@@ -1,0 +1,85 @@
+# The voice service's image, built on the pull request that changes it.
+#
+# Without this the first build of a change to `apps/tts` is `deploy-tts.yml`,
+# which builds and deploys in one step on main — so a Dockerfile that cannot
+# install a wheel, a model that 404s, or an engine that will not load fails
+# during a deploy rather than in review. The image is most of what that
+# directory *is*: almost nothing in it is exercised by `pnpm test`.
+#
+# It builds and throws the image away. Publishing is still `deploy-tts.yml`'s
+# job, and it is the only thing holding the Fly token.
+#
+# The expensive part is two gigabytes of voice models, which is why this runs
+# only when the service or the table it is generated from actually changes.
+name: Check TTS image
+
+on:
+  pull_request:
+    paths:
+      - apps/tts/**
+      - .github/workflows/check-tts.yml
+      # `voices.json` is generated from this, and a test fails if they disagree
+      # — but the test cannot tell whether the models it names can be fetched
+      # and loaded, which is what the build does.
+      - packages/shared/src/speech.ts
+      - '!**/*.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-tts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # The runner ships ~30 GB free and the image is ~2.5 GB before layers,
+      # which fits — but not with the preinstalled Android SDK and .NET also
+      # on the disk. Removing them costs a few seconds and has bitten larger
+      # builds than this one.
+      - name: Make room for the models
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
+          df -h /
+
+      # No push, no registry, no cache: a green build here means the download
+      # and both engines are good *today*, which is the only claim being made.
+      # Caching the model layer would quietly make it a claim about a cache.
+      - name: Build the image
+        run: docker build --progress=plain -t langx-tts:pr apps/tts
+
+      # The build already loads every voice and encodes a word — that is the
+      # RUN at the end of the Dockerfile. This proves the entrypoint comes up
+      # and answers, which the build does not.
+      - name: Start it and ask for a reading
+        run: |
+          docker run -d --name tts -p 8080:8080 langx-tts:pr
+          for i in $(seq 1 60); do
+            if curl -fsS localhost:8080/health >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          curl -fsS localhost:8080/health
+
+          # One from each engine: Kokoro's English, Piper's German.
+          for body in '{"text":"good morning","lang":"en","voice":"af_heart"}' \
+                      '{"text":"guten morgen","lang":"de","voice":"de_DE-thorsten-medium"}'; do
+            curl -fsS -o /tmp/out.m4a -X POST localhost:8080/synthesize \
+              -H 'Content-Type: application/json' -d "$body"
+            test -s /tmp/out.m4a
+            echo "$body -> $(wc -c < /tmp/out.m4a) bytes"
+          done
+
+          # And a language we are not licensed for is a 400, not a guess.
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST localhost:8080/synthesize \
+            -H 'Content-Type: application/json' \
+            -d '{"text":"gunaydin","lang":"tr","voice":"tr_TR-dfki-medium"}')
+          test "$code" = "400"
+          echo "turkish refused with $code"
+
+      - name: Logs, if anything above failed
+        if: failure()
+        run: docker logs tts || true
