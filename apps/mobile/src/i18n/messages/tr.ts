@@ -829,6 +829,10 @@ export const tr: Localized<EnMessages> = {
     tabCorrections: 'Düzeltmeler',
     tabPosts: 'Gönderiler',
     forName: '{name} için',
+    publicTitle: 'Düzeltmeler',
+    publicNote: 'Gönderilere yazılan düzeltmeler. Sohbette düzeltilen, o sohbette kalır.',
+    publicEmptyTitle: 'Henüz gönderi düzeltmesi yok',
+    publicEmptyBody: '@{handle} burada henüz bir gönderi düzeltmedi.',
   },
   myPosts: {
     emptyTitle: 'Henüz bir şey sormadın',
@@ -1856,6 +1860,9 @@ export const tr: Localized<EnMessages> = {
     corrections: { one: '{formatted} düzeltme', other: '{formatted} düzeltme' },
     earlyAdopter: 'İlk kullanıcılardan',
     earnedOf: '{total} rozetten {earned} tanesi kazanıldı',
+    emptyTitle: 'Henüz rozet yok',
+    emptyBody:
+      '@{handle} henüz rozet kazanmadı. Rozetler düzenli gelmek ve yardım etmek için verilir.',
   },
 
   shared: {

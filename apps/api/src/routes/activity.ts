@@ -1,6 +1,7 @@
 import {
   activityRangeSchema,
   ERROR_CODES,
+  listPostCorrectionsQuerySchema,
   localDayKey,
   repairDaySchema,
   TOKEN_RULES,
@@ -12,6 +13,8 @@ import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
 import { findProfileByHandleOrId, getProfile } from '../modules/profiles/profiles'
 import { blockedUserIds } from '../modules/moderation/blocks'
+import { listCorrectionsByAuthor } from '../modules/feed/feed'
+import { getPublicBadges } from '../modules/tokens/badges'
 import { getPublicSummary } from '../modules/tokens/publicSummary'
 import { listStreakDays, repairsInMonth } from '../modules/tokens/streakDays'
 import { recordCheckIn } from '../modules/tokens/streak'
@@ -183,6 +186,44 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
     if (!summary) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
     return reply.send(summary)
   })
+
+  /**
+   * The two tiles beside the follower count, opened.
+   *
+   * Here rather than next to `/me/badges` and the feed's post routes, because
+   * what decides who may read them is not the badge or the correction — it is
+   * the profile in the path, and the guard that answers "is this person here,
+   * for you" already lives in this file three times over.
+   */
+  app.get('/profiles/:handle/badges', { preHandler: requireAuth }, async (request, reply) => {
+    const { handle } = request.params as { handle: string }
+    // Resolved and guarded exactly as the two routes above — see them for why
+    // an old handle still works and why a block is a 404 rather than a 403.
+    const target = await findProfileByHandleOrId(app.mongo.db, handle)
+    const hidden = await blockedUserIds(app.mongo.db, request.userId)
+    if (!target || hidden.includes(target._id)) {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+    }
+
+    return reply.send(await getPublicBadges(app.mongo.db, target._id))
+  })
+
+  app.get(
+    '/profiles/:handle/corrections',
+    { preHandler: requireAuth, schema: { querystring: listPostCorrectionsQuerySchema } },
+    async (request, reply) => {
+      const { handle } = request.params as { handle: string }
+      const target = await findProfileByHandleOrId(app.mongo.db, handle)
+      const hidden = await blockedUserIds(app.mongo.db, request.userId)
+      if (!target || hidden.includes(target._id)) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+      }
+
+      return reply.send(
+        await listCorrectionsByAuthor(app.mongo.db, request.userId, target._id, request.query),
+      )
+    },
+  )
 }
 
 /**

@@ -27,7 +27,7 @@ import { StatTile } from '../../../src/components/ui/StatTile'
 import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
-import { goBackTo, openFollows } from '../../../src/lib/navigation'
+import { goBackTo, openBadges, openFollows, openPostCorrections } from '../../../src/lib/navigation'
 import { shareLink } from '../../../src/lib/share'
 import { profileShareText } from '../../../src/lib/shareText'
 import { showToast } from '../../../src/lib/toast'
@@ -341,17 +341,26 @@ export default function ProfileScreen() {
 
       {/*
         The numbers: the quickest read of whether this person is here to
-        teach. The streak has moved up beside the name, and the follower count
-        is the way into the list — the "›" is the hint that it opens.
+        teach. The streak has moved up beside the name, and all three of these
+        are the way into what they count — the "›" is the hint that it opens.
+
+        Pressable at zero too, the way the follower tile always has been. A
+        chevron that comes and goes with the count reads as a bug, and an
+        empty list says "nothing yet" better than a dead tile says anything.
       */}
       {summary.data && !user.official ? (
         <View style={styles.stats}>
           <StatTile
             tone="success"
-            label={t('me.corrections')}
+            label={`${t('me.corrections')} ›`}
             value={String(summary.data.corrections)}
+            onPress={() => openPostCorrections(user.handle, here)}
           />
-          <StatTile label={t('me.badges')} value={String(summary.data.badges)} />
+          <StatTile
+            label={`${t('me.badges')} ›`}
+            value={String(summary.data.badges)}
+            onPress={() => openBadges(user.handle, here)}
+          />
           <StatTile
             label={`${t('profile.followersTitle')} ›`}
             value={String(user.follow.followers)}

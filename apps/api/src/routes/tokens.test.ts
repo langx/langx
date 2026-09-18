@@ -1097,6 +1097,58 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(body.tokens).toBeGreaterThan(0)
     })
   })
+
+  describe('somebody else’s badges', () => {
+    interface PublicShelf {
+      badges: { id: string; earned: boolean }[]
+      earnedCount: number
+      total: number
+      next?: unknown
+    }
+
+    it('sends the earned ones and the size of the catalogue they came from', async () => {
+      const owner = await newUser('shelf-owner@example.com', { handle: 'shelfowner' })
+      const viewer = await newUser('shelf-viewer@example.com')
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: owner.userId }, { $set: { 'streak.longest': 7 } })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/shelfowner/badges',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<PublicShelf>()
+
+      expect(body.badges.map((badge) => badge.id)).toEqual(['streak.7'])
+      expect(body.badges.every((badge) => badge.earned)).toBe(true)
+      expect(body.earnedCount).toBe(1)
+      // Enough to draw "1 of 24 earned" without sending the 23 they have not
+      // got — a locked row is progress, and progress here is not ours to read.
+      expect(body.total).toBeGreaterThan(body.badges.length)
+      expect(body).not.toHaveProperty('next')
+    })
+
+    it('is absent rather than forbidden once the viewer is blocked', async () => {
+      const owner = await newUser('shelf-block-owner@example.com', { handle: 'shelfblocked' })
+      const viewer = await newUser('shelf-block-viewer@example.com')
+      await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: owner.cookie },
+        payload: { userId: viewer.userId },
+      })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/shelfblocked/badges',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode).toBe(404)
+    })
+  })
+
   describe('the token history', () => {
     it('groups a day by kind, files a pool share under the day it rewards, and pages', async () => {
       const user = await newUser('history@example.com')

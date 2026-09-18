@@ -253,3 +253,25 @@ export const badgeSummarySchema = z.object({
     .nullable(),
 })
 export type BadgeSummary = z.infer<typeof badgeSummarySchema>
+
+/**
+ * `GET /profiles/:handle/badges` — somebody else's shelf.
+ *
+ * Earned badges only, and no `next`. A locked row and the fraction under it
+ * are progress, and progress is a live reading of how many tokens, messages
+ * and corrections that person has — numbers the profile publishes as lifetime
+ * totals or not at all. What a stranger gets to read here is what was done,
+ * which is what a badge is for.
+ *
+ * `total` is the catalogue this account is measured against, and it is not
+ * always `BADGES.length`: a cohort badge nobody in that cohort can earn is
+ * dropped from their list entirely. Sent rather than inferred from `badges`,
+ * which now holds only the earned ones, so the header reads the same "3 of 25
+ * earned" here as it does on your own page.
+ */
+export const publicBadgesSchema = z.object({
+  badges: z.array(earnedBadgeSchema),
+  earnedCount: z.number().int(),
+  total: z.number().int(),
+})
+export type PublicBadges = z.infer<typeof publicBadgesSchema>

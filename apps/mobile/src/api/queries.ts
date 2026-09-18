@@ -43,6 +43,8 @@ import {
   type AppConfig,
   ERROR_CODES,
   type MessageSpeech,
+  type AuthoredCorrectionsPage,
+  type PublicBadges,
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
@@ -807,6 +809,35 @@ export function usePublicSummary(handle: string) {
 }
 
 /**
+ * Somebody else's badges — the earned ones only, and how many there were.
+ *
+ * A separate hook from `useBadges` rather than a handle-shaped argument to it:
+ * the two answer different endpoints with different shapes, and the cache key
+ * has to keep one person's shelf away from another's.
+ */
+export function usePublicBadges(handle: string) {
+  return useQuery({
+    queryKey: ['profileBadges', handle] as const,
+    queryFn: () => api.get<PublicBadges>(`/profiles/${handle}/badges`),
+    enabled: handle.length > 0,
+  })
+}
+
+/** The corrections somebody has written on posts, newest first. */
+export function useAuthoredCorrections(handle: string) {
+  return useInfiniteQuery({
+    queryKey: ['profileCorrections', handle] as const,
+    queryFn: ({ pageParam }) =>
+      api.get<AuthoredCorrectionsPage>(
+        `/profiles/${handle}/corrections${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled: handle.length > 0,
+  })
+}
+
+/**
  * The activity map's own data.
  *
  * `today` comes from the server rather than the device, because the streak's
@@ -1505,8 +1536,13 @@ export function useDeletePost() {
   })
 }
 
-export function useBadges() {
-  return useQuery({ queryKey: keys.badges, queryFn: () => api.get<BadgeSummary>('/me/badges') })
+export function useBadges(enabled = true) {
+  return useQuery({
+    queryKey: keys.badges,
+    queryFn: () => api.get<BadgeSummary>('/me/badges'),
+    // The badges screen reads either yours or somebody else's, never both.
+    enabled,
+  })
 }
 
 /**

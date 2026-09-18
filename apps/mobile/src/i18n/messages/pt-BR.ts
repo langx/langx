@@ -824,6 +824,10 @@ export const ptBR: Localized<EnMessages> = {
     tabCorrections: 'Correções',
     tabPosts: 'Publicações',
     forName: 'Para {name}',
+    publicTitle: 'Correções',
+    publicNote: 'Correções escritas em publicações. O que foi corrigido em uma conversa fica nela.',
+    publicEmptyTitle: 'Ainda sem correções em publicações',
+    publicEmptyBody: '@{handle} ainda não corrigiu nenhuma publicação aqui.',
   },
   myPosts: {
     emptyTitle: 'Você ainda não perguntou nada',
@@ -1853,6 +1857,8 @@ export const ptBR: Localized<EnMessages> = {
     corrections: { one: '{formatted} correção', other: '{formatted} correções' },
     earlyAdopter: 'Usuário pioneiro',
     earnedOf: '{earned} de {total} conquistadas',
+    emptyTitle: 'Ainda sem emblemas',
+    emptyBody: '@{handle} ainda não ganhou nenhum. Eles são dados por aparecer e por ajudar.',
   },
 
   shared: {

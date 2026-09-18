@@ -367,6 +367,46 @@ export const postCorrectionsPageSchema = z.object({
 })
 export type PostCorrectionsPage = z.infer<typeof postCorrectionsPageSchema>
 
+/**
+ * One correction somebody wrote on a post, as a stranger reads it back.
+ *
+ * Carries `original` — the post's own body — because a correction on its own
+ * is a sentence with no news in it; the fix only means something beside the
+ * thing it fixed. That is the same pair the chat correction bubble draws, so
+ * the row reads the same way in both places.
+ *
+ * No author: every row on this page was written by the one person whose
+ * profile opened it. No likes and no attachments either; this is a list to
+ * get back to the post from, and everything you can do to a correction lives
+ * on the post itself.
+ */
+export const authoredCorrectionSchema = z.object({
+  _id: z.string(),
+  postId: z.string(),
+  original: z.string(),
+  corrected: z.string(),
+  note: z.string().optional(),
+  language: z.string(),
+  createdAt: z.string(),
+})
+export type AuthoredCorrection = z.infer<typeof authoredCorrectionSchema>
+
+/**
+ * `GET /profiles/:handle/corrections` — the corrections one person has written
+ * on posts, newest first.
+ *
+ * Posts only, which is less than the number on their profile: that counts
+ * chat corrections and pronunciation recordings too, and both of those happen
+ * where a stranger has no business looking. The screen says which half it is
+ * showing rather than quietly disagreeing with the tile that opened it — the
+ * same choice `/me/corrections` made for the same reason.
+ */
+export const authoredCorrectionsPageSchema = z.object({
+  items: z.array(authoredCorrectionSchema),
+  nextCursor: z.string().nullable(),
+})
+export type AuthoredCorrectionsPage = z.infer<typeof authoredCorrectionsPageSchema>
+
 export const POST_COMMENTS_PAGE_SIZE_DEFAULT = 20
 export const POST_COMMENTS_PAGE_SIZE_MAX = 50
 

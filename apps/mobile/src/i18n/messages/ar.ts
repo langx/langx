@@ -910,6 +910,10 @@ export const ar: Localized<EnMessages> = {
     tabCorrections: 'التصحيحات',
     tabPosts: 'المنشورات',
     forName: 'لـ {name}',
+    publicTitle: 'التصحيحات',
+    publicNote: 'التصحيحات المكتوبة على المنشورات. ما صُحِّح في محادثة يبقى في تلك المحادثة.',
+    publicEmptyTitle: 'لا تصحيحات على المنشورات بعد',
+    publicEmptyBody: 'لم يصحّح @{handle} أي منشور هنا بعد.',
   },
   myPosts: {
     emptyTitle: 'لم تسأل عن شيء بعد',
@@ -2163,6 +2167,8 @@ export const ar: Localized<EnMessages> = {
     },
     earlyAdopter: 'من الأوائل',
     earnedOf: 'حصلت على {earned} من {total}',
+    emptyTitle: 'لا شارات بعد',
+    emptyBody: 'لم يحصل @{handle} على أي شارة بعد. تُمنح الشارات على المواظبة وعلى المساعدة.',
   },
 
   shared: {

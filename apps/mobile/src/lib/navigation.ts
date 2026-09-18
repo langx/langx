@@ -99,3 +99,20 @@ export function openLikers(targetType: string, targetId: string, from: string): 
 export function openFollows(userId: string, tab: 'followers' | 'following', from: string): void {
   push(`/(app)/follows?userId=${userId}&tab=${tab}&from=${encodeURIComponent(from)}`)
 }
+
+/**
+ * Somebody's badges, and the corrections they have written on posts.
+ *
+ * By handle rather than by id, unlike `openFollows`: both screens read an
+ * endpoint under `/profiles/:handle`, and the profile that opens them is
+ * already addressed by its handle.
+ */
+export function openBadges(handle: string, from: string): void {
+  push(`/(app)/badges?handle=${encodeURIComponent(handle)}&from=${encodeURIComponent(from)}`)
+}
+
+export function openPostCorrections(handle: string, from: string): void {
+  push(
+    `/(app)/post-corrections?handle=${encodeURIComponent(handle)}&from=${encodeURIComponent(from)}`,
+  )
+}

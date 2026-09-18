@@ -1496,4 +1496,119 @@ describe('community feed', () => {
       expect(page.nextCursor).toBeNull()
     })
   })
+
+  describe('somebody else’s corrections', () => {
+    interface AuthoredPage {
+      items: {
+        _id: string
+        postId: string
+        original: string
+        corrected: string
+        language: string
+      }[]
+      nextCursor: string | null
+    }
+
+    function written(viewer: SignedUpUser, of: string, qs = '') {
+      return app.inject({
+        method: 'GET',
+        url: `/profiles/${of}/corrections${qs ? `?${qs}` : ''}`,
+        headers: { cookie: viewer.cookie },
+      })
+    }
+
+    it('carries the sentence each correction was of, newest first', async () => {
+      const teacher = await newUser('written-teacher@example.com', { handle: 'writtenteacher' })
+      const asker = await newUser('written-asker@example.com')
+      const viewer = await newUser('written-viewer@example.com')
+
+      const first = (await post(asker, 'I has been there.')).json<{ _id: string }>()._id
+      const second = (await post(asker, 'She go home.')).json<{ _id: string }>()._id
+      expect((await correct(teacher, first, 'I have been there.')).statusCode).toBe(201)
+      expect((await correct(teacher, second, 'She goes home.')).statusCode).toBe(201)
+
+      const page = (await written(viewer, 'writtenteacher')).json<AuthoredPage>()
+      expect(page.items).toHaveLength(2)
+      // Newest first, the opposite of a post's own correction list: this one
+      // is read as "what has this person been doing", not as a thread.
+      expect(page.items.map((item) => item.corrected)).toEqual([
+        'She goes home.',
+        'I have been there.',
+      ])
+      expect(page.items[0]).toMatchObject({
+        postId: second,
+        original: 'She go home.',
+        language: 'en',
+      })
+      expect(page.nextCursor).toBeNull()
+    })
+
+    it('counts only what was written on posts, not what was written in a chat', async () => {
+      const teacher = await newUser('written-chat@example.com', { handle: 'writtenchat' })
+      const viewer = await newUser('written-chat-viewer@example.com')
+
+      // The tile that opens this screen counts chat corrections too. They are
+      // not here, which is the whole reason the screen carries a note saying so.
+      const page = (await written(viewer, 'writtenchat')).json<AuthoredPage>()
+      expect(page.items).toEqual([])
+      void teacher
+    })
+
+    it('leaves out a correction whose post is by somebody the viewer blocked', async () => {
+      const teacher = await newUser('written-block-teacher@example.com', {
+        handle: 'writtenblockteacher',
+      })
+      const shunned = await newUser('written-block-author@example.com')
+      const friend = await newUser('written-block-friend@example.com')
+      const viewer = await newUser('written-block-viewer@example.com')
+
+      const hiddenPost = (await post(shunned, 'Hidden sentence.')).json<{ _id: string }>()._id
+      const shownPost = (await post(friend, 'Shown sentence.')).json<{ _id: string }>()._id
+      await correct(teacher, hiddenPost, 'Hidden, fixed.')
+      await correct(teacher, shownPost, 'Shown, fixed.')
+
+      await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: viewer.cookie },
+        payload: { userId: shunned.userId },
+      })
+
+      const page = (await written(viewer, 'writtenblockteacher')).json<AuthoredPage>()
+      expect(page.items.map((item) => item.corrected)).toEqual(['Shown, fixed.'])
+    })
+
+    it('pages newest first and stops', async () => {
+      const teacher = await newUser('written-page-teacher@example.com', { handle: 'writtenpager' })
+      const asker = await newUser('written-page-asker@example.com')
+      const viewer = await newUser('written-page-viewer@example.com')
+
+      const corrected: string[] = []
+      for (let i = 0; i < 3; i++) {
+        const postId = (await post(asker, `Sentence ${i}.`)).json<{ _id: string }>()._id
+        await correct(teacher, postId, `Fixed ${i}.`)
+        corrected.push(`Fixed ${i}.`)
+      }
+      corrected.reverse()
+
+      const first = (await written(viewer, 'writtenpager', 'limit=2')).json<AuthoredPage>()
+      expect(first.items.map((item) => item.corrected)).toEqual(corrected.slice(0, 2))
+      expect(first.nextCursor).not.toBeNull()
+
+      const second = (
+        await written(
+          viewer,
+          'writtenpager',
+          `limit=2&cursor=${encodeURIComponent(first.nextCursor ?? '')}`,
+        )
+      ).json<AuthoredPage>()
+      expect(second.items.map((item) => item.corrected)).toEqual(corrected.slice(2))
+      expect(second.nextCursor).toBeNull()
+    })
+
+    it('is absent rather than forbidden for a handle nobody answers to', async () => {
+      const viewer = await newUser('written-missing-viewer@example.com')
+      expect((await written(viewer, 'nobodyatall')).statusCode).toBe(404)
+    })
+  })
 })
