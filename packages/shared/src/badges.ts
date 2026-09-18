@@ -129,7 +129,40 @@ function correctionLabel(threshold: number): string {
   return threshold === 1 ? 'First correction' : `${threshold.toLocaleString('en-US')} corrections`
 }
 
+/**
+ * The catalogue, in the order the badges screen draws it: **cohort badges
+ * first, then the ladders.**
+ *
+ * A cohort badge is one row and the whole of its kind — there is no next rung
+ * and no way to work towards it, so it is the only thing on that screen a
+ * reader cannot act on. Buried between the eighth streak and the third token
+ * total it reads as one more entry in a long list; at the top it reads as what
+ * it is. The ladders below it lose nothing by being second: they are already
+ * grouped, and a group announces itself.
+ *
+ * `badges.test.ts` holds the order, so appending a second cohort badge to the
+ * bottom of this array fails rather than quietly sinking it.
+ */
 export const BADGES: readonly BadgeDefinition[] = [
+  {
+    /**
+     * The one badge nobody new can ever earn: this account was opened by
+     * `precreate-v1-users.ts` for somebody who was on LangX v1.
+     *
+     * The id names the fact and the label does the wording, as everywhere else
+     * here — `Early Adopter` is what a reader sees, `origin.v1` is what the
+     * notification, the inbox row and `notifiedBadgeIds` carry, and neither
+     * moves if the other is reworded.
+     *
+     * A threshold of 1 is a boolean wearing a number, so the one `>=` in
+     * `getBadgeSummary` still serves every kind.
+     */
+    id: 'origin.v1',
+    kind: 'origin' as const,
+    threshold: 1,
+    label: 'Early Adopter',
+    icon: 'mci:sprout',
+  },
   ...Object.keys(TOKEN_RULES.streakMilestones)
     .map(Number)
     .sort((a, b) => a - b)
@@ -171,25 +204,6 @@ export const BADGES: readonly BadgeDefinition[] = [
     label: `${days} days a member`,
     icon: 'calendar',
   })),
-  {
-    /**
-     * The one badge nobody new can ever earn: this account was opened by
-     * `precreate-v1-users.ts` for somebody who was on LangX v1.
-     *
-     * The id names the fact and the label does the wording, as everywhere else
-     * here — `Early Adopter` is what a reader sees, `origin.v1` is what the
-     * notification, the inbox row and `notifiedBadgeIds` carry, and neither
-     * moves if the other is reworded.
-     *
-     * A threshold of 1 is a boolean wearing a number, so the one `>=` in
-     * `getBadgeSummary` still serves every kind.
-     */
-    id: 'origin.v1',
-    kind: 'origin' as const,
-    threshold: 1,
-    label: 'Early Adopter',
-    icon: 'mci:sprout',
-  },
 ]
 
 export function findBadge(id: string): BadgeDefinition | undefined {
