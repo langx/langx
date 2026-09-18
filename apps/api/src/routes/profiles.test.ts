@@ -1833,6 +1833,59 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
         expect.objectContaining({ code: 'en', priority: 1 }),
       ])
     })
+
+    /**
+     * A language named twice is one language.
+     *
+     * The client that sent this is fixed, but the write is the only place that
+     * can say so: the schema counts entries and never compares them, so two
+     * `de`s were two rows on the profile — and removing either removed both,
+     * because the screen filters a list by code. Dropped rather than refused,
+     * so that anybody already carrying a pair is mended by their next edit
+     * instead of locked out of the screen that would mend it.
+     */
+    it('stores a language named twice in one body once', async () => {
+      const { user } = await onboardedWith('lang-dupe@example.com', 'langdupe', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } },
+        )
+
+      const response = await patch(user, {
+        learning: [
+          { code: 'en', level: 'intermediate', priority: 1 },
+          { code: 'de', level: 'beginner', priority: 2 },
+          { code: 'de', level: 'beginner', priority: 3 },
+        ],
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ learning: { code: string }[] }>().learning.map((l) => l.code)).toEqual(
+        ['en', 'de'],
+      )
+    })
+
+    /** And the pair already stored comes apart on the next write, not the next release. */
+    it('heals a duplicate already on the profile', async () => {
+      const { user } = await onboardedWith('lang-dupe-stored@example.com', 'langdupestored', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { nativeLanguages: [{ code: 'tr' }, { code: 'tr' }] } },
+        )
+
+      const response = await patch(user, { nativeLanguages: [{ code: 'tr' }, { code: 'tr' }] })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ nativeLanguages: { code: string }[] }>().nativeLanguages).toEqual([
+        { code: 'tr' },
+      ])
+    })
   })
 
   describe('the translation target follows the native list', () => {

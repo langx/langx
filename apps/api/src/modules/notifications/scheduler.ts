@@ -14,6 +14,7 @@ import { runNewsletterPass } from './newsletter'
 import { runLikesRoundUpPass } from './social'
 import { runPromotionsPass } from './promotions'
 import { runGiftReadyPass, runPoolPayoutPass } from './wallet'
+import { runOnboardingReminderPass } from './onboardingReminder'
 import { runVerifyReminderPass } from './verifyReminder'
 
 /**
@@ -73,10 +74,17 @@ export function startNotificationScheduler(
             ]
           : []),
         /*
-         * The one transactional letter on this timer, and the only reason it
-         * is on a timer at all: it is deliberately late, so that a renewal
+         * The verify reminder's sibling: the same "you started something"
+         * letter, one step further in. It is on this timer rather than fired
+         * by an event because the event it waits for is one that never came —
+         * an absence has no trigger, so the clock is the only thing that can
+         * notice it.
+         */
+        run('onboarding reminder', () => runOnboardingReminderPass(db, senders.email, now)),
+        /*
+         * The one transactional letter on this timer that is *late* rather
+         * than clock-triggered: it is deliberately delayed, so that a renewal
          * arriving behind its own expiry has time to make it unnecessary.
-         * Everything else here is scheduled because the clock is its trigger.
          */
         run('billing plan ended', () =>
           runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
@@ -123,12 +131,19 @@ export function startNotificationScheduler(
    */
   async function run(
     name: string,
-    pass: () => Promise<{ sent: number; failed?: number }>,
+    pass: () => Promise<{ sent: number; failed?: number; skipped?: number }>,
   ): Promise<void> {
     try {
-      const { sent, failed } = await withJobHealth(db, name, pass)
+      const { sent, failed, skipped } = await withJobHealth(db, name, pass)
       if (sent > 0) logger.info({ sent, pass: name }, 'notifications sent')
-      if (failed) logger.warn({ failed, pass: name }, 'notifications skipped')
+      if (failed) logger.warn({ failed, pass: name }, 'notifications failed')
+      /*
+       * Not a failure and not a warning: somebody the pass deliberately did
+       * not write to — suppressed, or already claimed in the ledger. Worth a
+       * line, because "sent 0" and "sent 0, skipped 40" are very different
+       * mornings, and without this the second reads as the first.
+       */
+      if (skipped) logger.info({ skipped, pass: name }, 'notifications skipped')
     } catch (error) {
       logger.error({ err: error, pass: name }, 'notification pass failed')
     }

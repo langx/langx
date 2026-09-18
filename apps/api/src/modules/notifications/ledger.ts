@@ -29,6 +29,13 @@ export type NotificationJob =
   | 'wallet.pool'
   | 'wallet.gift'
   /**
+   * The one letter to somebody who signed up and never finished onboarding.
+   * Its period key is the constant `once`, not a date: this is a service
+   * message about opening an account, and a second one would make it a
+   * campaign to somebody who never consented to receive any.
+   */
+  | 'onboardingReminder'
+  /**
    * The v1 loyalty gift, once in an account's life — period key `'once'`.
    *
    * It is here rather than relying on the message's `clientId` because this

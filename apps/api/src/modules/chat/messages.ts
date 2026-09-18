@@ -812,6 +812,37 @@ export interface MessagePage {
 }
 
 /**
+ * The page a thread that is one message old would answer with, built without
+ * asking for it.
+ *
+ * `startConversation` writes the conversation and its opening message in one
+ * request, and the client that made it then has to draw that thread. It used
+ * to fetch the page — a second round trip, on a screen that had already
+ * cleared its composer and was showing nothing, for a page whose every field
+ * is known here: one message, no history in either direction, no pin, and the
+ * participants and media countdown off the conversation just written.
+ *
+ * Built here rather than in the route because `MessagePage` is this file's
+ * shape, and a second place constructing one is how the two start to
+ * disagree. Pure and synchronous, like `toMessageView` underneath it.
+ */
+export function openingPage(
+  conversation: Conversation,
+  message: Message,
+  viewerId: string,
+): MessagePage {
+  return {
+    items: [toMessageView(message, viewerId)],
+    // Nothing older and nothing newer: this message is the whole thread.
+    nextCursor: null,
+    prevCursor: null,
+    participants: conversation.participants,
+    pinned: null,
+    mediaLockedFor: mediaLockedFor(conversation, viewerId),
+  }
+}
+
+/**
  * Newest page first, but each page's `items` come back oldest-first.
  *
  * `cursor` walks backwards into history and `after` walks forwards toward the
