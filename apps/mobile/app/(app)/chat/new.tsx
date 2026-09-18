@@ -264,6 +264,10 @@ export default function NewChatScreen() {
                 onReply={ignore}
                 // Nothing to swipe towards: the stand-in's handlers are all inert.
                 canReply={false}
+                // And nothing to heart: the server has not named this message
+                // yet, so there is no id to send a reaction against.
+                canReact={false}
+                onReact={ignore}
                 onAnswerAsk={ignore}
                 onRespondMeeting={ignore}
                 onAnswerQuiz={ignore}
