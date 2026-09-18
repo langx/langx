@@ -262,11 +262,59 @@ more:
   optimising an app and building "customized experiences for all screen sizes".
   The image is the device folded, front and back, in Star White and Night Sky.
 
-That is marketing to developers, and it is the whole of our evidence. **It
-carries no dimensions, no size classes, no minimum iOS version, no App Store
-screenshot requirements and no ship date.** Everything in this section that
-sounds like a measurement is missing on purpose; the numbers come from the
-design kits and from Xcode 27.1, and both of those need a Mac.
+Those mails carry no measurements, and this document said for a few hours
+that there were none to be had. That was wrong: **Apple has published the
+documentation.** What follows is from it.
+
+**The numbers, from `apple.com/iphone-duo/specs`:**
+
+| Display          | Pixels      | Points at 3×  | Size | Density |
+| ---------------- | ----------- | ------------- | ---- | ------- |
+| Inner (unfolded) | 1878 × 2670 | **626 × 890** | 7.6″ | 430 ppi |
+| Outer (folded)   | 1398 × 2034 | **466 × 678** | 5.4″ | 460 ppi |
+
+The point sizes are the pixel counts divided by three; Apple's page gives the
+pixels, and the developer write-ups quote the same points, which is what makes
+3× safe to assume rather than a guess. Both displays carry the Dynamic Island,
+ProMotion and Always-On.
+
+The inner display's ratio is **1.42** — taller than it is wide, not a square
+and not a landscape tablet. Split down the middle it is two columns of
+**313 pt**, which is about a sidebar's width and is why a two-pane layout is
+the obvious thing to reach for.
+
+**What the developer documentation says**, from Apple's HIG page _Designing
+for iPhone Duo_ and three Tech Talks (_Prepare your app_, _Design for_, _Strike
+a pose with adaptive layouts_), as reported in developer write-ups — the pages
+themselves render only in a browser, so these are second-hand until somebody
+opens them on a Mac:
+
+- The inner display is **regular in both width and height** size classes, with
+  room for sidebars. Branch on size classes, not on idiom or orientation.
+- **The inner display does not honour an app's supported interface
+  orientations.** This is the line that touches us hardest, below.
+- **Safe areas and layout margins are asymmetric** — each edge is handled on
+  its own, especially in Split View.
+- `UIScreen.main` is ambiguous on a two-display device and is said to be headed
+  for deprecation; the screen comes from the window scene instead.
+- New API: `onHingeChange` in SwiftUI, `UIHingeInteraction` in UIKit, for the
+  fold angle. `NavigationSplitView` and `UISplitViewController` adapt on their
+  own. A container called `ArrangementView` places children by size class and
+  aspect ratio.
+- **Xcode 27.1's Device Hub** simulates opening, closing, rotating and
+  partially folding, and the write-ups say to rebuild against the **iOS 27.1
+  SDK**. Four poses to support: closed portrait, closed landscape, open
+  vertical, open horizontal.
+
+**`orientation: 'portrait'` is now a claim the device ignores.**
+`apps/mobile/app.config.ts` sets it, every screen in this app was drawn under
+it, and on the inner display it stops being true. Nothing in the app branches
+on orientation — that was checked, and there is no `ScreenOrientation` call and
+no `isLandscape` anywhere — so the app will not misbehave; it will simply be
+asked to lay out at 890 pt wide having never been asked before. That is the
+Duo's real bill for us, and it is a layout bill, not a crash.
+
+![iPhone Duo: the inner display showing a two-pane LangX — conversation list beside an open thread — and the outer display showing today's single-pane app with the widget above it](./iphone-watch-and-carplay/duo.png)
 
 **What is already true here**, from reading the app rather than guessing — and
 it is better news than it could have been:
@@ -274,7 +322,9 @@ it is better news than it could have been:
 - **Nothing calls `Dimensions.get`.** That is the classic folding-device bug:
   the value is read once at import and never changes, so an app that caches it
   keeps drawing for the screen it launched on. This app does not have that line
-  anywhere.
+  anywhere, and `eslint.config.mjs` now refuses it. React Native's own
+  `Dimensions` reads `UIScreen.main` underneath, which is the API Apple is
+  moving away from — one more reason for the hook to be the only door.
 - **`useWindowDimensions` is used in three files** — `MessageMenuHost`,
   `TourHost` and `chat-media`. It is the reactive hook; a fold re-renders them.
 - **`layout.maxWidth` is 720** and `Screen`'s `column` applies it on every
@@ -301,16 +351,18 @@ a stack and every route assumes it owns the screen. That is a structural change
 to navigation, it would equally serve iPad, and it deserves its own plan rather
 than a paragraph in this one.
 
-**What was worth doing now, with no Mac and no numbers:** keeping the good
+**What was worth doing now, before any of this is testable:** keeping the good
 state good. `eslint.config.mjs` now refuses `Dimensions.get` in
 `apps/mobile/**`, with the replacement named in the message. It fixes nothing —
 there was no call site — which is why it was cheap to add before the first one
 arrives. Everything else waits for the design kits.
 
-**Verify:** the app on Xcode 27.1's Duo simulator, folded and unfolded, with a
-chat open — no clipped header, no lost scroll position across the fold, the
-keyboard behaving on both; and the store listing's screenshot set answering
-whatever Apple ends up requiring for the device.
+**Verify:** the app in Xcode 27.1's Device Hub through all four poses —
+closed portrait, closed landscape, open vertical, open horizontal — with a chat
+open: no clipped header, no lost scroll position across a fold, the keyboard
+behaving in each, and both safe-area edges respected rather than mirrored. Then
+the store listing's screenshot set, against whatever Apple requires for the
+device.
 
 ## Surface B — Apple Watch
 
