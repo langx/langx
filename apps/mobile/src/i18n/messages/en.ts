@@ -947,6 +947,17 @@ export const en = {
     tabCorrections: 'Corrections',
     tabPosts: 'Posts',
     forName: 'For {name}',
+    /**
+     * Somebody else's corrections. Only the ones written on posts are here —
+     * the profile tile that opens this counts chat corrections and
+     * pronunciation recordings too, and neither is a stranger's to read. The
+     * note says so, rather than leaving a list that quietly disagrees with the
+     * number that led to it.
+     */
+    publicTitle: 'Corrections',
+    publicNote: 'Corrections written on posts. What was corrected in a chat stays in that chat.',
+    publicEmptyTitle: 'No post corrections yet',
+    publicEmptyBody: '@{handle} has not corrected a post here yet.',
   },
   myPosts: {
     emptyTitle: 'Nothing asked yet',
@@ -2005,6 +2016,14 @@ export const en = {
      */
     earlyAdopter: 'Early Adopter',
     earnedOf: '{earned} of {total} earned',
+    /**
+     * Only somebody else's page can be empty: your own is the whole catalogue,
+     * locked rows and all. Theirs is the earned half of it, which for a new
+     * account is nothing at all — and a blank screen under a tile that said
+     * "0 Badges" is the tile not working, as far as anyone tapping it knows.
+     */
+    emptyTitle: 'No badges yet',
+    emptyBody: '@{handle} has not earned one yet. They are given for showing up and for helping.',
   },
 
   shared: {

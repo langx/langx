@@ -837,6 +837,11 @@ export const de: Localized<EnMessages> = {
     tabCorrections: 'Korrekturen',
     tabPosts: 'Beiträge',
     forName: 'Für {name}',
+    publicTitle: 'Korrekturen',
+    publicNote:
+      'Korrekturen an Beiträgen. Was in einem Chat korrigiert wurde, bleibt in diesem Chat.',
+    publicEmptyTitle: 'Noch keine Beitragskorrekturen',
+    publicEmptyBody: '@{handle} hat hier noch keinen Beitrag korrigiert.',
   },
   myPosts: {
     emptyTitle: 'Noch nichts gefragt',
@@ -1892,6 +1897,8 @@ export const de: Localized<EnMessages> = {
     corrections: { one: '{formatted} Korrektur', other: '{formatted} Korrekturen' },
     earlyAdopter: 'Nutzer der ersten Stunde',
     earnedOf: '{earned} von {total} verdient',
+    emptyTitle: 'Noch keine Abzeichen',
+    emptyBody: '@{handle} hat noch keins verdient. Es gibt sie fürs Dabeisein und fürs Helfen.',
   },
 
   shared: {

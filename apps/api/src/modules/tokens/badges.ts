@@ -6,6 +6,7 @@ import {
   type BadgeKind,
   type BadgeSummary,
   type EarnedBadge,
+  type PublicBadges,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -189,4 +190,23 @@ export async function getBadgeSummary(
     : null
 
   return { badges, earnedCount: badges.filter((badge) => badge.earned).length, next }
+}
+
+/**
+ * Somebody else's badges: the ones they have, and how many there were to have.
+ *
+ * A filter over `getBadgeSummary` rather than a second derivation of the same
+ * facts, so their page and their own can never disagree about what they have
+ * earned. What it drops — the locked rows and `next` — is dropped because it
+ * is progress rather than achievement; see `publicBadgesSchema`.
+ */
+export async function getPublicBadges(db: Db, userId: string): Promise<PublicBadges> {
+  const summary = await getBadgeSummary(db, userId)
+  return {
+    badges: summary.badges.filter((badge) => badge.earned),
+    earnedCount: summary.earnedCount,
+    // Before the filter: the catalogue this account is measured against, which
+    // is short by one for anybody who did not come from v1.
+    total: summary.badges.length,
+  }
 }

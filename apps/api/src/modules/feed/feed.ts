@@ -8,6 +8,7 @@ import {
   FEED_FOLLOWING_SOURCE_LIMIT,
   type ListFeedQuery,
   type ListMyPostsQuery,
+  type AuthoredCorrectionsPage,
   type ListPostCorrectionsQuery,
   type PostCorrectionsPage,
   type PostCorrection,
@@ -604,6 +605,83 @@ export async function listPostCorrections(
       commentCount: commentCounts.get(postId) ?? 0,
     }),
     items: items.map((doc) => correctionDto(doc, authors, likes)),
+    nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
+  }
+}
+
+/**
+ * Every correction one person has written on a post, newest first.
+ *
+ * The lifetime number on a profile counts three things — corrections on posts,
+ * corrections in chats, and pronunciation recordings — and only the first of
+ * them happens somewhere a stranger can already look. So this is a third of a
+ * number rather than the number, and the screen that draws it says so; the
+ * alternative was a list that silently disagrees with the tile that opened it.
+ *
+ * The block filter is applied to the *post's* author, not the correction's:
+ * every row here was written by the one person being read, and what a viewer
+ * must not be shown is somebody they blocked turning up as the author of the
+ * sentence underneath.
+ */
+export async function listCorrectionsByAuthor(
+  db: Db,
+  viewerId: string,
+  authorId: string,
+  query: ListPostCorrectionsQuery,
+): Promise<AuthoredCorrectionsPage> {
+  // `author_recent` is `{authorId, createdAt: -1}` — the index this question
+  // was given when the lifetime count was the only thing asking it.
+  const filter: Document = { authorId }
+  if (query.cursor) {
+    const { date, id } = decodeDateIdCursor(query.cursor)
+    filter.$or = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
+  }
+
+  const rows = await db
+    .collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
+    .find(filter)
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(query.limit + 1)
+    .toArray()
+
+  const hasMore = rows.length > query.limit
+  const page = hasMore ? rows.slice(0, query.limit) : rows
+  const last = page.at(-1)
+
+  const [posts, hidden] = await Promise.all([
+    db
+      .collection<Post>(COLLECTIONS.posts)
+      .find({ _id: { $in: page.map((row) => row.postId) }, ...notHidden() })
+      .toArray(),
+    blockedUserIds(db, viewerId),
+  ])
+  const byId = new Map(posts.map((post) => [post._id.toHexString(), post]))
+
+  /*
+   * Dropped after the page was read rather than before it. Whether the post
+   * still exists and whose it is are facts in another collection, and the
+   * lookup that answers them is the one above — there is nothing to pre-filter
+   * on. The cursor is taken from the last row *read*, not the last row kept,
+   * so a page thinned by a deleted post comes back short instead of looping.
+   */
+  const items = page.flatMap((row) => {
+    const post = byId.get(row.postId.toHexString())
+    if (!post || hidden.includes(post.authorId)) return []
+    return [
+      {
+        _id: row._id.toHexString(),
+        postId: post._id.toHexString(),
+        original: post.body,
+        corrected: row.corrected,
+        ...(row.note ? { note: row.note } : {}),
+        language: post.language,
+        createdAt: row.createdAt.toISOString(),
+      },
+    ]
+  })
+
+  return {
+    items,
     nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
   }
 }

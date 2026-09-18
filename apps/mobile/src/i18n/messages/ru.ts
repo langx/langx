@@ -897,6 +897,11 @@ export const ru: Localized<EnMessages> = {
     tabCorrections: 'Исправления',
     tabPosts: 'Публикации',
     forName: 'Для {name}',
+    publicTitle: 'Исправления',
+    publicNote:
+      'Исправления, написанные к публикациям. Исправленное в переписке остаётся в переписке.',
+    publicEmptyTitle: 'Исправлений к публикациям пока нет',
+    publicEmptyBody: '@{handle} здесь ещё не исправлял(а) ни одной публикации.',
   },
   myPosts: {
     emptyTitle: 'Ты ещё ничего не спросил',
@@ -2075,6 +2080,8 @@ export const ru: Localized<EnMessages> = {
     },
     earlyAdopter: 'Первопроходец',
     earnedOf: 'Получено {earned} из {total}',
+    emptyTitle: 'Значков пока нет',
+    emptyBody: '@{handle} пока не заработал(а) ни одного. Их дают за постоянство и за помощь.',
   },
 
   shared: {

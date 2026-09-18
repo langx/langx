@@ -1,9 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import { useMemo } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import type { EarnedBadge } from '../api/types'
 import type { BadgeSummary, Locale } from '@langx/shared'
 import { BADGE_MARKS } from '../lib/badgeMark'
+import { badgesEarnedFirst } from '../lib/badgeOrder'
 import { makeStyles, useTheme } from '../lib/theme'
 import { badgeLabel, useLocale, useT } from '../i18n'
 
@@ -134,9 +136,13 @@ export function BadgeGrid({
   /** Given, an earned row opens the share sheet with its name. */
   onShare?: (label: string) => void
 }) {
+  // Earned first, always — see `badgesEarnedFirst` for why the catalogue's own
+  // order is the wrong one here and what survives of it.
+  const ordered = useMemo(() => badgesEarnedFirst(badges), [badges])
+
   return (
     <View>
-      {badges.map((badge) => (
+      {ordered.map((badge) => (
         <BadgeRow key={badge.id} badge={badge} next={next} onShare={onShare} />
       ))}
     </View>
