@@ -1440,12 +1440,17 @@ export const en = {
     followingCount: { one: '{count} following', other: '{count} following' },
     followersTitle: 'Followers',
     /**
-     * The third stat tile, where the badge count used to be. "Top 12%" rather
-     * than "#41,205": a rank is only worth reading at the very top of a board,
-     * and a percentile stays legible as the app grows.
+     * The third stat tile, where the badge count used to be. A percentile
+     * rather than "#41,205": a rank is only worth reading at the very top of a
+     * board, and a percentile stays legible as the app grows.
+     *
+     * The number alone, with `rankLabel` under it — the tile is the same shape
+     * as the two beside it, and "Top" was a word doing the work the small
+     * print already does. It stays a key rather than becoming `${n}%` in the
+     * component because Turkish writes the sign first: %12, not 12%.
      */
     rankLabel: 'This week',
-    rankValue: 'Top {percent}%',
+    rankValue: '{percent}%',
     badgeStrip: { one: '{count} badge earned', other: '{count} badges earned' },
     followingTitle: 'Following',
     followersEmptyTitle: 'No followers yet',

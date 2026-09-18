@@ -1326,7 +1326,7 @@ export const de: Localized<EnMessages> = {
     followingCount: { one: '{count} gefolgt', other: '{count} gefolgt' },
     followersTitle: 'Follower',
     rankLabel: 'Diese Woche',
-    rankValue: 'Top {percent}%',
+    rankValue: '{percent}%',
     badgeStrip: { one: '{count} Abzeichen verdient', other: '{count} Abzeichen verdient' },
     followingTitle: 'Folgt',
     followersEmptyTitle: 'Noch keine Follower',

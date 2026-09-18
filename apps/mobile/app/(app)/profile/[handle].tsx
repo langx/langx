@@ -373,13 +373,12 @@ export default function ProfileScreen() {
             <StatTile
               label={`${t('profile.rankLabel')} ›`}
               value={t('profile.rankValue', { percent: summary.data.rank.percentile })}
-              valueSize={20}
               onPress={() => router.push('/(app)/wallet/leaderboard')}
             />
           ) : (
-            // Off the board is not a zero, and "Top —%" is not a fact. The
-            // followers tile widens into the gap rather than a tile standing
-            // there with nothing to say.
+            // Off the board is not a zero, and an empty percentage is not a
+            // fact either. The followers tile widens into the gap rather than
+            // a tile standing there with nothing to say.
             <View style={styles.statSpacer} />
           )}
           <StatTile
