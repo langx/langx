@@ -14,6 +14,7 @@ import { runNewsletterPass } from './newsletter'
 import { runLikesRoundUpPass } from './social'
 import { runPromotionsPass } from './promotions'
 import { runGiftReadyPass, runPoolPayoutPass } from './wallet'
+import { runOnboardingReminderPass } from './onboardingReminder'
 import { runVerifyReminderPass } from './verifyReminder'
 
 /**
@@ -73,10 +74,17 @@ export function startNotificationScheduler(
             ]
           : []),
         /*
-         * The one transactional letter on this timer, and the only reason it
-         * is on a timer at all: it is deliberately late, so that a renewal
+         * The verify reminder's sibling: the same "you started something"
+         * letter, one step further in. It is on this timer rather than fired
+         * by an event because the event it waits for is one that never came —
+         * an absence has no trigger, so the clock is the only thing that can
+         * notice it.
+         */
+        run('onboarding reminder', () => runOnboardingReminderPass(db, senders.email, now)),
+        /*
+         * The one transactional letter on this timer that is *late* rather
+         * than clock-triggered: it is deliberately delayed, so that a renewal
          * arriving behind its own expiry has time to make it unnecessary.
-         * Everything else here is scheduled because the clock is its trigger.
          */
         run('billing plan ended', () =>
           runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),

@@ -39,6 +39,7 @@ import { createEmailSender, EMAIL_BATCH_SIZE, type EmailMessage } from '../src/e
 import { signUnsubscribeToken, unsubscribeUrl } from '../src/email/unsubscribeToken'
 import { loadEnv, publicApiUrl, unsubscribeSecret } from '../src/env'
 import { deriveTextBody, UNSUBSCRIBE_PLACEHOLDER } from '../src/modules/notifications/campaign'
+import { ONBOARDING_LETTERS, type Letter } from '../src/email/onboardingReminderLetters'
 import { claimOnce } from '../src/modules/notifications/ledger'
 import {
   reminderCohort,
@@ -51,12 +52,6 @@ const BATCH_DELAY_MS = 700
 
 /** One claim per person for all time — this letter has no second edition. */
 const PERIOD_KEY = 'once'
-
-interface Letter {
-  subject: string
-  html: string
-  text: string
-}
 
 function flag(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`)
@@ -95,14 +90,25 @@ async function main(): Promise<void> {
   const showEmails = process.argv.includes('--emails')
   const confirmed = process.argv.includes('--confirm')
 
-  if (!subject || !htmlFile) throw new Error('--subject and --html-file are both required')
-
+  /*
+   * The letters the scheduled pass sends, unless this run overrides them. They
+   * used to be files this script was *required* to be pointed at; they now live
+   * in `ONBOARDING_LETTERS`, because a pass running inside `dist/` cannot read
+   * a path under `scripts/`. Keeping the flags is what lets somebody try a
+   * different wording on a catch-up run without editing the one the timer uses.
+   */
   const letters: Record<ReminderVariant, Letter | undefined> = {
-    reminder: loadLetter(subject, htmlFile, flag('text-file')),
+    reminder:
+      subject && htmlFile
+        ? loadLetter(subject, htmlFile, flag('text-file'))
+        : ONBOARDING_LETTERS.reminder,
     confirm:
       confirmSubject && confirmHtmlFile
         ? loadLetter(confirmSubject, confirmHtmlFile, flag('confirm-text-file'))
-        : undefined,
+        : ONBOARDING_LETTERS.confirm,
+  }
+  if ((subject && !htmlFile) || (!subject && htmlFile)) {
+    throw new Error('--subject and --html-file go together, or leave both out for the built-in')
   }
 
   const env = loadEnv()
