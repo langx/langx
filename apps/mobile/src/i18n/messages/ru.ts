@@ -1130,6 +1130,7 @@ export const ru: Localized<EnMessages> = {
       other: 'Фото, видео и голосовые откроются, когда собеседник напишет ещё {count} сообщения.',
     },
     speaking: 'Читаем вслух…',
+    playAgain: 'Послушать ещё раз',
     speakUnavailable: 'Не удалось прочитать вслух',
     speakFailed: 'Попробуй ещё раз через минуту.',
     speakLimit: {

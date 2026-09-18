@@ -1063,6 +1063,7 @@ export const de: Localized<EnMessages> = {
         'Fotos und Sprachnachrichten werden nach {count} weiteren Nachrichten von der anderen Person freigeschaltet.',
     },
     speaking: 'Wird vorgelesen…',
+    playAgain: 'Nochmal abspielen',
     speakUnavailable: 'Konnte das nicht vorlesen',
     speakFailed: 'Versuch es gleich noch einmal.',
     speakLimit: {

@@ -61,6 +61,12 @@ export interface MessageBubbleProps {
   translating: boolean
   /** A reading of this bubble is being made; the machine may be cold. */
   speaking: boolean
+  /**
+   * A reading of this bubble has been made and is still in the screen's hands,
+   * so it can be played again without asking the server for anything.
+   */
+  hasReading: boolean
+  onReplayReading: (message: MessageDto) => void
   /** Briefly ringed after a jump, so the reader sees where they landed. */
   highlighted: boolean
   /** An optimistic stand-in for a send in flight; the meta says "Sending". */
@@ -120,6 +126,8 @@ export const MessageBubble = memo(function MessageBubble({
   translation,
   translating,
   speaking,
+  hasReading,
+  onReplayReading,
   highlighted,
   pending = false,
   askAnswered = false,
@@ -615,6 +623,37 @@ export const MessageBubble = memo(function MessageBubble({
    * and meta — a reaction to a specific message is still a reply, and the read
    * receipt is still the thing people check.
    */
+  /*
+   * "Reading aloud…" while it is being made, then a way to hear it again.
+   *
+   * The reading is already in the screen's state and the file is already in
+   * the bucket, so a second listen costs nothing at all — no request, no
+   * quota, no waking the machine. Without a control saying so the only way
+   * back to it is the long-press menu, which is a lot of gesture for
+   * something that is sitting right there.
+   *
+   * Shaped like the Echo chip below rather than like the menu: both are small
+   * offers attached to one bubble, and this one should read as part of the
+   * message rather than as a second toolbar.
+   */
+  const reading = speaking ? (
+    <Text style={styles.translateLink}>{t('chat.speaking')}</Text>
+  ) : hasReading ? (
+    <View style={styles.echoRow}>
+      <Feather name="volume-2" size={12} color={colors.accent} />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('chat.playAgain')}
+        hitSlop={8}
+        onPress={() => {
+          onReplayReading(message)
+        }}
+      >
+        <Text style={styles.echoAction}>{t('chat.playAgain')}</Text>
+      </Pressable>
+    </View>
+  ) : null
+
   if (isBigEmoji(message.body) && !message.deleted) {
     return shell(
       <Pressable onPress={replay} onLongPress={press} style={column}>
@@ -625,7 +664,7 @@ export const MessageBubble = memo(function MessageBubble({
           </Animated.Text>
         </View>
         {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
-        {speaking ? <Text style={styles.translateLink}>{t('chat.speaking')}</Text> : null}
+        {reading}
         {badge}
         {meta}
       </Pressable>,
@@ -726,7 +765,7 @@ export const MessageBubble = memo(function MessageBubble({
       {/* The link is gone — translate is a menu row now. This only reports the
             request already in flight. */}
       {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
-      {speaking ? <Text style={styles.translateLink}>{t('chat.speaking')}</Text> : null}
+      {reading}
       {/* Beside the clock, not in place of it: "when" and "changed since" are
             two different facts and the reader wants both. */}
       {message.editedAt ? <Text style={styles.edited}>{t('messageMeta.edited')}</Text> : null}

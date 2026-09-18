@@ -1159,6 +1159,7 @@ export const en = {
       other: 'Photos and voice notes unlock after {count} more messages from them.',
     },
     speaking: 'Reading aloud…',
+    playAgain: 'Play again',
     speakUnavailable: 'Couldn’t read that aloud',
     speakFailed: 'Try again in a moment.',
     speakLimit: {

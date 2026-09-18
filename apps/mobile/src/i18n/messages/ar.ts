@@ -1147,6 +1147,7 @@ export const ar: Localized<EnMessages> = {
         'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد أن يرسل لك الطرف الآخر {count} رسائل أخرى.',
     },
     speaking: 'جارٍ القراءة بصوت عالٍ…',
+    playAgain: 'استمع مرة أخرى',
     speakUnavailable: 'تعذّرت قراءة هذه الرسالة بصوت عالٍ',
     speakFailed: 'حاول مرة أخرى بعد قليل.',
     speakLimit: {
