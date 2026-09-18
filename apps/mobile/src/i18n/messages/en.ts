@@ -1703,7 +1703,7 @@ export const en = {
     showWeekChartBody: 'Which days you sent messages and corrections, on your profile.',
     voiceCredits: 'Voices and licences',
     voiceCreditsBody:
-      'Messages are read aloud by open-source voice models. Most ask nothing of us; these ten are licensed on the condition that we credit the people who recorded them.',
+      'Messages are read aloud by open-source voice models. Most ask nothing of us; the ones below are licensed on the condition that we credit the people who recorded them.',
     voiceCreditsEngines: 'The engines are Kokoro-82M and Piper, both open source.',
     legalSection: 'Legal',
     linkDeviceBody: 'Approve a sign-in, and see where you are signed in.',
