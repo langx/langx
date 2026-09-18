@@ -126,11 +126,20 @@ rule (`assertMediaUnlocked`), not a fixture detail: move the voice note or the
 picture earlier in `seed-promo-chat.ts`'s script and the seed stops with
 MEDIA_LOCKED, correctly.
 
-**The music is synthesised, and should be replaced.** `music.mjs` writes a
-plain pentatonic bed, because a public repository cannot carry somebody else's
-track and an unlicensed one under an advert gets the post muted. The track
-worth having is the one Instagram or TikTok adds from its own licensed library
-at upload time; until then, `PROMO_MUSIC=/path/to/track.mp3` takes a real file.
+**The music is synthesised, and should be replaced.** `music.mjs` writes one of
+three beds over the same four chords — `warm` (no rhythm), `lofi` (a soft kick
+and hats) and `pulse` (an eighth-note arpeggio) — because a public repository
+cannot carry somebody else's track and an unlicensed one under an advert gets
+the post muted. All three normalise to the same peak, so switching between them
+needs no change to the mix. Hear one on its own with:
+
+```bash
+node tools/promo-video/music.mjs 22 /tmp/bed.wav lofi
+```
+
+The track worth having is whichever Instagram or TikTok adds from its own
+licensed library at upload; until then `PROMO_MUSIC=/path/to/track.mp3` takes a
+real file.
 
 **Selectors are text.** There are no testIDs in the app, so a copy change in
 `src/i18n/messages/en.ts` breaks the capture. It fails loudly rather than

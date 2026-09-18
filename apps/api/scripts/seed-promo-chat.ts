@@ -132,14 +132,12 @@ async function boost(db: Db, handles: string[]): Promise<number> {
   let boosted = 0
   for (const handle of handles) {
     const id = await userId(db, handle)
-    const result = await db
-      .collection(COLLECTIONS.profiles)
-      .updateOne(
-        { _id: id as never },
-        {
-          $set: { entitlement: { tier: 'pro', willRenew: false, store: 'manual', updatedAt: now } },
-        },
-      )
+    const result = await db.collection(COLLECTIONS.profiles).updateOne(
+      { _id: id as never },
+      {
+        $set: { entitlement: { tier: 'pro', willRenew: false, store: 'manual', updatedAt: now } },
+      },
+    )
     boosted += result.modifiedCount
   }
   return boosted

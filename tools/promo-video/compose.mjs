@@ -189,9 +189,10 @@ function main() {
     `[body][end]xfade=transition=fade:duration=${END_FADE}:offset=${(journey - END_FADE).toFixed(3)}[joined]`,
     `[joined]fade=t=in:st=0:d=0.3[outv]`,
     `[2:a]atrim=duration=${total.toFixed(3)},asetpts=PTS-STARTPTS,` +
-      // The bed peaks around -12 dBFS on its own; this brings it to roughly
-      // -9, which is background music under nothing else rather than a hum.
-      `afade=t=out:st=${Math.max(0, total - 1.6).toFixed(3)}:d=1.6,volume=1.4[outa]`,
+      // `music.mjs` normalises every style to -6 dBFS, so one number works for
+      // all of them: this lands the bed around -10, which is background music
+      // under nothing else rather than a hum or a distraction.
+      `afade=t=out:st=${Math.max(0, total - 1.6).toFixed(3)}:d=1.6,volume=0.6[outa]`,
   )
 
   /*
