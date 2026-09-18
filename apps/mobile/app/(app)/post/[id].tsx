@@ -135,8 +135,17 @@ export default function PostScreen() {
    * where the keyboard lands, and this list pulls to refresh, so it cannot
    * hand the problem to `automaticallyAdjustKeyboardInsets` — see the hook.
    */
-  const keyboard = useKeyboardClearance((offset) => listRef.current?.scrollToOffset({ offset }))
+  const keyboard = useKeyboardClearance((offset, animated) =>
+    listRef.current?.scrollToOffset({ offset, animated }),
+  )
   const listRef = useRef<FlatList<PostCorrection | PronunciationAnswer>>(null)
+  /*
+   * The two boxes, not the two fields: each has a send button under it, and
+   * what the keyboard has to clear is the button. `collapsable={false}` on
+   * both, since a view kept only to be measured must not be flattened away.
+   */
+  const correctionBox = useRef<View>(null)
+  const commentBox = useRef<View>(null)
 
   const correctPost = useCorrectPost()
   const review = useReviewPrompt()
@@ -765,7 +774,7 @@ export default function PostScreen() {
                       <Text style={styles.doneLabel}>{t('feed.youCorrected')}</Text>
                     </View>
                   ) : (
-                    <View style={styles.compose}>
+                    <View ref={correctionBox} collapsable={false} style={styles.compose}>
                       <View style={styles.composeHead}>
                         <Text style={styles.composeTitle}>{t('feed.yourCorrection')}</Text>
                         {/*
@@ -785,7 +794,7 @@ export default function PostScreen() {
                       <FormField
                         value={correction}
                         onChangeText={setCorrection}
-                        {...keyboard.fieldProps}
+                        {...keyboard.fieldProps(correctionBox)}
                         placeholder={t('feed.correctionPlaceholder')}
                         multiline
                         autoCapitalize="sentences"
@@ -854,12 +863,12 @@ export default function PostScreen() {
                   </Pressable>
                 ) : null}
 
-                <View style={styles.commentCompose}>
+                <View ref={commentBox} collapsable={false} style={styles.commentCompose}>
                   <FormField
                     label={t('feed.addComment')}
                     value={commentDraft}
                     onChangeText={setCommentDraft}
-                    {...keyboard.fieldProps}
+                    {...keyboard.fieldProps(commentBox)}
                     placeholder={t('feed.commentPlaceholder')}
                     multiline
                     autoCapitalize="sentences"

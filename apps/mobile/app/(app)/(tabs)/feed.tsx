@@ -299,8 +299,18 @@ export default function FeedScreen() {
    * feed, and this list pulls to refresh, so it cannot hand the keyboard to
    * `automaticallyAdjustKeyboardInsets` — see the hook.
    */
-  const keyboard = useKeyboardClearance((offset) => listRef.current?.scrollToOffset({ offset }))
+  const keyboard = useKeyboardClearance((offset, animated) =>
+    listRef.current?.scrollToOffset({ offset, animated }),
+  )
   const listRef = useRef<FlatList<FeedPost>>(null)
+  /*
+   * The correction box, not the field inside it: the attachment bar and the
+   * send row sit below the field and it is those the keyboard has to clear.
+   * One ref for the list, because only one row corrects at a time.
+   * `collapsable={false}`, since a view kept only to be measured must not be
+   * flattened away.
+   */
+  const correctionBox = useRef<View>(null)
 
   function startCorrecting(post: FeedPost): void {
     setCorrectingId(post._id)
@@ -610,11 +620,11 @@ export default function FeedScreen() {
                   )}
 
                   {!pronouncing && !mine && correctingId === item._id ? (
-                    <View style={styles.compose}>
+                    <View ref={correctionBox} collapsable={false} style={styles.compose}>
                       <FormField
                         value={correction}
                         onChangeText={setCorrection}
-                        {...keyboard.fieldProps}
+                        {...keyboard.fieldProps(correctionBox)}
                         placeholder={t('feed.correctionPlaceholder')}
                         multiline
                         autoCapitalize="sentences"
