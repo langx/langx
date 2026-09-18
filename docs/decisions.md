@@ -115,6 +115,13 @@ Sharing a location is free on every tier while sorting by it is Pro+. A
 paid-only pool would have contained nobody on the day it shipped, and the
 people worth finding nearby are mostly not the people paying to look.
 
+Which is why the Nearby chip **stores** the fix on a free account too, before
+it opens the paywall. It used to raise the OS dialog and discard the answer,
+which quietly made the pool paid-only after all: no `location`, no row in the
+2dsphere index, and so no appearance in any subscriber's list. The prompt the
+person answered already names what sharing means — a rough distance, never a
+point — and the Settings switch is still the way back off.
+
 ### The radius belongs to the searcher, not to the sort
 
 Nearby shipped with a 500 km cap on every request and three chips above the

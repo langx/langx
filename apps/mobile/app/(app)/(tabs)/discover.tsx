@@ -29,7 +29,6 @@ import {
 import {
   captureLocation,
   locationPermissionState,
-  requestLocationPermission,
   type LocationFailure,
 } from '../../../src/lib/location'
 import { openPaywall } from '../../../src/lib/paywall'
@@ -150,12 +149,23 @@ export default function DiscoverScreen() {
    */
   async function chooseNearby(): Promise<void> {
     if (!canUseNearby) {
-      // The OS dialog first, then the pitch. Sharing a location is free and
-      // the permission is the half of Nearby the paywall cannot grant, so it
-      // is asked while the tap that meant "where am I" is still fresh.
-      // Whatever the answer, the paywall follows: a refusal is not a reason
-      // to withhold the offer.
-      await requestLocationPermission()
+      /*
+       * The fix is captured and **stored**, not just permitted.
+       *
+       * Asking here was always right: the tap is the moment somebody means
+       * "where am I", and the permission is the half of Nearby no purchase can
+       * grant. Throwing the answer away was not. A free account granted the
+       * dialog, met the pitch and left with no `location` on its profile — so
+       * it was not in the 2dsphere index, and so in nobody's Nearby list at
+       * all. Nearby is bought to find the people who are *not* paying for it,
+       * and that made the feature's supply its own subscriber list.
+       *
+       * Storing it gives away nothing the OS prompt did not already say — a
+       * rough distance is all anyone is ever shown — and the Settings switch
+       * is still the way back off. Whatever the answer, the paywall follows: a
+       * refusal is not a reason to withhold the offer.
+       */
+      await enableSharing()
       openPaywall('nearby', '/(app)/(tabs)/discover')
       return
     }
