@@ -441,6 +441,20 @@ export default function ChatScreen() {
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
   /**
+   * A channel — `@langx` — rather than somebody to talk to.
+   *
+   * One fact, read in four places below: there is no composer, no reaction
+   * strip, no swipe to reply, and the menu drops every row that would send
+   * something. They used to be offered and then quietly do nothing, because
+   * the mode banner they fill lives inside the composer that is not drawn and
+   * the API answers 403 to anything addressed here.
+   *
+   * False while the profile loads, which is the same window in which the
+   * composer is drawn for a channel — one wrong frame, and the alternative is
+   * a thread that starts out looking read-only for everybody.
+   */
+  const channel = partner?.official === true && partner.acceptsMessages === false
+  /**
    * Which language to send a translation in: the reader's, not the writer's.
    *
    * `translateTargetFor` is the same rule the Translate action uses, pointed
@@ -1338,6 +1352,7 @@ export default function ChatScreen() {
       // agree on one rule from `@langx/shared` instead of two copies of it.
       canEdit: canEditMessage(message, me.data?._id ?? '', new Date()),
       corrected: message.corrected === true,
+      channel,
       starred: message.starred === true,
       pinned: pinned?.messageId === message._id,
       // Strict, like `corrected` above: an unknown shape reads as "not kept"
@@ -1360,8 +1375,12 @@ export default function ChatScreen() {
       ),
       actions,
       ...(anchor ? { anchor } : {}),
-      // A withdrawn message cannot carry a reaction, so it gets no strip.
-      ...(message.deleted ? {} : { reactions: MESSAGE_REACTIONS, myReaction: message.myReaction }),
+      // A withdrawn message cannot carry a reaction, so it gets no strip. Nor
+      // does anything in a channel: a reaction is addressed to whoever wrote
+      // the message, and `@langx` is a process that will never read one.
+      ...(message.deleted || channel
+        ? {}
+        : { reactions: MESSAGE_REACTIONS, myReaction: message.myReaction }),
     })
     if (!picked) return
 
@@ -2010,6 +2029,7 @@ export default function ChatScreen() {
                     onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
                     onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}
+                    canReply={!channel}
                     onJumpTo={onJumpTo}
                     onOpenMedia={onOpenMedia}
                   />
@@ -2063,7 +2083,7 @@ export default function ChatScreen() {
           something that answers 403. The line in its place says what the
           thread is, rather than leaving the screen ending in nothing.
         */}
-        {partner?.official && partner.acceptsMessages === false ? (
+        {channel ? (
           <View style={styles.channelNote}>
             <Text style={styles.channelNoteText}>{t('chat.channelOnly')}</Text>
           </View>

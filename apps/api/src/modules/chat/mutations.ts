@@ -15,6 +15,7 @@ import { ObjectId, type Db, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
+import { acceptsMessages } from '../official/accounts'
 import { assertConversationAccess } from './access'
 import type { Conversation, Message } from './conversations'
 import { toConversationView, type ConversationView } from './conversationView'
@@ -94,6 +95,17 @@ export async function reactToMessage(
   )
   if (message.deletedAt) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That message was deleted')
+  }
+
+  /*
+   * The same rule `recordMessage` applies to a message, for the same reason: a
+   * reaction is addressed to whoever wrote the bubble, and a channel has
+   * nobody at the other end to receive one. The app draws no strip on a
+   * channel thread; this is what makes that a rule rather than a screen.
+   */
+  const recipientId = conversation.participants.find((id) => id !== userId)
+  if (recipientId !== undefined && !acceptsMessages(recipientId)) {
+    throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account does not take reactions')
   }
 
   const current = Object.entries(message.reactions ?? {}).find(([, users]) =>

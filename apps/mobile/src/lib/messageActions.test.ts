@@ -191,6 +191,28 @@ describe('messageActionsFor', () => {
     })
   })
 
+  /**
+   * `@langx` announces and nothing reads a reply, so the screen draws no
+   * composer for it. Every row that would have filled that composer, or
+   * reached the account behind it, goes with it — and the reading rows stay,
+   * because an announcement is worth translating and keeping.
+   */
+  describe('in a channel', () => {
+    const channel = { channel: true }
+
+    it('offers nothing that would be sent', () => {
+      const rows = ids({ ...speakable, ...channel })
+      for (const id of ['reply', 'correct', 'phrase', 'report']) {
+        expect(rows, id).not.toContain(id)
+      }
+    })
+
+    it('still reads, translates, copies, keeps and hides', () => {
+      const rows = ids({ ...speakable, ...channel })
+      expect(rows).toEqual(['translate', 'speak', 'copy', 'echo', 'delete', 'star', 'pin', 'share'])
+    })
+  })
+
   it('names star and pin for what pressing them will do', () => {
     expect(find({ starred: true }, 'star')?.label).toBe('Unstar')
     expect(find({ starred: false }, 'star')?.label).toBe('Star')
