@@ -20,6 +20,3 @@ apps/api/src/email/inlineAssets.ts
 tools/echo-content/tts/out/
 tools/echo-content/tts/*.onnx
 tools/echo-content/tts/*.bin
-
-# Downloaded OpenMoji sources — see tools/echo-content/images/build.mjs.
-tools/echo-content/images/.openmoji-cache/

@@ -55,7 +55,6 @@ import { DRAWINGS } from './drawings.mjs'
 
 const HERE = import.meta.dirname
 const OUT = resolve(HERE, 'out')
-const CACHE = resolve(HERE, '.openmoji-cache')
 const OPENMOJI_VERSION = '15.1.0'
 const DATA_URL = `https://cdn.jsdelivr.net/npm/openmoji@${OPENMOJI_VERSION}/data/openmoji.json`
 const SVG_URL = (hex) =>
@@ -87,38 +86,33 @@ function slugify(annotation) {
 const stripVariation = (text) => text.replace(/\uFE0F/g, '')
 
 /**
- * The cached copy, or one fetch and then the cached copy.
+ * Fetched, never cached to disk.
  *
- * Reads first and asks questions later, rather than testing for the file and
- * then writing it. Two runs at once is not the reason — it is that the pair of
- * calls is a race whatever the odds, and the version that cannot race is also
- * the shorter one.
+ * There was a disk cache here and it earned its removal twice over. CodeQL
+ * objects to writing a network response to a file and is right to — the
+ * pattern is worth a second look wherever it appears, and a build tool is not
+ * where you want to be arguing the exception. The version is pinned, so
+ * jsDelivr serves immutable bytes and the only cost of dropping the cache is
+ * a few hundred kilobytes on a run that already spends a minute rendering.
+ *
+ * What it buys back: no cache directory, no ignore entries for it, and no
+ * question about whether a stale file is why a picture changed.
  */
-async function cached(path, url) {
-  try {
-    return await readFile(path, 'utf8')
-  } catch {
-    // Not cached yet. Every other failure — a permission, a bad disk — comes
-    // back from the write below rather than being swallowed here.
-  }
+async function fetchText(url) {
   const response = await fetch(url)
   if (!response.ok) throw new Error(`${url}: ${response.status}`)
-  const body = await response.text()
-  await writeFile(path, body)
-  return body
+  return await response.text()
 }
 
 async function openmojiTable() {
-  await mkdir(CACHE, { recursive: true })
-  const rows = JSON.parse(await cached(join(CACHE, 'openmoji.json'), DATA_URL))
+  const rows = JSON.parse(await fetchText(DATA_URL))
   const byEmoji = new Map()
   for (const row of rows) byEmoji.set(stripVariation(row.emoji), row)
   return byEmoji
 }
 
 async function glyphBody(hex) {
-  await mkdir(CACHE, { recursive: true })
-  const raw = await cached(join(CACHE, `${hex}.svg`), SVG_URL(hex))
+  const raw = await fetchText(SVG_URL(hex))
   /*
    * The glyph's own 72×72 box is thrown away and its children are re-placed on
    * ours. Keeping the nested <svg> would work in some renderers and not
