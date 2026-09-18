@@ -33,11 +33,18 @@ const FONTS = join(HERE, '../../apps/api/assets/fonts')
 const BOLD = join(FONTS, 'Nunito_800ExtraBold.ttf')
 const SEMI = join(FONTS, 'Nunito_600SemiBold.ttf')
 
-/** A locale, or nothing — it names files, so it does not get to be free text. */
+/**
+ * A locale this tool actually has copy for, and the value returned is the one
+ * out of `captions.json` rather than the one off the command line — it goes on
+ * to name files, and a whitelist that hands back the input it matched is not a
+ * whitelist.
+ */
 function localeArg() {
-  const value = process.argv[2] ?? 'en'
-  if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(value)) throw new Error(`not a locale: ${value}`)
-  return value
+  const wanted = process.argv[2] ?? 'en'
+  const known = Object.keys(JSON.parse(readFileSync(join(HERE, 'captions.json'), 'utf8')))
+  const found = known.find((locale) => locale === wanted)
+  if (!found) throw new Error(`no captions for "${wanted}" — have ${known.join(', ')}`)
+  return found
 }
 
 const LOCALE = localeArg()
