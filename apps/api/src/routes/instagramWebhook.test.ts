@@ -87,6 +87,16 @@ describe('parse', () => {
     ])
   })
 
+  it('drops a sender id that is not a string', () => {
+    // It would go straight into a Mongo `_id`, where `{ $ne: null }` matches
+    // every lead there is. Only Meta can get a body past the signature check,
+    // which is the argument that stops being true the day something else can.
+    const body = {
+      entry: [{ messaging: [{ sender: { id: { $ne: null } }, message: { text: 'READY' } }] }],
+    }
+    expect(parse(JSON.stringify(body))).toEqual([])
+  })
+
   it('returns nothing rather than throwing on a shape it does not know', () => {
     // Meta adds fields to these payloads without warning; a strict parse would
     // turn the next addition into a dropped lead.

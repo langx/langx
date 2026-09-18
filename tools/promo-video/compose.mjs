@@ -33,8 +33,15 @@ const FONTS = join(HERE, '../../apps/api/assets/fonts')
 const BOLD = join(FONTS, 'Nunito_800ExtraBold.ttf')
 const SEMI = join(FONTS, 'Nunito_600SemiBold.ttf')
 
-const LOCALE = process.argv[2] ?? 'en'
-const FFMPEG = process.env.FFMPEG_PATH ?? 'ffmpeg'
+/** A locale, or nothing — it names files, so it does not get to be free text. */
+function localeArg() {
+  const value = process.argv[2] ?? 'en'
+  if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(value)) throw new Error(`not a locale: ${value}`)
+  return value
+}
+
+const LOCALE = localeArg()
+const FFMPEG = 'ffmpeg'
 
 /** `theme/tokens.ts`, as ffmpeg wants them. */
 const INK = '0x17191c'
@@ -209,9 +216,7 @@ function main() {
   const style = process.env.PROMO_MUSIC_STYLE
   const music =
     process.env.PROMO_MUSIC ??
-    (style
-      ? writeBed(total + 1, undefined, style)
-      : 'anullsrc=channel_layout=stereo:sample_rate=48000')
+    (style ? writeBed(total + 1, style) : 'anullsrc=channel_layout=stereo:sample_rate=48000')
   const synthesised = music.startsWith('anullsrc')
   if (!synthesised && !existsSync(music)) throw new Error(`no music at ${music}`)
 

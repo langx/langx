@@ -227,7 +227,15 @@ export function parse(raw: string): ParsedEvent[] {
       }
       // An echo is our own message coming back; answering it is a loop.
       if (message?.is_echo === true) continue
-      if (!sender?.id || typeof message?.text !== 'string') continue
+      /*
+       * `typeof`, not truthiness, and it matters: this id goes straight into a
+       * Mongo `_id`, so a body carrying `{"sender":{"id":{"$ne":null}}}` would
+       * otherwise match every lead in the collection. The signature check
+       * upstream means only Meta can send one, which narrows who could do it
+       * to nobody — and is exactly the argument that stops being true the day
+       * a second caller is added.
+       */
+      if (typeof sender?.id !== 'string' || typeof message?.text !== 'string') continue
       events.push({
         kind: 'message',
         senderId: sender.id,

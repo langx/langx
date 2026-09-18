@@ -151,7 +151,7 @@ function speak(text: string): { bytes: Uint8Array; seconds: number } | null {
     const m4a = join(scratch, 'note.m4a')
     const said = spawnSync('say', ['-o', aiff, text])
     if (said.status !== 0) return null
-    const converted = spawnSync(process.env.FFMPEG_PATH ?? 'ffmpeg', [
+    const converted = spawnSync('ffmpeg', [
       '-v',
       'error',
       '-y',
@@ -164,7 +164,7 @@ function speak(text: string): { bytes: Uint8Array; seconds: number } | null {
       m4a,
     ])
     if (converted.status !== 0) return null
-    const probe = spawnSync(process.env.FFPROBE_PATH ?? 'ffprobe', [
+    const probe = spawnSync('ffprobe', [
       '-v',
       'error',
       '-show_entries',

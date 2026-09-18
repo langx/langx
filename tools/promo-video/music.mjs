@@ -169,14 +169,23 @@ function wav({ left, right, samples }) {
   return buffer
 }
 
-export function writeBed(seconds, out = join(HERE, 'out/bed.wav'), style = DEFAULT_STYLE) {
+/**
+ * Always into `out/`, named by its style.
+ *
+ * The output path is not a parameter on purpose: a caller-supplied one was
+ * only ever used to drop a preview somewhere, and a path this file will write
+ * to is the one thing here worth keeping out of a caller's hands.
+ */
+export function writeBed(seconds, style = DEFAULT_STYLE) {
+  const chosen = STYLES.includes(style) ? style : STYLES[0]
+  const out = join(HERE, 'out', `bed-${chosen}.wav`)
   mkdirSync(dirname(out), { recursive: true })
-  writeFileSync(out, wav(render(seconds, style)))
+  writeFileSync(out, wav(render(seconds, chosen)))
   return out
 }
 
 if (process.argv[1] && process.argv[1].endsWith('music.mjs')) {
   const seconds = Number(process.argv[2] ?? 20)
-  const style = process.argv[4] ?? DEFAULT_STYLE
-  console.log(`bed: ${writeBed(seconds, process.argv[3], style)} (${seconds}s, ${style})`)
+  const style = process.argv[3] ?? DEFAULT_STYLE
+  console.log(`bed: ${writeBed(seconds, style)} (${seconds}s, ${style})`)
 }

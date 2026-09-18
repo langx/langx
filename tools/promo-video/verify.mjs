@@ -19,9 +19,16 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = join(HERE, 'out')
 const RAW = join(OUT, 'raw')
-const LOCALE = process.argv[2] ?? 'en'
-const FFMPEG = process.env.FFMPEG_PATH ?? 'ffmpeg'
-const FFPROBE = process.env.FFPROBE_PATH ?? 'ffprobe'
+/** A locale, or nothing — it names files, so it does not get to be free text. */
+function localeArg() {
+  const value = process.argv[2] ?? 'en'
+  if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(value)) throw new Error(`not a locale: ${value}`)
+  return value
+}
+
+const LOCALE = localeArg()
+const FFMPEG = 'ffmpeg'
+const FFPROBE = 'ffprobe'
 
 /** Playwright's own padding colour, as luma. */
 const PAD_LUMA = 126
