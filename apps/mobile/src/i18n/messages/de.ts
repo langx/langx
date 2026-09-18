@@ -1592,6 +1592,9 @@ export const de: Localized<EnMessages> = {
     showWeekChart: 'Wochendiagramm zeigen',
     showWeekChartBody:
       'An welchen Tagen du Nachrichten und Korrekturen geschickt hast, auf deinem Profil.',
+    voiceCredits: 'Stimmen und Lizenzen',
+    voiceCreditsBody: 'Nachrichten werden von quelloffenen Sprachmodellen vorgelesen. Die meisten verlangen nichts von uns; diese zehn sind unter der Bedingung lizenziert, dass wir die Menschen nennen, die sie aufgenommen haben.',
+    voiceCreditsEngines: 'Die Engines sind Kokoro-82M und Piper, beide quelloffen.',
     legalSection: 'Rechtliches',
     linkDeviceBody: 'Eine Anmeldung bestätigen und sehen, wo du angemeldet bist.',
     showInDiscover: 'In Entdecken zeigen',
