@@ -2,9 +2,9 @@ import { ERROR_CODES, echoSynthVoicesFor, type EchoCard, type EchoVoice } from '
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
-import { consumeQuota } from '../../lib/quota'
+import { consumeQuota, refundQuota } from '../../lib/quota'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
-import type { TtsProvider } from '../../tts/TtsProvider'
+import { TtsBusyError, type TtsProvider } from '../../tts/TtsProvider'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
 import { lookupVoices, synthesiseInto, voiceKey } from '../tts/speech'
@@ -55,6 +55,7 @@ export async function synthesiseCard(
     keys.map((entry) => entry.key),
   )
 
+  let spentAt: Date | undefined
   if (keys.some((entry) => !known.has(entry.key))) {
     const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
     if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
@@ -66,18 +67,29 @@ export async function synthesiseCard(
         quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
       )
     }
+    spentAt = quota.spentAt
   }
 
   const readings: EchoVoice[] = []
-  for (const { voice, key } of keys) {
-    const url =
-      known.get(key) ??
-      (await synthesiseInto(db, storage, tts, key, {
-        text: card.front,
-        lang: card.lang,
-        voice,
-      }))
-    readings.push({ url, voice })
+  try {
+    for (const { voice, key } of keys) {
+      const url =
+        known.get(key) ??
+        (await synthesiseInto(db, storage, tts, key, {
+          text: card.front,
+          lang: card.lang,
+          voice,
+        }))
+      readings.push({ url, voice })
+    }
+  } catch (caught) {
+    // The machine had no room. The card keeps no half-written readings and
+    // the unit goes back, because the button is about to say "try again".
+    if (caught instanceof TtsBusyError) {
+      await refundQuota(db, userId, 'echoVoices', spentAt)
+      throw new ApiError(ERROR_CODES.RATE_LIMITED, 'The voice service is busy — try again shortly')
+    }
+    throw caught
   }
 
   const updated = await cards.findOneAndUpdate(

@@ -35,12 +35,20 @@ RUN curl -fsSL -o kokoro-v1.0.onnx "$MODEL_BASE/kokoro-v1.0.onnx" \
 # so a voice can be looked up there under the name it has here.
 COPY voices.json ./
 ARG PIPER_BASE=https://huggingface.co/rhasspy/piper-voices/resolve/main
+# `--retry` with `--retry-all-errors`, and a pause between voices, because
+# sixty-two files fetched back to back from one unauthenticated address is
+# what Hugging Face throttles: the first build of this got five in and then a
+# 429. curl's own backoff clears it without a token, and the second of each
+# pair is a 5 KB config, so the pause is per voice rather than per file.
 RUN set -eux; \
   python -c "import json;[print(v['model']) for vs in json.load(open('voices.json')).values() for v in vs]" \
     | while read -r model; do \
         mkdir -p "piper/$(dirname "$model")"; \
-        curl -fsSL -o "piper/$model" "$PIPER_BASE/$model"; \
-        curl -fsSL -o "piper/$model.json" "$PIPER_BASE/$model.json"; \
+        curl -fsSL --retry 8 --retry-delay 5 --retry-all-errors --retry-max-time 300 \
+          -o "piper/$model" "$PIPER_BASE/$model"; \
+        curl -fsSL --retry 8 --retry-delay 5 --retry-all-errors --retry-max-time 300 \
+          -o "piper/$model.json" "$PIPER_BASE/$model.json"; \
+        sleep 1; \
       done; \
   du -sh piper
 

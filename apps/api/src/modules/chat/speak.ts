@@ -10,9 +10,9 @@ import { franc } from 'franc'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
-import { consumeQuota } from '../../lib/quota'
+import { consumeQuota, refundQuota } from '../../lib/quota'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
-import type { TtsProvider } from '../../tts/TtsProvider'
+import { TtsBusyError, type TtsProvider } from '../../tts/TtsProvider'
 import { lookupVoices, synthesiseInto, voiceKey } from '../tts/speech'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
@@ -144,6 +144,17 @@ export async function speakMessage(
     )
   }
 
-  const url = await synthesiseInto(db, storage, tts, key, { text, lang, voice: voice.id })
-  return { url, voice: voice.id, lang, cached: false }
+  try {
+    const url = await synthesiseInto(db, storage, tts, key, { text, lang, voice: voice.id })
+    return { url, voice: voice.id, lang, cached: false }
+  } catch (caught) {
+    // Both slots on the one machine were taken. Nothing was made, so nothing
+    // should have been paid — and "try again" while still charging is the
+    // version of this that people would rightly complain about.
+    if (caught instanceof TtsBusyError) {
+      await refundQuota(db, userId, 'chatVoices', quota.spentAt)
+      throw new ApiError(ERROR_CODES.RATE_LIMITED, 'The voice service is busy — try again shortly')
+    }
+    throw caught
+  }
 }

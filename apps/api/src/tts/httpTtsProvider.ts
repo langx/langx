@@ -1,4 +1,4 @@
-import type { SynthesizeInput, TtsProvider } from './TtsProvider'
+import { TtsBusyError, type SynthesizeInput, type TtsProvider } from './TtsProvider'
 
 /**
  * Sixty seconds, not the global thirty: the service scales to zero, so the
@@ -28,6 +28,12 @@ export class HttpTtsProvider implements TtsProvider {
       body: JSON.stringify(input),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     })
+    // 503 is Fly turning a caller away because both slots are taken, 429 the
+    // same answer from anything in front of it. Neither is a fault, and both
+    // want the same thing from the person waiting: try again shortly.
+    if (response.status === 503 || response.status === 429) {
+      throw new TtsBusyError(response.status)
+    }
     if (!response.ok) {
       const detail = (await response.text()).slice(0, 200)
       throw new Error(`TTS service answered ${response.status}: ${detail}`)

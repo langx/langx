@@ -353,6 +353,46 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(asked).toHaveLength(0)
     })
 
+    /*
+     * The service runs one synthesis at a time and Fly turns the third caller
+     * away, so a busy answer is ordinary rather than exceptional. It has to
+     * read as "try again" — and it must not cost a unit, because being told to
+     * try again while still being charged is the version people complain about.
+     */
+    it('gives the unit back when the machine had no room', async () => {
+      const { reader, thread, messageId } = await threadWith(
+        'speak-busy',
+        // Its own sentence: the shared cache is keyed on the text, so reusing
+        // another test's line would be served from it and never reach the
+        // synthesiser this test is here to make fail.
+        'heute abend gehe ich mit meiner schwester ins kino',
+        {
+          nativeLanguages: [{ code: 'en' }],
+          learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+        },
+      )
+      const { TtsBusyError } = await import('../tts/TtsProvider')
+      const busy = {
+        synthesize: () => Promise.reject(new TtsBusyError(503)),
+      }
+      const { speakMessage } = await import('../modules/chat/speak')
+
+      const refused = await speakMessage(
+        handle.db,
+        fakeStorage().storage,
+        busy,
+        reader.userId,
+        thread,
+        messageId,
+      ).then(
+        () => null,
+        (caught: unknown) => caught as { code: string },
+      )
+
+      expect(refused?.code).toBe('RATE_LIMITED')
+      expect(await spent(reader.userId)).toBe(0)
+    })
+
     it('stops at the daily ceiling with a retry time', async () => {
       const { reader, thread, messageId } = await threadWith(
         'speak-quota',
