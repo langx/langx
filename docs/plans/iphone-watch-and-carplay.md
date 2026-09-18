@@ -12,7 +12,9 @@ therefore answers rather than questions:
 - **The work starts with the widgets.** Phase 0, the `react-native-carplay`
   spike, was the answer given; it needs a Mac, which is not where this is
   being written, so its desk half was done instead and the build half waits
-  for one. Phase 1 leads.
+  for one. Phase 1 leads, and it ships **all three widget families**, with
+  **no Live Activity** and **no acting widget button** — the widget deep-links
+  into the app and the app does the rest.
 - **A bearer token may live in a shared Keychain.** So the Siri send path is
   in scope, with the REST twin and the security review it implies.
 
@@ -155,8 +157,11 @@ cannot disagree, which is the failure a second implementation would produce.
 `POST /me/check-in` exists precisely so that a background refresh, a prefetch
 or a test cannot move a streak — "it advanced because something polled" is not
 a rule anybody could predict. A widget that checked in on its own timeline
-would be exactly that. Whether a person _tapping_ a widget button may check in
-is a different question, and it is open, at the end of this document.
+would be exactly that. A person _tapping_ a button is a different case — the
+tap is explicit, which is what the route asks for — and it was still ruled out
+on 18 September: a streak is meant to measure showing up, and a widget button
+would let one run for weeks without the app ever being opened. **The widget
+deep-links; it does not act.**
 
 **Three families, and no more:**
 
@@ -205,15 +210,18 @@ Sign-out clears the blob in the same breath it clears the session — a widget
 still showing a 42-day streak after somebody signs out is a leak of their data
 onto a shared phone's Home Screen.
 
-**The Live Activity is updated locally, not by push.** ActivityKit's push
-updates need an APNs token per activity, which the Expo push service does not
-carry; adding a direct APNs path for it is a second delivery system for one
-feature and is out of scope. So the first Live Activity is one the phone can
+**The Live Activity is not in Phase 1.** Decided on 18 September: the first
+release is the widgets and the intents, and the Dynamic Island waits. The
+reasoning for when it comes back is kept here because it is the part that took
+the thinking. ActivityKit's push updates need an APNs token per activity,
+which the Expo push service does not carry, and a direct APNs path is a second
+delivery system for one feature. So the activity to build is one the phone can
 drive by itself: **a scheduled exchange**, from the agreed time to the end of
 the session (the meeting already exists — `message:meeting`, and
 `expo-calendar` already writes it into the person's day). The streak deadline
-was the other candidate and is deliberately not first: it would want a server
-push at the moment the day flips.
+is the weaker candidate for the same reason — it would want a server push at
+the moment the day flips. The iPhone mockup above still shows the activity,
+because that is the shape it would take when it is built.
 
 **Siri, Shortcuts, the Action Button and the Control Centre control are one
 piece of work**, because on iOS they are all App Intents. Three intents, no
@@ -225,9 +233,11 @@ is treated in its own section.
 ![Two iPhone screens: a widget showing streak, unread and cards due beside a small widget for the next session, and a Live Activity in the Dynamic Island counting down a session](./iphone-watch-and-carplay/iphone.png)
 
 **Verify:** a fresh build where the widget shows the real unread count within
-a minute of a message arriving; a Live Activity that appears when a session
-starts and dismisses when it ends; "Hey Siri, open my LangX review" landing
-on the Echo tab; a `prebuild --clean` after which all of it still builds.
+a minute of a message arriving, and still shows it when the app is force-quit
+and a push arrives; a Lock Screen that carries the same number as the Home
+Screen; "today has not counted yet" appearing by itself after local midnight;
+nothing at all after sign-out; "Hey Siri, open my LangX review" landing on the
+Echo tab; a `prebuild --clean` after which all of it still builds.
 
 ## Surface B — Apple Watch
 
@@ -387,7 +397,8 @@ is not, which is why its paperwork starts on day one.
 
 1. iPhone: apple-targets wiring, the string generator, the snapshot module,
    the three widget families, the notification service extension that keeps
-   the count true, the session Live Activity, three App Intents
+   the count true, three App Intents. No Live Activity — it is deferred, and
+   the reasoning for when it returns is kept under Surface A.
    → verify: the list under Surface A, plus a clean prebuild
 
 2. Apple Watch: the notification pass first, then the dependent companion
@@ -426,11 +437,7 @@ Answered on 18 September 2026:
 
 Still open:
 
-1. **May a widget button check in?** A tap is explicit, which is what
-   `/me/check-in` asks for — but it would let somebody keep a streak alive for
-   weeks without opening the app, and the streak is meant to measure showing
-   up. The plan leaves the button out until this is answered.
-2. **The first Live Activity: a scheduled exchange, or the streak?** The plan
-   picks the exchange because the phone can drive it alone.
-3. **Does the watch app go into the store listing now**, with its own
+1. **When does the Live Activity come back?** It is out of Phase 1, not out
+   of the plan; the scheduled exchange is the one to build when it returns.
+2. **Does the watch app go into the store listing now**, with its own
    screenshots, or wait until CarPlay is approved and both land together?
