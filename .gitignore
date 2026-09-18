@@ -63,3 +63,8 @@ apps/mobile/fastlane/screenshots/
 apps/mobile/fastlane/metadata/
 apps/mobile/fastlane/README.md
 apps/mobile/fastlane/report.xml
+
+tools/echo-content/images/.openmoji-cache/
+
+# Rendered cue pictures — see tools/echo-content/images/build.mjs.
+tools/echo-content/images/out/
