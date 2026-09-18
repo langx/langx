@@ -30,6 +30,7 @@
     "better-auth": "catalog:",
     "fastify": "catalog:",
     "fastify-type-provider-zod": "catalog:",
+    "franc": "^6.2.0",
     "jose": "catalog:",
     "mongodb": "catalog:",
     "node-appwrite": "catalog:",

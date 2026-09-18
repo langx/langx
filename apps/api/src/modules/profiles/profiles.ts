@@ -253,6 +253,7 @@ export interface Profile {
     echoCaptures?: Date[]
     echoNewCards?: Date[]
     echoVoices?: Date[]
+    chatVoices?: Date[]
   }
   /**
    * When this account was last told it had run out — a rolling window, kept

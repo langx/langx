@@ -4896,6 +4896,88 @@ phonemises through espeak-ng and Japanese and Chinese were not trained on
 that — a reading a native speaker winces at is worse than the button not
 being there.
 
+**Twenty-four more, once chat wanted the same thing.** Six is a reasonable
+number for a deck somebody builds in the language they are studying and an
+absurd one for a chat thread, where the sentence is in whatever the two
+people write in. Kokoro cannot be made to read a seventh, so Piper went in
+beside it: one small model per language, the same espeak-ng, a quality below
+Kokoro's and far above nothing, and Kokoro keeps its six — which also keeps
+them on the cache keys they already occupy. Loaded three at a time, because
+twenty-four models at 60 MB do not fit beside Kokoro on a 2 GB machine and
+almost nobody needs the twenty-fourth.
+
+**And the list is decided by licences, not by the catalogue.** Piper's voices
+are each licensed separately; ours are CC0, MIT, Apache-2.0 or CC-BY, and the
+ten CC-BY ones are why `settings/voices` exists at all — crediting them is a
+condition of shipping them. The languages that are _still_ silent are silent
+for that reason and no other: the catalogue has Turkish, Arabic, Japanese and
+Korean voices and every one of them is CC BY-NC, which an app that sells
+subscriptions cannot use. This is the same bar that chose Kokoro over Coqui
+XTTS, applied a second time and costing us something this time.
+
+**Two more are missing for a reason that is not the licence**, and they are
+worth separating out. `lt_LT-reginute1-medium` is built for a `lithuanian`
+phoneme type `piper-tts` does not implement — found by the build's own self
+test, not by reading anything. Chinese needs `piper-tts[zh]`, which pulls
+`transformers` and then downloads a g2pW model the first time somebody asks for
+a reading: a large dependency and a network call on a machine that sleeps, for
+one language. Both are revisitable in a way a non-commercial licence is not.
+
+Both stay in `APP_TO_ISO3` all the same, and that is the point of keeping that
+table wider than the one we can read: a Chinese message wins its own sentence
+and then loses the button, rather than being read aloud in whichever voice we
+happen to ship.
+
+**And five went on weight rather than on any failure.** Marathi, Telugu,
+Nepali, Welsh and Kazakh are 409 MB of the image between them — Kazakh alone is
+128, having only a `high` model — against close to nobody exchanging them here.
+The image is 2.1 GB instead of 2.5, which matters not for memory (three voices
+are resident at a time whatever the manifest says) nor for the bill, but for
+how long a deploy that touches this directory takes. A line each in
+`SPEECH_VOICES` brings any of them back.
+
+**Why the two engines both stay**, since the obvious question is whether one
+could do it alone. Piper has cleanly-licensed voices for five of Kokoro's six,
+so it nearly covers it — but not Hindi, whose Piper voices are all CC BY-NC,
+and not at Kokoro's quality: Kokoro is 82M parameters over all six languages
+where a Piper medium is around 15-20M for one. Dropping Kokoro would cost
+Hindi, lower five major languages, and save nothing, because the five
+replacements weigh about what Kokoro's single model does. Going the other way
+is not on offer at all — Kokoro has six languages and cannot be given a
+seventh. So: Kokoro where it was trained, Piper for the rest, and no overlap in
+the manifest.
+
+**Which language a message is in turned out to be the hard part**, and it took
+three goes. There is no `lang` on a message and nothing in the repo detected one.
+
+The first shape asked `franc` only within the languages we can read, which is
+worse than it sounds: a detector confined to a list always answers from the
+list, so it can never say "none of these", and Turkish came back as Norwegian.
+The second opened the question up — and that fixes the refusal while destroying
+the detection. On four hundred languages `franc` reads "Hey! How was your
+weekend?" as Afrikaans, "see you tomorrow" as Haitian Creole and "Good morning,
+I hope you slept well" as Swedish. Two of nine ordinary English messages got the
+button. Every unit test passed throughout, because they fed the detector's
+answer in and proved the rules around it; what was wrong was the answer.
+
+The third shape is the one that works, and it is the obvious one in hindsight:
+confine the detector to **these two people's** languages. It is a choice between
+three or four candidates instead of four hundred, which trigrams handle well
+even on half a sentence, and the languages we _cannot_ read are in the running,
+so Turkish wins its own sentence and is then dropped for want of a voice rather
+than read in the nearest one we happen to have. Eight of those nine messages now
+get the button, the ninth being "ok".
+
+That is also the honest model of the situation. Two people on a language
+exchange write in the languages they came to practise, and those are already on
+their profiles — the app knew the answer all along and was asking a trigram
+table instead. A provider's `sourceLang` is still believed above all of it,
+because Google read that exact sentence rather than guessing at it.
+
+The price is a floor: below twelve characters, or with fewer than two languages
+to choose between, there is no button. "ok" does not get read aloud, and that is
+the right way round.
+
 ## The opening is a ripple, because the old one looked like a fault
 
 The first version of `AppSplash` opened with four arcs: partial rings — two of

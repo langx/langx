@@ -1933,11 +1933,21 @@ describe('echo', () => {
       expect(await spent(user.userId)).toBe(2)
     })
 
+    /*
+     * Turkish, where this used to say German. German became readable when the
+     * table grew to take in Piper's thirty-one; Turkish did not and will not
+     * until a cleanly-licensed model exists, because the catalogue's only
+     * Turkish voice is CC BY-NC. That is what makes it the right language to
+     * pin this behaviour to — it is not waiting on a download.
+     */
     it('refuses a language the model cannot read', async () => {
       const user = await newUser('voices-lang@example.com', {
-        learning: [{ code: 'de', level: 'beginner', priority: 1 }],
+        // The fixture's default native language is Turkish, which is the one
+        // being learnt here; onboarding refuses that overlap.
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'tr', level: 'beginner', priority: 1 }],
       })
-      const cardId = await writeCard(user, 'voices-lang', 'gehen wir morgen?', 'de')
+      const cardId = await writeCard(user, 'voices-lang', 'yarın gidelim mi?', 'tr')
       const { storage } = fakeStorage()
       const { tts, asked } = fakeTts()
       const { synthesiseCard } = await import('../modules/echo/voices')

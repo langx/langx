@@ -26,6 +26,14 @@ export type TrackedQuotaKind =
   | 'echoNewCards'
   /** A member's own card read by the server voice; one unit per card. */
   | 'echoVoices'
+  /**
+   * A chat message read by the server voice; one unit per reading, and only
+   * when the sentence was not already in the cache. Metered for the same
+   * reason as `echoVoices` — CPU seconds on a machine of ours, plus a
+   * permanent object in the bucket — but on its own ceiling, so a talkative
+   * afternoon cannot silence the Echo button.
+   */
+  | 'chatVoices'
 
 export interface QuotaStatus {
   limit: number | null
@@ -61,7 +69,13 @@ export async function getQuotaStatus(
   return { limit, remaining, nextAvailableAt }
 }
 
-export type ConsumeResult = { consumed: true } | { consumed: false; nextAvailableAt: Date | null }
+export type ConsumeResult =
+  /**
+   * `spentAt` is the timestamp this call wrote, so it can be taken back off
+   * again if the work it was paying for never happened. Absent on an
+   * unlimited tier, where nothing was written.
+   */
+  { consumed: true; spentAt?: Date } | { consumed: false; nextAvailableAt: Date | null }
 
 /**
  * Atomic, race-safe decrement for a rolling-24h quota bucket (`initiations`
@@ -131,7 +145,7 @@ export async function consumeQuota(
     ],
   )
 
-  if (result) return { consumed: true }
+  if (result) return { consumed: true, spentAt: now }
 
   await recordRefusal(db, userId, now)
   const status = await getQuotaStatus(db, userId, tier, kind)
@@ -181,4 +195,26 @@ async function recordRefusal(db: Db, userId: string, now: Date): Promise<void> {
   } catch {
     // A counter nobody is waiting on.
   }
+}
+
+/**
+ * Give back a unit that bought nothing.
+ *
+ * For the one case that is neither a refusal nor anybody's fault: the voice
+ * service was busy, so the caller is being told to try again — and telling
+ * somebody to try again while still charging them is the actual unfairness.
+ *
+ * Pulls the exact timestamp `consumeQuota` wrote rather than the newest one,
+ * so a second spend landing in the same window is left alone.
+ */
+export async function refundQuota(
+  db: Db,
+  userId: string,
+  kind: TrackedQuotaKind,
+  spentAt: Date | undefined,
+): Promise<void> {
+  if (!spentAt) return
+  await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .updateOne({ _id: userId }, { $pull: { [`quota.${kind}`]: spentAt } })
 }

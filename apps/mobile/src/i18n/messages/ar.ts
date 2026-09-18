@@ -161,6 +161,7 @@ export const ar: Localized<EnMessages> = {
     reply: 'رد',
     correct: 'تصحيح',
     translate: 'ترجمة',
+    speak: 'اقرأ بصوت عالٍ',
     copy: 'نسخ',
     delete: 'حذف',
     edit: 'تعديل',
@@ -1145,6 +1146,13 @@ export const ar: Localized<EnMessages> = {
       other:
         'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد أن يرسل لك الطرف الآخر {count} رسائل أخرى.',
     },
+    speaking: 'جارٍ القراءة بصوت عالٍ…',
+    speakUnavailable: 'تعذّرت قراءة هذه الرسالة بصوت عالٍ',
+    speakFailed: 'حاول مرة أخرى بعد قليل.',
+    speakLimit: {
+      one: 'لقد استخدمت قراءة اليوم ({count}). يتجدّد الحد خلال 24 ساعة.',
+      other: 'لقد استخدمت قراءات اليوم ({count}). يتجدّد الحد خلال 24 ساعة.',
+    },
     copied: 'تم النسخ',
     couldNotSend: 'تعذّر الإرسال',
     mediaQuota: 'لقد بلغت حد اليوم للصور ومقاطع الفيديو والرسائل الصوتية.',
@@ -1770,6 +1778,10 @@ export const ar: Localized<EnMessages> = {
     appIconFailed: 'تعذّر تغيير الأيقونة',
     showWeekChart: 'إظهار رسم هذا الأسبوع',
     showWeekChartBody: 'الأيام التي أرسلت فيها رسائل وتصحيحات، على ملفك.',
+    voiceCredits: 'الأصوات والتراخيص',
+    voiceCreditsBody:
+      'تُقرأ الرسائل بصوت عالٍ عبر نماذج صوتية مفتوحة المصدر. معظمها لا يطلب منا شيئًا؛ أما الواردة أدناه فمرخّصة بشرط أن ننسب الفضل لمن سجّلوها.',
+    voiceCreditsEngines: 'المحرّكان هما Kokoro-82M وPiper، وكلاهما مفتوح المصدر.',
     legalSection: 'القانونية',
     linkDeviceBody: 'وافق على تسجيل دخول وشاهد أين سجّلت الدخول.',
     showInDiscover: 'أظهرني في الاستكشاف',

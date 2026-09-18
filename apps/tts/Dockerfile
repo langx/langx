@@ -25,6 +25,33 @@ RUN curl -fsSL -o kokoro-v1.0.onnx "$MODEL_BASE/kokoro-v1.0.onnx" \
   && echo "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5  kokoro-v1.0.onnx" | sha256sum -c - \
   && echo "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d  voices-v1.0.bin" | sha256sum -c -
 
+# The Piper models the manifest names, one language each, in a layer of their
+# own so that editing `server.py` does not re-download two gigabytes and a
+# deploy that changes no voice pushes no voice. `voices.json` is copied first
+# because the layer is keyed on it, and it is the only input.
+#
+# One `.onnx` and its `.onnx.json` config per voice, laid out under `piper/` by
+# the path the manifest gives — which is the path inside `rhasspy/piper-voices`,
+# so a voice can be looked up there under the name it has here.
+COPY voices.json ./
+ARG PIPER_BASE=https://huggingface.co/rhasspy/piper-voices/resolve/main
+# `--retry` with `--retry-all-errors`, and a pause between voices, because
+# sixty-two files fetched back to back from one unauthenticated address is
+# what Hugging Face throttles: the first build of this got five in and then a
+# 429. curl's own backoff clears it without a token, and the second of each
+# pair is a 5 KB config, so the pause is per voice rather than per file.
+RUN set -eux; \
+  python -c "import json;[print(v['model']) for vs in json.load(open('voices.json')).values() for v in vs]" \
+    | while read -r model; do \
+        mkdir -p "piper/$(dirname "$model")"; \
+        curl -fsSL --retry 8 --retry-delay 5 --retry-all-errors --retry-max-time 300 \
+          -o "piper/$model" "$PIPER_BASE/$model"; \
+        curl -fsSL --retry 8 --retry-delay 5 --retry-all-errors --retry-max-time 300 \
+          -o "piper/$model.json" "$PIPER_BASE/$model.json"; \
+        sleep 1; \
+      done; \
+  du -sh piper
+
 COPY server.py ./
 
 # Debian's espeak-ng rather than the wheel's bundled copy — see load_kokoro in
@@ -46,9 +73,10 @@ RUN set -eux; \
 ENV ESPEAK_LIBRARY=/usr/local/lib/libespeak-ng.so.1 \
     ESPEAK_DATA=/usr/local/share/espeak-ng-data
 
-# Read one word at build time, so an image that cannot phonemise fails here
-# and not on the first request after a deploy that looked green.
-RUN python -c "from server import load_kokoro; load_kokoro().create('hello', voice='af_heart', lang='en-us')"
+# Every voice, loaded and encoded — see selftest.py for what it proves and why
+# it reports all of them rather than stopping at the first.
+COPY selftest.py ./
+RUN python selftest.py
 
 RUN useradd --create-home tts
 USER tts

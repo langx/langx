@@ -18,22 +18,35 @@ docstring and `docs/decisions.md`: Apache-2.0 over the weights and the voice
 packs alike, where the obvious alternatives are all personal-use or
 non-commercial.
 
+**And Piper beside it, for the other thirty-one languages.** Kokoro reads six.
+Piper's catalogue reaches far wider, at a quality below Kokoro's and far above
+nothing, with one small model per language instead of one large model for all
+of them — so they are loaded on demand and the least recently used is dropped,
+rather than all two gigabytes being held at once on a 2 GB machine. The same
+licence bar applies and it is what decides the list: the catalogue's only
+Turkish, Arabic, Japanese and Korean voices are CC BY-NC, so this service does
+not read those languages at all. `voices.json` is the manifest, generated from
+`SPEECH_VOICES` in `packages/shared/src/speech.ts`, which stays the definition.
+
 Routes:
     GET  /health                -> 200 once the model is loaded
     POST /synthesize            -> audio/mp4
          {"text": "...", "lang": "en", "voice": "af_heart"}
          X-TTS-Secret: <TTS_SECRET>, when the service was started with one
 
-`lang` is a LangX language code; the espeak-ng code the model wants is decided
-here, so the API never learns what a phonemiser is. A code or a voice this file
-does not know is a 400, not a guess — a reading in the wrong accent is worse
-than none, and the app hides the button for languages the API does not offer.
+`lang` is a LangX language code; which engine reads it, and the espeak-ng code
+Kokoro wants, are both decided here, so the API never learns what a phonemiser
+is. A code or a voice this file does not know is a 400, not a guess — a reading
+in the wrong accent is worse than none, and the app hides the button for
+languages the API does not offer.
 
 Environment:
     PORT            default 8080
     TTS_SECRET      optional; when set, every /synthesize must carry it
     TTS_MODEL       default ./kokoro-v1.0.onnx
     TTS_VOICES      default ./voices-v1.0.bin
+    TTS_PIPER_DIR   where the Piper models live; default ./piper
+    TTS_PIPER_CACHE how many Piper voices to hold in memory at once; default 3
     ESPEAK_LIBRARY  the espeak-ng shared library to phonemise with; see load_kokoro
     ESPEAK_DATA     its espeak-ng-data directory
 
@@ -53,12 +66,18 @@ import os
 import subprocess
 import sys
 import threading
+import wave
+from collections import OrderedDict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 # Mirrors `ECHO_SYNTH_VOICES` in `packages/shared/src/echoPacks.ts`, which is
 # the definition — the API refuses before asking, this refuses in case it did
 # not. The right-hand side is what espeak-ng calls the language.
+#
+# Kokoro's six only. Piper's thirty-one are in `voices.json`, loaded below, for
+# the reason that file exists: they are data, they change by adding a line, and
+# the Dockerfile downloads exactly what the manifest names.
 LANGUAGES = {
     "en": ("en-us", {"af_heart", "am_michael"}),
     "es": ("es", {"ef_dora", "em_alex"}),
@@ -74,6 +93,32 @@ LANGUAGES = {
 MAX_TEXT = 400
 
 HERE = Path(__file__).resolve().parent
+
+PIPER_DIR = Path(os.environ.get("TTS_PIPER_DIR", str(HERE / "piper")))
+
+# How many Piper voices to keep loaded. Each is about 60 MB of ONNX session on
+# a machine with 2 GB and Kokoro already resident, so this is a memory budget
+# rather than a tuning knob; three covers a conversation switching between two
+# languages without reloading on every message.
+PIPER_CACHE_SIZE = int(os.environ.get("TTS_PIPER_CACHE", "3"))
+
+
+def load_piper_manifest() -> dict:
+    """LangX language code to the Piper voices that read it, from `voices.json`.
+
+    Missing or unreadable is not fatal: the service still reads Kokoro's six and
+    answers 400 for the rest, which is exactly what it did before Piper existed.
+    A half-built image should degrade to the old service, not fail to boot.
+    """
+    try:
+        with open(HERE / "voices.json", encoding="utf8") as handle:
+            return json.load(handle)
+    except (OSError, ValueError) as caught:
+        print(f"no piper manifest, reading six languages only: {caught}", flush=True)
+        return {}
+
+
+PIPER_LANGUAGES = load_piper_manifest()
 
 
 def load_kokoro():
@@ -96,12 +141,73 @@ def load_kokoro():
     return Kokoro(model, voices, espeak_config=espeak)
 
 
-def to_aac(samples, rate: int) -> bytes:
-    """WAV in memory to fragmented MP4/AAC on stdout — no file touches the disk."""
+_piper_voices: "OrderedDict[str, object]" = OrderedDict()
+
+
+def load_piper(voice_id: str, model: str):
+    """A Piper voice, loaded on demand and kept until something newer crowds it out.
+
+    Thirty-one models at 60 MB each do not fit beside Kokoro on this machine, and
+    almost nobody needs the thirty-first. The cost of the miss is a second or so
+    of ONNX session start, on a request that is already waiting on synthesis.
+
+    Called only under `Handler.lock`, so the dict needs no lock of its own.
+
+    **This path does not work on a Mac, and that is the wheel rather than us.**
+    Piper ships espeak-ng inside its own extension module with the data beside
+    it, and on Linux the extension builds the data path at run time from what
+    `initialize()` is handed. The macOS wheel has its build machine's directory
+    compiled in instead, so the first synthesis dies in C with
+    "Error processing file '/Users/runner/work/piper1-gpl/.../phontab'" — which
+    is the same failure, from the same cause, that `load_kokoro` below
+    documents for kokoro-onnx. There is nothing to point at it from here: the
+    path is not a parameter and no environment variable reaches it. Test the
+    Piper languages in the container; the Dockerfile loads every voice at build
+    time precisely so this cannot reach a deploy.
+    """
+    found = _piper_voices.get(voice_id)
+    if found is not None:
+        _piper_voices.move_to_end(voice_id)
+        return found
+
+    from piper import PiperVoice
+
+    path = PIPER_DIR / model
+    voice = PiperVoice.load(str(path))
+    _piper_voices[voice_id] = voice
+    while len(_piper_voices) > PIPER_CACHE_SIZE:
+        _piper_voices.popitem(last=False)
+    return voice
+
+
+def piper_wav(voice, text: str) -> bytes:
+    """One Piper reading as WAV bytes, assembled from the chunks it yields."""
+    buffer = io.BytesIO()
+    with wave.open(buffer, "wb") as out:
+        written = False
+        for chunk in voice.synthesize(text):
+            if not written:
+                out.setframerate(chunk.sample_rate)
+                out.setsampwidth(chunk.sample_width)
+                out.setnchannels(chunk.sample_channels)
+                written = True
+            out.writeframes(chunk.audio_int16_bytes)
+        if not written:
+            raise ValueError("piper produced no audio")
+    return buffer.getvalue()
+
+
+def kokoro_wav(samples, rate: int) -> bytes:
+    """One Kokoro reading as WAV bytes."""
     import soundfile as sf
 
     wav = io.BytesIO()
     sf.write(wav, samples, rate, format="WAV")
+    return wav.getvalue()
+
+
+def to_aac(wav: bytes) -> bytes:
+    """WAV in memory to fragmented MP4/AAC on stdout — no file touches the disk."""
     # 64 kb/s mono: a card is played on a phone, over a network somebody else is
     # paying for. `frag_keyframe+empty_moov` is what lets MP4 be written to a
     # pipe at all — the default layout needs to seek back to write its index.
@@ -113,7 +219,7 @@ def to_aac(samples, rate: int) -> bytes:
             "-movflags", "frag_keyframe+empty_moov",
             "-f", "mp4", "pipe:1",
         ],
-        input=wav.getvalue(),
+        input=wav,
         capture_output=True,
         check=True,
     )
@@ -164,15 +270,32 @@ class Handler(BaseHTTPRequestHandler):
 
         if not text or len(text) > MAX_TEXT:
             return self._json(400, {"error": "text is empty or too long"})
-        if lang not in LANGUAGES:
-            return self._json(400, {"error": f"no voice for language {lang!r}"})
-        espeak_lang, voices = LANGUAGES[lang]
-        if voice not in voices:
+
+        # Kokoro first: it reads the six it was trained for better than Piper
+        # does, and those six are the keys already in the cache upstream.
+        if lang in LANGUAGES:
+            espeak_lang, voices = LANGUAGES[lang]
+            if voice not in voices:
+                return self._json(400, {"error": f"voice {voice!r} does not read {lang!r}"})
+            with self.lock:
+                samples, rate = self.kokoro.create(
+                    text, voice=voice, speed=1.0, lang=espeak_lang
+                )
+                wav = kokoro_wav(samples, rate)
+            return self._send(200, to_aac(wav), "audio/mp4")
+
+        model = next(
+            (entry["model"] for entry in PIPER_LANGUAGES.get(lang, []) if entry["id"] == voice),
+            None,
+        )
+        if model is None:
+            if lang not in PIPER_LANGUAGES:
+                return self._json(400, {"error": f"no voice for language {lang!r}"})
             return self._json(400, {"error": f"voice {voice!r} does not read {lang!r}"})
 
         with self.lock:
-            samples, rate = self.kokoro.create(text, voice=voice, speed=1.0, lang=espeak_lang)
-        self._send(200, to_aac(samples, rate), "audio/mp4")
+            wav = piper_wav(load_piper(voice, model), text)
+        self._send(200, to_aac(wav), "audio/mp4")
 
 
 def main() -> int:

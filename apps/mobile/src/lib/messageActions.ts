@@ -1,10 +1,11 @@
-import type { MessageType } from '@langx/shared'
+import { TTS_MAX_TEXT_LENGTH, type MessageType } from '@langx/shared'
 import type { TranslateFn } from '../i18n/runtime'
 
 export const MESSAGE_ACTION_IDS = [
   'reply',
   'copy',
   'translate',
+  'speak',
   'correct',
   'echo',
   'delete',
@@ -42,6 +43,15 @@ export interface MessageActionContext {
    * action would offer a request the server refuses.
    */
   canTranslate?: boolean
+  /**
+   * Whether a reading is possible: this deployment has a voice service *and*
+   * the caller worked out a language it can be read in. Hidden by default,
+   * unlike `canTranslate` — translation is configured everywhere and a voice
+   * service is not, so the row must be earned rather than assumed.
+   */
+  canSpeak?: boolean
+  /** Characters the service would be asked to read. The cap is its own. */
+  bodyLength: number
   /** Whether the signed-in user sent it. */
   mine: boolean
   type: MessageType
@@ -111,6 +121,42 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
       id: 'translate',
       label: t('messageActions.translate'),
       icon: 'language-outline',
+      page: 'primary',
+    })
+  }
+
+  /**
+   * Hear the sentence said.
+   *
+   * **On your own messages too**, which is where this parts company with
+   * Translate and Correct. Translating what you wrote is a round trip to
+   * something you already understand; *hearing* what you wrote, in the
+   * language you are learning to write it in, is much of the reason for
+   * writing it at all.
+   *
+   * The same three types `echo` takes: a captioned photo's caption is a
+   * sentence, and a correction's body is the corrected line, which is the one
+   * most worth hearing. Never a voice note — that bubble is already a person
+   * saying it, and a machine reading its caption beside them is the one case
+   * that confuses rather than helps.
+   *
+   * Over the cap the row is hidden rather than disabled. The menu's only
+   * disabled row is Edit-after-correction, where hiding would look like a bug
+   * on your own recent message; nobody expects three paragraphs to offer to
+   * read themselves, so there is nothing to explain.
+   *
+   * `hasBody` also removes the tombstone, the way it does for `phrase`.
+   */
+  if (
+    context.canSpeak === true &&
+    context.hasBody &&
+    context.bodyLength <= TTS_MAX_TEXT_LENGTH &&
+    (context.type === 'text' || context.type === 'correction' || context.type === 'image')
+  ) {
+    actions.push({
+      id: 'speak',
+      label: t('messageActions.speak'),
+      icon: 'volume-medium-outline',
       page: 'primary',
     })
   }

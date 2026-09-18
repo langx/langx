@@ -49,7 +49,7 @@ describe('what a refused quota leaves behind', () => {
   it('writes nothing while there is room', async () => {
     const userId = await newProfile()
     for (let index = 0; index < FREE_INITIATIONS; index++) {
-      expect(await consumeQuota(handle.db, userId, 'free', 'initiations')).toEqual({
+      expect(await consumeQuota(handle.db, userId, 'free', 'initiations')).toMatchObject({
         consumed: true,
       })
     }
@@ -85,7 +85,7 @@ describe('what a refused quota leaves behind', () => {
   it('never records anything for a tier with no limit', async () => {
     const userId = await newProfile()
     for (let index = 0; index < FREE_INITIATIONS + 5; index++) {
-      expect(await consumeQuota(handle.db, userId, 'pro', 'initiations')).toEqual({
+      expect(await consumeQuota(handle.db, userId, 'pro', 'initiations')).toMatchObject({
         consumed: true,
       })
     }
@@ -128,7 +128,7 @@ describe('a quota bucket the profile has never had', () => {
 
   it('is consumed rather than raising', async () => {
     const userId = await profileWithoutEchoQuota()
-    expect(await consumeQuota(handle.db, userId, 'free', 'echoCaptures')).toEqual({
+    expect(await consumeQuota(handle.db, userId, 'free', 'echoCaptures')).toMatchObject({
       consumed: true,
     })
 
@@ -141,7 +141,7 @@ describe('a quota bucket the profile has never had', () => {
   it('still refuses at the ceiling once the array exists', async () => {
     const userId = await profileWithoutEchoQuota()
     for (let index = 0; index < FREE_CAPTURES; index++) {
-      expect(await consumeQuota(handle.db, userId, 'free', 'echoCaptures')).toEqual({
+      expect(await consumeQuota(handle.db, userId, 'free', 'echoCaptures')).toMatchObject({
         consumed: true,
       })
     }

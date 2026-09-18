@@ -162,6 +162,7 @@ export const ptBR: Localized<EnMessages> = {
     reply: 'Responder',
     correct: 'Corrigir',
     translate: 'Traduzir',
+    speak: 'Ler em voz alta',
     copy: 'Copiar',
     delete: 'Excluir',
     edit: 'Editar',
@@ -1030,6 +1031,13 @@ export const ptBR: Localized<EnMessages> = {
       other:
         'Fotos, vídeos e mensagens de voz são liberados depois de mais {count} mensagens da outra pessoa.',
     },
+    speaking: 'Lendo em voz alta…',
+    speakUnavailable: 'Não deu para ler em voz alta',
+    speakFailed: 'Tente de novo daqui a pouco.',
+    speakLimit: {
+      one: 'Você usou a {count} leitura de hoje. Ela volta em 24 horas.',
+      other: 'Você usou as {count} leituras de hoje. Elas voltam em 24 horas.',
+    },
     copied: 'Copiado',
     couldNotSend: 'Não deu para enviar',
     mediaQuota: 'Você atingiu o limite de hoje para fotos, vídeos e mensagens de voz.',
@@ -1546,6 +1554,10 @@ export const ptBR: Localized<EnMessages> = {
     appIconFailed: 'Não foi possível alterar o ícone',
     showWeekChart: 'Mostrar o gráfico da semana',
     showWeekChartBody: 'Em quais dias você enviou mensagens e correções, no seu perfil.',
+    voiceCredits: 'Vozes e licenças',
+    voiceCreditsBody:
+      'As mensagens são lidas em voz alta por modelos de voz de código aberto. A maioria não nos pede nada; os de baixo são licenciados com a condição de creditarmos quem os gravou.',
+    voiceCreditsEngines: 'Os motores são Kokoro-82M e Piper, ambos de código aberto.',
     legalSection: 'Jurídico',
     linkDeviceBody: 'Aprove um login e veja onde você está conectado.',
     showInDiscover: 'Mostrar em Descobrir',

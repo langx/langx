@@ -226,12 +226,15 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    partner who said it has no reason to press it. Rewriting the sentence, or
    its language, takes the readings off the card — they read a line that is
    gone — and the button comes back for the new one; the files stay, because
-   they are content-addressed and may be on somebody else's card. Six
-   languages — English,
-   Spanish, French, Italian, Portuguese, Hindi — because those are the voices
-   the model has and espeak-ng phonemises well (`ECHO_SYNTH_VOICES` is the
-   list); the app hides the button elsewhere. A person who already recorded
-   the sentence is still both cheaper and the actual differentiator.
+   they are content-addressed and may be on somebody else's card.
+   **Thirty languages** since chat started reading messages aloud
+   too: Kokoro still reads the six it was trained for, and Piper reads the
+   other twenty-four (`SPEECH_VOICES` is the list, and `ECHO_SYNTH_VOICES`
+   remains Kokoro's half of it). The app hides the button elsewhere — and
+   "elsewhere" is a licence question rather than a modelling one, since the
+   catalogue's only Turkish, Arabic, Japanese and Korean voices are
+   CC BY-NC. A person who already recorded the sentence is still both
+   cheaper and the actual differentiator.
 
 4. **Pack recordings. Built.** A Wikimedia Commons file on the pack item,
    played from Commons rather than copied into our storage — the decision

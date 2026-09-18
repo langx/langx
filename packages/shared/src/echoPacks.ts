@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { speechVoicesFor } from './speech'
 import { languageLevelSchema } from './level'
 import { localeSchema } from './locales'
 import { SRS_RULES } from './srs'
@@ -86,9 +87,17 @@ export const ECHO_SYNTH_VOICES: Readonly<Record<string, readonly string[]>> = {
   hi: ['hf_alpha', 'hm_omega'],
 }
 
-/** The voices that can read `lang`; empty for a language nothing here speaks. */
+/**
+ * The voices that can read `lang`; empty for a language nothing here speaks.
+ *
+ * Delegates to `SPEECH_VOICES`, which is the wider table — so a card in one of
+ * the thirty-one languages Piper reads can be read aloud too, and the button on
+ * the card screen appears wherever chat's does. `ECHO_SYNTH_VOICES` above stays
+ * as it is: it is what `apps/tts/server.py` mirrors for Kokoro, and the six it
+ * names are still the six that lead with two registers.
+ */
 export function echoSynthVoicesFor(lang: string): readonly string[] {
-  return ECHO_SYNTH_VOICES[lang] ?? []
+  return speechVoicesFor(lang).map((voice) => voice.id)
 }
 
 /**

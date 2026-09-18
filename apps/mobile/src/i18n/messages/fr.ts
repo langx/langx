@@ -166,6 +166,7 @@ export const fr: Localized<EnMessages> = {
     reply: 'Répondre',
     correct: 'Corriger',
     translate: 'Traduire',
+    speak: 'Lire à voix haute',
     copy: 'Copier',
     delete: 'Supprimer',
     edit: 'Modifier',
@@ -1038,6 +1039,13 @@ export const fr: Localized<EnMessages> = {
       other:
         'Les photos, vidéos et notes vocales se débloquent après {count} messages de plus de l’autre personne.',
     },
+    speaking: 'Lecture à voix haute…',
+    speakUnavailable: 'Impossible de lire ce message',
+    speakFailed: 'Réessaie dans un instant.',
+    speakLimit: {
+      one: 'Tu as utilisé la {count} lecture du jour. Elle se renouvelle sous 24 heures.',
+      other: 'Tu as utilisé les {count} lectures du jour. Elles se renouvellent sous 24 heures.',
+    },
     copied: 'Copié',
     couldNotSend: 'Envoi impossible',
     mediaQuota: 'Vous avez atteint la limite du jour pour les photos, vidéos et messages vocaux.',
@@ -1562,6 +1570,10 @@ export const fr: Localized<EnMessages> = {
     showWeekChart: 'Afficher le graphique de la semaine',
     showWeekChartBody:
       'Les jours où vous avez envoyé des messages et des corrections, sur votre profil.',
+    voiceCredits: 'Voix et licences',
+    voiceCreditsBody:
+      'Les messages sont lus à voix haute par des modèles vocaux libres. La plupart ne nous demandent rien ; ceux ci-dessous sont sous licence à condition que nous créditions les personnes qui les ont enregistrés.',
+    voiceCreditsEngines: 'Les moteurs sont Kokoro-82M et Piper, tous deux libres.',
     legalSection: 'Mentions légales',
     linkDeviceBody: 'Approuver une connexion et voir où vous êtes connecté.',
     showInDiscover: 'M’afficher dans Découvrir',

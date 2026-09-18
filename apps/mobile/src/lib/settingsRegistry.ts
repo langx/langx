@@ -206,6 +206,7 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
     route: '/(app)/settings/about',
     items: [
       { id: 'about.legal', titleKey: 'settings.legalSection' },
+      { id: 'about.voices', titleKey: 'settings.voiceCredits' },
       { id: 'about.reportBug', titleKey: 'feedback.bugTitle', bodyKey: 'feedback.bugRowBody' },
       {
         id: 'about.requestFeature',
