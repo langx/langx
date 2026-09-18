@@ -51,13 +51,24 @@ export interface SpeechVoice {
  * on a card; chat plays only `[0]`, which is also the voice Echo synthesises
  * first — so a sentence that is both echoed and played shares one object.
  *
- * Eighteen languages the catalogue has voices for are missing from this table.
- * Sixteen of them for the licence reason above, Turkish and Arabic among them.
- * The other two are engineering: `lt_LT-reginute1-medium` is built for a
+ * Twenty-three languages the catalogue has voices for are missing from this
+ * table, for three different reasons and it is worth keeping them apart.
+ *
+ * **Sixteen for the licence**, Turkish and Arabic among them — see
+ * `SpeechLicense`. Nothing but a new model changes those.
+ *
+ * **Two this engine cannot use.** `lt_LT-reginute1-medium` is built for a
  * `lithuanian` phoneme type `piper-tts` does not implement, and Chinese needs
  * `piper-tts[zh]`, which pulls `transformers` and then downloads a g2pW model
  * at first use — a large dependency and a network call on a machine that
- * sleeps, for one language. Both are revisitable; neither is a licence.
+ * sleeps, for one language.
+ *
+ * **Five for their weight against their use here.** Marathi, Telugu, Nepali,
+ * Welsh and Kazakh are 409 MB of the image between them — Kazakh alone is 128,
+ * having only a `high` model — and LangX has close to nobody exchanging them.
+ * A line each in the table brings any of them back.
+ *
+ * Only the first group is a hard no.
  *
  * Piper voices carry no register in their name, so `voiceLabel` falls through
  * to "Synthesised" for them rather than claiming a gender we did not check.
@@ -124,15 +135,6 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
       license: 'CC0',
     },
   ],
-  cy: [
-    {
-      id: 'cy_GB-bu_tts-medium',
-      engine: 'piper',
-      model: 'cy/cy_GB/bu_tts/medium/cy_GB-bu_tts-medium.onnx',
-      license: 'CC-BY-4.0',
-      attribution: 'bu_tts (cy_GB), https://huggingface.co/datasets/techiaith/bu-tts-cy-en',
-    },
-  ],
   da: [
     {
       id: 'da_DK-talesyntese-medium',
@@ -191,37 +193,11 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
       license: 'CC0',
     },
   ],
-  kk: [
-    {
-      id: 'kk_KZ-issai-high',
-      engine: 'piper',
-      model: 'kk/kk_KZ/issai/high/kk_KZ-issai-high.onnx',
-      license: 'CC-BY-4.0',
-      attribution: 'issai (kk_KZ), https://github.com/IS2AI/Kazakh_TTS',
-    },
-  ],
   lv: [
     {
       id: 'lv_LV-aivars-medium',
       engine: 'piper',
       model: 'lv/lv_LV/aivars/medium/lv_LV-aivars-medium.onnx',
-      license: 'CC0',
-    },
-  ],
-  mr: [
-    {
-      id: 'mr_IN-google-medium',
-      engine: 'piper',
-      model: 'mr/mr_IN/google/medium/mr_IN-google-medium.onnx',
-      license: 'CC-BY-SA-4.0',
-      attribution: 'google (mr_IN), https://openslr.org/64/',
-    },
-  ],
-  ne: [
-    {
-      id: 'ne_NP-chitwan-medium',
-      engine: 'piper',
-      model: 'ne/ne_NP/chitwan/medium/ne_NP-chitwan-medium.onnx',
       license: 'CC0',
     },
   ],
@@ -296,15 +272,6 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
       engine: 'piper',
       model: 'sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx',
       license: 'CC0',
-    },
-  ],
-  te: [
-    {
-      id: 'te_IN-padmavathi-medium',
-      engine: 'piper',
-      model: 'te/te_IN/padmavathi/medium/te_IN-padmavathi-medium.onnx',
-      license: 'CC-BY-4.0',
-      attribution: 'padmavathi (te_IN), https://huggingface.co/datasets/ai4bharat/indicvoices_r',
     },
   ],
   uk: [

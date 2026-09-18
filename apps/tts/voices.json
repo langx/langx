@@ -23,12 +23,6 @@
       "model": "cs/cs_CZ/jirka/medium/cs_CZ-jirka-medium.onnx"
     }
   ],
-  "cy": [
-    {
-      "id": "cy_GB-bu_tts-medium",
-      "model": "cy/cy_GB/bu_tts/medium/cy_GB-bu_tts-medium.onnx"
-    }
-  ],
   "da": [
     {
       "id": "da_DK-talesyntese-medium",
@@ -71,28 +65,10 @@
       "model": "hu/hu_HU/anna/medium/hu_HU-anna-medium.onnx"
     }
   ],
-  "kk": [
-    {
-      "id": "kk_KZ-issai-high",
-      "model": "kk/kk_KZ/issai/high/kk_KZ-issai-high.onnx"
-    }
-  ],
   "lv": [
     {
       "id": "lv_LV-aivars-medium",
       "model": "lv/lv_LV/aivars/medium/lv_LV-aivars-medium.onnx"
-    }
-  ],
-  "mr": [
-    {
-      "id": "mr_IN-google-medium",
-      "model": "mr/mr_IN/google/medium/mr_IN-google-medium.onnx"
-    }
-  ],
-  "ne": [
-    {
-      "id": "ne_NP-chitwan-medium",
-      "model": "ne/ne_NP/chitwan/medium/ne_NP-chitwan-medium.onnx"
     }
   ],
   "nl": [
@@ -147,12 +123,6 @@
     {
       "id": "sv_SE-nst-medium",
       "model": "sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx"
-    }
-  ],
-  "te": [
-    {
-      "id": "te_IN-padmavathi-medium",
-      "model": "te/te_IN/padmavathi/medium/te_IN-padmavathi-medium.onnx"
     }
   ],
   "uk": [

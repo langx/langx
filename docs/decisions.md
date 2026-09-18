@@ -4896,15 +4896,15 @@ phonemises through espeak-ng and Japanese and Chinese were not trained on
 that — a reading a native speaker winces at is worse than the button not
 being there.
 
-**Twenty-nine more, once chat wanted the same thing.** Six is a reasonable
+**Twenty-four more, once chat wanted the same thing.** Six is a reasonable
 number for a deck somebody builds in the language they are studying and an
 absurd one for a chat thread, where the sentence is in whatever the two
 people write in. Kokoro cannot be made to read a seventh, so Piper went in
 beside it: one small model per language, the same espeak-ng, a quality below
 Kokoro's and far above nothing, and Kokoro keeps its six — which also keeps
 them on the cache keys they already occupy. Loaded three at a time, because
-twenty-nine models at 60 MB do not fit beside Kokoro on a 2 GB machine and
-almost nobody needs the twenty-ninth.
+twenty-four models at 60 MB do not fit beside Kokoro on a 2 GB machine and
+almost nobody needs the twenty-fourth.
 
 **And the list is decided by licences, not by the catalogue.** Piper's voices
 are each licensed separately; ours are CC0, MIT, Apache-2.0 or CC-BY, and the
@@ -4927,6 +4927,25 @@ Both stay in `APP_TO_ISO3` all the same, and that is the point of keeping that
 table wider than the one we can read: a Chinese message wins its own sentence
 and then loses the button, rather than being read aloud in whichever voice we
 happen to ship.
+
+**And five went on weight rather than on any failure.** Marathi, Telugu,
+Nepali, Welsh and Kazakh are 409 MB of the image between them — Kazakh alone is
+128, having only a `high` model — against close to nobody exchanging them here.
+The image is 2.1 GB instead of 2.5, which matters not for memory (three voices
+are resident at a time whatever the manifest says) nor for the bill, but for
+how long a deploy that touches this directory takes. A line each in
+`SPEECH_VOICES` brings any of them back.
+
+**Why the two engines both stay**, since the obvious question is whether one
+could do it alone. Piper has cleanly-licensed voices for five of Kokoro's six,
+so it nearly covers it — but not Hindi, whose Piper voices are all CC BY-NC,
+and not at Kokoro's quality: Kokoro is 82M parameters over all six languages
+where a Piper medium is around 15-20M for one. Dropping Kokoro would cost
+Hindi, lower five major languages, and save nothing, because the five
+replacements weigh about what Kokoro's single model does. Going the other way
+is not on offer at all — Kokoro has six languages and cannot be given a
+seventh. So: Kokoro where it was trained, Piper for the rest, and no overlap in
+the manifest.
 
 **Which language a message is in turned out to be the hard part**, and it took
 three goes. There is no `lang` on a message and nothing in the repo detected one.

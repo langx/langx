@@ -16,8 +16,8 @@ import {
 } from './speech'
 
 describe('the voice table', () => {
-  it('reads thirty-five languages, and not the ones it must not', () => {
-    expect(SPEECH_LANGUAGES).toHaveLength(35)
+  it('reads thirty languages, and not the ones it must not', () => {
+    expect(SPEECH_LANGUAGES).toHaveLength(30)
     // The catalogue has voices for all four. Every one of them is CC BY-NC,
     // which an app that sells subscriptions cannot use — so they stay silent
     // rather than being read by a model we are not allowed to ship.
