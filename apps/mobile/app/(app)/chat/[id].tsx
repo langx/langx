@@ -7,6 +7,7 @@ import {
   MAX_ATTACHMENTS,
   MAX_VIDEO_SECONDS,
   type Media,
+  DOUBLE_TAP_REACTION,
   MESSAGE_REACTIONS,
   PHRASE_EXAMPLE_MAX_LENGTH,
   PLAN_LIMITS,
@@ -1628,6 +1629,21 @@ export default function ChatScreen() {
     [],
   )
 
+  /**
+   * Double tap to heart it, stabilised for the same reason.
+   *
+   * Sends the heart from `MESSAGE_REACTIONS` rather than a new one, so this is
+   * the gesture and nothing else: the same emoji the menu's strip offers, the
+   * same toggle, and a second double tap takes it off again.
+   */
+  const reactRef = useRef(react)
+  useEffect(() => {
+    reactRef.current = react
+  })
+  const onReact = useCallback((message: MessageDto) => {
+    void reactRef.current(message, DOUBLE_TAP_REACTION)
+  }, [])
+
   /** The bubble's replay control, stabilised for the same reason. */
   const speakRef = useRef(speak)
   useEffect(() => {
@@ -2041,6 +2057,14 @@ export default function ChatScreen() {
                     onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}
                     canReply={!channel}
+                    onReact={isOutgoingId(row.message._id) ? ignore : onReact}
+                    /*
+                     * The same pair the menu's emoji strip is hidden for, and
+                     * for the same reason: the server refuses a reaction to a
+                     * withdrawn message and to an official channel, so offering
+                     * the gesture there would end in an alert.
+                     */
+                    canReact={!channel && !row.message.deleted}
                     onJumpTo={onJumpTo}
                     onOpenMedia={onOpenMedia}
                   />

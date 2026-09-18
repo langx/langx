@@ -366,6 +366,18 @@ export const MESSAGE_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '�
 export type MessageReaction = (typeof MESSAGE_REACTIONS)[number]
 
 /**
+ * The one a double tap sends, and the only reaction reachable without opening
+ * the menu.
+ *
+ * Named here rather than written into the gesture, because the glyph is
+ * `U+2764 U+FE0F` and a bare `❤` typed at a call site is a different string —
+ * it would pass review, read identically in a diff, and fail
+ * `reactToMessageSchema`'s enum at run time. Typed as `MessageReaction`, so it
+ * cannot drift out of the strip either.
+ */
+export const DOUBLE_TAP_REACTION: MessageReaction = '❤️'
+
+/**
  * How long a sender can withdraw a message from the other person's device.
  *
  * Two days, the same window WhatsApp settled on. Past it, "delete for me"

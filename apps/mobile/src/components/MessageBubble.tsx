@@ -41,6 +41,8 @@ import { MessageMeta } from './MessageMeta'
 import { Image } from 'expo-image'
 import { stickerAsset } from '../lib/stickerAssets'
 import { useT, type MessageKey } from '../i18n'
+import { createDoubleTap, doubleTapToReactEnabled } from '../lib/doubleTapToReact'
+import { impact } from '../lib/haptics'
 
 /**
  * Whether this device has a finger. Read once, at module scope: it cannot
@@ -89,6 +91,15 @@ export interface MessageBubbleProps {
    * Reply row the menu no longer draws.
    */
   canReply: boolean
+  /**
+   * Whether a heart may be sent from here at all. False for a deleted message
+   * and in an official channel, which is the same pair the menu's emoji strip
+   * is hidden for — the server refuses both, and a gesture that ends in an
+   * alert is worse than one that is not offered.
+   */
+  canReact: boolean
+  /** Double tap. The emoji is the parent's to choose. */
+  onReact: (message: MessageDto) => void
   /** Answers the request on somebody else's message — correct it, or say it. */
   onAnswerAsk: (message: MessageDto, ask: MessageAsk) => void
   /** Accepts, declines or withdraws a proposed time. */
@@ -141,6 +152,8 @@ export const MessageBubble = memo(function MessageBubble({
   onEcho,
   onReply,
   canReply,
+  canReact,
+  onReact,
   onAnswerAsk,
   onRespondMeeting,
   onAnswerQuiz,
@@ -199,6 +212,30 @@ export const MessageBubble = memo(function MessageBubble({
    * half of making it work on a touchscreen: without it the browser claims the
    * horizontal pan for its own scrolling before the responder ever sees it.
    */
+  /**
+   * Double tap to heart it.
+   *
+   * On the same `Pressable` as the long press rather than a `Gesture.Tap`:
+   * the swipe already owns a `Gesture.Pan` here, a tap gesture would have to
+   * compose with it, and the app counts its only other double tap — the photo
+   * viewer's zoom — with a plain counter too.
+   *
+   * There is no single-tap meaning on a bubble to wait for, so the first tap
+   * needs no timer and does nothing. That is the whole reason this is three
+   * lines rather than the viewer's twenty.
+   */
+  const secondTap = useRef(createDoubleTap())
+  const tap =
+    canReact && doubleTapToReactEnabled(Platform.OS, HAS_TOUCH)
+      ? () => {
+          if (!secondTap.current(Date.now())) return
+          // The only feedback that arrives at the moment of the tap: the heart
+          // itself waits for the server to say it landed.
+          void impact('light')
+          onReact(message)
+        }
+      : undefined
+
   const translateX = useSharedValue(0)
   const pan = Gesture.Pan()
     .enabled(canReply && swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
@@ -339,7 +376,7 @@ export const MessageBubble = memo(function MessageBubble({
    */
   if (message.deleted) {
     return shell(
-      <Pressable onLongPress={press} style={column}>
+      <Pressable onPress={tap} onLongPress={press} style={column}>
         <View ref={box} style={[styles.bubble, styles.tombstone, flash]}>
           <View style={styles.tombstoneRow}>
             <Feather name="slash" size={13} color={colors.textMuted} />
@@ -353,7 +390,7 @@ export const MessageBubble = memo(function MessageBubble({
 
   if (message.type === 'correction') {
     return shell(
-      <Pressable ref={box} onLongPress={press} style={[styles.correction, flash]}>
+      <Pressable ref={box} onPress={tap} onLongPress={press} style={[styles.correction, flash]}>
         {/*
           The success pair, and only ever the success pair. A correction is
           another person changing your sentence; the info pair belongs to
@@ -380,7 +417,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.type === 'phrase' && message.phrase) {
     const { term, meaning, example } = message.phrase
     return shell(
-      <Pressable onLongPress={press} style={column}>
+      <Pressable onPress={tap} onLongPress={press} style={column}>
         <View ref={box} style={[styles.card, flash]}>
           <Text style={styles.cardKicker}>{t('chat.phraseCard')}</Text>
           <Text style={styles.phraseTerm}>{term}</Text>
@@ -397,7 +434,7 @@ export const MessageBubble = memo(function MessageBubble({
     const meeting = message.meeting
     const answered = meeting.status !== 'proposed'
     return shell(
-      <Pressable onLongPress={press} style={column}>
+      <Pressable onPress={tap} onLongPress={press} style={column}>
         <View ref={box} style={[styles.card, flash]}>
           <Text style={styles.cardKicker}>{t('chat.meetingCard')}</Text>
           {/*
@@ -484,7 +521,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.type === 'sticker' && message.sticker) {
     const picture = stickerAsset(message.sticker.packId, message.sticker.stickerId)
     return shell(
-      <Pressable onLongPress={press} style={column}>
+      <Pressable onPress={tap} onLongPress={press} style={column}>
         {/*
           No bubble behind it. A sticker is the whole message, and a chrome
           rectangle around one is what makes it look like a picture somebody
@@ -509,7 +546,7 @@ export const MessageBubble = memo(function MessageBubble({
     const quiz = message.quiz
     const answered = quiz.answer !== undefined
     return shell(
-      <Pressable onLongPress={press} style={column}>
+      <Pressable onPress={tap} onLongPress={press} style={column}>
         <View ref={box} style={[styles.card, flash]}>
           <Text style={styles.cardKicker}>{t('chat.quizCard')}</Text>
           <Text style={styles.phraseMeaning}>{quiz.question}</Text>
@@ -566,7 +603,7 @@ export const MessageBubble = memo(function MessageBubble({
    */
   if (!isDrawableType(message.type)) {
     return shell(
-      <Pressable onLongPress={press} style={column}>
+      <Pressable onPress={tap} onLongPress={press} style={column}>
         <View ref={box} style={[styles.card, flash]}>
           <Text style={styles.phraseMeaning}>{t('chat.unsupportedMessage')}</Text>
         </View>
@@ -663,7 +700,14 @@ export const MessageBubble = memo(function MessageBubble({
 
   if (isBigEmoji(message.body) && !message.deleted) {
     return shell(
-      <Pressable onPress={replay} onLongPress={press} style={column}>
+      <Pressable
+        onPress={() => {
+          replay()
+          tap?.()
+        }}
+        onLongPress={press}
+        style={column}
+      >
         {quote}
         <View ref={box}>
           <Animated.Text style={[styles.heroText, { transform: [{ scale: heroScale }] }]}>
@@ -679,7 +723,7 @@ export const MessageBubble = memo(function MessageBubble({
   }
 
   return shell(
-    <Pressable onLongPress={press} style={column}>
+    <Pressable onPress={tap} onLongPress={press} style={column}>
       {quote}
       <View ref={box} style={bubble}>
         <Text style={styles.bubbleText}>{message.body}</Text>
