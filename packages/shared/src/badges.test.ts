@@ -93,6 +93,21 @@ describe('badge catalogue', () => {
   })
 
   /**
+   * The screen draws this array in order, and a cohort badge is the one row on
+   * it a reader cannot work towards — so it leads, rather than sitting between
+   * the eighth streak and the third token total.
+   *
+   * Asserted rather than left to whoever edits the array next: the natural
+   * thing to do with a new entry is append it, and appending a cohort badge
+   * would sink it to the bottom with nothing failing.
+   */
+  it('puts every cohort badge above every ladder', () => {
+    const lastCohort = BADGES.map((badge) => isCohortBadge(badge.kind)).lastIndexOf(true)
+    const firstCounter = BADGES.map((badge) => isCohortBadge(badge.kind)).indexOf(false)
+    expect(lastCohort).toBeLessThan(firstCounter)
+  })
+
+  /**
    * `app/(app)/badges.tsx` passes a badge's label straight into
    * `createShareCardSchema.headline`, which is `.max(40)`. A longer label does
    * not fail here — it 400s when somebody tries to share that badge, which is
