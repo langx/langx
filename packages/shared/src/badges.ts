@@ -300,3 +300,54 @@ export const profileBadgeSchema = z.object({
   icon: z.string().nullable(),
 })
 export type ProfileBadge = z.infer<typeof profileBadgeSchema>
+
+/**
+ * Newest first, as closely as the data allows.
+ *
+ * It does not allow much, and the reason is worth knowing before reading the
+ * order this produces: only `streak` and `veteran` badges carry an `earnedAt`.
+ * A streak milestone has the ledger row that paid it and a veteran badge is
+ * arithmetic on the account's birthday; the counting kinds have no date at
+ * all, because a total is not an event and nothing records which correction
+ * was the thousandth. See `earnedBadgeSchema`.
+ *
+ * So the sort is in two halves. The dated badges go first, latest to earliest,
+ * which is the real answer where there is one. The undated ones follow in
+ * reverse catalogue order — and that is not a shrug: within a ladder the
+ * catalogue climbs, so reversing it puts the top rung first, and the top rung
+ * is by definition the most recently earned of its kind. Nobody is ever shown
+ * their 7-day badge ahead of their 365-day one.
+ *
+ * What it cannot do is order two ladders against each other, or a ladder
+ * against a dated badge. A correction badge earned this morning may sit behind
+ * a streak badge from March. That is the ceiling of what is recorded, not a
+ * choice — moving it would mean writing a date at the moment each counting
+ * badge is crossed, which is a migration and a new write on a hot path.
+ */
+export function badgesMostRecentFirst(badges: readonly EarnedBadge[]): EarnedBadge[] {
+  const rank = (id: string) => {
+    const index = CATALOGUE_INDEX.get(id)
+    // An id that is not in the catalogue sorts last rather than first: it is
+    // a badge this build does not know, and guessing it is the newest thing
+    // this person did is the wrong guess to make.
+    return index ?? -1
+  }
+
+  return [...badges].sort((a, b) => {
+    const at = a.earnedAt ? Date.parse(a.earnedAt) : Number.NaN
+    const bt = b.earnedAt ? Date.parse(b.earnedAt) : Number.NaN
+    const aDated = !Number.isNaN(at)
+    const bDated = !Number.isNaN(bt)
+    if (aDated && bDated) return bt - at
+    // An unparseable date is treated as no date rather than as an epoch,
+    // which would quietly promote a broken row to the front of the strip.
+    if (aDated !== bDated) return aDated ? -1 : 1
+    // The catalogue's index, not the caller's: reading the order off the input
+    // array would make this correct only for callers who happened to pass the
+    // badges in catalogue order, which is a precondition nothing states.
+    return rank(b.id) - rank(a.id)
+  })
+}
+
+/** `BADGES` by id, so the sort above does not scan the catalogue per compare. */
+const CATALOGUE_INDEX = new Map(BADGES.map((badge, index) => [badge.id, index]))

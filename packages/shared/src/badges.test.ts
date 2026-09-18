@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { BADGES, BADGE_KINDS, BADGE_SHAPES, findBadge, isCohortBadge } from './badges'
+import {
+  BADGES,
+  BADGE_KINDS,
+  BADGE_SHAPES,
+  badgesMostRecentFirst,
+  findBadge,
+  isCohortBadge,
+  type EarnedBadge,
+} from './badges'
 import { TOKEN_RULES } from './token'
 
 describe('badge catalogue', () => {
@@ -117,5 +125,74 @@ describe('badge catalogue', () => {
     for (const badge of BADGES) {
       expect(badge.label.length, badge.id).toBeLessThanOrEqual(40)
     }
+  })
+})
+
+describe('badgesMostRecentFirst', () => {
+  function earned(id: string, earnedAt: string | null): EarnedBadge {
+    const definition = findBadge(id)
+    if (!definition) throw new Error(`no such badge: ${id}`)
+    return {
+      id: definition.id,
+      kind: definition.kind,
+      threshold: definition.threshold,
+      label: definition.label,
+      icon: definition.icon,
+      earned: true,
+      earnedAt,
+    }
+  }
+
+  it('puts the latest dated badge first', () => {
+    const order = badgesMostRecentFirst([
+      earned('streak.7', '2026-01-10T00:00:00.000Z'),
+      earned('streak.30', '2026-04-02T00:00:00.000Z'),
+      earned('veteran.365', '2026-02-20T00:00:00.000Z'),
+    ]).map((badge) => badge.id)
+
+    expect(order).toEqual(['streak.30', 'veteran.365', 'streak.7'])
+  })
+
+  it('puts every dated badge ahead of every undated one', () => {
+    const order = badgesMostRecentFirst([
+      earned('correction.1', null),
+      earned('streak.7', '2020-01-01T00:00:00.000Z'),
+      earned('messages.100', null),
+    ]).map((badge) => badge.id)
+
+    expect(order[0]).toBe('streak.7')
+  })
+
+  /**
+   * The load-bearing half of the fallback: a ladder climbs in the catalogue,
+   * so its top rung is the one earned last even though nothing wrote a date.
+   */
+  it('leads an undated ladder with its top rung', () => {
+    const order = badgesMostRecentFirst([
+      earned('correction.1', null),
+      earned('correction.10', null),
+      earned('correction.100', null),
+    ]).map((badge) => badge.id)
+
+    expect(order).toEqual(['correction.100', 'correction.10', 'correction.1'])
+  })
+
+  it('treats an unparseable date as no date rather than as the epoch', () => {
+    const order = badgesMostRecentFirst([
+      earned('correction.10', null),
+      earned('streak.7', 'not a date'),
+    ]).map((badge) => badge.id)
+
+    // Sorted as undated, so reverse catalogue order decides: the correction
+    // rung is later in `BADGES` than the streak rung.
+    expect(order).toEqual(['correction.10', 'streak.7'])
+  })
+
+  it('leaves the input alone', () => {
+    const input = [earned('streak.7', null), earned('streak.30', null)]
+    const before = input.map((badge) => badge.id)
+    badgesMostRecentFirst(input)
+
+    expect(input.map((badge) => badge.id)).toEqual(before)
   })
 })

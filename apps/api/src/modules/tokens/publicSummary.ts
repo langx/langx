@@ -5,7 +5,12 @@ import { readActivityWeek } from './dailyActivity'
 import { getBadgeSummary } from './badges'
 import { countCorrectionsWritten } from './corrections'
 import { readAggregates, type TokenAggregate } from './ledger'
-import { periodKeys, PROFILE_BADGE_STRIP_MAX, type ProfileBadge } from '@langx/shared'
+import {
+  badgesMostRecentFirst,
+  periodKeys,
+  PROFILE_BADGE_STRIP_MAX,
+  type ProfileBadge,
+} from '@langx/shared'
 
 /**
  * What a profile shows about how somebody uses the app: the streak, how many
@@ -90,18 +95,22 @@ export async function getPublicSummary(
     badges: badges.earnedCount,
     /*
      * Which badges is no longer only the owner's page — the strip draws the
-     * first few of them, and `/profiles/:handle/badges` has published the
-     * earned ones since the tiles learned to open. What stays the owner's
-     * alone is the locked half and how far along it they are.
+     * newest few, and `/profiles/:handle/badges` has published the earned ones
+     * since the tiles learned to open. What stays the owner's alone is the
+     * locked half and how far along it they are.
      *
-     * `filter` before `slice`: the shelf holds locked rows too, and taking the
-     * first few of *those* would draw a strip of things this person has not
-     * done. The catalogue's own order survives the filter, which is the order
-     * `badgesEarnedFirst` leaves the earned half in on the badge page, so the
-     * strip and the page agree on which badge comes first.
+     * `filter`, then sort, then `slice`, and the order of the three is the
+     * whole thing. Filtering first keeps locked rows out of a strip of what
+     * somebody has done; sorting before the cut makes the twelve that survive
+     * the *newest* twelve rather than the first twelve of a catalogue that
+     * opens on a seven-day streak. See `badgesMostRecentFirst` for how little
+     * "newest" can mean when four of six kinds carry no date.
+     *
+     * This is where the strip and the badge page part company on order: the
+     * page is a catalogue and reads as one, the strip is a glimpse and leads
+     * with what just happened.
      */
-    topBadges: badges.badges
-      .filter((badge) => badge.earned)
+    topBadges: badgesMostRecentFirst(badges.badges.filter((badge) => badge.earned))
       .slice(0, PROFILE_BADGE_STRIP_MAX)
       .map((badge) => ({ id: badge.id, kind: badge.kind, icon: badge.icon })),
     // The all-time total, which is what the owner's own profile shows too —

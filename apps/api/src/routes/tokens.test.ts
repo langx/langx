@@ -1139,13 +1139,24 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
 
       expect(body.badges).toBeGreaterThan(PROFILE_BADGE_STRIP_MAX)
       expect(body.topBadges).toHaveLength(PROFILE_BADGE_STRIP_MAX)
-      // Catalogue order survives the filter, so the strip opens on the same
-      // badge the badge page does — and on earned rungs, never on locked ones.
+      /*
+       * Newest first, which here means the veteran ladder: it is the only kind
+       * in this account that carries a date, and `createdAt` 1,200 days back
+       * puts the three-year rung most recently behind them.
+       */
+      expect(body.topBadges[0]?.id).toBe('veteran.1095')
       expect(body.topBadges.slice(0, 3).map((badge) => badge.id)).toEqual([
-        'streak.7',
-        'streak.30',
-        'streak.100',
+        'veteran.1095',
+        'veteran.730',
+        'veteran.365',
       ])
+      /*
+       * And the point of the order: what the cap drops is the oldest and
+       * lowest, not the newest. A seven-day streak is the first row of the
+       * catalogue and the last thing a stranger needs to see.
+       */
+      expect(body.topBadges.map((badge) => badge.id)).not.toContain('streak.7')
+      // Still only earned rungs — this account has written no corrections.
       expect(body.topBadges.every((badge) => badge.kind !== 'correction')).toBe(true)
     })
 
