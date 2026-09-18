@@ -1,15 +1,14 @@
 import {
   DAILY_DIGEST_LOCAL_HOUR,
   localDayKey,
-  localHour,
   notificationsAllowed,
   type Locale,
   type NotificationType,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
-import { COLLECTIONS } from '../../db/collections'
 import { sendDigestEmail, type NotificationEmailContext } from '../../email/notify'
 import { dailyDigestEmail, type DigestSection } from '../../email/templates'
+import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
 import { tokensByLocale } from '../push/devices'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
@@ -79,20 +78,13 @@ export async function runDailyDigestPass(
   storagePublicBaseUrl?: string,
   logger?: Pick<SchedulerLogger, 'warn'>,
 ): Promise<{ sent: number; failed: number }> {
-  const profiles = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .find({
-      deletedAt: { $exists: false },
-      guest: { $exists: false },
-      // Bounds the scan only; `notificationsAllowed` decides per section. Two
-      // of the three stored shapes are objects this cannot read into.
-      'settings.notifications': { $ne: false },
-    })
-    .toArray()
-
-  const readers = profiles.filter(
-    (profile) => localHour(now, profile.timezone ?? 'UTC') === DAILY_DIGEST_LOCAL_HOUR,
-  )
+  const readers = await profilesInLocalHour(db, DAILY_DIGEST_LOCAL_HOUR, now, {
+    deletedAt: { $exists: false },
+    guest: { $exists: false },
+    // Bounds the scan only; `notificationsAllowed` decides per section. Two
+    // of the three stored shapes are objects this cannot read into.
+    'settings.notifications': { $ne: false },
+  })
   if (readers.length === 0) return { sent: 0, failed: 0 }
 
   /*

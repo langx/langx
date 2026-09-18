@@ -1,15 +1,10 @@
-import {
-  ECHO_REMINDER_LOCAL_HOUR,
-  localDayKey,
-  localHour,
-  notificationsAllowed,
-} from '@langx/shared'
+import { ECHO_REMINDER_LOCAL_HOUR, localDayKey, notificationsAllowed } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { translator } from '../../i18n'
 import type { EchoCardDoc } from '../echo/documents'
 import type { EchoReviewDoc } from '../echo/documents'
-import type { Profile } from '../profiles/profiles'
+import { profilesInLocalHour } from '../profiles/localHour'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { claimOnce } from './ledger'
 
@@ -37,23 +32,19 @@ export async function runEchoReminderPass(
   sender: PushSender,
   now: Date = new Date(),
 ): Promise<{ sent: number }> {
-  const profiles = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .find({
-      deletedAt: { $exists: false },
-      // Bounds the scan; `notificationsAllowed` decides. Only the oldest
-      // stored shape is a bare `false` this can read.
-      'settings.notifications': { $ne: false },
-    })
-    .toArray()
+  const readers = await profilesInLocalHour(db, ECHO_REMINDER_LOCAL_HOUR, now, {
+    deletedAt: { $exists: false },
+    // Bounds the scan; `notificationsAllowed` decides. Only the oldest
+    // stored shape is a bare `false` this can read.
+    'settings.notifications': { $ne: false },
+  })
 
   const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
   const reviews = db.collection<EchoReviewDoc>(COLLECTIONS.echoReviews)
   let sent = 0
 
-  for (const profile of profiles) {
+  for (const profile of readers) {
     const zone = profile.timezone ?? 'UTC'
-    if (localHour(now, zone) !== ECHO_REMINDER_LOCAL_HOUR) continue
     if (!notificationsAllowed(profile.settings?.notifications, 'echo', 'push')) continue
 
     const due = await cards.countDocuments({ userId: profile._id, 'srs.due': { $lte: now } })

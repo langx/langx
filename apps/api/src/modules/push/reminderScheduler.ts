@@ -55,11 +55,7 @@ export async function runStreakReminderTick(
     const byLocale = await tokensByLocale(db, candidate.userId)
     if (byLocale.size === 0) continue
 
-    const profile = await db
-      .collection<Profile>(COLLECTIONS.profiles)
-      .findOne({ _id: candidate.userId }, { projection: { timezone: 1 } })
-    const day = localDayKey(now, profile?.timezone ?? 'UTC')
-    if (!(await claimStreakDay(db, candidate.userId, day, now))) continue
+    if (!(await claimStreakDay(db, candidate.userId, candidate.day, now))) continue
 
     for (const [locale, tokens] of byLocale) {
       const t = translator(locale)
