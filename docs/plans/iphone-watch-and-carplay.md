@@ -20,6 +20,12 @@ therefore answers rather than questions:
 
 The rest of the list at the end is still open.
 
+**The iPhone Duo arrived while this was being written.** Apple's developer
+mails of 9 and 18 September announce it, with Xcode 27.1 beta and design kits;
+a section below says what they do and do not tell us, and what the app already
+does right. It is not a fourth surface — it is the same app on a screen that
+changes size while it is running.
+
 One of the three surfaces waits on **Apple** rather than on us. The
 entitlement is requested, not switched on, and Apple publishes no turnaround
 time. That is why the order of work below files the request first and builds
@@ -239,6 +245,72 @@ Screen; "today has not counted yet" appearing by itself after local midnight;
 nothing at all after sign-out; "Hey Siri, open my LangX review" landing on the
 Echo tab; a `prebuild --clean` after which all of it still builds.
 
+## The iPhone Duo
+
+Not a fourth surface — the same app, on a device that folds. It arrives in the
+middle of this plan rather than beside it, because everything above is drawn
+for one screen and the Duo has two.
+
+**What Apple has actually said**, which is two developer mails and nothing
+more:
+
+- **9 September 2026, "Get ready for iPhone Duo."** Videos, events and Q&As on
+  the Developer Forums. The image is the device open: a photo filling the left
+  panel, weather and map widgets beside rows of app icons on the right.
+- **18 September 2026, "Start building for iPhone Duo."** **Xcode 27.1 beta**,
+  Figma and Sketch **design kits** in Apple Design Resources, and workshops on
+  optimising an app and building "customized experiences for all screen sizes".
+  The image is the device folded, front and back, in Star White and Night Sky.
+
+That is marketing to developers, and it is the whole of our evidence. **It
+carries no dimensions, no size classes, no minimum iOS version, no App Store
+screenshot requirements and no ship date.** Everything in this section that
+sounds like a measurement is missing on purpose; the numbers come from the
+design kits and from Xcode 27.1, and both of those need a Mac.
+
+**What is already true here**, from reading the app rather than guessing — and
+it is better news than it could have been:
+
+- **Nothing calls `Dimensions.get`.** That is the classic folding-device bug:
+  the value is read once at import and never changes, so an app that caches it
+  keeps drawing for the screen it launched on. This app does not have that line
+  anywhere.
+- **`useWindowDimensions` is used in three files** — `MessageMenuHost`,
+  `TourHost` and `chat-media`. It is the reactive hook; a fold re-renders them.
+- **`layout.maxWidth` is 720** and `Screen`'s `column` applies it on every
+  platform, while `fluid` caps only the web build. So an unfolded Duo would not
+  stretch a chat bubble across the whole panel.
+- **`supportsTablet: true`** is already set, so iOS will not letterbox us.
+
+The expected failure is therefore not a broken app; it is **a phone-shaped app
+centred in a lot of empty space**, and a person who paid for two screens seeing
+one screen's worth of product.
+
+**What the Duo changes for the widgets.** Apple's own picture of the open
+device gives a whole panel to widgets and icons, which is an argument for
+building them well rather than for building more of them. The medium widget is
+the one that benefits. `systemLarge` stays ruled out: the reason was never a
+shortage of room, it was that a large widget would need other people's names
+and photos copied into the App Group, and a bigger screen does not change that.
+It gets re-examined when the design kits give real sizes, not before.
+
+**The two-pane layout is the real work, and it is not Phase 1.** The obvious
+shape — the chat list on one panel, the open thread on the other — is the
+layout this app has never had, on any device, because `expo-router` is driving
+a stack and every route assumes it owns the screen. That is a structural change
+to navigation, it would equally serve iPad, and it deserves its own plan rather
+than a paragraph in this one.
+
+**What is worth doing now, with no Mac and no numbers:** keep the good state
+good. A lint rule that refuses `Dimensions.get` costs nothing and protects the
+one property that matters most when the screen size changes under a running
+app. Everything else waits for the design kits.
+
+**Verify:** the app on Xcode 27.1's Duo simulator, folded and unfolded, with a
+chat open — no clipped header, no lost scroll position across the fold, the
+keyboard behaving on both; and the store listing's screenshot set answering
+whatever Apple ends up requiring for the device.
+
 ## Surface B — Apple Watch
 
 **The watch app is dependent, not independent.** It has no session, makes no
@@ -401,12 +473,17 @@ is not, which is why its paperwork starts on day one.
    the reasoning for when it returns is kept under Surface A.
    → verify: the list under Surface A, plus a clean prebuild
 
+1b. iPhone Duo readiness: the lint rule against `Dimensions.get` now; then,
+   once there is a Mac with Xcode 27.1 and the design kits, a fold-and-unfold
+   pass over the app
+   → verify: the list under The iPhone Duo
+
 2. Apple Watch: the notification pass first, then the dependent companion
    and the complication, then the store assets
    → verify: the list under Surface B
 
-3. CarPlay: the REST send twin and its test, the bearer path (if approved),
-   the communication templates, the Siri intents
+3. CarPlay: the REST send twin and its test, the bearer path, the
+   communication templates, the Siri intents
    → verify: the list under Surface C, against a real head unit as well as
      the simulator
 ```
@@ -441,3 +518,6 @@ Still open:
    of the plan; the scheduled exchange is the one to build when it returns.
 2. **Does the watch app go into the store listing now**, with its own
    screenshots, or wait until CarPlay is approved and both land together?
+3. **Is the two-pane layout worth its own plan now?** It is the Duo's whole
+   point and it would serve iPad too, but it rewrites how navigation works —
+   and nobody can size it until the design kits are open on a Mac.
