@@ -366,124 +366,202 @@ export const SPEECH_LANGUAGES: readonly LanguageCode[] = Object.keys(
 ) as LanguageCode[]
 
 /**
- * ISO 639-3, which is what `franc` answers in, to the codes this app uses.
+ * LangX language codes to the ISO 639-3 codes a detector answers in.
  *
- * Only the languages we can actually read, so that everything else falls out
- * as `undefined` — which is the point, and is why the detector is asked openly
- * rather than confined to these keys. See `speechLanguageFromIso3`.
+ * Every language this app lists that `franc` can actually weigh — a hundred and
+ * four of them — **not** only the thirty-seven we can read aloud. That is the
+ * whole point: the languages we cannot read have to be allowed to win, because
+ * winning is how they stop a sentence being read in the wrong one. Turkish is
+ * in this table precisely so that a Turkish message loses the button.
  *
- * Several entries have two spellings because `franc` names a specific variety
- * where we name the language: Mandarin for Chinese, Bokmal for Norwegian,
- * Tosk for Albanian, Western Farsi for Persian.
+ * Some entries carry two codes: `franc` names a specific variety where this app
+ * names the language, so Chinese is Mandarin, Norwegian is both Bokmal and
+ * Nynorsk, Albanian is Tosk, Persian is Western Farsi.
+ *
+ * Generated from `iso-639-3` against franc's own language list; it is data, and
+ * a language missing from it simply cannot be detected.
  */
-const ISO3_TO_APP: Readonly<Record<string, LanguageCode>> = {
-  bul: 'bg',
-  ben: 'bn',
-  cat: 'ca',
-  ces: 'cs',
-  cym: 'cy',
-  dan: 'da',
-  deu: 'de',
-  ell: 'el',
-  eng: 'en',
-  spa: 'es',
-  est: 'et',
-  fas: 'fa',
-  pes: 'fa',
-  fin: 'fi',
-  fra: 'fr',
-  hin: 'hi',
-  hun: 'hu',
-  ita: 'it',
-  kaz: 'kk',
-  lit: 'lt',
-  lav: 'lv',
-  mar: 'mr',
-  nep: 'ne',
-  npi: 'ne',
-  nld: 'nl',
-  nor: 'no',
-  nob: 'no',
-  pol: 'pl',
-  por: 'pt',
-  ron: 'ro',
-  rus: 'ru',
-  slk: 'sk',
-  slv: 'sl',
-  sqi: 'sq',
-  als: 'sq',
-  swe: 'sv',
-  tel: 'te',
-  ukr: 'uk',
-  urd: 'ur',
-  vie: 'vi',
-  cmn: 'zh',
-  zho: 'zh',
+const APP_TO_ISO3: Readonly<Record<string, readonly string[]>> = {
+  af: ['afr'],
+  am: ['amh'],
+  ar: ['arb'],
+  az: ['azj'],
+  be: ['bel'],
+  bg: ['bul'],
+  bm: ['bam'],
+  bn: ['ben'],
+  bo: ['bod'],
+  bs: ['bos'],
+  ca: ['cat'],
+  cs: ['ces'],
+  da: ['dan'],
+  de: ['deu'],
+  dv: ['div'],
+  ee: ['ewe'],
+  el: ['ell'],
+  en: ['eng'],
+  eo: ['epo'],
+  es: ['spa'],
+  et: ['ekk'],
+  fa: ['pes'],
+  fi: ['fin'],
+  fr: ['fra'],
+  gl: ['glg'],
+  gu: ['guj'],
+  ha: ['hau'],
+  he: ['heb'],
+  hi: ['hin'],
+  hr: ['hrv'],
+  ht: ['hat'],
+  hu: ['hun'],
+  hy: ['hye'],
+  id: ['ind'],
+  ig: ['ibo'],
+  it: ['ita'],
+  ja: ['jpn'],
+  jv: ['jav'],
+  ka: ['kat'],
+  kk: ['kaz'],
+  km: ['khm'],
+  kn: ['kan'],
+  ko: ['kor'],
+  ku: ['ckb'],
+  ky: ['kir'],
+  lg: ['lug'],
+  ln: ['lin'],
+  lo: ['lao'],
+  lt: ['lit'],
+  lv: ['lvs'],
+  mk: ['mkd'],
+  ml: ['mal'],
+  mr: ['mar'],
+  my: ['mya'],
+  nb: ['nob'],
+  ne: ['npi'],
+  ng: ['ndo'],
+  nl: ['nld'],
+  nn: ['nno'],
+  no: ['nno', 'nob'],
+  ny: ['nya'],
+  or: ['ori'],
+  pa: ['pan'],
+  pl: ['pol'],
+  pt: ['por'],
+  rn: ['run'],
+  ro: ['ron'],
+  ru: ['rus'],
+  rw: ['kin'],
+  sg: ['sag'],
+  si: ['sin'],
+  sk: ['slk'],
+  sl: ['slv'],
+  sn: ['sna'],
+  so: ['som'],
+  sq: ['als'],
+  sr: ['srp'],
+  ss: ['ssw'],
+  st: ['sot'],
+  su: ['sun'],
+  sv: ['swe'],
+  sw: ['swh'],
+  ta: ['tam'],
+  te: ['tel'],
+  tg: ['tgk'],
+  th: ['tha'],
+  ti: ['tir'],
+  tk: ['tuk'],
+  tl: ['tgl'],
+  tn: ['tsn'],
+  tr: ['tur'],
+  ts: ['tso'],
+  tt: ['tat'],
+  ug: ['uig'],
+  uk: ['ukr'],
+  ur: ['urd'],
+  uz: ['uzn'],
+  ve: ['ven'],
+  vi: ['vie'],
+  wo: ['wol'],
+  xh: ['xho'],
+  yo: ['yor'],
+  zh: ['cmn'],
+  zu: ['zul'],
 }
 
+/** The reverse, built once: a detector's answer as the code this app uses. */
+const ISO3_TO_APP: Readonly<Record<string, string>> = Object.fromEntries(
+  Object.entries(APP_TO_ISO3).flatMap(([app, codes]) => codes.map((iso3) => [iso3, app])),
+)
+
 /**
- * A detector's 639-3 answer as an app language, if we can read that language.
- *
- * **The detector must be asked openly, never restricted to these codes.** That
- * was the first shape of this and it is wrong in a way that only shows up on
- * the languages we cannot read: a detector confined to a list always answers
- * from the list, so it has no way to say "not one of those". Turkish came back
- * as Norwegian — the nearest of the thirty-seven it was allowed — and a
- * Turkish sentence read aloud in Norwegian is precisely the failure this
- * codebase keeps refusing. Ask about all four hundred, then drop the answer
- * here if nothing reads it. A guess we discard costs nothing; one we act on
- * costs the person their trust in the button.
+ * Below two candidates there is nothing to discriminate between: a detector
+ * confined to one language answers with that language whatever it is given.
  */
+export const SPEECH_MIN_CANDIDATES = 2
+
+/**
+ * Which codes to confine a detector to, given the languages in play.
+ *
+ * **This is the load-bearing idea, and it took two wrong shapes to find.**
+ *
+ * Confining the detector to the languages we can *read* was the first, and it
+ * cannot refuse: a detector restricted to a list always answers from the list,
+ * so Turkish came back as Norwegian. Asking it openly was the second, and it
+ * cannot detect: `franc` on four hundred languages reads "Hey! How was your
+ * weekend?" as Afrikaans, "see you tomorrow" as Haitian Creole and "Good
+ * morning, I hope you slept well" as Swedish. Out of nine ordinary English
+ * messages it recognised two.
+ *
+ * Confining it to *these two people's* languages is right on both counts. It is
+ * a choice between three or four candidates rather than four hundred, which
+ * trigrams handle well even on half a sentence; and the languages we cannot
+ * read are in the running, so Turkish wins its own sentence and is then dropped
+ * for want of a voice rather than read in Norwegian.
+ *
+ * It is also the honest model of the situation. Two people on a language
+ * exchange write in the languages they came to practise, and those are on their
+ * profiles. Nothing else needed guessing at.
+ */
+export function speechDetectCandidates(contextLangs: readonly string[]): string[] {
+  return [...new Set(contextLangs.flatMap((code) => APP_TO_ISO3[code] ?? []))]
+}
+
+/** A detector's 639-3 answer as an app language, if some voice reads it. */
 export function speechLanguageFromIso3(iso3: string): LanguageCode | undefined {
-  const code = ISO3_TO_APP[iso3]
+  const code = ISO3_TO_APP[iso3] as LanguageCode | undefined
   return code !== undefined && SPEECH_VOICES[code] !== undefined ? code : undefined
 }
 
 export interface SpeechLanguageHint {
   /** What a translation provider said the original was. Believed over guessing. */
   sourceLang?: string | undefined
-  /**
-   * The languages these people actually have, native and learning both. A
-   * detected language that is not among them is not believed — see below.
-   */
+  /** The languages these two people have, native and learning both. */
   contextLangs?: readonly string[] | undefined
-  /** `franc`'s answer, passed in so this stays a pure function. */
-  detected?: string | undefined
+  /**
+   * The detector itself, passed in so `@langx/shared` carries no trigram
+   * tables and so the API and the app cannot drift on *when* it is asked —
+   * the length floor, the candidate floor and the `only` list are decided
+   * here, once, and both callers hand over the same function.
+   */
+  detect?: ((text: string, only: readonly string[]) => string) | undefined
 }
 
 /**
  * Which language a sentence would be read in, or `undefined` when we cannot say.
  *
- * Pure, and takes the detector's answer rather than calling it: the API and the
- * app must agree on the outcome — one decides whether to draw the menu row, the
- * other decides which permanent object gets written — and the only way to
- * guarantee that is for both to run this same function. Keeping `franc` outside
- * it also keeps `@langx/shared` free of a dependency the app would carry into
- * its bundle for a gate.
- *
  * Two ways in, and both have to be earned:
  *
  * 1. **A translation provider's `sourceLang`.** Google looked at this exact
- *    sentence and said so; nothing we compute beats that.
- * 2. **A detection the conversation corroborates.** Past
- *    `SPEECH_MIN_DETECT_LENGTH`, and only when the language it names is one of
- *    the languages these two people actually have.
+ *    sentence and said so; nothing we compute beats that, and it needs no
+ *    candidate list because it was never a guess.
+ * 2. **A detector confined to the conversation's own languages**, past
+ *    `SPEECH_MIN_DETECT_LENGTH` and with at least `SPEECH_MIN_CANDIDATES` to
+ *    choose between. See `speechDetectCandidates` for why that confinement is
+ *    the thing that makes this work at all.
  *
- * **Why corroboration, and not the detector alone.** `franc` scored Norwegian
- * above Turkish on "bugün hava gerçekten çok güzel görünüyor" — 1.0 against
- * 0.992 — and we have no Turkish voice, so the reward for trusting it was a
- * Turkish sentence read aloud in Norwegian. Trigram detection is simply not
- * reliable enough on one chat message to be the only thing standing between a
- * sentence and a voice. What makes this app able to do better is that it
- * already knows what languages the two people speak and are learning: an
- * answer from inside that set is corroborated by something other than the
- * guess itself, and an answer from outside it is a guess we decline to act on.
- *
- * There is deliberately no third rule inferring the language from the
- * conversation when detection fails. It was written, and it was worse than
- * nothing: for a short message it would confidently pick the pair's one
- * readable language, which for a Turkish speaker practising English means
- * every Turkish "tamam" read out in English.
+ * An answer naming a language no voice reads is dropped, which is how Turkish,
+ * Arabic, Japanese and Korean stay silent rather than being read by the nearest
+ * voice we happen to have.
  */
 export function detectSpeechLanguage(
   text: string,
@@ -495,11 +573,11 @@ export function detectSpeechLanguage(
   const claimed = hint.sourceLang as LanguageCode | undefined
   if (claimed && SPEECH_VOICES[claimed] !== undefined) return claimed
 
-  if (trimmed.length < SPEECH_MIN_DETECT_LENGTH || !hint.detected) return undefined
-  const detected = speechLanguageFromIso3(hint.detected)
-  if (!detected) return undefined
+  if (!hint.detect || trimmed.length < SPEECH_MIN_DETECT_LENGTH) return undefined
+  const candidates = speechDetectCandidates(hint.contextLangs ?? [])
+  if (candidates.length < SPEECH_MIN_CANDIDATES) return undefined
 
-  return (hint.contextLangs ?? []).includes(detected) ? detected : undefined
+  return speechLanguageFromIso3(hint.detect(trimmed, candidates))
 }
 
 /** Whether a sentence is one the service would agree to read at all. */

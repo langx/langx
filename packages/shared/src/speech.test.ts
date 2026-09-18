@@ -6,7 +6,9 @@ import {
   isSpeakableLength,
   messageSpeechSchema,
   SPEECH_LANGUAGES,
+  SPEECH_MIN_CANDIDATES,
   SPEECH_MIN_DETECT_LENGTH,
+  speechDetectCandidates,
   speechLanguageFromIso3,
   speechVoicesFor,
   SPEECH_VOICES,
@@ -51,94 +53,122 @@ describe('the voice table', () => {
 })
 
 describe('detectSpeechLanguage', () => {
+  /** A stand-in for `franc`: answers with whichever candidate the caller planted. */
+  const detector = (answer: string) => (_text: string, only: readonly string[]) =>
+    only.includes(answer) ? answer : 'und'
+
   const german = 'guten morgen wie geht es dir heute'
-  const learners = ['en', 'de']
+  /** A Turkish speaker learning German, and a German speaker learning Turkish. */
+  const pair = ['tr', 'de', 'de', 'tr']
 
   it('believes a provider that looked at this exact sentence', () => {
-    // Beats the detector even when the detector disagrees, and needs no
-    // corroboration: Google read the sentence, it did not guess from trigrams.
-    expect(detectSpeechLanguage(german, { sourceLang: 'nl', detected: 'deu' })).toBe('nl')
+    // No candidate list needed: it was never a guess.
+    expect(detectSpeechLanguage(german, { sourceLang: 'nl' })).toBe('nl')
     // ...but not into a language nothing can read.
     expect(
-      detectSpeechLanguage(german, { sourceLang: 'tr', detected: 'deu', contextLangs: learners }),
+      detectSpeechLanguage(german, {
+        sourceLang: 'tr',
+        contextLangs: pair,
+        detect: detector('deu'),
+      }),
     ).toBe('de')
   })
 
-  it('takes a detection the conversation corroborates', () => {
-    expect(detectSpeechLanguage(german, { detected: 'deu', contextLangs: learners })).toBe('de')
+  it('takes a detection confined to the conversation', () => {
+    expect(detectSpeechLanguage(german, { contextLangs: pair, detect: detector('deu') })).toBe('de')
   })
 
   /*
-   * The rule the Turkish case bought. `franc` scores Norwegian above Turkish
-   * on a Turkish sentence, and we have a Norwegian voice — so without this,
-   * "bugün hava gerçekten çok güzel görünüyor" is read aloud in Norwegian.
+   * The rule the Turkish case bought, and the reason the candidate list is the
+   * pair's languages rather than the ones we can read. Turkish is *in* the
+   * running, so it wins its own sentence — and is then dropped for want of a
+   * voice, instead of the sentence being read in the nearest voice we have.
    */
-  it('refuses a detection nobody in the conversation could have written', () => {
+  it('lets a language we cannot read win, and then refuses', () => {
     const turkish = 'bugün hava gerçekten çok güzel görünüyor'
     expect(
-      detectSpeechLanguage(turkish, { detected: 'nob', contextLangs: ['en', 'tr'] }),
+      detectSpeechLanguage(turkish, { contextLangs: pair, detect: detector('tur') }),
     ).toBeUndefined()
-    // And with no context at all there is nothing to corroborate against.
-    expect(detectSpeechLanguage(german, { detected: 'deu' })).toBeUndefined()
+  })
+
+  it('offers the detector both people languages, and nothing else', () => {
+    const seen: string[][] = []
+    detectSpeechLanguage(german, {
+      contextLangs: pair,
+      detect: (_text, only) => {
+        seen.push([...only])
+        return 'deu'
+      },
+    })
+    expect(seen[0]?.sort()).toEqual(['deu', 'tur'])
+    // Norwegian is not in the running, so it cannot be the answer.
+    expect(seen[0]).not.toContain('nob')
+  })
+
+  it('will not guess between fewer than two candidates', () => {
+    // One language in play means the detector answers with it whatever it is
+    // handed, so there is nothing to learn from asking.
+    expect(
+      detectSpeechLanguage(german, { contextLangs: ['de'], detect: detector('deu') }),
+    ).toBeUndefined()
+    expect(
+      detectSpeechLanguage(german, { contextLangs: [], detect: detector('deu') }),
+    ).toBeUndefined()
+    expect(SPEECH_MIN_CANDIDATES).toBe(2)
   })
 
   it('ignores the detector below the minimum length', () => {
     expect('hallo'.length).toBeLessThan(SPEECH_MIN_DETECT_LENGTH)
     expect(
-      detectSpeechLanguage('hallo', { detected: 'deu', contextLangs: learners }),
+      detectSpeechLanguage('hallo', { contextLangs: pair, detect: detector('deu') }),
     ).toBeUndefined()
   })
 
-  it('drops a detected language no voice reads, corroborated or not', () => {
+  it('says nothing when there is no detector, or nothing to read', () => {
+    expect(detectSpeechLanguage(german, { contextLangs: pair })).toBeUndefined()
     expect(
-      detectSpeechLanguage('bugün hava gerçekten çok güzel', {
-        detected: 'tur',
-        contextLangs: ['en', 'tr'],
+      detectSpeechLanguage('   ', {
+        sourceLang: 'de',
+        contextLangs: pair,
+        detect: detector('deu'),
       }),
-    ).toBeUndefined()
-    expect(
-      detectSpeechLanguage('今日はいい天気ですね本当に', { detected: 'jpn', contextLangs: ['ja'] }),
-    ).toBeUndefined()
-  })
-
-  /*
-   * Deliberately absent: inferring the language from the conversation when
-   * detection fails. For a short message it picks the pair's one readable
-   * language, which for a Turkish speaker practising English turns every
-   * "tamam" into an English reading.
-   */
-  it('does not guess from the conversation alone', () => {
-    expect(detectSpeechLanguage('ok', { contextLangs: ['de'] })).toBeUndefined()
-    expect(detectSpeechLanguage('tamam', { contextLangs: ['en'] })).toBeUndefined()
-  })
-
-  it('says nothing about an empty sentence, whatever it is told', () => {
-    expect(
-      detectSpeechLanguage('   ', { sourceLang: 'de', detected: 'deu', contextLangs: learners }),
     ).toBeUndefined()
   })
 })
 
-describe('the detector contract', () => {
-  /*
-   * The detector is asked openly and its answer is dropped here, rather than
-   * the detector being confined to what we can read — which cannot refuse, and
-   * once answered Turkish with Norwegian.
-   */
-  it('drops an answer no voice reads, however confident it was', () => {
-    expect(speechLanguageFromIso3('tur')).toBeUndefined()
-    expect(speechLanguageFromIso3('arb')).toBeUndefined()
-    expect(speechLanguageFromIso3('jpn')).toBeUndefined()
-    expect(speechLanguageFromIso3('kor')).toBeUndefined()
-    expect(speechLanguageFromIso3('nonsense')).toBeUndefined()
-    expect(speechLanguageFromIso3('deu')).toBe('de')
+describe('speechDetectCandidates', () => {
+  it('includes the languages we cannot read, because they have to be able to win', () => {
+    const candidates = speechDetectCandidates(['tr', 'en'])
+    expect(candidates).toContain('tur')
+    expect(candidates).toContain('eng')
+    expect(speechDetectCandidates(['ja', 'ko', 'ar'])).toEqual(
+      expect.arrayContaining(['jpn', 'kor', 'arb']),
+    )
   })
 
-  it('maps the varieties a detector names where we name a language', () => {
+  it('carries the varieties a detector names where we name a language', () => {
+    expect(speechDetectCandidates(['zh'])).toContain('cmn')
+    expect(speechDetectCandidates(['no'])).toContain('nob')
+    expect(speechDetectCandidates(['sq'])).toContain('als')
+    expect(speechDetectCandidates(['fa'])).toContain('pes')
+  })
+
+  it('drops duplicates and anything no detector knows', () => {
+    expect(speechDetectCandidates(['en', 'en'])).toEqual(['eng'])
+    expect(speechDetectCandidates(['zz', 'ase'])).toEqual([])
+  })
+})
+
+describe('speechLanguageFromIso3', () => {
+  /*
+   * The second half of the refusal: a code can be detected and still have no
+   * voice. These four are the ones with CC BY-NC-only models.
+   */
+  it('drops an answer no voice reads, however confident it was', () => {
+    for (const iso3 of ['tur', 'arb', 'jpn', 'kor', 'nonsense'])
+      expect(speechLanguageFromIso3(iso3), iso3).toBeUndefined()
+    expect(speechLanguageFromIso3('deu')).toBe('de')
     expect(speechLanguageFromIso3('cmn')).toBe('zh')
-    expect(speechLanguageFromIso3('nob')).toBe('no')
-    expect(speechLanguageFromIso3('als')).toBe('sq')
-    expect(speechLanguageFromIso3('pes')).toBe('fa')
   })
 })
 

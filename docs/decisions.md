@@ -4915,27 +4915,35 @@ Korean voices and every one of them is CC BY-NC, which an app that sells
 subscriptions cannot use. This is the same bar that chose Kokoro over Coqui
 XTTS, applied a second time and costing us something this time.
 
-**Which language a message is in turned out to be the hard part.** There is no
-`lang` on a message and nothing in the repo detected one. The first shape
-asked `franc` only within the languages we can read, which is worse than it
-sounds: a detector confined to a list always answers from the list, so it can
-never say "none of these", and Turkish came back as Norwegian. Opening the
-question up fixes that one case and not the general one — on "bugün hava
-gerçekten çok güzel görünüyor" franc scores Norwegian _above_ Turkish, 1.0
-against 0.992, and we ship a Norwegian voice. Trigram detection on a single
-chat message is not reliable enough to be the only thing between a sentence
-and a voice.
+**Which language a message is in turned out to be the hard part**, and it took
+three goes. There is no `lang` on a message and nothing in the repo detected one.
 
-What this app has that a detector does not is the two people's own languages.
-So a detection is believed only when the conversation corroborates it — the
-language it names is one of the four sets on the two profiles — and a
-translation provider's `sourceLang` is believed without corroboration, because
-Google read that exact sentence. Everything else is refused. There is
-deliberately no third rule inferring the language from the conversation when
-detection fails: it was written first and was worse than nothing, because on a
-short message it confidently picks the pair's one readable language, which for
-a Turkish speaker practising English turns every "tamam" into an English
-reading. The price is that short messages often have no button, and that is
+The first shape asked `franc` only within the languages we can read, which is
+worse than it sounds: a detector confined to a list always answers from the
+list, so it can never say "none of these", and Turkish came back as Norwegian.
+The second opened the question up — and that fixes the refusal while destroying
+the detection. On four hundred languages `franc` reads "Hey! How was your
+weekend?" as Afrikaans, "see you tomorrow" as Haitian Creole and "Good morning,
+I hope you slept well" as Swedish. Two of nine ordinary English messages got the
+button. Every unit test passed throughout, because they fed the detector's
+answer in and proved the rules around it; what was wrong was the answer.
+
+The third shape is the one that works, and it is the obvious one in hindsight:
+confine the detector to **these two people's** languages. It is a choice between
+three or four candidates instead of four hundred, which trigrams handle well
+even on half a sentence, and the languages we _cannot_ read are in the running,
+so Turkish wins its own sentence and is then dropped for want of a voice rather
+than read in the nearest one we happen to have. Eight of those nine messages now
+get the button, the ninth being "ok".
+
+That is also the honest model of the situation. Two people on a language
+exchange write in the languages they came to practise, and those are already on
+their profiles — the app knew the answer all along and was asking a trigram
+table instead. A provider's `sourceLang` is still believed above all of it,
+because Google read that exact sentence rather than guessing at it.
+
+The price is a floor: below twelve characters, or with fewer than two languages
+to choose between, there is no button. "ok" does not get read aloud, and that is
 the right way round.
 
 ## The opening is a ripple, because the old one looked like a fault

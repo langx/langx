@@ -2,7 +2,6 @@ import {
   detectSpeechLanguage,
   ERROR_CODES,
   isSpeakableLength,
-  SPEECH_MIN_DETECT_LENGTH,
   speechVoicesFor,
   type LanguageCode,
   type MessageSpeech,
@@ -52,24 +51,20 @@ async function conversationLanguages(
  * Which language a message would be read in, decided here and never by the
  * caller.
  *
- * The app runs `detectSpeechLanguage` too, to decide whether to draw the menu
- * row at all, but its answer is advisory: this one picks the cache key, and a
- * client that could name the language could write an object of its choosing
- * under a language it does not speak.
+ * The app runs this same function to decide whether to draw the menu row at
+ * all, but its answer is advisory: this one picks the cache key, and a client
+ * that could name the language could write an object of its choosing under a
+ * language nobody in the thread speaks.
  *
- * `franc` is asked openly rather than confined to the languages we can read.
- * Confining it looks like the tighter choice and is the opposite: a detector
- * restricted to a list always answers from the list, so it can never say the
- * sentence is in none of them — Turkish came back as Norwegian, the nearest of
- * the thirty-seven it was allowed. `detectSpeechLanguage` drops an answer
- * nothing reads, which is the behaviour that makes the refusal possible.
+ * `franc` is confined to the two people's own languages rather than asked
+ * openly or confined to the ones we can read — `speechDetectCandidates`
+ * carries the reasoning, which cost two wrong versions to find.
  */
 function languageOf(message: Message, contextLangs: readonly string[]): LanguageCode | undefined {
-  const text = message.body.trim()
-  return detectSpeechLanguage(text, {
+  return detectSpeechLanguage(message.body, {
     sourceLang: message.translation?.sourceLang,
     contextLangs,
-    detected: text.length >= SPEECH_MIN_DETECT_LENGTH ? franc(text) : undefined,
+    detect: (text, only) => franc(text, { only: [...only] }),
   })
 }
 
