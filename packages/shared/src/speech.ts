@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { languageCodeSchema } from './languages'
+import { languageCodeSchema, type LanguageCode } from './languages'
 
 /**
  * The longest sentence the voice service will read, mirroring `MAX_TEXT` in
@@ -57,7 +57,7 @@ export interface SpeechVoice {
  * Piper voices carry no register in their name, so `voiceLabel` falls through
  * to "Synthesised" for them rather than claiming a gender we did not check.
  */
-export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
+export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly SpeechVoice[]>>> = {
 
   /*
    * Kokoro's six, from `ECHO_SYNTH_VOICES` — which stays the definition for
@@ -348,27 +348,36 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
   ],
 }
 
-/** The voices that can read `lang`; empty for a language nothing here speaks. */
+/**
+ * The voices that can read `lang`; empty for a language nothing here speaks.
+ *
+ * Takes a plain `string` rather than a `LanguageCode` because every caller has
+ * one — a card's language, a detector's answer, a field off the wire — and a
+ * cast at each call site would be the same unchecked narrowing written six
+ * times instead of once, behind a function whose whole job is to answer for a
+ * language it may not know.
+ */
 export function speechVoicesFor(lang: string): readonly SpeechVoice[] {
-  return SPEECH_VOICES[lang] ?? []
+  return SPEECH_VOICES[lang as LanguageCode] ?? []
 }
 
 /** Every language some voice can read, for the detector to choose among. */
-export const SPEECH_LANGUAGES: readonly string[] = Object.keys(SPEECH_VOICES)
+export const SPEECH_LANGUAGES: readonly LanguageCode[] = Object.keys(
+  SPEECH_VOICES,
+) as LanguageCode[]
 
 /**
  * ISO 639-3, which is what `franc` answers in, to the codes this app uses.
  *
- * Only the languages we can actually read — a detector allowed to answer
- * anything else would have its answer thrown away anyway, and restricting it
- * up front is what makes a three-word message land on the right one of five
- * Romance languages instead of the closest of four hundred.
+ * Only the languages we can actually read, so that everything else falls out
+ * as `undefined` — which is the point, and is why the detector is asked openly
+ * rather than confined to these keys. See `speechLanguageFromIso3`.
  *
  * Several entries have two spellings because `franc` names a specific variety
  * where we name the language: Mandarin for Chinese, Bokmal for Norwegian,
  * Tosk for Albanian, Western Farsi for Persian.
  */
-const ISO3_TO_APP: Readonly<Record<string, string>> = {
+const ISO3_TO_APP: Readonly<Record<string, LanguageCode>> = {
   bul: 'bg', ben: 'bn', cat: 'ca', ces: 'cs', cym: 'cy', dan: 'da', deu: 'de',
   ell: 'el', eng: 'en', spa: 'es', est: 'et', fas: 'fa', pes: 'fa', fin: 'fi',
   fra: 'fr', hin: 'hi', hun: 'hu', ita: 'it', kaz: 'kk', lit: 'lt', lav: 'lv',
@@ -377,24 +386,34 @@ const ISO3_TO_APP: Readonly<Record<string, string>> = {
   swe: 'sv', tel: 'te', ukr: 'uk', urd: 'ur', vie: 'vi', cmn: 'zh', zho: 'zh',
 }
 
-/** The 639-3 codes to let a detector answer with, given what we can read. */
-export const SPEECH_DETECT_ISO3: readonly string[] = Object.keys(ISO3_TO_APP).filter(
-  (iso3) => SPEECH_VOICES[ISO3_TO_APP[iso3] as string] !== undefined,
-)
-
-/** A detector's 639-3 answer as an app language, if we can read that language. */
-export function speechLanguageFromIso3(iso3: string): string | undefined {
+/**
+ * A detector's 639-3 answer as an app language, if we can read that language.
+ *
+ * **The detector must be asked openly, never restricted to these codes.** That
+ * was the first shape of this and it is wrong in a way that only shows up on
+ * the languages we cannot read: a detector confined to a list always answers
+ * from the list, so it has no way to say "not one of those". Turkish came back
+ * as Norwegian — the nearest of the thirty-seven it was allowed — and a
+ * Turkish sentence read aloud in Norwegian is precisely the failure this
+ * codebase keeps refusing. Ask about all four hundred, then drop the answer
+ * here if nothing reads it. A guess we discard costs nothing; one we act on
+ * costs the person their trust in the button.
+ */
+export function speechLanguageFromIso3(iso3: string): LanguageCode | undefined {
   const code = ISO3_TO_APP[iso3]
   return code !== undefined && SPEECH_VOICES[code] !== undefined ? code : undefined
 }
 
 export interface SpeechLanguageHint {
   /** What a translation provider said the original was. Believed over guessing. */
-  sourceLang?: string
-  /** The languages in play in this conversation, for the last-resort guess. */
-  contextLangs?: readonly string[]
+  sourceLang?: string | undefined
+  /**
+   * The languages these people actually have, native and learning both. A
+   * detected language that is not among them is not believed — see below.
+   */
+  contextLangs?: readonly string[] | undefined
   /** `franc`'s answer, passed in so this stays a pure function. */
-  detected?: string
+  detected?: string | undefined
 }
 
 /**
@@ -407,30 +426,45 @@ export interface SpeechLanguageHint {
  * it also keeps `@langx/shared` free of a dependency the app would carry into
  * its bundle for a gate.
  *
- * The order is confidence, not convenience:
+ * Two ways in, and both have to be earned:
  *
- * 1. A translation provider's `sourceLang`. Google looked at this exact
- *    sentence and it is already on the message; nothing we compute beats it.
- * 2. The detector, but only past `SPEECH_MIN_DETECT_LENGTH`. Trigram detection
- *    on "ok" or "hahaha" is a coin toss, and the rule this repo keeps coming
- *    back to is that a reading in the wrong accent is worse than no reading.
- * 3. The conversation's own languages, and only when they narrow to exactly
- *    one. Two people who share no other language are almost certainly writing
- *    in the one they do; three candidates is a guess and we do not guess.
+ * 1. **A translation provider's `sourceLang`.** Google looked at this exact
+ *    sentence and said so; nothing we compute beats that.
+ * 2. **A detection the conversation corroborates.** Past
+ *    `SPEECH_MIN_DETECT_LENGTH`, and only when the language it names is one of
+ *    the languages these two people actually have.
+ *
+ * **Why corroboration, and not the detector alone.** `franc` scored Norwegian
+ * above Turkish on "bugün hava gerçekten çok güzel görünüyor" — 1.0 against
+ * 0.992 — and we have no Turkish voice, so the reward for trusting it was a
+ * Turkish sentence read aloud in Norwegian. Trigram detection is simply not
+ * reliable enough on one chat message to be the only thing standing between a
+ * sentence and a voice. What makes this app able to do better is that it
+ * already knows what languages the two people speak and are learning: an
+ * answer from inside that set is corroborated by something other than the
+ * guess itself, and an answer from outside it is a guess we decline to act on.
+ *
+ * There is deliberately no third rule inferring the language from the
+ * conversation when detection fails. It was written, and it was worse than
+ * nothing: for a short message it would confidently pick the pair's one
+ * readable language, which for a Turkish speaker practising English means
+ * every Turkish "tamam" read out in English.
  */
-export function detectSpeechLanguage(text: string, hint: SpeechLanguageHint = {}): string | undefined {
+export function detectSpeechLanguage(
+  text: string,
+  hint: SpeechLanguageHint = {},
+): LanguageCode | undefined {
   const trimmed = text.trim()
   if (trimmed.length === 0) return undefined
 
-  if (hint.sourceLang && SPEECH_VOICES[hint.sourceLang] !== undefined) return hint.sourceLang
+  const claimed = hint.sourceLang as LanguageCode | undefined
+  if (claimed && SPEECH_VOICES[claimed] !== undefined) return claimed
 
-  if (trimmed.length >= SPEECH_MIN_DETECT_LENGTH && hint.detected) {
-    const code = speechLanguageFromIso3(hint.detected)
-    if (code) return code
-  }
+  if (trimmed.length < SPEECH_MIN_DETECT_LENGTH || !hint.detected) return undefined
+  const detected = speechLanguageFromIso3(hint.detected)
+  if (!detected) return undefined
 
-  const context = [...new Set((hint.contextLangs ?? []).filter((c) => SPEECH_VOICES[c] !== undefined))]
-  return context.length === 1 ? context[0] : undefined
+  return (hint.contextLangs ?? []).includes(detected) ? detected : undefined
 }
 
 /** Whether a sentence is one the service would agree to read at all. */

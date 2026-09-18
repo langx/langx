@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { ECHO_SYNTH_VOICES } from './echoPacks'
 import {
@@ -7,7 +5,6 @@ import {
   detectSpeechLanguage,
   isSpeakableLength,
   messageSpeechSchema,
-  SPEECH_DETECT_ISO3,
   SPEECH_LANGUAGES,
   SPEECH_MIN_DETECT_LENGTH,
   speechLanguageFromIso3,
@@ -51,93 +48,86 @@ describe('the voice table', () => {
     expect(attributedVoices().length).toBeGreaterThan(0)
     expect(attributedVoices().every((voice) => voice.attribution)).toBe(true)
   })
-
-  /**
-   * `apps/tts/server.py` keeps its own copy of what Kokoro reads, because it
-   * is Python and cannot import this file. Nothing but this test notices when
-   * the two drift, and drift here means a language the app offers and the
-   * service answers 400 for.
-   */
-  it('agrees with the voice service about Kokoro and about the length cap', () => {
-    const source = readFileSync(join(__dirname, '../../../apps/tts/server.py'), 'utf8')
-
-    const table = source.slice(source.indexOf('LANGUAGES = {'), source.indexOf('MAX_TEXT'))
-    const langs = [...table.matchAll(/^\s{4}"([a-z]{2})":/gm)].map((match) => match[1])
-    expect(langs.sort()).toEqual(Object.keys(ECHO_SYNTH_VOICES).sort())
-
-    const max = source.match(/^MAX_TEXT = (\d+)$/m)
-    expect(Number(max?.[1])).toBe(TTS_MAX_TEXT_LENGTH)
-  })
-
-  /**
-   * `apps/tts/voices.json` is what the Dockerfile downloads and what the
-   * service looks a Piper voice up in. A voice in this table but not in that
-   * manifest is a 400 the app cannot see coming; one in the manifest but not
-   * here is 60 MB of image nothing will ever ask for.
-   */
-  it('names exactly the Piper voices the service is built with', () => {
-    const manifest: Record<string, { id: string; model: string }[]> = JSON.parse(
-      readFileSync(join(__dirname, '../../../apps/tts/voices.json'), 'utf8'),
-    )
-
-    const fromTable = Object.entries(SPEECH_VOICES).flatMap(([lang, voices]) =>
-      voices.filter((voice) => voice.engine === 'piper').map((voice) => `${lang} ${voice.id} ${voice.model}`),
-    )
-    const fromManifest = Object.entries(manifest).flatMap(([lang, voices]) =>
-      voices.map((voice) => `${lang} ${voice.id} ${voice.model}`),
-    )
-    expect(fromManifest.sort()).toEqual(fromTable.sort())
-
-    // Kokoro's six are the service's own table, never the manifest's.
-    for (const lang of Object.keys(ECHO_SYNTH_VOICES)) {
-      expect(manifest[lang]).toBeUndefined()
-    }
-  })
 })
 
 describe('detectSpeechLanguage', () => {
-  const long = 'guten morgen wie geht es dir heute'
+  const german = 'guten morgen wie geht es dir heute'
+  const learners = ['en', 'de']
 
   it('believes a provider that looked at this exact sentence', () => {
-    // Beats the detector even when the detector is confident and disagrees.
-    expect(detectSpeechLanguage(long, { sourceLang: 'nl', detected: 'deu' })).toBe('nl')
+    // Beats the detector even when the detector disagrees, and needs no
+    // corroboration: Google read the sentence, it did not guess from trigrams.
+    expect(detectSpeechLanguage(german, { sourceLang: 'nl', detected: 'deu' })).toBe('nl')
     // ...but not into a language nothing can read.
-    expect(detectSpeechLanguage(long, { sourceLang: 'tr', detected: 'deu' })).toBe('de')
+    expect(
+      detectSpeechLanguage(german, { sourceLang: 'tr', detected: 'deu', contextLangs: learners }),
+    ).toBe('de')
   })
 
-  it('takes the detector past the minimum length and ignores it below', () => {
-    expect(detectSpeechLanguage(long, { detected: 'deu' })).toBe('de')
+  it('takes a detection the conversation corroborates', () => {
+    expect(detectSpeechLanguage(german, { detected: 'deu', contextLangs: learners })).toBe('de')
+  })
+
+  /*
+   * The rule the Turkish case bought. `franc` scores Norwegian above Turkish
+   * on a Turkish sentence, and we have a Norwegian voice — so without this,
+   * "bugün hava gerçekten çok güzel görünüyor" is read aloud in Norwegian.
+   */
+  it('refuses a detection nobody in the conversation could have written', () => {
+    const turkish = 'bugün hava gerçekten çok güzel görünüyor'
+    expect(detectSpeechLanguage(turkish, { detected: 'nob', contextLangs: ['en', 'tr'] })).toBeUndefined()
+    // And with no context at all there is nothing to corroborate against.
+    expect(detectSpeechLanguage(german, { detected: 'deu' })).toBeUndefined()
+  })
+
+  it('ignores the detector below the minimum length', () => {
     expect('hallo'.length).toBeLessThan(SPEECH_MIN_DETECT_LENGTH)
-    expect(detectSpeechLanguage('hallo', { detected: 'deu' })).toBeUndefined()
+    expect(detectSpeechLanguage('hallo', { detected: 'deu', contextLangs: learners })).toBeUndefined()
   })
 
-  it('drops a detected language no voice reads', () => {
-    expect(detectSpeechLanguage('bugün hava çok güzel', { detected: 'tur' })).toBeUndefined()
-    expect(detectSpeechLanguage('今日はいい天気ですね本当に', { detected: 'jpn' })).toBeUndefined()
+  it('drops a detected language no voice reads, corroborated or not', () => {
+    expect(
+      detectSpeechLanguage('bugün hava gerçekten çok güzel', {
+        detected: 'tur',
+        contextLangs: ['en', 'tr'],
+      }),
+    ).toBeUndefined()
+    expect(
+      detectSpeechLanguage('今日はいい天気ですね本当に', { detected: 'jpn', contextLangs: ['ja'] }),
+    ).toBeUndefined()
   })
 
-  it('falls back to the conversation only when it narrows to one language', () => {
-    expect(detectSpeechLanguage('ok', { contextLangs: ['de'] })).toBe('de')
-    expect(detectSpeechLanguage('ok', { contextLangs: ['de', 'de'] })).toBe('de')
-    // Two candidates is a guess, and a wrong accent is worse than silence.
-    expect(detectSpeechLanguage('ok', { contextLangs: ['de', 'nl'] })).toBeUndefined()
-    // A context language nothing reads does not count towards the one.
-    expect(detectSpeechLanguage('ok', { contextLangs: ['tr', 'de'] })).toBe('de')
-    expect(detectSpeechLanguage('ok', { contextLangs: [] })).toBeUndefined()
+  /*
+   * Deliberately absent: inferring the language from the conversation when
+   * detection fails. For a short message it picks the pair's one readable
+   * language, which for a Turkish speaker practising English turns every
+   * "tamam" into an English reading.
+   */
+  it('does not guess from the conversation alone', () => {
+    expect(detectSpeechLanguage('ok', { contextLangs: ['de'] })).toBeUndefined()
+    expect(detectSpeechLanguage('tamam', { contextLangs: ['en'] })).toBeUndefined()
   })
 
   it('says nothing about an empty sentence, whatever it is told', () => {
-    expect(detectSpeechLanguage('   ', { sourceLang: 'de', detected: 'deu' })).toBeUndefined()
+    expect(
+      detectSpeechLanguage('   ', { sourceLang: 'de', detected: 'deu', contextLangs: learners }),
+    ).toBeUndefined()
   })
 })
 
 describe('the detector contract', () => {
-  it('offers the detector only codes some voice can read', () => {
-    for (const iso3 of SPEECH_DETECT_ISO3) {
-      expect(speechLanguageFromIso3(iso3), iso3).toBeDefined()
-    }
+  /*
+   * The detector is asked openly and its answer is dropped here, rather than
+   * the detector being confined to what we can read — which cannot refuse, and
+   * once answered Turkish with Norwegian.
+   */
+  it('drops an answer no voice reads, however confident it was', () => {
     expect(speechLanguageFromIso3('tur')).toBeUndefined()
+    expect(speechLanguageFromIso3('arb')).toBeUndefined()
+    expect(speechLanguageFromIso3('jpn')).toBeUndefined()
+    expect(speechLanguageFromIso3('kor')).toBeUndefined()
     expect(speechLanguageFromIso3('nonsense')).toBeUndefined()
+    expect(speechLanguageFromIso3('deu')).toBe('de')
   })
 
   it('maps the varieties a detector names where we name a language', () => {

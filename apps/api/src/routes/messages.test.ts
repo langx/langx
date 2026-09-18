@@ -126,6 +126,309 @@ describe('Faz 5 — conversation/message history REST', () => {
   })
 
   /**
+   * Reading a message aloud. The logic is exercised through `speakMessage`
+   * with fakes, the way `synthesiseCard` is in `echo.test.ts`, because the
+   * suite's app is built with no storage and no voice service — which is
+   * itself what the last test here checks.
+   */
+  describe('reading a message aloud', () => {
+    const BUCKET = 'https://media.test'
+
+    function fakeStorage() {
+      const put: { key: string; bytes: number; contentType: string }[] = []
+      return {
+        put,
+        storage: {
+          getUploadUrl: () => {
+            throw new Error('not used')
+          },
+          putObject: (key: string, body: Uint8Array, contentType: string) => {
+            put.push({ key, bytes: body.byteLength, contentType })
+            return Promise.resolve(`${BUCKET}/${key}`)
+          },
+          getObject: () => {
+            throw new Error('not used')
+          },
+          deleteObject: () => Promise.resolve(),
+          keyFromPublicUrl: () => null,
+        },
+      }
+    }
+
+    function fakeTts() {
+      const asked: { text: string; lang: string; voice: string }[] = []
+      return {
+        asked,
+        tts: {
+          synthesize: (input: { text: string; lang: string; voice: string }) => {
+            asked.push(input)
+            return Promise.resolve(new Uint8Array([0, 1, 2, 3]))
+          },
+        },
+      }
+    }
+
+    /** A thread between two people, and the id of one message in it. */
+    async function threadWith(prefix: string, body: string, langs = {}) {
+      const speaker = await newUser(`${prefix}-a@example.com`, langs)
+      const reader = await newUser(`${prefix}-b@example.com`, langs)
+      const thread = (await startConversation(speaker, reader.userId, 'hey'))._id
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const sent = await sendTextMessage(handle.db, speaker.userId, {
+        conversationId: thread,
+        body,
+      })
+      return { speaker, reader, thread, messageId: sent.message._id.toString() }
+    }
+
+    async function spent(userId: string): Promise<number> {
+      const profile = await handle.db
+        .collection<{ quota?: { chatVoices?: Date[] } }>(COLLECTIONS.profiles)
+        .findOne({ _id: userId } as never)
+      return profile?.quota?.chatVoices?.length ?? 0
+    }
+
+    it('reads the other person sentence in one voice, for one quota unit', async () => {
+      const { reader, thread, messageId } = await threadWith(
+        'speak-read',
+        'guten morgen wie geht es dir heute',
+        {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+      },
+      )
+      const { storage, put } = fakeStorage()
+      const { tts, asked } = fakeTts()
+      const { speakMessage } = await import('../modules/chat/speak')
+
+      const reading = await speakMessage(
+        handle.db,
+        storage,
+        tts,
+        reader.userId,
+        thread,
+        messageId,
+      )
+
+      // German, detected — and one voice, not the pair Echo asks for.
+      expect(reading.lang).toBe('de')
+      expect(asked).toHaveLength(1)
+      expect(asked[0]?.voice).toBe('de_DE-thorsten-medium')
+      expect(reading.cached).toBe(false)
+      expect(put[0]?.contentType).toBe('audio/mp4')
+      expect(reading.url).toMatch(
+        /\/echo\/tts\/de\/de_DE-thorsten-medium\/[0-9a-f]{40}\.m4a$/,
+      )
+      expect(await spent(reader.userId)).toBe(1)
+    })
+
+    it('serves a sentence somebody already had read from the cache, for free', async () => {
+      const sentence = 'guten abend ich lerne gerade deutsch'
+      const first = await threadWith('speak-cache-1', sentence, {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+      })
+      const second = await threadWith('speak-cache-2', sentence, {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+      })
+      const { speakMessage } = await import('../modules/chat/speak')
+
+      const one = fakeTts()
+      await speakMessage(
+        handle.db,
+        fakeStorage().storage,
+        one.tts,
+        first.reader.userId,
+        first.thread,
+        first.messageId,
+      )
+
+      const two = fakeTts()
+      const again = await speakMessage(
+        handle.db,
+        fakeStorage().storage,
+        two.tts,
+        second.reader.userId,
+        second.thread,
+        second.messageId,
+      )
+
+      expect(two.asked).toHaveLength(0)
+      expect(again.cached).toBe(true)
+      // A hit costs us nothing, so it must not cost the caller a unit either.
+      expect(await spent(second.reader.userId)).toBe(0)
+    })
+
+    /*
+     * The cross-surface share that justifies keeping one key space: a sentence
+     * Echo has already read is free in chat, and the other way round.
+     */
+    it('shares its readings with Echo', async () => {
+      /*
+       * Long enough for the detector to be sure. The shorter line
+       * 'on y va demain matin ensemble' comes back as Dutch, which this
+       * pair does not have, so it is refused rather than read aloud in the
+       * wrong language. That is the corroboration rule working, and it is
+       * why the button is not on every short message.
+       */
+      const sentence = 'on y va demain matin ensemble au cafe du coin'
+      const { reader, thread, messageId } = await threadWith('speak-echo', sentence, {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'fr', level: 'intermediate', priority: 1 }],
+      })
+      const { speakMessage } = await import('../modules/chat/speak')
+      const { voiceKey } = await import('../modules/tts/speech')
+
+      const { storage } = fakeStorage()
+      const { tts } = fakeTts()
+      const reading = await speakMessage(
+        handle.db,
+        storage,
+        tts,
+        reader.userId,
+        thread,
+        messageId,
+      )
+
+      // Chat takes `[0]`, which is the voice Echo synthesises first.
+      expect(reading.voice).toBe('ff_siwis')
+      const row = await handle.db
+        .collection(COLLECTIONS.echoVoiceCache)
+        .findOne({ _id: voiceKey('fr', 'ff_siwis', sentence) } as never)
+      expect(row).not.toBeNull()
+    })
+
+    it('refuses a sentence nothing can read, and never wakes the machine', async () => {
+      /*
+       * Turkish, which has no voice we are licensed to ship — and which `franc`
+       * scores *below* Norwegian on this very sentence. Both defences have to
+       * hold: the detected language is not one this pair has, and Turkish would
+       * be dropped anyway. Either alone would let a Norwegian reading through.
+       */
+      const { reader, thread, messageId } = await threadWith(
+        'speak-unreadable',
+        'bugün hava gerçekten çok güzel görünüyor',
+        {
+          nativeLanguages: [{ code: 'en' }],
+          learning: [{ code: 'tr', level: 'beginner', priority: 1 }],
+        },
+      )
+      const { tts, asked } = fakeTts()
+      const { speakMessage } = await import('../modules/chat/speak')
+
+      await expect(
+        speakMessage(handle.db, fakeStorage().storage, tts, reader.userId, thread, messageId),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+      expect(asked).toHaveLength(0)
+      expect(await spent(reader.userId)).toBe(0)
+    })
+
+    it('refuses a message that was withdrawn', async () => {
+      const { reader, speaker, thread, messageId } = await threadWith(
+        'speak-withdrawn',
+        'guten morgen wie geht es dir heute',
+        {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+      },
+      )
+      const { deleteMessage } = await import('../modules/chat/mutations')
+      await deleteMessage(handle.db, speaker.userId, {
+        conversationId: thread,
+        messageId,
+        scope: 'everyone',
+      })
+      const { tts, asked } = fakeTts()
+      const { speakMessage } = await import('../modules/chat/speak')
+
+      await expect(
+        speakMessage(handle.db, fakeStorage().storage, tts, reader.userId, thread, messageId),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+      expect(asked).toHaveLength(0)
+    })
+
+    it('is not a way into a thread you are not in', async () => {
+      const { thread, messageId } = await threadWith(
+        'speak-outsider',
+        'guten morgen wie geht es dir heute',
+        {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+      },
+      )
+      const outsider = await newUser('speak-outsider-c@example.com')
+      const { tts, asked } = fakeTts()
+      const { speakMessage } = await import('../modules/chat/speak')
+
+      // Not found rather than forbidden — the contract `loadMutableMessage`
+      // keeps, so an id cannot be probed for existence from outside.
+      await expect(
+        speakMessage(handle.db, fakeStorage().storage, tts, outsider.userId, thread, messageId),
+      ).rejects.toMatchObject({ code: 'NOT_FOUND' })
+      expect(asked).toHaveLength(0)
+    })
+
+    it('stops at the daily ceiling with a retry time', async () => {
+      const { reader, thread, messageId } = await threadWith(
+        'speak-quota',
+        'guten morgen mein freund wie war dein wochenende',
+        {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+      },
+      )
+      const limit = PLAN_LIMITS.free.chatVoicesPerDay ?? 0
+      await handle.db.collection(COLLECTIONS.profiles).updateOne({ _id: reader.userId } as never, {
+        $set: { 'quota.chatVoices': Array.from({ length: limit }, () => new Date()) },
+      })
+      const { tts, asked } = fakeTts()
+      const { speakMessage } = await import('../modules/chat/speak')
+
+      const refused = await speakMessage(
+        handle.db,
+        fakeStorage().storage,
+        tts,
+        reader.userId,
+        thread,
+        messageId,
+      ).then(
+        () => null,
+        (caught: unknown) => caught as { code: string; retryAt?: string },
+      )
+      expect(refused?.code).toBe('QUOTA_EXCEEDED')
+      expect(typeof refused?.retryAt).toBe('string')
+      expect(asked).toHaveLength(0)
+    })
+
+    it('is a member route, and says clearly when nothing is configured', async () => {
+      const { reader, thread, messageId } = await threadWith(
+        'speak-route',
+        'guten morgen wie geht es dir heute',
+        {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+      },
+      )
+
+      const anonymous = await app.inject({
+        method: 'POST',
+        url: `/conversations/${thread}/messages/${messageId}/speak`,
+      })
+      expect(anonymous.statusCode).toBe(401)
+
+      // This suite's app has the not-configured voice service, so a signed-in
+      // member gets the provider's refusal rather than a reading.
+      const configured = await app.inject({
+        method: 'POST',
+        url: `/conversations/${thread}/messages/${messageId}/speak`,
+        headers: { cookie: reader.cookie },
+      })
+      expect(configured.statusCode).toBeGreaterThanOrEqual(400)
+    })
+  })
+
+  /**
    * A send whose ack is lost is indistinguishable from one that never arrived,
    * so the client retries it. Without the index behind this, the message it
    * already delivered would be posted a second time.

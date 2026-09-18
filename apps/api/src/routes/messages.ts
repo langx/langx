@@ -28,6 +28,7 @@ import {
   listStarredMessages,
   setConversationFlag,
 } from '../modules/chat/mutations'
+import { speakMessage } from '../modules/chat/speak'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -131,6 +132,45 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
     const total = await countUnread(app.mongo.db, request.userId)
     return reply.send({ total })
   })
+
+  /*
+   * The message, read aloud by the voice service.
+   *
+   * No body: which language it is in is decided on this side, from the text we
+   * already hold. The app runs the same detection to decide whether to offer
+   * the row, but a `lang` arriving from outside would let a client pick the
+   * cache key — and so write a permanent object under a language nobody in the
+   * thread speaks.
+   *
+   * `requireMember` rather than `requireVerifiedEmail`, matching
+   * `/echo/cards/:id/voices`: this wakes a machine of ours, which guests may
+   * not do, but it reaches nobody. The tight route limit is there for the same
+   * reason as Echo's; the daily ceiling is `chatVoices`.
+   */
+  app.post(
+    '/conversations/:id/messages/:messageId/speak',
+    {
+      preHandler: requireMember,
+      schema: {
+        params: z.object({
+          id: z.string().trim().min(1),
+          messageId: z.string().trim().min(1),
+        }),
+      },
+      config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const reading = await speakMessage(
+        app.mongo.db,
+        app.storage,
+        app.tts,
+        request.userId,
+        request.params.id,
+        request.params.messageId,
+      )
+      return reply.send(reading)
+    },
+  )
 
   app.get(
     '/conversations/:id/messages',
