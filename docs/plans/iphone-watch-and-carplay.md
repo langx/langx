@@ -301,10 +301,11 @@ a stack and every route assumes it owns the screen. That is a structural change
 to navigation, it would equally serve iPad, and it deserves its own plan rather
 than a paragraph in this one.
 
-**What is worth doing now, with no Mac and no numbers:** keep the good state
-good. A lint rule that refuses `Dimensions.get` costs nothing and protects the
-one property that matters most when the screen size changes under a running
-app. Everything else waits for the design kits.
+**What was worth doing now, with no Mac and no numbers:** keeping the good
+state good. `eslint.config.mjs` now refuses `Dimensions.get` in
+`apps/mobile/**`, with the replacement named in the message. It fixes nothing —
+there was no call site — which is why it was cheap to add before the first one
+arrives. Everything else waits for the design kits.
 
 **Verify:** the app on Xcode 27.1's Duo simulator, folded and unfolded, with a
 chat open — no clipped header, no lost scroll position across the fold, the
@@ -473,7 +474,7 @@ is not, which is why its paperwork starts on day one.
    the reasoning for when it returns is kept under Surface A.
    → verify: the list under Surface A, plus a clean prebuild
 
-1b. iPhone Duo readiness: the lint rule against `Dimensions.get` now; then,
+1b. iPhone Duo readiness: the lint rule against `Dimensions.get` — done; then,
    once there is a Mac with Xcode 27.1 and the design kits, a fold-and-unfold
    pass over the app
    → verify: the list under The iPhone Duo
