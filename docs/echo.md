@@ -227,9 +227,9 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    its language, takes the readings off the card — they read a line that is
    gone — and the button comes back for the new one; the files stay, because
    they are content-addressed and may be on somebody else's card.
-   **Thirty-seven languages** since chat started reading messages aloud
+   **Thirty-five languages** since chat started reading messages aloud
    too: Kokoro still reads the six it was trained for, and Piper reads the
-   other thirty-one (`SPEECH_VOICES` is the list, and `ECHO_SYNTH_VOICES`
+   other twenty-nine (`SPEECH_VOICES` is the list, and `ECHO_SYNTH_VOICES`
    remains Kokoro's half of it). The app hides the button elsewhere — and
    "elsewhere" is a licence question rather than a modelling one, since the
    catalogue's only Turkish, Arabic, Japanese and Korean voices are

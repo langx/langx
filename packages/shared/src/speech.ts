@@ -51,8 +51,13 @@ export interface SpeechVoice {
  * on a card; chat plays only `[0]`, which is also the voice Echo synthesises
  * first — so a sentence that is both echoed and played shares one object.
  *
- * Sixteen languages the catalogue has voices for are missing from this table,
- * including Turkish and Arabic. See `SpeechLicense`.
+ * Eighteen languages the catalogue has voices for are missing from this table.
+ * Sixteen of them for the licence reason above, Turkish and Arabic among them.
+ * The other two are engineering: `lt_LT-reginute1-medium` is built for a
+ * `lithuanian` phoneme type `piper-tts` does not implement, and Chinese needs
+ * `piper-tts[zh]`, which pulls `transformers` and then downloads a g2pW model
+ * at first use — a large dependency and a network call on a machine that
+ * sleeps, for one language. Both are revisitable; neither is a licence.
  *
  * Piper voices carry no register in their name, so `voiceLabel` falls through
  * to "Synthesised" for them rather than claiming a gender we did not check.
@@ -195,15 +200,6 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
       attribution: 'issai (kk_KZ), https://github.com/IS2AI/Kazakh_TTS',
     },
   ],
-  lt: [
-    {
-      id: 'lt_LT-reginute1-medium',
-      engine: 'piper',
-      model: 'lt/lt_LT/reginute1/medium/lt_LT-reginute1-medium.onnx',
-      license: 'CC-BY-4.0',
-      attribution: 'reginute1 (lt_LT), https://huggingface.co/datasets/meldynamics/liepa-tts',
-    },
-  ],
   lv: [
     {
       id: 'lv_LV-aivars-medium',
@@ -335,14 +331,6 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
       license: 'CC-BY-4.0',
       attribution:
         'vais1000 (vi_VN), https://ieee-dataport.org/documents/vais-1000-vietnamese-speech-synthesis-corpus',
-    },
-  ],
-  zh: [
-    {
-      id: 'zh_CN-chaowen-medium',
-      engine: 'piper',
-      model: 'zh/zh_CN/chaowen/medium/zh_CN-chaowen-medium.onnx',
-      license: 'CC0',
     },
   ],
 }

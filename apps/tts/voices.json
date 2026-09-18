@@ -77,12 +77,6 @@
       "model": "kk/kk_KZ/issai/high/kk_KZ-issai-high.onnx"
     }
   ],
-  "lt": [
-    {
-      "id": "lt_LT-reginute1-medium",
-      "model": "lt/lt_LT/reginute1/medium/lt_LT-reginute1-medium.onnx"
-    }
-  ],
   "lv": [
     {
       "id": "lv_LV-aivars-medium",
@@ -177,12 +171,6 @@
     {
       "id": "vi_VN-vais1000-medium",
       "model": "vi/vi_VN/vais1000/medium/vi_VN-vais1000-medium.onnx"
-    }
-  ],
-  "zh": [
-    {
-      "id": "zh_CN-chaowen-medium",
-      "model": "zh/zh_CN/chaowen/medium/zh_CN-chaowen-medium.onnx"
     }
   ]
 }

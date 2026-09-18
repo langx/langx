@@ -16,13 +16,18 @@ import {
 } from './speech'
 
 describe('the voice table', () => {
-  it('reads thirty-seven languages, and not the ones we are not licensed for', () => {
-    expect(SPEECH_LANGUAGES).toHaveLength(37)
+  it('reads thirty-five languages, and not the ones it must not', () => {
+    expect(SPEECH_LANGUAGES).toHaveLength(35)
     // The catalogue has voices for all four. Every one of them is CC BY-NC,
     // which an app that sells subscriptions cannot use — so they stay silent
     // rather than being read by a model we are not allowed to ship.
     for (const unlicensed of ['tr', 'ar', 'ja', 'ko']) {
       expect(speechVoicesFor(unlicensed)).toEqual([])
+    }
+    // And two this engine cannot use, which is a different reason — see the
+    // note on `SPEECH_VOICES`.
+    for (const unsupported of ['lt', 'zh']) {
+      expect(speechVoicesFor(unsupported)).toEqual([])
     }
   })
 
@@ -167,8 +172,16 @@ describe('speechLanguageFromIso3', () => {
   it('drops an answer no voice reads, however confident it was', () => {
     for (const iso3 of ['tur', 'arb', 'jpn', 'kor', 'nonsense'])
       expect(speechLanguageFromIso3(iso3), iso3).toBeUndefined()
+    /*
+     * Chinese and Lithuanian are detectable and unreadable, which is the pair
+     * of facts that has to hold together: they stay in `APP_TO_ISO3` so a
+     * Chinese message can win its own sentence, and they have no voice, so it
+     * loses the button rather than being read in the nearest one we ship.
+     */
+    expect(speechDetectCandidates(['zh'])).toContain('cmn')
+    expect(speechLanguageFromIso3('cmn')).toBeUndefined()
+    expect(speechLanguageFromIso3('lit')).toBeUndefined()
     expect(speechLanguageFromIso3('deu')).toBe('de')
-    expect(speechLanguageFromIso3('cmn')).toBe('zh')
   })
 })
 

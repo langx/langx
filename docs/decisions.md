@@ -4896,15 +4896,15 @@ phonemises through espeak-ng and Japanese and Chinese were not trained on
 that — a reading a native speaker winces at is worse than the button not
 being there.
 
-**Thirty-one more, once chat wanted the same thing.** Six is a reasonable
+**Twenty-nine more, once chat wanted the same thing.** Six is a reasonable
 number for a deck somebody builds in the language they are studying and an
 absurd one for a chat thread, where the sentence is in whatever the two
 people write in. Kokoro cannot be made to read a seventh, so Piper went in
 beside it: one small model per language, the same espeak-ng, a quality below
 Kokoro's and far above nothing, and Kokoro keeps its six — which also keeps
 them on the cache keys they already occupy. Loaded three at a time, because
-thirty-one models at 60 MB do not fit beside Kokoro on a 2 GB machine and
-almost nobody needs the thirty-first.
+twenty-nine models at 60 MB do not fit beside Kokoro on a 2 GB machine and
+almost nobody needs the twenty-ninth.
 
 **And the list is decided by licences, not by the catalogue.** Piper's voices
 are each licensed separately; ours are CC0, MIT, Apache-2.0 or CC-BY, and the
@@ -4914,6 +4914,19 @@ for that reason and no other: the catalogue has Turkish, Arabic, Japanese and
 Korean voices and every one of them is CC BY-NC, which an app that sells
 subscriptions cannot use. This is the same bar that chose Kokoro over Coqui
 XTTS, applied a second time and costing us something this time.
+
+**Two more are missing for a reason that is not the licence**, and they are
+worth separating out. `lt_LT-reginute1-medium` is built for a `lithuanian`
+phoneme type `piper-tts` does not implement — found by the build's own self
+test, not by reading anything. Chinese needs `piper-tts[zh]`, which pulls
+`transformers` and then downloads a g2pW model the first time somebody asks for
+a reading: a large dependency and a network call on a machine that sleeps, for
+one language. Both are revisitable in a way a non-commercial licence is not.
+
+Both stay in `APP_TO_ISO3` all the same, and that is the point of keeping that
+table wider than the one we can read: a Chinese message wins its own sentence
+and then loses the button, rather than being read aloud in whichever voice we
+happen to ship.
 
 **Which language a message is in turned out to be the hard part**, and it took
 three goes. There is no `lang` on a message and nothing in the repo detected one.
