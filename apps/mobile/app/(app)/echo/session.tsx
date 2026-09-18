@@ -427,7 +427,7 @@ export default function EchoSessionScreen() {
               <TextInput
                 value={typed}
                 onChangeText={setTyped}
-                {...keyboard.fieldProps}
+                {...keyboard.fieldProps()}
                 style={styles.input}
                 placeholder={t('echo.produceHint')}
                 placeholderTextColor={colors.textFaint}

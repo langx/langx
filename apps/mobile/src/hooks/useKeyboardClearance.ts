@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import {
   Animated,
   Keyboard,
@@ -32,9 +32,13 @@ import { spacing } from '../lib/theme'
  *   inside the measured view, so its frame is the same whatever the pad
  *   currently is, and a keyboard that changes height is measured from the
  *   same baseline.
- * - `fieldProps` go on every text field. When the keyboard announces where
- *   its top will be, the focused field is measured against it and the scroll
- *   view scrolled by the overlap, no more — a field already in view stays
+ * - `fieldProps` go on every text field, and take the view that has to clear
+ *   the keyboard along with it: a composer whose send button sits below the
+ *   field is that view, and measuring the field alone parked the button under
+ *   the keyboard every time — visible only to someone who thought to scroll.
+ *   A field with nothing below it passes nothing. When the keyboard announces
+ *   where its top will be, whichever was given is measured against it and the
+ *   scroll view scrolled by the overlap, no more — a box already in view stays
  *   where it is. `scrollProps` go on the scroll view: they track its offset,
  *   since a scroll-to is absolute, and set `scrollToOverflowEnabled`. Without
  *   that the scroll is clamped to the bounds the view still has at that
@@ -105,13 +109,19 @@ export function useKeyboardClearance(scrollTo: (offset: number) => void) {
           },
         }
       : {},
-    fieldProps: {
+    /*
+     * Resolved at focus rather than held as a second ref: by the time a field
+     * has focus its composer is laid out, so the one ref below is either the
+     * field or the box around it and the keyboard handler has nothing to pick
+     * between.
+     */
+    fieldProps: (block?: RefObject<View | null>) => ({
       onFocus: (event: FocusEvent) => {
-        field.current = event.target
+        field.current = block?.current ?? event.target
       },
       onBlur: () => {
         field.current = null
       },
-    },
+    }),
   }
 }
