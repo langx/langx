@@ -1439,6 +1439,14 @@ export const en = {
     followers: { one: '{count} follower', other: '{count} followers' },
     followingCount: { one: '{count} following', other: '{count} following' },
     followersTitle: 'Followers',
+    /**
+     * The third stat tile, where the badge count used to be. "Top 12%" rather
+     * than "#41,205": a rank is only worth reading at the very top of a board,
+     * and a percentile stays legible as the app grows.
+     */
+    rankLabel: 'This week',
+    rankValue: 'Top {percent}%',
+    badgeStrip: { one: '{count} badge earned', other: '{count} badges earned' },
     followingTitle: 'Following',
     followersEmptyTitle: 'No followers yet',
     followersEmptyBody: 'Corrections are how people find each other here.',

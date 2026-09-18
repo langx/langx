@@ -1,32 +1,13 @@
 import Feather from '@expo/vector-icons/Feather'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useMemo } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import type { EarnedBadge } from '../api/types'
 import type { BadgeSummary, Locale } from '@langx/shared'
+import { BadgeGlyph } from './BadgeGlyph'
 import { BADGE_MARKS } from '../lib/badgeMark'
 import { badgesEarnedFirst } from '../lib/badgeOrder'
 import { makeStyles, useTheme } from '../lib/theme'
 import { badgeLabel, useLocale, useT } from '../i18n'
-
-/**
- * The catalogue's glyph, from whichever set it names. `mci:` in front means
- * MaterialCommunityIcons; everything else is Feather.
- *
- * The casts are the price of a name that arrives as data. Both libraries type
- * `name` as a union of their own glyphs and neither exports a runtime guard;
- * `badgeGlyph.test.ts` checks every name in `BADGES` against the shipped maps
- * instead, which catches the only thing the union would have.
- */
-function BadgeGlyph({ icon, color }: { icon: string; color: string }) {
-  if (icon.startsWith('mci:')) {
-    const name = icon.slice(4) as React.ComponentProps<typeof MaterialCommunityIcons>['name']
-    return <MaterialCommunityIcons name={name} size={22} color={color} />
-  }
-  return (
-    <Feather name={icon as React.ComponentProps<typeof Feather>['name']} size={22} color={color} />
-  )
-}
 
 /** "Apr 2026" — a badge is dated to the month, not the minute. */
 function earnedMonth(iso: string, locale: Locale): string {
