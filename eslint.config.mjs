@@ -152,6 +152,7 @@ export default tseslint.config(
     languageOptions: {
       sourceType: 'module',
       globals: {
+        Buffer: 'readonly',
         console: 'readonly',
         process: 'readonly',
         URL: 'readonly',

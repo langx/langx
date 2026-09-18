@@ -1,8 +1,15 @@
 /**
  * Cuts `out/raw/journey.webm` into the finished 1080x1920 video.
  *
- * Nothing here is hand-timed: the trim points and every caption window come
- * out of `marks.json`, which `capture.mjs` measured while it recorded.
+ * Nothing here is hand-timed: the trim points, the excised waits and every
+ * caption window come out of `marks.json`, which `capture.mjs` measured while
+ * it recorded.
+ *
+ * What gets excised is dead time — the seconds where the app is fetching and
+ * the screen is a skeleton, and the minute where a second browser is driven
+ * off camera so that the reply is a real one. Each is replaced by a short
+ * dissolve, so it reads as an edit rather than as a stutter. Nothing a viewer
+ * is watching work is sped up; the cuts are where nothing happens at all.
  *
  * Two ffmpeg habits this file exists to avoid repeating:
  *   - captions go in through `textfile=`, never `text=`. A colon inside
@@ -14,9 +21,10 @@
  * Usage: node tools/promo-video/compose.mjs [locale]
  */
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { writeBed } from './music.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const RAW = join(HERE, 'out/raw')
@@ -42,6 +50,22 @@ const BORDER = 6
 const PHONE_Y = 300
 const BAND_H = 94
 const END_SECONDS = 2
+/** The dissolve that replaces an excised wait, and the one into the end card. */
+const CUT_FADE = 0.3
+const END_FADE = 0.5
+
+/**
+ * The waits worth removing, as pairs of marks.
+ *
+ * `keepBefore` leaves the tap visible and `keepAfter` leaves the screen
+ * arriving visible — cut flush against either and the action itself disappears
+ * along with the wait. A span too short to be worth a dissolve is left alone.
+ */
+const CUTS = [
+  { from: 'chatOpenClicked', to: 'chat', keepBefore: 0.5, keepAfter: 0.45 },
+  { from: 'sendClicked', to: 'delivered', keepBefore: 0.6, keepAfter: 0.35 },
+  { from: 'awaitReply', to: 'replied', keepBefore: 0.4, keepAfter: 0.3 },
+]
 
 function marksFor() {
   const { marks } = JSON.parse(readFileSync(join(RAW, 'marks.json'), 'utf8'))
@@ -50,7 +74,7 @@ function marksFor() {
     if (!found) throw new Error(`no mark "${name}" in marks.json`)
     return found.at
   }
-  return { at, start: at('journeyStart'), end: at('journeyEnd') }
+  return { at, has: (name) => marks.some((mark) => mark.name === name) }
 }
 
 /** A caption's own file, so nothing in the copy has to be escaped. */
@@ -60,12 +84,51 @@ function textfile(name, body) {
   return path
 }
 
+/**
+ * Turn a time in the recording into its time in the finished video.
+ *
+ * Each kept segment sits after the ones before it, minus the dissolve it
+ * overlaps them by. Caption marks are always inside a kept segment: they mark
+ * screens, and the cuts are between screens.
+ */
+function timeline(segments) {
+  return (t) => {
+    let out = 0
+    for (const [index, segment] of segments.entries()) {
+      const overlap = index === 0 ? 0 : CUT_FADE
+      if (t <= segment.end) return Math.max(0, out + (t - segment.start) - overlap)
+      out += segment.end - segment.start - overlap
+    }
+    return out
+  }
+}
+
 function main() {
   const copy = JSON.parse(readFileSync(join(HERE, 'captions.json'), 'utf8'))[LOCALE]
   if (!copy) throw new Error(`captions.json has no "${LOCALE}"`)
-  const { at, start, end } = marksFor()
-  const journey = end - start
-  const total = journey + END_SECONDS
+  const { at, has } = marksFor()
+  const start = at('journeyStart')
+  const end = at('journeyEnd')
+
+  const segments = []
+  let cursor = start
+  for (const cut of CUTS) {
+    if (!has(cut.from) || !has(cut.to)) continue
+    const from = at(cut.from) + cut.keepBefore
+    const to = at(cut.to) - cut.keepAfter
+    if (to - from < CUT_FADE * 2) continue
+    segments.push({ start: cursor, end: from })
+    cursor = to
+  }
+  segments.push({ start: cursor, end })
+
+  const kept = segments.reduce((total, segment) => total + (segment.end - segment.start), 0)
+  const journey = kept - CUT_FADE * (segments.length - 1)
+  const total = journey + END_SECONDS - END_FADE
+  const toOut = timeline(segments)
+  console.log(
+    `${segments.length} segment(s), ${(end - start - kept).toFixed(1)}s of waiting removed`,
+  )
 
   mkdirSync(OUT, { recursive: true })
   const hook = copy.hook.map((line, index) => textfile(`hook${index + 1}`, line))
@@ -73,8 +136,8 @@ function main() {
   // Each caption runs from its own mark to the next one's, the last to the end.
   const windows = copy.subtitles.map((caption, index) => ({
     file: textfile(`sub${index + 1}`, caption.text),
-    from: Math.max(0, at(caption.from) - start),
-    to: index + 1 < copy.subtitles.length ? at(copy.subtitles[index + 1].from) - start : journey,
+    from: toOut(at(caption.from)),
+    to: index + 1 < copy.subtitles.length ? toOut(at(copy.subtitles[index + 1].from)) : journey,
   }))
 
   const drawHook = hook
@@ -93,21 +156,51 @@ function main() {
     )
     .join(',')
 
-  const filter = [
-    // The recording: trimmed to the journey, framed, and never upscaled.
-    `[0:v]trim=start=${start.toFixed(3)}:end=${end.toFixed(3)},setpts=PTS-STARTPTS,fps=25,` +
-      `scale=-2:${PHONE_H}:flags=lanczos,setsar=1,` +
-      `pad=${PHONE_W + BORDER * 2}:${PHONE_H + BORDER * 2}:${BORDER}:${BORDER}:${PRIMARY}[phone]`,
+  // One branch per kept segment, each trimmed and scaled identically, then
+  // dissolved together in order — `xfade` insists on matching size and SAR.
+  const steps = [`[0:v]split=${segments.length}${segments.map((_, i) => `[src${i}]`).join('')}`]
+  segments.forEach((segment, index) => {
+    steps.push(
+      `[src${index}]trim=start=${segment.start.toFixed(3)}:end=${segment.end.toFixed(3)},` +
+        `setpts=PTS-STARTPTS,fps=25,scale=-2:${PHONE_H}:flags=lanczos,setsar=1[seg${index}]`,
+    )
+  })
+  let stitched = '[seg0]'
+  let elapsed = segments[0].end - segments[0].start
+  segments.slice(1).forEach((segment, index) => {
+    const offset = elapsed - CUT_FADE
+    const label = `[join${index}]`
+    steps.push(
+      `${stitched}[seg${index + 1}]xfade=transition=fade:duration=${CUT_FADE}:` +
+        `offset=${offset.toFixed(3)}${label}`,
+    )
+    stitched = label
+    elapsed = offset + (segment.end - segment.start)
+  })
+
+  steps.push(
+    `${stitched}pad=${PHONE_W + BORDER * 2}:${PHONE_H + BORDER * 2}:${BORDER}:${BORDER}:${PRIMARY}[phone]`,
     `color=c=${INK}:s=${W}x${H}:r=25:d=${journey.toFixed(3)}[bg]`,
     `[bg][phone]overlay=x=(W-w)/2:y=${PHONE_Y}:shortest=1[stage]`,
     `[stage]${drawHook}[titled]`,
     `[titled]drawbox=x=0:y=${H - BAND_H}:w=${W}:h=${BAND_H}:color=0x000000@0.55:t=fill,${drawSubs}[body]`,
-    // The end card is a still; `concat` needs it at the same size, rate and SAR.
     `[1:v]fps=25,scale=${W}:${H},setsar=1,trim=duration=${END_SECONDS},setpts=PTS-STARTPTS[end]`,
-    `[body][end]concat=n=2:v=1:a=0,fade=t=in:st=0:d=0.3[outv]`,
-    // Silent, but present: some upload paths mishandle a video-only MP4.
-    `[2:a]atrim=duration=${total.toFixed(3)},asetpts=PTS-STARTPTS[outa]`,
-  ].join(';')
+    `[body][end]xfade=transition=fade:duration=${END_FADE}:offset=${(journey - END_FADE).toFixed(3)}[joined]`,
+    `[joined]fade=t=in:st=0:d=0.3[outv]`,
+    `[2:a]atrim=duration=${total.toFixed(3)},asetpts=PTS-STARTPTS,` +
+      // The bed peaks around -12 dBFS on its own; this brings it to roughly
+      // -9, which is background music under nothing else rather than a hum.
+      `afade=t=out:st=${Math.max(0, total - 1.6).toFixed(3)}:d=1.6,volume=1.4[outa]`,
+  )
+
+  /*
+   * The bed is synthesised unless a real track is named. A public repository
+   * cannot carry somebody else's music, and an unlicensed track under an
+   * advert gets the post muted — the one worth using is whatever Instagram or
+   * TikTok adds from its own library at upload time.
+   */
+  const music = process.env.PROMO_MUSIC ?? writeBed(total + 1)
+  if (!existsSync(music)) throw new Error(`no music at ${music}`)
 
   const out = join(OUT, `langx-promo-${LOCALE}.mp4`)
   const args = [
@@ -122,12 +215,10 @@ function main() {
     String(END_SECONDS),
     '-i',
     join(OUT, 'endcard.png'),
-    '-f',
-    'lavfi',
     '-i',
-    'anullsrc=channel_layout=stereo:sample_rate=48000',
+    music,
     '-filter_complex',
-    filter,
+    steps.join(';'),
     '-map',
     '[outv]',
     '-map',
@@ -147,7 +238,7 @@ function main() {
     '-c:a',
     'aac',
     '-b:a',
-    '96k',
+    '128k',
     '-shortest',
     '-movflags',
     '+faststart',

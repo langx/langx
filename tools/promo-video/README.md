@@ -1,13 +1,24 @@
 # promo-video
 
 Cuts a 1080x1920 vertical promo video out of the real app: a scripted run
-through Discover, a profile and a first message, framed on a brand ground with
-a hook, captions and an end card.
+through Discover, a profile, a first message and the reply that comes back,
+framed on a brand ground with a hook, captions, an end card and a music bed.
+
+Both sides are real. The partner's reply is typed by a second signed-in
+session in a browser nobody records, through the same guards as anybody
+else's message — a reply written straight into the database would be a picture
+of the app rather than the app.
 
 Nothing here is hand-timed. `capture.mjs` writes down when each step actually
-happened, and `compose.mjs` computes every caption window and both trim points
-from those numbers — so a run where the app was slower produces a correct cut
-rather than captions that have slipped.
+happened; `compose.mjs` computes every caption window and every trim point from
+those numbers — so a run where the app was slower produces a correct cut rather
+than captions that have slipped.
+
+It also uses them to cut the dead time out: the seconds a screen spends on its
+skeleton, and the minute the partner's session takes to sign in and answer. Each
+becomes a short dissolve. Nothing a viewer watches the app do is sped up — the
+cuts are where nothing is happening at all, and `compose.mjs` prints how many
+seconds it removed.
 
 ## Before you run it
 
@@ -70,7 +81,9 @@ the store screenshots.
 | `PROMO_PLAYWRIGHT`               | `playwright`                      | module to import; an absolute path works    |
 | `PROMO_CHANNEL`                  | `chrome`                          | `chromium` uses Playwright's own build      |
 | `PROMO_PARTNER`                  | `Katya`                           | display name the capture clicks in Discover |
-| `PROMO_PARTNER_HANDLE`           | `test_katya`                      | the same person, for route warming          |
+| `PROMO_PARTNER_HANDLE`           | `test_katya`                      | the same person, for warming and signing in |
+| `PROMO_VIEWER_NAME`              | `George`                          | the row the partner clicks in their chats   |
+| `PROMO_MUSIC`                    | _(synthesised)_                   | a real track to use instead of the bed      |
 | `PROMO_EMAIL` / `PROMO_PASSWORD` | `test_george@…` / `TestUser!2026` | who is browsing                             |
 | `PROMO_WEB` / `PROMO_API`        | `:8081` / `:4000`                 | the stack                                   |
 
@@ -98,6 +111,12 @@ line to its own file, so copy can contain whatever it likes.
 on both branches. Playwright records at a hard 25 fps; converting to 30
 duplicates every fifth frame and shows as judder on exactly the slow scroll
 this pipeline works to get right.
+
+**The music is synthesised, and should be replaced.** `music.mjs` writes a
+plain pentatonic bed, because a public repository cannot carry somebody else's
+track and an unlicensed one under an advert gets the post muted. The track
+worth having is the one Instagram or TikTok adds from its own licensed library
+at upload time; until then, `PROMO_MUSIC=/path/to/track.mp3` takes a real file.
 
 **Selectors are text.** There are no testIDs in the app, so a copy change in
 `src/i18n/messages/en.ts` breaks the capture. It fails loudly rather than

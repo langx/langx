@@ -12,9 +12,10 @@
       },
       {
         "from": "chat",
-        "text": "Say hi. That is the whole app."
+        "text": "Say hi. Somebody answers."
       }
     ],
-    "message": "Hi Katya! Want to trade Russian for English?"
+    "message": "Hi Katya! Want to trade Russian for English?",
+    "reply": "Deal. Send me a voice note in Russian and I will correct it."
   }
 }

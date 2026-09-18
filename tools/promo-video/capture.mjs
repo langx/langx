@@ -30,8 +30,11 @@ const EMAIL = process.env.PROMO_EMAIL ?? 'test_george@test.langx.invalid'
 const PASSWORD = process.env.PROMO_PASSWORD ?? 'TestUser!2026'
 /** Display name as Discover prints it; the capture clicks this. */
 const PARTNER = process.env.PROMO_PARTNER ?? 'Katya'
-/** The same person's handle, used only to warm their profile route. */
+/** The same person's handle, used to warm their profile route and to sign in. */
 const PARTNER_HANDLE = process.env.PROMO_PARTNER_HANDLE ?? 'test_katya'
+const PARTNER_EMAIL = process.env.PROMO_PARTNER_EMAIL ?? `${PARTNER_HANDLE}@test.langx.invalid`
+/** How the viewer's row is labelled in the partner's chat list. */
+const VIEWER_NAME = process.env.PROMO_VIEWER_NAME ?? 'George'
 
 if (!/^https?:\/\/localhost[:/]/.test(API)) {
   throw new Error(`refusing to record against ${API} — the API must be localhost`)
@@ -122,13 +125,13 @@ const CONTEXT = {
   timezoneId: 'Europe/London',
 }
 
-async function signIn(context) {
+async function signIn(context, email = EMAIL) {
   const response = await context.request.post(`${API}/api/auth/sign-in/email`, {
     headers: { origin: WEB },
-    data: { email: EMAIL, password: PASSWORD },
+    data: { email, password: PASSWORD },
   })
   if (!response.ok()) {
-    throw new Error(`sign-in failed: ${response.status()} ${await response.text()}`)
+    throw new Error(`sign-in as ${email} failed: ${response.status()} ${await response.text()}`)
   }
 }
 
@@ -148,6 +151,37 @@ async function warmUp(browser) {
   await page.goto(`${WEB}/discover`, { waitUntil: 'load', timeout: 240000 })
   await page.waitForTimeout(6000)
   await context.close()
+}
+
+/**
+ * The other half of the conversation, in a second browser nobody records.
+ *
+ * A reply that appeared by writing to the database would be a picture of the
+ * app rather than the app, and one faked in the page would be a lie about what
+ * the product does. This is the partner signing in and typing, through the
+ * same guards as anybody — which is also why it is slow, and why the wait for
+ * it is one of the spans `compose.mjs` cuts.
+ */
+async function replyAsPartner(browser, text) {
+  const context = await browser.newContext(CONTEXT)
+  await context.addInitScript(quietFirstRun)
+  await signIn(context, PARTNER_EMAIL)
+  const page = await context.newPage()
+  try {
+    await page.goto(`${WEB}/chats`, { waitUntil: 'load', timeout: 240000 })
+    await page.getByText(VIEWER_NAME, { exact: false }).first().click({ timeout: 60000 })
+    await page.waitForURL(/\/chat\//, { timeout: 30000 })
+    const composer = page.locator('textarea').last()
+    await composer.click({ timeout: 30000 })
+    await composer.fill(text)
+    await page
+      .getByRole('button', { name: /^Send$/i })
+      .last()
+      .click({ timeout: 15000 })
+    await page.getByText(text).last().waitFor({ timeout: 30000 })
+  } finally {
+    await context.close()
+  }
 }
 
 async function main() {
@@ -232,6 +266,7 @@ async function main() {
   await glide(page, { distance: 520, durationMs: 1500 })
   await page.waitForTimeout(900)
 
+  mark('chatOpenClicked')
   await page
     .getByText(/Open your chat|Send a message/i)
     .last()
@@ -254,8 +289,9 @@ async function main() {
   })
   await page.keyboard.type(CAPTIONS.en.message, { delay: 62 })
   await page.waitForTimeout(500)
-  mark('typed')
-
+  // The same instant as the end of typing; named for what happens next,
+  // because `compose.mjs` cuts the wait that follows it.
+  mark('sendClicked')
   await page
     .getByRole('button', { name: /^Send$/i })
     .last()
@@ -269,8 +305,16 @@ async function main() {
    * the whole video exists to earn.
    */
   await settled(page, page.getByText(CAPTIONS.en.message).last(), 'sent message')
-  await page.waitForTimeout(1800)
-  mark('sent')
+  mark('delivered')
+  await page.waitForTimeout(900)
+
+  // Driving a second session takes the best part of a minute; the recording
+  // holds on a still chat throughout, and the span is cut out afterwards.
+  mark('awaitReply')
+  await replyAsPartner(browser, CAPTIONS.en.reply)
+  await settled(page, page.getByText(CAPTIONS.en.reply).last(), 'reply')
+  mark('replied')
+  await page.waitForTimeout(2200)
   mark('journeyEnd')
 
   const video = page.video()
