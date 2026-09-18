@@ -25,9 +25,9 @@ const FROM = '/(app)/(tabs)/discover'
  * product, so it must not look like a broken one, and a skeleton would
  * promise content that may never arrive.
  *
- * `params` is the filters only. Sort and radius are deliberately not passed:
- * the strip has one order of its own, and including them would give it a
- * fresh cache entry per sort for a response that never changes.
+ * `params` is the filters, plus the sort and — under Nearby — the radius: the
+ * server orders the strip by whatever the list below it is ordered by, so
+ * those are part of the answer rather than noise in its cache key.
  */
 export function BoostedProfiles({ params }: { params: Record<string, string> }) {
   const styles = useStyles()

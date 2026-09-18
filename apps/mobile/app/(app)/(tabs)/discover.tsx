@@ -277,8 +277,9 @@ export default function DiscoverScreen() {
   /*
    * Built once and handed to both surfaces, so the strip is filtered by
    * exactly what the list is filtered by. The sort and the radius stay out of
-   * it: the strip has neither, and putting them in its cache key would
-   * refetch a response that cannot change.
+   * it — they are added below, to each surface's own params — because this is
+   * also what `/filters` is handed, and a sort belongs to the screen rather
+   * than to the filter sheet.
    */
   const filterParams = toQuery(effective)
   // Nearby, with a reason on this device why it cannot work. The list is not
@@ -291,18 +292,22 @@ export default function DiscoverScreen() {
    * runs into.
    *
    * Added here rather than in `toQuery` for the reason that function gives:
-   * only this sort does anything with it, and `filterParams` is also the
-   * boosted strip's cache key.
+   * only this sort does anything with it, so it travels with the sort rather
+   * than with the filters. Both surfaces get it — Nearby's strip is bounded by
+   * the same circle as Nearby's list.
    */
   const radiusKm = effective.radiusKm
-  const query = useDiscovery(
-    {
-      sort,
-      ...filterParams,
-      ...(sort === 'nearby' && radiusKm !== undefined ? { radiusKm: String(radiusKm) } : {}),
-    },
-    { enabled: !nearbyStuck },
-  )
+  const sortParams = {
+    sort,
+    ...(sort === 'nearby' && radiusKm !== undefined ? { radiusKm: String(radiusKm) } : {}),
+  }
+  const query = useDiscovery({ ...sortParams, ...filterParams }, { enabled: !nearbyStuck })
+  /*
+   * The strip gets the sort too, and therefore a cache entry per sort. That is
+   * the point rather than the cost: its order now follows the section it sits
+   * in, so the three sorts are three different answers.
+   */
+  const boostedParams = { ...sortParams, ...filterParams }
   const pull = usePullToRefresh(() => query.refetch())
 
   // Deduped for the reason `dedupeById` gives: presence moves
@@ -510,14 +515,16 @@ export default function DiscoverScreen() {
            * holding the top of a screen somebody is scrolling past. It draws
            * nothing when nobody qualifies — see `BoostedProfiles`.
            *
-           * "For you" only. The other two sorts are a question the reader
-           * asked — who is active, who is near me — and a strip ordered by
-           * somebody's subscription is not an answer to either. The search
-           * branch replaces the whole list, so it needs no gate here.
+           * On every sort, which it was not. The gate here used to say that
+           * Active and Nearby are questions the reader asked and a strip
+           * ordered by somebody's subscription answers neither — true of a
+           * strip with an order of its own, which is why the answer was to
+           * give the strip the reader's order instead of hiding it. It leads
+           * with the most recently seen under Active and the nearest under
+           * Nearby; the subscription decides who is in it, not where. The
+           * search branch replaces the whole list, so it needs no gate here.
            */
-          ListHeaderComponent={
-            sort === 'recommended' ? <BoostedProfiles params={filterParams} /> : null
-          }
+          ListHeaderComponent={<BoostedProfiles params={boostedParams} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
