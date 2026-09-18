@@ -49,7 +49,6 @@
 import { Buffer } from 'node:buffer'
 import { spawn } from 'node:child_process'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { existsSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import prettier from 'prettier'
 import { DRAWINGS } from './drawings.mjs'
@@ -87,15 +86,31 @@ function slugify(annotation) {
 /** U+FE0F, the variation selector. `⏱` and `⏱️` are the same cue. */
 const stripVariation = (text) => text.replace(/\uFE0F/g, '')
 
+/**
+ * The cached copy, or one fetch and then the cached copy.
+ *
+ * Reads first and asks questions later, rather than testing for the file and
+ * then writing it. Two runs at once is not the reason — it is that the pair of
+ * calls is a race whatever the odds, and the version that cannot race is also
+ * the shorter one.
+ */
+async function cached(path, url) {
+  try {
+    return await readFile(path, 'utf8')
+  } catch {
+    // Not cached yet. Every other failure — a permission, a bad disk — comes
+    // back from the write below rather than being swallowed here.
+  }
+  const response = await fetch(url)
+  if (!response.ok) throw new Error(`${url}: ${response.status}`)
+  const body = await response.text()
+  await writeFile(path, body)
+  return body
+}
+
 async function openmojiTable() {
   await mkdir(CACHE, { recursive: true })
-  const path = join(CACHE, 'openmoji.json')
-  if (!existsSync(path)) {
-    const response = await fetch(DATA_URL)
-    if (!response.ok) throw new Error(`OpenMoji data: ${response.status}`)
-    await writeFile(path, await response.text())
-  }
-  const rows = JSON.parse(await readFile(path, 'utf8'))
+  const rows = JSON.parse(await cached(join(CACHE, 'openmoji.json'), DATA_URL))
   const byEmoji = new Map()
   for (const row of rows) byEmoji.set(stripVariation(row.emoji), row)
   return byEmoji
@@ -103,13 +118,7 @@ async function openmojiTable() {
 
 async function glyphBody(hex) {
   await mkdir(CACHE, { recursive: true })
-  const path = join(CACHE, `${hex}.svg`)
-  if (!existsSync(path)) {
-    const response = await fetch(SVG_URL(hex))
-    if (!response.ok) throw new Error(`OpenMoji ${hex}: ${response.status}`)
-    await writeFile(path, await response.text())
-  }
-  const raw = await readFile(path, 'utf8')
+  const raw = await cached(join(CACHE, `${hex}.svg`), SVG_URL(hex))
   /*
    * The glyph's own 72×72 box is thrown away and its children are re-placed on
    * ours. Keeping the nested <svg> would work in some renderers and not
