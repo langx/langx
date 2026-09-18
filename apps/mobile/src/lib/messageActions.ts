@@ -70,11 +70,13 @@ export interface MessageActionContext {
    * The thread is a channel: `@langx` announces, and there is nothing at the
    * other end to read anything sent back. The screen draws no composer for
    * one, and this is the same fact reaching the menu — every row that would
-   * write into that composer, or reach the account behind it, is off with it.
+   * *send* something is off with it.
    *
-   * Reading rows are untouched: a translation, a copy, an Echo card and a
-   * deletion are all things the reader does to their own copy, and an
-   * announcement is exactly the kind of text worth keeping.
+   * Sending is the whole of the rule. A translation, a copy, an Echo card and
+   * a deletion are things the reader does to their own copy, and an
+   * announcement is exactly the kind of text worth keeping. Report goes to
+   * moderation rather than to the account, so it stays too: a channel is
+   * still where an announcement nobody should have sent would appear.
    */
   channel?: boolean
   /**
@@ -299,9 +301,7 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
     })
   }
 
-  // Not in a channel: the account being reported is ours, so the complaint
-  // would reach the people who wrote the message it is about.
-  if (!context.mine && !context.channel) {
+  if (!context.mine) {
     actions.push({
       id: 'report',
       label: t('messageActions.report'),
