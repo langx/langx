@@ -761,6 +761,16 @@ export async function setGender(
   )
 }
 
+/** One entry per language code, in the order they arrived. */
+function withoutDuplicateCodes<T extends { code: string }>(entries: T[]): T[] {
+  const seen = new Set<string>()
+  return entries.filter((entry) => {
+    if (seen.has(entry.code)) return false
+    seen.add(entry.code)
+    return true
+  })
+}
+
 /**
  * Refuses a write that would put somebody further over their tier's language
  * limit than they already are.
@@ -982,8 +992,26 @@ export async function updateProfile(
   const current = await profiles.findOne({ _id: userId })
   if (!current) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
 
-  const nextNative = input.nativeLanguages ?? current.nativeLanguages
-  const nextLearning = input.learning ?? current.learning
+  /*
+   * A list of languages is a set, and only this function can make it one.
+   *
+   * The schema counts entries and cannot compare them, so a body naming the
+   * same language twice was stored twice — which a client bug did: the
+   * languages screen applied one tap to its cache and then applied it again to
+   * that same cache on the way to the wire. The rows came back as two, and
+   * removing either removed both, since a row is a language and a language is
+   * filtered by its code.
+   *
+   * Dropped rather than refused, and on the way through every update rather
+   * than on the way in: refusing would leave anybody already carrying a
+   * duplicate unable to edit their languages at all, while this heals them on
+   * the first write that carries the list — which the screen sends whole, so
+   * it is the first edit either way. The first occurrence is the one kept —
+   * in the learning list that is also the one with the lower priority, which
+   * is the one its owner arranged.
+   */
+  const nextNative = withoutDuplicateCodes(input.nativeLanguages ?? current.nativeLanguages)
+  const nextLearning = withoutDuplicateCodes(input.learning ?? current.learning)
   const nativeCodes = new Set(nextNative.map((l) => l.code))
   if (nextLearning.some((l) => nativeCodes.has(l.code))) {
     throw new ApiError(
@@ -1179,6 +1207,9 @@ export async function updateProfile(
     {
       $set: {
         ...rest,
+        // The lists as the checks above read them, not as they arrived.
+        ...(input.nativeLanguages !== undefined ? { nativeLanguages: nextNative } : {}),
+        ...(input.learning !== undefined ? { learning: nextLearning } : {}),
         /*
          * Derived, and derived here rather than anywhere else: `nameTokens` is
          * what the search box matches a name against, so it has to move in the
