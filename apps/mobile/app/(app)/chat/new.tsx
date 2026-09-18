@@ -252,6 +252,9 @@ export default function NewChatScreen() {
                 endsGroup
                 partnerName={partner?.displayName ?? t('chat.them')}
                 translating={false}
+                // A message still on its way out has nothing to read aloud;
+                // the long-press menu is inert on this stand-in anyway.
+                speaking={false}
                 highlighted={false}
                 pending
                 onLongPress={ignore}

@@ -46,6 +46,19 @@ jobs:
           sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
           df -h /
 
+      # Its own step, with retries, because Docker Hub resets the token request
+      # often enough to have already done it here once — and a base image that
+      # will not resolve is not news about this change. Once it is pulled the
+      # build uses the local copy.
+      - name: Pull the base image
+        run: |
+          for attempt in 1 2 3 4 5; do
+            docker pull python:3.12-slim && exit 0
+            echo "pull failed (attempt $attempt), retrying"
+            sleep $((attempt * 10))
+          done
+          exit 1
+
       # No push, no registry, no cache: a green build here means the download
       # and both engines are good *today*, which is the only claim being made.
       # Caching the model layer would quietly make it a claim about a cache.
