@@ -1035,6 +1035,7 @@ export const tr: Localized<EnMessages> = {
       other: 'Fotoğraf ve sesli mesajlar, karşı taraftan {count} mesaj daha gelince açılır.',
     },
     speaking: 'Sesli okunuyor…',
+    playAgain: 'Tekrar dinle',
     speakUnavailable: 'Bu mesaj sesli okunamadı',
     speakFailed: 'Birazdan tekrar dene.',
     speakLimit: {

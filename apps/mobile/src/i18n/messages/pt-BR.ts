@@ -1032,6 +1032,7 @@ export const ptBR: Localized<EnMessages> = {
         'Fotos, vídeos e mensagens de voz são liberados depois de mais {count} mensagens da outra pessoa.',
     },
     speaking: 'Lendo em voz alta…',
+    playAgain: 'Ouvir de novo',
     speakUnavailable: 'Não deu para ler em voz alta',
     speakFailed: 'Tente de novo daqui a pouco.',
     speakLimit: {

@@ -255,6 +255,8 @@ export default function NewChatScreen() {
                 // A message still on its way out has nothing to read aloud;
                 // the long-press menu is inert on this stand-in anyway.
                 speaking={false}
+                hasReading={false}
+                onReplayReading={ignore}
                 highlighted={false}
                 pending
                 onLongPress={ignore}

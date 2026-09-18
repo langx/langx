@@ -1036,6 +1036,7 @@ export const es: Localized<EnMessages> = {
         'Las fotos, los vídeos y las notas de voz se desbloquean cuando la otra persona te envíe {count} mensajes más.',
     },
     speaking: 'Leyendo en voz alta…',
+    playAgain: 'Escuchar otra vez',
     speakUnavailable: 'No se pudo leer en voz alta',
     speakFailed: 'Vuelve a intentarlo en un momento.',
     speakLimit: {

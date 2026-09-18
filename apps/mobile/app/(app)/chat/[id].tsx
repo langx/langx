@@ -1609,6 +1609,15 @@ export default function ChatScreen() {
     [],
   )
 
+  /** The bubble's replay control, stabilised for the same reason. */
+  const speakRef = useRef(speak)
+  useEffect(() => {
+    speakRef.current = speak
+  })
+  const onReplayReading = useCallback((message: MessageDto) => {
+    void speakRef.current(message)
+  }, [])
+
   /** The bubble's Echo chip, stabilised for the same reason. */
   const addEchoRef = useRef(addEcho)
   useEffect(() => {
@@ -1997,6 +2006,8 @@ export default function ChatScreen() {
                     translation={translations[row.message._id]}
                     translating={translating === row.message._id}
                     speaking={speaking === row.message._id}
+                    hasReading={speech[row.message._id] !== undefined}
+                    onReplayReading={onReplayReading}
                     highlighted={highlighted === row.message._id}
                     askAnswered={answeredAsks.has(row.message._id)}
                     onAnswerAsk={answerAsk}

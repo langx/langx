@@ -1040,6 +1040,7 @@ export const fr: Localized<EnMessages> = {
         'Les photos, vidéos et notes vocales se débloquent après {count} messages de plus de l’autre personne.',
     },
     speaking: 'Lecture à voix haute…',
+    playAgain: 'Réécouter',
     speakUnavailable: 'Impossible de lire ce message',
     speakFailed: 'Réessaie dans un instant.',
     speakLimit: {
