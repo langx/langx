@@ -96,6 +96,21 @@ export interface PlanLimits {
    */
   echoVoicesPerDay: Limit
   /**
+   * Messages a person may have read aloud in chat per rolling 24 hours — one
+   * unit per reading, and only when nobody has had that sentence read before.
+   *
+   * Its own ceiling rather than a share of `echoVoicesPerDay`, because the two
+   * behave nothing alike. An Echo card is kept deliberately, a few a day; a
+   * chat message offers the button on every bubble. Sharing one bucket would
+   * let an afternoon of chat silence the Echo button, and a limit nobody can
+   * see reads as a broken feature rather than as a ceiling.
+   *
+   * The number is also the storage budget: a miss writes a permanent,
+   * content-addressed object of 100-200 KB that nothing ever deletes. A hit
+   * costs neither a unit nor a byte.
+   */
+  chatVoicesPerDay: Limit
+  /**
    * Gender, "only my gender" and city in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
    *
@@ -265,6 +280,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoCapturesPerDay: 50,
     echoReviewsPerDay: null,
     echoVoicesPerDay: 10,
+    chatVoicesPerDay: 15,
     advancedFilters: false,
     boostedProfile: false,
     sendTranslation: false,
@@ -287,6 +303,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoCapturesPerDay: 50,
     echoReviewsPerDay: null,
     echoVoicesPerDay: 50,
+    chatVoicesPerDay: 100,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: false,
@@ -315,6 +332,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoCapturesPerDay: 50,
     echoReviewsPerDay: null,
     echoVoicesPerDay: 100,
+    chatVoicesPerDay: 250,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: true,
@@ -370,6 +388,7 @@ export const QUOTA_KINDS = [
   'echoCaptures',
   'echoNewCards',
   'echoVoices',
+  'chatVoices',
 ] as const
 export type QuotaKind = (typeof QUOTA_KINDS)[number]
 
@@ -381,6 +400,7 @@ const QUOTA_LIMIT_KEY = {
   echoCaptures: 'echoCapturesPerDay',
   echoNewCards: 'echoNewCardsPerDay',
   echoVoices: 'echoVoicesPerDay',
+  chatVoices: 'chatVoicesPerDay',
 } as const satisfies Record<QuotaKind, keyof PlanLimits>
 
 export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {

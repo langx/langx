@@ -26,6 +26,14 @@ export type TrackedQuotaKind =
   | 'echoNewCards'
   /** A member's own card read by the server voice; one unit per card. */
   | 'echoVoices'
+  /**
+   * A chat message read by the server voice; one unit per reading, and only
+   * when the sentence was not already in the cache. Metered for the same
+   * reason as `echoVoices` — CPU seconds on a machine of ours, plus a
+   * permanent object in the bucket — but on its own ceiling, so a talkative
+   * afternoon cannot silence the Echo button.
+   */
+  | 'chatVoices'
 
 export interface QuotaStatus {
   limit: number | null
