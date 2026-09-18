@@ -19,6 +19,12 @@ platform :ios do
   desc 'Put the store listing up: the localizations and their copy, then the screenshots'
   # `fastlane store skip_metadata:true` re-runs just the screenshots and
   # `skip_screenshots:true` just the copy, for when only one of the two moved.
+  #
+  # `app_version:2.5` names the version to fill in, and creates it if App Store
+  # Connect has no editable one. Without it the lane can only write to a version
+  # that already exists in Prepare for Submission — and screenshots cannot go to
+  # a live version at all, whatever the flags say, so a listing whose last
+  # version is Ready for Sale has nowhere to put them until the next one exists.
   lane :store do |options|
     app_store_connect_api_key(
       key_id: ENV.fetch('APP_STORE_CONNECT_API_KEY_KEY_ID'),
@@ -33,6 +39,9 @@ platform :ios do
     deliver(
       skip_metadata: options[:skip_metadata] || false,
       skip_screenshots: options[:skip_screenshots] || false,
+      # Absent unless asked for: with no app_version deliver edits whichever
+      # version is editable, which is what a release run wants.
+      app_version: options[:app_version],
       force: true,
       submit_for_review: false,
       run_precheck_before_submit: false,
