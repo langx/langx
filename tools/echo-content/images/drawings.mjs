@@ -682,4 +682,256 @@ export const DRAWINGS = {
       <path d="M108 150 L292 150" fill="none"/>
       <path d="M200 58 A54 92 0 0 1 200 242 A54 92 0 0 1 200 58 Z" fill="none"/>`,
   },
+  'flushed-face': {
+    label: 'A flushed face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <circle cx="140" cy="182" r="22" fill="#ff571a"/>
+      <circle cx="260" cy="182" r="22" fill="#ff571a"/>
+      <circle cx="170" cy="136" r="24" fill="#ffffff"/>
+      <circle cx="230" cy="136" r="24" fill="#ffffff"/>
+      <circle cx="170" cy="136" r="9" fill="#17191c" stroke="none"/>
+      <circle cx="230" cy="136" r="9" fill="#17191c" stroke="none"/>
+      <ellipse cx="200" cy="200" rx="16" ry="11" fill="#ffffff"/>`,
+  },
+  'zipper-mouth-face': {
+    label: 'A face with a zipped mouth',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <circle cx="170" cy="130" r="10" fill="#17191c"/>
+      <circle cx="230" cy="130" r="10" fill="#17191c"/>
+      <path d="M140 194 L246 194" fill="none"/>
+      <path d="M160 182 L160 206 M184 182 L184 206 M208 182 L208 206 M232 182 L232 206" fill="none"/>
+      <rect x="248" y="182" width="22" height="24" rx="6" fill="#3b6cf6"/>`,
+  },
+  'astonished-face': {
+    label: 'An astonished face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <circle cx="166" cy="128" r="22" fill="#ffffff"/>
+      <circle cx="234" cy="128" r="22" fill="#ffffff"/>
+      <circle cx="166" cy="128" r="9" fill="#17191c" stroke="none"/>
+      <circle cx="234" cy="128" r="9" fill="#17191c" stroke="none"/>
+      <ellipse cx="200" cy="198" rx="28" ry="26" fill="#ffffff"/>`,
+  },
+  'pleading-face': {
+    label: 'A pleading face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <path d="M148 100 Q172 90 192 102" fill="none"/>
+      <path d="M208 102 Q228 90 252 100" fill="none"/>
+      <circle cx="168" cy="146" r="26" fill="#ffffff"/>
+      <circle cx="232" cy="146" r="26" fill="#ffffff"/>
+      <circle cx="168" cy="150" r="12" fill="#17191c" stroke="none"/>
+      <circle cx="232" cy="150" r="12" fill="#17191c" stroke="none"/>
+      <path d="M178 204 Q200 192 222 204" fill="none"/>`,
+  },
+  'drooling-face': {
+    label: 'A drooling face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <circle cx="170" cy="132" r="10" fill="#17191c"/>
+      <circle cx="230" cy="132" r="10" fill="#17191c"/>
+      <path d="M160 186 Q200 214 240 186" fill="none"/>
+      <path d="M240 190 C248 208 252 216 252 224 A12 12 0 1 1 228 224 C228 216 232 208 240 190 Z" fill="#3b6cf6"/>`,
+  },
+  'nauseated-face': {
+    label: 'A nauseated face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#009f70"/>
+      <path d="M152 134 Q170 120 188 134" fill="none"/>
+      <path d="M212 134 Q230 120 248 134" fill="none"/>
+      <path d="M164 196 Q182 180 200 196 Q218 212 236 196" fill="none"/>`,
+  },
+  'face-with-raised-eyebrow': {
+    label: 'A face with one eyebrow raised',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <path d="M150 122 L188 122" fill="none"/>
+      <path d="M212 96 L250 108" fill="none"/>
+      <circle cx="170" cy="148" r="10" fill="#17191c"/>
+      <circle cx="230" cy="142" r="10" fill="#17191c"/>
+      <path d="M176 198 L222 194" fill="none"/>`,
+  },
+  'expressionless-face': {
+    label: 'An expressionless face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <path d="M150 136 L190 136" fill="none"/>
+      <path d="M210 136 L250 136" fill="none"/>
+      <path d="M162 196 L238 196" fill="none"/>`,
+  },
+  'confused-face': {
+    label: 'A confused face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <circle cx="170" cy="132" r="10" fill="#17191c"/>
+      <circle cx="230" cy="132" r="10" fill="#17191c"/>
+      <path d="M162 200 Q182 182 202 200 Q222 218 242 200" fill="none"/>`,
+  },
+  'worried-face': {
+    label: 'A worried face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <path d="M152 114 L186 104" fill="none"/>
+      <path d="M214 104 L248 114" fill="none"/>
+      <circle cx="170" cy="140" r="10" fill="#17191c"/>
+      <circle cx="230" cy="140" r="10" fill="#17191c"/>
+      <path d="M166 206 Q200 178 234 206" fill="none"/>`,
+  },
+  'face-with-thermometer': {
+    label: 'A face with a thermometer',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <path d="M152 136 Q170 150 188 136" fill="none"/>
+      <path d="M212 136 Q230 150 248 136" fill="none"/>
+      <path d="M176 196 L222 196" fill="none"/>
+      <rect x="140" y="188" width="150" height="22" rx="11" fill="#ffffff" transform="rotate(-16 215 199)"/>
+      <circle cx="292" cy="167" r="16" fill="#e5484d"/>`,
+  },
+  'face-with-crossed-out-eyes': {
+    label: 'A face with crossed-out eyes',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <path d="M152 118 L190 152 M190 118 L152 152" fill="none"/>
+      <path d="M210 118 L248 152 M248 118 L210 152" fill="none"/>
+      <ellipse cx="200" cy="200" rx="30" ry="22" fill="#ffffff"/>`,
+  },
+  'sneezing-face': {
+    label: 'A sneezing face',
+    body: `
+      <circle cx="200" cy="150" r="92" fill="#ffc409"/>
+      <path d="M150 128 Q170 114 190 128" fill="none"/>
+      <path d="M210 128 Q230 114 250 128" fill="none"/>
+      <rect x="150" y="176" width="104" height="72" rx="14" fill="#ffffff"/>`,
+  },
+  'crescent-moon': {
+    label: 'A crescent moon',
+    body: `
+      <path d="M248 58 A96 96 0 1 0 248 242 A76 76 0 1 1 248 58 Z" fill="#ffc409"/>`,
+  },
+  sun: {
+    label: 'The sun',
+    body: `
+      <path d="M200 46 L200 22" fill="none" stroke="#ff571a"/>
+      <path d="M200 254 L200 278" fill="none" stroke="#ff571a"/>
+      <path d="M96 150 L72 150" fill="none" stroke="#ff571a"/>
+      <path d="M304 150 L328 150" fill="none" stroke="#ff571a"/>
+      <path d="M126 76 L109 59" fill="none" stroke="#ff571a"/>
+      <path d="M274 224 L291 241" fill="none" stroke="#ff571a"/>
+      <path d="M274 76 L291 59" fill="none" stroke="#ff571a"/>
+      <path d="M126 224 L109 241" fill="none" stroke="#ff571a"/>
+      <circle cx="200" cy="150" r="72" fill="#ffc409"/>`,
+  },
+  key: {
+    label: 'A key',
+    body: `
+      <circle cx="126" cy="150" r="52" fill="#ffc409"/>
+      <circle cx="126" cy="150" r="20" fill="#f4f5f7"/>
+      <path d="M178 150 L310 150" fill="none"/>
+      <path d="M262 150 L262 194" fill="none"/>
+      <path d="M300 150 L300 186" fill="none"/>`,
+  },
+  train: {
+    label: 'A train',
+    body: `
+      <rect x="96" y="76" width="208" height="150" rx="28" fill="#3b6cf6"/>
+      <rect x="126" y="104" width="148" height="56" rx="10" fill="#ffffff"/>
+      <circle cx="146" cy="192" r="14" fill="#ffc409"/>
+      <circle cx="254" cy="192" r="14" fill="#ffc409"/>
+      <path d="M120 226 L104 252" fill="none"/>
+      <path d="M280 226 L296 252" fill="none"/>`,
+  },
+  airplane: {
+    label: 'An aeroplane',
+    body: `
+      <path d="M196 48 A22 22 0 0 1 218 70 L218 132 L322 186 L322 212 L218 184 L218 224 L246 246 L246 262 L200 250 L154 262 L154 246 L182 224 L182 184 L78 212 L78 186 L182 132 L182 70 A22 22 0 0 1 196 48 Z" fill="#3b6cf6"/>`,
+  },
+  bus: {
+    label: 'A bus',
+    body: `
+      <rect x="82" y="72" width="236" height="150" rx="24" fill="#ffc409"/>
+      <rect x="106" y="100" width="88" height="56" rx="8" fill="#3b6cf6"/>
+      <rect x="206" y="100" width="88" height="56" rx="8" fill="#3b6cf6"/>
+      <circle cx="132" cy="228" r="24" fill="#ffffff"/>
+      <circle cx="268" cy="228" r="24" fill="#ffffff"/>`,
+  },
+  'umbrella-with-rain-drops': {
+    label: 'An umbrella in the rain',
+    body: `
+      <path d="M62 158 A138 138 0 0 1 338 158 Z" fill="#e5484d"/>
+      <path d="M200 158 L200 226 A32 32 0 0 0 264 226" fill="none"/>
+      <path d="M92 196 L84 228" fill="none" stroke="#3b6cf6"/>
+      <path d="M140 210 L132 242" fill="none" stroke="#3b6cf6"/>
+      <path d="M306 196 L314 228" fill="none" stroke="#3b6cf6"/>`,
+  },
+  guitar: {
+    label: 'A guitar',
+    body: `
+      <path d="M256 58 L296 98" fill="none"/>
+      <path d="M170 184 L286 68" fill="none" stroke-width="22"/>
+      <path d="M170 184 L286 68" fill="none" stroke-width="10"/>
+      <circle cx="146" cy="192" r="66" fill="#ff571a"/>
+      <circle cx="176" cy="162" r="18" fill="#f4f5f7"/>`,
+  },
+  'wine-glass': {
+    label: 'A glass of wine',
+    body: `
+      <path d="M132 62 L268 62 L254 132 A56 56 0 0 1 146 132 Z" fill="#e5484d"/>
+      <path d="M200 188 L200 240" fill="none"/>
+      <path d="M156 244 L244 244" fill="none"/>`,
+  },
+  'beer-mug': {
+    label: 'A mug of beer',
+    body: `
+      <path d="M256 118 A44 44 0 0 1 256 206" fill="none"/>
+      <rect x="112" y="104" width="144" height="140" rx="16" fill="#ffc409"/>
+      <path d="M112 132 A28 28 0 0 1 152 108 A32 32 0 0 1 216 104 A28 28 0 0 1 256 132 L256 146 L112 146 Z" fill="#ffffff"/>`,
+  },
+  'mobile-phone': {
+    label: 'A mobile phone',
+    body: `
+      <rect x="136" y="50" width="128" height="200" rx="22" fill="#17191c"/>
+      <rect x="152" y="76" width="96" height="136" rx="8" fill="#ffffff"/>
+      <circle cx="200" cy="230" r="9" fill="#ffffff" stroke="none"/>`,
+  },
+  'musical-note': {
+    label: 'A musical note',
+    body: `
+      <path d="M170 196 L170 76 L286 52 L286 172" fill="none"/>
+      <ellipse cx="140" cy="200" rx="34" ry="26" fill="#3b6cf6" transform="rotate(-18 140 200)"/>
+      <ellipse cx="256" cy="176" rx="34" ry="26" fill="#3b6cf6" transform="rotate(-18 256 176)"/>`,
+  },
+  tooth: {
+    label: 'A tooth',
+    body: `
+      <path d="M200 58 A86 86 0 0 1 292 128 C292 176 268 182 260 234 A22 22 0 0 1 218 230 L212 186 A13 13 0 0 0 188 186 L182 230 A22 22 0 0 1 140 234 C132 182 108 176 108 128 A86 86 0 0 1 200 58 Z" fill="#ffffff"/>`,
+  },
+  'graduation-cap': {
+    label: 'A graduation cap',
+    body: `
+      <path d="M200 76 L340 130 L200 184 L60 130 Z" fill="#17191c"/>
+      <path d="M136 154 L136 210 A72 30 0 0 0 264 210 L264 154" fill="none"/>
+      <path d="M330 134 L330 214" fill="none"/>
+      <circle cx="330" cy="228" r="14" fill="#ffc409"/>`,
+  },
+  pill: {
+    label: 'A pill',
+    body: `
+      <rect x="78" y="112" width="244" height="76" rx="38" fill="#ffffff" transform="rotate(-28 200 150)"/>
+      <path d="M144 216 A38 38 0 0 1 117 151 L200 68 A38 38 0 0 1 254 122 Z" fill="#e5484d"/>`,
+  },
+  coin: {
+    label: 'A coin',
+    body: `
+      <circle cx="200" cy="150" r="88" fill="#ffc409"/>
+      <circle cx="200" cy="150" r="56" fill="none"/>`,
+  },
+  warning: {
+    label: 'A warning sign',
+    body: `
+      <path d="M200 56 L330 246 L70 246 Z" fill="#ffc409"/>
+      <path d="M200 130 L200 186" fill="none"/>
+      <circle cx="200" cy="216" r="8" fill="#17191c" stroke="none"/>`,
+  },
 }
