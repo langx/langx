@@ -152,6 +152,18 @@ def load_piper(voice_id: str, model: str):
     of ONNX session start, on a request that is already waiting on synthesis.
 
     Called only under `Handler.lock`, so the dict needs no lock of its own.
+
+    **This path does not work on a Mac, and that is the wheel rather than us.**
+    Piper ships espeak-ng inside its own extension module with the data beside
+    it, and on Linux the extension builds the data path at run time from what
+    `initialize()` is handed. The macOS wheel has its build machine's directory
+    compiled in instead, so the first synthesis dies in C with
+    "Error processing file '/Users/runner/work/piper1-gpl/.../phontab'" — which
+    is the same failure, from the same cause, that `load_kokoro` below
+    documents for kokoro-onnx. There is nothing to point at it from here: the
+    path is not a parameter and no environment variable reaches it. Test the
+    Piper languages in the container; the Dockerfile loads every voice at build
+    time precisely so this cannot reach a deploy.
     """
     found = _piper_voices.get(voice_id)
     if found is not None:
