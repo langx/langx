@@ -4833,9 +4833,10 @@ The price is that fixing a typo in a message does not fix the card, which is
 the right price: a card somebody has reviewed six times is theirs, including
 its mistakes.
 
-**`echoCapturesPerDay` is a ceiling, and the app must never sell it.** Fifty a
-day, the same number on all three tiers, and `rules.test.ts` asserts the
-sameness so it cannot drift into a product decision by accident. It exists
+**`echoCapturesPerDay` is a ceiling, and the app must never sell it.** Two
+hundred and fifty a day, the same number on all three tiers, and
+`rules.test.ts` asserts the sameness so it cannot drift into a product
+decision by accident. It exists
 because capture asks Google to translate a sentence the thread had not
 translated, which is billed per character — so it is an abuse control on a
 third-party bill, exactly like `mediaPer24h`. Everything follows from that.
@@ -4868,7 +4869,8 @@ $4 per million characters for a Standard voice and $16 for Neural2, free up to
 four million and one million a month. At thirty-five live profiles that is
 zero. The reason it is not built anyway is that the daily cap bounds how many
 cards a person makes and not what those cards cost: a thousand daily users at
-fifty captures is three hundred million characters a month, which is
+fifty captures — the cap at the time — is three hundred million characters a
+month, which is
 thousands of dollars for a voice worse than the one already in the building.
 A pronunciation answer is a real person saying the sentence, already recorded,
 already paid for, and it is the thing that distinguishes this from Memrise —
