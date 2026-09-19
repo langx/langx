@@ -53,6 +53,7 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useKeyboardClearance } from '../../../src/hooks/useKeyboardClearance'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { dedupeById } from '../../../src/lib/dedupeById'
+import { track } from '../../../src/lib/analytics'
 import { foldCorrection } from '../../../src/lib/feedCache'
 import { listState } from '../../../src/lib/listState'
 import { goBackTo, openLikers, openProfile } from '../../../src/lib/navigation'
@@ -385,6 +386,7 @@ export default function PostScreen() {
         return
       }
       const result = await captureEcho.mutateAsync({ source: { kind: 'post', postId: post._id } })
+      if (result.created) track({ name: 'echo_card_captured', properties: { source: 'post' } })
       showToast(t(result.created ? 'echo.added' : 'echo.alreadyAdded'))
     } catch (error) {
       // A ceiling, not a paywall: the same number on every plan.

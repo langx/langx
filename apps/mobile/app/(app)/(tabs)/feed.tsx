@@ -48,6 +48,7 @@ import { FeedPostSkeleton } from '../../../src/components/skeletons/FeedPostSkel
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { authClient } from '../../../src/lib/auth-client'
+import { track } from '../../../src/lib/analytics'
 import { reportWriteError } from '../../../src/lib/reportWriteError'
 import { chooseAlert, showAlert } from '../../../src/lib/alert'
 import { errorCodeOf } from '../../../src/lib/errors'
@@ -270,6 +271,7 @@ export default function FeedScreen() {
   async function addPostEcho(post: FeedPost): Promise<void> {
     try {
       const result = await captureEcho.mutateAsync({ source: { kind: 'post', postId: post._id } })
+      if (result.created) track({ name: 'echo_card_captured', properties: { source: 'post' } })
       showToast(t(result.created ? 'echo.added' : 'echo.alreadyAdded'))
     } catch (error) {
       // A ceiling, not a paywall — the number is the same on every plan, so
