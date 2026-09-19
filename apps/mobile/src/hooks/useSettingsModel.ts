@@ -42,6 +42,7 @@ import { storeManagementUrl } from '../lib/purchases'
 import { openPaywall } from '../lib/paywall'
 import { useThemePreference } from '../lib/theme'
 import { syncIconBadge } from '../lib/iconBadge'
+import { clearCompanionSnapshot } from '../../modules/companion-snapshot'
 import { settleWithin } from '../lib/settleWithin'
 import { showToast } from '../lib/toast'
 
@@ -329,6 +330,14 @@ export function useSettingsModel() {
     setSigningOut(true)
     let ended = false
     try {
+      /*
+       * The other thing this account left on the Home Screen. Beside the icon
+       * badge rather than inside the `settleWithin` above because it neither
+       * waits on the network nor can fail: it removes a key from a container
+       * on this device. A widget still showing a 42-day streak after somebody
+       * signs out is their data on a phone that may not be theirs.
+       */
+      clearCompanionSnapshot()
       await settleWithin(
         SIGN_OUT_CLEANUP_MS,
         Promise.all([unregisterPushToken(), syncIconBadge(0)]),
