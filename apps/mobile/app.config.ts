@@ -221,6 +221,57 @@ const config: ExpoConfig = {
      */
     '@bacons/apple-targets',
     /*
+     * The Android half of the same feature, and it needs no targets: an
+     * Android widget is drawn by the app's own JavaScript in a headless task,
+     * so the views live in `widgets/` as TSX and the plugin only has to write
+     * the manifest entries that let Android find them. The names below are the
+     * contract with `widgets/CompanionWidget.tsx` — change one and change both.
+     *
+     * `label` is the app's own name and nothing else, which is what the iOS
+     * widgets do with `configurationDisplayName`. It is not a translatable
+     * string — it is a proper noun — and without it Android shows the picker
+     * the raw widget id, "LangXStreak". `description` is left out for the
+     * opposite reason: it *would* be a sentence, and the generator that would
+     * translate one into eight languages does not exist yet. The two widgets
+     * are told apart by their drawings until it does.
+     */
+    [
+      'react-native-android-widget',
+      {
+        widgets: [
+          {
+            name: 'LangXStreak',
+            label: 'LangX',
+            minWidth: '110dp',
+            minHeight: '110dp',
+            targetCellWidth: 2,
+            targetCellHeight: 2,
+            resizeMode: 'none',
+            /*
+             * Android's only equivalent of the WidgetKit timeline the iOS
+             * widget uses to dim the streak after local midnight. There is no
+             * way to ask for one entry at a known moment, so this asks to be
+             * redrawn periodically instead; 30 minutes is the platform
+             * minimum, and the OS batches these and will not wake a sleeping
+             * phone for one. It costs a headless render from local storage —
+             * no network, no session, nothing that could move a streak.
+             */
+            updatePeriodMillis: 1800000,
+          },
+          {
+            name: 'LangXSummary',
+            label: 'LangX',
+            minWidth: '250dp',
+            minHeight: '110dp',
+            targetCellWidth: 4,
+            targetCellHeight: 2,
+            resizeMode: 'none',
+            updatePeriodMillis: 1800000,
+          },
+        ],
+      },
+    ],
+    /*
      * Three that carry a config plugin but take no configuration: they only
      * need naming so `prebuild` runs them. Listed because `expo-doctor`
      * reports their absence, and because `runtimeVersion` is a fingerprint —

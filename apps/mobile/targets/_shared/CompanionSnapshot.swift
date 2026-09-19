@@ -79,6 +79,11 @@ struct CompanionSnapshot: Codable {
    The device's day, not the profile's timezone, for the same reason
    `deviceDayKey` gives on the JS side: the phone is where the person is, and
    the answer is allowed to be loose in the direction of asking again.
+
+   The Android widget answers the same question in JavaScript, where it is
+   `countedToday` in `src/lib/companionSnapshot.ts` and has tests. This is the
+   second copy of it; nothing can check that the two agree, so keep them
+   spelled the same way.
    */
   func countedToday(now: Date = Date()) -> Bool {
     guard let last = streak.lastQualifiedDay else { return false }
