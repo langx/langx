@@ -9,6 +9,21 @@
 
 const GRAPH = 'https://graph.instagram.com/v21.0'
 
+/**
+ * A button under a message, which Instagram calls a quick reply.
+ *
+ * Tapping one sends `payload` back as a `messaging_postbacks` webhook — the
+ * same event, for this flow's purposes, as the person having typed it. They
+ * do not render on Instagram's desktop web, so every message that carries one
+ * must also read correctly without it.
+ */
+export interface QuickReply {
+  /** Shown on the button. Instagram truncates a long one. */
+  title: string
+  /** Comes back in the webhook when it is tapped. */
+  payload: string
+}
+
 export interface InstagramGraph {
   /**
    * Which account this token speaks as, asked of `/me` rather than configured.
@@ -26,9 +41,17 @@ export interface InstagramGraph {
    * than to a person, because at this point we do not have a person: a comment
    * carries no messaging id until its author writes to us.
    */
-  sendPrivateReply(commentId: string, message: string): Promise<void>
+  sendPrivateReply(
+    commentId: string,
+    message: string,
+    quickReplies?: readonly QuickReply[],
+  ): Promise<void>
   /** Anything after that, inside the window their reply opened. */
-  sendMessage(recipientId: string, message: string): Promise<void>
+  sendMessage(
+    recipientId: string,
+    message: string,
+    quickReplies?: readonly QuickReply[],
+  ): Promise<void>
   /**
    * Whether they follow the account.
    *
@@ -58,6 +81,20 @@ export function createGraph({
   fetch = globalThis.fetch,
 }: GraphConfig): InstagramGraph {
   let resolved: Promise<string> | null = null
+
+  /** The `message` object, with the buttons only when there are some. */
+  function content(text: string, quickReplies?: readonly QuickReply[]) {
+    if (!quickReplies?.length) return { text }
+    return {
+      text,
+      quick_replies: quickReplies.map(({ title, payload }) => ({
+        content_type: 'text',
+        title,
+        payload,
+      })),
+    }
+  }
+
   async function post(path: string, body: unknown): Promise<void> {
     const response = await fetch(`${GRAPH}${path}`, {
       method: 'POST',
@@ -101,16 +138,28 @@ export function createGraph({
     async replyToComment(commentId, message) {
       await post(`/${commentId}/replies`, { message })
     },
-    async sendPrivateReply(commentId, message) {
-      await post(`/${await this.accountId()}/messages`, {
-        recipient: { comment_id: commentId },
-        message: { text: message },
-      })
+    async sendPrivateReply(commentId, message, quickReplies) {
+      const path = `/${await this.accountId()}/messages`
+      const recipient = { comment_id: commentId }
+      try {
+        await post(path, { recipient, message: content(message, quickReplies) })
+      } catch (caught) {
+        /*
+         * Meta documents quick replies against a recipient *id* and says
+         * nothing either way about a recipient *comment_id*. If this send is
+         * the one they do not allow, the alternative is not a worse message —
+         * it is no message at all, and a public "sent it to your DMs" under a
+         * comment nobody was DMed about. A rejected request sends nothing, so
+         * the one private reply a comment earns is still unspent here.
+         */
+        if (!quickReplies?.length) throw caught
+        await post(path, { recipient, message: content(message) })
+      }
     },
-    async sendMessage(recipientId, message) {
+    async sendMessage(recipientId, message, quickReplies) {
       await post(`/${await this.accountId()}/messages`, {
         recipient: { id: recipientId },
-        message: { text: message },
+        message: content(message, quickReplies),
       })
     },
     async follows(recipientId) {

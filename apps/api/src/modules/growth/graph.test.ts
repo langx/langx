@@ -89,3 +89,77 @@ describe('the account id the token speaks as', () => {
     await expect(graph.accountId()).resolves.toBe('from-me')
   })
 })
+
+/** A `fetch` that keeps the bodies, which is what the button tests are about. */
+function posting(reject: (body: unknown, attempt: number) => boolean = () => false) {
+  const bodies: unknown[] = []
+  const fetch = vi.fn((url: string | URL | Request, init?: RequestInit) => {
+    if (asked(url).includes('/me?fields=id')) {
+      return Promise.resolve(new Response(JSON.stringify({ id: 'us' }), { status: 200 }))
+    }
+    // `BodyInit` is a union; the client only ever sends the string branch.
+    const body: unknown = JSON.parse(typeof init?.body === 'string' ? init.body : '{}')
+    bodies.push(body)
+    return Promise.resolve(
+      reject(body, bodies.length) ? new Response('nope', { status: 400 }) : new Response('{}'),
+    )
+  })
+  return { fetch: fetch as unknown as typeof globalThis.fetch, bodies }
+}
+
+/** What Instagram calls the buttons under a message. */
+function quickRepliesIn(body: unknown): unknown {
+  return (body as { message?: { quick_replies?: unknown } }).message?.quick_replies
+}
+
+describe('buttons under a message', () => {
+  it('sends a quick reply Instagram will render', async () => {
+    const { fetch, bodies } = posting()
+    const graph = createGraph({ token: 't', fetch })
+
+    await graph.sendMessage('them', 'Tap below', [{ title: 'Send the link', payload: 'SEND' }])
+
+    expect(quickRepliesIn(bodies[0])).toEqual([
+      { content_type: 'text', title: 'Send the link', payload: 'SEND' },
+    ])
+  })
+
+  it('leaves the key out entirely when there are no buttons', async () => {
+    // An empty `quick_replies` array is not the same as no buttons to Meta,
+    // and the difference shows as a rejected send rather than a plain message.
+    const { fetch, bodies } = posting()
+    const graph = createGraph({ token: 't', fetch })
+
+    await graph.sendMessage('them', 'Here it is')
+
+    expect(bodies[0]).toEqual({ recipient: { id: 'them' }, message: { text: 'Here it is' } })
+  })
+
+  it('falls back to plain text when a buttoned private reply is refused', async () => {
+    // Meta documents quick replies against a recipient id and says nothing
+    // about a recipient comment_id. If they turn out not to be allowed there,
+    // the alternative is no DM at all — under a public reply that already
+    // said one was sent.
+    const { fetch, bodies } = posting((body) => quickRepliesIn(body) !== undefined)
+    const graph = createGraph({ token: 't', fetch })
+
+    await graph.sendPrivateReply('comment-1', 'Tap below', [{ title: 'Send', payload: 'SEND' }])
+
+    expect(bodies).toHaveLength(2)
+    expect(bodies[1]).toEqual({
+      recipient: { comment_id: 'comment-1' },
+      message: { text: 'Tap below' },
+    })
+  })
+
+  it('still fails when the plain private reply is refused too', async () => {
+    // A retry that hides a real failure is worse than the failure: the public
+    // reply under the comment has already promised a DM.
+    const { fetch } = posting(() => true)
+    const graph = createGraph({ token: 't', fetch })
+
+    await expect(
+      graph.sendPrivateReply('comment-1', 'Tap below', [{ title: 'Send', payload: 'SEND' }]),
+    ).rejects.toThrow(/messages failed/)
+  })
+})

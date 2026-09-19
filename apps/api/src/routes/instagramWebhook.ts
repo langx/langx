@@ -7,8 +7,10 @@ import { createGraph, type InstagramGraph } from '../modules/growth/graph'
 import {
   ASK_TO_FOLLOW,
   DELIVERY,
+  FOLLOWED_BUTTON,
   PRIVATE_REPLIES,
   PUBLIC_REPLIES,
+  SEND_LINK_BUTTON,
   pick,
 } from '../modules/growth/messages'
 import {
@@ -165,7 +167,7 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
       case 'answerComment': {
         await sleep(action.delayMs)
         await graph.replyToComment(action.commentId, pick(PUBLIC_REPLIES))
-        await graph.sendPrivateReply(action.commentId, pick(PRIVATE_REPLIES))
+        await graph.sendPrivateReply(action.commentId, pick(PRIVATE_REPLIES), [SEND_LINK_BUTTON])
         return
       }
       case 'deliver': {
@@ -178,7 +180,7 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
         // the difference between a nudge and being harassed by a brand.
         const asks = await countFollowAsk(app.mongo.db, action.recipientId)
         if (asks > 1) return
-        await graph.sendMessage(action.recipientId, ASK_TO_FOLLOW)
+        await graph.sendMessage(action.recipientId, ASK_TO_FOLLOW, [FOLLOWED_BUTTON])
         return
       }
       default:
@@ -243,13 +245,22 @@ export function parse(raw: string): ParsedEvent[] {
     }
 
     for (const item of Array.isArray(messaging) ? messaging : []) {
-      const { sender, message, timestamp } = item as {
+      const { sender, message, postback, timestamp } = item as {
         sender?: { id?: string }
         message?: { text?: string; is_echo?: boolean }
+        postback?: { payload?: string }
         timestamp?: number
       }
       // An echo is our own message coming back; answering it is a loop.
       if (message?.is_echo === true) continue
+      /*
+       * A tapped button arrives as `postback` rather than `message`, and is
+       * treated as the same thing: what this flow needs from the person is
+       * that they acted, because acting is what opens the 24-hour window and
+       * makes `is_user_follow_business` readable. The payload stands in for
+       * what they would have typed.
+       */
+      const text = typeof message?.text === 'string' ? message.text : postback?.payload
       /*
        * `typeof`, not truthiness, and it matters: this id goes straight into a
        * Mongo `_id`, so a body carrying `{"sender":{"id":{"$ne":null}}}` would
@@ -258,11 +269,11 @@ export function parse(raw: string): ParsedEvent[] {
        * to nobody — and is exactly the argument that stops being true the day
        * a second caller is added.
        */
-      if (typeof sender?.id !== 'string' || typeof message?.text !== 'string') continue
+      if (typeof sender?.id !== 'string' || typeof text !== 'string') continue
       events.push({
         kind: 'message',
         senderId: sender.id,
-        text: message.text,
+        text,
         at: typeof timestamp === 'number' ? new Date(timestamp) : new Date(),
       })
     }

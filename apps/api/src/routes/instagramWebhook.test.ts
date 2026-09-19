@@ -87,6 +87,33 @@ describe('parse', () => {
     ])
   })
 
+  it('reads a tapped button as the message it stands in for', () => {
+    // A quick reply arrives as `postback`, not `message`. It has to count:
+    // tapping is the action that opens the 24-hour window and makes the
+    // follow check readable, exactly as typing would have.
+    const body = {
+      entry: [
+        {
+          messaging: [
+            {
+              sender: { id: 'them' },
+              postback: { mid: 'm1', title: 'Send the link', payload: 'LANGX_SEND_LINK' },
+              timestamp: 1_770_000_002_000,
+            },
+          ],
+        },
+      ],
+    }
+    expect(parse(JSON.stringify(body))).toEqual([
+      {
+        kind: 'message',
+        senderId: 'them',
+        text: 'LANGX_SEND_LINK',
+        at: new Date(1_770_000_002_000),
+      },
+    ])
+  })
+
   it('drops a sender id that is not a string', () => {
     // It would go straight into a Mongo `_id`, where `{ $ne: null }` matches
     // every lead there is. Only Meta can get a body past the signature check,
