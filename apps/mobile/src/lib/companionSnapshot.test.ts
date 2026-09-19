@@ -1,6 +1,6 @@
 import { companionSnapshotSchema } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { buildCompanionSnapshot, type CompanionSources } from './companionSnapshot'
+import { buildCompanionSnapshot, countedToday, type CompanionSources } from './companionSnapshot'
 
 const sources: CompanionSources = {
   unread: 3,
@@ -87,5 +87,45 @@ describe('buildCompanionSnapshot', () => {
 
     expect(older.echo.nextDue).toBeNull()
     expect(() => companionSnapshotSchema.parse(older)).not.toThrow()
+  })
+})
+
+describe('countedToday', () => {
+  const on = (lastQualifiedDay: string | null) =>
+    buildCompanionSnapshot(
+      { ...sources, profile: { streak: { current: 1, longest: 1, lastQualifiedDay } } },
+      'en',
+      t,
+      at,
+    )
+
+  /**
+   * The local day, not the UTC one. `at` is 08:30 UTC on the 19th; a phone in
+   * Toronto reads 04:30 on the 19th and a phone in Tokyo 17:30 on the 19th, so
+   * both agree here — the case that matters is the one below.
+   */
+  it('is true only when the last qualifying day is the device’s own today', () => {
+    const now = new Date('2026-09-19T12:00:00.000Z')
+
+    expect(countedToday(on('2026-09-19'), now)).toBe(true)
+    expect(countedToday(on('2026-09-18'), now)).toBe(false)
+  })
+
+  /** An account that has never had a qualifying day is not "done for today". */
+  it('is false when nothing has ever counted', () => {
+    expect(countedToday(on(null), new Date('2026-09-19T12:00:00.000Z'))).toBe(false)
+  })
+
+  /**
+   * The answer is asked again, not frozen. This is the whole reason the day
+   * travels raw instead of as a flag computed when the app last wrote: the
+   * widget wakes after a midnight the app slept through, and has to say the
+   * new day's answer about the same blob.
+   */
+  it('turns false once the device rolls into the next day', () => {
+    const snapshot = on('2026-09-19')
+
+    expect(countedToday(snapshot, new Date('2026-09-19T23:59:00-04:00'))).toBe(true)
+    expect(countedToday(snapshot, new Date('2026-09-20T00:01:00-04:00'))).toBe(false)
   })
 })

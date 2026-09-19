@@ -5,6 +5,7 @@ import {
   type Locale,
 } from '@langx/shared'
 import type { TranslateFn } from '../i18n/runtime'
+import { deviceDayKey } from './deviceDay'
 
 /**
  * What the app already holds, in the shape the four queries hand it over.
@@ -72,4 +73,26 @@ export function buildCompanionSnapshot(
       cardsDue: t('echo.tileDue'),
     },
   }
+}
+
+/**
+ * Whether today has already counted towards the streak, on this device's
+ * calendar.
+ *
+ * Lives here rather than in the widget that draws it, because the Swift half
+ * has the same comparison written out again (`CompanionSnapshot.countedToday`)
+ * and two copies are already one too many. Here it can at least be tested;
+ * `targets/_shared/CompanionSnapshot.swift` cannot import it, and says so.
+ *
+ * The comparison is deliberately all that happens. Whether a lapsed streak is
+ * still *savable* is a rule with freezes in it, it lives in `packages/shared`,
+ * and it is the app's to answer — a tile that reimplemented it would be a
+ * second copy free to disagree with the evening reminder.
+ *
+ * The device's day, not the profile's timezone, for the reason `deviceDayKey`
+ * gives: the phone is where the person is, and the answer is allowed to be
+ * loose in the direction of asking again.
+ */
+export function countedToday(snapshot: CompanionSnapshot, now: Date = new Date()): boolean {
+  return snapshot.streak.lastQualifiedDay === deviceDayKey(now)
 }

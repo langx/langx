@@ -145,8 +145,14 @@ That holds even though a bearer token now exists for Siri — the token buys one
 extension the right to send a message, not every extension the right to poll.
 
 The snapshot writer is a small local Expo module under `apps/mobile/modules/`
-— one function, `setCompanionSnapshot(json)`. It is a no-op on Android and on
-web, so call sites stay unconditional.
+— one function, `setCompanionSnapshot(json)`. It is a no-op on web, so call
+sites stay unconditional.
+
+**Android reuses all of this**, and the same module is its door too: there the
+widget is the app's own JavaScript, so the blob goes to local storage instead
+of an App Group and the views import the app's own `countedToday` rather than
+restating it. Where the two differ, and what was checked, is in
+[`android-widgets.md`](android-widgets.md).
 
 ### The widgets, in detail
 

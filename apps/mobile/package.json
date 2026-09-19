@@ -4,7 +4,7 @@
   "private": true,
   "license": "BSD-3-Clause",
   "description": "LangX v2 client — iOS, Android and web from one Expo codebase",
-  "main": "expo-router/entry",
+  "main": "./index.ts",
   "scripts": {
     "dev": "expo start",
     "web": "expo start --web",
@@ -69,6 +69,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-native": "catalog:",
+    "react-native-android-widget": "^0.22.1",
     "react-native-gesture-handler": "~2.32.0",
     "react-native-purchases": "^10.8.1",
     "react-native-reanimated": "4.5.1",

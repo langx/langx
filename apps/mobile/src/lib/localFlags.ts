@@ -66,6 +66,21 @@ export const FLAG_KEYS = {
    * limit.
    */
   unsentMessages: 'unsentMessages',
+  /**
+   * JSON: the last `CompanionSnapshot` written, for the Android widgets.
+   *
+   * The odd one out in this list — it belongs to whoever is signed in rather
+   * than to the device, and it is here anyway because of where it is *read*.
+   * An Android widget is drawn by a headless JS task, which has this module
+   * and no session, no query cache and no way to ask the server. iOS solves
+   * the same problem with an App Group container the Swift half reads; this
+   * is that container.
+   *
+   * Cleared in the same breath as the session, for the same reason as there:
+   * a widget still showing a 42-day streak after somebody signs out is their
+   * data on a Home Screen that may not be theirs.
+   */
+  companionSnapshot: 'companionSnapshot',
   /** `auto` | `light` | `dark`. A device preference, not an account one. */
   themePreference: 'themePreference',
   /**
