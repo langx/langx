@@ -114,6 +114,26 @@ describe('parse', () => {
     ])
   })
 
+  it('drops a postback our own account generated', () => {
+    // A CTA on the account reports a postback whose sender is us. Read as an
+    // ordinary tap it becomes a lead keyed by the account's own id — which
+    // then gets DMs from itself.
+    const body = {
+      entry: [
+        {
+          messaging: [
+            {
+              sender: { id: 'us' },
+              is_self: true,
+              postback: { title: 'Start Chatting', payload: 'LANGX_SEND_LINK' },
+            },
+          ],
+        },
+      ],
+    }
+    expect(parse(JSON.stringify(body))).toEqual([])
+  })
+
   it('drops a sender id that is not a string', () => {
     // It would go straight into a Mongo `_id`, where `{ $ne: null }` matches
     // every lead there is. Only Meta can get a body past the signature check,

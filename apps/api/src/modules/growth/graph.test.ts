@@ -107,26 +107,34 @@ function posting(reject: (body: unknown, attempt: number) => boolean = () => fal
   return { fetch: fetch as unknown as typeof globalThis.fetch, bodies }
 }
 
-/** What Instagram calls the buttons under a message. */
-function quickRepliesIn(body: unknown): unknown {
-  return (body as { message?: { quick_replies?: unknown } }).message?.quick_replies
+/** The attachment that draws the buttons, when a message carries one. */
+function templateIn(body: unknown): unknown {
+  return (body as { message?: { attachment?: unknown } }).message?.attachment
 }
 
-describe('buttons under a message', () => {
-  it('sends a quick reply Instagram will render', async () => {
+describe('buttons inside a message', () => {
+  it('sends a button template, not a quick reply', async () => {
+    // Quick replies render as chips along the bottom of the thread, detached
+    // from the message that prompted them. The buttons have to be in the
+    // bubble, which is what the template is for.
     const { fetch, bodies } = posting()
     const graph = createGraph({ token: 't', fetch })
 
     await graph.sendMessage('them', 'Tap below', [{ title: 'Send the link', payload: 'SEND' }])
 
-    expect(quickRepliesIn(bodies[0])).toEqual([
-      { content_type: 'text', title: 'Send the link', payload: 'SEND' },
-    ])
+    expect(templateIn(bodies[0])).toEqual({
+      type: 'template',
+      payload: {
+        template_type: 'button',
+        text: 'Tap below',
+        buttons: [{ type: 'postback', title: 'Send the link', payload: 'SEND' }],
+      },
+    })
   })
 
-  it('leaves the key out entirely when there are no buttons', async () => {
-    // An empty `quick_replies` array is not the same as no buttons to Meta,
-    // and the difference shows as a rejected send rather than a plain message.
+  it('sends plain text, with no attachment, when there are no buttons', async () => {
+    // `text` and the attachment are alternatives: sending both is what gets
+    // the whole message refused.
     const { fetch, bodies } = posting()
     const graph = createGraph({ token: 't', fetch })
 
@@ -136,11 +144,11 @@ describe('buttons under a message', () => {
   })
 
   it('falls back to plain text when a buttoned private reply is refused', async () => {
-    // Meta documents quick replies against a recipient id and says nothing
-    // about a recipient comment_id. If they turn out not to be allowed there,
-    // the alternative is no DM at all — under a public reply that already
-    // said one was sent.
-    const { fetch, bodies } = posting((body) => quickRepliesIn(body) !== undefined)
+    // Meta documents the button template against a recipient id and says
+    // nothing about a recipient comment_id. If it turns out not to be allowed
+    // there, the alternative is no DM at all — under a public reply that
+    // already said one was sent.
+    const { fetch, bodies } = posting((body) => templateIn(body) !== undefined)
     const graph = createGraph({ token: 't', fetch })
 
     await graph.sendPrivateReply('comment-1', 'Tap below', [{ title: 'Send', payload: 'SEND' }])
