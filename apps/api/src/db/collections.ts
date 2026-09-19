@@ -312,6 +312,24 @@ export const COLLECTIONS = {
    * Written unconditionally, drained only when a key is configured.
    */
   analyticsDeletions: 'analyticsDeletions',
+  /**
+   * One row per Instagram comment we have answered, holding the comment id as
+   * its `_id` and nothing worth reading.
+   *
+   * It exists to be a uniqueness constraint. Meta retries a webhook it did not
+   * get a prompt 200 for, a comment earns exactly one private reply from the
+   * platform, and a check-then-insert loses that race — so the claim *is* the
+   * insert. See `modules/growth/repo.ts`.
+   */
+  instagramComments: 'instagramComments',
+  /**
+   * People who wrote to the Instagram account after commenting, keyed by the
+   * Instagram-scoped id, which is theirs only for this account and means
+   * nothing anywhere else. What is kept is when they last wrote — the
+   * twenty-four hours in which we may answer are measured from it — and
+   * whether the link has gone out.
+   */
+  instagramLeads: 'instagramLeads',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]

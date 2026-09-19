@@ -1,0 +1,96 @@
+import { COMMENT_TO_DM_RULES, commentAsksForLink } from '@langx/shared'
+
+/**
+ * What a webhook event should cause, decided without touching the network or
+ * the database.
+ *
+ * The order this encodes is the one the API actually allows, which is not the
+ * one every guide to this draws. The obvious flow — comment arrives, check
+ * whether they follow us, send the link if they do — cannot be built: the
+ * field that says whether somebody follows the account (`is_user_follow_
+ * business`) is only readable once *they* have sent *us* a message, and a
+ * comment is not a message. So the follow check happens one step later than
+ * feels natural, and the single private reply a comment earns is spent asking
+ * for a reply rather than on the link itself.
+ */
+
+/** What the person did. */
+export type GrowthEvent =
+  | { kind: 'comment'; commentId: string; text: string; fromId: string }
+  | { kind: 'message'; senderId: string; text: string }
+
+/** What we do about it. */
+export type GrowthAction =
+  | { kind: 'ignore'; because: string }
+  | { kind: 'answerComment'; commentId: string; delayMs: number }
+  | { kind: 'deliver'; recipientId: string }
+  | { kind: 'askToFollow'; recipientId: string; recheckMs: number }
+
+export interface CommentContext {
+  /** True when this comment id has already been answered. */
+  seen: boolean
+  /** The account's own id, so it does not answer itself. */
+  selfId: string
+  /** When the comment was posted, against the seven-day private-reply window. */
+  postedAt: Date
+  now: Date
+  /** Injected so a test is not at the mercy of a random number. */
+  random?: () => number
+}
+
+export function decideForComment(
+  event: Extract<GrowthEvent, { kind: 'comment' }>,
+  context: CommentContext,
+): GrowthAction {
+  if (event.fromId === context.selfId) return { kind: 'ignore', because: 'own comment' }
+  // Not merely an optimisation: a second private reply to one comment is
+  // refused by the platform, so a retry that got this far would burn a request
+  // to be told no.
+  if (context.seen) return { kind: 'ignore', because: 'already answered' }
+  if (!commentAsksForLink(event.text)) return { kind: 'ignore', because: 'no keyword' }
+
+  const age = context.now.getTime() - context.postedAt.getTime()
+  if (age > COMMENT_TO_DM_RULES.privateReplyWindowMs) {
+    return { kind: 'ignore', because: 'outside the 7-day private reply window' }
+  }
+
+  const { min, max } = COMMENT_TO_DM_RULES.replyDelayMs
+  const random = context.random ?? Math.random
+  return {
+    kind: 'answerComment',
+    commentId: event.commentId,
+    delayMs: min + random() * (max - min),
+  }
+}
+
+export interface MessageContext {
+  /** Whether they follow the account — readable only now, which is the point. */
+  follows: boolean
+  /** True once the link has already been sent to this person. */
+  delivered: boolean
+  /** Whether we are still inside the 24 hours their message opened. */
+  withinWindow: boolean
+}
+
+export function decideForMessage(
+  event: Extract<GrowthEvent, { kind: 'message' }>,
+  context: MessageContext,
+): GrowthAction {
+  if (!context.withinWindow) return { kind: 'ignore', because: 'outside the 24-hour window' }
+  if (context.delivered) return { kind: 'ignore', because: 'link already sent' }
+  /*
+   * Anything they typed counts, not only the word we asked for. Requiring an
+   * exact `READY` would drop the person who wrote "ready!", "yes please", or
+   * their own language's word for it — and what matters here is that they
+   * wrote back at all, which is what opened the window. The word earns its
+   * place in the message as something concrete to do, not as a gate.
+   */
+  if (!context.follows) {
+    return {
+      kind: 'askToFollow',
+      recipientId: event.senderId,
+      recheckMs: COMMENT_TO_DM_RULES.followRecheckMs,
+    }
+  }
+  return { kind: 'deliver', recipientId: event.senderId }
+}

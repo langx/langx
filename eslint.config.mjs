@@ -142,6 +142,28 @@ export default tseslint.config(
     },
   },
   {
+    /*
+     * The promo video pipeline. Node code, except for the callbacks handed to
+     * `page.evaluate`, which are serialised and run inside the browser — hence
+     * the DOM globals beside the Node ones in a file that never sees a DOM.
+     */
+    files: ['tools/promo-video/**/*.mjs'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      sourceType: 'module',
+      globals: {
+        Buffer: 'readonly',
+        console: 'readonly',
+        process: 'readonly',
+        URL: 'readonly',
+        document: 'readonly',
+        localStorage: 'readonly',
+        performance: 'readonly',
+        requestAnimationFrame: 'readonly',
+      },
+    },
+  },
+  {
     // Metro/Babel config files are CommonJS and never typechecked.
     files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
     extends: [tseslint.configs.disableTypeChecked],

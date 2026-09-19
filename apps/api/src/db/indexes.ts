@@ -478,6 +478,29 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { lastViewedAt: 1 }, name: 'ttl_90d', expireAfterSeconds: NINETY_DAYS },
   ],
 
+  [COLLECTIONS.instagramComments]: [
+    /*
+     * No unique index on the comment id, because the comment id *is* `_id` —
+     * which is the uniqueness, enforced by the server rather than by a read
+     * this code would have to get right. That is the whole design of the
+     * collection: Meta retries a webhook it did not get a prompt 200 for, and
+     * a comment is only ever allowed one private reply, so the insert has to
+     * be what claims it.
+     *
+     * The TTL is the retention: an unanswerable comment is one older than
+     * Meta's seven-day private-reply window, and keeping the row past that
+     * protects nothing while holding an id belonging to somebody who commented
+     * on a post months ago.
+     */
+    { key: { answeredAt: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
+  ],
+
+  [COLLECTIONS.instagramLeads]: [
+    // The 24-hour window is measured from `lastMessageAt`, and a lead nobody
+    // has written to in three months is a scoped id with no purpose left.
+    { key: { lastMessageAt: 1 }, name: 'ttl_90d', expireAfterSeconds: NINETY_DAYS },
+  ],
+
   [COLLECTIONS.analyticsDeletions]: [
     // Oldest first, which is the order the drain sends them in. No unique
     // index: the distinct id *is* `_id`, so a second purge of the same account

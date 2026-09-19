@@ -1,0 +1,22 @@
+{
+  "en": {
+    "hook": ["Duolingo streak: 400 days.", "Still can't hold a conversation."],
+    "subtitles": [
+      {
+        "from": "journeyStart",
+        "text": "People who speak what you are learning"
+      },
+      {
+        "from": "profilePainted",
+        "text": "What they teach. What they want to learn."
+      },
+      {
+        "from": "chatPainted",
+        "text": "Corrections, voice notes, a real conversation."
+      }
+    ],
+    "message": "Deal. I will practise the stress tonight.",
+    "reply": "Good luck. Send me a voice note when you do.",
+    "chatMarker": "Same time tomorrow?"
+  }
+}
