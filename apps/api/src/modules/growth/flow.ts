@@ -22,7 +22,7 @@ import {
 /** What the person did. */
 export type GrowthEvent =
   | { kind: 'comment'; commentId: string; text: string; fromId: string }
-  | { kind: 'message'; senderId: string; text: string }
+  | { kind: 'message'; senderId: string; text: string; at: Date }
 
 /** What we do about it. */
 export type GrowthAction =
@@ -76,8 +76,13 @@ export interface MessageContext {
   delivered: boolean
   /** Whether we are still inside the 24 hours their message opened. */
   withinWindow: boolean
-  /** True once they have been asked which phone they are on. */
-  platformAsked: boolean
+  /**
+   * When the platform question went out, if it has. A time and not a flag,
+   * because what matters is whether *this* message came after it.
+   */
+  platformAskedAt?: Date
+  /** How many times they have already been asked to follow. */
+  followAsks: number
 }
 
 export function decideForMessage(
@@ -93,7 +98,15 @@ export function decideForMessage(
    * wrote back at all, which is what opened the window. The word earns its
    * place in the message as something concrete to do, not as a gate.
    */
-  if (!context.follows) {
+  /*
+   * The follow is asked for, and then eventually let go of.
+   *
+   * Somebody who has tapped this many times either cannot follow or has and
+   * Instagram will not say so, and holding the line past that point loses a
+   * person who has shown more intent than most followers ever do. The link
+   * was advertised publicly under the post; it was never a secret.
+   */
+  if (!context.follows && context.followAsks < COMMENT_TO_DM_RULES.followAsksBeforeGivingUp) {
     return {
       kind: 'askToFollow',
       recipientId: event.senderId,
@@ -110,7 +123,21 @@ export function decideForMessage(
    * flow that hands over a link the moment somebody follows reads like a
    * dispenser rather than a conversation.
    */
-  if (!context.platformAsked) return { kind: 'askPlatform', recipientId: event.senderId }
+  if (!context.platformAskedAt) return { kind: 'askPlatform', recipientId: event.senderId }
+  /*
+   * One tap reaches us twice: Instagram reports the button press, and the
+   * message the button leaves in the thread. Both are events, both are the
+   * same person doing the same thing once — and the second copy would
+   * otherwise answer a question the first copy had just caused to be asked,
+   * sending the link before anybody had chosen anything.
+   *
+   * An answer has to have happened after the question. It is worth stating as
+   * a rule rather than deduplicating by id, because it stays true whatever
+   * Instagram does next with retries and delivery order.
+   */
+  if (event.at <= context.platformAskedAt) {
+    return { kind: 'ignore', because: 'the tap that prompted the question, arriving again' }
+  }
 
   const platform = platformFromPayload(event.text)
   // Undefined when they typed something instead of tapping, which still

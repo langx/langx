@@ -87,8 +87,11 @@ Follow the account, then tap below and I'll sort your link out.`,
  * us: the only read we get on whether Instagram sends iOS or Android people,
  * and a second beat, so the exchange reads like somebody answering rather
  * than a dispenser emptying.
+ *
+ * It does not congratulate anybody on following, because the person reading
+ * it may be one we gave up asking.
  */
-export const ASK_PLATFORM = `Nice, you're in.
+export const ASK_PLATFORM = `Right, let's get you set up.
 
 Last thing — which one are you on?`
 
