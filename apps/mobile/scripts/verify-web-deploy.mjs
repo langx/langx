@@ -68,7 +68,20 @@ async function check() {
   if (!index.ok) return { ok: false, reason: `index answered ${index.status}` }
 
   const html = await index.text()
-  const match = /_expo\/static\/js\/web\/entry-[a-z0-9]+\.js/.exec(html)
+  /*
+   * `entry-` or `index-`: Expo names the web entry bundle after the entry
+   * module, so `main: './index.ts'` in `apps/mobile/package.json` renamed it.
+   * Matching only `entry-` failed every deploy from the commit that added that
+   * file onward — four red runs on four deploys that were all serving fine,
+   * which is the same wrong answer as a missed incident and reads worse,
+   * because a check nobody believes is a check nobody reads.
+   *
+   * Both names, not `[a-z]+-`: the index also references
+   * `__expo-metro-runtime-<hash>.js` and `__common-<hash>.js`, and a pattern
+   * loose enough to match a chunk would pass on a build whose entry bundle is
+   * missing — which is exactly the 5 September failure this file exists for.
+   */
+  const match = /_expo\/static\/js\/web\/(?:entry|index)-[a-z0-9]+\.js/.exec(html)
   if (!match) return { ok: false, reason: 'index does not reference an entry bundle' }
 
   const bundle = await fetch(`${host}/${match[0]}`)
