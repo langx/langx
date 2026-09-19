@@ -277,14 +277,21 @@ export function parse(raw: string): ParsedEvent[] {
     }
 
     for (const item of Array.isArray(messaging) ? messaging : []) {
-      const { sender, message, postback, timestamp } = item as {
+      const { sender, message, postback, timestamp, is_self } = item as {
         sender?: { id?: string }
         message?: { text?: string; is_echo?: boolean }
         postback?: { payload?: string }
         timestamp?: number
+        is_self?: boolean
       }
       // An echo is our own message coming back; answering it is a loop.
       if (message?.is_echo === true) continue
+      /*
+       * `is_self` is the same hazard wearing the other hat: a CTA on our own
+       * account reports a postback whose `sender.id` is *us*. Without this it
+       * becomes a lead keyed by the account's own id, which then gets DMs.
+       */
+      if (is_self === true) continue
       /*
        * A tapped button arrives as `postback` rather than `message`, and is
        * treated as the same thing: what this flow needs from the person is

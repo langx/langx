@@ -1,5 +1,5 @@
-import { COMMENT_TO_DM_CONFIRM_WORD, COMMENT_TO_DM_PAYLOADS } from '@langx/shared'
-import type { QuickReply } from './graph'
+import { COMMENT_TO_DM_PAYLOADS } from '@langx/shared'
+import type { MessageButton } from './graph'
 
 /**
  * Everything this flow says to anybody, in English.
@@ -38,20 +38,20 @@ export const PUBLIC_REPLIES = [
  * readable and opens the day-long window. Tapping is the cheapest version of
  * that action, and one they will actually do.
  *
- * Titles are kept short because Instagram truncates them; the payloads are in
- * `@langx/shared` with the other rules, because what they mean is a decision
- * and not a wording.
+ * Titles are kept short because Instagram truncates them past about twenty
+ * characters; the payloads are in `@langx/shared` with the other rules,
+ * because what they mean is a decision and not a wording.
  */
-export const SEND_LINK_BUTTON: QuickReply = {
+export const SEND_LINK_BUTTON: MessageButton = {
   title: 'Get my link',
   payload: COMMENT_TO_DM_PAYLOADS.sendLink,
 }
-export const FOLLOWED_BUTTON: QuickReply = {
+export const FOLLOWED_BUTTON: MessageButton = {
   title: 'I followed',
   payload: COMMENT_TO_DM_PAYLOADS.followed,
 }
 /** Both answers lead to the same link; the tap is what is being asked for. */
-export const PLATFORM_BUTTONS: readonly QuickReply[] = [
+export const PLATFORM_BUTTONS: readonly MessageButton[] = [
   { title: 'iPhone', payload: COMMENT_TO_DM_PAYLOADS.ios },
   { title: 'Android', payload: COMMENT_TO_DM_PAYLOADS.android },
 ]
@@ -64,21 +64,19 @@ export const PLATFORM_BUTTONS: readonly QuickReply[] = [
  * back — so this message's whole job is to get them to write back, which is
  * also what opens the day-long window everything after it needs.
  *
- * It still names the word as well as the button: quick replies do not render
- * on Instagram's desktop web, and somebody reading this there must be told
- * something they can actually do.
+ * Under 640 characters, which is all the text a button template carries.
  */
 export const PRIVATE_REPLIES = [
   `Hey — thanks for the comment.
 
 LangX puts you in a chat with someone learning your language while you learn theirs. Real conversations, not flashcards.
 
-Follow the account and tap below, and I'll get your link ready. (No button? Just reply ${COMMENT_TO_DM_CONFIRM_WORD}.)`,
+Follow the account, then tap below and I'll get your link ready.`,
   `Hey, glad you asked.
 
 LangX pairs you with someone who is learning your language while you learn theirs — you help each other, in a normal conversation.
 
-Follow the account and tap below and I'll sort your link out. (No button? Just reply ${COMMENT_TO_DM_CONFIRM_WORD}.)`,
+Follow the account, then tap below and I'll sort your link out.`,
 ] as const
 
 /**
@@ -116,7 +114,7 @@ Give it a few seconds and tap again. If it keeps missing, just say so here and I
 /** Sent once they have replied and they do not follow yet. */
 export const ASK_TO_FOLLOW = `Almost there — the follow has not come through on my side yet.
 
-Follow the account, then tap below and the link is yours. (Or send ${COMMENT_TO_DM_CONFIRM_WORD} once more.)`
+Follow the account, then tap below and the link is yours.`
 
 /** One of them, chosen at random. */
 export function pick<T>(options: readonly T[], random: () => number = Math.random): T {
