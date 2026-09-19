@@ -16,7 +16,7 @@ import { useLocale, useT } from '../i18n'
  * inside a scroll is where that stops being predictable, and every mark opens
  * the same page anyway, so there is nothing to tell apart.
  *
- * **The marks take a fixed 80px** now that the row scrolls. While it did not,
+ * **The marks take a fixed 56px** now that the row scrolls. While it did not,
  * width was a budget and the marks divided it with `flex: 1`; inside a
  * horizontal `ScrollView` there is no bounded width to divide, so a flexed
  * child collapses. Fixed is not the compromise here — it is what a scrolling
@@ -67,7 +67,7 @@ export function BadgeStrip({
           const mark = BADGE_MARKS[badge.kind](colors)
           return (
             <View key={badge.id} style={[styles.mark, { backgroundColor: mark.fill }]}>
-              <BadgeGlyph icon={badge.icon ?? 'award'} color={mark.glyph} size={40} />
+              <BadgeGlyph icon={badge.icon ?? 'award'} color={mark.glyph} size={28} />
             </View>
           )
         })}
@@ -90,9 +90,9 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   mark: {
     alignItems: 'center',
     borderRadius: radius.pill,
-    height: 80,
+    height: 56,
     justifyContent: 'center',
-    width: 80,
+    width: 56,
   },
   rest: { color: colors.textMuted, fontSize: 15, fontWeight: '700' },
 }))
