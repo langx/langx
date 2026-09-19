@@ -19,7 +19,7 @@ import type { QuickReply } from './graph'
 /** Answered under the post, so everybody else can see something happened. */
 export const PUBLIC_REPLIES = [
   'Sent it to your DMs',
-  'Check your inbox',
+  'I have sent you a DM, you can check it now',
   'On its way — look in your message requests if you do not see it',
   'Just messaged you',
 ] as const
