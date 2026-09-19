@@ -7,7 +7,12 @@ import { useLocale, useT } from '../i18n'
 
 /**
  * What somebody has earned, above their bio: a scrolling row of marks, and a
- * count for whatever is past the end of it.
+ * count for everything the row does not draw.
+ *
+ * **One mark per kind**, which is a rule the server keeps — see
+ * `badgeStripMarks`. A ladder's rungs all wear the same mark, so a climbed
+ * one used to arrive here as three identical circles; what is sent now is the
+ * newest rung of each kind, and the rest are part of the "+N".
  *
  * **It scrolls, and it is still one button.** Those read as a contradiction
  * and are not: React Native's responder system hands the touch to whichever

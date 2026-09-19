@@ -5,12 +5,7 @@ import { readActivityWeek } from './dailyActivity'
 import { getBadgeSummary } from './badges'
 import { countCorrectionsWritten } from './corrections'
 import { readAggregates, type TokenAggregate } from './ledger'
-import {
-  badgesMostRecentFirst,
-  periodKeys,
-  PROFILE_BADGE_STRIP_MAX,
-  type ProfileBadge,
-} from '@langx/shared'
+import { badgeStripMarks, periodKeys, type ProfileBadge } from '@langx/shared'
 
 /**
  * What a profile shows about how somebody uses the app: the streak, how many
@@ -37,15 +32,15 @@ export interface PublicSummary {
   /** Badges earned, out of the catalogue in `@langx/shared`. */
   badges: number
   /**
-   * The first few of those badges, in the order the badge page draws them, for
-   * the strip above the bio.
+   * The newest badge of each kind, for the strip above the bio — see
+   * `badgeStripMarks` for why a climbed ladder sends one mark and not four.
    *
    * Carried here rather than fetched from `/profiles/:handle/badges` when the
    * strip renders. This function already derives the whole shelf and throws
    * all but the count away; asking a second endpoint to derive it again would
-   * be a round trip bought with work already done. Capped at
-   * `PROFILE_BADGE_STRIP_MAX` — the strip cannot scroll, so anything past what
-   * it draws is a number, and `badges` above is where that number comes from.
+   * be a round trip bought with work already done. Whatever the strip does not
+   * draw is a number instead, and `badges` above is where that number comes
+   * from.
    */
   topBadges: ProfileBadge[]
   tokens: number
@@ -95,24 +90,23 @@ export async function getPublicSummary(
     badges: badges.earnedCount,
     /*
      * Which badges is no longer only the owner's page — the strip draws the
-     * newest few, and `/profiles/:handle/badges` has published the earned ones
-     * since the tiles learned to open. What stays the owner's alone is the
-     * locked half and how far along it they are.
+     * newest of each kind, and `/profiles/:handle/badges` has published the
+     * earned ones since the tiles learned to open. What stays the owner's
+     * alone is the locked half and how far along it they are.
      *
-     * `filter`, then sort, then `slice`, and the order of the three is the
-     * whole thing. Filtering first keeps locked rows out of a strip of what
-     * somebody has done; sorting before the cut makes the twelve that survive
-     * the *newest* twelve rather than the first twelve of a catalogue that
-     * opens on a seven-day streak. See `badgesMostRecentFirst` for how little
-     * "newest" can mean when four of six kinds carry no date.
+     * Filtered before `badgeStripMarks` rather than inside it: a locked rung
+     * is the newest of nothing, and letting one reach the dedupe would let it
+     * take a kind's place from the badge actually earned under it.
      *
      * This is where the strip and the badge page part company on order: the
      * page is a catalogue and reads as one, the strip is a glimpse and leads
      * with what just happened.
      */
-    topBadges: badgesMostRecentFirst(badges.badges.filter((badge) => badge.earned))
-      .slice(0, PROFILE_BADGE_STRIP_MAX)
-      .map((badge) => ({ id: badge.id, kind: badge.kind, icon: badge.icon })),
+    topBadges: badgeStripMarks(badges.badges.filter((badge) => badge.earned)).map((badge) => ({
+      id: badge.id,
+      kind: badge.kind,
+      icon: badge.icon,
+    })),
     // The all-time total, which is what the owner's own profile shows too —
     // not the balance, which moves when they spend and is nobody else's
     // business.
