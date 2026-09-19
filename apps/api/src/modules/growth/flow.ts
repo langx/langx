@@ -1,4 +1,9 @@
-import { COMMENT_TO_DM_RULES, commentAsksForLink } from '@langx/shared'
+import {
+  COMMENT_TO_DM_RULES,
+  commentAsksForLink,
+  type LeadPlatform,
+  platformFromPayload,
+} from '@langx/shared'
 
 /**
  * What a webhook event should cause, decided without touching the network or
@@ -23,7 +28,8 @@ export type GrowthEvent =
 export type GrowthAction =
   | { kind: 'ignore'; because: string }
   | { kind: 'answerComment'; commentId: string; delayMs: number }
-  | { kind: 'deliver'; recipientId: string }
+  | { kind: 'deliver'; recipientId: string; platform?: LeadPlatform }
+  | { kind: 'askPlatform'; recipientId: string }
   | { kind: 'askToFollow'; recipientId: string; recheckMs: number }
 
 export interface CommentContext {
@@ -70,6 +76,8 @@ export interface MessageContext {
   delivered: boolean
   /** Whether we are still inside the 24 hours their message opened. */
   withinWindow: boolean
+  /** True once they have been asked which phone they are on. */
+  platformAsked: boolean
 }
 
 export function decideForMessage(
@@ -92,5 +100,20 @@ export function decideForMessage(
       recheckMs: COMMENT_TO_DM_RULES.followRecheckMs,
     }
   }
-  return { kind: 'deliver', recipientId: event.senderId }
+  /*
+   * One question between following and the link, asked once.
+   *
+   * It does not change what gets sent: `get.langx.io` already routes a phone
+   * to its own store, so both answers lead to the same URL. It is here
+   * because the tap is worth more than the second it costs — it is the only
+   * read we get on whether Instagram sends us iOS or Android people, and a
+   * flow that hands over a link the moment somebody follows reads like a
+   * dispenser rather than a conversation.
+   */
+  if (!context.platformAsked) return { kind: 'askPlatform', recipientId: event.senderId }
+
+  const platform = platformFromPayload(event.text)
+  // Undefined when they typed something instead of tapping, which still
+  // delivers: the question was never a gate.
+  return { kind: 'deliver', recipientId: event.senderId, ...(platform ? { platform } : {}) }
 }

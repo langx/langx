@@ -1,4 +1,4 @@
-import { COMMENT_TO_DM_CONFIRM_WORD } from '@langx/shared'
+import { COMMENT_TO_DM_CONFIRM_WORD, COMMENT_TO_DM_PAYLOADS } from '@langx/shared'
 import type { QuickReply } from './graph'
 
 /**
@@ -38,13 +38,23 @@ export const PUBLIC_REPLIES = [
  * readable and opens the day-long window. Tapping is the cheapest version of
  * that action, and one they will actually do.
  *
- * Titles are kept short because Instagram truncates them, and the payload is
- * what comes back in the `messaging_postbacks` webhook. It is deliberately
- * readable rather than an opaque id — it is the text the flow logs, and one
- * more thing to decode in a log is one more thing to get wrong.
+ * Titles are kept short because Instagram truncates them; the payloads are in
+ * `@langx/shared` with the other rules, because what they mean is a decision
+ * and not a wording.
  */
-export const SEND_LINK_BUTTON: QuickReply = { title: 'Send the link', payload: 'LANGX_SEND_LINK' }
-export const FOLLOWED_BUTTON: QuickReply = { title: 'I followed', payload: 'LANGX_FOLLOWED' }
+export const SEND_LINK_BUTTON: QuickReply = {
+  title: 'Get my link',
+  payload: COMMENT_TO_DM_PAYLOADS.sendLink,
+}
+export const FOLLOWED_BUTTON: QuickReply = {
+  title: 'I followed',
+  payload: COMMENT_TO_DM_PAYLOADS.followed,
+}
+/** Both answers lead to the same link; the tap is what is being asked for. */
+export const PLATFORM_BUTTONS: readonly QuickReply[] = [
+  { title: 'iPhone', payload: COMMENT_TO_DM_PAYLOADS.ios },
+  { title: 'Android', payload: COMMENT_TO_DM_PAYLOADS.android },
+]
 
 /**
  * The single private reply a comment earns.
@@ -59,15 +69,42 @@ export const FOLLOWED_BUTTON: QuickReply = { title: 'I followed', payload: 'LANG
  * something they can actually do.
  */
 export const PRIVATE_REPLIES = [
-  `Hey! The LangX link is ready. Follow the account, then tap the button below — or reply ${COMMENT_TO_DM_CONFIRM_WORD} if you cannot see one.`,
-  `Got you. Follow along, then tap the button below — or reply ${COMMENT_TO_DM_CONFIRM_WORD} — and the link comes straight back.`,
+  `Hey — thanks for the comment.
+
+LangX puts you in a chat with someone learning your language while you learn theirs. Real conversations, not flashcards.
+
+Follow the account and tap below, and I'll get your link ready. (No button? Just reply ${COMMENT_TO_DM_CONFIRM_WORD}.)`,
+  `Hey, glad you asked.
+
+LangX pairs you with someone who is learning your language while you learn theirs — you help each other, in a normal conversation.
+
+Follow the account and tap below and I'll sort your link out. (No button? Just reply ${COMMENT_TO_DM_CONFIRM_WORD}.)`,
 ] as const
 
+/**
+ * Asked between the follow and the link.
+ *
+ * Both answers send the same URL — `get.langx.io` already routes a phone to
+ * its own store — so this buys nothing for the person. It buys two things for
+ * us: the only read we get on whether Instagram sends iOS or Android people,
+ * and a second beat, so the exchange reads like somebody answering rather
+ * than a dispenser emptying.
+ */
+export const ASK_PLATFORM = `Nice, you're in.
+
+Last thing — which one are you on?`
+
 /** Sent once they have replied and they do follow. */
-export const DELIVERY = 'Here it is: https://get.langx.io/?utm_source=ig&utm_medium=dm'
+export const DELIVERY = `Here you go — it opens straight in your store:
+
+https://get.langx.io/?utm_source=ig&utm_medium=dm
+
+Pick a language, say hi to someone, and you are off. Any trouble, just reply here.`
 
 /** Sent once they have replied and they do not follow yet. */
-export const ASK_TO_FOLLOW = `Almost — the follow has not come through yet. Follow the account and tap the button below (or send ${COMMENT_TO_DM_CONFIRM_WORD} once more) and the link is yours.`
+export const ASK_TO_FOLLOW = `Almost there — the follow has not come through on my side yet.
+
+Follow the account, then tap below and the link is yours. (Or send ${COMMENT_TO_DM_CONFIRM_WORD} once more.)`
 
 /** One of them, chosen at random. */
 export function pick<T>(options: readonly T[], random: () => number = Math.random): T {

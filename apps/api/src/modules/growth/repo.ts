@@ -1,3 +1,4 @@
+import type { LeadPlatform } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
@@ -37,6 +38,10 @@ export interface InstagramLead {
   deliveredAt?: Date
   /** How many times we have asked them to follow. One is a nudge, two is not. */
   followAsks?: number
+  /** When they were asked which phone they are on. Asked once. */
+  platformAskedAt?: Date
+  /** What they answered, when they answered by tapping rather than typing. */
+  platform?: LeadPlatform
   createdAt: Date
 }
 
@@ -82,11 +87,22 @@ export async function recordInboundMessage(
   return result
 }
 
-export async function markDelivered(db: Db, igsid: string): Promise<void> {
+export async function markDelivered(db: Db, igsid: string, platform?: LeadPlatform): Promise<void> {
   const id = assertId(igsid, 'instagram user id')
   await db
     .collection<InstagramLead>(COLLECTIONS.instagramLeads)
-    .updateOne({ _id: id }, { $set: { deliveredAt: new Date() } })
+    .updateOne(
+      { _id: id },
+      { $set: { deliveredAt: new Date(), ...(platform ? { platform } : {}) } },
+    )
+}
+
+/** Remember the question was asked, so it is asked once and not every reply. */
+export async function markPlatformAsked(db: Db, igsid: string): Promise<void> {
+  const id = assertId(igsid, 'instagram user id')
+  await db
+    .collection<InstagramLead>(COLLECTIONS.instagramLeads)
+    .updateOne({ _id: id }, { $set: { platformAskedAt: new Date() } })
 }
 
 export async function countFollowAsk(db: Db, igsid: string): Promise<number> {

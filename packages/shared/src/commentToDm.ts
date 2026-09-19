@@ -32,6 +32,39 @@ export const COMMENT_TO_DM_KEYWORDS = ['langx', 'link'] as const
  */
 export const COMMENT_TO_DM_CONFIRM_WORD = 'READY'
 
+/**
+ * What each DM button sends back when it is tapped.
+ *
+ * These are protocol rather than copy: they arrive in a `messaging_postbacks`
+ * webhook and decide what happens next, so they live beside the other rules
+ * and not in the file that holds the wording. Readable on purpose — they are
+ * what the flow logs, and an opaque id is one more thing to decode when
+ * something goes wrong.
+ */
+export const COMMENT_TO_DM_PAYLOADS = {
+  sendLink: 'LANGX_SEND_LINK',
+  followed: 'LANGX_FOLLOWED',
+  ios: 'LANGX_IOS',
+  android: 'LANGX_ANDROID',
+} as const
+
+/** Which phone a lead said they were on. */
+export type LeadPlatform = 'ios' | 'android'
+
+/**
+ * The platform behind a tapped button, if it was one of those two.
+ *
+ * The link itself is the same either way — `get.langx.io` already sends a
+ * phone to its own store — so this is not used to pick a URL. It is asked
+ * because the answer is worth having: it is the only read we get on whether
+ * the people Instagram sends us are on iOS or Android.
+ */
+export function platformFromPayload(payload: string): LeadPlatform | undefined {
+  if (payload === COMMENT_TO_DM_PAYLOADS.ios) return 'ios'
+  if (payload === COMMENT_TO_DM_PAYLOADS.android) return 'android'
+  return undefined
+}
+
 export interface CommentToDmRules {
   /**
    * How long to sit on a comment before answering it, in milliseconds.
