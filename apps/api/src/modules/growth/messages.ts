@@ -16,12 +16,19 @@ import type { QuickReply } from './graph'
  * what platforms pattern-match on.
  */
 
-/** Answered under the post, so everybody else can see something happened. */
+/**
+ * Answered under the post, so everybody else can see something happened.
+ *
+ * Written the way a person types under their own post rather than the way a
+ * brand does: lower case, contracted, no exclamation marks. Everybody
+ * scrolling past reads this, and "Check your inbox" in title case is the
+ * house style of every automation they have already learned to ignore.
+ */
 export const PUBLIC_REPLIES = [
-  'Sent it to your DMs',
-  'Check your inbox',
-  'On its way — look in your message requests if you do not see it',
-  'Just messaged you',
+  'just sent you a DM, have a look',
+  'sent it over to your DMs',
+  "just messaged you — if it's not in your inbox, check your message requests",
+  "DM's on its way",
 ] as const
 
 /**
