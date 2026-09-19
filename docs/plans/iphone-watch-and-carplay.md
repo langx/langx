@@ -141,23 +141,42 @@ web, so call sites stay unconditional.
 
 ### The widgets, in detail
 
-**What the snapshot holds**, and where each field already comes from:
+**What the snapshot holds.** Written as `companionSnapshotSchema` in
+`packages/shared/src/companion.ts`, assembled by
+`buildCompanionSnapshot` in `apps/mobile/src/lib/companionSnapshot.ts`:
 
-| Field                                | Source today                              |
-| ------------------------------------ | ----------------------------------------- |
-| `unread`                             | `GET /me/unread`, and every `message:new` |
-| `streak.current`, `streak.longest`   | the profile's `streak`                    |
-| `streak.lastQualifiedDay`, `freezes` | the same place `/me/activity` reads       |
-| `echo.due`, `echo.nextDueAt`         | `GET /echo/summary`                       |
-| `nextSession`                        | the agreed meeting (`message:meeting`)    |
-| `locale`, `writtenAt`                | the app, for formatting and for staleness |
+| Field                            | Source today                              |
+| -------------------------------- | ----------------------------------------- |
+| `unread`                         | `GET /me/unread`, and every `message:new` |
+| `streak.current`                 | `GET /me/activity`                        |
+| `streak.longest`                 | `GET /profiles/me`                        |
+| `streak.lastQualifiedDay`        | `GET /me/activity`                        |
+| `echo.due`, `echo.nextDue`       | `GET /echo/summary`                       |
+| `labels`                         | the app's own catalogues, already chosen  |
+| `version`, `writtenAt`, `locale` | the app, for staleness and formatting     |
 
-`lastQualifiedDay` and `freezes` are in that list for one reason: they are
-what let the widget say **"today has not counted yet"** without asking the
-server. `streakSavable` in `packages/shared` already decides it, and the
-widget runs the same rule against the device's own day — so the number on the
-Home Screen and the evening nudge at 20:00 (`STREAK_REMINDER_LOCAL_HOUR`)
-cannot disagree, which is the failure a second implementation would produce.
+Two things changed shape once this was written rather than described.
+
+**The day travels raw, and the freezes do not travel at all.** The earlier
+draft had the widget run `streakSavable` against a banked-freeze count, which
+would have been a second copy of the streak rules living in Swift — exactly
+what this repo refuses everywhere else. What the widget actually needs is
+smaller: `lastQualifiedDay` as a `YYYY-MM-DD` string, compared with the
+device's own day key the way `deviceDayKey` already spells it. That comparison
+is a string equality, not a rule, and it answers correctly after a midnight the
+app slept through — which a flag computed at write time would not. Whether a
+streak is still _savable_ is a question for the app and the 20:00 nudge
+(`STREAK_REMINDER_LOCAL_HOUR`), not for a Home Screen tile.
+
+**The words ride along with the numbers.** `labels` carries the three the
+widget draws — `me.dayStreak`, `inbox.unread`, `echo.tileDue` — in the reader's
+language, taken from the same keys the app's own tiles use, so a rewording
+reaches the Home Screen without a second edit. Only the empty state, which has
+no data behind it, needs a string catalogue on the Swift side.
+
+`nextSession` is not in the first cut: the agreed meeting lives in a message
+rather than in any of the four responses above, and fetching it would be the
+widget's only new server work. It goes in when the Live Activity does.
 
 **The streak is the widget's subject, and it is not the widget's to advance.**
 `POST /me/check-in` exists precisely so that a background refresh, a prefetch
