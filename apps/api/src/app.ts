@@ -2,7 +2,7 @@ import cors, { type FastifyCorsOptions } from '@fastify/cors'
 import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
 import { ERROR_CODES, ERROR_STATUS, type ApiErrorBody } from '@langx/shared'
-import Fastify, { type FastifyInstance } from 'fastify'
+import Fastify, { type FastifyInstance, type FastifyRequest } from 'fastify'
 import {
   hasZodFastifySchemaValidationErrors,
   serializerCompiler,
@@ -12,6 +12,7 @@ import type { Db, MongoClient } from 'mongodb'
 import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
+import { redactUrl } from './lib/redactUrl'
 import type { AssistantProvider } from './modules/official/assistantProvider'
 import { registerMaintenanceGate } from './middleware/maintenance'
 import { accountRoutes } from './routes/account'
@@ -158,17 +159,41 @@ export async function buildApp({
   assistant = null,
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
+  /*
+   * The default request serializer, with the credentials taken out of the URL.
+   *
+   * Fastify logs the query string as it arrived, and three routes are reached
+   * by a link that carries one — see `redactUrl`. Everything else about the
+   * shape is the default's, so a log line keeps the fields anything reading
+   * these expects.
+   */
+  const serializers = {
+    req(request: FastifyRequest) {
+      return {
+        method: request.method,
+        url: redactUrl(request.url),
+        host: request.host,
+        remoteAddress: request.ip,
+        // `?? 0` only to satisfy the serializer's type, which promises a
+        // number: the socket has a port for as long as the request is being
+        // served, and none once it has been destroyed.
+        remotePort: request.socket.remotePort ?? 0,
+      }
+    },
+  }
+
   const app = Fastify({
     logger:
       env.NODE_ENV === 'development'
         ? {
             level: env.LOG_LEVEL,
+            serializers,
             transport: {
               target: 'pino-pretty',
               options: { translateTime: 'HH:MM:ss', ignore: 'pid,hostname' },
             },
           }
-        : { level: env.LOG_LEVEL },
+        : { level: env.LOG_LEVEL, serializers },
     // Railway/Render terminate TLS upstream; without this the client IP the
     // rate limiter sees is the proxy's, i.e. everyone shares one bucket.
     trustProxy: env.NODE_ENV === 'production',
