@@ -42,9 +42,15 @@ export const companionSnapshotSchema = z.object({
    */
   version: z.literal(COMPANION_SNAPSHOT_VERSION),
   /**
-   * When the app last wrote. The widget shows the numbers regardless — a
-   * widget is allowed to be a few minutes old — and this is what lets it stop
-   * claiming them after a day of the app never being opened.
+   * When the app last wrote.
+   *
+   * Carried, and not yet read: `CompanionSnapshot.load` decides nothing from
+   * it, so a blob the app stopped refreshing is still drawn in full. That is
+   * deliberate for now — a widget is allowed to be a few minutes old, and no
+   * cut-off has been chosen, let alone measured. It is here because the
+   * moment one is wanted it has to already be in blobs written by builds that
+   * shipped before the rule, and a field added later would be missing from
+   * exactly the stale snapshots the rule exists to catch.
    */
   writtenAt: z.string().datetime(),
   /** The reader's locale, for number and date formatting on the Swift side. */

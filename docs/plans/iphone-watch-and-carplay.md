@@ -16,10 +16,13 @@ therefore answers rather than questions:
   **no Live Activity** and **no acting widget button** — the widget deep-links
   into the app and the app does the rest.
 
-**Phase 1 is written and unrun.** Everything above the Xcode line is in the
-branch and green in CI; nothing has been on a phone. What a Mac has to do
-before any of it can be believed is in
-[`phase-1-mac-handoff.md`](phase-1-mac-handoff.md).
+**Phase 1 has now been run on a Mac** — 19 September 2026. Both targets
+compile, the widgets draw real numbers on a simulator's Home and Lock Screens,
+and the deep links land. Three defects were found and fixed in the running,
+one claim needs a phone to settle, and one — the Lock Screen still showing a
+signed-out account's streak — is open. The claim-by-claim record is in
+[`phase-1-mac-handoff.md`](phase-1-mac-handoff.md), and nothing here should be
+read as verified except what that file marks verified.
 
 - **A bearer token may live in a shared Keychain.** So the Siri send path is
   in scope, with the REST twin and the security review it implies.
@@ -219,7 +222,11 @@ is closed, and each has an answer:
   service extension** — a second, tiny target sharing the App Group — bumps
   `unread` in the snapshot as the push passes through it, so the Home Screen
   is right even for somebody who never opens the app. It reads the payload it
-  was handed and makes no network call of its own.
+  was handed and makes no network call of its own. The sender has to ask for
+  this: iOS wakes the extension only for a push carrying
+  `aps.mutable-content`, which is `mutableContent` on Expo's side and defaults
+  to false. It was missing for the first day this existed, and the extension
+  was unreachable the whole time — see the handoff.
 - **The day rolls over.** The timeline carries entries at the device's local
   midnight and at 20:00, so "today has not counted yet" appears on its own
   without waking anything.
