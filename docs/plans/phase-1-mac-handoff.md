@@ -4,8 +4,9 @@ Written on 19 September 2026, when the iPhone widgets were finished as code
 and had never been on a phone; **run on a Mac the same day**, and rewritten
 here to say what happened rather than what to try. Everything above the Xcode
 line was written in a Linux container — it typechecked, it linted, its tests
-passed — and the ten claims below had never been checked. Eight of them now
-hold, one cannot be checked without a phone, and one is broken.
+passed — and the ten claims below had never been checked. Seven of them now
+hold, one is broken, and two need something this machine cannot reach on its
+own: a signed-in Xcode, and a phone.
 
 Every claim is marked with how it was checked, on Xcode 26.6 against an
 iPhone 17 Pro simulator on iOS 26.5, with the app talking to a local API and
@@ -63,8 +64,8 @@ machine rather than of the branch:
 
 ## What had to be true — and what came back
 
-Checked in this order on 19 September 2026. **Eight hold, one is open, one is
-broken.** Where the check was weaker than the claim, the gap is the last
+Checked in this order on 19 September 2026. **Seven hold, one is open, two are
+blocked on something outside the branch.** Where the check was weaker than the claim, the gap is the last
 sentence of the entry.
 
 1. **It builds.** ✅ All three Swift targets compile — the module, the widget
@@ -72,11 +73,26 @@ sentence of the entry.
    hand-written `CompanionSnapshot` podspec without complaint, which was the
    first risk on the old list. Debug and Release both link, and all three
    products carry the App Group in their generated entitlements.
-2. **The App Group is real.** ⚠️ On the simulator, yes: the app, the widget and
-   the service extension share one container and the widget draws what the app
-   wrote. That says nothing about the developer account — a simulator hands out
-   a group container whether or not the capability exists on the App ID. The
-   real check is the first `eas build`, which generates a profile per target.
+2. **The App Group is real.** ❌ **No.** On the simulator it works — the app,
+   the widget and the service extension share one container and the widget
+   draws what the app wrote — but a simulator hands out a group container
+   whether or not the capability exists, so that proved nothing about the
+   account. Building for a real phone answered it:
+
+   > Provisioning profile "iOS Team Provisioning Profile:
+   > tech.newchapter.languageXchange" doesn't support the
+   > group.tech.newchapter.languageXchange App Group.
+   > No profiles for 'tech.newchapter.languageXchange.widget' were found.
+   > No profiles for 'tech.newchapter.languageXchange.notification-service'
+   > were found.
+
+   Three things are missing from the developer account: the App Group itself,
+   and an App ID for each extension. `-allowProvisioningUpdates` creates all
+   three on its own — and could not, because Xcode's stored Apple ID session
+   has expired ("the login details for account … were rejected"). **Somebody
+   has to sign in to Xcode once**; after that either a device build or the
+   first `eas build` registers the three and this becomes a yes.
+
 3. **A signed-in app writes the blob.** ✅ Signing in filled the container
    within seconds, and the medium widget on the Home Screen showed the three
    numbers `GET /me/unread`, `GET /profiles/me` and `GET /echo/summary` were
@@ -140,11 +156,18 @@ One thing was _not_ changed. `writtenAt` was documented as the field that
 stops a widget claiming stale numbers, and nothing reads it. Rather than invent
 a cut-off nobody has chosen, the schema's comment now says what the code does.
 
-## Then build
+## Then build — not yet
 
 ```bash
 eas build --profile production --platform ios
 ```
+
+**Not run.** The instruction was to build when all ten held, and they do not:
+claim 9 is broken, claim 7 is untested, and claim 2 needs the App Group
+registered first — which is the same wall a production build would hit, since
+EAS generates a profile per target and cannot create one for a capability the
+account does not have. Signing in to Xcode, or handing EAS the Apple ID, is
+the first move either way.
 
 Two things to expect. The **runtime version is a fingerprint**, and this
 change moves it: no installed build can be reached over the air with any of
