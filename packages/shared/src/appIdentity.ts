@@ -35,6 +35,17 @@ export const ANDROID_PACKAGE = 'tech.newchapter.languageXchange'
 /** Apple Developer team. Public — it is half of every app ID Apple publishes. */
 export const APPLE_TEAM_ID = '8F63M4JH8P'
 
+/**
+ * The App Group the widgets, the notification service extension and the app
+ * all read the same snapshot through. Derived from the bundle id so there is
+ * one name to change, and repeated by hand in exactly two Swift files —
+ * `modules/companion-snapshot/ios/CompanionSnapshotModule.swift` and
+ * `targets/_shared/CompanionSnapshot.swift` — because an extension cannot
+ * import this package. Change it here and those two follow, or the widget
+ * quietly reads an empty container and shows its empty state forever.
+ */
+export const IOS_APP_GROUP = `group.${IOS_BUNDLE_ID}`
+
 /** What Apple calls an "app ID prefix + bundle ID", used in the AASA file. */
 export const IOS_APP_ID = `${APPLE_TEAM_ID}.${IOS_BUNDLE_ID}`
 

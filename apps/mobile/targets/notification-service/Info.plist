@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  No NSExtensionAttributes. The extension templates carry an
+  NSExtensionActivationRule of TRUEPREDICATE, which belongs to share and action
+  extensions — the ones the system offers from a sheet. A notification service
+  is picked by the push that names it, so the key does nothing here except make
+  the build warn that the App Store will reject the app for shipping it.
+-->
+<plist version="1.0">
+  <dict>
+    <key>NSExtension</key>
+    <dict>
+      <key>NSExtensionPrincipalClass</key>
+      <string>$(PRODUCT_MODULE_NAME).NotificationService</string>
+      <key>NSExtensionPointIdentifier</key>
+      <string>com.apple.usernotifications.service</string>
+    </dict>
+  </dict>
+</plist>

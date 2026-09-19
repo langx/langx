@@ -5,7 +5,13 @@
 // without them (fine for Metro/tsc's Bundler resolution, not for Node's
 // native loader). These two modules have no imports of their own, which is
 // why they are the ones this loader can resolve — keep it that way.
-import { ANDROID_PACKAGE, APP_LINK_HOST, IOS_BUNDLE_ID } from '@langx/shared/appIdentity'
+import {
+  ANDROID_PACKAGE,
+  APPLE_TEAM_ID,
+  APP_LINK_HOST,
+  IOS_APP_GROUP,
+  IOS_BUNDLE_ID,
+} from '@langx/shared/appIdentity'
 import { APP_SCHEMES } from '@langx/shared/appScheme'
 import type { ExpoConfig } from 'expo/config'
 // The one place the version is written is the root package.json; `pnpm
@@ -56,6 +62,22 @@ const config: ExpoConfig = {
   ios: {
     bundleIdentifier: IOS_BUNDLE_ID,
     supportsTablet: true,
+    /*
+     * Named here, not only in `eas.json`, because `@bacons/apple-targets`
+     * needs it to sign the widget and the notification service extension when
+     * the project is generated. It is not a secret — it is in every app's
+     * receipt — and the repository is public by design.
+     */
+    appleTeamId: APPLE_TEAM_ID,
+    /*
+     * The one container the app, the widgets and the notification service
+     * extension share. The targets mirror this array rather than declaring
+     * their own, so there is one list; the two Swift files that name the group
+     * as a string are called out where `IOS_APP_GROUP` is defined.
+     */
+    entitlements: {
+      'com.apple.security.application-groups': [IOS_APP_GROUP],
+    },
     // The app encrypts nothing of its own; it only speaks HTTPS through the
     // system stack, which Apple's export rules exempt. Answering that here
     // answers it once — without it every upload sits in App Store Connect as
@@ -190,6 +212,14 @@ const config: ExpoConfig = {
 
   plugins: [
     'expo-router',
+    /*
+     * The Apple targets — the widgets and the notification service extension —
+     * live in `targets/`, outside `ios/`, which is the whole reason for this
+     * plugin: `expo prebuild --clean` regenerates the Xcode project and would
+     * delete anything wired in by hand. Each target's own settings are in its
+     * `expo-target.config.js`.
+     */
+    '@bacons/apple-targets',
     /*
      * Three that carry a config plugin but take no configuration: they only
      * need naming so `prebuild` runs them. Listed because `expo-doctor`

@@ -453,7 +453,18 @@ export interface MeProfile {
     willRenew?: boolean
     store?: string
   }
-  streak: { current: number; longest: number }
+  streak: {
+    current: number
+    longest: number
+    /**
+     * The last day that counted, in the profile's timezone. It has been on the
+     * wire since the streak shipped — `GET /profiles/me` returns the stored
+     * document — and is modelled here now because the widget snapshot carries
+     * it: the Home Screen has to answer "has today counted" after a midnight
+     * the app slept through, and a flag computed at write time cannot.
+     */
+    lastQualifiedDay: string | null
+  }
   cosmetics?: string[]
   /** ISO. The one date on this screen the user did not enter themselves. */
   createdAt: string

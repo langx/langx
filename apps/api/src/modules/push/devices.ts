@@ -243,6 +243,18 @@ export class ExpoPushSender implements PushSender {
             body: message.body,
             data: message.data,
             sound: 'default',
+            /**
+             * iOS only, and the one thing that lets the widgets stay right for
+             * somebody who never opens the app. It sets `aps.mutable-content`,
+             * without which iOS delivers the push straight to the Home Screen
+             * and never wakes `LangXNotificationService` — the extension that
+             * writes the new unread total into the App Group the widgets read.
+             * It defaults to false, so the extension existed and never ran.
+             * Constant rather than per-message: the extension decides what to
+             * do from the payload it is handed, and a push with no badge
+             * leaves the count alone.
+             */
+            mutableContent: true,
             ...(message.badge !== undefined ? { badge: message.badge } : {}),
           })),
         ),
