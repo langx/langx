@@ -121,18 +121,23 @@ export default function LinkDeviceScreen() {
     }
     // Something that worked gets a toast, not an alert to dismiss.
     showToast(t(approve ? 'linkDevice.approved' : 'linkDevice.denied'))
-    if (!approve) {
-      goBackTo('/(app)/settings')
-      return
-    }
     /*
-     * Not back to settings on an approval: the device list below is where the
-     * laptop now appears, which is the only proof the approval landed. But the
-     * row is not there yet — approving only marks the code; the browser
-     * creates its session on its next poll, a couple of seconds from now. One
-     * refetch fired here always lost that race and the list sat unchanged
-     * until the next visit. So: ask again on the browser's rhythm until the
-     * new row shows up, and say meanwhile that it is on its way.
+     * The code is spent either way, so the field it was typed into is emptied.
+     * Leaving it filled left two live buttons over something that could only
+     * answer "no longer valid" from here on — which reads as the decision
+     * having failed rather than as it having already been made.
+     */
+    setEntered('')
+    if (!approve) return
+    /*
+     * Neither decision leaves this screen, and an approval is why: the device
+     * list below is where the laptop now appears, which is the only proof the
+     * approval landed. But the row is not there yet — approving only marks the
+     * code; the browser creates its session on its next poll, a couple of
+     * seconds from now. One refetch fired here always lost that race and the
+     * list sat unchanged until the next visit. So: ask again on the browser's
+     * rhythm until the new row shows up, and say meanwhile that it is on its
+     * way.
      */
     const known = new Set((sessions.data ?? []).map((session) => session.token))
     setAwaiting(true)

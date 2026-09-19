@@ -26,7 +26,7 @@ import type { QuickReply } from './graph'
  */
 export const PUBLIC_REPLIES = [
   'just sent you a DM, have a look',
-  'sent it over to your DMs',
+  "I've sent you a DM, you can check it now",
   "just messaged you — if it's not in your inbox, check your message requests",
   "DM's on its way",
 ] as const
