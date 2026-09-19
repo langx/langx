@@ -78,6 +78,32 @@ export const SINGLE_SEND_SPACING_MS = 600
  * eighteen people before it again. Twenty-seven ticks later they had each
  * received the launch mail twenty-eight times.
  */
+/**
+ * Nothing on the `.invalid` TLD can ever be delivered — RFC 2606 reserves it
+ * precisely so it never resolves — and this codebase mints such addresses on
+ * purpose: `guest.langx.invalid` for anonymous accounts,
+ * `official.langx.invalid` for the accounts nobody reads,
+ * `handle.langx.invalid` when a sign-in names a handle that does not exist,
+ * `internal.langx.invalid` for the boot warm-up, and `test.langx.invalid` for
+ * the seeded rig.
+ *
+ * Handing one to the provider anyway is not free. SES accepts it, retries the
+ * lookup for hours as `delivery_delayed`, and eventually writes a transient
+ * bounce — against the reputation of the domain every real mail leaves from.
+ * `sendVerificationEmail` learned this in #1304 and stopped mailing the
+ * warm-up address, but that fixed one address rather than the class: the
+ * seeded test accounts kept receiving sign-in notices, streaks, token mail and
+ * digests, nine of the last hundred sends on 19 September 2026.
+ *
+ * So the check belongs here, once, rather than in each of the callers that
+ * would each have to remember. `onboardingReminder.ts` filters the same
+ * addresses a step earlier, when choosing an audience, which stays worth doing
+ * — it is cheaper to not build a letter than to drop it.
+ */
+export function isUndeliverableAddress(to: string): boolean {
+  return /\.invalid$/i.test(to.trim())
+}
+
 export class EmailRejectedError extends Error {
   readonly to: string
 
@@ -113,12 +139,23 @@ export class ResendEmailSender implements EmailSender {
   readonly deliverable = true
   readonly #client: Resend
   readonly #from: string
+  /** Optional so the existing tests can construct one with two arguments. */
+  readonly #logger: EmailSenderLogger | undefined
   /** When the next single send may go, per `SINGLE_SEND_SPACING_MS`. */
   #nextSendAt = 0
 
-  constructor(apiKey: string, from: string) {
+  constructor(apiKey: string, from: string, logger?: EmailSenderLogger) {
     this.#client = new Resend(apiKey)
     this.#from = from
+    this.#logger = logger
+  }
+
+  /** Logged rather than thrown: the address is synthetic by construction, and
+   * a scheduler that crashed on one would stop delivering everybody else's. */
+  #dropUndeliverable(to: string, subject: string): boolean {
+    if (!isUndeliverableAddress(to)) return false
+    this.#logger?.warn({ to, subject }, 'not sending: address is on the reserved .invalid TLD')
+    return true
   }
 
   async send({
@@ -130,6 +167,8 @@ export class ResendEmailSender implements EmailSender {
     replyTo,
     attachments,
   }: EmailMessage): Promise<void> {
+    if (this.#dropUndeliverable(to, subject)) return
+
     const wait = this.#nextSendAt - Date.now()
     if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait))
     this.#nextSendAt = Date.now() + SINGLE_SEND_SPACING_MS
@@ -152,6 +191,8 @@ export class ResendEmailSender implements EmailSender {
   }
 
   async sendBatch(messages: EmailMessage[]): Promise<void> {
+    messages = messages.filter(({ to, subject }) => !this.#dropUndeliverable(to, subject))
+    if (messages.length === 0) return
     /*
      * The batch endpoint takes no attachments, so a message that carries an
      * inline image goes on its own, paced by `send`. A thrown error from this
@@ -216,6 +257,6 @@ export class ConsoleEmailSender implements EmailSender {
 
 export function createEmailSender(env: Env, logger: EmailSenderLogger): EmailSender {
   return env.RESEND_API_KEY
-    ? new ResendEmailSender(env.RESEND_API_KEY, env.EMAIL_FROM)
+    ? new ResendEmailSender(env.RESEND_API_KEY, env.EMAIL_FROM, logger)
     : new ConsoleEmailSender(logger)
 }

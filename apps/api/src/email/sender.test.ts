@@ -10,7 +10,7 @@ vi.mock('resend', () => ({
   },
 }))
 
-const { EmailRejectedError, ResendEmailSender } = await import('./sender')
+const { EmailRejectedError, ResendEmailSender, isUndeliverableAddress } = await import('./sender')
 const { LOGO_SRC, inlineSrc } = await import('./logo')
 
 const withLogo = (to: string) => ({
@@ -87,5 +87,50 @@ describe('the Resend sender and the logo', () => {
     const outage = sender.send(plain('c@example.com'))
     await expect(outage).rejects.toThrow('Too many requests')
     await expect(outage).rejects.not.toBeInstanceOf(EmailRejectedError)
+  })
+})
+
+describe('addresses that can never be delivered', () => {
+  const warn = vi.fn()
+  const sender = new ResendEmailSender('re_test', 'LangX <hi@langx.io>', { warn })
+
+  it('knows the reserved TLD from a domain that merely contains the word', () => {
+    expect(isUndeliverableAddress('test_katya@test.langx.invalid')).toBe(true)
+    expect(isUndeliverableAddress('bootstrap-warmup@internal.langx.invalid')).toBe(true)
+    expect(isUndeliverableAddress('a@GUEST.LANGX.INVALID')).toBe(true)
+    expect(isUndeliverableAddress(' a@x.invalid ')).toBe(true)
+    // Not the TLD: a real domain may be spelt this way and must still be sent.
+    expect(isUndeliverableAddress('a@invalid.com')).toBe(false)
+    expect(isUndeliverableAddress('a@invalid.example.org')).toBe(false)
+    expect(isUndeliverableAddress('invalid@example.com')).toBe(false)
+  })
+
+  it('does not hand one to the provider, and does not throw', async () => {
+    send.mockClear()
+    warn.mockClear()
+    await expect(sender.send(plain('test_anna@test.langx.invalid'))).resolves.toBeUndefined()
+    expect(send).not.toHaveBeenCalled()
+    expect(warn).toHaveBeenCalledTimes(1)
+  })
+
+  it('drops them out of a batch and still sends the rest', async () => {
+    send.mockClear()
+    batchSend.mockClear()
+    await sender.sendBatch([
+      plain('a@example.com'),
+      plain('test_yuki@test.langx.invalid'),
+      plain('b@example.com'),
+    ])
+    expect(batchSend).toHaveBeenCalledTimes(1)
+    const [[batch]] = batchSend.mock.calls as [[{ to: string }[]]]
+    expect(batch.map((message) => message.to)).toEqual(['a@example.com', 'b@example.com'])
+  })
+
+  it('makes no request at all when a batch is nothing but these', async () => {
+    send.mockClear()
+    batchSend.mockClear()
+    await sender.sendBatch([plain('test_pavel@test.langx.invalid')])
+    expect(batchSend).not.toHaveBeenCalled()
+    expect(send).not.toHaveBeenCalled()
   })
 })
