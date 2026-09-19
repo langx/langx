@@ -17,6 +17,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@bacons/apple-targets": "^5.0.0",
     "@better-auth/expo": "catalog:",
     "@expo-google-fonts/nunito": "^0.4.2",
     "@expo/metro-runtime": "~57.0.15",

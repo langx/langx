@@ -4,8 +4,7 @@ import { buildCompanionSnapshot, type CompanionSources } from './companionSnapsh
 
 const sources: CompanionSources = {
   unread: 3,
-  activity: { streak: { current: 42, lastQualifiedDay: '2026-09-18' } },
-  profile: { streak: { longest: 108 } },
+  profile: { streak: { current: 42, longest: 108, lastQualifiedDay: '2026-09-18' } },
   echo: { due: 12, nextDue: '2026-09-20T06:00:00.000Z' },
 }
 
@@ -57,7 +56,10 @@ describe('buildCompanionSnapshot', () => {
    */
   it('copies lastQualifiedDay across rather than deciding whether today counted', () => {
     const today = buildCompanionSnapshot(
-      { ...sources, activity: { streak: { current: 42, lastQualifiedDay: '2026-09-19' } } },
+      {
+        ...sources,
+        profile: { streak: { current: 42, longest: 108, lastQualifiedDay: '2026-09-19' } },
+      },
       'en',
       t,
       at,
@@ -71,7 +73,7 @@ describe('buildCompanionSnapshot', () => {
 
   it('has a null day for an account that has never had one', () => {
     const fresh = buildCompanionSnapshot(
-      { ...sources, activity: { streak: { current: 0, lastQualifiedDay: null } } },
+      { ...sources, profile: { streak: { current: 0, longest: 108, lastQualifiedDay: null } } },
       'en',
       t,
       at,

@@ -16,10 +16,12 @@ import type { TranslateFn } from '../i18n/runtime'
 export interface CompanionSources {
   /** `GET /me/unread`. */
   unread: number
-  /** `GET /me/activity` — the streak beside the days, and the server's day. */
-  activity: { streak: { current: number; lastQualifiedDay: string | null } }
-  /** `GET /profiles/me`, for the longest run, which activity does not carry. */
-  profile: { streak: { longest: number } }
+  /**
+   * `GET /profiles/me`. All three streak numbers come from the one response —
+   * `/me/activity` carries the same day but asks for a date range the widget
+   * has no use for, and the profile is already in the cache on every screen.
+   */
+  profile: { streak: { current: number; longest: number; lastQualifiedDay: string | null } }
   /** `GET /echo/summary`. */
   echo: Pick<EchoSummary, 'due' | 'nextDue'>
 }
@@ -50,9 +52,9 @@ export function buildCompanionSnapshot(
     locale,
     unread: sources.unread,
     streak: {
-      current: sources.activity.streak.current,
+      current: sources.profile.streak.current,
       longest: sources.profile.streak.longest,
-      lastQualifiedDay: sources.activity.streak.lastQualifiedDay,
+      lastQualifiedDay: sources.profile.streak.lastQualifiedDay,
     },
     echo: {
       due: sources.echo.due,
