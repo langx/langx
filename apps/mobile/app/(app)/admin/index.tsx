@@ -400,6 +400,17 @@ function Chart({
   color?: string
 }) {
   const styles = useStyles()
+  /*
+   * Thirty columns are too narrow to label one by one — a date under each at
+   * 10px is unreadable whatever it says — so a series that carries no labels
+   * of its own gets its two ends instead. That is the whole x axis it needs:
+   * the caption above says how long the window is, and these say where it
+   * starts and stops.
+   */
+  const ends = points.some((point) => point.label)
+    ? null
+    : [points[0]?.key, points.at(-1)?.key].map(monthDay)
+
   return (
     <View style={styles.chart}>
       <View style={styles.chartHead}>
@@ -411,8 +422,23 @@ function Chart({
         {...(color ? { color } : {})}
         accessibilityLabel={`${title}, ${caption}`}
       />
+      {ends ? (
+        <View style={styles.axis}>
+          <Text style={styles.axisLabel}>{ends[0]}</Text>
+          <Text style={styles.axisLabel}>{ends[1]}</Text>
+        </View>
+      ) : null}
     </View>
   )
+}
+
+/** `2026-09-19` as `Sep 19`. English, like the rest of this surface. */
+function monthDay(day: string | undefined): string {
+  if (!day) return ''
+  const at = new Date(`${day}T00:00:00Z`)
+  return Number.isNaN(at.getTime())
+    ? ''
+    : at.toLocaleDateString('en', { day: 'numeric', month: 'short', timeZone: 'UTC' })
 }
 
 function Heading({ children }: { children: string }) {
