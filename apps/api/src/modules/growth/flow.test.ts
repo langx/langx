@@ -1,4 +1,4 @@
-import { COMMENT_TO_DM_RULES, commentAsksForLink } from '@langx/shared'
+import { COMMENT_TO_DM_PAYLOADS, COMMENT_TO_DM_RULES, commentAsksForLink } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { decideForComment, decideForMessage } from './flow'
 
@@ -73,12 +73,42 @@ describe('decideForComment', () => {
 describe('decideForMessage', () => {
   const message = { kind: 'message' as const, senderId: 'them', text: 'READY' }
 
-  it('delivers once they follow', () => {
+  it('asks which phone they are on before handing anything over', () => {
     const action = decideForMessage(message, {
       follows: true,
       delivered: false,
       withinWindow: true,
+      platformAsked: false,
     })
+    expect(action).toEqual({ kind: 'askPlatform', recipientId: 'them' })
+  })
+
+  it('delivers once they follow and the question has been asked', () => {
+    const action = decideForMessage(message, {
+      follows: true,
+      delivered: false,
+      withinWindow: true,
+      platformAsked: true,
+    })
+    expect(action).toEqual({ kind: 'deliver', recipientId: 'them' })
+  })
+
+  it('records which button they tapped, without it changing the link', () => {
+    // Both answers send the same URL. The answer is kept because it is the
+    // only read we get on whether Instagram sends us iOS or Android people.
+    const action = decideForMessage(
+      { ...message, text: COMMENT_TO_DM_PAYLOADS.android },
+      { follows: true, delivered: false, withinWindow: true, platformAsked: true },
+    )
+    expect(action).toEqual({ kind: 'deliver', recipientId: 'them', platform: 'android' })
+  })
+
+  it('delivers anyway when they typed instead of tapping', () => {
+    // The question was a beat, never a gate.
+    const action = decideForMessage(
+      { ...message, text: 'iphone i guess' },
+      { follows: true, delivered: false, withinWindow: true, platformAsked: true },
+    )
     expect(action).toEqual({ kind: 'deliver', recipientId: 'them' })
   })
 
@@ -87,6 +117,7 @@ describe('decideForMessage', () => {
       follows: false,
       delivered: false,
       withinWindow: true,
+      platformAsked: false,
     })
     expect(action).toEqual({
       kind: 'askToFollow',
@@ -105,6 +136,7 @@ describe('decideForMessage', () => {
         follows: true,
         delivered: false,
         withinWindow: true,
+        platformAsked: true,
       },
     )
     expect(action).toMatchObject({ kind: 'deliver' })
@@ -112,7 +144,12 @@ describe('decideForMessage', () => {
 
   it('sends nothing twice', () => {
     expect(
-      decideForMessage(message, { follows: true, delivered: true, withinWindow: true }),
+      decideForMessage(message, {
+        follows: true,
+        delivered: true,
+        withinWindow: true,
+        platformAsked: true,
+      }),
     ).toMatchObject({ kind: 'ignore' })
   })
 
@@ -123,6 +160,7 @@ describe('decideForMessage', () => {
       follows: true,
       delivered: false,
       withinWindow: false,
+      platformAsked: true,
     })
     expect(action.kind).toBe('ignore')
     expect(action.kind === 'ignore' && action.because).toContain('24-hour')

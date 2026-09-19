@@ -5,9 +5,11 @@ import { ApiError } from '../lib/ApiError'
 import { decideForComment, decideForMessage, type GrowthAction } from '../modules/growth/flow'
 import { createGraph, type InstagramGraph } from '../modules/growth/graph'
 import {
+  ASK_PLATFORM,
   ASK_TO_FOLLOW,
   DELIVERY,
   FOLLOWED_BUTTON,
+  PLATFORM_BUTTONS,
   PRIVATE_REPLIES,
   PUBLIC_REPLIES,
   SEND_LINK_BUTTON,
@@ -17,6 +19,7 @@ import {
   claimComment,
   countFollowAsk,
   markDelivered,
+  markPlatformAsked,
   recordInboundMessage,
 } from '../modules/growth/repo'
 
@@ -159,6 +162,7 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
       follows,
       delivered: lead.deliveredAt !== undefined,
       withinWindow: Date.now() - event.at.getTime() < COMMENT_TO_DM_RULES.conversationWindowMs,
+      platformAsked: lead.platformAskedAt !== undefined,
     })
   }
 
@@ -172,7 +176,14 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
       }
       case 'deliver': {
         await graph.sendMessage(action.recipientId, DELIVERY)
-        await markDelivered(app.mongo.db, action.recipientId)
+        await markDelivered(app.mongo.db, action.recipientId, action.platform)
+        return
+      }
+      case 'askPlatform': {
+        // Marked before the send, not after: a failure here must not leave
+        // somebody being asked the same question on every reply.
+        await markPlatformAsked(app.mongo.db, action.recipientId)
+        await graph.sendMessage(action.recipientId, ASK_PLATFORM, PLATFORM_BUTTONS)
         return
       }
       case 'askToFollow': {
