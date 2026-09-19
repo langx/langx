@@ -1153,7 +1153,7 @@ a store install read the same stream. Screens, logic, copy and most bug fixes
 go out this way without a store review; a new native module, a new permission
 or an SDK bump still needs a build.
 
-Publishing is automatic: `update.yml` runs on every merge to `main`. There is
+Publishing is automatic: `deploy-ota.yml` runs on every merge to `main`. There is
 no second channel to hold a change back on — see `decisions.md` for why, and
 for the guard that makes it safe.
 

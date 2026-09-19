@@ -1,0 +1,113 @@
+# Every merge to main that touches the app becomes an over-the-air update on
+# the `production` channel — the same trigger and the same paths as
+# deploy-web.yml, which hands the identical JS to the browser.
+#
+# This used to be apps/mobile/.eas/workflows/update.yml, a job on **Expo's**
+# machines, and it moved here on 19 September 2026 when the EAS subscription
+# was cancelled. The free plan allows 60 EAS Workflows minutes a month; in the
+# preceding 30 days 228 merges touched these paths, so the allowance was gone
+# within days and the merges after it published nothing, silently. A runner
+# here costs nothing — this repository is public — and `eas update` spends no
+# workflow minutes at all: an update is billed as monthly active users,
+# bandwidth and storage, all of which are an order of magnitude under the free
+# caps at this size.
+name: Publish OTA
+
+on:
+  push:
+    branches: [main]
+    # Byte-for-byte the paths the EAS job watched. Notably *not*
+    # `pnpm-lock.yaml`, which deploy-web.yml does watch: a lockfile-only bump
+    # can change an autolinked module and with it the fingerprint, and
+    # release-runbook.md turns that gap into a rule — such a bump is meant to
+    # be observable on the web first and to wait for a build before it reaches
+    # phones. Adding the lockfile here would publish it to a runtime version
+    # no released binary has, green and reaching nobody.
+    paths:
+      - apps/mobile/**
+      - packages/shared/**
+      - '!**/*.md'
+
+  # Replaces `eas workflow:run update.yml`, which went away with the EAS job.
+  workflow_dispatch:
+
+# One publish at a time, in order, matching deploy-web.yml. Two updates racing
+# would land on the channel in whichever order they finished rather than the
+# order they were merged.
+concurrency:
+  group: deploy-ota
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Pinned to the same commit deploy-web.yml pins, for the same reason:
+      # this job holds an Expo token, and a tag can be moved.
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # `runtimeVersion` is a fingerprint, and a fingerprint only reaches a
+      # phone if it matches the one the *build* machine computed. app.config.ts
+      # adds `googleServicesFile` only when GOOGLE_SERVICES_JSON names a real
+      # file, so the config — and with it possibly the fingerprint — differs
+      # between a machine that has the file and one that does not. On EAS the
+      # variable is a secret *file* variable, materialised on the builder and
+      # readable nowhere else, so `--environment production` below cannot
+      # fetch it: it has to be written here.
+      #
+      # Whether this particular variable moves the hash was never proved
+      # either way — the check needs a worktree with apps/mobile installed —
+      # so the file is provided rather than gambled on. If the secret is
+      # missing the file is not written and the variable stays unset, which is
+      # the same state a local build has; the update still publishes, and it
+      # is the fingerprint you would then want to check against eas build:list.
+      - name: Materialise the Android FCM config
+        env:
+          GOOGLE_SERVICES_JSON_CONTENTS: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON_CONTENTS" ]; then
+            printf '%s' "$GOOGLE_SERVICES_JSON_CONTENTS" > "$RUNNER_TEMP/google-services.json"
+            echo "GOOGLE_SERVICES_JSON=$RUNNER_TEMP/google-services.json" >> "$GITHUB_ENV"
+          else
+            echo "::warning::GOOGLE_SERVICES_JSON is not set; publishing without it"
+          fi
+
+      # `--environment production` is load-bearing, not decoration, and the
+      # reason is inherited from the EAS job this replaces: `EXPO_PUBLIC_*`
+      # values are inlined into the bundle as it is exported, this checkout has
+      # no `.env`, and eas.json's `env` blocks belong to *build* profiles that
+      # an update never reads. Without it `EXPO_PUBLIC_API_URL` is unset and
+      # the bundle falls back to `http://localhost:4000` — see resolveApiUrl.ts,
+      # which only rewrites loopback in development. Every update published
+      # before 4 September 2026 shipped that fallback.
+      #
+      # eas-cli is pinned rather than floating: it computes the fingerprint
+      # that decides which installed apps an update can reach, and 23 is the
+      # version the production builds were made with.
+      #
+      # The commit subject arrives as an environment variable rather than
+      # through `${{ }}` inside the script, so that a message containing a
+      # quote or a newline cannot end the argument early.
+      - name: Publish the update
+        working-directory: apps/mobile
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          UPDATE_MESSAGE: ${{ github.event.head_commit.message || github.sha }}
+        run: |
+          npx --yes eas-cli@23 update \
+            --channel production \
+            --environment production \
+            --message "$(printf '%s' "$UPDATE_MESSAGE" | head -n 1)" \
+            --non-interactive

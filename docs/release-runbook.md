@@ -326,22 +326,31 @@ scripts/send-campaign.ts --resume --campaign 2026-09-launch
 
 ## Shipping runs on expo.dev
 
-Builds, store submissions and over-the-air updates are all EAS jobs, defined
-in `apps/mobile/.eas/workflows/`. GitHub Actions tests, deploys the web and
-turns a version tag into a Release page (see below). The workflows that ship
-something, and what each costs:
+Builds and store submissions are EAS jobs, defined in
+`apps/mobile/.eas/workflows/`. GitHub Actions tests, publishes the OTA update,
+deploys the web and turns a version tag into a Release page (see below). The
+workflows that ship something, and what each costs:
 
 | Workflow         | Where          | Trigger                  | Cost                               |
 | ---------------- | -------------- | ------------------------ | ---------------------------------- |
-| `update.yml`     | expo.dev       | every merge to `main`    | nothing — an OTA update, no build  |
+| `deploy-ota.yml` | GitHub Actions | every merge to `main`    | nothing — an OTA update, no build  |
 | `deploy-web.yml` | GitHub Actions | every merge to `main`    | nothing — a static export to Pages |
 | `release.yml`    | expo.dev       | by hand, pick a platform | one build, then `eas submit`       |
 
-`update.yml` and `deploy-web.yml` watch nearly the same paths on purpose: a
+The OTA ran on expo.dev as `update.yml` until 19 September 2026, when the EAS
+subscription was cancelled: the free plan allows 60 EAS Workflows minutes a
+month and the preceding 30 days held 228 merges that would have spent them. It
+publishes from a runner here now, which costs nothing because this repository
+is public, and `eas update` spends no workflow minutes — an update is billed as
+monthly active users, bandwidth and storage. Builds still run on expo.dev, on
+the free plan's 15 per platform per month, low priority, with a 45-minute
+timeout rather than two hours.
+
+`deploy-ota.yml` and `deploy-web.yml` watch nearly the same paths on purpose: a
 merge that changes the app reaches installed phones and `app.langx.io` from
 the same commit, and neither waits for the other. **Nearly**, and the gap has
 a direction: `deploy-web.yml` also fires on `pnpm-lock.yaml`, which
-`update.yml` does not watch. A dependency bump that touches only the lockfile
+`deploy-ota.yml` does not watch. A dependency bump that touches only the lockfile
 — every Dependabot catalog bump — therefore reaches the browser and not the
 phones, and the two run different versions of that package until the next
 merge that does touch `apps/mobile/**`. Harmless for a patch release, but it
@@ -381,7 +390,7 @@ Which is why a native-module version bump is never only a dependency bump.
 `runtimeVersion` is a fingerprint and `@expo/fingerprint` hashes the source
 directory of every autolinked module, so changing one changes the runtime
 version, and every later JS-only merge then publishes to a runtime version no
-released binary has: `update.yml` keeps going green while reaching nobody.
+released binary has: `deploy-ota.yml` keeps going green while reaching nobody.
 **Every open Dependabot pull request against a `react-native*` package is
 deferred for this reason**, and they are deliberately left open rather than
 closed so the versions stay visible. There were five by the evening of
@@ -399,15 +408,25 @@ bundle it and only the fingerprint argument applies.
 
 An update job builds the bundle on EAS from a fresh checkout, and
 `EXPO_PUBLIC_*` values are inlined at that moment. `eas.json`'s `env` blocks
-belong to _build_ profiles and an update job never reads them, so `update.yml`
-names `environment: production` and the value lives in the EAS `production`
-environment. Without it the bundle falls back to `http://localhost:4000` and
-every install loses the API on its next launch.
+belong to _build_ profiles and an update job never reads them, so
+`deploy-ota.yml` passes `--environment production` and the value lives in the
+EAS `production` environment. Without it the bundle falls back to
+`http://localhost:4000` and every install loses the API on its next launch.
+
+Two repository secrets carry what the runner cannot fetch: `EXPO_TOKEN`, which
+authenticates the CLI, and `GOOGLE_SERVICES_JSON`, whose **contents** are
+written to a file before the publish. The second is there because
+`runtimeVersion` is a fingerprint: `app.config.ts` sets `googleServicesFile`
+only when that variable names a real file, and on EAS it is a secret _file_
+variable that `--environment production` cannot read off a builder. Whether it
+actually moves the hash was never measured — the check needs a worktree with
+`apps/mobile` installed — so it is supplied rather than gambled on.
 
 - [x] **The GitHub repo is linked**: the merge of #1157 and #1158 on
-      5 September 2026 each started `update.yml` on expo.dev with trigger
-      `refs/heads/main@…` and no hand on it. Manual runs still work:
-      `eas workflow:run update.yml` from `apps/mobile`.
+      5 September 2026 each started the OTA with trigger `refs/heads/main@…`
+      and no hand on it, back when it was `update.yml` on expo.dev. It is
+      `deploy-ota.yml` here now; a manual run is the **Run workflow** button,
+      or `gh workflow run deploy-ota.yml`.
 - [x] **iOS credentials.** Proven on 7 September 2026: `release.yml` with
       `platform=ios` built 2.0 (137) and its submit step delivered it to App
       Store Connect (app 6474187141) with no hand on it, so the distribution
