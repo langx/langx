@@ -99,21 +99,24 @@ describe('countedToday', () => {
       at,
     )
 
-  /**
-   * The local day, not the UTC one. `at` is 08:30 UTC on the 19th; a phone in
-   * Toronto reads 04:30 on the 19th and a phone in Tokyo 17:30 on the 19th, so
-   * both agree here — the case that matters is the one below.
-   */
-  it('is true only when the last qualifying day is the device’s own today', () => {
-    const now = new Date('2026-09-19T12:00:00.000Z')
+  /*
+   Every moment below is built from **local** components — `new Date(y, m, d,
+   …)` rather than an ISO string — because that is the calendar `deviceDayKey`
+   reads, and it is the only way these assertions mean the same thing wherever
+   they run. Written with a fixed `-04:00`, the last one passed in Toronto and
+   failed on a UTC runner: it was asserting something about the machine. That
+   is the confusion this function exists to keep out of the widget.
+  */
+  const localNoon = new Date(2026, 8, 19, 12, 0)
 
-    expect(countedToday(on('2026-09-19'), now)).toBe(true)
-    expect(countedToday(on('2026-09-18'), now)).toBe(false)
+  it('is true only when the last qualifying day is the device’s own today', () => {
+    expect(countedToday(on('2026-09-19'), localNoon)).toBe(true)
+    expect(countedToday(on('2026-09-18'), localNoon)).toBe(false)
   })
 
   /** An account that has never had a qualifying day is not "done for today". */
   it('is false when nothing has ever counted', () => {
-    expect(countedToday(on(null), new Date('2026-09-19T12:00:00.000Z'))).toBe(false)
+    expect(countedToday(on(null), localNoon)).toBe(false)
   })
 
   /**
@@ -125,7 +128,7 @@ describe('countedToday', () => {
   it('turns false once the device rolls into the next day', () => {
     const snapshot = on('2026-09-19')
 
-    expect(countedToday(snapshot, new Date('2026-09-19T23:59:00-04:00'))).toBe(true)
-    expect(countedToday(snapshot, new Date('2026-09-20T00:01:00-04:00'))).toBe(false)
+    expect(countedToday(snapshot, new Date(2026, 8, 19, 23, 59))).toBe(true)
+    expect(countedToday(snapshot, new Date(2026, 8, 20, 0, 1))).toBe(false)
   })
 })
