@@ -661,7 +661,7 @@ be a data blob every consumer parses at import.
 | Row                  | free | pro  | pro_plus | Why                                                      |
 | -------------------- | ---- | ---- | -------- | -------------------------------------------------------- |
 | `echoNewCardsPerDay` | null | null | null     | The one row that may be metered later. Free at launch.   |
-| `echoCapturesPerDay` | 50   | 50   | 50       | Abuse ceiling on server-side translation. Not a paywall. |
+| `echoCapturesPerDay` | 250  | 250  | 250      | Abuse ceiling on server-side translation. Not a paywall. |
 | `echoReviewsPerDay`  | null | null | null     | Reviews are **never** capped, on any tier, ever.         |
 | `echoVoicesPerDay`   | 10   | 50   | 100      | Cards read aloud by the server voice; one unit per card. |
 

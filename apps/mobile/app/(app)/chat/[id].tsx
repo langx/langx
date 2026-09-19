@@ -1477,7 +1477,7 @@ export default function ChatScreen() {
     } catch (error) {
       /*
        * No paywall, deliberately — and this is the one place the difference
-       * from `translate` above matters. `echoCapturesPerDay` is the same 50
+       * from `translate` above matters. `echoCapturesPerDay` is the same 250
        * on every plan, so the upgrade screen would be offering something that
        * does not exist. A ceiling gets an explanation; only a gate gets a
        * price.
