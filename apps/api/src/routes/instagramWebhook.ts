@@ -43,8 +43,13 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
 
   const graphFor = (): InstagramGraph | null => {
     const { IG_ACCOUNT_ID, IG_PAGE_TOKEN } = app.env
-    if (!IG_ACCOUNT_ID || !IG_PAGE_TOKEN) return null
-    return createGraph({ accountId: IG_ACCOUNT_ID, token: IG_PAGE_TOKEN })
+    // Only the token is required now: the account id comes from `/me`, and
+    // `IG_ACCOUNT_ID` is the fallback for when that call cannot be made.
+    if (!IG_PAGE_TOKEN) return null
+    return createGraph({
+      token: IG_PAGE_TOKEN,
+      ...(IG_ACCOUNT_ID ? { fallbackAccountId: IG_ACCOUNT_ID } : {}),
+    })
   }
 
   /**
@@ -104,7 +109,7 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
         event.kind === 'comment'
           ? decideForComment(event, {
               seen: !(await claimComment(app.mongo.db, event.commentId)),
-              selfId: app.env.IG_ACCOUNT_ID ?? '',
+              selfId: await selfId(graph),
               postedAt: event.postedAt,
               now: new Date(),
             })
@@ -119,6 +124,24 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
         continue
       }
       await perform(action, graph)
+    }
+  }
+
+  /**
+   * Who we are, for the "do not answer ourselves" check.
+   *
+   * Asked of the token when there is one, because the configured id and the
+   * one the token answers with are not always the same. An empty string when
+   * neither is available matches nothing, which fails towards answering a
+   * stranger rather than towards silence.
+   */
+  async function selfId(graph: InstagramGraph | null): Promise<string> {
+    if (!graph) return app.env.IG_ACCOUNT_ID ?? ''
+    try {
+      return await graph.accountId()
+    } catch (caught) {
+      app.log.warn({ err: caught }, 'instagram /me lookup failed')
+      return app.env.IG_ACCOUNT_ID ?? ''
     }
   }
 

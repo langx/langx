@@ -10,6 +10,15 @@
 const GRAPH = 'https://graph.instagram.com/v21.0'
 
 export interface InstagramGraph {
+  /**
+   * Which account this token speaks as, asked of `/me` rather than configured.
+   *
+   * The dashboard shows one id for @langxapp and the token answers with
+   * another — both real, in different id spaces — and addressing `/messages`
+   * with the wrong one fails at the moment a DM should go out, which is the
+   * hardest place to notice it. So the token is asked, and the answer cached.
+   */
+  accountId(): Promise<string>
   /** Answered under the post, publicly. */
   replyToComment(commentId: string, message: string): Promise<void>
   /**
@@ -31,8 +40,12 @@ export interface InstagramGraph {
 }
 
 export interface GraphConfig {
-  /** The Instagram professional account's own id. */
-  accountId: string
+  /**
+   * What `IG_ACCOUNT_ID` holds, used only if `/me` cannot be reached. Asking
+   * the token is the truth; this is the fallback for a network blip, not a
+   * second source of it.
+   */
+  fallbackAccountId?: string
   /** A long-lived page token with the messaging and comment scopes. */
   token: string
   /** Injected in tests; the global otherwise. */
@@ -40,10 +53,11 @@ export interface GraphConfig {
 }
 
 export function createGraph({
-  accountId,
+  fallbackAccountId,
   token,
   fetch = globalThis.fetch,
 }: GraphConfig): InstagramGraph {
+  let resolved: Promise<string> | null = null
   async function post(path: string, body: unknown): Promise<void> {
     const response = await fetch(`${GRAPH}${path}`, {
       method: 'POST',
@@ -55,18 +69,46 @@ export function createGraph({
     }
   }
 
+  async function askWhoWeAre(): Promise<string> {
+    const response = await fetch(`${GRAPH}/me?fields=id`, {
+      headers: { authorization: `Bearer ${token}` },
+    })
+    if (!response.ok) {
+      if (fallbackAccountId) return fallbackAccountId
+      throw new Error(`instagram /me failed: ${response.status}`)
+    }
+    const body = (await response.json()) as { id?: string }
+    if (typeof body.id !== 'string') {
+      if (fallbackAccountId) return fallbackAccountId
+      throw new Error('instagram /me returned no id')
+    }
+    return body.id
+  }
+
   return {
+    async accountId() {
+      // Cached as the promise, not the value, so two events arriving together
+      // ask once.
+      resolved ??= askWhoWeAre()
+      try {
+        return await resolved
+      } catch (caught) {
+        // A failed lookup must not poison every later call.
+        resolved = null
+        throw caught
+      }
+    },
     async replyToComment(commentId, message) {
       await post(`/${commentId}/replies`, { message })
     },
     async sendPrivateReply(commentId, message) {
-      await post(`/${accountId}/messages`, {
+      await post(`/${await this.accountId()}/messages`, {
         recipient: { comment_id: commentId },
         message: { text: message },
       })
     },
     async sendMessage(recipientId, message) {
-      await post(`/${accountId}/messages`, {
+      await post(`/${await this.accountId()}/messages`, {
         recipient: { id: recipientId },
         message: { text: message },
       })
