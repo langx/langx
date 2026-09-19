@@ -15,6 +15,12 @@ therefore answers rather than questions:
   for one. Phase 1 leads, and it ships **all three widget families**, with
   **no Live Activity** and **no acting widget button** — the widget deep-links
   into the app and the app does the rest.
+
+**Phase 1 is written and unrun.** Everything above the Xcode line is in the
+branch and green in CI; nothing has been on a phone. What a Mac has to do
+before any of it can be believed is in
+[`phase-1-mac-handoff.md`](phase-1-mac-handoff.md).
+
 - **A bearer token may live in a shared Keychain.** So the Siri send path is
   in scope, with the REST twin and the security review it implies.
 
@@ -539,11 +545,13 @@ is not, which is why its paperwork starts on day one.
      ends in a written no-go and surface C is re-planned natively
    → in parallel, and on day one: file the CarPlay entitlement request
 
-1. iPhone: apple-targets wiring, the string generator, the snapshot module,
-   the three widget families, the notification service extension that keeps
-   the count true, three App Intents. No Live Activity — it is deferred, and
-   the reasoning for when it returns is kept under Surface A.
-   → verify: the list under Surface A, plus a clean prebuild
+1. iPhone — **written, not yet run on a device** (19 September):
+   the snapshot contract and builder, the local module that writes it,
+   `@bacons/apple-targets` wiring, the three widget families, the
+   notification service extension, and the blob cleared at sign-out.
+   Still to do: the three App Intents, and the string generator — which
+   nothing needs yet, because no text here is drawn in one language only.
+   → verify: everything in `phase-1-mac-handoff.md`, on a Mac
 
 1b. iPhone Duo readiness: the lint rule against `Dimensions.get` — done; then,
    once there is a Mac with Xcode 27.1 and the design kits, a fold-and-unfold
