@@ -22,6 +22,17 @@ private enum Brand {
 // MARK: - Timeline
 
 struct CompanionEntry: TimelineEntry {
+  /**
+   The moment this entry stands for — and the only clock the views below may
+   read.
+
+   WidgetKit renders an entry *before* its date arrives and shows the finished
+   image when the moment comes, so `Date()` inside a view body is the time the
+   drawing happened, not the time it is seen. Asking it whether today has
+   counted would answer for the evening the midnight entry was drawn in, and
+   the streak would still read solid at one in the morning — the entry at
+   midnight would exist, wake the widget, and change nothing.
+   */
   let date: Date
   let snapshot: CompanionSnapshot?
 }
@@ -107,10 +118,12 @@ private struct Tile: View {
 /// catalogue, and it is read at a glance rather than parsed.
 private struct StreakMark: View {
   let snapshot: CompanionSnapshot
+  /// The moment this entry stands for. See `CompanionEntry`.
+  let now: Date
   var size: CGFloat = 34
 
   var body: some View {
-    let counted = snapshot.countedToday()
+    let counted = snapshot.countedToday(now: now)
     VStack(spacing: 2) {
       Text("\(snapshot.streak.current)")
         .font(.system(size: size, weight: .bold, design: .rounded))
@@ -131,11 +144,12 @@ private struct StreakMark: View {
 
 private struct SmallView: View {
   let snapshot: CompanionSnapshot?
+  let now: Date
 
   var body: some View {
     Group {
       if let snapshot {
-        StreakMark(snapshot: snapshot)
+        StreakMark(snapshot: snapshot, now: now)
       } else {
         EmptyState()
       }
@@ -146,6 +160,7 @@ private struct SmallView: View {
 
 private struct MediumView: View {
   let snapshot: CompanionSnapshot?
+  let now: Date
 
   var body: some View {
     Group {
@@ -160,7 +175,7 @@ private struct MediumView: View {
           Link(destination: URL(string: "langx:///me")!) {
             Tile(
               value: snapshot.streak.current, label: snapshot.labels.streak,
-              tint: snapshot.countedToday() ? Brand.streak : Brand.streak.opacity(0.45))
+              tint: snapshot.countedToday(now: now) ? Brand.streak : Brand.streak.opacity(0.45))
           }
           Link(destination: URL(string: "langx:///chats")!) {
             Tile(value: snapshot.unread, label: snapshot.labels.unread, tint: Brand.accent)
@@ -178,11 +193,12 @@ private struct MediumView: View {
 
 private struct CircularView: View {
   let snapshot: CompanionSnapshot?
+  let now: Date
 
   var body: some View {
     Group {
       if let snapshot {
-        Gauge(value: snapshot.countedToday() ? 1 : 0) {
+        Gauge(value: snapshot.countedToday(now: now) ? 1 : 0) {
           Text("\(snapshot.streak.current)")
         }
         .gaugeStyle(.accessoryCircularCapacity)
@@ -223,7 +239,7 @@ private struct RectangularView: View {
 struct LangXStreakWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXStreakWidget", provider: CompanionProvider()) { entry in
-      SmallView(snapshot: entry.snapshot)
+      SmallView(snapshot: entry.snapshot, now: entry.date)
         .containerBackground(.fill.tertiary, for: .widget)
     }
     .configurationDisplayName("LangX")
@@ -234,7 +250,7 @@ struct LangXStreakWidget: Widget {
 struct LangXSummaryWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXSummaryWidget", provider: CompanionProvider()) { entry in
-      MediumView(snapshot: entry.snapshot)
+      MediumView(snapshot: entry.snapshot, now: entry.date)
         .containerBackground(.fill.tertiary, for: .widget)
     }
     .configurationDisplayName("LangX")
@@ -265,7 +281,7 @@ private struct AccessoryRouter: View {
     case .accessoryRectangular:
       RectangularView(snapshot: entry.snapshot)
     default:
-      CircularView(snapshot: entry.snapshot)
+      CircularView(snapshot: entry.snapshot, now: entry.date)
     }
   }
 }
