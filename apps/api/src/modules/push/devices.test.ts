@@ -90,6 +90,35 @@ describe('ExpoPushSender', () => {
     expect(sentBody(1)[0]).not.toHaveProperty('badge')
   })
 
+  /**
+   * The flag the iOS widgets depend on. Without `mutableContent` the push is
+   * delivered without ever waking `LangXNotificationService`, so the unread
+   * number on the Home Screen stops moving for anybody who does not open the
+   * app. Asserted on a push that carries no badge too, because the extension
+   * is the only thing that can tell the two apart.
+   */
+  it('marks every push mutable so the iOS extension is woken', async () => {
+    const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(ticketsFor(['ok'])))
+    vi.stubGlobal('fetch', fetchMock)
+    const sender = new ExpoPushSender()
+    const sentBody = (call: number): { mutableContent?: boolean }[] => {
+      const init = fetchMock.mock.calls[call]?.[1] as { body: string } | undefined
+      return JSON.parse(init?.body ?? '[]') as { mutableContent?: boolean }[]
+    }
+
+    await sender.send({
+      to: ['t'],
+      title: 'hi',
+      body: 'there',
+      data: { kind: 'message' },
+      badge: 1,
+    })
+    expect(sentBody(0)[0]?.mutableContent).toBe(true)
+
+    await sender.send({ to: ['t'], title: 'hi', body: 'there', data: { kind: 'streakReminder' } })
+    expect(sentBody(1)[0]?.mutableContent).toBe(true)
+  })
+
   it('splits more than 100 recipients across requests', async () => {
     const fetchMock = vi
       .fn()
