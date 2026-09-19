@@ -269,6 +269,19 @@ const envSchema = z.object({
   POSTHOG_PROJECT_ID: emptyToUndefined(z.string().optional()),
   POSTHOG_REGION: z.enum(['eu', 'us']).default('eu'),
 
+  /**
+   * The funnel on the operator panel — install → onboarding → first message →
+   * paywall. A `query:read` key, and a *second* variable rather than a scope
+   * added to the one above, which is the whole point: the paragraph above says
+   * read-the-whole-project and delete-people-from-it are the pair you do not
+   * want in one credential, and granting `query:read` to the write key would
+   * have built precisely that. It may be the same key `pnpm insight` uses.
+   *
+   * Unset, the panel says the funnel is not configured and everything else on
+   * the screen is unaffected. `modules/admin/funnel.ts` has the rest.
+   */
+  POSTHOG_QUERY_API_KEY: emptyToUndefined(z.string().optional()),
+
   // Faz 2: username claim. Must match what the ETL used to hash legacy
   // emails into handleReservations.legacyEmailHash, or nothing ever matches.
   LEGACY_EMAIL_HASH_SALT: emptyToUndefined(z.string().optional()),

@@ -22,6 +22,7 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { withJobHealth, type JobHealth } from '../modules/admin/jobHealth'
 import { verifyBountyToken } from '../email/bountyToken'
 import { signReviewToken } from '../email/reviewToken'
+import { PULSE_POINTS, recordPresenceSample, type AdminPulse } from '../modules/admin/pulse'
 import { forgetAdminStats, type AdminStats } from '../modules/admin/stats'
 import type { Message } from '../modules/chat/conversations'
 import type { Profile } from '../modules/profiles/profiles'
@@ -267,6 +268,89 @@ describe('the operator panel', () => {
 
       // Read from the public module rather than recomputed beside it.
       expect(stats.public.totals.members).toBeGreaterThan(0)
+    })
+  })
+
+  describe('the live count', () => {
+    it('is behind the same guard as the rest of the panel', async () => {
+      expect((await get(null, '/admin/pulse')).statusCode).toBe(401)
+      const member = await newUser()
+      const refused = await get(member, '/admin/pulse')
+      expect(refused.statusCode).toBe(403)
+      expect(refused.json<{ code: string }>().code).toBe(ERROR_CODES.ADMIN_REQUIRED)
+    })
+
+    it('counts who is here now and draws the hour behind it, gaps included', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await profiles().updateOne(
+        { _id: admin.userId },
+        { $set: { 'stats.lastActiveAt': new Date() } },
+      )
+
+      await recordPresenceSample(handle.db)
+      const pulse = (await get(admin, '/admin/pulse')).json<AdminPulse>()
+
+      expect(pulse.online).toBeGreaterThan(0)
+
+      /*
+       * A fixed number of evenly spaced slots, oldest first, whatever was
+       * recorded — the chart's x axis is time, so a minute nobody sampled has
+       * to take up its minute of width rather than closing the gap.
+       */
+      expect(pulse.history).toHaveLength(PULSE_POINTS)
+      const spacing = pulse.history
+        .slice(1)
+        .map((point, i) => Date.parse(point.at) - Date.parse(pulse.history[i]!.at))
+      expect(new Set(spacing)).toEqual(new Set([pulse.bucketMs]))
+
+      // Only this minute was sampled, so it is the only slot with a number in
+      // it — and the rest are null rather than zero, which would claim the app
+      // was empty at times nobody looked.
+      const recorded = pulse.history.filter((point) => point.online !== null)
+      expect(recorded).toHaveLength(1)
+      expect(recorded[0]!.at).toBe(pulse.history.at(-1)!.at)
+      expect(recorded[0]!.online).toBe(pulse.online)
+    })
+
+    it('keeps one row per minute however many instances sample it', async () => {
+      const samples = handle.db.collection(COLLECTIONS.presenceSamples)
+      await samples.deleteMany({})
+
+      // The two machines in production, both ticking inside the same minute.
+      await recordPresenceSample(handle.db)
+      await recordPresenceSample(handle.db)
+
+      expect(await samples.countDocuments({})).toBe(1)
+    })
+  })
+
+  describe('the funnel', () => {
+    it('is behind the guard, and says why it is empty rather than failing', async () => {
+      expect((await get(null, '/admin/funnel')).statusCode).toBe(401)
+
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      /*
+       * The test env has no `POSTHOG_QUERY_API_KEY`, which is the shape most
+       * instances run in: no analytics is a supported way to run LangX, so the
+       * panel gets a reason and a 200 rather than an error it would have to
+       * draw as a broken screen.
+       */
+      const answer = await get(admin, '/admin/funnel')
+      expect(answer.statusCode).toBe(200)
+      expect(answer.json<{ reason: string; window: string }>()).toMatchObject({
+        reason: 'unconfigured',
+        window: '30d',
+      })
+
+      expect((await get(admin, '/admin/funnel?window=all')).json<{ window: string }>().window).toBe(
+        'all',
+      )
+      // Only the two windows the panel offers; anything else is a 400 rather
+      // than a date this route would have to choose.
+      expect((await get(admin, '/admin/funnel?window=7d')).statusCode).toBe(400)
     })
   })
 

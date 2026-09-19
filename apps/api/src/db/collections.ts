@@ -216,6 +216,18 @@ export const COLLECTIONS = {
   /** Every mutating decision an operator made in the panel, append-only. */
   adminActions: 'adminActions',
   /**
+   * One row per UTC minute: how many people were in the app then.
+   *
+   * Written by every API instance and keyed on the minute itself, so the two
+   * machines in production land in the same bucket and the second one's
+   * `$setOnInsert` is a no-op. That is the whole reason this is a collection
+   * and not a ring buffer in process memory — a buffer per machine would give
+   * a dashboard polling through the load balancer two interleaved histories
+   * drawn as one line. Bounded by the TTL in `indexes.ts` to the couple of
+   * hours the panel's chart reads. See `modules/admin/pulse.ts`.
+   */
+  presenceSamples: 'presenceSamples',
+  /**
    * Socket.io's bus between API instances. Every emit is written here and
    * every instance tails it with a change stream, which is how a message sent
    * through one machine reaches a socket held on the other. Written and read

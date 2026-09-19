@@ -37,6 +37,8 @@ import {
 } from '../modules/admin/broadcast'
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
+import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
+import { readAdminPulse } from '../modules/admin/pulse'
 import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
 import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
@@ -88,6 +90,43 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get('/admin/stats', { preHandler: requireAdmin }, async (_request, reply) => {
     return reply.send(await readAdminStats(app.mongo.db))
   })
+
+  /**
+   * How many people are in the app right now, and the hour behind it.
+   *
+   * Its own route rather than a field on `/admin/stats` because the two are
+   * read at different rates: the dashboard polls this every few seconds, and
+   * the stats behind that route are a minute-cached `Promise.all` of nine
+   * queries that must not run at that rate. One indexed count and one bounded
+   * read of `presenceSamples` — see `modules/admin/pulse.ts`.
+   */
+  app.get('/admin/pulse', { preHandler: requireAdmin }, async (_request, reply) => {
+    return reply.send(await readAdminPulse(app.mongo.db))
+  })
+
+  /**
+   * Where people stop between installing the app and paying for it.
+   *
+   * Its own route and not a field on `/admin/stats`, because it is the one
+   * thing the panel asks that leaves this machine: a funnel over all time is a
+   * scan of every event the project has, and hanging the dashboard on a
+   * third party's query queue would mean PostHog being slow made the reports
+   * queue slow. Half-hour memory on the module behind it, per window.
+   *
+   * An instance with no `POSTHOG_QUERY_API_KEY` answers 200 with a reason
+   * rather than an error: no analytics is a supported way to run LangX, and
+   * the panel prints the reason where the funnel would have been.
+   */
+  app.get(
+    '/admin/funnel',
+    {
+      preHandler: requireAdmin,
+      schema: { querystring: z.object({ window: z.enum(FUNNEL_WINDOWS).default('30d') }) },
+    },
+    async (request, reply) => {
+      return reply.send(await readFunnel(app.env, request.query.window))
+    },
+  )
 
   /**
    * Telling everyone on an older build that a new one is in the stores.

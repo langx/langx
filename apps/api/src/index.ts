@@ -14,6 +14,7 @@ import { createTtsProvider } from './tts/createTtsProvider'
 import { createAnthropicProvider } from './modules/official/assistantProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
+import { startPresenceSampler } from './modules/admin/pulse'
 import { ExpoPushSender } from './modules/push/devices'
 import type { NotificationEmailContext } from './email/notify'
 import { startLegacyImportScheduler } from './modules/handles/legacyImportScheduler'
@@ -113,6 +114,13 @@ async function main(): Promise<void> {
     startStreakReminderScheduler(db, push, app.log),
     startMeetingReminderScheduler(db, push, app.log),
     startLegacyImportScheduler(db, app.log),
+    /*
+     * Not a scheduled *job* — it writes no ledger and claims no period. Every
+     * instance samples, because what it records is one number read from the
+     * database and the minute it lands in is the deduplication. See
+     * `modules/admin/pulse.ts`.
+     */
+    startPresenceSampler(db, app.log),
     startNotificationScheduler(db, { push, email: notificationEmail }, app.log, {
       ...(env.STORAGE_PUBLIC_BASE_URL ? { storagePublicBaseUrl: env.STORAGE_PUBLIC_BASE_URL } : {}),
       // Better Auth mints the link and sends it through the same hook the
