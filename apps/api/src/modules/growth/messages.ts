@@ -101,6 +101,18 @@ https://get.langx.io/?utm_source=ig&utm_medium=dm
 
 Pick a language, say hi to someone, and you are off. Any trouble, just reply here.`
 
+/**
+ * Sent when they have asked again and the follow still is not there.
+ *
+ * Every one of these answers a button they pressed, so saying nothing is not
+ * restraint — it is a dead end with no way out of it. Saying the same thing
+ * twice is what the automations everybody recognises do. This says what is
+ * actually happening and offers a person at the end of it.
+ */
+export const ASK_TO_FOLLOW_AGAIN = `Still nothing on my side — Instagram can take a moment to report a follow.
+
+Give it a few seconds and tap again. If it keeps missing, just say so here and I'll sort it out myself.`
+
 /** Sent once they have replied and they do not follow yet. */
 export const ASK_TO_FOLLOW = `Almost there — the follow has not come through on my side yet.
 

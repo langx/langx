@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { COMMENT_TO_DM_RULES, ERROR_CODES } from '@langx/shared'
+import { COMMENT_TO_DM_PAYLOADS, COMMENT_TO_DM_RULES, ERROR_CODES } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { decideForComment, decideForMessage, type GrowthAction } from '../modules/growth/flow'
@@ -7,6 +7,7 @@ import { createGraph, type InstagramGraph } from '../modules/growth/graph'
 import {
   ASK_PLATFORM,
   ASK_TO_FOLLOW,
+  ASK_TO_FOLLOW_AGAIN,
   DELIVERY,
   FOLLOWED_BUTTON,
   PLATFORM_BUTTONS,
@@ -157,7 +158,18 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
     const lead = await recordInboundMessage(app.mongo.db, event.senderId, event.at)
     // Asked now and not at comment time because now is the first moment Meta
     // will answer it.
-    const follows = graph ? await graph.follows(event.senderId) : false
+    let follows = graph ? await graph.follows(event.senderId) : false
+    /*
+     * Somebody who just tapped "I followed" is the one person this call is
+     * most likely to be wrong about: Instagram does not report a follow the
+     * instant it happens. Refusing them on the first read would turn the
+     * platform's lag into our dead end, so the claim is taken seriously
+     * enough to look once more.
+     */
+    if (!follows && graph && event.text === COMMENT_TO_DM_PAYLOADS.followed) {
+      await sleep(COMMENT_TO_DM_RULES.followRecheckMs)
+      follows = await graph.follows(event.senderId)
+    }
     return decideForMessage(event, {
       follows,
       delivered: lead.deliveredAt !== undefined,
@@ -187,11 +199,20 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
         return
       }
       case 'askToFollow': {
-        // Once. A second reminder to somebody who has already been asked is
-        // the difference between a nudge and being harassed by a brand.
+        /*
+         * Always an answer, never silence.
+         *
+         * This used to stop after the first ask, which was right when the only
+         * way to get here was to type something unprompted — a brand that
+         * repeats itself at somebody is harassing them. With buttons it is
+         * exactly backwards: every one of these is the reply to a tap the
+         * person just made, and the guard turned "I followed" into a message
+         * that did nothing at all. Repeating is not the risk; leaving them
+         * staring at their own tap is.
+         */
         const asks = await countFollowAsk(app.mongo.db, action.recipientId)
-        if (asks > 1) return
-        await graph.sendMessage(action.recipientId, ASK_TO_FOLLOW, [FOLLOWED_BUTTON])
+        const message = asks > 1 ? ASK_TO_FOLLOW_AGAIN : ASK_TO_FOLLOW
+        await graph.sendMessage(action.recipientId, message, [FOLLOWED_BUTTON])
         return
       }
       default:

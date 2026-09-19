@@ -76,9 +76,12 @@ export interface CommentToDmRules {
    */
   replyDelayMs: { min: number; max: number }
   /**
-   * How long to wait before looking again at somebody who had not followed
-   * yet. One re-check, not a loop: a second nag is where helpful turns into
-   * harassment.
+   * How long to wait before looking at a follow a second time.
+   *
+   * Instagram does not report a follow the instant it happens, and the person
+   * it fails for is precisely the one who just tapped "I followed" — so the
+   * answer to that tap waits this long and asks once more before saying no.
+   * Short, because somebody is watching the thread while it runs.
    */
   followRecheckMs: number
   /** Meta's own window from the comment, in which the one private reply works. */
@@ -95,7 +98,7 @@ const DAY = 24 * HOUR
 
 export const COMMENT_TO_DM_RULES: CommentToDmRules = {
   replyDelayMs: { min: 20 * 1000, max: 90 * 1000 },
-  followRecheckMs: 90 * 1000,
+  followRecheckMs: 8 * 1000,
   privateReplyWindowMs: 7 * DAY,
   conversationWindowMs: 24 * HOUR,
   privateRepliesPerHour: 750,
