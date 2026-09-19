@@ -1,4 +1,5 @@
 import type { Db, IndexDescription } from 'mongodb'
+import { PULSE_RETENTION_SECONDS } from '../modules/admin/pulse'
 import { COLLECTIONS, type CollectionName } from './collections'
 
 /**
@@ -927,6 +928,18 @@ export const INDEXES: Partial<IndexSpec> = {
      */
     { key: { subjectUserId: 1, at: -1 }, name: 'subject_recent' },
     { key: { at: -1 }, name: 'recent' },
+  ],
+  [COLLECTIONS.presenceSamples]: [
+    /*
+     * The read is "the last hour, oldest first", and the TTL is the retention:
+     * the operator panel's live chart draws sixty minutes, so a row two hours
+     * old is behind the left edge of the only chart that reads it. Nothing
+     * else stops this collection growing a row a minute forever.
+     *
+     * No unique index on the minute, because the minute *is* `_id` — which is
+     * what makes the second machine's sample a no-op rather than a second row.
+     */
+    { key: { at: 1 }, name: 'minute_ttl', expireAfterSeconds: PULSE_RETENTION_SECONDS },
   ],
   [COLLECTIONS.jobRuns]: [
     // The only defence against a double-run cron distributing the pool twice.

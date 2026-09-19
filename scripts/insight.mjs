@@ -52,6 +52,11 @@ const DAYS = Number(process.argv[2] ?? 30)
  * `photo` is deliberately not a step — it comes after the profile exists, so
  * `onboarding_completed` has already counted that account.
  *
+ * The operator panel asks the same funnel — `apps/api/src/modules/admin/funnel.ts`
+ * carries the list a second time, because that file is TypeScript and this one
+ * is run by bare `node`, so neither can import the other. `funnel.test.ts`
+ * reads this file off disk and fails if the two drift. Change both.
+ *
  * `Application Installed` is the SDK's own and the only event that can count
  * an install that never reached a screen of ours. The last step is filtered to
  * a purchase that actually completed — the event also fires for a cancelled or

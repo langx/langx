@@ -21,6 +21,16 @@
  *
  * If you are here to "finish the translations": this is finished.
  */
+/**
+ * One decimal, and an em dash rather than a `0%` when there is nothing to take
+ * a share of. Here rather than in a screen because the sentences that carry a
+ * percentage are here, and a rate formatted two ways on one dashboard is a
+ * reader wondering which one is rounded.
+ */
+export function adminPercent(part: number, whole: number): string {
+  return whole > 0 ? `${Math.round((part / whole) * 1000) / 10}%` : '—'
+}
+
 export const ADMIN = {
   entryRow: 'Operator panel',
 
@@ -35,22 +45,83 @@ export const ADMIN = {
     users: 'Find someone',
     system: 'System',
     waiting: 'waiting',
-    sections: { queue: 'Waiting', audience: 'People', money: 'Plans & tokens' },
+    sections: {
+      queue: 'Waiting',
+      audience: 'People',
+      talking: 'Conversation',
+      languages: 'Languages',
+      funnel: 'Funnel',
+      money: 'Plans & tokens',
+    },
     joinedToday: 'Joined today',
     joinedWeek: 'Joined this week',
     activeToday: 'Active today',
     seenWeek: 'Seen this week',
     profiles: 'Profiles',
     messages: 'Messages',
+    corrections: 'Corrections',
+    languageCount: 'Languages',
     pro: 'Pro',
     proPlus: 'Pro+',
     free: 'Free',
+    paidShare: (paid: number, total: number) =>
+      `${paid} of ${total} members are paying · ${adminPercent(paid, total)}`,
     poolYesterday: 'Yesterday’s pool',
     poolPaid: 'paid',
     poolDistributed: 'distributed',
     poolNone: 'No pool has run yet.',
     builds: 'Builds',
     failedToLoad: 'Could not load the dashboard.',
+
+    /** The live card at the top: who is in the app at this moment. */
+    live: {
+      badge: 'LIVE',
+      online: 'in the app now',
+      window: (minutes: number) => `Anyone seen in the last ${minutes} minutes`,
+      peak: (n: number) => `peak ${n}`,
+      hourAgo: '60 min ago',
+      now: 'now',
+      /** Before the first minute has been sampled, and after a restart. */
+      warmingUp: 'The first minute is still being recorded.',
+    },
+
+    /** Charts. Each is a single series, so each says what it plots. */
+    charts: {
+      activeDaily: 'Active each day',
+      newMembers: 'Joined each day',
+      messagesDaily: 'Messages each day',
+      correctionsDaily: 'Corrections each day',
+      tokensDaily: 'Tokens awarded each day',
+      lastDays: (days: number) => `last ${days} days`,
+      lastWeek: 'last 7 days',
+    },
+
+    streaks: {
+      longest: 'Longest streak',
+      active: 'On a streak now',
+    },
+
+    languages: {
+      learning: 'Being learned',
+      native: 'Spoken natively',
+      none: 'Nobody has listed one yet.',
+    },
+
+    /** Install → onboarding → first message → paywall, from PostHog. */
+    funnel: {
+      lastMonth: 'Last 30 days',
+      allTime: 'All time',
+      top: 'the top of the funnel',
+      ofPrevious: (percent: string) => `${percent} of the step above`,
+      loading: 'Asking PostHog…',
+      none: 'No events in this window.',
+      unconfigured:
+        'POSTHOG_QUERY_API_KEY is not set on this instance, so there is no funnel here. It is a read key, separate from the one the purge uses — see .env.example. pnpm insight asks the same question from a laptop.',
+      refused:
+        'PostHog refused the key. It needs query:read on this project, and PostHog answers 403 rather than 401 for one it does not accept.',
+      unreachable: 'PostHog did not answer. Nothing else on this screen is affected.',
+      failed: 'Could not reach the funnel.',
+    },
   },
 
   reports: {

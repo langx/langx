@@ -252,6 +252,8 @@ export const keys = {
    * two comments above describe does not apply here.
    */
   adminStats: ['admin', 'stats'] as const,
+  adminPulse: ['admin', 'pulse'] as const,
+  adminFunnel: (window: string) => ['admin', 'funnel', window] as const,
   adminReports: (status: string) => ['admin', 'reports', status] as const,
   adminReport: (id: string) => ['admin', 'reports', 'one', id] as const,
   adminAppeals: ['admin', 'appeals'] as const,
@@ -2547,6 +2549,32 @@ export interface AdminStatsDto {
      */
     config: AppConfig
   }
+  /**
+   * The public counters, read rather than recomputed — `/public/stats` already
+   * caches these for ten minutes and already runs the three scans behind them.
+   * Nothing on this half may move the other way: `modules/insight/publicStats`
+   * says what may be published and what may not.
+   */
+  public: {
+    generatedAt: string
+    days: number
+    totals: { members: number; messages: number; corrections: number; languages: number }
+    streaks: { longest: number; active: number }
+    daily: { day: string; members: number; messages: number; corrections: number }[]
+    learning: { code: string; name: string; count: number }[]
+    native: { code: string; name: string; count: number }[]
+  }
+}
+
+/** How many people are in the app right now, and the hour behind it. */
+export interface AdminPulseDto {
+  at: string
+  online: number
+  /** The window `online` counts over, so the panel can say what it means. */
+  windowMs: number
+  bucketMs: number
+  /** Evenly spaced slots, oldest first. `null` is a minute nobody recorded. */
+  history: { at: string; online: number | null }[]
 }
 
 export interface AdminPartyDto {
@@ -2652,6 +2680,57 @@ export function useAdminStats(enabled = true) {
     queryKey: keys.adminStats,
     queryFn: () => api.get<AdminStatsDto>('/admin/stats'),
     enabled,
+  })
+}
+
+/**
+ * The live count, on its own poll.
+ *
+ * Separate from `useAdminStats` because the two age differently: the dashboard
+ * is a minute-cached snapshot of nine queries and this is one indexed count.
+ * Fifteen seconds is well inside the five-minute window the number is defined
+ * over, so the headline never drifts far from the chart under it, and the
+ * chart's own grain is a minute whatever this is set to.
+ */
+export function useAdminPulse(enabled = true) {
+  return useQuery({
+    queryKey: keys.adminPulse,
+    queryFn: () => api.get<AdminPulseDto>('/admin/pulse'),
+    enabled,
+    refetchInterval: ADMIN_PULSE_POLL_MS,
+  })
+}
+
+/** How often the operator panel asks who is online. */
+export const ADMIN_PULSE_POLL_MS = 15 * 1000
+
+/** The two windows the funnel offers. Mirrors `FUNNEL_WINDOWS` on the server. */
+export type AdminFunnelWindow = '30d' | 'all'
+
+export type AdminFunnelDto =
+  | { window: AdminFunnelWindow; generatedAt: string; steps: { label: string; count: number }[] }
+  | {
+      window: AdminFunnelWindow
+      reason: 'unconfigured' | 'refused' | 'unreachable'
+      detail: string
+    }
+
+/**
+ * Where people stop between installing the app and paying for it.
+ *
+ * Fetched per window and only when a window is actually looked at: all time is
+ * a scan of every event the project has ever had, so asking for it because a
+ * screen opened would spend that on somebody who wanted the reports queue. The
+ * server keeps the answer for half an hour, which is why there is no polling
+ * here and why `staleTime` matches it — a remount inside that window should
+ * not make a request the server would answer from memory anyway.
+ */
+export function useAdminFunnel(window: AdminFunnelWindow, enabled = true) {
+  return useQuery({
+    queryKey: keys.adminFunnel(window),
+    queryFn: () => api.get<AdminFunnelDto>(`/admin/funnel?window=${window}`),
+    enabled,
+    staleTime: 30 * 60 * 1000,
   })
 }
 
