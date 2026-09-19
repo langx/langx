@@ -1,11 +1,15 @@
 import type {
   BillingPeriod,
   CosmeticKind,
+  EchoGrade,
+  EchoSourceKind,
+  LanguageLevel,
   MessageType,
   PaidPlanTier,
   PlanChange,
   PlanFeature,
   PlanTier,
+  PostKind,
   PushKind,
 } from '@langx/shared'
 import type { OnboardingStep } from './onboardingStep'
@@ -328,6 +332,109 @@ export type AnalyticsEvent =
        */
       name: 'tour_completed'
       properties: { is_guest: boolean; opened_profile: boolean }
+    }
+  | {
+      /**
+       * A sentence was kept as a card.
+       *
+       * Echo is capture and then review, and nothing counted the first half.
+       * The four ways in are four different screens — a chat bubble, a post,
+       * the hand-written card, the pack — and `source` is which of them, so
+       * "people keep what they read and never write their own" stops being a
+       * guess.
+       *
+       * Only a card that was created. The endpoint is idempotent and answers
+       * `created: false` for a sentence already kept, and counting that tap
+       * would inflate the very half this exists to measure. A pack's cards
+       * are minted server-side in one batch and counted by
+       * `echo_pack_started` instead, which is why `source` can be `pack` here
+       * and never is.
+       */
+      name: 'echo_card_captured'
+      properties: { source: EchoSourceKind }
+    }
+  | {
+      /**
+       * A deck was opened with cards in it.
+       *
+       * The denominator for everything below, and the thing `$screen` cannot
+       * be: the session screen is counted whether it found cards or showed
+       * "nothing due", and those are opposite outcomes. `cards` is the deck
+       * as it was frozen on arrival — one language's worth, not everything
+       * due across all of them.
+       *
+       * `offline` is a deck read off the device because the API could not be
+       * reached. It is the one case where the count can be stale, and the
+       * only place the offline path leaves any trace at all.
+       */
+      name: 'echo_session_started'
+      properties: { cards: number; offline: boolean }
+    }
+  | {
+      /**
+       * One card was answered.
+       *
+       * The highest-frequency event in the app after `boosted_strip_shown`,
+       * and bounded the same way — a session is `SRS_RULES.sessionSize` cards
+       * and each one is graded once. `again` over the rest is the only
+       * measure of whether the scheduler asks too much too soon, which is the
+       * one number a spaced-repetition app cannot be run without.
+       *
+       * `producing` splits writing the sentence from recognising it. They are
+       * the same row shown two ways by a pure rule, and a card that is easy
+       * to recognise and impossible to produce is the ordinary case rather
+       * than a defect — averaged together they hide each other.
+       *
+       * `seconds` is how long the card was in front of somebody, rounded.
+       * Never the card's text: that is a message somebody sent.
+       */
+      name: 'echo_card_graded'
+      properties: { grade: EchoGrade; producing: boolean; seconds: number }
+    }
+  | {
+      /**
+       * The last card of the deck was graded.
+       *
+       * Against `echo_session_started`, the completion rate — and abandoning
+       * a session half way is the failure mode this feature has, invisible
+       * from either event alone. Leaving early sends nothing: the grades are
+       * still saved, but an abandoned session is not a finished one and must
+       * not be counted as one.
+       *
+       * `remembered` is the grades that were not `again`, the same split the
+       * done screen shows the person.
+       */
+      name: 'echo_session_finished'
+      properties: { reviewed: number; remembered: number; offline: boolean }
+    }
+  | {
+      /**
+       * A pack handed over its next batch of cards.
+       *
+       * The only capture path that is not one tap per card, and the only
+       * measure of whether the packs earn the content problem they carry.
+       * `count` is how many cards the press actually minted and is never
+       * zero — a finished pack shows a toast and starts nothing.
+       */
+      name: 'echo_pack_started'
+      properties: { lang: string; level: LanguageLevel; count: number }
+    }
+  | {
+      /**
+       * The composer was opened from a card, to ask the feed.
+       *
+       * Echo's one path back out into the exchange, and what makes it more
+       * than a flashcard drawer: a sentence you cannot say becomes a question
+       * somebody answers in their own voice. `kind` is which question — how
+       * it is said, or whether it is right.
+       *
+       * Counts the ask being opened, not posted. What is posted is counted by
+       * `message_sent`, which cannot tell an Echo ask from any other post;
+       * the gap between the two is people who opened the composer and thought
+       * better of it.
+       */
+      name: 'echo_ask_opened'
+      properties: { kind: PostKind }
     }
 
 export type AnalyticsEventName = AnalyticsEvent['name']

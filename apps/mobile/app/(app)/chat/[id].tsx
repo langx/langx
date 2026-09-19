@@ -1472,6 +1472,7 @@ export default function ChatScreen() {
             : {}),
         },
       })
+      if (result.created) track({ name: 'echo_card_captured', properties: { source: 'chat' } })
       showToast(t(result.created ? 'echo.added' : 'echo.alreadyAdded'))
     } catch (error) {
       /*

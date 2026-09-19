@@ -10,6 +10,7 @@ import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useT } from '../../../../src/i18n'
 import { useDisplayNames } from '../../../../src/i18n/displayNames'
 import { showAlert } from '../../../../src/lib/alert'
+import { track } from '../../../../src/lib/analytics'
 import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
@@ -47,6 +48,10 @@ export default function EchoPackScreen() {
         showToast(t('echo.packFinished'))
         return
       }
+      track({
+        name: 'echo_pack_started',
+        properties: { lang: pack.lang, level: pack.level, count: result.started },
+      })
       showToast(t('echo.packStarted', { count: result.started }))
       // The pack's own language, not whatever is due across all of them: you
       // pressed start on a French pack, so the session that opens is French.

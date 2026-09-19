@@ -10,6 +10,7 @@ import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { useDisplayNames, useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
 import { showAlert } from '../../../src/lib/alert'
+import { track } from '../../../src/lib/analytics'
 import { errorCodeOf } from '../../../src/lib/errors'
 import { goBackTo } from '../../../src/lib/navigation'
 import { postLanguages, resolvePostLanguage } from '../../../src/lib/postLanguage'
@@ -73,6 +74,7 @@ export default function NewEchoCardScreen() {
           lang: language,
         },
       })
+      track({ name: 'echo_card_captured', properties: { source: 'manual' } })
       close()
       showToast(t('echo.added'))
     } catch (error) {

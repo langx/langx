@@ -29,6 +29,7 @@ import { useT } from '../../../src/i18n'
 import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
+import { track } from '../../../src/lib/analytics'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
 import { compactDuration } from '../../../src/lib/format'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../../../src/lib/localFlags'
@@ -153,6 +154,7 @@ export default function EchoSessionScreen() {
     if (deck !== null) return
     if (queue.data) {
       setDeck(queue.data.cards)
+      started(queue.data.cards.length, false)
       // The cheapest moment to know the truth is the moment it arrives.
       void rememberEchoCards(queue.data.cards)
       return
@@ -165,10 +167,24 @@ export default function EchoSessionScreen() {
     if (!queue.isPaused && !queue.isError) return
     void readEchoSnapshot().then((snapshot) => {
       if (!snapshot) return
-      setDeck(offlineQueue(snapshot, new Date()))
+      const cards = offlineQueue(snapshot, new Date())
+      setDeck(cards)
       setOffline(true)
+      started(cards.length, true)
     })
   }, [deck, queue.data, queue.isPaused, queue.isError])
+
+  /**
+   * Counts the session, and only a session there was something to do in.
+   *
+   * This screen is reached with nothing due — the tab's tile opens it either
+   * way — so `$screen` counts an empty deck and a full one identically, and
+   * the two are opposite answers to "did anybody review today".
+   */
+  function started(cards: number, fromDevice: boolean): void {
+    if (cards === 0) return
+    track({ name: 'echo_session_started', properties: { cards, offline: fromDevice } })
+  }
 
   const card = deck?.[index]
   const recordings = card ? echoAudiosOf(card) : []
@@ -246,12 +262,28 @@ export default function EchoSessionScreen() {
       durationMs: Math.max(0, Date.now() - shownAt.current),
     }
     const next = [...graded, entry]
+    track({
+      name: 'echo_card_graded',
+      properties: { grade: value, producing, seconds: Math.round(entry.durationMs / 1000) },
+    })
     setGraded(next)
     setRevealed(false)
     setTyped('')
     shownAt.current = Date.now()
     setIndex((current) => current + 1)
-    if (deck && index + 1 >= deck.length) void flush(next)
+    if (deck && index + 1 >= deck.length) {
+      // Finished, which is not the same as graded: leaving half way through
+      // saves the work and sends no such event. See `echo_session_finished`.
+      track({
+        name: 'echo_session_finished',
+        properties: {
+          reviewed: next.length,
+          remembered: next.filter((entry) => entry.grade !== 'again').length,
+          offline,
+        },
+      })
+      void flush(next)
+    }
   }
 
   const verdict = card && producing ? productionVerdict(typed, card.front) : 'wrong'
@@ -281,6 +313,7 @@ export default function EchoSessionScreen() {
    * in one tap.
    */
   function askTheFeed(params: EchoAskParams): void {
+    track({ name: 'echo_ask_opened', properties: { kind: params.kind } })
     router.push({ pathname: '/(app)/compose', params })
   }
 

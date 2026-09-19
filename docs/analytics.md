@@ -76,6 +76,12 @@ reached a screen of ours.
 | `notification_opened`       | `kind` (any `PushKind`, or unknown), `cold_start`                                                     | A push was tapped. Counts taps, never sends                         |
 | `filters_applied`           | `count`, `pro`                                                                                        | The discovery filter sheet is applied. How many, never which        |
 | `tokens_spent`              | `sku`, `kind` (cosmetic kind or consumable), `amount`                                                 | A wallet purchase the server accepted. Spending only, never earning |
+| `echo_card_captured`        | `source` (chat, post, phrase, manual)                                                                 | A sentence was kept as a card. Only one that was created            |
+| `echo_session_started`      | `cards`, `offline`                                                                                    | A review deck was opened and had cards in it                        |
+| `echo_card_graded`          | `grade` (again, hard, good, easy), `producing`, `seconds`                                             | One card was answered. Never the card's text                        |
+| `echo_session_finished`     | `reviewed`, `remembered`, `offline`                                                                   | The last card of the deck was graded. Leaving early sends nothing   |
+| `echo_pack_started`         | `lang`, `level`, `count`                                                                              | A pack handed over its next batch of cards                          |
+| `echo_ask_opened`           | `kind` (pronunciation, correction)                                                                    | The composer was opened from a card, to ask the feed                |
 
 Some of these carry a number that needs a caveat rather than a footnote:
 
@@ -123,6 +129,18 @@ Some of these carry a number that needs a caveat rather than a footnote:
 - **`tokens_spent`** cannot be summed into a balance. Earning happens in cron
   jobs and gifts the device never sees, so this is one side of a ledger whose
   other side exists only on the server.
+- **Echo's six** are read as one funnel and not one at a time: capture
+  (`echo_card_captured` + `echo_pack_started`) → `echo_session_started` →
+  `echo_card_graded` → `echo_session_finished`. Two of them need a caveat.
+  `echo_card_captured` fires only where the capture created a card — the
+  endpoint is idempotent and answers `created: false` for a sentence already
+  kept — and it never carries `pack`, because a pack's cards are minted in one
+  server-side batch that `echo_pack_started` counts instead. And
+  `echo_session_finished` means the deck was exhausted: leaving half way
+  through still saves every grade, so a session that is started and never
+  finished is a real thing this measures rather than a lost event.
+  `echo_card_graded` is high-frequency like the Boosted strip's, bounded by
+  `SRS_RULES.sessionSize` per session.
 
 Purchases themselves — renewals, refunds, what was actually charged — come
 from RevenueCat's server-side PostHog integration (below), not from the app.
