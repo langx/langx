@@ -206,6 +206,27 @@ function dominantAuthor(byNumber) {
 }
 
 /**
+ * Whether the prose names this version, with `2.6` not answering for `12.60`.
+ *
+ * Spelled out rather than built into a `RegExp`, because a regular expression
+ * assembled from an argument is `js/regex-injection` and CodeQL fails the pull
+ * request on it. `TAG` has already proved the version is two numbers by the
+ * time it gets here, but the check and the use are far enough apart that
+ * neither CodeQL nor a reader should have to take that on trust.
+ */
+function mentions(prose, version) {
+  // Digits and dots only, so `v2.6` and `2.6's` both count as the version
+  // while `12.6` and `2.60` do not.
+  const boundary = /[\d.]/
+  for (let at = prose.indexOf(version); at !== -1; at = prose.indexOf(version, at + 1)) {
+    const before = prose[at - 1] ?? ' '
+    const after = prose[at + version.length] ?? ' '
+    if (!boundary.test(before) && !boundary.test(after)) return true
+  }
+  return false
+}
+
+/**
  * The English release notes out of `docs/store/listing.md`, read at the tag so
  * a later edit cannot rewrite a published release's summary.
  *
@@ -230,7 +251,7 @@ function storeNotes(tag, version) {
   if (!section) return null
 
   const intro = section.split(/^### /m)[0]
-  if (!new RegExp(`\\b${version.replace('.', '\\.')}\\b`).test(intro)) return null
+  if (!mentions(intro, version)) return null
 
   const english = section.split(/^### Release notes$/m)[1]?.split(/^\*\*English\*\*$/m)[1]
   if (!english) return null
