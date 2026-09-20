@@ -1,17 +1,21 @@
-import { Pressable, ScrollView, View } from 'react-native'
+import { Pressable, ScrollView } from 'react-native'
 import type { ProfileBadge } from '@langx/shared'
-import { BadgeGlyph } from './BadgeGlyph'
-import { BADGE_MARKS } from '../lib/badgeMark'
-import { makeStyles, useTheme } from '../lib/theme'
+import { BadgeMark } from './BadgeMark'
+import { makeStyles } from '../lib/theme'
 import { useT } from '../i18n'
 
 /**
  * What somebody has earned, above their bio: a scrolling row of marks.
  *
  * **One mark per kind**, which is a rule the server keeps — see
- * `badgeStripMarks`. A ladder's rungs all wear the same mark, so a climbed
- * one used to arrive here as three identical circles; what is sent now is the
- * newest rung of each kind.
+ * `badgeStripMarks`. What is sent is the newest rung of each kind, and since
+ * every badge now wears a picture of its own, no two marks on this row repeat.
+ *
+ * **The pictures stand on their own ground.** There was a filled circle behind
+ * each of them, carrying a colour per kind — green for teaching, blue for
+ * talking — while the glyph inside was shared by a whole ladder. The picture
+ * says both things now, so a second ground under it was a ring of colour
+ * around a drawing that already had its own.
  *
  * **There is no "+N" any more, because there is nothing left for it to
  * count.** It used to say how many badges were past the end of the row, back
@@ -40,9 +44,8 @@ import { useT } from '../i18n'
  * row needs, and it also means a mark is the same size on every phone rather
  * than a function of the screen.
  *
- * Colour and glyph come from the same `BADGE_MARKS` the badge page uses, so a
- * reader who has learned that green is teaching and blue is talking reads this
- * strip without being taught it twice.
+ * The pictures are the same files the badge page draws, so a mark learned on
+ * one screen is recognised on the other.
  *
  * Nothing is drawn for somebody with no badges. An empty rail under a profile
  * is not a smaller version of this — it is a sentence about a stranger that
@@ -55,7 +58,6 @@ export function BadgeStrip({
   badges: readonly ProfileBadge[]
   onPress: () => void
 }) {
-  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
 
@@ -74,20 +76,23 @@ export function BadgeStrip({
         onPress={onPress}
         style={({ pressed }) => [styles.strip, pressed && styles.pressed]}
       >
-        {badges.map((badge) => {
-          const mark = BADGE_MARKS[badge.kind](colors)
-          return (
-            <View key={badge.id} style={[styles.mark, { backgroundColor: mark.fill }]}>
-              <BadgeGlyph icon={badge.icon ?? 'award'} color={mark.glyph} size={28} />
-            </View>
-          )
-        })}
+        {badges.map((badge) => (
+          <BadgeMark key={badge.id} icon={badge.icon} size={MARK_SIZE} />
+        ))}
       </Pressable>
     </ScrollView>
   )
 }
 
-const useStyles = makeStyles(({ radius, spacing }) => ({
+/**
+ * Bigger than the 28px glyph it replaces and smaller than the 56px circle that
+ * held it: a drawing is ink edge to edge where a glyph was a stroke in the
+ * middle of a disc, so matching the circle would weigh twice as much on a row
+ * that sits under somebody's face.
+ */
+const MARK_SIZE = 44
+
+const useStyles = makeStyles(({ spacing }) => ({
   // The vertical padding is the scroller's, so the marks do not sit against
   // the stats row above or the bio below while the row slides under them.
   scroller: { paddingVertical: spacing.lg },
@@ -97,11 +102,4 @@ const useStyles = makeStyles(({ radius, spacing }) => ({
   content: { paddingRight: spacing.lg },
   strip: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   pressed: { opacity: 0.6 },
-  mark: {
-    alignItems: 'center',
-    borderRadius: radius.pill,
-    height: 56,
-    justifyContent: 'center',
-    width: 56,
-  },
 }))
