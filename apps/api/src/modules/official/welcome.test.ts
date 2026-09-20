@@ -112,9 +112,32 @@ describe('a new account meets @langx', () => {
     return user
   }
 
-  /** The welcome is deliberately not awaited by the route. */
-  async function settle(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve, 300))
+  /**
+   * Wait for the welcome to land, rather than guess how long it takes.
+   *
+   * The route does not await it — that is the behaviour under test, not an
+   * accident — so something here has to. What stood here was a flat 300 ms,
+   * which is a guess about a machine: it holds on a quiet laptop and does not
+   * on a loaded CI runner, where the same suite is driving an in-memory
+   * replica set that answers transactions with `WriteConflict` and retries.
+   * The test then read an empty collection and reported a missing welcome,
+   * which is a true statement about that moment and a false one about the
+   * code.
+   *
+   * So it polls for the messages it is about to assert on, and gives up at a
+   * deadline **without** failing: the assertion that follows is the one that
+   * should report the absence, in its own words, on the line that cares.
+   */
+  async function settle(...clientIds: string[]): Promise<void> {
+    const langxId = officialIds().get('langx')!
+    const deadline = Date.now() + 5000
+    for (;;) {
+      const said = await messagesFrom(langxId)
+      const landed = new Set(said.map((message) => message.clientId))
+      if (clientIds.every((id) => landed.has(id))) return
+      if (Date.now() >= deadline) return
+      await new Promise((resolve) => setTimeout(resolve, 25))
+    }
   }
 
   async function messagesFrom(senderId: string): Promise<Message[]> {
@@ -127,7 +150,7 @@ describe('a new account meets @langx', () => {
 
   it('leaves the welcome in the new account’s chat list, in their own language', async () => {
     const user = await onboard('welcome-tr@example.com', 'turkishone', 'tr')
-    await settle()
+    await settle(`welcome:${user.userId}`)
 
     const langxId = officialIds().get('langx')!
     const said = await messagesFrom(langxId)
@@ -179,7 +202,7 @@ describe('a new account meets @langx', () => {
       payload: onboarding('backagain', 'tr'),
     })
     expect(response.statusCode, response.body).toBe(201)
-    await settle()
+    await settle(`welcomeback:${user.userId}`)
 
     const said = await messagesFrom(officialIds().get('langx')!)
     const back = said.filter((m) => m.clientId === `welcomeback:${user.userId}`)
@@ -195,7 +218,7 @@ describe('a new account meets @langx', () => {
    */
   it('points at inviting a friend, whatever they signed up on', async () => {
     const user = await onboard('invite@example.com', 'inviteone', 'en', 'Mozilla/5.0 (Macintosh)')
-    await settle()
+    await settle(`welcome:${user.userId}`)
 
     const said = await messagesFrom(officialIds().get('langx')!)
     const welcome = said.find((m) => m.clientId === `welcome:${user.userId}`)
@@ -212,7 +235,7 @@ describe('a new account meets @langx', () => {
 
     const onPhone = await onboard('ios@example.com', 'iphoneone', 'en', 'CFNetwork/1.0 Darwin/23')
     const onWeb = await onboard('web@example.com', 'browserone', 'en', 'Mozilla/5.0 (Macintosh)')
-    await settle()
+    await settle(`welcome:${onPhone.userId}`, `welcome:${onWeb.userId}`)
 
     const said = await messagesFrom(langxId)
     const phone = said.find((m) => m.clientId === `welcome:${onPhone.userId}`)
@@ -233,7 +256,7 @@ describe('a new account meets @langx', () => {
 
   it('writes in English to somebody we ship no catalogue for', async () => {
     const user = await onboard('welcome-ja@example.com', 'japaneseone', 'ja')
-    await settle()
+    await settle(`welcome:${user.userId}`)
 
     const said = await messagesFrom(officialIds().get('langx')!)
     const toThem = said.find((m) => m.clientId === `welcome:${user.userId}`)
@@ -248,7 +271,7 @@ describe('a new account meets @langx', () => {
    */
   it('opens a thread nobody can write into', async () => {
     const user = await onboard('writes-back@example.com', 'writesback', 'en')
-    await settle()
+    await settle(`welcome:${user.userId}`)
 
     const langxId = officialIds().get('langx')!
     const conversation = (await handle.db

@@ -73,10 +73,31 @@ describe('handleEvents', () => {
    * our own `platformAskedAt`, written with `new Date()` when the question
    * goes out — two clocks, one real. Fixed timestamps in the past would sit
    * before every question ever asked and make the rule look broken, so each
-   * event is stamped when it is sent, exactly as a real one is. The database
-   * round trips in between are what guarantee the order.
+   * event is stamped when it is sent, exactly as a real one is.
+   *
+   * What this does **not** give is an ordering. A round trip through an
+   * in-memory replica set can finish inside one millisecond, so a stamp taken
+   * after the question can equal the question's own — and the rule reads `<=`,
+   * on purpose, so equal means "the tap that prompted this". A test that wants
+   * an answer to land after a question has to say so: see `afterTheQuestion`.
    */
   const clock = () => () => new Date()
+
+  /**
+   * A stamp strictly later than the question's own, read from the row the
+   * question wrote.
+   *
+   * Sleeping until the clock moved would do the same thing and say less: what
+   * this test needs is not elapsed time but the one relation the rule is
+   * about, and taking it from `platformAskedAt` states it.
+   */
+  async function afterTheQuestion(): Promise<Date> {
+    const lead = await db
+      .collection<{ platformAskedAt?: Date }>(COLLECTIONS.instagramLeads)
+      .findOne({ _id: 'them' as never })
+    if (!lead?.platformAskedAt) throw new Error('the question was never asked')
+    return new Date(lead.platformAskedAt.getTime() + 1)
+  }
 
   const tap = (payload: string, at: Date): ParsedEvent => ({
     kind: 'message',
@@ -171,7 +192,7 @@ describe('handleEvents', () => {
     const next = clock()
 
     await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.followed, next())], deps(graph))
-    await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.ios, next())], deps(graph))
+    await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.ios, await afterTheQuestion())], deps(graph))
 
     expect(calls[1]).toContain(DELIVERY)
     const lead = await db.collection(COLLECTIONS.instagramLeads).findOne({ _id: 'them' as never })
