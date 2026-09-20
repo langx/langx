@@ -5,16 +5,26 @@ import { confirmAlert, showAlert } from './alert'
 
 /**
  * Reading the device's position, and the one decision that makes this file
- * worth having: **we ask for the least accurate fix the platform offers.**
+ * worth having: **we ask for a fix finer than the grid we store it on.**
  *
- * The server rounds coordinates to about a kilometre anyway (`location.ts` in
- * `@langx/shared`), so a precise fix would be thrown away — but asking for one
- * still costs the user a GPS warm-up and, on iOS 14+, still shows the
- * "Precise: On" affordance and invites them to turn it off. `Lowest` is
- * satisfied by the network/cell estimate the OS already has, which is both
- * faster and honest about what the feature actually needs.
+ * The server rounds every coordinate to about a kilometre (`location.ts` in
+ * `@langx/shared`) and throws the rest away, so nothing precise survives the
+ * boundary. What the rounding cannot do is fix a reading that was already
+ * wrong by more than a cell. `Lowest` was: it is `kCLLocationAccuracyThree-
+ * Kilometers` on iOS, three times coarser than the cell it feeds, so a fix
+ * could round into a neighbouring cell and sort somebody against the wrong
+ * side of their city — the argument for it measured the request against the
+ * feature's needs and never against the grid. `Balanced` is a hundred metres,
+ * comfortably inside the cell, which is the whole requirement.
+ *
+ * It buys nothing at the permission boundary and costs nothing there either.
+ * This constant is `desiredAccuracy`; it is not what the dialog asks for.
+ * Android requests `ACCESS_FINE_LOCATION` beside the coarse one whatever we
+ * put here, and iOS 14+ opens on "Precise: On" — so the person was already
+ * choosing between precise and approximate, and `coarsen` rounds whichever
+ * they chose.
  */
-const ACCURACY = Location.Accuracy.Lowest
+const ACCURACY = Location.Accuracy.Balanced
 
 /**
  * A fix, or `null` with a reason. Deliberately not a thrown error: every
@@ -76,7 +86,15 @@ export async function captureLocation({
     // saying it cannot wait for that next refresh.
     const position = fresh
       ? null
-      : await Location.getLastKnownPositionAsync({ maxAge: 60 * 60 * 1000 })
+      : await Location.getLastKnownPositionAsync({
+          maxAge: 60 * 60 * 1000,
+          // The same rule as `ACCURACY`, applied to the fix we did not ask
+          // for. Without it the cache can hand back the three-kilometre
+          // network estimate some other app left behind, which is the reading
+          // `Lowest` used to produce and the one the grid cannot absorb.
+          // Rejecting it returns `null`, and the line below asks properly.
+          requiredAccuracy: 1000,
+        })
     const fix = position ?? (await Location.getCurrentPositionAsync({ accuracy: ACCURACY }))
     return { ok: true, lat: fix.coords.latitude, lng: fix.coords.longitude }
   } catch {
