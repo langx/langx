@@ -27,6 +27,13 @@ private enum Brand {
    light/dark pair in `expo-target.config.js`.
   */
   static let fill = Color("tile")
+  /// `colors.bg` — the ground the widgets sit on, as the mockups draw them.
+  static let ground = Color("ground")
+  /// `colors.ink` — the busiest day on the activity map.
+  static let ink = Color("ink")
+  /// `colors.border` — the empty square on the activity map. See the note in
+  /// `expo-target.config.js` for why it is not `fill`, which the app uses.
+  static let cell = Color("cell")
   /// `colors.primaryText`, the ink that goes on yellow and nowhere else.
   static let primaryInk = Color(red: 0.125, green: 0.098, blue: 0.0) // #201900
 }
@@ -312,21 +319,28 @@ private struct Square: View {
   }
 
   /**
-   The four shades, and the empty square.
+   The shades, taken from the app's own map rather than invented.
 
-   `streak` at four strengths rather than four colours: the map answers one
-   question — did you show up — and a second hue would invite reading a
-   meaning into it that the shading does not carry. The empty square is `fill`,
-   the same ground the tiles sit on, so a blank week reads as an absence rather
-   than as a different kind of day.
+   `ActivityMap.tsx` settled these and its comments say why, in words this
+   widget had to learn twice: three shades of work, the busiest in `ink`
+   rather than a fourth step of blue, because at this size two more steps of
+   one hue stop being tellable apart. The lowest is `accent` thinned out and
+   deliberately *not* `accentBg`, which is a near-match for `fill` in both
+   schemes — a quiet day would read as a missed one.
+
+   The empty square is the one deliberate departure: the app uses `fill`, and
+   at twelve points on a widget's own ground that is one step from invisible.
+   It takes `border` instead — the token whose job is visible separation — for
+   the reason `ActivityMap.tsx` states outright: a calendar whose empty days
+   are invisible is not a calendar, it is a scatter of dots. This widget drew
+   exactly that, twice, before the colour was right.
   */
   private var colour: Color {
     switch mark {
-    case "1": return Brand.streak.opacity(0.35)
-    case "2": return Brand.streak.opacity(0.55)
-    case "3": return Brand.streak.opacity(0.78)
-    case "4": return Brand.streak
-    default: return Brand.fill
+    case "1": return Brand.accent.opacity(0.4)
+    case "2": return Brand.accent
+    case "3", "4": return Brand.ink.opacity(0.85)
+    default: return Brand.cell
     }
   }
 }
@@ -380,7 +394,7 @@ struct LangXStreakWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXStreakWidget", provider: CompanionProvider()) { entry in
       SmallView(snapshot: entry.snapshot, now: entry.date)
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Brand.ground, for: .widget)
     }
     .configurationDisplayName("LangX")
     .supportedFamilies([.systemSmall])
@@ -391,7 +405,7 @@ struct LangXSummaryWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXSummaryWidget", provider: CompanionProvider()) { entry in
       MediumView(snapshot: entry.snapshot, now: entry.date)
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Brand.ground, for: .widget)
     }
     .configurationDisplayName("LangX")
     .supportedFamilies([.systemMedium])
@@ -410,7 +424,7 @@ struct LangXActivityWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXActivityWidget", provider: CompanionProvider()) { entry in
       ActivityView(snapshot: entry.snapshot, now: entry.date)
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Brand.ground, for: .widget)
     }
     .configurationDisplayName("LangX")
     .supportedFamilies([.systemMedium])
@@ -424,7 +438,7 @@ struct LangXAccessoryWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXAccessoryWidget", provider: CompanionProvider()) { entry in
       AccessoryRouter(entry: entry)
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Brand.ground, for: .widget)
     }
     .configurationDisplayName("LangX")
     .supportedFamilies([.accessoryCircular, .accessoryRectangular])

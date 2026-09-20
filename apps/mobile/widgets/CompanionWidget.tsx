@@ -339,7 +339,7 @@ function ActivityWidget({
                   marginRight: 2,
                   marginTop: 2,
                   borderRadius: 2,
-                  backgroundColor: squareColour(column[row] ?? '.', colors.streak, colors.fill),
+                  backgroundColor: squareColour(colors, column[row] ?? '.'),
                 }}
               />
             ))}
@@ -360,27 +360,35 @@ function activityColumns(activity: NonNullable<CompanionSnapshot['activity']>): 
 }
 
 /**
- * The four shades, and the empty square.
+ * The shades, taken from the app's own map rather than invented.
  *
- * `streak` at four strengths rather than four colours: the map answers one
- * question — did you show up — and a second hue would invite reading a meaning
- * into it that the shading does not carry. A future day is fully transparent
- * so it keeps its space and the grid stays a rectangle.
+ * `ActivityMap.tsx` settled these: three shades of work, the busiest in `ink`
+ * rather than a fourth step of blue, because at this size two more steps of
+ * one hue stop being tellable apart. The lowest is `accent` thinned out and
+ * deliberately not `accentBg`, which is a near-match for `fill` in both
+ * schemes — a quiet day would read as a missed one.
+ *
+ * The empty square is the one deliberate departure from that file: it uses
+ * `fill`, and at a widget's twelve points on the widget's own ground that is
+ * one step from invisible. `border` is the token whose job is visible
+ * separation, and the rule it protects is the one `ActivityMap.tsx` states
+ * outright — a calendar whose empty days are invisible is not a calendar, it
+ * is a scatter of dots. A future day is fully transparent instead, so it keeps
+ * its space and the grid stays a rectangle.
  */
-function squareColour(mark: string, streak: string, fill: string): `#${string}` {
+function squareColour(colors: ReturnType<typeof palette>, mark: string): `#${string}` {
   switch (mark) {
     case '1':
-      return fade(streak, 0.35)
+      return fade(colors.accent, 0.4)
     case '2':
-      return fade(streak, 0.55)
+      return hex(colors.accent)
     case '3':
-      return fade(streak, 0.78)
     case '4':
-      return hex(streak)
+      return fade(colors.ink, 0.85)
     case '.':
-      return fade(fill, 0)
+      return fade(colors.border, 0)
     default:
-      return hex(fill)
+      return hex(colors.border)
   }
 }
 
