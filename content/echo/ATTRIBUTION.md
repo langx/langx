@@ -6,12 +6,22 @@ thing, plus the reasoning about what was left out.
 
 ## In use
 
-The three English packs — `en/absoluteBeginner.json` (271 items),
-`en/beginner.json` (275) and `en/intermediate.json` (263).
-`contentVersion: 6`, `"reviewed": true`, so the seed script will write them.
-Everything else here is a draft; see "Drafts" at the end.
+**Eighteen packs, six languages, 4,910 items**, all `"reviewed": true`, so the
+seed script will write them:
 
-### What that review was, exactly
+| Language | absoluteBeginner | beginner | intermediate |
+| -------- | ---------------- | -------- | ------------ |
+| English  | 271              | 275      | 263          |
+| Spanish  | 258              | 281      | 280          |
+| German   | 267              | 283      | 282          |
+| French   | 272              | 281      | 281          |
+| Russian  | 252              | 268      | 278          |
+| Italian  | 260              | 279      | 279          |
+
+The flag does not mean the same thing for English as for the other five. The
+two "what that review was" sections say what each one actually was.
+
+### What the English review was, exactly
 
 The flag means somebody read the file, and it is load-bearing enough that a
 later reader should not believe more than was done.
@@ -284,13 +294,13 @@ A draft is a pack file with `"reviewed": false`. **The seed script refuses to
 write one**, and that refusal is the whole quality gate. The three English
 packs have passed it; see "In use" above for what passing meant.
 
-**Fifteen files are drafts today** — Spanish, German, French, Russian and
-Italian, three levels each, 4,208 items and 29,099 glosses. Nobody has read
-them. `tools/echo-content/lint-glosses.mjs` had 92 things to say about them,
-which is the mechanical half of a first pass: 64 Russian copula dashes written
-as a hyphen, 13 Arabic sentences spaced before their punctuation, 3 Persian
-letters inside Arabic words. It cannot see a wrong sense or a translation of a
-different sentence, which is what the reading is for.
+**There are no drafts today.** The fifteen drafted on 20 September were read
+the same night; see "What the review of the fifteen was" below.
+`tools/echo-content/lint-glosses.mjs` had 92 things to say about them before
+that reading — 64 Russian copula dashes written as a hyphen, 13 Arabic
+sentences spaced before their punctuation, 3 Persian letters inside Arabic
+words — and all 92 were repaired. It cannot see a wrong sense or a
+translation of a different sentence, which is what the reading was for.
 
 Almost all of every new pack is Tatoeba. The phrasebook categories outside
 English are small to begin with, and most of their entries have no translation
@@ -298,82 +308,75 @@ table on their own wiki: 36 of the 39 Spanish phrasebook entries that reached
 `absoluteBeginner` resolved to nothing. Where English is about half set
 expressions, these are around one in twenty.
 
-### What has been read so far, and what has not
+### What the review of the fifteen was, exactly
 
-**`es/absoluteBeginner.json`, first pass.** The 264 Spanish fronts and the
-English column read line by line; the other six columns only linted, except
-Turkish, which was read line by line as well. It is still `"reviewed": false`,
-because five columns have not been read and the flag would say they had.
+**Three columns of seven in every file — the front, English and Turkish —
+read line by line.** 4,208 drafted items across Spanish, German, French,
+Russian and Italian, of which 3,901 remain. The other four columns in each
+file were **linted and not read**, which is the same footing English's
+German, Spanish, French and Portuguese columns are on. If a wrong gloss
+survives, that is where to look first.
 
-Six items dropped, leaving 258: `¿Quién la mató?`, `Tom murió solo.`,
-`La respuesta es 42.`, `Sé que no sé.`, `La gente es gente.` and
-`La guerra es mala.` — Tatoeba filler and slogans rather than anything a
-learner would say in their first week. The death and illness sentences that
-are ordinary speech stayed, on the precedent of the English pass.
+Why those three. The front is the card. **English is the floor** — required
+on every item, what `glossFor` falls back to for every reader whose own
+locale is missing, and, it turns out, the loosest column in the corpus,
+because English has the most Tatoeba contributors and the most idiom. Turkish
+is the column a reader of this repository can check.
 
-Ten English glosses corrected, and the pattern in them is worth knowing
-before reading the next pack: **the English column is the loosest one**,
-because English has the most Tatoeba contributors and the most idiom. Every
-one of the ten had five or six other locales agreeing literally while English
-went its own way — `¿Qué has dicho?` answered "Come again?", `Es muy fácil.`
-answered "It's as easy as pie.", `Tengo un perro.` answered "I keep a dog."
-One was a person error rather than a register one: `Sé dónde vive.` said "I
-know where you live" where the German, French, Turkish and Russian all say
-"he". They were brought into line with the columns that agreed, not
-translated afresh.
+**307 items dropped**, in five kinds:
 
-Six Turkish glosses corrected: `günaydin` for `günaydın`, a calque
-("Sözcük kaybındayım" for _no tengo palabras_), a plain mistranslation
-(`Él tiene mucho dinero.` answered "O aşırı para harcıyor.", he _spends_ a
-lot), `Öğle yemeği hazır.` for _la comida está lista_ (lunch, not food), and
-two clumsy constructions. Each carries `tr` in `review.edited`.
+- **Slogans and positions** — "¡América ha vuelto!", "Je suis Charlie.", "Le
+  vite nere contano.", "Tutto il mondo odia la polizia.", "Il partito ha
+  sempre ragione.", "Eigentum ist Diebstahl.", "Черные жизни важны." Four
+  languages produced a "War is bad" and all four are gone.
+- **Quotations** — Dante, Mozart, Leonardo, Proudhon, Genesis in three
+  languages, "Houston, tenemos un problema.", "Sono un genio molto stabile."
+- **Tatoeba nonsense** — "Es carne de mono.", "Dio è un elefante." in three
+  languages, "Meine Katze bellt.", "La torta è una bugia.", and "Él vive en
+  una manzana.", whose English gloss reads "He lives inside an apple"
+  (_manzana_ is a city block).
+- **Violence and obscenity** — "¿Quién la mató?", "Tom veut tuer Mary.", "Ho
+  una granata.", two anatomical Italian ones, and "Voglio farmi saltare il
+  cervello.", which is self-harm and exactly where the English pass drew its
+  line.
+- **Items that contradict themselves** — three whose glosses answer a
+  different question than the front asks, and three with no English gloss at
+  all and nothing worth keeping without one.
 
-Nothing has been read in the other fourteen files.
+The death and illness sentences that are ordinary speech stayed, on the
+precedent of the English pass: a learner who cannot say them is worse off
+than one who can.
 
-The reason it exists is worth stating plainly, because the obvious shortcut is
-very tempting and it does not work. Wiktionary's translation tables are
-sense-carrying, which is exactly what a gloss needs — but picking a sense
-mechanically gets it wrong often enough to be useless. Measured on eight
-beginner words, the first version of `build-pack.mjs` — which pulled raw
-wikitext and took the first `{{trans-top|…}}` block — gave:
+**About two hundred glosses corrected**, each naming its locale in
+`review.edited`. The repeats across languages are the interesting part:
 
-| Word     | Sense taken                           | Wanted      |
-| -------- | ------------------------------------- | ----------- |
-| bread    | baked dough made from cereals         | correct     |
-| tomorrow | on the day after the present day      | correct     |
-| bank     | institution                           | correct     |
-| train    | the elongated back portion of a dress | the vehicle |
-| dog      | pursue with the intent to catch       | the animal  |
-| water    | to pour water into the soil           | the liquid  |
+- `Tutti lo sanno.`, `Tout le monde le sait.` and `Jeder weiß das.` all
+  answered "Anybody knows it." in English and "nobody knows" in Turkish. One
+  English pair appears to have seeded three languages.
+- **Which word for God.** German, French, Italian and Russian all mixed
+  `Allah` and `Tanrı` in Turkish for the one word their front uses, sometimes
+  two lines apart. They say `Tanrı` throughout now, except where the front
+  itself says Allah.
+- Passive for active in three languages (`Él la besó.` → "She was kissed by
+  him.").
+- Plain mistranslations: `en yakın banka` had become "en yakın bank", which is
+  a bench; `Él tiene mucho dinero.` said he _spends_ a lot; `Je ne fais que
+mon travail.` said the opposite of itself.
 
-Three wrong out of six that resolved at all, and scoping the search to the
-word's part of speech did not fix it — it turned `water`, `light` and `right`
-into no result instead of a wrong one, because the tables are not always inside
-the section they belong to.
+**Twenty-one fronts corrected**, each keeping the original in
+`review.frontWas`. Fourteen were Russian sentences with a hyphen where the
+language writes an em dash — the linter found sixty-four of those in the
+glosses and nothing was looking at the fronts. The rest: two pre-1996 German
+spellings, two Spanish accents, a French colour agreeing with its noun, and a
+missing ё.
 
-**The second version gets all six right, and the gate stays anyway.** It reads
-kaikki.org, where each translation arrives tagged with its sense, and drafts the
-sense that the most languages have a word for — a usage signal, where
-Wiktionary's own order is by etymology and age. That is what puts the vehicle
-ahead of the dress. On the same six words:
+### What is still owed on the fifteen
 
-| Word     | Sense drafted                    | Languages | Right? |
-| -------- | -------------------------------- | --------- | ------ |
-| bread    | baked dough made from cereals    | 406       | yes    |
-| tomorrow | on the day after the present day | 334       | yes    |
-| bank     | institution                      | 187       | yes    |
-| train    | line of connected cars           | 258       | yes    |
-| dog      | animal                           | 953       | yes    |
-| water    | inorganic compound H₂O           | 4,031     | yes    |
+**No synthesised readings and no cue pictures.** Kokoro reads Spanish, French
+and Italian and its model was not on the machine this ran on; German and
+Russian cannot be read here at all, for the reason under "The synthesised
+readings". So every card in these packs is silent and blank above the
+sentence, and the card's own "Read it aloud" answers for all five through the
+voice service. No `cues.<lang>.json` exists yet.
 
-That machinery now runs over the phrasebook half of a pack only. A Tatoeba
-sentence has no sense to choose: it arrives with its translation attached, and
-what a reviewer checks there is whether the two say the same thing.
-
-Six out of six is not a guarantee, it is six. The senses a frequency list is
-made of are the easy ones; `be` drafts as _to occupy a place_ rather than the
-copula, and that is a judgement a count cannot make. So the pipeline still
-drafts and a person still decides — it writes the definition, the other
-candidate senses and the number of languages behind each one beside every
-gloss, precisely so that reading the file is a possible thing to do rather than
-a matter of trusting it.
+**Four columns per file unread**, as above.

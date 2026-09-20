@@ -3,7 +3,7 @@
   "lang": "ru",
   "level": "intermediate",
   "contentVersion": 2,
-  "reviewed": false,
+  "reviewed": true,
   "sources": [
     {
       "name": "Wiktionary, via kaikki.org (wiktextract)",
