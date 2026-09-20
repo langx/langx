@@ -30,7 +30,8 @@
  *       [--min-age-hours 24] [--limit 50] [--emails] [--confirm]
  *
  * Without `--confirm` it counts, prints and sends nothing. Without
- * RESEND_API_KEY the sender prints each message instead of sending it.
+ * RESEND_API_KEY — or without `NODE_ENV=production`, which the production
+ * overlay sets — the sender prints each message instead of sending it.
  */
 import { readFileSync } from 'node:fs'
 import { connectToDatabase } from '../src/db/client'
@@ -151,11 +152,11 @@ async function main(): Promise<void> {
       console.log('\n(dry run — re-run with --confirm to send)')
       return
     }
-    if (!env.RESEND_API_KEY) {
-      console.log('\nRESEND_API_KEY is not set — every message will be printed, not sent')
+    const sender = createEmailSender(env, console)
+    if (!sender.deliverable) {
+      console.log('\nthis sender cannot deliver — every message will be printed, not sent')
     }
 
-    const sender = createEmailSender(env, console)
     const secret = unsubscribeSecret(env)
     const apiBaseUrl = publicApiUrl(env)
 

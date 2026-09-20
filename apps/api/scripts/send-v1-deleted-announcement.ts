@@ -24,7 +24,8 @@
  *     [--text-file ./announcement.txt] [--limit 50] [--confirm] [--drop]
  *
  * Without `--confirm` it counts, prints and sends nothing. Without
- * RESEND_API_KEY it prints each message instead of sending it. `--drop` is
+ * RESEND_API_KEY — or without `NODE_ENV=production`, which the production
+ * overlay sets — it prints each message instead of sending it. `--drop` is
  * refused while anybody is still unsent, and can be run alone later.
  */
 import { readFileSync } from 'node:fs'
@@ -106,8 +107,8 @@ async function main(): Promise<void> {
       console.log('\n(dry run — re-run with --confirm to send)')
       return
     }
-    if (!env.RESEND_API_KEY) {
-      console.log('\nRESEND_API_KEY is not set — every message will be printed, not sent')
+    if (!sender.deliverable) {
+      console.log('\nthis sender cannot deliver — every message will be printed, not sent')
     }
 
     let sent = 0
