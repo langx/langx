@@ -174,7 +174,8 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
       follows,
       delivered: lead.deliveredAt !== undefined,
       withinWindow: Date.now() - event.at.getTime() < COMMENT_TO_DM_RULES.conversationWindowMs,
-      platformAsked: lead.platformAskedAt !== undefined,
+      ...(lead.platformAskedAt ? { platformAskedAt: lead.platformAskedAt } : {}),
+      followAsks: lead.followAsks ?? 0,
     })
   }
 

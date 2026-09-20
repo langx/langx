@@ -90,6 +90,16 @@ export interface CommentToDmRules {
   conversationWindowMs: number
   /** Meta's per-account ceiling on private replies. */
   privateRepliesPerHour: number
+  /**
+   * How many times to ask for the follow before sending the link anyway.
+   *
+   * The gate is worth having and it is not worth losing somebody over.
+   * Whoever has tapped this many times either cannot follow, or has and
+   * Instagram will not say so — and in both cases they have shown more
+   * intent than most followers ever do. The link was advertised publicly
+   * under the post; it is not a secret being withheld.
+   */
+  followAsksBeforeGivingUp: number
 }
 
 const MINUTE = 60 * 1000
@@ -102,6 +112,7 @@ export const COMMENT_TO_DM_RULES: CommentToDmRules = {
   privateReplyWindowMs: 7 * DAY,
   conversationWindowMs: 24 * HOUR,
   privateRepliesPerHour: 750,
+  followAsksBeforeGivingUp: 3,
 }
 
 /** Whether a comment is asking for the link. */
