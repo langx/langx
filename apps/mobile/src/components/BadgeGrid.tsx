@@ -56,7 +56,7 @@ function BadgeRow({
 
   const content = (
     <>
-      <BadgeMark icon={badge.icon} size={MARK_SIZE} locked={!badge.earned} />
+      <BadgeMark id={badge.id} size={MARK_SIZE} locked={!badge.earned} />
       <View style={styles.body}>
         <Text style={styles.name} numberOfLines={1}>
           {label}

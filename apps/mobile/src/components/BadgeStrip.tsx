@@ -77,7 +77,7 @@ export function BadgeStrip({
         style={({ pressed }) => [styles.strip, pressed && styles.pressed]}
       >
         {badges.map((badge) => (
-          <BadgeMark key={badge.id} icon={badge.icon} size={MARK_SIZE} />
+          <BadgeMark key={badge.id} id={badge.id} size={MARK_SIZE} />
         ))}
       </Pressable>
     </ScrollView>

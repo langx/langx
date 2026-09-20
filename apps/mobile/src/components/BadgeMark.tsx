@@ -11,12 +11,16 @@ import { BADGE_ART } from '../lib/badgeArt'
  * `react-native-svg` is not here: a native module cannot reach a device over
  * an OTA update. See `docs/decisions.md`.
  *
- * **A name this build does not know draws nothing, and keeps its space.** The
- * only way to get one is a server that is ahead of the app or behind it — the
- * picture is named by the catalogue and `badgeArt.test.ts` holds the two
- * together, so in-repo it cannot happen. A gap for the minutes a deploy takes
- * beats a fallback picture: every badge would fall back to the same one, and a
- * shelf of identical marks is what this whole change set out to end.
+ * **Found by `id`, never by anything the server chose.** The DTO also carries
+ * an `icon`, and drawing from it is what put question marks on live profiles
+ * the day these pictures shipped: an app older than the server was handed a
+ * name its vector font had never heard of. An id is the badge's own name and
+ * does not move, so what this build draws depends only on this build.
+ *
+ * **An id this build does not know draws nothing, and keeps its space.** That
+ * is a badge added after this version shipped, and the honest answer is a gap:
+ * a fallback picture would give every unknown badge the same face, which is
+ * the thing the drawings were introduced to end.
  *
  * **Locked is the same picture at a third of its opacity.** Not greyscale,
  * which is a filter, and Android decodes SVG through `androidsvg`, which has
@@ -24,15 +28,15 @@ import { BADGE_ART } from '../lib/badgeArt'
  * circle to drain, now that the picture is the mark.
  */
 export function BadgeMark({
-  icon,
+  id,
   size,
   locked = false,
 }: {
-  icon: string | null
+  id: string
   size: number
   locked?: boolean
 }) {
-  const art = icon ? BADGE_ART[icon] : undefined
+  const art = BADGE_ART[id]
   if (!art) return <View style={{ height: size, width: size }} />
 
   return (
