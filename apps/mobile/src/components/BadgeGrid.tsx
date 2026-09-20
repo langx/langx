@@ -3,8 +3,7 @@ import { useMemo } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import type { EarnedBadge } from '../api/types'
 import type { BadgeSummary, Locale } from '@langx/shared'
-import { BadgeGlyph } from './BadgeGlyph'
-import { BADGE_MARKS } from '../lib/badgeMark'
+import { BadgeMark } from './BadgeMark'
 import { badgesEarnedFirst } from '../lib/badgeOrder'
 import { makeStyles, useTheme } from '../lib/theme'
 import { badgeLabel, useLocale, useT } from '../i18n'
@@ -17,19 +16,18 @@ function earnedMonth(iso: string, locale: Locale): string {
 }
 
 /**
- * One divided row per badge: the mark in a circle, the name, when it was
- * earned, and hard right either a green tick or how far along the next one is.
+ * One divided row per badge: the picture, the name, when it was earned, and
+ * hard right either a green tick or how far along the next one is.
  *
- * The state still lives in the circle, and it is now the whole circle that
- * carries it: an earned badge wears its kind's colours, a locked one the plain
- * `fill` and a faint glyph. Colour is what earning it buys, so a locked row
- * never shows any — which also means one glance sorts the screen into what you
- * have and what you do not, without reading a word.
+ * The state lives in the picture, which is drawn faint until it is earned.
+ * Colour is still what earning it buys, so one glance sorts the screen into
+ * what you have and what you do not, without reading a word. There used to be
+ * a filled circle doing that job around a glyph a whole ladder shared; the
+ * picture is the mark now, and it is its own.
  *
- * Tiers inside a kind share a mark on purpose. Thirty days and a hundred days
- * are the same achievement at two sizes; a glyph each would only say so twice,
- * and the number in the label already says which rung. What differs is the
- * kind, because that is the thing a reader cannot infer.
+ * Every rung has its own picture, and a ladder's are one idea growing — see
+ * the art ladders in `@langx/shared`. The number in the label still says which
+ * rung, and no longer has to say it alone.
  */
 function BadgeRow({
   badge,
@@ -45,7 +43,6 @@ function BadgeRow({
   const t = useT()
   const { locale } = useLocale()
   const label = badgeLabel({ t, locale }, badge.kind, badge.threshold)
-  const mark = BADGE_MARKS[badge.kind](colors)
 
   /*
    * Only the nearest badge has a position on its own scale — `next.current`
@@ -59,12 +56,7 @@ function BadgeRow({
 
   const content = (
     <>
-      <View style={[styles.mark, { backgroundColor: badge.earned ? mark.fill : colors.fill }]}>
-        <BadgeGlyph
-          icon={badge.icon ?? 'award'}
-          color={badge.earned ? mark.glyph : colors.textFaint}
-        />
-      </View>
+      <BadgeMark icon={badge.icon} size={MARK_SIZE} locked={!badge.earned} />
       <View style={styles.body}>
         <Text style={styles.name} numberOfLines={1}>
           {label}
@@ -130,7 +122,10 @@ export function BadgeGrid({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+/** The circle that held the glyph was 48 wide; the drawing keeps that rhythm. */
+const MARK_SIZE = 40
+
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
@@ -140,14 +135,6 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingVertical: spacing.lg,
   },
   pressed: { opacity: 0.7 },
-  mark: {
-    alignItems: 'center',
-    borderRadius: radius.pill,
-    height: 48,
-    justifyContent: 'center',
-    width: 48,
-  },
-
   body: { flex: 1, gap: 2 },
   name: { ...font.heading, color: colors.text, fontSize: 16 },
   state: { color: colors.textMuted, fontSize: 14 },

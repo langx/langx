@@ -129,6 +129,33 @@ describe('badge catalogue', () => {
   })
 })
 
+describe('badge artwork', () => {
+  /**
+   * The rule the whole set exists for. Two badges wearing one picture is what
+   * this replaced, and it is not something the types can see: `icon` is a
+   * string, and a ladder that copies its line compiles.
+   */
+  it('gives every badge a picture of its own', () => {
+    const pictures = BADGES.map((badge) => badge.icon)
+
+    expect(new Set(pictures).size, 'a picture is used twice').toBe(pictures.length)
+  })
+
+  /**
+   * The `?? 'fire'` fallbacks in the ladders are there so a missing rung
+   * compiles, not so it ships: a milestone added to `TOKEN_RULES` without a
+   * picture would otherwise wear the 30-day one and look earned twice.
+   */
+  it('has a picture for every streak milestone the economy pays', () => {
+    const rungs = BADGES.filter((badge) => badge.kind === 'streak')
+    const fallbacks = rungs.filter((badge) => badge.icon === 'fire')
+
+    expect(Object.keys(TOKEN_RULES.streakMilestones)).toHaveLength(rungs.length)
+    // 'fire' is the 30-day rung's own picture, so exactly one badge may wear it.
+    expect(fallbacks.map((badge) => badge.id)).toEqual(['streak.30'])
+  })
+})
+
 describe('badgesMostRecentFirst', () => {
   function earned(id: string, earnedAt: string | null): EarnedBadge {
     const definition = findBadge(id)

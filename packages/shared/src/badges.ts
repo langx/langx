@@ -78,22 +78,26 @@ export interface BadgeDefinition {
   threshold: number
   label: string
   /**
-   * Glyph name, Feather by default — `mci:` in front means
-   * MaterialCommunityIcons instead, for the two marks Feather has no glyph
-   * for (a sprout and a coin in a hand).
+   * The picture this badge wears, by name — `badgeArt.ts` on the mobile side
+   * turns it into a bundled SVG.
    *
-   * A prefix rather than a second field: the family is a property of the name,
-   * not of the badge, and a `{ family, name }` pair for the sake of two
-   * entries would be read at every call site to answer a question only the
-   * grid asks. `badgeGlyph.test.ts` on the mobile side checks every name here
-   * against the shipped glyph maps, so a typo is a failing test rather than an
-   * empty circle.
+   * **One picture per badge, never shared.** These used to be four vector-font
+   * glyphs for twenty-five badges, on the reasoning that a ladder's rungs are
+   * one achievement at several sizes and the number beside each says which.
+   * That is still true of the number, and it stopped being enough the moment
+   * the profile drew a mark with no number under it. `badges.test.ts` holds
+   * the uniqueness, so a copied line fails rather than quietly giving two
+   * badges the same face.
    *
-   * On the definition rather than switched on in the grid: the icon is a
-   * property of the kind, and a `kind === 'streak' ? … : …` ternary silently
-   * gave every new kind the correction tick. The streak used to be `null`
-   * here and a "🔥" in the grid — the one emoji left in a column of glyphs,
-   * and drawn differently on every platform.
+   * A name rather than a path, and no file extension: what a name resolves to
+   * is the app's business — Metro needs a literal import for every asset it
+   * bundles, so the mapping cannot be built from a string anyway, and putting
+   * `assets/badges/…` in this package would make the API's DTO carry a mobile
+   * directory layout.
+   *
+   * On the definition rather than switched on in the grid: the picture is a
+   * property of the badge, and a `kind === 'streak' ? … : …` ternary silently
+   * gave every new kind the correction tick.
    */
   icon: string
 }
@@ -104,6 +108,62 @@ export interface BadgeDefinition {
  * the next badge is always visible without ever being close.
  */
 const CORRECTION_THRESHOLDS = [1, 10, 100, 1000, 5000, 10_000, 25_000] as const
+
+/**
+ * A ladder's pictures, keyed by the rung they belong to.
+ *
+ * Each ladder is **one idea getting bigger**, rather than seven unrelated
+ * pictures: a candle becomes a bonfire becomes the sun, a pencil becomes a
+ * library becomes an owl. Two things fall out of that which a set of unrelated
+ * marks would not give. A stranger reads the kind from any one of them without
+ * being taught the scale, and somebody who has climbed two rungs can see that
+ * they climbed — which is the part the old shared glyph could not say and the
+ * number in the label had to.
+ *
+ * Keyed rather than positional. `streak` reads its rungs off
+ * `TOKEN_RULES.streakMilestones`, so a positional list would silently shift
+ * every picture up one the day a milestone is inserted; a key is wrong
+ * loudly instead, and `badges.test.ts` fails for the milestone with no
+ * picture.
+ */
+const STREAK_ART: Record<number, string> = {
+  7: 'candle',
+  30: 'fire',
+  100: 'sparkler',
+  180: 'fireworks',
+  365: 'comet',
+  730: 'volcano',
+  1095: 'sun',
+}
+
+const CORRECTION_ART: Record<number, string> = {
+  1: 'pencil',
+  10: 'memo',
+  100: 'fountain-pen',
+  1000: 'books',
+  5000: 'graduation-cap',
+  10_000: 'brain',
+  25_000: 'owl',
+}
+
+const MESSAGE_ART: Record<number, string> = {
+  100: 'speech-balloon',
+  1000: 'speaking-head',
+  10_000: 'megaphone',
+  50_000: 'globe',
+}
+
+const TOKEN_ART: Record<number, string> = {
+  10_000: 'coin',
+  50_000: 'money-bag',
+  250_000: 'gem',
+}
+
+const VETERAN_ART: Record<number, string> = {
+  365: 'cake',
+  730: 'medal',
+  1095: 'crown',
+}
 
 /** Messages sent, lifetime. `profile.stats.messagesSent`, which only ever grows. */
 const MESSAGE_THRESHOLDS = [100, 1000, 10_000, 50_000] as const
@@ -161,7 +221,7 @@ export const BADGES: readonly BadgeDefinition[] = [
     kind: 'origin' as const,
     threshold: 1,
     label: 'Early Adopter',
-    icon: 'mci:sprout',
+    icon: 'seedling',
   },
   ...Object.keys(TOKEN_RULES.streakMilestones)
     .map(Number)
@@ -171,38 +231,35 @@ export const BADGES: readonly BadgeDefinition[] = [
       kind: 'streak' as const,
       threshold: days,
       label: `${days} days`,
-      icon: 'zap',
+      icon: STREAK_ART[days] ?? 'fire',
     })),
   ...CORRECTION_THRESHOLDS.map((count) => ({
     id: `correction.${count}`,
     kind: 'correction' as const,
     threshold: count,
     label: correctionLabel(count),
-    icon: 'check',
+    icon: CORRECTION_ART[count] ?? 'pencil',
   })),
   ...MESSAGE_THRESHOLDS.map((count) => ({
     id: `messages.${count}`,
     kind: 'messages' as const,
     threshold: count,
     label: `${count.toLocaleString('en-US')} messages`,
-    icon: 'message-square',
+    icon: MESSAGE_ART[count] ?? 'speech-balloon',
   })),
   ...TOKEN_THRESHOLDS.map((count) => ({
     id: `tokens.${count}`,
     kind: 'tokens' as const,
     threshold: count,
     label: `${count.toLocaleString('en-US')} tokens earned`,
-    // Not Feather's `award`, which is a rosette — the same picture the badges
-    // screen is already made of, and so a mark that says "badge" where it
-    // should say "tokens".
-    icon: 'mci:hand-coin',
+    icon: TOKEN_ART[count] ?? 'coin',
   })),
   ...VETERAN_THRESHOLDS.map((days) => ({
     id: `veteran.${days}`,
     kind: 'veteran' as const,
     threshold: days,
     label: `${days} days a member`,
-    icon: 'calendar',
+    icon: VETERAN_ART[days] ?? 'cake',
   })),
 ]
 
