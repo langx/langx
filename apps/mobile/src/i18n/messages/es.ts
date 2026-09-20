@@ -2110,6 +2110,19 @@ export const es: Localized<EnMessages> = {
    drawn by WidgetKit before the snapshot is read, so these eight have to
    travel the same road the watch's words do.
   */
+
+  /*
+   What the Shortcuts app, the Action Button and the Control Centre call these
+   actions. Drawn by Apple rather than by us, so they travel the same road the
+   watch's words do — `nativeKeys.ts`, then the generator, then a catalogue the
+   app target now carries for the first time.
+  */
+  intents: {
+    openEcho: 'Abrir Echo',
+    openEchoDetail: 'Ir directo a las tarjetas de hoy.',
+    openChats: 'Abrir mis mensajes',
+    openChatsDetail: 'Ir directo a la lista de chats.',
+  },
   widget: {
     streakName: 'Racha',
     streakDetail: 'Tus días seguidos. Atenuada hasta que hoy cuente.',

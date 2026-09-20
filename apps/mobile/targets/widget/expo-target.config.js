@@ -16,7 +16,10 @@ module.exports = (config) => ({
     'com.apple.security.application-groups':
       config.ios.entitlements['com.apple.security.application-groups'],
   },
-  frameworks: ['SwiftUI', 'WidgetKit'],
+  // `AppIntents` is here for `OpenIntents.swift`, not for the widgets: the
+  // extension is where the intents live, because the metadata step that makes
+  // Shortcuts and Siri aware of them does not run for an Expo module.
+  frameworks: ['SwiftUI', 'WidgetKit', 'AppIntents'],
   /*
    * 17.0, not the app's own floor. `containerBackground` is required of every
    * Home Screen widget from iOS 17, and writing the pre-17 path as well would

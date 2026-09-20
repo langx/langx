@@ -20,4 +20,8 @@
   <string name="widget_glanceDetail">Серия и непрочитанные для экрана блокировки и StandBy.</string>
   <string name="widget_exchangeStartsIn">Начало через</string>
   <string name="widget_exchangeEndsIn">Конец через</string>
+  <string name="intents_openEcho">Открыть Echo</string>
+  <string name="intents_openEchoDetail">Сразу к карточкам на сегодня.</string>
+  <string name="intents_openChats">Открыть сообщения</string>
+  <string name="intents_openChatsDetail">Сразу к списку чатов.</string>
 </resources>

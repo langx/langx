@@ -20,4 +20,8 @@
   <string name="widget_glanceDetail">Kilit ekranı ve StandBy için seri ve okunmamışlar.</string>
   <string name="widget_exchangeStartsIn">Başlamasına</string>
   <string name="widget_exchangeEndsIn">Bitmesine</string>
+  <string name="intents_openEcho">Echo’yu aç</string>
+  <string name="intents_openEchoDetail">Bugün sırası gelen kartlara doğrudan git.</string>
+  <string name="intents_openChats">Mesajlarımı aç</string>
+  <string name="intents_openChatsDetail">Doğrudan sohbet listesine git.</string>
 </resources>

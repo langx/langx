@@ -20,4 +20,8 @@
   <string name="widget_glanceDetail">Streak and unread, for the Lock Screen and StandBy.</string>
   <string name="widget_exchangeStartsIn">Starts in</string>
   <string name="widget_exchangeEndsIn">Ends in</string>
+  <string name="intents_openEcho">Open Echo</string>
+  <string name="intents_openEchoDetail">Go straight to the cards due today.</string>
+  <string name="intents_openChats">Open my messages</string>
+  <string name="intents_openChatsDetail">Go straight to the chat list.</string>
 </resources>

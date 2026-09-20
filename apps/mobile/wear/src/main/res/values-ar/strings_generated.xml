@@ -20,4 +20,8 @@
   <string name="widget_glanceDetail">السلسلة وغير المقروء لشاشة القفل و StandBy.</string>
   <string name="widget_exchangeStartsIn">يبدأ خلال</string>
   <string name="widget_exchangeEndsIn">ينتهي خلال</string>
+  <string name="intents_openEcho">افتح Echo</string>
+  <string name="intents_openEchoDetail">انتقل مباشرة إلى بطاقات اليوم.</string>
+  <string name="intents_openChats">افتح رسائلي</string>
+  <string name="intents_openChatsDetail">انتقل مباشرة إلى قائمة المحادثات.</string>
 </resources>
