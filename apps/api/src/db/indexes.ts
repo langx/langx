@@ -222,11 +222,11 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { restoredBy: 1 }, name: 'restored_by', sparse: true },
   ],
 
-  [COLLECTIONS.v1DeletedContacts]: [
-    // One address once, however many times the script is re-run; the send
-    // that reads this must not be able to mail anybody twice.
-    { key: { email: 1 }, name: 'v1_deleted_email_uidx', unique: true },
-  ],
+  // `v1DeletedContacts` had a unique index on `email` here. The collection was
+  // dropped on 20 September 2026, its one announcement having gone out, and the
+  // declaration goes with it: `ensureIndexes` creates the collection it indexes,
+  // so leaving this would have rebuilt an empty one on the next boot — the
+  // opposite of dropping it.
 
   [COLLECTIONS.legacyRooms]: [
     // "Which of this returning user's threads exist?" — the multikey lookup
