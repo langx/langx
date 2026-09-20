@@ -84,16 +84,24 @@ function build(): string {
 /**
  * The Swift half of "no user-facing string is written in a component".
  *
- * A lint rule cannot reach Swift, so this is the rule for `targets/**`, and it
- * leans on a SwiftUI detail: `Text("…")` takes a `LocalizedStringKey`, so a
- * literal there is *already* a lookup — it simply falls back to itself when
- * the key is missing, which is how an English sentence ends up hard-coded on a
- * Turkish watch and nothing complains. Requiring every such literal to be a
- * key this generator emits turns that silent fallback into a failed build.
+ * A lint rule cannot reach Swift, so this is the rule for `targets/**`. It
+ * exists because of a SwiftUI detail: `Text("…")`, `navigationTitle("…")` and
+ * every other `LocalizedStringKey` parameter turn a literal into a *lookup*
+ * that silently falls back to itself when the key is missing. That is exactly
+ * how an English sentence ends up hard-coded on a Turkish watch with nothing
+ * to show for it — no warning, no crash, a screen that looks finished.
  *
- * Only literals are checked. `Text(snapshot.labels.streak)` passes a `String`,
- * not a key — that is the widgets' way of speaking eight languages without
- * any of this, and it stays allowed.
+ * **The test is a space.** Rather than list the dozens of SwiftUI parameters
+ * that localize, this flags any string literal containing one, anywhere in a
+ * target, unless it is a key this generator emits. Prose has spaces; keys,
+ * bundle identifiers, date formats and `UserDefaults` keys do not. It is a
+ * heuristic, and it is the one that catches the failure this is about while
+ * leaving the identifiers these files are full of alone.
+ *
+ * Interpolations are skipped — a literal with a `\(…)` in it is a format
+ * string, and the only ones here are in log lines nobody reads on a wrist.
+ * `Text(snapshot.labels.streak)` is not a literal at all: that is the widgets'
+ * way of speaking eight languages without any of this, and it stays allowed.
  */
 function unlocalizedSwiftLiterals(): string[] {
   const allowed = new Set<string>(NATIVE_KEYS)
@@ -101,10 +109,14 @@ function unlocalizedSwiftLiterals(): string[] {
 
   for (const file of globSync('**/*.swift', { cwd: TARGETS })) {
     const source = readFileSync(join(TARGETS, file), 'utf8')
-    for (const [, key] of source.matchAll(/\b(?:Text|LocalizedStringKey)\("([^"\\]*)"\)/g)) {
-      if (key !== undefined && !allowed.has(key)) {
-        problems.push(`${relative(process.cwd(), join(TARGETS, file))}: Text("${key}")`)
-      }
+    // Comments are prose by definition and explain the code rather than
+    // appearing on a screen, so they are stripped before the scan.
+    const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
+
+    for (const [, literal] of code.matchAll(/"([^"\\\n]*)"/g)) {
+      if (literal === undefined || !literal.includes(' ')) continue
+      if (allowed.has(literal)) continue
+      problems.push(`${relative(process.cwd(), join(TARGETS, file))}: "${literal}"`)
     }
   }
   return problems
