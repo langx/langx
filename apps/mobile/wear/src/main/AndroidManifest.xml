@@ -33,5 +33,35 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <!--
+      The tile. `BIND_TILE_PROVIDER` is the permission the system holds, not
+      one we ask for, and without the `preview` metadata the tile picker shows
+      a blank card where the choice should be.
+    -->
+    <service
+      android:name=".UnreadTileService"
+      android:exported="true"
+      android:label="@string/watch_unread"
+      android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+      <intent-filter>
+        <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+      </intent-filter>
+      <meta-data
+        android:name="androidx.wear.tiles.PREVIEW"
+        android:resource="@mipmap/ic_launcher" />
+    </service>
+
+    <!--
+      Redraws the tile when a payload lands, whether or not the app is
+      running — which is the case a tile exists for.
+    -->
+    <service
+      android:name=".PayloadTileRefresher"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/langx/payload" />
+      </intent-filter>
+    </service>
   </application>
 </manifest>
