@@ -67,23 +67,25 @@ describe('the voice service and the tables it mirrors', () => {
     const table = source.slice(source.indexOf('KOKORO = {'), source.indexOf('\nROOT ='))
     const rows = [...table.matchAll(/^ {4}"([a-z]{2})": \("([a-z-]+)", \(([^)]*)\)\),$/gm)]
 
-    const voices = Object.fromEntries(
-      rows.map((row) => [
-        row[1],
-        [...(row[3] ?? '').matchAll(/"([a-z_]+)"/g)].map((match) => match[1]),
-      ]),
+    // Flat strings rather than objects, so a missing language reads as one
+    // line of diff instead of a nested one.
+    const voices = rows.map(
+      (row) =>
+        `${row[1]} ${[...(row[3] ?? '').matchAll(/"([a-z_]+)"/g)].map((match) => match[1]).join(' ')}`,
     )
-    expect(voices).toEqual(ECHO_SYNTH_VOICES)
+    expect(voices.sort()).toEqual(
+      Object.entries(ECHO_SYNTH_VOICES)
+        .map(([lang, named]) => `${lang} ${named.join(' ')}`)
+        .sort(),
+    )
 
     // The espeak name beside each, against the service's own table.
     const service = readFileSync(join(TTS_DIR, 'server.py'), 'utf8')
-    const said = Object.fromEntries(
-      [
-        ...service
-          .slice(service.indexOf('LANGUAGES = {'), service.indexOf('MAX_TEXT'))
-          .matchAll(/^ {4}"([a-z]{2})": \("([a-z-]+)"/gm),
-      ].map((match) => [match[1], match[2]]),
-    )
-    expect(Object.fromEntries(rows.map((row) => [row[1], row[2]]))).toEqual(said)
+    const said = [
+      ...service
+        .slice(service.indexOf('LANGUAGES = {'), service.indexOf('MAX_TEXT'))
+        .matchAll(/^ {4}"([a-z]{2})": \("([a-z-]+)"/gm),
+    ].map((match) => `${match[1]} ${match[2]}`)
+    expect(rows.map((row) => `${row[1]} ${row[2]}`).sort()).toEqual(said.sort())
   })
 })

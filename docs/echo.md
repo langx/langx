@@ -24,15 +24,15 @@ wrote, a phrase they used — makes an Echo card. The front is the sentence as i
 was written; the back is what it means in your language. The scheduler brings
 it back tomorrow, then in three days, then in a week.
 
-Curated packs (English and French first) exist so a new user has something to
-review on day one, and so the empty tab does not read as "come back after you
-have made friends". They are the same cards in the same queue. A card from a
+Curated packs (English first, then Spanish, German, French, Russian and
+Italian) exist so a new user has something to review on day one, and so the
+empty tab does not read as "come back after you have made friends". They are the same cards in the same queue. A card from a
 pack and a card from a chat differ only in `source`.
 
 **Any language, not only the pack languages.** A card's `lang` is any code in
-`languages.ts`. The packs are the one thing limited to English and French;
-a Russian sentence echoed from a chat lives beside a French pack card, and the
-tab groups by language. Nothing about capture knows which packs exist.
+`languages.ts`. The packs are the one thing limited to six of them; a Japanese
+sentence echoed from a chat lives beside a French pack card, and the tab groups
+by language. Nothing about capture knows which packs exist.
 
 **Why now, and why free.** We are in the cold start. A person who signs up
 tonight may find nobody to talk to tonight, and a chat app with nobody online
@@ -558,9 +558,27 @@ inside `ECHO_PRODUCTION_MAX_LENGTH`, so a pack card can be asked for by typing
 as well as by recognition, which a three-hundred-character sentence from a chat
 never can.
 
-The first wave is two languages, chosen by hand rather than from the v1
+The first wave was two languages, chosen by hand rather than from the v1
 distribution, because two is what can be read end to end by a human before it
-ships. The matrix is 2 languages × 4 levels × 8 gloss locales.
+ships.
+
+**The second wave is chosen from the distribution, because there is one now.**
+`GET /public/stats` on 20 September 2026, by what members say they are
+learning: English 45, Spanish 13, German 10, French 7, Russian 6, Chinese 5,
+Italian 4, Japanese 4. So Spanish, German, French, Russian and Italian — five
+languages that are also, apart from Italian, interface locales. Fifteen packs,
+4,208 items, drafted and unread.
+
+**Turkish and Arabic are not in it, and the reason is written down here so the
+absence reads as a decision.** Both are interface locales and both would be
+silent: the catalogue's only Turkish and Arabic voices are CC BY-NC, which an
+app that sells subscriptions cannot use (`packages/shared/src/speech.ts`).
+Arabic is separately the thinnest gloss column in every other language, so it
+is the language we are worst at serving and the one we can serve last. A clean
+model reopens both. Chinese and Japanese are out for a different reason: no
+usable voice either, and the picker's word counts and
+`ECHO_PRODUCTION_MAX_LENGTH` both assume a language that puts spaces between
+words. Portuguese is out on the data — Tatoeba links it to Arabic 348 times.
 
 **A pack is phrases, at every level.** This section said "words and short
 phrases from a frequency list" and the first draft built to it was three
@@ -580,12 +598,20 @@ eight locales was written by a person. No dictionary has an entry for "Why do
 you ask?", and the gloss of a sentence is exactly the thing a machine must not
 invent.
 
-**Levelling a phrase is levelling its hardest word.** The CEFR-J band of the
-rarest word in it, through the same `CEFR_TO_LANGUAGE_LEVEL` that
+**Levelling a phrase is levelling its hardest word.** In English, the CEFR-J
+band of the rarest word in it. In every other language there is no CEFR list
+we may ship — CEFR-J is English and CEFRLex is CC BY-NC-SA — so the band comes
+from frequency instead, the first 1,000 / 3,000 / 10,000 forms of
+hermitdave's OpenSubtitles list standing in for A1 / A2 / B1. Either way it
+goes through the same `CEFR_TO_LANGUAGE_LEVEL` that
 `packages/shared/src/level.ts` already holds — so a phrase all of whose words
 are A1 is an `absoluteBeginner` phrase, and no second scale appears anywhere. A
-word CEFR-J does not list counts as **above** the band rather than below it,
-which is what keeps _beware of the dog_ and _bon voyage_ out of a first pack.
+word no list covers counts as **above** the band rather than below it, which
+is what keeps _beware of the dog_ and _bon voyage_ out of a first pack. The
+frequency lists are surface forms rather than lemmas, so in Russian and German
+they band strictly — a declined form outside the top ten thousand takes its
+phrase with it. That is the direction to err in, and review is what pulls back
+a phrase that should not have gone.
 
 **A phrase is more than one word.** The phrasebook category carries `hello`,
 `yes` and `sorry`, expressions in the sense a phrasebook means and single words
@@ -595,7 +621,8 @@ Nothing is lost that a learner does not meet in the first sentence that greets
 them.
 
 **Scope**: three packs per language, at `absoluteBeginner`, `beginner` and
-`intermediate`, about 300 phrases each with a gloss in eight locales. A
+`intermediate`, about 300 phrases each — in eight locales for English, and in
+English plus what exists for the rest; see below. A
 sentence is its own example, so `example` is filled only for a phrasebook
 entry, where the dictionary has one. Each is read end to end by a person before
 its `"reviewed": true`; they are drafted together because the Tatoeba exports
@@ -604,29 +631,39 @@ are two hundred megabytes and one pass answers every level.
 **`fluent` has no pack, and the reason is the eight locales rather than the
 level.** Requiring a human translation in all eight is what makes a gloss
 trustworthy, and Arabic is where it binds: across every level Tatoeba links
-Arabic to 16,322 of the 657,063 candidate sentences, 2.5%. At A1 a pool that
-large still leaves a thousand; at C1 and C2 it leaves four. Filling the top
-level means either sourcing it somewhere other than Tatoeba or letting a pack
-ship in fewer locales than eight — both decisions, neither a default, and
-neither needed before the three below it have been read.
+Arabic to 16,322 of the 657,063 candidate English sentences, 2.5%. At A1 a
+pool that large still leaves a thousand; at C1 and C2 it leaves four.
+
+**Outside English that requirement had to go, and the same number is why.**
+Tatoeba links Arabic to 3,393 Spanish sentences, 3,104 French, 2,971 German,
+735 Italian. All eight there is not a stricter pack, it is no pack. So every
+language but English requires **English only** — the floor `glossFor` falls
+back to — and the picker prefers the best-covered sentences over the merely
+eligible, which is what keeps the thin columns filling: 300 taken from 29,000
+Spanish candidates average 6.1 of 7 locales. The cost is stated rather than
+hidden: Arabic reaches 87% of the English items, 36% of the Russian and 9% of
+the Italian, and a reader whose column is missing gets English.
+
+That decision does not reach up to `fluent`, which is still unbuilt, and it
+does not reach back to English, which still requires all eight.
 
 **Sources and licence** — verify at the version downloaded, record it:
 
-| Source                            | Gives                                          | Licence                            | Use                                                 |
-| --------------------------------- | ---------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
-| Lexique 3 (lexique.org)           | FR: 142k words, frequency, IPA, part of speech | CC BY-SA 4.0                       | French ranking and phonetics                        |
-| CEFR-J Vocabulary Profile 1.5     | EN: 7,798 headwords with a CEFR level          | Free commercially, **if cited**    | Which English words are in which pack               |
-| NGSL (Browne, Culligan, Phillips) | EN: 2,801 core words with a frequency rank     | CC BY-SA 4.0                       | The order they go in, and `freqRank`                |
-| Wiktionary frequency lists        | EN / FR / RU subtitle-derived lists            | CC BY-SA                           | Cross-check; the Russian list when a RU pack comes  |
-| Wiktextract (kaikki.org)          | Senses, definitions, examples, IPA, recordings | CC BY-SA 4.0                       | Glosses and examples for a phrasebook entry         |
-| Wiktionary `English phrasebook`   | 460 curated everyday expressions               | CC BY-SA 4.0                       | Half the phrases in a pack                          |
-| Tatoeba                           | Short sentences, translated by people          | CC BY 2.0 FR                       | The other half: sentence patterns and their glosses |
-| Lingua Libre (Wikimedia Commons)  | Human word recordings, per language            | CC BY-SA 4.0                       | Pack audio for single words                         |
-| Common Voice                      | Sentence recordings                            | CC0                                | Sentence audio, later                               |
-| CEFRLex — EFLLex, FLELex          | EN / FR lemmas by CEFR level                   | CC BY-NC-SA 4.0                    | **Out** — non-commercial. The French levels problem |
-| Kelly lists (Leeds)               | EN / RU learner lists by CEFR                  | CC BY-NC-ND-SA, offline since 2026 | **Out** — non-commercial, no derivatives            |
-| Oxford 3000 / EVP (Cambridge)     | EN word lists by CEFR                          | none granted                       | **Out** — no licence; the MIT mirrors have no right |
-| Anki shared decks                 | —                                              | none stated                        | **Out** — no provenance                             |
+| Source                             | Gives                                          | Licence                            | Use                                                 |
+| ---------------------------------- | ---------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
+| CEFR-J Vocabulary Profile 1.5      | EN: 7,798 headwords with a CEFR level          | Free commercially, **if cited**    | Which English words are in which pack               |
+| NGSL (Browne, Culligan, Phillips)  | EN: 2,801 core words with a frequency rank     | CC BY-SA 4.0                       | The order they go in, and `freqRank`                |
+| FrequencyWords (hermitdave)        | 50k forms by frequency, one file per language  | CC BY-SA 4.0 (content)             | Levels and order for every language but English     |
+| Lexique 3 (lexique.org)            | FR: 142k words, frequency, IPA, part of speech | CC BY-SA 4.0                       | A cross-check on the French levels                  |
+| Wiktextract (kaikki.org)           | Senses, definitions, examples, IPA, recordings | CC BY-SA 4.0                       | Glosses and examples for a phrasebook entry         |
+| Wiktionary `<Language> phrasebook` | Curated expressions: EN 460, RU 170, DE 104…   | CC BY-SA 4.0                       | Half an English pack; a twentieth of the others     |
+| Tatoeba                            | Short sentences, translated by people          | CC BY 2.0 FR                       | The other half: sentence patterns and their glosses |
+| Lingua Libre (Wikimedia Commons)   | Human word recordings, per language            | CC BY-SA 4.0                       | Pack audio for single words                         |
+| Common Voice                       | Sentence recordings                            | CC0                                | Sentence audio, later                               |
+| CEFRLex — EFLLex, FLELex           | EN / FR lemmas by CEFR level                   | CC BY-NC-SA 4.0                    | **Out** — non-commercial. The French levels problem |
+| Kelly lists (Leeds)                | EN / RU learner lists by CEFR                  | CC BY-NC-ND-SA, offline since 2026 | **Out** — non-commercial, no derivatives            |
+| Oxford 3000 / EVP (Cambridge)      | EN word lists by CEFR                          | none granted                       | **Out** — no licence; the MIT mirrors have no right |
+| Anki shared decks                  | —                                              | none stated                        | **Out** — no provenance                             |
 
 Glosses are drafted from the sense-carrying source, never machine-translated
 from a bare lemma — `light`, `bank` and `right` come back as whichever sense
@@ -696,11 +733,11 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 
 ## Phases
 
-| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Done when                                                                                                                                     |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio" | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
-| 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. pack audio, from Commons with its licence checked per file; the three **English packs**, 809 items, read in two passes and marked `"reviewed": true` — see `content/echo/ATTRIBUTION.md` for what that review covered and what it only sampled. **Not built:** the `fr` packs and OpenMoji icons                                            | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | **Built:** production cards, offline review. **Left:** pack multiple choice, listening cards, the upper two levels, more languages, FSRS                                                                                                                                                                                                                                                                                                                                                                             | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Done when                                                                                                                                     |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio"                                                                           | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
+| 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. pack audio, from Commons with its licence checked per file; the three **English packs**, 809 items, read in two passes and marked `"reviewed": true` — see `content/echo/ATTRIBUTION.md` for what that review covered and what it only sampled. **Not built:** the fifteen drafts — Spanish, German, French, Russian and Italian, three levels each, 4,208 items, `"reviewed": false` and unread — and OpenMoji icons | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
+| 3     | **Built:** production cards, offline review. **Left:** pack multiple choice, listening cards, the upper two levels, Turkish and Arabic packs when a voice exists for them, FSRS                                                                                                                                                                                                                                                                                                                                                                                                                | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth
