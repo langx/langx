@@ -2,7 +2,7 @@
   "id": "it:intermediate",
   "lang": "it",
   "level": "intermediate",
-  "contentVersion": 1,
+  "contentVersion": 2,
   "reviewed": false,
   "sources": [
     {
@@ -604,22 +604,6 @@
     {
       "index": 35,
       "kind": "phrase",
-      "text": "Loro mi uccideranno.",
-      "gloss": {
-        "en": "They'll kill me.",
-        "de": "Sie werden mich umbringen.",
-        "es": "Me matarán.",
-        "fr": "Ils me tueront.",
-        "pt-BR": "Eles vão me matar."
-      },
-      "freqRank": 40,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 36,
-      "kind": "phrase",
       "text": "Dammi mille baci.",
       "gloss": {
         "en": "Give me a thousand kisses.",
@@ -635,7 +619,7 @@
       }
     },
     {
-      "index": 37,
+      "index": 36,
       "kind": "phrase",
       "text": "Non siamo angeli.",
       "gloss": {
@@ -651,7 +635,7 @@
       }
     },
     {
-      "index": 38,
+      "index": 37,
       "kind": "phrase",
       "text": "Lavorare è pregare.",
       "gloss": {
@@ -667,7 +651,7 @@
       }
     },
     {
-      "index": 39,
+      "index": 38,
       "kind": "phrase",
       "text": "Dove abita John?",
       "gloss": {
@@ -684,7 +668,7 @@
       }
     },
     {
-      "index": 40,
+      "index": 39,
       "kind": "phrase",
       "text": "So dove abita.",
       "gloss": {
@@ -700,7 +684,7 @@
       }
     },
     {
-      "index": 41,
+      "index": 40,
       "kind": "phrase",
       "text": "Voglio una chitarra.",
       "gloss": {
@@ -716,7 +700,7 @@
       }
     },
     {
-      "index": 42,
+      "index": 41,
       "kind": "phrase",
       "text": "Chi sta leggendo?",
       "gloss": {
@@ -732,7 +716,7 @@
       }
     },
     {
-      "index": 43,
+      "index": 42,
       "kind": "phrase",
       "text": "Oggi è lunedì.",
       "gloss": {
@@ -750,7 +734,7 @@
       }
     },
     {
-      "index": 44,
+      "index": 43,
       "kind": "phrase",
       "text": "Lei odia Facebook.",
       "gloss": {
@@ -766,7 +750,7 @@
       }
     },
     {
-      "index": 45,
+      "index": 44,
       "kind": "phrase",
       "text": "Io non leggo.",
       "gloss": {
@@ -783,7 +767,7 @@
       }
     },
     {
-      "index": 46,
+      "index": 45,
       "kind": "phrase",
       "text": "Non leggo libri.",
       "gloss": {
@@ -799,7 +783,7 @@
       }
     },
     {
-      "index": 47,
+      "index": 46,
       "kind": "phrase",
       "text": "Sono Tom Hunter.",
       "gloss": {
@@ -816,7 +800,7 @@
       }
     },
     {
-      "index": 48,
+      "index": 47,
       "kind": "phrase",
       "text": "Facendo si impara.",
       "gloss": {
@@ -832,7 +816,7 @@
       }
     },
     {
-      "index": 49,
+      "index": 48,
       "kind": "phrase",
       "text": "Ti chiamerò domani.",
       "gloss": {
@@ -848,7 +832,7 @@
       }
     },
     {
-      "index": 50,
+      "index": 49,
       "kind": "phrase",
       "text": "Muoio di fame!",
       "gloss": {
@@ -864,24 +848,7 @@
       }
     },
     {
-      "index": 51,
-      "kind": "phrase",
-      "text": "Viva la Repubblica!",
-      "gloss": {
-        "en": "Long live the Republic!",
-        "tr": "Yaşasın cumhuriyet!",
-        "de": "Es lebe die Republik!",
-        "es": "¡Viva la República!",
-        "fr": "Vive la République !",
-        "ru": "Да здравствует Республика!"
-      },
-      "freqRank": 56,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 52,
+      "index": 50,
       "kind": "phrase",
       "text": "Ha i baffi.",
       "gloss": {
@@ -897,7 +864,7 @@
       }
     },
     {
-      "index": 53,
+      "index": 51,
       "kind": "phrase",
       "text": "È a Tokyo.",
       "gloss": {
@@ -914,7 +881,7 @@
       }
     },
     {
-      "index": 54,
+      "index": 52,
       "kind": "phrase",
       "text": "Sono di Tokyo.",
       "gloss": {
@@ -931,7 +898,7 @@
       }
     },
     {
-      "index": 55,
+      "index": 53,
       "kind": "phrase",
       "text": "Vive a Tokyo.",
       "gloss": {
@@ -947,7 +914,7 @@
       }
     },
     {
-      "index": 56,
+      "index": 54,
       "kind": "phrase",
       "text": "Vivo a Tokyo.",
       "gloss": {
@@ -963,7 +930,7 @@
       }
     },
     {
-      "index": 57,
+      "index": 55,
       "kind": "phrase",
       "text": "Mi chiamo Andrea.",
       "gloss": {
@@ -980,7 +947,7 @@
       }
     },
     {
-      "index": 58,
+      "index": 56,
       "kind": "phrase",
       "text": "Dobbiamo agire rapidamente.",
       "gloss": {
@@ -996,7 +963,7 @@
       }
     },
     {
-      "index": 59,
+      "index": 57,
       "kind": "phrase",
       "text": "Oggi è giovedì.",
       "gloss": {
@@ -1014,7 +981,7 @@
       }
     },
     {
-      "index": 60,
+      "index": 58,
       "kind": "phrase",
       "text": "Allah è grande!",
       "gloss": {
@@ -1030,7 +997,7 @@
       }
     },
     {
-      "index": 61,
+      "index": 59,
       "kind": "phrase",
       "text": "Oggi è martedì.",
       "gloss": {
@@ -1046,7 +1013,7 @@
       }
     },
     {
-      "index": 62,
+      "index": 60,
       "kind": "phrase",
       "text": "Non cambierà niente.",
       "gloss": {
@@ -1062,7 +1029,7 @@
       }
     },
     {
-      "index": 63,
+      "index": 61,
       "kind": "phrase",
       "text": "Hai un hobby?",
       "gloss": {
@@ -1078,7 +1045,7 @@
       }
     },
     {
-      "index": 64,
+      "index": 62,
       "kind": "phrase",
       "text": "Non sono sordo.",
       "gloss": {
@@ -1095,12 +1062,12 @@
       }
     },
     {
-      "index": 65,
+      "index": 63,
       "kind": "phrase",
       "text": "Lavoro a Milano.",
       "gloss": {
         "en": "I work in Milan.",
-        "tr": "Milan'da çalışıyorum.",
+        "tr": "Milano'da çalışıyorum.",
         "de": "Ich arbeite in Mailand.",
         "es": "Trabajo en Milán.",
         "fr": "Je travaille à Milan.",
@@ -1108,11 +1075,12 @@
       },
       "freqRank": 70,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 66,
+      "index": 64,
       "kind": "phrase",
       "text": "Vengo da Milano.",
       "gloss": {
@@ -1128,7 +1096,7 @@
       }
     },
     {
-      "index": 67,
+      "index": 65,
       "kind": "phrase",
       "text": "Ho due nipoti.",
       "gloss": {
@@ -1144,7 +1112,7 @@
       }
     },
     {
-      "index": 68,
+      "index": 66,
       "kind": "phrase",
       "text": "Vengo da Israele.",
       "gloss": {
@@ -1160,7 +1128,7 @@
       }
     },
     {
-      "index": 69,
+      "index": 67,
       "kind": "phrase",
       "text": "Tradurre è tradire.",
       "gloss": {
@@ -1177,7 +1145,7 @@
       }
     },
     {
-      "index": 70,
+      "index": 68,
       "kind": "phrase",
       "text": "Lui non fuma.",
       "gloss": {
@@ -1193,7 +1161,7 @@
       }
     },
     {
-      "index": 71,
+      "index": 69,
       "kind": "phrase",
       "text": "Lo vedo raramente.",
       "gloss": {
@@ -1209,7 +1177,7 @@
       }
     },
     {
-      "index": 72,
+      "index": 70,
       "kind": "phrase",
       "text": "Ho un suggerimento.",
       "gloss": {
@@ -1225,7 +1193,7 @@
       }
     },
     {
-      "index": 73,
+      "index": 71,
       "kind": "phrase",
       "text": "Vengo dal Brasile.",
       "gloss": {
@@ -1243,7 +1211,7 @@
       }
     },
     {
-      "index": 74,
+      "index": 72,
       "kind": "phrase",
       "text": "Hai un preservativo?",
       "gloss": {
@@ -1261,7 +1229,7 @@
       }
     },
     {
-      "index": 75,
+      "index": 73,
       "kind": "phrase",
       "text": "Vivo a Rio.",
       "gloss": {
@@ -1277,7 +1245,7 @@
       }
     },
     {
-      "index": 76,
+      "index": 74,
       "kind": "phrase",
       "text": "Buona notte, Timmy.",
       "gloss": {
@@ -1294,7 +1262,7 @@
       }
     },
     {
-      "index": 77,
+      "index": 75,
       "kind": "phrase",
       "text": "Non sono religioso.",
       "gloss": {
@@ -1310,23 +1278,7 @@
       }
     },
     {
-      "index": 78,
-      "kind": "phrase",
-      "text": "Ho una granata.",
-      "gloss": {
-        "en": "I have a grenade.",
-        "de": "Ich habe eine Granate.",
-        "es": "Tengo una granada.",
-        "fr": "J'ai une grenade.",
-        "ru": "У меня граната."
-      },
-      "freqRank": 83,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 79,
+      "index": 76,
       "kind": "phrase",
       "text": "Costerà trenta euro.",
       "gloss": {
@@ -1342,7 +1294,7 @@
       }
     },
     {
-      "index": 80,
+      "index": 77,
       "kind": "phrase",
       "text": "Non conoscevo quella canzone.",
       "gloss": {
@@ -1358,7 +1310,7 @@
       }
     },
     {
-      "index": 81,
+      "index": 78,
       "kind": "phrase",
       "text": "Devo smettere di fumare.",
       "gloss": {
@@ -1374,7 +1326,7 @@
       }
     },
     {
-      "index": 82,
+      "index": 79,
       "kind": "phrase",
       "text": "Non capisco il tedesco.",
       "gloss": {
@@ -1390,7 +1342,7 @@
       }
     },
     {
-      "index": 83,
+      "index": 80,
       "kind": "phrase",
       "text": "Sai parlare il tedesco?",
       "gloss": {
@@ -1406,7 +1358,7 @@
       }
     },
     {
-      "index": 84,
+      "index": 81,
       "kind": "phrase",
       "text": "In che distretto vivi?",
       "gloss": {
@@ -1423,7 +1375,7 @@
       }
     },
     {
-      "index": 85,
+      "index": 82,
       "kind": "phrase",
       "text": "Siamo in una biblioteca.",
       "gloss": {
@@ -1439,7 +1391,7 @@
       }
     },
     {
-      "index": 86,
+      "index": 83,
       "kind": "phrase",
       "text": "Tom è un robot.",
       "gloss": {
@@ -1456,7 +1408,7 @@
       }
     },
     {
-      "index": 87,
+      "index": 84,
       "kind": "phrase",
       "text": "Parla perfettamente il russo.",
       "gloss": {
@@ -1473,7 +1425,7 @@
       }
     },
     {
-      "index": 88,
+      "index": 85,
       "kind": "phrase",
       "text": "Non sono uno studente.",
       "gloss": {
@@ -1489,7 +1441,7 @@
       }
     },
     {
-      "index": 89,
+      "index": 86,
       "kind": "phrase",
       "text": "Viviamo in una società.",
       "gloss": {
@@ -1506,7 +1458,7 @@
       }
     },
     {
-      "index": 90,
+      "index": 87,
       "kind": "phrase",
       "text": "Non bevo molto vino.",
       "gloss": {
@@ -1523,7 +1475,7 @@
       }
     },
     {
-      "index": 91,
+      "index": 88,
       "kind": "phrase",
       "text": "Cari fratelli e sorelle!",
       "gloss": {
@@ -1539,7 +1491,7 @@
       }
     },
     {
-      "index": 92,
+      "index": 89,
       "kind": "phrase",
       "text": "La zuppa è calda.",
       "gloss": {
@@ -1555,7 +1507,7 @@
       }
     },
     {
-      "index": 93,
+      "index": 90,
       "kind": "phrase",
       "text": "È la pura verità.",
       "gloss": {
@@ -1572,7 +1524,7 @@
       }
     },
     {
-      "index": 94,
+      "index": 91,
       "kind": "phrase",
       "text": "La zuppa è fredda.",
       "gloss": {
@@ -1588,7 +1540,7 @@
       }
     },
     {
-      "index": 95,
+      "index": 92,
       "kind": "phrase",
       "text": "Lei adora i gatti.",
       "gloss": {
@@ -1604,7 +1556,7 @@
       }
     },
     {
-      "index": 96,
+      "index": 93,
       "kind": "phrase",
       "text": "Lui scrive una lettera.",
       "gloss": {
@@ -1621,7 +1573,7 @@
       }
     },
     {
-      "index": 97,
+      "index": 94,
       "kind": "phrase",
       "text": "Tom scrive molto bene.",
       "gloss": {
@@ -1638,7 +1590,7 @@
       }
     },
     {
-      "index": 98,
+      "index": 95,
       "kind": "phrase",
       "text": "Dimmi perché sta piangendo.",
       "gloss": {
@@ -1654,7 +1606,7 @@
       }
     },
     {
-      "index": 99,
+      "index": 96,
       "kind": "phrase",
       "text": "È un libro spagnolo.",
       "gloss": {
@@ -1670,7 +1622,7 @@
       }
     },
     {
-      "index": 100,
+      "index": 97,
       "kind": "phrase",
       "text": "Bill era in Giappone.",
       "gloss": {
@@ -1686,7 +1638,7 @@
       }
     },
     {
-      "index": 101,
+      "index": 98,
       "kind": "phrase",
       "text": "Il Giappone è qui!",
       "gloss": {
@@ -1702,7 +1654,7 @@
       }
     },
     {
-      "index": 102,
+      "index": 99,
       "kind": "phrase",
       "text": "Questo è il Giappone.",
       "gloss": {
@@ -1718,24 +1670,7 @@
       }
     },
     {
-      "index": 103,
-      "kind": "phrase",
-      "text": "È carne di scimmia.",
-      "gloss": {
-        "en": "It's monkey meat.",
-        "tr": "O maymun eti.",
-        "de": "Das ist Affenfleisch.",
-        "es": "Es carne de mono.",
-        "fr": "C'est de la viande de singe.",
-        "pt-BR": "É carne de macaco."
-      },
-      "freqRank": 108,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 104,
+      "index": 100,
       "kind": "phrase",
       "text": "Il ragazzo ha sete.",
       "gloss": {
@@ -1752,7 +1687,7 @@
       }
     },
     {
-      "index": 105,
+      "index": 101,
       "kind": "phrase",
       "text": "Non sono un mago.",
       "gloss": {
@@ -1768,23 +1703,7 @@
       }
     },
     {
-      "index": 106,
-      "kind": "phrase",
-      "text": "Dio è un fiore.",
-      "gloss": {
-        "en": "God is a flower.",
-        "de": "Gott ist eine Blume.",
-        "es": "Dios es una flor.",
-        "fr": "Dieu est une fleur.",
-        "ar": "الله هو زهرة."
-      },
-      "freqRank": 111,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 107,
+      "index": 102,
       "kind": "phrase",
       "text": "Quali sono i sintomi?",
       "gloss": {
@@ -1801,7 +1720,7 @@
       }
     },
     {
-      "index": 108,
+      "index": 103,
       "kind": "phrase",
       "text": "Il gatto sta mangiando.",
       "gloss": {
@@ -1818,7 +1737,7 @@
       }
     },
     {
-      "index": 109,
+      "index": 104,
       "kind": "phrase",
       "text": "Tom non beve vino.",
       "gloss": {
@@ -1834,7 +1753,7 @@
       }
     },
     {
-      "index": 110,
+      "index": 105,
       "kind": "phrase",
       "text": "Parlo di un leone.",
       "gloss": {
@@ -1850,7 +1769,7 @@
       }
     },
     {
-      "index": 111,
+      "index": 106,
       "kind": "phrase",
       "text": "Il computer è spento.",
       "gloss": {
@@ -1867,11 +1786,11 @@
       }
     },
     {
-      "index": 112,
+      "index": 107,
       "kind": "phrase",
       "text": "Costi quel che costi.",
       "gloss": {
-        "en": "It will cost however much it costs.",
+        "en": "Whatever it costs.",
         "de": "Koste es, was es wolle!",
         "es": "Cueste lo que cueste.",
         "fr": "Coûte que coûte.",
@@ -1879,11 +1798,12 @@
       },
       "freqRank": 117,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 113,
+      "index": 108,
       "kind": "phrase",
       "text": "Ho preso degli stivali.",
       "gloss": {
@@ -1900,7 +1820,7 @@
       }
     },
     {
-      "index": 114,
+      "index": 109,
       "kind": "phrase",
       "text": "Lei suona la chitarra.",
       "gloss": {
@@ -1916,7 +1836,7 @@
       }
     },
     {
-      "index": 115,
+      "index": 110,
       "kind": "phrase",
       "text": "Ho una chitarra elettrica.",
       "gloss": {
@@ -1932,7 +1852,7 @@
       }
     },
     {
-      "index": 116,
+      "index": 111,
       "kind": "phrase",
       "text": "Non ho una chitarra.",
       "gloss": {
@@ -1948,7 +1868,7 @@
       }
     },
     {
-      "index": 117,
+      "index": 112,
       "kind": "phrase",
       "text": "So suonare la chitarra.",
       "gloss": {
@@ -1965,7 +1885,7 @@
       }
     },
     {
-      "index": 118,
+      "index": 113,
       "kind": "phrase",
       "text": "Mi sono alzato presto.",
       "gloss": {
@@ -1981,7 +1901,7 @@
       }
     },
     {
-      "index": 119,
+      "index": 114,
       "kind": "phrase",
       "text": "Quella è una bambola.",
       "gloss": {
@@ -1997,7 +1917,7 @@
       }
     },
     {
-      "index": 120,
+      "index": 115,
       "kind": "phrase",
       "text": "Tom ha baciato Mary.",
       "gloss": {
@@ -2013,7 +1933,7 @@
       }
     },
     {
-      "index": 121,
+      "index": 116,
       "kind": "phrase",
       "text": "La donna sta leggendo.",
       "gloss": {
@@ -2030,7 +1950,7 @@
       }
     },
     {
-      "index": 122,
+      "index": 117,
       "kind": "phrase",
       "text": "Sto leggendo il giornale.",
       "gloss": {
@@ -2046,23 +1966,7 @@
       }
     },
     {
-      "index": 123,
-      "kind": "phrase",
-      "text": "Betty uccise sua madre.",
-      "gloss": {
-        "en": "Betty killed her mother.",
-        "tr": "Betty annesini öldürdü.",
-        "de": "Betty tötete seine Mutter.",
-        "fr": "Betty tua sa mère.",
-        "ru": "Бетти убила свою мать."
-      },
-      "freqRank": 128,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 124,
+      "index": 118,
       "kind": "phrase",
       "text": "Sono nata in luglio.",
       "gloss": {
@@ -2078,7 +1982,7 @@
       }
     },
     {
-      "index": 125,
+      "index": 119,
       "kind": "phrase",
       "text": "La password è \"password\".",
       "gloss": {
@@ -2097,7 +2001,7 @@
       }
     },
     {
-      "index": 126,
+      "index": 120,
       "kind": "phrase",
       "text": "Sto mangiando una mela.",
       "gloss": {
@@ -2114,7 +2018,7 @@
       }
     },
     {
-      "index": 127,
+      "index": 121,
       "kind": "phrase",
       "text": "Gli alberi sono verdi.",
       "gloss": {
@@ -2131,7 +2035,7 @@
       }
     },
     {
-      "index": 128,
+      "index": 122,
       "kind": "phrase",
       "text": "Non ha una bicicletta.",
       "gloss": {
@@ -2147,7 +2051,7 @@
       }
     },
     {
-      "index": 129,
+      "index": 123,
       "kind": "phrase",
       "text": "Sono andati allo zoo.",
       "gloss": {
@@ -2163,7 +2067,7 @@
       }
     },
     {
-      "index": 130,
+      "index": 124,
       "kind": "phrase",
       "text": "Dove sono le mele?",
       "gloss": {
@@ -2180,7 +2084,7 @@
       }
     },
     {
-      "index": 131,
+      "index": 125,
       "kind": "phrase",
       "text": "Sono andato allo zoo.",
       "gloss": {
@@ -2196,7 +2100,7 @@
       }
     },
     {
-      "index": 132,
+      "index": 126,
       "kind": "phrase",
       "text": "La pianta è blu.",
       "gloss": {
@@ -2212,7 +2116,7 @@
       }
     },
     {
-      "index": 133,
+      "index": 127,
       "kind": "phrase",
       "text": "I muri hanno orecchie.",
       "gloss": {
@@ -2228,7 +2132,7 @@
       }
     },
     {
-      "index": 134,
+      "index": 128,
       "kind": "phrase",
       "text": "Le mele sono rosse.",
       "gloss": {
@@ -2245,7 +2149,7 @@
       }
     },
     {
-      "index": 135,
+      "index": 129,
       "kind": "phrase",
       "text": "Ho affrontato il campione.",
       "gloss": {
@@ -2261,7 +2165,7 @@
       }
     },
     {
-      "index": 136,
+      "index": 130,
       "kind": "phrase",
       "text": "Mi piace il tennis.",
       "gloss": {
@@ -2277,7 +2181,7 @@
       }
     },
     {
-      "index": 137,
+      "index": 131,
       "kind": "phrase",
       "text": "Dove sono i bagni?",
       "gloss": {
@@ -2293,7 +2197,7 @@
       }
     },
     {
-      "index": 138,
+      "index": 132,
       "kind": "phrase",
       "text": "Questo è un DVD.",
       "gloss": {
@@ -2309,7 +2213,7 @@
       }
     },
     {
-      "index": 139,
+      "index": 133,
       "kind": "phrase",
       "text": "Mary lavora come modella.",
       "gloss": {
@@ -2325,7 +2229,7 @@
       }
     },
     {
-      "index": 140,
+      "index": 134,
       "kind": "phrase",
       "text": "La saggezza è potere.",
       "gloss": {
@@ -2341,7 +2245,7 @@
       }
     },
     {
-      "index": 141,
+      "index": 135,
       "kind": "phrase",
       "text": "Madonna è una bellezza.",
       "gloss": {
@@ -2358,7 +2262,7 @@
       }
     },
     {
-      "index": 142,
+      "index": 136,
       "kind": "phrase",
       "text": "Vivo tra due mondi.",
       "gloss": {
@@ -2375,7 +2279,7 @@
       }
     },
     {
-      "index": 143,
+      "index": 137,
       "kind": "phrase",
       "text": "Sono andati a pescare.",
       "gloss": {
@@ -2391,7 +2295,7 @@
       }
     },
     {
-      "index": 144,
+      "index": 138,
       "kind": "phrase",
       "text": "Tom è un pirata.",
       "gloss": {
@@ -2407,7 +2311,7 @@
       }
     },
     {
-      "index": 145,
+      "index": 139,
       "kind": "phrase",
       "text": "Mi piace il jazz.",
       "gloss": {
@@ -2423,7 +2327,7 @@
       }
     },
     {
-      "index": 146,
+      "index": 140,
       "kind": "phrase",
       "text": "Sto mangiando una banana.",
       "gloss": {
@@ -2439,7 +2343,7 @@
       }
     },
     {
-      "index": 147,
+      "index": 141,
       "kind": "phrase",
       "text": "Può proseguire lui ora.",
       "gloss": {
@@ -2456,43 +2360,7 @@
       }
     },
     {
-      "index": 148,
-      "kind": "phrase",
-      "text": "Dio è un elefante.",
-      "gloss": {
-        "en": "God is an elephant.",
-        "tr": "Tanrı bir fildir.",
-        "de": "Gott ist ein Elefant.",
-        "es": "Dios es un elefante.",
-        "fr": "Dieu est un éléphant.",
-        "pt-BR": "Deus é um elefante.",
-        "ru": "Бог — слон.",
-        "ar": "الله فيل."
-      },
-      "freqRank": 153,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 149,
-      "kind": "phrase",
-      "text": "Le vite nere contano.",
-      "gloss": {
-        "en": "Black lives matter.",
-        "de": "Schwarze Leben zählen.",
-        "es": "Las vidas negras importan.",
-        "fr": "La vie des Noirs compte.",
-        "pt-BR": "As vidas negras importam.",
-        "ar": "حياة السود مهمة."
-      },
-      "freqRank": 154,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 150,
+      "index": 142,
       "kind": "phrase",
       "text": "Piove da giovedì scorso.",
       "gloss": {
@@ -2508,7 +2376,7 @@
       }
     },
     {
-      "index": 151,
+      "index": 143,
       "kind": "phrase",
       "text": "Questo orologio è elettrico.",
       "gloss": {
@@ -2524,7 +2392,7 @@
       }
     },
     {
-      "index": 152,
+      "index": 144,
       "kind": "phrase",
       "text": "Hai lasciato la mancia?",
       "gloss": {
@@ -2540,7 +2408,7 @@
       }
     },
     {
-      "index": 153,
+      "index": 145,
       "kind": "phrase",
       "text": "Febbraio ha solo 28 giorni.",
       "gloss": {
@@ -2557,7 +2425,7 @@
       }
     },
     {
-      "index": 154,
+      "index": 146,
       "kind": "phrase",
       "text": "Sono un ragazzo timido.",
       "gloss": {
@@ -2573,7 +2441,7 @@
       }
     },
     {
-      "index": 155,
+      "index": 147,
       "kind": "phrase",
       "text": "Lui è disperatamente romantico.",
       "gloss": {
@@ -2589,7 +2457,7 @@
       }
     },
     {
-      "index": 156,
+      "index": 148,
       "kind": "phrase",
       "text": "Mi piacciono le lingue.",
       "gloss": {
@@ -2605,7 +2473,7 @@
       }
     },
     {
-      "index": 157,
+      "index": 149,
       "kind": "phrase",
       "text": "Lui parla cinque lingue.",
       "gloss": {
@@ -2621,23 +2489,7 @@
       }
     },
     {
-      "index": 158,
-      "kind": "phrase",
-      "text": "Hitler odiava gli ebrei.",
-      "gloss": {
-        "en": "Hitler hated the Jews.",
-        "tr": "Hitler Yahudilerden nefret ediyordu.",
-        "de": "Hitler hasste die Juden.",
-        "fr": "Hitler détestait les Juifs.",
-        "ar": "هتلر كره اليهود."
-      },
-      "freqRank": 163,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 159,
+      "index": 150,
       "kind": "phrase",
       "text": "Non dimenticherò mai Tom.",
       "gloss": {
@@ -2653,7 +2505,7 @@
       }
     },
     {
-      "index": 160,
+      "index": 151,
       "kind": "phrase",
       "text": "Papà è impaziente oggi.",
       "gloss": {
@@ -2669,7 +2521,7 @@
       }
     },
     {
-      "index": 161,
+      "index": 152,
       "kind": "phrase",
       "text": "Tony studia dopo cena?",
       "gloss": {
@@ -2685,7 +2537,7 @@
       }
     },
     {
-      "index": 162,
+      "index": 153,
       "kind": "phrase",
       "text": "I conigli sanno nuotare.",
       "gloss": {
@@ -2701,7 +2553,7 @@
       }
     },
     {
-      "index": 163,
+      "index": 154,
       "kind": "phrase",
       "text": "Amo i musicisti rock.",
       "gloss": {
@@ -2717,7 +2569,7 @@
       }
     },
     {
-      "index": 164,
+      "index": 155,
       "kind": "phrase",
       "text": "I pomodori sono rossi.",
       "gloss": {
@@ -2733,7 +2585,7 @@
       }
     },
     {
-      "index": 165,
+      "index": 156,
       "kind": "phrase",
       "text": "La mia coscienza è pulita.",
       "gloss": {
@@ -2750,7 +2602,7 @@
       }
     },
     {
-      "index": 166,
+      "index": 157,
       "kind": "phrase",
       "text": "Grazie per la tua spiegazione.",
       "gloss": {
@@ -2766,7 +2618,7 @@
       }
     },
     {
-      "index": 167,
+      "index": 158,
       "kind": "phrase",
       "text": "Guardare la televisione è divertente.",
       "gloss": {
@@ -2782,7 +2634,7 @@
       }
     },
     {
-      "index": 168,
+      "index": 159,
       "kind": "phrase",
       "text": "Mi piace guardare la televisione.",
       "gloss": {
@@ -2798,7 +2650,7 @@
       }
     },
     {
-      "index": 169,
+      "index": 160,
       "kind": "phrase",
       "text": "Non sapevo da dove venisse.",
       "gloss": {
@@ -2814,7 +2666,7 @@
       }
     },
     {
-      "index": 170,
+      "index": 161,
       "kind": "phrase",
       "text": "Gli uccelli non hanno denti.",
       "gloss": {
@@ -2830,7 +2682,7 @@
       }
     },
     {
-      "index": 171,
+      "index": 162,
       "kind": "phrase",
       "text": "Dodici è un numero pari.",
       "gloss": {
@@ -2847,7 +2699,7 @@
       }
     },
     {
-      "index": 172,
+      "index": 163,
       "kind": "phrase",
       "text": "Mi piace mangiare il cioccolato.",
       "gloss": {
@@ -2864,7 +2716,7 @@
       }
     },
     {
-      "index": 173,
+      "index": 164,
       "kind": "phrase",
       "text": "È la mia canzone preferita.",
       "gloss": {
@@ -2881,26 +2733,7 @@
       }
     },
     {
-      "index": 174,
-      "kind": "phrase",
-      "text": "La proprietà è un furto.",
-      "gloss": {
-        "en": "Property is theft.",
-        "tr": "Mülkiyet hırsızlıktır.",
-        "de": "Eigentum ist Diebstahl.",
-        "es": "La propiedad es un robo.",
-        "fr": "La propriété, c'est le vol.",
-        "pt-BR": "A propriedade é um roubo.",
-        "ru": "Собственность есть кража.",
-        "ar": "الملكية سرقة."
-      },
-      "freqRank": 179,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 175,
+      "index": 165,
       "kind": "phrase",
       "text": "Questa non è una frase.",
       "gloss": {
@@ -2916,7 +2749,7 @@
       }
     },
     {
-      "index": 176,
+      "index": 166,
       "kind": "phrase",
       "text": "Come si dice in russo?",
       "gloss": {
@@ -2932,7 +2765,7 @@
       }
     },
     {
-      "index": 177,
+      "index": 167,
       "kind": "phrase",
       "text": "Viviamo in una bella città.",
       "gloss": {
@@ -2950,7 +2783,7 @@
       }
     },
     {
-      "index": 178,
+      "index": 168,
       "kind": "phrase",
       "text": "La mia valigia è rotta.",
       "gloss": {
@@ -2966,7 +2799,7 @@
       }
     },
     {
-      "index": 179,
+      "index": 169,
       "kind": "phrase",
       "text": "I pesci vivono nel mare.",
       "gloss": {
@@ -2982,7 +2815,7 @@
       }
     },
     {
-      "index": 180,
+      "index": 170,
       "kind": "phrase",
       "text": "Tom è un uomo simpatico.",
       "gloss": {
@@ -2998,7 +2831,7 @@
       }
     },
     {
-      "index": 181,
+      "index": 171,
       "kind": "phrase",
       "text": "I gatti neri sono belli.",
       "gloss": {
@@ -3014,7 +2847,7 @@
       }
     },
     {
-      "index": 182,
+      "index": 172,
       "kind": "phrase",
       "text": "Mi piacciono i gatti neri.",
       "gloss": {
@@ -3031,7 +2864,7 @@
       }
     },
     {
-      "index": 183,
+      "index": 173,
       "kind": "phrase",
       "text": "Vuoi un succo di frutta?",
       "gloss": {
@@ -3047,7 +2880,7 @@
       }
     },
     {
-      "index": 184,
+      "index": 174,
       "kind": "phrase",
       "text": "Tutto è pronto per venerdì.",
       "gloss": {
@@ -3063,7 +2896,7 @@
       }
     },
     {
-      "index": 185,
+      "index": 175,
       "kind": "phrase",
       "text": "Questa ragazza viene dal Giappone.",
       "gloss": {
@@ -3079,7 +2912,7 @@
       }
     },
     {
-      "index": 186,
+      "index": 176,
       "kind": "phrase",
       "text": "Roma è una città antica.",
       "gloss": {
@@ -3095,7 +2928,7 @@
       }
     },
     {
-      "index": 187,
+      "index": 177,
       "kind": "phrase",
       "text": "Ho comprato una cravatta rossa.",
       "gloss": {
@@ -3111,7 +2944,7 @@
       }
     },
     {
-      "index": 188,
+      "index": 178,
       "kind": "phrase",
       "text": "Mia nonna abita in campagna.",
       "gloss": {
@@ -3127,7 +2960,7 @@
       }
     },
     {
-      "index": 189,
+      "index": 179,
       "kind": "phrase",
       "text": "I gatti sono animali sociali.",
       "gloss": {
@@ -3143,7 +2976,7 @@
       }
     },
     {
-      "index": 190,
+      "index": 180,
       "kind": "phrase",
       "text": "Di chi è questa chitarra?",
       "gloss": {
@@ -3159,7 +2992,7 @@
       }
     },
     {
-      "index": 191,
+      "index": 181,
       "kind": "phrase",
       "text": "Mio fratello suona la chitarra.",
       "gloss": {
@@ -3175,7 +3008,7 @@
       }
     },
     {
-      "index": 192,
+      "index": 182,
       "kind": "phrase",
       "text": "Ho perso il mio portafoglio.",
       "gloss": {
@@ -3191,7 +3024,7 @@
       }
     },
     {
-      "index": 193,
+      "index": 183,
       "kind": "phrase",
       "text": "Sono le undici e mezza.",
       "gloss": {
@@ -3207,7 +3040,7 @@
       }
     },
     {
-      "index": 194,
+      "index": 184,
       "kind": "phrase",
       "text": "Il ragazzo compra un cane.",
       "gloss": {
@@ -3223,25 +3056,7 @@
       }
     },
     {
-      "index": 195,
-      "kind": "phrase",
-      "text": "Sono un genio molto stabile.",
-      "gloss": {
-        "en": "I'm a very stable genius.",
-        "tr": "Ben çok dengeli bir dâhiyim.",
-        "de": "Ich bin ein sehr stabiles Genie.",
-        "es": "Soy un genio muy estable.",
-        "fr": "Je suis un génie très stable.",
-        "pt-BR": "Sou um gênio muito estável.",
-        "ar": "أنا عبقري مستقر جدا عقليا."
-      },
-      "freqRank": 199,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 196,
+      "index": 185,
       "kind": "phrase",
       "text": "Un dollaro vale cento centesimi.",
       "gloss": {
@@ -3257,7 +3072,7 @@
       }
     },
     {
-      "index": 197,
+      "index": 186,
       "kind": "phrase",
       "text": "Non so la sua password.",
       "gloss": {
@@ -3276,7 +3091,7 @@
       }
     },
     {
-      "index": 198,
+      "index": 187,
       "kind": "phrase",
       "text": "Ieri ho mangiato una mela.",
       "gloss": {
@@ -3292,7 +3107,7 @@
       }
     },
     {
-      "index": 199,
+      "index": 188,
       "kind": "phrase",
       "text": "Mi ha dato una mela.",
       "gloss": {
@@ -3309,7 +3124,7 @@
       }
     },
     {
-      "index": 200,
+      "index": 189,
       "kind": "phrase",
       "text": "Mosca è una città russa.",
       "gloss": {
@@ -3326,7 +3141,7 @@
       }
     },
     {
-      "index": 201,
+      "index": 190,
       "kind": "phrase",
       "text": "Questa frase contiene cinque parole.",
       "gloss": {
@@ -3344,7 +3159,7 @@
       }
     },
     {
-      "index": 202,
+      "index": 191,
       "kind": "phrase",
       "text": "Mario è un cittadino italiano.",
       "gloss": {
@@ -3360,7 +3175,7 @@
       }
     },
     {
-      "index": 203,
+      "index": 192,
       "kind": "phrase",
       "text": "Bill sa andare in bicicletta.",
       "gloss": {
@@ -3377,7 +3192,7 @@
       }
     },
     {
-      "index": 204,
+      "index": 193,
       "kind": "phrase",
       "text": "La sua bicicletta è blu.",
       "gloss": {
@@ -3393,23 +3208,7 @@
       }
     },
     {
-      "index": 205,
-      "kind": "phrase",
-      "text": "Vi devo confessare che russo.",
-      "gloss": {
-        "en": "I must admit that I snore.",
-        "de": "Ich muss zugeben, dass ich schnarche.",
-        "es": "Debo admitir que ronco...",
-        "fr": "Je dois vous avouer que je ronfle...",
-        "ru": "Я должен признаться, что храплю."
-      },
-      "freqRank": 210,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 206,
+      "index": 194,
       "kind": "phrase",
       "text": "Perché le piante sono verdi?",
       "gloss": {
@@ -3427,7 +3226,7 @@
       }
     },
     {
-      "index": 207,
+      "index": 195,
       "kind": "phrase",
       "text": "La sua risposta era logica.",
       "gloss": {
@@ -3443,7 +3242,7 @@
       }
     },
     {
-      "index": 208,
+      "index": 196,
       "kind": "phrase",
       "text": "Sono bellissimi tutti e quattro.",
       "gloss": {
@@ -3460,7 +3259,7 @@
       }
     },
     {
-      "index": 209,
+      "index": 197,
       "kind": "phrase",
       "text": "Mio fratello vive a Tokyo.",
       "gloss": {
@@ -3477,7 +3276,7 @@
       }
     },
     {
-      "index": 210,
+      "index": 198,
       "kind": "phrase",
       "text": "Mi piacciono le rose rosse.",
       "gloss": {
@@ -3494,7 +3293,7 @@
       }
     },
     {
-      "index": 211,
+      "index": 199,
       "kind": "phrase",
       "text": "Lei è una giovane studentessa.",
       "gloss": {
@@ -3511,7 +3310,7 @@
       }
     },
     {
-      "index": 212,
+      "index": 200,
       "kind": "phrase",
       "text": "Non gli piace il tennis.",
       "gloss": {
@@ -3527,7 +3326,7 @@
       }
     },
     {
-      "index": 213,
+      "index": 201,
       "kind": "phrase",
       "text": "Vado a giocare a tennis.",
       "gloss": {
@@ -3543,7 +3342,7 @@
       }
     },
     {
-      "index": 214,
+      "index": 202,
       "kind": "phrase",
       "text": "Tom è bravo a scacchi.",
       "gloss": {
@@ -3559,7 +3358,7 @@
       }
     },
     {
-      "index": 215,
+      "index": 203,
       "kind": "phrase",
       "text": "Mio padre ascolta musica classica.",
       "gloss": {
@@ -3575,7 +3374,7 @@
       }
     },
     {
-      "index": 216,
+      "index": 204,
       "kind": "phrase",
       "text": "Le monete sono di metallo.",
       "gloss": {
@@ -3592,7 +3391,7 @@
       }
     },
     {
-      "index": 217,
+      "index": 205,
       "kind": "phrase",
       "text": "Un cane ha quattro zampe.",
       "gloss": {
@@ -3608,55 +3407,24 @@
       }
     },
     {
-      "index": 218,
+      "index": 206,
       "kind": "phrase",
       "text": "Il mio nome è Sasha.",
       "gloss": {
         "en": "My name is Sasha.",
-        "tr": "Benim adım Saşa.",
+        "tr": "Benim adım Sasha.",
         "es": "Mi nombre es Sasha.",
         "fr": "Mon nom est Sasha.",
         "pt-BR": "Meu nome é Sasha."
       },
       "freqRank": 223,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 219,
-      "kind": "phrase",
-      "text": "Natura non rompe sua legge.",
-      "gloss": {
-        "en": "Nature never breaks her own laws.",
-        "de": "Die Natur bricht niemals ihre Gesetze.",
-        "es": "La naturaleza nunca rompe sus propias leyes.",
-        "fr": "La nature ne brise jamais ses propres lois.",
-        "pt-BR": "A natureza nunca quebra suas próprias leis."
-      },
-      "freqRank": 224,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 220,
-      "kind": "phrase",
-      "text": "Il mio nome è Luis.",
-      "gloss": {
-        "en": "My name is Luis.",
-        "de": "Mein Name ist Luis.",
-        "es": "Mi nombre es Luis.",
-        "fr": "Mon nom est Luis.",
-        "pt-BR": "Meu nome é Luís."
-      },
-      "freqRank": 225,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 221,
+      "index": 207,
       "kind": "phrase",
       "text": "Questo è un momento storico.",
       "gloss": {
@@ -3672,7 +3440,23 @@
       }
     },
     {
-      "index": 222,
+      "index": 208,
+      "kind": "phrase",
+      "text": "Il mio nome è Luis.",
+      "gloss": {
+        "en": "My name is Luis.",
+        "de": "Mein Name ist Luis.",
+        "es": "Mi nombre es Luis.",
+        "fr": "Mon nom est Luis.",
+        "pt-BR": "Meu nome é Luís."
+      },
+      "freqRank": 225,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 209,
       "kind": "phrase",
       "text": "Berlino è una città tedesca.",
       "gloss": {
@@ -3688,7 +3472,7 @@
       }
     },
     {
-      "index": 223,
+      "index": 210,
       "kind": "phrase",
       "text": "Questo per me è arabo.",
       "gloss": {
@@ -3704,7 +3488,7 @@
       }
     },
     {
-      "index": 224,
+      "index": 211,
       "kind": "phrase",
       "text": "Il dolore era quasi insopportabile.",
       "gloss": {
@@ -3720,23 +3504,7 @@
       }
     },
     {
-      "index": 225,
-      "kind": "phrase",
-      "text": "Ogni cosa inventata è vera.",
-      "gloss": {
-        "en": "All that which is invented, is true.",
-        "de": "Alles Erfundene ist wahr.",
-        "es": "Todo lo que es inventado es verdadero.",
-        "fr": "Tout ce qui est inventé est vrai.",
-        "ru": "Всё то, что было изобретено, правильно."
-      },
-      "freqRank": 230,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 226,
+      "index": 212,
       "kind": "phrase",
       "text": "Le tue mani sono pulite?",
       "gloss": {
@@ -3752,7 +3520,7 @@
       }
     },
     {
-      "index": 227,
+      "index": 213,
       "kind": "phrase",
       "text": "Nuoto una volta a settimana.",
       "gloss": {
@@ -3768,7 +3536,7 @@
       }
     },
     {
-      "index": 228,
+      "index": 214,
       "kind": "phrase",
       "text": "Hai mai visto una balena?",
       "gloss": {
@@ -3784,7 +3552,7 @@
       }
     },
     {
-      "index": 229,
+      "index": 215,
       "kind": "phrase",
       "text": "Bill ha molte idee originali.",
       "gloss": {
@@ -3800,7 +3568,7 @@
       }
     },
     {
-      "index": 230,
+      "index": 216,
       "kind": "phrase",
       "text": "Il film è durato 2 ore.",
       "gloss": {
@@ -3816,7 +3584,7 @@
       }
     },
     {
-      "index": 231,
+      "index": 217,
       "kind": "phrase",
       "text": "Corro due volte a settimana.",
       "gloss": {
@@ -3832,7 +3600,7 @@
       }
     },
     {
-      "index": 232,
+      "index": 218,
       "kind": "phrase",
       "text": "La vita è molto corta.",
       "gloss": {
@@ -3848,7 +3616,7 @@
       }
     },
     {
-      "index": 233,
+      "index": 219,
       "kind": "phrase",
       "text": "Ti consiglio di smettere di fumare.",
       "gloss": {
@@ -3864,7 +3632,7 @@
       }
     },
     {
-      "index": 234,
+      "index": 220,
       "kind": "phrase",
       "text": "Come si dice \"formaggio\" in tedesco?",
       "gloss": {
@@ -3880,7 +3648,7 @@
       }
     },
     {
-      "index": 235,
+      "index": 221,
       "kind": "phrase",
       "text": "Ho passato dodici ore in treno.",
       "gloss": {
@@ -3896,7 +3664,7 @@
       }
     },
     {
-      "index": 236,
+      "index": 222,
       "kind": "phrase",
       "text": "Mi piace il gelato al cioccolato.",
       "gloss": {
@@ -3912,7 +3680,7 @@
       }
     },
     {
-      "index": 237,
+      "index": 223,
       "kind": "phrase",
       "text": "Tom non canta mai in pubblico.",
       "gloss": {
@@ -3928,7 +3696,7 @@
       }
     },
     {
-      "index": 238,
+      "index": 224,
       "kind": "phrase",
       "text": "Tutte le strade portano a Roma.",
       "gloss": {
@@ -3946,7 +3714,7 @@
       }
     },
     {
-      "index": 239,
+      "index": 225,
       "kind": "phrase",
       "text": "Questa terra è la mia proprietà.",
       "gloss": {
@@ -3963,7 +3731,7 @@
       }
     },
     {
-      "index": 240,
+      "index": 226,
       "kind": "phrase",
       "text": "Vengo da una famiglia di dottori.",
       "gloss": {
@@ -3979,7 +3747,7 @@
       }
     },
     {
-      "index": 241,
+      "index": 227,
       "kind": "phrase",
       "text": "Anche le donne sono esseri umani.",
       "gloss": {
@@ -3996,7 +3764,7 @@
       }
     },
     {
-      "index": 242,
+      "index": 228,
       "kind": "phrase",
       "text": "Abbiamo giocato secondo le nuove regole.",
       "gloss": {
@@ -4012,7 +3780,7 @@
       }
     },
     {
-      "index": 243,
+      "index": 229,
       "kind": "phrase",
       "text": "Ha un figlio e due figlie.",
       "gloss": {
@@ -4028,7 +3796,7 @@
       }
     },
     {
-      "index": 244,
+      "index": 230,
       "kind": "phrase",
       "text": "Tom ha un amico a Boston.",
       "gloss": {
@@ -4044,7 +3812,7 @@
       }
     },
     {
-      "index": 245,
+      "index": 231,
       "kind": "phrase",
       "text": "Il suo tappeto è completamente bianco.",
       "gloss": {
@@ -4060,39 +3828,7 @@
       }
     },
     {
-      "index": 246,
-      "kind": "phrase",
-      "text": "I veri ebrei sono gli ebrei.",
-      "gloss": {
-        "en": "The real Jews are the Jews.",
-        "de": "Die wahren Juden sind die Juden.",
-        "es": "Los verdaderos judíos son los judíos.",
-        "fr": "Les vrais Juifs sont les Juifs.",
-        "ar": "اليهود الحقيقي هو اليهود."
-      },
-      "freqRank": 251,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 247,
-      "kind": "phrase",
-      "text": "Il serpente è vivo o morto?",
-      "gloss": {
-        "en": "Is the snake alive or dead?",
-        "de": "Ist die Schlange lebendig oder tot?",
-        "es": "¿La serpiente está viva o muerta?",
-        "fr": "Le serpent est-il vivant ou mort ?",
-        "ru": "Эта змея живая или мёртвая?"
-      },
-      "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 248,
+      "index": 232,
       "kind": "phrase",
       "text": "Ho un cane e due gatti.",
       "gloss": {
@@ -4109,7 +3845,23 @@
       }
     },
     {
-      "index": 249,
+      "index": 233,
+      "kind": "phrase",
+      "text": "Il serpente è vivo o morto?",
+      "gloss": {
+        "en": "Is the snake alive or dead?",
+        "de": "Ist die Schlange lebendig oder tot?",
+        "es": "¿La serpiente está viva o muerta?",
+        "fr": "Le serpent est-il vivant ou mort ?",
+        "ru": "Эта змея живая или мёртвая?"
+      },
+      "freqRank": 252,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 234,
       "kind": "phrase",
       "text": "Non tutti i gatti sono neri.",
       "gloss": {
@@ -4125,7 +3877,7 @@
       }
     },
     {
-      "index": 250,
+      "index": 235,
       "kind": "phrase",
       "text": "Gli piace il pane col burro.",
       "gloss": {
@@ -4141,7 +3893,7 @@
       }
     },
     {
-      "index": 251,
+      "index": 236,
       "kind": "phrase",
       "text": "Come si dice questo in italiano?",
       "gloss": {
@@ -4157,7 +3909,7 @@
       }
     },
     {
-      "index": 252,
+      "index": 237,
       "kind": "phrase",
       "text": "Il Giappone è un bel paese.",
       "gloss": {
@@ -4173,7 +3925,7 @@
       }
     },
     {
-      "index": 253,
+      "index": 238,
       "kind": "phrase",
       "text": "Lui non sa molto del Giappone.",
       "gloss": {
@@ -4189,7 +3941,7 @@
       }
     },
     {
-      "index": 254,
+      "index": 239,
       "kind": "phrase",
       "text": "Il Giappone è un paese ricco.",
       "gloss": {
@@ -4206,7 +3958,7 @@
       }
     },
     {
-      "index": 255,
+      "index": 240,
       "kind": "phrase",
       "text": "Mi piacerebbe tanto andare in Giappone.",
       "gloss": {
@@ -4223,7 +3975,7 @@
       }
     },
     {
-      "index": 256,
+      "index": 241,
       "kind": "phrase",
       "text": "Mary ha un fiore in mano.",
       "gloss": {
@@ -4239,7 +3991,7 @@
       }
     },
     {
-      "index": 257,
+      "index": 242,
       "kind": "phrase",
       "text": "Mi piacerebbe nuotare in questo fiume.",
       "gloss": {
@@ -4255,7 +4007,7 @@
       }
     },
     {
-      "index": 258,
+      "index": 243,
       "kind": "phrase",
       "text": "Il bambino sta mangiando del pane.",
       "gloss": {
@@ -4272,7 +4024,7 @@
       }
     },
     {
-      "index": 259,
+      "index": 244,
       "kind": "phrase",
       "text": "Mio zio abita vicino alla scuola.",
       "gloss": {
@@ -4288,7 +4040,7 @@
       }
     },
     {
-      "index": 260,
+      "index": 245,
       "kind": "phrase",
       "text": "So chi abita in questa casa.",
       "gloss": {
@@ -4305,7 +4057,7 @@
       }
     },
     {
-      "index": 261,
+      "index": 246,
       "kind": "phrase",
       "text": "John non sa suonare la chitarra.",
       "gloss": {
@@ -4321,7 +4073,7 @@
       }
     },
     {
-      "index": 262,
+      "index": 247,
       "kind": "phrase",
       "text": "Questa è la bandiera del Giappone.",
       "gloss": {
@@ -4337,7 +4089,7 @@
       }
     },
     {
-      "index": 263,
+      "index": 248,
       "kind": "phrase",
       "text": "Roma è la capitale del mondo.",
       "gloss": {
@@ -4354,7 +4106,7 @@
       }
     },
     {
-      "index": 264,
+      "index": 249,
       "kind": "phrase",
       "text": "Jane preferisce i cani ai gatti.",
       "gloss": {
@@ -4370,7 +4122,7 @@
       }
     },
     {
-      "index": 265,
+      "index": 250,
       "kind": "phrase",
       "text": "Chi è il tuo cantante preferito?",
       "gloss": {
@@ -4386,7 +4138,7 @@
       }
     },
     {
-      "index": 266,
+      "index": 251,
       "kind": "phrase",
       "text": "Berlino è la capitale della Germania.",
       "gloss": {
@@ -4402,7 +4154,7 @@
       }
     },
     {
-      "index": 267,
+      "index": 252,
       "kind": "phrase",
       "text": "Questa frase contiene esattamente sei parole.",
       "gloss": {
@@ -4419,7 +4171,7 @@
       }
     },
     {
-      "index": 268,
+      "index": 253,
       "kind": "phrase",
       "text": "Ci sono molti animali nello zoo?",
       "gloss": {
@@ -4435,7 +4187,7 @@
       }
     },
     {
-      "index": 269,
+      "index": 254,
       "kind": "phrase",
       "text": "In quel momento ero in Canada.",
       "gloss": {
@@ -4451,7 +4203,7 @@
       }
     },
     {
-      "index": 270,
+      "index": 255,
       "kind": "phrase",
       "text": "Sappiamo che è nata in Canada.",
       "gloss": {
@@ -4467,7 +4219,7 @@
       }
     },
     {
-      "index": 271,
+      "index": 256,
       "kind": "phrase",
       "text": "Hanno bevuto due bottiglie di vino.",
       "gloss": {
@@ -4484,7 +4236,7 @@
       }
     },
     {
-      "index": 272,
+      "index": 257,
       "kind": "phrase",
       "text": "In agosto non ci sono lezioni.",
       "gloss": {
@@ -4500,7 +4252,7 @@
       }
     },
     {
-      "index": 273,
+      "index": 258,
       "kind": "phrase",
       "text": "La fine del mondo dovrà attendere.",
       "gloss": {
@@ -4516,7 +4268,7 @@
       }
     },
     {
-      "index": 274,
+      "index": 259,
       "kind": "phrase",
       "text": "Sono entrambi bravi giocatori di scacchi.",
       "gloss": {
@@ -4532,7 +4284,7 @@
       }
     },
     {
-      "index": 275,
+      "index": 260,
       "kind": "phrase",
       "text": "Come si dice \"ragno\" in tedesco?",
       "gloss": {
@@ -4548,7 +4300,7 @@
       }
     },
     {
-      "index": 276,
+      "index": 261,
       "kind": "phrase",
       "text": "La volpe è un animale selvaggio.",
       "gloss": {
@@ -4565,7 +4317,7 @@
       }
     },
     {
-      "index": 277,
+      "index": 262,
       "kind": "phrase",
       "text": "Marilyn Monroe è morta 33 anni fa.",
       "gloss": {
@@ -4581,7 +4333,7 @@
       }
     },
     {
-      "index": 278,
+      "index": 263,
       "kind": "phrase",
       "text": "Quante lingue ci sono in Europa?",
       "gloss": {
@@ -4597,7 +4349,7 @@
       }
     },
     {
-      "index": 279,
+      "index": 264,
       "kind": "phrase",
       "text": "È un lupo vestito da agnello.",
       "gloss": {
@@ -4614,7 +4366,7 @@
       }
     },
     {
-      "index": 280,
+      "index": 265,
       "kind": "phrase",
       "text": "Quante lingue ci sono nel mondo?",
       "gloss": {
@@ -4630,7 +4382,7 @@
       }
     },
     {
-      "index": 281,
+      "index": 266,
       "kind": "phrase",
       "text": "Il turco è una lingua difficile.",
       "gloss": {
@@ -4647,7 +4399,7 @@
       }
     },
     {
-      "index": 282,
+      "index": 267,
       "kind": "phrase",
       "text": "La colazione è inclusa nel prezzo?",
       "gloss": {
@@ -4664,7 +4416,7 @@
       }
     },
     {
-      "index": 283,
+      "index": 268,
       "kind": "phrase",
       "text": "Il russo è molto difficile da imparare.",
       "gloss": {
@@ -4681,7 +4433,7 @@
       }
     },
     {
-      "index": 284,
+      "index": 269,
       "kind": "phrase",
       "text": "La mia lingua madre è il giapponese.",
       "gloss": {
@@ -4698,7 +4450,7 @@
       }
     },
     {
-      "index": 285,
+      "index": 270,
       "kind": "phrase",
       "text": "Mio padre ci ha portati allo zoo.",
       "gloss": {
@@ -4715,7 +4467,7 @@
       }
     },
     {
-      "index": 286,
+      "index": 271,
       "kind": "phrase",
       "text": "La Cina è più grande del Giappone.",
       "gloss": {
@@ -4732,7 +4484,7 @@
       }
     },
     {
-      "index": 287,
+      "index": 272,
       "kind": "phrase",
       "text": "Il Canada è più grande del Giappone.",
       "gloss": {
@@ -4749,24 +4501,7 @@
       }
     },
     {
-      "index": 288,
-      "kind": "phrase",
-      "text": "E Dio vide che questo era buono.",
-      "gloss": {
-        "en": "And God saw that it was good.",
-        "de": "Und Gott sah, dass es gut war.",
-        "es": "Y Dios vio que era bueno.",
-        "fr": "Et Dieu vit que cela était bon.",
-        "pt-BR": "E viu Deus que isso era bom.",
-        "ru": "И увидел Бог, что это хорошо."
-      },
-      "freqRank": 293,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 289,
+      "index": 273,
       "kind": "phrase",
       "text": "Si è perso nella nebbia dei ricordi.",
       "gloss": {
@@ -4783,24 +4518,7 @@
       }
     },
     {
-      "index": 290,
-      "kind": "phrase",
-      "text": "Lunedì, martedì, mercoledì, giovedì, venerdì, sabato, domenica.",
-      "gloss": {
-        "en": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.",
-        "tr": "Pazartesi, salı, çarşamba, perşembe, cuma, cumartesi, pazar.",
-        "de": "Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag, Sonntag.",
-        "es": "Lunes, martes, miércoles, jueves, viernes, sábado, domingo.",
-        "fr": "Lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche.",
-        "ru": "Понедельник, вторник, среда, четверг, пятница, суббота, воскресенье."
-      },
-      "freqRank": 295,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 291,
+      "index": 274,
       "kind": "phrase",
       "text": "Dove si trova la farmacia più vicina?",
       "gloss": {
@@ -4817,7 +4535,7 @@
       }
     },
     {
-      "index": 292,
+      "index": 275,
       "kind": "phrase",
       "text": "Domenica, lunedì, martedì, mercoledì, giovedì, venerdì e sabato.",
       "gloss": {
@@ -4837,7 +4555,7 @@
       }
     },
     {
-      "index": 293,
+      "index": 276,
       "kind": "phrase",
       "text": "Ma sono pericolose per la salute queste cose?",
       "gloss": {
@@ -4855,7 +4573,7 @@
       }
     },
     {
-      "index": 294,
+      "index": 277,
       "kind": "phrase",
       "text": "La bandiera italiana è verde, bianca e rossa.",
       "gloss": {
@@ -4872,7 +4590,7 @@
       }
     },
     {
-      "index": 295,
+      "index": 278,
       "kind": "phrase",
       "text": "George mi ha mandato una cartolina di compleanno.",
       "gloss": {
