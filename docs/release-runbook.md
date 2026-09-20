@@ -973,11 +973,13 @@ to be checked on a device before the submission rather than after.
 ## Location changes both privacy forms
 
 Nearby (Polyglot) added the app's first location permission, so two answers that
-were "no" are now "yes", and a store form that still says otherwise is a false
-declaration rather than a stale one. The box-by-box version of everything below,
-including two answers that are already live and wrong, is
-[`store/privacy-forms-checklist.md`](store/privacy-forms-checklist.md) — open it
-next to the Console rather than working from this section:
+were "no" had to become "yes". **Both consoles were read back box by box on
+20 September 2026 and already carry every answer below**, so this section is now
+a record rather than a task; the sentence that used to stand here, calling two
+live answers false, was itself out of date. The box-by-box version is
+[`store/privacy-forms-checklist.md`](store/privacy-forms-checklist.md), which
+notes which answers were verified and the one that deliberately reads "no".
+Open it next to the Console rather than trusting either page:
 
 - [ ] Play Data Safety → **Location → Approximate location**: collected, not
       shared, optional, purpose "App functionality". **Precise location stays

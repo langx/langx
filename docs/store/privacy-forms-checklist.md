@@ -6,32 +6,46 @@ answer is in [`privacy-data-safety.md`](privacy-data-safety.md); this file only
 says which box to tick. If the two disagree, `privacy-data-safety.md` is the
 source and this page is stale.
 
-Four things need to change in the same sitting. Two of them are corrections to
-answers that are already live and wrong; the third is the new location
-permission; the fourth is analytics, which the app did not have when this page
-was first written.
+**Both forms were read back box by box on 20 September 2026 and already match
+this page.** Nothing was changed; the boxes below are ticked as a record of
+what the consoles actually say, not as a plan. The paragraph that used to open
+this file — and the _Location changes both privacy forms_ section of
+`release-runbook.md`, which says two live answers are wrong — described the
+state before someone transcribed it. Read the consoles before believing either
+of them again.
+
+One answer deliberately reads "no", and it is the one this page states most
+loosely. Play asks whether users can request that **some or all of their data
+be deleted _without deleting their account_**. There is no such path: the app
+offers account deletion, which is declared separately through the **Delete
+account URL** (`https://langx.io/data-deletion`, already set), and that is what
+puts the deletion line on the store listing. Answering yes would claim a
+mechanism that does not exist.
 
 ## 1. Play Data Safety — corrections to what is live today
 
 Read off the published Data safety page on 31 August 2026 and compared against
 HelloTalk, Tandem and Hilokal.
 
-- [ ] **Personal info → Race and ethnicity: uncheck.** Nothing in the app asks
+- [x] **Personal info → Race and ethnicity: uncheck.** Nothing in the app asks
       for it and nothing stores it — the profile holds gender, date of birth,
       country, city and languages. None of the three comparable apps declares
       it. Declaring data we do not collect is as wrong as omitting data we do.
-- [ ] **Security practices → "You can request that data be deleted": check.**
-      It is implemented — Settings → "Hesabımı sil" hides the account
-      immediately and purges it after 30 days, photos included. LangX is
-      currently the only one of the four without this line, and the line is
-      true.
+- [~] **Security practices → "You can request that data be deleted".** Already
+  carried by the Delete account URL, which is set. The separate Play
+  question about deleting data _without_ deleting the account correctly
+  reads "no" — see the note at the top of this page.
+  It is implemented — Settings → "Hesabımı sil" hides the account
+  immediately and purges it after 30 days, photos included. LangX is
+  currently the only one of the four without this line, and the line is
+  true.
 
 ## 2. Play Data Safety — the new location answers
 
 Nearby (Polyglot) added the app's first location permission, so two answers
 that were "no" are now "yes".
 
-- [ ] **Location → Approximate location: collected.**
+- [x] **Location → Approximate location: collected.**
   - Shared with third parties: **no**
   - Required or optional: **optional** — the user turns it on in Settings or
     from the Nearby tab's prompt; nothing writes it at sign-up or in the
@@ -39,7 +53,7 @@ that were "no" are now "yes".
   - Purpose: **App functionality** (only)
   - Processed ephemerally: **no** — it is stored on the profile until the user
     turns it off
-- [ ] **Location → Precise location: leave unchecked.** The client asks the OS
+- [x] **Location → Precise location: leave unchecked.** The client asks the OS
       for `Accuracy.Lowest` and the server rounds to two decimals (~1 km)
       before storing, so no precise value is ever written.
 - [ ] Everything else on the form stays as it is, except the analytics rows
@@ -47,11 +61,11 @@ that were "no" are now "yes".
 
 ## 3. Apple App Privacy — the same change
 
-- [ ] **Location → Coarse Location: collected.**
+- [x] **Location → Coarse Location: collected.**
   - Linked to the user: **yes**
   - Used for tracking: **no**
   - Purpose: **App Functionality** (only)
-- [ ] **Location → Precise Location: leave unchecked.**
+- [x] **Location → Precise Location: leave unchecked.**
 - [ ] **Tracking: stays "no".** No IDFA, no ad SDK, no data broker, nothing
       linked to other companies' data for advertising.
 
@@ -86,7 +100,7 @@ crash-log line below is worth re-reading rather than copying.
 
 ### Play Data Safety
 
-- [ ] **App activity → App interactions: collected.**
+- [x] **App activity → App interactions: collected.**
   - Shared with third parties: **no**
   - Required or optional: **optional** — Settings → Privacy → _Share usage
     data_
@@ -96,9 +110,9 @@ crash-log line below is worth re-reading rather than copying.
     category; what is recorded is which screens and taps, with all text and
     every image masked before the frame leaves the phone, so it belongs here
     and not under Messages or Photos.
-- [ ] **Device or other IDs: collected.** PostHog's own anonymous id before
+- [x] **Device or other IDs: collected.** PostHog's own anonymous id before
       sign-in, our account id after. Not shared, optional, purpose Analytics.
-- [ ] **App info and performance → Crash logs, Diagnostics: leave unchecked.**
+- [x] **App info and performance → Crash logs, Diagnostics: leave unchecked.**
       Error tracking is not enabled in the SDK. The native plugin that arrived
       with session replay _can_ capture native crashes; it is off
       (`errorTracking.autocapture` is unset), so this answer holds — but it is
@@ -107,15 +121,15 @@ crash-log line below is worth re-reading rather than copying.
 
 ### Apple App Privacy
 
-- [ ] **Usage Data → Product Interaction: collected.** Linked to the user:
+- [x] **Usage Data → Product Interaction: collected.** Linked to the user:
       **yes**. Used for tracking: **no**. Purpose: **Analytics** (only). The
       masked session recording is declared here: Apple's nearest categories are
       Product Interaction for behaviour and "Other Data" for anything else, and
       a recording in which all text and every image is masked on the device is
       behaviour. Nothing about it is linked to another company's data, so
       Tracking stays **no**.
-- [ ] **Identifiers → User ID: collected.** Linked, Analytics, not tracking.
-- [ ] **Identifiers → Device ID: collected.** Linked, Analytics, not tracking.
+- [x] **Identifiers → User ID: collected.** Linked, Analytics, not tracking.
+- [x] **Identifiers → Device ID: collected.** Linked, Analytics, not tracking.
       It is the SDK's random id, not IDFA — there is still no IDFA and no
       `NSUserTrackingUsageDescription`.
 - [ ] **Tracking: stays "no".** Nothing is linked to other companies' data and
