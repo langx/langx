@@ -33,7 +33,27 @@ import subprocess
 import sys
 from pathlib import Path
 
-VOICES = ("af_heart", "am_michael")
+# Mirrors `ECHO_SYNTH_VOICES` in `packages/shared/src/echoPacks.ts`, which is
+# the definition, and `LANGUAGES` in `apps/tts/server.py`, which is the other
+# copy; a test in `apps/api/src/modules/tts/speech.test.ts` keeps all three
+# equal. The left of each pair is what espeak-ng calls the language.
+#
+# **Kokoro's six, and no Piper.** Piper reads thirty-one more languages in the
+# service, German and Russian among them, and cannot be run here: its wheel
+# compiles its build machine's espeak data path into the extension, so the
+# first synthesis on a Mac dies in C. See `load_piper` in `apps/tts/server.py`.
+# A pack in a language Kokoro does not read therefore ships with no readings of
+# its own — the card's own "Read it aloud" still answers for it, through the
+# service, where Piper works.
+KOKORO = {
+    "en": ("en-us", ("af_heart", "am_michael")),
+    "es": ("es", ("ef_dora", "em_alex")),
+    "fr": ("fr-fr", ("ff_siwis",)),
+    "it": ("it", ("if_sara", "im_nicola")),
+    "pt": ("pt-br", ("pf_dora", "pm_alex")),
+    "hi": ("hi", ("hf_alpha", "hm_omega")),
+}
+
 ROOT = Path(__file__).resolve().parents[3]
 CONTENT = ROOT / "content" / "echo"
 
@@ -81,6 +101,11 @@ def main() -> int:
     made = skipped = 0
 
     for path, pack in packs():
+        spoken = KOKORO.get(pack["lang"])
+        if not spoken:
+            print(f"  {pack['id']}: no Kokoro voice for {pack['lang']}, left silent", flush=True)
+            continue
+        espeak, voices = spoken
         out = args.out / pack["id"].replace(":", "_")
         out.mkdir(parents=True, exist_ok=True)
         for item in pack["items"]:
@@ -89,15 +114,15 @@ def main() -> int:
             # `upload-echo-voices.ts` is what puts the bytes where this points.
             item["voices"] = [
                 {"key": voice_key(pack["id"], item["index"], voice), "voice": voice}
-                for voice in VOICES
+                for voice in voices
             ]
-            for voice in VOICES:
+            for voice in voices:
                 target = out / f"{item['index']}-{voice}.m4a"
                 if target.exists():
                     skipped += 1
                     continue
                 wav = target.with_suffix(".wav")
-                samples, rate = k.create(item["text"], voice=voice, speed=1.0, lang="en-us")
+                samples, rate = k.create(item["text"], voice=voice, speed=1.0, lang=espeak)
                 sf.write(wav, samples, rate)
                 # AAC rather than the WAV: a card is played on a phone, over a
                 # network somebody else is paying for.

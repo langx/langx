@@ -54,4 +54,36 @@ describe('the voice service and the tables it mirrors', () => {
       expect(manifest[lang]).toBeUndefined()
     }
   })
+
+  /**
+   * And the third copy: the offline generator that reads a pack before it
+   * ships. It runs on a laptop rather than in the container, so it is the one
+   * place where drift shows up as silence in a file somebody then uploads —
+   * a pack read in the wrong voice, or in the right voice phonemised as
+   * English, is not something the schema or the seed can notice.
+   */
+  it('generates pack readings in the same languages and voices', () => {
+    const source = readFileSync(join(TTS_DIR, '../../tools/echo-content/tts/generate.py'), 'utf8')
+    const table = source.slice(source.indexOf('KOKORO = {'), source.indexOf('\nROOT ='))
+    const rows = [...table.matchAll(/^ {4}"([a-z]{2})": \("([a-z-]+)", \(([^)]*)\)\),$/gm)]
+
+    const voices = Object.fromEntries(
+      rows.map((row) => [
+        row[1],
+        [...(row[3] ?? '').matchAll(/"([a-z_]+)"/g)].map((match) => match[1]),
+      ]),
+    )
+    expect(voices).toEqual(ECHO_SYNTH_VOICES)
+
+    // The espeak name beside each, against the service's own table.
+    const service = readFileSync(join(TTS_DIR, 'server.py'), 'utf8')
+    const said = Object.fromEntries(
+      [
+        ...service
+          .slice(service.indexOf('LANGUAGES = {'), service.indexOf('MAX_TEXT'))
+          .matchAll(/^ {4}"([a-z]{2})": \("([a-z-]+)"/gm),
+      ].map((match) => [match[1], match[2]]),
+    )
+    expect(Object.fromEntries(rows.map((row) => [row[1], row[2]]))).toEqual(said)
+  })
 })
