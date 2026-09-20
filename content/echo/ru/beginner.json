@@ -3909,11 +3909,12 @@
         "es": "Sí, Bob me ha ayudado.",
         "fr": "Oui, Bob m'a aidé.",
         "pt-BR": "Sim, Bob me ajudou.",
-        "ar": "أجل ، ساعدني بوب."
+        "ar": "أجل، ساعدني بوب."
       },
       "freqRank": 268,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {

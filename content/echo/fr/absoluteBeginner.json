@@ -36,7 +36,7 @@
         "tr": "nasılsın",
         "de": "wie geht es dir",
         "es": "cómo estás",
-        "pt-BR": "como (você) vai?",
+        "pt-BR": "como vai?",
         "ru": "как ты поживаешь",
         "ar": "كيف حالك"
       },
@@ -61,7 +61,8 @@
             "file": "LL-Q150 (fra)-Jérémy-Günther-Heinz Jähnick-ça va.wav",
             "tags": []
           }
-        ]
+        ],
+        "edited": ["pt-BR"]
       }
     },
     {
@@ -918,11 +919,12 @@
         "tr": "Ben senim.",
         "de": "Ich bin du.",
         "es": "Soy tú.",
-        "ru": "Я - это ты."
+        "ru": "Я — это ты."
       },
       "freqRank": 53,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -969,11 +971,12 @@
         "es": "¿Dónde estás?",
         "pt-BR": "Onde você está?",
         "ru": "Где ты?",
-        "ar": "أين أنت ؟"
+        "ar": "أين أنت؟"
       },
       "freqRank": 56,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4051,11 +4054,12 @@
         "es": "Él tiene un perro.",
         "pt-BR": "Ele tem um cachorro.",
         "ru": "У него есть собака.",
-        "ar": "لديه كلب ."
+        "ar": "لديه كلب."
       },
       "freqRank": 244,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4188,11 +4192,12 @@
         "es": "Sam, ¿qué estás haciendo?",
         "pt-BR": "Sam, o que você está fazendo?",
         "ru": "Сэм, что ты делаешь?",
-        "ar": "سام ، ماذا تفعل؟"
+        "ar": "سام، ماذا تفعل؟"
       },
       "freqRank": 252,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4529,12 +4534,13 @@
         "tr": "Dünya bir okuldur.",
         "de": "Die Welt ist eine Schule.",
         "es": "El mundo es una escuela.",
-        "ru": "Мир - это школа.",
+        "ru": "Мир — это школа.",
         "ar": "العالم مدرسة."
       },
       "freqRank": 272,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {

@@ -1657,11 +1657,12 @@
         "de": "Ich bin Chinese.",
         "es": "Soy chino.",
         "pt-BR": "Eu sou chinês.",
-        "ru": "Я - китаец."
+        "ru": "Я — китаец."
       },
       "freqRank": 112,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3868,11 +3869,12 @@
         "de": "Familie ist wichtig.",
         "es": "La familia es importante.",
         "pt-BR": "A família é importante.",
-        "ru": "Семья - это важно."
+        "ru": "Семья — это важно."
       },
       "freqRank": 248,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4296,12 +4298,13 @@
         "de": "Tiere sind unsere Freunde.",
         "es": "Los animales son nuestros amigos.",
         "pt-BR": "Os animais são nossos amigos.",
-        "ru": "Животные - наши друзья.",
+        "ru": "Животные — наши друзья.",
         "ar": "الحيوانات أصدقاؤنا."
       },
       "freqRank": 273,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4705,11 +4708,12 @@
         "de": "Diese Insel ist ein Kinderparadies.",
         "es": "Esa isla es un paraíso para los niños.",
         "pt-BR": "Esta ilha é um paraíso para as crianças.",
-        "ru": "Этот остров - рай для детей."
+        "ru": "Этот остров — рай для детей."
       },
       "freqRank": 297,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {

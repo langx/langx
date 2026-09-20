@@ -151,11 +151,12 @@
         "fr": "Je sais tout.",
         "pt-BR": "Eu sei de tudo.",
         "ru": "Я всё знаю.",
-        "ar": "أعرف كل شيء ."
+        "ar": "أعرف كل شيء."
       },
       "freqRank": 43,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3299,11 +3300,12 @@
         "de": "Du bist meine Mutter.",
         "fr": "Tu es ma mère.",
         "pt-BR": "Você é a minha mãe.",
-        "ru": "Ты - моя мать."
+        "ru": "Ты — моя мать."
       },
       "freqRank": 227,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3708,14 +3710,15 @@
         "en": "Who is this girl?",
         "tr": "Bu kız kimdir?",
         "de": "Wer ist dieses Mädchen?",
-        "fr": "Qui est cette fille  ?",
+        "fr": "Qui est cette fille ?",
         "pt-BR": "Quem é esta menina?",
         "ru": "Кто эта девушка?",
         "ar": "من هذه الفتاة؟"
       },
       "freqRank": 251,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["fr"]
       }
     },
     {
@@ -4210,11 +4213,12 @@
         "fr": "Il a un chien.",
         "pt-BR": "Ele tem um cachorro.",
         "ru": "У него есть собака.",
-        "ar": "لديه كلب ."
+        "ar": "لديه كلب."
       },
       "freqRank": 280,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4533,12 +4537,13 @@
         "de": "Der Hund ist der beste Freund des Mannes.",
         "fr": "Le chien est le meilleur ami de l'Homme.",
         "pt-BR": "O cão é o melhor amigo do homem.",
-        "ru": "Собака - лучший друг человека.",
+        "ru": "Собака — лучший друг человека.",
         "ar": "الكلب أفضل صديق للإنسان."
       },
       "freqRank": 298,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {

@@ -1224,11 +1224,12 @@
         "de": "Das gefällt mir.",
         "fr": "J'apprécie ceci.",
         "pt-BR": "Gosto disso.",
-        "ar": "انا احب ذلک."
+        "ar": "أنا أحب ذلك."
       },
       "freqRank": 115,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3326,11 +3327,12 @@
         "es": "Otro café, por favor.",
         "fr": "Encore du café s'il vous plait.",
         "pt-BR": "Mais um café, por favor!",
-        "ar": "أكثر من القهوة, من فضلك."
+        "ar": "أكثر من القهوة، من فضلك."
       },
       "freqRank": 244,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {

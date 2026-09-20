@@ -1149,12 +1149,13 @@
         "de": "Wo ein Wille ist, ist auch ein Weg.",
         "fr": "Vouloir c'est pouvoir.",
         "pt-BR": "Querer é poder.",
-        "ru": "Всё возможно - было бы желание.",
+        "ru": "Всё возможно — было бы желание.",
         "ar": "حيث هناك إرادة هناك وسيلة."
       },
       "freqRank": 82,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3011,11 +3012,12 @@
         "de": "Meine Frau ist Chinesin.",
         "fr": "Ma femme est Chinoise.",
         "pt-BR": "Minha esposa é chinesa.",
-        "ru": "Моя жена - китаянка."
+        "ru": "Моя жена — китаянка."
       },
       "freqRank": 191,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3950,12 +3952,13 @@
         "tr": "Hayvanlar bizim arkadaşlarımızdır.",
         "fr": "Les animaux sont nos amis.",
         "pt-BR": "Os animais são nossos amigos.",
-        "ru": "Животные - наши друзья.",
+        "ru": "Животные — наши друзья.",
         "ar": "الحيوانات أصدقاؤنا."
       },
       "freqRank": 246,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3985,11 +3988,12 @@
         "de": "„Ich weiß es nicht“, sagte Tony.",
         "fr": "\"Je ne sais pas\", dit Tony.",
         "pt-BR": "\"Não sei\", disse Tony.",
-        "ru": "\"Я не знаю\", - сказал Тони."
+        "ru": "\"Я не знаю\", — сказал Тони."
       },
       "freqRank": 248,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4857,11 +4861,12 @@
         "fr": "Jim n'est pas avocat mais médecin.",
         "pt-BR": "Jim não é advogado. É médico.",
         "ru": "Йим не адвокат, а врач.",
-        "ar": "جيم ليس محام بل هو طبيب ."
+        "ar": "جيم ليس محام بل هو طبيب."
       },
       "freqRank": 299,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {

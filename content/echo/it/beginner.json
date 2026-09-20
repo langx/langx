@@ -1062,11 +1062,12 @@
         "de": "Ich bin Chinese.",
         "es": "Soy chino.",
         "fr": "Je suis Chinois.",
-        "ru": "Я - китаец."
+        "ru": "Я — китаец."
       },
       "freqRank": 75,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -1143,11 +1144,12 @@
         "de": "Wo ein Wille ist, ist auch ein Weg.",
         "es": "Querer es poder.",
         "fr": "Vouloir c'est pouvoir.",
-        "ru": "Всё возможно - было бы желание."
+        "ru": "Всё возможно — было бы желание."
       },
       "freqRank": 80,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -1258,11 +1260,12 @@
         "de": "Wir werden immer Freunde sein.",
         "es": "Seremos amigos por siempre.",
         "fr": "Nous serons toujours amis.",
-        "ar": "سنكون اصدقاء الى الابد ."
+        "ar": "سنكون اصدقاء الى الابد."
       },
       "freqRank": 87,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -1388,11 +1391,12 @@
         "tr": "Mary benim annem.",
         "es": "Mary es mi madre.",
         "fr": "Mary est ma mère.",
-        "ru": "Мэри - моя мать."
+        "ru": "Мэри — моя мать."
       },
       "freqRank": 95,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2300,11 +2304,12 @@
         "de": "Sogar wir sind Leute.",
         "es": "Hasta nosotros somos personas.",
         "pt-BR": "Até nós somos pessoas.",
-        "ru": "Даже мы - люди."
+        "ru": "Даже мы — люди."
       },
       "freqRank": 151,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2868,11 +2873,12 @@
         "es": "La Tierra es un planeta.",
         "fr": "La Terre est une planète.",
         "pt-BR": "A Terra é um planeta.",
-        "ru": "Земля - это планета."
+        "ru": "Земля — это планета."
       },
       "freqRank": 186,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2899,12 +2905,13 @@
         "en": "Animals are our friends.",
         "tr": "Hayvanlar dostumuzdur.",
         "pt-BR": "Os animais são nossos amigos.",
-        "ru": "Животные - наши друзья.",
+        "ru": "Животные — наши друзья.",
         "ar": "الحيوانات أصدقاؤنا."
       },
       "freqRank": 188,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3274,11 +3281,12 @@
         "es": "Su hijo es un genio.",
         "fr": "Son fils est un génie.",
         "pt-BR": "O filho dela é um gênio.",
-        "ru": "Его сын - гений."
+        "ru": "Его сын — гений."
       },
       "freqRank": 211,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3307,11 +3315,12 @@
         "de": "Die Sonne ist ein Stern.",
         "es": "El Sol es una estrella.",
         "fr": "Le Soleil est une étoile.",
-        "ru": "Солнце - звезда."
+        "ru": "Солнце — звезда."
       },
       "freqRank": 213,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4479,11 +4488,12 @@
         "de": "Meine Lieblingsfarbe ist Rot.",
         "fr": "Ma couleur préférée est le rouge.",
         "pt-BR": "Minha cor favorita é o vermelho.",
-        "ru": "Мой любимый цвет - красный."
+        "ru": "Мой любимый цвет — красный."
       },
       "freqRank": 285,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4673,11 +4683,12 @@
         "es": "París es la ciudad más bonita del mundo.",
         "fr": "Paris est la ville la plus belle du monde.",
         "pt-BR": "Paris é a cidade mais bonita do mundo.",
-        "ru": "Париж - самый красивый город на свете."
+        "ru": "Париж — самый красивый город на свете."
       },
       "freqRank": 297,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {

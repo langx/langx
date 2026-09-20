@@ -2024,11 +2024,12 @@
         "es": "Somos médicos.",
         "fr": "Nous sommes médecins.",
         "pt-BR": "Nós somos médicos.",
-        "ru": "Мы - врачи."
+        "ru": "Мы — врачи."
       },
       "freqRank": 136,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2758,12 +2759,13 @@
         "tr": "Babam bir öğretmendir.",
         "es": "Mi padre es profesor.",
         "fr": "Mon père est enseignant.",
-        "ru": "Мой отец - учитель.",
+        "ru": "Мой отец — учитель.",
         "ar": "أبي مدرّس."
       },
       "freqRank": 179,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3271,11 +3273,12 @@
         "es": "\"Confía en mí\", dijo él.",
         "fr": "« Fais-moi confiance », dit-il.",
         "pt-BR": "\"Confie em mim\", disse ele.",
-        "ru": "\"Поверь мне\", - сказал он."
+        "ru": "\"Поверь мне\", — сказал он."
       },
       "freqRank": 209,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3629,11 +3632,12 @@
         "es": "Es una bonita casa.",
         "fr": "C'est une chouette maison.",
         "ru": "Это красивый дом.",
-        "ar": "هذا منزل جمیل."
+        "ar": "هذا منزل جميل."
       },
       "freqRank": 230,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3747,12 +3751,13 @@
         "es": "El caballo es un animal.",
         "fr": "Un cheval, c'est un animal.",
         "pt-BR": "Um cavalo é um animal.",
-        "ru": "Лошадь - это животное.",
+        "ru": "Лошадь — это животное.",
         "ar": "الحصان حيوان."
       },
       "freqRank": 237,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3901,11 +3906,12 @@
         "es": "Mi vestido nuevo es rojo.",
         "fr": "Ma nouvelle robe est rouge.",
         "pt-BR": "Meu vestido novo é vermelho.",
-        "ru": "Моё новое платье - красное."
+        "ru": "Моё новое платье — красное."
       },
       "freqRank": 246,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4378,11 +4384,12 @@
         "es": "Mary es la mujer de mis sueños.",
         "fr": "Mary est la femme de mes rêves.",
         "pt-BR": "Maria é a mulher dos meus sonhos.",
-        "ru": "Мэри - женщина моей мечты."
+        "ru": "Мэри — женщина моей мечты."
       },
       "freqRank": 274,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {

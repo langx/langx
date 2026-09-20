@@ -100,11 +100,12 @@
         "de": "Ich bin du.",
         "es": "Soy tú.",
         "fr": "Je suis toi.",
-        "ru": "Я - это ты."
+        "ru": "Я — это ты."
       },
       "freqRank": 37,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -1786,11 +1787,12 @@
         "es": "Él tiene un perro.",
         "fr": "Il a un chien.",
         "pt-BR": "Ele tem um cachorro.",
-        "ar": "لديه كلب ."
+        "ar": "لديه كلب."
       },
       "freqRank": 143,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3330,12 +3332,13 @@
         "de": "Die Welt ist eine Schule.",
         "es": "El mundo es una escuela.",
         "fr": "Le monde est une école.",
-        "ru": "Мир - это школа.",
+        "ru": "Мир — это школа.",
         "ar": "العالم مدرسة."
       },
       "freqRank": 237,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {

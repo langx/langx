@@ -1368,11 +1368,12 @@
         "de": "Er ist mein Nachbar.",
         "fr": "C'est mon voisin.",
         "pt-BR": "Ele é meu vizinho.",
-        "ru": "Он - мой сосед."
+        "ru": "Он — мой сосед."
       },
       "freqRank": 90,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -1861,11 +1862,12 @@
         "de": "Seine Frau ist Französin.",
         "fr": "Sa femme est française.",
         "pt-BR": "A mulher dele é francesa.",
-        "ru": "У него жена - француженка."
+        "ru": "У него жена — француженка."
       },
       "freqRank": 119,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2185,11 +2187,12 @@
         "de": "Tom ist mein Zahnarzt.",
         "fr": "Tom est mon dentiste.",
         "pt-BR": "Tom é o meu dentista.",
-        "ru": "Том - мой стоматолог."
+        "ru": "Том — мой стоматолог."
       },
       "freqRank": 138,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2562,11 +2565,12 @@
         "fr": "Je suis en train de lire un livre.",
         "pt-BR": "Agora estou lendo um livro.",
         "ru": "Сейчас я читаю книгу.",
-        "ar": "أنا أقرأ كتابًا الآن ."
+        "ar": "أنا أقرأ كتابًا الآن."
       },
       "freqRank": 160,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2817,11 +2821,12 @@
         "de": "Der Teufel ist ein Egoist.",
         "fr": "Le diable est un égoïste.",
         "pt-BR": "O diabo é um egoísta.",
-        "ru": "Дьявол - эгоист."
+        "ru": "Дьявол — эгоист."
       },
       "freqRank": 175,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2936,12 +2941,13 @@
         "de": "Mike und Ken sind Freunde.",
         "fr": "Mike et Ken sont amis.",
         "pt-BR": "Mike e Ken são amigos.",
-        "ru": "Майк и Кен - друзья.",
+        "ru": "Майк и Кен — друзья.",
         "ar": "مايك وكين صديقان."
       },
       "freqRank": 182,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3073,11 +3079,12 @@
         "de": "Mario ist italienischer Staatsbürger.",
         "fr": "Mario est citoyen italien.",
         "pt-BR": "Mario é um cidadão italiano.",
-        "ru": "Марио - гражданин Италии."
+        "ru": "Марио — гражданин Италии."
       },
       "freqRank": 190,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3209,11 +3216,12 @@
         "de": "Hans ist ein deutscher Name.",
         "fr": "Hans est un nom allemand.",
         "pt-BR": "Hans é um nome alemão.",
-        "ru": "Ганс - немецкое имя."
+        "ru": "Ганс — немецкое имя."
       },
       "freqRank": 198,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4301,11 +4309,12 @@
         "de": "Türkisch ist eine schwierige Sprache.",
         "fr": "Le turc est une langue difficile.",
         "pt-BR": "O turco é uma língua difícil.",
-        "ru": "Турецкий - сложный язык."
+        "ru": "Турецкий — сложный язык."
       },
       "freqRank": 262,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4659,11 +4668,12 @@
         "de": "Arabisch ist eine sehr wichtige Sprache.",
         "fr": "L'arabe est une langue très importante.",
         "pt-BR": "O árabe é uma língua muito importante.",
-        "ru": "Арабский - очень важный язык."
+        "ru": "Арабский — очень важный язык."
       },
       "freqRank": 283,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4710,11 +4720,12 @@
         "de": "Ich habe einen Freund, dessen Vater Tierarzt ist.",
         "fr": "J'ai un ami dont le père est vétérinaire.",
         "pt-BR": "Tenho um amigo cujo pai é veterinário.",
-        "ru": "У меня есть друг, у которого отец - ветеринар."
+        "ru": "У меня есть друг, у которого отец — ветеринар."
       },
       "freqRank": 286,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4744,11 +4755,12 @@
         "de": "Das Mädchen, das am Klavier sitzt, ist meine Tochter.",
         "fr": "L'enfant assise au piano est ma fille.",
         "pt-BR": "A menina sentada ao piano é minha filha.",
-        "ru": "Девочка, сидящая за пианино, - моя дочь."
+        "ru": "Девочка, сидящая за пианино, — моя дочь."
       },
       "freqRank": 288,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4780,11 +4792,12 @@
         "fr": "Dimanche, lundi, mardi, mercredi, jeudi, vendredi et samedi.",
         "pt-BR": "Domingo, segunda, terça, quarta, quinta, sexta e sábado.",
         "ru": "Воскресенье, понедельник, вторник, среда, четверг, пятница и суббота.",
-        "ar": "الأحد, الإثنين, الثلاثاء, الأربعاء, الخميس, الجمعة والسبت."
+        "ar": "الأحد، الإثنين، الثلاثاء، الأربعاء، الخميس، الجمعة والسبت."
       },
       "freqRank": 290,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4882,11 +4895,12 @@
         "de": "Armut ist die Wurzel allen Übels.",
         "fr": "La pauvreté est à la racine de tout mal.",
         "pt-BR": "A pobreza é a raiz de todo o mal.",
-        "ru": "Бедность - это корень всего зла."
+        "ru": "Бедность — это корень всего зла."
       },
       "freqRank": 296,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4898,12 +4912,13 @@
         "de": "Alles was ich möchte ist dich loswerden.",
         "fr": "Tout ce que je veux, c'est me débarrasser de toi.",
         "pt-BR": "Tudo que quero é me livrar de você.",
-        "ru": "Всё, чего я хочу, - это избавиться от тебя.",
+        "ru": "Всё, чего я хочу, — это избавиться от тебя.",
         "ar": "كل ما أريده هو التخلّص منك."
       },
       "freqRank": 297,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {

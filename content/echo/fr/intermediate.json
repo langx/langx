@@ -1687,11 +1687,12 @@
         "de": "Maria ist Deutsche.",
         "es": "María es alemana.",
         "pt-BR": "Maria é alemã.",
-        "ru": "Мэри - немка."
+        "ru": "Мэри — немка."
       },
       "freqRank": 108,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2030,11 +2031,12 @@
         "de": "Reisen macht großen Spaß.",
         "es": "Viajar es muy divertido.",
         "pt-BR": "Viajar é muito divertido.",
-        "ru": "Путешествовать - это очень весело."
+        "ru": "Путешествовать — это очень весело."
       },
       "freqRank": 129,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2736,12 +2738,13 @@
         "en": "Tom is a terrorist.",
         "de": "Tom ist ein Terrorist.",
         "es": "Tom es terrorista.",
-        "ru": "Том - террорист.",
+        "ru": "Том — террорист.",
         "ar": "توم إرهابي."
       },
       "freqRank": 173,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3799,11 +3802,12 @@
         "de": "Mario ist italienischer Staatsbürger.",
         "es": "Mario es un ciudadano italiano.",
         "pt-BR": "Mario é um cidadão italiano.",
-        "ru": "Марио - гражданин Италии."
+        "ru": "Марио — гражданин Италии."
       },
       "freqRank": 239,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4340,11 +4344,12 @@
         "de": "Mike und Ken sind befreundet.",
         "es": "Mike y Ken son amigos.",
         "pt-BR": "Mike e Ken são amigos.",
-        "ru": "Майк и Кен - друзья."
+        "ru": "Майк и Кен — друзья."
       },
       "freqRank": 272,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4460,11 +4465,12 @@
         "de": "Florenz ist eine schöne Stadt.",
         "es": "Florencia es una ciudad bonita.",
         "pt-BR": "Florença é uma cidade bonita.",
-        "ru": "Флоренция - прекрасный город."
+        "ru": "Флоренция — прекрасный город."
       },
       "freqRank": 279,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4785,11 +4791,12 @@
         "es": "Domingo, lunes, martes, miércoles, jueves, viernes y sábado.",
         "pt-BR": "Domingo, segunda, terça, quarta, quinta, sexta e sábado.",
         "ru": "Воскресенье, понедельник, вторник, среда, четверг, пятница и суббота.",
-        "ar": "الأحد, الإثنين, الثلاثاء, الأربعاء, الخميس, الجمعة والسبت."
+        "ar": "الأحد، الإثنين، الثلاثاء، الأربعاء، الخميس، الجمعة والسبت."
       },
       "freqRank": 298,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {

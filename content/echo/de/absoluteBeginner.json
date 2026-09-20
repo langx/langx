@@ -442,11 +442,12 @@
         "tr": "Ben senim.",
         "es": "Soy tú.",
         "fr": "Je suis toi.",
-        "ru": "Я - это ты."
+        "ru": "Я — это ты."
       },
       "freqRank": 40,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -474,11 +475,12 @@
         "tr": "Ben benim.",
         "es": "Yo soy yo.",
         "fr": "Je suis moi.",
-        "ru": "Я - это я."
+        "ru": "Я — это я."
       },
       "freqRank": 42,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -1225,11 +1227,12 @@
         "es": "¿Es guapa?",
         "fr": "Est-elle belle ?",
         "ru": "Она красивая?",
-        "ar": "أهي جميلة ؟"
+        "ar": "أهي جميلة؟"
       },
       "freqRank": 88,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2204,11 +2207,12 @@
         "fr": "Je vais bien.",
         "pt-BR": "Eu vou bem.",
         "ru": "Со мной всё в порядке.",
-        "ar": "اننی بحال جیده."
+        "ar": "إنني بحال جيدة."
       },
       "freqRank": 146,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3318,11 +3322,12 @@
         "es": "La Guerra es el infierno.",
         "fr": "La guerre, c'est l'enfer.",
         "pt-BR": "A guerra é o inferno.",
-        "ru": "Война - это ад."
+        "ru": "Война — это ад."
       },
       "freqRank": 211,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3353,11 +3358,12 @@
         "fr": "Il a un chien.",
         "pt-BR": "Ele tem um cachorro.",
         "ru": "У него есть собака.",
-        "ar": "لديه كلب ."
+        "ar": "لديه كلب."
       },
       "freqRank": 213,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4190,12 +4196,13 @@
         "tr": "Dünya bir okuldur.",
         "es": "El mundo es una escuela.",
         "fr": "Le monde est une école.",
-        "ru": "Мир - это школа.",
+        "ru": "Мир — это школа.",
         "ar": "العالم مدرسة."
       },
       "freqRank": 262,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {

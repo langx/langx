@@ -780,11 +780,12 @@
         "tr": "Tom pilottur.",
         "es": "Tom es piloto.",
         "fr": "Tom est pilote.",
-        "ru": "Том - пилот."
+        "ru": "Том — пилот."
       },
       "freqRank": 59,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -812,12 +813,13 @@
         "en": "Mary is a doctor.",
         "es": "María es médica.",
         "pt-BR": "Maria é doutora.",
-        "ru": "Мэри - врач.",
+        "ru": "Мэри — врач.",
         "ar": "ماري طبيبة."
       },
       "freqRank": 61,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2430,12 +2432,13 @@
         "en": "You snooze, you lose.",
         "es": "Quien fue a Sevilla perdió su silla.",
         "pt-BR": "Quem vai ao vento perde o assento.",
-        "ru": "Попу поднял - место потерял.",
+        "ru": "Попу поднял — место потерял.",
         "ar": "من غاب خاب."
       },
       "freqRank": 161,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3493,12 +3496,13 @@
         "es": "Tom es nuestro vecino.",
         "fr": "Tom est notre voisin.",
         "pt-BR": "Tom é nosso vizinho.",
-        "ru": "Том - наш сосед.",
+        "ru": "Том — наш сосед.",
         "ar": "توم جارنا."
       },
       "freqRank": 225,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4195,11 +4199,12 @@
         "es": "Detroit es una ciudad peligrosa.",
         "fr": "Détroit est une ville dangereuse.",
         "pt-BR": "Detroit é uma cidade perigosa.",
-        "ru": "Детройт - опасный город."
+        "ru": "Детройт — опасный город."
       },
       "freqRank": 266,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4298,11 +4303,12 @@
         "es": "El francés es la lengua del amor.",
         "fr": "Le français est la langue de l'amour.",
         "pt-BR": "Francês é a língua do amor.",
-        "ru": "Французский - это язык любви."
+        "ru": "Французский — это язык любви."
       },
       "freqRank": 272,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4707,11 +4713,12 @@
         "fr": "Dimanche, lundi, mardi, mercredi, jeudi, vendredi et samedi.",
         "pt-BR": "Domingo, segunda, terça, quarta, quinta, sexta e sábado.",
         "ru": "Воскресенье, понедельник, вторник, среда, четверг, пятница и суббота.",
-        "ar": "الأحد, الإثنين, الثلاثاء, الأربعاء, الخميس, الجمعة والسبت."
+        "ar": "الأحد، الإثنين، الثلاثاء، الأربعاء، الخميس، الجمعة والسبت."
       },
       "freqRank": 296,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {

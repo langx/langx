@@ -4343,7 +4343,7 @@
         "fr": "je m'appelle ...",
         "pt-BR": "chamo-me ...",
         "ru": "меня́ зову́т ...",
-        "ar": "اِسْمِي ...",
+        "ar": "اِسْمِي...",
         "en": "a way to identify oneself"
       },
       "freqRank": 124,
@@ -4351,7 +4351,8 @@
         "sense": "a way to identify oneself",
         "translationCount": 224,
         "definition": "A common way to identify oneself.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       },
       "voices": [
         {

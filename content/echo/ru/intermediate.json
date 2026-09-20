@@ -3553,11 +3553,12 @@
         "es": "¿Cuántos años tiene tu hermana?",
         "fr": "Quel âge a ta sœur ?",
         "pt-BR": "Que idade tem a tua irmã?",
-        "ar": "كم عمر أختك ؟"
+        "ar": "كم عمر أختك؟"
       },
       "freqRank": 236,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {

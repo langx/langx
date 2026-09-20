@@ -1447,11 +1447,12 @@
         "de": "Tom ist ein Roboter.",
         "fr": "Tom est un robot.",
         "pt-BR": "Tom é um robô.",
-        "ru": "Том - робот."
+        "ru": "Том — робот."
       },
       "freqRank": 91,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2348,11 +2349,12 @@
         "de": "Madonna ist eine Schönheit.",
         "es": "Madonna es una belleza.",
         "pt-BR": "Madonna é uma beleza.",
-        "ru": "Мадонна - красавица."
+        "ru": "Мадонна — красавица."
       },
       "freqRank": 146,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2836,11 +2838,12 @@
         "es": "Doce es un número par.",
         "fr": "Douze est un nombre pair.",
         "pt-BR": "Doze é um número par.",
-        "ru": "Двенадцать - чётное число."
+        "ru": "Двенадцать — чётное число."
       },
       "freqRank": 176,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3314,11 +3317,12 @@
         "de": "Moskau ist eine russische Stadt.",
         "es": "Moscú es una ciudad rusa.",
         "pt-BR": "Moscou é uma cidade russa.",
-        "ru": "Москва - российский город."
+        "ru": "Москва — российский город."
       },
       "freqRank": 205,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4552,11 +4556,12 @@
         "de": "Der Fuchs ist ein wildes Tier.",
         "fr": "Le renard est un animal sauvage.",
         "pt-BR": "A raposa é um animal selvagem.",
-        "ru": "Лиса - дикое животное."
+        "ru": "Лиса — дикое животное."
       },
       "freqRank": 281,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4823,11 +4828,12 @@
         "fr": "Dimanche, lundi, mardi, mercredi, jeudi, vendredi et samedi.",
         "pt-BR": "Domingo, segunda, terça, quarta, quinta, sexta e sábado.",
         "ru": "Воскресенье, понедельник, вторник, среда, четверг, пятница и суббота.",
-        "ar": "الأحد, الإثنين, الثلاثاء, الأربعاء, الخميس, الجمعة والسبت."
+        "ar": "الأحد، الإثنين، الثلاثاء، الأربعاء، الخميس، الجمعة والسبت."
       },
       "freqRank": 297,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {

@@ -56,7 +56,10 @@ const RULES = [
     'same as the front',
     (text, item, locale, pack) => locale !== pack.lang && text.trim() === item.text.trim() && text,
   ],
-  ['blank or padded', (text) => (text !== text.trim() || /\s{2,}/.test(text)) && `"${text}"`],
+  [
+    'blank or padded',
+    (text) => (text !== text.trim() || /\s{2,}/.test(text)) && JSON.stringify(text),
+  ],
   ['newline', (text) => text.includes('\n') && JSON.stringify(text)],
   // "It's too big." glossed with an unrelated Tatoeba sentence about Tom: the
   // wrong sentence is usually the longer one, and length is what a rule can see.
