@@ -17,13 +17,24 @@
  * The reviewer's only way to tell the difference was to parse both sides.
  *
  * So the shape is decided once, here, rather than assumed in four places.
- * Prettier's own wrapping is the one worth keeping: it is what `pnpm format`
- * would converge on if `objectWrap` were `collapse`, and it puts a short
- * `voices` entry on one line where the expanded form spends four.
+ * Prettier's own wrapping is the one worth keeping: it puts a short `voices`
+ * entry on one line where the expanded form spends four.
  *
  * `tts/generate.py` cannot import this. It holds the same two lines with a
  * comment pointing here, the way `voice_key` there mirrors `packVoiceKey` in
  * `packages/shared`.
+ *
+ * **And `.prettierrc.json` now sets `objectWrap: "collapse"` over
+ * the pack files, which is what makes any of this checkable.** With
+ * the default `preserve`, both shapes are valid prettier, so `format:check`
+ * passes either and CI cannot see the drift — one tool written the old way
+ * and the packs flip again with nothing to catch it. Under `collapse` the
+ * expanded shape simply fails `pnpm format:check`, and `pnpm format` puts it
+ * back. The override is scoped to the packs on purpose: `objectWrap` applies
+ * to object literals in every language, and repo-wide it rewrites 257 files.
+ *
+ * So this function is no longer the only guard, and that is the point — it
+ * keeps a tool's own output correct so the check never has to fail.
  */
 import { writeFile } from 'node:fs/promises'
 import prettier from 'prettier'
