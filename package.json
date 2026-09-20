@@ -25,6 +25,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "release": "node scripts/release.mjs",
+    "release:notes": "node scripts/release-notes.mjs",
     "insight": "node --env-file-if-exists=.env scripts/insight.mjs"
   },
   "devDependencies": {

@@ -386,11 +386,30 @@ git push origin v2.1          # once it is on main; the tag creates the GitHub R
 ```
 
 The tag's only effect is on GitHub: `github-release.yml` checks it against
-`package.json` and writes a Release with notes from the merged pull requests.
+`package.json` and writes a Release, with notes from `release-notes.mjs`.
 It builds nothing. A new number reaches the stores with the next `release.yml`
 run on expo.dev, and the web with the merge of the release commit itself,
 since `deploy-web.yml` runs on it; installed apps keep showing the binary's
 own number until a store build ships.
+
+**The Release's notes start with the store's own.** `scripts/release-notes.mjs`
+takes the English block out of `docs/store/listing.md` — the one written for
+this version, in a person's words — and prints the merged pull requests under
+it, grouped into the app, the server, Echo's content, and a folded section for
+docs, CI and dependency bumps. Preview it against any tag before pushing one:
+
+```bash
+pnpm release:notes v2.6
+```
+
+The summary is the only part with an order of operations attached: the file has
+to say **this** version's number in the prose under _What's new (release
+notes)_, or the block is left out rather than printed as this release's when it
+is the last one's. So the store copy is written before the tag is pushed, which
+is where it already sat in the round — the tag goes last anyway. A release
+whose notes open straight into `### The app` is that check having fired, and
+the fix is to write the copy and edit the Release by hand; retagging is not
+worth it.
 
 **There is one channel, `production`, and merging to `main` publishes to it.**
 A JS-only change reaches every installed app on its next launch without a
