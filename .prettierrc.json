@@ -3,5 +3,13 @@
   "singleQuote": true,
   "trailingComma": "all",
   "printWidth": 100,
-  "arrowParens": "always"
+  "arrowParens": "always",
+  "overrides": [
+    {
+      "files": "content/echo/*/*.json",
+      "options": {
+        "objectWrap": "collapse"
+      }
+    }
+  ]
 }
