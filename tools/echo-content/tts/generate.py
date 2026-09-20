@@ -182,6 +182,52 @@ def voice_key(pack_id: str, index: int, voice: str) -> str:
     return f"echo/packs/{pack_id.replace(':', '_')}/{index}-{voice}.m4a"
 
 
+def write_pack(path: Path, pack) -> None:
+    """Writes a pack the way `build.mjs` writes one, which is prettier's way.
+
+    **On one line, deliberately.** Prettier's JSON printer defaults to
+    `objectWrap: "preserve"`: an object with a line break after its `{` keeps
+    its expanded shape, and one without gets wrapped to `printWidth`. So a
+    file this wrote with `indent=2` stays expanded *through* `prettier
+    --write` — it is already valid prettier — while `build.mjs`, which
+    formats `JSON.stringify` output, writes the compact form. Both pass
+    `format:check`, and the two tools spent the German and Russian packs
+    flipping between them: a four-thousand-line diff with no content in it,
+    every time either one ran.
+
+    Handing prettier the same single line `JSON.stringify` produces ends that.
+    `format_packs` below is what turns it back into something readable, and
+    until it runs the file on disk is one long line.
+    """
+    path.write_text(json.dumps(pack, ensure_ascii=False) + "\n")
+
+
+def format_packs(paths) -> bool:
+    """Runs the repository's prettier over the packs this run rewrote.
+
+    Not optional and not a convenience: `write_pack` leaves one line, and the
+    formatter is the half that decides where it breaks. A failure here is
+    reported with the command to run by hand rather than raised, because the
+    audio took an hour and the files are already correct JSON.
+    """
+    if not paths:
+        return True
+    try:
+        subprocess.run(
+            ["pnpm", "exec", "prettier", "--write", *(str(p) for p in paths)],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+        )
+    except (OSError, subprocess.CalledProcessError) as failed:
+        detail = getattr(failed, "stderr", b"") or b""
+        print(f"  prettier did not run ({failed}) {detail.decode(errors='replace').strip()}")
+        print(f"  The packs are written but unformatted. Run, from {ROOT}:")
+        print(f"    pnpm exec prettier --write {' '.join(str(p) for p in paths)}")
+        return False
+    return True
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     here = Path(__file__).resolve().parent
@@ -217,6 +263,7 @@ def main() -> int:
         return loaded[model]
 
     made = skipped = 0
+    written: list[Path] = []
 
     for path, pack in packs(args.lang):
         # The engine follows from the language and nothing else. Kokoro's six
@@ -253,12 +300,14 @@ def main() -> int:
                 wav.unlink()
                 made += 1
         pack["contentVersion"] += 1
-        path.write_text(json.dumps(pack, indent=2, ensure_ascii=False) + "\n")
+        write_pack(path, pack)
+        written.append(path)
         print(f"  {pack['id']}: {len(pack['items'])} items, {len(voices)} voice(s)", flush=True)
 
+    formatted = format_packs(written)
     print(f"made {made}, skipped {skipped} already there")
-    print("Run prettier over content/echo, then upload-echo-voices.ts.")
-    return 0
+    print("Then upload-echo-voices.ts." if formatted else "Format the packs, then upload.")
+    return 0 if formatted else 1
 
 
 if __name__ == "__main__":

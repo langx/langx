@@ -43,8 +43,9 @@
  * choosing a sense. Everything else falls through to kaikki as before.
  */
 
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
+import { writePack } from './writePack.mjs'
 import { writable } from './text.mjs'
 
 /** Interface locale → the language code Wiktionary tags a translation with. */
@@ -466,7 +467,7 @@ async function main() {
   }
 
   await mkdir(dirname(out), { recursive: true })
-  await writeFile(out, `${JSON.stringify(pack, null, 2)}\n`, 'utf8')
+  await writePack(out, pack)
   console.error(
     `\nWrote ${items.length} items to ${out} ` +
       `(${fromPrepared} glossed from ${glossesPath ?? 'nothing'}, ${missing} had no translations).`,

@@ -29,8 +29,9 @@
  * prints every rejection with its reason either way. `review.audio` is never
  * touched: it is the record of what was on offer.
  */
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { writePack } from './writePack.mjs'
 
 const API = 'https://commons.wikimedia.org/w/api.php'
 
@@ -298,7 +299,7 @@ async function main() {
     process.stdout.write('\nDry run. Pass --apply to write.\n')
     return
   }
-  await writeFile(full, `${JSON.stringify(pack, null, 2)}\n`)
+  await writePack(full, pack)
   process.stdout.write(`\nWrote ${path}\n`)
 }
 

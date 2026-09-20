@@ -51,8 +51,8 @@ import { Buffer } from 'node:buffer'
 import { spawn } from 'node:child_process'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
-import prettier from 'prettier'
 import { DRAWINGS } from './drawings.mjs'
+import { writePack } from '../writePack.mjs'
 
 const HERE = import.meta.dirname
 const OUT = resolve(HERE, 'out')
@@ -128,21 +128,6 @@ function renderPng(svg, path) {
     })
     child.stdin.end(svg)
   })
-}
-
-/**
- * Written the way `pnpm format` would write it, rather than the way
- * `JSON.stringify` does.
- *
- * The two disagree about short arrays — prettier puts `["ru"]` on one line and
- * `JSON.stringify` takes three — so a file this script wrote would fail
- * `format:check` until somebody ran the formatter, and running the formatter
- * would then show up as a diff in the next build. Formatting here ends that
- * loop: what comes out is already what CI asks for.
- */
-async function writeJson(path, value) {
-  const config = await prettier.resolveConfig(path)
-  await writeFile(path, await prettier.format(JSON.stringify(value), { ...config, filepath: path }))
 }
 
 async function main() {
@@ -231,7 +216,7 @@ async function main() {
       }
       pack.contentVersion += 1
       console.log(`  ${pack.id}: ${changed} cue(s) changed → contentVersion ${pack.contentVersion}`)
-      if (apply) await writeJson(path, pack)
+      if (apply) await writePack(path, pack)
     }
   }
 

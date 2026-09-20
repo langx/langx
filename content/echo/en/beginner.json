@@ -10,11 +10,7 @@
       "licence": "CC BY-SA 4.0",
       "url": "https://kaikki.org/"
     },
-    {
-      "name": "Tatoeba",
-      "licence": "CC BY 2.0 FR",
-      "url": "https://tatoeba.org/"
-    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
       "name": "CEFR-J Vocabulary Profile 1.5 (Tono Laboratory, TUFS)",
       "licence": "Free for research and commercial use with citation",
@@ -51,19 +47,10 @@
         "ar": "إنه جديد"
       },
       "freqRank": 1,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/0-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/0-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/0-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/0-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:new-button"
     },
@@ -104,14 +91,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/1-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/1-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/1-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/1-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:waving-hand"
     },
@@ -129,18 +110,10 @@
         "ar": "مللت."
       },
       "freqRank": 3,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/2-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/2-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/2-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/2-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:unamused-face"
     },
@@ -155,20 +128,10 @@
         "en": "week after this one"
       },
       "freqRank": 4,
-      "review": {
-        "sense": "week after this one",
-        "translationCount": 20,
-        "otherSenses": []
-      },
+      "review": { "sense": "week after this one", "translationCount": 20, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/3-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/3-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/3-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/3-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:calendar"
     },
@@ -186,19 +149,10 @@
         "ar": "أنا مفلس."
       },
       "freqRank": 5,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/4-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/4-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/4-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/4-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:money-with-wings"
     },
@@ -216,18 +170,10 @@
         "ar": "إنها ساعة متأخرة."
       },
       "freqRank": 6,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/5-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/5-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/5-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/5-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ten-o-clock"
     },
@@ -245,19 +191,10 @@
         "ar": "أنا محتار."
       },
       "freqRank": 7,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar", "ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar", "ru"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/6-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/6-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/6-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/6-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:confused-face"
     },
@@ -275,18 +212,10 @@
         "ar": "اليوم الإثنين."
       },
       "freqRank": 8,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/7-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/7-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/7-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/7-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:spiral-calendar"
     },
@@ -334,14 +263,8 @@
         "licence": "CC BY-SA 3.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/8-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/8-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/8-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/8-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:door"
     },
@@ -359,18 +282,10 @@
         "ar": "نَحنُ مُحامون"
       },
       "freqRank": 10,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/9-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/9-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/9-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/9-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:balance-scale"
     },
@@ -388,18 +303,10 @@
         "ar": "أستخدمه."
       },
       "freqRank": 11,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/10-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/10-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/10-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/10-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:wrench"
     },
@@ -442,14 +349,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/11-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/11-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/11-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/11-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ok-hand"
     },
@@ -467,18 +368,10 @@
         "ar": "آمل ذلك."
       },
       "freqRank": 13,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/12-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/12-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/12-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/12-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:crossed-fingers"
     },
@@ -496,19 +389,10 @@
         "ar": "املأها."
       },
       "freqRank": 14,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/13-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/13-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/13-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/13-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:fuel-pump"
     },
@@ -545,14 +429,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/14-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/14-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/14-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/14-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-shrugging"
     },
@@ -570,18 +448,10 @@
         "ar": "ها هي."
       },
       "freqRank": 16,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/15-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/15-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/15-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/15-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:round-pushpin"
     },
@@ -599,18 +469,10 @@
         "ar": "أنا بطل."
       },
       "freqRank": 17,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/16-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/16-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/16-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/16-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:superhero"
     },
@@ -634,14 +496,8 @@
         "otherSenses": ["marriage proposal from a woman to a man (the shortest form) (15)"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/17-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/17-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/17-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/17-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ring"
     },
@@ -659,18 +515,10 @@
         "ar": "هل أنت غاضب؟"
       },
       "freqRank": 19,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/18-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/18-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/18-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/18-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:angry-face"
     },
@@ -688,18 +536,10 @@
         "ar": "لا تفعل ذلك!"
       },
       "freqRank": 20,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/19-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/19-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/19-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/19-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:prohibited"
     },
@@ -717,18 +557,10 @@
         "ar": "إنه وحيد."
       },
       "freqRank": 21,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/20-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/20-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/20-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/20-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-standing"
     },
@@ -769,14 +601,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/21-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/21-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/21-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/21-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:writing-hand"
     },
@@ -794,18 +620,10 @@
         "ar": "أعشق موسيقى الروك."
       },
       "freqRank": 23,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/22-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/22-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/22-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/22-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:guitar"
     },
@@ -845,14 +663,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/23-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/23-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/23-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/23-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-gesturing-no"
     },
@@ -870,18 +682,10 @@
         "ar": "أحتاج للمساعدة."
       },
       "freqRank": 25,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/24-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/24-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/24-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/24-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sos-button"
     },
@@ -899,18 +703,10 @@
         "ar": "لا يمكن أن يحصل ذلك!"
       },
       "freqRank": 26,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/25-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/25-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/25-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/25-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:astonished-face"
     },
@@ -928,18 +724,10 @@
         "ar": "من رسم ذلك؟"
       },
       "freqRank": 27,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/26-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/26-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/26-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/26-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:artist-palette"
     },
@@ -977,14 +765,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/27-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/27-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/27-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/27-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:thought-balloon"
     },
@@ -1002,18 +784,10 @@
         "ar": "قد ينزل الثلج"
       },
       "freqRank": 29,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/28-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/28-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/28-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/28-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cloud-with-snow"
     },
@@ -1038,14 +812,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/29-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/29-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/29-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/29-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:right-arrow-curving-left"
     },
@@ -1063,18 +831,10 @@
         "ar": "من الممكن أن تمطر."
       },
       "freqRank": 31,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/30-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/30-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/30-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/30-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cloud-with-rain"
     },
@@ -1092,18 +852,10 @@
         "ar": "هل سيموت؟"
       },
       "freqRank": 32,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/31-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/31-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/31-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/31-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:coffin"
     },
@@ -1121,18 +873,10 @@
         "ar": "أدخله."
       },
       "freqRank": 33,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/32-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/32-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/32-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/32-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:door"
     },
@@ -1151,20 +895,10 @@
         "en": "do you understand?"
       },
       "freqRank": 34,
-      "review": {
-        "sense": "do you understand?",
-        "translationCount": 133,
-        "otherSenses": []
-      },
+      "review": { "sense": "do you understand?", "translationCount": 133, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/33-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/33-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/33-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/33-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:thinking-face"
     },
@@ -1182,18 +916,10 @@
         "ar": "كانت لدي شكوك."
       },
       "freqRank": 35,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/34-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/34-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/34-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/34-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:red-question-mark"
     },
@@ -1211,19 +937,10 @@
         "ar": "كان الليل."
       },
       "freqRank": 36,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/35-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/35-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/35-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/35-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:night-with-stars"
     },
@@ -1241,18 +958,10 @@
         "ar": "لن أخسر!"
       },
       "freqRank": 37,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/36-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/36-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/36-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/36-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:trophy"
     },
@@ -1288,14 +997,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/37-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/37-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/37-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/37-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:folded-hands"
     },
@@ -1313,19 +1016,10 @@
         "ar": "إنه كبير جداً."
       },
       "freqRank": 39,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/38-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/38-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/38-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/38-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:elephant"
     },
@@ -1344,20 +1038,10 @@
         "en": "call the police"
       },
       "freqRank": 40,
-      "review": {
-        "sense": "call the police",
-        "translationCount": 88,
-        "otherSenses": []
-      },
+      "review": { "sense": "call the police", "translationCount": 88, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/39-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/39-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/39-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/39-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:police-car"
     },
@@ -1375,18 +1059,10 @@
         "ar": "إنه ساخن جداً."
       },
       "freqRank": 41,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/40-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/40-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/40-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/40-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:fire"
     },
@@ -1404,18 +1080,10 @@
         "ar": "ضعه هناك."
       },
       "freqRank": 42,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/41-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/41-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/41-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/41-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:backhand-index-pointing-down"
     },
@@ -1433,18 +1101,10 @@
         "ar": "حاول مرة أخرى."
       },
       "freqRank": 43,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/42-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/42-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/42-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/42-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:repeat-button"
     },
@@ -1481,14 +1141,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/43-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/43-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/43-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/43-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:no-entry"
     },
@@ -1506,18 +1160,10 @@
         "ar": "أيقظهم."
       },
       "freqRank": 45,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/44-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/44-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/44-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/44-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:alarm-clock"
     },
@@ -1535,18 +1181,10 @@
         "ar": "نحن نحتاج إلى مساعدة"
       },
       "freqRank": 46,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/45-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/45-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/45-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/45-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sos-button"
     },
@@ -1565,20 +1203,10 @@
         "en": "the bill, please"
       },
       "freqRank": 47,
-      "review": {
-        "sense": "the bill, please",
-        "translationCount": 47,
-        "otherSenses": []
-      },
+      "review": { "sense": "the bill, please", "translationCount": 47, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/46-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/46-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/46-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/46-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:receipt"
     },
@@ -1596,19 +1224,10 @@
         "ar": "الجميع سعداء."
       },
       "freqRank": 48,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "correctedTr": "Hepimiz mutluyuz."
-      },
+      "review": { "glossedBy": "Tatoeba", "correctedTr": "Hepimiz mutluyuz." },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/47-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/47-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/47-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/47-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:grinning-face-with-big-eyes"
     },
@@ -1626,18 +1245,10 @@
         "ar": "هل أنت وحدك؟"
       },
       "freqRank": 49,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/48-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/48-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/48-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/48-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-standing"
     },
@@ -1655,18 +1266,10 @@
         "ar": "احضره الى هنا."
       },
       "freqRank": 50,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/49-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/49-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/49-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/49-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:palm-up-hand"
     },
@@ -1704,14 +1307,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/50-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/50-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/50-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/50-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:bell-with-slash"
     },
@@ -1729,18 +1326,10 @@
         "ar": "لدي شكوك."
       },
       "freqRank": 52,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/51-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/51-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/51-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/51-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:red-question-mark"
     },
@@ -1758,18 +1347,10 @@
         "ar": "لن ينجح هذا."
       },
       "freqRank": 53,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/52-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/52-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/52-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/52-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:prohibited"
     },
@@ -1807,14 +1388,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/53-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/53-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/53-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/53-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:four-leaf-clover"
     },
@@ -1832,18 +1407,10 @@
         "ar": "لم يرني أحد."
       },
       "freqRank": 55,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/54-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/54-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/54-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/54-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:see-no-evil-monkey"
     },
@@ -1861,18 +1428,10 @@
         "ar": "خسر فريقنا."
       },
       "freqRank": 56,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/55-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/55-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/55-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/55-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:soccer-ball"
     },
@@ -1898,14 +1457,8 @@
         "machineSense": "familiar"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/56-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/56-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/56-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/56-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ring"
     },
@@ -1923,19 +1476,10 @@
         "ar": "أنت إنسان."
       },
       "freqRank": 58,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/57-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/57-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/57-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/57-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person"
     },
@@ -1958,14 +1502,8 @@
         "machineSense": "familiar"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/58-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/58-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/58-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/58-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-raising-hand"
     },
@@ -1983,18 +1521,10 @@
         "ar": "لقد ساعدتنا."
       },
       "freqRank": 60,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/59-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/59-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/59-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/59-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -2012,18 +1542,10 @@
         "ar": "عُد قريبًا."
       },
       "freqRank": 61,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/60-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/60-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/60-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/60-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:back-arrow"
     },
@@ -2041,18 +1563,10 @@
         "ar": "أتعدني؟"
       },
       "freqRank": 62,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/61-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/61-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/61-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/61-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:crossed-fingers"
     },
@@ -2060,11 +1574,7 @@
       "index": 62,
       "kind": "phrase",
       "text": "consider it done",
-      "gloss": {
-        "de": "betrachte es als erledigt",
-        "pt-BR": "é pra já",
-        "en": "consider it done"
-      },
+      "gloss": { "de": "betrachte es als erledigt", "pt-BR": "é pra já", "en": "consider it done" },
       "freqRank": 63,
       "review": {
         "sense": "consider it done",
@@ -2085,14 +1595,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/62-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/62-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/62-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/62-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:check-mark-button"
     },
@@ -2110,19 +1614,10 @@
         "ar": "هل تقومون بإعادة التصنيع؟"
       },
       "freqRank": 64,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/63-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/63-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/63-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/63-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:recycling-symbol"
     },
@@ -2140,18 +1635,10 @@
         "ar": "أقبل الهدايا."
       },
       "freqRank": 65,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/64-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/64-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/64-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/64-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:wrapped-gift"
     },
@@ -2183,14 +1670,8 @@
         ]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/65-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/65-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/65-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/65-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:skull-and-crossbones"
     },
@@ -2208,18 +1689,10 @@
         "ar": "ما كنت وحيداً."
       },
       "freqRank": 67,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/66-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/66-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/66-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/66-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:busts-in-silhouette"
     },
@@ -2237,18 +1710,10 @@
         "ar": "سأعود."
       },
       "freqRank": 68,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/67-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/67-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/67-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/67-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:back-arrow"
     },
@@ -2266,18 +1731,10 @@
         "ar": "إنها جديدة."
       },
       "freqRank": 69,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/68-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/68-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/68-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/68-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:new-button"
     },
@@ -2303,14 +1760,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/69-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/69-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/69-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/69-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:compass"
     },
@@ -2328,18 +1779,10 @@
         "ar": "الجو حار اليوم."
       },
       "freqRank": 71,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/70-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/70-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/70-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/70-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:thermometer"
     },
@@ -2357,18 +1800,10 @@
         "ar": "تفضل بالدخول."
       },
       "freqRank": 72,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/71-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/71-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/71-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/71-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:door"
     },
@@ -2387,20 +1822,10 @@
         "en": "I'm married"
       },
       "freqRank": 73,
-      "review": {
-        "sense": "I'm married",
-        "translationCount": 107,
-        "otherSenses": []
-      },
+      "review": { "sense": "I'm married", "translationCount": 107, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/72-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/72-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/72-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/72-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ring"
     },
@@ -2418,18 +1843,10 @@
         "ar": "إنها صغيرة جداً."
       },
       "freqRank": 74,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/73-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/73-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/73-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/73-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ant"
     },
@@ -2447,18 +1864,10 @@
         "ar": "هي تمشي."
       },
       "freqRank": 75,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/74-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/74-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/74-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/74-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-walking"
     },
@@ -2476,19 +1885,10 @@
         "ar": "إنها جاهزة الآن."
       },
       "freqRank": 76,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/75-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/75-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/75-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/75-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:check-mark-button"
     },
@@ -2507,20 +1907,10 @@
         "en": "I'm single"
       },
       "freqRank": 77,
-      "review": {
-        "sense": "I'm single",
-        "translationCount": 118,
-        "otherSenses": []
-      },
+      "review": { "sense": "I'm single", "translationCount": 118, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/76-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/76-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/76-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/76-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-raising-hand"
     },
@@ -2538,18 +1928,10 @@
         "ar": "قل الحقيقة"
       },
       "freqRank": 78,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/77-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/77-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/77-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/77-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:speaking-head"
     },
@@ -2567,18 +1949,10 @@
         "ar": "فكر في ذلك."
       },
       "freqRank": 79,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/78-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/78-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/78-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/78-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:thought-balloon"
     },
@@ -2596,20 +1970,10 @@
         "en": "I'm straight"
       },
       "freqRank": 80,
-      "review": {
-        "sense": "I'm straight",
-        "translationCount": 54,
-        "otherSenses": []
-      },
+      "review": { "sense": "I'm straight", "translationCount": 54, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/79-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/79-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/79-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/79-am_michael.m4a", "voice": "am_michael" }
       ]
     },
     {
@@ -2626,19 +1990,10 @@
         "ar": "لقد تزوجنا."
       },
       "freqRank": 81,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/80-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/80-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/80-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/80-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:wedding"
     },
@@ -2664,14 +2019,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/81-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/81-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/81-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/81-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cup-with-straw"
     },
@@ -2689,18 +2038,10 @@
         "ar": "ندرس الموسيقى."
       },
       "freqRank": 83,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/82-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/82-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/82-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/82-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:musical-score"
     },
@@ -2718,18 +2059,10 @@
         "ar": "من كسر هذا؟"
       },
       "freqRank": 84,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/83-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/83-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/83-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/83-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:collision"
     },
@@ -2747,18 +2080,10 @@
         "ar": "يبدو عليك الملل."
       },
       "freqRank": 85,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/84-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/84-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/84-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/84-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:expressionless-face"
     },
@@ -2781,14 +2106,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/85-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/85-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/85-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/85-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:worried-face"
     },
@@ -2806,18 +2125,10 @@
         "ar": "لا تنظر إلى الوراء."
       },
       "freqRank": 87,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/86-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/86-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/86-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/86-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:back-arrow"
     },
@@ -2835,18 +2146,10 @@
         "ar": "يناسبك اللون الأخضر."
       },
       "freqRank": 88,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/87-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/87-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/87-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/87-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:green-heart"
     },
@@ -2872,14 +2175,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/88-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/88-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/88-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/88-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:face-savoring-food"
     },
@@ -2897,19 +2194,10 @@
         "ar": "أنا لست عاطشا."
       },
       "freqRank": 90,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "correctedTr": "Susuz değilim."
-      },
+      "review": { "glossedBy": "Tatoeba", "correctedTr": "Susuz değilim." },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/89-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/89-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/89-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/89-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:non-potable-water"
     },
@@ -2927,18 +2215,10 @@
         "ar": "نجح الأمر حقّا."
       },
       "freqRank": 91,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/90-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/90-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/90-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/90-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:gear"
     },
@@ -2956,18 +2236,10 @@
         "ar": "إنّها مفاجأة."
       },
       "freqRank": 92,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/91-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/91-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/91-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/91-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:wrapped-gift"
     },
@@ -2985,19 +2257,10 @@
         "ar": "ارفع يدك."
       },
       "freqRank": 93,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/92-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/92-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/92-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/92-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:raised-hand"
     },
@@ -3015,18 +2278,10 @@
         "ar": "إنها ليست مكسورة"
       },
       "freqRank": 94,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/93-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/93-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/93-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/93-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:wrench"
     },
@@ -3044,18 +2299,10 @@
         "ar": "لم يكن أحد في البيت."
       },
       "freqRank": 95,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/94-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/94-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/94-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/94-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:house"
     },
@@ -3073,20 +2320,10 @@
         "en": "it's snowing"
       },
       "freqRank": 96,
-      "review": {
-        "sense": "it's snowing",
-        "translationCount": 39,
-        "otherSenses": []
-      },
+      "review": { "sense": "it's snowing", "translationCount": 39, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/95-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/95-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/95-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/95-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:snowflake"
     },
@@ -3104,19 +2341,10 @@
         "ar": "اجلس مستقيماً."
       },
       "freqRank": 97,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/96-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/96-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/96-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/96-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:chair"
     },
@@ -3135,20 +2363,10 @@
         "en": "it's raining"
       },
       "freqRank": 98,
-      "review": {
-        "sense": "it's raining",
-        "translationCount": 98,
-        "otherSenses": []
-      },
+      "review": { "sense": "it's raining", "translationCount": 98, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/97-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/97-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/97-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/97-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cloud-with-rain"
     },
@@ -3167,20 +2385,10 @@
         "en": "please help me"
       },
       "freqRank": 99,
-      "review": {
-        "sense": "please help me",
-        "translationCount": 56,
-        "otherSenses": []
-      },
+      "review": { "sense": "please help me", "translationCount": 56, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/98-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/98-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/98-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/98-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sos-button"
     },
@@ -3198,18 +2406,10 @@
         "ar": "هم يصدقونه."
       },
       "freqRank": 100,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/99-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/99-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/99-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/99-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:folded-hands"
     },
@@ -3247,14 +2447,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/100-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/100-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/100-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/100-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:beer-mug"
     },
@@ -3272,18 +2466,10 @@
         "ar": "خسروا من جديد."
       },
       "freqRank": 102,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/101-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/101-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/101-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/101-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:disappointed-face"
     },
@@ -3301,19 +2487,10 @@
         "ar": "كِدْتَ أن تموت."
       },
       "freqRank": 103,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/102-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/102-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/102-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/102-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:skull"
     },
@@ -3331,18 +2508,10 @@
         "ar": "هل تدرس؟"
       },
       "freqRank": 104,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/103-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/103-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/103-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/103-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:open-book"
     },
@@ -3360,18 +2529,10 @@
         "ar": "لقد وعدتني."
       },
       "freqRank": 105,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/104-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/104-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/104-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/104-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -3411,14 +2572,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/105-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/105-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/105-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/105-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:pensive-face"
     },
@@ -3436,19 +2591,10 @@
         "ar": "نظف المرآة."
       },
       "freqRank": 107,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/106-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/106-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/106-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/106-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:mirror"
     },
@@ -3466,18 +2612,10 @@
         "ar": "لا شكر على واجب."
       },
       "freqRank": 108,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/107-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/107-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/107-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/107-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:smiling-face-with-smiling-eyes"
     },
@@ -3496,20 +2634,10 @@
         "en": "what does … mean?"
       },
       "freqRank": 109,
-      "review": {
-        "sense": "what does … mean?",
-        "translationCount": 78,
-        "otherSenses": []
-      },
+      "review": { "sense": "what does … mean?", "translationCount": 78, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/108-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/108-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/108-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/108-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:open-book"
     },
@@ -3527,18 +2655,10 @@
         "ar": "ها هي محفظتي."
       },
       "freqRank": 110,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/109-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/109-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/109-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/109-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:purse"
     },
@@ -3556,18 +2676,10 @@
         "ar": "مات البارحة."
       },
       "freqRank": 111,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/110-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/110-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/110-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/110-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:coffin"
     },
@@ -3593,14 +2705,8 @@
         "machineSense": "phrase"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/111-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/111-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/111-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/111-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:door"
     },
@@ -3618,19 +2724,10 @@
         "ar": "لم يحدث قط."
       },
       "freqRank": 113,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/112-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/112-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/112-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/112-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cross-mark"
     },
@@ -3648,18 +2745,10 @@
         "ar": "ما هي السعادة؟"
       },
       "freqRank": 114,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/113-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/113-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/113-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/113-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:smiling-face-with-smiling-eyes"
     },
@@ -3694,14 +2783,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/114-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/114-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/114-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/114-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:red-question-mark"
     },
@@ -3719,19 +2802,10 @@
         "ar": "يحترق الخشب بسهولة."
       },
       "freqRank": 116,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/115-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/115-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/115-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/115-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:wood"
     },
@@ -3749,18 +2823,10 @@
         "ar": "أنت تفهمني."
       },
       "freqRank": 117,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/116-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/116-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/116-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/116-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:brain"
     },
@@ -3778,18 +2844,10 @@
         "ar": "ألست عطشاناً؟"
       },
       "freqRank": 118,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/117-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/117-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/117-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/117-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:glass-of-milk"
     },
@@ -3828,14 +2886,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/118-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/118-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/118-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/118-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:red-question-mark"
     },
@@ -3853,18 +2905,10 @@
         "ar": "إنه يحب السفر."
       },
       "freqRank": 120,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/119-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/119-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/119-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/119-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:airplane"
     },
@@ -3882,18 +2926,10 @@
         "ar": "لقد أُصبت بالخيبة."
       },
       "freqRank": 121,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/120-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/120-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/120-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/120-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:disappointed-face"
     },
@@ -3919,14 +2955,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/121-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/121-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/121-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/121-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -3944,18 +2974,10 @@
         "ar": "تحسنت."
       },
       "freqRank": 123,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/122-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/122-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/122-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/122-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:chart-increasing"
     },
@@ -3974,20 +2996,10 @@
         "en": "do you need help?"
       },
       "freqRank": 124,
-      "review": {
-        "sense": "do you need help?",
-        "translationCount": 98,
-        "otherSenses": []
-      },
+      "review": { "sense": "do you need help?", "translationCount": 98, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/123-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/123-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/123-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/123-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sos-button"
     },
@@ -4005,18 +3017,10 @@
         "ar": "إنها تمطر مجدداً!"
       },
       "freqRank": 125,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/124-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/124-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/124-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/124-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:umbrella-with-rain-drops"
     },
@@ -4034,19 +3038,10 @@
         "ar": "العلم قوة."
       },
       "freqRank": 126,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["es"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["es"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/125-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/125-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/125-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/125-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:books"
     },
@@ -4064,18 +3059,10 @@
         "ar": "ليس هناك ما ينقص."
       },
       "freqRank": 127,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/126-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/126-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/126-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/126-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:check-mark-button"
     },
@@ -4112,14 +3099,8 @@
         ]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/127-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/127-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/127-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/127-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-shrugging"
     },
@@ -4137,20 +3118,10 @@
         "ar": "يحترق الورق بسهولة."
       },
       "freqRank": 129,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "correctedTr": "Kağıt kolayca yakar.",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "correctedTr": "Kağıt kolayca yakar.", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/128-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/128-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/128-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/128-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:page-facing-up"
     },
@@ -4168,18 +3139,10 @@
         "ar": "ارجع إلى الوراء من فضلك."
       },
       "freqRank": 130,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/129-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/129-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/129-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/129-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:left-right-arrow"
     },
@@ -4197,18 +3160,10 @@
         "ar": "لقد هوجموا."
       },
       "freqRank": 131,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/130-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/130-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/130-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/130-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:crossed-swords"
     },
@@ -4247,14 +3202,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/131-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/131-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/131-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/131-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:hundred-points"
     },
@@ -4272,19 +3221,10 @@
         "ar": "ينكسر الزجاج بسهولة."
       },
       "freqRank": 133,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/132-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/132-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/132-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/132-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:tumbler-glass"
     },
@@ -4302,18 +3242,10 @@
         "ar": "الناس يحبون الحرية."
       },
       "freqRank": 134,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/133-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/133-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/133-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/133-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:dove"
     },
@@ -4352,14 +3284,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/134-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/134-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/134-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/134-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:fast-forward-button"
     },
@@ -4377,18 +3303,10 @@
         "ar": "من فضلك، تحدث ببطء."
       },
       "freqRank": 136,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/135-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/135-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/135-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/135-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:turtle"
     },
@@ -4406,18 +3324,10 @@
         "ar": "هي مناسبة تماما."
       },
       "freqRank": 137,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/136-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/136-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/136-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/136-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:t-shirt"
     },
@@ -4443,14 +3353,8 @@
         "edited": ["ar", "ru"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/137-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/137-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/137-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/137-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:salt"
     },
@@ -4468,18 +3372,10 @@
         "ar": "من بحث وجد."
       },
       "freqRank": 139,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/138-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/138-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/138-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/138-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:magnifying-glass-tilted-left"
     },
@@ -4497,18 +3393,10 @@
         "ar": "خيبت أملي."
       },
       "freqRank": 140,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/139-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/139-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/139-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/139-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:disappointed-face"
     },
@@ -4534,14 +3422,8 @@
         "edited": ["pt-BR", "tr"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/140-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/140-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/140-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/140-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sos-button"
     },
@@ -4559,19 +3441,10 @@
         "ar": "وأخيراً أتت الجمعة."
       },
       "freqRank": 142,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/141-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/141-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/141-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/141-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:party-popper"
     },
@@ -4589,18 +3462,10 @@
         "ar": "تفضّل البيت بيتك."
       },
       "freqRank": 143,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/142-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/142-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/142-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/142-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:fork-and-knife-with-plate"
     },
@@ -4617,20 +3482,10 @@
         "en": "I have a toothache"
       },
       "freqRank": 144,
-      "review": {
-        "sense": "I have a toothache",
-        "translationCount": 26,
-        "otherSenses": []
-      },
+      "review": { "sense": "I have a toothache", "translationCount": 26, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/143-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/143-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/143-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/143-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:tooth"
     },
@@ -4648,18 +3503,10 @@
         "ar": "عليك أن تتأسف."
       },
       "freqRank": 145,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/144-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/144-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/144-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/144-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-bowing"
     },
@@ -4677,18 +3524,10 @@
         "ar": "لا يفهمني أحد."
       },
       "freqRank": 146,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/145-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/145-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/145-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/145-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:pensive-face"
     },
@@ -4706,18 +3545,10 @@
         "ar": "تذكر وعدك."
       },
       "freqRank": 147,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/146-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/146-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/146-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/146-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -4742,14 +3573,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/147-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/147-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/147-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/147-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:glasses"
     },
@@ -4767,18 +3592,10 @@
         "ar": "حجرة، ورقة، مقص."
       },
       "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/148-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/148-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/148-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/148-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:scissors"
     },
@@ -4796,18 +3613,10 @@
         "ar": "التاريخ يعيد نفسه."
       },
       "freqRank": 150,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/149-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/149-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/149-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/149-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:scroll"
     },
@@ -4832,14 +3641,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/150-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/150-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/150-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/150-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handbag"
     },
@@ -4857,18 +3660,10 @@
         "ar": "تعبر الكلمات عن الأفكار."
       },
       "freqRank": 152,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/151-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/151-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/151-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/151-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:speech-balloon"
     },
@@ -4886,19 +3681,10 @@
         "ar": "اعتبر نفسك محظوظا"
       },
       "freqRank": 153,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "correctedTr": "Kendini şanslı düşün."
-      },
+      "review": { "glossedBy": "Tatoeba", "correctedTr": "Kendini şanslı düşün." },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/152-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/152-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/152-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/152-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:four-leaf-clover"
     },
@@ -4924,14 +3710,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/153-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/153-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/153-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/153-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:key"
     },
@@ -4949,18 +3729,10 @@
         "ar": "لقد فاجأت الجميع."
       },
       "freqRank": 155,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/154-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/154-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/154-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/154-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:confetti-ball"
     },
@@ -4978,18 +3750,10 @@
         "ar": "هو بطل."
       },
       "freqRank": 156,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/155-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/155-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/155-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/155-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:superhero"
     },
@@ -5015,14 +3779,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/156-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/156-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/156-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/156-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:purse"
     },
@@ -5040,18 +3798,10 @@
         "ar": "أطلق عليّ الرّصاص."
       },
       "freqRank": 158,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/157-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/157-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/157-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/157-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:collision"
     },
@@ -5069,18 +3819,10 @@
         "ar": "استيقظت للتوّ."
       },
       "freqRank": 159,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/158-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/158-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/158-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/158-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:bed"
     },
@@ -5098,18 +3840,10 @@
         "ar": "يمكنك أن تفعلها!"
       },
       "freqRank": 160,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/159-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/159-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/159-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/159-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:flexed-biceps"
     },
@@ -5137,14 +3871,8 @@
         "edited": ["ar"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/160-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/160-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/160-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/160-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:drop-of-blood"
     },
@@ -5162,18 +3890,10 @@
         "ar": "أحضرها لي."
       },
       "freqRank": 162,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/161-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/161-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/161-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/161-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:palm-up-hand"
     },
@@ -5191,18 +3911,10 @@
         "ar": "أعطه إياه."
       },
       "freqRank": 163,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/162-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/162-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/162-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/162-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:palms-up-together"
     },
@@ -5228,14 +3940,8 @@
         "edited": ["ar"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/163-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/163-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/163-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/163-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:fire"
     },
@@ -5253,19 +3959,10 @@
         "ar": "كيف بإمكاني مساعدتك؟"
       },
       "freqRank": 165,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/164-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/164-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/164-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/164-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -5290,14 +3987,8 @@
         "edited": ["ru"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/165-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/165-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/165-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/165-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:shield"
     },
@@ -5315,19 +4006,10 @@
         "ar": "ما مدى ارتفاعها؟"
       },
       "freqRank": 167,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/166-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/166-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/166-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/166-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:straight-ruler"
     },
@@ -5345,18 +4027,10 @@
         "ar": "أنا سائح."
       },
       "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/167-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/167-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/167-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/167-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:luggage"
     },
@@ -5374,18 +4048,10 @@
         "ar": "كان ذلك فأراً."
       },
       "freqRank": 169,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/168-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/168-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/168-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/168-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:mouse-face"
     },
@@ -5404,20 +4070,10 @@
         "en": "isn't it so?"
       },
       "freqRank": 170,
-      "review": {
-        "sense": "isn't it so?",
-        "translationCount": 72,
-        "otherSenses": []
-      },
+      "review": { "sense": "isn't it so?", "translationCount": 72, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/169-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/169-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/169-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/169-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:red-question-mark"
     },
@@ -5435,18 +4091,10 @@
         "ar": "هل تحتاج لمساعدة؟"
       },
       "freqRank": 171,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/170-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/170-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/170-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/170-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -5464,19 +4112,10 @@
         "ar": "حان وقت الاستيقاظ."
       },
       "freqRank": 172,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar", "ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar", "ru"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/171-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/171-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/171-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/171-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:alarm-clock"
     },
@@ -5494,18 +4133,10 @@
         "ar": "هل أنت في البيت؟"
       },
       "freqRank": 173,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/172-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/172-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/172-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/172-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:house"
     },
@@ -5542,14 +4173,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/173-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/173-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/173-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/173-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-shrugging"
     },
@@ -5567,18 +4192,10 @@
         "ar": "أتعتقد ذلك؟"
       },
       "freqRank": 175,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/174-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/174-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/174-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/174-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:thought-balloon"
     },
@@ -5596,18 +4213,10 @@
         "ar": "عليّ أن أدرس."
       },
       "freqRank": 176,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/175-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/175-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/175-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/175-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:open-book"
     },
@@ -5626,20 +4235,10 @@
         "en": "it's an emergency"
       },
       "freqRank": 177,
-      "review": {
-        "sense": "it's an emergency",
-        "translationCount": 30,
-        "otherSenses": []
-      },
+      "review": { "sense": "it's an emergency", "translationCount": 30, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/176-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/176-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/176-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/176-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:police-car-light"
     },
@@ -5657,18 +4256,10 @@
         "ar": "أحتاج إلى مساعدته."
       },
       "freqRank": 178,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/177-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/177-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/177-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/177-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sos-button"
     },
@@ -5687,20 +4278,10 @@
         "en": "it's too expensive"
       },
       "freqRank": 179,
-      "review": {
-        "sense": "it's too expensive",
-        "translationCount": 38,
-        "otherSenses": []
-      },
+      "review": { "sense": "it's too expensive", "translationCount": 38, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/178-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/178-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/178-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/178-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:heavy-dollar-sign"
     },
@@ -5718,18 +4299,10 @@
         "ar": "أستيقظ مبكراً."
       },
       "freqRank": 180,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/179-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/179-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/179-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/179-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sunrise"
     },
@@ -5747,18 +4320,10 @@
         "ar": "أليست سوداء؟"
       },
       "freqRank": 181,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/180-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/180-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/180-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/180-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:black-circle"
     },
@@ -5776,18 +4341,10 @@
         "ar": "هل أنت محامٍ؟"
       },
       "freqRank": 182,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/181-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/181-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/181-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/181-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:balance-scale"
     },
@@ -5826,14 +4383,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/182-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/182-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/182-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/182-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:repeat-button"
     },
@@ -5851,19 +4402,10 @@
         "ar": "تعال وساعدنا."
       },
       "freqRank": 184,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/183-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/183-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/183-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/183-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -5881,18 +4423,10 @@
         "ar": "أثق في قدرتك."
       },
       "freqRank": 185,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/184-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/184-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/184-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/184-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:thumbs-up"
     },
@@ -5910,18 +4444,10 @@
         "ar": "ستمطر قريباً."
       },
       "freqRank": 186,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/185-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/185-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/185-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/185-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cloud-with-rain"
     },
@@ -5960,14 +4486,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/186-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/186-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/186-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/186-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -5985,18 +4505,10 @@
         "ar": "أعرف الحقيقة."
       },
       "freqRank": 188,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/187-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/187-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/187-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/187-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:light-bulb"
     },
@@ -6035,14 +4547,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/188-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/188-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/188-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/188-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:one-o-clock"
     },
@@ -6060,20 +4566,10 @@
         "en": "thanks for your help"
       },
       "freqRank": 190,
-      "review": {
-        "sense": "thanks for your help",
-        "translationCount": 46,
-        "otherSenses": []
-      },
+      "review": { "sense": "thanks for your help", "translationCount": 46, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/189-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/189-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/189-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/189-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:folded-hands"
     },
@@ -6091,18 +4587,10 @@
         "ar": "أحتاج مساعدتك."
       },
       "freqRank": 191,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/190-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/190-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/190-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/190-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sos-button"
     },
@@ -6120,18 +4608,10 @@
         "ar": "كان في المدرسة."
       },
       "freqRank": 192,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/191-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/191-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/191-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/191-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:school"
     },
@@ -6149,18 +4629,10 @@
         "ar": "أشتاق إليك كثيراً."
       },
       "freqRank": 193,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/192-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/192-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/192-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/192-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:pleading-face"
     },
@@ -6178,18 +4650,10 @@
         "ar": "لماذا تدرس؟"
       },
       "freqRank": 194,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/193-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/193-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/193-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/193-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:books"
     },
@@ -6207,18 +4671,10 @@
         "ar": "أنا شربت النبيذ."
       },
       "freqRank": 195,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/194-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/194-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/194-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/194-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:wine-glass"
     },
@@ -6241,14 +4697,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/195-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/195-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/195-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/195-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:world-map"
     },
@@ -6266,18 +4716,10 @@
         "ar": "هل الجميع جاهز؟"
       },
       "freqRank": 197,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/196-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/196-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/196-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/196-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:chequered-flag"
     },
@@ -6295,18 +4737,10 @@
         "ar": "أيمكنك مساعدتي؟"
       },
       "freqRank": 198,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/197-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/197-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/197-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/197-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sos-button"
     },
@@ -6325,20 +4759,10 @@
         "en": "marriage proposal"
       },
       "freqRank": 199,
-      "review": {
-        "sense": "marriage proposal",
-        "translationCount": 68,
-        "otherSenses": []
-      },
+      "review": { "sense": "marriage proposal", "translationCount": 68, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/198-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/198-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/198-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/198-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ring"
     },
@@ -6356,18 +4780,10 @@
         "ar": "بدأ يصرخ."
       },
       "freqRank": 200,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/199-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/199-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/199-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/199-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:loudspeaker"
     },
@@ -6385,18 +4801,10 @@
         "ar": "طلبت النجدة."
       },
       "freqRank": 201,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/200-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/200-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/200-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/200-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:telephone-receiver"
     },
@@ -6414,18 +4822,10 @@
         "ar": "لقد أتى بنفسه"
       },
       "freqRank": 202,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/201-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/201-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/201-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/201-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-walking"
     },
@@ -6458,14 +4858,8 @@
         ]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/202-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/202-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/202-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/202-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-gesturing-no"
     },
@@ -6483,18 +4877,10 @@
         "ar": "أشعل عود ثقاب."
       },
       "freqRank": 204,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/203-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/203-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/203-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/203-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:fire"
     },
@@ -6519,14 +4905,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/204-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/204-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/204-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/204-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:police-car"
     },
@@ -6544,18 +4924,10 @@
         "ar": "لقد أخلف وعده."
       },
       "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/205-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/205-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/205-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/205-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:broken-heart"
     },
@@ -6573,18 +4945,10 @@
         "ar": "بالكاد يمكنني المشي."
       },
       "freqRank": 207,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/206-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/206-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/206-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/206-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:white-cane"
     },
@@ -6602,18 +4966,10 @@
         "ar": "الجو مشمس اليوم."
       },
       "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/207-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/207-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/207-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/207-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sun"
     },
@@ -6638,14 +4994,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/208-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/208-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/208-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/208-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:stethoscope"
     },
@@ -6663,18 +5013,10 @@
         "ar": "أراك الأسبوع القادم!"
       },
       "freqRank": 210,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/209-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/209-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/209-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/209-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:waving-hand"
     },
@@ -6692,18 +5034,10 @@
         "ar": "لا مشكلة مطلقا!"
       },
       "freqRank": 211,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/210-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/210-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/210-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/210-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ok-hand"
     },
@@ -6730,14 +5064,8 @@
         "edited": ["pt-BR"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/211-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/211-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/211-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/211-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:stethoscope"
     },
@@ -6755,18 +5083,10 @@
         "ar": "افتح الراديو."
       },
       "freqRank": 213,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/212-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/212-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/212-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/212-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:radio"
     },
@@ -6784,18 +5104,10 @@
         "ar": "رأيته يركض."
       },
       "freqRank": 214,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/213-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/213-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/213-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/213-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-running"
     },
@@ -6813,18 +5125,10 @@
         "ar": "عليك أن تسرع."
       },
       "freqRank": 215,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/214-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/214-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/214-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/214-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:fast-forward-button"
     },
@@ -6850,14 +5154,8 @@
         "edited": ["es", "pt-BR", "ru", "tr"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/215-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/215-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/215-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/215-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:luggage"
     },
@@ -6875,18 +5173,10 @@
         "ar": "أتوقع مساعدتك."
       },
       "freqRank": 217,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/216-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/216-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/216-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/216-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -6924,14 +5214,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/217-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/217-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/217-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/217-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:credit-card"
     },
@@ -6957,14 +5241,8 @@
         "edited": ["ar"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/218-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/218-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/218-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/218-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:mobile-phone"
     },
@@ -6982,18 +5260,10 @@
         "ar": "أحتاج نصيحتك."
       },
       "freqRank": 220,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/219-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/219-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/219-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/219-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:speech-balloon"
     },
@@ -7011,18 +5281,10 @@
         "ar": "دعِ الأمر لي."
       },
       "freqRank": 221,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/220-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/220-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/220-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/220-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-raising-hand"
     },
@@ -7040,18 +5302,10 @@
         "ar": "نظرت حولي."
       },
       "freqRank": 222,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/221-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/221-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/221-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/221-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:eyes"
     },
@@ -7069,18 +5323,10 @@
         "ar": "سيكلفك ذلك ثلاثين يورو."
       },
       "freqRank": 223,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/222-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/222-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/222-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/222-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:euro-banknote"
     },
@@ -7098,18 +5344,10 @@
         "ar": "كنت أتوقعه!"
       },
       "freqRank": 224,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/223-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/223-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/223-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/223-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:relieved-face"
     },
@@ -7132,14 +5370,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/224-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/224-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/224-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/224-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ambulance"
     },
@@ -7157,18 +5389,10 @@
         "ar": "أوقف المنبه."
       },
       "freqRank": 226,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/225-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/225-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/225-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/225-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:alarm-clock"
     },
@@ -7186,18 +5410,10 @@
         "ar": "أستمطر اليوم؟"
       },
       "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/226-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/226-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/226-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/226-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cloud-with-rain"
     },
@@ -7215,18 +5431,10 @@
         "ar": "يمكنك أن تدرس هنا."
       },
       "freqRank": 228,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/227-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/227-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/227-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/227-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:open-book"
     },
@@ -7251,14 +5459,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/228-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/228-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/228-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/228-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:heavy-dollar-sign"
     },
@@ -7276,18 +5478,10 @@
         "ar": "السمك رخيص اليوم."
       },
       "freqRank": 230,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/229-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/229-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/229-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/229-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:fish"
     },
@@ -7305,18 +5499,10 @@
         "ar": "كتب التقرير."
       },
       "freqRank": 231,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/230-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/230-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/230-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/230-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:memo"
     },
@@ -7354,14 +5540,8 @@
         "licence": "CC BY-SA 4.0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/231-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/231-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/231-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/231-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-shrugging"
     },
@@ -7379,18 +5559,10 @@
         "ar": "أما زالت تمطر؟"
       },
       "freqRank": 233,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/232-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/232-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/232-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/232-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:umbrella-with-rain-drops"
     },
@@ -7408,18 +5580,10 @@
         "ar": "ربما ستمطر الليلة."
       },
       "freqRank": 234,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/233-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/233-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/233-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/233-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cloud-with-rain"
     },
@@ -7456,14 +5620,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/234-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/234-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/234-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/234-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-gesturing-no"
     },
@@ -7481,18 +5639,10 @@
         "ar": "كان رخيصاً جداً."
       },
       "freqRank": 236,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/235-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/235-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/235-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/235-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:label"
     },
@@ -7510,18 +5660,10 @@
         "ar": "ماذا تقترح؟"
       },
       "freqRank": 237,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/236-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/236-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/236-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/236-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:light-bulb"
     },
@@ -7536,20 +5678,10 @@
         "en": "the drinks are on me"
       },
       "freqRank": 238,
-      "review": {
-        "sense": "the drinks are on me",
-        "translationCount": 10,
-        "otherSenses": []
-      },
+      "review": { "sense": "the drinks are on me", "translationCount": 10, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/237-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/237-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/237-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/237-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:clinking-beer-mugs"
     },
@@ -7567,18 +5699,10 @@
         "ar": "عليك أن تدرس بجدّ."
       },
       "freqRank": 239,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/238-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/238-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/238-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/238-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:books"
     },
@@ -7596,18 +5720,10 @@
         "ar": "هل تفهمني؟"
       },
       "freqRank": 240,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/239-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/239-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/239-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/239-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:brain"
     },
@@ -7625,19 +5741,10 @@
         "ar": "ارسم خطاً مستقيماً."
       },
       "freqRank": 241,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/240-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/240-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/240-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/240-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:triangular-ruler"
     },
@@ -7654,20 +5761,10 @@
         "en": "there's been an accident"
       },
       "freqRank": 242,
-      "review": {
-        "sense": "there's been an accident",
-        "translationCount": 23,
-        "otherSenses": []
-      },
+      "review": { "sense": "there's been an accident", "translationCount": 23, "otherSenses": [] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/241-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/241-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/241-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/241-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:police-car-light"
     },
@@ -7685,18 +5782,10 @@
         "ar": "هل أنهيتها؟"
       },
       "freqRank": 243,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/242-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/242-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/242-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/242-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:chequered-flag"
     },
@@ -7714,19 +5803,10 @@
         "ar": "أنا أعتذر عن هذا."
       },
       "freqRank": 244,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/243-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/243-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/243-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/243-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-bowing"
     },
@@ -7765,14 +5845,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/244-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/244-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/244-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/244-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:envelope"
     },
@@ -7790,19 +5864,10 @@
         "ar": "أظن أنني فهمت."
       },
       "freqRank": 246,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/245-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/245-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/245-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/245-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:light-bulb"
     },
@@ -7820,18 +5885,10 @@
         "ar": "هل هناك مصعد؟"
       },
       "freqRank": 247,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/246-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/246-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/246-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/246-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:elevator"
     },
@@ -7856,14 +5913,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/247-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/247-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/247-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/247-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:calendar"
     },
@@ -7881,18 +5932,10 @@
         "ar": "قل الحقيقة دائماً."
       },
       "freqRank": 249,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/248-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/248-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/248-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/248-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:speaking-head"
     },
@@ -7910,18 +5953,10 @@
         "ar": "هل تفهَمُها؟"
       },
       "freqRank": 250,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/249-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/249-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/249-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/249-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:woman"
     },
@@ -7945,14 +5980,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/250-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/250-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/250-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/250-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:tear-off-calendar"
     },
@@ -7970,18 +5999,10 @@
         "ar": "لا أحب أن أكون وحدي."
       },
       "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/251-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/251-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/251-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/251-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-standing"
     },
@@ -7999,18 +6020,10 @@
         "ar": "كان الجو بارداً البارحة."
       },
       "freqRank": 253,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/252-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/252-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/252-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/252-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cold-face"
     },
@@ -8035,14 +6048,8 @@
         "edited": ["ar"]
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/253-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/253-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/253-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/253-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:thought-balloon"
     },
@@ -8060,18 +6067,10 @@
         "ar": "هل ستمطر غداً؟"
       },
       "freqRank": 255,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/254-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/254-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/254-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/254-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:sun-behind-rain-cloud"
     },
@@ -8089,18 +6088,10 @@
         "ar": "القطط تكره البلل."
       },
       "freqRank": 256,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/255-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/255-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/255-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/255-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cat"
     },
@@ -8118,18 +6109,10 @@
         "ar": "أعطني فرصةً أخرى."
       },
       "freqRank": 257,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/256-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/256-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/256-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/256-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:counterclockwise-arrows-button"
     },
@@ -8155,14 +6138,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/257-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/257-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/257-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/257-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:clipboard"
     },
@@ -8180,18 +6157,10 @@
         "ar": "حاول أن يهرب."
       },
       "freqRank": 259,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/258-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/258-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/258-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/258-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-running"
     },
@@ -8209,18 +6178,10 @@
         "ar": "أُقَدِّر مساعدتك."
       },
       "freqRank": 260,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/259-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/259-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/259-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/259-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:folded-hands"
     },
@@ -8259,14 +6220,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/260-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/260-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/260-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/260-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:speaking-head"
     },
@@ -8284,18 +6239,10 @@
         "ar": "ساعدته بالأمس."
       },
       "freqRank": 262,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/261-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/261-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/261-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/261-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:handshake"
     },
@@ -8313,19 +6260,10 @@
         "ar": "اتبع قلبك فحسب."
       },
       "freqRank": 263,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/262-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/262-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/262-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/262-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:red-heart"
     },
@@ -8365,14 +6303,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/263-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/263-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/263-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/263-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:heart-with-arrow"
     },
@@ -8390,18 +6322,10 @@
         "ar": "نحن نتعلم بالتجربة."
       },
       "freqRank": 265,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/264-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/264-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/264-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/264-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:graduation-cap"
     },
@@ -8419,18 +6343,10 @@
         "ar": "باءت كل محاولاتنا بالفشل."
       },
       "freqRank": 266,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/265-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/265-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/265-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/265-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:cross-mark"
     },
@@ -8456,14 +6372,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/266-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/266-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/266-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/266-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:briefcase"
     },
@@ -8481,18 +6391,10 @@
         "ar": "هل كل شيء على ما يرام؟"
       },
       "freqRank": 268,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/267-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/267-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/267-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/267-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:ok-hand"
     },
@@ -8510,18 +6412,10 @@
         "ar": "للأسف ذلك صحيح."
       },
       "freqRank": 269,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/268-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/268-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/268-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/268-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:pensive-face"
     },
@@ -8539,18 +6433,10 @@
         "ar": "عالم آخر ممكن."
       },
       "freqRank": 270,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/269-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/269-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/269-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/269-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:globe-showing-europe-africa"
     },
@@ -8573,14 +6459,8 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/270-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/270-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/270-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/270-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:restroom"
     },
@@ -8598,18 +6478,10 @@
         "ar": "عليك أن تتحكم بنزواتك."
       },
       "freqRank": 272,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/271-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/271-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/271-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/271-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:person-in-lotus-position"
     },
@@ -8627,18 +6499,10 @@
         "ar": "اختر مضربك المفضل."
       },
       "freqRank": 273,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/272-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/272-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/272-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/272-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:tennis"
     },
@@ -8674,14 +6538,8 @@
         "licence": "CC0"
       },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/273-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/273-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/273-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/273-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:credit-card"
     },
@@ -8699,19 +6557,10 @@
         "ar": "أنا وُلدت في عام 1972."
       },
       "freqRank": 275,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/en_beginner/274-af_heart.m4a",
-          "voice": "af_heart"
-        },
-        {
-          "key": "echo/packs/en_beginner/274-am_michael.m4a",
-          "voice": "am_michael"
-        }
+        { "key": "echo/packs/en_beginner/274-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_beginner/274-am_michael.m4a", "voice": "am_michael" }
       ],
       "image": "cue:baby"
     }
