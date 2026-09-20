@@ -18,6 +18,11 @@ import { LoadFailed } from '../../../../src/components/LoadFailed'
 import { Avatar } from '../../../../src/components/ui/Avatar'
 import { Button } from '../../../../src/components/ui/Button'
 import { Screen } from '../../../../src/components/ui/Screen'
+import {
+  PlayAgainButton,
+  PlayAgainProvider,
+  useTakePlay,
+} from '../../../../src/components/echo/PlayAgain'
 import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useT } from '../../../../src/i18n'
@@ -26,7 +31,6 @@ import { voiceLabel } from '../../../../src/i18n/labels'
 import { useAppConfig } from '../../../../src/hooks/useAppConfig'
 import { useProfileCache } from '../../../../src/hooks/useProfileCache'
 import { confirmAlert, showAlert } from '../../../../src/lib/alert'
-import { ensurePlaybackAudioMode } from '../../../../src/lib/audioSession'
 import { errorCodeOf } from '../../../../src/lib/errors'
 import { dueInCompact } from '../../../../src/lib/format'
 import { goBackTo } from '../../../../src/lib/navigation'
@@ -112,15 +116,18 @@ function Card({ card }: { card: EchoCard }) {
         voice was the one shown without any.
       */}
       {recordings.length > 0 || readings.length > 0 ? (
-        <View style={styles.block}>
-          <Text style={styles.label}>{t('echo.cardAudio')}</Text>
-          {recordings.map((audio) => (
-            <Recording key={audio.url} audio={audio} />
-          ))}
-          {readings.map((take) => (
-            <Reading key={take.voice} take={take} />
-          ))}
-        </View>
+        <PlayAgainProvider>
+          <View style={styles.block}>
+            <Text style={styles.label}>{t('echo.cardAudio')}</Text>
+            {recordings.map((audio) => (
+              <Recording key={audio.url} audio={audio} />
+            ))}
+            {readings.map((take) => (
+              <Reading key={take.voice} take={take} />
+            ))}
+            <PlayAgainButton />
+          </View>
+        </PlayAgainProvider>
       ) : null}
       <ReadAloud card={card} />
 
@@ -324,12 +331,7 @@ function Recording({ audio }: { audio: EchoAudio }) {
   const { colors } = useTheme()
   const t = useT()
   const player = useAudioPlayer(audio.url)
-
-  async function play(): Promise<void> {
-    await ensurePlaybackAudioMode()
-    void player.seekTo(0)
-    player.play()
-  }
+  const play = useTakePlay(player)
 
   return (
     <Pressable
@@ -353,12 +355,7 @@ function Reading({ take }: { take: EchoVoice }) {
   const { colors } = useTheme()
   const t = useT()
   const player = useAudioPlayer(take.url)
-
-  async function play(): Promise<void> {
-    await ensurePlaybackAudioMode()
-    void player.seekTo(0)
-    player.play()
-  }
+  const play = useTakePlay(player)
 
   return (
     <Pressable

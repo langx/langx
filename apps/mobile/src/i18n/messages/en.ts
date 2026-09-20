@@ -334,6 +334,13 @@ export const en = {
     good: 'Good',
     easy: 'Easy',
     play: 'Play',
+    /**
+     * One button under the takes, repeating whichever was pressed last.
+     * A card can hold three — a person's recording and two synthesised
+     * readings — and finding the one just heard among them is what this
+     * saves. Same words as `chat.playAgain`, which is the same act.
+     */
+    playAgain: 'Play again',
     /** So a recording by a person is never mistaken for anything else. */
     /* A machine reading, and the label says so — there is nobody to credit. */
     /* Over the rows a pack would add next, under its Start button. */

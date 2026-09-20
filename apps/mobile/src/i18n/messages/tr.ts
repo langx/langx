@@ -293,6 +293,7 @@ export const tr: Localized<EnMessages> = {
     good: 'İyi',
     easy: 'Kolay',
     play: 'Oynat',
+    playAgain: 'Tekrar dinle',
     packNext: 'Sıradakiler',
     autoplayOn: 'Otomatik oynatma açık',
     autoplayOff: 'Otomatik oynatma kapalı',

@@ -281,6 +281,7 @@ export const ptBR: Localized<EnMessages> = {
     good: 'Bom',
     easy: 'Fácil',
     play: 'Ouvir',
+    playAgain: 'Ouvir de novo',
     packNext: 'A seguir',
     autoplayOn: 'Reprodução automática ativada',
     autoplayOff: 'Reprodução automática desativada',

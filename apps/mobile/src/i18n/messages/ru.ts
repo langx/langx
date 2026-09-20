@@ -308,6 +308,7 @@ export const ru: Localized<EnMessages> = {
     good: 'Хорошо',
     easy: 'Легко',
     play: 'Прослушать',
+    playAgain: 'Послушать ещё раз',
     packNext: 'Далее',
     autoplayOn: 'Автовоспроизведение включено',
     autoplayOff: 'Автовоспроизведение выключено',

@@ -307,6 +307,7 @@ export const ar: Localized<EnMessages> = {
     good: 'جيدة',
     easy: 'سهلة',
     play: 'استماع',
+    playAgain: 'استمع مرة أخرى',
     packNext: 'التالي',
     autoplayOn: 'التشغيل التلقائي مفعّل',
     autoplayOff: 'التشغيل التلقائي متوقف',

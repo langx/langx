@@ -23,6 +23,11 @@ import { ProgressBar } from '../../../src/components/ui/ProgressBar'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
+import {
+  PlayAgainButton,
+  PlayAgainProvider,
+  useTakePlay,
+} from '../../../src/components/echo/PlayAgain'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { useKeyboardClearance } from '../../../src/hooks/useKeyboardClearance'
 import { useT } from '../../../src/i18n'
@@ -516,29 +521,32 @@ export default function EchoSessionScreen() {
           production card mounts these only once the answer is up, which is
           also when they may speak: the sentence *is* the answer.
         */}
-          {!producing || revealed
-            ? recordings.map((audio, i) => (
-                <Recording
-                  key={`${card._id}:${audio.url}`}
-                  audio={audio}
-                  autoplay={autoplay && i === 0}
-                />
-              ))
-            : null}
-          {/*
+          <PlayAgainProvider key={card._id}>
+            {!producing || revealed
+              ? recordings.map((audio, i) => (
+                  <Recording
+                    key={`${card._id}:${audio.url}`}
+                    audio={audio}
+                    autoplay={autoplay && i === 0}
+                  />
+                ))
+              : null}
+            {/*
           The pack's own readings, under the people. Labelled by register and
           by nothing else: there is nobody to credit, and a name here would
           make a voice model indistinguishable from the volunteer above it.
         */}
-          {!producing || revealed
-            ? (card.voices ?? []).map((take, i) => (
-                <Reading
-                  key={`${card._id}:${take.voice}`}
-                  take={take}
-                  autoplay={autoplay && recordings.length === 0 && i === 0}
-                />
-              ))
-            : null}
+            {!producing || revealed
+              ? (card.voices ?? []).map((take, i) => (
+                  <Reading
+                    key={`${card._id}:${take.voice}`}
+                    take={take}
+                    autoplay={autoplay && recordings.length === 0 && i === 0}
+                  />
+                ))
+              : null}
+            <PlayAgainButton />
+          </PlayAgainProvider>
 
           {revealed ? (
             <>
@@ -652,12 +660,7 @@ function Recording({ audio, autoplay = false }: { audio: EchoAudio; autoplay?: b
   const t = useT()
   const player = useAudioPlayer(audio.url)
   useAutoplay(player, autoplay)
-
-  async function play(): Promise<void> {
-    await ensurePlaybackAudioMode()
-    void player.seekTo(0)
-    player.play()
-  }
+  const play = useTakePlay(player)
 
   return (
     <Pressable
@@ -684,12 +687,7 @@ function Reading({ take, autoplay = false }: { take: EchoVoice; autoplay?: boole
   const t = useT()
   const player = useAudioPlayer(take.url)
   useAutoplay(player, autoplay)
-
-  async function play(): Promise<void> {
-    await ensurePlaybackAudioMode()
-    void player.seekTo(0)
-    player.play()
-  }
+  const play = useTakePlay(player)
 
   return (
     <Pressable
