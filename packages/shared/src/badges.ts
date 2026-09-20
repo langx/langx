@@ -78,30 +78,25 @@ export interface BadgeDefinition {
   threshold: number
   label: string
   /**
-   * Glyph name, Feather by default — `mci:` in front means
-   * MaterialCommunityIcons instead, for the two marks Feather has no glyph
-   * for (a sprout and a coin in a hand).
+   * A vector-font glyph name, Feather by default — `mci:` in front means
+   * MaterialCommunityIcons.
    *
-   * A prefix rather than a second field: the family is a property of the name,
-   * not of the badge, and a `{ family, name }` pair for the sake of two
-   * entries would be read at every call site to answer a question only the
-   * grid asks. `badgeGlyph.test.ts` on the mobile side checks every name here
-   * against the shipped glyph maps, so a typo is a failing test rather than an
-   * empty circle.
+   * **Nothing in the current app reads this.** Each badge wears its own
+   * drawing now, and `badgeArt.ts` on the mobile side finds it by the badge's
+   * `id`; these names are here for **older installs**, which draw a glyph from
+   * whatever this field says.
    *
-   * On the definition rather than switched on in the grid: the icon is a
-   * property of the kind, and a `kind === 'streak' ? … : …` ternary silently
-   * gave every new kind the correction tick. The streak used to be `null`
-   * here and a "🔥" in the grid — the one emoji left in a column of glyphs,
-   * and drawn differently on every platform.
+   * That is not tidiness, it is a bill already paid. The drawings first
+   * shipped by putting their names in this field, which travels in the API's
+   * DTO — so the moment the server deployed, every app that had not yet taken
+   * the update asked a vector font for `candle` and got its missing-glyph box:
+   * a profile full of question marks, on builds whose fingerprint the update
+   * could not even reach. A field the client reads is a field the *oldest*
+   * client reads, and the only safe thing to put in it is what the oldest
+   * client already understood.
    *
-   * **The names themselves are frozen.** They travel in the API's DTO, so the
-   * app reading one is not always the app this file shipped with: the day the
-   * badges wore drawings instead, their names went in here, and every install
-   * that had not taken the update asked a vector font for `candle` and got its
-   * missing-glyph box — a profile full of question marks, on builds an
-   * over-the-air update could not always reach. A new badge takes whichever of
-   * these six is closest. Nothing new goes here, and nothing here changes.
+   * So it stays frozen at these six names. A new badge can take whichever of
+   * them is closest — nothing new goes here, and nothing here changes.
    */
   icon: string
 }
@@ -200,9 +195,6 @@ export const BADGES: readonly BadgeDefinition[] = [
     kind: 'tokens' as const,
     threshold: count,
     label: `${count.toLocaleString('en-US')} tokens earned`,
-    // Not Feather's `award`, which is a rosette — the same picture the badges
-    // screen is already made of, and so a mark that says "badge" where it
-    // should say "tokens".
     icon: 'mci:hand-coin',
   })),
   ...VETERAN_THRESHOLDS.map((days) => ({
