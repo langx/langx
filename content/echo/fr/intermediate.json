@@ -1,0 +1,4831 @@
+{
+  "id": "fr:intermediate",
+  "lang": "fr",
+  "level": "intermediate",
+  "contentVersion": 1,
+  "reviewed": false,
+  "sources": [
+    {
+      "name": "Wiktionary, via kaikki.org (wiktextract)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://kaikki.org/"
+    },
+    {
+      "name": "Tatoeba",
+      "licence": "CC BY 2.0 FR",
+      "url": "https://tatoeba.org/"
+    },
+    {
+      "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/hermitdave/FrequencyWords"
+    },
+    {
+      "name": "Kokoro-82M (hexgrad)",
+      "licence": "Apache-2.0",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M"
+    }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "bon appétit",
+      "gloss": {
+        "en": "have a nice meal",
+        "tr": "afiyet olsun",
+        "de": "guten Appetit",
+        "es": "buen provecho",
+        "pt-BR": "bom apetite",
+        "ru": "приятного аппетита",
+        "ar": "شهية طيبة"
+      },
+      "freqRank": 1,
+      "review": {
+        "sense": "Formule traditionnelle échangée entre convives avant de partager un repas.",
+        "translationCount": 68,
+        "definition": "Formule traditionnelle échangée entre convives avant de partager un repas.",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0f/LL-Q150_(fra)-WikiLucas00-bon_appétit.wav/LL-Q150_(fra)-WikiLucas00-bon_appétit.wav.mp3",
+            "file": "LL-Q150 (fra)-WikiLucas00-bon appétit.wav",
+            "tags": []
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/38/LL-Q150_(fra)-LoquaxFR-bon_appétit.wav/LL-Q150_(fra)-LoquaxFR-bon_appétit.wav.mp3",
+            "file": "LL-Q150 (fra)-LoquaxFR-bon appétit.wav",
+            "tags": []
+          }
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "Êtes-vous japonais ?",
+      "gloss": {
+        "en": "Are you Japanese?",
+        "de": "Sind Sie Japaner?",
+        "es": "¿Es usted japonés?",
+        "pt-BR": "Você é japonês?",
+        "ru": "Вы японец?"
+      },
+      "freqRank": 8,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "Je suis Japonais.",
+      "gloss": {
+        "en": "I am a Japanese.",
+        "tr": "Japonum.",
+        "de": "Ich bin Japaner.",
+        "es": "Soy japonés.",
+        "pt-BR": "Sou japonês.",
+        "ru": "Я японец."
+      },
+      "freqRank": 9,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "Parles-tu japonais ?",
+      "gloss": {
+        "en": "Do you speak Japanese?",
+        "tr": "Japonca konuşuyor musun?",
+        "de": "Sprichst du japanisch?",
+        "es": "¿Hablas japonés?",
+        "pt-BR": "Falas japonês?",
+        "ru": "Ты говоришь по-японски?"
+      },
+      "freqRank": 10,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "Mange des fruits !",
+      "gloss": {
+        "en": "Eat fruit!",
+        "de": "Iss Früchte!",
+        "es": "¡Comé frutas!",
+        "pt-BR": "Coma frutas!",
+        "ru": "Ешь фрукты!"
+      },
+      "freqRank": 11,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "Aimes-tu voyager ?",
+      "gloss": {
+        "en": "Do you enjoy traveling?",
+        "de": "Reist du gern?",
+        "es": "¿Te gusta viajar?",
+        "pt-BR": "Você gosta de viajar?",
+        "ru": "Ты любишь путешествовать?"
+      },
+      "freqRank": 12,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "Fermez le livre.",
+      "gloss": {
+        "en": "Close the book.",
+        "tr": "Kitabınızı kapatın.",
+        "de": "Schließe das Buch.",
+        "es": "Cierra el libro.",
+        "ru": "Закройте книгу."
+      },
+      "freqRank": 13,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "Vis et apprends.",
+      "gloss": {
+        "en": "Live and learn.",
+        "de": "Lebe und lerne.",
+        "es": "Vive y aprende.",
+        "pt-BR": "Viva e aprenda.",
+        "ru": "Живи и учись."
+      },
+      "freqRank": 14,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "Prenons le bus.",
+      "gloss": {
+        "en": "Let's take the bus.",
+        "de": "Lass uns den Bus nehmen.",
+        "es": "Cojamos el autobús.",
+        "pt-BR": "Tomemos o ônibus.",
+        "ru": "Давайте поедем на автобусе."
+      },
+      "freqRank": 15,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "Prenons le train.",
+      "gloss": {
+        "en": "Let's take a train.",
+        "de": "Lass uns den Zug nehmen.",
+        "es": "Vayamos en tren.",
+        "pt-BR": "Tomemos o trem.",
+        "ru": "Давай поедем на поезде."
+      },
+      "freqRank": 16,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "Prenons un bus.",
+      "gloss": {
+        "en": "Let's take a bus.",
+        "de": "Nehmen wir doch den Bus.",
+        "es": "Pesquemos un bus.",
+        "pt-BR": "Vamos pegar um ônibus.",
+        "ru": "Поехали на автобусе."
+      },
+      "freqRank": 17,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "Il est étudiant.",
+      "gloss": {
+        "en": "He is a student.",
+        "tr": "Öğrenci.",
+        "de": "Er ist Student.",
+        "es": "Él es estudiante.",
+        "pt-BR": "Ele é estudante.",
+        "ru": "Он студент.",
+        "ar": "هو طالب."
+      },
+      "freqRank": 18,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "Je suis étudiant.",
+      "gloss": {
+        "en": "I am a student.",
+        "tr": "Öğrenciyim.",
+        "de": "Ich bin Student.",
+        "es": "Soy estudiante.",
+        "pt-BR": "Eu sou estudante.",
+        "ru": "Я студент."
+      },
+      "freqRank": 19,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "Elle parle allemand.",
+      "gloss": {
+        "en": "She speaks German.",
+        "de": "Sie spricht Deutsch.",
+        "es": "Habla alemán.",
+        "pt-BR": "Ela fala alemão.",
+        "ru": "Она говорит по-немецки."
+      },
+      "freqRank": 20,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "Parlez-vous allemand ?",
+      "gloss": {
+        "en": "Can you speak German?",
+        "de": "Sprecht ihr Deutsch?",
+        "es": "¿Habla usted alemán?",
+        "pt-BR": "O senhor fala alemão?",
+        "ru": "Вы говорите по-немецки?"
+      },
+      "freqRank": 21,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "Quelle route emprunter ?",
+      "gloss": {
+        "en": "Which route to take?",
+        "de": "Welchen Weg soll man nehmen?",
+        "es": "¿Qué ruta tomar?",
+        "pt-BR": "Qual rota tomar?",
+        "ru": "Какой маршрут выбрать?"
+      },
+      "freqRank": 22,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "Tom boit trop.",
+      "gloss": {
+        "en": "Tom drinks too much.",
+        "de": "Tom trinkt zu viel.",
+        "es": "Tom bebe demasiado.",
+        "pt-BR": "Tom bebe demais.",
+        "ru": "Том слишком много пьёт."
+      },
+      "freqRank": 23,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "Nous sommes juifs.",
+      "gloss": {
+        "en": "We're Jews.",
+        "tr": "Biz Yahudiyiz.",
+        "de": "Wir sind Juden.",
+        "es": "Somos judíos.",
+        "ru": "Мы евреи.",
+        "ar": "نحن يهود."
+      },
+      "freqRank": 24,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "Nous sommes libres !",
+      "gloss": {
+        "en": "We are free!",
+        "de": "Wir sind frei!",
+        "es": "¡Somos libres!",
+        "pt-BR": "Estamos livres!",
+        "ru": "Мы свободны!"
+      },
+      "freqRank": 25,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Aimes-tu nager ?",
+      "gloss": {
+        "en": "Are you fond of swimming?",
+        "tr": "Yüzmeyi sever misin?",
+        "de": "Schwimmst du gerne?",
+        "es": "¿Te gusta nadar?",
+        "ru": "Ты любишь плавать?"
+      },
+      "freqRank": 26,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "Elle aime nager.",
+      "gloss": {
+        "en": "She likes to swim.",
+        "tr": "O yüzmeyi sever.",
+        "de": "Sie schwimmt gern.",
+        "es": "A ella le gusta nadar.",
+        "ru": "Она любит плавать."
+      },
+      "freqRank": 27,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "Il aime nager.",
+      "gloss": {
+        "en": "He likes to swim.",
+        "de": "Er schwimmt gerne.",
+        "es": "A él le gusta nadar.",
+        "pt-BR": "Ele gosta de nadar.",
+        "ru": "Он любит плавать."
+      },
+      "freqRank": 28,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "Il sait nager.",
+      "gloss": {
+        "en": "He can swim.",
+        "de": "Er kann schwimmen.",
+        "es": "Él sabe nadar.",
+        "pt-BR": "Ele sabe nadar.",
+        "ru": "Он умеет плавать."
+      },
+      "freqRank": 29,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "Marie sait nager.",
+      "gloss": {
+        "en": "Mary can swim.",
+        "de": "Mary kann schwimmen.",
+        "es": "Mary sabe nadar.",
+        "pt-BR": "Mary sabe nadar.",
+        "ru": "Мэри умеет плавать."
+      },
+      "freqRank": 30,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "Sais-tu nager ?",
+      "gloss": {
+        "en": "Can you swim?",
+        "de": "Kannst du schwimmen?",
+        "es": "¿Sabes nadar?",
+        "pt-BR": "Você sabe nadar?",
+        "ru": "Ты умеешь плавать?"
+      },
+      "freqRank": 31,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "Tom aime nager.",
+      "gloss": {
+        "en": "Tom likes swimming.",
+        "tr": "Tom yüzmeyi sever.",
+        "de": "Tom schwimmt gern.",
+        "pt-BR": "Tom gosta de nadar.",
+        "ru": "Том любит плавать."
+      },
+      "freqRank": 32,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "Je suis déçu.",
+      "gloss": {
+        "en": "I'm disappointed.",
+        "de": "Ich bin enttäuscht.",
+        "es": "Estoy decepcionado.",
+        "pt-BR": "Eu estou decepcionado.",
+        "ru": "Я разочарован."
+      },
+      "freqRank": 33,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "Je la regardais.",
+      "gloss": {
+        "en": "I was looking at her.",
+        "tr": "Ona bakıyordum.",
+        "de": "Ich schaute sie an.",
+        "pt-BR": "Estava olhando para ela.",
+        "ru": "Я смотрел на неё."
+      },
+      "freqRank": 34,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "Je te pardonne.",
+      "gloss": {
+        "en": "I forgive you.",
+        "de": "Ich verzeihe dir.",
+        "es": "Te perdono.",
+        "pt-BR": "Eu te perdoo.",
+        "ru": "Я тебя прощаю."
+      },
+      "freqRank": 35,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "Pardonne et oublie.",
+      "gloss": {
+        "en": "Forgive and forget.",
+        "tr": "Affet ve unut.",
+        "de": "Vergib und vergiss.",
+        "ru": "Прости и забудь.",
+        "ar": "سامحي وانسي."
+      },
+      "freqRank": 36,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "Est-ce gratuit ?",
+      "gloss": {
+        "en": "Is it free of charge?",
+        "tr": "O ücretsiz mi?",
+        "de": "Ist es kostenlos?",
+        "es": "¿Es gratis?",
+        "pt-BR": "É de graça?",
+        "ru": "Это бесплатно?"
+      },
+      "freqRank": 37,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "Parlez-vous espagnol ?",
+      "gloss": {
+        "en": "Do you speak Spanish?",
+        "tr": "İspanyolca konuşur musunuz?",
+        "de": "Sprechen Sie Spanisch?",
+        "pt-BR": "Você fala espanhol?",
+        "ru": "Вы говорите по-испански?"
+      },
+      "freqRank": 38,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "Ken est heureux.",
+      "gloss": {
+        "en": "Ken is happy.",
+        "de": "Ken ist glücklich.",
+        "es": "Ken es feliz.",
+        "pt-BR": "Ken é feliz.",
+        "ru": "Кэн счастлив."
+      },
+      "freqRank": 39,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "Que mange Ken ?",
+      "gloss": {
+        "en": "What is Ken eating?",
+        "de": "Was isst Ken?",
+        "es": "¿Qué está comiendo Ken?",
+        "pt-BR": "O que Ken está comendo?",
+        "ru": "Что ест Кен?"
+      },
+      "freqRank": 40,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "Quelle phrase merveilleuse !",
+      "gloss": {
+        "en": "What a marvellous sentence!",
+        "de": "Was für ein traumhafter Satz!",
+        "es": "¡Qué hermosa frase!",
+        "pt-BR": "Que frase maravilhosa!",
+        "ru": "Какое чудесное предложение!"
+      },
+      "freqRank": 41,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "Le réveil sonne.",
+      "gloss": {
+        "en": "The alarm clock is ringing.",
+        "de": "Der Wecker klingelt.",
+        "es": "El despertador está sonando.",
+        "pt-BR": "O despertador está tocando.",
+        "ru": "Будильник звонит."
+      },
+      "freqRank": 42,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "Bob sait cuisiner.",
+      "gloss": {
+        "en": "Bob can cook.",
+        "de": "Bob kann kochen.",
+        "es": "Bob sabe cocinar.",
+        "pt-BR": "Bob sabe cozinhar.",
+        "ru": "Боб умеет готовить."
+      },
+      "freqRank": 43,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "Mangez et buvez.",
+      "gloss": {
+        "en": "Eat and drink.",
+        "de": "Esst und trinkt.",
+        "es": "Coma y beba.",
+        "pt-BR": "Comam e bebam.",
+        "ru": "Ешьте и пейте."
+      },
+      "freqRank": 44,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "Je suis Italien.",
+      "gloss": {
+        "en": "I'm Italian.",
+        "tr": "İtalyanım.",
+        "de": "Ich bin Italiener.",
+        "es": "Soy italiano.",
+        "pt-BR": "Eu sou italiano.",
+        "ru": "Я итальянец."
+      },
+      "freqRank": 45,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "Il est écrivain.",
+      "gloss": {
+        "en": "He is a writer.",
+        "de": "Er ist Schriftsteller.",
+        "es": "Él es escritor.",
+        "pt-BR": "Ele é escritor.",
+        "ru": "Он писатель."
+      },
+      "freqRank": 46,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "César ou rien.",
+      "gloss": {
+        "en": "It is either Cesar or nothing.",
+        "de": "Entweder Caesar oder nichts.",
+        "es": "O el Cesar o nada.",
+        "pt-BR": "Ou César ou nada.",
+        "ru": "Или Цезарь, или ничего."
+      },
+      "freqRank": 47,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "Vivez-vous ici ?",
+      "gloss": {
+        "en": "Do you live here?",
+        "de": "Leben Sie hier?",
+        "es": "¿Usted vive aquí?",
+        "pt-BR": "Vocês vivem aqui?",
+        "ru": "Вы здесь живете?"
+      },
+      "freqRank": 48,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "Plante un arbre.",
+      "gloss": {
+        "en": "Plant a tree.",
+        "tr": "Bir ağaç dikin.",
+        "de": "Pflanze einen Baum.",
+        "es": "Planta un árbol.",
+        "ru": "Посади дерево."
+      },
+      "freqRank": 49,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "Est-ce légal ?",
+      "gloss": {
+        "en": "Is this legal?",
+        "de": "Ist das legal?",
+        "es": "¿Esto es legal?",
+        "pt-BR": "Isto é legal?",
+        "ru": "Это законно?"
+      },
+      "freqRank": 50,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "Que faisiez-vous ?",
+      "gloss": {
+        "en": "What were you doing?",
+        "de": "Was habt ihr gemacht?",
+        "es": "¿Qué estaba haciendo?",
+        "pt-BR": "Que vocês estavam fazendo?",
+        "ru": "Что вы делали?"
+      },
+      "freqRank": 51,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "Chambre à louer.",
+      "gloss": {
+        "en": "Room for rent.",
+        "tr": "Kiralık oda.",
+        "de": "Zimmer zu vermieten.",
+        "es": "Habitación para alquilar.",
+        "pt-BR": "Aluga-se quarto.",
+        "ru": "Сдаётся комната."
+      },
+      "freqRank": 52,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "Les dieux existent.",
+      "gloss": {
+        "en": "Gods exist.",
+        "de": "Götter existieren.",
+        "es": "Los dioses existen.",
+        "pt-BR": "Os deuses existem.",
+        "ru": "Боги существуют."
+      },
+      "freqRank": 53,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "Je suis ingénieur.",
+      "gloss": {
+        "en": "I'm an engineer.",
+        "tr": "Ben bir mühendisim.",
+        "de": "Ich bin Ingenieur.",
+        "es": "Soy ingeniero.",
+        "pt-BR": "Eu sou engenheiro.",
+        "ru": "Я инженер."
+      },
+      "freqRank": 54,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "Elle est française.",
+      "gloss": {
+        "en": "She is French.",
+        "tr": "O Fransız.",
+        "de": "Sie ist Französin.",
+        "es": "Ella es francesa.",
+        "pt-BR": "Ela é francesa.",
+        "ru": "Она француженка."
+      },
+      "freqRank": 55,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "Je suis satisfait.",
+      "gloss": {
+        "en": "I'm satisfied.",
+        "tr": "Ben hoşnutum.",
+        "de": "Ich bin zufrieden.",
+        "es": "Estoy satisfecho.",
+        "pt-BR": "Estou satisfeito."
+      },
+      "freqRank": 56,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "Heather me croit.",
+      "gloss": {
+        "en": "Heather believes me.",
+        "tr": "Heather bana inanır.",
+        "de": "Heather glaubt mir.",
+        "pt-BR": "Heather acredita em mim.",
+        "ru": "Хизер верит мне."
+      },
+      "freqRank": 57,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "Baissez les mains !",
+      "gloss": {
+        "en": "Put your hands down!",
+        "de": "Hände runter!",
+        "es": "¡Bajad las manos!",
+        "pt-BR": "Abaixe as mãos!",
+        "ru": "Опустите руки."
+      },
+      "freqRank": 58,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "Que désirez-vous ?",
+      "gloss": {
+        "en": "What'll it be?",
+        "de": "Was wünschen Sie?",
+        "es": "¿Qué desea usted?",
+        "pt-BR": "O que você deseja?",
+        "ru": "Чего желаете?"
+      },
+      "freqRank": 59,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "Tu sembles surprise.",
+      "gloss": {
+        "en": "You sound surprised.",
+        "tr": "Şaşırmış görünüyorsun.",
+        "de": "Du klingst überrascht.",
+        "es": "Pareces sorprendida.",
+        "ru": "Ты, похоже, удивлена."
+      },
+      "freqRank": 60,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "Il partira aussi.",
+      "gloss": {
+        "en": "He will also go.",
+        "es": "Él también se irá.",
+        "pt-BR": "Ele também irá embora.",
+        "ru": "Он тоже уйдёт.",
+        "ar": "سيذهب كذلك."
+      },
+      "freqRank": 61,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "Il a vomi.",
+      "gloss": {
+        "en": "He vomited.",
+        "de": "Er hat sich übergeben.",
+        "es": "Vomitó.",
+        "pt-BR": "Ele vomitou.",
+        "ru": "Его вырвало."
+      },
+      "freqRank": 62,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "Elle veut divorcer.",
+      "gloss": {
+        "en": "She wants a divorce.",
+        "de": "Sie will die Scheidung.",
+        "es": "Ella quiere divorciarse.",
+        "pt-BR": "Ela quer se divorciar.",
+        "ru": "Она хочет развестись."
+      },
+      "freqRank": 63,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "Ils étaient occupés.",
+      "gloss": {
+        "en": "They were busy.",
+        "de": "Sie waren beschäftigt.",
+        "es": "Ellos estaban ocupados.",
+        "pt-BR": "Eles estavam ocupados.",
+        "ru": "Они были заняты."
+      },
+      "freqRank": 64,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "Il pleut dehors.",
+      "gloss": {
+        "en": "It's raining outside.",
+        "de": "Draußen regnet es.",
+        "es": "Fuera está lloviendo.",
+        "pt-BR": "Está chovendo lá fora.",
+        "ru": "На улице дождь."
+      },
+      "freqRank": 65,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "Il pleut encore.",
+      "gloss": {
+        "en": "It's still raining.",
+        "tr": "Hâlâ yağmur yağıyor.",
+        "de": "Es regnet noch.",
+        "es": "Todavía llueve.",
+        "pt-BR": "Ainda está chovendo.",
+        "ru": "Всё ещё идёт дождь."
+      },
+      "freqRank": 66,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "Pleut-il maintenant ?",
+      "gloss": {
+        "en": "Is it raining now?",
+        "tr": "Şimdi yağmur yağıyor mu?",
+        "de": "Regnet es gerade?",
+        "es": "¿Está lloviendo ahora?",
+        "ru": "Сейчас идёт дождь?",
+        "ar": "هل تمطر الآن؟"
+      },
+      "freqRank": 67,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "Il se lave.",
+      "gloss": {
+        "en": "He washes himself.",
+        "de": "Er wäscht sich.",
+        "es": "Él se lava.",
+        "pt-BR": "Ele se lava.",
+        "ru": "Он моется."
+      },
+      "freqRank": 68,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "Lave tes pieds.",
+      "gloss": {
+        "en": "Wash your feet.",
+        "tr": "Ayaklarını yıka.",
+        "de": "Wasch deine Füße.",
+        "es": "Lávate los pies.",
+        "pt-BR": "Lave seus pés."
+      },
+      "freqRank": 69,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "Meg parle trop.",
+      "gloss": {
+        "en": "Meg talks too much.",
+        "tr": "Meg çok fazla konuşuyor.",
+        "es": "Meg habla demasiado.",
+        "pt-BR": "Meg fala demais.",
+        "ru": "Мег слишком много говорит."
+      },
+      "freqRank": 70,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "Je suis photographe.",
+      "gloss": {
+        "en": "I'm a photographer.",
+        "tr": "Fotoğrafçıyım.",
+        "de": "Ich bin Fotograf.",
+        "es": "Soy fotógrafo.",
+        "ru": "Я фотограф."
+      },
+      "freqRank": 71,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "Décembre a 31 jours.",
+      "gloss": {
+        "en": "December has thirty-one days.",
+        "tr": "Aralık 31 gün çeker.",
+        "de": "Der Dezember hat einunddreißig Tage.",
+        "es": "Diciembre tiene treinta y un días.",
+        "pt-BR": "Dezembro tem trinta e um dias.",
+        "ru": "В декабре 31 день."
+      },
+      "freqRank": 72,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "Nous vivons ensemble.",
+      "gloss": {
+        "en": "We live together.",
+        "tr": "Birlikte yaşıyoruz.",
+        "de": "Wir leben zusammen.",
+        "es": "Vivimos juntos.",
+        "pt-BR": "Nós moramos juntos.",
+        "ru": "Мы живём вместе."
+      },
+      "freqRank": 73,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "Nous vivons ici.",
+      "gloss": {
+        "en": "We live here.",
+        "tr": "Burada yaşıyoruz.",
+        "de": "Wir leben hier.",
+        "es": "Vivimos aquí.",
+        "pt-BR": "Nós moramos aqui.",
+        "ru": "Мы здесь живём.",
+        "ar": "نعيش هنا."
+      },
+      "freqRank": 74,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "Je suis divorcé.",
+      "gloss": {
+        "en": "I am divorced.",
+        "de": "Ich bin geschieden.",
+        "es": "Estoy divorciado.",
+        "pt-BR": "Eu sou divorciado.",
+        "ru": "Я разведён."
+      },
+      "freqRank": 75,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "Il aime pêcher.",
+      "gloss": {
+        "en": "He likes fishing.",
+        "de": "Er mag Angeln.",
+        "es": "Le gusta pescar.",
+        "pt-BR": "Ele gosta de pescar.",
+        "ru": "Он любит рыбалку."
+      },
+      "freqRank": 76,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "Elle est étudiante.",
+      "gloss": {
+        "en": "She is a student.",
+        "de": "Sie ist Studentin.",
+        "es": "Ella es una estudiante.",
+        "ru": "Она студентка.",
+        "ar": "هي طالبة."
+      },
+      "freqRank": 77,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "Elle était habillée.",
+      "gloss": {
+        "en": "She was dressed.",
+        "de": "Sie war angezogen.",
+        "es": "Ella estaba vestida.",
+        "pt-BR": "Ela estava vestida.",
+        "ru": "Она была одета."
+      },
+      "freqRank": 78,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "Les détails comptent.",
+      "gloss": {
+        "en": "Details matter.",
+        "tr": "Ayrıntılar önemlidir.",
+        "de": "Die Details sind wichtig.",
+        "pt-BR": "Os detalhes são importantes.",
+        "ar": "التفاصيل مهمة."
+      },
+      "freqRank": 79,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "La lune brille.",
+      "gloss": {
+        "en": "The moon is shining.",
+        "de": "Der Mond scheint.",
+        "es": "La luna está brillando.",
+        "pt-BR": "A lua brilha.",
+        "ru": "Светит луна."
+      },
+      "freqRank": 80,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "Le soleil brille.",
+      "gloss": {
+        "en": "The sun is shining.",
+        "de": "Die Sonne scheint.",
+        "es": "El sol brilla.",
+        "pt-BR": "O sol brilha.",
+        "ru": "Солнце светит."
+      },
+      "freqRank": 81,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "Éteins la lumière.",
+      "gloss": {
+        "en": "Turn off the light.",
+        "de": "Mach das Licht aus!",
+        "es": "Apaga la luz.",
+        "pt-BR": "Desligue a luz.",
+        "ru": "Выключи свет."
+      },
+      "freqRank": 82,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "Éteins la radio.",
+      "gloss": {
+        "en": "Turn off the radio.",
+        "de": "Mach das Radio aus.",
+        "es": "Apaga la radio.",
+        "pt-BR": "Desligue o rádio.",
+        "ru": "Выключи радио."
+      },
+      "freqRank": 83,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "Il a ri.",
+      "gloss": {
+        "en": "He laughed.",
+        "de": "Er lachte.",
+        "es": "Él se rio.",
+        "pt-BR": "Ele riu.",
+        "ar": "ضحك."
+      },
+      "freqRank": 84,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "Je parle arabe.",
+      "gloss": {
+        "en": "I speak Arabic.",
+        "de": "Ich spreche Arabisch.",
+        "es": "Hablo árabe.",
+        "pt-BR": "Eu falo árabe.",
+        "ru": "Я говорю по-арабски."
+      },
+      "freqRank": 85,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "Tu parles arabe ?",
+      "gloss": {
+        "en": "Do you speak Arabic?",
+        "de": "Sprichst du arabisch?",
+        "es": "¿Hablas árabe?",
+        "pt-BR": "Falas árabe?",
+        "ru": "Ты говоришь по-арабски?"
+      },
+      "freqRank": 86,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "Vive la démocratie !",
+      "gloss": {
+        "en": "Long live democracy!",
+        "tr": "Yaşasın demokrasi!",
+        "de": "Es lebe die Demokratie!",
+        "ru": "Да здравствует демократия!",
+        "ar": "عاشت الديمقراطية!"
+      },
+      "freqRank": 87,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "Respirez plus profondément !",
+      "gloss": {
+        "en": "Breathe deeply!",
+        "de": "Atmen Sie noch tiefer ein!",
+        "es": "¡Respire más profundamente!",
+        "pt-BR": "Respire mais fundo!",
+        "ru": "Дышите глубже!"
+      },
+      "freqRank": 88,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "Pourquoi pleures-tu ?",
+      "gloss": {
+        "en": "Why are you crying?",
+        "de": "Wieso weinst du?",
+        "es": "¿Por qué lloras?",
+        "pt-BR": "Por que você está chorando?",
+        "ru": "Почему ты плачешь?"
+      },
+      "freqRank": 89,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "Vous êtes raciste.",
+      "gloss": {
+        "en": "You're a racist.",
+        "de": "Sie sind ein Rassist.",
+        "es": "Usted es racista.",
+        "pt-BR": "Você é racista.",
+        "ru": "Вы расист."
+      },
+      "freqRank": 90,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "Tu es modeste.",
+      "gloss": {
+        "en": "You're modest.",
+        "tr": "Sen mütevazısın.",
+        "es": "Eres modesta.",
+        "pt-BR": "Tu és modesto.",
+        "ru": "Ты скромный."
+      },
+      "freqRank": 91,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "Nous devons épargner.",
+      "gloss": {
+        "en": "We have to make savings.",
+        "tr": "Tasarruf yapmak zorundayız.",
+        "de": "Wir müssen sparen.",
+        "es": "Tenemos que ahorrar.",
+        "ru": "Мы должны экономить."
+      },
+      "freqRank": 92,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "Jouons au baseball.",
+      "gloss": {
+        "en": "Let's play baseball!",
+        "de": "Lasst uns Baseball spielen.",
+        "es": "Juguemos al beisbol.",
+        "pt-BR": "Vamos jogar beisebol.",
+        "ru": "Давайте сыграем в бейсбол."
+      },
+      "freqRank": 93,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "Jouons aux cartes.",
+      "gloss": {
+        "en": "Let's play cards.",
+        "de": "Lasst uns Karten spielen.",
+        "es": "Juguemos a las cartas.",
+        "pt-BR": "Vamos jogar cartas.",
+        "ru": "Поиграем в карты."
+      },
+      "freqRank": 94,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "Ils me tueront.",
+      "gloss": {
+        "en": "They'll kill me.",
+        "de": "Sie werden mich umbringen.",
+        "es": "Me matarán.",
+        "pt-BR": "Eles me matarão!",
+        "ru": "Они убьют меня."
+      },
+      "freqRank": 95,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "Elle lui sourit.",
+      "gloss": {
+        "en": "She smiled at him.",
+        "de": "Sie lächelte ihn an.",
+        "es": "Ella le sonrió.",
+        "pt-BR": "Ela sorriu para ele.",
+        "ru": "Она улыбнулась ему."
+      },
+      "freqRank": 96,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "Le professeur sourit.",
+      "gloss": {
+        "en": "The professor smiled.",
+        "tr": "Profesör gülümsedi.",
+        "de": "Der Professor lächelte.",
+        "es": "El profesor sonrió.",
+        "ru": "Преподаватель улыбнулся."
+      },
+      "freqRank": 97,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "Tom sourit toujours.",
+      "gloss": {
+        "en": "Tom is always smiling.",
+        "de": "Tom lächelt immer.",
+        "es": "Tom siempre está sonriendo.",
+        "pt-BR": "O Tom está sempre sorrindo.",
+        "ru": "Том всегда улыбается."
+      },
+      "freqRank": 98,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "Fais un souhait !",
+      "gloss": {
+        "en": "Make a wish.",
+        "de": "Wünsch dir was.",
+        "es": "Pide un deseo.",
+        "pt-BR": "Faça um desejo.",
+        "ru": "Загадай желание."
+      },
+      "freqRank": 99,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "Je suis Anton.",
+      "gloss": {
+        "en": "I am Antonio.",
+        "tr": "Ben Anton.",
+        "de": "Ich bin Anton.",
+        "es": "Yo soy Antonio.",
+        "pt-BR": "Eu sou Anton.",
+        "ru": "Меня зовут Антон."
+      },
+      "freqRank": 100,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "La ville dormait.",
+      "gloss": {
+        "en": "The town slept.",
+        "tr": "Şehir uyuyordu.",
+        "de": "Die Stadt schlief.",
+        "es": "La ciudad dormía.",
+        "ru": "Город спал."
+      },
+      "freqRank": 101,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "Fais le calcul.",
+      "gloss": {
+        "en": "Do the math.",
+        "de": "Rechne es aus.",
+        "es": "Calcula.",
+        "pt-BR": "Faça a conta.",
+        "ru": "Посчитай."
+      },
+      "freqRank": 102,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "Je suis musicien.",
+      "gloss": {
+        "en": "I'm a musician.",
+        "tr": "Ben bir müzisyenim.",
+        "de": "Ich bin Musiker.",
+        "es": "Soy músico.",
+        "ru": "Я музыкант."
+      },
+      "freqRank": 103,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "Les oiseaux volent.",
+      "gloss": {
+        "en": "Birds fly.",
+        "de": "Vögel fliegen.",
+        "es": "Los pájaros vuelan.",
+        "pt-BR": "Os pássaros voam.",
+        "ru": "Птицы летают."
+      },
+      "freqRank": 104,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "Elle est chanteuse.",
+      "gloss": {
+        "en": "She is a singer.",
+        "de": "Sie ist Sängerin.",
+        "es": "Ella es cantante.",
+        "pt-BR": "Ela é uma cantora.",
+        "ru": "Она певица."
+      },
+      "freqRank": 105,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "Conduis avec prudence.",
+      "gloss": {
+        "en": "Drive carefully.",
+        "tr": "Dikkatli sür.",
+        "de": "Fahre vorsichtig.",
+        "es": "Conduce con cuidado.",
+        "ru": "Веди осторожно."
+      },
+      "freqRank": 106,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "Il est DJ.",
+      "gloss": {
+        "en": "He is a DJ.",
+        "de": "Er ist ein DJ.",
+        "es": "Él es DJ.",
+        "pt-BR": "Ele é DJ.",
+        "ru": "Он диджей."
+      },
+      "freqRank": 107,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "Marie est Allemande.",
+      "gloss": {
+        "en": "Mary is German.",
+        "de": "Maria ist Deutsche.",
+        "es": "María es alemana.",
+        "pt-BR": "Maria é alemã.",
+        "ru": "Мэри - немка."
+      },
+      "freqRank": 108,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "Vous me manquez.",
+      "gloss": {
+        "en": "I miss you guys.",
+        "de": "Ich vermisse Sie.",
+        "es": "Os extraño.",
+        "pt-BR": "Estou com saudades de você.",
+        "ru": "Я скучаю по вам."
+      },
+      "freqRank": 109,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "Le loup hurle.",
+      "gloss": {
+        "en": "The wolf howls.",
+        "de": "Der Wolf heult.",
+        "es": "El lobo aúlla.",
+        "pt-BR": "O lobo uiva.",
+        "ru": "Волк воет."
+      },
+      "freqRank": 110,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "Il semble pleuvoir.",
+      "gloss": {
+        "en": "It looks like rain.",
+        "tr": "Yağmur yağacak gibi gözüküyor.",
+        "de": "Es scheint zu regnen.",
+        "es": "Parece que está lloviendo.",
+        "pt-BR": "Parece que está chovendo.",
+        "ru": "Кажется, дождь идёт."
+      },
+      "freqRank": 111,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "Les politiciens mentent.",
+      "gloss": {
+        "en": "Politicians lie.",
+        "tr": "Politikacılar yalan söyler.",
+        "es": "Los políticos mienten.",
+        "ru": "Политики врут.",
+        "ar": "السياسيون يكذبون."
+      },
+      "freqRank": 112,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "Le climat change.",
+      "gloss": {
+        "en": "The climate is changing.",
+        "de": "Das Klima verändert sich.",
+        "es": "El clima está cambiando.",
+        "pt-BR": "O clima muda.",
+        "ru": "Климат меняется."
+      },
+      "freqRank": 113,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "Où habites-tu ?",
+      "gloss": {
+        "en": "Where do you live?",
+        "tr": "Nerede oturuyorsun?",
+        "de": "Wo lebst du?",
+        "es": "¿Dónde vives?",
+        "pt-BR": "Onde você mora?",
+        "ru": "Где ты живёшь?",
+        "ar": "أين تسكن؟"
+      },
+      "freqRank": 114,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "Deux femmes chantent.",
+      "gloss": {
+        "en": "Two women are singing.",
+        "tr": "İki kadın şarkı söylüyor.",
+        "de": "Zwei Frauen singen.",
+        "es": "Dos mujeres cantan.",
+        "pt-BR": "Duas mulheres cantam.",
+        "ru": "Две женщины поют."
+      },
+      "freqRank": 115,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "Les oiseaux chantent.",
+      "gloss": {
+        "en": "The birds are singing.",
+        "de": "Vögel singen.",
+        "es": "Los pájaros cantan.",
+        "pt-BR": "Os pássaros cantam.",
+        "ru": "Птицы поют."
+      },
+      "freqRank": 116,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "Bonne nuit, Timmy.",
+      "gloss": {
+        "en": "Good night, Timmy!",
+        "tr": "İyi geceler, Timmy.",
+        "de": "Gute Nacht, Timmy.",
+        "es": "Buenas noches, Timmy.",
+        "pt-BR": "Boa noite, Timmy.",
+        "ru": "Спокойной ночи, Тимми."
+      },
+      "freqRank": 117,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "Elle est japonaise.",
+      "gloss": {
+        "en": "She is Japanese.",
+        "tr": "O Japondur.",
+        "es": "Es japonesa.",
+        "pt-BR": "Ela é japonesa.",
+        "ru": "Она японка."
+      },
+      "freqRank": 118,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "Il est paresseux.",
+      "gloss": {
+        "en": "He is lazy.",
+        "de": "Er ist faul.",
+        "es": "Él es perezoso.",
+        "pt-BR": "Ele é preguiçoso.",
+        "ru": "Он ленивый."
+      },
+      "freqRank": 119,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "Tu es paresseux.",
+      "gloss": {
+        "en": "You're lazy.",
+        "tr": "Sen tembelsin.",
+        "de": "Du bist faul.",
+        "es": "Eres perezoso.",
+        "pt-BR": "Tu és preguiçoso.",
+        "ru": "Ты ленивый."
+      },
+      "freqRank": 120,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "Je suis rabbin.",
+      "gloss": {
+        "en": "I'm a rabbi.",
+        "tr": "Ben bir hahamım.",
+        "de": "Ich bin Rabbi.",
+        "es": "Soy un rabino.",
+        "ru": "Я раввин."
+      },
+      "freqRank": 121,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "Nous étions pressés.",
+      "gloss": {
+        "en": "We were in a hurry.",
+        "de": "Wir eilten.",
+        "es": "Estábamos apurados.",
+        "pt-BR": "Estávamos com pressa.",
+        "ru": "Мы торопились."
+      },
+      "freqRank": 122,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "Assieds-toi, Kate.",
+      "gloss": {
+        "en": "Sit down, Kate.",
+        "de": "Setz dich, Kate.",
+        "es": "Siéntate, Kate.",
+        "pt-BR": "Sente-se, Kate.",
+        "ru": "Садись, Кейт."
+      },
+      "freqRank": 123,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "Il est blond.",
+      "gloss": {
+        "en": "He has blond hair.",
+        "de": "Er ist blond.",
+        "es": "Él es rubio.",
+        "pt-BR": "Ele é loiro.",
+        "ru": "Он блондин."
+      },
+      "freqRank": 124,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "Je suis entrepreneur.",
+      "gloss": {
+        "en": "I am an entrepreneur.",
+        "tr": "Ben bir girişimciyim.",
+        "es": "Soy un empresario.",
+        "pt-BR": "Sou empresário.",
+        "ru": "Я предприниматель."
+      },
+      "freqRank": 125,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "Elle me méprise.",
+      "gloss": {
+        "en": "She despises me.",
+        "de": "Sie verachtet mich.",
+        "es": "Ella me desprecia.",
+        "pt-BR": "Ela me despreza.",
+        "ru": "Она меня презирает."
+      },
+      "freqRank": 126,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "Tu aimes les fruits.",
+      "gloss": {
+        "en": "You like fruit.",
+        "de": "Du magst Obst.",
+        "es": "A ti te gusta la fruta.",
+        "pt-BR": "Você gosta de fruta.",
+        "ru": "Ты любишь фрукты."
+      },
+      "freqRank": 127,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "Marie montre le miroir.",
+      "gloss": {
+        "en": "Mary shows the mirror.",
+        "de": "Marie zeigt den Spiegel.",
+        "es": "María sostiene el espejo.",
+        "pt-BR": "Maria mostra o espelho.",
+        "ru": "Мэри показывает на зеркало.",
+        "ar": "ماري تْظهِر المرآة"
+      },
+      "freqRank": 128,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "Voyager est très amusant.",
+      "gloss": {
+        "en": "Traveling is a lot of fun.",
+        "de": "Reisen macht großen Spaß.",
+        "es": "Viajar es muy divertido.",
+        "pt-BR": "Viajar é muito divertido.",
+        "ru": "Путешествовать - это очень весело."
+      },
+      "freqRank": 129,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "Il joue au golf.",
+      "gloss": {
+        "en": "He is playing golf.",
+        "de": "Er spielt Golf.",
+        "es": "Está jugando al golf.",
+        "pt-BR": "Ele está jogando golfe.",
+        "ru": "Он играет в гольф."
+      },
+      "freqRank": 130,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "La mer était bleue.",
+      "gloss": {
+        "en": "The sea was blue.",
+        "tr": "Deniz maviydi.",
+        "de": "Das Meer war blau.",
+        "es": "El mar era azul.",
+        "ru": "Море было синее."
+      },
+      "freqRank": 131,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "Il joue au football.",
+      "gloss": {
+        "en": "He plays soccer.",
+        "de": "Er spielt Fußball.",
+        "es": "Juega al fútbol.",
+        "pt-BR": "Ele joga futebol.",
+        "ru": "Он играет в футбол."
+      },
+      "freqRank": 132,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "Le printemps est arrivé.",
+      "gloss": {
+        "en": "Spring has come around.",
+        "tr": "Bahar geldi.",
+        "de": "Der Frühling ist da.",
+        "es": "Ha llegado la primavera.",
+        "pt-BR": "A primavera chegou.",
+        "ru": "Наступила весна."
+      },
+      "freqRank": 133,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "Il est mon collègue.",
+      "gloss": {
+        "en": "He's my workmate.",
+        "de": "Er ist mein Kollege.",
+        "es": "Él es mi colega.",
+        "pt-BR": "Ele é meu colega.",
+        "ru": "Он мой коллега."
+      },
+      "freqRank": 134,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "Prenons le petit-déjeuner !",
+      "gloss": {
+        "en": "Let's have breakfast.",
+        "de": "Lass uns frühstücken!",
+        "es": "¡Desayunemos!",
+        "pt-BR": "Vamos tomar o café da manhã!",
+        "ru": "Давайте позавтракаем."
+      },
+      "freqRank": 135,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "Où est le musée ?",
+      "gloss": {
+        "en": "Where is the museum?",
+        "de": "Wo ist das Museum?",
+        "es": "¿Dónde está el museo?",
+        "pt-BR": "Onde é o museu?",
+        "ru": "Где находится музей?"
+      },
+      "freqRank": 136,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "La situation est critique.",
+      "gloss": {
+        "en": "The situation is critical.",
+        "de": "Die Situation ist kritisch.",
+        "es": "La situación es crítica.",
+        "pt-BR": "A situação é crítica.",
+        "ru": "Положение критическое."
+      },
+      "freqRank": 137,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "Quand est-elle née ?",
+      "gloss": {
+        "en": "When was she born?",
+        "de": "Wann wurde sie geboren?",
+        "es": "¿Cuándo nació ella?",
+        "pt-BR": "Quando ela nasceu?",
+        "ru": "Когда она родилась?"
+      },
+      "freqRank": 138,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "Il jouait du piano.",
+      "gloss": {
+        "en": "He was playing the piano.",
+        "tr": "Piyano çalıyordu.",
+        "es": "Él estaba tocando el piano.",
+        "pt-BR": "Ele estava tocando piano.",
+        "ru": "Он играл на пианино."
+      },
+      "freqRank": 139,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "Ses joues étaient rouges.",
+      "gloss": {
+        "en": "Her cheeks were red.",
+        "tr": "Yanakları kırmızıydı.",
+        "de": "Ihre Wangen waren rot.",
+        "pt-BR": "Suas bochechas estavam vermelhas.",
+        "ru": "Щёки у него были красные."
+      },
+      "freqRank": 140,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "Je lis un magazine.",
+      "gloss": {
+        "en": "I am reading a magazine.",
+        "de": "Ich lese eine Zeitschrift.",
+        "es": "Estoy leyendo una revista.",
+        "pt-BR": "Estou a ler uma revista.",
+        "ru": "Я читаю журнал."
+      },
+      "freqRank": 141,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "Elle vend des fleurs.",
+      "gloss": {
+        "en": "She sells flowers.",
+        "de": "Sie verkauft Blumen.",
+        "es": "Ella vende flores.",
+        "pt-BR": "Ela vende flores.",
+        "ru": "Она продаёт цветы."
+      },
+      "freqRank": 142,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "Il vend des fruits.",
+      "gloss": {
+        "en": "He sells fruit.",
+        "de": "Er verkauft Obst.",
+        "es": "Él vende frutas.",
+        "pt-BR": "Ele vende frutas.",
+        "ru": "Он торгует фруктами."
+      },
+      "freqRank": 143,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "Il vend du whisky.",
+      "gloss": {
+        "en": "He sells whisky.",
+        "de": "Er verkauft Whisky.",
+        "es": "Él vende whisky.",
+        "pt-BR": "Ele vende uísque.",
+        "ru": "Он продаёт виски."
+      },
+      "freqRank": 144,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "Tom habite à Boston.",
+      "gloss": {
+        "en": "Tom is living in Boston.",
+        "tr": "Tom Bostonda yaşıyor.",
+        "de": "Tom wohnt in Boston.",
+        "es": "Tom vive en Boston.",
+        "ru": "Том живёт в Бостоне."
+      },
+      "freqRank": 145,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "Je veux parler allemand.",
+      "gloss": {
+        "en": "I want to speak German.",
+        "tr": "Almanca konuşmak istiyorum.",
+        "de": "Ich will Deutsch sprechen.",
+        "es": "Quiero hablar alemán.",
+        "ru": "Я хочу говорить по-немецки."
+      },
+      "freqRank": 146,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "Bill était au Japon.",
+      "gloss": {
+        "en": "Bill was in Japan.",
+        "de": "Bill war in Japan.",
+        "es": "Bill estaba en Japón.",
+        "pt-BR": "Bill estava no Japão.",
+        "ru": "Билл был в Японии."
+      },
+      "freqRank": 147,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "Je viens du Japon.",
+      "gloss": {
+        "en": "I come from Japan.",
+        "de": "Ich komme aus Japan.",
+        "es": "Yo vengo de Japón.",
+        "pt-BR": "Eu venho do Japão.",
+        "ru": "Я из Японии."
+      },
+      "freqRank": 148,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "Je vis au Japon.",
+      "gloss": {
+        "en": "I live in Japan.",
+        "de": "Ich lebe in Japan.",
+        "es": "Vivo en Japón.",
+        "pt-BR": "Eu vivo no Japão.",
+        "ru": "Я живу в Японии."
+      },
+      "freqRank": 149,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "Elle est très mignonne.",
+      "gloss": {
+        "en": "She is very pretty.",
+        "de": "Sie ist sehr hübsch.",
+        "es": "Ella es muy guapa.",
+        "pt-BR": "Ela é muito bonita.",
+        "ru": "Она очень симпатичная."
+      },
+      "freqRank": 150,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "La maison est froide.",
+      "gloss": {
+        "en": "The house is cold.",
+        "de": "Das Haus ist kalt.",
+        "es": "La casa está fría.",
+        "pt-BR": "A casa é fria.",
+        "ru": "В доме холодно."
+      },
+      "freqRank": 151,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "Tu sais taper, non ?",
+      "gloss": {
+        "en": "You can type, can't you?",
+        "de": "Du kannst tippen, nicht wahr?",
+        "es": "¿Puedes teclear, o no?",
+        "pt-BR": "Você sabe digitar, não sabe?",
+        "ru": "Ты печатать-то умеешь?"
+      },
+      "freqRank": 152,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "Ils ne donnent rien.",
+      "gloss": {
+        "en": "They give nothing.",
+        "tr": "Hiçbir şey vermiyorlar.",
+        "de": "Die geben nichts.",
+        "es": "No dan nada.",
+        "ru": "Они ничего не дают."
+      },
+      "freqRank": 153,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "Nous allons en Allemagne.",
+      "gloss": {
+        "en": "We're going to Germany.",
+        "de": "Wir fahren nach Deutschland.",
+        "es": "Vamos a Alemania.",
+        "pt-BR": "Nós estamos indo para a Alemanha.",
+        "ru": "Мы едем в Германию."
+      },
+      "freqRank": 154,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "Il a plu hier.",
+      "gloss": {
+        "en": "It rained yesterday.",
+        "de": "Gestern regnete es.",
+        "es": "Llovió ayer.",
+        "pt-BR": "Choveu ontem.",
+        "ru": "Вчера шёл дождь."
+      },
+      "freqRank": 155,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "Il a épousé Anne.",
+      "gloss": {
+        "en": "He married Ann.",
+        "de": "Er heiratete Ann.",
+        "es": "Se casó con Ann.",
+        "pt-BR": "Ele casou-se com Anne.",
+        "ru": "Он женился на Анне."
+      },
+      "freqRank": 156,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "Ça ne changera rien.",
+      "gloss": {
+        "en": "That won't change anything.",
+        "de": "Das wird nichts ändern.",
+        "es": "Eso no va a cambiar nada.",
+        "pt-BR": "Isso não vai mudar nada.",
+        "ru": "Это ничего не изменит."
+      },
+      "freqRank": 157,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "Il apprend à nager.",
+      "gloss": {
+        "en": "He's learning to swim.",
+        "de": "Er lernt schwimmen.",
+        "es": "Está aprendiendo a nadar.",
+        "pt-BR": "Ele está aprendendo a nadar.",
+        "ru": "Он учится плавать."
+      },
+      "freqRank": 158,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "Il peut nager vite.",
+      "gloss": {
+        "en": "He can swim fast.",
+        "de": "Er kann schnell schwimmen.",
+        "es": "Él puede nadar rápido.",
+        "pt-BR": "Ele consegue nadar rápido.",
+        "ru": "Он умеет быстро плавать."
+      },
+      "freqRank": 159,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "Je préfère aller nager.",
+      "gloss": {
+        "en": "I'd rather go swimming.",
+        "de": "Ich gehe lieber schwimmen.",
+        "es": "Prefiero ir a nadar.",
+        "pt-BR": "Prefiro ir nadar.",
+        "ru": "Я лучше пойду поплаваю."
+      },
+      "freqRank": 160,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "Ses yeux sont bleus.",
+      "gloss": {
+        "en": "His eyes are blue.",
+        "de": "Seine Augen sind blau.",
+        "es": "Sus ojos son azules.",
+        "pt-BR": "Os olhos dele são azuis.",
+        "ru": "У него голубые глаза."
+      },
+      "freqRank": 161,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "Où sont les pommes ?",
+      "gloss": {
+        "en": "Where are the apples?",
+        "de": "Wo sind die Äpfel?",
+        "es": "¿Dónde están las manzanas?",
+        "pt-BR": "Onde estão as maçãs?",
+        "ru": "Где яблоки?"
+      },
+      "freqRank": 162,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "Tu mérites le prix.",
+      "gloss": {
+        "en": "You deserve the prize.",
+        "de": "Du verdienst den Preis.",
+        "es": "Te mereces el premio.",
+        "pt-BR": "Você merece o prêmio.",
+        "ru": "Ты заслуживаешь этой награды."
+      },
+      "freqRank": 163,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "La porte était fermée.",
+      "gloss": {
+        "en": "The door was closed.",
+        "tr": "Kapı kapalıydı.",
+        "de": "Die Tür war geschlossen.",
+        "es": "La puerta estaba cerrada.",
+        "pt-BR": "A porta estava fechada.",
+        "ru": "Дверь была закрыта."
+      },
+      "freqRank": 164,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "Il a deux chats.",
+      "gloss": {
+        "en": "He keeps two cats.",
+        "de": "Er hat zwei Katzen.",
+        "es": "Él tiene dos gatos.",
+        "pt-BR": "Ele tem dois gatos.",
+        "ru": "У него две кошки."
+      },
+      "freqRank": 165,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "Nous avons des chats.",
+      "gloss": {
+        "en": "We have cats.",
+        "tr": "Kedilerimiz var.",
+        "de": "Wir haben Katzen.",
+        "es": "Tenemos gatos.",
+        "ru": "У нас есть кошки.",
+        "ar": "عندنا قطط."
+      },
+      "freqRank": 166,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "Tom a trois chats.",
+      "gloss": {
+        "en": "Tom has three cats.",
+        "tr": "Tom'un üç kedisi var.",
+        "de": "Tom hat drei Katzen.",
+        "es": "Tom tiene tres gatos.",
+        "ru": "У Тома три кошки."
+      },
+      "freqRank": 167,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "Il porte des gants.",
+      "gloss": {
+        "en": "He is wearing gloves.",
+        "de": "Er trägt Handschuhe.",
+        "es": "Él lleva guantes.",
+        "pt-BR": "Ele está usando luvas.",
+        "ru": "Он носит перчатки."
+      },
+      "freqRank": 168,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "Ce sont des œufs.",
+      "gloss": {
+        "en": "They're eggs.",
+        "de": "Es sind Eier.",
+        "es": "Son huevos.",
+        "pt-BR": "São ovos.",
+        "ru": "Это яйца."
+      },
+      "freqRank": 169,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "Aimes-tu San Francisco ?",
+      "gloss": {
+        "en": "Do you like San Francisco?",
+        "de": "Magst du San Francisco?",
+        "es": "¿Te gusta San Francisco?",
+        "pt-BR": "Você gosta de San Fran?",
+        "ru": "Тебе нравится Сан-Франциско?"
+      },
+      "freqRank": 170,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "Je suis un espion.",
+      "gloss": {
+        "en": "I am a spy.",
+        "tr": "Casusum.",
+        "de": "Ich bin ein Spion.",
+        "ru": "Я шпион.",
+        "ar": "أنا جاسوس."
+      },
+      "freqRank": 171,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "Tom mérite une promotion.",
+      "gloss": {
+        "en": "Tom deserves a promotion.",
+        "de": "Tom verdient eine Beförderung.",
+        "es": "Tom merece un ascenso.",
+        "pt-BR": "Tom merece uma promoção.",
+        "ru": "Том заслуживает повышения по службе."
+      },
+      "freqRank": 172,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "Tom est un terroriste.",
+      "gloss": {
+        "en": "Tom is a terrorist.",
+        "de": "Tom ist ein Terrorist.",
+        "es": "Tom es terrorista.",
+        "ru": "Том - террорист.",
+        "ar": "توم إرهابي."
+      },
+      "freqRank": 173,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "Malheureusement, Nancy avait raison.",
+      "gloss": {
+        "en": "Unfortunately, Nancy was right.",
+        "tr": "Maalesef, Nancy haklıydı.",
+        "es": "Desafortunadamente, Nancy tenía razón.",
+        "pt-BR": "Infelizmente, Nancy tinha razão.",
+        "ru": "К сожалению, Нэнси была права."
+      },
+      "freqRank": 174,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "Où sont mes cigarettes ?",
+      "gloss": {
+        "en": "Where are my cigarettes?",
+        "de": "Wo sind meine Zigaretten?",
+        "es": "¿Dónde están mis cigarrillos?",
+        "pt-BR": "Onde estão os meus cigarros?",
+        "ru": "Где мои сигареты?"
+      },
+      "freqRank": 175,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "Elle a deux sœurs.",
+      "gloss": {
+        "en": "She has two sisters.",
+        "tr": "Onun iki kız kardeşi var.",
+        "de": "Sie hat zwei Schwestern.",
+        "es": "Ella tiene dos hermanas.",
+        "pt-BR": "Ela tem duas irmãs.",
+        "ru": "У неё есть две сестры."
+      },
+      "freqRank": 176,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "Elle est au régime.",
+      "gloss": {
+        "en": "She is on a diet.",
+        "de": "Sie ist auf Diät.",
+        "es": "Ella está a dieta.",
+        "pt-BR": "Ela está de regime.",
+        "ru": "Она на диете."
+      },
+      "freqRank": 177,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "Je suis au régime.",
+      "gloss": {
+        "en": "I'm on a diet.",
+        "de": "Ich bin auf Diät.",
+        "es": "Estoy a régimen.",
+        "pt-BR": "Eu estou de regime.",
+        "ru": "Я на диете."
+      },
+      "freqRank": 178,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "J’aimerais l’emporter.",
+      "gloss": {
+        "en": "I'd like to take this with me.",
+        "de": "Ich würde das gerne mit mir nehmen.",
+        "es": "Me gustaría llevarme esto conmigo.",
+        "pt-BR": "Gostaria de levar isto comigo.",
+        "ru": "Я хотел бы взять это с собой."
+      },
+      "freqRank": 179,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "Le ballon est rond.",
+      "gloss": {
+        "en": "The ball is round.",
+        "de": "Der Ball ist rund.",
+        "es": "La pelota es redonda.",
+        "pt-BR": "A bola é redonda.",
+        "ru": "Мяч круглый."
+      },
+      "freqRank": 180,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "La femme est nue.",
+      "gloss": {
+        "en": "The woman is naked.",
+        "de": "Die Frau ist nackt.",
+        "es": "La mujer está desnuda.",
+        "pt-BR": "A mulher está nua.",
+        "ru": "Женщина обнажённая."
+      },
+      "freqRank": 181,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "100 cents font un dollar.",
+      "gloss": {
+        "en": "One hundred cents makes one dollar.",
+        "de": "100 Cent sind ein Dollar.",
+        "es": "Cien centavos hacen un dólar.",
+        "pt-BR": "Cem cents fazem um dólar.",
+        "ru": "Сто центов — это доллар."
+      },
+      "freqRank": 182,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "Ken a deux chats.",
+      "gloss": {
+        "en": "Ken keeps two cats.",
+        "de": "Ken hat zwei Katzen.",
+        "es": "Ken tiene dos gatos.",
+        "pt-BR": "Ken tem dois gatos.",
+        "ru": "У Кена две кошки."
+      },
+      "freqRank": 183,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "Son nom est Ken.",
+      "gloss": {
+        "en": "Its name is Ken.",
+        "tr": "Onun adı Ken.",
+        "de": "Sein Name ist Ken.",
+        "pt-BR": "Seu nome é Ken.",
+        "ru": "Его зовут Кен."
+      },
+      "freqRank": 184,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "Il ne fume pas.",
+      "gloss": {
+        "en": "He does not smoke.",
+        "de": "Er raucht nicht.",
+        "es": "No fuma.",
+        "pt-BR": "Ele não fuma.",
+        "ru": "Он не курит."
+      },
+      "freqRank": 185,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "Je ne fume pas.",
+      "gloss": {
+        "en": "I don't smoke.",
+        "de": "Ich rauche nicht.",
+        "es": "No fumo.",
+        "pt-BR": "Eu não fumo.",
+        "ru": "Я не курю."
+      },
+      "freqRank": 186,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "Combien coûte ce stylo ?",
+      "gloss": {
+        "en": "How much is this pen?",
+        "de": "Wie viel kostet dieser Stift?",
+        "es": "¿Cuánto cuesta este bolígrafo?",
+        "pt-BR": "Quanto custa esta caneta?",
+        "ru": "Сколько стоит эта ручка?"
+      },
+      "freqRank": 187,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "Donne-moi le stylo.",
+      "gloss": {
+        "en": "Pass me the pen.",
+        "de": "Gib mir den Stift.",
+        "es": "Dame el bolígrafo.",
+        "pt-BR": "Dê-me a caneta.",
+        "ru": "Дай мне ручку."
+      },
+      "freqRank": 188,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "J’ai un stylo.",
+      "gloss": {
+        "en": "I have a pen.",
+        "de": "Ich habe einen Kuli.",
+        "es": "Tengo un bolígrafo.",
+        "pt-BR": "Tenho uma caneta.",
+        "ru": "У меня есть ручка."
+      },
+      "freqRank": 189,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "Avez-vous du riz ?",
+      "gloss": {
+        "en": "Do you have rice?",
+        "de": "Haben Sie Reis?",
+        "es": "¿Tienen arroz?",
+        "pt-BR": "Você tem arroz?",
+        "ru": "У вас есть рис?"
+      },
+      "freqRank": 190,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "Je mange du riz.",
+      "gloss": {
+        "en": "I am eating rice.",
+        "de": "Ich esse Reis.",
+        "es": "Estoy comiendo arroz.",
+        "pt-BR": "Estou comendo arroz.",
+        "ru": "Я ем рис."
+      },
+      "freqRank": 191,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "Je vois un lion.",
+      "gloss": {
+        "en": "I see a lion.",
+        "tr": "Bir aslan görüyorum.",
+        "de": "Ich sehe einen Löwen.",
+        "es": "Veo un león.",
+        "pt-BR": "Vejo um leão.",
+        "ru": "Я вижу льва."
+      },
+      "freqRank": 192,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "Le lion est fort.",
+      "gloss": {
+        "en": "A lion is strong.",
+        "de": "Ein Löwe ist stark.",
+        "es": "El león es fuerte.",
+        "pt-BR": "O leão é forte.",
+        "ru": "Лев силён."
+      },
+      "freqRank": 193,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "As-tu un passeport ?",
+      "gloss": {
+        "en": "Do you have a passport?",
+        "tr": "Bir pasaportun var mı?",
+        "de": "Hast du einen Pass?",
+        "es": "¿Tienes pasaporte?",
+        "ru": "У тебя есть паспорт?"
+      },
+      "freqRank": 194,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "Où est ton passeport ?",
+      "gloss": {
+        "en": "Where's your passport?",
+        "de": "Wo ist dein Reisepass?",
+        "es": "¿Dónde está tu pasaporte?",
+        "pt-BR": "Onde está o teu passaporte?",
+        "ru": "Где твой паспорт?"
+      },
+      "freqRank": 195,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "Elle mange une pomme.",
+      "gloss": {
+        "en": "She's eating an apple.",
+        "de": "Sie isst einen Apfel.",
+        "es": "Ella come una manzana.",
+        "pt-BR": "Ela come uma maçã.",
+        "ru": "Она ест яблоко.",
+        "ar": "إنها تأكل تفاحة."
+      },
+      "freqRank": 196,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "Je mange une pomme.",
+      "gloss": {
+        "en": "I am eating an apple.",
+        "de": "Ich esse einen Apfel.",
+        "es": "Estoy comiendo una manzana.",
+        "pt-BR": "Estou comendo uma maçã.",
+        "ru": "Я ем яблоко."
+      },
+      "freqRank": 197,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "La pomme est douce.",
+      "gloss": {
+        "en": "The apple tastes sweet.",
+        "de": "Der Apfel schmeckt süß.",
+        "es": "La manzana está dulce.",
+        "pt-BR": "A maçã está doce.",
+        "ru": "Яблоко сладкое."
+      },
+      "freqRank": 198,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "Tu me manques énormément.",
+      "gloss": {
+        "en": "I miss you dearly.",
+        "de": "Ich vermisse dich schrecklich.",
+        "es": "Te extraño muchísimo.",
+        "ru": "Я ужасно по тебе скучаю.",
+        "ar": "أشتاق إليك كثيرا."
+      },
+      "freqRank": 199,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "Vas-tu te promener ?",
+      "gloss": {
+        "en": "Are you going for a walk?",
+        "tr": "Gezecek misin?",
+        "de": "Gehst du spazieren?",
+        "es": "¿Vas a dar un paseo?",
+        "ru": "Ты идёшь гулять?"
+      },
+      "freqRank": 200,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "La douche est cassée.",
+      "gloss": {
+        "en": "The shower is broken.",
+        "tr": "Duş bozuk.",
+        "de": "Die Dusche ist kaputt.",
+        "es": "La ducha está rota.",
+        "ru": "Душ не работает."
+      },
+      "freqRank": 201,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "Ma valise est cassée.",
+      "gloss": {
+        "en": "My suitcase is broken.",
+        "tr": "Valizim kırık.",
+        "de": "Mein Koffer ist kaputt.",
+        "pt-BR": "A minha mala está quebrada.",
+        "ru": "Мой чемодан сломался."
+      },
+      "freqRank": 202,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "À chacun le sien.",
+      "gloss": {
+        "en": "To each his own.",
+        "de": "Jedem das Seine.",
+        "es": "A cada uno lo suyo.",
+        "pt-BR": "A cada um o seu.",
+        "ru": "Каждому своё."
+      },
+      "freqRank": 203,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "Il est mauvais conducteur.",
+      "gloss": {
+        "en": "He is a bad driver.",
+        "de": "Er ist ein schlechter Autofahrer.",
+        "es": "Él es mal conductor.",
+        "pt-BR": "Ele é um mau condutor.",
+        "ru": "Он плохой водитель."
+      },
+      "freqRank": 204,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "Il est à Tokyo.",
+      "gloss": {
+        "en": "He is in Tokyo.",
+        "de": "Er ist in Tokyo.",
+        "es": "Él está en Tokio.",
+        "pt-BR": "Ele está em Tóquio.",
+        "ru": "Он в Токио."
+      },
+      "freqRank": 205,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "Il vit à Tokyo.",
+      "gloss": {
+        "en": "He lives in Tokyo.",
+        "de": "Er lebt in Tokio.",
+        "es": "Él vive en Tokio.",
+        "pt-BR": "Ele vive em Tóquio.",
+        "ru": "Он живёт в Токио."
+      },
+      "freqRank": 206,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "Je vis à Tokyo.",
+      "gloss": {
+        "en": "I live in Tokyo.",
+        "de": "Ich wohne in Tōkyō.",
+        "es": "Vivo en Tokio.",
+        "pt-BR": "Vivo em Tóquio.",
+        "ru": "Я живу в Токио."
+      },
+      "freqRank": 207,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "La robe est verte.",
+      "gloss": {
+        "en": "The dress is green.",
+        "de": "Das Kleid ist grün.",
+        "es": "El vestido es verde.",
+        "pt-BR": "O vestido é verde.",
+        "ru": "Платье зелёное."
+      },
+      "freqRank": 208,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "Nous sommes du Canada.",
+      "gloss": {
+        "en": "We are from Canada.",
+        "es": "Somos de Canadá.",
+        "pt-BR": "Nós somos do Canadá.",
+        "ru": "Мы из Канады.",
+        "ar": "نحن من كندا."
+      },
+      "freqRank": 209,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "Je le vois rarement.",
+      "gloss": {
+        "en": "I see it rarely.",
+        "de": "Ich sehe ihn selten.",
+        "es": "Muy rara vez lo veo.",
+        "pt-BR": "Eu o vejo raramente.",
+        "ru": "Я редко его вижу."
+      },
+      "freqRank": 210,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "Je suis à Berlin.",
+      "gloss": {
+        "en": "I am in Berlin.",
+        "tr": "Berlin'deyim.",
+        "de": "Ich bin in Berlin.",
+        "es": "Estoy en Berlín.",
+        "ru": "Я в Берлине."
+      },
+      "freqRank": 211,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "Où est la vodka ?",
+      "gloss": {
+        "en": "Where is the vodka?",
+        "de": "Wo ist der Wodka?",
+        "es": "¿Dónde está el vodka?",
+        "pt-BR": "Onde está a vodca?",
+        "ru": "Где водка?"
+      },
+      "freqRank": 212,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "Il a trente ans.",
+      "gloss": {
+        "en": "He is thirty years old.",
+        "de": "Er ist dreißig.",
+        "es": "Tiene treinta años.",
+        "pt-BR": "Ele tem trinta anos.",
+        "ru": "Ему тридцать лет."
+      },
+      "freqRank": 213,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "Je paie en espèces.",
+      "gloss": {
+        "en": "I pay in cash.",
+        "tr": "Nakit öderim.",
+        "de": "Ich zahle bar.",
+        "es": "Pago en efectivo.",
+        "pt-BR": "Pago em dinheiro."
+      },
+      "freqRank": 214,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "Tu aurais dû téléphoner.",
+      "gloss": {
+        "en": "You should've called.",
+        "de": "Du hättest anrufen sollen.",
+        "es": "Deberías haber llamado.",
+        "pt-BR": "Você deveria ter telefonado.",
+        "ru": "Тебе нужно было позвонить!"
+      },
+      "freqRank": 215,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "Nous avons un Pape.",
+      "gloss": {
+        "en": "We have a Pope.",
+        "de": "Wir haben einen Papst.",
+        "es": "Tenemos Papa.",
+        "pt-BR": "Nós temos um papa.",
+        "ru": "У нас есть Папа."
+      },
+      "freqRank": 216,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "Cet arbre est remarquable !",
+      "gloss": {
+        "en": "This tree is remarkable!",
+        "de": "Dieser Baum ist bemerkenswert!",
+        "es": "¡Este árbol es notable!",
+        "pt-BR": "Esta árvore é notável!",
+        "ru": "Это дерево замечательное!"
+      },
+      "freqRank": 217,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "Tu caches quelque chose.",
+      "gloss": {
+        "en": "You're hiding something.",
+        "tr": "Bir şey saklıyorsun.",
+        "de": "Du verbirgst etwas.",
+        "es": "Estás ocultando algo.",
+        "ru": "Ты что-то скрываешь."
+      },
+      "freqRank": 218,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "Je jouais au tennis.",
+      "gloss": {
+        "en": "I used to play tennis.",
+        "de": "Ich spielte Tennis.",
+        "es": "Yo jugaba al tenis.",
+        "pt-BR": "Eu jogava tênis.",
+        "ru": "Я играл в теннис."
+      },
+      "freqRank": 219,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "Je joue au tennis.",
+      "gloss": {
+        "en": "I play tennis.",
+        "de": "Ich spiele Tennis.",
+        "es": "Juego al tenis.",
+        "pt-BR": "Eu jogo tênis.",
+        "ru": "Я играю в теннис."
+      },
+      "freqRank": 220,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "Ils mangent du pain.",
+      "gloss": {
+        "en": "They are eating bread.",
+        "de": "Die essen Brot.",
+        "es": "Comen pan.",
+        "pt-BR": "Eles estão comendo pão.",
+        "ru": "Они едят хлеб."
+      },
+      "freqRank": 221,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "Les roses sentent bon.",
+      "gloss": {
+        "en": "Roses smell sweet.",
+        "de": "Rosen riechen gut.",
+        "es": "Las rosas huelen bien.",
+        "pt-BR": "As rosas têm um bom cheiro.",
+        "ru": "Розы приятно пахнут."
+      },
+      "freqRank": 222,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "Il pleut à nouveau.",
+      "gloss": {
+        "en": "It's raining again.",
+        "de": "Es regnet wieder.",
+        "es": "Está lloviendo otra vez.",
+        "pt-BR": "Está chovendo de novo.",
+        "ru": "Опять идёт дождь."
+      },
+      "freqRank": 223,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "Il lave sa voiture.",
+      "gloss": {
+        "en": "He is washing his car.",
+        "de": "Er wäscht sein Auto.",
+        "es": "Está lavando su coche.",
+        "pt-BR": "Ele está lavando o seu carro.",
+        "ru": "Он моет свою машину."
+      },
+      "freqRank": 224,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "Lave-toi le visage.",
+      "gloss": {
+        "en": "Wash your face.",
+        "de": "Wasch dir das Gesicht.",
+        "es": "Lávate la cara.",
+        "pt-BR": "Lave o rosto.",
+        "ru": "Умойся."
+      },
+      "freqRank": 225,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "Lave-toi les mains.",
+      "gloss": {
+        "en": "Wash your hands.",
+        "de": "Wasch dir die Hände.",
+        "es": "Lávate las manos.",
+        "pt-BR": "Lave as mãos.",
+        "ru": "Вымой руки."
+      },
+      "freqRank": 226,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "Il est photographe professionnel.",
+      "gloss": {
+        "en": "He's a professional photographer.",
+        "de": "Er ist Berufsfotograf.",
+        "es": "Él es fotógrafo profesional.",
+        "pt-BR": "Ele é um fotógrafo profissional.",
+        "ru": "Он профессиональный фотограф."
+      },
+      "freqRank": 227,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "La mouche est petite.",
+      "gloss": {
+        "en": "The fly is small.",
+        "de": "Die Fliege ist klein.",
+        "es": "La mosca es pequeña.",
+        "pt-BR": "A mosca é pequena.",
+        "ru": "Муха маленькая."
+      },
+      "freqRank": 228,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "Son pull est gris.",
+      "gloss": {
+        "en": "His sweater is gray.",
+        "de": "Sein Pulli ist grau.",
+        "es": "Su suéter es gris.",
+        "pt-BR": "Seu pulôver é cinza.",
+        "ru": "У него серый свитер."
+      },
+      "freqRank": 229,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "Nous vivons à Boston.",
+      "gloss": {
+        "en": "We live in Boston.",
+        "tr": "Boston'da yaşıyoruz.",
+        "de": "Wir leben in Boston.",
+        "es": "Vivimos en Boston.",
+        "pt-BR": "Nós vivemos em Boston.",
+        "ru": "Мы живём в Бостоне."
+      },
+      "freqRank": 230,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "Nous vivons en appartement.",
+      "gloss": {
+        "en": "We live in an apartment.",
+        "de": "Wir wohnen in einem Appartement.",
+        "es": "Vivimos en un apartamento.",
+        "pt-BR": "Moramos num apartamento.",
+        "ru": "Мы живём в квартире."
+      },
+      "freqRank": 231,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "Nous vivons en société.",
+      "gloss": {
+        "en": "We live in a society.",
+        "tr": "Bir toplumda yaşıyoruz.",
+        "de": "Wir leben in einer Gesellschaft.",
+        "es": "Vivimos en una sociedad.",
+        "ru": "Мы живём в обществе.",
+        "ar": "نحن نعيش في مجتمع."
+      },
+      "freqRank": 232,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "Nous vivons sur Terre.",
+      "gloss": {
+        "en": "We live on the earth.",
+        "de": "Wir leben auf der Erde.",
+        "es": "Vivimos en la Tierra.",
+        "pt-BR": "Nós moramos na Terra.",
+        "ru": "Мы живём на Земле.",
+        "ar": "نحن نعيش على كوكب الأرض."
+      },
+      "freqRank": 233,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "Janvier est mon mois.",
+      "gloss": {
+        "en": "January is my month.",
+        "de": "Der Januar ist mein Monat.",
+        "es": "Enero es mi mes.",
+        "pt-BR": "Janeiro é o meu mês.",
+        "ru": "Январь — мой месяц."
+      },
+      "freqRank": 234,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "Je veux le surprendre.",
+      "gloss": {
+        "en": "I want to surprise him.",
+        "tr": "Ona sürpriz yapmak istiyorum.",
+        "de": "Ich will ihn überraschen.",
+        "es": "Quiero darle una sorpresa.",
+        "ru": "Я хочу его удивить."
+      },
+      "freqRank": 235,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "Je dois me dépêcher !",
+      "gloss": {
+        "en": "I have to hurry!",
+        "de": "Ich muss mich beeilen!",
+        "es": "¡Tengo que apurarme!",
+        "pt-BR": "Eu devo me apressar!",
+        "ru": "Мне надо спешить!"
+      },
+      "freqRank": 236,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "Le citron est acide.",
+      "gloss": {
+        "en": "Lemon is sour.",
+        "de": "Die Zitrone ist sauer.",
+        "es": "El limón es ácido.",
+        "pt-BR": "O limão é ácido.",
+        "ru": "Лимон кислый."
+      },
+      "freqRank": 237,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "Il a la grippe.",
+      "gloss": {
+        "en": "He's got the flu.",
+        "de": "Er hat die Grippe.",
+        "es": "Él tiene la gripe.",
+        "pt-BR": "Ele está com gripe.",
+        "ru": "У него грипп."
+      },
+      "freqRank": 238,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "Mario est citoyen italien.",
+      "gloss": {
+        "en": "Mario is an Italian citizen.",
+        "de": "Mario ist italienischer Staatsbürger.",
+        "es": "Mario es un ciudadano italiano.",
+        "pt-BR": "Mario é um cidadão italiano.",
+        "ru": "Марио - гражданин Италии."
+      },
+      "freqRank": 239,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "La Terre est ronde.",
+      "gloss": {
+        "en": "The earth is round.",
+        "de": "Die Erde ist rund.",
+        "es": "La Tierra es redonda.",
+        "pt-BR": "A Terra é redonda.",
+        "ru": "Земля круглая."
+      },
+      "freqRank": 240,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "De quoi tu ris ?",
+      "gloss": {
+        "en": "What are you laughing at?",
+        "de": "Worüber lachst du?",
+        "es": "¿De qué te ríes?",
+        "pt-BR": "Do que você está rindo?",
+        "ru": "Над чем ты смеёшься?"
+      },
+      "freqRank": 241,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "Dieu est un éléphant.",
+      "gloss": {
+        "en": "God is an elephant.",
+        "tr": "Tanrı bir fildir.",
+        "de": "Gott ist ein Elefant.",
+        "es": "Dios es un elefante.",
+        "pt-BR": "Deus é um elefante.",
+        "ru": "Бог — слон.",
+        "ar": "الله فيل."
+      },
+      "freqRank": 242,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "Je suis Tom Hunter.",
+      "gloss": {
+        "en": "I'm Tom Hunter.",
+        "tr": "Ben Tom Hunter.",
+        "de": "Ich bin Tom Hunter.",
+        "es": "Soy Tom Hunter.",
+        "pt-BR": "Eu sou Tom Hunter."
+      },
+      "freqRank": 243,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "Tom a été kidnappé.",
+      "gloss": {
+        "en": "Tom was kidnapped.",
+        "de": "Tom wurde entführt.",
+        "es": "Tom fue secuestrado.",
+        "pt-BR": "Tom foi sequestrado.",
+        "ru": "Тома похитили."
+      },
+      "freqRank": 244,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "Les arbres sont verts.",
+      "gloss": {
+        "en": "The trees are green.",
+        "de": "Die Bäume sind grün.",
+        "es": "Los árboles son verdes.",
+        "pt-BR": "As árvores são verdes.",
+        "ru": "Деревья зелёные."
+      },
+      "freqRank": 245,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "Le supermarché est ouvert.",
+      "gloss": {
+        "en": "The supermarket is open.",
+        "de": "Der Supermarkt ist offen.",
+        "es": "El supermercado está abierto.",
+        "pt-BR": "O supermercado está aberto.",
+        "ru": "Супермаркет открыт."
+      },
+      "freqRank": 246,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "Je viens du Brésil.",
+      "gloss": {
+        "en": "I come from Brazil.",
+        "de": "Ich komme aus Brasilien.",
+        "es": "Vengo de Brasil.",
+        "pt-BR": "Eu venho do Brasil.",
+        "ru": "Я из Бразилии."
+      },
+      "freqRank": 247,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "Les femmes me détestent.",
+      "gloss": {
+        "en": "Women hate me.",
+        "de": "Frauen hassen mich.",
+        "es": "Las mujeres me odian.",
+        "pt-BR": "As mulheres me detestam.",
+        "ru": "Женщины меня ненавидят."
+      },
+      "freqRank": 248,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "Glenn a deux amies.",
+      "gloss": {
+        "en": "Glenn has two friends who are women.",
+        "de": "Glenn hat zwei Freundinnen.",
+        "es": "Glenn tiene dos amigas.",
+        "pt-BR": "Glenn tem duas amigas.",
+        "ru": "У Гленна две подруги."
+      },
+      "freqRank": 249,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "Il parle dix langues.",
+      "gloss": {
+        "en": "He speaks ten languages.",
+        "de": "Er spricht zehn Sprachen.",
+        "es": "Él habla diez lenguas.",
+        "pt-BR": "Ele fala dez línguas.",
+        "ru": "Он говорит на десяти языках."
+      },
+      "freqRank": 250,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "La tactique a fonctionné.",
+      "gloss": {
+        "en": "The tactic worked.",
+        "tr": "Taktik işe yaradı.",
+        "de": "Die Taktik funktionierte.",
+        "es": "La táctica funcionó.",
+        "ru": "Тактика сработала."
+      },
+      "freqRank": 251,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "La douleur était insupportable.",
+      "gloss": {
+        "en": "The pain was unbearable.",
+        "de": "Der Schmerz war nicht auszuhalten.",
+        "es": "El dolor era insoportable.",
+        "pt-BR": "A dor era insuportável.",
+        "ru": "Боль была невыносима."
+      },
+      "freqRank": 252,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "Supporter peut être insupportable.",
+      "gloss": {
+        "en": "Bearing can be unbearable.",
+        "de": "Ertragen kann unerträglich sein.",
+        "es": "Soportar puede ser insoportable.",
+        "pt-BR": "Suportar pode ser insuportável.",
+        "ru": "Выносить что-либо может быть невыносимо."
+      },
+      "freqRank": 253,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "Nous devons être prudents.",
+      "gloss": {
+        "en": "We must be cautious.",
+        "de": "Wir müssen vorsichtig sein.",
+        "es": "Tenemos que ser prudentes.",
+        "pt-BR": "Devemos ser prudentes.",
+        "ru": "Мы должны быть осторожны."
+      },
+      "freqRank": 254,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "As-tu un violon ?",
+      "gloss": {
+        "en": "Do you have a violin?",
+        "de": "Hast du eine Geige?",
+        "es": "¿Tienes un violín?",
+        "pt-BR": "Você tem um violino?",
+        "ru": "У тебя есть скрипка?"
+      },
+      "freqRank": 255,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "Je joue du violon.",
+      "gloss": {
+        "en": "I play the violin.",
+        "de": "Ich spiele Geige.",
+        "es": "Toco el violín.",
+        "pt-BR": "Eu toco violino.",
+        "ru": "Я играю на скрипке.",
+        "ar": "أعزف الكمان."
+      },
+      "freqRank": 256,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 250,
+      "kind": "phrase",
+      "text": "Les chats dorment beaucoup.",
+      "gloss": {
+        "en": "Cats sleep a lot.",
+        "de": "Katzen schlafen viel.",
+        "es": "Los gatos duermen mucho.",
+        "pt-BR": "Os gatos dormem muito.",
+        "ru": "Кошки много спят."
+      },
+      "freqRank": 257,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 251,
+      "kind": "phrase",
+      "text": "Les poissons dorment-ils ?",
+      "gloss": {
+        "en": "Do fish sleep?",
+        "tr": "Balıklar uyur mu?",
+        "de": "Schlafen Fische?",
+        "es": "¿Los peces duermen?",
+        "pt-BR": "Os peixes dormem?",
+        "ru": "Рыбы спят?"
+      },
+      "freqRank": 258,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "Il se mit debout.",
+      "gloss": {
+        "en": "He stood up.",
+        "de": "Er stand auf.",
+        "es": "Él se puso de pie.",
+        "pt-BR": "Ele pôs-se de pé.",
+        "ru": "Он встал."
+      },
+      "freqRank": 259,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 253,
+      "kind": "phrase",
+      "text": "Tom veut devenir pompier.",
+      "gloss": {
+        "en": "Tom wants to become a fireman.",
+        "de": "Tom will Feuerwehrmann werden.",
+        "es": "Tom quiere convertirse en bombero.",
+        "pt-BR": "Tom quer ser bombeiro.",
+        "ru": "Том хочет стать пожарным."
+      },
+      "freqRank": 260,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
+      "text": "As-tu tout lavé ?",
+      "gloss": {
+        "en": "Did you clean everything?",
+        "de": "Hast du alles abgewaschen?",
+        "es": "¿Lo has lavado todo?",
+        "pt-BR": "Você lavou tudo?",
+        "ru": "Ты всё помыл?"
+      },
+      "freqRank": 261,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 255,
+      "kind": "phrase",
+      "text": "Je me suis lavé.",
+      "gloss": {
+        "en": "I washed myself.",
+        "de": "Ich habe mich gewaschen.",
+        "es": "Yo me lavé.",
+        "pt-BR": "Eu me lavei.",
+        "ru": "Я вымылся."
+      },
+      "freqRank": 262,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 256,
+      "kind": "phrase",
+      "text": "Quelles sont les causes ?",
+      "gloss": {
+        "en": "What are the causes?",
+        "tr": "Sebepleri nelerdir?",
+        "de": "Was sind die Ursachen?",
+        "es": "¿Cuáles son las causas?",
+        "ru": "Каковы причины?"
+      },
+      "freqRank": 263,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 257,
+      "kind": "phrase",
+      "text": "Ceci est un crayon.",
+      "gloss": {
+        "en": "This is a pencil.",
+        "de": "Dies ist ein Bleistift.",
+        "es": "Esto es un lápiz.",
+        "pt-BR": "Isto é um lápis.",
+        "ru": "Это карандаш.",
+        "ar": "هذا قلم رصاص."
+      },
+      "freqRank": 264,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 258,
+      "kind": "phrase",
+      "text": "Je mange des pâtes.",
+      "gloss": {
+        "en": "I eat noodles.",
+        "tr": "Makarna yiyorum.",
+        "de": "Ich esse Nudeln.",
+        "es": "Yo como pasta.",
+        "pt-BR": "Estou comendo macarrão.",
+        "ru": "Я ем макароны."
+      },
+      "freqRank": 265,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 259,
+      "kind": "phrase",
+      "text": "Betty a tué sa mère.",
+      "gloss": {
+        "en": "Betty killed her mother.",
+        "tr": "Betty annesini öldürdü.",
+        "de": "Betty hat ihre Mutter getötet.",
+        "es": "Betty mató a su madre.",
+        "pt-BR": "Betty matou a mãe.",
+        "ru": "Бетти убила свою мать."
+      },
+      "freqRank": 266,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 260,
+      "kind": "phrase",
+      "text": "Il aime jouer au foot.",
+      "gloss": {
+        "en": "He likes playing soccer.",
+        "tr": "O, futbol oynamayı sever.",
+        "de": "Er spielt gerne Fußball.",
+        "es": "Le gusta jugar al fútbol.",
+        "pt-BR": "Ele gosta de jogar futebol.",
+        "ru": "Он любит играть в футбол."
+      },
+      "freqRank": 267,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "Un chien a quatre pattes.",
+      "gloss": {
+        "en": "A dog has four legs.",
+        "tr": "Bir köpeğin dört bacağı var.",
+        "de": "Ein Hund hat vier Pfoten.",
+        "es": "Un perro tiene cuatro patas.",
+        "pt-BR": "Um cão tem quatro patas.",
+        "ru": "У собаки четыре лапы."
+      },
+      "freqRank": 268,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 262,
+      "kind": "phrase",
+      "text": "Nous pensons, donc nous sommes.",
+      "gloss": {
+        "en": "We think, therefore we are.",
+        "tr": "Düşünüyoruz, öyleyse varız.",
+        "de": "Wir denken, also sind wir.",
+        "es": "Pensamos, luego existimos.",
+        "ru": "Мы мыслим, следовательно, мы существуем.",
+        "ar": "نفكر، إذن نحن موجودون."
+      },
+      "freqRank": 269,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 263,
+      "kind": "phrase",
+      "text": "La fille boit du thé.",
+      "gloss": {
+        "en": "The girl is drinking tea.",
+        "tr": "Kız çay içiyor.",
+        "de": "Das Mädchen trinkt Tee.",
+        "es": "La niña está tomando té.",
+        "pt-BR": "A garota está tomando chá.",
+        "ru": "Девочка пьёт чай."
+      },
+      "freqRank": 270,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 264,
+      "kind": "phrase",
+      "text": "Je ne sais pas nager.",
+      "gloss": {
+        "en": "I don't know how to swim.",
+        "tr": "Nasıl yüzülür bilmiyorum.",
+        "de": "Ich kann nicht schwimmen.",
+        "es": "No sé nadar.",
+        "pt-BR": "Eu não sei nadar.",
+        "ru": "Я не умею плавать."
+      },
+      "freqRank": 271,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 265,
+      "kind": "phrase",
+      "text": "Mike et Ken sont amis.",
+      "gloss": {
+        "en": "Mike and Ken are friends.",
+        "tr": "Mike ve Ken arkadaşlar.",
+        "de": "Mike und Ken sind befreundet.",
+        "es": "Mike y Ken son amigos.",
+        "pt-BR": "Mike e Ken são amigos.",
+        "ru": "Майк и Кен - друзья."
+      },
+      "freqRank": 272,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 266,
+      "kind": "phrase",
+      "text": "Savez-vous cuisiner le poisson ?",
+      "gloss": {
+        "en": "Do you know how to cook fish?",
+        "tr": "Balık pişirmeyi biliyor musunuz?",
+        "de": "Wissen Sie, wie man Fisch kocht?",
+        "es": "¿Tú sabes cómo cocinar pescado?",
+        "pt-BR": "Você sabe cozinhar peixe?",
+        "ru": "Вы умеете готовить рыбу?"
+      },
+      "freqRank": 273,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 267,
+      "kind": "phrase",
+      "text": "Je veux aller en Italie.",
+      "gloss": {
+        "en": "I do want to go to Italy.",
+        "tr": "İtalya'ya gitmek istiyorum.",
+        "de": "Ich will nach Italien gehen.",
+        "es": "Quiero ir a Italia.",
+        "pt-BR": "Quero ir à Itália.",
+        "ru": "Я хочу поехать в Италию."
+      },
+      "freqRank": 274,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 268,
+      "kind": "phrase",
+      "text": "Puis-je voir votre passeport ?",
+      "gloss": {
+        "en": "May I see your passport?",
+        "tr": "Pasaportunuzu görebilir miyim?",
+        "de": "Darf ich Ihren Ausweis sehen?",
+        "es": "¿Puedo ver su pasaporte?",
+        "pt-BR": "Posso ver seu passaporte?",
+        "ru": "Можно взглянуть на Ваш паспорт?"
+      },
+      "freqRank": 275,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 269,
+      "kind": "phrase",
+      "text": "Nous vivons aux États-Unis.",
+      "gloss": {
+        "en": "We live in the United States.",
+        "tr": "Biz ABD'de yaşıyoruz.",
+        "de": "Wir leben in den Vereinigten Staaten.",
+        "es": "Vivimos en los Estados Unidos.",
+        "pt-BR": "Moramos nos Estados Unidos.",
+        "ru": "Мы живём в США."
+      },
+      "freqRank": 276,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "Nous voulons une solution pacifique.",
+      "gloss": {
+        "en": "We want a peaceful solution.",
+        "tr": "Barışçıl bir çözüm istiyoruz.",
+        "de": "Wir wollen eine friedliche Lösung.",
+        "es": "Queremos una solución pacífica.",
+        "pt-BR": "Nós queremos uma solução pacífica.",
+        "ru": "Мы хотим мирного решения.",
+        "ar": "نحن نريد حلاً سلمياً."
+      },
+      "freqRank": 277,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "Je suis allé au supermarché.",
+      "gloss": {
+        "en": "I've been to the supermarket.",
+        "tr": "Süpermarkete gittim.",
+        "de": "Ich bin zum Supermarkt gegangen.",
+        "es": "Fui al supermercado.",
+        "pt-BR": "Fui ao supermercado.",
+        "ru": "Я ходил в супермаркет."
+      },
+      "freqRank": 278,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "Florence est une belle ville.",
+      "gloss": {
+        "en": "Florence is a beautiful city.",
+        "tr": "Floransa güzel bir şehirdir.",
+        "de": "Florenz ist eine schöne Stadt.",
+        "es": "Florencia es una ciudad bonita.",
+        "pt-BR": "Florença é uma cidade bonita.",
+        "ru": "Флоренция - прекрасный город."
+      },
+      "freqRank": 279,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "Est-ce que tu viendras ?",
+      "gloss": {
+        "en": "Are you going to come?",
+        "tr": "Gelecek misin?",
+        "de": "Wirst du kommen?",
+        "es": "¿Vas a venir?",
+        "ru": "Ты придёшь?",
+        "ar": "هل ستأتي؟"
+      },
+      "freqRank": 280,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "Un plus deux égale trois.",
+      "gloss": {
+        "en": "One plus two equals three.",
+        "tr": "Bir artı iki üç eder.",
+        "de": "Eins plus zwei ist gleich drei.",
+        "es": "Uno más dos es igual a tres.",
+        "ru": "Один плюс два равно трём.",
+        "ar": "واحد زائد اثنان يساوي ثلاثة."
+      },
+      "freqRank": 281,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "Comment se manifeste le défaut ?",
+      "gloss": {
+        "en": "How is the error observed?",
+        "tr": "Hata nasıl gözlendi?",
+        "de": "Wie äußert sich der Fehler?",
+        "es": "¿Cómo se manifestó el error?",
+        "pt-BR": "De que forma o erro se manifestou?",
+        "ru": "В чем проявляется неисправность?",
+        "ar": "كيف يلاحَظ الخطأ؟"
+      },
+      "freqRank": 282,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "Quand es-tu venu au Japon ?",
+      "gloss": {
+        "en": "When did you come to Japan?",
+        "tr": "Japonya'ya ne zaman geldin?",
+        "de": "Wann bist du nach Japan gekommen?",
+        "es": "¿Cuándo viniste a Japón?",
+        "pt-BR": "Quando você veio para o Japão?",
+        "ru": "Когда ты приехал в Японию?"
+      },
+      "freqRank": 283,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "Tom a des amis en Allemagne.",
+      "gloss": {
+        "en": "Tom has friends in Germany.",
+        "tr": "Tom'un Almanya'da arkadaşları var.",
+        "de": "Tom hat Freunde in Deutschland.",
+        "es": "Tom tiene amigos en Alemania.",
+        "pt-BR": "Tom tem amigos na Alemanha.",
+        "ru": "У Тома есть друзья в Германии."
+      },
+      "freqRank": 284,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "Je ne regrette pas mes actes.",
+      "gloss": {
+        "en": "I don't regret my actions.",
+        "tr": "Hareketlerimden pişman değilim.",
+        "de": "Ich bereue meine Taten nicht.",
+        "es": "No me arrepiento de nada de lo que hice.",
+        "pt-BR": "Eu não lamento meus atos.",
+        "ru": "Я не жалею о своих поступках."
+      },
+      "freqRank": 285,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "Tom ne boit pas de bière.",
+      "gloss": {
+        "en": "Tom doesn't drink beer.",
+        "tr": "Tom bira içmez.",
+        "de": "Tom trinkt kein Bier.",
+        "es": "Tom no bebe cerveza.",
+        "pt-BR": "Tom não bebe cerveja.",
+        "ru": "Том не пьет пиво."
+      },
+      "freqRank": 286,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "Fermez toutes les portes et fenêtres.",
+      "gloss": {
+        "en": "Shut all the doors and windows.",
+        "tr": "Bütün kapıları ve pencereleri kapa.",
+        "de": "Schließt alle Türen und Fenster.",
+        "es": "Cerrad todas las puertas y ventanas.",
+        "pt-BR": "Fechem todas as portas e janelas.",
+        "ru": "Закройте все двери и окна."
+      },
+      "freqRank": 287,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "Je suis un génie très stable.",
+      "gloss": {
+        "en": "I'm a very stable genius.",
+        "tr": "Ben çok dengeli bir dâhiyim.",
+        "de": "Ich bin ein sehr stabiles Genie.",
+        "es": "Soy un genio muy estable.",
+        "pt-BR": "Sou um gênio muito estável.",
+        "ar": "أنا عبقري مستقر جدا عقليا."
+      },
+      "freqRank": 288,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "Nous n’avons pas de pape !",
+      "gloss": {
+        "en": "We don't have a Pope!",
+        "tr": "Papamız yok!",
+        "de": "Wir haben keinen Papst!",
+        "es": "¡No tenemos Papa!",
+        "pt-BR": "Nós não temos Papa!",
+        "ru": "У нас нет папы римского!"
+      },
+      "freqRank": 289,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 283,
+      "kind": "phrase",
+      "text": "Nous vivons dans une belle ville.",
+      "gloss": {
+        "en": "We live in a beautiful city.",
+        "tr": "Biz güzel bir şehirde yaşıyoruz.",
+        "de": "Wir leben in einer schönen Stadt.",
+        "es": "Vivimos en una hermosa ciudad.",
+        "pt-BR": "Vivemos em uma bela cidade.",
+        "ru": "Мы живем в прекрасном городе."
+      },
+      "freqRank": 290,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "Tous les chemins mènent à Rome.",
+      "gloss": {
+        "en": "All roads lead to Rome.",
+        "tr": "Bütün yollar Roma'ya çıkar.",
+        "de": "Alle Wege führen nach Rom.",
+        "es": "Todos los caminos llevan a Roma.",
+        "ru": "Все дороги ведут в Рим.",
+        "ar": "كل الطرق تؤدي إلى روما."
+      },
+      "freqRank": 291,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 285,
+      "kind": "phrase",
+      "text": "Tom est-il en train de rêver ?",
+      "gloss": {
+        "en": "Is Tom dreaming?",
+        "tr": "Tom hayal kuruyor mu?",
+        "de": "Träumt Tom?",
+        "es": "¿Tom está soñando?",
+        "pt-BR": "Tom está sonhando?",
+        "ru": "Том мечтает?"
+      },
+      "freqRank": 292,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "Il a peint la porte en bleue.",
+      "gloss": {
+        "en": "He painted the door blue.",
+        "de": "Er hat die Tür blau gestrichen.",
+        "es": "Pintó la puerta de azul.",
+        "pt-BR": "Ele pintou a porta de azul.",
+        "ru": "Он покрасил дверь в синий цвет.",
+        "ar": "طلى الباب باللون الأزرق."
+      },
+      "freqRank": 293,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 287,
+      "kind": "phrase",
+      "text": "Les abeilles volent de fleur en fleur.",
+      "gloss": {
+        "en": "Bees fly from flower to flower.",
+        "tr": "Arılar çiçekten çiçeğe uçarlar.",
+        "de": "Bienen fliegen von Blume zu Blume.",
+        "es": "Las abejas vuelan de flor en flor.",
+        "pt-BR": "As abelhas voam de flor em flor.",
+        "ru": "Пчёлы перелетают от цветка к цветку."
+      },
+      "freqRank": 294,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 288,
+      "kind": "phrase",
+      "text": "Le médicament a eu un effet immédiat.",
+      "gloss": {
+        "en": "The medicine had an immediate effect.",
+        "tr": "İlacın anında etkisi oldu.",
+        "de": "Das Medikament hatte eine sofortige Wirkung.",
+        "es": "El remedio tuvo un efecto inmediato.",
+        "pt-BR": "O remédio tinha efeito imediato.",
+        "ru": "Лекарство подействовало немедленно."
+      },
+      "freqRank": 295,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 289,
+      "kind": "phrase",
+      "text": "Il pleut aujourd'hui. Où est mon parapluie?",
+      "gloss": {
+        "en": "It's raining today. Where is my umbrella?",
+        "de": "Es regnet heute. Wo ist mein Regenschirm?",
+        "es": "Está lloviendo hoy, ¿dónde está mi paraguas?",
+        "pt-BR": "Está chovendo hoje. Onde está meu guarda-chuva?",
+        "ru": "Сегодня дождь. Где мой зонтик?",
+        "ar": "إنها تمطر اليوم، أين مظلتي؟"
+      },
+      "freqRank": 296,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 290,
+      "kind": "phrase",
+      "text": "Le musée est ouvert du lundi au vendredi.",
+      "gloss": {
+        "en": "The museum is open from Monday to Friday.",
+        "tr": "Müze pazartesiden cumaya kadar açıktır.",
+        "de": "Das Museum ist Montag bis Freitag geöffnet.",
+        "es": "El museo está abierto de lunes a viernes.",
+        "pt-BR": "O museu está aberto de segunda a sexta.",
+        "ru": "Музей открыт с понедельника по пятницу."
+      },
+      "freqRank": 297,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 291,
+      "kind": "phrase",
+      "text": "Dimanche, lundi, mardi, mercredi, jeudi, vendredi et samedi.",
+      "gloss": {
+        "en": "Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, and Saturday.",
+        "tr": "Pazar, Pazartesi, Salı, Çarşamba, Perşembe, Cuma ve Cumartesi.",
+        "de": "Sonntag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag und Samstag.",
+        "es": "Domingo, lunes, martes, miércoles, jueves, viernes y sábado.",
+        "pt-BR": "Domingo, segunda, terça, quarta, quinta, sexta e sábado.",
+        "ru": "Воскресенье, понедельник, вторник, среда, четверг, пятница и суббота.",
+        "ar": "الأحد, الإثنين, الثلاثاء, الأربعاء, الخميس, الجمعة والسبت."
+      },
+      "freqRank": 298,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 292,
+      "kind": "phrase",
+      "text": "Dans quelles circonstances le défaut est-il apparu ?",
+      "gloss": {
+        "en": "When did the error occur?",
+        "tr": "Hata ne zaman meydana geldi?",
+        "de": "Wobei ist der Fehler aufgetreten?",
+        "es": "¿Dónde ha aparecido el error?",
+        "pt-BR": "Como o erro surgiu?",
+        "ru": "При каких обстоятельствах возникла неисправность?",
+        "ar": "في أي ظروف ظهر الخطأ؟"
+      },
+      "freqRank": 299,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 293,
+      "kind": "phrase",
+      "text": "Chaque fois que je le vois, il sourit.",
+      "gloss": {
+        "en": "Every time I see him, he is smiling.",
+        "tr": "Onu her gördüğümde, gülüyor.",
+        "de": "Jedes Mal, wenn ich ihn sehe, lächelt er.",
+        "es": "Cada vez que lo veo, está sonriendo.",
+        "pt-BR": "Toda vez que eu o vejo, ele está sorrindo.",
+        "ru": "Каждый раз, когда я его вижу, он улыбается."
+      },
+      "freqRank": 300,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    }
+  ]
+}
