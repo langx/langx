@@ -78,12 +78,20 @@ page was a blank splash with a 404 in the console while the deploy had
 reported success. Two things changed the same day. The zone's "Cache
 websites" rule now covers `langx.io` alone (it had a one-day edge TTL that
 overrode Pages' `max-age=0` on `app.langx.io`); Pages needs no zone rule, and
-`public/_headers` already marks the fingerprinted assets immutable. And
-`pnpm deploy:web` now ends with `scripts/verify-web-deploy.mjs --built`,
-which fetches the live index on the custom domain and checks that the scripts
-it loads are the ones in the `dist/` it just uploaded, then fetches each of
-them. If it ever fails again, purge the host (Caching → Configuration → Purge
-→ Custom → Hostname `app.langx.io`) and check the cache rules.
+`public/_headers` already marks the fingerprinted assets immutable. And every web
+deploy now ends with `scripts/verify-web-deploy.mjs --built`, which fetches
+the live index on the custom domain and checks that the scripts it loads are
+the ones in the `dist/` it just uploaded, then fetches each of them. If it
+ever fails again, purge the host (Caching → Configuration → Purge → Custom →
+Hostname `app.langx.io`) and check the cache rules.
+
+**The `--built` flag is passed by `deploy-web.yml`, not by the `deploy:web`
+script**, and the reason has nothing to do with deploys: `runtimeVersion` is a
+fingerprint and `@expo/fingerprint` hashes `packageJson:scripts`, so a flag on
+a line in `apps/mobile/package.json` changes the runtime version and cuts every
+installed app off from over-the-air updates. It did, on 20 September 2026. A
+deploy run by hand therefore answers the weaker question below; the strict one
+runs in CI, which is where web deploys have happened since 5 September.
 
 `pnpm verify:web` runs it on its own, without `--built`, and answers the
 weaker question: does the live index load every script it references. That is
@@ -331,6 +339,17 @@ scripts/send-campaign.ts --resume --campaign 2026-09-launch
   `--pause` and work out why before resuming.
 
 ## Shipping runs on expo.dev
+
+> **Do this in the same build, before you start one.** A binary changes the
+> runtime version anyway, so it is the one free moment to stop npm scripts
+> from doing it: add a `fingerprint.config.js` under `apps/mobile` with
+> `sourceSkips: SourceSkips.PackageJsonScriptsAll` (the constant exists in
+> the `@expo/fingerprint` this repo ships). Until that lands, editing any
+> script in `apps/mobile/package.json` severs over-the-air updates for every
+> app already installed — it did on 20 September 2026, for a flag that
+> touched no native code, and the only repair was putting the line back
+> byte-for-byte. The config changes the hash itself, which is exactly why it
+> has to ride a build rather than an update. See `deploy-web.yml`.
 
 Builds and store submissions are EAS jobs, defined in
 `apps/mobile/.eas/workflows/`. GitHub Actions tests, publishes the OTA update,
