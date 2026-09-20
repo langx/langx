@@ -2,7 +2,7 @@
   "id": "fr:beginner",
   "lang": "fr",
   "level": "beginner",
-  "contentVersion": 1,
+  "contentVersion": 2,
   "reviewed": false,
   "sources": [
     {
@@ -32,7 +32,7 @@
       "kind": "phrase",
       "text": "bon courage",
       "gloss": {
-        "en": "go for it",
+        "en": "keep it up",
         "de": "frohes Schaffen",
         "es": "buena suerte",
         "pt-BR": "boa sorte"
@@ -55,7 +55,8 @@
             "file": "LL-Q150 (fra)-Poslovitch-bon courage.wav",
             "tags": []
           }
-        ]
+        ],
+        "edited": ["en"]
       }
     },
     {
@@ -160,25 +161,9 @@
     {
       "index": 7,
       "kind": "phrase",
-      "text": "Bienvenue en enfer !",
-      "gloss": {
-        "en": "Welcome to hell!",
-        "de": "Willkommen in der Hölle!",
-        "es": "¡Bienvenido al infierno!",
-        "pt-BR": "Bem-vindo ao inferno!",
-        "ru": "Добро пожаловать в ад!"
-      },
-      "freqRank": 20,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 8,
-      "kind": "phrase",
       "text": "Que faisais-tu ?",
       "gloss": {
-        "en": "What did you make?",
+        "en": "What were you doing?",
         "de": "Was hast du gemacht?",
         "es": "¿Qué hiciste?",
         "pt-BR": "Que fazias?",
@@ -186,11 +171,12 @@
       },
       "freqRank": 21,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 9,
+      "index": 8,
       "kind": "phrase",
       "text": "Je préfère marcher.",
       "gloss": {
@@ -206,7 +192,7 @@
       }
     },
     {
-      "index": 10,
+      "index": 9,
       "kind": "phrase",
       "text": "Où est Paris ?",
       "gloss": {
@@ -222,7 +208,7 @@
       }
     },
     {
-      "index": 11,
+      "index": 10,
       "kind": "phrase",
       "text": "Lequel veux-tu ?",
       "gloss": {
@@ -238,7 +224,7 @@
       }
     },
     {
-      "index": 12,
+      "index": 11,
       "kind": "phrase",
       "text": "Où est Paul ?",
       "gloss": {
@@ -254,7 +240,7 @@
       }
     },
     {
-      "index": 13,
+      "index": 12,
       "kind": "phrase",
       "text": "C’est bon.",
       "gloss": {
@@ -270,39 +256,7 @@
       }
     },
     {
-      "index": 14,
-      "kind": "phrase",
-      "text": "Fils de pute !",
-      "gloss": {
-        "en": "Son of a bitch!",
-        "de": "Du Sohn einer Hure!",
-        "es": "¡Hijo de puta!",
-        "pt-BR": "Seu filho da puta!",
-        "ru": "Сукин сын!"
-      },
-      "freqRank": 29,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 15,
-      "kind": "phrase",
-      "text": "C’est exact.",
-      "gloss": {
-        "en": "It's accurate.",
-        "de": "Genau!",
-        "es": "Exactamente.",
-        "pt-BR": "Exatamente.",
-        "ru": "Это точно."
-      },
-      "freqRank": 27,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 16,
+      "index": 13,
       "kind": "phrase",
       "text": "Quel temps horrible !",
       "gloss": {
@@ -318,23 +272,23 @@
       }
     },
     {
-      "index": 17,
+      "index": 14,
       "kind": "phrase",
-      "text": "C’est tout.",
+      "text": "C’est exact.",
       "gloss": {
-        "en": "That's all.",
-        "de": "Das ist alles.",
-        "es": "Eso es todo.",
-        "pt-BR": "Isso é tudo.",
-        "ru": "Это всё."
+        "en": "It's accurate.",
+        "de": "Genau!",
+        "es": "Exactamente.",
+        "pt-BR": "Exatamente.",
+        "ru": "Это точно."
       },
-      "freqRank": 28,
+      "freqRank": 27,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 18,
+      "index": 15,
       "kind": "phrase",
       "text": "Elle est enceinte.",
       "gloss": {
@@ -350,7 +304,23 @@
       }
     },
     {
-      "index": 19,
+      "index": 16,
+      "kind": "phrase",
+      "text": "C’est tout.",
+      "gloss": {
+        "en": "That's all.",
+        "de": "Das ist alles.",
+        "es": "Eso es todo.",
+        "pt-BR": "Isso é tudo.",
+        "ru": "Это всё."
+      },
+      "freqRank": 28,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 17,
       "kind": "phrase",
       "text": "Es-tu enceinte ?",
       "gloss": {
@@ -367,7 +337,7 @@
       }
     },
     {
-      "index": 20,
+      "index": 18,
       "kind": "phrase",
       "text": "Suis-je enceinte ?",
       "gloss": {
@@ -385,7 +355,7 @@
       }
     },
     {
-      "index": 21,
+      "index": 19,
       "kind": "word",
       "text": "Existe-t-elle ?",
       "gloss": {
@@ -401,7 +371,7 @@
       }
     },
     {
-      "index": 22,
+      "index": 20,
       "kind": "phrase",
       "text": "Café ou thé ?",
       "gloss": {
@@ -418,7 +388,7 @@
       }
     },
     {
-      "index": 23,
+      "index": 21,
       "kind": "phrase",
       "text": "Appelez la police !",
       "gloss": {
@@ -434,23 +404,24 @@
       }
     },
     {
-      "index": 24,
+      "index": 22,
       "kind": "phrase",
       "text": "Il est Anglais.",
       "gloss": {
         "en": "He's an Englishman.",
-        "tr": "O bir İngiliz'dir.",
+        "tr": "O bir İngiliz.",
         "de": "Er ist Engländer.",
         "pt-BR": "Ele é inglês.",
         "ru": "Он англичанин."
       },
       "freqRank": 38,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 25,
+      "index": 23,
       "kind": "phrase",
       "text": "Appelez mon mari !",
       "gloss": {
@@ -466,11 +437,11 @@
       }
     },
     {
-      "index": 26,
+      "index": 24,
       "kind": "phrase",
       "text": "Il parle anglais.",
       "gloss": {
-        "en": "He is speaking English.",
+        "en": "He speaks English.",
         "tr": "O İngilizce konuşur.",
         "de": "Er spricht Englisch.",
         "es": "Él habla inglés.",
@@ -478,11 +449,12 @@
       },
       "freqRank": 39,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 27,
+      "index": 25,
       "kind": "phrase",
       "text": "Jack parle anglais.",
       "gloss": {
@@ -498,11 +470,11 @@
       }
     },
     {
-      "index": 28,
+      "index": 26,
       "kind": "phrase",
       "text": "Je parle anglais.",
       "gloss": {
-        "en": "I can speak English.",
+        "en": "I speak English.",
         "de": "Ich kann Englisch sprechen.",
         "es": "Hablo inglés.",
         "pt-BR": "Eu falo inglês.",
@@ -510,11 +482,12 @@
       },
       "freqRank": 41,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 29,
+      "index": 27,
       "kind": "phrase",
       "text": "Es-tu occupé ?",
       "gloss": {
@@ -530,7 +503,7 @@
       }
     },
     {
-      "index": 30,
+      "index": 28,
       "kind": "phrase",
       "text": "Je suis occupé.",
       "gloss": {
@@ -547,7 +520,7 @@
       }
     },
     {
-      "index": 31,
+      "index": 29,
       "kind": "phrase",
       "text": "Vous me comprenez ?",
       "gloss": {
@@ -563,7 +536,7 @@
       }
     },
     {
-      "index": 32,
+      "index": 30,
       "kind": "phrase",
       "text": "Demande à Alex.",
       "gloss": {
@@ -579,7 +552,7 @@
       }
     },
     {
-      "index": 33,
+      "index": 31,
       "kind": "phrase",
       "text": "Quel monde merveilleux !",
       "gloss": {
@@ -595,7 +568,7 @@
       }
     },
     {
-      "index": 34,
+      "index": 32,
       "kind": "phrase",
       "text": "Ferme la fenêtre.",
       "gloss": {
@@ -611,7 +584,7 @@
       }
     },
     {
-      "index": 35,
+      "index": 33,
       "kind": "phrase",
       "text": "La Terre tourne.",
       "gloss": {
@@ -627,7 +600,7 @@
       }
     },
     {
-      "index": 36,
+      "index": 34,
       "kind": "phrase",
       "text": "Tourne à gauche.",
       "gloss": {
@@ -643,7 +616,7 @@
       }
     },
     {
-      "index": 37,
+      "index": 35,
       "kind": "phrase",
       "text": "Elle veut danser.",
       "gloss": {
@@ -659,7 +632,7 @@
       }
     },
     {
-      "index": 38,
+      "index": 36,
       "kind": "phrase",
       "text": "Je veux danser.",
       "gloss": {
@@ -675,7 +648,7 @@
       }
     },
     {
-      "index": 39,
+      "index": 37,
       "kind": "phrase",
       "text": "Il semble honnête.",
       "gloss": {
@@ -691,7 +664,7 @@
       }
     },
     {
-      "index": 40,
+      "index": 38,
       "kind": "phrase",
       "text": "La glace fond.",
       "gloss": {
@@ -707,7 +680,7 @@
       }
     },
     {
-      "index": 41,
+      "index": 39,
       "kind": "phrase",
       "text": "Thé sans glace.",
       "gloss": {
@@ -723,7 +696,7 @@
       }
     },
     {
-      "index": 42,
+      "index": 40,
       "kind": "phrase",
       "text": "Nous sommes frères.",
       "gloss": {
@@ -739,7 +712,7 @@
       }
     },
     {
-      "index": 43,
+      "index": 41,
       "kind": "phrase",
       "text": "Êtes-vous marié ?",
       "gloss": {
@@ -756,7 +729,7 @@
       }
     },
     {
-      "index": 44,
+      "index": 42,
       "kind": "phrase",
       "text": "Je suis marié.",
       "gloss": {
@@ -774,7 +747,7 @@
       }
     },
     {
-      "index": 45,
+      "index": 43,
       "kind": "phrase",
       "text": "Tom est marié.",
       "gloss": {
@@ -790,7 +763,7 @@
       }
     },
     {
-      "index": 46,
+      "index": 44,
       "kind": "phrase",
       "text": "Tony était heureux.",
       "gloss": {
@@ -806,7 +779,7 @@
       }
     },
     {
-      "index": 47,
+      "index": 45,
       "kind": "phrase",
       "text": "Où est Jim ?",
       "gloss": {
@@ -823,7 +796,7 @@
       }
     },
     {
-      "index": 48,
+      "index": 46,
       "kind": "phrase",
       "text": "Aimes-tu chanter ?",
       "gloss": {
@@ -839,7 +812,7 @@
       }
     },
     {
-      "index": 49,
+      "index": 47,
       "kind": "phrase",
       "text": "Il aime chanter.",
       "gloss": {
@@ -855,7 +828,7 @@
       }
     },
     {
-      "index": 50,
+      "index": 48,
       "kind": "phrase",
       "text": "Lâche mon bras.",
       "gloss": {
@@ -871,7 +844,7 @@
       }
     },
     {
-      "index": 51,
+      "index": 49,
       "kind": "phrase",
       "text": "Es-tu riche ?",
       "gloss": {
@@ -887,7 +860,7 @@
       }
     },
     {
-      "index": 52,
+      "index": 50,
       "kind": "phrase",
       "text": "Tu es riche.",
       "gloss": {
@@ -903,7 +876,7 @@
       }
     },
     {
-      "index": 53,
+      "index": 51,
       "kind": "phrase",
       "text": "Je suis mariée.",
       "gloss": {
@@ -919,7 +892,7 @@
       }
     },
     {
-      "index": 54,
+      "index": 52,
       "kind": "phrase",
       "text": "Oh, quelle beauté !",
       "gloss": {
@@ -935,7 +908,7 @@
       }
     },
     {
-      "index": 55,
+      "index": 53,
       "kind": "phrase",
       "text": "Elle est forte.",
       "gloss": {
@@ -952,7 +925,7 @@
       }
     },
     {
-      "index": 56,
+      "index": 54,
       "kind": "phrase",
       "text": "Je te remercie.",
       "gloss": {
@@ -968,7 +941,7 @@
       }
     },
     {
-      "index": 57,
+      "index": 55,
       "kind": "phrase",
       "text": "Elle connaît Marie.",
       "gloss": {
@@ -984,7 +957,7 @@
       }
     },
     {
-      "index": 58,
+      "index": 56,
       "kind": "phrase",
       "text": "Pleurer est normal.",
       "gloss": {
@@ -1000,7 +973,7 @@
       }
     },
     {
-      "index": 59,
+      "index": 57,
       "kind": "phrase",
       "text": "Ouvrez la bouche !",
       "gloss": {
@@ -1017,7 +990,7 @@
       }
     },
     {
-      "index": 60,
+      "index": 58,
       "kind": "phrase",
       "text": "Veuillez me suivre.",
       "gloss": {
@@ -1034,7 +1007,7 @@
       }
     },
     {
-      "index": 61,
+      "index": 59,
       "kind": "phrase",
       "text": "Ouvrez la porte.",
       "gloss": {
@@ -1050,7 +1023,7 @@
       }
     },
     {
-      "index": 62,
+      "index": 60,
       "kind": "phrase",
       "text": "Il semble mentir.",
       "gloss": {
@@ -1066,7 +1039,7 @@
       }
     },
     {
-      "index": 63,
+      "index": 61,
       "kind": "phrase",
       "text": "Elle déteste courir.",
       "gloss": {
@@ -1082,7 +1055,7 @@
       }
     },
     {
-      "index": 64,
+      "index": 62,
       "kind": "phrase",
       "text": "Est-il Américain ?",
       "gloss": {
@@ -1099,7 +1072,7 @@
       }
     },
     {
-      "index": 65,
+      "index": 63,
       "kind": "phrase",
       "text": "Il est Américain.",
       "gloss": {
@@ -1115,7 +1088,7 @@
       }
     },
     {
-      "index": 66,
+      "index": 64,
       "kind": "phrase",
       "text": "Je suis américain.",
       "gloss": {
@@ -1131,7 +1104,7 @@
       }
     },
     {
-      "index": 67,
+      "index": 65,
       "kind": "phrase",
       "text": "Bois ton lait.",
       "gloss": {
@@ -1147,7 +1120,7 @@
       }
     },
     {
-      "index": 68,
+      "index": 66,
       "kind": "phrase",
       "text": "Il est français.",
       "gloss": {
@@ -1163,7 +1136,7 @@
       }
     },
     {
-      "index": 69,
+      "index": 67,
       "kind": "phrase",
       "text": "Ouvre la bouteille.",
       "gloss": {
@@ -1179,7 +1152,7 @@
       }
     },
     {
-      "index": 70,
+      "index": 68,
       "kind": "phrase",
       "text": "Il parle français.",
       "gloss": {
@@ -1195,7 +1168,7 @@
       }
     },
     {
-      "index": 71,
+      "index": 69,
       "kind": "phrase",
       "text": "Elle viendra aussi ?",
       "gloss": {
@@ -1211,7 +1184,7 @@
       }
     },
     {
-      "index": 72,
+      "index": 70,
       "kind": "phrase",
       "text": "Personne ne viendra.",
       "gloss": {
@@ -1227,7 +1200,7 @@
       }
     },
     {
-      "index": 73,
+      "index": 71,
       "kind": "phrase",
       "text": "Faisons une pause.",
       "gloss": {
@@ -1243,7 +1216,7 @@
       }
     },
     {
-      "index": 74,
+      "index": 72,
       "kind": "phrase",
       "text": "Je suis intelligent.",
       "gloss": {
@@ -1259,7 +1232,7 @@
       }
     },
     {
-      "index": 75,
+      "index": 73,
       "kind": "phrase",
       "text": "Tu es intelligent.",
       "gloss": {
@@ -1275,7 +1248,7 @@
       }
     },
     {
-      "index": 76,
+      "index": 74,
       "kind": "phrase",
       "text": "Nous voulons aider.",
       "gloss": {
@@ -1291,11 +1264,11 @@
       }
     },
     {
-      "index": 77,
+      "index": 75,
       "kind": "phrase",
       "text": "Tu es méchant.",
       "gloss": {
-        "en": "You are naughty.",
+        "en": "You are mean.",
         "de": "Du bist ungezogen.",
         "es": "Eres malo.",
         "pt-BR": "Você é mau.",
@@ -1303,11 +1276,12 @@
       },
       "freqRank": 89,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 78,
+      "index": 76,
       "kind": "phrase",
       "text": "Mets ton chapeau.",
       "gloss": {
@@ -1323,7 +1297,7 @@
       }
     },
     {
-      "index": 79,
+      "index": 77,
       "kind": "phrase",
       "text": "J’aime chanter.",
       "gloss": {
@@ -1339,7 +1313,7 @@
       }
     },
     {
-      "index": 80,
+      "index": 78,
       "kind": "phrase",
       "text": "Personne ne saura.",
       "gloss": {
@@ -1356,7 +1330,7 @@
       }
     },
     {
-      "index": 81,
+      "index": 79,
       "kind": "phrase",
       "text": "J’étais professeur.",
       "gloss": {
@@ -1372,7 +1346,7 @@
       }
     },
     {
-      "index": 82,
+      "index": 80,
       "kind": "phrase",
       "text": "Viande ou poisson ?",
       "gloss": {
@@ -1388,7 +1362,7 @@
       }
     },
     {
-      "index": 83,
+      "index": 81,
       "kind": "phrase",
       "text": "Que regardes-tu ?",
       "gloss": {
@@ -1405,7 +1379,7 @@
       }
     },
     {
-      "index": 84,
+      "index": 82,
       "kind": "phrase",
       "text": "Je suis étranger.",
       "gloss": {
@@ -1421,7 +1395,7 @@
       }
     },
     {
-      "index": 85,
+      "index": 83,
       "kind": "phrase",
       "text": "Où habite John ?",
       "gloss": {
@@ -1438,12 +1412,12 @@
       }
     },
     {
-      "index": 86,
+      "index": 84,
       "kind": "phrase",
       "text": "Je suis fatigué !",
       "gloss": {
         "en": "I'm tired.",
-        "tr": "Uykum var!",
+        "tr": "Yorgunum!",
         "de": "Ich bin müde!",
         "es": "Estoy cansado.",
         "pt-BR": "Eu estou cansado.",
@@ -1451,11 +1425,12 @@
       },
       "freqRank": 99,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 87,
+      "index": 85,
       "kind": "phrase",
       "text": "Pourquoi demandes-tu ?",
       "gloss": {
@@ -1471,7 +1446,7 @@
       }
     },
     {
-      "index": 88,
+      "index": 86,
       "kind": "phrase",
       "text": "Je descends ici.",
       "gloss": {
@@ -1487,11 +1462,11 @@
       }
     },
     {
-      "index": 89,
+      "index": 87,
       "kind": "phrase",
       "text": "Que cherchez-vous ?",
       "gloss": {
-        "en": "What're you guys looking for?",
+        "en": "What are you looking for?",
         "de": "Wonach suchen Sie?",
         "es": "¿Qué busca?",
         "pt-BR": "Que estão procurando?",
@@ -1499,11 +1474,12 @@
       },
       "freqRank": 102,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 90,
+      "index": 88,
       "kind": "phrase",
       "text": "Ne meurs pas !",
       "gloss": {
@@ -1519,7 +1495,7 @@
       }
     },
     {
-      "index": 91,
+      "index": 89,
       "kind": "phrase",
       "text": "Je pense autrement.",
       "gloss": {
@@ -1535,7 +1511,7 @@
       }
     },
     {
-      "index": 92,
+      "index": 90,
       "kind": "phrase",
       "text": "Nous sommes mariés.",
       "gloss": {
@@ -1551,7 +1527,7 @@
       }
     },
     {
-      "index": 93,
+      "index": 91,
       "kind": "phrase",
       "text": "Ça sonne occupé.",
       "gloss": {
@@ -1567,7 +1543,7 @@
       }
     },
     {
-      "index": 94,
+      "index": 92,
       "kind": "phrase",
       "text": "Le téléphone sonne !",
       "gloss": {
@@ -1583,7 +1559,7 @@
       }
     },
     {
-      "index": 95,
+      "index": 93,
       "kind": "phrase",
       "text": "Je suis innocent.",
       "gloss": {
@@ -1599,7 +1575,7 @@
       }
     },
     {
-      "index": 96,
+      "index": 94,
       "kind": "phrase",
       "text": "Elle parle chinois.",
       "gloss": {
@@ -1615,7 +1591,7 @@
       }
     },
     {
-      "index": 97,
+      "index": 95,
       "kind": "phrase",
       "text": "Je suis infirmière.",
       "gloss": {
@@ -1631,7 +1607,7 @@
       }
     },
     {
-      "index": 98,
+      "index": 96,
       "kind": "phrase",
       "text": "Es-tu Chinois ?",
       "gloss": {
@@ -1648,7 +1624,7 @@
       }
     },
     {
-      "index": 99,
+      "index": 97,
       "kind": "phrase",
       "text": "Je suis Chinois.",
       "gloss": {
@@ -1666,7 +1642,7 @@
       }
     },
     {
-      "index": 100,
+      "index": 98,
       "kind": "phrase",
       "text": "Que feras-tu ?",
       "gloss": {
@@ -1683,7 +1659,7 @@
       }
     },
     {
-      "index": 101,
+      "index": 99,
       "kind": "phrase",
       "text": "Je lis beaucoup.",
       "gloss": {
@@ -1699,7 +1675,7 @@
       }
     },
     {
-      "index": 102,
+      "index": 100,
       "kind": "phrase",
       "text": "Lis ce livre.",
       "gloss": {
@@ -1715,7 +1691,7 @@
       }
     },
     {
-      "index": 103,
+      "index": 101,
       "kind": "phrase",
       "text": "Que lis-tu ?",
       "gloss": {
@@ -1731,7 +1707,7 @@
       }
     },
     {
-      "index": 104,
+      "index": 102,
       "kind": "phrase",
       "text": "Il chante bien.",
       "gloss": {
@@ -1747,11 +1723,11 @@
       }
     },
     {
-      "index": 105,
+      "index": 103,
       "kind": "phrase",
       "text": "Je chante bien.",
       "gloss": {
-        "en": "I can sing well.",
+        "en": "I sing well.",
         "de": "Ich kann gut singen.",
         "es": "Yo canto bien.",
         "pt-BR": "Eu canto bem.",
@@ -1759,11 +1735,12 @@
       },
       "freqRank": 118,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 106,
+      "index": 104,
       "kind": "phrase",
       "text": "Tu es viré.",
       "gloss": {
@@ -1780,7 +1757,7 @@
       }
     },
     {
-      "index": 107,
+      "index": 105,
       "kind": "phrase",
       "text": "Suis les étoiles.",
       "gloss": {
@@ -1796,7 +1773,7 @@
       }
     },
     {
-      "index": 108,
+      "index": 106,
       "kind": "phrase",
       "text": "Aujourd'hui, il neige.",
       "gloss": {
@@ -1812,7 +1789,7 @@
       }
     },
     {
-      "index": 109,
+      "index": 107,
       "kind": "phrase",
       "text": "Il neige encore.",
       "gloss": {
@@ -1828,7 +1805,7 @@
       }
     },
     {
-      "index": 110,
+      "index": 108,
       "kind": "phrase",
       "text": "Nous sommes lundi.",
       "gloss": {
@@ -1844,7 +1821,7 @@
       }
     },
     {
-      "index": 111,
+      "index": 109,
       "kind": "phrase",
       "text": "Regarde cette montagne.",
       "gloss": {
@@ -1860,7 +1837,7 @@
       }
     },
     {
-      "index": 112,
+      "index": 110,
       "kind": "phrase",
       "text": "Nous sommes pauvres.",
       "gloss": {
@@ -1876,7 +1853,7 @@
       }
     },
     {
-      "index": 113,
+      "index": 111,
       "kind": "phrase",
       "text": "Il est minuit.",
       "gloss": {
@@ -1892,7 +1869,7 @@
       }
     },
     {
-      "index": 114,
+      "index": 112,
       "kind": "phrase",
       "text": "Ça coûte combien ?",
       "gloss": {
@@ -1908,7 +1885,7 @@
       }
     },
     {
-      "index": 115,
+      "index": 113,
       "kind": "phrase",
       "text": "Il est midi.",
       "gloss": {
@@ -1924,7 +1901,7 @@
       }
     },
     {
-      "index": 116,
+      "index": 114,
       "kind": "phrase",
       "text": "Le vent souffle.",
       "gloss": {
@@ -1940,7 +1917,7 @@
       }
     },
     {
-      "index": 117,
+      "index": 115,
       "kind": "phrase",
       "text": "Nous étions voisins.",
       "gloss": {
@@ -1957,7 +1934,7 @@
       }
     },
     {
-      "index": 118,
+      "index": 116,
       "kind": "phrase",
       "text": "Le cœur bat.",
       "gloss": {
@@ -1973,7 +1950,7 @@
       }
     },
     {
-      "index": 119,
+      "index": 117,
       "kind": "phrase",
       "text": "Que cherches-tu ?",
       "gloss": {
@@ -1989,7 +1966,7 @@
       }
     },
     {
-      "index": 120,
+      "index": 118,
       "kind": "phrase",
       "text": "Elle est occupée.",
       "gloss": {
@@ -2006,7 +1983,7 @@
       }
     },
     {
-      "index": 121,
+      "index": 119,
       "kind": "phrase",
       "text": "Nous sommes riches.",
       "gloss": {
@@ -2022,7 +1999,7 @@
       }
     },
     {
-      "index": 122,
+      "index": 120,
       "kind": "phrase",
       "text": "Quand écris-tu ?",
       "gloss": {
@@ -2038,7 +2015,7 @@
       }
     },
     {
-      "index": 123,
+      "index": 121,
       "kind": "phrase",
       "text": "Il est jaloux.",
       "gloss": {
@@ -2055,7 +2032,7 @@
       }
     },
     {
-      "index": 124,
+      "index": 122,
       "kind": "phrase",
       "text": "Nous étions jaloux.",
       "gloss": {
@@ -2072,7 +2049,7 @@
       }
     },
     {
-      "index": 125,
+      "index": 123,
       "kind": "phrase",
       "text": "Il parle russe.",
       "gloss": {
@@ -2088,7 +2065,7 @@
       }
     },
     {
-      "index": 126,
+      "index": 124,
       "kind": "phrase",
       "text": "Aimes-tu étudier ?",
       "gloss": {
@@ -2104,7 +2081,7 @@
       }
     },
     {
-      "index": 127,
+      "index": 125,
       "kind": "phrase",
       "text": "Je déteste étudier.",
       "gloss": {
@@ -2120,7 +2097,7 @@
       }
     },
     {
-      "index": 128,
+      "index": 126,
       "kind": "phrase",
       "text": "Il est journaliste.",
       "gloss": {
@@ -2136,7 +2113,7 @@
       }
     },
     {
-      "index": 129,
+      "index": 127,
       "kind": "phrase",
       "text": "Je dois étudier.",
       "gloss": {
@@ -2152,7 +2129,7 @@
       }
     },
     {
-      "index": 130,
+      "index": 128,
       "kind": "phrase",
       "text": "Il apprend vite.",
       "gloss": {
@@ -2169,7 +2146,7 @@
       }
     },
     {
-      "index": 131,
+      "index": 129,
       "kind": "phrase",
       "text": "Je suis curieux.",
       "gloss": {
@@ -2185,7 +2162,7 @@
       }
     },
     {
-      "index": 132,
+      "index": 130,
       "kind": "phrase",
       "text": "La fille saute.",
       "gloss": {
@@ -2201,7 +2178,7 @@
       }
     },
     {
-      "index": 133,
+      "index": 131,
       "kind": "phrase",
       "text": "Le cheval saute.",
       "gloss": {
@@ -2217,7 +2194,7 @@
       }
     },
     {
-      "index": 134,
+      "index": 132,
       "kind": "phrase",
       "text": "Où travailles-tu ?",
       "gloss": {
@@ -2234,7 +2211,7 @@
       }
     },
     {
-      "index": 135,
+      "index": 133,
       "kind": "phrase",
       "text": "Le chien saute.",
       "gloss": {
@@ -2250,7 +2227,7 @@
       }
     },
     {
-      "index": 136,
+      "index": 134,
       "kind": "phrase",
       "text": "Travailles-tu, aujourd'hui ?",
       "gloss": {
@@ -2266,7 +2243,7 @@
       }
     },
     {
-      "index": 137,
+      "index": 135,
       "kind": "phrase",
       "text": "Le garçon saute.",
       "gloss": {
@@ -2282,7 +2259,7 @@
       }
     },
     {
-      "index": 138,
+      "index": 136,
       "kind": "phrase",
       "text": "Sauve qui peut !",
       "gloss": {
@@ -2298,7 +2275,7 @@
       }
     },
     {
-      "index": 139,
+      "index": 137,
       "kind": "phrase",
       "text": "Nous sommes étudiants.",
       "gloss": {
@@ -2314,23 +2291,7 @@
       }
     },
     {
-      "index": 140,
-      "kind": "phrase",
-      "text": "La lutte continue !",
-      "gloss": {
-        "en": "The fight continues!",
-        "tr": "Mücadele devam ediyor!",
-        "de": "Der Kampf geht weiter!",
-        "pt-BR": "A luta continua!",
-        "ru": "Борьба продолжается!"
-      },
-      "freqRank": 153,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 141,
+      "index": 138,
       "kind": "phrase",
       "text": "Essayons quelque chose !",
       "gloss": {
@@ -2346,7 +2307,7 @@
       }
     },
     {
-      "index": 142,
+      "index": 139,
       "kind": "phrase",
       "text": "Je suis célibataire.",
       "gloss": {
@@ -2362,7 +2323,7 @@
       }
     },
     {
-      "index": 143,
+      "index": 140,
       "kind": "phrase",
       "text": "Quelle jolie fleur.",
       "gloss": {
@@ -2378,7 +2339,7 @@
       }
     },
     {
-      "index": 144,
+      "index": 141,
       "kind": "phrase",
       "text": "Avez-vous soif ?",
       "gloss": {
@@ -2394,7 +2355,7 @@
       }
     },
     {
-      "index": 145,
+      "index": 142,
       "kind": "phrase",
       "text": "Je mange lentement.",
       "gloss": {
@@ -2412,7 +2373,7 @@
       }
     },
     {
-      "index": 146,
+      "index": 143,
       "kind": "phrase",
       "text": "Il me respecte.",
       "gloss": {
@@ -2428,7 +2389,7 @@
       }
     },
     {
-      "index": 147,
+      "index": 144,
       "kind": "phrase",
       "text": "Fais tes devoirs.",
       "gloss": {
@@ -2444,7 +2405,7 @@
       }
     },
     {
-      "index": 148,
+      "index": 145,
       "kind": "phrase",
       "text": "Ce chien est blanc.",
       "gloss": {
@@ -2461,7 +2422,7 @@
       }
     },
     {
-      "index": 149,
+      "index": 146,
       "kind": "phrase",
       "text": "Le chien est blanc.",
       "gloss": {
@@ -2477,7 +2438,7 @@
       }
     },
     {
-      "index": 150,
+      "index": 147,
       "kind": "phrase",
       "text": "Mon chien est blanc.",
       "gloss": {
@@ -2493,7 +2454,7 @@
       }
     },
     {
-      "index": 151,
+      "index": 148,
       "kind": "phrase",
       "text": "Je ne mange pas.",
       "gloss": {
@@ -2509,7 +2470,7 @@
       }
     },
     {
-      "index": 152,
+      "index": 149,
       "kind": "phrase",
       "text": "Il vit en ville.",
       "gloss": {
@@ -2525,7 +2486,7 @@
       }
     },
     {
-      "index": 153,
+      "index": 150,
       "kind": "phrase",
       "text": "Tom vit en ville.",
       "gloss": {
@@ -2541,7 +2502,7 @@
       }
     },
     {
-      "index": 154,
+      "index": 151,
       "kind": "phrase",
       "text": "Je cherche ma clé.",
       "gloss": {
@@ -2557,23 +2518,7 @@
       }
     },
     {
-      "index": 155,
-      "kind": "phrase",
-      "text": "Qui avez-vous acheté ?",
-      "gloss": {
-        "en": "Whom did you buy?",
-        "tr": "Kimden satın aldınız?",
-        "de": "Wen haben Sie gekauft?",
-        "pt-BR": "Quem vocês compraram?",
-        "ru": "Вы кого купили?"
-      },
-      "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 156,
+      "index": 152,
       "kind": "phrase",
       "text": "Il est bien payé.",
       "gloss": {
@@ -2589,7 +2534,7 @@
       }
     },
     {
-      "index": 157,
+      "index": 153,
       "kind": "phrase",
       "text": "Je suis à Paris.",
       "gloss": {
@@ -2606,7 +2551,7 @@
       }
     },
     {
-      "index": 158,
+      "index": 154,
       "kind": "phrase",
       "text": "Où est-elle allée ?",
       "gloss": {
@@ -2622,7 +2567,7 @@
       }
     },
     {
-      "index": 159,
+      "index": 155,
       "kind": "phrase",
       "text": "Mon cheval est blanc.",
       "gloss": {
@@ -2638,7 +2583,7 @@
       }
     },
     {
-      "index": 160,
+      "index": 156,
       "kind": "phrase",
       "text": "Où est mon cheval ?",
       "gloss": {
@@ -2654,7 +2599,7 @@
       }
     },
     {
-      "index": 161,
+      "index": 157,
       "kind": "phrase",
       "text": "Tel père, tel fils.",
       "gloss": {
@@ -2671,7 +2616,7 @@
       }
     },
     {
-      "index": 162,
+      "index": 158,
       "kind": "phrase",
       "text": "Je n’avais rien.",
       "gloss": {
@@ -2687,7 +2632,7 @@
       }
     },
     {
-      "index": 163,
+      "index": 159,
       "kind": "phrase",
       "text": "Où est le journal ?",
       "gloss": {
@@ -2704,7 +2649,7 @@
       }
     },
     {
-      "index": 164,
+      "index": 160,
       "kind": "phrase",
       "text": "C’est trop petit.",
       "gloss": {
@@ -2721,7 +2666,7 @@
       }
     },
     {
-      "index": 165,
+      "index": 161,
       "kind": "phrase",
       "text": "Elle a sept fils.",
       "gloss": {
@@ -2738,7 +2683,7 @@
       }
     },
     {
-      "index": 166,
+      "index": 162,
       "kind": "phrase",
       "text": "Il a sept fils.",
       "gloss": {
@@ -2754,7 +2699,7 @@
       }
     },
     {
-      "index": 167,
+      "index": 163,
       "kind": "phrase",
       "text": "Je suis un héros.",
       "gloss": {
@@ -2771,7 +2716,7 @@
       }
     },
     {
-      "index": 168,
+      "index": 164,
       "kind": "phrase",
       "text": "Il nous a menti.",
       "gloss": {
@@ -2787,7 +2732,7 @@
       }
     },
     {
-      "index": 169,
+      "index": 165,
       "kind": "phrase",
       "text": "Pourquoi as-tu menti ?",
       "gloss": {
@@ -2804,7 +2749,7 @@
       }
     },
     {
-      "index": 170,
+      "index": 166,
       "kind": "phrase",
       "text": "Où est ma bière ?",
       "gloss": {
@@ -2820,7 +2765,7 @@
       }
     },
     {
-      "index": 171,
+      "index": 167,
       "kind": "phrase",
       "text": "As-tu deux livres ?",
       "gloss": {
@@ -2837,7 +2782,7 @@
       }
     },
     {
-      "index": 172,
+      "index": 168,
       "kind": "phrase",
       "text": "Ce sont nos livres.",
       "gloss": {
@@ -2853,7 +2798,7 @@
       }
     },
     {
-      "index": 173,
+      "index": 169,
       "kind": "phrase",
       "text": "Où sont mes livres ?",
       "gloss": {
@@ -2869,7 +2814,7 @@
       }
     },
     {
-      "index": 174,
+      "index": 170,
       "kind": "phrase",
       "text": "Tu as deux livres.",
       "gloss": {
@@ -2886,7 +2831,7 @@
       }
     },
     {
-      "index": 175,
+      "index": 171,
       "kind": "phrase",
       "text": "Elle aime le vin.",
       "gloss": {
@@ -2902,7 +2847,7 @@
       }
     },
     {
-      "index": 176,
+      "index": 172,
       "kind": "phrase",
       "text": "Nous avons du vin.",
       "gloss": {
@@ -2918,7 +2863,7 @@
       }
     },
     {
-      "index": 177,
+      "index": 173,
       "kind": "phrase",
       "text": "Ce livre est intéressant.",
       "gloss": {
@@ -2934,7 +2879,7 @@
       }
     },
     {
-      "index": 178,
+      "index": 174,
       "kind": "phrase",
       "text": "Le film était intéressant.",
       "gloss": {
@@ -2950,7 +2895,7 @@
       }
     },
     {
-      "index": 179,
+      "index": 175,
       "kind": "phrase",
       "text": "Que manque-t-il ?",
       "gloss": {
@@ -2967,7 +2912,7 @@
       }
     },
     {
-      "index": 180,
+      "index": 176,
       "kind": "phrase",
       "text": "Pense à ton avenir.",
       "gloss": {
@@ -2983,7 +2928,7 @@
       }
     },
     {
-      "index": 181,
+      "index": 177,
       "kind": "phrase",
       "text": "Où est la banque ?",
       "gloss": {
@@ -2999,7 +2944,7 @@
       }
     },
     {
-      "index": 182,
+      "index": 178,
       "kind": "phrase",
       "text": "Aimes-tu le thé ?",
       "gloss": {
@@ -3015,7 +2960,7 @@
       }
     },
     {
-      "index": 183,
+      "index": 179,
       "kind": "phrase",
       "text": "Le thé est chaud.",
       "gloss": {
@@ -3031,7 +2976,7 @@
       }
     },
     {
-      "index": 184,
+      "index": 180,
       "kind": "phrase",
       "text": "Tu bois du thé.",
       "gloss": {
@@ -3047,7 +2992,7 @@
       }
     },
     {
-      "index": 185,
+      "index": 181,
       "kind": "phrase",
       "text": "Comment vous appelez-vous ?",
       "gloss": {
@@ -3064,7 +3009,7 @@
       }
     },
     {
-      "index": 186,
+      "index": 182,
       "kind": "phrase",
       "text": "Donne-moi un baiser !",
       "gloss": {
@@ -3080,7 +3025,7 @@
       }
     },
     {
-      "index": 187,
+      "index": 183,
       "kind": "phrase",
       "text": "Dis-le en anglais.",
       "gloss": {
@@ -3096,7 +3041,7 @@
       }
     },
     {
-      "index": 188,
+      "index": 184,
       "kind": "phrase",
       "text": "Parle-t-il anglais ?",
       "gloss": {
@@ -3113,7 +3058,7 @@
       }
     },
     {
-      "index": 189,
+      "index": 185,
       "kind": "phrase",
       "text": "Tu dois parler anglais.",
       "gloss": {
@@ -3129,7 +3074,7 @@
       }
     },
     {
-      "index": 190,
+      "index": 186,
       "kind": "phrase",
       "text": "Où sont les toilettes ?",
       "gloss": {
@@ -3146,7 +3091,7 @@
       }
     },
     {
-      "index": 191,
+      "index": 187,
       "kind": "phrase",
       "text": "Es-tu occupé aujourd'hui ?",
       "gloss": {
@@ -3162,11 +3107,11 @@
       }
     },
     {
-      "index": 192,
+      "index": 188,
       "kind": "phrase",
       "text": "Je suis très occupé.",
       "gloss": {
-        "en": "I'm busy as a bee.",
+        "en": "I'm very busy.",
         "tr": "Çok meşgulüm.",
         "de": "Ich bin sehr beschäftigt.",
         "es": "Estoy muy ocupado.",
@@ -3176,28 +3121,12 @@
       },
       "freqRank": 205,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 193,
-      "kind": "phrase",
-      "text": "La reine doit mourir.",
-      "gloss": {
-        "en": "The queen must die.",
-        "tr": "Kraliçe ölmeli.",
-        "de": "Die Königin muss sterben.",
-        "es": "La reina debe morir.",
-        "pt-BR": "A rainha deve morrer.",
-        "ru": "Королева должна умереть."
-      },
-      "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 194,
+      "index": 189,
       "kind": "phrase",
       "text": "Elle me croit toujours.",
       "gloss": {
@@ -3213,7 +3142,7 @@
       }
     },
     {
-      "index": 195,
+      "index": 190,
       "kind": "phrase",
       "text": "Tom croit tout savoir.",
       "gloss": {
@@ -3229,7 +3158,7 @@
       }
     },
     {
-      "index": 196,
+      "index": 191,
       "kind": "phrase",
       "text": "La boîte est vide.",
       "gloss": {
@@ -3245,7 +3174,7 @@
       }
     },
     {
-      "index": 197,
+      "index": 192,
       "kind": "phrase",
       "text": "Il a huit ans.",
       "gloss": {
@@ -3261,7 +3190,7 @@
       }
     },
     {
-      "index": 198,
+      "index": 193,
       "kind": "phrase",
       "text": "Nous avions trois avions.",
       "gloss": {
@@ -3277,7 +3206,7 @@
       }
     },
     {
-      "index": 199,
+      "index": 194,
       "kind": "phrase",
       "text": "Je cherche un magasin.",
       "gloss": {
@@ -3293,7 +3222,7 @@
       }
     },
     {
-      "index": 200,
+      "index": 195,
       "kind": "phrase",
       "text": "Bob est mon ami.",
       "gloss": {
@@ -3311,7 +3240,7 @@
       }
     },
     {
-      "index": 201,
+      "index": 196,
       "kind": "phrase",
       "text": "Il mérite le prix.",
       "gloss": {
@@ -3327,7 +3256,7 @@
       }
     },
     {
-      "index": 202,
+      "index": 197,
       "kind": "phrase",
       "text": "Quel est ton village ?",
       "gloss": {
@@ -3343,7 +3272,7 @@
       }
     },
     {
-      "index": 203,
+      "index": 198,
       "kind": "phrase",
       "text": "Il est très honnête.",
       "gloss": {
@@ -3359,7 +3288,7 @@
       }
     },
     {
-      "index": 204,
+      "index": 199,
       "kind": "phrase",
       "text": "Cette rose est jolie.",
       "gloss": {
@@ -3375,7 +3304,7 @@
       }
     },
     {
-      "index": 205,
+      "index": 200,
       "kind": "phrase",
       "text": "As-tu déjà mangé ?",
       "gloss": {
@@ -3391,7 +3320,7 @@
       }
     },
     {
-      "index": 206,
+      "index": 201,
       "kind": "phrase",
       "text": "Il a tout mangé.",
       "gloss": {
@@ -3407,7 +3336,7 @@
       }
     },
     {
-      "index": 207,
+      "index": 202,
       "kind": "phrase",
       "text": "Tu as déjà mangé.",
       "gloss": {
@@ -3423,7 +3352,7 @@
       }
     },
     {
-      "index": 208,
+      "index": 203,
       "kind": "phrase",
       "text": "Je vis en ville.",
       "gloss": {
@@ -3440,7 +3369,7 @@
       }
     },
     {
-      "index": 209,
+      "index": 204,
       "kind": "phrase",
       "text": "Elle a trois frères.",
       "gloss": {
@@ -3456,7 +3385,7 @@
       }
     },
     {
-      "index": 210,
+      "index": 205,
       "kind": "phrase",
       "text": "Je suis en vacances.",
       "gloss": {
@@ -3472,7 +3401,7 @@
       }
     },
     {
-      "index": 211,
+      "index": 206,
       "kind": "phrase",
       "text": "Il a trois frères.",
       "gloss": {
@@ -3488,7 +3417,7 @@
       }
     },
     {
-      "index": 212,
+      "index": 207,
       "kind": "phrase",
       "text": "À quoi sert-il ?",
       "gloss": {
@@ -3504,11 +3433,11 @@
       }
     },
     {
-      "index": 213,
+      "index": 208,
       "kind": "phrase",
       "text": "Bill, ouvre la porte.",
       "gloss": {
-        "en": "Bill, answer the door.",
+        "en": "Bill, open the door.",
         "de": "Bill, mach die Tür auf.",
         "es": "Bill, abre la puerta.",
         "ru": "Билл, открой дверь.",
@@ -3516,11 +3445,12 @@
       },
       "freqRank": 226,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 214,
+      "index": 209,
       "kind": "phrase",
       "text": "As-tu un portable ?",
       "gloss": {
@@ -3536,7 +3466,7 @@
       }
     },
     {
-      "index": 215,
+      "index": 210,
       "kind": "phrase",
       "text": "Quel âge a Tony ?",
       "gloss": {
@@ -3552,7 +3482,7 @@
       }
     },
     {
-      "index": 216,
+      "index": 211,
       "kind": "phrase",
       "text": "Mary était mon amie.",
       "gloss": {
@@ -3568,23 +3498,7 @@
       }
     },
     {
-      "index": 217,
-      "kind": "phrase",
-      "text": "Tom veut tuer Mary.",
-      "gloss": {
-        "en": "Tom wants to kill Mary.",
-        "de": "Tom will Mary töten.",
-        "es": "Tom quiere matar a Mary.",
-        "pt-BR": "Tom quer matar Mary.",
-        "ru": "Том хочет убить Мэри."
-      },
-      "freqRank": 230,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 218,
+      "index": 212,
       "kind": "phrase",
       "text": "Tu es mon ennemi.",
       "gloss": {
@@ -3600,7 +3514,7 @@
       }
     },
     {
-      "index": 219,
+      "index": 213,
       "kind": "phrase",
       "text": "Il est devenu riche.",
       "gloss": {
@@ -3616,7 +3530,7 @@
       }
     },
     {
-      "index": 220,
+      "index": 214,
       "kind": "phrase",
       "text": "Mon frère est riche.",
       "gloss": {
@@ -3632,7 +3546,7 @@
       }
     },
     {
-      "index": 221,
+      "index": 215,
       "kind": "phrase",
       "text": "Son mari est riche.",
       "gloss": {
@@ -3648,7 +3562,7 @@
       }
     },
     {
-      "index": 222,
+      "index": 216,
       "kind": "phrase",
       "text": "Mon père est riche.",
       "gloss": {
@@ -3664,7 +3578,7 @@
       }
     },
     {
-      "index": 223,
+      "index": 217,
       "kind": "phrase",
       "text": "Je déteste la politique.",
       "gloss": {
@@ -3680,7 +3594,7 @@
       }
     },
     {
-      "index": 224,
+      "index": 218,
       "kind": "phrase",
       "text": "Ma sœur est mariée.",
       "gloss": {
@@ -3696,7 +3610,7 @@
       }
     },
     {
-      "index": 225,
+      "index": 219,
       "kind": "phrase",
       "text": "Est-ce un chat ?",
       "gloss": {
@@ -3712,7 +3626,7 @@
       }
     },
     {
-      "index": 226,
+      "index": 220,
       "kind": "phrase",
       "text": "Je suis un chat.",
       "gloss": {
@@ -3728,7 +3642,7 @@
       }
     },
     {
-      "index": 227,
+      "index": 221,
       "kind": "phrase",
       "text": "Le chat aime dormir.",
       "gloss": {
@@ -3744,7 +3658,7 @@
       }
     },
     {
-      "index": 228,
+      "index": 222,
       "kind": "phrase",
       "text": "Mon chat est blanc.",
       "gloss": {
@@ -3761,7 +3675,7 @@
       }
     },
     {
-      "index": 229,
+      "index": 223,
       "kind": "phrase",
       "text": "Le chat est noir.",
       "gloss": {
@@ -3777,7 +3691,7 @@
       }
     },
     {
-      "index": 230,
+      "index": 224,
       "kind": "phrase",
       "text": "La vie est dure.",
       "gloss": {
@@ -3793,7 +3707,7 @@
       }
     },
     {
-      "index": 231,
+      "index": 225,
       "kind": "phrase",
       "text": "Je veux du papier.",
       "gloss": {
@@ -3809,7 +3723,7 @@
       }
     },
     {
-      "index": 232,
+      "index": 226,
       "kind": "phrase",
       "text": "Joyeux Noël, mon amour !",
       "gloss": {
@@ -3826,7 +3740,7 @@
       }
     },
     {
-      "index": 233,
+      "index": 227,
       "kind": "phrase",
       "text": "Marie aide sa mère.",
       "gloss": {
@@ -3843,7 +3757,7 @@
       }
     },
     {
-      "index": 234,
+      "index": 228,
       "kind": "phrase",
       "text": "Je suis né en 1972.",
       "gloss": {
@@ -3860,7 +3774,7 @@
       }
     },
     {
-      "index": 235,
+      "index": 229,
       "kind": "phrase",
       "text": "La famille est importante.",
       "gloss": {
@@ -3878,7 +3792,7 @@
       }
     },
     {
-      "index": 236,
+      "index": 230,
       "kind": "phrase",
       "text": "Personne ne me comprend.",
       "gloss": {
@@ -3895,7 +3809,7 @@
       }
     },
     {
-      "index": 237,
+      "index": 231,
       "kind": "phrase",
       "text": "Où est le jardin ?",
       "gloss": {
@@ -3913,41 +3827,7 @@
       }
     },
     {
-      "index": 238,
-      "kind": "phrase",
-      "text": "La France a peur.",
-      "gloss": {
-        "en": "France is scared.",
-        "tr": "Fransa korkuyor.",
-        "de": "Frankreich hat Angst.",
-        "es": "Francia tiene miedo.",
-        "pt-BR": "A França está com medo.",
-        "ru": "Франция боится."
-      },
-      "freqRank": 251,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 239,
-      "kind": "phrase",
-      "text": "Où habite ton oncle ?",
-      "gloss": {
-        "en": "Where does your uncle live?",
-        "tr": "Amcan nerede yaşıyor?",
-        "de": "Wo wohnt dein Onkel?",
-        "es": "¿Dónde vive tu tío?",
-        "ru": "Где живет твой дядя?",
-        "ar": "أين يسكن عمك؟"
-      },
-      "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 240,
+      "index": 232,
       "kind": "phrase",
       "text": "Je suis très fatigué.",
       "gloss": {
@@ -3964,7 +3844,24 @@
       }
     },
     {
-      "index": 241,
+      "index": 233,
+      "kind": "phrase",
+      "text": "Où habite ton oncle ?",
+      "gloss": {
+        "en": "Where does your uncle live?",
+        "tr": "Amcan nerede yaşıyor?",
+        "de": "Wo wohnt dein Onkel?",
+        "es": "¿Dónde vive tu tío?",
+        "ru": "Где живет твой дядя?",
+        "ar": "أين يسكن عمك؟"
+      },
+      "freqRank": 252,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 234,
       "kind": "phrase",
       "text": "Les femmes sont belles.",
       "gloss": {
@@ -3981,7 +3878,7 @@
       }
     },
     {
-      "index": 242,
+      "index": 235,
       "kind": "phrase",
       "text": "Je lis ce livre.",
       "gloss": {
@@ -3998,7 +3895,7 @@
       }
     },
     {
-      "index": 243,
+      "index": 236,
       "kind": "phrase",
       "text": "Aimerais-tu être célèbre ?",
       "gloss": {
@@ -4015,7 +3912,7 @@
       }
     },
     {
-      "index": 244,
+      "index": 237,
       "kind": "phrase",
       "text": "Combien coûte une bière ?",
       "gloss": {
@@ -4032,7 +3929,7 @@
       }
     },
     {
-      "index": 245,
+      "index": 238,
       "kind": "phrase",
       "text": "Ce château est beau.",
       "gloss": {
@@ -4049,7 +3946,7 @@
       }
     },
     {
-      "index": 246,
+      "index": 239,
       "kind": "phrase",
       "text": "Cherches-tu du travail ?",
       "gloss": {
@@ -4067,7 +3964,7 @@
       }
     },
     {
-      "index": 247,
+      "index": 240,
       "kind": "phrase",
       "text": "Je dois le refaire.",
       "gloss": {
@@ -4084,7 +3981,7 @@
       }
     },
     {
-      "index": 248,
+      "index": 241,
       "kind": "phrase",
       "text": "Vivent-ils avec toi ?",
       "gloss": {
@@ -4101,7 +3998,7 @@
       }
     },
     {
-      "index": 249,
+      "index": 242,
       "kind": "phrase",
       "text": "Le garçon a soif.",
       "gloss": {
@@ -4118,7 +4015,7 @@
       }
     },
     {
-      "index": 250,
+      "index": 243,
       "kind": "phrase",
       "text": "Comme tu me manques !",
       "gloss": {
@@ -4135,7 +4032,7 @@
       }
     },
     {
-      "index": 251,
+      "index": 244,
       "kind": "phrase",
       "text": "Elle vit à New York.",
       "gloss": {
@@ -4152,7 +4049,7 @@
       }
     },
     {
-      "index": 252,
+      "index": 245,
       "kind": "phrase",
       "text": "John vit à New York.",
       "gloss": {
@@ -4169,12 +4066,12 @@
       }
     },
     {
-      "index": 253,
+      "index": 246,
       "kind": "phrase",
       "text": "Je vous présente Monsieur Petit.",
       "gloss": {
         "en": "Meet Mr. Petit.",
-        "tr": "Bay Petit ile buluş.",
+        "tr": "Size Bay Petit'yi takdim ederim.",
         "de": "Ich stelle Ihnen Herrn Petit vor.",
         "es": "Les presento al Sr. Petit.",
         "pt-BR": "Eu lhes apresento o Sr. Petit.",
@@ -4182,11 +4079,12 @@
       },
       "freqRank": 266,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 254,
+      "index": 247,
       "kind": "phrase",
       "text": "Ce thé est très bon.",
       "gloss": {
@@ -4203,7 +4101,7 @@
       }
     },
     {
-      "index": 255,
+      "index": 248,
       "kind": "phrase",
       "text": "Je ne suis pas occupé.",
       "gloss": {
@@ -4221,7 +4119,7 @@
       }
     },
     {
-      "index": 256,
+      "index": 249,
       "kind": "phrase",
       "text": "Nous avons beaucoup d’amis.",
       "gloss": {
@@ -4238,7 +4136,7 @@
       }
     },
     {
-      "index": 257,
+      "index": 250,
       "kind": "phrase",
       "text": "Il veut épouser ma fille.",
       "gloss": {
@@ -4255,7 +4153,7 @@
       }
     },
     {
-      "index": 258,
+      "index": 251,
       "kind": "phrase",
       "text": "Je suis une femme mariée.",
       "gloss": {
@@ -4272,7 +4170,7 @@
       }
     },
     {
-      "index": 259,
+      "index": 252,
       "kind": "phrase",
       "text": "Peux-tu fermer la porte ?",
       "gloss": {
@@ -4289,7 +4187,7 @@
       }
     },
     {
-      "index": 260,
+      "index": 253,
       "kind": "phrase",
       "text": "Les animaux sont nos amis.",
       "gloss": {
@@ -4308,7 +4206,7 @@
       }
     },
     {
-      "index": 261,
+      "index": 254,
       "kind": "phrase",
       "text": "Je suis gay, et alors ?",
       "gloss": {
@@ -4325,11 +4223,11 @@
       }
     },
     {
-      "index": 262,
+      "index": 255,
       "kind": "phrase",
       "text": "Nous ne parlons pas français.",
       "gloss": {
-        "en": "We don't understand French.",
+        "en": "We don't speak French.",
         "tr": "Fransızca konuşmuyoruz.",
         "de": "Wir sprechen kein Französisch.",
         "es": "No hablamos francés.",
@@ -4338,11 +4236,12 @@
       },
       "freqRank": 277,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 263,
+      "index": 256,
       "kind": "phrase",
       "text": "Je veux un gâteau bleu.",
       "gloss": {
@@ -4359,7 +4258,7 @@
       }
     },
     {
-      "index": 264,
+      "index": 257,
       "kind": "phrase",
       "text": "Est-elle chauffeur de taxi ?",
       "gloss": {
@@ -4376,7 +4275,7 @@
       }
     },
     {
-      "index": 265,
+      "index": 258,
       "kind": "phrase",
       "text": "Je veux aller au cinéma.",
       "gloss": {
@@ -4393,7 +4292,7 @@
       }
     },
     {
-      "index": 266,
+      "index": 259,
       "kind": "phrase",
       "text": "Le garçon achète un chien.",
       "gloss": {
@@ -4410,7 +4309,7 @@
       }
     },
     {
-      "index": 267,
+      "index": 260,
       "kind": "phrase",
       "text": "Je suis ici depuis samedi.",
       "gloss": {
@@ -4427,7 +4326,7 @@
       }
     },
     {
-      "index": 268,
+      "index": 261,
       "kind": "phrase",
       "text": "Il a traversé la rue.",
       "gloss": {
@@ -4444,7 +4343,7 @@
       }
     },
     {
-      "index": 269,
+      "index": 262,
       "kind": "phrase",
       "text": "Je peux lire sans lunettes.",
       "gloss": {
@@ -4461,7 +4360,7 @@
       }
     },
     {
-      "index": 270,
+      "index": 263,
       "kind": "phrase",
       "text": "Qui a inventé le piano ?",
       "gloss": {
@@ -4478,7 +4377,7 @@
       }
     },
     {
-      "index": 271,
+      "index": 264,
       "kind": "phrase",
       "text": "Pour une vie longue et heureuse !",
       "gloss": {
@@ -4495,7 +4394,7 @@
       }
     },
     {
-      "index": 272,
+      "index": 265,
       "kind": "phrase",
       "text": "Il a une voiture à 4 portes.",
       "gloss": {
@@ -4512,12 +4411,12 @@
       }
     },
     {
-      "index": 273,
+      "index": 266,
       "kind": "phrase",
       "text": "Tom ne croit pas en Dieu.",
       "gloss": {
         "en": "Tom doesn't believe in God.",
-        "tr": "Tom Allah'a inanmıyor.",
+        "tr": "Tom Tanrı'ya inanmıyor.",
         "de": "Tom glaubt nicht an Gott.",
         "es": "Tom no cree en Dios.",
         "ru": "Том не верит в Бога.",
@@ -4525,16 +4424,17 @@
       },
       "freqRank": 286,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 274,
+      "index": 267,
       "kind": "phrase",
       "text": "Nous avons quelque chose en commun.",
       "gloss": {
         "en": "We have something in common.",
-        "tr": "Ortak birkaç şeyimiz var.",
+        "tr": "Ortak bir şeyimiz var.",
         "de": "Wir haben etwas gemeinsam.",
         "es": "Tenemos algo en común.",
         "pt-BR": "Temos algo em comum.",
@@ -4542,11 +4442,12 @@
       },
       "freqRank": 287,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 275,
+      "index": 268,
       "kind": "phrase",
       "text": "Cette maison n’est pas très grande.",
       "gloss": {
@@ -4563,7 +4464,7 @@
       }
     },
     {
-      "index": 276,
+      "index": 269,
       "kind": "phrase",
       "text": "Tout le monde mérite une seconde chance.",
       "gloss": {
@@ -4580,7 +4481,7 @@
       }
     },
     {
-      "index": 277,
+      "index": 270,
       "kind": "phrase",
       "text": "Il est riche et je suis pauvre.",
       "gloss": {
@@ -4597,7 +4498,7 @@
       }
     },
     {
-      "index": 278,
+      "index": 271,
       "kind": "phrase",
       "text": "Je suis né il y a 20 ans.",
       "gloss": {
@@ -4614,12 +4515,12 @@
       }
     },
     {
-      "index": 279,
+      "index": 272,
       "kind": "phrase",
       "text": "Elle pratique le piano depuis ce matin.",
       "gloss": {
         "en": "She has been practicing the piano since morning.",
-        "tr": "O, sabahtan beri piyano çalışmaktadır.",
+        "tr": "O, sabahtan beri piyano çalışıyor.",
         "de": "Sie spielt seit heute Morgen Klavier.",
         "es": "Ella ha estado practicando el piano desde la mañana.",
         "pt-BR": "Ela está praticando no piano desde de manhã.",
@@ -4627,11 +4528,12 @@
       },
       "freqRank": 294,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 280,
+      "index": 273,
       "kind": "phrase",
       "text": "Je ne sais pas où il habite.",
       "gloss": {
@@ -4648,7 +4550,7 @@
       }
     },
     {
-      "index": 281,
+      "index": 274,
       "kind": "phrase",
       "text": "Quelle est la couleur de la Mer Noire ?",
       "gloss": {
@@ -4665,7 +4567,7 @@
       }
     },
     {
-      "index": 282,
+      "index": 275,
       "kind": "phrase",
       "text": "Je lui ai posé une question difficile.",
       "gloss": {
@@ -4682,7 +4584,7 @@
       }
     },
     {
-      "index": 283,
+      "index": 276,
       "kind": "phrase",
       "text": "Derrière la maison il y a un jardin.",
       "gloss": {
@@ -4699,7 +4601,7 @@
       }
     },
     {
-      "index": 284,
+      "index": 277,
       "kind": "phrase",
       "text": "Cette île est un paradis pour les enfants.",
       "gloss": {
@@ -4717,12 +4619,12 @@
       }
     },
     {
-      "index": 285,
+      "index": 278,
       "kind": "phrase",
       "text": "Les enfants ont besoin de beaucoup de sommeil.",
       "gloss": {
         "en": "Children need a lot of sleep.",
-        "tr": "Çocukların daha çok uykuya ihtiyacı vardır.",
+        "tr": "Çocukların çok uykuya ihtiyacı vardır.",
         "de": "Kinder brauchen viel Schlaf.",
         "es": "Los niños necesitan mucho sueño.",
         "pt-BR": "As crianças precisam de muito sono.",
@@ -4730,16 +4632,17 @@
       },
       "freqRank": 298,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 286,
+      "index": 279,
       "kind": "phrase",
       "text": "Je pense que nous pourrions être bons amis.",
       "gloss": {
         "en": "I think we could be good friends.",
-        "tr": "Bence iyi arkadaş olabilirdik..",
+        "tr": "Bence iyi arkadaş olabilirdik.",
         "de": "Ich denke, wir könnten gute Freunde sein.",
         "es": "Creo que podríamos ser buenos amigos.",
         "pt-BR": "Eu acho que poderíamos ser bons amigos.",
@@ -4747,11 +4650,12 @@
       },
       "freqRank": 299,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 287,
+      "index": 280,
       "kind": "phrase",
       "text": "Quel dommage que tu ne saches pas danser !",
       "gloss": {
