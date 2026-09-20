@@ -277,8 +277,8 @@ convention is not artwork, but it came from somewhere and this is where.
 
 **The pictures themselves are not committed.** They are rendered to PNG and
 uploaded to the bucket; the repository keeps the decision (`cues.<lang>.json`), the
-naming (`concepts.json`), the geometry (`drawings.mjs`) and the manifest
-(`credits.json`). PNG rather than the vector they are drawn as because
+naming, which is also the manifest (`concepts.json`), and the geometry
+(`drawings.mjs`). PNG rather than the vector they are drawn as because
 expo-image hands an SVG to each platform's own decoder, and iOS's mishandles
 the arc syntax most minifiers emit.
 
