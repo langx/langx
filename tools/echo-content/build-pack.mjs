@@ -32,6 +32,10 @@
  * Repeatable. kaikki is added on its own; everything else has to be said,
  * because a pack's `sources` array is the licence record for the file.
  *
+ * `--lang` also picks the kaikki edition — see `EDITIONS`. A language that is
+ * not English is read from its own Wiktionary, because en.wiktionary has no
+ * translation table for anything but English.
+ *
  * `--glosses` is a prepared `{ "<text>": { "<locale>": "…" } }` map, written by
  * `pick-phrases.mjs`. A line found in it is glossed from it and never looked
  * up: no dictionary has an entry for "Why do you ask?", and the translation of
@@ -44,7 +48,8 @@ import { dirname } from 'node:path'
 import { writable } from './text.mjs'
 
 /** Interface locale → the language code Wiktionary tags a translation with. */
-const LOCALES = {
+const LOCALE_CODES = {
+  en: 'en',
   tr: 'tr',
   de: 'de',
   es: 'es',
@@ -54,8 +59,34 @@ const LOCALES = {
   ar: 'ar',
 }
 
-/** The language a pack is in → the kaikki edition to read it from. */
-const EDITIONS = { en: 'English', fr: 'French' }
+/**
+ * The columns a pack in `lang` is glossed into: the eight interface locales
+ * less the pack's own language, which is the side the learner is reading
+ * rather than the side they are told.
+ */
+function localesFor(lang) {
+  return Object.fromEntries(Object.entries(LOCALE_CODES).filter(([, code]) => code !== lang))
+}
+
+/**
+ * The language a pack is in → the kaikki edition to read it from.
+ *
+ * English is the odd one and the reason this is a table of URLs rather than of
+ * names. A translation table lives only on an English-language entry of
+ * en.wiktionary, so `kaikki.org/dictionary/<Language>` — that wiki indexed by
+ * the language of the word — answers with translations for English and with
+ * none at all for anything else: `buenos días`, `guten Tag` and `bonjour` all
+ * come back with an empty `translations`. Every other language is read from
+ * its own Wiktionary, where its own entries are the ones carrying tables.
+ */
+const EDITIONS = {
+  en: 'https://kaikki.org/dictionary/English',
+  es: 'https://kaikki.org/eswiktionary/Español',
+  de: 'https://kaikki.org/dewiktionary/Deutsch',
+  fr: 'https://kaikki.org/frwiktionary/Français',
+  ru: 'https://kaikki.org/ruwiktionary/Русский',
+  it: 'https://kaikki.org/itwiktionary/Italiano',
+}
 
 /** A words file says `noun`; kaikki says `noun`, `adj`, `intj`. */
 const PARTS_OF_SPEECH = {
@@ -99,7 +130,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
  */
 async function entries(word, edition) {
   const path = `${encodeURIComponent(word[0])}/${encodeURIComponent(word.slice(0, 2))}/${encodeURIComponent(word)}`
-  const response = await fetch(`https://kaikki.org/dictionary/${edition}/meaning/${path}.jsonl`, {
+  const response = await fetch(`${edition}/meaning/${path}.jsonl`, {
     headers: { 'user-agent': UA },
   })
   if (!response.ok) return []
@@ -128,17 +159,46 @@ function sensesWithTranslations(found, partOfSpeech) {
   const groups = new Map()
   for (const entry of scope) {
     for (const translation of entry.translations ?? []) {
-      if (!translation.sense || !translation.word) continue
-      const group = groups.get(translation.sense) ?? {
-        sense: translation.sense,
+      if (!translation.word) continue
+      const meaning = senseOf(entry, translation)
+      if (!meaning?.label) continue
+      const group = groups.get(meaning.label) ?? {
+        sense: meaning.label,
+        // The sense object itself where the edition linked one, so the
+        // definition and the examples do not have to be guessed back.
+        known: meaning.sense,
         entry,
         translations: [],
       }
       group.translations.push(translation)
-      groups.set(translation.sense, group)
+      groups.set(meaning.label, group)
     }
   }
   return [...groups.values()]
+}
+
+/**
+ * Which sense a translation belongs to — three shapes, one answer.
+ *
+ * en.wiktionary writes the sense on the translation as text, and that is what
+ * this file was built around. The other editions do not: es and fr carry a
+ * `sense_index` pointing into `senses[]`, and it carries nothing at all.
+ *
+ * Unlinked translations on an entry with **one** sense are still attributable,
+ * because there is no choice to make. On an entry with several they are not,
+ * and this returns null rather than attaching them to the first — guessing
+ * which meaning a word was translated under is the one thing this file exists
+ * not to do.
+ */
+function senseOf(entry, translation) {
+  const senses = entry.senses ?? []
+  if (translation.sense_index) {
+    const match = senses.find((sense) => sense.sense_index === translation.sense_index)
+    if (match) return { label: match.glosses?.at(-1), sense: match }
+  }
+  if (translation.sense) return { label: translation.sense, sense: null }
+  if (senses.length === 1) return { label: senses[0].glosses?.at(-1), sense: senses[0] }
+  return null
 }
 
 /**
@@ -157,17 +217,20 @@ function draftSense(groups) {
   )
 }
 
-function glossFrom(group) {
+function glossFrom(group, locales, lang) {
   const gloss = {}
-  for (const [locale, code] of Object.entries(LOCALES)) {
+  for (const [locale, code] of Object.entries(locales)) {
     const match = group.translations.find(
       (translation) => translation.lang_code === code && writable(translation.word),
     )
     if (match) gloss[locale] = match.word
   }
-  // The sense label is Wiktionary's own summary of the sense, which is what an
-  // English gloss on an English pack should be. `glossFor` falls back to it.
-  gloss.en = group.sense
+  // On an English pack the English column is the sense label — Wiktionary's own
+  // summary, which is what a definition on the known side should be, and what
+  // `glossFor` falls back to. Anywhere else `en` is a translation like the
+  // other seven and was filled above; the label there is written in that
+  // wiki's own language and would put Italian on an Italian card's back.
+  if (lang === 'en') gloss.en = group.sense
   return gloss
 }
 
@@ -190,7 +253,7 @@ function contentWords(text) {
   return new Set(
     text
       .toLowerCase()
-      .split(/[^a-zà-ÿ]+/)
+      .split(/[^\p{L}]+/u)
       .filter((word) => word.length > 2 && !STOP_WORDS.has(word)),
   )
 }
@@ -204,7 +267,14 @@ function contentWords(text) {
  * two in common nothing is claimed: an example sentence filed under the wrong
  * sense teaches the wrong thing, which is the whole reason this file drafts.
  */
-function definitionFor(entry, sense) {
+function definitionFor(entry, sense, known) {
+  if (known) {
+    const example = known.examples?.find((item) => item.text && !item.ref && writable(item.text))
+    return {
+      ...(known.glosses?.at(-1) ? { definition: known.glosses.at(-1) } : {}),
+      ...(example ? { example: example.text } : {}),
+    }
+  }
   const label = contentWords(sense)
   let best = null
   for (const candidate of entry.senses ?? []) {
@@ -290,6 +360,7 @@ async function main() {
     console.error(`No kaikki edition mapped for '${lang}'. Add it to EDITIONS.`)
     process.exit(1)
   }
+  const locales = localesFor(lang)
 
   const lines = (await readFile(wordsPath, 'utf8'))
     .split('\n')
@@ -344,14 +415,14 @@ async function main() {
       continue
     }
 
-    const context = definitionFor(chosen.entry, chosen.sense)
+    const context = definitionFor(chosen.entry, chosen.sense, chosen.known)
     const heard = recordings(found)
     items.push({
       index: items.length,
       kind: text.includes(' ') ? 'phrase' : 'word',
       text,
       ...(partOfSpeech ? { partOfSpeech } : {}),
-      gloss: glossFrom(chosen),
+      gloss: glossFrom(chosen, locales, lang),
       ...(context?.example ? { example: context.example } : {}),
       freqRank: index + 1,
       // Everything the reviewer needs to agree or disagree, and nothing the
@@ -400,6 +471,19 @@ async function main() {
     `\nWrote ${items.length} items to ${out} ` +
       `(${fromPrepared} glossed from ${glossesPath ?? 'nothing'}, ${missing} had no translations).`,
   )
+  // The floor the content test enforces: outside an English pack, an item with
+  // no English gloss has nothing for `glossFor` to fall back to and shows its
+  // own front on both sides. Named here rather than dropped, because a
+  // reviewer who knows the language can write the one line that saves it.
+  if (lang !== 'en') {
+    const bare = items.filter((item) => !item.gloss.en)
+    if (bare.length > 0) {
+      console.error(
+        `${bare.length} have no English gloss and cannot be seeded as they are:\n` +
+          bare.map((item) => `  ${item.text}`).join('\n'),
+      )
+    }
+  }
   console.error('Marked reviewed: false. A person reads it before it can be seeded.')
 }
 
