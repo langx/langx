@@ -3,6 +3,7 @@ import {
   archiveEchoCardsSchema,
   attachEchoAudioSchema,
   captureEchoSchema,
+  echoLeaderboardQuerySchema,
   echoPackPreviewQuerySchema,
   echoQueueQuerySchema,
   linkEchoAskSchema,
@@ -28,6 +29,7 @@ import {
   summary,
   updateCard,
 } from '../modules/echo/cards'
+import { getEchoLeaderboard } from '../modules/echo/leaderboard'
 import { listPacks, previewPack, startPack } from '../modules/echo/packs'
 import { submitReviews } from '../modules/echo/reviews'
 import { synthesiseCard } from '../modules/echo/voices'
@@ -235,6 +237,23 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get('/echo/summary', { preHandler: requireAuth }, async (request, reply) => {
     return reply.send(await summary(app.mongo.db, request.userId))
   })
+
+  /*
+   * The review board. Here rather than beside the token and streak boards on
+   * `/leaderboard`, because what it ranks belongs to this module: the counter
+   * is written by `submitReviews` and nothing in `tokens` knows it exists.
+   *
+   * `requireAuth`, like the summary above — looking at who has studied the
+   * most is part of the offer made before an account, and somebody with no
+   * reviews is simply rank `null`.
+   */
+  app.get(
+    '/echo/leaderboard',
+    { preHandler: requireAuth, schema: { querystring: echoLeaderboardQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await getEchoLeaderboard(app.mongo.db, request.userId, request.query))
+    },
+  )
 
   /*
    * What a pack holds, a page at a time. `requireAuth` rather than

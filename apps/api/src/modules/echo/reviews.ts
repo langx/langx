@@ -1,8 +1,11 @@
 import {
+  aggregateId,
   completedEchoSessions,
   echoSessionRefId,
+  periodKeys,
   schedule,
   TOKEN_RULES,
+  type PeriodType,
   type SubmitEchoReviewsInput,
   type SubmitEchoReviewsResult,
 } from '@langx/shared'
@@ -11,7 +14,7 @@ import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { awardTokens } from '../tokens/ledger'
 import { recordQualifyingAction, streakDay } from '../tokens/streak'
-import { toEchoSrs, type EchoCardDoc, type EchoReviewDoc } from './documents'
+import { toEchoSrs, type EchoAggregate, type EchoCardDoc, type EchoReviewDoc } from './documents'
 
 function isDuplicate(error: unknown): boolean {
   return error instanceof MongoServerError && error.code === 11000
@@ -47,6 +50,8 @@ export async function submitReviews(
   const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
   const reviews = db.collection<EchoReviewDoc>(COLLECTIONS.echoReviews)
   const results: SubmitEchoReviewsResult['results'] = []
+  /** Rows this batch actually wrote — what the board's counter is moved by. */
+  let inserted = 0
 
   for (const item of input.reviews) {
     // A malformed id is `missing`, not a 400. One bad entry in a batch of ten
@@ -81,6 +86,7 @@ export async function submitReviews(
       })
       continue
     }
+    inserted += 1
 
     const card = await cards.findOne({ _id: cardId, userId })
     if (!card) {
@@ -99,6 +105,40 @@ export async function submitReviews(
       status: 'applied',
       srs: toEchoSrs(next),
     })
+  }
+
+  /*
+   * The board's counters, moved by what this batch wrote and not by what it
+   * was asked to write — a resubmitted session reports `duplicate` for every
+   * card and adds nothing here, the same rule the ledger applies next door.
+   *
+   * Four period rows at once, the same shape and the same `periodKeys` as
+   * `awardTokens`: "this week" has to mean the same UTC week on both boards,
+   * or the two tables under the same three tabs would disagree about when the
+   * week ended.
+   *
+   * One write for the batch rather than one per card, and deliberately after
+   * the loop rather than inside its try: the accepted failure is a crash
+   * between an insert and this line, which leaves a counter low. That is the
+   * right side to fail on — a number on a ranking table is worth less than a
+   * card that moved — and `scripts/backfill-echo-review-counts.ts` rebuilds
+   * the counters from the rows.
+   */
+  if (inserted > 0) {
+    const keys = periodKeys(now)
+    await db.collection<EchoAggregate>(COLLECTIONS.echoAggregates).bulkWrite(
+      (Object.keys(keys) as PeriodType[]).map((periodType) => ({
+        updateOne: {
+          filter: { _id: aggregateId(userId, periodType, keys[periodType]) },
+          update: {
+            $inc: { reviews: inserted },
+            $setOnInsert: { userId, periodType, periodKey: keys[periodType] },
+            $set: { updatedAt: now },
+          },
+          upsert: true,
+        },
+      })),
+    )
   }
 
   await settleSessions(db, userId, now)

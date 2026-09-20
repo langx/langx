@@ -218,6 +218,8 @@ export const ar: Localized<EnMessages> = {
     statCards: 'بطاقات',
     allCards: 'كل البطاقات',
     allCardsSub: 'من محادثاتك ومن المنشورات ومن كتابتك',
+    leaderboard: 'لوحة الصدارة',
+    leaderboardSub: 'من أجاب عن أكبر عدد من البطاقات',
     packsSub: 'كلمات جاهزة لما تتعلّمه',
     packsBlurb:
       'كلمات جاهزة للغات التي تتعلّمها. خذ منها قليلًا، فتدخل نفس جدول البطاقات التي تحفظها بنفسك.',
@@ -2128,6 +2130,8 @@ export const ar: Localized<EnMessages> = {
     streakPicker: 'ترتيب السلاسل',
     streakEmptyTitle: 'لا سلاسل بعد',
     streakEmptyBody: 'احضر يومين متتاليين وستظهر في هذه اللوحة.',
+    echoEmptyTitle: 'لا مراجعات في هذه الفترة',
+    echoEmptyBody: 'أجب عن بضع بطاقات لتظهر في لوحة هذه الفترة.',
   },
 
   badges: {

@@ -7,6 +7,7 @@ import type {
   EchoSource,
   EchoSrs,
   EchoSrsDto,
+  PeriodType,
 } from '@langx/shared'
 import type { ObjectId } from 'mongodb'
 
@@ -84,6 +85,24 @@ export interface EchoReviewDoc {
   grade: EchoGrade
   at: Date
   durationMs: number
+}
+
+/**
+ * One period's review count for one person — the board's row.
+ *
+ * `TokenAggregate` with a different number in it, deliberately down to the
+ * `_id` shape (`aggregateId`) and the field names, so the two boards are read
+ * and reasoned about the same way. A shared type would have to call the count
+ * something neutral, and `tokens` and `reviews` are not the same measurement.
+ */
+export interface EchoAggregate {
+  /** `<userId>:<periodType>:<periodKey>` — see `aggregateId`. */
+  _id: string
+  userId: string
+  periodType: PeriodType
+  periodKey: string
+  reviews: number
+  updatedAt: Date
 }
 
 /** The schedule as it travels: the same numbers, with the dates as strings. */

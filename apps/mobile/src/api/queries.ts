@@ -53,6 +53,7 @@ import type {
   HandleSearchPage,
   DiscoveryResult,
   Leaderboard,
+  EchoLeaderboard,
   StreakLeaderboard,
   StreakMetric,
   PeriodType,
@@ -244,6 +245,7 @@ export const keys = {
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
   contributors: ['contributors'] as const,
   streakLeaderboard: (metric: string) => ['leaderboard', 'streak', metric] as const,
+  echoLeaderboard: (period: PeriodType) => ['leaderboard', 'echo', period] as const,
   blocks: ['blocks'] as const,
   /*
    * The operator panel, all of it under one prefix so a decision can
@@ -1596,6 +1598,14 @@ export function useStreakLeaderboard(metric: StreakMetric, limit = 50) {
     queryKey: [...keys.streakLeaderboard(metric)],
     queryFn: () =>
       api.get<StreakLeaderboard>(`/leaderboard/streak?metric=${metric}&limit=${limit}`),
+  })
+}
+
+/** Cards answered, by period — the token board's three tabs, over Echo. */
+export function useEchoLeaderboard(period: PeriodType, limit = 50) {
+  return useQuery({
+    queryKey: keys.echoLeaderboard(period),
+    queryFn: () => api.get<EchoLeaderboard>(`/echo/leaderboard?period=${period}&limit=${limit}`),
   })
 }
 

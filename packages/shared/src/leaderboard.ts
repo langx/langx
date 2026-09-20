@@ -115,3 +115,51 @@ export const streakLeaderboardSchema = z.object({
   }),
 })
 export type StreakLeaderboard = z.infer<typeof streakLeaderboardSchema>
+
+/**
+ * The Echo board: how many cards somebody answered in a period.
+ *
+ * The token board's periods, and for the token board's reason — a table that
+ * only ever counts from the beginning is a table whose top rows were decided
+ * months ago, and nobody who joins this week can reach it. Same four keys,
+ * same `periodKeys`, so "this week" means the same UTC week on both.
+ *
+ * No cursor, unlike the token board: this one is a page of fifty inside a
+ * screen it does not own, exactly like the streak board beside it.
+ */
+export const echoLeaderboardQuerySchema = z.object({
+  /** `all` | `year` | `month` | `week` — three of them are tabs. */
+  period: z.enum(PERIOD_TYPES).default('week'),
+  /** Defaults to the period in progress; an explicit key reads a finished one. */
+  periodKey: z.string().trim().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(LEADERBOARD_PAGE_SIZE).default(50),
+})
+export type EchoLeaderboardQuery = z.infer<typeof echoLeaderboardQuerySchema>
+
+export const echoLeaderboardEntrySchema = z.object({
+  /** Competition ranking, on the same terms as the other two boards. */
+  rank: z.number().int(),
+  userId: z.string(),
+  handle: z.string(),
+  displayName: z.string(),
+  avatarUrl: z.string().optional(),
+  /** Cards answered in this period. */
+  reviews: z.number().int(),
+  frame: z.string().optional(),
+  title: z.string().optional(),
+  isViewer: z.boolean(),
+})
+export type EchoLeaderboardEntry = z.infer<typeof echoLeaderboardEntrySchema>
+
+export const echoLeaderboardSchema = z.object({
+  period: z.enum(PERIOD_TYPES),
+  periodKey: z.string(),
+  entries: z.array(echoLeaderboardEntrySchema),
+  viewer: z.object({
+    /** `null` when the viewer answered nothing in this period. */
+    rank: z.number().int().nullable(),
+    reviews: z.number().int(),
+    inPage: z.boolean(),
+  }),
+})
+export type EchoLeaderboard = z.infer<typeof echoLeaderboardSchema>

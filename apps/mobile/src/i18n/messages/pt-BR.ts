@@ -215,6 +215,8 @@ export const ptBR: Localized<EnMessages> = {
     statCards: 'Cartões',
     allCards: 'Todos os cartões',
     allCardsSub: 'Das suas conversas, de posts e seus',
+    leaderboard: 'Classificação',
+    leaderboardSub: 'Quem respondeu mais cartões',
     packsSub: 'Palavras prontas para o que você está aprendendo',
     packsBlurb:
       'Palavras prontas para os idiomas que você está aprendendo. Pegue um punhado e elas entram no mesmo cronograma dos seus próprios cartões.',
@@ -1846,6 +1848,8 @@ export const ptBR: Localized<EnMessages> = {
     streakPicker: 'Ranking de sequências',
     streakEmptyTitle: 'Ainda não há sequências',
     streakEmptyBody: 'Apareça dois dias seguidos e você entra nesta classificação.',
+    echoEmptyTitle: 'Sem revisões neste período',
+    echoEmptyBody: 'Responda alguns cartões e você entra na classificação deste período.',
   },
 
   badges: {

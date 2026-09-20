@@ -292,6 +292,14 @@ export default function EchoScreen() {
             sub={t('echo.allCardsSub')}
             onPress={() => router.push('/(app)/echo/cards')}
           />
+          {/* The third row, and the only one that looks outward: the two
+              above are your own cards, this is everybody's count. */}
+          <Row
+            icon="award"
+            title={t('echo.leaderboard')}
+            sub={t('echo.leaderboardSub')}
+            onPress={() => router.push('/(app)/echo/leaderboard')}
+          />
         </View>
       </ScrollView>
 

@@ -226,6 +226,8 @@ export const ru: Localized<EnMessages> = {
     statCards: 'Карточки',
     allCards: 'Все карточки',
     allCardsSub: 'Из чатов, из постов и твои собственные',
+    leaderboard: 'Таблица лидеров',
+    leaderboardSub: 'Кто ответил на больше всего карточек',
     packsSub: 'Готовые слова для того, что ты учишь',
     packsBlurb:
       'Готовые слова для языков, которые ты учишь. Возьми пригоршню — они попадут в то же расписание, что и твои собственные карточки.',
@@ -2049,6 +2051,8 @@ export const ru: Localized<EnMessages> = {
     streakPicker: 'Рейтинг серий',
     streakEmptyTitle: 'Серий пока нет',
     streakEmptyBody: 'Заходи два дня подряд — и попадёшь в эту таблицу.',
+    echoEmptyTitle: 'В этом периоде повторений нет',
+    echoEmptyBody: 'Ответь на несколько карточек — и попадёшь в таблицу за этот период.',
   },
 
   badges: {

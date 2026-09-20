@@ -679,6 +679,13 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1, at: -1 }, name: 'owner_recent' },
   ],
 
+  [COLLECTIONS.echoAggregates]: [
+    // Top-N for one tab of the review board, in one index scan. The same two
+    // indexes `tokenAggregates` has, for the same two reads.
+    { key: { periodType: 1, periodKey: 1, reviews: -1 }, name: 'leaderboard' },
+    { key: { userId: 1 }, name: 'user' },
+  ],
+
   [COLLECTIONS.echoPackItems]: [
     // The seed script's idempotency, asserted before the script exists.
     { key: { packId: 1, index: 1 }, name: 'pack_index_unique', unique: true },

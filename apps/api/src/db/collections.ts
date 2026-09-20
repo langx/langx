@@ -135,6 +135,19 @@ export const COLLECTIONS = {
    */
   echoReviews: 'echoReviews',
   /**
+   * The review board's four counters per person — `all`, `year`, `month`,
+   * `week` — keyed `<userId>:<periodType>:<periodKey>` exactly as
+   * `tokenAggregates` is.
+   *
+   * A counter rather than a `$group` over `echoReviews`, which gains a row per
+   * graded card and never loses one: the board would be a collection scan
+   * every time somebody opened the tab. `submitReviews` writes it after the
+   * rows, so a crash between the two under-counts a table rather than losing a
+   * card, and `scripts/backfill-echo-review-counts.ts` rebuilds it from the
+   * rows whenever that is worth correcting.
+   */
+  echoAggregates: 'echoAggregates',
+  /**
    * The curated packs, and their items. Written by Phase 2's seed script and
    * read by nothing yet.
    *
