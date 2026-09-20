@@ -2646,4 +2646,120 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(response.statusCode).toBe(404)
     })
   })
+  /*
+   * The REST send twin, which exists for callers that cannot hold a socket —
+   * the Apple Watch reply reaching an iPhone woken in the background, and
+   * later CarPlay. What these check is not that a row appears: it is that the
+   * two transports are the same door. A guard that holds on the socket and
+   * not here would be the whole risk of having two.
+   */
+  describe('sending a message over REST', () => {
+    async function pair(prefix: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const conversationId = (await startConversation(a, b.userId, 'hey'))._id
+      return { a, b, conversationId }
+    }
+
+    it('writes the message and returns it the way the socket ack does', async () => {
+      const { a, conversationId } = await pair('rest-send')
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body: 'from my wrist' },
+      })
+
+      expect(response.statusCode).toBe(200)
+      const message = response.json<{ _id: string; body: string; senderId: string }>()
+      expect(message.body).toBe('from my wrist')
+      expect(message.senderId).toBe(a.userId)
+
+      const stored = await handle.db
+        .collection(COLLECTIONS.messages)
+        .findOne({ _id: new ObjectId(message._id) })
+      expect(stored?.body).toBe('from my wrist')
+    })
+
+    /*
+     * The one that matters most. `assertConversationAccess` is what stops a
+     * stranger writing into a thread, and it lives in `sendTextMessage` rather
+     * than in either handler — so this asserts the module is actually being
+     * asked, not that the route re-checks.
+     */
+    it('refuses a thread the sender is not in', async () => {
+      const { conversationId } = await pair('rest-send-outsider')
+      const outsider = await newUser('rest-send-outsider-c@example.com')
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: outsider.cookie },
+        payload: { body: 'let me in' },
+      })
+
+      expect(response.statusCode).toBe(404)
+    })
+
+    it('refuses an empty body, as the schema does on the socket', async () => {
+      const { a, conversationId } = await pair('rest-send-empty')
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body: '   ' },
+      })
+
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('needs a session', async () => {
+      const { conversationId } = await pair('rest-send-anon')
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        payload: { body: 'hello?' },
+      })
+
+      expect(response.statusCode).toBe(401)
+    })
+
+    /*
+     * The retry story the socket already has. A watch reply whose reply-handler
+     * never came back is resent by the phone, and `sender_client_id_unique` is
+     * what makes that safe — the second write is refused by the index, not by
+     * a prior read. Without this the wrist would be the one place in the app
+     * that double-sends.
+     */
+    it('is idempotent on clientId, so a resent reply is not a second message', async () => {
+      const { a, conversationId } = await pair('rest-send-retry')
+      const clientId = new ObjectId().toHexString()
+      const payload = { body: 'sent once', clientId }
+
+      const first = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload,
+      })
+      const second = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload,
+      })
+
+      expect(first.statusCode).toBe(200)
+      expect(second.statusCode).toBe(200)
+      expect(second.json<{ _id: string }>()._id).toBe(first.json<{ _id: string }>()._id)
+
+      const count = await handle.db
+        .collection(COLLECTIONS.messages)
+        .countDocuments({ conversationId: new ObjectId(conversationId), body: 'sent once' })
+      expect(count).toBe(1)
+    })
+  })
 })

@@ -2086,4 +2086,16 @@ export const es: Localized<EnMessages> = {
     messages: 'Mensajes',
     summary: 'Esta semana: {messages} y {corrections}.',
   },
+
+  watch: {
+    unread: 'No leídos',
+    nothingUnread: 'Nada sin leer',
+    openOnPhone: 'Abre LangX en tu teléfono',
+    phoneNotReachable: 'Teléfono no disponible',
+    reply: 'Responder',
+    sending: 'Enviando…',
+    sent: 'Enviado',
+    notSent: 'No enviado',
+    loading: 'Cargando…',
+  },
 }

@@ -343,7 +343,8 @@ expressions, these are around one in twenty.
 
 **Three columns of seven in every file — the front, English and Turkish —
 read line by line.** 4,208 drafted items across Spanish, German, French,
-Russian and Italian, of which 3,901 remain. The other four columns in each
+Russian and Italian, of which **4,101** remain — es 819, de 832, fr 834,
+ru 798, it 818. The other four columns in each
 file were **linted and not read**, which is the same footing English's
 German, Spanish, French and Portuguese columns are on. If a wrong gloss
 survives, that is where to look first.
@@ -354,7 +355,7 @@ locale is missing, and, it turns out, the loosest column in the corpus,
 because English has the most Tatoeba contributors and the most idiom. Turkish
 is the column a reader of this repository can check.
 
-**307 items dropped**, in five kinds:
+**107 items dropped**, in five kinds:
 
 - **Slogans and positions** — "¡América ha vuelto!", "Je suis Charlie.", "Le
   vite nere contano.", "Tutto il mondo odia la polizia.", "Il partito ha

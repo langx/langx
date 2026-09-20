@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A proper noun, and the only string in this module that is not generated.
+  Everything the app says to a person comes from `strings_generated.xml`,
+  which `scripts/generate-xcstrings.ts` writes from the app's own catalogues.
+-->
+<resources>
+  <string name="app_name">LangX</string>
+</resources>

@@ -9,6 +9,7 @@ import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useLocationRefresh } from '../../src/hooks/useLocationRefresh'
 import { useDailyCheckIn } from '../../src/hooks/useDailyCheckIn'
 import { useCompanionSnapshot } from '../../src/hooks/useCompanionSnapshot'
+import { useWatchLink } from '../../src/hooks/useWatchLink'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { useSocket } from '../../src/hooks/useSocket'
@@ -56,6 +57,7 @@ export default function AppLayout() {
   // iOS only in effect: the module behind it is absent everywhere else, so
   // this is a no-op on Android and on the web rather than a branch here.
   useCompanionSnapshot({ enabled: !isGuest })
+  useWatchLink({ enabled: !isGuest })
 
   return (
     /*

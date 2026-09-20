@@ -221,6 +221,12 @@ const config: ExpoConfig = {
      */
     '@bacons/apple-targets',
     /*
+     * The Wear OS app, which needs the same trick for the same reason:
+     * `android/` is generated and not committed, so the module lives in
+     * `apps/mobile/wear/` and this copies it in. See `plugins/withWearApp.js`.
+     */
+    './plugins/withWearApp',
+    /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
      * so the views live in `widgets/` as TSX and the plugin only has to write
@@ -265,6 +271,21 @@ const config: ExpoConfig = {
             minHeight: '110dp',
             targetCellWidth: 4,
             targetCellHeight: 2,
+            resizeMode: 'none',
+            updatePeriodMillis: 1800000,
+          },
+          /*
+           * The activity map. Four cells wide like the summary and three tall
+           * rather than two: seven rows of squares need the height, and a map
+           * squeezed into 110dp is a bar code.
+           */
+          {
+            name: 'LangXActivity',
+            label: 'LangX',
+            minWidth: '250dp',
+            minHeight: '160dp',
+            targetCellWidth: 4,
+            targetCellHeight: 3,
             resizeMode: 'none',
             updatePeriodMillis: 1800000,
           },

@@ -2320,4 +2320,16 @@ export const ru: Localized<EnMessages> = {
     messages: 'Сообщения',
     summary: 'На этой неделе: {messages} и {corrections}.',
   },
+
+  watch: {
+    unread: 'Непрочитанные',
+    nothingUnread: 'Нет непрочитанных',
+    openOnPhone: 'Откройте LangX на телефоне',
+    phoneNotReachable: 'Телефон недоступен',
+    reply: 'Ответить',
+    sending: 'Отправка…',
+    sent: 'Отправлено',
+    notSent: 'Не отправлено',
+    loading: 'Загрузка…',
+  },
 }

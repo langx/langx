@@ -17,6 +17,25 @@ private enum Brand {
   static let streak = Color(red: 1.0, green: 0.663, blue: 0.239) // #ffa93d
   static let accent = Color(red: 0.486, green: 0.612, blue: 0.976) // #7c9cf9
   static let primary = Color(red: 1.0, green: 0.769, blue: 0.035) // #ffc409
+  /**
+   `colors.fill` — the ground a tile sits on, one step up from the widget's own
+   background so three numbers read as three things rather than a row.
+
+   From the asset catalogue rather than written out like the three above,
+   because this one has to follow the system appearance: the others are brand
+   colours that hold on either ground, and a tile is a *surface*. Declared as a
+   light/dark pair in `expo-target.config.js`.
+  */
+  static let fill = Color("tile")
+  /// `colors.bg` — the ground the widgets sit on, as the mockups draw them.
+  static let ground = Color("ground")
+  /// `colors.ink` — the busiest day on the activity map.
+  static let ink = Color("ink")
+  /// `colors.border` — the empty square on the activity map. See the note in
+  /// `expo-target.config.js` for why it is not `fill`, which the app uses.
+  static let cell = Color("cell")
+  /// `colors.primaryText`, the ink that goes on yellow and nowhere else.
+  static let primaryInk = Color(red: 0.125, green: 0.098, blue: 0.0) // #201900
 }
 
 // MARK: - Timeline
@@ -91,13 +110,22 @@ private struct EmptyState: View {
   }
 }
 
+/**
+ One number and its word, on a ground of their own.
+
+ The card is what makes the medium widget read as three answers rather than a
+ sentence — see `docs/plans/iphone-watch-and-carplay/iphone.png`. It matters
+ more here than it would in the app: a widget is read in a glance, against a
+ photograph, and three numbers sharing one background merge into a row of
+ digits at arm's length.
+ */
 private struct Tile: View {
   let value: Int
   let label: String
   let tint: Color
 
   var body: some View {
-    VStack(spacing: 2) {
+    VStack(spacing: 1) {
       Text("\(value)")
         .font(.system(size: 26, weight: .bold, design: .rounded))
         .foregroundStyle(tint)
@@ -110,6 +138,37 @@ private struct Tile: View {
         .minimumScaleFactor(0.7)
     }
     .frame(maxWidth: .infinity)
+    .padding(.vertical, 10)
+    .background(Brand.fill, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+  }
+}
+
+/**
+ The mark and the name, above the numbers.
+
+ Not decoration and not a title: a widget sits among other apps' widgets on
+ somebody's wallpaper, and the one question a glance has to answer before the
+ numbers mean anything is whose they are. `configurationDisplayName` answers it
+ in the gallery, which is the one place the person is not looking.
+
+ "LangX" is a proper noun, which is why it is written here rather than taken
+ from a catalogue — the same reasoning as the Android widget's `label` in
+ `app.config.ts`.
+ */
+private struct WidgetHeader: View {
+  var body: some View {
+    HStack(spacing: 6) {
+      Image("WidgetIcon")
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+        .frame(width: 16, height: 16)
+        .padding(3)
+        .background(Brand.primary, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+      Text("LangX")
+        .font(.system(size: 13, weight: .bold, design: .rounded))
+        .foregroundStyle(.secondary)
+      Spacer(minLength: 0)
+    }
   }
 }
 
@@ -165,28 +224,139 @@ private struct MediumView: View {
   var body: some View {
     Group {
       if let snapshot {
-        HStack(spacing: 10) {
-          /*
-           Each tile is its own link rather than the whole widget being one:
-           the three numbers answer three different questions, and tapping
-           "unread" to land on a streak page is the kind of small lie that
-           makes people stop tapping widgets.
-           */
-          Link(destination: URL(string: "langx:///me")!) {
-            Tile(
-              value: snapshot.streak.current, label: snapshot.labels.streak,
-              tint: snapshot.countedToday(now: now) ? Brand.streak : Brand.streak.opacity(0.45))
-          }
-          Link(destination: URL(string: "langx:///chats")!) {
-            Tile(value: snapshot.unread, label: snapshot.labels.unread, tint: Brand.accent)
-          }
-          Link(destination: URL(string: "langx:///echo")!) {
-            Tile(value: snapshot.echo.due, label: snapshot.labels.cardsDue, tint: Brand.primary)
+        VStack(alignment: .leading, spacing: 8) {
+          WidgetHeader()
+          HStack(spacing: 8) {
+            /*
+             Each tile is its own link rather than the whole widget being one:
+             the three numbers answer three different questions, and tapping
+             "unread" to land on a streak page is the kind of small lie that
+             makes people stop tapping widgets.
+             */
+            Link(destination: URL(string: "langx:///me")!) {
+              Tile(
+                value: snapshot.streak.current, label: snapshot.labels.streak,
+                tint: snapshot.countedToday(now: now) ? Brand.streak : Brand.streak.opacity(0.45))
+            }
+            Link(destination: URL(string: "langx:///chats")!) {
+              Tile(value: snapshot.unread, label: snapshot.labels.unread, tint: Brand.accent)
+            }
+            Link(destination: URL(string: "langx:///echo")!) {
+              Tile(value: snapshot.echo.due, label: snapshot.labels.cardsDue, tint: Brand.primary)
+            }
           }
         }
       } else {
         EmptyState()
       }
+    }
+  }
+}
+
+/**
+ Every day this person showed up, as a grid.
+
+ The shape is `activityGrid`'s and is not recomputed here: which square is
+ today and which week the last column stands for are exactly the two things
+ that are invisible in a screenshot, so they are decided once, in
+ `src/lib/activityMap.ts`, where there are tests. This side decodes and draws.
+
+ A day that has not happened yet is a **gap**, not an empty square. The
+ difference is the whole reason the encoding carries `.` — six blank boxes
+ after today would read as six days missed, every single Monday.
+ */
+private struct ActivityView: View {
+  let snapshot: CompanionSnapshot?
+  let now: Date
+
+  var body: some View {
+    Group {
+      if let snapshot, let activity = snapshot.activity, !activity.columns.isEmpty {
+        VStack(alignment: .leading, spacing: 8) {
+          HStack(alignment: .firstTextBaseline, spacing: 6) {
+            WidgetHeader()
+            Spacer(minLength: 0)
+            Text("\(snapshot.streak.current)")
+              .font(.system(size: 17, weight: .bold, design: .rounded))
+              .foregroundStyle(
+                snapshot.countedToday(now: now) ? Brand.streak : Brand.streak.opacity(0.45))
+          }
+          /*
+           The squares are sized from the width rather than fixed, which is
+           what `activityCellSize` does for the app's own map and for the same
+           reason: a fixed square leaves a margin of dead space on the right of
+           a widget whose width is not ours to choose, and the map reads as
+           left-aligned in a box rather than as the widget's content.
+
+           `GeometryReader` because a widget has no layout pass to ask
+           afterwards — the number has to come from the space actually handed
+           over, on the family the person picked.
+          */
+          GeometryReader { geometry in
+            let gap: CGFloat = 3
+            let columns = CGFloat(activity.columns.count)
+            let side = max(2, (geometry.size.width - gap * (columns - 1)) / columns)
+
+            VStack(spacing: gap) {
+              /*
+               Rows are weekdays and columns are weeks, which is the calendar
+               shape rather than a timeline: a gap on the same row every week
+               says something a flat run of squares cannot.
+              */
+              ForEach(0..<7, id: \.self) { row in
+                HStack(spacing: gap) {
+                  ForEach(Array(activity.columns.enumerated()), id: \.offset) { _, column in
+                    Square(mark: column[row])
+                      .frame(width: side, height: side)
+                  }
+                }
+              }
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
+          }
+        }
+      } else {
+        EmptyState()
+      }
+    }
+    .widgetURL(URL(string: "langx:///me"))
+  }
+}
+
+private struct Square: View {
+  let mark: Character
+
+  var body: some View {
+    RoundedRectangle(cornerRadius: 2, style: .continuous)
+      .fill(colour)
+      // A future day keeps its space and draws nothing, so the grid stays a
+      // rectangle and this week does not look shorter than the others.
+      .opacity(mark == "." ? 0 : 1)
+  }
+
+  /**
+   The shades, taken from the app's own map rather than invented.
+
+   `ActivityMap.tsx` settled these and its comments say why, in words this
+   widget had to learn twice: three shades of work, the busiest in `ink`
+   rather than a fourth step of blue, because at this size two more steps of
+   one hue stop being tellable apart. The lowest is `accent` thinned out and
+   deliberately *not* `accentBg`, which is a near-match for `fill` in both
+   schemes — a quiet day would read as a missed one.
+
+   The empty square is the one deliberate departure: the app uses `fill`, and
+   at twelve points on a widget's own ground that is one step from invisible.
+   It takes `border` instead — the token whose job is visible separation — for
+   the reason `ActivityMap.tsx` states outright: a calendar whose empty days
+   are invisible is not a calendar, it is a scatter of dots. This widget drew
+   exactly that, twice, before the colour was right.
+  */
+  private var colour: Color {
+    switch mark {
+    case "1": return Brand.accent.opacity(0.4)
+    case "2": return Brand.accent
+    case "3", "4": return Brand.ink.opacity(0.85)
+    default: return Brand.cell
     }
   }
 }
@@ -240,7 +410,7 @@ struct LangXStreakWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXStreakWidget", provider: CompanionProvider()) { entry in
       SmallView(snapshot: entry.snapshot, now: entry.date)
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Brand.ground, for: .widget)
     }
     .configurationDisplayName("LangX")
     .supportedFamilies([.systemSmall])
@@ -251,7 +421,26 @@ struct LangXSummaryWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXSummaryWidget", provider: CompanionProvider()) { entry in
       MediumView(snapshot: entry.snapshot, now: entry.date)
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Brand.ground, for: .widget)
+    }
+    .configurationDisplayName("LangX")
+    .supportedFamilies([.systemMedium])
+  }
+}
+
+/**
+ The map on its own, as a medium widget.
+
+ A separate family rather than a bigger `LangXSummaryWidget`, because it
+ answers a different question. The summary says what is waiting; this says what
+ you have done, and somebody who wants one usually does not want the other on
+ the same screen.
+ */
+struct LangXActivityWidget: Widget {
+  var body: some WidgetConfiguration {
+    StaticConfiguration(kind: "LangXActivityWidget", provider: CompanionProvider()) { entry in
+      ActivityView(snapshot: entry.snapshot, now: entry.date)
+        .containerBackground(Brand.ground, for: .widget)
     }
     .configurationDisplayName("LangX")
     .supportedFamilies([.systemMedium])
@@ -265,7 +454,7 @@ struct LangXAccessoryWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXAccessoryWidget", provider: CompanionProvider()) { entry in
       AccessoryRouter(entry: entry)
-        .containerBackground(.fill.tertiary, for: .widget)
+        .containerBackground(Brand.ground, for: .widget)
     }
     .configurationDisplayName("LangX")
     .supportedFamilies([.accessoryCircular, .accessoryRectangular])
@@ -291,6 +480,7 @@ struct LangXWidgets: WidgetBundle {
   var body: some Widget {
     LangXStreakWidget()
     LangXSummaryWidget()
+    LangXActivityWidget()
     LangXAccessoryWidget()
   }
 }
