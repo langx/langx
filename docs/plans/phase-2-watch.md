@@ -112,13 +112,22 @@ signed in as the seeded `test_anna`.
 | The sent message comes back to the watch      | ✅ New payload redrew the thread with it                                                 |
 | Outcome states draw                           | ✅ "Sending…" then cleared by the fresh payload                                          |
 | Sign-out empties the watch                    | ⬜ **not exercised**                                                                     |
-| A reply with the phone app closed             | ⬜ **not exercised** — the background-wake path is the one that most needs a real device |
+| **A reply with the phone app force-quit**     | ✅ 20 September — see below                                                              |
 
-Two rows are blank rather than ticked. The second is the important one: every
-reply in this run went to a phone whose app was in the foreground, so the
-`OnCreate` activation and the Keychain read on a cold background launch are
-**inference, not observation**. They are also the reason the REST twin exists,
-so they are the first thing to check on a real watch.
+The background row was the one that mattered, and it stayed blank until the
+app was actually killed and the reply sent anyway. `simctl terminate` left
+zero processes; the wrist sent; `POST /conversations/:id/messages` answered
+200 and the row appeared in `langx_dev` at the moment of the tap.
+
+That the _native_ path did it is not a guess either: the REST twin has exactly
+one caller on each platform — `ReplySender.swift` and
+`ReplyListenerService.kt` — and no JavaScript anywhere asks for that route.
+iOS did relaunch the app a moment later, which is what the `get-session` and
+`profiles/me` requests beside it are; the send itself could only have come
+from Swift.
+
+So `OnCreate` activating the session and the Keychain read on a cold launch
+are observed rather than inferred. Sign-out is still not exercised.
 
 ## The Wear OS half
 
