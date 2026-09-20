@@ -352,9 +352,18 @@ platform-specific, because nothing else in 2.6 is.
 Two claims were deliberately not made. The watch is **dependent on the phone**
 — it holds no session and makes no call of its own — so nothing here says it
 works without one; what it survives is the phone's app being _closed_, which is
-a different sentence and the one that was actually tested. And the Echo packs
-for the five new languages ship without their readings and picture cues, so
-"read aloud" names only Spanish, French and Italian, which have them.
+a different sentence and the one that was actually tested. And the cue pictures
+above the cards are not mentioned at all: the five new packs carry them now, but
+a picture above a sentence is not why anyone installs a language app, and every
+line here has to earn its place against Play's 500 characters.
+
+**The read-aloud line names all five, and that changed late.** It said Spanish,
+French and Italian while the German and Russian packs were still silent —
+Kokoro does not read those two and Piper, which does, had not been run for
+them. It has been since, so all five carry readings and the line no longer has
+an exception to make. German and Russian carry one voice each where the other
+three carry two, which is a distinction these notes have no room for and no
+reason to draw.
 
 "Polyglot" is a plan name and stays in English everywhere, the way "LangX Pro"
 does in the description.
@@ -387,7 +396,7 @@ the current one. Play has no equivalent field.
 > The widgets are redrawn, and your activity map is one of them now.
 > Echo has a leaderboard: this week, this month, this year.
 > Echo packs in five more languages - Spanish, German, French, Russian and Italian.
-> The Spanish, French and Italian packs can be read aloud.
+> All five can be read aloud.
 > Every badge has a picture of its own.
 > Nearby asks for a finer fix, so the distance it shows is closer to the truth.
 >
@@ -401,7 +410,7 @@ the current one. Play has no equivalent field.
 > Widget'lar yeniden çizildi; etkinlik haritan da artık onlardan biri.
 > Echo'ya liderlik tablosu geldi: bu hafta, bu ay, bu yıl.
 > Beş dilde daha Echo paketi - İspanyolca, Almanca, Fransızca, Rusça ve İtalyanca.
-> İspanyolca, Fransızca ve İtalyanca paketler sesli okunabiliyor.
+> Beşi de sesli okunabiliyor.
 > Her rozetin artık kendi resmi var.
 > Yakındakiler daha hassas bir konum istiyor, böylece gösterdiği mesafe gerçeğe daha yakın.
 >
@@ -415,7 +424,7 @@ the current one. Play has no equivalent field.
 > Los widgets se rediseñaron, y tu mapa de actividad ya es uno de ellos.
 > Echo tiene una clasificación: esta semana, este mes, este año.
 > Packs de Echo en cinco idiomas más - español, alemán, francés, ruso e italiano.
-> Los packs de español, francés e italiano se pueden escuchar en voz alta.
+> Los cinco se pueden escuchar en voz alta.
 > Cada insignia tiene una imagen propia.
 > Cerca de ti pide una ubicación más precisa, así la distancia que muestra se acerca más a la real.
 >
@@ -429,7 +438,7 @@ the current one. Play has no equivalent field.
 > Виджеты перерисованы, и карта активности теперь один из них.
 > В Echo появилась таблица лидеров: эта неделя, этот месяц, этот год.
 > Наборы Echo ещё на пяти языках - испанском, немецком, французском, русском и итальянском.
-> Испанские, французские и итальянские наборы можно слушать вслух.
+> Все пять можно слушать вслух.
 > У каждого значка теперь своя картинка.
 > «Рядом» запрашивает более точное место, поэтому расстояние ближе к настоящему.
 >
@@ -443,7 +452,7 @@ the current one. Play has no equivalent field.
 > أُعيد رسم الأدوات، وخريطة نشاطك صارت واحدة منها.
 > في Echo لوحة متصدرين: هذا الأسبوع، هذا الشهر، هذه السنة.
 > حزم Echo بخمس لغات إضافية - الإسبانية والألمانية والفرنسية والروسية والإيطالية.
-> حزم الإسبانية والفرنسية والإيطالية يمكن الاستماع إليها.
+> الحزم الخمس كلّها يمكن الاستماع إليها.
 > لكل شارة صورتها الخاصة الآن.
 > «القريبون» يطلب تحديدًا أدقّ للموقع، فتقترب المسافة المعروضة من الحقيقة.
 >
@@ -457,7 +466,7 @@ the current one. Play has no equivalent field.
 > Les widgets ont été redessinés, et votre carte d'activité en fait partie.
 > Echo a un classement : cette semaine, ce mois, cette année.
 > Des packs Echo dans cinq langues de plus - espagnol, allemand, français, russe et italien.
-> Les packs espagnol, français et italien peuvent être lus à voix haute.
+> Les cinq peuvent être lus à voix haute.
 > Chaque badge a son propre dessin.
 > À proximité demande une position plus fine, pour que la distance affichée soit plus juste.
 >
@@ -471,7 +480,7 @@ the current one. Play has no equivalent field.
 > Die Widgets wurden neu gezeichnet, und deine Aktivitätskarte ist jetzt eines davon.
 > Echo hat eine Bestenliste: diese Woche, diesen Monat, dieses Jahr.
 > Echo-Pakete in fünf weiteren Sprachen - Spanisch, Deutsch, Französisch, Russisch und Italienisch.
-> Die spanischen, französischen und italienischen Pakete lassen sich vorlesen.
+> Alle fünf lassen sich vorlesen.
 > Jedes Abzeichen hat jetzt ein eigenes Bild.
 > In der Nähe fragt nach einer genaueren Position, damit die angezeigte Entfernung näher an der Wahrheit liegt.
 >
@@ -485,7 +494,7 @@ the current one. Play has no equivalent field.
 > Os widgets foram redesenhados, e seu mapa de atividade agora é um deles.
 > O Echo tem um ranking: esta semana, este mês, este ano.
 > Pacotes do Echo em mais cinco idiomas - espanhol, alemão, francês, russo e italiano.
-> Os pacotes de espanhol, francês e italiano podem ser ouvidos em voz alta.
+> Todos os cinco podem ser ouvidos em voz alta.
 > Cada medalha tem uma imagem própria.
 > O Por perto pede uma localização mais precisa, para a distância mostrada ficar mais perto da real.
 >
@@ -494,7 +503,7 @@ the current one. Play has no equivalent field.
 ### Play release notes (500 characters)
 
 Play's "What's new" field caps at **500 characters per language**; the App Store
-allows 4000. Every note above is between 590 and 840, so Play needs its own
+allows 4000. Every note above is between 574 and 798, so Play needs its own
 shorter set rather than a truncation — Play truncates silently and would cut a
 different sentence in each language, including the last one, which is the one
 that must survive.
