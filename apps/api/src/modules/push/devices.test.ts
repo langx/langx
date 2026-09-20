@@ -1,3 +1,4 @@
+import { PUSH_CATEGORY_MESSAGE } from '@langx/shared'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
@@ -117,6 +118,35 @@ describe('ExpoPushSender', () => {
 
     await sender.send({ to: ['t'], title: 'hi', body: 'there', data: { kind: 'streakReminder' } })
     expect(sentBody(1)[0]?.mutableContent).toBe(true)
+  })
+
+  /**
+   * The category is what puts a Reply box on the notification, and it only
+   * belongs on a message: there is nothing to type back to a streak reminder.
+   * Asserted both ways round because the bug this guards against is the quiet
+   * one — a key that stops being sent, and a quick-reply that stops appearing
+   * with nothing in any log.
+   */
+  it('names the message category, and only on a message', async () => {
+    const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(ticketsFor(['ok'])))
+    vi.stubGlobal('fetch', fetchMock)
+    const sender = new ExpoPushSender()
+    const sentBody = (call: number): { categoryId?: string }[] => {
+      const init = fetchMock.mock.calls[call]?.[1] as { body: string } | undefined
+      return JSON.parse(init?.body ?? '[]') as { categoryId?: string }[]
+    }
+
+    await sender.send({
+      to: ['t'],
+      title: 'hi',
+      body: 'there',
+      data: { kind: 'message' },
+      categoryId: PUSH_CATEGORY_MESSAGE,
+    })
+    expect(sentBody(0)[0]?.categoryId).toBe(PUSH_CATEGORY_MESSAGE)
+
+    await sender.send({ to: ['t'], title: 'hi', body: 'there', data: { kind: 'streakReminder' } })
+    expect(sentBody(1)[0]).not.toHaveProperty('categoryId')
   })
 
   it('splits more than 100 recipients across requests', async () => {

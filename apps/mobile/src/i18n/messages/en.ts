@@ -876,6 +876,8 @@ export const en = {
   },
 
   notifications: {
+    replyAction: 'Reply',
+    replyPlaceholder: 'Write a reply',
     messages: 'Messages',
     messagesBody: 'When somebody writes to you. By email only if you have been away a while.',
     streak: 'Streak reminder',
@@ -2278,6 +2280,28 @@ export const en = {
     sent: 'Sent',
     notSent: 'Not sent',
     loading: 'Loading…',
+  },
+
+  /*
+   The widget gallery: the name under each widget and the line under that.
+
+   These are the only widget strings that exist. Everything a widget *draws*
+   is a word the app already wrote into the snapshot, which is how three
+   families ship in eight languages without a catalogue — but the gallery is
+   drawn by WidgetKit before the snapshot is read, so these eight have to
+   travel the same road the watch's words do.
+  */
+  widget: {
+    streakName: 'Streak',
+    streakDetail: 'Your run of days. Dim until today counts.',
+    todayName: 'Today',
+    todayDetail: 'Streak, unread and cards due, in one row.',
+    activityName: 'Activity',
+    activityDetail: 'Your practice, one square a day.',
+    glanceName: 'Glance',
+    glanceDetail: 'Streak and unread, for the Lock Screen and StandBy.',
+    exchangeStartsIn: 'Starts in',
+    exchangeEndsIn: 'Ends in',
   },
 } as const
 

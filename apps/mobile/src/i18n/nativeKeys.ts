@@ -6,7 +6,8 @@ import type { Paths } from '@langx/shared'
  *
  * A Swift target cannot import `src/i18n`, so the rule that no user-facing
  * string is written in a component would quietly stop applying the moment a
- * native target drew a word of its own. This list is how it keeps applying:
+ * native target drew a word of its own. Swift and Kotlin both read from here:
+ * the watch app, the Wear app and the widget gallery. This list is how it keeps applying:
  * `scripts/generate-xcstrings.ts` copies exactly these keys out of the eight
  * catalogues into `targets/_shared/Localizable.xcstrings`, and a lint rule
  * refuses a literal user-facing string inside `targets/**`.
@@ -34,6 +35,16 @@ export const NATIVE_KEYS = [
   'watch.sent',
   'watch.notSent',
   'watch.loading',
+  'widget.streakName',
+  'widget.streakDetail',
+  'widget.todayName',
+  'widget.todayDetail',
+  'widget.activityName',
+  'widget.activityDetail',
+  'widget.glanceName',
+  'widget.glanceDetail',
+  'widget.exchangeStartsIn',
+  'widget.exchangeEndsIn',
 ] as const satisfies readonly Paths<EnMessages>[]
 
 export type NativeKey = (typeof NATIVE_KEYS)[number]

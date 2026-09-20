@@ -13,7 +13,11 @@ import WidgetKit
 /// The three from `src/lib/theme/tokens.ts`, written out because an extension
 /// cannot import the app's tokens. Dark-scheme values: a widget draws on the
 /// wallpaper, and these have to hold against a photograph rather than a page.
-private enum Brand {
+///
+/// Not `private`: `ExchangeLiveActivity.swift` draws on the same ground, and a
+/// second copy of the palette in that file is the drift this one exists to
+/// avoid.
+enum Brand {
   static let streak = Color(red: 1.0, green: 0.663, blue: 0.239) // #ffa93d
   static let accent = Color(red: 0.486, green: 0.612, blue: 0.976) // #7c9cf9
   static let primary = Color(red: 1.0, green: 0.769, blue: 0.035) // #ffc409
@@ -153,7 +157,8 @@ private struct Tile: View {
 
  "LangX" is a proper noun, which is why it is written here rather than taken
  from a catalogue — the same reasoning as the Android widget's `label` in
- `app.config.ts`.
+ `app.config.ts`. The gallery's own name and description are a different
+ matter and do come from the catalogue: they are sentences, not a mark.
  */
 private struct WidgetHeader: View {
   var body: some View {
@@ -412,7 +417,8 @@ struct LangXStreakWidget: Widget {
       SmallView(snapshot: entry.snapshot, now: entry.date)
         .containerBackground(Brand.ground, for: .widget)
     }
-    .configurationDisplayName("LangX")
+    .configurationDisplayName(LocalizedStringResource("widget.streakName"))
+    .description(LocalizedStringResource("widget.streakDetail"))
     .supportedFamilies([.systemSmall])
   }
 }
@@ -423,7 +429,8 @@ struct LangXSummaryWidget: Widget {
       MediumView(snapshot: entry.snapshot, now: entry.date)
         .containerBackground(Brand.ground, for: .widget)
     }
-    .configurationDisplayName("LangX")
+    .configurationDisplayName(LocalizedStringResource("widget.todayName"))
+    .description(LocalizedStringResource("widget.todayDetail"))
     .supportedFamilies([.systemMedium])
   }
 }
@@ -442,7 +449,8 @@ struct LangXActivityWidget: Widget {
       ActivityView(snapshot: entry.snapshot, now: entry.date)
         .containerBackground(Brand.ground, for: .widget)
     }
-    .configurationDisplayName("LangX")
+    .configurationDisplayName(LocalizedStringResource("widget.activityName"))
+    .description(LocalizedStringResource("widget.activityDetail"))
     .supportedFamilies([.systemMedium])
   }
 }
@@ -456,7 +464,8 @@ struct LangXAccessoryWidget: Widget {
       AccessoryRouter(entry: entry)
         .containerBackground(Brand.ground, for: .widget)
     }
-    .configurationDisplayName("LangX")
+    .configurationDisplayName(LocalizedStringResource("widget.glanceName"))
+    .description(LocalizedStringResource("widget.glanceDetail"))
     .supportedFamilies([.accessoryCircular, .accessoryRectangular])
   }
 }
@@ -482,5 +491,14 @@ struct LangXWidgets: WidgetBundle {
     LangXSummaryWidget()
     LangXActivityWidget()
     LangXAccessoryWidget()
+    /*
+     A Live Activity is a widget to `WidgetBundle` and nothing else here has
+     to know about it. Guarded because `ActivityConfiguration` is iOS 16.1 and
+     this target's floor is 17.0 — the guard costs nothing and says which
+     framework the line depends on.
+    */
+    if #available(iOS 16.1, *) {
+      ExchangeLiveActivity()
+    }
   }
 }

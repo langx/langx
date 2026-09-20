@@ -1,4 +1,6 @@
+import { PUSH_ACTION_REPLY, PUSH_CATEGORY_MESSAGE } from '@langx/shared'
 import { AppState, Platform } from 'react-native'
+import { currentTranslate } from '../i18n/runtime'
 import { presentationFor } from './foregroundPush'
 
 /**
@@ -44,6 +46,39 @@ export async function configureNotifications(): Promise<void> {
         })
       },
     })
+
+    /**
+     * The Reply box on a message notification.
+     *
+     * Registered every time this runs rather than once, because the button's
+     * word is translated and the person can change their language: a category
+     * keeps whatever title it was registered with, so re-registering is how
+     * "Reply" becomes "Yanıtla" without a reinstall. Registering the same
+     * identifier again replaces it, which is what makes that cheap.
+     *
+     * The server names this category on every message push
+     * (`PUSH_CATEGORY_MESSAGE`). A build that predates this call simply shows
+     * the notification without the action.
+     */
+    const t = currentTranslate()
+    await Notifications.setNotificationCategoryAsync(PUSH_CATEGORY_MESSAGE, [
+      {
+        identifier: PUSH_ACTION_REPLY,
+        buttonTitle: t('notifications.replyAction'),
+        textInput: {
+          submitButtonTitle: t('notifications.replyAction'),
+          placeholder: t('notifications.replyPlaceholder'),
+        },
+        options: {
+          /*
+           The notification stays put and the app stays closed: answering from
+           the shade is the whole point, and opening the app would throw away
+           the one thing that made it quick.
+          */
+          opensAppToForeground: false,
+        },
+      },
+    ])
 
     if (Platform.OS === 'android') {
       /**

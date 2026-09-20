@@ -1,0 +1,1 @@
+../../../targets/_shared/ExchangeActivity.swift

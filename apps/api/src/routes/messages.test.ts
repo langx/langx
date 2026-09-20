@@ -7,6 +7,7 @@ import {
   MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
   PLAN_LIMITS,
   sendMediaMessageSchema,
+  UPCOMING_MEETING_LOOKAHEAD_HOURS,
 } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
@@ -592,6 +593,112 @@ describe('Faz 5 — conversation/message history REST', () => {
     const body = response.json<{ items: { participants: string[] }[] }>()
     expect(body.items).toHaveLength(2)
     expect(body.items[0]?.participants).toContain(newer.userId) // most recent activity first
+  })
+
+  describe('the calls you have agreed to', () => {
+    async function upcoming(viewer: SignedUpUser) {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/me/meetings/upcoming',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      return response.json<{ items: { withUserId: string; durationMinutes: number }[] }>().items
+    }
+
+    // Meetings have no REST path of their own — they are proposed and answered
+    // over the socket — so the fixtures call the same functions that handler
+    // calls rather than a route that does not exist.
+    async function propose(fromId: string, conversationId: string, startsAt: Date) {
+      const { sendMeeting } = await import('../modules/chat/messages')
+      const { message } = await sendMeeting(handle.db, fromId, {
+        conversationId,
+        startsAt: startsAt.toISOString(),
+        durationMinutes: 30,
+      })
+      return message._id.toHexString()
+    }
+
+    async function respond(
+      userId: string,
+      conversationId: string,
+      messageId: string,
+      status: 'accepted' | 'declined' | 'cancelled',
+    ) {
+      const { respondToMeeting } = await import('../modules/chat/messages')
+      await respondToMeeting(handle.db, userId, { conversationId, messageId, status })
+    }
+
+    it('returns what both sides agreed to, and nothing else', async () => {
+      const asker = await newUser('meet-asker@example.com')
+      const invitee = await newUser('meet-invitee@example.com')
+      const conversationId = (await startConversation(asker, invitee.userId, 'shall we talk?'))._id
+      const messageId = await propose(
+        asker.userId,
+        conversationId,
+        new Date(Date.now() + 2 * 60 * 60 * 1000),
+      )
+
+      // Proposed is not agreed: neither side should see it yet.
+      expect(await upcoming(asker)).toHaveLength(0)
+      expect(await upcoming(invitee)).toHaveLength(0)
+
+      await respond(invitee.userId, conversationId, messageId, 'accepted')
+
+      // Both of them, each naming the other — the proposer forgets too.
+      const forAsker = await upcoming(asker)
+      const forInvitee = await upcoming(invitee)
+      expect(forAsker).toHaveLength(1)
+      expect(forAsker[0]?.withUserId).toBe(invitee.userId)
+      expect(forAsker[0]?.durationMinutes).toBe(30)
+      expect(forInvitee[0]?.withUserId).toBe(asker.userId)
+
+      // Somebody not in the thread sees none of it.
+      const stranger = await newUser('meet-stranger@example.com')
+      expect(await upcoming(stranger)).toHaveLength(0)
+    })
+
+    it('leaves out a refused one and one too far ahead', async () => {
+      const asker = await newUser('meet-window-asker@example.com')
+      const invitee = await newUser('meet-window-invitee@example.com')
+      const conversationId = (await startConversation(asker, invitee.userId, 'a time?'))._id
+
+      const soon = await propose(
+        asker.userId,
+        conversationId,
+        new Date(Date.now() + 3 * 60 * 60 * 1000),
+      )
+      await respond(invitee.userId, conversationId, soon, 'accepted')
+      expect(await upcoming(asker)).toHaveLength(1)
+
+      // Agreed, but past the lookahead: not something to start a countdown for.
+      const far = await propose(
+        asker.userId,
+        conversationId,
+        new Date(Date.now() + (UPCOMING_MEETING_LOOKAHEAD_HOURS + 24) * 60 * 60 * 1000),
+      )
+      await respond(invitee.userId, conversationId, far, 'accepted')
+      expect(await upcoming(asker)).toHaveLength(1)
+
+      // Refused, so it never becomes a commitment.
+      const refused = await propose(
+        asker.userId,
+        conversationId,
+        new Date(Date.now() + 4 * 60 * 60 * 1000),
+      )
+      await respond(invitee.userId, conversationId, refused, 'declined')
+      expect(await upcoming(asker)).toHaveLength(1)
+      expect(await upcoming(invitee)).toHaveLength(1)
+    })
+
+    /*
+     Worth knowing, and not this endpoint's to fix: once a meeting is
+     accepted, `respondToMeeting` refuses every further answer including
+     `cancelled`, so there is no way to call off a call both people agreed to.
+     `MEETING_STATUSES` has the state and `respondToMeetingSchema` offers it;
+     only a proposal can actually reach it. Recorded rather than changed —
+     it is a product decision, not a defect in the list below.
+    */
   })
 
   describe('the unread total behind the tab badge', () => {

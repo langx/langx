@@ -767,6 +767,8 @@ export const fr: Localized<EnMessages> = {
   },
 
   notifications: {
+    replyAction: 'Répondre',
+    replyPlaceholder: 'Écrivez une réponse',
     messages: 'Messages',
     messagesBody: 'Quand quelqu’un vous écrit. Par e-mail seulement après une absence.',
     streak: 'Rappel de série',
@@ -2113,5 +2115,27 @@ export const fr: Localized<EnMessages> = {
     sent: 'Envoyé',
     notSent: 'Non envoyé',
     loading: 'Chargement…',
+  },
+
+  /*
+   The widget gallery: the name under each widget and the line under that.
+
+   These are the only widget strings that exist. Everything a widget *draws*
+   is a word the app already wrote into the snapshot, which is how three
+   families ship in eight languages without a catalogue — but the gallery is
+   drawn by WidgetKit before the snapshot is read, so these eight have to
+   travel the same road the watch's words do.
+  */
+  widget: {
+    streakName: 'Série',
+    streakDetail: 'Vos jours d’affilée. Pâle tant qu’aujourd’hui ne compte pas.',
+    todayName: 'Aujourd’hui',
+    todayDetail: 'Série, non lus et cartes à revoir, sur une ligne.',
+    activityName: 'Activité',
+    activityDetail: 'Votre pratique, un carré par jour.',
+    glanceName: 'Coup d’œil',
+    glanceDetail: 'Série et non lus, pour l’écran verrouillé et StandBy.',
+    exchangeStartsIn: 'Commence dans',
+    exchangeEndsIn: 'Se termine dans',
   },
 }

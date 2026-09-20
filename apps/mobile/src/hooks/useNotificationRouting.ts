@@ -1,8 +1,9 @@
-import { PUSH_KINDS, type PushKind } from '@langx/shared'
-import { useQueryClient } from '@tanstack/react-query'
+import { PUSH_ACTION_REPLY, PUSH_KINDS, type PushKind } from '@langx/shared'
+import { useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { AppState, Platform } from 'react-native'
+import { api } from '../api/client'
 import { markConversationRead } from '../api/queries'
 import { track } from '../lib/analytics'
 import { getActiveConversation } from '../lib/activeConversation'
@@ -24,6 +25,46 @@ import { notificationRoute } from '../lib/notificationRoute'
 function openedKind(data: unknown): PushKind | 'unknown' {
   const kind = (data as { kind?: unknown } | null)?.kind
   return PUSH_KINDS.includes(kind as PushKind) ? (kind as PushKind) : 'unknown'
+}
+
+/**
+ * Send what somebody typed into a notification.
+ *
+ * The REST twin, not the socket: this runs with the app in the background or
+ * not running at all, and `useSocket` only has a connection while a screen is
+ * mounted. It is the same route the watch reply uses and the same guards on
+ * the other side of it — one send path, three ways in.
+ *
+ * `clientId` is minted here for the reason the watch mints its own: a reply
+ * whose response never arrives is indistinguishable from one that was never
+ * sent, so the retry has to carry the same id and let the unique index refuse
+ * the second write.
+ *
+ * A failure is silent. There is no screen to show it on — the app is not in
+ * front — and the message is still in the thread's draft nowhere, so the
+ * honest thing is to leave the notification's own "sent" state to the OS and
+ * let the person find out when they open the app. Anything louder would be a
+ * banner for an app nobody is looking at.
+ */
+async function sendQuickReply(
+  data: unknown,
+  text: string | undefined,
+  queryClient: QueryClient,
+): Promise<void> {
+  const conversationId = (data as { conversationId?: unknown } | null)?.conversationId
+  const body = text?.trim()
+  if (typeof conversationId !== 'string' || !body) return
+  try {
+    await api.post(`/conversations/${conversationId}/messages`, {
+      body,
+      clientId: `notif-${conversationId}-${Date.now()}`,
+    })
+    // The thread now has a message the caches have never seen, and the app
+    // may be opened straight into it.
+    await invalidateMissedEvents(queryClient)
+  } catch {
+    // See above.
+  }
 }
 
 /**
@@ -58,6 +99,22 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
 
         subscription = Notifications.addNotificationResponseReceivedListener((response) => {
           const data = response.notification.request.content.data
+
+          /*
+           * Answered from the shade rather than opened.
+           *
+           * Before the analytics event and before the routing, because this
+           * is not an open: the app was not brought forward, nothing was
+           * read, and counting it as a notification_opened would make the
+           * number mean two different things. It returns instead of falling
+           * through — `notificationRoute` would push the thread behind a
+           * notification the person deliberately did not tap.
+           */
+          if (response.actionIdentifier === PUSH_ACTION_REPLY) {
+            void sendQuickReply(data, (response as { userText?: string }).userText, queryClient)
+            return
+          }
+
           track({
             name: 'notification_opened',
             properties: { kind: openedKind(data), cold_start: false },

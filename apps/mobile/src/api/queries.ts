@@ -46,6 +46,7 @@ import {
   type AuthoredCorrectionsPage,
   type ProfileBadge,
   type PublicBadges,
+  type UpcomingMeeting,
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
@@ -227,6 +228,12 @@ export const keys = {
    * and would throw. `invalidateUnread` is what keeps the two in step instead.
    */
   unread: ['unread'] as const,
+  /*
+   * The agreed calls, which only the Live Activity reads. Its own prefix for
+   * the same reason `unread` has one: nothing in the socket's conversation
+   * patching should ever walk it.
+   */
+  upcomingMeetings: ['upcomingMeetings'] as const,
   /**
    * The notification centre, paged. Its own top-level prefix rather than a
    * corner of `['feed']`: `feedCache`'s writers patch that one with
@@ -292,6 +299,27 @@ export function useUnreadTotal(enabled = true) {
     queryKey: keys.unread,
     queryFn: async () => (await api.get<{ total: number }>('/me/unread')).total,
     enabled,
+  })
+}
+
+/**
+ * The calls this person agreed to and has not had yet.
+ *
+ * Polled slowly rather than patched by the socket. A meeting is agreed once
+ * and then sits there for hours, so the thing that has to be right is the
+ * *state* an hour from now, not the millisecond a card is answered — and the
+ * countdown it feeds is drawn by the system from two dates, so a late refetch
+ * costs nothing that is visible. The socket already invalidates the
+ * conversation it belongs to; this is the one list that does not need it.
+ */
+export function useUpcomingMeetings(enabled = true) {
+  return useQuery({
+    queryKey: keys.upcomingMeetings,
+    queryFn: async () =>
+      (await api.get<{ items: UpcomingMeeting[] }>('/me/meetings/upcoming')).items,
+    enabled,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 15 * 60 * 1000,
   })
 }
 

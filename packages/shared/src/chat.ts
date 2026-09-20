@@ -231,6 +231,30 @@ export const sendMeetingSchema = z.object({
 })
 export type SendMeetingInput = z.infer<typeof sendMeetingSchema>
 
+/**
+ * How far ahead the client is told about agreed calls.
+ *
+ * Two days, which is longer than any countdown would ever run and short
+ * enough that the answer stays small. The reason it is a constant rather than
+ * a number in a query is the reason every threshold here is: the Live
+ * Activity, the endpoint and any test of either have to agree about what
+ * "upcoming" means, and three copies of two would not stay three copies of
+ * two.
+ */
+export const UPCOMING_MEETING_LOOKAHEAD_HOURS = 48
+
+/** One agreed call, as the person in it sees it. */
+export const upcomingMeetingSchema = z.object({
+  conversationId: z.string(),
+  /** The message the card belongs to, so a client can open it. */
+  messageId: z.string(),
+  /** The other person. Their name is not here: the client already has it. */
+  withUserId: z.string(),
+  startsAt: z.iso.datetime(),
+  durationMinutes: z.number().int().positive(),
+})
+export type UpcomingMeeting = z.infer<typeof upcomingMeetingSchema>
+
 export const respondToMeetingSchema = z.object({
   conversationId: z.string().trim().min(1),
   messageId: z.string().trim().min(1),

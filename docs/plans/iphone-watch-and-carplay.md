@@ -579,8 +579,11 @@ is not, which is why its paperwork starts on day one.
    the snapshot contract and builder, the local module that writes it,
    `@bacons/apple-targets` wiring, the three widget families, the
    notification service extension, and the blob cleared at sign-out.
-   Still to do: the three App Intents, and the string generator — which
-   nothing needs yet, because no text here is drawn in one language only.
+   The string generator is **done** — the watch is what finally required it,
+   and the widgets' gallery names are what finally spend it.
+   Still to do: the three App Intents, the gallery names and descriptions,
+   the Lock Screen not clearing at sign-out, and the phone-driven Live
+   Activity that answer 1 below brings back.
    → verify: everything in `phase-1-mac-handoff.md`, on a Mac
 
 1b. iPhone Duo readiness: the lint rule against `Dimensions.get` — done; then,
@@ -607,8 +610,11 @@ is not, which is why its paperwork starts on day one.
 4. Wear OS — **done, 20 September**, out of order because the design was
    never actually separate. Tile and sign-out still open.
 
-5. Android Auto: the other car, and the one nobody has to approve
+5. Android Auto: the other car, and the one nobody has to approve —
+   **and it goes before CarPlay** (Behic, 20 September), because phase 3 waits
+   on an Apple queue with no published turnaround and this waits on nobody
    → verify: the same list as Surface C, in the Android Auto simulator
+   → the review is not free: see the phase, it becomes blocking on production
 
 6. iPad, Mac and the Duo's inner display: one two-pane layout, not three
    → verify: a chat open on all four, and the four Duo poses
@@ -666,6 +672,34 @@ Siri — replies would come from the Assistant instead.
 
 **Prerequisite:** the `react-native-carplay` no-go would not block it; this is
 native Kotlin either way.
+
+**Chosen on 20 September: this goes first, ahead of CarPlay.** Behic's call,
+on the argument above.
+
+**What "no entitlement" actually costs, checked 20 September.** There is no
+form to file and nothing to wait for: the opt-in is Play Console → Advanced
+settings → Form factors → Add form factor → Android Auto, plus a
+`com.google.android.gms.car.application` meta-data entry pointing at
+`res/xml/automotive_app_desc.xml`, which for a messaging app declares
+`<uses name="notification" />`. The review happens **at submission**, against
+the car app quality checklist.
+
+The part worth knowing before opting in is what the review does to the rest of
+the release. It is not scoped to the car:
+
+| Track                     | Car review                        |
+| ------------------------- | --------------------------------- |
+| Internal sharing          | none                              |
+| Closed testing            | runs, reports, **does not block** |
+| Open testing / production | **blocks the whole submission**   |
+
+So a car-quality failure rejects the release, not the feature. The order that
+follows is: opt in, ship the first Auto-carrying build to **closed testing**,
+read what the checklist says, and only then let it reach production. That is
+one extra round trip, and it is cheaper than a blocked store release.
+
+Sources: Android's [Distribute to cars](https://developer.android.com/training/cars/distribute)
+and [Car app quality](https://developer.android.com/docs/quality-guidelines/car-app-quality).
 
 ### Phase 6 — iPad and Mac layouts
 
@@ -740,6 +774,29 @@ The plan's own answer stands: revisit only if Apple **refuses** the
 communication entitlement. Until then this phase's real content is the
 contingency, not the build.
 
+**Decided on 20 September: both are parked, and this is the decision, not a
+deferral.** Behic handed the call over rather than making it, so it is written
+here with its reasoning and the thing that would reopen it.
+
+_The independent watch app: no._ The wrist does two things in this product —
+see who is waiting and answer them — and both of them assume the conversation
+lives on the phone. Independence would buy the watch working out of range and
+charge a second credential store, a second revocation path at account
+deletion, a second push registration and a socket client on watchOS for a
+protocol that is socket-first. That is a third client, not a feature. **What
+would reopen it:** evidence that people use the watch away from the phone.
+Nothing measures that today, and the honest order is to measure before
+building — which is itself a small piece of work and a cheaper one than the
+phase.
+
+_Echo as a CarPlay audio app: no._ Two independent reasons, and either alone
+is enough. The entitlement already filed is Communication; asking for Audio
+means a second app or reversing a request that has no published turnaround to
+begin with, so the cost is measured in Apple's queue rather than in our time.
+And Echo is a recall drill that judges whether an answer was right — a loop
+that wants attention, offered to somebody driving. The contingency above
+stands unchanged: if Apple refuses Communication, this is reconsidered.
+
 ## What Behic decided, and what is still open
 
 Answered on 18 September 2026:
@@ -756,10 +813,19 @@ Answered on 18 September 2026:
 
 Still open:
 
-1. **When does the Live Activity come back?** It is out of Phase 1, not out
-   of the plan; the scheduled exchange is the one to build when it returns.
-2. **Does the watch app go into the store listing now**, with its own
-   screenshots, or wait until CarPlay is approved and both land together?
+1. ~~**When does the Live Activity come back?**~~ **Answered 20 September, and
+   built the same day** — see `phase-3-live-activity.md`. The trigger is the
+   scheduled exchange — Behic's words were that
+   it should appear when something scheduled happens. So the phone-driven
+   activity starts at a booked exchange and ends when it does, which is the
+   one case in this app with a known start, a known end and a reason to watch
+   the clock. Phase 7's server-driven question is untouched by this.
+2. ~~**Does the watch app go into the store listing now?**~~ **Answered 20
+   September: now.** The watch enters the listing with its first build rather
+   than waiting for CarPlay, and both screenshot sets are shot and merged —
+   `branding/2.x/<locale>/ios/watch/` and `.../android/wear/`, eight languages
+   each. Wear's cannot be uploaded until the Wear OS form factor is ticked in
+   Play Console.
 3. ~~**Is the two-pane layout worth its own plan now?**~~ **Answered by
    phase 6**, which absorbs it: one two-pane job serving the Duo's inner
    display, iPad and Mac rather than three layout efforts. Still nobody can
@@ -771,6 +837,10 @@ Added on 20 September, when phases 4 to 9 came in:
    reach an installed app over the air — `runtimeVersion` is a fingerprint and
    every remaining item there is native. The exception is the notification
    quick-reply, which is JavaScript and a `categoryId` on the server.
-5. **Does Android Auto go before CarPlay?** It waits on nobody, and CarPlay's
-   entitlement has no published turnaround.
-6. **Do the two contradictions in phase 9 get a decision, or stay parked?**
+5. ~~**Does Android Auto go before CarPlay?**~~ **Answered 20 September:
+   yes.** Recorded in the order of work and in phase 5, along with what the
+   car-quality review costs once the form factor is on.
+6. ~~**Do the two contradictions in phase 9 get a decision, or stay parked?**~~
+   **Answered 20 September: Behic handed the call over, and both are parked
+   as a decision** — the reasoning, and the one thing that would reopen the
+   independent watch app, are written into phase 9 rather than left here.
