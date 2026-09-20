@@ -469,12 +469,18 @@ const config: ExpoConfig = {
     // use": there is no background permission here, and adding one would
     // change what both stores' privacy forms have to say.
     // The string is what iOS shows in the prompt, so it names the feature
-    // rather than the permission.
+    // rather than the permission. It used to open "LangX uses your approximate
+    // location", which described the reading rather than the request: the
+    // dialog it appears in is the one offering Precise, and `location.ts` now
+    // asks for a fix finer than the kilometre grid because a coarser one
+    // rounds into the wrong cell. The promise that mattered was never about
+    // what we ask for — it is that the precise value is discarded before
+    // anything stores it — so that is what the sentence says now.
     [
       'expo-location',
       {
         locationWhenInUsePermission:
-          'LangX uses your approximate location so you can find language partners near you. Your exact position is never stored, and nobody is shown more than a rough distance.',
+          'LangX uses your location so you can find language partners near you. It is rounded to about a kilometre before it is saved, so your exact position is never stored and nobody is shown more than a rough distance.',
         isAndroidBackgroundLocationEnabled: false,
         isIosBackgroundLocationEnabled: false,
       },
