@@ -109,7 +109,11 @@ there, and so does an unsubscribe pressed by somebody who has no profile to
 hold the preference.
 
 Without `RESEND_API_KEY` the notification email is printed to the log rather
-than sent, exactly like the verification link. Without `EMAIL_UNSUBSCRIBE_SECRET`
+than sent, exactly like the verification link — and so it is under any
+`NODE_ENV` but `production`, key or no key, so that a development process
+cannot mail real people from the live sending domain. The image below and
+`fly.toml` both set it; if you run the API some other way, set it yourself or
+nothing will leave the log. Without `EMAIL_UNSUBSCRIBE_SECRET`
 the unsubscribe links are signed with `BETTER_AUTH_SECRET` instead — which
 works, but means rotating that secret breaks every unsubscribe link already
 sitting in somebody's inbox.

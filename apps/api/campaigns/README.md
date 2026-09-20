@@ -27,6 +27,10 @@ Three mails to the accounts pre-created from v1, ten and thirty days apart,
 each excluding whoever has onboarded since. Run each from `apps/api` with
 the production env; the dry run prints the audience and queues nothing.
 
+That env must carry `NODE_ENV=production`, which is what lets any of this
+leave the process — without it the sender prints every message to the
+terminal and says so, and the run looks like a success that sent nothing.
+
 ```bash
 ENV="--env-file=../../.env --env-file=../../.env.prod"
 

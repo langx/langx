@@ -10,7 +10,13 @@ vi.mock('resend', () => ({
   },
 }))
 
-const { EmailRejectedError, ResendEmailSender, isUndeliverableAddress } = await import('./sender')
+const {
+  ConsoleEmailSender,
+  EmailRejectedError,
+  ResendEmailSender,
+  createEmailSender,
+  isUndeliverableAddress,
+} = await import('./sender')
 const { LOGO_SRC, inlineSrc } = await import('./logo')
 
 const withLogo = (to: string) => ({
@@ -132,5 +138,40 @@ describe('addresses that can never be delivered', () => {
     await sender.sendBatch([plain('test_pavel@test.langx.invalid')])
     expect(batchSend).not.toHaveBeenCalled()
     expect(send).not.toHaveBeenCalled()
+  })
+})
+
+describe('which sender a process gets', () => {
+  const env = (over: Record<string, unknown>) =>
+    ({ EMAIL_FROM: 'LangX <hi@langx.io>', ...over }) as unknown as Parameters<
+      typeof createEmailSender
+    >[0]
+
+  it('sends only from production, even with a key in hand', () => {
+    const warn = vi.fn()
+    expect(
+      createEmailSender(env({ NODE_ENV: 'production', RESEND_API_KEY: 're_test' }), { warn }),
+    ).toBeInstanceOf(ResendEmailSender)
+    expect(
+      createEmailSender(env({ NODE_ENV: 'development', RESEND_API_KEY: 're_test' }), { warn }),
+    ).toBeInstanceOf(ConsoleEmailSender)
+    expect(
+      createEmailSender(env({ NODE_ENV: 'test', RESEND_API_KEY: 're_test' }), { warn }),
+    ).toBeInstanceOf(ConsoleEmailSender)
+    expect(createEmailSender(env({ NODE_ENV: 'production' }), { warn })).toBeInstanceOf(
+      ConsoleEmailSender,
+    )
+  })
+
+  it('says which of the two reasons kept the mail in the log', async () => {
+    const warn = vi.fn()
+    await createEmailSender(env({ NODE_ENV: 'development', RESEND_API_KEY: 're_test' }), {
+      warn,
+    }).send(plain('a@example.com'))
+    expect(warn.mock.calls[0]?.[1]).toContain('NODE_ENV')
+
+    warn.mockClear()
+    await createEmailSender(env({ NODE_ENV: 'production' }), { warn }).send(plain('a@example.com'))
+    expect(warn.mock.calls[0]?.[1]).toContain('RESEND_API_KEY not set')
   })
 })

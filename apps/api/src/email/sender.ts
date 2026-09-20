@@ -229,23 +229,29 @@ export class ResendEmailSender implements EmailSender {
 }
 
 /**
- * Used whenever RESEND_API_KEY is unset. The app still boots and every auth
- * flow is fully testable — the verification/reset link just lands in the log
- * instead of an inbox. This is what makes `pnpm dev` work before anyone has
- * gone and created a Resend account.
+ * Used whenever no mail may leave this process. The app still boots and every
+ * auth flow is fully testable — the verification/reset link just lands in the
+ * log instead of an inbox. This is what makes `pnpm dev` work before anyone
+ * has gone and created a Resend account.
+ *
+ * `reason` is in the log line because there are now two ways to end up here
+ * and they call for opposite responses: a missing key is something to set, a
+ * non-production `NODE_ENV` is the protection working.
  */
 export class ConsoleEmailSender implements EmailSender {
   readonly deliverable = false
   readonly #logger: EmailSenderLogger
+  readonly #reason: string
 
-  constructor(logger: EmailSenderLogger) {
+  constructor(logger: EmailSenderLogger, reason = 'RESEND_API_KEY not set') {
     this.#logger = logger
+    this.#reason = reason
   }
 
   send({ to, subject, text, headers }: EmailMessage): Promise<void> {
     this.#logger.warn(
       { to, subject, text, headers },
-      'RESEND_API_KEY not set — printing email instead of sending it',
+      `${this.#reason} — printing email instead of sending it`,
     )
     return Promise.resolve()
   }
@@ -255,8 +261,30 @@ export class ConsoleEmailSender implements EmailSender {
   }
 }
 
+/**
+ * Only a production process sends mail, even when a key is right there.
+ *
+ * A development machine holds the real key on purpose — the campaign scripts
+ * run from a laptop against the production database, and they need one. But
+ * the same `.env` also names the development database, and `pnpm dev` starts
+ * the full notification scheduler against it. On 19 September 2026 that
+ * combination mailed sign-in notices, streaks and daily-pool mail from
+ * `hi@langx.io` to the seeded fixture accounts, whose addresses cannot
+ * resolve; the bounces landed on the reputation of the domain every real mail
+ * leaves from. `isUndeliverableAddress` closed the fixture accounts. This
+ * closes the rest of it — a person with a real address in `langx_dev` was
+ * always one scheduler tick away from being mailed by somebody's laptop.
+ *
+ * `NODE_ENV` rather than the database name, because it is what a deployment
+ * already sets (`fly.toml`, the `Dockerfile`) and what the production overlay
+ * turns on for a script run against the live cluster. A self-hosted install
+ * that leaves it at the default gets the log instead of the mail, and the log
+ * line says so.
+ */
 export function createEmailSender(env: Env, logger: EmailSenderLogger): EmailSender {
-  return env.RESEND_API_KEY
-    ? new ResendEmailSender(env.RESEND_API_KEY, env.EMAIL_FROM, logger)
-    : new ConsoleEmailSender(logger)
+  if (!env.RESEND_API_KEY) return new ConsoleEmailSender(logger)
+  if (env.NODE_ENV !== 'production') {
+    return new ConsoleEmailSender(logger, `NODE_ENV is "${env.NODE_ENV}", not "production"`)
+  }
+  return new ResendEmailSender(env.RESEND_API_KEY, env.EMAIL_FROM, logger)
 }
