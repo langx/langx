@@ -9,6 +9,8 @@ import {
   type SendCorrectionInput,
   type SendMediaMessageInput,
   type SendMeetingInput,
+  UPCOMING_MEETING_LOOKAHEAD_HOURS,
+  type UpcomingMeeting,
   type SendPhraseInput,
   type SendQuizInput,
   type SendStickerInput,
@@ -400,6 +402,74 @@ export async function sendPhrase(
   })
 
   return { message, conversation: updatedConversation }
+}
+
+/**
+ * Every call this person has agreed to that has not started yet.
+ *
+ * Read by one client for one reason: the Live Activity needs a start, an end
+ * and somebody to name, and it cannot get them by walking the conversation
+ * list — a meeting card can be any distance up a thread, and the phone holds
+ * only the pages it has opened.
+ *
+ * Both sides of the card are returned, because both sides agreed to it. The
+ * proposer is as likely to have forgotten as the invitee, which is the same
+ * reasoning the hour-before push already follows in
+ * `modules/notifications/meetings.ts`.
+ *
+ * Sorted by start, and capped by a lookahead rather than a count: a client
+ * that asked for "the next one" and got a call three weeks away would start a
+ * countdown nobody wants to look at for three weeks.
+ */
+export async function upcomingMeetingsFor(
+  db: Db,
+  userId: string,
+  now: Date = new Date(),
+): Promise<UpcomingMeeting[]> {
+  const conversations = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .find({ participants: userId }, { projection: { _id: 1, participants: 1 } })
+    .toArray()
+  if (conversations.length === 0) return []
+
+  const participantsOf = new Map(
+    conversations.map((conversation) => [
+      conversation._id.toHexString(),
+      conversation.participants,
+    ]),
+  )
+
+  const horizon = new Date(now.getTime() + UPCOMING_MEETING_LOOKAHEAD_HOURS * 60 * 60 * 1000)
+  const messages = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .find({
+      conversationId: { $in: conversations.map((conversation) => conversation._id) },
+      type: 'meeting',
+      // Agreed, not merely offered. A proposal nobody answered is not a
+      // commitment and a withdrawn one is not either.
+      'meeting.status': 'accepted',
+      'meeting.startsAt': { $gte: now, $lt: horizon },
+      deletedAt: { $exists: false },
+    })
+    .sort({ 'meeting.startsAt': 1 })
+    .toArray()
+
+  const upcoming: UpcomingMeeting[] = []
+  for (const message of messages) {
+    const meeting = message.meeting
+    if (!meeting) continue
+    const conversationId = message.conversationId.toHexString()
+    const withUserId = participantsOf.get(conversationId)?.find((id) => id !== userId)
+    if (withUserId === undefined) continue
+    upcoming.push({
+      conversationId,
+      messageId: message._id.toHexString(),
+      withUserId,
+      startsAt: meeting.startsAt.toISOString(),
+      durationMinutes: meeting.durationMinutes,
+    })
+  }
+  return upcoming
 }
 
 /**

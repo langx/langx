@@ -19,6 +19,7 @@ import {
   listMessagesAround,
   markConversationRead,
   sendTextMessage,
+  upcomingMeetingsFor,
 } from '../modules/chat/messages'
 import { assertConversationAccess } from '../modules/chat/access'
 import { listConversationMedia } from '../modules/chat/conversationMedia'
@@ -131,6 +132,18 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
    * conversations page: the badge has to be right on a screen that never
    * opened the chats list, and the list is paged besides.
    */
+  /**
+   * The calls this person has agreed to and has not had yet.
+   *
+   * `requireAuth` rather than `requireVerifiedEmail`: this reads nothing an
+   * unverified account could not already see in its own threads, and the
+   * Live Activity that asks for it runs on a phone that is already signed in.
+   */
+  app.get('/me/meetings/upcoming', { preHandler: requireAuth }, async (request, reply) => {
+    const meetings = await upcomingMeetingsFor(app.mongo.db, request.userId)
+    return reply.send({ items: meetings })
+  })
+
   app.get('/me/unread', { preHandler: requireAuth }, async (request, reply) => {
     const total = await countUnread(app.mongo.db, request.userId)
     return reply.send({ total })
