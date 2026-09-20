@@ -2,7 +2,7 @@
   "id": "fr:beginner",
   "lang": "fr",
   "level": "beginner",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -1902,7 +1902,8 @@
       },
       "freqRank": 129,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_beginner/114-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_beginner/114-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:leaf-fluttering-in-wind"
     },
     {
       "index": 115,
@@ -2178,7 +2179,8 @@
       },
       "freqRank": 146,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_beginner/131-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_beginner/131-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:horse"
     },
     {
       "index": 132,
@@ -2566,7 +2568,8 @@
       },
       "freqRank": 172,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_beginner/155-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_beginner/155-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:horse"
     },
     {
       "index": 156,
@@ -2581,7 +2584,8 @@
       },
       "freqRank": 173,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_beginner/156-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_beginner/156-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:horse"
     },
     {
       "index": 157,
@@ -4182,7 +4186,8 @@
       },
       "freqRank": 273,
       "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
-      "voices": [{ "key": "echo/packs/fr_beginner/253-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_beginner/253-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:paw-prints"
     },
     {
       "index": 254,

@@ -2,7 +2,7 @@
   "id": "ru:intermediate",
   "lang": "ru",
   "level": "intermediate",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -10,11 +10,7 @@
       "licence": "CC BY-SA 4.0",
       "url": "https://kaikki.org/"
     },
-    {
-      "name": "Tatoeba",
-      "licence": "CC BY 2.0 FR",
-      "url": "https://tatoeba.org/"
-    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
       "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
       "licence": "CC BY-SA 4.0",
@@ -26,11 +22,7 @@
       "index": 0,
       "kind": "phrase",
       "text": "будьте добры",
-      "gloss": {
-        "en": "would you mind",
-        "de": "seien Sie so gut",
-        "pt-BR": "tenha a bondade"
-      },
+      "gloss": { "en": "would you mind", "de": "seien Sie so gut", "pt-BR": "tenha a bondade" },
       "freqRank": 4,
       "review": {
         "sense": "разг. этикетная формула вежливости, вежливое обращение к кому-либо с просьбой сделать что-либо; пожалуйста, прошу",
@@ -50,11 +42,7 @@
       "index": 1,
       "kind": "phrase",
       "text": "всего доброго",
-      "gloss": {
-        "en": "good luck",
-        "de": "alles Gute",
-        "fr": "bonne chance"
-      },
+      "gloss": { "en": "good luck", "de": "alles Gute", "fr": "bonne chance" },
       "freqRank": 6,
       "review": {
         "sense": "возглас при прощании на неопределённый срок",
@@ -74,11 +62,7 @@
       "index": 2,
       "kind": "phrase",
       "text": "будь здоров",
-      "gloss": {
-        "en": "bless you",
-        "de": "Gesundheit",
-        "fr": "à tes souhaits!"
-      },
+      "gloss": { "en": "bless you", "de": "Gesundheit", "fr": "à tes souhaits!" },
       "freqRank": 10,
       "review": {
         "sense": "пожелание здоровья чихнувшему",
@@ -126,11 +110,7 @@
       "index": 4,
       "kind": "phrase",
       "text": "приятного аппетита",
-      "gloss": {
-        "en": "bon appétit!",
-        "fr": "bon appétit!",
-        "ar": "بِٱلصِّحَّةِ وَٱلْعَافِيَةِ"
-      },
+      "gloss": { "en": "bon appétit!", "fr": "bon appétit!", "ar": "بِٱلصِّحَّةِ وَٱلْعَافِيَةِ" },
       "freqRank": 14,
       "review": {
         "sense": "Пожелание приятного приёма пищи. Используется как выражение доброго пожелания перед началом трапезы или в процессе еды.",
@@ -150,10 +130,7 @@
       "index": 5,
       "kind": "phrase",
       "text": "будьте здоровы",
-      "gloss": {
-        "en": "God bless you",
-        "fr": "à vos souhaits"
-      },
+      "gloss": { "en": "God bless you", "fr": "à vos souhaits" },
       "freqRank": 15,
       "review": {
         "sense": "обращение к чихнувшему",
@@ -232,9 +209,7 @@
         "pt-BR": "Ele abriu a porta."
       },
       "freqRank": 28,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:door",
       "voices": [
         {
@@ -255,9 +230,7 @@
         "pt-BR": "Tom abriu a janela."
       },
       "freqRank": 29,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:window",
       "voices": [
         {
@@ -278,9 +251,7 @@
         "ar": "الضّغط طبيعي."
       },
       "freqRank": 31,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
         {
@@ -301,9 +272,7 @@
         "pt-BR": "Tom abriu a boca."
       },
       "freqRank": 30,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:mouth",
       "voices": [
         {
@@ -324,9 +293,7 @@
         "fr": "Viens si tu peux !"
       },
       "freqRank": 32,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-walking",
       "voices": [
         {
@@ -347,10 +314,7 @@
         "fr": "Il a peur du chien."
       },
       "freqRank": 33,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:fearful-face",
       "voices": [
         {
@@ -371,9 +335,7 @@
         "ar": "لماذا أنت متأخر؟"
       },
       "freqRank": 34,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:alarm-clock",
       "voices": [
         {
@@ -394,9 +356,7 @@
         "pt-BR": "Ele recebe as chaves."
       },
       "freqRank": 35,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
         {
@@ -417,9 +377,7 @@
         "fr": "C'est une bonne affaire."
       },
       "freqRank": 36,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:label",
       "voices": [
         {
@@ -440,9 +398,7 @@
         "pt-BR": "Algo terrível aconteceu."
       },
       "freqRank": 37,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:police-car-light",
       "voices": [
         {
@@ -463,9 +419,7 @@
         "ar": "لقد مرّ الصيف بسرعة."
       },
       "freqRank": 38,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
       "voices": [
         {
@@ -486,9 +440,7 @@
         "fr": "Ils te cherchent."
       },
       "freqRank": 39,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:magnifying-glass-tilted-left",
       "voices": [
         {
@@ -509,9 +461,7 @@
         "pt-BR": "Ontem estava quente."
       },
       "freqRank": 40,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thermometer",
       "voices": [
         {
@@ -532,9 +482,7 @@
         "pt-BR": "Hoje está muito quente."
       },
       "freqRank": 41,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thermometer",
       "voices": [
         {
@@ -556,16 +504,14 @@
         "ar": "الحصان حيوان."
       },
       "freqRank": 42,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Лошадь - это животное."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Лошадь - это животное." },
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/22-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 23,
@@ -579,9 +525,7 @@
         "pt-BR": "Estou um pouco bêbado."
       },
       "freqRank": 43,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:beer-mug",
       "voices": [
         {
@@ -602,9 +546,7 @@
         "ar": "لا أحد جائع."
       },
       "freqRank": 44,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -625,9 +567,7 @@
         "pt-BR": "Tenho muita fome."
       },
       "freqRank": 45,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:drooling-face",
       "voices": [
         {
@@ -648,9 +588,7 @@
         "pt-BR": "Obrigado pelo bolo."
       },
       "freqRank": 49,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shortcake",
       "voices": [
         {
@@ -671,9 +609,7 @@
         "ar": "سأشتري سيارة."
       },
       "freqRank": 46,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -694,9 +630,7 @@
         "pt-BR": "O homem usa óculos."
       },
       "freqRank": 50,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glasses",
       "voices": [
         {
@@ -718,9 +652,7 @@
         "pt-BR": "Tenho medo de cães."
       },
       "freqRank": 47,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -741,9 +673,7 @@
         "pt-BR": "Ele usa óculos."
       },
       "freqRank": 51,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glasses",
       "voices": [
         {
@@ -764,9 +694,7 @@
         "pt-BR": "Eu odeio cães."
       },
       "freqRank": 48,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -788,9 +716,7 @@
         "pt-BR": "Onde eu durmo?"
       },
       "freqRank": 52,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
       "voices": [
         {
@@ -811,9 +737,7 @@
         "pt-BR": "Ele escreve livros."
       },
       "freqRank": 53,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -835,9 +759,7 @@
         "ar": "توم يكتب مكتوباً."
       },
       "freqRank": 54,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -858,9 +780,7 @@
         "pt-BR": "Que dia é hoje?"
       },
       "freqRank": 55,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:calendar",
       "voices": [
         {
@@ -882,9 +802,7 @@
         "pt-BR": "O filme te agradou?"
       },
       "freqRank": 56,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:clapper-board",
       "voices": [
         {
@@ -905,9 +823,7 @@
         "pt-BR": "O filme me agradou."
       },
       "freqRank": 57,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:clapper-board",
       "voices": [
         {
@@ -930,9 +846,7 @@
         "ar": "إلى أين تذهب؟"
       },
       "freqRank": 58,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:compass",
       "voices": [
         {
@@ -954,9 +868,7 @@
         "ar": "البارحة كان يوم الخميس."
       },
       "freqRank": 59,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:calendar",
       "voices": [
         {
@@ -977,9 +889,7 @@
         "ar": "أمي مجنونه."
       },
       "freqRank": 60,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-rolling-eyes",
       "voices": [
         {
@@ -1000,9 +910,7 @@
         "fr": "Je perdis conscience."
       },
       "freqRank": 61,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-crossed-out-eyes",
       "voices": [
         {
@@ -1023,9 +931,7 @@
         "pt-BR": "Tenho trinta anos."
       },
       "freqRank": 62,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -1046,9 +952,7 @@
         "ar": "أنا في لندن."
       },
       "freqRank": 63,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cityscape-at-dusk",
       "voices": [
         {
@@ -1069,9 +973,7 @@
         "ar": "ماذا أكلت؟"
       },
       "freqRank": 64,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -1092,9 +994,7 @@
         "pt-BR": "Por que perguntas?"
       },
       "freqRank": 65,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
         {
@@ -1115,9 +1015,7 @@
         "fr": "Tu m'écoutes ?"
       },
       "freqRank": 66,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ear",
       "voices": [
         {
@@ -1138,9 +1036,7 @@
         "pt-BR": "Quanto custa a entrada?"
       },
       "freqRank": 67,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:heavy-dollar-sign",
       "voices": [
         {
@@ -1161,9 +1057,7 @@
         "fr": "Où est la mère de Tom ?"
       },
       "freqRank": 68,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
         {
@@ -1184,10 +1078,7 @@
         "pt-BR": "Maria é a esposa de Tom."
       },
       "freqRank": 69,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Мэри - жена Тома."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Мэри - жена Тома." },
       "image": "cue:ring",
       "voices": [
         {
@@ -1208,9 +1099,7 @@
         "fr": "Je hais les parents de Tom."
       },
       "freqRank": 70,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:anger-symbol",
       "voices": [
         {
@@ -1231,9 +1120,7 @@
         "fr": "Pourquoi est-ce que Tom n'est pas ici ?"
       },
       "freqRank": 71,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-gesturing-no",
       "voices": [
         {
@@ -1254,9 +1141,7 @@
         "fr": "Est-ce que tu aimes Tom ?"
       },
       "freqRank": 72,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
         {
@@ -1277,9 +1162,7 @@
         "pt-BR": "Essa voz é de Tom."
       },
       "freqRank": 73,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -1300,9 +1183,7 @@
         "pt-BR": "Eu sou tio de Tom."
       },
       "freqRank": 76,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:man",
       "voices": [
         {
@@ -1323,9 +1204,7 @@
         "pt-BR": "Este livro é do Tom."
       },
       "freqRank": 74,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
         {
@@ -1346,9 +1225,7 @@
         "pt-BR": "Odeio Tom."
       },
       "freqRank": 77,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:anger-symbol",
       "voices": [
         {
@@ -1369,9 +1246,7 @@
         "pt-BR": "Este é o quarto do Tom."
       },
       "freqRank": 75,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
       "voices": [
         {
@@ -1392,9 +1267,7 @@
         "ar": "اشرب الكثير من الماء"
       },
       "freqRank": 79,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:potable-water",
       "voices": [
         {
@@ -1415,9 +1288,7 @@
         "pt-BR": "Isso é o meu avião."
       },
       "freqRank": 78,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:airplane",
       "voices": [
         {
@@ -1439,9 +1310,7 @@
         "ar": "الضحك أفضل دواء."
       },
       "freqRank": 80,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-tears-of-joy",
       "voices": [
         {
@@ -1462,9 +1331,7 @@
         "ar": "خلع معطفه."
       },
       "freqRank": 81,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:t-shirt",
       "voices": [
         {
@@ -1485,9 +1352,7 @@
         "ar": "لمن هذا الكتاب؟"
       },
       "freqRank": 82,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
         {
@@ -1508,9 +1373,7 @@
         "fr": "J'étais content."
       },
       "freqRank": 84,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:relieved-face",
       "voices": [
         {
@@ -1531,9 +1394,7 @@
         "ar": "لمن هذه السيارة؟"
       },
       "freqRank": 83,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -1555,9 +1416,7 @@
         "pt-BR": "Eu como carne."
       },
       "freqRank": 85,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cut-of-meat",
       "voices": [
         {
@@ -1578,9 +1437,7 @@
         "pt-BR": "Os olhos são o espelho da alma."
       },
       "freqRank": 88,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:eye",
       "voices": [
         {
@@ -1601,9 +1458,7 @@
         "fr": "Je mange de la soupe."
       },
       "freqRank": 86,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pot-of-food",
       "voices": [
         {
@@ -1624,9 +1479,7 @@
         "pt-BR": "Qual é a cor do espelho?"
       },
       "freqRank": 89,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:mirror",
       "voices": [
         {
@@ -1648,9 +1501,7 @@
         "ar": "آكل الخبز."
       },
       "freqRank": 87,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife",
       "voices": [
         {
@@ -1672,10 +1523,7 @@
         "pt-BR": "Há um telefone na redondeza?"
       },
       "freqRank": 91,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:telephone",
       "voices": [
         {
@@ -1696,9 +1544,7 @@
         "fr": "Je t'ai cru."
       },
       "freqRank": 90,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thumbs-up",
       "voices": [
         {
@@ -1719,9 +1565,7 @@
         "pt-BR": "Quem será a vítima?"
       },
       "freqRank": 92,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:warning",
       "voices": [
         {
@@ -1743,9 +1587,7 @@
         "ar": "أنا أشرب الماء."
       },
       "freqRank": 93,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:potable-water",
       "voices": [
         {
@@ -1766,9 +1608,7 @@
         "pt-BR": "Eles compraram um carro."
       },
       "freqRank": 95,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -1791,9 +1631,7 @@
         "ar": "أنا أشرب الحليب."
       },
       "freqRank": 94,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glass-of-milk",
       "voices": [
         {
@@ -1814,9 +1652,7 @@
         "ar": "انها فكرة رائعة."
       },
       "freqRank": 96,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
         {
@@ -1837,9 +1673,7 @@
         "fr": "Oh, quelle beauté !"
       },
       "freqRank": 97,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cherry-blossom",
       "voices": [
         {
@@ -1860,9 +1694,7 @@
         "pt-BR": "Eu quebrei a perna."
       },
       "freqRank": 98,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:leg",
       "voices": [
         {
@@ -1883,9 +1715,7 @@
         "ar": "هذه ليست سمكة."
       },
       "freqRank": 100,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fish",
       "voices": [
         {
@@ -1906,9 +1736,7 @@
         "pt-BR": "Estou dirigindo um caminhão."
       },
       "freqRank": 99,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -1929,9 +1757,7 @@
         "pt-BR": "Nós estamos no banco."
       },
       "freqRank": 101,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dollar-banknote",
       "voices": [
         {
@@ -1952,9 +1778,7 @@
         "fr": "Les idées ne meurent pas."
       },
       "freqRank": 102,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
         {
@@ -1975,9 +1799,7 @@
         "pt-BR": "Minha mãe vai me matar."
       },
       "freqRank": 103,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:enraged-face",
       "voices": [
         {
@@ -1998,10 +1820,7 @@
         "fr": "Tom est notre voisin."
       },
       "freqRank": 104,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Том - наш сосед."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Том - наш сосед." },
       "image": "cue:houses",
       "voices": [
         {
@@ -2022,9 +1841,7 @@
         "ar": "ما أجمل هذه الحديقة."
       },
       "freqRank": 106,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house-with-garden",
       "voices": [
         {
@@ -2045,10 +1862,7 @@
         "pt-BR": "O Tom é um bom vizinho."
       },
       "freqRank": 105,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Том - хороший сосед."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Том - хороший сосед." },
       "image": "cue:houses",
       "voices": [
         {
@@ -2069,9 +1883,7 @@
         "pt-BR": "Isto é o mais interessante."
       },
       "freqRank": 107,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-raised-eyebrow",
       "voices": [
         {
@@ -2092,9 +1904,7 @@
         "fr": "Les gens ont peur de la guerre."
       },
       "freqRank": 108,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crossed-swords",
       "voices": [
         {
@@ -2116,9 +1926,7 @@
         "ar": "أكتب رسالة."
       },
       "freqRank": 109,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -2139,9 +1947,7 @@
         "fr": "Il hait Nancy."
       },
       "freqRank": 110,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:anger-symbol",
       "voices": [
         {
@@ -2162,9 +1968,7 @@
         "pt-BR": "O teu pai é alto."
       },
       "freqRank": 112,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:straight-ruler",
       "voices": [
         {
@@ -2185,9 +1989,7 @@
         "ar": "هو طويل جدّا."
       },
       "freqRank": 111,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:straight-ruler",
       "voices": [
         {
@@ -2208,9 +2010,7 @@
         "pt-BR": "A mulher está comendo pão."
       },
       "freqRank": 113,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman",
       "voices": [
         {
@@ -2231,9 +2031,7 @@
         "pt-BR": "Alguém está comendo."
       },
       "freqRank": 114,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife",
       "voices": [
         {
@@ -2254,9 +2052,7 @@
         "pt-BR": "O menino está comendo pão."
       },
       "freqRank": 115,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:boy",
       "voices": [
         {
@@ -2277,9 +2073,7 @@
         "pt-BR": "Eu não sou um gato."
       },
       "freqRank": 116,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -2301,9 +2095,7 @@
         "ar": "صديق من أنت؟"
       },
       "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {
@@ -2324,9 +2116,7 @@
         "fr": "J'aime le poisson."
       },
       "freqRank": 117,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fish",
       "voices": [
         {
@@ -2347,9 +2137,7 @@
         "pt-BR": "De quem é esse bebê?"
       },
       "freqRank": 120,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -2371,10 +2159,7 @@
         "pt-BR": "Fui a pé."
       },
       "freqRank": 118,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:footprints",
       "voices": [
         {
@@ -2395,9 +2180,7 @@
         "pt-BR": "De quem é aquele celular?"
       },
       "freqRank": 121,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:mobile-phone",
       "voices": [
         {
@@ -2419,9 +2202,7 @@
         "pt-BR": "Estou na praia."
       },
       "freqRank": 122,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
       "voices": [
         {
@@ -2442,9 +2223,7 @@
         "pt-BR": "Ela não é pobre."
       },
       "freqRank": 125,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -2465,9 +2244,7 @@
         "pt-BR": "Eu amo sorvete."
       },
       "freqRank": 123,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:candy",
       "voices": [
         {
@@ -2489,9 +2266,7 @@
         "ar": "هن في البستان."
       },
       "freqRank": 126,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house-with-garden",
       "voices": [
         {
@@ -2512,9 +2287,7 @@
         "pt-BR": "Quero um gelado."
       },
       "freqRank": 124,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:candy",
       "voices": [
         {
@@ -2535,9 +2308,7 @@
         "pt-BR": "Ontem nevou."
       },
       "freqRank": 128,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-snow",
       "voices": [
         {
@@ -2558,9 +2329,7 @@
         "pt-BR": "Estou no jardim."
       },
       "freqRank": 127,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house-with-garden",
       "voices": [
         {
@@ -2581,9 +2350,7 @@
         "fr": "Pourquoi la neige est-elle blanche ?"
       },
       "freqRank": 129,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:snowflake",
       "voices": [
         {
@@ -2604,9 +2371,7 @@
         "pt-BR": "Olha, está nevando!"
       },
       "freqRank": 130,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:snowflake",
       "voices": [
         {
@@ -2627,9 +2392,7 @@
         "pt-BR": "Tom gosta de neve."
       },
       "freqRank": 131,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:snowflake",
       "voices": [
         {
@@ -2652,16 +2415,14 @@
         "ar": "الحيوانات أصدقاؤنا."
       },
       "freqRank": 132,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Животные - наши друзья."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Животные - наши друзья." },
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/112-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:paw-prints"
     },
     {
       "index": 113,
@@ -2675,16 +2436,14 @@
         "pt-BR": "O cavalo é um animal."
       },
       "freqRank": 133,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Лошади - это животные."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Лошади - это животные." },
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/113-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 114,
@@ -2698,9 +2457,7 @@
         "pt-BR": "Somos todos animais."
       },
       "freqRank": 134,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person",
       "voices": [
         {
@@ -2722,9 +2479,7 @@
         "ar": "ما هي الحرية؟"
       },
       "freqRank": 135,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
       "voices": [
         {
@@ -2745,9 +2500,7 @@
         "pt-BR": "Sinto-me tão só."
       },
       "freqRank": 136,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-standing",
       "voices": [
         {
@@ -2768,9 +2521,7 @@
         "fr": "Quarante ans ont passé."
       },
       "freqRank": 138,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-done",
       "voices": [
         {
@@ -2791,9 +2542,7 @@
         "pt-BR": "Tenho 40 anos de idade."
       },
       "freqRank": 137,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -2814,9 +2563,7 @@
         "fr": "Peut-être plus tard."
       },
       "freqRank": 139,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-not-done",
       "voices": [
         {
@@ -2837,9 +2584,7 @@
         "ar": "انطفأت الأضواء."
       },
       "freqRank": 140,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
         {
@@ -2860,9 +2605,7 @@
         "pt-BR": "As crianças entendem tudo."
       },
       "freqRank": 141,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
         {
@@ -2883,9 +2626,7 @@
         "fr": "Nous resterons ici."
       },
       "freqRank": 142,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:round-pushpin",
       "voices": [
         {
@@ -2906,9 +2647,7 @@
         "fr": "Je préfère le café au thé."
       },
       "freqRank": 143,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-beverage",
       "voices": [
         {
@@ -2929,9 +2668,7 @@
         "pt-BR": "Eu amo pizza."
       },
       "freqRank": 144,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -2952,9 +2689,7 @@
         "pt-BR": "Ela gosta de correr."
       },
       "freqRank": 145,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
         {
@@ -2975,9 +2710,7 @@
         "pt-BR": "Onde está o meu diário?"
       },
       "freqRank": 146,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:memo",
       "voices": [
         {
@@ -2998,9 +2731,7 @@
         "pt-BR": "Ele estava dormindo profundamente."
       },
       "freqRank": 147,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -3021,9 +2752,7 @@
         "fr": "Vous n'avez pas besoin de vous excuser."
       },
       "freqRank": 148,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-bowing",
       "voices": [
         {
@@ -3044,9 +2773,7 @@
         "pt-BR": "Que bela surpresa!"
       },
       "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:confetti-ball",
       "voices": [
         {
@@ -3067,9 +2794,7 @@
         "ar": "لا تبكِ من فضلك."
       },
       "freqRank": 150,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:loudly-crying-face",
       "voices": [
         {
@@ -3090,9 +2815,7 @@
         "fr": "Je préfère l'anglais."
       },
       "freqRank": 151,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -3113,9 +2836,7 @@
         "fr": "Il fait très mauvais."
       },
       "freqRank": 152,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-rain",
       "voices": [
         {
@@ -3137,9 +2858,7 @@
         "ar": "قرأت الكتاب."
       },
       "freqRank": 153,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -3160,9 +2879,7 @@
         "fr": "Mon verre est plein."
       },
       "freqRank": 154,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tumbler-glass",
       "voices": [
         {
@@ -3183,9 +2900,7 @@
         "pt-BR": "Cadê o seu passaporte?"
       },
       "freqRank": 155,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:passport-control",
       "voices": [
         {
@@ -3206,9 +2921,7 @@
         "fr": "C'est ma valise."
       },
       "freqRank": 156,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:luggage",
       "voices": [
         {
@@ -3229,9 +2942,7 @@
         "pt-BR": "Esqueci a senha."
       },
       "freqRank": 157,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
         {
@@ -3252,9 +2963,7 @@
         "pt-BR": "Somos da Alemanha."
       },
       "freqRank": 158,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -3275,9 +2984,7 @@
         "pt-BR": "Ela é da Alemanha."
       },
       "freqRank": 159,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -3299,9 +3006,7 @@
         "ar": "إنهُ شاب جداً."
       },
       "freqRank": 160,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -3322,9 +3027,7 @@
         "pt-BR": "Eu leio bastante."
       },
       "freqRank": 161,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -3345,9 +3048,7 @@
         "pt-BR": "Onde estão meus anéis?"
       },
       "freqRank": 166,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ring",
       "voices": [
         {
@@ -3368,9 +3069,7 @@
         "pt-BR": "Eu não leio."
       },
       "freqRank": 162,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -3391,9 +3090,7 @@
         "fr": "La vie est un mystère."
       },
       "freqRank": 167,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
         {
@@ -3414,9 +3111,7 @@
         "pt-BR": "Estou lendo alguns livros."
       },
       "freqRank": 163,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
         {
@@ -3437,9 +3132,7 @@
         "pt-BR": "Era uma armadilha."
       },
       "freqRank": 169,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:warning",
       "voices": [
         {
@@ -3462,9 +3155,7 @@
         "ar": "أقرأ كتاباً."
       },
       "freqRank": 164,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -3485,9 +3176,7 @@
         "pt-BR": "Tom é meu colega."
       },
       "freqRank": 170,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
         {
@@ -3509,9 +3198,7 @@
         "ar": "أنا أقرأ رسالة."
       },
       "freqRank": 165,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
       "voices": [
         {
@@ -3532,9 +3219,7 @@
         "pt-BR": "As mulheres me detestam."
       },
       "freqRank": 172,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:anger-symbol",
       "voices": [
         {
@@ -3555,9 +3240,7 @@
         "pt-BR": "Eu sou do Japão."
       },
       "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -3578,9 +3261,7 @@
         "pt-BR": "Explica-me isso."
       },
       "freqRank": 174,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speech-balloon",
       "voices": [
         {
@@ -3602,9 +3283,7 @@
         "pt-BR": "Não sou mentiroso."
       },
       "freqRank": 173,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
       "voices": [
         {
@@ -3625,9 +3304,7 @@
         "pt-BR": "Ela está cozinhando para ele."
       },
       "freqRank": 175,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pot-of-food",
       "voices": [
         {
@@ -3648,9 +3325,7 @@
         "fr": "Il est exactement minuit."
       },
       "freqRank": 176,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crescent-moon",
       "voices": [
         {
@@ -3671,9 +3346,7 @@
         "fr": "Je porte des lunettes."
       },
       "freqRank": 177,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glasses",
       "voices": [
         {
@@ -3694,9 +3367,7 @@
         "ar": "متى سترجع؟"
       },
       "freqRank": 178,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:back-arrow",
       "voices": [
         {
@@ -3717,9 +3388,7 @@
         "pt-BR": "Tom está no aeroporto."
       },
       "freqRank": 179,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:airplane",
       "voices": [
         {
@@ -3740,9 +3409,7 @@
         "pt-BR": "Ele gosta de nadar."
       },
       "freqRank": 180,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
         {
@@ -3763,9 +3430,7 @@
         "pt-BR": "Sabe nadar?"
       },
       "freqRank": 182,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
         {
@@ -3786,9 +3451,7 @@
         "pt-BR": "Ele sabe nadar."
       },
       "freqRank": 181,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
         {
@@ -3809,9 +3472,7 @@
         "fr": "Je sais nager."
       },
       "freqRank": 183,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
         {
@@ -3832,10 +3493,7 @@
         "fr": "Un chat est sous la table."
       },
       "freqRank": 184,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:cat",
       "voices": [
         {
@@ -3856,9 +3514,7 @@
         "fr": "Nous venons de Russie."
       },
       "freqRank": 185,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -3881,10 +3537,7 @@
         "ar": "أنا من روسيا."
       },
       "freqRank": 186,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -3905,9 +3558,7 @@
         "fr": "Y a-t-il un hôpital à proximité ?"
       },
       "freqRank": 187,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
         {
@@ -3929,9 +3580,7 @@
         "ar": "ماذا تقرأ؟"
       },
       "freqRank": 188,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -3953,9 +3602,7 @@
         "ar": "أين تسكن؟"
       },
       "freqRank": 189,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -3976,9 +3623,7 @@
         "fr": "Ce n'est pas une mauvaise idée."
       },
       "freqRank": 190,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
         {
@@ -3999,9 +3644,7 @@
         "pt-BR": "Eu sou muito velho."
       },
       "freqRank": 191,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-beard",
       "voices": [
         {
@@ -4022,9 +3665,7 @@
         "pt-BR": "Eu gosto de passear."
       },
       "freqRank": 193,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-walking",
       "voices": [
         {
@@ -4045,9 +3686,7 @@
         "ar": "أنا أحب الشوكولاتة."
       },
       "freqRank": 192,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:chocolate-bar",
       "voices": [
         {
@@ -4068,9 +3707,7 @@
         "pt-BR": "Dê-me a caneta."
       },
       "freqRank": 194,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -4091,9 +3728,7 @@
         "pt-BR": "Você está na Europa!"
       },
       "freqRank": 195,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -4114,9 +3749,7 @@
         "ar": "\"هل أنت روسي؟\" \"نعم.\""
       },
       "freqRank": 196,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -4138,9 +3771,7 @@
         "pt-BR": "Vamos à praia."
       },
       "freqRank": 197,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
       "voices": [
         {
@@ -4161,9 +3792,7 @@
         "fr": "Certaines personnes aiment ça."
       },
       "freqRank": 198,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thumbs-up",
       "voices": [
         {
@@ -4184,9 +3813,7 @@
         "fr": "Quelle belle fleur !"
       },
       "freqRank": 199,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:rose",
       "voices": [
         {
@@ -4207,9 +3834,7 @@
         "fr": "Elle est plus jeune que moi."
       },
       "freqRank": 200,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -4230,10 +3855,7 @@
         "fr": "Donne-moi un exemple."
       },
       "freqRank": 201,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:speech-balloon",
       "voices": [
         {
@@ -4254,9 +3876,7 @@
         "pt-BR": "É uma longa história."
       },
       "freqRank": 202,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:scroll",
       "voices": [
         {
@@ -4277,9 +3897,7 @@
         "pt-BR": "Acredite na sorte !"
       },
       "freqRank": 203,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:four-leaf-clover",
       "voices": [
         {
@@ -4300,9 +3918,7 @@
         "pt-BR": "Tom morreu jovem."
       },
       "freqRank": 204,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:coffin",
       "voices": [
         {
@@ -4325,9 +3941,7 @@
         "ar": "لماذا تبكي؟"
       },
       "freqRank": 205,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:loudly-crying-face",
       "voices": [
         {
@@ -4348,9 +3962,7 @@
         "ar": "نانسي من لندن."
       },
       "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cityscape-at-dusk",
       "voices": [
         {
@@ -4371,9 +3983,7 @@
         "pt-BR": "O menino beijou a menina."
       },
       "freqRank": 207,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:kiss-mark",
       "voices": [
         {
@@ -4394,10 +4004,7 @@
         "ar": "قبّلها."
       },
       "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:kiss-mark",
       "voices": [
         {
@@ -4418,9 +4025,7 @@
         "pt-BR": "Tom beijou Mary."
       },
       "freqRank": 209,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:kiss-mark",
       "voices": [
         {
@@ -4442,9 +4047,7 @@
         "ar": "أقرا صحيفةً."
       },
       "freqRank": 210,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:page-facing-up",
       "voices": [
         {
@@ -4465,9 +4068,7 @@
         "fr": "Elle a ouvert la porte."
       },
       "freqRank": 211,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:door",
       "voices": [
         {
@@ -4488,9 +4089,7 @@
         "pt-BR": "Não sou um especialista."
       },
       "freqRank": 212,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-shrugging",
       "voices": [
         {
@@ -4511,9 +4110,7 @@
         "ar": "خمس عشرة دقيقة فقط."
       },
       "freqRank": 213,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:timer-clock",
       "voices": [
         {
@@ -4535,15 +4132,14 @@
         "pt-BR": "A minha bicicleta é vermelha."
       },
       "freqRank": 214,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/193-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 194,
@@ -4557,15 +4153,14 @@
         "fr": "À qui est cette bicyclette ?"
       },
       "freqRank": 215,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/194-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 195,
@@ -4579,15 +4174,14 @@
         "ar": "هل تلك دراجتك؟"
       },
       "freqRank": 216,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/195-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 196,
@@ -4602,9 +4196,7 @@
         "pt-BR": "Estou comendo arroz."
       },
       "freqRank": 218,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cooked-rice",
       "voices": [
         {
@@ -4625,10 +4217,7 @@
         "pt-BR": "É uma informação interessante."
       },
       "freqRank": 219,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:page-facing-up",
       "voices": [
         {
@@ -4650,9 +4239,7 @@
         "pt-BR": "Ele está lendo o jornal."
       },
       "freqRank": 222,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:page-facing-up",
       "voices": [
         {
@@ -4673,9 +4260,7 @@
         "pt-BR": "Esta é uma história interessante."
       },
       "freqRank": 220,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:scroll",
       "voices": [
         {
@@ -4697,9 +4282,7 @@
         "ar": "هو يقرأ كتاباً."
       },
       "freqRank": 223,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -4720,9 +4303,7 @@
         "fr": "C'est un livre intéressant."
       },
       "freqRank": 221,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -4743,9 +4324,7 @@
         "ar": "توم ليس يهوديا."
       },
       "freqRank": 225,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:place-of-worship",
       "voices": [
         {
@@ -4766,9 +4345,7 @@
         "pt-BR": "Isto não é açúcar."
       },
       "freqRank": 224,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:candy",
       "voices": [
         {
@@ -4789,9 +4366,7 @@
         "pt-BR": "O leite está na geladeira."
       },
       "freqRank": 226,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glass-of-milk",
       "voices": [
         {
@@ -4812,9 +4387,7 @@
         "pt-BR": "Este jogo é fácil."
       },
       "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:game-die",
       "voices": [
         {
@@ -4836,9 +4409,7 @@
         "ar": "إنهم في المكتبة."
       },
       "freqRank": 228,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
         {
@@ -4860,9 +4431,7 @@
         "ar": "يتعلم بسرعة."
       },
       "freqRank": 229,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
         {
@@ -4884,9 +4453,7 @@
         "pt-BR": "Comi a maçã."
       },
       "freqRank": 230,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife",
       "voices": [
         {
@@ -4908,9 +4475,7 @@
         "ar": "لديها الكثير من الكلاب."
       },
       "freqRank": 233,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -4932,15 +4497,14 @@
         "pt-BR": "Quero uma maçã."
       },
       "freqRank": 231,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/210-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:red-apple"
     },
     {
       "index": 211,
@@ -4955,9 +4519,7 @@
         "pt-BR": "O que te faz feliz?"
       },
       "freqRank": 235,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:smiling-face-with-smiling-eyes",
       "voices": [
         {
@@ -4979,9 +4541,7 @@
         "pt-BR": "Eu jogo futebol."
       },
       "freqRank": 232,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soccer-ball",
       "voices": [
         {
@@ -5003,10 +4563,7 @@
         "ar": "كم عمر أختك؟"
       },
       "freqRank": 236,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -5028,9 +4585,7 @@
         "ar": "أنا أحبّ الكلاب حقّا."
       },
       "freqRank": 234,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -5052,9 +4607,7 @@
         "ar": "يعمل في البنوك."
       },
       "freqRank": 239,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
         {
@@ -5076,9 +4629,7 @@
         "pt-BR": "Eu não bebo café."
       },
       "freqRank": 237,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-beverage",
       "voices": [
         {
@@ -5100,9 +4651,7 @@
         "pt-BR": "Existem ilhas no mar."
       },
       "freqRank": 240,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:droplet",
       "voices": [
         {
@@ -5124,9 +4673,7 @@
         "ar": "أنا ما شربت الحليب."
       },
       "freqRank": 238,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glass-of-milk",
       "voices": [
         {
@@ -5148,9 +4695,7 @@
         "pt-BR": "Este é o símbolo da nossa cidade."
       },
       "freqRank": 241,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cityscape-at-dusk",
       "voices": [
         {
@@ -5172,9 +4717,7 @@
         "ar": "أنتَ كسرتَ قلبي."
       },
       "freqRank": 242,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broken-heart",
       "voices": [
         {
@@ -5196,9 +4739,7 @@
         "ar": "أريد أن أتعلم السباحة."
       },
       "freqRank": 243,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
         {
@@ -5220,9 +4761,7 @@
         "ar": "لا تكن ولداً سيئاً."
       },
       "freqRank": 245,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:boy",
       "voices": [
         {
@@ -5244,9 +4783,7 @@
         "ar": "أعيش في روسيا."
       },
       "freqRank": 244,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -5268,9 +4805,7 @@
         "pt-BR": "Ele mora em Tóquio."
       },
       "freqRank": 246,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -5292,9 +4827,7 @@
         "pt-BR": "Vivo em Tóquio."
       },
       "freqRank": 247,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -5317,10 +4850,7 @@
         "ar": "هناك اثنا عشر شهرًا في السنة."
       },
       "freqRank": 248,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:calendar",
       "voices": [
         {
@@ -5342,9 +4872,7 @@
         "ar": "سقف بيتي أحمر."
       },
       "freqRank": 249,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -5366,9 +4894,7 @@
         "ar": "نحن نعيش في مجتمع."
       },
       "freqRank": 250,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:busts-in-silhouette",
       "voices": [
         {
@@ -5390,9 +4916,7 @@
         "pt-BR": "Pássaros têm asas."
       },
       "freqRank": 251,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
       "voices": [
         {
@@ -5414,9 +4938,7 @@
         "pt-BR": "Amizade legítima vale mais que dinheiro."
       },
       "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {
@@ -5438,9 +4960,7 @@
         "ar": "لا أحب أليس."
       },
       "freqRank": 253,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thumbs-down",
       "voices": [
         {
@@ -5462,9 +4982,7 @@
         "pt-BR": "Eu tenho cabelos compridos."
       },
       "freqRank": 254,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-getting-haircut",
       "voices": [
         {
@@ -5486,9 +5004,7 @@
         "ar": "ما هي هوايتك؟"
       },
       "freqRank": 255,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
         {
@@ -5510,9 +5026,7 @@
         "ar": "لدي قلم."
       },
       "freqRank": 256,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -5534,9 +5048,7 @@
         "ar": "الجوّ بارد جداً هذا الشتاء."
       },
       "freqRank": 259,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:snowflake",
       "voices": [
         {
@@ -5558,9 +5070,7 @@
         "ar": "عندنا قطط."
       },
       "freqRank": 257,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -5582,9 +5092,7 @@
         "pt-BR": "Eles alcançaram o seu objetivo."
       },
       "freqRank": 260,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:chequered-flag",
       "voices": [
         {
@@ -5606,9 +5114,7 @@
         "ar": "الم ركبتي."
       },
       "freqRank": 258,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:leg",
       "voices": [
         {
@@ -5630,9 +5136,7 @@
         "pt-BR": "Tom não gosta de gatos."
       },
       "freqRank": 262,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -5654,10 +5158,7 @@
         "pt-BR": "Ele não enxerga bem."
       },
       "freqRank": 261,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:glasses",
       "voices": [
         {
@@ -5679,9 +5180,7 @@
         "pt-BR": "França, eu te amo!"
       },
       "freqRank": 263,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
         {
@@ -5703,9 +5202,7 @@
         "pt-BR": "Um pássaro está cantando na árvore."
       },
       "freqRank": 264,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
         {
@@ -5727,10 +5224,7 @@
         "ar": "توم لا يؤمن بالله."
       },
       "freqRank": 265,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:place-of-worship",
       "voices": [
         {
@@ -5752,9 +5246,7 @@
         "pt-BR": "Ontem joguei futebol."
       },
       "freqRank": 266,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soccer-ball",
       "voices": [
         {
@@ -5776,9 +5268,7 @@
         "pt-BR": "Você sabe onde moramos?"
       },
       "freqRank": 268,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -5800,9 +5290,7 @@
         "ar": "لعبنا كرة القدم بالأمس."
       },
       "freqRank": 267,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soccer-ball",
       "voices": [
         {
@@ -5824,9 +5312,7 @@
         "ar": "تعلّمتُ ذلك منك."
       },
       "freqRank": 269,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:graduation-cap",
       "voices": [
         {
@@ -5848,9 +5334,7 @@
         "ar": "هو صديق لإحدى صديقاتي."
       },
       "freqRank": 270,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {
@@ -5872,9 +5356,7 @@
         "pt-BR": "Emily respondeu a pergunta corretamente."
       },
       "freqRank": 271,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:check-mark",
       "voices": [
         {
@@ -5896,9 +5378,7 @@
         "pt-BR": "Todas as estradas levam a Roma."
       },
       "freqRank": 272,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:compass",
       "voices": [
         {
@@ -5920,9 +5400,7 @@
         "pt-BR": "Tom não pode dirigir um carro."
       },
       "freqRank": 273,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -5944,9 +5422,7 @@
         "ar": "لا أعرف كيف أقود سيارة."
       },
       "freqRank": 274,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -5968,9 +5444,7 @@
         "pt-BR": "Alguém roubou a minha mala."
       },
       "freqRank": 275,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:luggage",
       "voices": [
         {
@@ -5992,9 +5466,7 @@
         "ar": "كيف تعرفت عليها؟"
       },
       "freqRank": 276,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman",
       "voices": [
         {
@@ -6016,10 +5488,7 @@
         "pt-BR": "Inglês não é minha língua nativa."
       },
       "freqRank": 277,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Английский - не мой родной язык."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Английский - не мой родной язык." },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -6041,9 +5510,7 @@
         "ar": "ما إسم ألبومها الأخير؟"
       },
       "freqRank": 278,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
         {
@@ -6065,9 +5532,7 @@
         "pt-BR": "Ele tinha um gato branco."
       },
       "freqRank": 279,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -6089,9 +5554,7 @@
         "pt-BR": "Perdemos nosso trem."
       },
       "freqRank": 280,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:train",
       "voices": [
         {
@@ -6113,9 +5576,7 @@
         "pt-BR": "Meu irmão mora em Tóquio."
       },
       "freqRank": 281,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -6137,9 +5598,7 @@
         "pt-BR": "Você, por acaso, se lembrou do número?"
       },
       "freqRank": 282,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
         {
@@ -6161,9 +5620,7 @@
         "ar": "كم عندك من الأصدقاء المُقَرّبين؟"
       },
       "freqRank": 284,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {
@@ -6185,9 +5642,7 @@
         "pt-BR": "Falas com o teu cachorro?"
       },
       "freqRank": 283,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -6209,9 +5664,7 @@
         "ar": "العلم فن البحث عن الحق."
       },
       "freqRank": 285,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:test-tube",
       "voices": [
         {
@@ -6233,10 +5686,7 @@
         "ar": "كرة القدم أحب رياضة إلى قلبي."
       },
       "freqRank": 286,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Футбол - мой любимый вид спорта."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Футбол - мой любимый вид спорта." },
       "image": "cue:soccer-ball",
       "voices": [
         {
@@ -6258,9 +5708,7 @@
         "ar": "فرنسا في أوروبا الغربية."
       },
       "freqRank": 287,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -6282,9 +5730,7 @@
         "pt-BR": "Ele é um dos meus velhos amigos."
       },
       "freqRank": 288,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {
@@ -6306,9 +5752,7 @@
         "ar": "لديه الكثير من المال في البنك."
       },
       "freqRank": 289,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -6330,9 +5774,7 @@
         "pt-BR": "O mundo está mudando cada vez mais rápido."
       },
       "freqRank": 290,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -6354,9 +5796,7 @@
         "ar": "ركب توم القطار الخطأ."
       },
       "freqRank": 291,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:train",
       "voices": [
         {
@@ -6378,9 +5818,7 @@
         "pt-BR": "Eu não sei tocar piano."
       },
       "freqRank": 292,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
         {
@@ -6402,9 +5840,7 @@
         "pt-BR": "Meu irmão mora em São Diego."
       },
       "freqRank": 293,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cityscape-at-dusk",
       "voices": [
         {
@@ -6426,9 +5862,7 @@
         "ar": "و فوق كل شيء، يحتاج الأطفال إلى الحب."
       },
       "freqRank": 294,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
         {
@@ -6450,9 +5884,7 @@
         "ar": "الجو حار جداً في جنوب اسبانيا في فصل الصيف."
       },
       "freqRank": 295,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-face",
       "voices": [
         {
@@ -6474,10 +5906,7 @@
         "pt-BR": "Você é a pessoa mais importante em minha vida."
       },
       "freqRank": 296,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Ты - самый важный человек в моей жизни."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Ты - самый важный человек в моей жизни." },
       "image": "cue:sparkling-heart",
       "voices": [
         {
@@ -6499,9 +5928,7 @@
         "pt-BR": "Pode me dizer o que você está procurando?"
       },
       "freqRank": 298,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:magnifying-glass-tilted-left",
       "voices": [
         {
@@ -6523,9 +5950,7 @@
         "pt-BR": "Ele veio de ônibus ou de trem?"
       },
       "freqRank": 299,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bus",
       "voices": [
         {
@@ -6547,9 +5972,7 @@
         "ar": "لديّ صديق يعيش في ألمانيا."
       },
       "freqRank": 300,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {

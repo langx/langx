@@ -2,7 +2,7 @@
   "id": "fr:intermediate",
   "lang": "fr",
   "level": "intermediate",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -1320,7 +1320,8 @@
       },
       "freqRank": 87,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_intermediate/78-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_intermediate/78-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:ballot-box-with-ballot"
     },
     {
       "index": 79,
@@ -1399,7 +1400,8 @@
       },
       "freqRank": 93,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_intermediate/83-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_intermediate/83-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:baseball"
     },
     {
       "index": 84,
@@ -1655,7 +1657,8 @@
       },
       "freqRank": 110,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_intermediate/99-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_intermediate/99-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:wolf"
     },
     {
       "index": 100,
@@ -1981,7 +1984,8 @@
       },
       "freqRank": 130,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_intermediate/119-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_intermediate/119-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:flag-in-hole"
     },
     {
       "index": 120,
@@ -2493,7 +2497,8 @@
       },
       "freqRank": 162,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_intermediate/151-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_intermediate/151-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-apple"
     },
     {
       "index": 152,
@@ -2590,7 +2595,8 @@
       },
       "freqRank": 168,
       "review": { "glossedBy": "Tatoeba" },
-      "voices": [{ "key": "echo/packs/fr_intermediate/157-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_intermediate/157-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:gloves"
     },
     {
       "index": 158,

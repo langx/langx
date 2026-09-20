@@ -1112,6 +1112,15 @@ export const DRAWINGS = {
       <path d="M156 176 Q200 206 244 176" fill="none"/>
       <path d="M180 196 A26 26 0 0 0 226 216 L214 184 Z" fill="#e5484d"/>`,
   },
+  'smiling-face-with-halo': {
+    label: 'A smiling face with a halo',
+    body: `
+      <circle cx="200" cy="174" r="78" fill="#ffffff"/>
+      <circle cx="176" cy="164" r="9" fill="#17191c"/>
+      <circle cx="224" cy="164" r="9" fill="#17191c"/>
+      <path d="M170 196 C184 216 216 216 230 196" fill="none"/>
+      <ellipse cx="200" cy="76" rx="60" ry="17" fill="none" stroke="#ffc409" stroke-width="14"/>`,
+  },
   'smiling-face-with-open-hands': {
     label: 'A smiling face with open hands',
     body: `
@@ -1722,6 +1731,17 @@ export const DRAWINGS = {
       <ellipse cx="128" cy="150" rx="34" ry="32" fill="#17191c"/>
       <path d="M104 126 L74 92 M104 174 L74 208" fill="none"/>`,
   },
+  bear: {
+    label: 'A bear',
+    body: `
+      <circle cx="136" cy="110" r="34" fill="#ff571a"/>
+      <circle cx="264" cy="110" r="34" fill="#ff571a"/>
+      <circle cx="200" cy="168" r="82" fill="#ff571a"/>
+      <ellipse cx="200" cy="198" rx="52" ry="38" fill="#ffffff"/>
+      <circle cx="172" cy="148" r="9" fill="#17191c"/>
+      <circle cx="228" cy="148" r="9" fill="#17191c"/>
+      <ellipse cx="200" cy="184" rx="18" ry="13" fill="#17191c"/>`,
+  },
   cat: {
     label: 'A cat',
     body: `
@@ -1786,6 +1806,49 @@ export const DRAWINGS = {
       <circle cx="122" cy="136" r="10" fill="#17191c"/>
       <path d="M180 108 L206 130 L180 152" fill="none"/>`,
   },
+  fox: {
+    label: 'A fox',
+    body: `
+      <path d="M120 150 L128 60 L194 106 Z" fill="#ff571a"/>
+      <path d="M280 150 L272 60 L206 106 Z" fill="#ff571a"/>
+      <path d="M120 132 C120 106 280 106 280 132 C280 172 246 198 200 198 C154 198 120 172 120 132 Z" fill="#ff571a"/>
+      <path d="M200 178 C178 178 142 192 142 212 C142 234 172 248 200 248 C228 248 258 234 258 212 C258 192 222 178 200 178 Z" fill="#ffffff"/>
+      <circle cx="170" cy="150" r="9" fill="#17191c"/>
+      <circle cx="230" cy="150" r="9" fill="#17191c"/>
+      <path d="M186 208 L214 208 L200 224 Z" fill="#17191c"/>`,
+  },
+  horse: {
+    label: 'A horse',
+    body: `
+      <path d="M104 250 C108 174 144 118 196 92 C214 84 228 88 236 100 L300 152 C312 162 316 176 308 184 C300 191 284 192 266 190 C246 188 234 200 228 216 C222 232 220 240 220 250 Z" fill="#ffc409"/>
+      <path d="M196 92 C160 124 132 182 126 250 L104 250 C108 174 144 118 196 92 Z" fill="#ff571a"/>
+      <path d="M238 102 C250 94 254 84 250 74 C240 82 232 92 230 100 Z" fill="#ff571a"/>
+      <path d="M200 94 L208 52 L230 90 Z" fill="#ffc409"/>
+      <circle cx="240" cy="130" r="8" fill="#17191c"/>
+      <ellipse cx="288" cy="172" rx="7" ry="6" fill="#17191c"/>
+      <path d="M304 186 C296 190 286 190 278 188" fill="none"/>`,
+  },
+  lion: {
+    label: 'A lion',
+    body: `
+      <circle cx="200" cy="158" r="90" fill="#ff571a"/>
+      <circle cx="148" cy="106" r="20" fill="#ffc409"/>
+      <circle cx="252" cy="106" r="20" fill="#ffc409"/>
+      <circle cx="200" cy="162" r="60" fill="#ffc409"/>
+      <circle cx="178" cy="150" r="9" fill="#17191c"/>
+      <circle cx="222" cy="150" r="9" fill="#17191c"/>
+      <path d="M186 174 L214 174 L200 188 Z" fill="#17191c"/>
+      <path d="M200 188 L200 196 M200 196 C192 208 178 206 174 196 M200 196 C208 208 222 206 226 196" fill="none"/>`,
+  },
+  'paw-prints': {
+    label: 'An animal paw print',
+    body: `
+      <ellipse cx="128" cy="140" rx="20" ry="26" transform="rotate(-25 128 140)" fill="#17191c"/>
+      <ellipse cx="174" cy="104" rx="21" ry="28" transform="rotate(-10 174 104)" fill="#17191c"/>
+      <ellipse cx="226" cy="104" rx="21" ry="28" transform="rotate(10 226 104)" fill="#17191c"/>
+      <ellipse cx="272" cy="140" rx="20" ry="26" transform="rotate(25 272 140)" fill="#17191c"/>
+      <path d="M200 182 C242 182 270 208 270 228 C270 246 246 254 224 248 C209 244 191 244 176 248 C154 254 130 246 130 228 C130 208 158 182 200 182 Z" fill="#17191c"/>`,
+  },
   pig: {
     label: 'A pig',
     body: `
@@ -1806,6 +1869,14 @@ export const DRAWINGS = {
       <path d="M300 96 L340 74 M300 126 L342 120" fill="none"/>
       <circle cx="282" cy="108" r="8" fill="#17191c" stroke="none"/>`,
   },
+  snake: {
+    label: 'A snake',
+    body: `
+      <path d="M120 232 C120 202 200 208 200 178 C200 148 120 154 120 124 C120 98 172 84 222 88" fill="none" stroke="#009f70" stroke-width="40"/>
+      <ellipse cx="256" cy="96" rx="42" ry="31" fill="#009f70"/>
+      <circle cx="270" cy="86" r="8" fill="#17191c"/>
+      <path d="M296 104 L324 110 M324 110 L334 104 M324 110 L334 116" fill="none" stroke="#e5484d"/>`,
+  },
   turtle: {
     label: 'A turtle',
     body: `
@@ -1814,6 +1885,27 @@ export const DRAWINGS = {
       <path d="M90 204 A112 92 0 0 1 290 204 Z" fill="#009f70"/>
       <path d="M200 116 L200 204 M136 176 L264 176" fill="none"/>
       <circle cx="316" cy="160" r="7" fill="#17191c" stroke="none"/>`,
+  },
+  whale: {
+    label: 'A whale',
+    body: `
+      <path d="M118 172 C96 152 76 140 64 144 C64 164 78 184 98 194 C76 204 64 222 68 238 C86 240 110 216 126 196 Z" fill="#3b6cf6"/>
+      <path d="M112 176 C112 130 178 98 258 100 C306 102 330 128 330 166 L330 182 C330 214 288 232 228 232 C162 232 112 210 112 176 Z" fill="#3b6cf6"/>
+      <path d="M156 216 C200 228 258 224 300 206 C272 222 230 230 194 226 Z" fill="#ffffff"/>
+      <circle cx="298" cy="148" r="9" fill="#17191c"/>
+      <path d="M330 178 C302 196 266 202 232 200" fill="none"/>
+      <path d="M278 94 C270 74 272 56 284 44 M298 96 C304 76 316 62 332 54" fill="none" stroke="#3b6cf6"/>`,
+  },
+  wolf: {
+    label: 'A wolf',
+    body: `
+      <path d="M126 152 L136 62 L190 106 Z" fill="#9aa1a7"/>
+      <path d="M274 152 L264 62 L210 106 Z" fill="#9aa1a7"/>
+      <path d="M138 120 C138 98 262 98 262 120 L248 188 L200 242 L152 188 Z" fill="#9aa1a7"/>
+      <path d="M176 172 C176 194 188 214 200 222 C212 214 224 194 224 172 Z" fill="#ffffff"/>
+      <circle cx="172" cy="142" r="9" fill="#17191c"/>
+      <circle cx="228" cy="142" r="9" fill="#17191c"/>
+      <path d="M190 180 L210 180 L200 193 Z" fill="#17191c"/>`,
   },
   bouquet: {
     label: 'A bouquet',
@@ -1857,6 +1949,15 @@ export const DRAWINGS = {
       <path d="M200 248 L200 150" fill="none" stroke="#009f70"/>
       <path d="M200 176 C148 176 112 144 112 104 C164 104 200 136 200 176 Z" fill="#009f70"/>
       <path d="M200 156 C252 156 288 124 288 84 C236 84 200 116 200 156 Z" fill="#009f70"/>`,
+  },
+  'leaf-fluttering-in-wind': {
+    label: 'A leaf blown by the wind',
+    body: `
+      <path d="M298 70 C214 76 162 130 162 188 C162 222 190 242 224 238 C292 228 314 146 298 70 Z" fill="#009f70"/>
+      <path d="M172 234 C210 196 252 148 288 86" fill="none"/>
+      <path d="M68 122 C100 104 126 112 142 124" fill="none" stroke="#3b6cf6"/>
+      <path d="M62 170 C92 154 116 160 132 170" fill="none" stroke="#3b6cf6"/>
+      <path d="M78 216 C104 204 124 208 138 216" fill="none" stroke="#3b6cf6"/>`,
   },
   wood: {
     label: 'A log of wood',
@@ -2036,12 +2137,31 @@ export const DRAWINGS = {
       <circle cx="272" cy="148" r="14" fill="#3b6cf6"/>
       <circle cx="240" cy="144" r="12" fill="#3b6cf6"/>`,
   },
+  banana: {
+    label: 'A banana',
+    body: `
+      <path d="M108 112 C104 194 160 250 238 250 C288 250 318 226 322 196 C304 216 276 226 246 222 C180 212 146 158 148 102 C130 94 112 98 108 112 Z" fill="#ffc409"/>`,
+  },
+  bread: {
+    label: 'A loaf of bread',
+    body: `
+      <path d="M108 130 C108 96 146 74 200 74 C254 74 292 96 292 130 L292 226 C292 240 282 250 268 250 L132 250 C118 250 108 240 108 226 Z" fill="#ff571a"/>
+      <path d="M134 138 C134 114 162 100 200 100 C238 100 266 114 266 138 L266 212 C266 221 259 228 250 228 L150 228 C141 228 134 221 134 212 Z" fill="#ffc409"/>`,
+  },
   candy: {
     label: 'A sweet',
     body: `
       <path d="M82 104 L124 150 L82 196 Z" fill="#ffc409"/>
       <path d="M318 104 L276 150 L318 196 Z" fill="#ffc409"/>
       <rect x="118" y="106" width="164" height="88" rx="40" fill="#e5484d"/>`,
+  },
+  'cheese-wedge': {
+    label: 'A wedge of cheese',
+    body: `
+      <path d="M92 216 L296 108 L310 210 Z" fill="#ffc409"/>
+      <circle cx="184" cy="188" r="15" fill="#ffffff"/>
+      <circle cx="244" cy="164" r="11" fill="#ffffff"/>
+      <circle cx="264" cy="198" r="9" fill="#ffffff"/>`,
   },
   'chocolate-bar': {
     label: 'A bar of chocolate',
@@ -2125,6 +2245,13 @@ export const DRAWINGS = {
       <circle cx="232" cy="134" r="9" fill="#17191c" stroke="none"/>
       <circle cx="252" cy="192" r="8" fill="#17191c" stroke="none"/>`,
   },
+  'red-apple': {
+    label: 'An apple',
+    body: `
+      <path d="M200 100 C170 70 108 82 108 148 C108 206 152 250 200 250 C248 250 292 206 292 148 C292 82 230 70 200 100 Z" fill="#e5484d"/>
+      <path d="M200 100 L200 62" fill="none"/>
+      <path d="M206 76 C232 52 266 62 258 90 C242 108 214 100 206 76 Z" fill="#009f70"/>`,
+  },
   salt: {
     label: 'A salt shaker',
     body: `
@@ -2154,6 +2281,13 @@ export const DRAWINGS = {
       <path d="M104 130 L296 130 L272 208 A80 28 0 0 1 128 208 Z" fill="#ffffff"/>
       <path d="M82 232 L318 232" fill="none" stroke-width="22"/>
       <path d="M124 146 L276 146" fill="none" stroke="#009f70"/>`,
+  },
+  tomato: {
+    label: 'A tomato',
+    body: `
+      <ellipse cx="200" cy="184" rx="88" ry="66" fill="#e5484d"/>
+      <path d="M200 76 L211 110 L247 110 L218 131 L229 165 L200 144 L171 165 L182 131 L153 110 L189 110 Z" fill="#009f70"/>
+      <path d="M200 84 L200 58" fill="none" stroke="#009f70" stroke-width="14"/>`,
   },
   'tropical-drink': {
     label: 'A tropical drink',
@@ -2330,6 +2464,21 @@ export const DRAWINGS = {
       <path d="M252 106 A50 44 0 0 0 340 106 Z" fill="#ffc409"/>
       <path d="M104 96 L104 106 M296 96 L296 106" fill="none"/>`,
   },
+  'ballot-box-with-ballot': {
+    label: 'A ballot going into a ballot box',
+    body: `
+      <path d="M150 146 L150 64 L258 64 L258 146 Z" fill="#ffffff"/>
+      <path d="M176 104 L196 124 L236 82" fill="none" stroke="#009f70"/>
+      <rect x="92" y="146" width="216" height="104" rx="14" fill="#3b6cf6"/>
+      <rect x="138" y="166" width="124" height="16" rx="8" fill="#17191c"/>`,
+  },
+  baseball: {
+    label: 'A baseball',
+    body: `
+      <circle cx="200" cy="164" r="84" fill="#ffffff"/>
+      <path d="M150 100 C176 134 176 194 150 228" fill="none" stroke="#e5484d"/>
+      <path d="M250 100 C224 134 224 194 250 228" fill="none" stroke="#e5484d"/>`,
+  },
   bathtub: {
     label: 'A bathtub',
     body: `
@@ -2347,6 +2496,17 @@ export const DRAWINGS = {
       <path d="M182 216 A20 20 0 0 0 218 216" fill="none"/>
       <path d="M200 96 L200 74" fill="none"/>
       <path d="M96 66 L304 240" fill="none" stroke="#e5484d" stroke-width="24"/>`,
+  },
+  bicycle: {
+    label: 'A bicycle',
+    body: `
+      <circle cx="118" cy="192" r="52" fill="#ffffff"/>
+      <circle cx="282" cy="192" r="52" fill="#ffffff"/>
+      <path d="M118 192 L168 116 L200 192 Z" fill="none" stroke="#3b6cf6"/>
+      <path d="M168 116 L252 110 L282 192" fill="none" stroke="#3b6cf6"/>
+      <path d="M200 192 L252 110" fill="none" stroke="#3b6cf6"/>
+      <path d="M244 100 L286 92" fill="none"/>
+      <rect x="146" y="96" width="48" height="16" rx="8" fill="#ffc409"/>`,
   },
   broom: {
     label: 'A broom',
@@ -2452,6 +2612,16 @@ export const DRAWINGS = {
       <path d="M308 76 L264 76 L128 212 L152 236 Z" fill="#9aa1a7"/>
       <path d="M108 216 L156 264 M292 216 L244 264" fill="none" stroke-width="22"/>`,
   },
+  'desert-island': {
+    label: 'A palm tree on an island',
+    body: `
+      <path d="M214 100 C186 82 154 92 148 116 C176 100 200 104 214 100 Z" fill="#009f70"/>
+      <path d="M214 100 C242 82 274 92 280 116 C252 100 228 104 214 100 Z" fill="#009f70"/>
+      <path d="M214 100 C208 68 232 48 258 50 C244 74 228 88 214 100 Z" fill="#009f70"/>
+      <path d="M200 196 C194 158 200 124 214 102" fill="none"/>
+      <path d="M112 228 C112 204 152 188 200 188 C248 188 288 204 288 228 Z" fill="#ffc409"/>
+      <path d="M78 242 C106 230 138 254 166 242 M206 242 C234 230 266 254 294 242" fill="none" stroke="#3b6cf6"/>`,
+  },
   'dollar-banknote': {
     label: 'A dollar note',
     body: `
@@ -2504,6 +2674,15 @@ export const DRAWINGS = {
       <circle cx="92" cy="150" r="12" fill="#009f70"/>
       <circle cx="112" cy="72" r="12" fill="#e5484d"/>`,
   },
+  'flag-in-hole': {
+    label: 'A golf flag in its hole',
+    body: `
+      <path d="M78 222 C120 198 280 198 322 222 C280 244 120 244 78 222 Z" fill="#009f70"/>
+      <path d="M232 84 L308 108 L232 132 Z" fill="#e5484d"/>
+      <path d="M232 80 L232 214" fill="none"/>
+      <ellipse cx="232" cy="214" rx="20" ry="9" fill="#17191c"/>
+      <circle cx="146" cy="208" r="16" fill="#ffffff"/>`,
+  },
   'fuel-pump': {
     label: 'A fuel pump',
     body: `
@@ -2543,6 +2722,17 @@ export const DRAWINGS = {
       <path d="M156 78 C186 96 172 126 196 130 C220 134 222 106 246 110 L252 88 Z" fill="#009f70"/>
       <path d="M170 156 C200 150 214 172 210 198 C206 226 186 232 174 216 C162 200 150 166 170 156 Z" fill="#009f70"/>
       <path d="M244 160 C262 156 272 174 264 192 L242 186 Z" fill="#009f70"/>`,
+  },
+  gloves: {
+    label: 'A glove',
+    body: `
+      <rect x="150" y="82" width="30" height="100" rx="15" fill="#e5484d"/>
+      <rect x="186" y="70" width="30" height="112" rx="15" fill="#e5484d"/>
+      <rect x="222" y="78" width="30" height="104" rx="15" fill="#e5484d"/>
+      <rect x="258" y="96" width="28" height="86" rx="14" fill="#e5484d"/>
+      <path d="M146 148 L290 148 L290 206 L146 206 Z" fill="#e5484d"/>
+      <path d="M148 152 C120 148 102 162 102 180 C102 196 118 206 146 204 Z" fill="#e5484d"/>
+      <rect x="138" y="200" width="158" height="46" rx="16" fill="#ffc409"/>`,
   },
   'hammer-and-wrench': {
     label: 'A hammer and a wrench',
@@ -2599,6 +2789,13 @@ export const DRAWINGS = {
     body: `
       <path d="M62 118 A20 20 0 0 1 82 98 L224 98 L338 150 L224 202 L82 202 A20 20 0 0 1 62 182 Z" fill="#ffc409"/>
       <circle cx="112" cy="150" r="15" fill="#f4f5f7"/>`,
+  },
+  laptop: {
+    label: 'A laptop computer',
+    body: `
+      <rect x="106" y="70" width="188" height="126" rx="12" fill="#3b6cf6"/>
+      <rect x="124" y="88" width="152" height="90" rx="6" fill="#ffffff"/>
+      <path d="M80 196 L320 196 L336 234 L64 234 Z" fill="#9aa1a7"/>`,
   },
   lipstick: {
     label: 'A lipstick',
@@ -2787,6 +2984,16 @@ export const DRAWINGS = {
       <path d="M200 48 L318 86 C318 186 272 234 200 256 C128 234 82 186 82 86 Z" fill="#3b6cf6"/>
       <path d="M200 96 L200 208" fill="none" stroke="#ffffff"/>
       <path d="M140 140 L260 140" fill="none" stroke="#ffffff"/>`,
+  },
+  ship: {
+    label: 'A ship',
+    body: `
+      <rect x="196" y="94" width="44" height="48" rx="8" fill="#e5484d"/>
+      <rect x="138" y="142" width="132" height="60" rx="10" fill="#ffffff"/>
+      <circle cx="166" cy="172" r="11" fill="#3b6cf6"/>
+      <circle cx="204" cy="172" r="11" fill="#3b6cf6"/>
+      <circle cx="242" cy="172" r="11" fill="#3b6cf6"/>
+      <path d="M82 202 L318 202 L286 248 L114 248 Z" fill="#3b6cf6"/>`,
   },
   'shopping-cart': {
     label: 'A shopping trolley',

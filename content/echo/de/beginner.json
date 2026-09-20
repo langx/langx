@@ -2,7 +2,7 @@
   "id": "de:beginner",
   "lang": "de",
   "level": "beginner",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -10,11 +10,7 @@
       "licence": "CC BY-SA 4.0",
       "url": "https://kaikki.org/"
     },
-    {
-      "name": "Tatoeba",
-      "licence": "CC BY 2.0 FR",
-      "url": "https://tatoeba.org/"
-    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
       "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
       "licence": "CC BY-SA 4.0",
@@ -69,9 +65,7 @@
         "ru": "Том — адвокат."
       },
       "freqRank": 17,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:balance-scale",
       "voices": [
         {
@@ -92,9 +86,7 @@
         "ru": "Помоги мне, пожалуйста."
       },
       "freqRank": 18,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sos-button",
       "voices": [
         {
@@ -116,9 +108,7 @@
         "ru": "Ты маленький."
       },
       "freqRank": 19,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ant",
       "voices": [
         {
@@ -139,9 +129,7 @@
         "ru": "Большой или маленький?"
       },
       "freqRank": 20,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:straight-ruler",
       "voices": [
         {
@@ -162,9 +150,7 @@
         "ru": "Где находится Париж?"
       },
       "freqRank": 21,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:world-map",
       "voices": [
         {
@@ -186,9 +172,7 @@
         "ru": "Он беден."
       },
       "freqRank": 22,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:coin",
       "voices": [
         {
@@ -211,9 +195,7 @@
         "ar": "أنا فقير."
       },
       "freqRank": 23,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:coin",
       "voices": [
         {
@@ -234,9 +216,7 @@
         "ru": "Не хотите ли потанцевать?"
       },
       "freqRank": 25,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-dancing",
       "voices": [
         {
@@ -258,9 +238,7 @@
         "ru": "Я хочу танцевать."
       },
       "freqRank": 24,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-dancing",
       "voices": [
         {
@@ -281,9 +259,7 @@
         "ru": "Хочешь потанцевать?"
       },
       "freqRank": 26,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-dancing",
       "voices": [
         {
@@ -304,9 +280,7 @@
         "ru": "Я путешествую один."
       },
       "freqRank": 27,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:luggage",
       "voices": [
         {
@@ -329,9 +303,7 @@
         "ar": "الجو بارد."
       },
       "freqRank": 28,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cold-face",
       "voices": [
         {
@@ -353,10 +325,7 @@
         "ar": "أشعر بالبرد."
       },
       "freqRank": 29,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:cold-face",
       "voices": [
         {
@@ -377,10 +346,7 @@
         "ru": "Я устал."
       },
       "freqRank": 30,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -401,9 +367,7 @@
         "ru": "Вы устали?"
       },
       "freqRank": 31,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleepy-face",
       "voices": [
         {
@@ -424,9 +388,7 @@
         "ru": "Ищите женщину!"
       },
       "freqRank": 32,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman",
       "voices": [
         {
@@ -447,9 +409,7 @@
         "ru": "Том ищет работу."
       },
       "freqRank": 33,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
         {
@@ -470,9 +430,7 @@
         "ru": "Меня зовут Джек."
       },
       "freqRank": 34,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:identification-card",
       "voices": [
         {
@@ -493,9 +451,7 @@
         "ru": "Том скучает по тебе."
       },
       "freqRank": 36,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pleading-face",
       "voices": [
         {
@@ -517,9 +473,7 @@
         "ru": "Меня зовут Том."
       },
       "freqRank": 35,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:identification-card",
       "voices": [
         {
@@ -540,9 +494,7 @@
         "ru": "Что было украдено?"
       },
       "freqRank": 37,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
         {
@@ -563,9 +515,7 @@
         "ru": "Голоден?"
       },
       "freqRank": 38,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hamburger",
       "voices": [
         {
@@ -586,10 +536,7 @@
         "ru": "Это ужасно!"
       },
       "freqRank": 39,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:face-screaming-in-fear",
       "voices": [
         {
@@ -610,9 +557,7 @@
         "ru": "Это было ужасно."
       },
       "freqRank": 40,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-screaming-in-fear",
       "voices": [
         {
@@ -634,9 +579,7 @@
         "ru": "Он много говорит."
       },
       "freqRank": 41,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -657,9 +600,7 @@
         "ru": "Она много говорит."
       },
       "freqRank": 42,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -680,9 +621,7 @@
         "ru": "Я молод."
       },
       "freqRank": 43,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -703,9 +642,7 @@
         "ru": "Она была молода."
       },
       "freqRank": 44,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -726,9 +663,7 @@
         "ru": "Том умер молодым."
       },
       "freqRank": 45,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:coffin",
       "voices": [
         {
@@ -750,9 +685,7 @@
         "ru": "Она родилась в 1960 году."
       },
       "freqRank": 46,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -773,9 +706,7 @@
         "ru": "Том ведёт машину."
       },
       "freqRank": 47,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -796,9 +727,7 @@
         "ru": "Ты богат?"
       },
       "freqRank": 48,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -819,9 +748,7 @@
         "ru": "Ты богатая."
       },
       "freqRank": 49,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -842,9 +769,7 @@
         "ru": "Я богат."
       },
       "freqRank": 50,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -866,9 +791,7 @@
         "ru": "Она богата."
       },
       "freqRank": 51,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -889,9 +812,7 @@
         "ru": "Мы богаты."
       },
       "freqRank": 53,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -912,9 +833,7 @@
         "ru": "Они богаты."
       },
       "freqRank": 52,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -936,9 +855,7 @@
         "ar": "هل أنتَ حزين؟"
       },
       "freqRank": 54,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crying-face",
       "voices": [
         {
@@ -959,9 +876,7 @@
         "ru": "Ты грустный."
       },
       "freqRank": 55,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crying-face",
       "voices": [
         {
@@ -983,9 +898,7 @@
         "ar": "أنا حزين."
       },
       "freqRank": 56,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crying-face",
       "voices": [
         {
@@ -1006,9 +919,7 @@
         "ar": "كان توم حزينا."
       },
       "freqRank": 57,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crying-face",
       "voices": [
         {
@@ -1029,9 +940,7 @@
         "ru": "Идите с миром!"
       },
       "freqRank": 58,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:peace-symbol",
       "voices": [
         {
@@ -1052,9 +961,7 @@
         "ru": "Мы хотим мира."
       },
       "freqRank": 59,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:peace-symbol",
       "voices": [
         {
@@ -1075,9 +982,7 @@
         "ru": "Солнце светит."
       },
       "freqRank": 60,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
       "voices": [
         {
@@ -1098,10 +1003,7 @@
         "ru": "Это длится целую вечность."
       },
       "freqRank": 61,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:hourglass-not-done",
       "voices": [
         {
@@ -1123,9 +1025,7 @@
         "ru": "Две женщины поют."
       },
       "freqRank": 62,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
       "voices": [
         {
@@ -1147,9 +1047,7 @@
         "ru": "Ты занят?"
       },
       "freqRank": 63,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
         {
@@ -1170,9 +1068,7 @@
         "ru": "Я занят."
       },
       "freqRank": 64,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
         {
@@ -1193,9 +1089,7 @@
         "ru": "Завтра Рождество."
       },
       "freqRank": 65,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:christmas-tree",
       "voices": [
         {
@@ -1217,9 +1111,7 @@
         "ru": "Я люблю вино."
       },
       "freqRank": 66,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
       "voices": [
         {
@@ -1240,10 +1132,7 @@
         "ru": "Ей нравится вино."
       },
       "freqRank": 67,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:wine-glass",
       "voices": [
         {
@@ -1264,9 +1153,7 @@
         "ru": "У нас есть вино."
       },
       "freqRank": 68,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
       "voices": [
         {
@@ -1287,9 +1174,7 @@
         "ru": "Детям нужно спать."
       },
       "freqRank": 69,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -1310,9 +1195,7 @@
         "ru": "Интересно, да?"
       },
       "freqRank": 70,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-raised-eyebrow",
       "voices": [
         {
@@ -1333,9 +1216,7 @@
         "ru": "Ты меня любишь?"
       },
       "freqRank": 71,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:growing-heart",
       "voices": [
         {
@@ -1357,9 +1238,7 @@
         "ru": "Кого ты любишь?"
       },
       "freqRank": 72,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
         {
@@ -1380,9 +1259,7 @@
         "ru": "Где Джим?"
       },
       "freqRank": 73,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:round-pushpin",
       "voices": [
         {
@@ -1404,9 +1281,7 @@
         "ar": "انه يحب الشاي."
       },
       "freqRank": 74,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:teacup-without-handle",
       "voices": [
         {
@@ -1427,9 +1302,7 @@
         "ru": "Я люблю чай."
       },
       "freqRank": 75,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:teacup-without-handle",
       "voices": [
         {
@@ -1451,9 +1324,7 @@
         "ru": "Кофе или чай?"
       },
       "freqRank": 76,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-beverage",
       "voices": [
         {
@@ -1474,9 +1345,7 @@
         "ru": "Я выживу."
       },
       "freqRank": 77,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:flexed-biceps",
       "voices": [
         {
@@ -1498,9 +1367,7 @@
         "ru": "Тони был счастлив."
       },
       "freqRank": 78,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:grinning-face",
       "voices": [
         {
@@ -1521,9 +1388,7 @@
         "ru": "Ты помог?"
       },
       "freqRank": 79,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/de_beginner/63-de_DE-thorsten-medium.m4a",
@@ -1543,9 +1408,7 @@
         "ru": "Он живёт здесь."
       },
       "freqRank": 80,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house-with-garden",
       "voices": [
         {
@@ -1567,9 +1430,7 @@
         "ru": "Где живет Джон?"
       },
       "freqRank": 81,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -1590,9 +1451,7 @@
         "ru": "Я здоров."
       },
       "freqRank": 83,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
         {
@@ -1613,9 +1472,7 @@
         "ru": "Мэри красивая."
       },
       "freqRank": 84,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cherry-blossom",
       "voices": [
         {
@@ -1637,9 +1494,7 @@
         "ar": "أين مريم؟"
       },
       "freqRank": 85,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:round-pushpin",
       "voices": [
         {
@@ -1661,9 +1516,7 @@
         "ar": "هل أنا حامل؟"
       },
       "freqRank": 86,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pregnant-woman",
       "voices": [
         {
@@ -1684,9 +1537,7 @@
         "ar": "أنا حامل."
       },
       "freqRank": 87,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pregnant-woman",
       "voices": [
         {
@@ -1708,9 +1559,7 @@
         "ru": "Никто меня не понимает."
       },
       "freqRank": 88,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pensive-face",
       "voices": [
         {
@@ -1731,9 +1580,7 @@
         "ru": "Чай без льда."
       },
       "freqRank": 89,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:teacup-without-handle",
       "voices": [
         {
@@ -1754,9 +1601,7 @@
         "ru": "Два мороженых, пожалуйста."
       },
       "freqRank": 90,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:candy",
       "voices": [
         {
@@ -1778,10 +1623,7 @@
         "ar": "لا شكر على واجب."
       },
       "freqRank": 91,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:smiling-face-with-smiling-eyes",
       "voices": [
         {
@@ -1802,9 +1644,7 @@
         "ru": "Я доволен."
       },
       "freqRank": 92,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:relieved-face",
       "voices": [
         {
@@ -1825,9 +1665,7 @@
         "ru": "О чём мы говорим?"
       },
       "freqRank": 93,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speech-balloon",
       "voices": [
         {
@@ -1848,9 +1686,7 @@
         "ru": "Я слышу голоса."
       },
       "freqRank": 94,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ear",
       "voices": [
         {
@@ -1872,9 +1708,7 @@
         "ru": "Телефон звонит."
       },
       "freqRank": 96,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:telephone",
       "voices": [
         {
@@ -1897,9 +1731,7 @@
         "ar": "أعمل في الليل."
       },
       "freqRank": 95,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:night-with-stars",
       "voices": [
         {
@@ -1920,9 +1752,7 @@
         "ru": "Питер любит Джейн."
       },
       "freqRank": 97,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
         {
@@ -1943,9 +1773,7 @@
         "ru": "Не двигайтесь."
       },
       "freqRank": 98,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:raised-hand",
       "voices": [
         {
@@ -1966,9 +1794,7 @@
         "ar": "هل علمتَ بذلك؟"
       },
       "freqRank": 99,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
         {
@@ -1989,9 +1815,7 @@
         "ru": "Ребёнок спит."
       },
       "freqRank": 100,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -2013,9 +1837,7 @@
         "ru": "Собака спит."
       },
       "freqRank": 101,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -2036,9 +1858,7 @@
         "ru": "Он любит спать."
       },
       "freqRank": 102,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -2059,9 +1879,7 @@
         "ru": "Она уже спит."
       },
       "freqRank": 105,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -2082,9 +1900,7 @@
         "ru": "Он не спит."
       },
       "freqRank": 103,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -2105,9 +1921,7 @@
         "ru": "Где спит Том?"
       },
       "freqRank": 106,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
       "voices": [
         {
@@ -2128,9 +1942,7 @@
         "ru": "Он ещё спит."
       },
       "freqRank": 104,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -2151,9 +1963,7 @@
         "ru": "Я обожаю игры."
       },
       "freqRank": 107,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:game-die",
       "voices": [
         {
@@ -2176,9 +1986,7 @@
         "ar": "ما هي الحرية؟"
       },
       "freqRank": 108,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
       "voices": [
         {
@@ -2199,9 +2007,7 @@
         "ru": "Надежда есть."
       },
       "freqRank": 109,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crossed-fingers",
       "voices": [
         {
@@ -2222,9 +2028,7 @@
         "ru": "Душа моя поёт."
       },
       "freqRank": 110,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-notes",
       "voices": [
         {
@@ -2245,9 +2049,7 @@
         "ru": "Я люблю цветы."
       },
       "freqRank": 111,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bouquet",
       "voices": [
         {
@@ -2269,9 +2071,7 @@
         "ru": "Он учитель."
       },
       "freqRank": 113,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
         {
@@ -2293,9 +2093,7 @@
         "ru": "Я не вру."
       },
       "freqRank": 112,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
       "voices": [
         {
@@ -2317,9 +2115,7 @@
         "ru": "Ты ешь мясо?"
       },
       "freqRank": 115,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cut-of-meat",
       "voices": [
         {
@@ -2341,9 +2137,7 @@
         "ar": "كنت معلماً."
       },
       "freqRank": 114,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
         {
@@ -2365,9 +2159,7 @@
         "ru": "Что ты ешь?"
       },
       "freqRank": 116,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -2389,9 +2181,7 @@
         "ar": "كان امراً مستعجَلاً."
       },
       "freqRank": 117,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:police-car-light",
       "voices": [
         {
@@ -2413,9 +2203,7 @@
         "ru": "Поговори со мной!"
       },
       "freqRank": 118,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -2437,9 +2225,7 @@
         "ru": "Я ненавижу собак."
       },
       "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -2461,9 +2247,7 @@
         "ru": "Ты любишь рыбу?"
       },
       "freqRank": 120,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fish",
       "voices": [
         {
@@ -2485,9 +2269,7 @@
         "ru": "Кровь красная."
       },
       "freqRank": 121,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:drop-of-blood",
       "voices": [
         {
@@ -2509,9 +2291,7 @@
         "ar": "هل تعمل اليوم؟"
       },
       "freqRank": 122,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
         {
@@ -2534,9 +2314,7 @@
         "ar": "أين تعمل؟"
       },
       "freqRank": 123,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
         {
@@ -2558,9 +2336,7 @@
         "ar": "لماذا تسأل؟"
       },
       "freqRank": 124,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
         {
@@ -2582,9 +2358,7 @@
         "ar": "أنا شبعان."
       },
       "freqRank": 125,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -2606,10 +2380,7 @@
         "ar": "هل تتكلم اللغة الإنجليزية؟"
       },
       "freqRank": 128,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -2632,9 +2403,7 @@
         "ar": "اليوم هو الأحد."
       },
       "freqRank": 130,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:calendar",
       "voices": [
         {
@@ -2656,9 +2425,7 @@
         "ar": "يمكنني السباحة."
       },
       "freqRank": 127,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
         {
@@ -2680,9 +2447,7 @@
         "ru": "Счет, пожалуйста."
       },
       "freqRank": 131,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:receipt",
       "voices": [
         {
@@ -2704,9 +2469,7 @@
         "ru": "Я скучаю по тебе."
       },
       "freqRank": 129,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pleading-face",
       "voices": [
         {
@@ -2729,9 +2492,7 @@
         "ar": "المرأة تقرأ"
       },
       "freqRank": 132,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -2753,9 +2514,7 @@
         "ru": "Что ты читаешь?"
       },
       "freqRank": 133,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -2777,9 +2536,7 @@
         "ar": "اليوم يوم السبت."
       },
       "freqRank": 134,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:calendar",
       "voices": [
         {
@@ -2801,9 +2558,7 @@
         "ru": "Где ты живёшь?"
       },
       "freqRank": 135,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -2825,10 +2580,7 @@
         "ru": "Мы — врачи."
       },
       "freqRank": 136,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "image": "cue:stethoscope",
       "voices": [
         {
@@ -2850,9 +2602,7 @@
         "ar": "اليوم هو الإثنين"
       },
       "freqRank": 137,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:spiral-calendar",
       "voices": [
         {
@@ -2874,9 +2624,7 @@
         "ru": "Я смущён."
       },
       "freqRank": 138,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:confused-face",
       "voices": [
         {
@@ -2898,9 +2646,7 @@
         "ru": "Он пьёт воду."
       },
       "freqRank": 141,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:potable-water",
       "voices": [
         {
@@ -2922,9 +2668,7 @@
         "ru": "Я пью молоко."
       },
       "freqRank": 139,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glass-of-milk",
       "voices": [
         {
@@ -2946,9 +2690,7 @@
         "ru": "Она пьёт кофе."
       },
       "freqRank": 142,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-beverage",
       "voices": [
         {
@@ -2971,9 +2713,7 @@
         "ar": "أنا أشرب الماء"
       },
       "freqRank": 140,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:potable-water",
       "voices": [
         {
@@ -2995,9 +2735,7 @@
         "ru": "Открой своё сердце."
       },
       "freqRank": 145,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
         {
@@ -3020,9 +2758,7 @@
         "ar": "أنا آكل الخبز."
       },
       "freqRank": 143,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife",
       "voices": [
         {
@@ -3044,9 +2780,7 @@
         "ar": "الدنيا صغيرة."
       },
       "freqRank": 146,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -3068,9 +2802,7 @@
         "ru": "Я не ем."
       },
       "freqRank": 144,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife",
       "voices": [
         {
@@ -3092,9 +2824,7 @@
         "ru": "Он был очень бедным."
       },
       "freqRank": 147,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:coin",
       "voices": [
         {
@@ -3116,9 +2846,7 @@
         "ar": "البارحة كان برداً."
       },
       "freqRank": 148,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cold-face",
       "voices": [
         {
@@ -3140,9 +2868,7 @@
         "ru": "Лиха беда начало."
       },
       "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:new-button",
       "voices": [
         {
@@ -3164,9 +2890,7 @@
         "ru": "Я не устал."
       },
       "freqRank": 150,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleepy-face",
       "voices": [
         {
@@ -3188,9 +2912,7 @@
         "ru": "Мои глаза устали."
       },
       "freqRank": 152,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:eye",
       "voices": [
         {
@@ -3212,9 +2934,7 @@
         "ru": "Я очень устал."
       },
       "freqRank": 151,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:weary-face",
       "voices": [
         {
@@ -3236,9 +2956,7 @@
         "ru": "Это не шутка."
       },
       "freqRank": 153,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:warning",
       "voices": [
         {
@@ -3260,15 +2978,14 @@
         "ru": "Моя лошадь белая."
       },
       "freqRank": 154,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/de_beginner/136-de_DE-thorsten-medium.m4a",
           "voice": "de_DE-thorsten-medium"
         }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 137,
@@ -3283,15 +3000,14 @@
         "ru": "Где моя лошадь?"
       },
       "freqRank": 155,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/de_beginner/137-de_DE-thorsten-medium.m4a",
           "voice": "de_DE-thorsten-medium"
         }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 138,
@@ -3306,9 +3022,7 @@
         "ru": "Сегодня мой день рождения."
       },
       "freqRank": 156,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -3330,9 +3044,7 @@
         "ar": "متى عيد ميلادك؟"
       },
       "freqRank": 157,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -3354,9 +3066,7 @@
         "ru": "Где находится банк?"
       },
       "freqRank": 158,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dollar-banknote",
       "voices": [
         {
@@ -3378,9 +3088,7 @@
         "ru": "Я занят сегодня."
       },
       "freqRank": 159,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
         {
@@ -3402,9 +3110,7 @@
         "ru": "Это был сюрприз."
       },
       "freqRank": 162,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:confetti-ball",
       "voices": [
         {
@@ -3426,9 +3132,7 @@
         "ar": "لست مشغولة."
       },
       "freqRank": 160,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
         {
@@ -3450,10 +3154,7 @@
         "ru": "Это не удивительно."
       },
       "freqRank": 163,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:unamused-face",
       "voices": [
         {
@@ -3475,9 +3176,7 @@
         "ru": "Вчера я был занят."
       },
       "freqRank": 161,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
         {
@@ -3500,9 +3199,7 @@
         "ar": "بوب صديقي."
       },
       "freqRank": 164,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {
@@ -3524,9 +3221,7 @@
         "ru": "Стакан чистый."
       },
       "freqRank": 165,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tumbler-glass",
       "voices": [
         {
@@ -3548,9 +3243,7 @@
         "ar": "كوبي كامل."
       },
       "freqRank": 166,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tumbler-glass",
       "voices": [
         {
@@ -3572,9 +3265,7 @@
         "ru": "Америка очень большая."
       },
       "freqRank": 167,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:world-map",
       "voices": [
         {
@@ -3596,9 +3287,7 @@
         "ru": "Где газета?"
       },
       "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:page-facing-up",
       "voices": [
         {
@@ -3620,9 +3309,7 @@
         "ar": "مع من أتكلم؟"
       },
       "freqRank": 169,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -3644,9 +3331,7 @@
         "ru": "У тебя две книги."
       },
       "freqRank": 170,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
         {
@@ -3668,9 +3353,7 @@
         "ru": "Почему ангелы умеют летать?"
       },
       "freqRank": 172,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
       "voices": [
         {
@@ -3692,9 +3375,7 @@
         "ru": "Ты ангел!"
       },
       "freqRank": 171,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sparkling-heart",
       "voices": [
         {
@@ -3716,9 +3397,7 @@
         "ru": "Это была ложь."
       },
       "freqRank": 173,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
       "voices": [
         {
@@ -3740,9 +3419,7 @@
         "ru": "У него три брата."
       },
       "freqRank": 174,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:men-holding-hands",
       "voices": [
         {
@@ -3764,9 +3441,7 @@
         "ru": "Моё сердце разбито."
       },
       "freqRank": 175,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broken-heart",
       "voices": [
         {
@@ -3788,9 +3463,7 @@
         "ar": "هذه شجرة."
       },
       "freqRank": 176,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:seedling",
       "voices": [
         {
@@ -3813,9 +3486,7 @@
         "ar": "أنا مدرس أيضاً."
       },
       "freqRank": 178,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
         {
@@ -3837,10 +3508,7 @@
         "ru": "Ничего не получится."
       },
       "freqRank": 177,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:prohibited",
       "voices": [
         {
@@ -3862,10 +3530,7 @@
         "ar": "أبي مدرّس."
       },
       "freqRank": 179,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "image": "cue:school",
       "voices": [
         {
@@ -3887,9 +3552,7 @@
         "ar": "أنا بطل."
       },
       "freqRank": 180,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:superhero",
       "voices": [
         {
@@ -3911,9 +3574,7 @@
         "ru": "Это мой кот."
       },
       "freqRank": 181,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -3935,9 +3596,7 @@
         "ru": "У меня нет кошки."
       },
       "freqRank": 182,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -3959,9 +3618,7 @@
         "ru": "Это кошка?"
       },
       "freqRank": 184,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -3983,9 +3640,7 @@
         "ru": "Я своего кота ищу."
       },
       "freqRank": 183,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -4007,9 +3662,7 @@
         "ru": "Моя кошка белая."
       },
       "freqRank": 185,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -4031,9 +3684,7 @@
         "ru": "Где кошка?"
       },
       "freqRank": 186,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -4055,9 +3706,7 @@
         "ru": "Это мои штаны."
       },
       "freqRank": 187,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:t-shirt",
       "voices": [
         {
@@ -4079,9 +3728,7 @@
         "ru": "У меня три собаки."
       },
       "freqRank": 188,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -4103,9 +3750,7 @@
         "ru": "Этот пирог сладкий."
       },
       "freqRank": 189,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shortcake",
       "voices": [
         {
@@ -4127,9 +3772,7 @@
         "ar": "يا لها من مصادفة!"
       },
       "freqRank": 190,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:astonished-face",
       "voices": [
         {
@@ -4151,9 +3794,7 @@
         "ru": "Я не американец."
       },
       "freqRank": 191,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -4175,9 +3816,7 @@
         "ru": "Кошка чёрная."
       },
       "freqRank": 192,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -4200,10 +3839,7 @@
         "ar": "انا من فرنسا."
       },
       "freqRank": 193,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -4225,9 +3861,7 @@
         "ar": "شكراً لتوضيحك."
       },
       "freqRank": 195,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:folded-hands",
       "voices": [
         {
@@ -4249,9 +3883,7 @@
         "ru": "Я понимаю твой язык."
       },
       "freqRank": 194,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -4273,9 +3905,7 @@
         "ru": "Ты едешь слишком быстро."
       },
       "freqRank": 196,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -4297,9 +3927,7 @@
         "ar": "هو يكتب رسالة."
       },
       "freqRank": 197,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
       "voices": [
         {
@@ -4321,9 +3949,7 @@
         "ru": "Том пишет книгу."
       },
       "freqRank": 198,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -4346,9 +3972,7 @@
         "ar": "أنا أكره جيراني."
       },
       "freqRank": 200,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:houses",
       "voices": [
         {
@@ -4370,9 +3994,7 @@
         "ru": "Том пишет письмо."
       },
       "freqRank": 199,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -4394,9 +4016,7 @@
         "ar": "عيد ميلاد سعيد!‏‏"
       },
       "freqRank": 201,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -4418,9 +4038,7 @@
         "ru": "Где аэропорт?"
       },
       "freqRank": 202,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:airplane",
       "voices": [
         {
@@ -4442,9 +4060,7 @@
         "ar": "ليس لدي أخوات."
       },
       "freqRank": 203,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:women-holding-hands",
       "voices": [
         {
@@ -4466,10 +4082,7 @@
         "ru": "Надежда умирает последней."
       },
       "freqRank": 204,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:crossed-fingers",
       "voices": [
         {
@@ -4491,9 +4104,7 @@
         "ru": "Ты должен говорить по-английски."
       },
       "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -4515,9 +4126,7 @@
         "ru": "Мир говорит по-английски."
       },
       "freqRank": 205,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -4539,9 +4148,7 @@
         "ru": "Он читает книгу."
       },
       "freqRank": 207,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -4563,9 +4170,7 @@
         "ar": "إني أكتب مقالا."
       },
       "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -4587,10 +4192,7 @@
         "ru": "\"Поверь мне\", — сказал он."
       },
       "freqRank": 209,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru", "tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru", "tr"] },
       "image": "cue:handshake",
       "voices": [
         {
@@ -4612,9 +4214,7 @@
         "ru": "Он говорит на десяти языках."
       },
       "freqRank": 210,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -4636,9 +4236,7 @@
         "ar": "وصلت البارحة."
       },
       "freqRank": 211,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:airplane-arrival",
       "voices": [
         {
@@ -4660,9 +4258,7 @@
         "ru": "Где зеркало?"
       },
       "freqRank": 212,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:mirror",
       "voices": [
         {
@@ -4684,9 +4280,7 @@
         "ru": "Мужчина ест хлеб."
       },
       "freqRank": 213,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:man",
       "voices": [
         {
@@ -4708,9 +4302,7 @@
         "ru": "Я не пью кофе."
       },
       "freqRank": 214,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-beverage",
       "voices": [
         {
@@ -4732,9 +4324,7 @@
         "ru": "Он гений."
       },
       "freqRank": 216,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
         {
@@ -4756,9 +4346,7 @@
         "ru": "Я вина не пью."
       },
       "freqRank": 215,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
       "voices": [
         {
@@ -4780,9 +4368,7 @@
         "ar": "هل تحتاج سيارةَ إسعافٍ؟"
       },
       "freqRank": 219,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ambulance",
       "voices": [
         {
@@ -4804,9 +4390,7 @@
         "ar": "أنا جوعانة جداً."
       },
       "freqRank": 217,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:drooling-face",
       "voices": [
         {
@@ -4828,9 +4412,7 @@
         "ru": "Ребенок учится говорить."
       },
       "freqRank": 221,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -4852,9 +4434,7 @@
         "ru": "Я в Интернете."
       },
       "freqRank": 218,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:mobile-phone",
       "voices": [
         {
@@ -4876,10 +4456,7 @@
         "ar": "حبل الكذب قصير."
       },
       "freqRank": 222,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:lying-face",
       "voices": [
         {
@@ -4901,9 +4478,7 @@
         "ar": "أنا من الصين."
       },
       "freqRank": 220,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -4925,9 +4500,7 @@
         "ar": "هل تذكرني؟"
       },
       "freqRank": 223,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
         {
@@ -4949,9 +4522,7 @@
         "ru": "Ты выглядишь очень уставшим!"
       },
       "freqRank": 224,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:weary-face",
       "voices": [
         {
@@ -4974,9 +4545,7 @@
         "ar": "إشتريت كتاباً."
       },
       "freqRank": 225,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
         {
@@ -4998,9 +4567,7 @@
         "ru": "У моей тёти трое детей."
       },
       "freqRank": 226,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
         {
@@ -5022,9 +4589,7 @@
         "ru": "У меня большой дом."
       },
       "freqRank": 228,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -5046,9 +4611,7 @@
         "ru": "У моей тёти было трое детей."
       },
       "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
         {
@@ -5070,9 +4633,7 @@
         "ar": "نحن نعيش في مجتمع."
       },
       "freqRank": 229,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:busts-in-silhouette",
       "voices": [
         {
@@ -5094,10 +4655,7 @@
         "ar": "هذا منزل جميل."
       },
       "freqRank": 230,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "image": "cue:house",
       "voices": [
         {
@@ -5119,9 +4677,7 @@
         "ar": "إنه يوم جميل."
       },
       "freqRank": 231,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:rainbow",
       "voices": [
         {
@@ -5143,9 +4699,7 @@
         "ru": "Сегодня прекрасный день."
       },
       "freqRank": 232,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:rainbow",
       "voices": [
         {
@@ -5167,9 +4721,7 @@
         "ru": "Завтра новый день."
       },
       "freqRank": 233,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunrise",
       "voices": [
         {
@@ -5191,9 +4743,7 @@
         "ar": "ليلة سعيدة و أحلام أسعد."
       },
       "freqRank": 234,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crescent-moon",
       "voices": [
         {
@@ -5215,9 +4765,7 @@
         "ar": "إنه ينام كطفل."
       },
       "freqRank": 235,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -5239,9 +4787,7 @@
         "ar": "لكلّ مشكلة حلّ."
       },
       "freqRank": 236,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
         {
@@ -5263,16 +4809,14 @@
         "ar": "الحصان حيوان."
       },
       "freqRank": 237,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "voices": [
         {
           "key": "echo/packs/de_beginner/219-de_DE-thorsten-medium.m4a",
           "voice": "de_DE-thorsten-medium"
         }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 220,
@@ -5287,9 +4831,7 @@
         "ru": "У неё есть белый кот."
       },
       "freqRank": 238,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -5311,9 +4853,7 @@
         "ar": "لدينا قط أبيض."
       },
       "freqRank": 239,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -5335,9 +4875,7 @@
         "ar": "إنك تتكلم كأمك."
       },
       "freqRank": 240,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -5359,9 +4897,7 @@
         "ru": "Он выше меня."
       },
       "freqRank": 241,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:straight-ruler",
       "voices": [
         {
@@ -5383,9 +4919,7 @@
         "ru": "Она выше, чем он."
       },
       "freqRank": 242,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:straight-ruler",
       "voices": [
         {
@@ -5407,9 +4941,7 @@
         "ru": "Том выше Мэри."
       },
       "freqRank": 243,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:straight-ruler",
       "voices": [
         {
@@ -5431,9 +4963,7 @@
         "ru": "Сейчас восемь часов утра."
       },
       "freqRank": 244,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunrise",
       "voices": [
         {
@@ -5455,9 +4985,7 @@
         "ru": "Какого цвета эта рыба?"
       },
       "freqRank": 245,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fish",
       "voices": [
         {
@@ -5479,10 +5007,7 @@
         "ru": "Моё новое платье — красное."
       },
       "freqRank": 246,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "image": "cue:t-shirt",
       "voices": [
         {
@@ -5504,10 +5029,7 @@
         "ru": "Я ненавижу путешествовать."
       },
       "freqRank": 247,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:luggage",
       "voices": [
         {
@@ -5529,9 +5051,7 @@
         "ar": "كَم لبثت؟"
       },
       "freqRank": 248,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-not-done",
       "voices": [
         {
@@ -5553,9 +5073,7 @@
         "ar": "روما مدينة قديمة."
       },
       "freqRank": 249,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cityscape-at-dusk",
       "voices": [
         {
@@ -5577,9 +5095,7 @@
         "ru": "Ребёнок заплакал."
       },
       "freqRank": 250,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -5601,10 +5117,7 @@
         "ru": "Она старше него."
       },
       "freqRank": 251,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -5626,9 +5139,7 @@
         "ru": "Том старше, чем я."
       },
       "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -5650,9 +5161,7 @@
         "ar": "هناك اثنا عشر شهرًا في السنة."
       },
       "freqRank": 253,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:calendar",
       "voices": [
         {
@@ -5674,9 +5183,7 @@
         "ar": "تَشعرُ بالوحدة، أليس كذلك؟"
       },
       "freqRank": 254,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-standing",
       "voices": [
         {
@@ -5698,9 +5205,7 @@
         "ru": "Он назвал его лжецом."
       },
       "freqRank": 255,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
       "voices": [
         {
@@ -5722,9 +5227,7 @@
         "ru": "Я здесь с субботы."
       },
       "freqRank": 256,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:calendar",
       "voices": [
         {
@@ -5746,9 +5249,7 @@
         "ru": "На скольких языках ты говоришь?"
       },
       "freqRank": 257,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -5770,9 +5271,7 @@
         "ru": "Все дороги ведут в Рим."
       },
       "freqRank": 258,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:compass",
       "voices": [
         {
@@ -5794,9 +5293,7 @@
         "ru": "Кого ты пытаешься убедить?"
       },
       "freqRank": 259,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speech-balloon",
       "voices": [
         {
@@ -5818,9 +5315,7 @@
         "ru": "Я ем здесь каждый день."
       },
       "freqRank": 260,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -5842,9 +5337,7 @@
         "ru": "У Тома есть друзья в Германии."
       },
       "freqRank": 261,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {
@@ -5866,9 +5359,7 @@
         "ru": "Каков возраст Вселенной?"
       },
       "freqRank": 262,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:night-with-stars",
       "voices": [
         {
@@ -5890,9 +5381,7 @@
         "ru": "Мы живем в прекрасном городе."
       },
       "freqRank": 263,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cityscape-at-dusk",
       "voices": [
         {
@@ -5914,9 +5403,7 @@
         "ru": "Вчера утром было очень холодно."
       },
       "freqRank": 264,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cold-face",
       "voices": [
         {
@@ -5938,9 +5425,7 @@
         "ar": "هذه الهدية لك."
       },
       "freqRank": 265,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wrapped-gift",
       "voices": [
         {
@@ -5962,9 +5447,7 @@
         "ru": "Сегодня у тебя день рождения, да?"
       },
       "freqRank": 266,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -5986,9 +5469,7 @@
         "ru": "Я нашёл эту книгу очень интересной."
       },
       "freqRank": 267,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -6010,9 +5491,7 @@
         "ru": "Он оставил дверь открытой."
       },
       "freqRank": 268,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:door",
       "voices": [
         {
@@ -6034,9 +5513,7 @@
         "ru": "Анна похожа на мою сестру."
       },
       "freqRank": 269,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:women-holding-hands",
       "voices": [
         {
@@ -6058,9 +5535,7 @@
         "ru": "Я не буду закрывать дверь."
       },
       "freqRank": 270,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:door",
       "voices": [
         {
@@ -6083,9 +5558,7 @@
         "ar": "قد يكون أو لا يكون صحيحًا."
       },
       "freqRank": 272,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-shrugging",
       "voices": [
         {
@@ -6107,9 +5580,7 @@
         "ru": "Я не хотел закрывать дверь."
       },
       "freqRank": 271,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:door",
       "voices": [
         {
@@ -6131,9 +5602,7 @@
         "ru": "Это было слишком сложно для меня."
       },
       "freqRank": 273,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:weary-face",
       "voices": [
         {
@@ -6155,10 +5624,7 @@
         "ru": "Мэри — женщина моей мечты."
       },
       "freqRank": 274,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "image": "cue:heart-with-arrow",
       "voices": [
         {
@@ -6180,9 +5646,7 @@
         "ar": "يمكننا التحدث في القطار."
       },
       "freqRank": 275,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:train",
       "voices": [
         {
@@ -6204,9 +5668,7 @@
         "ru": "Картина висит на стене."
       },
       "freqRank": 276,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:artist-palette",
       "voices": [
         {
@@ -6228,9 +5690,7 @@
         "ru": "Я знаю, что вы учитель."
       },
       "freqRank": 277,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
         {
@@ -6252,9 +5712,7 @@
         "ru": "Кошка под кроватью."
       },
       "freqRank": 278,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -6276,10 +5734,7 @@
         "ar": "من يضحك أخيرًا يضحك كثيرًا."
       },
       "freqRank": 280,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:face-with-tears-of-joy",
       "voices": [
         {
@@ -6301,9 +5756,7 @@
         "ru": "Кошка спит на столе."
       },
       "freqRank": 279,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
         {
@@ -6325,9 +5778,7 @@
         "ru": "О вкусах не спорят."
       },
       "freqRank": 281,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-shrugging",
       "voices": [
         {
@@ -6349,9 +5800,7 @@
         "ru": "Ноль стоит перед единицей."
       },
       "freqRank": 282,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:input-numbers",
       "voices": [
         {
@@ -6373,9 +5822,7 @@
         "ru": "Как провёл отпуск?"
       },
       "freqRank": 283,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:luggage",
       "voices": [
         {
@@ -6397,9 +5844,7 @@
         "ru": "Он ничего не видит без очков."
       },
       "freqRank": 284,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glasses",
       "voices": [
         {
@@ -6421,9 +5866,7 @@
         "ru": "Похоже на яйцо."
       },
       "freqRank": 285,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:egg",
       "voices": [
         {
@@ -6445,9 +5888,7 @@
         "ru": "У Тома много денег в банке."
       },
       "freqRank": 286,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -6469,9 +5910,7 @@
         "ru": "Пока есть жизнь, есть надежда."
       },
       "freqRank": 287,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crossed-fingers",
       "voices": [
         {
@@ -6493,9 +5932,7 @@
         "ru": "Я целый день не ел."
       },
       "freqRank": 288,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -6517,9 +5954,7 @@
         "ru": "Сегодня мы не пойдём в парк?"
       },
       "freqRank": 290,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-walking",
       "voices": [
         {
@@ -6542,9 +5977,7 @@
         "ar": "ليست لدي أدنى فكرة عن مكان إقامتها."
       },
       "freqRank": 289,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-shrugging",
       "voices": [
         {
@@ -6566,9 +5999,7 @@
         "ru": "Луна вращается вокруг Земли."
       },
       "freqRank": 292,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crescent-moon",
       "voices": [
         {
@@ -6590,9 +6021,7 @@
         "ru": "У меня нет времени на чтение книг."
       },
       "freqRank": 291,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-done",
       "voices": [
         {
@@ -6614,10 +6043,7 @@
         "ru": "Он старше меня на два года."
       },
       "freqRank": 295,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:birthday-cake",
       "voices": [
         {
@@ -6639,9 +6065,7 @@
         "ru": "У меня три брата и четыре сестры."
       },
       "freqRank": 293,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
         {
@@ -6663,9 +6087,7 @@
         "ar": "غداً سيهبط على سطح القمر."
       },
       "freqRank": 296,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crescent-moon",
       "voices": [
         {
@@ -6687,9 +6109,7 @@
         "ru": "У меня два брата и три сестры."
       },
       "freqRank": 294,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
         {
@@ -6711,9 +6131,7 @@
         "ru": "Он ещё слишком молод для такой работы."
       },
       "freqRank": 297,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
         {
@@ -6735,9 +6153,7 @@
         "ru": "Таким образом я убиваю двух зайцев."
       },
       "freqRank": 298,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:rock",
       "voices": [
         {
@@ -6759,9 +6175,7 @@
         "ar": "حسب علمي، كان طالبا جيدا."
       },
       "freqRank": 299,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -6783,9 +6197,7 @@
         "ru": "Он встретил свою жену в интернете."
       },
       "freqRank": 300,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:mobile-phone",
       "voices": [
         {

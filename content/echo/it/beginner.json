@@ -2,7 +2,7 @@
   "id": "it:beginner",
   "lang": "it",
   "level": "beginner",
-  "contentVersion": 5,
+  "contentVersion": 6,
   "reviewed": true,
   "sources": [
     {
@@ -1028,7 +1028,8 @@
       "voices": [
         { "key": "echo/packs/it_beginner/51-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_beginner/51-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:paw-prints"
     },
     {
       "index": 52,
@@ -1622,7 +1623,8 @@
       "voices": [
         { "key": "echo/packs/it_beginner/82-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_beginner/82-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 83,
@@ -1640,7 +1642,8 @@
       "voices": [
         { "key": "echo/packs/it_beginner/83-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_beginner/83-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 84,
@@ -3122,7 +3125,8 @@
       "voices": [
         { "key": "echo/packs/it_beginner/160-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_beginner/160-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 161,
@@ -3352,7 +3356,8 @@
       "voices": [
         { "key": "echo/packs/it_beginner/172-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_beginner/172-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:paw-prints"
     },
     {
       "index": 173,
@@ -3891,7 +3896,8 @@
       "voices": [
         { "key": "echo/packs/it_beginner/200-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_beginner/200-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 201,
@@ -4179,7 +4185,8 @@
       "voices": [
         { "key": "echo/packs/it_beginner/215-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_beginner/215-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:laptop"
     },
     {
       "index": 216,
