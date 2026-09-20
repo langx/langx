@@ -30,4 +30,17 @@ module.exports = () => ({
    * an accessory to it, not a gate on it.
    */
   deploymentTarget: '11.0',
+  /*
+   * The watch app needs an icon of its own, and nothing local says so. It
+   * builds, installs and runs without one; `altool` rejects the upload:
+   * "No icons found for watch application 'LangX.app/Watch/LangXWatch.app'"
+   * and a missing `CFBundleIconName` for the watch bundle. That validation
+   * runs only against a finished archive, so the gap cost build 162 — the
+   * whole compile and submit — to surface.
+   *
+   * The phone's own 1024 master, because a watch app wearing a different mark
+   * than the phone it belongs to is a bug nobody files. `@bacons/apple-targets`
+   * writes the asset catalogue and the Info.plist key from this one file.
+   */
+  icon: '../../assets/icons/default.png',
 })
