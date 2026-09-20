@@ -2405,4 +2405,16 @@ export const ar: Localized<EnMessages> = {
     messages: 'الرسائل',
     summary: 'هذا الأسبوع: {messages} و{corrections}.',
   },
+
+  watch: {
+    unread: 'غير المقروءة',
+    nothingUnread: 'لا رسائل غير مقروءة',
+    openOnPhone: 'افتح LangX على iPhone',
+    phoneNotReachable: 'iPhone غير متاح',
+    reply: 'رد',
+    sending: 'جارٍ الإرسال…',
+    sent: 'تم الإرسال',
+    notSent: 'لم يُرسل',
+    loading: 'جارٍ التحميل…',
+  },
 }

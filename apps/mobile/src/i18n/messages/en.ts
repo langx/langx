@@ -2256,6 +2256,25 @@ export const en = {
     messages: 'Messages',
     summary: 'This week: {messages} and {corrections}.',
   },
+
+  /*
+   The Apple Watch app, whose words cannot come from `t()` at runtime: they are
+   drawn by Swift on a second device. `scripts/generate-xcstrings.ts` copies
+   the keys listed in `src/i18n/nativeKeys.ts` out of these catalogues into an
+   Apple string catalogue the watch target compiles. So this block is still the
+   one source of truth â it simply reaches the watch by a different road.
+  */
+  watch: {
+    unread: 'Unread',
+    nothingUnread: 'Nothing unread',
+    openOnPhone: 'Open LangX on your iPhone',
+    phoneNotReachable: 'iPhone not reachable',
+    reply: 'Reply',
+    sending: 'Sending…',
+    sent: 'Sent',
+    notSent: 'Not sent',
+    loading: 'Loading…',
+  },
 } as const
 
 export type EnMessages = typeof en

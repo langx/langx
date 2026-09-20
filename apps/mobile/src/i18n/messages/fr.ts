@@ -2098,4 +2098,16 @@ export const fr: Localized<EnMessages> = {
     messages: 'Messages',
     summary: 'Cette semaine : {messages} et {corrections}.',
   },
+
+  watch: {
+    unread: 'Non lus',
+    nothingUnread: 'Rien de non lu',
+    openOnPhone: 'Ouvrez LangX sur votre iPhone',
+    phoneNotReachable: 'iPhone non joignable',
+    reply: 'Répondre',
+    sending: 'Envoi…',
+    sent: 'Envoyé',
+    notSent: 'Non envoyé',
+    loading: 'Chargement…',
+  },
 }

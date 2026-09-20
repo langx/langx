@@ -2122,4 +2122,16 @@ export const de: Localized<EnMessages> = {
     messages: 'Nachrichten',
     summary: 'Diese Woche: {messages} und {corrections}.',
   },
+
+  watch: {
+    unread: 'Ungelesen',
+    nothingUnread: 'Nichts Ungelesenes',
+    openOnPhone: 'Öffne LangX auf deinem iPhone',
+    phoneNotReachable: 'iPhone nicht erreichbar',
+    reply: 'Antworten',
+    sending: 'Senden…',
+    sent: 'Gesendet',
+    notSent: 'Nicht gesendet',
+    loading: 'Wird geladen…',
+  },
 }

@@ -438,6 +438,9 @@ importers:
       babel-preset-expo:
         specifier: ~57.0.8
         version: 57.0.8(@babel/core@7.29.7)(@babel/runtime@7.29.7)(expo@57.0.20)(react-refresh@0.14.2)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.23.13
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
