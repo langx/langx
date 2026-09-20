@@ -2,7 +2,7 @@
 
 The drawing language for a cue — the picture above the sentence on an Echo
 card. It governs every one of them: the set began as borrowed glyphs on our own
-plate and ended with all 371 drawn here, so there is no longer a second style
+plate and ended with all 372 drawn here, so there is no longer a second style
 for this to have to sit beside.
 
 ## The philosophy

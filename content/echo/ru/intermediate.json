@@ -2,7 +2,7 @@
   "id": "ru:intermediate",
   "lang": "ru",
   "level": "intermediate",
-  "contentVersion": 5,
+  "contentVersion": 6,
   "reviewed": true,
   "sources": [
     {
@@ -70,7 +70,7 @@
         "definition": "пожелание здоровья тому, кто чихнул",
         "otherSenses": ["пожелание здоровья, когда чокаются (1)"]
       },
-      "image": "cue:folded-hands",
+      "image": "cue:sneezing-face",
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/2-ru_RU-denis-medium.m4a",
@@ -137,7 +137,7 @@
         "translationCount": 3,
         "otherSenses": ["пожелание (2)"]
       },
-      "image": "cue:folded-hands",
+      "image": "cue:sneezing-face",
       "voices": [
         {
           "key": "echo/packs/ru_intermediate/5-ru_RU-denis-medium.m4a",

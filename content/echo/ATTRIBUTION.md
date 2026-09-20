@@ -260,14 +260,14 @@ person. That derivation is ours and is the expensive half of a French pack.
 Every card in these packs carries a cue above the sentence. There are two
 sources for them and they are kept apart on purpose — see `LICENSE`.
 
-**Nothing in them is borrowed.** All 371 cue pictures are drawn for this app,
+**Nothing in them is borrowed.** All 372 cue pictures are drawn for this app,
 from the shapes in `tools/echo-content/images/drawings.mjs`, and every one of
 the 4,894 cards that carries a cue points at one of them. The first 348 were
 drawn for the English packs and were not added to for the five new languages —
 the same set served all six, which is the point of keeping the slug rather
-than the phrase as what a card stores. The 23 added after them are what those
+than the phrase as what a card stores. The 24 added after them are what those
 five asked for and English never had: a horse, an apple, a bicycle, a paw
-print and nineteen more, each of which several cards across several languages
+print and twenty more, each of which several cards across several languages
 now share.
 
 That is a change from how this started. The first version of the set was
@@ -301,14 +301,19 @@ defend in eight languages; it is a hook for the eye. Where no honest picture
 existed the item keeps none — "I'm straight" has no cue and should not be given
 one.
 
-**The five new languages are blanker than English, and should be.** 4,010 of
-their 4,101 cards carry a cue and 91 do not, against one of 809 in English.
-That gap is not carelessness on one side or diligence on the other: the 348
-concepts were drawn _for_ the 808 English phrases, so near-total coverage there
-was true by construction. Where these packs go somewhere English never did —
-horses, bicycles, apples, wolves, chess pieces — the palette has nothing
-honest and the card keeps no picture. A card without a picture is fine. A card
-with the wrong one teaches a wrong association and nobody will report it.
+**The five new languages started blanker than English, for a reason worth
+keeping.** The first 348 concepts were drawn _for_ the 808 English phrases, so
+near-total coverage there was true by construction; where these packs went
+somewhere English never did — horses, bicycles, apples, wolves, chess — the
+palette had nothing honest and 92 cards kept no picture. Twenty-four concepts
+later, 4,086 of their 4,101 cards carry a cue and 15 do not, against one of
+809 in English.
+
+Those 15 are the answer rather than a backlog: abstractions with no subject to
+draw, a condom, a thief, a genie, a doll, a carpet. A card without a picture
+is fine. A card with the wrong one teaches a wrong association and nobody will
+report it — which is why `Le citron est acide.` stopped borrowing the
+tangerine and got a lemon of its own.
 
 ## Rejected
 

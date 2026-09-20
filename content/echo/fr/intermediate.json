@@ -2,7 +2,7 @@
   "id": "fr:intermediate",
   "lang": "fr",
   "level": "intermediate",
-  "contentVersion": 5,
+  "contentVersion": 6,
   "reviewed": true,
   "sources": [
     {
@@ -3674,7 +3674,7 @@
       "freqRank": 237,
       "review": { "glossedBy": "Tatoeba" },
       "voices": [{ "key": "echo/packs/fr_intermediate/224-ff_siwis.m4a", "voice": "ff_siwis" }],
-      "image": "cue:tangerine"
+      "image": "cue:lemon"
     },
     {
       "index": 225,
