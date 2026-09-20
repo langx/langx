@@ -240,11 +240,14 @@ the Flycast address carries the ports `[http_service]` publishes, 80 and 443.
 Naming 8080 there reaches the proxy, which has no service on that port and
 resets the connection a few seconds in, which reads like a machine that
 will not wake. Fly's proxy still fronts Flycast traffic, which is what lets
-the machine stop when idle and start on the first request —
+the machine sleep when idle and wake on the first request —
 `min_machines_running = 0` in its `fly.toml` is the whole cost story. Set the
-same `TTS_SECRET` on both apps, or on neither. The first request after a stop
-pays for a machine start and a model load; the API waits sixty seconds for it
-and the app shows a spinner.
+same `TTS_SECRET` on both apps, or on neither. It sleeps by `auto_stop_machines
+= 'suspend'`, so waking is its memory read back from disk with the model still
+in it — a couple of seconds, where a stopped machine spent twenty-three booting
+before it could read anything. A deploy still replaces the machine and Fly may
+drop a snapshot, so the API waits sixty seconds for the cold case and the app
+shows a spinner.
 
 ## Storage: B2 or R2
 
