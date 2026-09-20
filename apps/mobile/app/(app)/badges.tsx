@@ -1,11 +1,12 @@
 import { useLocalSearchParams } from 'expo-router'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Text } from 'react-native'
 import { useBadges, useMe, usePublicBadges } from '../../src/api/queries'
 import { BadgeGrid } from '../../src/components/BadgeGrid'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { badgeLadderTips } from '../../src/lib/badgeOrder'
 import { goBackTo } from '../../src/lib/navigation'
 import { ShareCardSheet, type ShareCardRequest } from '../../src/components/ShareCardSheet'
 import { badgeShareText } from '../../src/lib/shareText'
@@ -25,6 +26,11 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  *
  * There is no milestone card any more either: the nearest badge's progress is
  * drawn on its own row, where the reader is already looking for it.
+ *
+ * **Two rows per kind, not the whole ladder** — the top rung earned and the
+ * one after it. See `badgeLadderTips`. The header still counts against the
+ * whole catalogue, because "4 of 25" is a fact about what there is to earn
+ * and not about how many rows this screen chose to draw.
  *
  * With a `handle` it is somebody else's shelf, the way `follows` takes a
  * `userId` rather than living under `profile/[handle]/`. Two differences, both
@@ -52,6 +58,11 @@ export default function BadgesScreen() {
   // the earned half of it.
   const total = mine ? (own.data?.badges.length ?? 0) : (theirs.data?.total ?? 0)
   const next = mine ? own.data?.next : null
+
+  // Filtered here rather than in `BadgeGrid`: `total` and the empty state
+  // above are readings of the whole shelf, and both would be wrong if the
+  // short list were the only one this screen had.
+  const rows = useMemo(() => badgeLadderTips(data?.badges ?? []), [data])
 
   const pull = usePullToRefresh(() => (mine ? own.refetch() : theirs.refetch()))
   const handle = me.data?.handle
@@ -81,7 +92,7 @@ export default function BadgesScreen() {
         />
       ) : data ? (
         <BadgeGrid
-          badges={data.badges}
+          badges={rows}
           {...(next ? { next } : {})}
           {...(mine && handle
             ? {
