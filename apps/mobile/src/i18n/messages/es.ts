@@ -284,6 +284,7 @@ export const es: Localized<EnMessages> = {
     good: 'Bien',
     easy: 'Fácil',
     play: 'Reproducir',
+    playAgain: 'Escuchar otra vez',
     packNext: 'A continuación',
     autoplayOn: 'Reproducción automática activada',
     autoplayOff: 'Reproducción automática desactivada',
