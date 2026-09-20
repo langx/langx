@@ -23,3 +23,45 @@ import type { EarnedBadge } from '@langx/shared'
 export function badgesEarnedFirst(badges: readonly EarnedBadge[]): EarnedBadge[] {
   return [...badges].sort((a, b) => Number(b.earned) - Number(a.earned))
 }
+
+/**
+ * Two rows per kind: **where you are, and what is next.**
+ *
+ * A ladder used to arrive whole — first correction, ten, a hundred, and the
+ * four locked rungs above them — which is seven rows to say one thing. The
+ * rungs below the top are a history, and a history of a number that only goes
+ * up is already implied by the number itself: nobody holding "1,000
+ * corrections" is wondering whether they passed ten.
+ *
+ * So each kind keeps its **highest earned** rung and its **lowest unearned**
+ * one, and the page goes from twenty-five rows to about ten. The pair reads as
+ * a sentence — here, then there — which is what the screen was for.
+ *
+ * The lowest unearned rung is also always the one `next` can name: "nearest"
+ * is by fraction of the way there, and within a kind that is whichever rung
+ * comes first. So the progress fraction never lands on a row this drops.
+ *
+ * Thresholds decide, not the order the badges arrive in. Reading the tips off
+ * the array's ends would be right only for a caller who passed the catalogue
+ * in its own order, which is a precondition nothing here states — the same
+ * reason `badgeStripMarks` does its own sorting.
+ *
+ * Their shelf holds no locked rows at all, so there this is the strip's rule
+ * by another route: one mark per kind, the top one.
+ */
+export function badgeLadderTips(badges: readonly EarnedBadge[]): EarnedBadge[] {
+  const tips = new Map<string, EarnedBadge>()
+  for (const badge of badges) {
+    // Keyed by state as well as kind, so a kind's earned tip and its locked
+    // one never compete for the same slot.
+    const key = `${badge.kind}:${String(badge.earned)}`
+    const held = tips.get(key)
+    const beats = badge.earned
+      ? !held || badge.threshold > held.threshold
+      : !held || badge.threshold < held.threshold
+    if (beats) tips.set(key, badge)
+  }
+
+  const keep = new Set([...tips.values()].map((badge) => badge.id))
+  return badges.filter((badge) => keep.has(badge.id))
+}

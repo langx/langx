@@ -1,13 +1,30 @@
-import { Pressable, ScrollView, Text, View } from 'react-native'
+import { Pressable, ScrollView, View } from 'react-native'
 import type { ProfileBadge } from '@langx/shared'
 import { BadgeGlyph } from './BadgeGlyph'
 import { BADGE_MARKS } from '../lib/badgeMark'
 import { makeStyles, useTheme } from '../lib/theme'
-import { useLocale, useT } from '../i18n'
+import { useT } from '../i18n'
 
 /**
- * What somebody has earned, above their bio: a scrolling row of marks, and a
- * count for whatever is past the end of it.
+ * What somebody has earned, above their bio: a scrolling row of marks.
+ *
+ * **One mark per kind**, which is a rule the server keeps — see
+ * `badgeStripMarks`. A ladder's rungs all wear the same mark, so a climbed
+ * one used to arrive here as three identical circles; what is sent now is the
+ * newest rung of each kind.
+ *
+ * **There is no "+N" any more, because there is nothing left for it to
+ * count.** It used to say how many badges were past the end of the row, back
+ * when the row was every rung and the payload was capped. The shelf this
+ * opens now draws the tips of the same ladders — `badgeLadderTips` on an
+ * earned-only list is this rule by another route — so the row and the page
+ * hold the same badges, and any count of the difference is zero. A "+8" over
+ * a page with nothing extra on it is a promise the tap breaks.
+ *
+ * The count a screen reader hears is therefore the marks drawn, not the rungs
+ * behind them. The summary stopped sending that second number when the "+N"
+ * went: it had no other reader, and a profile paying for a number nothing
+ * draws is how a payload grows.
  *
  * **It scrolls, and it is still one button.** Those read as a contradiction
  * and are not: React Native's responder system hands the touch to whichever
@@ -16,7 +33,7 @@ import { useLocale, useT } from '../i18n'
  * inside a scroll is where that stops being predictable, and every mark opens
  * the same page anyway, so there is nothing to tell apart.
  *
- * **The marks take a fixed 80px** now that the row scrolls. While it did not,
+ * **The marks take a fixed 56px** now that the row scrolls. While it did not,
  * width was a budget and the marks divided it with `flex: 1`; inside a
  * horizontal `ScrollView` there is no bounded width to divide, so a flexed
  * child collapses. Fixed is not the compromise here — it is what a scrolling
@@ -33,22 +50,16 @@ import { useLocale, useT } from '../i18n'
  */
 export function BadgeStrip({
   badges,
-  total,
   onPress,
 }: {
   badges: readonly ProfileBadge[]
-  /** Every badge earned, not just the ones sent — this is what "+N" counts. */
-  total: number
   onPress: () => void
 }) {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
-  const { locale } = useLocale()
 
   if (badges.length === 0) return null
-
-  const rest = total - badges.length
 
   return (
     <ScrollView
@@ -59,7 +70,7 @@ export function BadgeStrip({
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={t('profile.badgeStrip', { count: total })}
+        accessibilityLabel={t('profile.badgeStrip', { count: badges.length })}
         onPress={onPress}
         style={({ pressed }) => [styles.strip, pressed && styles.pressed]}
       >
@@ -67,17 +78,16 @@ export function BadgeStrip({
           const mark = BADGE_MARKS[badge.kind](colors)
           return (
             <View key={badge.id} style={[styles.mark, { backgroundColor: mark.fill }]}>
-              <BadgeGlyph icon={badge.icon ?? 'award'} color={mark.glyph} size={40} />
+              <BadgeGlyph icon={badge.icon ?? 'award'} color={mark.glyph} size={28} />
             </View>
           )
         })}
-        {rest > 0 ? <Text style={styles.rest}>+{rest.toLocaleString(locale)}</Text> : null}
       </Pressable>
     </ScrollView>
   )
 }
 
-const useStyles = makeStyles(({ colors, radius, spacing }) => ({
+const useStyles = makeStyles(({ radius, spacing }) => ({
   // The vertical padding is the scroller's, so the marks do not sit against
   // the stats row above or the bio below while the row slides under them.
   scroller: { paddingVertical: spacing.lg },
@@ -90,9 +100,8 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   mark: {
     alignItems: 'center',
     borderRadius: radius.pill,
-    height: 80,
+    height: 56,
     justifyContent: 'center',
-    width: 80,
+    width: 56,
   },
-  rest: { color: colors.textMuted, fontSize: 15, fontWeight: '700' },
 }))

@@ -4,6 +4,7 @@ import {
   BADGE_KINDS,
   BADGE_SHAPES,
   badgesMostRecentFirst,
+  badgeStripMarks,
   findBadge,
   isCohortBadge,
   type EarnedBadge,
@@ -192,6 +193,71 @@ describe('badgesMostRecentFirst', () => {
     const input = [earned('streak.7', null), earned('streak.30', null)]
     const before = input.map((badge) => badge.id)
     badgesMostRecentFirst(input)
+
+    expect(input.map((badge) => badge.id)).toEqual(before)
+  })
+})
+
+describe('badgeStripMarks', () => {
+  function earned(id: string, earnedAt: string | null): EarnedBadge {
+    const definition = findBadge(id)
+    if (!definition) throw new Error(`no such badge: ${id}`)
+    return {
+      id: definition.id,
+      kind: definition.kind,
+      threshold: definition.threshold,
+      label: definition.label,
+      icon: definition.icon,
+      earned: true,
+      earnedAt,
+    }
+  }
+
+  it('keeps one mark per kind', () => {
+    const marks = badgeStripMarks([
+      earned('correction.1', null),
+      earned('correction.10', null),
+      earned('correction.100', null),
+      earned('messages.100', null),
+    ]).map((badge) => badge.id)
+
+    expect(marks).toEqual(['messages.100', 'correction.100'])
+  })
+
+  /** The half the sort is here for: catalogue order in, top rung out. */
+  it('keeps the top rung of an undated ladder, not the first', () => {
+    const marks = badgeStripMarks([
+      earned('streak.7', null),
+      earned('streak.30', null),
+      earned('streak.365', null),
+    ]).map((badge) => badge.id)
+
+    expect(marks).toEqual(['streak.365'])
+  })
+
+  it('keeps the latest of a dated kind', () => {
+    const marks = badgeStripMarks([
+      earned('veteran.730', '2026-04-02T00:00:00.000Z'),
+      earned('veteran.365', '2025-04-02T00:00:00.000Z'),
+    ]).map((badge) => badge.id)
+
+    expect(marks).toEqual(['veteran.730'])
+  })
+
+  /**
+   * Six kinds, so the strip is bounded by the catalogue rather than by a
+   * count — this is what replaced the cap the payload used to carry.
+   */
+  it('sends no more marks than there are kinds', () => {
+    const everything = BADGES.map((badge) => earned(badge.id, null))
+
+    expect(badgeStripMarks(everything).length).toBeLessThanOrEqual(BADGE_KINDS.length)
+  })
+
+  it('leaves the input alone', () => {
+    const input = [earned('streak.7', null), earned('streak.30', null)]
+    const before = input.map((badge) => badge.id)
+    badgeStripMarks(input)
 
     expect(input.map((badge) => badge.id)).toEqual(before)
   })

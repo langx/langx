@@ -396,11 +396,7 @@ export default function ProfileScreen() {
         earned none.
       */}
       {summary.data && !user.official ? (
-        <BadgeStrip
-          badges={summary.data.topBadges}
-          total={summary.data.badges}
-          onPress={() => openBadges(user.handle, here)}
-        />
+        <BadgeStrip badges={summary.data.topBadges} onPress={() => openBadges(user.handle, here)} />
       ) : null}
 
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}

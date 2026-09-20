@@ -276,24 +276,7 @@ export const publicBadgesSchema = z.object({
 })
 export type PublicBadges = z.infer<typeof publicBadgesSchema>
 
-/**
- * How many marks the profile's badge strip draws before it gives up and counts.
- *
- * The row scrolls, so this is no longer the width of a phone deciding it —
- * that was the constraint while the strip was a fixed row, and it put the
- * number first at six 40px marks and then at three 80px ones. What is left to
- * bound is the payload: a summary is read on every profile anybody opens, and
- * a member with forty badges should not ship forty of them to a screen that
- * is a glimpse.
- *
- * Twelve is well past what a thumb will travel on a row above the bio, and
- * anyone holding more than that is told so by the "+28" at the end, which is
- * the same sentence in less room. Sliced on the server rather than the client
- * so the bytes are never sent at all.
- */
-export const PROFILE_BADGE_STRIP_MAX = 12
-
-/** One mark on that strip: enough to draw it, and nothing else. */
+/** One mark on the profile's badge strip: enough to draw it, and nothing else. */
 export const profileBadgeSchema = z.object({
   id: z.string(),
   kind: z.enum(BADGE_KINDS),
@@ -351,3 +334,37 @@ export function badgesMostRecentFirst(badges: readonly EarnedBadge[]): EarnedBad
 
 /** `BADGES` by id, so the sort above does not scan the catalogue per compare. */
 const CATALOGUE_INDEX = new Map(BADGES.map((badge, index) => [badge.id, index]))
+
+/**
+ * What the profile's badge strip draws: **the newest badge of each kind, and
+ * no other.**
+ *
+ * A ladder's rungs all wear one mark — thirty days and a hundred days are the
+ * same achievement at two sizes, which the badge page says on purpose (see
+ * `BadgeGrid`) because the number beside each row is there to tell them
+ * apart. The strip has no such number, so a climbed ladder arrived as three
+ * identical circles in a row, and three identical circles say "streak" once
+ * and then say it twice more.
+ *
+ * So the strip keeps one of each, and `badgesMostRecentFirst` decides which:
+ * for a dated kind the latest, and for an undated ladder the top rung, which
+ * is the same answer by a different route. Nothing is lost by dropping the
+ * rest — the row is one button onto the badge page, where every rung is a
+ * row of its own.
+ *
+ * The sort happens here rather than being asked of the caller. It is what
+ * picks the survivor, so a caller who passed badges in catalogue order would
+ * otherwise get the *first* rung of each ladder — the seven-day streak — and
+ * get it silently.
+ *
+ * This is also what bounds the payload, which a count used to: there are six
+ * kinds, so a member with forty badges ships six marks and a "+34".
+ */
+export function badgeStripMarks(badges: readonly EarnedBadge[]): EarnedBadge[] {
+  const seen = new Set<BadgeKind>()
+  return badgesMostRecentFirst(badges).filter((badge) => {
+    if (seen.has(badge.kind)) return false
+    seen.add(badge.kind)
+    return true
+  })
+}
