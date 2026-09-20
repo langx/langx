@@ -340,17 +340,6 @@ scripts/send-campaign.ts --resume --campaign 2026-09-launch
 
 ## Shipping runs on expo.dev
 
-> **Do this in the same build, before you start one.** A binary changes the
-> runtime version anyway, so it is the one free moment to stop npm scripts
-> from doing it: add a `fingerprint.config.js` under `apps/mobile` with
-> `sourceSkips: SourceSkips.PackageJsonScriptsAll` (the constant exists in
-> the `@expo/fingerprint` this repo ships). Until that lands, editing any
-> script in `apps/mobile/package.json` severs over-the-air updates for every
-> app already installed — it did on 20 September 2026, for a flag that
-> touched no native code, and the only repair was putting the line back
-> byte-for-byte. The config changes the hash itself, which is exactly why it
-> has to ride a build rather than an update. See `deploy-web.yml`.
-
 Builds and store submissions are EAS jobs, defined in
 `apps/mobile/.eas/workflows/`. GitHub Actions tests, publishes the OTA update,
 deploys the web and turns a version tag into a Release page (see below). The
