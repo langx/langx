@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { echoPackFileSchema, packVoiceKey } from '@langx/shared'
+import { echoPackFileSchema, echoSynthVoicesFor, packVoiceKey } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 
 /**
@@ -89,14 +89,52 @@ describe('the packs in content/echo', () => {
     })
 
     /*
-     * Two takes or none. One synthetic reading presents itself as *the*
-     * pronunciation; the pair is what makes them read as alternatives, and it
-     * is also the cheapest way to catch a generation run that stopped halfway.
+     * Every take the language has, or none.
+     *
+     * One synthetic reading presents itself as *the* pronunciation where a
+     * second exists, and a short count is also the cheapest way to catch a
+     * generation run that stopped halfway. But the number is the language's,
+     * not two: Kokoro has one French voice, and the Piper languages a pack
+     * outside its six needs have one each — so "more than one" would have
+     * failed every pack that is not English, Spanish or Italian.
      */
-    it(`${name} gives every read item more than one voice`, () => {
+    it(`${name} gives every read item each voice its language has`, () => {
       const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
-      const lonely = pack.items.filter((item) => item.voices && item.voices.length < 2)
-      expect(lonely.map((item) => item.text)).toEqual([])
+      const expected = echoSynthVoicesFor(pack.lang).length
+      const short = pack.items.filter((item) => item.voices && item.voices.length !== expected)
+      expect(short.map((item) => `${item.text} (${item.voices?.length} of ${expected})`)).toEqual(
+        [],
+      )
+    })
+
+    /*
+     * The id is the pack's identity — it becomes `_id` and every card's
+     * `sourceKey` — and it is written by hand in the file rather than derived
+     * from where the file sits. A pack in `content/echo/es/` calling itself
+     * `en:beginner` would overwrite the English one at the next seed.
+     */
+    it(`${name} agrees with the path it is filed under`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      const [dir, file] = name.split('/')
+      expect(pack.id).toBe(`${pack.lang}:${pack.level}`)
+      expect(pack.lang).toBe(dir)
+      expect(file).toBe(`${pack.level}.json`)
+    })
+
+    /*
+     * A pack that is not in English carries an English gloss on every item.
+     *
+     * It is the floor under `glossFor`'s fallback chain: a reader whose own
+     * locale a Tatoeba contributor never wrote lands on English, and an item
+     * with nothing there shows its own front on both sides. English packs are
+     * exempt — there the `en` column is a definition, which most of a
+     * phrasebook has no use for.
+     */
+    it(`${name} glosses every item in English, unless it is English`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      if (pack.lang === 'en') return
+      const bare = pack.items.filter((item) => !item.gloss.en)
+      expect(bare.map((item) => item.text)).toEqual([])
     })
 
     /*

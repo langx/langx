@@ -113,11 +113,17 @@ export function echoSynthVoicesFor(lang: string): readonly string[] {
  * every other piece of media.
  */
 export const echoPackVoiceSchema = z.object({
-  /** `echo/packs/<packId with : as _>/<index>-<voice>.m4a`, and derivable. */
+  /**
+   * `echo/packs/<packId with : as _>/<index>-<voice>.m4a`, and derivable.
+   *
+   * The voice may carry hyphens: Kokoro names a voice `af_heart`, Piper names
+   * one `de_DE-thorsten-medium`, and the languages Piper answers for are the
+   * ones a pack outside Kokoro's six has to be read by.
+   */
   key: z
     .string()
     .trim()
-    .regex(/^echo\/packs\/[A-Za-z0-9_-]+\/\d+-[A-Za-z0-9_]+\.m4a$/),
+    .regex(/^echo\/packs\/[A-Za-z0-9_-]+\/\d+-[A-Za-z0-9_-]+\.m4a$/),
   voice: z.string().trim().min(1),
 })
 export type EchoPackVoice = z.infer<typeof echoPackVoiceSchema>
