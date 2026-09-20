@@ -22,13 +22,31 @@ primary_region = 'fra'
 # Flycast address (`fly ips allocate-v6 --private`), so `langx-tts.flycast`
 # resolves from the API's machines and from nowhere else. Fly's proxy still
 # fronts Flycast traffic, which is what makes autostart work on a private app:
-# the first request of the hour starts the machine, the model loads (see the
-# grace period below), the reading is made, and after a few idle minutes the
-# proxy stops it again. `min_machines_running = 0` is the whole cost story —
-# a stopped machine is billed for its rootfs and nothing else.
+# the first request of the hour wakes the machine, the reading is made, and
+# after a few idle minutes the proxy puts it back to sleep.
+# `min_machines_running = 0` is the whole cost story — a sleeping machine is
+# billed for its storage and nothing else, and that is true of both ways of
+# sleeping.
+#
+# Which is why it sleeps by `suspend` rather than by `stop`: the two cost the
+# same and only one of them is a wait anybody would sit through. A stopped
+# machine is booted from nothing — measured on 20 September 2026, a second of
+# Firecracker and then twenty-three more of Python imports and Kokoro's 330 MB
+# through ONNX Runtime before the socket opens, and four seconds for the first
+# reading after that while espeak and the session warm up. Half a minute of
+# spinner for one sentence. A suspended machine is its memory written to disk
+# and read back: it resumed in about two seconds and answered that first
+# request in 1.5, the warm figure, because the model never left RAM.
+#
+# Two things suspension is not. It is not durable — Fly may drop a snapshot,
+# and a deploy replaces the machine outright — so a cold boot stays a normal
+# event rather than a fault, and the sixty seconds `HttpTtsProvider` allows
+# itself are still sized for one. And it is capped at 4 GB of memory, which
+# the 2 GB below is under, with about 800 MB of that in use once the model is
+# loaded.
 [http_service]
   internal_port = 8080
-  auto_stop_machines = 'stop'
+  auto_stop_machines = 'suspend'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']

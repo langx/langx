@@ -3175,12 +3175,13 @@ export function useAttachEchoAudio() {
  * How long to wait on the voice service, rather than the ten seconds
  * `apiFetch` gives everything else.
  *
- * `langx-tts` scales to zero, and the first reading of the hour spends thirty
- * to sixty seconds starting a machine and loading a model — so the default
- * budget cut off precisely the request it was never sized for. The failure was
- * invisible rather than loud: the phone gave up, the API finished anyway and
- * wrote the object, and the retry came back instantly, which reads as
- * slowness rather than as a bug.
+ * `langx-tts` sleeps between readings. It usually wakes from a suspended
+ * snapshot in a second or two, but a deploy replaces the machine and Fly may
+ * drop a snapshot, and then the first reading spends half a minute booting and
+ * loading a model — so the default budget cut off precisely the request it was
+ * never sized for. The failure was invisible rather than loud: the phone gave
+ * up, the API finished anyway and wrote the object, and the retry came back
+ * instantly, which reads as slowness rather than as a bug.
  *
  * `fetchWithTimeout` stands aside when the caller brings its own signal. This
  * one sits just past the sixty seconds `HttpTtsProvider` allows itself, so the

@@ -1,10 +1,12 @@
 import { TtsBusyError, type SynthesizeInput, type TtsProvider } from './TtsProvider'
 
 /**
- * Sixty seconds, not the global thirty: the service scales to zero, so the
- * first request of the hour pays for a machine start and a model load before
- * a single sample is made, and a limit that fits a warm call cuts off exactly
- * the cold one.
+ * Sixty seconds, not the global thirty: the service sleeps between readings,
+ * and while it usually wakes from a suspended snapshot in a second or two, the
+ * snapshot is a courtesy rather than a guarantee — a deploy replaces the
+ * machine and Fly may drop one on its own, and then the first request pays for
+ * a boot and a model load before a single sample is made. A limit that fits
+ * the warm call cuts off exactly the cold one.
  */
 const TIMEOUT_MS = 60_000
 
