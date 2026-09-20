@@ -9,10 +9,12 @@
  *
  * Two sources, because they answer different halves of the question:
  *
- * - **Wiktionary's English phrasebook** (`Category:English phrasebook`) is 460
+ * - **Wiktionary's phrasebook category** (`Category:<Language> phrasebook`) is
  *   everyday expressions — _excuse me_, _be careful_, _can I come in_ — each a
  *   dictionary entry with translations somebody curated. `build-pack.mjs`
- *   glosses these the same way it glosses a word. The category listing is an
+ *   glosses these the same way it glosses a word. English has 460 of them and
+ *   no other language comes close: Russian 170, German 104, French 93, Spanish
+ *   79, Italian 57. Outside English a pack is mostly the other source. The category listing is an
  *   input rather than something this fetches: Wikimedia rate-limits the API
  *   hard from a shared address, and a run that fails on the fourth 429 after
  *   twenty minutes of streaming Tatoeba is a run nobody repeats.
@@ -22,7 +24,9 @@
  *   wrote it. Those glosses are written out here and handed to `build-pack.mjs`.
  *
  * **Level is the level of the hardest word in the phrase**, looked up in a
- * CEFR profile and mapped onto our four by the same table
+ * CEFR profile — or, for every language but English, in a frequency list,
+ * because no CEFR list for them is licensed for commercial use. See
+ * `frequencyBands`. Either way it is mapped onto our four by the same table
  * `packages/shared/src/level.ts` uses. A phrase every one of whose words is A1
  * is an `absoluteBeginner` phrase. A word no profile lists counts as above the
  * band rather than below it, which is what keeps _beware of the dog_ and _bon
@@ -37,7 +41,8 @@
  * streaming them once per level to ask the same question with a different
  * filter is four times the download for the same answer.
  *
- * Usage — the category listing first, saved exactly as the API returns it:
+ * Usage — the category listing first, saved exactly as the API returns it
+ * (`Category:Spanish phrasebook` for a Spanish pack, and so on):
  *
  *   curl -s 'https://en.wiktionary.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:English%20phrasebook&cmlimit=500&cmnamespace=0&format=json&formatversion=2' -o ./phrasebook.json
  *
@@ -46,6 +51,17 @@
  *     --profile ./octanove-vocabulary-profile-c1c2-1.0.csv \
  *     --ngsl ./NGSL_12_lemmatized_for_teaching.csv --ngsl-stats ./NGSL_12_stats.csv \
  *     --phrasebook ./phrasebook.json --limit 300 --out-dir ./picked
+ *
+ * and for any other language, where the profiles do not exist:
+ *
+ *   node tools/echo-content/pick-phrases.mjs --lang es \
+ *     --frequency ./es_50k.txt \
+ *     --phrasebook ./es-phrasebook.json --limit 300 --out-dir ./picked-es
+ *
+ * `--require` is the locales a sentence must be glossed into to be taken at
+ * all; it defaults to all seven for English and to `en` for everything else,
+ * which is the measurement in `tatoeba` below. Sentences with more than the
+ * floor are preferred over sentences with the floor.
  *
  * Writes `<level>.txt` and `<level>.glosses.json` per level into `--out-dir`,
  * for every level unless `--levels` names some. Leave `--phrasebook` off and the
@@ -62,7 +78,8 @@ import { join } from 'node:path'
 import { writable } from './text.mjs'
 
 /** Interface locale → the Tatoeba language directory that holds it. */
-const LOCALES = {
+const LOCALE_EXPORTS = {
+  en: 'eng',
   tr: 'tur',
   de: 'deu',
   es: 'spa',
@@ -70,6 +87,19 @@ const LOCALES = {
   'pt-BR': 'por',
   ru: 'rus',
   ar: 'ara',
+}
+
+/** A pack language → its Tatoeba directory, for the languages packs exist in. */
+const PACK_EXPORTS = { ...LOCALE_EXPORTS, pt: 'por', it: 'ita' }
+
+/**
+ * The columns a pack in `lang` is glossed into — the eight interface locales
+ * less its own, which is the side of the card the learner is reading.
+ */
+function localesFor(lang) {
+  return Object.fromEntries(
+    Object.entries(LOCALE_EXPORTS).filter(([locale]) => locale.split('-')[0] !== lang),
+  )
 }
 
 /** CEFR band → our four levels. The copy of `CEFR_TO_LANGUAGE_LEVEL` a plain
@@ -143,6 +173,59 @@ async function* lines(url) {
   for await (const line of createInterface({ input: curl.stdout, crlfDelay: Infinity })) yield line
 }
 
+/**
+ * The same map as `gradedWords`, banded by frequency instead of by a profile.
+ *
+ * There is no CEFR list for the languages after English. CEFR-J is English
+ * only, and CEFRLex — the one resource that bands French, Spanish and German —
+ * is CC BY-NC-SA, which an app that sells subscriptions cannot ship a
+ * derivative of. What is left that is both free and commercial is frequency:
+ * hermitdave/FrequencyWords, one `<lang>_50k.txt` per language from the
+ * OpenSubtitles 2018 corpus, CC BY-SA 4.0 for the content.
+ *
+ * The bands are the thresholds, and they are a judgement rather than a
+ * measurement — the first thousand forms of a subtitle corpus are roughly what
+ * a first week teaches. A form past the last band is unlisted, exactly as an
+ * unlisted word is to CEFR-J, and its phrase is dropped rather than guessed at.
+ *
+ * **Surface forms, not lemmas**, which matters most in Russian and German: a
+ * declined form that did not make the top ten thousand bands its phrase out
+ * even where the lemma is everyday. That is the conservative direction, and
+ * review pulls back what it should not have lost.
+ */
+const FREQUENCY_BANDS = [
+  [1000, 'A1'],
+  [3000, 'A2'],
+  [10000, 'B1'],
+]
+
+async function frequencyBands(path) {
+  const level = new Map()
+  let rank = 0
+  for (const line of (await readFile(path, 'utf8')).split('\n')) {
+    const word = line.split(' ')[0]?.trim().toLowerCase()
+    if (!word) continue
+    rank += 1
+    const band = FREQUENCY_BANDS.find(([ceiling]) => rank <= ceiling)?.[1]
+    if (!band) break
+    if (!level.has(word)) level.set(word, band)
+  }
+  return level
+}
+
+/** The same ordering key as `frequencyRanks`, from the same file. */
+async function frequencyRanksFrom(path) {
+  const rank = new Map()
+  let index = 0
+  for (const line of (await readFile(path, 'utf8')).split('\n')) {
+    const word = line.split(' ')[0]?.trim().toLowerCase()
+    if (!word) continue
+    index += 1
+    if (!rank.has(word)) rank.set(word, index)
+  }
+  return rank
+}
+
 /** Naive CSV: the two files this reads quote nothing in the columns it uses. */
 function rows(text) {
   const [header, ...rest] = text.trim().split('\n')
@@ -185,12 +268,23 @@ async function gradedWords(profilePaths, ngslPath) {
   return level
 }
 
-function words(phrase) {
+/**
+ * The words of a phrase, in any script.
+ *
+ * `\p{L}` rather than `a-z`: `días` is one Spanish word and two ASCII ones,
+ * and a Russian sentence matches nothing at all — which would have banded
+ * every Cyrillic phrase as unlisted and dropped the whole language quietly.
+ * Contractions are English and only English; French elision (`j'ai`) is one
+ * word to a frequency list too.
+ */
+function words(phrase, lang = 'en') {
   return (
     phrase
       .toLowerCase()
-      .match(/[a-z']+/g)
-      ?.flatMap((token) => CONTRACTIONS[token] ?? [token.replace(/^'|'$/g, '')])
+      .match(/[\p{L}']+/gu)
+      ?.flatMap((token) =>
+        lang === 'en' ? (CONTRACTIONS[token] ?? [token.replace(/^'|'$/g, '')]) : [token],
+      )
       .filter(Boolean) ?? []
   )
 }
@@ -202,9 +296,9 @@ function words(phrase) {
  * CEFR-J bothered to band, and dropping the phrase is cheaper than teaching
  * _mercies_ to somebody on their first day.
  */
-function levelOf(phrase, graded) {
+function levelOf(phrase, graded, lang) {
   const bands = []
-  for (const word of words(phrase)) {
+  for (const word of words(phrase, lang)) {
     const band = graded.get(word)
     if (!band) return null
     bands.push(band)
@@ -232,7 +326,7 @@ function isPhrase(text) {
 function shape(phrase) {
   return phrase
     .toLowerCase()
-    .replace(/[^a-z0-9 ]/g, '')
+    .replace(/[^\p{L}\p{N} ]/gu, '')
     .replace(/\s+/g, ' ')
     .trim()
 }
@@ -254,64 +348,72 @@ async function phrasebook(path) {
 }
 
 /**
- * Tatoeba sentences at the wanted level, with a translation in every locale.
+ * Tatoeba sentences at the wanted level, with the translations they have.
  *
- * Every locale, not most: the gloss is the half a learner cannot check, and a
- * pack that silently falls back to English for Arabic readers is a pack that is
- * worse for them without saying so.
+ * **`required` is why this is a parameter and not a constant.** English asks
+ * for all seven other locales, and can: Tatoeba links 16,322 English sentences
+ * to Arabic. Nothing else comes close — Spanish 3,393, French 3,104, German
+ * 2,971, Italian 735 — so the same rule outside English does not make a
+ * stricter pack, it makes no pack. Every other language requires English only,
+ * which is the floor `glossFor` falls back to, and carries the rest where a
+ * contributor wrote one. The caller then prefers the best-covered sentences,
+ * so the thin columns still fill as far as the data allows.
  */
-async function tatoeba(graded, levels) {
-  const english = new Map()
+async function tatoeba(graded, levels, lang, locales, required) {
+  const source = PACK_EXPORTS[lang]
+  const sentences = new Map()
   const levelOfId = new Map()
   for await (const line of lines(
-    'https://downloads.tatoeba.org/exports/per_language/eng/eng_sentences.tsv.bz2',
+    `https://downloads.tatoeba.org/exports/per_language/${source}/${source}_sentences.tsv.bz2`,
   )) {
     const [id, , text] = line.split('\t')
     if (!text || !'.?!'.includes(text.at(-1))) continue
-    const count = words(text).length
+    const count = words(text, lang).length
     if (count < MIN_WORDS || count > MAX_WORDS) continue
-    const band = levelOf(text, graded)
+    const band = levelOf(text, graded, lang)
     if (!band || !levels.includes(band)) continue
-    english.set(id, text)
+    sentences.set(id, text)
     levelOfId.set(id, band)
   }
   // One pass for every level asked for. Four passes would stream two hundred
   // megabytes four times to answer the same question with a different filter.
-  console.error(`  tatoeba: ${english.size} English sentences across ${levels.join(', ')}`)
+  console.error(`  tatoeba: ${sentences.size} ${lang} sentences across ${levels.join(', ')}`)
 
   const glosses = new Map()
-  for (const [locale, code] of Object.entries(LOCALES)) {
+  for (const [locale, code] of Object.entries(locales)) {
     const wanted = new Map()
     for await (const line of lines(
-      `https://downloads.tatoeba.org/exports/per_language/eng/eng-${code}_links.tsv.bz2`,
+      `https://downloads.tatoeba.org/exports/per_language/${source}/${source}-${code}_links.tsv.bz2`,
     )) {
       const [from, to] = line.split('\t')
-      if (english.has(from) && to && !wanted.has(to)) wanted.set(to.trim(), from)
+      if (sentences.has(from) && to && !wanted.has(to)) wanted.set(to.trim(), from)
     }
     let found = 0
     for await (const line of lines(
       `https://downloads.tatoeba.org/exports/per_language/${code}/${code}_sentences.tsv.bz2`,
     )) {
       const [id, , text] = line.split('\t')
-      const englishId = wanted.get(id)
-      if (!englishId || !text?.trim()) continue
-      const gloss = glosses.get(englishId) ?? {}
+      const sourceId = wanted.get(id)
+      if (!sourceId || !text?.trim()) continue
+      const gloss = glosses.get(sourceId) ?? {}
       if (gloss[locale]) continue
       gloss[locale] = text.trim()
-      glosses.set(englishId, gloss)
+      glosses.set(sourceId, gloss)
       found += 1
     }
     console.error(`  tatoeba: ${locale} covers ${found}`)
   }
 
   const complete = new Map(levels.map((band) => [band, []]))
-  for (const [id, gloss] of glosses) {
-    if (Object.keys(gloss).length !== Object.keys(LOCALES).length) continue
-    const text = english.get(id)
-    // All of it or none of it: a sentence whose Russian is unusable is not a
-    // sentence with six good glosses, it is a card that is blank for a reader.
-    if (!writable(text) || !Object.values(gloss).every(writable)) continue
-    complete.get(levelOfId.get(id))?.push({ text, gloss })
+  for (const [id, raw] of glosses) {
+    // An unusable column is dropped rather than taking the sentence with it:
+    // a bad Russian gloss is one blank back for Russian readers, where under
+    // the old rule it cost every other reader the card as well.
+    const gloss = Object.fromEntries(Object.entries(raw).filter(([, text]) => writable(text)))
+    if (!required.every((locale) => gloss[locale])) continue
+    const text = sentences.get(id)
+    if (!writable(text)) continue
+    complete.get(levelOfId.get(id))?.push({ text, gloss, covers: Object.keys(gloss).length })
   }
   return complete
 }
@@ -322,8 +424,8 @@ async function tatoeba(graded, levels) {
  * The rarest word in the phrase is what decides the second half — a five-word
  * sentence is as hard as the one word in it nobody has met.
  */
-function difficulty(phrase, rank) {
-  const inside = words(phrase)
+function difficulty(phrase, rank, lang) {
+  const inside = words(phrase, lang)
   const rarest = Math.max(...inside.map((word) => rank.get(word) ?? 3000))
   return [inside.length, rarest]
 }
@@ -339,16 +441,36 @@ async function frequencyRanks(ngslPath) {
 }
 
 async function main() {
+  const lang = arg('lang', 'en')
+  if (!PACK_EXPORTS[lang]) {
+    console.error(`No Tatoeba export mapped for '${lang}'. Add it to PACK_EXPORTS.`)
+    process.exit(1)
+  }
+  const locales = localesFor(lang)
+  // English can ask for every column; nothing else can. See `tatoeba`.
+  const required = arg('require', lang === 'en' ? Object.keys(locales).join(',') : 'en').split(',')
+  for (const locale of required) {
+    if (!locales[locale]) {
+      console.error(`Not a gloss column for a ${lang} pack: ${locale}.`)
+      process.exit(1)
+    }
+  }
+
   const profiles = args('profile')
   const ngslPath = arg('ngsl')
   const statsPath = arg('ngsl-stats', ngslPath)
+  const frequencyPath = arg('frequency')
   // Deduplicated: B1 and B2 are both `intermediate`, C1 and C2 both `fluent`,
   // so the bands are six and the levels are four.
   const levels = [...new Set(arg('levels', Object.values(LEVELS).join(',')).split(','))]
   const limit = Number(arg('limit', '300'))
   const outDir = arg('out-dir')
-  if (profiles.length === 0 || !ngslPath || !outDir) {
-    console.error('Need --profile, --ngsl and --out-dir. See the header of this file.')
+  if (!outDir || (lang === 'en' ? profiles.length === 0 || !ngslPath : !frequencyPath)) {
+    console.error(
+      lang === 'en'
+        ? 'Need --profile, --ngsl and --out-dir. See the header of this file.'
+        : 'Need --frequency and --out-dir. See the header of this file.',
+    )
     process.exit(1)
   }
   for (const level of levels) {
@@ -360,51 +482,73 @@ async function main() {
     }
   }
 
-  const graded = await gradedWords(profiles, ngslPath)
-  const rank = await frequencyRanks(statsPath)
-  console.error(`graded ${graded.size} word forms`)
+  const graded =
+    lang === 'en' ? await gradedWords(profiles, ngslPath) : await frequencyBands(frequencyPath)
+  const rank =
+    lang === 'en' ? await frequencyRanks(statsPath) : await frequencyRanksFrom(frequencyPath)
+  console.error(`graded ${graded.size} ${lang} word forms`)
 
   const book = await phrasebook(arg('phrasebook'))
-  const sentences = await tatoeba(graded, levels)
+  const sentences = await tatoeba(graded, levels, lang, locales, required)
 
   for (const level of levels) {
-    const entries = book.filter((phrase) => levelOf(phrase, graded) === level)
+    const entries = book.filter((phrase) => levelOf(phrase, graded, lang) === level)
     const said = sentences.get(level) ?? []
     console.error(`\n${level}: ${entries.length} phrasebook, ${said.length} Tatoeba`)
 
     const seen = new Set()
-    const chosen = []
-    const glosses = {}
+    const candidates = []
     // The phrasebook first: a set expression is worth more to somebody meeting
     // the level than a well-formed sentence, and there are only ever a few.
     for (const phrase of [...entries, ...said.map((item) => item.text)]) {
       const key = shape(phrase)
       if (!key || seen.has(key) || !writable(phrase) || !isPhrase(phrase)) continue
       seen.add(key)
-      chosen.push(phrase)
+      candidates.push(phrase)
     }
-    for (const item of said) glosses[item.text] = item.gloss
 
     const bookSet = new Set(entries)
-    const ordered = chosen.sort((a, b) => {
+    const covers = new Map(said.map((item) => [item.text, item.covers ?? 0]))
+    const byDifficulty = (a, b) => {
       // Both halves are sorted by difficulty, but the phrasebook stays in front.
       const side = Number(bookSet.has(b)) - Number(bookSet.has(a))
       if (side !== 0) return side
-      const [aWords, aRare] = difficulty(a, rank)
-      const [bWords, bRare] = difficulty(b, rank)
+      const [aWords, aRare] = difficulty(a, rank, lang)
+      const [bWords, bRare] = difficulty(b, rank, lang)
       return aWords - bWords || aRare - bRare || a.localeCompare(b)
-    })
+    }
+    /*
+     * Which sentences get in, and what order they are in, are two questions
+     * and used to be one sort. A place in the pack goes to the sentence that
+     * is glossed into the most locales, because that is the only way the thin
+     * columns — Arabic everywhere, Turkish outside Europe — fill at all when
+     * the floor is English alone. The order is then difficulty again, because
+     * the pack's order is the order a learner meets it in.
+     */
+    const byCoverage = (a, b) => {
+      const side = Number(bookSet.has(b)) - Number(bookSet.has(a))
+      if (side !== 0) return side
+      const spread = (covers.get(b) ?? 0) - (covers.get(a) ?? 0)
+      return spread !== 0 ? spread : byDifficulty(a, b)
+    }
 
-    const taken = ordered.slice(0, limit)
+    const taken = [...candidates].sort(byCoverage).slice(0, limit).sort(byDifficulty)
+    const glosses = {}
+    for (const item of said) if (taken.includes(item.text)) glosses[item.text] = item.gloss
+
     const out = join(outDir, `${level}.txt`)
     const glossesOut = join(outDir, `${level}.glosses.json`)
     await mkdir(outDir, { recursive: true })
     await writeFile(out, `${taken.join('\n')}\n`, 'utf8')
     await writeFile(glossesOut, `${JSON.stringify(glosses, null, 2)}\n`, 'utf8')
+    const spread = taken.map((phrase) => covers.get(phrase)).filter(Boolean)
     console.error(
       `  wrote ${taken.length} phrases to ${out} ` +
         `(${taken.filter((phrase) => bookSet.has(phrase)).length} from the phrasebook) ` +
-        `and ${Object.keys(glosses).length} prepared glosses to ${glossesOut}.`,
+        `and ${Object.keys(glosses).length} prepared glosses to ${glossesOut}` +
+        (spread.length > 0
+          ? `, ${(spread.reduce((a, b) => a + b, 0) / spread.length).toFixed(1)} locales each.`
+          : '.'),
     )
   }
 }
