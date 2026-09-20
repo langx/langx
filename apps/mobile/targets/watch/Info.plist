@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict/>
+  <dict>
+    <!--
+      The key `altool` asks a watch bundle for by name, and the one thing the
+      generated asset catalogue does not bring with it. `@bacons/apple-targets`
+      writes the nested CFBundleIcons.CFBundlePrimaryIcon.CFBundleIconName from
+      the target's `icon`, which is enough for the phone app — it ships without
+      this key — and not enough for a watch app, where validation fails the
+      upload. Verified against the archive: Assets.car carries AppIcon either
+      way; only this key was missing.
+    -->
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
+  </dict>
 </plist>
