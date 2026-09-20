@@ -69,10 +69,13 @@ export interface CommentToDmRules {
   /**
    * How long to sit on a comment before answering it, in milliseconds.
    *
-   * Randomised inside this range. An account that answers every comment in
-   * the same second reads as a bot to the people watching and to whatever
-   * Instagram runs over it; the delay is cheap and the DM is not less useful
-   * for arriving a minute later.
+   * Randomised inside this range, because an account that answers every
+   * comment on the same beat reads as a bot to the people scrolling past and
+   * to whatever Instagram runs over it. Randomised, not slow: the first
+   * version of this waited up to ninety seconds on the theory that a DM is no
+   * less useful for arriving a minute later, which is wrong. It is useful
+   * exactly as long as the person is still in the app, and a minute is long
+   * enough to lose them. A few seconds, varying, buys the same cover.
    */
   replyDelayMs: { min: number; max: number }
   /**
@@ -107,7 +110,7 @@ const HOUR = 60 * MINUTE
 const DAY = 24 * HOUR
 
 export const COMMENT_TO_DM_RULES: CommentToDmRules = {
-  replyDelayMs: { min: 20 * 1000, max: 90 * 1000 },
+  replyDelayMs: { min: 5 * 1000, max: 15 * 1000 },
   followRecheckMs: 8 * 1000,
   privateReplyWindowMs: 7 * DAY,
   conversationWindowMs: 24 * HOUR,

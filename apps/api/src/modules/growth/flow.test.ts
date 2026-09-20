@@ -34,8 +34,15 @@ describe('commentAsksForLink', () => {
 
 describe('decideForComment', () => {
   it('answers a comment asking for the link', () => {
+    // Derived, not written down: the range is config, and a literal here
+    // turns tuning it into a failing test that says nothing is wrong.
+    const { min, max } = COMMENT_TO_DM_RULES.replyDelayMs
     const action = decideForComment(comment(), context())
-    expect(action).toEqual({ kind: 'answerComment', commentId: 'c1', delayMs: 55_000 })
+    expect(action).toEqual({
+      kind: 'answerComment',
+      commentId: 'c1',
+      delayMs: min + (max - min) / 2,
+    })
   })
 
   it('waits somewhere inside the configured range', () => {

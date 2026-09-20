@@ -77,11 +77,11 @@ export const instagramWebhookRoutes: FastifyPluginAsyncZod = async (app) => {
        * Acknowledge first, work after.
        *
        * Meta retries anything it does not get a prompt 200 for, and the work
-       * below deliberately sleeps for up to ninety seconds before answering a
-       * comment — an account that replies within the same second reads as a
-       * machine to everybody watching. Waiting for that inside the request
-       * would guarantee the retry, and the retry would be a second attempt at
-       * a private reply the platform only allows once.
+       * below deliberately waits before answering a comment — an account that
+       * replies on the same beat every time reads as a machine to everybody
+       * watching. Waiting for that inside the request invites the retry, and
+       * the retry would be a second attempt at a private reply the platform
+       * only allows once.
        */
       void handleEvents(parse(raw), {
         db: app.mongo.db,
