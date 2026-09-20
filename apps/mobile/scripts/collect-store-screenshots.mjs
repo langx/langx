@@ -74,8 +74,15 @@ const LOCALES = {
  *
  * 12.9/ stays in the branding repo: Play has no such derivation, and a future
  * App Store Connect may split the slots again.
+ *
+ * `watch/` is the fourth, and the one that is allowed to be short. deliver
+ * works the device out from the image's own dimensions, so 416 x 496 lands in
+ * the Apple Watch slot with nothing to configure — but Arabic ships one shot
+ * where the others ship two (the thread screen's back chevron sits under the
+ * clock in right-to-left), so this slot counts what it finds instead of
+ * demanding a fixed eight.
  */
-const SLOTS = ['6.9', '5.5', '13']
+const SLOTS = ['6.9', '5.5', '13', 'watch']
 
 fs.rmSync(OUT, { recursive: true, force: true })
 let copied = 0
@@ -97,7 +104,7 @@ for (const [ours, apple] of Object.entries(LOCALES)) {
       copied++
     }
   }
-  console.log(`${apple}: ${SLOTS.length * 8} screenshots`)
+  console.log(`${apple}: ${fs.readdirSync(dir).length} screenshots`)
 }
 console.log(`\n${copied} files in ${OUT}`)
 console.log('Next: cd apps/mobile && fastlane deliver')
