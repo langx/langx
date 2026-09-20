@@ -296,9 +296,9 @@ One field, `image?: { url, width?, height?, origin: 'chat' | 'pack' | 'self' }`:
 
   `tools/echo-content/images/cues.<lang>.json` says which phrase points at
   which, one file per pack language and one line each, and is the half worth
-  reviewing. `build.mjs` beside it derives
-  everything else: the pictures, the `image` fields, `credits.json`, and the
-  `contentVersion` bump when a cue actually changed.
+  reviewing. `build.mjs` beside it reads that and `concepts.json`, the frozen
+  table naming the concepts, and derives everything else: the pictures, the
+  `image` fields, and the `contentVersion` bump when a cue actually changed.
 
   **All 371 are drawn for this app**, their shapes in `drawings.mjs` to
   `ILLUSTRATION.md`. The set began as OpenMoji glyphs on our own plate and was

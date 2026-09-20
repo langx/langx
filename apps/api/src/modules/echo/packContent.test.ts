@@ -149,12 +149,12 @@ describe('the packs in content/echo', () => {
      *
      * The pictures are not in the repository — they are rendered to
      * `tools/echo-content/images/out/` and uploaded — so there is no directory
-     * here to compare against. `credits.json` is the manifest the renderer
-     * writes, and it is the thing that would disagree with the packs if a cue
-     * were renamed in one place and not the other. A slug that names no
-     * picture is a blank space above a sentence on somebody's phone, which is
-     * the one defect in this area nobody would report: a card with no picture
-     * looks like a card that never had one.
+     * here to compare against. `concepts.json` is the manifest the renderer
+     * resolves every slug through, and it is the thing that would disagree
+     * with the packs if a cue were renamed in one place and not the other. A
+     * slug that names no picture is a blank space above a sentence on
+     * somebody's phone, which is the one defect in this area nobody would
+     * report: a card with no picture looks like a card that never had one.
      */
     it(`${name} points every cue at a slug the renderer knows`, () => {
       const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
