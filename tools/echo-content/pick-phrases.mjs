@@ -75,6 +75,7 @@ import { spawn } from 'node:child_process'
 import { createInterface } from 'node:readline'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { opening, spread } from './order.mjs'
 import { writable } from './text.mjs'
 
 /** Interface locale → the Tatoeba language directory that holds it. */
@@ -528,11 +529,17 @@ async function main() {
     const byCoverage = (a, b) => {
       const side = Number(bookSet.has(b)) - Number(bookSet.has(a))
       if (side !== 0) return side
-      const spread = (covers.get(b) ?? 0) - (covers.get(a) ?? 0)
-      return spread !== 0 ? spread : byDifficulty(a, b)
+      const gap = (covers.get(b) ?? 0) - (covers.get(a) ?? 0)
+      return gap !== 0 ? gap : byDifficulty(a, b)
     }
 
-    const taken = [...candidates].sort(byCoverage).slice(0, limit).sort(byDifficulty)
+    // Coverage decides who is in, difficulty decides the order, and `spread`
+    // then stops two neighbours opening with the same word — which is the
+    // defect a session of ten makes visible and nothing else would catch.
+    const taken = spread(
+      [...candidates].sort(byCoverage).slice(0, limit).sort(byDifficulty),
+      opening,
+    )
     const glosses = {}
     for (const item of said) if (taken.includes(item.text)) glosses[item.text] = item.gloss
 
@@ -541,13 +548,13 @@ async function main() {
     await mkdir(outDir, { recursive: true })
     await writeFile(out, `${taken.join('\n')}\n`, 'utf8')
     await writeFile(glossesOut, `${JSON.stringify(glosses, null, 2)}\n`, 'utf8')
-    const spread = taken.map((phrase) => covers.get(phrase)).filter(Boolean)
+    const covered = taken.map((phrase) => covers.get(phrase)).filter(Boolean)
     console.error(
       `  wrote ${taken.length} phrases to ${out} ` +
         `(${taken.filter((phrase) => bookSet.has(phrase)).length} from the phrasebook) ` +
         `and ${Object.keys(glosses).length} prepared glosses to ${glossesOut}` +
-        (spread.length > 0
-          ? `, ${(spread.reduce((a, b) => a + b, 0) / spread.length).toFixed(1)} locales each.`
+        (covered.length > 0
+          ? `, ${(covered.reduce((a, b) => a + b, 0) / covered.length).toFixed(1)} locales each.`
           : '.'),
     )
   }

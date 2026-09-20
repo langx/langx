@@ -65,23 +65,6 @@
     {
       "index": 2,
       "kind": "phrase",
-      "text": "Abre tu corazón.",
-      "gloss": {
-        "en": "Open your heart.",
-        "tr": "Kalbini aç.",
-        "de": "Öffne dein Herz.",
-        "fr": "Ouvre ton cœur.",
-        "pt-BR": "Abre teu coração.",
-        "ru": "Открой своё сердце."
-      },
-      "freqRank": 19,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 3,
-      "kind": "phrase",
       "text": "Ella cocina bien.",
       "gloss": {
         "en": "She cooks well.",
@@ -92,6 +75,23 @@
         "ru": "Она хорошо готовит."
       },
       "freqRank": 20,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "Abre tu corazón.",
+      "gloss": {
+        "en": "Open your heart.",
+        "tr": "Kalbini aç.",
+        "de": "Öffne dein Herz.",
+        "fr": "Ouvre ton cœur.",
+        "pt-BR": "Abre teu coração.",
+        "ru": "Открой своё сердце."
+      },
+      "freqRank": 19,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -116,23 +116,6 @@
     {
       "index": 5,
       "kind": "phrase",
-      "text": "¿Dónde está Paul?",
-      "gloss": {
-        "en": "Where is Paul?",
-        "tr": "Paul nerede?",
-        "de": "Wo ist Paul?",
-        "fr": "Où est Paul ?",
-        "pt-BR": "Onde está Paul?",
-        "ru": "Где Пол?"
-      },
-      "freqRank": 22,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 6,
-      "kind": "phrase",
       "text": "Veo una reina.",
       "gloss": {
         "en": "I see a queen.",
@@ -143,6 +126,23 @@
         "ru": "Я вижу королеву."
       },
       "freqRank": 23,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "¿Dónde está Paul?",
+      "gloss": {
+        "en": "Where is Paul?",
+        "tr": "Paul nerede?",
+        "de": "Wo ist Paul?",
+        "fr": "Où est Paul ?",
+        "pt-BR": "Onde está Paul?",
+        "ru": "Где Пол?"
+      },
+      "freqRank": 22,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -510,23 +510,6 @@
     {
       "index": 28,
       "kind": "phrase",
-      "text": "Tengo tres hermanos.",
-      "gloss": {
-        "en": "I have three brothers.",
-        "tr": "Üç erkek kardeşim var.",
-        "de": "Ich habe drei Geschwister.",
-        "fr": "J'ai trois frères.",
-        "pt-BR": "Eu tenho três irmãos.",
-        "ru": "У меня три брата."
-      },
-      "freqRank": 45,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 29,
-      "kind": "phrase",
       "text": "¿Qué llevas puesto?",
       "gloss": {
         "en": "What are you wearing?",
@@ -537,6 +520,23 @@
         "ru": "Что на тебе надето?"
       },
       "freqRank": 46,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "Tengo tres hermanos.",
+      "gloss": {
+        "en": "I have three brothers.",
+        "tr": "Üç erkek kardeşim var.",
+        "de": "Ich habe drei Geschwister.",
+        "fr": "J'ai trois frères.",
+        "pt-BR": "Eu tenho três irmãos.",
+        "ru": "У меня три брата."
+      },
+      "freqRank": 45,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -578,23 +578,6 @@
     {
       "index": 32,
       "kind": "phrase",
-      "text": "Tengo muchos libros.",
-      "gloss": {
-        "en": "I have many books.",
-        "tr": "Benim birsürü kitabım var.",
-        "de": "Ich habe viele Bücher.",
-        "fr": "J'ai beaucoup de livres.",
-        "pt-BR": "Eu tenho muitos livros.",
-        "ru": "У меня много книг."
-      },
-      "freqRank": 49,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 33,
-      "kind": "phrase",
       "text": "Estoy en Londres.",
       "gloss": {
         "en": "I am in London.",
@@ -605,6 +588,23 @@
         "ru": "Я в Лондоне."
       },
       "freqRank": 50,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "Tengo muchos libros.",
+      "gloss": {
+        "en": "I have many books.",
+        "tr": "Benim birsürü kitabım var.",
+        "de": "Ich habe viele Bücher.",
+        "fr": "J'ai beaucoup de livres.",
+        "pt-BR": "Eu tenho muitos livros.",
+        "ru": "У меня много книг."
+      },
+      "freqRank": 49,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1109,23 +1109,6 @@
     {
       "index": 63,
       "kind": "phrase",
-      "text": "Tengo malas noticias.",
-      "gloss": {
-        "en": "I've got bad news.",
-        "tr": "Kötü bir haberim var.",
-        "de": "Ich habe schlechte Nachrichten.",
-        "fr": "J'ai de mauvaises nouvelles.",
-        "pt-BR": "Tenho más notícias.",
-        "ru": "У меня плохая новость."
-      },
-      "freqRank": 80,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 64,
-      "kind": "phrase",
       "text": "Tom se cayó.",
       "gloss": {
         "en": "Tom fell down.",
@@ -1136,6 +1119,23 @@
         "ru": "Том упал."
       },
       "freqRank": 81,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "Tengo malas noticias.",
+      "gloss": {
+        "en": "I've got bad news.",
+        "tr": "Kötü bir haberim var.",
+        "de": "Ich habe schlechte Nachrichten.",
+        "fr": "J'ai de mauvaises nouvelles.",
+        "pt-BR": "Tenho más notícias.",
+        "ru": "У меня плохая новость."
+      },
+      "freqRank": 80,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1486,23 +1486,6 @@
     {
       "index": 85,
       "kind": "phrase",
-      "text": "No nos conocemos.",
-      "gloss": {
-        "en": "We don't know each other.",
-        "tr": "Biz birbirimizi tanımıyoruz.",
-        "de": "Wir kennen uns nicht.",
-        "fr": "Nous ne nous connaissons pas.",
-        "pt-BR": "Nós não nos conhecemos.",
-        "ru": "Мы не знаем друг друга."
-      },
-      "freqRank": 102,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 86,
-      "kind": "phrase",
       "text": "Él es francés.",
       "gloss": {
         "en": "He is French.",
@@ -1513,6 +1496,23 @@
         "ru": "Он француз."
       },
       "freqRank": 103,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "No nos conocemos.",
+      "gloss": {
+        "en": "We don't know each other.",
+        "tr": "Biz birbirimizi tanımıyoruz.",
+        "de": "Wir kennen uns nicht.",
+        "fr": "Nous ne nous connaissons pas.",
+        "pt-BR": "Nós não nos conhecemos.",
+        "ru": "Мы не знаем друг друга."
+      },
+      "freqRank": 102,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1775,6 +1775,23 @@
     {
       "index": 102,
       "kind": "phrase",
+      "text": "Es una sombra.",
+      "gloss": {
+        "en": "It's a shadow.",
+        "tr": "Bu bir gölge.",
+        "de": "Das ist ein Schatten.",
+        "fr": "C'est une ombre.",
+        "pt-BR": "É uma sombra.",
+        "ru": "Это тень."
+      },
+      "freqRank": 120,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
       "text": "No hablo alemán.",
       "gloss": {
         "en": "I don't speak German.",
@@ -1786,23 +1803,6 @@
         "ar": "لا أتكلم الألمانية."
       },
       "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 103,
-      "kind": "phrase",
-      "text": "Es una sombra.",
-      "gloss": {
-        "en": "It's a shadow.",
-        "tr": "Bu bir gölge.",
-        "de": "Das ist ein Schatten.",
-        "fr": "C'est une ombre.",
-        "pt-BR": "É uma sombra.",
-        "ru": "Это тень."
-      },
-      "freqRank": 120,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2322,23 +2322,6 @@
     {
       "index": 134,
       "kind": "phrase",
-      "text": "Estos son nuestros libros.",
-      "gloss": {
-        "en": "These are our books.",
-        "tr": "Bunlar bizim kitaplarımız.",
-        "de": "Das sind unsere Bücher.",
-        "fr": "Ce sont nos livres.",
-        "pt-BR": "Estes são nossos livros.",
-        "ru": "Это наши книги."
-      },
-      "freqRank": 151,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 135,
-      "kind": "phrase",
       "text": "Me gusta leer libros.",
       "gloss": {
         "en": "I love reading books.",
@@ -2349,6 +2332,23 @@
         "ru": "Мне нравится читать книги."
       },
       "freqRank": 152,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "Estos son nuestros libros.",
+      "gloss": {
+        "en": "These are our books.",
+        "tr": "Bunlar bizim kitaplarımız.",
+        "de": "Das sind unsere Bücher.",
+        "fr": "Ce sont nos livres.",
+        "pt-BR": "Estes são nossos livros.",
+        "ru": "Это наши книги."
+      },
+      "freqRank": 151,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2459,23 +2459,6 @@
     {
       "index": 142,
       "kind": "phrase",
-      "text": "El Sol es rojo.",
-      "gloss": {
-        "en": "The sun is red.",
-        "tr": "Güneş kırmızıdır.",
-        "de": "Die Sonne ist rot.",
-        "fr": "Le soleil est rouge.",
-        "pt-BR": "O Sol é vermelho.",
-        "ru": "Солнце красное."
-      },
-      "freqRank": 159,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 143,
-      "kind": "phrase",
       "text": "Éste libro es rojo.",
       "gloss": {
         "en": "This book is red.",
@@ -2486,6 +2469,23 @@
         "ar": "هذا الكتاب أحمر."
       },
       "freqRank": 160,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "El Sol es rojo.",
+      "gloss": {
+        "en": "The sun is red.",
+        "tr": "Güneş kırmızıdır.",
+        "de": "Die Sonne ist rot.",
+        "fr": "Le soleil est rouge.",
+        "pt-BR": "O Sol é vermelho.",
+        "ru": "Солнце красное."
+      },
+      "freqRank": 159,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2561,23 +2561,6 @@
     {
       "index": 148,
       "kind": "phrase",
-      "text": "Hace mucho calor, ¿verdad?",
-      "gloss": {
-        "en": "It's very hot, isn't it?",
-        "tr": "Çok sıcak değil mi?",
-        "de": "Es ist sehr heiß, nicht wahr?",
-        "fr": "Il fait très chaud, n'est-ce pas ?",
-        "pt-BR": "Está muito quente, não está?",
-        "ru": "Очень жарко, правда?"
-      },
-      "freqRank": 165,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 149,
-      "kind": "phrase",
       "text": "Hoy hace mucho calor.",
       "gloss": {
         "en": "It is very hot today.",
@@ -2588,6 +2571,23 @@
         "ru": "Сегодня очень жарко."
       },
       "freqRank": 166,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "Hace mucho calor, ¿verdad?",
+      "gloss": {
+        "en": "It's very hot, isn't it?",
+        "tr": "Çok sıcak değil mi?",
+        "de": "Es ist sehr heiß, nicht wahr?",
+        "fr": "Il fait très chaud, n'est-ce pas ?",
+        "pt-BR": "Está muito quente, não está?",
+        "ru": "Очень жарко, правда?"
+      },
+      "freqRank": 165,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3690,23 +3690,6 @@
     {
       "index": 214,
       "kind": "phrase",
-      "text": "Vivimos en una sociedad.",
-      "gloss": {
-        "en": "We live in a society.",
-        "tr": "Bir toplumda yaşıyoruz.",
-        "de": "Wir leben in einer Gesellschaft.",
-        "fr": "Nous vivons en société.",
-        "ru": "Мы живём в обществе.",
-        "ar": "نحن نعيش في مجتمع."
-      },
-      "freqRank": 231,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 215,
-      "kind": "phrase",
       "text": "El amor es ciego.",
       "gloss": {
         "en": "Love sees no faults.",
@@ -3717,6 +3700,23 @@
         "ar": "الحب أعمى."
       },
       "freqRank": 232,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "Vivimos en una sociedad.",
+      "gloss": {
+        "en": "We live in a society.",
+        "tr": "Bir toplumda yaşıyoruz.",
+        "de": "Wir leben in einer Gesellschaft.",
+        "fr": "Nous vivons en société.",
+        "ru": "Мы живём в обществе.",
+        "ar": "نحن نعيش في مجتمع."
+      },
+      "freqRank": 231,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3894,40 +3894,6 @@
     {
       "index": 226,
       "kind": "phrase",
-      "text": "Mi madre tiene dos hermanos.",
-      "gloss": {
-        "en": "My mother has two brothers.",
-        "tr": "Annemin iki erkek kardeşi var.",
-        "de": "Meine Mutter hat zwei Brüder.",
-        "fr": "Ma mère a deux frères.",
-        "pt-BR": "Minha mãe tem dois irmãos.",
-        "ru": "У моей матери два брата."
-      },
-      "freqRank": 243,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 227,
-      "kind": "phrase",
-      "text": "Mi padre tiene muchos libros.",
-      "gloss": {
-        "en": "My father has many books.",
-        "tr": "Babamın birsürü kitabı var.",
-        "de": "Mein Vater hat viele Bücher.",
-        "fr": "Mon père a beaucoup de livres.",
-        "pt-BR": "Meu pai tem muitos livros.",
-        "ru": "У моего отца много книг."
-      },
-      "freqRank": 244,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 228,
-      "kind": "phrase",
       "text": "Tengo un coche rojo nuevo.",
       "gloss": {
         "en": "I have a new red car.",
@@ -3944,7 +3910,24 @@
       }
     },
     {
-      "index": 229,
+      "index": 227,
+      "kind": "phrase",
+      "text": "Mi madre tiene dos hermanos.",
+      "gloss": {
+        "en": "My mother has two brothers.",
+        "tr": "Annemin iki erkek kardeşi var.",
+        "de": "Meine Mutter hat zwei Brüder.",
+        "fr": "Ma mère a deux frères.",
+        "pt-BR": "Minha mãe tem dois irmãos.",
+        "ru": "У моей матери два брата."
+      },
+      "freqRank": 243,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 228,
       "kind": "phrase",
       "text": "Los animales son nuestros amigos.",
       "gloss": {
@@ -3959,6 +3942,23 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
+      }
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "Mi padre tiene muchos libros.",
+      "gloss": {
+        "en": "My father has many books.",
+        "tr": "Babamın birsürü kitabı var.",
+        "de": "Mein Vater hat viele Bücher.",
+        "fr": "Mon père a beaucoup de livres.",
+        "pt-BR": "Meu pai tem muitos livros.",
+        "ru": "У моего отца много книг."
+      },
+      "freqRank": 244,
+      "review": {
+        "glossedBy": "Tatoeba"
       }
     },
     {

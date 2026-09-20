@@ -166,6 +166,36 @@ describe('the packs in content/echo', () => {
   }
 
   /*
+   * No two neighbours open with the same word.
+   *
+   * A pack is handed out ten at a time in `index` order, so a run of
+   * "Are you …" is a whole session of one question asked several ways. The
+   * first English drafts had thirty in a row and PR #1375 broke them by
+   * hand; `tools/echo-content/order.mjs` does it now, and this is what says
+   * it still happened — a pack edited by hand afterwards is exactly where it
+   * would stop being true.
+   *
+   * `opening` is two lines rather than an import: that file is plain `.mjs`
+   * with no types, and a test that has to disable three rules to read one
+   * regular expression is worse than a copy of the regular expression.
+   */
+  const opening = (phrase: string) => phrase.toLowerCase().match(/[\p{L}']+/u)?.[0] ?? ''
+
+  for (const path of files) {
+    const name = path.slice(CONTENT.length + 1)
+    it(`${name} opens no two neighbours with the same word`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      const repeated = pack.items
+        .filter(
+          (item, index) =>
+            index > 0 && opening(item.text) === opening(pack.items[index - 1]?.text ?? ''),
+        )
+        .map((item) => `${item.index} ${item.text}`)
+      expect(repeated).toEqual([])
+    })
+  }
+
+  /*
    * And the other direction, once: a picture nothing points at.
    *
    * Harmless in production — an unused object in a bucket costs nothing — but

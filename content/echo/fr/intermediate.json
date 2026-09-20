@@ -193,38 +193,6 @@
     {
       "index": 9,
       "kind": "phrase",
-      "text": "Prenons le train.",
-      "gloss": {
-        "en": "Let's take a train.",
-        "de": "Lass uns den Zug nehmen.",
-        "es": "Vayamos en tren.",
-        "pt-BR": "Tomemos o trem.",
-        "ru": "Давай поедем на поезде."
-      },
-      "freqRank": 16,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 10,
-      "kind": "phrase",
-      "text": "Prenons un bus.",
-      "gloss": {
-        "en": "Let's take a bus.",
-        "de": "Nehmen wir doch den Bus.",
-        "es": "Pesquemos un bus.",
-        "pt-BR": "Vamos pegar um ônibus.",
-        "ru": "Поехали на автобусе."
-      },
-      "freqRank": 17,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 11,
-      "kind": "phrase",
       "text": "Il est étudiant.",
       "gloss": {
         "en": "He is a student.",
@@ -241,7 +209,23 @@
       }
     },
     {
-      "index": 12,
+      "index": 10,
+      "kind": "phrase",
+      "text": "Prenons le train.",
+      "gloss": {
+        "en": "Let's take a train.",
+        "de": "Lass uns den Zug nehmen.",
+        "es": "Vayamos en tren.",
+        "pt-BR": "Tomemos o trem.",
+        "ru": "Давай поедем на поезде."
+      },
+      "freqRank": 16,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 11,
       "kind": "phrase",
       "text": "Je suis étudiant.",
       "gloss": {
@@ -253,6 +237,22 @@
         "ru": "Я студент."
       },
       "freqRank": 19,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "Prenons un bus.",
+      "gloss": {
+        "en": "Let's take a bus.",
+        "de": "Nehmen wir doch den Bus.",
+        "es": "Pesquemos un bus.",
+        "pt-BR": "Vamos pegar um ônibus.",
+        "ru": "Поехали на автобусе."
+      },
+      "freqRank": 17,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -341,22 +341,6 @@
     {
       "index": 18,
       "kind": "phrase",
-      "text": "Nous sommes libres !",
-      "gloss": {
-        "en": "We are free!",
-        "de": "Wir sind frei!",
-        "es": "¡Somos libres!",
-        "pt-BR": "Estamos livres!",
-        "ru": "Мы свободны!"
-      },
-      "freqRank": 25,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 19,
-      "kind": "phrase",
       "text": "Aimes-tu nager ?",
       "gloss": {
         "en": "Are you fond of swimming?",
@@ -366,6 +350,22 @@
         "ru": "Ты любишь плавать?"
       },
       "freqRank": 26,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Nous sommes libres !",
+      "gloss": {
+        "en": "We are free!",
+        "de": "Wir sind frei!",
+        "es": "¡Somos libres!",
+        "pt-BR": "Estamos livres!",
+        "ru": "Мы свободны!"
+      },
+      "freqRank": 25,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -405,22 +405,6 @@
     {
       "index": 22,
       "kind": "phrase",
-      "text": "Il sait nager.",
-      "gloss": {
-        "en": "He can swim.",
-        "de": "Er kann schwimmen.",
-        "es": "Él sabe nadar.",
-        "pt-BR": "Ele sabe nadar.",
-        "ru": "Он умеет плавать."
-      },
-      "freqRank": 29,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 23,
-      "kind": "phrase",
       "text": "Marie sait nager.",
       "gloss": {
         "en": "Mary can swim.",
@@ -430,6 +414,22 @@
         "ru": "Мэри умеет плавать."
       },
       "freqRank": 30,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "Il sait nager.",
+      "gloss": {
+        "en": "He can swim.",
+        "de": "Er kann schwimmen.",
+        "es": "Él sabe nadar.",
+        "pt-BR": "Ele sabe nadar.",
+        "ru": "Он умеет плавать."
+      },
+      "freqRank": 29,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -485,38 +485,6 @@
     {
       "index": 27,
       "kind": "phrase",
-      "text": "Je la regardais.",
-      "gloss": {
-        "en": "I was looking at her.",
-        "tr": "Ona bakıyordum.",
-        "de": "Ich schaute sie an.",
-        "pt-BR": "Estava olhando para ela.",
-        "ru": "Я смотрел на неё."
-      },
-      "freqRank": 34,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 28,
-      "kind": "phrase",
-      "text": "Je te pardonne.",
-      "gloss": {
-        "en": "I forgive you.",
-        "de": "Ich verzeihe dir.",
-        "es": "Te perdono.",
-        "pt-BR": "Eu te perdoo.",
-        "ru": "Я тебя прощаю."
-      },
-      "freqRank": 35,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 29,
-      "kind": "phrase",
       "text": "Pardonne et oublie.",
       "gloss": {
         "en": "Forgive and forget.",
@@ -531,7 +499,23 @@
       }
     },
     {
-      "index": 30,
+      "index": 28,
+      "kind": "phrase",
+      "text": "Je la regardais.",
+      "gloss": {
+        "en": "I was looking at her.",
+        "tr": "Ona bakıyordum.",
+        "de": "Ich schaute sie an.",
+        "pt-BR": "Estava olhando para ela.",
+        "ru": "Я смотрел на неё."
+      },
+      "freqRank": 34,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 29,
       "kind": "phrase",
       "text": "Est-ce gratuit ?",
       "gloss": {
@@ -543,6 +527,22 @@
         "ru": "Это бесплатно?"
       },
       "freqRank": 37,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "Je te pardonne.",
+      "gloss": {
+        "en": "I forgive you.",
+        "de": "Ich verzeihe dir.",
+        "es": "Te perdono.",
+        "pt-BR": "Eu te perdoo.",
+        "ru": "Я тебя прощаю."
+      },
+      "freqRank": 35,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -938,22 +938,6 @@
     {
       "index": 55,
       "kind": "phrase",
-      "text": "Il a vomi.",
-      "gloss": {
-        "en": "He vomited.",
-        "de": "Er hat sich übergeben.",
-        "es": "Vomitó.",
-        "pt-BR": "Ele vomitou.",
-        "ru": "Его вырвало."
-      },
-      "freqRank": 62,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 56,
-      "kind": "phrase",
       "text": "Elle veut divorcer.",
       "gloss": {
         "en": "She wants a divorce.",
@@ -963,6 +947,22 @@
         "ru": "Она хочет развестись."
       },
       "freqRank": 63,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "Il a vomi.",
+      "gloss": {
+        "en": "He vomited.",
+        "de": "Er hat sich übergeben.",
+        "es": "Vomitó.",
+        "pt-BR": "Ele vomitou.",
+        "ru": "Его вырвало."
+      },
+      "freqRank": 62,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1002,23 +1002,6 @@
     {
       "index": 59,
       "kind": "phrase",
-      "text": "Il pleut encore.",
-      "gloss": {
-        "en": "It's still raining.",
-        "tr": "Hâlâ yağmur yağıyor.",
-        "de": "Es regnet noch.",
-        "es": "Todavía llueve.",
-        "pt-BR": "Ainda está chovendo.",
-        "ru": "Всё ещё идёт дождь."
-      },
-      "freqRank": 66,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 60,
-      "kind": "phrase",
       "text": "Pleut-il maintenant ?",
       "gloss": {
         "en": "Is it raining now?",
@@ -1034,23 +1017,24 @@
       }
     },
     {
-      "index": 61,
+      "index": 60,
       "kind": "phrase",
-      "text": "Il se lave.",
+      "text": "Il pleut encore.",
       "gloss": {
-        "en": "He washes himself.",
-        "de": "Er wäscht sich.",
-        "es": "Él se lava.",
-        "pt-BR": "Ele se lava.",
-        "ru": "Он моется."
+        "en": "It's still raining.",
+        "tr": "Hâlâ yağmur yağıyor.",
+        "de": "Es regnet noch.",
+        "es": "Todavía llueve.",
+        "pt-BR": "Ainda está chovendo.",
+        "ru": "Всё ещё идёт дождь."
       },
-      "freqRank": 68,
+      "freqRank": 66,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 62,
+      "index": 61,
       "kind": "phrase",
       "text": "Lave tes pieds.",
       "gloss": {
@@ -1061,6 +1045,22 @@
         "pt-BR": "Lave seus pés."
       },
       "freqRank": 69,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "Il se lave.",
+      "gloss": {
+        "en": "He washes himself.",
+        "de": "Er wäscht sich.",
+        "es": "Él se lava.",
+        "pt-BR": "Ele se lava.",
+        "ru": "Он моется."
+      },
+      "freqRank": 68,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1134,6 +1134,22 @@
     {
       "index": 67,
       "kind": "phrase",
+      "text": "Je suis divorcé.",
+      "gloss": {
+        "en": "I am divorced.",
+        "de": "Ich bin geschieden.",
+        "es": "Estoy divorciado.",
+        "pt-BR": "Eu sou divorciado.",
+        "ru": "Я разведён."
+      },
+      "freqRank": 75,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
       "text": "Nous vivons ici.",
       "gloss": {
         "en": "We live here.",
@@ -1145,22 +1161,6 @@
         "ar": "نعيش هنا."
       },
       "freqRank": 74,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 68,
-      "kind": "phrase",
-      "text": "Je suis divorcé.",
-      "gloss": {
-        "en": "I am divorced.",
-        "de": "Ich bin geschieden.",
-        "es": "Estoy divorciado.",
-        "pt-BR": "Eu sou divorciado.",
-        "ru": "Я разведён."
-      },
-      "freqRank": 75,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1200,22 +1200,6 @@
     {
       "index": 71,
       "kind": "phrase",
-      "text": "Elle était habillée.",
-      "gloss": {
-        "en": "She was dressed.",
-        "de": "Sie war angezogen.",
-        "es": "Ella estaba vestida.",
-        "pt-BR": "Ela estava vestida.",
-        "ru": "Она была одета."
-      },
-      "freqRank": 78,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 72,
-      "kind": "phrase",
       "text": "Les détails comptent.",
       "gloss": {
         "en": "Details matter.",
@@ -1225,6 +1209,22 @@
         "ar": "التفاصيل مهمة."
       },
       "freqRank": 79,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "Elle était habillée.",
+      "gloss": {
+        "en": "She was dressed.",
+        "de": "Sie war angezogen.",
+        "es": "Ella estaba vestida.",
+        "pt-BR": "Ela estava vestida.",
+        "ru": "Она была одета."
+      },
+      "freqRank": 78,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1280,22 +1280,6 @@
     {
       "index": 76,
       "kind": "phrase",
-      "text": "Éteins la radio.",
-      "gloss": {
-        "en": "Turn off the radio.",
-        "de": "Mach das Radio aus.",
-        "es": "Apaga la radio.",
-        "pt-BR": "Desligue o rádio.",
-        "ru": "Выключи радио."
-      },
-      "freqRank": 83,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 77,
-      "kind": "phrase",
       "text": "Il a ri.",
       "gloss": {
         "en": "He laughed.",
@@ -1305,6 +1289,22 @@
         "ar": "ضحك."
       },
       "freqRank": 84,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "Éteins la radio.",
+      "gloss": {
+        "en": "Turn off the radio.",
+        "de": "Mach das Radio aus.",
+        "es": "Apaga la radio.",
+        "pt-BR": "Desligue o rádio.",
+        "ru": "Выключи радио."
+      },
+      "freqRank": 83,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1456,22 +1456,6 @@
     {
       "index": 87,
       "kind": "phrase",
-      "text": "Jouons aux cartes.",
-      "gloss": {
-        "en": "Let's play cards.",
-        "de": "Lasst uns Karten spielen.",
-        "es": "Juguemos a las cartas.",
-        "pt-BR": "Vamos jogar cartas.",
-        "ru": "Поиграем в карты."
-      },
-      "freqRank": 94,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 88,
-      "kind": "phrase",
       "text": "Ils me tueront.",
       "gloss": {
         "en": "They'll kill me.",
@@ -1481,6 +1465,22 @@
         "ru": "Они убьют меня."
       },
       "freqRank": 95,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "Jouons aux cartes.",
+      "gloss": {
+        "en": "Let's play cards.",
+        "de": "Lasst uns Karten spielen.",
+        "es": "Juguemos a las cartas.",
+        "pt-BR": "Vamos jogar cartas.",
+        "ru": "Поиграем в карты."
+      },
+      "freqRank": 94,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2267,22 +2267,6 @@
     {
       "index": 137,
       "kind": "phrase",
-      "text": "Il vend du whisky.",
-      "gloss": {
-        "en": "He sells whisky.",
-        "de": "Er verkauft Whisky.",
-        "es": "Él vende whisky.",
-        "pt-BR": "Ele vende uísque.",
-        "ru": "Он продаёт виски."
-      },
-      "freqRank": 144,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 138,
-      "kind": "phrase",
       "text": "Tom habite à Boston.",
       "gloss": {
         "en": "Tom is living in Boston.",
@@ -2292,6 +2276,22 @@
         "ru": "Том живёт в Бостоне."
       },
       "freqRank": 145,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "Il vend du whisky.",
+      "gloss": {
+        "en": "He sells whisky.",
+        "de": "Er verkauft Whisky.",
+        "es": "Él vende whisky.",
+        "pt-BR": "Ele vende uísque.",
+        "ru": "Он продаёт виски."
+      },
+      "freqRank": 144,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2347,22 +2347,6 @@
     {
       "index": 142,
       "kind": "phrase",
-      "text": "Je vis au Japon.",
-      "gloss": {
-        "en": "I live in Japan.",
-        "de": "Ich lebe in Japan.",
-        "es": "Vivo en Japón.",
-        "pt-BR": "Eu vivo no Japão.",
-        "ru": "Я живу в Японии."
-      },
-      "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 143,
-      "kind": "phrase",
       "text": "Elle est très mignonne.",
       "gloss": {
         "en": "She is very pretty.",
@@ -2372,6 +2356,22 @@
         "ru": "Она очень симпатичная."
       },
       "freqRank": 150,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "Je vis au Japon.",
+      "gloss": {
+        "en": "I live in Japan.",
+        "de": "Ich lebe in Japan.",
+        "es": "Vivo en Japón.",
+        "pt-BR": "Eu vivo no Japão.",
+        "ru": "Я живу в Японии."
+      },
+      "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2459,22 +2459,6 @@
     {
       "index": 149,
       "kind": "phrase",
-      "text": "Il a épousé Anne.",
-      "gloss": {
-        "en": "He married Ann.",
-        "de": "Er heiratete Ann.",
-        "es": "Se casó con Ann.",
-        "pt-BR": "Ele casou-se com Anne.",
-        "ru": "Он женился на Анне."
-      },
-      "freqRank": 156,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 150,
-      "kind": "phrase",
       "text": "Ça ne changera rien.",
       "gloss": {
         "en": "That won't change anything.",
@@ -2489,39 +2473,23 @@
       }
     },
     {
+      "index": 150,
+      "kind": "phrase",
+      "text": "Il a épousé Anne.",
+      "gloss": {
+        "en": "He married Ann.",
+        "de": "Er heiratete Ann.",
+        "es": "Se casó con Ann.",
+        "pt-BR": "Ele casou-se com Anne.",
+        "ru": "Он женился на Анне."
+      },
+      "freqRank": 156,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
       "index": 151,
-      "kind": "phrase",
-      "text": "Il apprend à nager.",
-      "gloss": {
-        "en": "He's learning to swim.",
-        "de": "Er lernt schwimmen.",
-        "es": "Está aprendiendo a nadar.",
-        "pt-BR": "Ele está aprendendo a nadar.",
-        "ru": "Он учится плавать."
-      },
-      "freqRank": 158,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 152,
-      "kind": "phrase",
-      "text": "Il peut nager vite.",
-      "gloss": {
-        "en": "He can swim fast.",
-        "de": "Er kann schnell schwimmen.",
-        "es": "Él puede nadar rápido.",
-        "pt-BR": "Ele consegue nadar rápido.",
-        "ru": "Он умеет быстро плавать."
-      },
-      "freqRank": 159,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 153,
       "kind": "phrase",
       "text": "Je préfère aller nager.",
       "gloss": {
@@ -2537,7 +2505,23 @@
       }
     },
     {
-      "index": 154,
+      "index": 152,
+      "kind": "phrase",
+      "text": "Il apprend à nager.",
+      "gloss": {
+        "en": "He's learning to swim.",
+        "de": "Er lernt schwimmen.",
+        "es": "Está aprendiendo a nadar.",
+        "pt-BR": "Ele está aprendendo a nadar.",
+        "ru": "Он учится плавать."
+      },
+      "freqRank": 158,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 153,
       "kind": "phrase",
       "text": "Ses yeux sont bleus.",
       "gloss": {
@@ -2548,6 +2532,22 @@
         "ru": "У него голубые глаза."
       },
       "freqRank": 161,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "Il peut nager vite.",
+      "gloss": {
+        "en": "He can swim fast.",
+        "de": "Er kann schnell schwimmen.",
+        "es": "Él puede nadar rápido.",
+        "pt-BR": "Ele consegue nadar rápido.",
+        "ru": "Он умеет быстро плавать."
+      },
+      "freqRank": 159,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2733,6 +2733,22 @@
     {
       "index": 166,
       "kind": "phrase",
+      "text": "Malheureusement, Nancy avait raison.",
+      "gloss": {
+        "en": "Unfortunately, Nancy was right.",
+        "tr": "Maalesef, Nancy haklıydı.",
+        "es": "Desafortunadamente, Nancy tenía razón.",
+        "pt-BR": "Infelizmente, Nancy tinha razão.",
+        "ru": "К сожалению, Нэнси была права."
+      },
+      "freqRank": 174,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
       "text": "Tom est un terroriste.",
       "gloss": {
         "en": "Tom is a terrorist.",
@@ -2745,22 +2761,6 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
-    },
-    {
-      "index": 167,
-      "kind": "phrase",
-      "text": "Malheureusement, Nancy avait raison.",
-      "gloss": {
-        "en": "Unfortunately, Nancy was right.",
-        "tr": "Maalesef, Nancy haklıydı.",
-        "es": "Desafortunadamente, Nancy tenía razón.",
-        "pt-BR": "Infelizmente, Nancy tinha razão.",
-        "ru": "К сожалению, Нэнси была права."
-      },
-      "freqRank": 174,
-      "review": {
-        "glossedBy": "Tatoeba"
       }
     },
     {
@@ -2799,22 +2799,6 @@
     {
       "index": 170,
       "kind": "phrase",
-      "text": "Elle est au régime.",
-      "gloss": {
-        "en": "She is on a diet.",
-        "de": "Sie ist auf Diät.",
-        "es": "Ella está a dieta.",
-        "pt-BR": "Ela está de regime.",
-        "ru": "Она на диете."
-      },
-      "freqRank": 177,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 171,
-      "kind": "phrase",
       "text": "Je suis au régime.",
       "gloss": {
         "en": "I'm on a diet.",
@@ -2824,6 +2808,22 @@
         "ru": "Я на диете."
       },
       "freqRank": 178,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "Elle est au régime.",
+      "gloss": {
+        "en": "She is on a diet.",
+        "de": "Sie ist auf Diät.",
+        "es": "Ella está a dieta.",
+        "pt-BR": "Ela está de regime.",
+        "ru": "Она на диете."
+      },
+      "freqRank": 177,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3039,6 +3039,22 @@
     {
       "index": 185,
       "kind": "phrase",
+      "text": "Le lion est fort.",
+      "gloss": {
+        "en": "A lion is strong.",
+        "de": "Ein Löwe ist stark.",
+        "es": "El león es fuerte.",
+        "pt-BR": "O leão é forte.",
+        "ru": "Лев силён."
+      },
+      "freqRank": 193,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
       "text": "Je vois un lion.",
       "gloss": {
         "en": "I see a lion.",
@@ -3049,22 +3065,6 @@
         "ru": "Я вижу льва."
       },
       "freqRank": 192,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 186,
-      "kind": "phrase",
-      "text": "Le lion est fort.",
-      "gloss": {
-        "en": "A lion is strong.",
-        "de": "Ein Löwe ist stark.",
-        "es": "El león es fuerte.",
-        "pt-BR": "O leão é forte.",
-        "ru": "Лев силён."
-      },
-      "freqRank": 193,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3249,38 +3249,6 @@
     {
       "index": 198,
       "kind": "phrase",
-      "text": "Il est à Tokyo.",
-      "gloss": {
-        "en": "He is in Tokyo.",
-        "de": "Er ist in Tokyo.",
-        "es": "Él está en Tokio.",
-        "pt-BR": "Ele está em Tóquio.",
-        "ru": "Он в Токио."
-      },
-      "freqRank": 205,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 199,
-      "kind": "phrase",
-      "text": "Il vit à Tokyo.",
-      "gloss": {
-        "en": "He lives in Tokyo.",
-        "de": "Er lebt in Tokio.",
-        "es": "Él vive en Tokio.",
-        "pt-BR": "Ele vive em Tóquio.",
-        "ru": "Он живёт в Токио."
-      },
-      "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 200,
-      "kind": "phrase",
       "text": "Je vis à Tokyo.",
       "gloss": {
         "en": "I live in Tokyo.",
@@ -3295,7 +3263,23 @@
       }
     },
     {
-      "index": 201,
+      "index": 199,
+      "kind": "phrase",
+      "text": "Il est à Tokyo.",
+      "gloss": {
+        "en": "He is in Tokyo.",
+        "de": "Er ist in Tokyo.",
+        "es": "Él está en Tokio.",
+        "pt-BR": "Ele está em Tóquio.",
+        "ru": "Он в Токио."
+      },
+      "freqRank": 205,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 200,
       "kind": "phrase",
       "text": "La robe est verte.",
       "gloss": {
@@ -3306,6 +3290,22 @@
         "ru": "Платье зелёное."
       },
       "freqRank": 208,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "Il vit à Tokyo.",
+      "gloss": {
+        "en": "He lives in Tokyo.",
+        "de": "Er lebt in Tokio.",
+        "es": "Él vive en Tokio.",
+        "pt-BR": "Ele vive em Tóquio.",
+        "ru": "Он живёт в Токио."
+      },
+      "freqRank": 206,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3345,22 +3345,6 @@
     {
       "index": 204,
       "kind": "phrase",
-      "text": "Je suis à Berlin.",
-      "gloss": {
-        "en": "I am in Berlin.",
-        "tr": "Berlin'deyim.",
-        "de": "Ich bin in Berlin.",
-        "es": "Estoy en Berlín.",
-        "ru": "Я в Берлине."
-      },
-      "freqRank": 211,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 205,
-      "kind": "phrase",
       "text": "Où est la vodka ?",
       "gloss": {
         "en": "Where is the vodka?",
@@ -3370,6 +3354,22 @@
         "ru": "Где водка?"
       },
       "freqRank": 212,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "Je suis à Berlin.",
+      "gloss": {
+        "en": "I am in Berlin.",
+        "tr": "Berlin'deyim.",
+        "de": "Ich bin in Berlin.",
+        "es": "Estoy en Berlín.",
+        "ru": "Я в Берлине."
+      },
+      "freqRank": 211,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3489,22 +3489,6 @@
     {
       "index": 213,
       "kind": "phrase",
-      "text": "Je joue au tennis.",
-      "gloss": {
-        "en": "I play tennis.",
-        "de": "Ich spiele Tennis.",
-        "es": "Juego al tenis.",
-        "pt-BR": "Eu jogo tênis.",
-        "ru": "Я играю в теннис."
-      },
-      "freqRank": 220,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 214,
-      "kind": "phrase",
       "text": "Ils mangent du pain.",
       "gloss": {
         "en": "They are eating bread.",
@@ -3514,6 +3498,22 @@
         "ru": "Они едят хлеб."
       },
       "freqRank": 221,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "Je joue au tennis.",
+      "gloss": {
+        "en": "I play tennis.",
+        "de": "Ich spiele Tennis.",
+        "es": "Juego al tenis.",
+        "pt-BR": "Eu jogo tênis.",
+        "ru": "Я играю в теннис."
+      },
+      "freqRank": 220,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3553,22 +3553,6 @@
     {
       "index": 217,
       "kind": "phrase",
-      "text": "Il lave sa voiture.",
-      "gloss": {
-        "en": "He is washing his car.",
-        "de": "Er wäscht sein Auto.",
-        "es": "Está lavando su coche.",
-        "pt-BR": "Ele está lavando o seu carro.",
-        "ru": "Он моет свою машину."
-      },
-      "freqRank": 224,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 218,
-      "kind": "phrase",
       "text": "Lave-toi le visage.",
       "gloss": {
         "en": "Wash your face.",
@@ -3578,6 +3562,22 @@
         "ru": "Умойся."
       },
       "freqRank": 225,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "Il lave sa voiture.",
+      "gloss": {
+        "en": "He is washing his car.",
+        "de": "Er wäscht sein Auto.",
+        "es": "Está lavando su coche.",
+        "pt-BR": "Ele está lavando o seu carro.",
+        "ru": "Он моет свою машину."
+      },
+      "freqRank": 224,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3666,6 +3666,22 @@
     {
       "index": 224,
       "kind": "phrase",
+      "text": "Janvier est mon mois.",
+      "gloss": {
+        "en": "January is my month.",
+        "de": "Der Januar ist mein Monat.",
+        "es": "Enero es mi mes.",
+        "pt-BR": "Janeiro é o meu mês.",
+        "ru": "Январь — мой месяц."
+      },
+      "freqRank": 234,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
       "text": "Nous vivons en appartement.",
       "gloss": {
         "en": "We live in an apartment.",
@@ -3680,7 +3696,23 @@
       }
     },
     {
-      "index": 225,
+      "index": 226,
+      "kind": "phrase",
+      "text": "Je veux le surprendre.",
+      "gloss": {
+        "en": "I want to surprise him.",
+        "tr": "Ona sürpriz yapmak istiyorum.",
+        "de": "Ich will ihn überraschen.",
+        "es": "Quiero darle una sorpresa.",
+        "ru": "Я хочу его удивить."
+      },
+      "freqRank": 235,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 227,
       "kind": "phrase",
       "text": "Nous vivons en société.",
       "gloss": {
@@ -3697,7 +3729,23 @@
       }
     },
     {
-      "index": 226,
+      "index": 228,
+      "kind": "phrase",
+      "text": "Je dois me dépêcher !",
+      "gloss": {
+        "en": "I have to hurry!",
+        "de": "Ich muss mich beeilen!",
+        "es": "¡Tengo que apurarme!",
+        "pt-BR": "Eu devo me apressar!",
+        "ru": "Мне надо спешить!"
+      },
+      "freqRank": 236,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 229,
       "kind": "phrase",
       "text": "Nous vivons sur Terre.",
       "gloss": {
@@ -3709,54 +3757,6 @@
         "ar": "نحن نعيش على كوكب الأرض."
       },
       "freqRank": 233,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 227,
-      "kind": "phrase",
-      "text": "Janvier est mon mois.",
-      "gloss": {
-        "en": "January is my month.",
-        "de": "Der Januar ist mein Monat.",
-        "es": "Enero es mi mes.",
-        "pt-BR": "Janeiro é o meu mês.",
-        "ru": "Январь — мой месяц."
-      },
-      "freqRank": 234,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 228,
-      "kind": "phrase",
-      "text": "Je veux le surprendre.",
-      "gloss": {
-        "en": "I want to surprise him.",
-        "tr": "Ona sürpriz yapmak istiyorum.",
-        "de": "Ich will ihn überraschen.",
-        "es": "Quiero darle una sorpresa.",
-        "ru": "Я хочу его удивить."
-      },
-      "freqRank": 235,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 229,
-      "kind": "phrase",
-      "text": "Je dois me dépêcher !",
-      "gloss": {
-        "en": "I have to hurry!",
-        "de": "Ich muss mich beeilen!",
-        "es": "¡Tengo que apurarme!",
-        "pt-BR": "Eu devo me apressar!",
-        "ru": "Мне надо спешить!"
-      },
-      "freqRank": 236,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4007,22 +4007,6 @@
     {
       "index": 245,
       "kind": "phrase",
-      "text": "La douleur était insupportable.",
-      "gloss": {
-        "en": "The pain was unbearable.",
-        "de": "Der Schmerz war nicht auszuhalten.",
-        "es": "El dolor era insoportable.",
-        "pt-BR": "A dor era insuportável.",
-        "ru": "Боль была невыносима."
-      },
-      "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 246,
-      "kind": "phrase",
       "text": "Supporter peut être insupportable.",
       "gloss": {
         "en": "Bearing can be unbearable.",
@@ -4032,6 +4016,22 @@
         "ru": "Выносить что-либо может быть невыносимо."
       },
       "freqRank": 253,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "La douleur était insupportable.",
+      "gloss": {
+        "en": "The pain was unbearable.",
+        "de": "Der Schmerz war nicht auszuhalten.",
+        "es": "El dolor era insoportable.",
+        "pt-BR": "A dor era insuportável.",
+        "ru": "Боль была невыносима."
+      },
+      "freqRank": 252,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4104,6 +4104,22 @@
     {
       "index": 251,
       "kind": "phrase",
+      "text": "Il se mit debout.",
+      "gloss": {
+        "en": "He stood up.",
+        "de": "Er stand auf.",
+        "es": "Él se puso de pie.",
+        "pt-BR": "Ele pôs-se de pé.",
+        "ru": "Он встал."
+      },
+      "freqRank": 259,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
       "text": "Les poissons dorment-ils ?",
       "gloss": {
         "en": "Do fish sleep?",
@@ -4114,22 +4130,6 @@
         "ru": "Рыбы спят?"
       },
       "freqRank": 258,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 252,
-      "kind": "phrase",
-      "text": "Il se mit debout.",
-      "gloss": {
-        "en": "He stood up.",
-        "de": "Er stand auf.",
-        "es": "Él se puso de pie.",
-        "pt-BR": "Ele pôs-se de pé.",
-        "ru": "Он встал."
-      },
-      "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4423,6 +4423,23 @@
     {
       "index": 270,
       "kind": "phrase",
+      "text": "Je suis allé au supermarché.",
+      "gloss": {
+        "en": "I've been to the supermarket.",
+        "tr": "Süpermarkete gittim.",
+        "de": "Ich bin zum Supermarkt gegangen.",
+        "es": "Fui al supermercado.",
+        "pt-BR": "Fui ao supermercado.",
+        "ru": "Я ходил в супермаркет."
+      },
+      "freqRank": 278,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
       "text": "Nous voulons une solution pacifique.",
       "gloss": {
         "en": "We want a peaceful solution.",
@@ -4434,23 +4451,6 @@
         "ar": "نحن نريد حلاً سلمياً."
       },
       "freqRank": 277,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 271,
-      "kind": "phrase",
-      "text": "Je suis allé au supermarché.",
-      "gloss": {
-        "en": "I've been to the supermarket.",
-        "tr": "Süpermarkete gittim.",
-        "de": "Ich bin zum Supermarkt gegangen.",
-        "es": "Fui al supermercado.",
-        "pt-BR": "Fui ao supermercado.",
-        "ru": "Я ходил в супермаркет."
-      },
-      "freqRank": 278,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4647,23 +4647,6 @@
     {
       "index": 283,
       "kind": "phrase",
-      "text": "Nous vivons dans une belle ville.",
-      "gloss": {
-        "en": "We live in a beautiful city.",
-        "tr": "Biz güzel bir şehirde yaşıyoruz.",
-        "de": "Wir leben in einer schönen Stadt.",
-        "es": "Vivimos en una hermosa ciudad.",
-        "pt-BR": "Vivemos em uma bela cidade.",
-        "ru": "Мы живем в прекрасном городе."
-      },
-      "freqRank": 290,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 284,
-      "kind": "phrase",
       "text": "Tous les chemins mènent à Rome.",
       "gloss": {
         "en": "All roads lead to Rome.",
@@ -4674,6 +4657,23 @@
         "ar": "كل الطرق تؤدي إلى روما."
       },
       "freqRank": 291,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "Nous vivons dans une belle ville.",
+      "gloss": {
+        "en": "We live in a beautiful city.",
+        "tr": "Biz güzel bir şehirde yaşıyoruz.",
+        "de": "Wir leben in einer schönen Stadt.",
+        "es": "Vivimos en una hermosa ciudad.",
+        "pt-BR": "Vivemos em uma bela cidade.",
+        "ru": "Мы живем в прекрасном городе."
+      },
+      "freqRank": 290,
       "review": {
         "glossedBy": "Tatoeba"
       }

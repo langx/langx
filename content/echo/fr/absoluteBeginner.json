@@ -236,68 +236,6 @@
     {
       "index": 6,
       "kind": "phrase",
-      "text": "bonne chance",
-      "gloss": {
-        "en": "good luck",
-        "tr": "iyi şanslar",
-        "de": "viel Glück",
-        "es": "buena suerte",
-        "pt-BR": "boa sorte",
-        "ru": "удачи",
-        "ar": "بالتوفيق"
-      },
-      "example": "Je vous souhaite bonne chance et du succès dans votre travail.",
-      "freqRank": 10,
-      "review": {
-        "sense": "Se dit pour porter bonheur.",
-        "translationCount": 55,
-        "definition": "Se dit pour porter bonheur.",
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8d/LL-Q150_(fra)-WikiLucas00-bonne_chance.wav/LL-Q150_(fra)-WikiLucas00-bonne_chance.wav.mp3",
-            "file": "LL-Q150 (fra)-WikiLucas00-bonne chance.wav",
-            "tags": []
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d6/LL-Q150_(fra)-LoquaxFR-bonne_chance.wav/LL-Q150_(fra)-LoquaxFR-bonne_chance.wav.mp3",
-            "file": "LL-Q150 (fra)-LoquaxFR-bonne chance.wav",
-            "tags": []
-          }
-        ]
-      }
-    },
-    {
-      "index": 7,
-      "kind": "phrase",
-      "text": "bonne journée",
-      "gloss": {
-        "en": "have a nice day",
-        "ru": "всего хорошего"
-      },
-      "freqRank": 11,
-      "review": {
-        "sense": "Formule de politesse utilisée lorsqu’on quitte quelqu’un.",
-        "translationCount": 7,
-        "definition": "Formule de politesse utilisée lorsqu’on quitte quelqu’un.",
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e9/LL-Q150_(fra)-WikiLucas00-bonne_journée.wav/LL-Q150_(fra)-WikiLucas00-bonne_journée.wav.mp3",
-            "file": "LL-Q150 (fra)-WikiLucas00-bonne journée.wav",
-            "tags": []
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d6/LL-Q150_(fra)-LoquaxFR-bonne_journée.wav/LL-Q150_(fra)-LoquaxFR-bonne_journée.wav.mp3",
-            "file": "LL-Q150 (fra)-LoquaxFR-bonne journée.wav",
-            "tags": []
-          }
-        ]
-      }
-    },
-    {
-      "index": 8,
-      "kind": "phrase",
       "text": "à bientôt",
       "gloss": {
         "en": "see you soon",
@@ -334,7 +272,41 @@
       }
     },
     {
-      "index": 9,
+      "index": 7,
+      "kind": "phrase",
+      "text": "bonne chance",
+      "gloss": {
+        "en": "good luck",
+        "tr": "iyi şanslar",
+        "de": "viel Glück",
+        "es": "buena suerte",
+        "pt-BR": "boa sorte",
+        "ru": "удачи",
+        "ar": "بالتوفيق"
+      },
+      "example": "Je vous souhaite bonne chance et du succès dans votre travail.",
+      "freqRank": 10,
+      "review": {
+        "sense": "Se dit pour porter bonheur.",
+        "translationCount": 55,
+        "definition": "Se dit pour porter bonheur.",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8d/LL-Q150_(fra)-WikiLucas00-bonne_chance.wav/LL-Q150_(fra)-WikiLucas00-bonne_chance.wav.mp3",
+            "file": "LL-Q150 (fra)-WikiLucas00-bonne chance.wav",
+            "tags": []
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d6/LL-Q150_(fra)-LoquaxFR-bonne_chance.wav/LL-Q150_(fra)-LoquaxFR-bonne_chance.wav.mp3",
+            "file": "LL-Q150 (fra)-LoquaxFR-bonne chance.wav",
+            "tags": []
+          }
+        ]
+      }
+    },
+    {
+      "index": 8,
       "kind": "phrase",
       "text": "avec plaisir",
       "gloss": {
@@ -367,7 +339,65 @@
       }
     },
     {
+      "index": 9,
+      "kind": "phrase",
+      "text": "bonne journée",
+      "gloss": {
+        "en": "have a nice day",
+        "ru": "всего хорошего"
+      },
+      "freqRank": 11,
+      "review": {
+        "sense": "Formule de politesse utilisée lorsqu’on quitte quelqu’un.",
+        "translationCount": 7,
+        "definition": "Formule de politesse utilisée lorsqu’on quitte quelqu’un.",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e9/LL-Q150_(fra)-WikiLucas00-bonne_journée.wav/LL-Q150_(fra)-WikiLucas00-bonne_journée.wav.mp3",
+            "file": "LL-Q150 (fra)-WikiLucas00-bonne journée.wav",
+            "tags": []
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d6/LL-Q150_(fra)-LoquaxFR-bonne_journée.wav/LL-Q150_(fra)-LoquaxFR-bonne_journée.wav.mp3",
+            "file": "LL-Q150 (fra)-LoquaxFR-bonne journée.wav",
+            "tags": []
+          }
+        ]
+      }
+    },
+    {
       "index": 10,
+      "kind": "phrase",
+      "text": "bon voyage",
+      "gloss": {
+        "en": "have a nice trip",
+        "de": "gute Reise",
+        "es": "buen viaje",
+        "ru": "счастливого пути"
+      },
+      "freqRank": 17,
+      "review": {
+        "sense": "Se dit pour dire au revoir à quelqu’un qui part en voyage.",
+        "translationCount": 19,
+        "definition": "Se dit pour dire au revoir à quelqu’un qui part en voyage.",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7f/LL-Q150_(fra)-WikiLucas00-bon_voyage.wav/LL-Q150_(fra)-WikiLucas00-bon_voyage.wav.mp3",
+            "file": "LL-Q150 (fra)-WikiLucas00-bon voyage.wav",
+            "tags": []
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/03/LL-Q150_(fra)-LoquaxFR-bon_voyage.wav/LL-Q150_(fra)-LoquaxFR-bon_voyage.wav.mp3",
+            "file": "LL-Q150 (fra)-LoquaxFR-bon voyage.wav",
+            "tags": []
+          }
+        ]
+      }
+    },
+    {
+      "index": 11,
       "kind": "phrase",
       "text": "bonne année",
       "gloss": {
@@ -406,62 +436,7 @@
       }
     },
     {
-      "index": 11,
-      "kind": "phrase",
-      "text": "bonne soirée",
-      "gloss": {},
-      "freqRank": 16,
-      "review": {
-        "sense": "Se dit en quittant quelqu’un le soir en sachant que la personne ne se couchera pas tout de suite.",
-        "translationCount": 5,
-        "definition": "Se dit en quittant quelqu’un le soir en sachant que la personne ne se couchera pas tout de suite.",
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c3/LL-Q150_(fra)-WikiLucas00-bonne_soirée.wav/LL-Q150_(fra)-WikiLucas00-bonne_soirée.wav.mp3",
-            "file": "LL-Q150 (fra)-WikiLucas00-bonne soirée.wav",
-            "tags": []
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/2e/LL-Q150_(fra)-LoquaxFR-bonne_soirée.wav/LL-Q150_(fra)-LoquaxFR-bonne_soirée.wav.mp3",
-            "file": "LL-Q150 (fra)-LoquaxFR-bonne soirée.wav",
-            "tags": []
-          }
-        ]
-      }
-    },
-    {
       "index": 12,
-      "kind": "phrase",
-      "text": "bon voyage",
-      "gloss": {
-        "en": "have a nice trip",
-        "de": "gute Reise",
-        "es": "buen viaje",
-        "ru": "счастливого пути"
-      },
-      "freqRank": 17,
-      "review": {
-        "sense": "Se dit pour dire au revoir à quelqu’un qui part en voyage.",
-        "translationCount": 19,
-        "definition": "Se dit pour dire au revoir à quelqu’un qui part en voyage.",
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7f/LL-Q150_(fra)-WikiLucas00-bon_voyage.wav/LL-Q150_(fra)-WikiLucas00-bon_voyage.wav.mp3",
-            "file": "LL-Q150 (fra)-WikiLucas00-bon voyage.wav",
-            "tags": []
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/03/LL-Q150_(fra)-LoquaxFR-bon_voyage.wav/LL-Q150_(fra)-LoquaxFR-bon_voyage.wav.mp3",
-            "file": "LL-Q150 (fra)-LoquaxFR-bon voyage.wav",
-            "tags": []
-          }
-        ]
-      }
-    },
-    {
-      "index": 13,
       "kind": "phrase",
       "text": "à droite",
       "gloss": {
@@ -488,6 +463,31 @@
           {
             "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/32/LL-Q150_(fra)-Poslovitch-à_droite.wav/LL-Q150_(fra)-Poslovitch-à_droite.wav.mp3",
             "file": "LL-Q150 (fra)-Poslovitch-à droite.wav",
+            "tags": []
+          }
+        ]
+      }
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "bonne soirée",
+      "gloss": {},
+      "freqRank": 16,
+      "review": {
+        "sense": "Se dit en quittant quelqu’un le soir en sachant que la personne ne se couchera pas tout de suite.",
+        "translationCount": 5,
+        "definition": "Se dit en quittant quelqu’un le soir en sachant que la personne ne se couchera pas tout de suite.",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c3/LL-Q150_(fra)-WikiLucas00-bonne_soirée.wav/LL-Q150_(fra)-WikiLucas00-bonne_soirée.wav.mp3",
+            "file": "LL-Q150 (fra)-WikiLucas00-bonne soirée.wav",
+            "tags": []
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/2e/LL-Q150_(fra)-LoquaxFR-bonne_soirée.wav/LL-Q150_(fra)-LoquaxFR-bonne_soirée.wav.mp3",
+            "file": "LL-Q150 (fra)-LoquaxFR-bonne soirée.wav",
             "tags": []
           }
         ]
@@ -606,6 +606,33 @@
     {
       "index": 18,
       "kind": "phrase",
+      "text": "quoi de neuf",
+      "gloss": {
+        "en": "what’s new",
+        "tr": "ne var ne yok",
+        "de": "was gibts Neues",
+        "es": "qué hay de nuevo",
+        "pt-BR": "quais as novidades",
+        "ar": "ما الجَديدُ"
+      },
+      "freqRank": 29,
+      "review": {
+        "sense": "Locution qui se dit pour prendre des nouvelles de quelqu’un ou de quelque chose, pour savoir ce qui s’est passé récemment. — Note d’usage : Très souvent utilisé sans verbe, par ellipse de il y a.",
+        "translationCount": 23,
+        "definition": "Locution qui se dit pour prendre des nouvelles de quelqu’un ou de quelque chose, pour savoir ce qui s’est passé récemment. — Note d’usage : Très souvent utilisé sans verbe, par ellipse de il y a.",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/b6/LL-Q150_(fra)-Jérémy-Günther-Heinz_Jähnick-quoi_de_neuf.wav/LL-Q150_(fra)-Jérémy-Günther-Heinz_Jähnick-quoi_de_neuf.wav.mp3",
+            "file": "LL-Q150 (fra)-Jérémy-Günther-Heinz Jähnick-quoi de neuf.wav",
+            "tags": []
+          }
+        ]
+      }
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
       "text": "comment vas-tu",
       "gloss": {
         "en": "how are you",
@@ -634,33 +661,6 @@
           {
             "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/48/LL-Q150_(fra)-Jérémy-Günther-Heinz_Jähnick-comment_vas-tu.wav/LL-Q150_(fra)-Jérémy-Günther-Heinz_Jähnick-comment_vas-tu.wav.mp3",
             "file": "LL-Q150 (fra)-Jérémy-Günther-Heinz Jähnick-comment vas-tu.wav",
-            "tags": []
-          }
-        ]
-      }
-    },
-    {
-      "index": 19,
-      "kind": "phrase",
-      "text": "quoi de neuf",
-      "gloss": {
-        "en": "what’s new",
-        "tr": "ne var ne yok",
-        "de": "was gibts Neues",
-        "es": "qué hay de nuevo",
-        "pt-BR": "quais as novidades",
-        "ar": "ما الجَديدُ"
-      },
-      "freqRank": 29,
-      "review": {
-        "sense": "Locution qui se dit pour prendre des nouvelles de quelqu’un ou de quelque chose, pour savoir ce qui s’est passé récemment. — Note d’usage : Très souvent utilisé sans verbe, par ellipse de il y a.",
-        "translationCount": 23,
-        "definition": "Locution qui se dit pour prendre des nouvelles de quelqu’un ou de quelque chose, pour savoir ce qui s’est passé récemment. — Note d’usage : Très souvent utilisé sans verbe, par ellipse de il y a.",
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/b6/LL-Q150_(fra)-Jérémy-Günther-Heinz_Jähnick-quoi_de_neuf.wav/LL-Q150_(fra)-Jérémy-Günther-Heinz_Jähnick-quoi_de_neuf.wav.mp3",
-            "file": "LL-Q150 (fra)-Jérémy-Günther-Heinz Jähnick-quoi de neuf.wav",
             "tags": []
           }
         ]
@@ -719,22 +719,6 @@
     {
       "index": 22,
       "kind": "phrase",
-      "text": "Qui est-elle ?",
-      "gloss": {
-        "en": "Who is she?",
-        "de": "Wer ist sie?",
-        "es": "¿Quién es ella?",
-        "pt-BR": "Quem é ela?",
-        "ru": "Кто она?"
-      },
-      "freqRank": 41,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 23,
-      "kind": "phrase",
       "text": "On y est.",
       "gloss": {
         "en": "Here we are.",
@@ -749,7 +733,39 @@
       }
     },
     {
+      "index": 23,
+      "kind": "phrase",
+      "text": "Qui est-elle ?",
+      "gloss": {
+        "en": "Who is she?",
+        "de": "Wer ist sie?",
+        "es": "¿Quién es ella?",
+        "pt-BR": "Quem é ela?",
+        "ru": "Кто она?"
+      },
+      "freqRank": 41,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
       "index": 24,
+      "kind": "phrase",
+      "text": "Que fait-elle ?",
+      "gloss": {
+        "en": "What does she do?",
+        "de": "Was macht sie?",
+        "es": "¿Qué está haciendo ella?",
+        "pt-BR": "O que ela faz?",
+        "ru": "Что она делает?"
+      },
+      "freqRank": 44,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 25,
       "kind": "phrase",
       "text": "Qui suis-je ?",
       "gloss": {
@@ -761,22 +777,6 @@
         "ru": "Кто я?"
       },
       "freqRank": 43,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 25,
-      "kind": "phrase",
-      "text": "Que fait-elle ?",
-      "gloss": {
-        "en": "What does she do?",
-        "de": "Was macht sie?",
-        "es": "¿Qué está haciendo ella?",
-        "pt-BR": "O que ela faz?",
-        "ru": "Что она делает?"
-      },
-      "freqRank": 44,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -946,23 +946,6 @@
     {
       "index": 36,
       "kind": "phrase",
-      "text": "Qui es-tu ?",
-      "gloss": {
-        "en": "Who are you?",
-        "tr": "Sen kimsin?",
-        "de": "Wer bist du?",
-        "es": "¿Quién eres?",
-        "pt-BR": "Quem é você?",
-        "ru": "Ты кто?"
-      },
-      "freqRank": 55,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 37,
-      "kind": "phrase",
       "text": "Où es-tu ?",
       "gloss": {
         "en": "Where are you?",
@@ -977,6 +960,23 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
+      }
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "Qui es-tu ?",
+      "gloss": {
+        "en": "Who are you?",
+        "tr": "Sen kimsin?",
+        "de": "Wer bist du?",
+        "es": "¿Quién eres?",
+        "pt-BR": "Quem é você?",
+        "ru": "Ты кто?"
+      },
+      "freqRank": 55,
+      "review": {
+        "glossedBy": "Tatoeba"
       }
     },
     {
@@ -1873,38 +1873,6 @@
     {
       "index": 93,
       "kind": "phrase",
-      "text": "Je les connais.",
-      "gloss": {
-        "en": "I know them.",
-        "de": "Ich kenne sie.",
-        "es": "Los conozco.",
-        "pt-BR": "Eu os conheço.",
-        "ru": "Я их знаю."
-      },
-      "freqRank": 112,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 94,
-      "kind": "phrase",
-      "text": "Je te connais.",
-      "gloss": {
-        "en": "I know you.",
-        "de": "Ich kenne dich.",
-        "es": "Yo te conozco.",
-        "pt-BR": "Eu te conheço.",
-        "ru": "Я тебя знаю."
-      },
-      "freqRank": 113,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 95,
-      "kind": "phrase",
       "text": "Tu le connais ?",
       "gloss": {
         "en": "Do you know it?",
@@ -1919,7 +1887,23 @@
       }
     },
     {
-      "index": 96,
+      "index": 94,
+      "kind": "phrase",
+      "text": "Je les connais.",
+      "gloss": {
+        "en": "I know them.",
+        "de": "Ich kenne sie.",
+        "es": "Los conozco.",
+        "pt-BR": "Eu os conheço.",
+        "ru": "Я их знаю."
+      },
+      "freqRank": 112,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 95,
       "kind": "phrase",
       "text": "Vous pouvez partir.",
       "gloss": {
@@ -1935,7 +1919,39 @@
       }
     },
     {
+      "index": 96,
+      "kind": "phrase",
+      "text": "Je te connais.",
+      "gloss": {
+        "en": "I know you.",
+        "de": "Ich kenne dich.",
+        "es": "Yo te conozco.",
+        "pt-BR": "Eu te conheço.",
+        "ru": "Я тебя знаю."
+      },
+      "freqRank": 113,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
       "index": 97,
+      "kind": "phrase",
+      "text": "Quand vient-il ?",
+      "gloss": {
+        "en": "When does he come?",
+        "de": "Wann kommt er?",
+        "es": "¿Cuándo viene?",
+        "pt-BR": "Quando ele vem?",
+        "ru": "Когда он придёт?"
+      },
+      "freqRank": 119,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 98,
       "kind": "phrase",
       "text": "Je dois sortir.",
       "gloss": {
@@ -1951,7 +1967,23 @@
       }
     },
     {
-      "index": 98,
+      "index": 99,
+      "kind": "phrase",
+      "text": "Vient-elle aussi ?",
+      "gloss": {
+        "en": "Is she coming, too?",
+        "tr": "O da geliyor mu?",
+        "de": "Kommt sie auch?",
+        "es": "¿Ella también viene?",
+        "pt-BR": "Ela também vem?"
+      },
+      "freqRank": 120,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 100,
       "kind": "phrase",
       "text": "Je te comprends.",
       "gloss": {
@@ -1968,55 +2000,7 @@
       }
     },
     {
-      "index": 99,
-      "kind": "phrase",
-      "text": "Je vous comprends.",
-      "gloss": {
-        "en": "I understand you guys.",
-        "tr": "Sizi anlıyorum.",
-        "es": "Le entiendo.",
-        "pt-BR": "Entendo-os.",
-        "ru": "Я вас понимаю."
-      },
-      "freqRank": 118,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 100,
-      "kind": "phrase",
-      "text": "Quand vient-il ?",
-      "gloss": {
-        "en": "When does he come?",
-        "de": "Wann kommt er?",
-        "es": "¿Cuándo viene?",
-        "pt-BR": "Quando ele vem?",
-        "ru": "Когда он придёт?"
-      },
-      "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
       "index": 101,
-      "kind": "phrase",
-      "text": "Vient-elle aussi ?",
-      "gloss": {
-        "en": "Is she coming, too?",
-        "tr": "O da geliyor mu?",
-        "de": "Kommt sie auch?",
-        "es": "¿Ella también viene?",
-        "pt-BR": "Ela também vem?"
-      },
-      "freqRank": 120,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 102,
       "kind": "phrase",
       "text": "Tu es nouveau ?",
       "gloss": {
@@ -2027,6 +2011,22 @@
         "ru": "Ты новенький?"
       },
       "freqRank": 121,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "Je vous comprends.",
+      "gloss": {
+        "en": "I understand you guys.",
+        "tr": "Sizi anlıyorum.",
+        "es": "Le entiendo.",
+        "pt-BR": "Entendo-os.",
+        "ru": "Я вас понимаю."
+      },
+      "freqRank": 118,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2082,38 +2082,6 @@
     {
       "index": 106,
       "kind": "phrase",
-      "text": "Laisse-moi partir !",
-      "gloss": {
-        "en": "Let me go!",
-        "de": "Lass mich gehen!",
-        "es": "¡Déjame irme!",
-        "pt-BR": "Deixe-me ir embora!",
-        "ru": "Отпусти меня!"
-      },
-      "freqRank": 125,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 107,
-      "kind": "phrase",
-      "text": "Laisse-moi voir.",
-      "gloss": {
-        "en": "Let me see.",
-        "de": "Lass mich sehen.",
-        "es": "Déjame ver.",
-        "pt-BR": "Deixe-me ver.",
-        "ru": "Дай посмотреть."
-      },
-      "freqRank": 126,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 108,
-      "kind": "phrase",
       "text": "Ils vont bien.",
       "gloss": {
         "en": "They're fine.",
@@ -2128,7 +2096,23 @@
       }
     },
     {
-      "index": 109,
+      "index": 107,
+      "kind": "phrase",
+      "text": "Laisse-moi partir !",
+      "gloss": {
+        "en": "Let me go!",
+        "de": "Lass mich gehen!",
+        "es": "¡Déjame irme!",
+        "pt-BR": "Deixe-me ir embora!",
+        "ru": "Отпусти меня!"
+      },
+      "freqRank": 125,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 108,
       "kind": "phrase",
       "text": "Ça fait longtemps.",
       "gloss": {
@@ -2139,6 +2123,22 @@
         "ru": "Давно не виделись."
       },
       "freqRank": 128,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "Laisse-moi voir.",
+      "gloss": {
+        "en": "Let me see.",
+        "de": "Lass mich sehen.",
+        "es": "Déjame ver.",
+        "pt-BR": "Deixe-me ver.",
+        "ru": "Дай посмотреть."
+      },
+      "freqRank": 126,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2243,38 +2243,6 @@
     {
       "index": 116,
       "kind": "phrase",
-      "text": "Venez avec nous.",
-      "gloss": {
-        "en": "Come along with us.",
-        "de": "Kommt mit uns.",
-        "es": "Venga con nosotros.",
-        "pt-BR": "Vem conosco.",
-        "ru": "Пойдёмте с нами."
-      },
-      "freqRank": 135,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 117,
-      "kind": "phrase",
-      "text": "Venez demain matin.",
-      "gloss": {
-        "en": "Come tomorrow morning.",
-        "de": "Kommen Sie morgen Vormittag.",
-        "es": "Venid mañana por la mañana.",
-        "pt-BR": "Venha amanhã de manhã.",
-        "ru": "Приходите завтра утром."
-      },
-      "freqRank": 136,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 118,
-      "kind": "phrase",
       "text": "Voici ma chambre.",
       "gloss": {
         "en": "This is my room.",
@@ -2289,7 +2257,23 @@
       }
     },
     {
-      "index": 119,
+      "index": 117,
+      "kind": "phrase",
+      "text": "Venez avec nous.",
+      "gloss": {
+        "en": "Come along with us.",
+        "de": "Kommt mit uns.",
+        "es": "Venga con nosotros.",
+        "pt-BR": "Vem conosco.",
+        "ru": "Пойдёмте с нами."
+      },
+      "freqRank": 135,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 118,
       "kind": "phrase",
       "text": "Elle est belle.",
       "gloss": {
@@ -2300,6 +2284,22 @@
         "ru": "Она красивая."
       },
       "freqRank": 138,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "Venez demain matin.",
+      "gloss": {
+        "en": "Come tomorrow morning.",
+        "de": "Kommen Sie morgen Vormittag.",
+        "es": "Venid mañana por la mañana.",
+        "pt-BR": "Venha amanhã de manhã.",
+        "ru": "Приходите завтра утром."
+      },
+      "freqRank": 136,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2468,22 +2468,6 @@
     {
       "index": 130,
       "kind": "phrase",
-      "text": "Je veux vivre.",
-      "gloss": {
-        "en": "I want to live.",
-        "de": "Ich will leben.",
-        "es": "Quiero vivir.",
-        "pt-BR": "Eu quero viver.",
-        "ru": "Я хочу жить."
-      },
-      "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 131,
-      "kind": "phrase",
       "text": "Quelle belle journée !",
       "gloss": {
         "en": "What a fine day it is!",
@@ -2494,6 +2478,22 @@
         "ru": "Какой прекрасный день!"
       },
       "freqRank": 150,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "Je veux vivre.",
+      "gloss": {
+        "en": "I want to live.",
+        "de": "Ich will leben.",
+        "es": "Quiero vivir.",
+        "pt-BR": "Eu quero viver.",
+        "ru": "Я хочу жить."
+      },
+      "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2662,22 +2662,6 @@
     {
       "index": 142,
       "kind": "phrase",
-      "text": "Attends un instant.",
-      "gloss": {
-        "en": "Wait a moment.",
-        "de": "Warte einen Augenblick.",
-        "es": "Espera un momento.",
-        "pt-BR": "Espere um instante.",
-        "ru": "Подожди секундочку."
-      },
-      "freqRank": 161,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 143,
-      "kind": "phrase",
       "text": "Aimerais-tu essayer ?",
       "gloss": {
         "en": "Would you like to try?",
@@ -2687,6 +2671,22 @@
         "ru": "Не хотел бы ты попробовать?"
       },
       "freqRank": 162,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "Attends un instant.",
+      "gloss": {
+        "en": "Wait a moment.",
+        "de": "Warte einen Augenblick.",
+        "es": "Espera un momento.",
+        "pt-BR": "Espere um instante.",
+        "ru": "Подожди секундочку."
+      },
+      "freqRank": 161,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2887,22 +2887,6 @@
     {
       "index": 156,
       "kind": "phrase",
-      "text": "Je travaille ici.",
-      "gloss": {
-        "en": "I work here.",
-        "de": "Ich arbeite hier.",
-        "es": "Trabajo aquí.",
-        "pt-BR": "Eu trabalho aqui.",
-        "ru": "Я здесь работаю."
-      },
-      "freqRank": 175,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 157,
-      "kind": "phrase",
       "text": "Prie et travaille.",
       "gloss": {
         "en": "Pray and work.",
@@ -2917,23 +2901,23 @@
       }
     },
     {
-      "index": 158,
+      "index": 157,
       "kind": "phrase",
-      "text": "Je commence demain.",
+      "text": "Je travaille ici.",
       "gloss": {
-        "en": "I start tomorrow.",
-        "de": "Ich fange morgen an.",
-        "es": "Empiezo mañana.",
-        "pt-BR": "Eu começo amanhã.",
-        "ru": "Завтра начинаю."
+        "en": "I work here.",
+        "de": "Ich arbeite hier.",
+        "es": "Trabajo aquí.",
+        "pt-BR": "Eu trabalho aqui.",
+        "ru": "Я здесь работаю."
       },
-      "freqRank": 177,
+      "freqRank": 175,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 159,
+      "index": 158,
       "kind": "phrase",
       "text": "Le film commence.",
       "gloss": {
@@ -2944,6 +2928,22 @@
         "ru": "Фильм начинается."
       },
       "freqRank": 178,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "Je commence demain.",
+      "gloss": {
+        "en": "I start tomorrow.",
+        "de": "Ich fange morgen an.",
+        "es": "Empiezo mañana.",
+        "pt-BR": "Eu começo amanhã.",
+        "ru": "Завтра начинаю."
+      },
+      "freqRank": 177,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3259,6 +3259,22 @@
     {
       "index": 179,
       "kind": "phrase",
+      "text": "Tu devrais dormir.",
+      "gloss": {
+        "en": "You should sleep.",
+        "de": "Du solltest schlafen.",
+        "es": "Deberías dormir.",
+        "pt-BR": "Você deveria dormir.",
+        "ru": "Тебе лучше поспать."
+      },
+      "freqRank": 200,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
       "text": "Je vais commencer.",
       "gloss": {
         "en": "I'm going to start.",
@@ -3273,7 +3289,23 @@
       }
     },
     {
-      "index": 180,
+      "index": 181,
+      "kind": "phrase",
+      "text": "Vrai ou faux ?",
+      "gloss": {
+        "en": "True or false?",
+        "de": "Wahr oder falsch?",
+        "es": "¿Verdadero o falso?",
+        "pt-BR": "Verdadeiro ou falso?",
+        "ru": "Правда или ложь?"
+      },
+      "freqRank": 201,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 182,
       "kind": "phrase",
       "text": "Je veux dormir.",
       "gloss": {
@@ -3291,56 +3323,7 @@
       }
     },
     {
-      "index": 181,
-      "kind": "phrase",
-      "text": "Tu devrais dormir.",
-      "gloss": {
-        "en": "You should sleep.",
-        "de": "Du solltest schlafen.",
-        "es": "Deberías dormir.",
-        "pt-BR": "Você deveria dormir.",
-        "ru": "Тебе лучше поспать."
-      },
-      "freqRank": 200,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 182,
-      "kind": "phrase",
-      "text": "Vrai ou faux ?",
-      "gloss": {
-        "en": "True or false?",
-        "de": "Wahr oder falsch?",
-        "es": "¿Verdadero o falso?",
-        "pt-BR": "Verdadeiro ou falso?",
-        "ru": "Правда или ложь?"
-      },
-      "freqRank": 201,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
       "index": 183,
-      "kind": "phrase",
-      "text": "Je voyage seul.",
-      "gloss": {
-        "en": "I'm travelling alone.",
-        "tr": "Yalnız seyahat ediyorum.",
-        "de": "Ich reise alleine.",
-        "es": "Viajo solo.",
-        "pt-BR": "Estou viajando sozinho.",
-        "ru": "Я путешествую один."
-      },
-      "freqRank": 202,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 184,
       "kind": "phrase",
       "text": "Ne bouge pas.",
       "gloss": {
@@ -3352,6 +3335,23 @@
         "ru": "Не двигайся."
       },
       "freqRank": 203,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "Je voyage seul.",
+      "gloss": {
+        "en": "I'm travelling alone.",
+        "tr": "Yalnız seyahat ediyorum.",
+        "de": "Ich reise alleine.",
+        "es": "Viajo solo.",
+        "pt-BR": "Estou viajando sozinho.",
+        "ru": "Я путешествую один."
+      },
+      "freqRank": 202,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3461,23 +3461,6 @@
     {
       "index": 191,
       "kind": "phrase",
-      "text": "Je suis Tom.",
-      "gloss": {
-        "en": "I'm Tom.",
-        "tr": "Ben Tom.",
-        "de": "Ich bin Tom.",
-        "es": "Soy Tom.",
-        "pt-BR": "Eu sou Tom.",
-        "ru": "Я Том."
-      },
-      "freqRank": 210,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 192,
-      "kind": "phrase",
       "text": "Il fait froid.",
       "gloss": {
         "en": "It's cold.",
@@ -3488,6 +3471,23 @@
         "ru": "Холодно."
       },
       "freqRank": 211,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "Je suis Tom.",
+      "gloss": {
+        "en": "I'm Tom.",
+        "tr": "Ben Tom.",
+        "de": "Ich bin Tom.",
+        "es": "Soy Tom.",
+        "pt-BR": "Eu sou Tom.",
+        "ru": "Я Том."
+      },
+      "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3529,6 +3529,23 @@
     {
       "index": 195,
       "kind": "phrase",
+      "text": "Que dois-je faire ?",
+      "gloss": {
+        "en": "What should I do?",
+        "tr": "Ne yapmam gerekiyor?",
+        "de": "Was muss ich tun?",
+        "es": "¿Qué debo hacer?",
+        "pt-BR": "O que devo fazer?",
+        "ru": "Что мне делать?"
+      },
+      "freqRank": 215,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
       "text": "Je ne peux pas.",
       "gloss": {
         "en": "I can't.",
@@ -3545,24 +3562,24 @@
       }
     },
     {
-      "index": 196,
+      "index": 197,
       "kind": "phrase",
-      "text": "Que dois-je faire ?",
+      "text": "La vie est bonne.",
       "gloss": {
-        "en": "What should I do?",
-        "tr": "Ne yapmam gerekiyor?",
-        "de": "Was muss ich tun?",
-        "es": "¿Qué debo hacer?",
-        "pt-BR": "O que devo fazer?",
-        "ru": "Что мне делать?"
+        "en": "Life is good.",
+        "tr": "Yaşam iyidir.",
+        "de": "Das Leben ist gut.",
+        "es": "La vida es buena.",
+        "pt-BR": "A vida é boa.",
+        "ru": "Жизнь хороша."
       },
-      "freqRank": 215,
+      "freqRank": 220,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 197,
+      "index": 198,
       "kind": "phrase",
       "text": "Je crois en Dieu.",
       "gloss": {
@@ -3580,75 +3597,7 @@
       }
     },
     {
-      "index": 198,
-      "kind": "phrase",
-      "text": "Je pense à toi.",
-      "gloss": {
-        "en": "I'm thinking about you.",
-        "de": "Ich denke an dich.",
-        "es": "Pienso en ti.",
-        "pt-BR": "Estou pensando em ti.",
-        "ru": "Я думаю о тебе.",
-        "ar": "أفكر فيك."
-      },
-      "freqRank": 217,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
       "index": 199,
-      "kind": "phrase",
-      "text": "Je suis un homme.",
-      "gloss": {
-        "en": "I am a man.",
-        "tr": "Ben bir erkeğim.",
-        "de": "Ich bin ein Mann.",
-        "es": "Soy un hombre.",
-        "pt-BR": "Eu sou homem.",
-        "ru": "Я мужчина."
-      },
-      "freqRank": 218,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 200,
-      "kind": "phrase",
-      "text": "Je suis une femme.",
-      "gloss": {
-        "en": "I am a woman.",
-        "tr": "Ben bir kadınım.",
-        "de": "Ich bin eine Frau.",
-        "es": "Soy una mujer.",
-        "pt-BR": "Sou uma mulher.",
-        "ru": "Я женщина."
-      },
-      "freqRank": 219,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 201,
-      "kind": "phrase",
-      "text": "La vie est bonne.",
-      "gloss": {
-        "en": "Life is good.",
-        "tr": "Yaşam iyidir.",
-        "de": "Das Leben ist gut.",
-        "es": "La vida es buena.",
-        "pt-BR": "A vida é boa.",
-        "ru": "Жизнь хороша."
-      },
-      "freqRank": 220,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 202,
       "kind": "phrase",
       "text": "Le monde est petit.",
       "gloss": {
@@ -3666,7 +3615,24 @@
       }
     },
     {
-      "index": 203,
+      "index": 200,
+      "kind": "phrase",
+      "text": "Je pense à toi.",
+      "gloss": {
+        "en": "I'm thinking about you.",
+        "de": "Ich denke an dich.",
+        "es": "Pienso en ti.",
+        "pt-BR": "Estou pensando em ti.",
+        "ru": "Я думаю о тебе.",
+        "ar": "أفكر فيك."
+      },
+      "freqRank": 217,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 201,
       "kind": "phrase",
       "text": "Cela peut être vrai.",
       "gloss": {
@@ -3683,7 +3649,24 @@
       }
     },
     {
-      "index": 204,
+      "index": 202,
+      "kind": "phrase",
+      "text": "Je suis un homme.",
+      "gloss": {
+        "en": "I am a man.",
+        "tr": "Ben bir erkeğim.",
+        "de": "Ich bin ein Mann.",
+        "es": "Soy un hombre.",
+        "pt-BR": "Eu sou homem.",
+        "ru": "Я мужчина."
+      },
+      "freqRank": 218,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 203,
       "kind": "phrase",
       "text": "Salut ! Comment ça va ?",
       "gloss": {
@@ -3695,6 +3678,23 @@
         "ru": "Привет! Как дела?"
       },
       "freqRank": 223,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "Je suis une femme.",
+      "gloss": {
+        "en": "I am a woman.",
+        "tr": "Ben bir kadınım.",
+        "de": "Ich bin eine Frau.",
+        "es": "Soy una mujer.",
+        "pt-BR": "Sou uma mulher.",
+        "ru": "Я женщина."
+      },
+      "freqRank": 219,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3753,23 +3753,6 @@
     {
       "index": 208,
       "kind": "phrase",
-      "text": "Quel était le problème ?",
-      "gloss": {
-        "en": "What was the problem?",
-        "tr": "Sorun neydi?",
-        "de": "Was war das Problem?",
-        "es": "¿Cuál era el problema?",
-        "pt-BR": "Qual era o problema?",
-        "ru": "В чем было дело?"
-      },
-      "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 209,
-      "kind": "phrase",
       "text": "Ça me plaît beaucoup.",
       "gloss": {
         "en": "I like it very much.",
@@ -3780,6 +3763,23 @@
         "ar": "هذا يعجبني كثيرا."
       },
       "freqRank": 228,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "Quel était le problème ?",
+      "gloss": {
+        "en": "What was the problem?",
+        "tr": "Sorun neydi?",
+        "de": "Was war das Problem?",
+        "es": "¿Cuál era el problema?",
+        "pt-BR": "Qual era o problema?",
+        "ru": "В чем было дело?"
+      },
+      "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3856,24 +3856,6 @@
     {
       "index": 214,
       "kind": "phrase",
-      "text": "Où est ta chambre ?",
-      "gloss": {
-        "en": "Where is your room?",
-        "tr": "Odan nerede?",
-        "de": "Wo ist dein Zimmer?",
-        "es": "¿Dónde está tu habitación?",
-        "pt-BR": "Onde é o seu quarto?",
-        "ru": "Где твоя комната?",
-        "ar": "أين غرفتك؟"
-      },
-      "freqRank": 233,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 215,
-      "kind": "phrase",
       "text": "La vie est belle.",
       "gloss": {
         "en": "Life is beautiful.",
@@ -3885,6 +3867,24 @@
         "ar": "الحياة جميلة."
       },
       "freqRank": 234,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "Où est ta chambre ?",
+      "gloss": {
+        "en": "Where is your room?",
+        "tr": "Odan nerede?",
+        "de": "Wo ist dein Zimmer?",
+        "es": "¿Dónde está tu habitación?",
+        "pt-BR": "Onde é o seu quarto?",
+        "ru": "Где твоя комната?",
+        "ar": "أين غرفتك؟"
+      },
+      "freqRank": 233,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4046,6 +4046,24 @@
     {
       "index": 225,
       "kind": "phrase",
+      "text": "Je veux un chien.",
+      "gloss": {
+        "en": "I want a dog.",
+        "tr": "Bir köpek istiyorum.",
+        "de": "Ich will einen Hund haben.",
+        "es": "Quiero un perro.",
+        "pt-BR": "Eu quero um cachorro.",
+        "ru": "Я хочу собаку.",
+        "ar": "أريد كلبا."
+      },
+      "freqRank": 245,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
       "text": "Il a un chien.",
       "gloss": {
         "en": "He has a dog.",
@@ -4060,24 +4078,6 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
-    },
-    {
-      "index": 226,
-      "kind": "phrase",
-      "text": "Je veux un chien.",
-      "gloss": {
-        "en": "I want a dog.",
-        "tr": "Bir köpek istiyorum.",
-        "de": "Ich will einen Hund haben.",
-        "es": "Quiero un perro.",
-        "pt-BR": "Eu quero um cachorro.",
-        "ru": "Я хочу собаку.",
-        "ar": "أريد كلبا."
-      },
-      "freqRank": 245,
-      "review": {
-        "glossedBy": "Tatoeba"
       }
     },
     {
@@ -4340,23 +4340,6 @@
     {
       "index": 242,
       "kind": "phrase",
-      "text": "Il ne nous aime pas.",
-      "gloss": {
-        "en": "He doesn't like us.",
-        "tr": "O bizi sevmiyor.",
-        "de": "Er mag uns nicht.",
-        "es": "No le gustamos.",
-        "pt-BR": "Ele não gosta de nós.",
-        "ru": "Он нас не любит."
-      },
-      "freqRank": 261,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 243,
-      "kind": "phrase",
       "text": "Les gens sont les gens.",
       "gloss": {
         "en": "People are people.",
@@ -4368,6 +4351,23 @@
         "ar": "الناس هم الناس."
       },
       "freqRank": 262,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "Il ne nous aime pas.",
+      "gloss": {
+        "en": "He doesn't like us.",
+        "tr": "O bizi sevmiyor.",
+        "de": "Er mag uns nicht.",
+        "es": "No le gustamos.",
+        "pt-BR": "Ele não gosta de nós.",
+        "ru": "Он нас не любит."
+      },
+      "freqRank": 261,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4443,23 +4443,6 @@
     {
       "index": 248,
       "kind": "phrase",
-      "text": "Je suis dans ma voiture.",
-      "gloss": {
-        "en": "I'm in my car.",
-        "tr": "Arabamdayım.",
-        "de": "Ich bin in meinem Auto.",
-        "es": "Estoy en mi coche.",
-        "pt-BR": "Estou no meu carro.",
-        "ar": "أنا في سيارتي."
-      },
-      "freqRank": 267,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 249,
-      "kind": "phrase",
       "text": "Où se trouve sa maison ?",
       "gloss": {
         "en": "Where is his house?",
@@ -4470,6 +4453,23 @@
         "ar": "أين بيتها؟"
       },
       "freqRank": 268,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "Je suis dans ma voiture.",
+      "gloss": {
+        "en": "I'm in my car.",
+        "tr": "Arabamdayım.",
+        "de": "Ich bin in meinem Auto.",
+        "es": "Estoy en mi coche.",
+        "pt-BR": "Estou no meu carro.",
+        "ar": "أنا في سيارتي."
+      },
+      "freqRank": 267,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4648,23 +4648,6 @@
     {
       "index": 260,
       "kind": "phrase",
-      "text": "Je commence à avoir faim.",
-      "gloss": {
-        "en": "I'm getting hungry.",
-        "de": "Ich habe langsam Hunger.",
-        "es": "Estoy empezando a tener hambre.",
-        "pt-BR": "Estou começando a ficar com fome.",
-        "ru": "Я начинаю хотеть есть.",
-        "ar": "بدأت أحس بالجوع."
-      },
-      "freqRank": 279,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 261,
-      "kind": "phrase",
       "text": "Aujourd'hui, il fait très chaud.",
       "gloss": {
         "en": "It is very hot today.",
@@ -4675,6 +4658,23 @@
         "ru": "Сегодня очень жарко."
       },
       "freqRank": 280,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "Je commence à avoir faim.",
+      "gloss": {
+        "en": "I'm getting hungry.",
+        "de": "Ich habe langsam Hunger.",
+        "es": "Estoy empezando a tener hambre.",
+        "pt-BR": "Estou começando a ficar com fome.",
+        "ru": "Я начинаю хотеть есть.",
+        "ar": "بدأت أحس بالجوع."
+      },
+      "freqRank": 279,
       "review": {
         "glossedBy": "Tatoeba"
       }

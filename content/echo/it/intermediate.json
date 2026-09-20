@@ -326,23 +326,6 @@
     {
       "index": 18,
       "kind": "phrase",
-      "text": "Ti ho sognato.",
-      "gloss": {
-        "en": "I dreamt about you.",
-        "de": "Ich habe von dir geträumt.",
-        "es": "He soñado contigo.",
-        "fr": "J'ai rêvé de toi.",
-        "pt-BR": "Eu sonhei com você.",
-        "ru": "Ты мне снился."
-      },
-      "freqRank": 23,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 19,
-      "kind": "phrase",
       "text": "Abbiamo dei gatti.",
       "gloss": {
         "en": "We have cats.",
@@ -354,6 +337,23 @@
         "ar": "عندنا قطط."
       },
       "freqRank": 24,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Ti ho sognato.",
+      "gloss": {
+        "en": "I dreamt about you.",
+        "de": "Ich habe von dir geträumt.",
+        "es": "He soñado contigo.",
+        "fr": "J'ai rêvé de toi.",
+        "pt-BR": "Eu sonhei com você.",
+        "ru": "Ты мне снился."
+      },
+      "freqRank": 23,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -378,22 +378,6 @@
     {
       "index": 21,
       "kind": "phrase",
-      "text": "Non parlo spagnolo.",
-      "gloss": {
-        "en": "I don't speak Spanish.",
-        "de": "Ich spreche nicht Spanisch.",
-        "es": "Yo no hablo castellano.",
-        "fr": "Je ne parle pas espagnol.",
-        "ru": "Я не говорю по-испански."
-      },
-      "freqRank": 26,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 22,
-      "kind": "phrase",
       "text": "Sì, parlo spagnolo.",
       "gloss": {
         "en": "Yes, I speak Spanish.",
@@ -403,6 +387,22 @@
         "ru": "Да, я говорю по-испански."
       },
       "freqRank": 27,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "Non parlo spagnolo.",
+      "gloss": {
+        "en": "I don't speak Spanish.",
+        "de": "Ich spreche nicht Spanisch.",
+        "es": "Yo no hablo castellano.",
+        "fr": "Je ne parle pas espagnol.",
+        "ru": "Я не говорю по-испански."
+      },
+      "freqRank": 26,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1016,22 +1016,6 @@
     {
       "index": 60,
       "kind": "phrase",
-      "text": "Oggi è martedì.",
-      "gloss": {
-        "en": "Today is Tuesday.",
-        "de": "Heute ist Dienstag.",
-        "fr": "Aujourd'hui, c'est mardi.",
-        "ru": "Сегодня вторник.",
-        "ar": "اليوم هو الثلاثاء."
-      },
-      "freqRank": 65,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 61,
-      "kind": "phrase",
       "text": "Allah è grande!",
       "gloss": {
         "en": "Allah is great!",
@@ -1041,6 +1025,22 @@
         "ru": "Аллах велик!"
       },
       "freqRank": 66,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "Oggi è martedì.",
+      "gloss": {
+        "en": "Today is Tuesday.",
+        "de": "Heute ist Dienstag.",
+        "fr": "Aujourd'hui, c'est mardi.",
+        "ru": "Сегодня вторник.",
+        "ar": "اليوم هو الثلاثاء."
+      },
+      "freqRank": 65,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1557,22 +1557,6 @@
     {
       "index": 93,
       "kind": "phrase",
-      "text": "La zuppa è fredda.",
-      "gloss": {
-        "en": "The soup is cold.",
-        "tr": "Çorba soğuk.",
-        "de": "Die Suppe ist kalt.",
-        "es": "La sopa está fría.",
-        "fr": "La soupe est froide."
-      },
-      "freqRank": 98,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 94,
-      "kind": "phrase",
       "text": "È la pura verità.",
       "gloss": {
         "en": "That's the absolute truth.",
@@ -1583,6 +1567,22 @@
         "ru": "Это абсолютная правда."
       },
       "freqRank": 99,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "La zuppa è fredda.",
+      "gloss": {
+        "en": "The soup is cold.",
+        "tr": "Çorba soğuk.",
+        "de": "Die Suppe ist kalt.",
+        "es": "La sopa está fría.",
+        "fr": "La soupe est froide."
+      },
+      "freqRank": 98,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1902,22 +1902,6 @@
     {
       "index": 114,
       "kind": "phrase",
-      "text": "Ho una chitarra elettrica.",
-      "gloss": {
-        "en": "I have an electric guitar.",
-        "de": "Ich habe eine E-Gitarre.",
-        "es": "Tengo una guitarra eléctrica.",
-        "fr": "J'ai une guitare électrique.",
-        "pt-BR": "Eu tenho uma guitarra."
-      },
-      "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 115,
-      "kind": "phrase",
       "text": "Lei suona la chitarra.",
       "gloss": {
         "en": "She plays the guitar.",
@@ -1927,6 +1911,22 @@
         "ru": "Она играет на гитаре."
       },
       "freqRank": 120,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "Ho una chitarra elettrica.",
+      "gloss": {
+        "en": "I have an electric guitar.",
+        "de": "Ich habe eine E-Gitarre.",
+        "es": "Tengo una guitarra eléctrica.",
+        "fr": "J'ai une guitare électrique.",
+        "pt-BR": "Eu tenho uma guitarra."
+      },
+      "freqRank": 119,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2165,22 +2165,6 @@
     {
       "index": 130,
       "kind": "phrase",
-      "text": "Sono andato allo zoo.",
-      "gloss": {
-        "en": "I went to the zoo.",
-        "tr": "Hayvanat bahçesine gittim.",
-        "es": "Fui al zoológico.",
-        "fr": "Je suis allé au zoo.",
-        "pt-BR": "Fui ao zoológico."
-      },
-      "freqRank": 135,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 131,
-      "kind": "phrase",
       "text": "Dove sono le mele?",
       "gloss": {
         "en": "Where are the apples?",
@@ -2191,6 +2175,22 @@
         "ru": "Где яблоки?"
       },
       "freqRank": 136,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "Sono andato allo zoo.",
+      "gloss": {
+        "en": "I went to the zoo.",
+        "tr": "Hayvanat bahçesine gittim.",
+        "es": "Fui al zoológico.",
+        "fr": "Je suis allé au zoo.",
+        "pt-BR": "Fui ao zoológico."
+      },
+      "freqRank": 135,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2591,22 +2591,6 @@
     {
       "index": 156,
       "kind": "phrase",
-      "text": "Lui parla cinque lingue.",
-      "gloss": {
-        "en": "He speaks five languages.",
-        "de": "Er spricht fünf Sprachen.",
-        "es": "Él habla cinco idiomas.",
-        "fr": "Il parle cinq langues.",
-        "pt-BR": "Ele fala cinco idiomas."
-      },
-      "freqRank": 161,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 157,
-      "kind": "phrase",
       "text": "Mi piacciono le lingue.",
       "gloss": {
         "en": "I like languages.",
@@ -2616,6 +2600,22 @@
         "ru": "Мне нравятся языки."
       },
       "freqRank": 162,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "Lui parla cinque lingue.",
+      "gloss": {
+        "en": "He speaks five languages.",
+        "de": "Er spricht fünf Sprachen.",
+        "es": "Él habla cinco idiomas.",
+        "fr": "Il parle cinq langues.",
+        "pt-BR": "Ele fala cinco idiomas."
+      },
+      "freqRank": 161,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2703,22 +2703,6 @@
     {
       "index": 163,
       "kind": "phrase",
-      "text": "I pomodori sono rossi.",
-      "gloss": {
-        "en": "Tomatoes are red.",
-        "de": "Tomaten sind rot.",
-        "es": "Los tomates son rojos.",
-        "fr": "Les tomates sont rouges.",
-        "ru": "Помидоры красные."
-      },
-      "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 164,
-      "kind": "phrase",
       "text": "Amo i musicisti rock.",
       "gloss": {
         "en": "I love rock musicians.",
@@ -2728,6 +2712,22 @@
         "ru": "Я люблю рок-музыкантов."
       },
       "freqRank": 169,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "I pomodori sono rossi.",
+      "gloss": {
+        "en": "Tomatoes are red.",
+        "de": "Tomaten sind rot.",
+        "es": "Los tomates son rojos.",
+        "fr": "Les tomates sont rouges.",
+        "ru": "Помидоры красные."
+      },
+      "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3209,6 +3209,22 @@
     {
       "index": 194,
       "kind": "phrase",
+      "text": "Il ragazzo compra un cane.",
+      "gloss": {
+        "en": "The boy buys a dog.",
+        "de": "Der Junge kauft einen Hund.",
+        "es": "El niño compra un perro.",
+        "fr": "Le garçon achète un chien.",
+        "pt-BR": "O menino compra um cachorro."
+      },
+      "freqRank": 200,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
       "text": "Sono un genio molto stabile.",
       "gloss": {
         "en": "I'm a very stable genius.",
@@ -3220,22 +3236,6 @@
         "ar": "أنا عبقري مستقر جدا عقليا."
       },
       "freqRank": 199,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 195,
-      "kind": "phrase",
-      "text": "Il ragazzo compra un cane.",
-      "gloss": {
-        "en": "The boy buys a dog.",
-        "de": "Der Junge kauft einen Hund.",
-        "es": "El niño compra un perro.",
-        "fr": "Le garçon achète un chien.",
-        "pt-BR": "O menino compra um cachorro."
-      },
-      "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3674,22 +3674,6 @@
     {
       "index": 222,
       "kind": "phrase",
-      "text": "Questo per me è arabo.",
-      "gloss": {
-        "en": "It's all Greek to me.",
-        "tr": "Konuya Fransız kaldım.",
-        "de": "Ich verstehe nur Bahnhof.",
-        "fr": "C'est du chinois.",
-        "ru": "Это для меня китайская грамота."
-      },
-      "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 223,
-      "kind": "phrase",
       "text": "Berlino è una città tedesca.",
       "gloss": {
         "en": "Berlin is a German town.",
@@ -3699,6 +3683,22 @@
         "pt-BR": "Berlim é uma cidade alemã."
       },
       "freqRank": 228,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "Questo per me è arabo.",
+      "gloss": {
+        "en": "It's all Greek to me.",
+        "tr": "Konuya Fransız kaldım.",
+        "de": "Ich verstehe nur Bahnhof.",
+        "fr": "C'est du chinois.",
+        "ru": "Это для меня китайская грамота."
+      },
+      "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4175,6 +4175,22 @@
     {
       "index": 253,
       "kind": "phrase",
+      "text": "Lui non sa molto del Giappone.",
+      "gloss": {
+        "en": "He doesn't know a lot about Japan.",
+        "de": "Er weiß nicht viel über Japan.",
+        "es": "Él no sabe mucho sobre Japón.",
+        "pt-BR": "Ele não sabe muito sobre o Japão.",
+        "ru": "Он мало знает о Японии."
+      },
+      "freqRank": 259,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
       "text": "Il Giappone è un paese ricco.",
       "gloss": {
         "en": "Japan is a rich country.",
@@ -4185,22 +4201,6 @@
         "ru": "Япония — богатая страна."
       },
       "freqRank": 258,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 254,
-      "kind": "phrase",
-      "text": "Lui non sa molto del Giappone.",
-      "gloss": {
-        "en": "He doesn't know a lot about Japan.",
-        "de": "Er weiß nicht viel über Japan.",
-        "es": "Él no sabe mucho sobre Japón.",
-        "pt-BR": "Ele não sabe muito sobre o Japão.",
-        "ru": "Он мало знает о Японии."
-      },
-      "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4599,22 +4599,6 @@
     {
       "index": 279,
       "kind": "phrase",
-      "text": "Quante lingue ci sono nel mondo?",
-      "gloss": {
-        "en": "How many languages are there in the world?",
-        "de": "Wie viele Sprachen gibt es auf der Welt?",
-        "es": "¿Cuántas lenguas hay en el mundo?",
-        "fr": "Combien de langues y a-t-il au monde ?",
-        "ru": "Сколько всего языков на свете?"
-      },
-      "freqRank": 284,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 280,
-      "kind": "phrase",
       "text": "È un lupo vestito da agnello.",
       "gloss": {
         "en": "He is a wolf in sheep's clothing.",
@@ -4625,6 +4609,22 @@
         "ar": "هو ذئب في ثوب حمل."
       },
       "freqRank": 285,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "Quante lingue ci sono nel mondo?",
+      "gloss": {
+        "en": "How many languages are there in the world?",
+        "de": "Wie viele Sprachen gibt es auf der Welt?",
+        "es": "¿Cuántas lenguas hay en el mundo?",
+        "fr": "Combien de langues y a-t-il au monde ?",
+        "ru": "Сколько всего языков на свете?"
+      },
+      "freqRank": 284,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4700,23 +4700,6 @@
     {
       "index": 285,
       "kind": "phrase",
-      "text": "La Cina è più grande del Giappone.",
-      "gloss": {
-        "en": "China is bigger than Japan.",
-        "de": "China ist größer als Japan.",
-        "es": "China es más grande que Japón.",
-        "fr": "La Chine est plus grande que le Japon.",
-        "pt-BR": "A China é maior que o Japão.",
-        "ru": "Китай больше Японии."
-      },
-      "freqRank": 290,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 286,
-      "kind": "phrase",
       "text": "Mio padre ci ha portati allo zoo.",
       "gloss": {
         "en": "My father took us to the zoo.",
@@ -4727,6 +4710,23 @@
         "ru": "Мой отец повёл нас в зоопарк."
       },
       "freqRank": 291,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "La Cina è più grande del Giappone.",
+      "gloss": {
+        "en": "China is bigger than Japan.",
+        "de": "China ist größer als Japan.",
+        "es": "China es más grande que Japón.",
+        "fr": "La Chine est plus grande que le Japon.",
+        "pt-BR": "A China é maior que o Japão.",
+        "ru": "Китай больше Японии."
+      },
+      "freqRank": 290,
       "review": {
         "glossedBy": "Tatoeba"
       }

@@ -132,30 +132,6 @@
     {
       "index": 5,
       "kind": "phrase",
-      "text": "добрый день",
-      "gloss": {
-        "en": "good morning!",
-        "es": "¡buenos días!",
-        "pt-BR": "bom dia"
-      },
-      "freqRank": 19,
-      "review": {
-        "sense": "приветствие при встрече, обычно в дневное время",
-        "translationCount": 15,
-        "definition": "приветствие при встрече, обычно в дневное время",
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9b/LL-Q7737_(rus)-Tatiana_Kerbush-добрый_день.wav/LL-Q7737_(rus)-Tatiana_Kerbush-добрый_день.wav.mp3",
-            "file": "LL-Q7737 (rus)-Tatiana Kerbush-добрый день.wav",
-            "tags": []
-          }
-        ]
-      }
-    },
-    {
-      "index": 6,
-      "kind": "phrase",
       "text": "добро пожаловать",
       "gloss": {
         "en": "welcome",
@@ -173,6 +149,30 @@
           {
             "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0b/Ru-добро_пожаловать.ogg/Ru-добро_пожаловать.ogg.mp3",
             "file": "Ru-добро пожаловать.ogg",
+            "tags": []
+          }
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "добрый день",
+      "gloss": {
+        "en": "good morning!",
+        "es": "¡buenos días!",
+        "pt-BR": "bom dia"
+      },
+      "freqRank": 19,
+      "review": {
+        "sense": "приветствие при встрече, обычно в дневное время",
+        "translationCount": 15,
+        "definition": "приветствие при встрече, обычно в дневное время",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9b/LL-Q7737_(rus)-Tatiana_Kerbush-добрый_день.wav/LL-Q7737_(rus)-Tatiana_Kerbush-добрый_день.wav.mp3",
+            "file": "LL-Q7737 (rus)-Tatiana Kerbush-добрый день.wav",
             "tags": []
           }
         ]
@@ -302,38 +302,6 @@
     {
       "index": 13,
       "kind": "phrase",
-      "text": "Я тебя знаю?",
-      "gloss": {
-        "en": "Do I know you?",
-        "de": "Kenne ich dich?",
-        "es": "¿Te conozco?",
-        "fr": "Est-ce que je te connais ?",
-        "ar": "هل أعرفك؟"
-      },
-      "freqRank": 59,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 14,
-      "kind": "phrase",
-      "text": "Я всё знаю.",
-      "gloss": {
-        "en": "I know everything.",
-        "tr": "Her şeyi biliyorum.",
-        "de": "Ich weiß alles.",
-        "es": "Lo sé todo.",
-        "fr": "Je sais tout."
-      },
-      "freqRank": 60,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 15,
-      "kind": "phrase",
       "text": "Что это было?",
       "gloss": {
         "en": "What was that?",
@@ -348,7 +316,23 @@
       }
     },
     {
-      "index": 16,
+      "index": 14,
+      "kind": "phrase",
+      "text": "Я тебя знаю?",
+      "gloss": {
+        "en": "Do I know you?",
+        "de": "Kenne ich dich?",
+        "es": "¿Te conozco?",
+        "fr": "Est-ce que je te connais ?",
+        "ar": "هل أعرفك؟"
+      },
+      "freqRank": 59,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 15,
       "kind": "phrase",
       "text": "Это очень хорошо.",
       "gloss": {
@@ -364,7 +348,39 @@
       }
     },
     {
+      "index": 16,
+      "kind": "phrase",
+      "text": "Я всё знаю.",
+      "gloss": {
+        "en": "I know everything.",
+        "tr": "Her şeyi biliyorum.",
+        "de": "Ich weiß alles.",
+        "es": "Lo sé todo.",
+        "fr": "Je sais tout."
+      },
+      "freqRank": 60,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
       "index": 17,
+      "kind": "phrase",
+      "text": "Спасибо, это всё.",
+      "gloss": {
+        "en": "Thanks, that's all.",
+        "de": "Danke, das ist alles.",
+        "es": "Gracias, es todo.",
+        "fr": "Merci, c'est tout.",
+        "ar": "شكراً، هذا كل شيء."
+      },
+      "freqRank": 64,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 18,
       "kind": "phrase",
       "text": "Я не могу.",
       "gloss": {
@@ -376,22 +392,6 @@
         "ar": "لا يمكنني."
       },
       "freqRank": 63,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 18,
-      "kind": "phrase",
-      "text": "Спасибо, это всё.",
-      "gloss": {
-        "en": "Thanks, that's all.",
-        "de": "Danke, das ist alles.",
-        "es": "Gracias, es todo.",
-        "fr": "Merci, c'est tout.",
-        "ar": "شكراً، هذا كل شيء."
-      },
-      "freqRank": 64,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -465,22 +465,6 @@
     {
       "index": 23,
       "kind": "phrase",
-      "text": "Я хочу тебя.",
-      "gloss": {
-        "en": "I want you.",
-        "de": "Ich will dich.",
-        "es": "Yo te deseo.",
-        "fr": "J'ai envie de toi.",
-        "ar": "أريدك."
-      },
-      "freqRank": 69,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 24,
-      "kind": "phrase",
       "text": "Всё или ничего.",
       "gloss": {
         "en": "It's all or nothing.",
@@ -490,6 +474,22 @@
         "pt-BR": "Ou tudo ou nada."
       },
       "freqRank": 70,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "Я хочу тебя.",
+      "gloss": {
+        "en": "I want you.",
+        "de": "Ich will dich.",
+        "es": "Yo te deseo.",
+        "fr": "J'ai envie de toi.",
+        "ar": "أريدك."
+      },
+      "freqRank": 69,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -529,22 +529,6 @@
     {
       "index": 27,
       "kind": "phrase",
-      "text": "Ты их знаешь?",
-      "gloss": {
-        "en": "Do you know them?",
-        "de": "Kennst du sie?",
-        "es": "¿Los conoces?",
-        "fr": "Les connais-tu ?",
-        "ar": "هل تعرفهم؟"
-      },
-      "freqRank": 73,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 28,
-      "kind": "phrase",
       "text": "Что ты знаешь?",
       "gloss": {
         "en": "What do you know?",
@@ -554,6 +538,22 @@
         "pt-BR": "O que você sabe?"
       },
       "freqRank": 74,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "Ты их знаешь?",
+      "gloss": {
+        "en": "Do you know them?",
+        "de": "Kennst du sie?",
+        "es": "¿Los conoces?",
+        "fr": "Les connais-tu ?",
+        "ar": "هل تعرفهم؟"
+      },
+      "freqRank": 73,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -842,22 +842,6 @@
     {
       "index": 46,
       "kind": "phrase",
-      "text": "Кто эти люди?",
-      "gloss": {
-        "en": "Who are these people?",
-        "de": "Wer sind diese Leute?",
-        "es": "¿Quiénes son estas personas?",
-        "fr": "Qui sont ces gens ?",
-        "ar": "من هؤلاء النَّاس؟"
-      },
-      "freqRank": 92,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 47,
-      "kind": "phrase",
       "text": "Люди есть люди.",
       "gloss": {
         "en": "People are people.",
@@ -869,6 +853,22 @@
         "ar": "الناس هم الناس."
       },
       "freqRank": 93,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "Кто эти люди?",
+      "gloss": {
+        "en": "Who are these people?",
+        "de": "Wer sind diese Leute?",
+        "es": "¿Quiénes son estas personas?",
+        "fr": "Qui sont ces gens ?",
+        "ar": "من هؤلاء النَّاس؟"
+      },
+      "freqRank": 92,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1104,22 +1104,6 @@
     {
       "index": 62,
       "kind": "phrase",
-      "text": "Он мой друг.",
-      "gloss": {
-        "en": "He is my friend.",
-        "de": "Er ist mein Freund.",
-        "es": "Él es mi amigo.",
-        "fr": "Il est mon ami.",
-        "pt-BR": "Ele é meu amigo."
-      },
-      "freqRank": 108,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 63,
-      "kind": "phrase",
       "text": "Том мой друг.",
       "gloss": {
         "en": "Tom is a friend of mine.",
@@ -1130,6 +1114,22 @@
         "pt-BR": "Tom é meu amigo."
       },
       "freqRank": 109,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "Он мой друг.",
+      "gloss": {
+        "en": "He is my friend.",
+        "de": "Er ist mein Freund.",
+        "es": "Él es mi amigo.",
+        "fr": "Il est mon ami.",
+        "pt-BR": "Ele é meu amigo."
+      },
+      "freqRank": 108,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1284,6 +1284,22 @@
     {
       "index": 73,
       "kind": "phrase",
+      "text": "Том хочет помочь.",
+      "gloss": {
+        "en": "Tom wants to help.",
+        "de": "Tom möchte helfen.",
+        "es": "Tom quiere ayudar.",
+        "fr": "Tom veut aider.",
+        "pt-BR": "Tom quer ajudar."
+      },
+      "freqRank": 120,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
       "text": "Я люблю тебя!",
       "gloss": {
         "en": "I love you.",
@@ -1294,22 +1310,6 @@
         "pt-BR": "Te amo."
       },
       "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 74,
-      "kind": "phrase",
-      "text": "Том хочет помочь.",
-      "gloss": {
-        "en": "Tom wants to help.",
-        "de": "Tom möchte helfen.",
-        "es": "Tom quiere ayudar.",
-        "fr": "Tom veut aider.",
-        "pt-BR": "Tom quer ajudar."
-      },
-      "freqRank": 120,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1382,38 +1382,6 @@
     {
       "index": 79,
       "kind": "phrase",
-      "text": "Я дома, Том.",
-      "gloss": {
-        "en": "I'm home, Tom.",
-        "de": "Ich bin zu Hause, Tom.",
-        "es": "Estoy en casa, Tom.",
-        "fr": "Je suis chez moi, Tom.",
-        "pt-BR": "Eu estou em casa, Tom."
-      },
-      "freqRank": 125,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 80,
-      "kind": "phrase",
-      "text": "Я не доктор.",
-      "gloss": {
-        "en": "I'm not a doctor.",
-        "de": "Ich bin kein Arzt.",
-        "es": "No soy un doctor.",
-        "fr": "Je ne suis pas docteur.",
-        "pt-BR": "Eu não sou doutor."
-      },
-      "freqRank": 126,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 81,
-      "kind": "phrase",
       "text": "Что ты делаешь?",
       "gloss": {
         "en": "What are you doing?",
@@ -1429,7 +1397,23 @@
       }
     },
     {
-      "index": 82,
+      "index": 80,
+      "kind": "phrase",
+      "text": "Я дома, Том.",
+      "gloss": {
+        "en": "I'm home, Tom.",
+        "de": "Ich bin zu Hause, Tom.",
+        "es": "Estoy en casa, Tom.",
+        "fr": "Je suis chez moi, Tom.",
+        "pt-BR": "Eu estou em casa, Tom."
+      },
+      "freqRank": 125,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 81,
       "kind": "phrase",
       "text": "Том может говорить.",
       "gloss": {
@@ -1440,6 +1424,22 @@
         "pt-BR": "Tom sabe falar."
       },
       "freqRank": 128,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "Я не доктор.",
+      "gloss": {
+        "en": "I'm not a doctor.",
+        "de": "Ich bin kein Arzt.",
+        "es": "No soy un doctor.",
+        "fr": "Je ne suis pas docteur.",
+        "pt-BR": "Eu não sou doutor."
+      },
+      "freqRank": 126,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1529,22 +1529,6 @@
     {
       "index": 88,
       "kind": "phrase",
-      "text": "Где твой дом?",
-      "gloss": {
-        "en": "Where is your house?",
-        "de": "Wo ist dein Haus?",
-        "es": "¿Dónde está tu casa?",
-        "fr": "Où est ta maison ?",
-        "ar": "أين بيتك؟"
-      },
-      "freqRank": 134,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 89,
-      "kind": "phrase",
       "text": "Это его дом.",
       "gloss": {
         "en": "That is his house.",
@@ -1554,6 +1538,22 @@
         "ar": "هذا هو منزله."
       },
       "freqRank": 135,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "Где твой дом?",
+      "gloss": {
+        "en": "Where is your house?",
+        "de": "Wo ist dein Haus?",
+        "es": "¿Dónde está tu casa?",
+        "fr": "Où est ta maison ?",
+        "ar": "أين بيتك؟"
+      },
+      "freqRank": 134,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1627,22 +1627,6 @@
     {
       "index": 94,
       "kind": "phrase",
-      "text": "Что она говорит?",
-      "gloss": {
-        "en": "What does she say?",
-        "de": "Was sagt sie?",
-        "es": "¿Qué dice ella?",
-        "fr": "Que dit-elle ?",
-        "pt-BR": "O que ela está dizendo?"
-      },
-      "freqRank": 140,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 95,
-      "kind": "phrase",
       "text": "Ничего не происходит.",
       "gloss": {
         "en": "Nothing is happening.",
@@ -1652,6 +1636,22 @@
         "pt-BR": "Não está acontecendo nada."
       },
       "freqRank": 141,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "Что она говорит?",
+      "gloss": {
+        "en": "What does she say?",
+        "de": "Was sagt sie?",
+        "es": "¿Qué dice ella?",
+        "fr": "Que dit-elle ?",
+        "pt-BR": "O que ela está dizendo?"
+      },
+      "freqRank": 140,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -1756,6 +1756,22 @@
     {
       "index": 102,
       "kind": "phrase",
+      "text": "Откуда твой друг?",
+      "gloss": {
+        "en": "Where is your friend from?",
+        "de": "Woher kommt dein Freund?",
+        "es": "¿De dónde es tu amigo?",
+        "fr": "D'où vient ton ami ?",
+        "ar": "من أين صديقك؟"
+      },
+      "freqRank": 150,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
       "text": "Ты не понимаешь.",
       "gloss": {
         "en": "You don't understand.",
@@ -1771,39 +1787,7 @@
       }
     },
     {
-      "index": 103,
-      "kind": "phrase",
-      "text": "Ты это понимаешь?",
-      "gloss": {
-        "en": "Do you understand it?",
-        "tr": "Bunu anlıyor musun?",
-        "de": "Verstehst du das?",
-        "es": "¿Lo entiendes?",
-        "fr": "Comprends-tu ça ?"
-      },
-      "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
       "index": 104,
-      "kind": "phrase",
-      "text": "Откуда твой друг?",
-      "gloss": {
-        "en": "Where is your friend from?",
-        "de": "Woher kommt dein Freund?",
-        "es": "¿De dónde es tu amigo?",
-        "fr": "D'où vient ton ami ?",
-        "ar": "من أين صديقك؟"
-      },
-      "freqRank": 150,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 105,
       "kind": "phrase",
       "text": "Я вижу дом.",
       "gloss": {
@@ -1815,6 +1799,22 @@
         "pt-BR": "Estou vendo uma casa."
       },
       "freqRank": 151,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "Ты это понимаешь?",
+      "gloss": {
+        "en": "Do you understand it?",
+        "tr": "Bunu anlıyor musun?",
+        "de": "Verstehst du das?",
+        "es": "¿Lo entiendes?",
+        "fr": "Comprends-tu ça ?"
+      },
+      "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2081,38 +2081,6 @@
     {
       "index": 122,
       "kind": "phrase",
-      "text": "Я почти готов.",
-      "gloss": {
-        "en": "I'm about ready.",
-        "de": "Ich bin fast fertig.",
-        "es": "Estoy casi listo.",
-        "fr": "Je suis presque prêt.",
-        "ar": "أنا جاهز تقريباً."
-      },
-      "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 123,
-      "kind": "phrase",
-      "text": "Я всё слышал.",
-      "gloss": {
-        "en": "I've heard everything.",
-        "de": "Ich habe alles gehört.",
-        "es": "Lo he oído todo.",
-        "fr": "J'ai tout entendu.",
-        "pt-BR": "Ouvi tudo."
-      },
-      "freqRank": 169,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 124,
-      "kind": "phrase",
       "text": "Том был прав.",
       "gloss": {
         "en": "Tom was right.",
@@ -2127,7 +2095,23 @@
       }
     },
     {
-      "index": 125,
+      "index": 123,
+      "kind": "phrase",
+      "text": "Я почти готов.",
+      "gloss": {
+        "en": "I'm about ready.",
+        "de": "Ich bin fast fertig.",
+        "es": "Estoy casi listo.",
+        "fr": "Je suis presque prêt.",
+        "ar": "أنا جاهز تقريباً."
+      },
+      "freqRank": 168,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 124,
       "kind": "phrase",
       "text": "Где мой брат?",
       "gloss": {
@@ -2139,6 +2123,22 @@
         "pt-BR": "Onde está meu irmão?"
       },
       "freqRank": 171,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "Я всё слышал.",
+      "gloss": {
+        "en": "I've heard everything.",
+        "de": "Ich habe alles gehört.",
+        "es": "Lo he oído todo.",
+        "fr": "J'ai tout entendu.",
+        "pt-BR": "Ouvi tudo."
+      },
+      "freqRank": 169,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2439,22 +2439,6 @@
     {
       "index": 144,
       "kind": "phrase",
-      "text": "У меня проблемы.",
-      "gloss": {
-        "en": "I'm having problems.",
-        "de": "Ich habe Probleme.",
-        "es": "Tengo problemas.",
-        "fr": "J'ai des problèmes.",
-        "ar": "إني في مشكلة الآن."
-      },
-      "freqRank": 190,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 145,
-      "kind": "phrase",
       "text": "Он хороший человек.",
       "gloss": {
         "en": "He's a good person.",
@@ -2465,6 +2449,22 @@
         "ar": "إنه شخص جيد."
       },
       "freqRank": 191,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "У меня проблемы.",
+      "gloss": {
+        "en": "I'm having problems.",
+        "de": "Ich habe Probleme.",
+        "es": "Tengo problemas.",
+        "fr": "J'ai des problèmes.",
+        "ar": "إني في مشكلة الآن."
+      },
+      "freqRank": 190,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2733,6 +2733,22 @@
     {
       "index": 162,
       "kind": "phrase",
+      "text": "Это не любовь.",
+      "gloss": {
+        "en": "This isn't love.",
+        "de": "Das ist keine Liebe.",
+        "es": "Esto no es amor.",
+        "fr": "Ce n'est pas de l'amour.",
+        "pt-BR": "Isto não é amor."
+      },
+      "freqRank": 209,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
       "text": "Они наши друзья.",
       "gloss": {
         "en": "They're our friends.",
@@ -2744,22 +2760,6 @@
         "ar": "هم أصدقاؤنا."
       },
       "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 163,
-      "kind": "phrase",
-      "text": "Это не любовь.",
-      "gloss": {
-        "en": "This isn't love.",
-        "de": "Das ist keine Liebe.",
-        "es": "Esto no es amor.",
-        "fr": "Ce n'est pas de l'amour.",
-        "pt-BR": "Isto não é amor."
-      },
-      "freqRank": 209,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3059,22 +3059,6 @@
     {
       "index": 182,
       "kind": "phrase",
-      "text": "Это моё место.",
-      "gloss": {
-        "en": "This is my seat.",
-        "de": "Das ist mein Platz.",
-        "es": "Este es mi lugar.",
-        "fr": "C'est ma place.",
-        "pt-BR": "Esse é o meu lugar."
-      },
-      "freqRank": 228,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 183,
-      "kind": "phrase",
       "text": "Где мой телефон?",
       "gloss": {
         "en": "Where's my phone?",
@@ -3084,6 +3068,22 @@
         "pt-BR": "Onde está o meu telefone?"
       },
       "freqRank": 229,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "Это моё место.",
+      "gloss": {
+        "en": "This is my seat.",
+        "de": "Das ist mein Platz.",
+        "es": "Este es mi lugar.",
+        "fr": "C'est ma place.",
+        "pt-BR": "Esse é o meu lugar."
+      },
+      "freqRank": 228,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3173,22 +3173,6 @@
     {
       "index": 189,
       "kind": "phrase",
-      "text": "Уже слишком поздно.",
-      "gloss": {
-        "en": "It is too late.",
-        "tr": "Zaten çok geç.",
-        "de": "Es ist zu spät.",
-        "es": "Es demasiado tarde.",
-        "fr": "Il est déjà trop tard."
-      },
-      "freqRank": 235,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 190,
-      "kind": "phrase",
       "text": "Я на работе.",
       "gloss": {
         "en": "I'm at work.",
@@ -3198,6 +3182,22 @@
         "pt-BR": "Estou no trabalho."
       },
       "freqRank": 236,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "Уже слишком поздно.",
+      "gloss": {
+        "en": "It is too late.",
+        "tr": "Zaten çok geç.",
+        "de": "Es ist zu spät.",
+        "es": "Es demasiado tarde.",
+        "fr": "Il est déjà trop tard."
+      },
+      "freqRank": 235,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3253,23 +3253,6 @@
     {
       "index": 194,
       "kind": "phrase",
-      "text": "Где твоя сестра?",
-      "gloss": {
-        "en": "Where is your sister?",
-        "tr": "Kız kardeşin nerede?",
-        "de": "Wo ist deine Schwester?",
-        "es": "¿Dónde está tu hermana?",
-        "fr": "Où est ta sœur ?",
-        "ar": "أين أختك؟"
-      },
-      "freqRank": 240,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 195,
-      "kind": "phrase",
       "text": "Это моя сестра.",
       "gloss": {
         "en": "This is my sister.",
@@ -3281,6 +3264,23 @@
         "ar": "هذه أختي."
       },
       "freqRank": 241,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "Где твоя сестра?",
+      "gloss": {
+        "en": "Where is your sister?",
+        "tr": "Kız kardeşin nerede?",
+        "de": "Wo ist deine Schwester?",
+        "es": "¿Dónde está tu hermana?",
+        "fr": "Où est ta sœur ?",
+        "ar": "أين أختك؟"
+      },
+      "freqRank": 240,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3469,22 +3469,6 @@
     {
       "index": 207,
       "kind": "phrase",
-      "text": "Я скоро вернусь.",
-      "gloss": {
-        "en": "I will be back soon.",
-        "de": "Ich werde bald zurück sein.",
-        "es": "Volveré pronto.",
-        "fr": "Je serai bientôt de retour.",
-        "ar": "سوف أعود بعد قليل."
-      },
-      "freqRank": 253,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 208,
-      "kind": "phrase",
       "text": "Том - мой муж.",
       "gloss": {
         "en": "Tom is my husband.",
@@ -3494,6 +3478,22 @@
         "fr": "Tom est mon mari."
       },
       "freqRank": 254,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "Я скоро вернусь.",
+      "gloss": {
+        "en": "I will be back soon.",
+        "de": "Ich werde bald zurück sein.",
+        "es": "Volveré pronto.",
+        "fr": "Je serai bientôt de retour.",
+        "ar": "سوف أعود بعد قليل."
+      },
+      "freqRank": 253,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3838,23 +3838,6 @@
     {
       "index": 229,
       "kind": "phrase",
-      "text": "У меня нет дома.",
-      "gloss": {
-        "en": "I have no home.",
-        "tr": "Evim yok.",
-        "de": "Ich habe kein Haus.",
-        "es": "No tengo casa.",
-        "fr": "Je n'ai pas de maison.",
-        "pt-BR": "Não tenho casa."
-      },
-      "freqRank": 275,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 230,
-      "kind": "phrase",
       "text": "Я не могу говорить.",
       "gloss": {
         "en": "I can't talk.",
@@ -3865,6 +3848,23 @@
         "pt-BR": "Não posso falar."
       },
       "freqRank": 276,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "У меня нет дома.",
+      "gloss": {
+        "en": "I have no home.",
+        "tr": "Evim yok.",
+        "de": "Ich habe kein Haus.",
+        "es": "No tengo casa.",
+        "fr": "Je n'ai pas de maison.",
+        "pt-BR": "Não tenho casa."
+      },
+      "freqRank": 275,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -3974,23 +3974,6 @@
     {
       "index": 237,
       "kind": "phrase",
-      "text": "Я хочу посмотреть фильм.",
-      "gloss": {
-        "en": "I want to see the movie.",
-        "tr": "Bir film izlemek istiyorum.",
-        "de": "Ich will den Film anschauen.",
-        "es": "Quiero ver la película.",
-        "fr": "Je veux voir le film.",
-        "pt-BR": "Quero ver o filme."
-      },
-      "freqRank": 283,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 238,
-      "kind": "phrase",
       "text": "У меня два брата.",
       "gloss": {
         "en": "I've got two brothers.",
@@ -4006,24 +3989,24 @@
       }
     },
     {
-      "index": 239,
+      "index": 238,
       "kind": "phrase",
-      "text": "Я верю в Бога.",
+      "text": "Я хочу посмотреть фильм.",
       "gloss": {
-        "en": "I believe in God.",
-        "tr": "Allah'a inanıyorum.",
-        "de": "Ich glaube an Gott.",
-        "es": "Yo creo en Dios.",
-        "fr": "Je crois en Dieu.",
-        "ar": "أنا اؤمن بالله."
+        "en": "I want to see the movie.",
+        "tr": "Bir film izlemek istiyorum.",
+        "de": "Ich will den Film anschauen.",
+        "es": "Quiero ver la película.",
+        "fr": "Je veux voir le film.",
+        "pt-BR": "Quero ver o filme."
       },
-      "freqRank": 285,
+      "freqRank": 283,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 240,
+      "index": 239,
       "kind": "phrase",
       "text": "Это всё, что мне нужно.",
       "gloss": {
@@ -4040,41 +4023,24 @@
       }
     },
     {
+      "index": 240,
+      "kind": "phrase",
+      "text": "Я верю в Бога.",
+      "gloss": {
+        "en": "I believe in God.",
+        "tr": "Allah'a inanıyorum.",
+        "de": "Ich glaube an Gott.",
+        "es": "Yo creo en Dios.",
+        "fr": "Je crois en Dieu.",
+        "ar": "أنا اؤمن بالله."
+      },
+      "freqRank": 285,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
       "index": 241,
-      "kind": "phrase",
-      "text": "Я не могу этого сделать.",
-      "gloss": {
-        "en": "I can't do that.",
-        "tr": "Bunu yapamıyorum.",
-        "de": "Ich kann das nicht machen.",
-        "es": "No puedo hacer esto.",
-        "fr": "Je ne peux le faire.",
-        "ar": "لا يمكنني فعل ذلك."
-      },
-      "freqRank": 287,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 242,
-      "kind": "phrase",
-      "text": "Я не против, я — за.",
-      "gloss": {
-        "en": "I'm not against it, I'm for it.",
-        "tr": "Buna karşı değilim, aksine destekliyorum.",
-        "de": "Ich bin nicht dagegen, ich bin dafür.",
-        "es": "No estoy en contra, estoy a favor.",
-        "fr": "Je ne suis pas contre, je suis pour.",
-        "pt-BR": "Não sou contra, sou a favor."
-      },
-      "freqRank": 288,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 243,
       "kind": "phrase",
       "text": "Мне ещё час нельзя есть.",
       "gloss": {
@@ -4091,7 +4057,24 @@
       }
     },
     {
-      "index": 244,
+      "index": 242,
+      "kind": "phrase",
+      "text": "Я не могу этого сделать.",
+      "gloss": {
+        "en": "I can't do that.",
+        "tr": "Bunu yapamıyorum.",
+        "de": "Ich kann das nicht machen.",
+        "es": "No puedo hacer esto.",
+        "fr": "Je ne peux le faire.",
+        "ar": "لا يمكنني فعل ذلك."
+      },
+      "freqRank": 287,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 243,
       "kind": "phrase",
       "text": "В комнате никого не было.",
       "gloss": {
@@ -4103,6 +4086,23 @@
         "pt-BR": "Não havia ninguém no quarto."
       },
       "freqRank": 290,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "Я не против, я — за.",
+      "gloss": {
+        "en": "I'm not against it, I'm for it.",
+        "tr": "Buna karşı değilim, aksine destekliyorum.",
+        "de": "Ich bin nicht dagegen, ich bin dafür.",
+        "es": "No estoy en contra, estoy a favor.",
+        "fr": "Je ne suis pas contre, je suis pour.",
+        "pt-BR": "Não sou contra, sou a favor."
+      },
+      "freqRank": 288,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4128,6 +4128,23 @@
     {
       "index": 246,
       "kind": "phrase",
+      "text": "Я не хочу идти в школу.",
+      "gloss": {
+        "en": "I don't want to go to school.",
+        "tr": "Okula gitmek istemiyorum.",
+        "de": "Ich will nicht in die Schule gehen.",
+        "es": "No quiero ir a la escuela.",
+        "fr": "Je ne veux pas aller à l'école.",
+        "ar": "لا أريد أن أذهب إلى المدرسة."
+      },
+      "freqRank": 300,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
       "text": "Том не знает моего имени.",
       "gloss": {
         "en": "Tom doesn't know my name.",
@@ -4143,7 +4160,7 @@
       }
     },
     {
-      "index": 247,
+      "index": 248,
       "kind": "phrase",
       "text": "Я не хотел, чтобы это случилось.",
       "gloss": {
@@ -4161,7 +4178,7 @@
       }
     },
     {
-      "index": 248,
+      "index": 249,
       "kind": "phrase",
       "text": "У меня нет на это времени.",
       "gloss": {
@@ -4178,7 +4195,7 @@
       }
     },
     {
-      "index": 249,
+      "index": 250,
       "kind": "phrase",
       "text": "Я не хочу о ней говорить.",
       "gloss": {
@@ -4195,41 +4212,7 @@
       }
     },
     {
-      "index": 250,
-      "kind": "phrase",
-      "text": "Я не хочу об этом говорить.",
-      "gloss": {
-        "en": "I don't want to talk about it.",
-        "de": "Ich will nicht darüber sprechen.",
-        "es": "No quiero hablar de eso.",
-        "fr": "Je ne veux pas en parler.",
-        "pt-BR": "Não quero falar disso.",
-        "ar": "لا أريد أن أتكلّم عنه."
-      },
-      "freqRank": 296,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
       "index": 251,
-      "kind": "phrase",
-      "text": "Я не могу жить без тебя.",
-      "gloss": {
-        "en": "I can't live without you.",
-        "tr": "Sensiz yaşayamam.",
-        "de": "Ich kann nicht ohne dich leben.",
-        "es": "No puedo estar sin ti.",
-        "fr": "Je ne peux pas vivre sans toi.",
-        "pt-BR": "Não posso viver sem ti."
-      },
-      "freqRank": 297,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 252,
       "kind": "phrase",
       "text": "Кто такой Бог? Что такое Бог?",
       "gloss": {
@@ -4241,6 +4224,23 @@
         "ar": "من هو الله؟ ما هو الله؟"
       },
       "freqRank": 298,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "Я не хочу об этом говорить.",
+      "gloss": {
+        "en": "I don't want to talk about it.",
+        "de": "Ich will nicht darüber sprechen.",
+        "es": "No quiero hablar de eso.",
+        "fr": "Je ne veux pas en parler.",
+        "pt-BR": "Não quero falar disso.",
+        "ar": "لا أريد أن أتكلّم عنه."
+      },
+      "freqRank": 296,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -4265,16 +4265,16 @@
     {
       "index": 254,
       "kind": "phrase",
-      "text": "Я не хочу идти в школу.",
+      "text": "Я не могу жить без тебя.",
       "gloss": {
-        "en": "I don't want to go to school.",
-        "tr": "Okula gitmek istemiyorum.",
-        "de": "Ich will nicht in die Schule gehen.",
-        "es": "No quiero ir a la escuela.",
-        "fr": "Je ne veux pas aller à l'école.",
-        "ar": "لا أريد أن أذهب إلى المدرسة."
+        "en": "I can't live without you.",
+        "tr": "Sensiz yaşayamam.",
+        "de": "Ich kann nicht ohne dich leben.",
+        "es": "No puedo estar sin ti.",
+        "fr": "Je ne peux pas vivre sans toi.",
+        "pt-BR": "Não posso viver sem ti."
       },
-      "freqRank": 300,
+      "freqRank": 297,
       "review": {
         "glossedBy": "Tatoeba"
       }
