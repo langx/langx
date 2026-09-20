@@ -122,17 +122,24 @@ describe('the packs in content/echo', () => {
     })
 
     /*
-     * A pack that is not in English carries an English gloss on every item.
+     * A reviewed pack that is not in English carries an English gloss on
+     * every item.
      *
      * It is the floor under `glossFor`'s fallback chain: a reader whose own
      * locale a Tatoeba contributor never wrote lands on English, and an item
      * with nothing there shows its own front on both sides. English packs are
      * exempt — there the `en` column is a definition, which most of a
      * phrasebook has no use for.
+     *
+     * Reviewed only, because a draft is allowed to be incomplete and this is
+     * a promise about what ships. `build-pack.mjs` names the bare items at
+     * the end of a run so the reviewer meets them there; the seed refuses an
+     * unreviewed file anyway, so nothing without the floor can reach a card.
      */
     it(`${name} glosses every item in English, unless it is English`, () => {
-      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
-      if (pack.lang === 'en') return
+      const raw = JSON.parse(readFileSync(path, 'utf8')) as { reviewed?: boolean }
+      const pack = echoPackFileSchema.parse(raw)
+      if (pack.lang === 'en' || raw.reviewed !== true) return
       const bare = pack.items.filter((item) => !item.gloss.en)
       expect(bare.map((item) => item.text)).toEqual([])
     })
