@@ -800,9 +800,7 @@ export interface PublicActivityDto {
 export interface PublicSummaryDto {
   streak: { current: number; longest: number }
   corrections: number
-  /** Badges earned, out of the shared catalogue's total. */
-  badges: number
-  /** The first few of them, capped by the server, for the strip above the bio. */
+  /** The newest badge of each kind, for the strip above the bio. */
   topBadges: ProfileBadge[]
   tokens: number
   /** Where they stand on this week's token board, or `null` when they are off it. */

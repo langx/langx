@@ -1055,14 +1055,14 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       const body = response.json<{
         streak: { current: number }
         corrections: number
-        badges: number
+        topBadges: unknown[]
         tokens: number
         week: unknown[]
       }>()
       expect(body.streak.current).toBe(0)
-      expect(body.corrections).toBe(0)
       // Zero is an answer: the tile on the profile says "0", not nothing.
-      expect(body.badges).toBe(0)
+      expect(body.corrections).toBe(0)
+      expect(body.topBadges).toEqual([])
       // The sign-up bonus is already on the ledger, so this is a real number
       // rather than a zero that would pass whatever the query did.
       expect(body.tokens).toBeGreaterThan(0)
@@ -1094,14 +1094,13 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(body).not.toHaveProperty('week')
       expect(body.streak).toEqual({ current: 0, longest: 0 })
       expect(body.corrections).toBe(0)
-      expect(body.badges).toBe(0)
+      expect(body.topBadges).toEqual([])
       expect(body.tokens).toBeGreaterThan(0)
     })
   })
 
   describe('the strip and the rank on a profile', () => {
     interface Summary {
-      badges: number
       topBadges: { id: string; kind: string }[]
       rank: { percentile: number } | null
     }
@@ -1137,7 +1136,8 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
 
       const body = (await summaryOf(viewer, 'stripowner')).json<Summary>()
 
-      expect(body.badges).toBeGreaterThan(body.topBadges.length)
+      // One kind each, which is the whole of what shortens this list.
+      expect(new Set(body.topBadges.map((badge) => badge.kind)).size).toBe(body.topBadges.length)
       /*
        * One mark each, newest first — which here leads with the veteran
        * ladder: it is the only kind in this account that carries a date, and
@@ -1165,7 +1165,6 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
 
       const body = (await summaryOf(viewer, 'stripempty')).json<Summary>()
       expect(body.topBadges).toEqual([])
-      expect(body.badges).toBe(0)
       void owner
     })
 

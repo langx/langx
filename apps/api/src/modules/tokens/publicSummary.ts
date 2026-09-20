@@ -9,14 +9,14 @@ import { badgeStripMarks, periodKeys, type ProfileBadge } from '@langx/shared'
 
 /**
  * What a profile shows about how somebody uses the app: the streak, how many
- * corrections they have written, how many badges they hold, how many tokens
- * they have earned — and, if they allow it, the week's shape.
+ * corrections they have written, which badges they hold, how many tokens they
+ * have earned — and, if they allow it, the week's shape.
  *
  * A deliberately smaller thing than `getTokenSummary`, which is the owner's
  * view: no wallet, no quota, no per-day counters, nothing about what was
  * bought.
  *
- * The four numbers are always sent. They are a record of teaching people,
+ * The numbers are always sent. They are a record of teaching people,
  * which is the point of the product, and they sit at the top of a profile the
  * way a follower count does — there used to be a "show my numbers" switch,
  * and it went because a profile with the counts missing read as a profile
@@ -29,18 +29,18 @@ import { badgeStripMarks, periodKeys, type ProfileBadge } from '@langx/shared'
 export interface PublicSummary {
   streak: { current: number; longest: number }
   corrections: number
-  /** Badges earned, out of the catalogue in `@langx/shared`. */
-  badges: number
   /**
    * The newest badge of each kind, for the strip above the bio — see
    * `badgeStripMarks` for why a climbed ladder sends one mark and not four.
    *
    * Carried here rather than fetched from `/profiles/:handle/badges` when the
-   * strip renders. This function already derives the whole shelf and throws
-   * all but the count away; asking a second endpoint to derive it again would
-   * be a round trip bought with work already done. Whatever the strip does not
-   * draw is a number instead, and `badges` above is where that number comes
-   * from.
+   * strip renders. This function already derives the whole shelf and keeps
+   * one mark per kind of it; asking a second endpoint to derive it again
+   * would be a round trip bought with work already done.
+   *
+   * There is no count beside it. The strip used to carry one for the badges
+   * past the end of the row, and there are none: the shelf it opens draws the
+   * tips of the same ladders, so the difference is always zero.
    */
   topBadges: ProfileBadge[]
   tokens: number
@@ -87,7 +87,6 @@ export async function getPublicSummary(
     streak: { current: profile.streak.current, longest: profile.streak.longest },
     corrections,
     rank: await weekPercentile(db, tokens.week, at),
-    badges: badges.earnedCount,
     /*
      * Which badges is no longer only the owner's page — the strip draws the
      * newest of each kind, and `/profiles/:handle/badges` has published the

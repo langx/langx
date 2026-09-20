@@ -21,6 +21,11 @@ import { useT } from '../i18n'
  * hold the same badges, and any count of the difference is zero. A "+8" over
  * a page with nothing extra on it is a promise the tap breaks.
  *
+ * The count a screen reader hears is therefore the marks drawn, not the rungs
+ * behind them. The summary stopped sending that second number when the "+N"
+ * went: it had no other reader, and a profile paying for a number nothing
+ * draws is how a payload grows.
+ *
  * **It scrolls, and it is still one button.** Those read as a contradiction
  * and are not: React Native's responder system hands the touch to whichever
  * of the two the finger turns out to mean, so a drag scrolls and a tap opens
@@ -45,16 +50,9 @@ import { useT } from '../i18n'
  */
 export function BadgeStrip({
   badges,
-  total,
   onPress,
 }: {
   badges: readonly ProfileBadge[]
-  /**
-   * Every badge earned, which is more than the row draws. Nothing on screen
-   * says the number — it is the label a screen reader gets, and the same
-   * number the page this opens carries in its header.
-   */
-  total: number
   onPress: () => void
 }) {
   const { colors } = useTheme()
@@ -72,7 +70,7 @@ export function BadgeStrip({
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={t('profile.badgeStrip', { count: total })}
+        accessibilityLabel={t('profile.badgeStrip', { count: badges.length })}
         onPress={onPress}
         style={({ pressed }) => [styles.strip, pressed && styles.pressed]}
       >
