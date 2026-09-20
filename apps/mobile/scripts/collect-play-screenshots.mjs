@@ -92,11 +92,19 @@ const LOCALES = {
   'pt-BR': 'pt-BR',
 }
 
-/** Our folder name to supply's directory name. */
+/**
+ * Our folder name to supply's directory name.
+ *
+ * `wear` is the one that is not eight shots. Play takes one to eight square
+ * screenshots for a watch and asks for them only once the app is opted into
+ * the Wear OS form factor in Play Console — so the folder holds two, and the
+ * count printed below has to be counted rather than multiplied.
+ */
 const SIZES = {
   phone: 'phoneScreenshots',
   '7tablet': 'sevenInchScreenshots',
   '10tablet': 'tenInchScreenshots',
+  wear: 'wearScreenshots',
 }
 
 // Only the images are rewritten here: the screenshots and the feature graphic.
@@ -107,6 +115,7 @@ const SIZES = {
 fs.rmSync(OUT, { recursive: true, force: true })
 let copied = 0
 for (const [ours, play] of Object.entries(LOCALES)) {
+  let copiedHere = 0
   for (const [size, supplyDir] of Object.entries(SIZES)) {
     const from = within(BRANDING, '2.x', ours, 'android', size)
     if (!fs.existsSync(from)) {
@@ -125,6 +134,7 @@ for (const [ours, play] of Object.entries(LOCALES)) {
       const n = path.basename(file, '.png').padStart(2, '0')
       fs.copyFileSync(within(from, file), within(to, `${n}.png`))
       copied++
+      copiedHere++
     }
   }
 
@@ -138,7 +148,7 @@ for (const [ours, play] of Object.entries(LOCALES)) {
   fs.mkdirSync(images, { recursive: true })
   fs.copyFileSync(banner, within(images, 'featureGraphic.png'))
   copied++
-  console.log(`${play}: ${Object.keys(SIZES).length * 8} screenshots, 1 feature graphic`)
+  console.log(`${play}: ${copiedHere} screenshots, 1 feature graphic`)
 }
 console.log(`\n${copied} files in ${OUT}`)
 console.log('Next: cd apps/mobile && fastlane android play')

@@ -242,9 +242,14 @@ give, not this session's.
   field the payload does not carry, and the settings screen the plan asks for
   ("streak, or unread, chosen by the person"). Not started.
 - **The notification quick-reply action.** No categories exist yet; see above.
-- **Store assets.** The plan counts the watch's own screenshots and the listing
-  update as part of this phase's definition of done. Blocked on an open
-  question — whether the watch app enters the listing now or waits for CarPlay.
+- ~~**Store assets.**~~ Done, 20 September. Behic answered the open question —
+  the watch enters the listing with its first build rather than waiting for
+  CarPlay — so both sets were shot from the running apps rather than drawn:
+  `branding/2.x/<locale>/ios/watch/` at 416 x 496, and
+  `branding/2.x/<locale>/android/wear/` at 384 x 384, eight languages each.
+  The Wear set cannot be uploaded until the app is opted into the **Wear OS
+  form factor** in Play Console, which is Behic's to tick; Play asks for the
+  screenshots only once it is.
 - **App Groups on the two new App IDs.** Nothing needs them until the
   complication does, and when it does, expect the manual portal work recorded
   in [`phase-1-mac-handoff.md`](phase-1-mac-handoff.md): eas-cli cannot patch
