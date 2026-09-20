@@ -2,7 +2,7 @@
   "id": "de:beginner",
   "lang": "de",
   "level": "beginner",
-  "contentVersion": 2,
+  "contentVersion": 4,
   "reviewed": true,
   "sources": [
     {
@@ -48,7 +48,14 @@
             "tags": []
           }
         ]
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/0-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 1,
@@ -64,7 +71,14 @@
       "freqRank": 17,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:balance-scale",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/1-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 2,
@@ -80,7 +94,14 @@
       "freqRank": 18,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sos-button",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/2-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 3,
@@ -97,7 +118,14 @@
       "freqRank": 19,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ant",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/3-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 4,
@@ -113,7 +141,14 @@
       "freqRank": 20,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:straight-ruler",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/4-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 5,
@@ -129,7 +164,14 @@
       "freqRank": 21,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:world-map",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/5-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 6,
@@ -146,7 +188,14 @@
       "freqRank": 22,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:coin",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/6-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 7,
@@ -164,7 +213,14 @@
       "freqRank": 23,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:coin",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/7-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 8,
@@ -180,7 +236,14 @@
       "freqRank": 25,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman-dancing",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/8-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 9,
@@ -197,7 +260,14 @@
       "freqRank": 24,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman-dancing",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/9-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 10,
@@ -213,7 +283,14 @@
       "freqRank": 26,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman-dancing",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/10-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 11,
@@ -229,7 +306,14 @@
       "freqRank": 27,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:luggage",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/11-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 12,
@@ -247,7 +331,14 @@
       "freqRank": 28,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cold-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/12-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 13,
@@ -265,7 +356,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:cold-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/13-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 14,
@@ -282,7 +380,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/14-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 15,
@@ -298,7 +403,14 @@
       "freqRank": 31,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleepy-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/15-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 16,
@@ -314,7 +426,14 @@
       "freqRank": 32,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/16-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 17,
@@ -330,7 +449,14 @@
       "freqRank": 33,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/17-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 18,
@@ -346,7 +472,14 @@
       "freqRank": 34,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/18-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 19,
@@ -362,7 +495,14 @@
       "freqRank": 36,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pleading-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/19-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 20,
@@ -379,7 +519,14 @@
       "freqRank": 35,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/20-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 21,
@@ -395,7 +542,14 @@
       "freqRank": 37,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/21-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 22,
@@ -411,7 +565,14 @@
       "freqRank": 38,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hamburger",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/22-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 23,
@@ -428,7 +589,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:face-screaming-in-fear",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/23-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 24,
@@ -444,7 +612,14 @@
       "freqRank": 40,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-screaming-in-fear",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/24-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 25,
@@ -461,7 +636,14 @@
       "freqRank": 41,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/25-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 26,
@@ -477,7 +659,14 @@
       "freqRank": 42,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/26-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 27,
@@ -493,7 +682,14 @@
       "freqRank": 43,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/27-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 28,
@@ -509,7 +705,14 @@
       "freqRank": 44,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/28-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 29,
@@ -525,7 +728,14 @@
       "freqRank": 45,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:coffin",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/29-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 30,
@@ -542,7 +752,14 @@
       "freqRank": 46,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/30-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 31,
@@ -558,7 +775,14 @@
       "freqRank": 47,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:automobile",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/31-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 32,
@@ -574,7 +798,14 @@
       "freqRank": 48,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-bag",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/32-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 33,
@@ -590,7 +821,14 @@
       "freqRank": 49,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-bag",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/33-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 34,
@@ -606,7 +844,14 @@
       "freqRank": 50,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-bag",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/34-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 35,
@@ -623,7 +868,14 @@
       "freqRank": 51,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-bag",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/35-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 36,
@@ -639,7 +891,14 @@
       "freqRank": 53,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-bag",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/36-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 37,
@@ -655,7 +914,14 @@
       "freqRank": 52,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-bag",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/37-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 38,
@@ -672,7 +938,14 @@
       "freqRank": 54,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/38-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 39,
@@ -688,7 +961,14 @@
       "freqRank": 55,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/39-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 40,
@@ -705,7 +985,14 @@
       "freqRank": 56,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/40-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 41,
@@ -721,7 +1008,14 @@
       "freqRank": 57,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/41-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 42,
@@ -737,7 +1031,14 @@
       "freqRank": 58,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:peace-symbol",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/42-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 43,
@@ -753,7 +1054,14 @@
       "freqRank": 59,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:peace-symbol",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/43-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 44,
@@ -769,7 +1077,14 @@
       "freqRank": 60,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sun",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/44-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 45,
@@ -786,7 +1101,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/45-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 46,
@@ -803,7 +1125,14 @@
       "freqRank": 62,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:microphone",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/46-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 47,
@@ -820,7 +1149,14 @@
       "freqRank": 63,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-running",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/47-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 48,
@@ -836,7 +1172,14 @@
       "freqRank": 64,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-running",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/48-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 49,
@@ -852,7 +1195,14 @@
       "freqRank": 65,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:christmas-tree",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/49-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 50,
@@ -869,7 +1219,14 @@
       "freqRank": 66,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:wine-glass",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/50-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 51,
@@ -886,7 +1243,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:wine-glass",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/51-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 52,
@@ -902,7 +1266,14 @@
       "freqRank": 68,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:wine-glass",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/52-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 53,
@@ -918,7 +1289,14 @@
       "freqRank": 69,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/53-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 54,
@@ -934,7 +1312,14 @@
       "freqRank": 70,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/54-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 55,
@@ -950,7 +1335,14 @@
       "freqRank": 71,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:growing-heart",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/55-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 56,
@@ -967,7 +1359,14 @@
       "freqRank": 72,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-heart",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/56-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 57,
@@ -983,7 +1382,14 @@
       "freqRank": 73,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:round-pushpin",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/57-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 58,
@@ -1000,7 +1406,14 @@
       "freqRank": 74,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/58-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 59,
@@ -1016,7 +1429,14 @@
       "freqRank": 75,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/59-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 60,
@@ -1033,7 +1453,14 @@
       "freqRank": 76,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hot-beverage",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/60-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 61,
@@ -1049,7 +1476,14 @@
       "freqRank": 77,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:flexed-biceps",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/61-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 62,
@@ -1066,7 +1500,14 @@
       "freqRank": 78,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:grinning-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/62-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 63,
@@ -1082,7 +1523,13 @@
       "freqRank": 79,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/63-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 64,
@@ -1098,7 +1545,14 @@
       "freqRank": 80,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house-with-garden",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/64-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 65,
@@ -1115,7 +1569,14 @@
       "freqRank": 81,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/65-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 66,
@@ -1131,7 +1592,14 @@
       "freqRank": 83,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:stethoscope",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/66-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 67,
@@ -1147,7 +1615,14 @@
       "freqRank": 84,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cherry-blossom",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/67-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 68,
@@ -1164,7 +1639,14 @@
       "freqRank": 85,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:round-pushpin",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/68-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 69,
@@ -1181,7 +1663,14 @@
       "freqRank": 86,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pregnant-woman",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/69-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 70,
@@ -1197,7 +1686,14 @@
       "freqRank": 87,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pregnant-woman",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/70-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 71,
@@ -1214,7 +1710,14 @@
       "freqRank": 88,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pensive-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/71-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 72,
@@ -1230,7 +1733,14 @@
       "freqRank": 89,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/72-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 73,
@@ -1246,7 +1756,14 @@
       "freqRank": 90,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:candy",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/73-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 74,
@@ -1264,7 +1781,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/74-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 75,
@@ -1280,7 +1804,14 @@
       "freqRank": 92,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:relieved-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/75-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 76,
@@ -1296,7 +1827,14 @@
       "freqRank": 93,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speech-balloon",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/76-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 77,
@@ -1312,7 +1850,14 @@
       "freqRank": 94,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ear",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/77-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 78,
@@ -1329,7 +1874,14 @@
       "freqRank": 96,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:telephone",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/78-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 79,
@@ -1347,7 +1899,14 @@
       "freqRank": 95,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:night-with-stars",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/79-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 80,
@@ -1363,7 +1922,14 @@
       "freqRank": 97,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-heart",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/80-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 81,
@@ -1379,7 +1945,14 @@
       "freqRank": 98,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:raised-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/81-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 82,
@@ -1395,7 +1968,14 @@
       "freqRank": 99,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/82-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 83,
@@ -1411,7 +1991,14 @@
       "freqRank": 100,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/83-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 84,
@@ -1428,7 +2015,14 @@
       "freqRank": 101,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dog",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/84-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 85,
@@ -1444,7 +2038,14 @@
       "freqRank": 102,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/85-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 86,
@@ -1460,7 +2061,14 @@
       "freqRank": 105,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/86-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 87,
@@ -1476,7 +2084,14 @@
       "freqRank": 103,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/87-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 88,
@@ -1492,7 +2107,14 @@
       "freqRank": 106,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:bed",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/88-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 89,
@@ -1508,7 +2130,14 @@
       "freqRank": 104,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/89-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 90,
@@ -1524,7 +2153,14 @@
       "freqRank": 107,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:game-die",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/90-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 91,
@@ -1542,7 +2178,14 @@
       "freqRank": 108,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dove",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/91-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 92,
@@ -1558,7 +2201,14 @@
       "freqRank": 109,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crossed-fingers",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/92-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 93,
@@ -1574,7 +2224,14 @@
       "freqRank": 110,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:musical-notes",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/93-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 94,
@@ -1590,7 +2247,14 @@
       "freqRank": 111,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:bouquet",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/94-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 95,
@@ -1607,7 +2271,14 @@
       "freqRank": 113,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/95-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 96,
@@ -1624,7 +2295,14 @@
       "freqRank": 112,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:lying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/96-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 97,
@@ -1641,7 +2319,14 @@
       "freqRank": 115,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cut-of-meat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/97-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 98,
@@ -1658,7 +2343,14 @@
       "freqRank": 114,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/98-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 99,
@@ -1675,7 +2367,14 @@
       "freqRank": 116,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/99-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 100,
@@ -1692,7 +2391,14 @@
       "freqRank": 117,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:police-car-light",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/100-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 101,
@@ -1709,7 +2415,14 @@
       "freqRank": 118,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/101-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 102,
@@ -1726,7 +2439,14 @@
       "freqRank": 119,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dog",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/102-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 103,
@@ -1743,7 +2463,14 @@
       "freqRank": 120,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fish",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/103-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 104,
@@ -1760,7 +2487,14 @@
       "freqRank": 121,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:drop-of-blood",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/104-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 105,
@@ -1777,7 +2511,14 @@
       "freqRank": 122,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/105-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 106,
@@ -1795,7 +2536,14 @@
       "freqRank": 123,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/106-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 107,
@@ -1812,7 +2560,14 @@
       "freqRank": 124,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/107-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 108,
@@ -1829,7 +2584,14 @@
       "freqRank": 125,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/108-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 109,
@@ -1847,7 +2609,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/109-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 110,
@@ -1865,7 +2634,14 @@
       "freqRank": 130,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/110-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 111,
@@ -1882,7 +2658,14 @@
       "freqRank": 127,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-swimming",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/111-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 112,
@@ -1899,7 +2682,14 @@
       "freqRank": 131,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:receipt",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/112-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 113,
@@ -1916,7 +2706,14 @@
       "freqRank": 129,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pleading-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/113-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 114,
@@ -1934,7 +2731,14 @@
       "freqRank": 132,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/114-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 115,
@@ -1951,7 +2755,14 @@
       "freqRank": 133,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/115-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 116,
@@ -1968,7 +2779,14 @@
       "freqRank": 134,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/116-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 117,
@@ -1985,7 +2803,14 @@
       "freqRank": 135,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/117-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 118,
@@ -2003,7 +2828,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:stethoscope",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/118-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 119,
@@ -2020,7 +2852,14 @@
       "freqRank": 137,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:spiral-calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/119-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 120,
@@ -2037,7 +2876,14 @@
       "freqRank": 138,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:confused-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/120-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 121,
@@ -2054,7 +2900,14 @@
       "freqRank": 141,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:potable-water",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/121-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 122,
@@ -2071,7 +2924,14 @@
       "freqRank": 139,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:glass-of-milk",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/122-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 123,
@@ -2088,7 +2948,14 @@
       "freqRank": 142,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hot-beverage",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/123-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 124,
@@ -2106,7 +2973,14 @@
       "freqRank": 140,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:potable-water",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/124-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 125,
@@ -2123,7 +2997,14 @@
       "freqRank": 145,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-heart",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/125-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 126,
@@ -2141,7 +3022,14 @@
       "freqRank": 143,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/126-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 127,
@@ -2158,7 +3046,14 @@
       "freqRank": 146,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/127-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 128,
@@ -2175,7 +3070,14 @@
       "freqRank": 144,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/128-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 129,
@@ -2192,7 +3094,14 @@
       "freqRank": 147,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:coin",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/129-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 130,
@@ -2209,7 +3118,14 @@
       "freqRank": 148,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cold-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/130-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 131,
@@ -2226,7 +3142,14 @@
       "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:new-button",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/131-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 132,
@@ -2243,7 +3166,14 @@
       "freqRank": 150,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleepy-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/132-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 133,
@@ -2260,7 +3190,14 @@
       "freqRank": 152,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eye",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/133-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 134,
@@ -2277,7 +3214,14 @@
       "freqRank": 151,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:weary-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/134-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 135,
@@ -2294,7 +3238,14 @@
       "freqRank": 153,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:warning",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/135-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 136,
@@ -2311,7 +3262,13 @@
       "freqRank": 154,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/136-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 137,
@@ -2328,7 +3285,13 @@
       "freqRank": 155,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/137-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 138,
@@ -2345,7 +3308,14 @@
       "freqRank": 156,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/138-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 139,
@@ -2362,7 +3332,14 @@
       "freqRank": 157,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/139-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 140,
@@ -2379,7 +3356,14 @@
       "freqRank": 158,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/140-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 141,
@@ -2396,7 +3380,14 @@
       "freqRank": 159,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-running",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/141-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 142,
@@ -2413,7 +3404,14 @@
       "freqRank": 162,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:confetti-ball",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/142-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 143,
@@ -2430,7 +3428,14 @@
       "freqRank": 160,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-running",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/143-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 144,
@@ -2448,7 +3453,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:unamused-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/144-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 145,
@@ -2465,7 +3477,14 @@
       "freqRank": 161,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-running",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/145-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 146,
@@ -2483,7 +3502,14 @@
       "freqRank": 164,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/146-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 147,
@@ -2500,7 +3526,14 @@
       "freqRank": 165,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tumbler-glass",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/147-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 148,
@@ -2517,7 +3550,14 @@
       "freqRank": 166,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tumbler-glass",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/148-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 149,
@@ -2534,7 +3574,14 @@
       "freqRank": 167,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:world-map",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/149-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 150,
@@ -2551,7 +3598,14 @@
       "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:page-facing-up",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/150-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 151,
@@ -2568,7 +3622,14 @@
       "freqRank": 169,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/151-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 152,
@@ -2585,7 +3646,14 @@
       "freqRank": 170,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:books",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/152-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 153,
@@ -2602,7 +3670,14 @@
       "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dove",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/153-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 154,
@@ -2619,7 +3694,14 @@
       "freqRank": 171,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sparkling-heart",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/154-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 155,
@@ -2636,7 +3718,14 @@
       "freqRank": 173,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:lying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/155-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 156,
@@ -2653,7 +3742,14 @@
       "freqRank": 174,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/156-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 157,
@@ -2670,7 +3766,14 @@
       "freqRank": 175,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:broken-heart",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/157-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 158,
@@ -2687,7 +3790,14 @@
       "freqRank": 176,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:seedling",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/158-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 159,
@@ -2705,7 +3815,14 @@
       "freqRank": 178,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/159-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 160,
@@ -2723,7 +3840,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:prohibited",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/160-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 161,
@@ -2741,7 +3865,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/161-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 162,
@@ -2758,7 +3889,14 @@
       "freqRank": 180,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:superhero",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/162-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 163,
@@ -2775,7 +3913,14 @@
       "freqRank": 181,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/163-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 164,
@@ -2792,7 +3937,14 @@
       "freqRank": 182,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/164-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 165,
@@ -2809,7 +3961,14 @@
       "freqRank": 184,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/165-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 166,
@@ -2826,7 +3985,14 @@
       "freqRank": 183,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/166-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 167,
@@ -2843,7 +4009,14 @@
       "freqRank": 185,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/167-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 168,
@@ -2860,7 +4033,14 @@
       "freqRank": 186,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/168-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 169,
@@ -2877,7 +4057,14 @@
       "freqRank": 187,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:t-shirt",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/169-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 170,
@@ -2894,7 +4081,14 @@
       "freqRank": 188,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dog",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/170-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 171,
@@ -2911,7 +4105,14 @@
       "freqRank": 189,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:shortcake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/171-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 172,
@@ -2928,7 +4129,14 @@
       "freqRank": 190,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:astonished-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/172-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 173,
@@ -2945,7 +4153,14 @@
       "freqRank": 191,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/173-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 174,
@@ -2962,7 +4177,14 @@
       "freqRank": 192,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/174-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 175,
@@ -2981,7 +4203,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/175-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 176,
@@ -2998,7 +4227,14 @@
       "freqRank": 195,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/176-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 177,
@@ -3015,7 +4251,14 @@
       "freqRank": 194,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/177-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 178,
@@ -3032,7 +4275,14 @@
       "freqRank": 196,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:automobile",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/178-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 179,
@@ -3049,7 +4299,14 @@
       "freqRank": 197,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:envelope",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/179-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 180,
@@ -3066,7 +4323,14 @@
       "freqRank": 198,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:writing-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/180-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 181,
@@ -3084,7 +4348,14 @@
       "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:houses",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/181-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 182,
@@ -3101,7 +4372,14 @@
       "freqRank": 199,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:writing-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/182-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 183,
@@ -3118,7 +4396,14 @@
       "freqRank": 201,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/183-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 184,
@@ -3135,7 +4420,14 @@
       "freqRank": 202,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:airplane",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/184-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 185,
@@ -3152,7 +4444,14 @@
       "freqRank": 203,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:women-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/185-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 186,
@@ -3170,7 +4469,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:crossed-fingers",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/186-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 187,
@@ -3187,7 +4493,14 @@
       "freqRank": 206,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/187-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 188,
@@ -3204,7 +4517,14 @@
       "freqRank": 205,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/188-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 189,
@@ -3221,7 +4541,14 @@
       "freqRank": 207,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/189-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 190,
@@ -3238,7 +4565,14 @@
       "freqRank": 208,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:writing-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/190-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 191,
@@ -3256,7 +4590,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru", "tr"]
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/191-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 192,
@@ -3273,7 +4614,14 @@
       "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/192-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 193,
@@ -3290,7 +4638,14 @@
       "freqRank": 211,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:airplane-arrival",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/193-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 194,
@@ -3307,7 +4662,14 @@
       "freqRank": 212,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:mirror",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/194-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 195,
@@ -3324,7 +4686,14 @@
       "freqRank": 213,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:man",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/195-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 196,
@@ -3341,7 +4710,14 @@
       "freqRank": 214,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hot-beverage",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/196-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 197,
@@ -3358,7 +4734,14 @@
       "freqRank": 216,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/197-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 198,
@@ -3375,7 +4758,14 @@
       "freqRank": 215,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:wine-glass",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/198-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 199,
@@ -3392,7 +4782,14 @@
       "freqRank": 219,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ambulance",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/199-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 200,
@@ -3409,7 +4806,14 @@
       "freqRank": 217,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:drooling-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/200-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 201,
@@ -3426,7 +4830,14 @@
       "freqRank": 221,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/201-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 202,
@@ -3443,7 +4854,14 @@
       "freqRank": 218,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:mobile-phone",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/202-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 203,
@@ -3461,7 +4879,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:lying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/203-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 204,
@@ -3478,7 +4903,14 @@
       "freqRank": 220,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/204-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 205,
@@ -3495,7 +4927,14 @@
       "freqRank": 223,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/205-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 206,
@@ -3512,7 +4951,14 @@
       "freqRank": 224,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:weary-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/206-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 207,
@@ -3530,7 +4976,14 @@
       "freqRank": 225,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:closed-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/207-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 208,
@@ -3547,7 +5000,14 @@
       "freqRank": 226,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/208-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 209,
@@ -3564,7 +5024,14 @@
       "freqRank": 228,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/209-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 210,
@@ -3581,7 +5048,14 @@
       "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/210-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 211,
@@ -3598,7 +5072,14 @@
       "freqRank": 229,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/211-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 212,
@@ -3616,7 +5097,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/212-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 213,
@@ -3633,7 +5121,14 @@
       "freqRank": 231,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:rainbow",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/213-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 214,
@@ -3650,7 +5145,14 @@
       "freqRank": 232,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:rainbow",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/214-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 215,
@@ -3667,7 +5169,14 @@
       "freqRank": 233,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sunrise",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/215-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 216,
@@ -3684,7 +5193,14 @@
       "freqRank": 234,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crescent-moon",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/216-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 217,
@@ -3701,7 +5217,14 @@
       "freqRank": 235,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/217-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 218,
@@ -3718,7 +5241,14 @@
       "freqRank": 236,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/218-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 219,
@@ -3736,7 +5266,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/219-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 220,
@@ -3753,7 +5289,14 @@
       "freqRank": 238,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/220-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 221,
@@ -3770,7 +5313,14 @@
       "freqRank": 239,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/221-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 222,
@@ -3787,7 +5337,14 @@
       "freqRank": 240,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/222-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 223,
@@ -3804,7 +5361,14 @@
       "freqRank": 241,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:straight-ruler",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/223-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 224,
@@ -3821,7 +5385,14 @@
       "freqRank": 242,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:straight-ruler",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/224-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 225,
@@ -3838,7 +5409,14 @@
       "freqRank": 243,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:straight-ruler",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/225-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 226,
@@ -3855,7 +5433,14 @@
       "freqRank": 244,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sunrise",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/226-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 227,
@@ -3872,7 +5457,14 @@
       "freqRank": 245,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fish",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/227-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 228,
@@ -3890,7 +5482,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:t-shirt",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/228-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 229,
@@ -3908,7 +5507,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:luggage",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/229-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 230,
@@ -3925,7 +5531,14 @@
       "freqRank": 248,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/230-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 231,
@@ -3942,7 +5555,14 @@
       "freqRank": 249,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/231-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 232,
@@ -3959,7 +5579,14 @@
       "freqRank": 250,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/232-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 233,
@@ -3977,7 +5604,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/233-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 234,
@@ -3994,7 +5628,14 @@
       "freqRank": 252,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/234-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 235,
@@ -4011,7 +5652,14 @@
       "freqRank": 253,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/235-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 236,
@@ -4028,7 +5676,14 @@
       "freqRank": 254,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-standing",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/236-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 237,
@@ -4045,7 +5700,14 @@
       "freqRank": 255,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:lying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/237-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 238,
@@ -4062,7 +5724,14 @@
       "freqRank": 256,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/238-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 239,
@@ -4079,7 +5748,14 @@
       "freqRank": 257,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/239-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 240,
@@ -4096,7 +5772,14 @@
       "freqRank": 258,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:compass",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/240-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 241,
@@ -4113,7 +5796,14 @@
       "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speech-balloon",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/241-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 242,
@@ -4130,7 +5820,14 @@
       "freqRank": 260,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/242-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 243,
@@ -4147,7 +5844,14 @@
       "freqRank": 261,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/243-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 244,
@@ -4164,7 +5868,14 @@
       "freqRank": 262,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:night-with-stars",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/244-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 245,
@@ -4181,7 +5892,14 @@
       "freqRank": 263,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/245-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 246,
@@ -4198,7 +5916,14 @@
       "freqRank": 264,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cold-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/246-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 247,
@@ -4215,7 +5940,14 @@
       "freqRank": 265,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:wrapped-gift",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/247-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 248,
@@ -4232,7 +5964,14 @@
       "freqRank": 266,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/248-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 249,
@@ -4249,7 +5988,14 @@
       "freqRank": 267,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/249-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 250,
@@ -4266,7 +6012,14 @@
       "freqRank": 268,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:door",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/250-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 251,
@@ -4283,7 +6036,14 @@
       "freqRank": 269,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:women-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/251-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 252,
@@ -4300,7 +6060,14 @@
       "freqRank": 270,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:door",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/252-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 253,
@@ -4318,7 +6085,14 @@
       "freqRank": 272,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/253-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 254,
@@ -4335,7 +6109,14 @@
       "freqRank": 271,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:door",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/254-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 255,
@@ -4352,7 +6133,14 @@
       "freqRank": 273,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:weary-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/255-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 256,
@@ -4370,7 +6158,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/256-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 257,
@@ -4387,7 +6182,14 @@
       "freqRank": 275,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:train",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/257-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 258,
@@ -4404,7 +6206,14 @@
       "freqRank": 276,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:artist-palette",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/258-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 259,
@@ -4421,7 +6230,14 @@
       "freqRank": 277,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/259-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 260,
@@ -4438,7 +6254,14 @@
       "freqRank": 278,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/260-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 261,
@@ -4456,7 +6279,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:face-with-tears-of-joy",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/261-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 262,
@@ -4473,7 +6303,14 @@
       "freqRank": 279,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/262-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 263,
@@ -4490,7 +6327,14 @@
       "freqRank": 281,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/263-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 264,
@@ -4507,7 +6351,14 @@
       "freqRank": 282,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:input-numbers",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/264-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 265,
@@ -4524,7 +6375,14 @@
       "freqRank": 283,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:luggage",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/265-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 266,
@@ -4541,7 +6399,14 @@
       "freqRank": 284,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:glasses",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/266-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 267,
@@ -4558,7 +6423,14 @@
       "freqRank": 285,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:egg",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/267-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 268,
@@ -4575,7 +6447,14 @@
       "freqRank": 286,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-bag",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/268-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 269,
@@ -4592,7 +6471,14 @@
       "freqRank": 287,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crossed-fingers",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/269-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 270,
@@ -4609,7 +6495,14 @@
       "freqRank": 288,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/270-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 271,
@@ -4626,7 +6519,14 @@
       "freqRank": 290,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-walking",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/271-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 272,
@@ -4644,7 +6544,14 @@
       "freqRank": 289,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/272-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 273,
@@ -4661,7 +6568,14 @@
       "freqRank": 292,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crescent-moon",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/273-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 274,
@@ -4678,7 +6592,14 @@
       "freqRank": 291,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hourglass-done",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/274-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 275,
@@ -4696,7 +6617,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/275-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 276,
@@ -4713,7 +6641,14 @@
       "freqRank": 293,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/276-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 277,
@@ -4730,7 +6665,14 @@
       "freqRank": 296,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crescent-moon",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/277-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 278,
@@ -4747,7 +6689,14 @@
       "freqRank": 294,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/278-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 279,
@@ -4764,7 +6713,14 @@
       "freqRank": 297,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/279-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 280,
@@ -4781,7 +6737,14 @@
       "freqRank": 298,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:rock",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/280-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 281,
@@ -4798,7 +6761,14 @@
       "freqRank": 299,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/281-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 282,
@@ -4815,7 +6785,14 @@
       "freqRank": 300,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:mobile-phone",
+      "voices": [
+        {
+          "key": "echo/packs/de_beginner/282-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     }
   ]
 }

@@ -2,7 +2,7 @@
   "id": "de:intermediate",
   "lang": "de",
   "level": "intermediate",
-  "contentVersion": 2,
+  "contentVersion": 4,
   "reviewed": true,
   "sources": [
     {
@@ -54,7 +54,14 @@
           }
         ],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/0-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 1,
@@ -80,7 +87,14 @@
             "tags": []
           }
         ]
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/1-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 2,
@@ -105,7 +119,14 @@
             "tags": []
           }
         ]
-      }
+      },
+      "image": "cue:adhesive-bandage",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/2-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 3,
@@ -121,7 +142,14 @@
       "freqRank": 18,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eyes",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/3-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 4,
@@ -137,7 +165,14 @@
       "freqRank": 19,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:candy",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/4-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 5,
@@ -153,7 +188,14 @@
       "freqRank": 20,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fish",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/5-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 6,
@@ -169,7 +211,14 @@
       "freqRank": 21,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/6-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 7,
@@ -185,7 +234,14 @@
       "freqRank": 22,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:coin",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/7-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 8,
@@ -203,7 +259,14 @@
       "freqRank": 23,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/8-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 9,
@@ -219,7 +282,14 @@
       "freqRank": 24,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pot-of-food",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/9-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 10,
@@ -237,7 +307,14 @@
       "freqRank": 26,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/10-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 11,
@@ -253,7 +330,14 @@
       "freqRank": 25,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/11-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 12,
@@ -269,7 +353,14 @@
       "freqRank": 27,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/12-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 13,
@@ -287,7 +378,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/13-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 14,
@@ -303,7 +401,14 @@
       "freqRank": 29,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/14-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 15,
@@ -319,7 +424,14 @@
       "freqRank": 30,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:t-shirt",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/15-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 16,
@@ -335,7 +447,14 @@
       "freqRank": 31,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thermometer",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/16-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 17,
@@ -352,7 +471,14 @@
       "freqRank": 32,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/17-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 18,
@@ -369,7 +495,14 @@
       "freqRank": 33,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/18-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 19,
@@ -385,7 +518,13 @@
       "freqRank": 34,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/19-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 20,
@@ -401,7 +540,14 @@
       "freqRank": 35,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:soccer-ball",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/20-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 21,
@@ -417,7 +563,14 @@
       "freqRank": 36,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:place-of-worship",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/21-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 22,
@@ -433,7 +586,14 @@
       "freqRank": 37,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman-dancing",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/22-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 23,
@@ -449,7 +609,14 @@
       "freqRank": 38,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/23-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 24,
@@ -465,7 +632,14 @@
       "freqRank": 39,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/24-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 25,
@@ -481,7 +655,14 @@
       "freqRank": 42,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:trophy",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/25-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 26,
@@ -497,7 +678,14 @@
       "freqRank": 40,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/26-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 27,
@@ -514,7 +702,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/27-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 28,
@@ -530,7 +725,14 @@
       "freqRank": 41,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/28-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 29,
@@ -547,7 +749,14 @@
       "freqRank": 45,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:droplet",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/29-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 30,
@@ -564,7 +773,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:chocolate-bar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/30-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 31,
@@ -580,7 +796,14 @@
       "freqRank": 46,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-cartwheeling",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/31-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 32,
@@ -596,7 +819,14 @@
       "freqRank": 48,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dog",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/32-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 33,
@@ -612,7 +842,13 @@
       "freqRank": 47,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/33-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 34,
@@ -628,7 +864,14 @@
       "freqRank": 49,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-cartwheeling",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/34-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 35,
@@ -644,7 +887,14 @@
       "freqRank": 50,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:smiling-face-with-open-hands",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/35-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 36,
@@ -660,7 +910,14 @@
       "freqRank": 52,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/36-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 37,
@@ -676,7 +933,14 @@
       "freqRank": 51,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:smiling-face-with-open-hands",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/37-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 38,
@@ -692,7 +956,14 @@
       "freqRank": 53,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/38-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 39,
@@ -709,7 +980,14 @@
       "freqRank": 54,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ear-with-hearing-aid",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/39-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 40,
@@ -725,7 +1003,14 @@
       "freqRank": 55,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ear-with-hearing-aid",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/40-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 41,
@@ -741,7 +1026,14 @@
       "freqRank": 56,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:world-map",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/41-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 42,
@@ -757,7 +1049,14 @@
       "freqRank": 57,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/42-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 43,
@@ -773,7 +1072,14 @@
       "freqRank": 58,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:wine-glass",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/43-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 44,
@@ -790,7 +1096,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:airplane",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/44-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 45,
@@ -807,7 +1120,14 @@
       "freqRank": 60,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:stethoscope",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/45-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 46,
@@ -824,7 +1144,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:stethoscope",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/46-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 47,
@@ -840,7 +1167,14 @@
       "freqRank": 62,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:stethoscope",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/47-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 48,
@@ -856,7 +1190,14 @@
       "freqRank": 63,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:musical-score",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/48-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 49,
@@ -872,7 +1213,14 @@
       "freqRank": 64,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:soap",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/49-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 50,
@@ -888,7 +1236,14 @@
       "freqRank": 67,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dog",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/50-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 51,
@@ -905,7 +1260,14 @@
       "freqRank": 65,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/51-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 52,
@@ -921,7 +1283,14 @@
       "freqRank": 68,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ring",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/52-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 53,
@@ -937,7 +1306,14 @@
       "freqRank": 66,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/53-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 54,
@@ -953,7 +1329,14 @@
       "freqRank": 71,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:writing-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/54-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 55,
@@ -969,7 +1352,13 @@
       "freqRank": 69,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/55-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 56,
@@ -985,7 +1374,14 @@
       "freqRank": 72,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:musical-note",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/56-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 57,
@@ -1001,7 +1397,14 @@
       "freqRank": 70,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:wrench",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/57-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 58,
@@ -1017,7 +1420,14 @@
       "freqRank": 73,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:musical-note",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/58-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 59,
@@ -1033,7 +1443,13 @@
       "freqRank": 74,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/59-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 60,
@@ -1049,7 +1465,14 @@
       "freqRank": 75,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:shopping-cart",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/60-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 61,
@@ -1065,7 +1488,14 @@
       "freqRank": 76,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:shopping-cart",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/61-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 62,
@@ -1082,7 +1512,14 @@
       "freqRank": 77,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:shopping-cart",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/62-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 63,
@@ -1098,7 +1535,14 @@
       "freqRank": 78,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:mouse-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/63-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 64,
@@ -1114,7 +1558,14 @@
       "freqRank": 79,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/64-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 65,
@@ -1131,7 +1582,14 @@
       "freqRank": 80,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/65-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 66,
@@ -1147,7 +1605,14 @@
       "freqRank": 81,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/66-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 67,
@@ -1163,7 +1628,14 @@
       "freqRank": 82,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/67-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 68,
@@ -1179,7 +1651,14 @@
       "freqRank": 83,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/68-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 69,
@@ -1195,7 +1674,14 @@
       "freqRank": 84,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/69-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 70,
@@ -1211,7 +1697,14 @@
       "freqRank": 85,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eyes",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/70-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 71,
@@ -1227,7 +1720,14 @@
       "freqRank": 86,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:package",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/71-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 72,
@@ -1243,7 +1743,14 @@
       "freqRank": 87,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-with-crossed-out-eyes",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/72-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 73,
@@ -1259,7 +1766,14 @@
       "freqRank": 88,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/73-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 74,
@@ -1275,7 +1789,14 @@
       "freqRank": 89,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/74-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 75,
@@ -1291,7 +1812,14 @@
       "freqRank": 90,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tumbler-glass",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/75-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 76,
@@ -1307,7 +1835,14 @@
       "freqRank": 91,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:door",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/76-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 77,
@@ -1323,7 +1858,14 @@
       "freqRank": 94,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:glass-of-milk",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/77-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 78,
@@ -1340,7 +1882,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/78-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 79,
@@ -1356,7 +1905,14 @@
       "freqRank": 95,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/79-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 80,
@@ -1373,7 +1929,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:glass-of-milk",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/80-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 81,
@@ -1389,7 +1952,14 @@
       "freqRank": 96,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/81-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 82,
@@ -1405,7 +1975,14 @@
       "freqRank": 97,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/82-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 83,
@@ -1421,7 +1998,14 @@
       "freqRank": 98,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:back-arrow",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/83-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 84,
@@ -1437,7 +2021,14 @@
       "freqRank": 99,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/84-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 85,
@@ -1453,7 +2044,14 @@
       "freqRank": 100,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/85-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 86,
@@ -1469,7 +2067,14 @@
       "freqRank": 102,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/86-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 87,
@@ -1485,7 +2090,14 @@
       "freqRank": 101,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:umbrella-with-rain-drops",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/87-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 88,
@@ -1501,7 +2113,14 @@
       "freqRank": 103,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/88-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 89,
@@ -1518,7 +2137,14 @@
       "freqRank": 104,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/89-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 90,
@@ -1536,7 +2162,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:sleepy-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/90-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 91,
@@ -1552,7 +2185,14 @@
       "freqRank": 106,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleepy-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/91-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 92,
@@ -1568,7 +2208,14 @@
       "freqRank": 107,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleepy-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/92-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 93,
@@ -1584,7 +2231,14 @@
       "freqRank": 108,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:green-salad",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/93-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 94,
@@ -1600,7 +2254,14 @@
       "freqRank": 109,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/94-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 95,
@@ -1616,7 +2277,14 @@
       "freqRank": 110,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:soccer-ball",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/95-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 96,
@@ -1633,7 +2301,14 @@
       "freqRank": 111,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:soccer-ball",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/96-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 97,
@@ -1650,7 +2325,14 @@
       "freqRank": 112,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cross-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/97-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 98,
@@ -1666,7 +2348,14 @@
       "freqRank": 114,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cherry-blossom",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/98-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 99,
@@ -1682,7 +2371,14 @@
       "freqRank": 115,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:guitar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/99-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 100,
@@ -1698,7 +2394,14 @@
       "freqRank": 116,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/100-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 101,
@@ -1714,7 +2417,13 @@
       "freqRank": 117,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/101-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 102,
@@ -1730,7 +2439,14 @@
       "freqRank": 118,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:chair",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/102-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 103,
@@ -1746,7 +2462,14 @@
       "freqRank": 119,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dog",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/103-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 104,
@@ -1763,7 +2486,14 @@
       "freqRank": 120,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dog",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/104-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 105,
@@ -1779,7 +2509,14 @@
       "freqRank": 122,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cooked-rice",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/105-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 106,
@@ -1795,7 +2532,14 @@
       "freqRank": 123,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cooked-rice",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/106-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 107,
@@ -1811,7 +2555,14 @@
       "freqRank": 124,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cooked-rice",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/107-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 108,
@@ -1827,7 +2578,14 @@
       "freqRank": 125,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:elephant",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/108-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 109,
@@ -1843,7 +2601,14 @@
       "freqRank": 126,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:elephant",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/109-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 110,
@@ -1859,7 +2624,14 @@
       "freqRank": 127,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pot-of-food",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/110-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 111,
@@ -1875,7 +2647,14 @@
       "freqRank": 128,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/111-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 112,
@@ -1891,7 +2670,14 @@
       "freqRank": 129,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:zipper-mouth-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/112-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 113,
@@ -1907,7 +2693,13 @@
       "freqRank": 130,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/113-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 114,
@@ -1923,7 +2715,14 @@
       "freqRank": 131,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/114-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 115,
@@ -1940,7 +2739,14 @@
       "freqRank": 132,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/115-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 116,
@@ -1956,7 +2762,14 @@
       "freqRank": 133,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hourglass-done",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/116-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 117,
@@ -1973,7 +2786,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/117-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 118,
@@ -1989,7 +2809,14 @@
       "freqRank": 136,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:game-die",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/118-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 119,
@@ -2005,7 +2832,14 @@
       "freqRank": 135,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:musical-note",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/119-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 120,
@@ -2021,7 +2855,14 @@
       "freqRank": 137,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:chequered-flag",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/120-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 121,
@@ -2037,7 +2878,14 @@
       "freqRank": 138,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:beer-mug",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/121-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 122,
@@ -2053,7 +2901,14 @@
       "freqRank": 139,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/122-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 123,
@@ -2069,7 +2924,13 @@
       "freqRank": 140,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/123-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 124,
@@ -2085,7 +2946,14 @@
       "freqRank": 141,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:broken-heart",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/124-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 125,
@@ -2101,7 +2969,14 @@
       "freqRank": 142,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:astonished-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/125-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 126,
@@ -2119,7 +2994,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/126-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 127,
@@ -2136,7 +3018,14 @@
       "freqRank": 144,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/127-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 128,
@@ -2152,7 +3041,14 @@
       "freqRank": 145,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:writing-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/128-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 129,
@@ -2168,7 +3064,14 @@
       "freqRank": 146,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/129-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 130,
@@ -2185,7 +3088,14 @@
       "freqRank": 147,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/130-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 131,
@@ -2201,7 +3111,14 @@
       "freqRank": 148,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman-dancing",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/131-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 132,
@@ -2217,7 +3134,14 @@
       "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:loudly-crying-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/132-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 133,
@@ -2234,7 +3158,14 @@
       "freqRank": 150,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/133-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 134,
@@ -2250,7 +3181,14 @@
       "freqRank": 152,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pensive-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/134-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 135,
@@ -2266,7 +3204,14 @@
       "freqRank": 151,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pot-of-food",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/135-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 136,
@@ -2282,7 +3227,14 @@
       "freqRank": 153,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dog",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/136-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 137,
@@ -2298,7 +3250,13 @@
       "freqRank": 154,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/137-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 138,
@@ -2314,7 +3272,14 @@
       "freqRank": 155,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eyes",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/138-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 139,
@@ -2330,7 +3295,14 @@
       "freqRank": 156,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:rock",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/139-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 140,
@@ -2346,7 +3318,14 @@
       "freqRank": 157,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hammer-and-wrench",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/140-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 141,
@@ -2362,7 +3341,14 @@
       "freqRank": 158,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:crescent-moon",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/141-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 142,
@@ -2379,7 +3365,14 @@
       "freqRank": 159,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/142-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 143,
@@ -2397,7 +3390,14 @@
       "freqRank": 160,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:no-smoking",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/143-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 144,
@@ -2414,7 +3414,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/144-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 145,
@@ -2430,7 +3437,14 @@
       "freqRank": 162,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:seedling",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/145-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 146,
@@ -2446,7 +3460,14 @@
       "freqRank": 163,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:writing-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/146-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 147,
@@ -2462,7 +3483,14 @@
       "freqRank": 164,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:writing-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/147-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 148,
@@ -2478,7 +3506,14 @@
       "freqRank": 165,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tangerine",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/148-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 149,
@@ -2494,7 +3529,14 @@
       "freqRank": 167,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:man",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/149-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 150,
@@ -2510,7 +3552,14 @@
       "freqRank": 166,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:new-button",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/150-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 151,
@@ -2526,7 +3575,14 @@
       "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:pensive-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/151-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 152,
@@ -2542,7 +3598,13 @@
       "freqRank": 169,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/152-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 153,
@@ -2558,7 +3620,13 @@
       "freqRank": 170,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/153-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 154,
@@ -2574,7 +3642,13 @@
       "freqRank": 171,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/154-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 155,
@@ -2590,7 +3664,14 @@
       "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/155-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 156,
@@ -2608,7 +3689,14 @@
       "freqRank": 173,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/156-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 157,
@@ -2624,7 +3712,14 @@
       "freqRank": 174,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:graduation-cap",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/157-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 158,
@@ -2640,7 +3735,14 @@
       "freqRank": 176,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/158-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 159,
@@ -2657,7 +3759,14 @@
       "freqRank": 175,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/159-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 160,
@@ -2673,7 +3782,13 @@
       "freqRank": 177,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/160-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 161,
@@ -2689,7 +3804,14 @@
       "freqRank": 178,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:artist-palette",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/161-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 162,
@@ -2705,7 +3827,14 @@
       "freqRank": 179,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:automobile",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/162-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 163,
@@ -2721,7 +3850,14 @@
       "freqRank": 180,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:writing-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/163-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 164,
@@ -2737,7 +3873,14 @@
       "freqRank": 183,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/164-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 165,
@@ -2754,7 +3897,14 @@
       "freqRank": 181,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/165-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 166,
@@ -2771,7 +3921,14 @@
       "freqRank": 184,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/166-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 167,
@@ -2788,7 +3945,14 @@
       "freqRank": 182,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/167-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 168,
@@ -2804,7 +3968,14 @@
       "freqRank": 185,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house-with-garden",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/168-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 169,
@@ -2820,7 +3991,14 @@
       "freqRank": 186,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:counterclockwise-arrows-button",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/169-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 170,
@@ -2836,7 +4014,14 @@
       "freqRank": 187,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:test-tube",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/170-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 171,
@@ -2852,7 +4037,14 @@
       "freqRank": 188,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:smiling-face-with-open-hands",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/171-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 172,
@@ -2868,7 +4060,14 @@
       "freqRank": 189,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/172-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 173,
@@ -2885,7 +4084,14 @@
       "freqRank": 190,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/173-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 174,
@@ -2901,7 +4107,14 @@
       "freqRank": 191,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ant",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/174-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 175,
@@ -2918,7 +4131,14 @@
       "freqRank": 192,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:no-smoking",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/175-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 176,
@@ -2934,7 +4154,14 @@
       "freqRank": 193,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cigarette",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/176-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 177,
@@ -2951,7 +4178,14 @@
       "freqRank": 194,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tennis",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/177-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 178,
@@ -2967,7 +4201,14 @@
       "freqRank": 197,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tennis",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/178-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 179,
@@ -2984,7 +4225,14 @@
       "freqRank": 195,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tennis",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/179-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 180,
@@ -3000,7 +4248,14 @@
       "freqRank": 198,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:clinking-beer-mugs",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/180-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 181,
@@ -3017,7 +4272,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:tennis",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/181-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 182,
@@ -3033,7 +4295,14 @@
       "freqRank": 199,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:grinning-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/182-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 183,
@@ -3050,7 +4319,14 @@
       "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:camera",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/183-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 184,
@@ -3067,7 +4343,14 @@
       "freqRank": 202,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/184-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 185,
@@ -3084,7 +4367,14 @@
       "freqRank": 201,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/185-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 186,
@@ -3102,7 +4392,14 @@
       "freqRank": 203,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:microphone",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/186-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 187,
@@ -3119,7 +4416,14 @@
       "freqRank": 204,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/187-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 188,
@@ -3136,7 +4440,13 @@
       "freqRank": 205,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/188-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 189,
@@ -3153,7 +4463,14 @@
       "freqRank": 206,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/189-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 190,
@@ -3170,7 +4487,14 @@
       "freqRank": 207,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/190-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 191,
@@ -3187,7 +4511,14 @@
       "freqRank": 208,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/191-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 192,
@@ -3204,7 +4535,14 @@
       "freqRank": 209,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fish",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/192-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 193,
@@ -3221,7 +4559,14 @@
       "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cross-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/193-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 194,
@@ -3238,7 +4583,14 @@
       "freqRank": 211,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:envelope",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/194-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 195,
@@ -3255,7 +4607,14 @@
       "freqRank": 214,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/195-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 196,
@@ -3272,7 +4631,14 @@
       "freqRank": 212,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/196-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 197,
@@ -3289,7 +4655,14 @@
       "freqRank": 216,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/197-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 198,
@@ -3306,7 +4679,14 @@
       "freqRank": 213,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/198-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 199,
@@ -3323,7 +4703,14 @@
       "freqRank": 218,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:artist-palette",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/199-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 200,
@@ -3340,7 +4727,14 @@
       "freqRank": 215,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/200-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 201,
@@ -3357,7 +4751,14 @@
       "freqRank": 219,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family-man-boy",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/201-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 202,
@@ -3376,7 +4777,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/202-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 203,
@@ -3393,7 +4801,14 @@
       "freqRank": 220,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:seedling",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/203-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 204,
@@ -3410,7 +4825,14 @@
       "freqRank": 221,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:girl",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/204-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 205,
@@ -3427,7 +4849,14 @@
       "freqRank": 222,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:girl",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/205-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 206,
@@ -3444,7 +4873,14 @@
       "freqRank": 223,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:elevator",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/206-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 207,
@@ -3462,7 +4898,14 @@
       "freqRank": 224,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:rose",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/207-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 208,
@@ -3480,7 +4923,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:houses",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/208-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 209,
@@ -3497,7 +4947,14 @@
       "freqRank": 226,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:telephone-receiver",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/209-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 210,
@@ -3514,7 +4971,14 @@
       "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eye",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/210-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 211,
@@ -3531,7 +4995,14 @@
       "freqRank": 228,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:rose",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/211-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 212,
@@ -3548,7 +5019,14 @@
       "freqRank": 229,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:telephone",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/212-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 213,
@@ -3565,7 +5043,14 @@
       "freqRank": 230,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:soccer-ball",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/213-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 214,
@@ -3582,7 +5067,13 @@
       "freqRank": 231,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/214-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 215,
@@ -3600,7 +5091,14 @@
       "freqRank": 232,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/215-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 216,
@@ -3617,7 +5115,14 @@
       "freqRank": 233,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/216-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 217,
@@ -3634,7 +5139,14 @@
       "freqRank": 234,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:man",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/217-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 218,
@@ -3651,7 +5163,14 @@
       "freqRank": 235,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:mouth",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/218-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 219,
@@ -3669,7 +5188,14 @@
       "freqRank": 236,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:key",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/219-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 220,
@@ -3687,7 +5213,13 @@
       "freqRank": 237,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/220-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 221,
@@ -3704,7 +5236,14 @@
       "freqRank": 238,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/221-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 222,
@@ -3721,7 +5260,14 @@
       "freqRank": 240,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/222-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 223,
@@ -3738,7 +5284,14 @@
       "freqRank": 239,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/223-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 224,
@@ -3755,7 +5308,14 @@
       "freqRank": 242,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/224-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 225,
@@ -3772,7 +5332,14 @@
       "freqRank": 241,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thumbs-down",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/225-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 226,
@@ -3789,7 +5356,14 @@
       "freqRank": 243,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tennis",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/226-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 227,
@@ -3806,7 +5380,14 @@
       "freqRank": 246,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cup-with-straw",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/227-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 228,
@@ -3823,7 +5404,14 @@
       "freqRank": 244,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-swimming",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/228-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 229,
@@ -3840,7 +5428,13 @@
       "freqRank": 249,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/229-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 230,
@@ -3857,7 +5451,14 @@
       "freqRank": 247,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/230-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 231,
@@ -3874,7 +5475,14 @@
       "freqRank": 250,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:train",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/231-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 232,
@@ -3891,7 +5499,14 @@
       "freqRank": 248,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/232-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 233,
@@ -3908,7 +5523,14 @@
       "freqRank": 251,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/233-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 234,
@@ -3925,7 +5547,14 @@
       "freqRank": 252,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sunrise-over-mountains",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/234-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 235,
@@ -3942,7 +5571,14 @@
       "freqRank": 253,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:world-map",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/235-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 236,
@@ -3959,7 +5595,14 @@
       "freqRank": 254,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:christmas-tree",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/236-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 237,
@@ -3976,7 +5619,14 @@
       "freqRank": 256,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:artist-palette",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/237-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 238,
@@ -3993,7 +5643,14 @@
       "freqRank": 255,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:flexed-biceps",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/238-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 239,
@@ -4010,7 +5667,14 @@
       "freqRank": 257,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:rose",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/239-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 240,
@@ -4027,7 +5691,14 @@
       "freqRank": 258,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:memo",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/240-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 241,
@@ -4044,7 +5715,14 @@
       "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/241-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 242,
@@ -4061,7 +5739,14 @@
       "freqRank": 260,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/242-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 243,
@@ -4078,7 +5763,14 @@
       "freqRank": 261,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:baby",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/243-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 244,
@@ -4095,7 +5787,14 @@
       "freqRank": 262,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:night-with-stars",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/244-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 245,
@@ -4112,7 +5811,14 @@
       "freqRank": 264,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:coffin",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/245-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 246,
@@ -4130,7 +5836,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:back-arrow",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/246-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 247,
@@ -4147,7 +5860,14 @@
       "freqRank": 265,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:world-map",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/247-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 248,
@@ -4165,7 +5885,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:warning",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/248-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 249,
@@ -4182,7 +5909,14 @@
       "freqRank": 267,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/249-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 250,
@@ -4199,7 +5933,14 @@
       "freqRank": 268,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/250-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 251,
@@ -4216,7 +5957,14 @@
       "freqRank": 269,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-beard",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/251-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 252,
@@ -4233,7 +5981,14 @@
       "freqRank": 270,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-bag",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/252-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 253,
@@ -4251,7 +6006,14 @@
       "freqRank": 271,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sunrise",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/253-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 254,
@@ -4269,7 +6031,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "image": "cue:red-heart",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/254-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 255,
@@ -4286,7 +6055,14 @@
       "freqRank": 273,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:plus",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/255-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 256,
@@ -4304,7 +6080,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/256-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 257,
@@ -4321,7 +6104,14 @@
       "freqRank": 275,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/257-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 258,
@@ -4339,7 +6129,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:clapper-board",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/258-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 259,
@@ -4356,7 +6153,14 @@
       "freqRank": 277,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-raising-hand",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/259-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 260,
@@ -4373,7 +6177,14 @@
       "freqRank": 278,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/260-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 261,
@@ -4390,7 +6201,14 @@
       "freqRank": 279,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:chair",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/261-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 262,
@@ -4407,7 +6225,14 @@
       "freqRank": 280,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:game-die",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/262-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 263,
@@ -4424,7 +6249,13 @@
       "freqRank": 281,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/263-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 264,
@@ -4441,7 +6272,14 @@
       "freqRank": 282,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:t-shirt",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/264-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 265,
@@ -4458,7 +6296,14 @@
       "freqRank": 283,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cat",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/265-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 266,
@@ -4475,7 +6320,14 @@
       "freqRank": 284,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:heavy-dollar-sign",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/266-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 267,
@@ -4492,7 +6344,14 @@
       "freqRank": 285,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:astonished-face",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/267-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 268,
@@ -4509,7 +6368,14 @@
       "freqRank": 286,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ring",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/268-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 269,
@@ -4527,7 +6393,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/269-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 270,
@@ -4544,7 +6417,14 @@
       "freqRank": 288,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:check-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/270-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 271,
@@ -4561,7 +6441,14 @@
       "freqRank": 289,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family-man-boy",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/271-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 272,
@@ -4578,7 +6465,14 @@
       "freqRank": 290,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/272-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 273,
@@ -4595,7 +6489,14 @@
       "freqRank": 291,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/273-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 274,
@@ -4612,7 +6513,14 @@
       "freqRank": 292,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:check-mark",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/274-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 275,
@@ -4629,7 +6537,14 @@
       "freqRank": 294,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:test-tube",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/275-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 276,
@@ -4646,7 +6561,14 @@
       "freqRank": 295,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/276-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 277,
@@ -4665,7 +6587,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "image": "cue:calendar",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/277-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 278,
@@ -4682,7 +6611,14 @@
       "freqRank": 297,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:artist-palette",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/278-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 279,
@@ -4699,7 +6635,14 @@
       "freqRank": 298,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman-dancing",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/279-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 280,
@@ -4716,7 +6659,14 @@
       "freqRank": 299,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:elephant",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/280-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     },
     {
       "index": 281,
@@ -4734,7 +6684,14 @@
       "freqRank": 300,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        {
+          "key": "echo/packs/de_intermediate/281-de_DE-thorsten-medium.m4a",
+          "voice": "de_DE-thorsten-medium"
+        }
+      ]
     }
   ]
 }

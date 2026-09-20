@@ -2,7 +2,7 @@
   "id": "es:absoluteBeginner",
   "lang": "es",
   "level": "absoluteBeginner",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -10,11 +10,7 @@
       "licence": "CC BY-SA 4.0",
       "url": "https://kaikki.org/"
     },
-    {
-      "name": "Tatoeba",
-      "licence": "CC BY 2.0 FR",
-      "url": "https://tatoeba.org/"
-    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
       "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
       "licence": "CC BY-SA 4.0",
@@ -45,15 +41,10 @@
         "otherSenses": []
       },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/0-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/0-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/0-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/0-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:smiling-face-with-smiling-eyes"
     },
     {
       "index": 1,
@@ -77,15 +68,10 @@
         "edited": ["tr"]
       },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/1-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/1-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/1-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/1-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sunrise"
     },
     {
       "index": 2,
@@ -110,15 +96,10 @@
         ]
       },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/2-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/2-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/2-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/2-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:cityscape-at-dusk"
     },
     {
       "index": 3,
@@ -133,19 +114,12 @@
         "ar": "لم لا؟"
       },
       "freqRank": 40,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/3-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/3-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/3-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/3-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 4,
@@ -160,19 +134,12 @@
         "ru": "Это очень хорошо."
       },
       "freqRank": 42,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/4-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/4-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/4-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/4-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 5,
@@ -187,19 +154,12 @@
         "ru": "Почему я?"
       },
       "freqRank": 41,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/5-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/5-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/5-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/5-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:index-pointing-at-the-viewer"
     },
     {
       "index": 6,
@@ -215,20 +175,12 @@
         "ar": "أعرف كل شيء."
       },
       "freqRank": 43,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/6-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/6-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/6-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/6-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:brain"
     },
     {
       "index": 7,
@@ -243,19 +195,12 @@
         "ar": "لا أعرف شيئاً."
       },
       "freqRank": 44,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/7-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/7-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/7-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/7-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 8,
@@ -270,19 +215,12 @@
         "ru": "Да или нет?"
       },
       "freqRank": 45,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/8-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/8-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/8-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/8-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 9,
@@ -297,19 +235,12 @@
         "ru": "У него ничего нет."
       },
       "freqRank": 46,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/9-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/9-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/9-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/9-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:money-with-wings"
     },
     {
       "index": 10,
@@ -324,19 +255,12 @@
         "ru": "Спасибо за всё."
       },
       "freqRank": 48,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/10-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/10-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/10-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/10-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 11,
@@ -351,19 +275,12 @@
         "ar": "لا أريدهم."
       },
       "freqRank": 47,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/11-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/11-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/11-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/11-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 12,
@@ -378,19 +295,12 @@
         "ar": "و كيف لك أن تعرف؟"
       },
       "freqRank": 49,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/12-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/12-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/12-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/12-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 13,
@@ -405,19 +315,12 @@
         "ru": "Всем привет!"
       },
       "freqRank": 50,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/13-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/13-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/13-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/13-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:waving-hand"
     },
     {
       "index": 14,
@@ -433,19 +336,12 @@
         "ar": "أعرف الحقيقة."
       },
       "freqRank": 51,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/14-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/14-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/14-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/14-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:light-bulb"
     },
     {
       "index": 15,
@@ -460,19 +356,12 @@
         "ru": "Ты дома?"
       },
       "freqRank": 52,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/15-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/15-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/15-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/15-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 16,
@@ -488,19 +377,12 @@
         "ar": "إني في المنزل."
       },
       "freqRank": 53,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/16-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/16-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/16-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/16-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 17,
@@ -515,19 +397,12 @@
         "ru": "Кто он?"
       },
       "freqRank": 54,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/17-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/17-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/17-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/17-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:man"
     },
     {
       "index": 18,
@@ -542,19 +417,12 @@
         "ar": "ليس لدي وقت."
       },
       "freqRank": 56,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/18-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/18-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/18-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/18-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:hourglass-done"
     },
     {
       "index": 19,
@@ -569,19 +437,12 @@
         "ru": "Кто я?"
       },
       "freqRank": 55,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/19-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/19-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/19-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/19-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:identification-card"
     },
     {
       "index": 20,
@@ -596,19 +457,12 @@
         "ru": "Где он?"
       },
       "freqRank": 57,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/20-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/20-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/20-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/20-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 21,
@@ -624,19 +478,12 @@
         "ar": "ماذا يريد أن يفعل؟"
       },
       "freqRank": 58,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/21-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/21-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/21-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/21-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 22,
@@ -651,19 +498,12 @@
         "ru": "Я чувствую себя хорошо."
       },
       "freqRank": 59,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/22-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/22-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/22-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/22-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:ok-hand"
     },
     {
       "index": 23,
@@ -679,19 +519,12 @@
         "ar": "أيمكنني أن أقول شيئاً؟"
       },
       "freqRank": 60,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/23-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/23-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/23-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/23-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 24,
@@ -706,19 +539,12 @@
         "ru": "У нас нет времени."
       },
       "freqRank": 61,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/24-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/24-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/24-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/24-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:hourglass-done"
     },
     {
       "index": 25,
@@ -733,19 +559,12 @@
         "ru": "Я верю в тебя."
       },
       "freqRank": 62,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/25-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/25-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/25-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/25-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 26,
@@ -760,19 +579,12 @@
         "ru": "Это тебе."
       },
       "freqRank": 63,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/26-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/26-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/26-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/26-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:wrapped-gift"
     },
     {
       "index": 27,
@@ -787,19 +599,12 @@
         "ru": "Ей 31 год."
       },
       "freqRank": 64,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/27-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/27-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/27-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/27-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:birthday-cake"
     },
     {
       "index": 28,
@@ -814,19 +619,12 @@
         "ru": "Мне 18 лет."
       },
       "freqRank": 65,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/28-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/28-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/28-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/28-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:birthday-cake"
     },
     {
       "index": 29,
@@ -841,19 +639,12 @@
         "ar": "ليس من جديد!"
       },
       "freqRank": 66,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/29-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/29-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/29-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/29-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:face-with-rolling-eyes"
     },
     {
       "index": 30,
@@ -869,19 +660,12 @@
         "ar": "الآن تذكرت."
       },
       "freqRank": 67,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/30-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/30-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/30-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/30-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:light-bulb"
     },
     {
       "index": 31,
@@ -896,19 +680,12 @@
         "ar": "أنا عاطل عن العمل."
       },
       "freqRank": 69,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/31-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/31-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/31-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/31-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:briefcase"
     },
     {
       "index": 32,
@@ -923,19 +700,12 @@
         "ru": "Теперь я работаю здесь."
       },
       "freqRank": 68,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/32-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/32-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/32-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/32-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:briefcase"
     },
     {
       "index": 33,
@@ -950,19 +720,12 @@
         "ru": "Я могу говорить."
       },
       "freqRank": 70,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/33-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/33-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/33-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/33-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 34,
@@ -978,19 +741,12 @@
         "ar": "إلى أين أنت ذاهب؟"
       },
       "freqRank": 71,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/34-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/34-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/34-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/34-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:compass"
     },
     {
       "index": 35,
@@ -1005,20 +761,12 @@
         "ru": "Ничего страшного."
       },
       "freqRank": 72,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/35-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/35-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/35-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/35-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:ok-hand"
     },
     {
       "index": 36,
@@ -1033,19 +781,12 @@
         "ru": "У него мало денег."
       },
       "freqRank": 74,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/36-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/36-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/36-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/36-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:coin"
     },
     {
       "index": 37,
@@ -1060,19 +801,12 @@
         "ru": "У меня нет денег."
       },
       "freqRank": 73,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/37-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/37-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/37-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/37-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:money-with-wings"
     },
     {
       "index": 38,
@@ -1087,19 +821,12 @@
         "ru": "Ты их мать?"
       },
       "freqRank": 75,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/38-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/38-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/38-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/38-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family"
     },
     {
       "index": 39,
@@ -1114,19 +841,12 @@
         "ru": "Что вы делали?"
       },
       "freqRank": 76,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/39-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/39-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/39-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/39-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 40,
@@ -1141,19 +861,12 @@
         "ru": "Кто это знает?"
       },
       "freqRank": 78,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/40-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/40-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/40-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/40-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 41,
@@ -1168,19 +881,12 @@
         "ru": "Что ты делаешь?"
       },
       "freqRank": 77,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/41-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/41-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/41-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/41-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 42,
@@ -1195,19 +901,12 @@
         "ru": "Ты женщина."
       },
       "freqRank": 79,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/42-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/42-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/42-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/42-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:woman"
     },
     {
       "index": 43,
@@ -1222,19 +921,12 @@
         "ru": "Мне нужно больше времени."
       },
       "freqRank": 80,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/43-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/43-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/43-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/43-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 44,
@@ -1249,19 +941,12 @@
         "ru": "Что тебе нравится?"
       },
       "freqRank": 82,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/44-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/44-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/44-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/44-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-heart"
     },
     {
       "index": 45,
@@ -1277,19 +962,12 @@
         "ar": "أحتاج وظيفة."
       },
       "freqRank": 81,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/45-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/45-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/45-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/45-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:briefcase"
     },
     {
       "index": 46,
@@ -1304,19 +982,12 @@
         "ru": "Мне это очень нравится."
       },
       "freqRank": 83,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/46-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/46-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/46-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/46-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 47,
@@ -1331,20 +1002,12 @@
         "ru": "Погода хорошая."
       },
       "freqRank": 84,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/47-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/47-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/47-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/47-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sun"
     },
     {
       "index": 48,
@@ -1359,19 +1022,12 @@
         "ru": "Я плохо себя чувствую."
       },
       "freqRank": 85,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/48-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/48-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/48-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/48-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:nauseated-face"
     },
     {
       "index": 49,
@@ -1386,19 +1042,12 @@
         "ar": "يا الهي!"
       },
       "freqRank": 86,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/49-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/49-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/49-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/49-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:astonished-face"
     },
     {
       "index": 50,
@@ -1413,19 +1062,12 @@
         "ru": "Могу я с тобой поговорить?"
       },
       "freqRank": 87,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/50-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/50-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/50-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/50-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 51,
@@ -1440,19 +1082,12 @@
         "ru": "Какая хорошая идея!"
       },
       "freqRank": 88,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/51-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/51-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/51-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/51-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:light-bulb"
     },
     {
       "index": 52,
@@ -1467,19 +1102,12 @@
         "ru": "У меня идея."
       },
       "freqRank": 89,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/52-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/52-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/52-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/52-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:light-bulb"
     },
     {
       "index": 53,
@@ -1495,19 +1123,12 @@
         "ar": "لدينا مشكلة."
       },
       "freqRank": 90,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/53-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/53-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/53-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/53-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:warning"
     },
     {
       "index": 54,
@@ -1522,19 +1143,12 @@
         "ru": "Что он сказал?"
       },
       "freqRank": 91,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/54-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/54-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/54-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/54-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 55,
@@ -1549,19 +1163,12 @@
         "ru": "У меня есть семья."
       },
       "freqRank": 94,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/55-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/55-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/55-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/55-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family"
     },
     {
       "index": 56,
@@ -1576,20 +1183,12 @@
         "ru": "Что ты сказал?"
       },
       "freqRank": 92,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/56-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/56-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/56-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/56-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 57,
@@ -1604,19 +1203,12 @@
         "ar": "ما زال لدينا الكثير من الوقت."
       },
       "freqRank": 96,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/57-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/57-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/57-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/57-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 58,
@@ -1631,19 +1223,12 @@
         "ar": "ماذا حدث؟"
       },
       "freqRank": 93,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/58-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/58-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/58-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/58-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 59,
@@ -1658,19 +1243,12 @@
         "ru": "Я ничего не вижу."
       },
       "freqRank": 97,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/59-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/59-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/59-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/59-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:see-no-evil-monkey"
     },
     {
       "index": 60,
@@ -1685,20 +1263,12 @@
         "ru": "Что ты здесь делаешь?"
       },
       "freqRank": 95,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/60-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/60-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/60-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/60-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 61,
@@ -1713,19 +1283,12 @@
         "ru": "Они дружат?"
       },
       "freqRank": 98,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/61-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/61-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/61-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/61-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:woman-and-man-holding-hands"
     },
     {
       "index": 62,
@@ -1741,19 +1304,12 @@
         "ar": "لي أخ وحيد."
       },
       "freqRank": 99,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/62-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/62-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/62-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/62-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:men-holding-hands"
     },
     {
       "index": 63,
@@ -1768,19 +1324,12 @@
         "ru": "Что произошло потом?"
       },
       "freqRank": 100,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/63-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/63-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/63-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/63-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 64,
@@ -1795,19 +1344,12 @@
         "ru": "Я мальчик."
       },
       "freqRank": 101,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/64-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/64-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/64-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/64-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:boy"
     },
     {
       "index": 65,
@@ -1822,20 +1364,12 @@
         "ar": "لا أريد العودة."
       },
       "freqRank": 102,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/65-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/65-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/65-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/65-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 66,
@@ -1850,19 +1384,12 @@
         "ru": "Ты со мной разговариваешь?"
       },
       "freqRank": 103,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/66-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/66-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/66-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/66-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 67,
@@ -1877,20 +1404,12 @@
         "ru": "Я тебя не понимаю."
       },
       "freqRank": 104,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/67-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/67-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/67-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/67-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 68,
@@ -1905,19 +1424,12 @@
         "ru": "Да, я понимаю. Большое спасибо."
       },
       "freqRank": 105,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/68-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/68-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/68-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/68-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:brain"
     },
     {
       "index": 69,
@@ -1932,19 +1444,12 @@
         "ru": "Как тебе везёт!"
       },
       "freqRank": 106,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/69-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/69-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/69-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/69-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:four-leaf-clover"
     },
     {
       "index": 70,
@@ -1959,19 +1464,12 @@
         "ru": "Ты делаешь меня счастливым."
       },
       "freqRank": 107,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/70-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/70-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/70-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/70-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:smiling-face-with-smiling-eyes"
     },
     {
       "index": 71,
@@ -1986,19 +1484,12 @@
         "ar": "يمكنك المجيئ معي."
       },
       "freqRank": 108,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/71-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/71-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/71-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/71-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-walking"
     },
     {
       "index": 72,
@@ -2013,19 +1504,12 @@
         "ru": "Я могу завтра прийти."
       },
       "freqRank": 109,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/72-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/72-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/72-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/72-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:tear-off-calendar"
     },
     {
       "index": 73,
@@ -2040,19 +1524,12 @@
         "ru": "Ты должен прийти."
       },
       "freqRank": 110,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/73-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/73-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/73-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/73-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-walking"
     },
     {
       "index": 74,
@@ -2067,19 +1544,12 @@
         "ru": "У меня есть дочь."
       },
       "freqRank": 111,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/74-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/74-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/74-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/74-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:girl"
     },
     {
       "index": 75,
@@ -2094,19 +1564,12 @@
         "ru": "Сколько ты хочешь денег?"
       },
       "freqRank": 112,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/75-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/75-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/75-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/75-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:dollar-banknote"
     },
     {
       "index": 76,
@@ -2122,19 +1585,12 @@
         "ar": "ليس مهماً."
       },
       "freqRank": 114,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/76-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/76-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/76-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/76-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 77,
@@ -2149,19 +1605,12 @@
         "ru": "Сколько у тебя денег?"
       },
       "freqRank": 113,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/77-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/77-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/77-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/77-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:dollar-banknote"
     },
     {
       "index": 78,
@@ -2176,19 +1625,12 @@
         "ru": "Ты меня боишься?"
       },
       "freqRank": 115,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/78-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/78-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/78-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/78-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:fearful-face"
     },
     {
       "index": 79,
@@ -2203,19 +1645,12 @@
         "ru": "Я не боюсь."
       },
       "freqRank": 116,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/79-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/79-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/79-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/79-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:fearful-face"
     },
     {
       "index": 80,
@@ -2230,19 +1665,12 @@
         "ru": "Воды, пожалуйста."
       },
       "freqRank": 118,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/80-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/80-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/80-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/80-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:potable-water"
     },
     {
       "index": 81,
@@ -2257,19 +1685,12 @@
         "ru": "Она не боится."
       },
       "freqRank": 117,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/81-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/81-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/81-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/81-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:flexed-biceps"
     },
     {
       "index": 82,
@@ -2284,19 +1705,12 @@
         "ru": "Я сделаю тебя счастливой."
       },
       "freqRank": 120,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/82-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/82-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/82-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/82-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:smiling-face-with-smiling-eyes"
     },
     {
       "index": 83,
@@ -2311,19 +1725,12 @@
         "ru": "У нас нет воды."
       },
       "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/83-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/83-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/83-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/83-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:non-potable-water"
     },
     {
       "index": 84,
@@ -2338,19 +1745,12 @@
         "ru": "Она тоже придёт?"
       },
       "freqRank": 121,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/84-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/84-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/84-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/84-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-walking"
     },
     {
       "index": 85,
@@ -2365,19 +1765,12 @@
         "ru": "Кто пойдёт со мной?"
       },
       "freqRank": 122,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/85-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/85-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/85-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/85-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-walking"
     },
     {
       "index": 86,
@@ -2392,19 +1785,12 @@
         "ar": "ربما ستأتي."
       },
       "freqRank": 123,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/86-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/86-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/86-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/86-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-walking"
     },
     {
       "index": 87,
@@ -2419,20 +1805,12 @@
         "ar": "أنا طفل وحيد أبي و أمي."
       },
       "freqRank": 124,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/87-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/87-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/87-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/87-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-standing"
     },
     {
       "index": 88,
@@ -2447,19 +1825,12 @@
         "ru": "Ей нужна помощь."
       },
       "freqRank": 125,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/88-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/88-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/88-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/88-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sos-button"
     },
     {
       "index": 89,
@@ -2474,19 +1845,12 @@
         "ru": "У меня есть автомобиль."
       },
       "freqRank": 126,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/89-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/89-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/89-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/89-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 90,
@@ -2501,19 +1865,12 @@
         "ru": "Нам нужна машина."
       },
       "freqRank": 128,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/90-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/90-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/90-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/90-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 91,
@@ -2528,19 +1885,12 @@
         "ru": "Завтра у меня занятия."
       },
       "freqRank": 127,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/91-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/91-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/91-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/91-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:school"
     },
     {
       "index": 92,
@@ -2555,19 +1905,12 @@
         "ru": "Всё готово."
       },
       "freqRank": 129,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/92-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/92-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/92-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/92-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:check-mark-button"
     },
     {
       "index": 93,
@@ -2582,19 +1925,12 @@
         "ar": "ما الذي يحدث؟"
       },
       "freqRank": 130,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/93-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/93-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/93-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/93-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 94,
@@ -2609,18 +1945,10 @@
         "ru": "Я капитан."
       },
       "freqRank": 131,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/94-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/94-em_alex.m4a",
-          "voice": "em_alex"
-        }
+        { "key": "echo/packs/es_absoluteBeginner/94-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/94-em_alex.m4a", "voice": "em_alex" }
       ]
     },
     {
@@ -2637,19 +1965,12 @@
         "ar": "أعرف اسمه."
       },
       "freqRank": 132,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/95-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/95-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/95-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/95-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:identification-card"
     },
     {
       "index": 96,
@@ -2665,20 +1986,12 @@
         "ar": "إنه سهل جدا."
       },
       "freqRank": 133,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/96-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/96-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/96-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/96-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:ok-hand"
     },
     {
       "index": 97,
@@ -2694,19 +2007,12 @@
         "ar": "ماذا تريد أن تأكل؟"
       },
       "freqRank": 134,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/97-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/97-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/97-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/97-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 98,
@@ -2721,19 +2027,12 @@
         "ar": "هل تريد أن تأكل شيئا؟"
       },
       "freqRank": 135,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/98-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/98-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/98-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/98-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 99,
@@ -2748,19 +2047,12 @@
         "ru": "У нас два сына."
       },
       "freqRank": 136,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/99-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/99-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/99-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/99-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family-man-boy"
     },
     {
       "index": 100,
@@ -2775,19 +2067,12 @@
         "ru": "Что мы ищем?"
       },
       "freqRank": 137,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/100-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/100-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/100-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/100-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:magnifying-glass-tilted-left"
     },
     {
       "index": 101,
@@ -2802,19 +2087,12 @@
         "ru": "Я не хочу ждать."
       },
       "freqRank": 138,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/101-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/101-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/101-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/101-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 102,
@@ -2829,19 +2107,12 @@
         "ru": "Она любит поспать."
       },
       "freqRank": 139,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/102-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/102-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/102-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/102-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 103,
@@ -2856,19 +2127,12 @@
         "ru": "Мне не спится."
       },
       "freqRank": 140,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/103-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/103-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/103-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/103-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 104,
@@ -2883,19 +2147,12 @@
         "ru": "У тебя есть план?"
       },
       "freqRank": 141,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/104-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/104-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/104-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/104-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:clipboard"
     },
     {
       "index": 105,
@@ -2910,19 +2167,12 @@
         "ru": "Джон, иди сюда."
       },
       "freqRank": 142,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/105-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/105-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/105-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/105-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:palm-up-hand"
     },
     {
       "index": 106,
@@ -2937,19 +2187,12 @@
         "ar": "هي بنتٌ."
       },
       "freqRank": 143,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/106-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/106-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/106-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/106-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:girl"
     },
     {
       "index": 107,
@@ -2964,19 +2207,12 @@
         "ru": "Кто-то звонил."
       },
       "freqRank": 144,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/107-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/107-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/107-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/107-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:telephone-receiver"
     },
     {
       "index": 108,
@@ -2991,19 +2227,12 @@
         "ru": "Он только что приехал."
       },
       "freqRank": 145,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/108-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/108-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/108-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/108-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:airplane-arrival"
     },
     {
       "index": 109,
@@ -3018,19 +2247,12 @@
         "ar": "إنه كتابك."
       },
       "freqRank": 146,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/109-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/109-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/109-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/109-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:closed-book"
     },
     {
       "index": 110,
@@ -3045,19 +2267,12 @@
         "ru": "У меня есть одна книга."
       },
       "freqRank": 147,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/110-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/110-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/110-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/110-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:closed-book"
     },
     {
       "index": 111,
@@ -3072,19 +2287,12 @@
         "ar": "أرى كتاباً."
       },
       "freqRank": 148,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/111-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/111-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/111-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/111-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:open-book"
     },
     {
       "index": 112,
@@ -3099,19 +2307,12 @@
         "ru": "Я собираюсь начать."
       },
       "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/112-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/112-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/112-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/112-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:new-button"
     },
     {
       "index": 113,
@@ -3126,20 +2327,12 @@
         "ru": "У меня есть собака."
       },
       "freqRank": 150,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/113-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/113-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/113-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/113-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:dog"
     },
     {
       "index": 114,
@@ -3154,19 +2347,12 @@
         "ar": "أنا حُرّ."
       },
       "freqRank": 152,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/114-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/114-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/114-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/114-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:free-button"
     },
     {
       "index": 115,
@@ -3181,19 +2367,12 @@
         "ru": "У меня много вопросов."
       },
       "freqRank": 151,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/115-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/115-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/115-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/115-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 116,
@@ -3208,19 +2387,12 @@
         "ru": "Возвращайся домой."
       },
       "freqRank": 153,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/116-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/116-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/116-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/116-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:back-arrow"
     },
     {
       "index": 117,
@@ -3235,20 +2407,12 @@
         "ru": "У меня нет слов."
       },
       "freqRank": 154,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/117-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/117-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/117-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/117-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:zipper-mouth-face"
     },
     {
       "index": 118,
@@ -3263,19 +2427,12 @@
         "ru": "Что ты делал вчера?"
       },
       "freqRank": 156,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/118-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/118-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/118-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/118-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 119,
@@ -3290,19 +2447,12 @@
         "ru": "Ты не понимаешь."
       },
       "freqRank": 155,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/119-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/119-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/119-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/119-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 120,
@@ -3317,19 +2467,12 @@
         "ru": "Он вчера умер."
       },
       "freqRank": 157,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/120-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/120-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/120-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/120-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:coffin"
     },
     {
       "index": 121,
@@ -3344,19 +2487,12 @@
         "ru": "Приходи когда хочешь."
       },
       "freqRank": 158,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/121-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/121-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/121-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/121-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-walking"
     },
     {
       "index": 122,
@@ -3372,19 +2508,12 @@
         "ar": "أكره القهوة."
       },
       "freqRank": 159,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/122-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/122-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/122-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/122-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:hot-beverage"
     },
     {
       "index": 123,
@@ -3399,19 +2528,12 @@
         "ru": "У меня есть мечта."
       },
       "freqRank": 160,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/123-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/123-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/123-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/123-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:thought-balloon"
     },
     {
       "index": 124,
@@ -3426,19 +2548,12 @@
         "ru": "Куда ты хочешь пойти?"
       },
       "freqRank": 161,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/124-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/124-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/124-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/124-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:compass"
     },
     {
       "index": 125,
@@ -3453,19 +2568,12 @@
         "ru": "Я им не нравлюсь."
       },
       "freqRank": 162,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/125-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/125-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/125-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/125-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:thumbs-down"
     },
     {
       "index": 126,
@@ -3480,19 +2588,12 @@
         "ru": "Он беден."
       },
       "freqRank": 163,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/126-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/126-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/126-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/126-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:coin"
     },
     {
       "index": 127,
@@ -3507,19 +2608,12 @@
         "ru": "Тебе нужен адвокат."
       },
       "freqRank": 164,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/127-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/127-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/127-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/127-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:balance-scale"
     },
     {
       "index": 128,
@@ -3534,19 +2628,12 @@
         "ru": "Меня зовут Джек."
       },
       "freqRank": 166,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/128-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/128-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/128-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/128-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:identification-card"
     },
     {
       "index": 129,
@@ -3561,19 +2648,12 @@
         "ru": "Как ты себя чувствуешь?"
       },
       "freqRank": 167,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/129-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/129-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/129-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/129-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-raising-hand"
     },
     {
       "index": 130,
@@ -3588,19 +2668,12 @@
         "ru": "Тебе лучше?"
       },
       "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/130-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/130-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/130-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/130-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:face-with-head-bandage"
     },
     {
       "index": 131,
@@ -3615,19 +2688,12 @@
         "ru": "Где он живёт?"
       },
       "freqRank": 169,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/131-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/131-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/131-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/131-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 132,
@@ -3642,19 +2708,12 @@
         "ru": "Он тут живёт?"
       },
       "freqRank": 171,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/132-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/132-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/132-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/132-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 133,
@@ -3669,19 +2728,12 @@
         "ru": "Где живет Джон?"
       },
       "freqRank": 170,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/133-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/133-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/133-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/133-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 134,
@@ -3696,19 +2748,12 @@
         "ru": "Кто здесь живёт?"
       },
       "freqRank": 172,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/134-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/134-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/134-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/134-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 135,
@@ -3723,19 +2768,12 @@
         "ru": "Ты знаешь, где он живёт?"
       },
       "freqRank": 173,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/135-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/135-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/135-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/135-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 136,
@@ -3750,19 +2788,12 @@
         "ar": "أتسكن هنا؟"
       },
       "freqRank": 174,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/136-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/136-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/136-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/136-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 137,
@@ -3777,20 +2808,12 @@
         "ru": "Я знаю, где он живёт."
       },
       "freqRank": 175,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/137-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/137-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/137-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/137-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 138,
@@ -3805,19 +2828,12 @@
         "ru": "Сегодня солнечно."
       },
       "freqRank": 176,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/138-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/138-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/138-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/138-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sun"
     },
     {
       "index": 139,
@@ -3832,19 +2848,12 @@
         "ru": "Я не голоден."
       },
       "freqRank": 177,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/139-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/139-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/139-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/139-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 140,
@@ -3859,19 +2868,12 @@
         "ru": "Ты знаешь ответ?"
       },
       "freqRank": 178,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/140-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/140-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/140-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/140-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:light-bulb"
     },
     {
       "index": 141,
@@ -3886,19 +2888,12 @@
         "ru": "Это невозможно."
       },
       "freqRank": 180,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/141-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/141-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/141-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/141-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:cross-mark"
     },
     {
       "index": 142,
@@ -3913,19 +2908,12 @@
         "ru": "Разве это нормально?"
       },
       "freqRank": 181,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/142-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/142-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/142-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/142-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 143,
@@ -3941,19 +2929,12 @@
         "ar": "من هو توم؟"
       },
       "freqRank": 182,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/143-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/143-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/143-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/143-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 144,
@@ -3968,19 +2949,12 @@
         "ru": "У Тома есть девушка?"
       },
       "freqRank": 183,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/144-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/144-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/144-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/144-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:girl"
     },
     {
       "index": 145,
@@ -3995,19 +2969,12 @@
         "ru": "Удачи, Том."
       },
       "freqRank": 184,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/145-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/145-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/145-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/145-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:four-leaf-clover"
     },
     {
       "index": 146,
@@ -4022,19 +2989,12 @@
         "ar": "كنت معلما."
       },
       "freqRank": 187,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/146-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/146-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/146-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/146-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:school"
     },
     {
       "index": 147,
@@ -4049,19 +3009,12 @@
         "ru": "Том, ты где?"
       },
       "freqRank": 186,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/147-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/147-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/147-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/147-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 148,
@@ -4076,19 +3029,12 @@
         "ru": "Я профессор."
       },
       "freqRank": 188,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/148-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/148-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/148-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/148-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:school"
     },
     {
       "index": 149,
@@ -4103,19 +3049,12 @@
         "ru": "Ты знаешь эту песню?"
       },
       "freqRank": 189,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/149-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/149-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/149-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/149-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:musical-note"
     },
     {
       "index": 150,
@@ -4130,19 +3069,12 @@
         "ar": "اكره هذه الأغنية."
       },
       "freqRank": 190,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/150-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/150-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/150-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/150-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:musical-note"
     },
     {
       "index": 151,
@@ -4157,19 +3089,12 @@
         "ru": "Не бойся."
       },
       "freqRank": 191,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/151-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/151-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/151-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/151-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:fearful-face"
     },
     {
       "index": 152,
@@ -4185,19 +3110,12 @@
         "ar": "صباح الخير، يا مايك"
       },
       "freqRank": 194,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/152-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/152-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/152-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/152-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sunrise"
     },
     {
       "index": 153,
@@ -4212,19 +3130,12 @@
         "ar": "ليس بالضرورة."
       },
       "freqRank": 192,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/153-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/153-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/153-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/153-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 154,
@@ -4240,19 +3151,12 @@
         "ar": "اجلس في أي مكان تحب."
       },
       "freqRank": 195,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/154-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/154-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/154-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/154-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:chair"
     },
     {
       "index": 155,
@@ -4267,19 +3171,12 @@
         "ar": "أنا لست مستعجلاً."
       },
       "freqRank": 193,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/155-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/155-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/155-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/155-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 156,
@@ -4294,19 +3191,12 @@
         "ru": "Она мертва."
       },
       "freqRank": 196,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/156-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/156-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/156-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/156-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:coffin"
     },
     {
       "index": 157,
@@ -4321,19 +3211,12 @@
         "ru": "Это шутка?"
       },
       "freqRank": 197,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/157-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/157-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/157-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/157-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:winking-face-with-tongue"
     },
     {
       "index": 158,
@@ -4348,19 +3231,12 @@
         "ru": "Это был подарок."
       },
       "freqRank": 198,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/158-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/158-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/158-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/158-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:wrapped-gift"
     },
     {
       "index": 159,
@@ -4375,19 +3251,12 @@
         "ru": "Желаю тебе удачи."
       },
       "freqRank": 199,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/159-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/159-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/159-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/159-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:four-leaf-clover"
     },
     {
       "index": 160,
@@ -4402,19 +3271,12 @@
         "ru": "Это сюрприз."
       },
       "freqRank": 200,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/160-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/160-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/160-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/160-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:wrapped-gift"
     },
     {
       "index": 161,
@@ -4429,19 +3291,12 @@
         "ar": "لماذا أنا هنا؟"
       },
       "freqRank": 201,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/161-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/161-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/161-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/161-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 162,
@@ -4457,19 +3312,12 @@
         "ar": "لا شكر على واجب."
       },
       "freqRank": 202,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/162-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/162-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/162-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/162-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:smiling-face-with-smiling-eyes"
     },
     {
       "index": 163,
@@ -4484,19 +3332,12 @@
         "ru": "Правда? Почему?"
       },
       "freqRank": 207,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/163-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/163-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/163-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/163-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 164,
@@ -4511,19 +3352,12 @@
         "ru": "Я ничего не могу сделать."
       },
       "freqRank": 204,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/164-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/164-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/164-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/164-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 165,
@@ -4538,19 +3372,12 @@
         "ru": "Что такое истина?"
       },
       "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/165-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/165-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/165-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/165-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 166,
@@ -4566,19 +3393,12 @@
         "ar": "لا أعرف ماذا أفعل."
       },
       "freqRank": 205,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/166-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/166-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/166-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/166-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 167,
@@ -4593,19 +3413,12 @@
         "ru": "Он был дома."
       },
       "freqRank": 209,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/167-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/167-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/167-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/167-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 168,
@@ -4620,19 +3433,12 @@
         "ar": "أنا لست من هنا."
       },
       "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/168-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/168-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/168-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/168-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:globe-showing-europe-africa"
     },
     {
       "index": 169,
@@ -4647,19 +3453,12 @@
         "ru": "Это мой дом."
       },
       "freqRank": 210,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/169-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/169-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/169-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/169-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 170,
@@ -4674,19 +3473,12 @@
         "ru": "Я не знаю, кто она."
       },
       "freqRank": 211,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/170-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/170-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/170-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/170-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 171,
@@ -4701,19 +3493,12 @@
         "ar": "أين بيتك؟"
       },
       "freqRank": 212,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/171-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/171-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/171-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/171-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 172,
@@ -4728,19 +3513,12 @@
         "ru": "Я не знаю, где я."
       },
       "freqRank": 213,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/172-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/172-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/172-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/172-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:compass"
     },
     {
       "index": 173,
@@ -4755,19 +3533,12 @@
         "ru": "Чем хочешь сейчас заняться?"
       },
       "freqRank": 214,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/173-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/173-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/173-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/173-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 174,
@@ -4782,19 +3553,12 @@
         "ru": "Кто этот человек?"
       },
       "freqRank": 215,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/174-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/174-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/174-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/174-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:man"
     },
     {
       "index": 175,
@@ -4809,19 +3573,12 @@
         "ru": "Мне тоже семнадцать лет."
       },
       "freqRank": 216,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/175-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/175-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/175-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/175-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:birthday-cake"
     },
     {
       "index": 176,
@@ -4836,19 +3593,12 @@
         "ru": "Я не согласен."
       },
       "freqRank": 217,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/176-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/176-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/176-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/176-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:thumbs-down"
     },
     {
       "index": 177,
@@ -4863,19 +3613,12 @@
         "ar": "أين أبوك؟"
       },
       "freqRank": 219,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/177-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/177-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/177-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/177-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:man"
     },
     {
       "index": 178,
@@ -4890,19 +3633,12 @@
         "ru": "Я люблю своего отца."
       },
       "freqRank": 220,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/178-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/178-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/178-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/178-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family-man-boy"
     },
     {
       "index": 179,
@@ -4917,19 +3653,12 @@
         "ru": "Кто-то мне это сказал."
       },
       "freqRank": 221,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/179-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/179-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/179-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/179-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 180,
@@ -4944,19 +3673,12 @@
         "ru": "Она ничего не сказала."
       },
       "freqRank": 222,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/180-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/180-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/180-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/180-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:zipper-mouth-face"
     },
     {
       "index": 181,
@@ -4971,19 +3693,12 @@
         "ru": "С кем ты хочешь поговорить?"
       },
       "freqRank": 223,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/181-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/181-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/181-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/181-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 182,
@@ -4998,20 +3713,12 @@
         "ru": "У него много денег."
       },
       "freqRank": 224,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/182-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/182-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/182-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/182-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:money-bag"
     },
     {
       "index": 183,
@@ -5026,19 +3733,12 @@
         "ru": "Я не твоя мать."
       },
       "freqRank": 225,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/183-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/183-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/183-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/183-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family"
     },
     {
       "index": 184,
@@ -5053,19 +3753,12 @@
         "ru": "Я как мама."
       },
       "freqRank": 226,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/184-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/184-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/184-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/184-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family"
     },
     {
       "index": 185,
@@ -5080,20 +3773,12 @@
         "ru": "Ты — моя мать."
       },
       "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/185-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/185-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/185-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/185-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family"
     },
     {
       "index": 186,
@@ -5108,19 +3793,12 @@
         "ru": "Он знает правду."
       },
       "freqRank": 228,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/186-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/186-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/186-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/186-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:light-bulb"
     },
     {
       "index": 187,
@@ -5135,19 +3813,12 @@
         "ar": "هي تَعرِفُ الحقيقة."
       },
       "freqRank": 229,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/187-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/187-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/187-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/187-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:light-bulb"
     },
     {
       "index": 188,
@@ -5162,19 +3833,12 @@
         "ru": "Я могу быть твоим другом?"
       },
       "freqRank": 230,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/188-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/188-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/188-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/188-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 189,
@@ -5189,19 +3853,12 @@
         "ru": "Он её друг."
       },
       "freqRank": 231,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/189-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/189-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/189-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/189-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 190,
@@ -5216,19 +3873,12 @@
         "ru": "Ты мой друг."
       },
       "freqRank": 232,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/190-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/190-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/190-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/190-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 191,
@@ -5244,19 +3894,12 @@
         "ar": "أحب أمي."
       },
       "freqRank": 233,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/191-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/191-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/191-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/191-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family"
     },
     {
       "index": 192,
@@ -5271,19 +3914,12 @@
         "ru": "Так не говорят."
       },
       "freqRank": 234,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/192-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/192-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/192-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/192-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:shushing-face"
     },
     {
       "index": 193,
@@ -5298,19 +3934,12 @@
         "ar": "ماذا تريد أن تفعل اليوم؟"
       },
       "freqRank": 235,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/193-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/193-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/193-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/193-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 194,
@@ -5325,19 +3954,12 @@
         "ru": "Сегодня я чувствую себя хорошо."
       },
       "freqRank": 236,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/194-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/194-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/194-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/194-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:ok-hand"
     },
     {
       "index": 195,
@@ -5352,19 +3974,12 @@
         "ru": "Жизнь хороша."
       },
       "freqRank": 238,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/195-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/195-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/195-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/195-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sunflower"
     },
     {
       "index": 196,
@@ -5379,19 +3994,12 @@
         "ru": "Я сегодня без денег."
       },
       "freqRank": 237,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/196-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/196-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/196-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/196-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:money-with-wings"
     },
     {
       "index": 197,
@@ -5406,19 +4014,12 @@
         "ru": "Чем ты любишь заниматься?"
       },
       "freqRank": 239,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/197-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/197-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/197-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/197-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:red-heart"
     },
     {
       "index": 198,
@@ -5433,19 +4034,12 @@
         "ru": "Мне нравится одиночество."
       },
       "freqRank": 240,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/198-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/198-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/198-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/198-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-standing"
     },
     {
       "index": 199,
@@ -5461,19 +4055,12 @@
         "ar": "لا أحد يعرف اسمه."
       },
       "freqRank": 241,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/199-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/199-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/199-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/199-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 200,
@@ -5488,19 +4075,12 @@
         "ru": "Я знаю твоё имя."
       },
       "freqRank": 242,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/200-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/200-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/200-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/200-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:identification-card"
     },
     {
       "index": 201,
@@ -5515,19 +4095,12 @@
         "ru": "Ты тоже, сын мой."
       },
       "freqRank": 243,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/201-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/201-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/201-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/201-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family-man-boy"
     },
     {
       "index": 202,
@@ -5542,19 +4115,12 @@
         "ru": "Я должен сделать это сейчас."
       },
       "freqRank": 244,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/202-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/202-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/202-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/202-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:stopwatch"
     },
     {
       "index": 203,
@@ -5569,19 +4135,12 @@
         "ru": "Я не хочу с тобой разговаривать."
       },
       "freqRank": 245,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/203-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/203-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/203-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/203-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:zipper-mouth-face"
     },
     {
       "index": 204,
@@ -5597,19 +4156,12 @@
         "ar": "أين المشكلة؟"
       },
       "freqRank": 246,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/204-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/204-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/204-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/204-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:warning"
     },
     {
       "index": 205,
@@ -5624,19 +4176,12 @@
         "ru": "Ну и что у тебя за проблема?"
       },
       "freqRank": 247,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/205-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/205-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/205-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/205-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:warning"
     },
     {
       "index": 206,
@@ -5651,19 +4196,12 @@
         "ru": "Сколько сейчас времени?"
       },
       "freqRank": 248,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/206-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/206-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/206-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/206-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:one-o-clock"
     },
     {
       "index": 207,
@@ -5678,19 +4216,12 @@
         "ru": "Где его семья?"
       },
       "freqRank": 250,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/207-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/207-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/207-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/207-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:family"
     },
     {
       "index": 208,
@@ -5705,19 +4236,12 @@
         "ru": "Что такое любовь?"
       },
       "freqRank": 249,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/208-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/208-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/208-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/208-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:two-hearts"
     },
     {
       "index": 209,
@@ -5733,20 +4257,12 @@
         "ar": "من هذه الفتاة؟"
       },
       "freqRank": 251,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["fr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["fr"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/209-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/209-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/209-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/209-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:girl"
     },
     {
       "index": 210,
@@ -5761,19 +4277,12 @@
         "ru": "Этого я пока не знаю."
       },
       "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/210-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/210-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/210-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/210-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 211,
@@ -5789,19 +4298,12 @@
         "ar": "أين أخوك؟"
       },
       "freqRank": 253,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/211-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/211-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/211-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/211-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:men-holding-hands"
     },
     {
       "index": 212,
@@ -5816,19 +4318,12 @@
         "ar": "هذا أخي."
       },
       "freqRank": 254,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/212-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/212-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/212-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/212-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:men-holding-hands"
     },
     {
       "index": 213,
@@ -5843,19 +4338,12 @@
         "ru": "Я многое видел."
       },
       "freqRank": 255,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/213-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/213-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/213-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/213-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:eyes"
     },
     {
       "index": 214,
@@ -5870,19 +4358,12 @@
         "ru": "О чём ты?"
       },
       "freqRank": 256,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/214-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/214-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/214-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/214-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 215,
@@ -5897,19 +4378,12 @@
         "ru": "Спасибо за помощь."
       },
       "freqRank": 257,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/215-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/215-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/215-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/215-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 216,
@@ -5924,19 +4398,12 @@
         "ru": "До свидания и удачи."
       },
       "freqRank": 258,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/216-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/216-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/216-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/216-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:waving-hand"
     },
     {
       "index": 217,
@@ -5951,19 +4418,12 @@
         "ar": "دَعَهُ يذهب."
       },
       "freqRank": 259,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/217-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/217-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/217-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/217-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:door"
     },
     {
       "index": 218,
@@ -5978,19 +4438,12 @@
         "ru": "Почему ты боишься?"
       },
       "freqRank": 260,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/218-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/218-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/218-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/218-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:fearful-face"
     },
     {
       "index": 219,
@@ -6005,19 +4458,12 @@
         "ar": "هي زوجتي."
       },
       "freqRank": 261,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/219-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/219-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/219-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/219-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:ring"
     },
     {
       "index": 220,
@@ -6032,19 +4478,12 @@
         "ru": "Всем спокойной ночи!"
       },
       "freqRank": 262,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/220-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/220-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/220-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/220-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:crescent-moon"
     },
     {
       "index": 221,
@@ -6060,19 +4499,12 @@
         "ar": "منزلي كبير."
       },
       "freqRank": 263,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/221-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/221-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/221-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/221-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 222,
@@ -6087,19 +4519,12 @@
         "ru": "Где мой автомобиль?"
       },
       "freqRank": 264,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/222-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/222-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/222-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/222-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 223,
@@ -6114,19 +4539,12 @@
         "ru": "Это машина."
       },
       "freqRank": 265,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/223-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/223-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/223-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/223-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 224,
@@ -6141,19 +4559,12 @@
         "ar": "أنا في السيارة"
       },
       "freqRank": 266,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/224-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/224-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/224-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/224-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 225,
@@ -6168,19 +4579,12 @@
         "ru": "У меня старая машина."
       },
       "freqRank": 268,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/225-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/225-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/225-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/225-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 226,
@@ -6195,19 +4599,12 @@
         "ar": "أنا في سيارتي."
       },
       "freqRank": 267,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/226-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/226-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/226-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/226-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 227,
@@ -6222,19 +4619,12 @@
         "ru": "Сегодня нет занятий."
       },
       "freqRank": 269,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/227-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/227-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/227-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/227-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:school"
     },
     {
       "index": 228,
@@ -6249,19 +4639,12 @@
         "ru": "У нас сегодня нет школы."
       },
       "freqRank": 270,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/228-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/228-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/228-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/228-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:school"
     },
     {
       "index": 229,
@@ -6276,19 +4659,12 @@
         "ru": "Зачем ты это говоришь?"
       },
       "freqRank": 271,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/229-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/229-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/229-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/229-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 230,
@@ -6303,19 +4679,12 @@
         "ru": "Я сделаю, что могу."
       },
       "freqRank": 272,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/230-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/230-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/230-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/230-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:flexed-biceps"
     },
     {
       "index": 231,
@@ -6330,19 +4699,12 @@
         "ru": "Это лишь игра."
       },
       "freqRank": 273,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/231-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/231-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/231-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/231-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:game-die"
     },
     {
       "index": 232,
@@ -6357,19 +4719,12 @@
         "ar": "عليك أن تقول الحقيقة."
       },
       "freqRank": 274,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/232-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/232-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/232-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/232-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 233,
@@ -6384,19 +4739,12 @@
         "ru": "Я так жить не могу."
       },
       "freqRank": 275,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/233-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/233-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/233-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/233-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 234,
@@ -6411,19 +4759,12 @@
         "ru": "Где находится школа?"
       },
       "freqRank": 276,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/234-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/234-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/234-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/234-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:school"
     },
     {
       "index": 235,
@@ -6439,20 +4780,12 @@
         "ar": "الطّعام جاهز."
       },
       "freqRank": 277,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/235-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/235-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/235-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/235-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 236,
@@ -6468,19 +4801,12 @@
         "ar": "انها ليست غلطتي!"
       },
       "freqRank": 278,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/236-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/236-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/236-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/236-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 237,
@@ -6496,19 +4822,12 @@
         "ar": "اين كلبك؟"
       },
       "freqRank": 279,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/237-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/237-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/237-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/237-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:dog"
     },
     {
       "index": 238,
@@ -6524,20 +4843,12 @@
         "ar": "لديه كلب."
       },
       "freqRank": 280,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/238-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/238-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/238-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/238-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:dog"
     },
     {
       "index": 239,
@@ -6553,19 +4864,12 @@
         "ar": "من هو محاميك؟"
       },
       "freqRank": 282,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/239-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/239-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/239-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/239-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:balance-scale"
     },
     {
       "index": 240,
@@ -6581,19 +4885,12 @@
         "ar": "هذا منزله."
       },
       "freqRank": 283,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/240-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/240-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/240-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/240-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 241,
@@ -6609,19 +4906,12 @@
         "ar": "أريد أن أشتري منزلًا"
       },
       "freqRank": 284,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/241-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/241-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/241-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/241-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:house"
     },
     {
       "index": 242,
@@ -6637,19 +4927,12 @@
         "ar": "إن الكلب أبيض."
       },
       "freqRank": 285,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/242-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/242-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/242-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/242-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:dog"
     },
     {
       "index": 243,
@@ -6665,19 +4948,12 @@
         "ar": "إسمي توم."
       },
       "freqRank": 286,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/243-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/243-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/243-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/243-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:identification-card"
     },
     {
       "index": 244,
@@ -6693,19 +4969,12 @@
         "ar": "توم صديقي."
       },
       "freqRank": 287,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/244-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/244-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/244-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/244-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 245,
@@ -6721,20 +4990,12 @@
         "ar": "أخي مدرس."
       },
       "freqRank": 288,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/245-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/245-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/245-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/245-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:school"
     },
     {
       "index": 246,
@@ -6750,19 +5011,12 @@
         "ar": "لا أعرف كم الساعة"
       },
       "freqRank": 289,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/246-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/246-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/246-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/246-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:one-o-clock"
     },
     {
       "index": 247,
@@ -6778,20 +5032,12 @@
         "ar": "أمي لا يمكنها المجيء."
       },
       "freqRank": 290,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/247-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/247-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/247-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/247-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 248,
@@ -6807,19 +5053,12 @@
         "ar": "إنه ليس منّا."
       },
       "freqRank": 291,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/248-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/248-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/248-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/248-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 249,
@@ -6835,19 +5074,12 @@
         "ar": "عن ماذا يتحدث الكتاب؟"
       },
       "freqRank": 293,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/249-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/249-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/249-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/249-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:open-book"
     },
     {
       "index": 250,
@@ -6863,19 +5095,12 @@
         "ar": "لا أستطيع أن أُصدق هذا!"
       },
       "freqRank": 292,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/250-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/250-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/250-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/250-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:astonished-face"
     },
     {
       "index": 251,
@@ -6891,19 +5116,12 @@
         "ar": "عليّ أن أنام."
       },
       "freqRank": 294,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/251-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/251-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/251-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/251-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 252,
@@ -6919,19 +5137,12 @@
         "ar": "توم هو صديق لي."
       },
       "freqRank": 295,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/252-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/252-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/252-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/252-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 253,
@@ -6947,19 +5158,12 @@
         "ar": "أعطاني عمي سيارته."
       },
       "freqRank": 296,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/253-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/253-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/253-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/253-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 254,
@@ -6975,20 +5179,12 @@
         "ar": "الكلب أفضل صديق للإنسان."
       },
       "freqRank": 298,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/254-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/254-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/254-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/254-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:dog"
     },
     {
       "index": 255,
@@ -7004,19 +5200,12 @@
         "ar": "يعيش عمي قرب المدرسة."
       },
       "freqRank": 297,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/255-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/255-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/255-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/255-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:school"
     },
     {
       "index": 256,
@@ -7032,19 +5221,12 @@
         "ar": "البعيد عن العين بعيد عن القلب."
       },
       "freqRank": 299,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/256-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/256-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/256-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/256-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:see-no-evil-monkey"
     },
     {
       "index": 257,
@@ -7060,19 +5242,12 @@
         "ar": "أي مكان في العالم هو أجمل الأماكن؟"
       },
       "freqRank": 300,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
-        {
-          "key": "echo/packs/es_absoluteBeginner/257-ef_dora.m4a",
-          "voice": "ef_dora"
-        },
-        {
-          "key": "echo/packs/es_absoluteBeginner/257-em_alex.m4a",
-          "voice": "em_alex"
-        }
-      ]
+        { "key": "echo/packs/es_absoluteBeginner/257-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_absoluteBeginner/257-em_alex.m4a", "voice": "em_alex" }
+      ],
+      "image": "cue:world-map"
     }
   ]
 }
