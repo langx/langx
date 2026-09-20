@@ -1,5 +1,9 @@
-# A pushed version tag becomes a GitHub Release, with the notes written from
-# the pull requests merged since the previous tag.
+# A pushed version tag becomes a GitHub Release, with the notes written by
+# `scripts/release-notes.mjs`: the store's own "What's new" for that version on
+# top, then the pull requests merged since the previous tag, grouped by what
+# they touched. GitHub's `--generate-notes` wrote one flat list instead, which
+# at v2.6 was forty-six sentences about pull requests and none about the
+# release.
 #
 # The tag is the trigger and `pnpm release` is what makes one: it bumps the
 # version, commits and tags, and the person pushes. It builds nothing —
@@ -24,7 +28,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      # The notes are written from the commits and tags between this release
+      # and the one before it, so a shallow clone has nothing to read.
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: The tag must be the version in package.json
         run: |
@@ -37,4 +45,8 @@ jobs:
       - name: Create the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --generate-notes
+        run: |
+          node scripts/release-notes.mjs "${GITHUB_REF_NAME}" > "${RUNNER_TEMP}/notes.md"
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "${GITHUB_REF_NAME}" \
+            --notes-file "${RUNNER_TEMP}/notes.md"
