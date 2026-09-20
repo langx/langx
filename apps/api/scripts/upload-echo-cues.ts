@@ -24,7 +24,7 @@
  * The alternative — parse every pack, collect the cues, upload the
  * intersection — makes a picture's presence in the bucket depend on which
  * packs happened to be reviewed on the day somebody ran this. A cue added to
- * `cues.json` on Monday and seeded on Friday would be a broken image for four
+ * `cues.<lang>.json` on Monday and seeded on Friday would be a broken image for four
  * days.
  *
  * Usage:

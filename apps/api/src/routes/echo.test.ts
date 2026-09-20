@@ -1677,7 +1677,9 @@ describe('echo', () => {
         await seedPack('en', level)
       }
       await seedPack('fr', 'beginner')
+      await seedPack('fr', 'absoluteBeginner')
       await seedPack('it', 'beginner')
+      await seedPack('it', 'intermediate')
       // Ten items on one of them, so the preview has something to show.
       await handle.db.collection(COLLECTIONS.echoPackItems).insertMany(
         Array.from({ length: 10 }, (_, index) => ({
@@ -1787,15 +1789,21 @@ describe('echo', () => {
         nativeLanguages: [{ code: 'es' }],
         learning: [{ code: 'it', level: 'beginner', priority: 1 }],
       })
-      expect(await packIds(user)).toEqual(['it:beginner'])
+      expect(await packIds(user)).toEqual(['it:beginner', 'it:intermediate'])
     })
 
     /*
      * Written straight to the profile rather than through onboarding, because
      * a second learning language is a paid benefit and the plan gate is not
      * what is under test here — the order is.
+     *
+     * Two languages with several levels each is the ordinary case now that
+     * five languages have packs, and the assertion is that the levels stay
+     * with their language: the screen draws a heading per language, so a list
+     * that sorted every `absoluteBeginner` to the front would put two rows
+     * under the wrong one.
      */
-    it('puts the language onboarding was asked for first', async () => {
+    it('keeps the levels of a language together, first language first', async () => {
       const user = await newUser('packs-priority@example.com')
       await handle.db.collection(COLLECTIONS.profiles).updateOne(
         { _id: user.userId as never },
@@ -1808,7 +1816,12 @@ describe('echo', () => {
           },
         },
       )
-      expect(await packIds(user)).toEqual(['it:beginner', 'fr:beginner'])
+      expect(await packIds(user)).toEqual([
+        'it:beginner',
+        'it:intermediate',
+        'fr:absoluteBeginner',
+        'fr:beginner',
+      ])
     })
   })
 

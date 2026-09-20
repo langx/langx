@@ -6,11 +6,22 @@ thing, plus the reasoning about what was left out.
 
 ## In use
 
-The three English packs — `en/absoluteBeginner.json` (271 items),
-`en/beginner.json` (275) and `en/intermediate.json` (263).
-`contentVersion: 3`, `"reviewed": true`, so the seed script will write them.
+**Eighteen packs, six languages, 4,910 items**, all `"reviewed": true`, so the
+seed script will write them:
 
-### What that review was, exactly
+| Language | absoluteBeginner | beginner | intermediate |
+| -------- | ---------------- | -------- | ------------ |
+| English  | 271              | 275      | 263          |
+| Spanish  | 258              | 281      | 280          |
+| German   | 267              | 283      | 282          |
+| French   | 272              | 281      | 281          |
+| Russian  | 252              | 268      | 278          |
+| Italian  | 260              | 279      | 279          |
+
+The flag does not mean the same thing for English as for the other five. The
+two "what that review was" sections say what each one actually was.
+
+### What the English review was, exactly
 
 The flag means somebody read the file, and it is load-bearing enough that a
 later reader should not believe more than was done.
@@ -58,16 +69,65 @@ the card falls back to English.
 
 ## Chosen, and why
 
-| Source                                                                                                        | Gives                                                                    | Licence                                                        | Use                                                               |
-| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------------------------- |
-| [CEFR-J Vocabulary Profile 1.5](https://github.com/openlanguageprofiles/olp-en-cefrj) (Tono Laboratory, TUFS) | English: 7,798 headwords with a CEFR level and a part of speech          | Free for research **and commercial** use, provided it is cited | Which English words belong to which pack                          |
-| [Octanove Vocabulary Profile C1/C2 1.0](https://github.com/openlanguageprofiles/olp-en-cefrj) (Octanove Labs) | English: 2,136 headwords at C1 and C2                                    | CC BY-SA 4.0                                                   | The ceiling CEFR-J stops below, so `fluent` has words of its own  |
-| [NGSL 1.2](https://www.newgeneralservicelist.com/) (Browne, Culligan, Phillips)                               | English: 2,801 core words with an SFI frequency rank                     | CC BY-SA 4.0                                                   | The order the words go in, and `freqRank`                         |
-| [Lexique 3](http://www.lexique.org/)                                                                          | French: 142k words with frequency, part of speech, phonetics             | CC BY-SA 4.0                                                   | The French word list and its ordering                             |
-| [Wiktionary](https://en.wiktionary.org/), via [kaikki.org](https://kaikki.org/) (wiktextract)                 | Senses with definitions and examples, per-sense translations, recordings | CC BY-SA 4.0                                                   | Glosses for a phrasebook entry, and its example                   |
-| [Tatoeba](https://tatoeba.org/)                                                                               | Short sentences with human translations into the eight locales           | CC BY 2.0 FR                                                   | Sentence patterns, and their glosses                              |
-| [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (hexgrad)                                             | A synthesised reading of any line, in a choice of voices                 | Apache-2.0                                                     | The second and third takes on a card, where a person's is missing |
-| [Wiktionary `Category:English phrasebook`](https://en.wiktionary.org/wiki/Category:English_phrasebook)        | 460 curated everyday expressions                                         | CC BY-SA 4.0                                                   | The set expressions in a pack                                     |
+| Source                                                                                                        | Gives                                                                                                 | Licence                                                        | Use                                                               |
+| ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [CEFR-J Vocabulary Profile 1.5](https://github.com/openlanguageprofiles/olp-en-cefrj) (Tono Laboratory, TUFS) | English: 7,798 headwords with a CEFR level and a part of speech                                       | Free for research **and commercial** use, provided it is cited | Which English words belong to which pack                          |
+| [Octanove Vocabulary Profile C1/C2 1.0](https://github.com/openlanguageprofiles/olp-en-cefrj) (Octanove Labs) | English: 2,136 headwords at C1 and C2                                                                 | CC BY-SA 4.0                                                   | The ceiling CEFR-J stops below, so `fluent` has words of its own  |
+| [NGSL 1.2](https://www.newgeneralservicelist.com/) (Browne, Culligan, Phillips)                               | English: 2,801 core words with an SFI frequency rank                                                  | CC BY-SA 4.0                                                   | The order the words go in, and `freqRank`                         |
+| [FrequencyWords](https://github.com/hermitdave/FrequencyWords) (hermitdave, OpenSubtitles 2018)               | 50k word forms by frequency, per language                                                             | CC BY-SA 4.0 for the content (MIT for the code)                | Levels and ordering for every language but English                |
+| [Lexique 3](http://www.lexique.org/)                                                                          | French: 142k words with frequency, part of speech, phonetics                                          | CC BY-SA 4.0                                                   | A cross-check on the French levels; not a source of any pack      |
+| [Wiktionary](https://en.wiktionary.org/), via [kaikki.org](https://kaikki.org/) (wiktextract)                 | Senses with definitions and examples, per-sense translations, recordings                              | CC BY-SA 4.0                                                   | Glosses for a phrasebook entry, and its example                   |
+| [Tatoeba](https://tatoeba.org/)                                                                               | Short sentences with human translations into the eight locales                                        | CC BY 2.0 FR                                                   | Sentence patterns, and their glosses                              |
+| [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (hexgrad)                                             | A synthesised reading of any line, in a choice of voices                                              | Apache-2.0                                                     | The second and third takes on a card, where a person's is missing |
+| [Wiktionary `Category:<Language> phrasebook`](https://en.wiktionary.org/wiki/Category:English_phrasebook)     | Curated everyday expressions: English 460, Russian 170, German 104, French 93, Spanish 79, Italian 57 | CC BY-SA 4.0                                                   | The set expressions in a pack                                     |
+
+### Which Wiktionary a language is read from
+
+kaikki.org publishes one extraction per Wiktionary edition, and which one a
+pack uses is not a preference. **A translation table lives only on an
+English-language entry of en.wiktionary.** `kaikki.org/dictionary/<Language>`
+— that wiki seen by the language of the word — therefore answers with
+translations for English and with nothing at all for anything else: `buenos
+días`, `guten Tag` and `bonjour` all come back with an empty `translations`.
+
+So English is read from `kaikki.org/dictionary/English` and every other
+language from its own wiki — `eswiktionary/Español`, `frwiktionary/Français`,
+and so on — where its own entries are the ones carrying tables. Those editions
+link a translation to a sense differently, and `build-pack.mjs` reads all
+three shapes: English writes the sense as text, Spanish and French carry a
+`sense_index` into `senses[]`, and Italian carries nothing, which is
+attributable only where the entry has a single sense.
+
+### Eight locales in English, English plus what exists elsewhere
+
+The rule for a Tatoeba sentence was a human translation in all eight locales
+or nothing. That rule is kept for English and could not be kept anywhere else,
+and the number is the reason. Counting direct links in Tatoeba's own export:
+
+| Pack language | Links into Arabic | Into Turkish |
+| ------------- | ----------------- | ------------ |
+| English       | 16,322            | plenty       |
+| Russian       | 6,560             | 22,604       |
+| Spanish       | 3,393             | 38,317       |
+| French        | 3,104             | 12,765       |
+| German        | 2,971             | 22,142       |
+| Italian       | 735               | 17,186       |
+| Portuguese    | 348               | 4,795        |
+
+Requiring all eight outside English does not make a stricter pack; it makes no
+pack. What replaced it is a floor and a preference: **English is required** —
+it is what `glossFor` falls back to, and an item without it shows its own
+front on both sides — and the picker then prefers the best-covered sentences
+over the merely eligible ones, so the thin columns fill as far as the data
+goes. Taking 300 of 29,000 Spanish candidates that way lands on 6.1 of 7
+locales each. Portuguese is not in this wave on the strength of that table
+alone.
+
+The cost is visible and is meant to be: Arabic reaches 9% of the Italian
+items and 36% of the Russian ones, where across the English packs it reaches
+87%. A
+reader whose locale is missing gets the English gloss, which is a worse card
+than a Spanish reader gets, and better than no pack at all.
 
 ### The recordings
 
@@ -132,6 +192,14 @@ it is read:
 | Coqui XTTS v2            | CPML — non-commercial. The most-recommended answer online, and the wrong one.                                                                                                                                                        |
 | espeak-ng                | GPL, and a quality nobody would learn a language from.                                                                                                                                                                               |
 
+**Two of the five new languages are silent.** Kokoro reads Spanish, French
+and Italian, so their packs carry synthesised takes like the English ones do.
+It does not read German or Russian; Piper does, in the service, and Piper's
+wheel cannot run on the machine these are generated on — it compiles its build
+machine's espeak data path into the extension. Those packs therefore ship with
+no readings of their own, and the card's "Read it aloud" answers for them
+through the service instead. See `load_piper` in `apps/tts/server.py`.
+
 **A person's recording is still better and still comes first.** The card draws
 it above the synthesised ones and says "Spoken by {name}"; a synthesised take
 carries no name, because there is nobody to credit and a made-up one would make
@@ -186,7 +254,7 @@ called, so that `💸` resolves to `money-with-wings` and names a file. A naming
 convention is not artwork, but it came from somewhere and this is where.
 
 **The pictures themselves are not committed.** They are rendered to PNG and
-uploaded to the bucket; the repository keeps the decision (`cues.json`), the
+uploaded to the bucket; the repository keeps the decision (`cues.<lang>.json`), the
 naming (`concepts.json`), the geometry (`drawings.mjs`) and the manifest
 (`credits.json`). PNG rather than the vector they are drawn as because
 expo-image hands an SVG to each platform's own decoder, and iOS's mishandles
@@ -197,9 +265,10 @@ belonged only on "a noun you can point at", with abstract items left plain. No
 item in any of these packs is a noun: they are eight hundred phrases, so the
 rule could never fire, and the field it described sat empty from the day it was
 written. What is there now is a cue for the _meaning_ — 💸 over "I'm broke." —
-which is a thing a phrase has. `tools/echo-content/images/cues.json` is the
-record of which meaning was chosen for which phrase, one line each, and is the
-half of this worth reading.
+which is a thing a phrase has. `tools/echo-content/images/cues.<lang>.json` is
+the record of which meaning was chosen for which phrase — one file per pack
+language, because the key is the phrase, and the slugs behind them are shared —
+one line each, and is the half of this worth reading.
 
 **What a cue is not.** It is not a translation and it is not a mnemonic we can
 defend in eight languages; it is a hook for the eye. Where no honest picture
@@ -225,50 +294,89 @@ A draft is a pack file with `"reviewed": false`. **The seed script refuses to
 write one**, and that refusal is the whole quality gate. The three English
 packs have passed it; see "In use" above for what passing meant.
 
-The reason it exists is worth stating plainly, because the obvious shortcut is
-very tempting and it does not work. Wiktionary's translation tables are
-sense-carrying, which is exactly what a gloss needs — but picking a sense
-mechanically gets it wrong often enough to be useless. Measured on eight
-beginner words, the first version of `build-pack.mjs` — which pulled raw
-wikitext and took the first `{{trans-top|…}}` block — gave:
+**There are no drafts today.** The fifteen drafted on 20 September were read
+the same night; see "What the review of the fifteen was" below.
+`tools/echo-content/lint-glosses.mjs` had 92 things to say about them before
+that reading — 64 Russian copula dashes written as a hyphen, 13 Arabic
+sentences spaced before their punctuation, 3 Persian letters inside Arabic
+words — and all 92 were repaired. It cannot see a wrong sense or a
+translation of a different sentence, which is what the reading was for.
 
-| Word     | Sense taken                           | Wanted      |
-| -------- | ------------------------------------- | ----------- |
-| bread    | baked dough made from cereals         | correct     |
-| tomorrow | on the day after the present day      | correct     |
-| bank     | institution                           | correct     |
-| train    | the elongated back portion of a dress | the vehicle |
-| dog      | pursue with the intent to catch       | the animal  |
-| water    | to pour water into the soil           | the liquid  |
+Almost all of every new pack is Tatoeba. The phrasebook categories outside
+English are small to begin with, and most of their entries have no translation
+table on their own wiki: 36 of the 39 Spanish phrasebook entries that reached
+`absoluteBeginner` resolved to nothing. Where English is about half set
+expressions, these are around one in twenty.
 
-Three wrong out of six that resolved at all, and scoping the search to the
-word's part of speech did not fix it — it turned `water`, `light` and `right`
-into no result instead of a wrong one, because the tables are not always inside
-the section they belong to.
+### What the review of the fifteen was, exactly
 
-**The second version gets all six right, and the gate stays anyway.** It reads
-kaikki.org, where each translation arrives tagged with its sense, and drafts the
-sense that the most languages have a word for — a usage signal, where
-Wiktionary's own order is by etymology and age. That is what puts the vehicle
-ahead of the dress. On the same six words:
+**Three columns of seven in every file — the front, English and Turkish —
+read line by line.** 4,208 drafted items across Spanish, German, French,
+Russian and Italian, of which 3,901 remain. The other four columns in each
+file were **linted and not read**, which is the same footing English's
+German, Spanish, French and Portuguese columns are on. If a wrong gloss
+survives, that is where to look first.
 
-| Word     | Sense drafted                    | Languages | Right? |
-| -------- | -------------------------------- | --------- | ------ |
-| bread    | baked dough made from cereals    | 406       | yes    |
-| tomorrow | on the day after the present day | 334       | yes    |
-| bank     | institution                      | 187       | yes    |
-| train    | line of connected cars           | 258       | yes    |
-| dog      | animal                           | 953       | yes    |
-| water    | inorganic compound H₂O           | 4,031     | yes    |
+Why those three. The front is the card. **English is the floor** — required
+on every item, what `glossFor` falls back to for every reader whose own
+locale is missing, and, it turns out, the loosest column in the corpus,
+because English has the most Tatoeba contributors and the most idiom. Turkish
+is the column a reader of this repository can check.
 
-That machinery now runs over the phrasebook half of a pack only. A Tatoeba
-sentence has no sense to choose: it arrives with its translation attached, and
-what a reviewer checks there is whether the two say the same thing.
+**307 items dropped**, in five kinds:
 
-Six out of six is not a guarantee, it is six. The senses a frequency list is
-made of are the easy ones; `be` drafts as _to occupy a place_ rather than the
-copula, and that is a judgement a count cannot make. So the pipeline still
-drafts and a person still decides — it writes the definition, the other
-candidate senses and the number of languages behind each one beside every
-gloss, precisely so that reading the file is a possible thing to do rather than
-a matter of trusting it.
+- **Slogans and positions** — "¡América ha vuelto!", "Je suis Charlie.", "Le
+  vite nere contano.", "Tutto il mondo odia la polizia.", "Il partito ha
+  sempre ragione.", "Eigentum ist Diebstahl.", "Черные жизни важны." Four
+  languages produced a "War is bad" and all four are gone.
+- **Quotations** — Dante, Mozart, Leonardo, Proudhon, Genesis in three
+  languages, "Houston, tenemos un problema.", "Sono un genio molto stabile."
+- **Tatoeba nonsense** — "Es carne de mono.", "Dio è un elefante." in three
+  languages, "Meine Katze bellt.", "La torta è una bugia.", and "Él vive en
+  una manzana.", whose English gloss reads "He lives inside an apple"
+  (_manzana_ is a city block).
+- **Violence and obscenity** — "¿Quién la mató?", "Tom veut tuer Mary.", "Ho
+  una granata.", two anatomical Italian ones, and "Voglio farmi saltare il
+  cervello.", which is self-harm and exactly where the English pass drew its
+  line.
+- **Items that contradict themselves** — three whose glosses answer a
+  different question than the front asks, and three with no English gloss at
+  all and nothing worth keeping without one.
+
+The death and illness sentences that are ordinary speech stayed, on the
+precedent of the English pass: a learner who cannot say them is worse off
+than one who can.
+
+**About two hundred glosses corrected**, each naming its locale in
+`review.edited`. The repeats across languages are the interesting part:
+
+- `Tutti lo sanno.`, `Tout le monde le sait.` and `Jeder weiß das.` all
+  answered "Anybody knows it." in English and "nobody knows" in Turkish. One
+  English pair appears to have seeded three languages.
+- **Which word for God.** German, French, Italian and Russian all mixed
+  `Allah` and `Tanrı` in Turkish for the one word their front uses, sometimes
+  two lines apart. They say `Tanrı` throughout now, except where the front
+  itself says Allah.
+- Passive for active in three languages (`Él la besó.` → "She was kissed by
+  him.").
+- Plain mistranslations: `en yakın banka` had become "en yakın bank", which is
+  a bench; `Él tiene mucho dinero.` said he _spends_ a lot; `Je ne fais que
+mon travail.` said the opposite of itself.
+
+**Twenty-one fronts corrected**, each keeping the original in
+`review.frontWas`. Fourteen were Russian sentences with a hyphen where the
+language writes an em dash — the linter found sixty-four of those in the
+glosses and nothing was looking at the fronts. The rest: two pre-1996 German
+spellings, two Spanish accents, a French colour agreeing with its noun, and a
+missing ё.
+
+### What is still owed on the fifteen
+
+**No synthesised readings and no cue pictures.** Kokoro reads Spanish, French
+and Italian and its model was not on the machine this ran on; German and
+Russian cannot be read here at all, for the reason under "The synthesised
+readings". So every card in these packs is silent and blank above the
+sentence, and the card's own "Read it aloud" answers for all five through the
+voice service. No `cues.<lang>.json` exists yet.
+
+**Four columns per file unread**, as above.

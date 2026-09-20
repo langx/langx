@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { echoPackFileSchema, packVoiceKey } from '@langx/shared'
+import { echoPackFileSchema, echoSynthVoicesFor, packVoiceKey } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 
 /**
@@ -89,14 +89,59 @@ describe('the packs in content/echo', () => {
     })
 
     /*
-     * Two takes or none. One synthetic reading presents itself as *the*
-     * pronunciation; the pair is what makes them read as alternatives, and it
-     * is also the cheapest way to catch a generation run that stopped halfway.
+     * Every take the language has, or none.
+     *
+     * One synthetic reading presents itself as *the* pronunciation where a
+     * second exists, and a short count is also the cheapest way to catch a
+     * generation run that stopped halfway. But the number is the language's,
+     * not two: Kokoro has one French voice, and the Piper languages a pack
+     * outside its six needs have one each — so "more than one" would have
+     * failed every pack that is not English, Spanish or Italian.
      */
-    it(`${name} gives every read item more than one voice`, () => {
+    it(`${name} gives every read item each voice its language has`, () => {
       const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
-      const lonely = pack.items.filter((item) => item.voices && item.voices.length < 2)
-      expect(lonely.map((item) => item.text)).toEqual([])
+      const expected = echoSynthVoicesFor(pack.lang).length
+      const short = pack.items.filter((item) => item.voices && item.voices.length !== expected)
+      expect(short.map((item) => `${item.text} (${item.voices?.length} of ${expected})`)).toEqual(
+        [],
+      )
+    })
+
+    /*
+     * The id is the pack's identity — it becomes `_id` and every card's
+     * `sourceKey` — and it is written by hand in the file rather than derived
+     * from where the file sits. A pack in `content/echo/es/` calling itself
+     * `en:beginner` would overwrite the English one at the next seed.
+     */
+    it(`${name} agrees with the path it is filed under`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      const [dir, file] = name.split('/')
+      expect(pack.id).toBe(`${pack.lang}:${pack.level}`)
+      expect(pack.lang).toBe(dir)
+      expect(file).toBe(`${pack.level}.json`)
+    })
+
+    /*
+     * A reviewed pack that is not in English carries an English gloss on
+     * every item.
+     *
+     * It is the floor under `glossFor`'s fallback chain: a reader whose own
+     * locale a Tatoeba contributor never wrote lands on English, and an item
+     * with nothing there shows its own front on both sides. English packs are
+     * exempt — there the `en` column is a definition, which most of a
+     * phrasebook has no use for.
+     *
+     * Reviewed only, because a draft is allowed to be incomplete and this is
+     * a promise about what ships. `build-pack.mjs` names the bare items at
+     * the end of a run so the reviewer meets them there; the seed refuses an
+     * unreviewed file anyway, so nothing without the floor can reach a card.
+     */
+    it(`${name} glosses every item in English, unless it is English`, () => {
+      const raw = JSON.parse(readFileSync(path, 'utf8')) as { reviewed?: boolean }
+      const pack = echoPackFileSchema.parse(raw)
+      if (pack.lang === 'en' || raw.reviewed !== true) return
+      const bare = pack.items.filter((item) => !item.gloss.en)
+      expect(bare.map((item) => item.text)).toEqual([])
     })
 
     /*
@@ -117,6 +162,36 @@ describe('the packs in content/echo', () => {
         .filter((item) => item.image && !built().has(item.image.slice('cue:'.length)))
         .map((item) => `${item.text} → ${item.image}`)
       expect(dangling).toEqual([])
+    })
+  }
+
+  /*
+   * No two neighbours open with the same word.
+   *
+   * A pack is handed out ten at a time in `index` order, so a run of
+   * "Are you …" is a whole session of one question asked several ways. The
+   * first English drafts had thirty in a row and PR #1375 broke them by
+   * hand; `tools/echo-content/order.mjs` does it now, and this is what says
+   * it still happened — a pack edited by hand afterwards is exactly where it
+   * would stop being true.
+   *
+   * `opening` is two lines rather than an import: that file is plain `.mjs`
+   * with no types, and a test that has to disable three rules to read one
+   * regular expression is worse than a copy of the regular expression.
+   */
+  const opening = (phrase: string) => phrase.toLowerCase().match(/[\p{L}']+/u)?.[0] ?? ''
+
+  for (const path of files) {
+    const name = path.slice(CONTENT.length + 1)
+    it(`${name} opens no two neighbours with the same word`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      const repeated = pack.items
+        .filter(
+          (item, index) =>
+            index > 0 && opening(item.text) === opening(pack.items[index - 1]?.text ?? ''),
+        )
+        .map((item) => `${item.index} ${item.text}`)
+      expect(repeated).toEqual([])
     })
   }
 

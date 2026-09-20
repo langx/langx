@@ -113,11 +113,17 @@ export function echoSynthVoicesFor(lang: string): readonly string[] {
  * every other piece of media.
  */
 export const echoPackVoiceSchema = z.object({
-  /** `echo/packs/<packId with : as _>/<index>-<voice>.m4a`, and derivable. */
+  /**
+   * `echo/packs/<packId with : as _>/<index>-<voice>.m4a`, and derivable.
+   *
+   * The voice may carry hyphens: Kokoro names a voice `af_heart`, Piper names
+   * one `de_DE-thorsten-medium`, and the languages Piper answers for are the
+   * ones a pack outside Kokoro's six has to be read by.
+   */
   key: z
     .string()
     .trim()
-    .regex(/^echo\/packs\/[A-Za-z0-9_-]+\/\d+-[A-Za-z0-9_]+\.m4a$/),
+    .regex(/^echo\/packs\/[A-Za-z0-9_-]+\/\d+-[A-Za-z0-9_-]+\.m4a$/),
   voice: z.string().trim().min(1),
 })
 export type EchoPackVoice = z.infer<typeof echoPackVoiceSchema>
@@ -165,8 +171,8 @@ export const echoPackItemSchema = z.object({
    * A slug rather than a file, because the cue is shared: "🤝" is the picture
    * for sixteen different phrases, and sixteen copies of one drawing is
    * sixteen chances for fifteen of them to go stale. `content/echo/images/`
-   * holds one file per slug and `tools/echo-content/images/cues.json` says
-   * which phrase points at which — see that file's header for why the cue is
+   * holds one file per slug and `tools/echo-content/images/cues.<lang>.json`
+   * says which phrase points at which — see that file's header for why the cue is
    * written there as an emoji and never shipped as one.
    *
    * This used to read `openmoji:<hex>` and to be documented as "for a noun you
