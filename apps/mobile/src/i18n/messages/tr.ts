@@ -227,6 +227,8 @@ export const tr: Localized<EnMessages> = {
     statCards: 'Kart',
     allCards: 'Tüm kartlar',
     allCardsSub: 'Sohbetlerinden, gönderilerden ve kendi yazdıklarından',
+    leaderboard: 'Liderlik tablosu',
+    leaderboardSub: 'En çok kart yanıtlayanlar',
     packsSub: 'Öğrendiğin diller için hazır kelimeler',
     packsBlurb:
       'Öğrendiğin diller için hazır kelimeler. Bir avuç al; kendi sakladığın kartlarla aynı programa girsinler.',
@@ -1849,6 +1851,8 @@ export const tr: Localized<EnMessages> = {
     streakPicker: 'Seri sıralaması',
     streakEmptyTitle: 'Henüz seri yok',
     streakEmptyBody: 'Üst üste iki gün uğra, bu tabloya girersin.',
+    echoEmptyTitle: 'Bu dönemde tekrar yok',
+    echoEmptyBody: 'Birkaç kart yanıtla, bu dönemin tablosuna girersin.',
   },
 
   badges: {

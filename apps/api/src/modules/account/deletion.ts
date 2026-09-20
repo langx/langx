@@ -401,6 +401,9 @@ export async function purgeExpiredAccounts(
        */
       db.collection(COLLECTIONS.echoCards).deleteMany({ userId }),
       db.collection(COLLECTIONS.echoReviews).deleteMany({ userId }),
+      // The board's counters go with them: they are derived from those rows
+      // and a row left behind is a deleted account still holding a rank.
+      db.collection(COLLECTIONS.echoAggregates).deleteMany({ userId }),
       db.collection(COLLECTIONS.subscriptions).deleteMany({ userId }),
       // The rows behind the images deleted above. A card's `_id` is a public
       // `/s/<id>` page about a person, so leaving it is leaving a profile

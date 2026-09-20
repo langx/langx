@@ -27,7 +27,7 @@ interface LeaderboardSectionProps<Option extends string> {
   pickerLabel: string
   entries: Row[]
   viewer: { rank: number | null; inPage: boolean } | undefined
-  /** The number on the right of a row — tokens on one board, days on the other. */
+  /** The number on the right of a row — tokens, days, or cards answered. */
   valueOf: (row: Row) => string
   /** The viewer's own number, for the pinned row when they are off the page. */
   viewerValue: string

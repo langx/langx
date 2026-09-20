@@ -218,6 +218,8 @@ export const es: Localized<EnMessages> = {
     statCards: 'Tarjetas',
     allCards: 'Todas las tarjetas',
     allCardsSub: 'De tus chats, de publicaciones y tuyas',
+    leaderboard: 'Clasificación',
+    leaderboardSub: 'Quién ha respondido más tarjetas',
     packsSub: 'Palabras listas para lo que estás aprendiendo',
     packsBlurb:
       'Palabras listas para los idiomas que estás aprendiendo. Toma un puñado y entran en el mismo calendario que tus propias tarjetas.',
@@ -1847,6 +1849,8 @@ export const es: Localized<EnMessages> = {
     streakPicker: 'Clasificación de rachas',
     streakEmptyTitle: 'Aún no hay rachas',
     streakEmptyBody: 'Aparece dos días seguidos y estarás en esta clasificación.',
+    echoEmptyTitle: 'Sin repasos en este periodo',
+    echoEmptyBody: 'Responde algunas tarjetas y estarás en la clasificación de este periodo.',
   },
 
   badges: {

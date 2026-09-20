@@ -264,6 +264,8 @@ export const en = {
     statCards: 'Cards',
     allCards: 'All cards',
     allCardsSub: 'From your chats, from posts, and your own',
+    leaderboard: 'Leaderboard',
+    leaderboardSub: 'Who has answered the most cards',
     packsSub: 'Ready-made words for what you are learning',
     packsBlurb:
       'Ready-made words for the languages you are learning. Take a handful and they join the same schedule as the cards you keep yourself.',
@@ -2009,6 +2011,8 @@ export const en = {
     streakPicker: 'Streak ranking',
     streakEmptyTitle: 'No streaks yet',
     streakEmptyBody: 'Show up on two days in a row and you are on this board.',
+    echoEmptyTitle: 'No reviews this period',
+    echoEmptyBody: 'Answer a few cards and you are on this board for the period.',
   },
 
   badges: {

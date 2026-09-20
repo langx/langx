@@ -443,6 +443,23 @@ Indexes, in `indexes.ts`:
   device as `{ job, periodKey }` on `jobRuns`.
 - unique `{ packId, index }` on `echoPackItems`, so the seed script is
   idempotent by construction.
+- `{ periodType, periodKey, reviews: -1 }` and `{ userId }` on
+  `echoAggregates` — the review board's page, and every counter of one person.
+  The two indexes `tokenAggregates` has, for the same two reads.
+
+**`echoAggregates` is a counter, not a query.** The board ranks how many cards
+somebody answered in a period, and `echoReviews` grows by a row per graded card
+forever — so a `$group` across it on every open is a collection scan on a
+screen anybody can reach. A row is `{ _id: '<userId>:<periodType>:<periodKey>',
+userId, periodType, periodKey, reviews, updatedAt }`, the shape and the
+`periodKeys` of `tokenAggregates` down to the UTC week, so "this week" means
+the same seven days on both boards. `submitReviews` `$inc`s the four periods
+with the rows it actually inserted — a resubmitted batch adds nothing, the same
+rule the ledger applies — and `scripts/backfill-echo-review-counts.ts` rebuilds
+the counters from the rows: once for everything answered before the collection
+existed, and afterwards whenever a crash between the insert and the `$inc` is
+worth correcting. The counter is the side allowed to be wrong, because a card
+that moved matters more than a number on a table.
 
 ## The scheduler
 
@@ -485,14 +502,15 @@ was never the rule — the rule is that nothing which is not a tab may be
 registered there — and it now says five and states the rule instead.
 Icon: Feather `repeat` — the same glyph carries the toast and the bubble mark.
 
-| Route                | Screen                                                                                                                                     |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `(tabs)/echo.tsx`    | The tab root: due count and the one yellow button, then "From your chats" (latest cards, partner face, tap to open the thread), then Packs |
-| `echo/session.tsx`   | The review: card, reveal, four grades, progress; the end-of-queue screen                                                                   |
-| `echo/pack/[id].tsx` | A pack: progress, "Start" / "Continue", and the session's worth of items the button would add — not a page of the whole pack               |
-| `echo/cards.tsx`     | Every card, filter by language and source, edit or remove                                                                                  |
-| `echo/new.tsx`       | A card written by hand: the sentence, what it means, the language                                                                          |
-| `echo/edit.tsx`      | Everything but the source: the two lines, the language, the picture and the recording                                                      |
+| Route                  | Screen                                                                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `(tabs)/echo.tsx`      | The tab root: due count and the one yellow button, then "From your chats" (latest cards, partner face, tap to open the thread), then Packs |
+| `echo/session.tsx`     | The review: card, reveal, four grades, progress; the end-of-queue screen                                                                   |
+| `echo/pack/[id].tsx`   | A pack: progress, "Start" / "Continue", and the session's worth of items the button would add — not a page of the whole pack               |
+| `echo/cards.tsx`       | Every card, filter by language and source, edit or remove                                                                                  |
+| `echo/new.tsx`         | A card written by hand: the sentence, what it means, the language                                                                          |
+| `echo/edit.tsx`        | Everything but the source: the two lines, the language, the picture and the recording                                                      |
+| `echo/leaderboard.tsx` | The review board: who has answered the most cards, all time, plus your own row from wherever you are on it                                 |
 
 **Review asks which language.** A deck drawn across every language at once is
 not a study session — it is a French word, then a Russian one, then French

@@ -219,6 +219,8 @@ export const fr: Localized<EnMessages> = {
     statCards: 'Cartes',
     allCards: 'Toutes les cartes',
     allCardsSub: 'De tes discussions, des publications et de toi',
+    leaderboard: 'Classement',
+    leaderboardSub: 'Qui a répondu au plus de cartes',
     packsSub: 'Des mots tout prêts pour ce que tu apprends',
     packsBlurb:
       'Des mots tout prêts pour les langues que tu apprends. Prends-en une poignée : ils rejoignent le même programme que tes propres cartes.',
@@ -1863,6 +1865,8 @@ export const fr: Localized<EnMessages> = {
     streakPicker: 'Classement des séries',
     streakEmptyTitle: 'Pas encore de séries',
     streakEmptyBody: 'Viens deux jours de suite et tu figureras dans ce classement.',
+    echoEmptyTitle: 'Aucune révision sur cette période',
+    echoEmptyBody: 'Réponds à quelques cartes et tu figureras dans ce classement pour la période.',
   },
 
   badges: {

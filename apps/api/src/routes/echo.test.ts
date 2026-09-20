@@ -12,7 +12,9 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
+import type { EchoLeaderboard } from '@langx/shared'
 import {
+  weekKey,
   ECHO_ARCHIVE_BATCH_MAX,
   ECHO_AUDIO_MAX,
   newCardSrs,
@@ -654,6 +656,124 @@ describe('echo', () => {
           .collection(COLLECTIONS.dailyActivity)
           .countDocuments({ userId: user.userId }),
       ).toBe(0)
+    })
+  })
+
+  /**
+   * The board, which ranks how many cards somebody answered in a period.
+   *
+   * Every assertion here is relative. The board is global and the tests above
+   * have already graded cards on other accounts, so an absolute rank would be
+   * a test that fails the next time somebody adds a review to this file.
+   */
+  describe('the review board', () => {
+    async function cardsFor(userId: string, tag: string, count: number): Promise<string[]> {
+      const now = new Date()
+      const docs = Array.from({ length: count }, (_, index) => ({
+        _id: new ObjectId(),
+        userId,
+        lang: 'fr',
+        front: `board ${tag} ${index}`,
+        back: `meaning ${index}`,
+        source: { kind: 'pack' as const, packId: 'fr:board', itemId: `fr:board#${tag}-${index}` },
+        sourceKey: `pack:fr:board#${tag}-${index}`,
+        srs: newCardSrs(now),
+        createdAt: now,
+      }))
+      await handle.db.collection(COLLECTIONS.echoCards).insertMany(docs)
+      return docs.map((doc) => doc._id.toHexString())
+    }
+
+    function batch(cardIds: string[], tag: string) {
+      return cardIds.map((cardId, index) => ({
+        reviewId: `rv-board-${tag}-${index}`,
+        cardId,
+        grade: 'good' as const,
+        durationMs: 900,
+      }))
+    }
+
+    async function answer(user: SignedUpUser, tag: string, count: number) {
+      const cards = await cardsFor(user.userId, tag, count)
+      const reviews = batch(cards, tag)
+      const response = await app.inject({
+        method: 'POST',
+        url: '/echo/reviews',
+        headers: { cookie: user.cookie },
+        payload: { reviews },
+      })
+      expect(response.statusCode).toBe(200)
+      return reviews
+    }
+
+    async function board(user: SignedUpUser, query = ''): Promise<EchoLeaderboard> {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/echo/leaderboard${query}`,
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode).toBe(200)
+      return response.json()
+    }
+
+    it('ranks the busier reader above the quieter one', async () => {
+      const busy = await newUser('board-busy@example.com')
+      const quiet = await newUser('board-quiet@example.com')
+      await answer(busy, 'busy', 6)
+      await answer(quiet, 'quiet', 2)
+
+      const result = await board(busy)
+      const busyRow = result.entries.find((row) => row.userId === busy.userId)
+      const quietRow = result.entries.find((row) => row.userId === quiet.userId)
+      expect(busyRow?.reviews).toBe(6)
+      expect(quietRow?.reviews).toBe(2)
+      expect(busyRow!.rank).toBeLessThan(quietRow!.rank)
+      // The viewer's own row is the same number, from wherever it is read.
+      expect(result.viewer).toMatchObject({ reviews: 6, inPage: true })
+      expect(busyRow?.isViewer).toBe(true)
+      // The tab that was asked for, and the key it resolved to.
+      expect(result.period).toBe('week')
+      expect(result.periodKey).toBe(weekKey(new Date()))
+    })
+
+    it('counts the same cards into every period', async () => {
+      const user = await newUser('board-periods@example.com')
+      await answer(user, 'periods', 4)
+
+      for (const period of ['week', 'month', 'year', 'all'] as const) {
+        const result = await board(user, `?period=${period}`)
+        expect(result.viewer.reviews).toBe(4)
+      }
+      // A period nobody has reviewed in is empty rather than wrong.
+      const lastYear = await board(user, '?period=year&periodKey=2001')
+      expect(lastYear.entries).toHaveLength(0)
+      expect(lastYear.viewer).toMatchObject({ rank: null, reviews: 0, inPage: false })
+    })
+
+    it('counts the rows a batch wrote, not the ones it was asked to write', async () => {
+      const user = await newUser('board-retry@example.com')
+      const reviews = await answer(user, 'retry', 3)
+
+      // The network dropped and the app retried. Every grade comes back
+      // `duplicate`, and the counter must not move a second time.
+      const again = await app.inject({
+        method: 'POST',
+        url: '/echo/reviews',
+        headers: { cookie: user.cookie },
+        payload: { reviews },
+      })
+      expect(again.statusCode).toBe(200)
+
+      const result = await board(user)
+      expect(result.viewer.reviews).toBe(3)
+      expect(result.entries.find((row) => row.userId === user.userId)?.reviews).toBe(3)
+    })
+
+    it('has nothing to say about somebody who has answered nothing this period', async () => {
+      const fresh = await newUser('board-fresh@example.com')
+      const result = await board(fresh)
+      expect(result.viewer).toMatchObject({ rank: null, reviews: 0, inPage: false })
+      expect(result.entries.some((row) => row.userId === fresh.userId)).toBe(false)
     })
   })
 

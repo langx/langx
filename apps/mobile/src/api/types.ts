@@ -38,6 +38,8 @@ export type {
   StreakLeaderboard,
   StreakLeaderboardEntry,
   StreakMetric,
+  EchoLeaderboard,
+  EchoLeaderboardEntry,
   PeriodType,
   PlanTier,
   SuspensionStatus,
