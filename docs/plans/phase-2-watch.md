@@ -255,8 +255,27 @@ lowering their wrist.
 
 ## What is not here
 
-- **A Wear OS complication or tile**, which is the Android counterpart of the
-  one below and is not started either.
+- ~~**A Wear OS tile**~~ — built 20 September. `UnreadTileService` draws one
+  number and one word: how many are waiting, and a tap that opens the app. It
+  reads the Data Layer itself rather than asking the app, because a tile is
+  rendered in its own process on a watch whose app may never have been
+  opened, and it decodes with the same `WearPayload` the app uses.
+  `PayloadTileRefresher` asks for a redraw when a payload lands, so the count
+  is not as stale as the fifteen-minute floor.
+
+  **`onTileRequest` is `@MainThread`.** The first version awaited the Data
+  Layer read inside it; `Tasks.await` throws on the main thread, the throw was
+  swallowed by a `catch (Throwable)`, and the tile showed "open the app on
+  your phone" for ever while the app two swipes away listed the threads. The
+  read goes through the task's callback and completes a
+  `CallbackToFutureAdapter` future instead.
+
+  **A tile render is cached, and the cache outlives a reinstall.** After
+  fixing the above, the tile kept drawing the old layout — including a
+  Portuguese string from a locale override that had already been set back to
+  English. `adb shell am broadcast … remove-tile` then `add-tile` is what
+  forces a fresh one; without it a change looks like it did nothing.
+
 - **The complication.** A `watch-widget` target reading a digest the watch app
   stores. It needs its own App Group between the two watch targets, a `streak`
   field the payload does not carry, and the settings screen the plan asks for

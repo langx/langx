@@ -97,4 +97,20 @@ dependencies {
   implementation 'androidx.wear:wear-input:1.1.0'
   // The Data Layer — the Android half of what `WCSession` does on Apple.
   implementation 'com.google.android.gms:play-services-wearable:19.0.0'
+  /*
+   * The tile — Wear's answer to a complication. `protolayout` rather than
+   * Compose: a tile is rendered by the system in its own process from a
+   * serialized layout, so none of the Compose above can be used in it.
+   */
+  implementation 'androidx.wear.tiles:tiles:1.4.1'
+  implementation 'androidx.wear.protolayout:protolayout:1.2.1'
+  implementation 'androidx.wear.protolayout:protolayout-expression:1.2.1'
+  // `Futures.immediateFuture`, which `onTileRequest` must return.
+  implementation 'com.google.guava:guava:33.3.1-android'
+  /*
+   * `CallbackToFutureAdapter`. `onTileRequest` is `@MainThread`, so the Data
+   * Layer read cannot be awaited inside it — the future is completed from the
+   * task's callback instead.
+   */
+  implementation 'androidx.concurrent:concurrent-futures:1.2.0'
 }
