@@ -177,16 +177,38 @@ A **debug** build on a Wear OS 5 emulator (`android-34`, arm64, 384×384).
 | The config plugin survives `prebuild --clean`     | ✅ `android/wear` and `include ':wear'` regenerated |
 | It installs and runs on a watch                   | ✅ under the phone app's own application id         |
 | Words come from the generated resources           | ✅ the empty state, in the phone-neutral wording    |
-| **The payload reaches it**                        | ⬜ **not exercised**                                |
-| A reply from the wrist                            | ⬜ **not exercised**                                |
+| **The payload reaches it**                        | ✅ the unread list drew on the wrist                |
+| **A reply from the wrist**                        | ✅ `POST …/messages` → 200, and it came back        |
 
-The last two rows need a paired _phone_ emulator running the signed-in app,
-which this run did not have — the Data Layer connects two devices, and there
-was only one. Everything above the line is observed; everything below it is
-inference, and the app drawing "open LangX on your phone" is exactly what an
-unpaired watch should draw, so the run proves nothing about the pairing either
-way. That is the first thing to check next, and it is the same gap the Apple
-side has in its own table.
+All of it is observed, on a Wear OS 5 emulator paired to a Pixel 9 through
+Android Studio's assistant with the phone signed in against the local API.
+
+Getting there cost three real bugs, every one of them invisible without the
+pairing:
+
+- **The module was hand-written instead of using `expo-module-gradle-plugin`.**
+  It compiled, installed, and crashed the app on launch with
+  `UnsupportedOperationException: This function has a reified type parameter`.
+  Expo's module DSL is built from reified inline functions, R8 is on in
+  release, and the plugin is what carries the rules that keep them inlinable.
+  The plugin also requires `defaultConfig.versionName`, in a message that
+  names neither this module nor itself.
+- **The Wear module signed with the wrong key.** `signingConfigs.debug` inside
+  a module falls back to `~/.android/debug.keystore` while the app uses the
+  generated `app/debug.keystore`, and the Data Layer pairs by application id
+  _and_ certificate. The two APKs installed, ran, and never heard each other:
+  the watch showed "open LangX on your phone" forever with nothing in any log
+  to say why. This is the one to remember.
+- **`registerForActivityResult` needs Fragment 1.3.0+**, which the Wear Compose
+  artifacts do not bring. Lint fails the release build over it and the debug
+  build does not, which is how it stayed hidden.
+
+Two notes belong to the harness rather than the code. A release APK blocks
+cleartext HTTP, so `http://localhost:4000` fails silently at the network layer
+— the generated `android/` manifest was edited for the test and nothing in the
+shipping config was touched. And Studio's pairing installs the Wear OS
+companion from Play, which wants a Google account: that was the owner's to
+give, not this session's.
 
 ## What is not here
 

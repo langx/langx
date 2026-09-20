@@ -1,6 +1,7 @@
 package expo.modules.wearlink
 
 import android.content.Context
+import android.util.Log
 import androidx.core.content.edit
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -45,11 +46,22 @@ class WearLinkModule : Module() {
      * no Wear support at all.
      */
     Function("isSupported") {
-      com.google.android.gms.common.GoogleApiAvailability.getInstance()
-          .isGooglePlayServicesAvailable(context) == com.google.android.gms.common.ConnectionResult.SUCCESS
+      val status =
+          com.google.android.gms.common.GoogleApiAvailability.getInstance()
+              .isGooglePlayServicesAvailable(context)
+      val supported = status == com.google.android.gms.common.ConnectionResult.SUCCESS
+      /*
+       Logged because the failure mode is silence: a false here makes every
+       call below a no-op and the watch simply stays empty, with nothing in
+       any log to say why. `status` is a `ConnectionResult` code — 0 is
+       success, 1 means Play services are missing, 2 that they need updating.
+      */
+      Log.i(TAG, "isSupported=$supported (play services status $status)")
+      supported
     }
 
     Function("send") { json: String ->
+      Log.i(TAG, "send ${json.length} bytes")
       val request = PutDataMapRequest.create(PATH_PAYLOAD)
       request.dataMap.putString("payload", json)
       /*
@@ -91,6 +103,8 @@ class WearLinkModule : Module() {
   }
 
   companion object {
+    private const val TAG = "WearLink"
+
     /** Must match the paths in `wear/PhoneLink.kt`. */
     const val PATH_PAYLOAD = "/langx/payload"
   }
