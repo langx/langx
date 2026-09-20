@@ -113,49 +113,49 @@
         "en": {
           "stringUnit": {
             "state": "new",
-            "value": "Open LangX on your iPhone"
+            "value": "Open LangX on your phone"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "LangX’i iPhone’unda aç"
+            "value": "LangX’i telefonunda aç"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abre LangX en tu iPhone"
+            "value": "Abre LangX en tu teléfono"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Откройте LangX на iPhone"
+            "value": "Откройте LangX на телефоне"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "افتح LangX على iPhone"
+            "value": "افتح LangX على الهاتف"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ouvrez LangX sur votre iPhone"
+            "value": "Ouvrez LangX sur votre téléphone"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Öffne LangX auf deinem iPhone"
+            "value": "Öffne LangX auf deinem Telefon"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abra o LangX no seu iPhone"
+            "value": "Abra o LangX no seu telefone"
           }
         }
       }
@@ -166,49 +166,49 @@
         "en": {
           "stringUnit": {
             "state": "new",
-            "value": "iPhone not reachable"
+            "value": "Phone not reachable"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone erişilebilir değil"
+            "value": "Telefon erişilebilir değil"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone no disponible"
+            "value": "Teléfono no disponible"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone недоступен"
+            "value": "Телефон недоступен"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone غير متاح"
+            "value": "الهاتف غير متاح"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone non joignable"
+            "value": "Téléphone non joignable"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone nicht erreichbar"
+            "value": "Telefon nicht erreichbar"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone indisponível"
+            "value": "Telefone indisponível"
           }
         }
       }

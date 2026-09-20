@@ -1,0 +1,73 @@
+/*
+ * The Wear OS app.
+ *
+ * A module of the phone app's own Gradle build rather than a project of its
+ * own, because the Data Layer only connects a watch app to a phone app with
+ * the **same application id and the same signing key**. Building it here is
+ * what makes that true without a second signing story.
+ *
+ * `apps/mobile/wear/` is the source of record; `expo prebuild` regenerates
+ * `android/` and would delete anything written straight into it, which is the
+ * same reason the Apple targets live in `apps/mobile/targets/`. The config
+ * plugin `plugins/withWearApp.js` copies this in and adds `include ':wear'`.
+ */
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+
+android {
+  namespace 'tech.newchapter.languageXchange.wear'
+  compileSdk rootProject.ext.compileSdkVersion
+
+  defaultConfig {
+    /*
+     * The phone app's id, not a `.wear` suffix of it. The Data Layer pairs a
+     * watch app to a phone app by application id and signature; a suffixed id
+     * installs and runs and then never hears from the phone, which is the
+     * failure that looks like a bug in the code rather than in the manifest.
+     */
+    applicationId 'tech.newchapter.languageXchange'
+    /*
+     * 30, not the phone's 24. Wear OS 3 is the floor that has Compose for Wear
+     * and the modern Data Layer; a watch older than that is not a device this
+     * app is going to reach. The phone's own floor is untouched — a watch is
+     * an accessory to it, not a gate on it.
+     */
+    minSdk 30
+    targetSdk rootProject.ext.targetSdkVersion
+    versionCode 1
+    versionName '1.0'
+  }
+
+  buildFeatures { compose true }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+
+  kotlinOptions { jvmTarget = '17' }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      signingConfig signingConfigs.debug
+    }
+  }
+}
+
+dependencies {
+  implementation platform('androidx.compose:compose-bom:2025.04.00')
+  implementation 'androidx.compose.ui:ui'
+  implementation 'androidx.compose.ui:ui-tooling-preview'
+  implementation 'androidx.wear.compose:compose-material:1.4.1'
+  implementation 'androidx.wear.compose:compose-foundation:1.4.1'
+  implementation 'androidx.wear.compose:compose-navigation:1.4.1'
+  implementation 'androidx.activity:activity-compose:1.9.3'
+  implementation 'androidx.core:core-ktx:1.15.0'
+  // `RemoteInputIntentHelper` — Wear's own text entry screen, which offers
+  // dictation, the keyboard and handwriting and lets the wearer choose.
+  implementation 'androidx.wear:wear-input:1.1.0'
+  // The Data Layer — the Android half of what `WCSession` does on Apple.
+  implementation 'com.google.android.gms:play-services-wearable:19.0.0'
+}

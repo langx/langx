@@ -2085,8 +2085,8 @@ export const tr: Localized<EnMessages> = {
   watch: {
     unread: 'Okunmamış',
     nothingUnread: 'Okunmamış yok',
-    openOnPhone: 'LangX’i iPhone’unda aç',
-    phoneNotReachable: 'iPhone erişilebilir değil',
+    openOnPhone: 'LangX’i telefonunda aç',
+    phoneNotReachable: 'Telefon erişilebilir değil',
     reply: 'Yanıtla',
     sending: 'Gönderiliyor…',
     sent: 'Gönderildi',

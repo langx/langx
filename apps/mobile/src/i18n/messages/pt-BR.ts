@@ -2084,8 +2084,8 @@ export const ptBR: Localized<EnMessages> = {
   watch: {
     unread: 'Não lidas',
     nothingUnread: 'Nada não lido',
-    openOnPhone: 'Abra o LangX no seu iPhone',
-    phoneNotReachable: 'iPhone indisponível',
+    openOnPhone: 'Abra o LangX no seu telefone',
+    phoneNotReachable: 'Telefone indisponível',
     reply: 'Responder',
     sending: 'Enviando…',
     sent: 'Enviado',

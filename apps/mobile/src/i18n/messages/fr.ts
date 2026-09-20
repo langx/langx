@@ -2102,8 +2102,8 @@ export const fr: Localized<EnMessages> = {
   watch: {
     unread: 'Non lus',
     nothingUnread: 'Rien de non lu',
-    openOnPhone: 'Ouvrez LangX sur votre iPhone',
-    phoneNotReachable: 'iPhone non joignable',
+    openOnPhone: 'Ouvrez LangX sur votre téléphone',
+    phoneNotReachable: 'Téléphone non joignable',
     reply: 'Répondre',
     sending: 'Envoi…',
     sent: 'Envoyé',

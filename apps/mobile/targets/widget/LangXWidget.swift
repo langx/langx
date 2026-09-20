@@ -281,21 +281,38 @@ private struct ActivityView: View {
               .foregroundStyle(
                 snapshot.countedToday(now: now) ? Brand.streak : Brand.streak.opacity(0.45))
           }
-          Grid(horizontalSpacing: 3, verticalSpacing: 3) {
-            /*
-             Rows are weekdays and columns are weeks, which is the calendar
-             shape rather than a timeline: a gap on the same row every week
-             says something a flat run of squares cannot. Seven `GridRow`s,
-             each walking the columns, because SwiftUI lays a Grid out by rows
-             and the encoding is by columns.
-            */
-            ForEach(0..<7, id: \.self) { row in
-              GridRow {
-                ForEach(Array(activity.columns.enumerated()), id: \.offset) { _, column in
-                  Square(mark: column[row])
+          /*
+           The squares are sized from the width rather than fixed, which is
+           what `activityCellSize` does for the app's own map and for the same
+           reason: a fixed square leaves a margin of dead space on the right of
+           a widget whose width is not ours to choose, and the map reads as
+           left-aligned in a box rather than as the widget's content.
+
+           `GeometryReader` because a widget has no layout pass to ask
+           afterwards — the number has to come from the space actually handed
+           over, on the family the person picked.
+          */
+          GeometryReader { geometry in
+            let gap: CGFloat = 3
+            let columns = CGFloat(activity.columns.count)
+            let side = max(2, (geometry.size.width - gap * (columns - 1)) / columns)
+
+            VStack(spacing: gap) {
+              /*
+               Rows are weekdays and columns are weeks, which is the calendar
+               shape rather than a timeline: a gap on the same row every week
+               says something a flat run of squares cannot.
+              */
+              ForEach(0..<7, id: \.self) { row in
+                HStack(spacing: gap) {
+                  ForEach(Array(activity.columns.enumerated()), id: \.offset) { _, column in
+                    Square(mark: column[row])
+                      .frame(width: side, height: side)
+                  }
                 }
               }
             }
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
           }
         }
       } else {
@@ -312,7 +329,6 @@ private struct Square: View {
   var body: some View {
     RoundedRectangle(cornerRadius: 2, style: .continuous)
       .fill(colour)
-      .aspectRatio(1, contentMode: .fit)
       // A future day keeps its space and draws nothing, so the grid stays a
       // rectangle and this week does not look shorter than the others.
       .opacity(mark == "." ? 0 : 1)

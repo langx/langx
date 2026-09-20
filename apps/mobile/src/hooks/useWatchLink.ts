@@ -10,9 +10,15 @@ import {
   setWatchCredentials,
   watchIsSupported,
 } from '../../modules/watch-link'
+import {
+  clearWear,
+  sendWearPayload,
+  setWearCredentials,
+  wearIsSupported,
+} from '../../modules/wear-link'
 
 /**
- * Keeps the Apple Watch fed, and keeps Swift able to answer for it.
+ * Keeps a paired watch fed, and keeps native able to answer for it.
  *
  * Mounted once in the signed-in layout beside `useCompanionSnapshot`, for the
  * reason that hook gives: a wrist has to be right for everybody, not only for
@@ -23,6 +29,13 @@ import {
  * five-minute profile cache the list itself uses — so on a phone with no
  * watch this hook costs one boolean, and on a phone with one it costs a walk
  * over a list that was already in memory.
+ *
+ * **Both watches, one payload.** The Apple Watch and the Wear OS app read the
+ * same `watchPayloadSchema` blob and differ only in how it travels —
+ * `WCSession` on one side, the Data Layer on the other. Each module is a
+ * no-op on the platform it does not belong to, so nothing here branches on
+ * `Platform.OS`; asking both is how the two stay the same feature rather than
+ * two features that resemble each other.
  */
 export function useWatchLink({ enabled }: { enabled: boolean }): void {
   /*
@@ -32,7 +45,7 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
    * below is skipped for them, including the profile requests the payload
    * would otherwise warm.
    */
-  const supported = useMemo(() => watchIsSupported(), [])
+  const supported = useMemo(() => watchIsSupported() || wearIsSupported(), [])
   const active = enabled && supported
 
   const me = useMe(active)
@@ -72,11 +85,14 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
     if (!supported) return
     if (!enabled) {
       clearWatch()
+      clearWear()
       return
     }
     let cancelled = false
     void authClient.getCookie().then((cookie) => {
-      if (!cancelled && cookie) setWatchCredentials(API_URL, cookie)
+      if (cancelled || !cookie) return
+      setWatchCredentials(API_URL, cookie)
+      setWearCredentials(API_URL, cookie)
     })
     return () => {
       cancelled = true
@@ -86,6 +102,8 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
   useEffect(() => {
     if (!active || meId === undefined) return
 
-    sendWatchPayload(buildWatchPayload({ meId, conversations: unreadThreads, names }))
+    const payload = buildWatchPayload({ meId, conversations: unreadThreads, names })
+    sendWatchPayload(payload)
+    sendWearPayload(payload)
   }, [active, meId, unreadThreads, names])
 }

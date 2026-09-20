@@ -2267,8 +2267,8 @@ export const en = {
   watch: {
     unread: 'Unread',
     nothingUnread: 'Nothing unread',
-    openOnPhone: 'Open LangX on your iPhone',
-    phoneNotReachable: 'iPhone not reachable',
+    openOnPhone: 'Open LangX on your phone',
+    phoneNotReachable: 'Phone not reachable',
     reply: 'Reply',
     sending: 'Sending…',
     sent: 'Sent',

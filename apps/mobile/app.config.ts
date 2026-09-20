@@ -221,6 +221,12 @@ const config: ExpoConfig = {
      */
     '@bacons/apple-targets',
     /*
+     * The Wear OS app, which needs the same trick for the same reason:
+     * `android/` is generated and not committed, so the module lives in
+     * `apps/mobile/wear/` and this copies it in. See `plugins/withWearApp.js`.
+     */
+    './plugins/withWearApp',
+    /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
      * so the views live in `widgets/` as TSX and the plugin only has to write

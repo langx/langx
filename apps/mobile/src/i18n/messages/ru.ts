@@ -2320,8 +2320,8 @@ export const ru: Localized<EnMessages> = {
   watch: {
     unread: 'Непрочитанные',
     nothingUnread: 'Нет непрочитанных',
-    openOnPhone: 'Откройте LangX на iPhone',
-    phoneNotReachable: 'iPhone недоступен',
+    openOnPhone: 'Откройте LangX на телефоне',
+    phoneNotReachable: 'Телефон недоступен',
     reply: 'Ответить',
     sending: 'Отправка…',
     sent: 'Отправлено',

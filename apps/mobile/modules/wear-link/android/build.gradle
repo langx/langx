@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+group = 'expo.modules.wearlink'
+version = '1.0.0'
+
+android {
+  namespace 'expo.modules.wearlink'
+  compileSdk rootProject.ext.compileSdkVersion
+  defaultConfig { minSdk rootProject.ext.minSdkVersion }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+  kotlinOptions { jvmTarget = '17' }
+}
+
+dependencies {
+  implementation project(':expo-modules-core')
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+  // The Data Layer — the Android half of what `WCSession` does on Apple.
+  implementation 'com.google.android.gms:play-services-wearable:19.0.0'
+}

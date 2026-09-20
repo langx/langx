@@ -2409,8 +2409,8 @@ export const ar: Localized<EnMessages> = {
   watch: {
     unread: 'غير المقروءة',
     nothingUnread: 'لا رسائل غير مقروءة',
-    openOnPhone: 'افتح LangX على iPhone',
-    phoneNotReachable: 'iPhone غير متاح',
+    openOnPhone: 'افتح LangX على الهاتف',
+    phoneNotReachable: 'الهاتف غير متاح',
     reply: 'رد',
     sending: 'جارٍ الإرسال…',
     sent: 'تم الإرسال',

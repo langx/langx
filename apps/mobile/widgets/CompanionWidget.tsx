@@ -329,13 +329,19 @@ function ActivityWidget({
       */}
       <FlexWidget style={{ flexDirection: 'column' }}>
         {[0, 1, 2, 3, 4, 5, 6].map((row) => (
-          <FlexWidget key={row} style={{ flexDirection: 'row' }}>
+          <FlexWidget key={row} style={{ flexDirection: 'row', width: 'match_parent' }}>
             {columns.map((column, index) => (
               <FlexWidget
                 key={index}
+                /*
+                 `flex: 1` rather than a fixed twelve points, so the row fills
+                 whatever width the launcher gave the widget instead of ending
+                 in a margin of dead space. `height` stays fixed because a
+                 RemoteViews row has no way to ask how wide it turned out.
+                */
                 style={{
-                  width: 12,
-                  height: 12,
+                  flex: 1,
+                  height: 14,
                   marginRight: 2,
                   marginTop: 2,
                   borderRadius: 2,
