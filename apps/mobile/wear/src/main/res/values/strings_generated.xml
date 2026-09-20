@@ -10,4 +10,12 @@
   <string name="watch_sent">Sent</string>
   <string name="watch_notSent">Not sent</string>
   <string name="watch_loading">Loading…</string>
+  <string name="widget_streakName">Streak</string>
+  <string name="widget_streakDetail">Your run of days. Dim until today counts.</string>
+  <string name="widget_todayName">Today</string>
+  <string name="widget_todayDetail">Streak, unread and cards due, in one row.</string>
+  <string name="widget_activityName">Activity</string>
+  <string name="widget_activityDetail">Your practice, one square a day.</string>
+  <string name="widget_glanceName">Glance</string>
+  <string name="widget_glanceDetail">Streak and unread, for the Lock Screen and StandBy.</string>
 </resources>

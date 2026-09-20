@@ -2097,4 +2097,24 @@ export const tr: Localized<EnMessages> = {
     notSent: 'Gönderilemedi',
     loading: 'Yükleniyor…',
   },
+
+  /*
+   The widget gallery: the name under each widget and the line under that.
+
+   These are the only widget strings that exist. Everything a widget *draws*
+   is a word the app already wrote into the snapshot, which is how three
+   families ship in eight languages without a catalogue — but the gallery is
+   drawn by WidgetKit before the snapshot is read, so these eight have to
+   travel the same road the watch's words do.
+  */
+  widget: {
+    streakName: 'Seri',
+    streakDetail: 'Üst üste günlerin. Bugün sayılana kadar soluk.',
+    todayName: 'Bugün',
+    todayDetail: 'Seri, okunmamışlar ve sıradaki kartlar tek sırada.',
+    activityName: 'Etkinlik',
+    activityDetail: 'Çalışman, günde bir kare.',
+    glanceName: 'Bakış',
+    glanceDetail: 'Kilit ekranı ve StandBy için seri ve okunmamışlar.',
+  },
 }

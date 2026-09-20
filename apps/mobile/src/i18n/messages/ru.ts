@@ -2332,4 +2332,24 @@ export const ru: Localized<EnMessages> = {
     notSent: 'Не отправлено',
     loading: 'Загрузка…',
   },
+
+  /*
+   The widget gallery: the name under each widget and the line under that.
+
+   These are the only widget strings that exist. Everything a widget *draws*
+   is a word the app already wrote into the snapshot, which is how three
+   families ship in eight languages without a catalogue — but the gallery is
+   drawn by WidgetKit before the snapshot is read, so these eight have to
+   travel the same road the watch's words do.
+  */
+  widget: {
+    streakName: 'Серия',
+    streakDetail: 'Дни подряд. Тускнеет, пока сегодня не засчитано.',
+    todayName: 'Сегодня',
+    todayDetail: 'Серия, непрочитанные и карточки — в один ряд.',
+    activityName: 'Активность',
+    activityDetail: 'Ваши занятия: один квадрат в день.',
+    glanceName: 'Взгляд',
+    glanceDetail: 'Серия и непрочитанные для экрана блокировки и StandBy.',
+  },
 }

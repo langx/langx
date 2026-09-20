@@ -28,12 +28,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.material.LocalTextStyle
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
@@ -181,6 +183,8 @@ private fun ConversationRow(conversation: WearConversation, onClick: () -> Unit)
                   color = Palette.textMuted,
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis,
+                  // The message's own direction, not the watch's. See `Bubble`.
+                  style = LocalTextStyle.current.copy(textDirection = TextDirection.Content),
               )
             }
           }
@@ -304,6 +308,17 @@ private fun ThreadScreen(
   }
 }
 
+/**
+ One message.
+
+ `TextDirection.Content` rather than the default, which follows the *locale*.
+ This is a language-exchange app: an Arabic speaker's thread is full of
+ English and an English speaker's is full of Arabic, so the paragraph
+ direction has to come from the sentence rather than from the watch's
+ settings. Without it an English message shown to an Arabic reader is laid out
+ right-to-left and its trailing punctuation jumps to the far side — the
+ question mark of "is this right?" ends up in front of the question.
+ */
 @Composable
 private fun Bubble(message: WearMessage) {
   Row(
@@ -316,7 +331,12 @@ private fun Bubble(message: WearMessage) {
                 .background(if (message.mine) Palette.accentBg else Palette.fill)
                 .padding(horizontal = 9.dp, vertical = 6.dp)
     ) {
-      Text(text = message.body, fontSize = 14.sp, color = Palette.text)
+      Text(
+          text = message.body,
+          fontSize = 14.sp,
+          color = Palette.text,
+          style = LocalTextStyle.current.copy(textDirection = TextDirection.Content),
+      )
     }
   }
 }

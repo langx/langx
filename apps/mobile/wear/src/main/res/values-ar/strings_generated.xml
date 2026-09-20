@@ -10,4 +10,12 @@
   <string name="watch_sent">تم الإرسال</string>
   <string name="watch_notSent">لم يُرسل</string>
   <string name="watch_loading">جارٍ التحميل…</string>
+  <string name="widget_streakName">السلسلة</string>
+  <string name="widget_streakDetail">أيامك المتتالية. باهتة حتى يُحتسب اليوم.</string>
+  <string name="widget_todayName">اليوم</string>
+  <string name="widget_todayDetail">السلسلة وغير المقروء والبطاقات المستحقة في صف واحد.</string>
+  <string name="widget_activityName">النشاط</string>
+  <string name="widget_activityDetail">تدريبك، مربع لكل يوم.</string>
+  <string name="widget_glanceName">لمحة</string>
+  <string name="widget_glanceDetail">السلسلة وغير المقروء لشاشة القفل و StandBy.</string>
 </resources>

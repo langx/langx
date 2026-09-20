@@ -2279,6 +2279,26 @@ export const en = {
     notSent: 'Not sent',
     loading: 'Loading…',
   },
+
+  /*
+   The widget gallery: the name under each widget and the line under that.
+
+   These are the only widget strings that exist. Everything a widget *draws*
+   is a word the app already wrote into the snapshot, which is how three
+   families ship in eight languages without a catalogue — but the gallery is
+   drawn by WidgetKit before the snapshot is read, so these eight have to
+   travel the same road the watch's words do.
+  */
+  widget: {
+    streakName: 'Streak',
+    streakDetail: 'Your run of days. Dim until today counts.',
+    todayName: 'Today',
+    todayDetail: 'Streak, unread and cards due, in one row.',
+    activityName: 'Activity',
+    activityDetail: 'Your practice, one square a day.',
+    glanceName: 'Glance',
+    glanceDetail: 'Streak and unread, for the Lock Screen and StandBy.',
+  },
 } as const
 
 export type EnMessages = typeof en

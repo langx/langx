@@ -233,6 +233,26 @@ shipping config was touched. And Studio's pairing installs the Wear OS
 companion from Play, which wants a Google account: that was the owner's to
 give, not this session's.
 
+### Two things the screenshot shoot turned up on Wear
+
+**The message's direction is the message's, not the watch's.** The bubbles and
+the list preview now set `TextDirection.Content`, so the paragraph direction
+comes from the sentence rather than from the locale. The default is the
+locale's, and in this app that is wrong more often than in most: an Arabic
+speaker's thread is full of English and the reverse. It shows as displaced
+punctuation — the question mark of "is this right?" drawn in front of the
+question — which is what an Arabic capture of an English message looked like.
+
+**Wear apps do not have to show the time, and this one will not.** Worth
+writing down because it looks like an omission next to Apple, where watchOS
+draws the clock over every app for free. On Wear the app draws its own with
+`TimeText`, and the first read of these captures called the absence a defect.
+It is not: Google removed it from the quality checklist on 13 July 2023
+(`WO-V11`, "no longer a quality requirement for Wear OS apps"); only watch
+faces must show the time. Adding one would cost the top of every screen — the
+title, and a row of the list — to repeat something the wearer can see by
+lowering their wrist.
+
 ## What is not here
 
 - **A Wear OS complication or tile**, which is the Android counterpart of the

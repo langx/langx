@@ -10,4 +10,12 @@
   <string name="watch_sent">Envoyé</string>
   <string name="watch_notSent">Non envoyé</string>
   <string name="watch_loading">Chargement…</string>
+  <string name="widget_streakName">Série</string>
+  <string name="widget_streakDetail">Vos jours d’affilée. Pâle tant qu’aujourd’hui ne compte pas.</string>
+  <string name="widget_todayName">Aujourd’hui</string>
+  <string name="widget_todayDetail">Série, non lus et cartes à revoir, sur une ligne.</string>
+  <string name="widget_activityName">Activité</string>
+  <string name="widget_activityDetail">Votre pratique, un carré par jour.</string>
+  <string name="widget_glanceName">Coup d’œil</string>
+  <string name="widget_glanceDetail">Série et non lus, pour l’écran verrouillé et StandBy.</string>
 </resources>

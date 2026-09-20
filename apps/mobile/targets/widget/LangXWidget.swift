@@ -153,7 +153,8 @@ private struct Tile: View {
 
  "LangX" is a proper noun, which is why it is written here rather than taken
  from a catalogue — the same reasoning as the Android widget's `label` in
- `app.config.ts`.
+ `app.config.ts`. The gallery's own name and description are a different
+ matter and do come from the catalogue: they are sentences, not a mark.
  */
 private struct WidgetHeader: View {
   var body: some View {
@@ -412,7 +413,8 @@ struct LangXStreakWidget: Widget {
       SmallView(snapshot: entry.snapshot, now: entry.date)
         .containerBackground(Brand.ground, for: .widget)
     }
-    .configurationDisplayName("LangX")
+    .configurationDisplayName(LocalizedStringResource("widget.streakName"))
+    .description(LocalizedStringResource("widget.streakDetail"))
     .supportedFamilies([.systemSmall])
   }
 }
@@ -423,7 +425,8 @@ struct LangXSummaryWidget: Widget {
       MediumView(snapshot: entry.snapshot, now: entry.date)
         .containerBackground(Brand.ground, for: .widget)
     }
-    .configurationDisplayName("LangX")
+    .configurationDisplayName(LocalizedStringResource("widget.todayName"))
+    .description(LocalizedStringResource("widget.todayDetail"))
     .supportedFamilies([.systemMedium])
   }
 }
@@ -442,7 +445,8 @@ struct LangXActivityWidget: Widget {
       ActivityView(snapshot: entry.snapshot, now: entry.date)
         .containerBackground(Brand.ground, for: .widget)
     }
-    .configurationDisplayName("LangX")
+    .configurationDisplayName(LocalizedStringResource("widget.activityName"))
+    .description(LocalizedStringResource("widget.activityDetail"))
     .supportedFamilies([.systemMedium])
   }
 }
@@ -456,7 +460,8 @@ struct LangXAccessoryWidget: Widget {
       AccessoryRouter(entry: entry)
         .containerBackground(Brand.ground, for: .widget)
     }
-    .configurationDisplayName("LangX")
+    .configurationDisplayName(LocalizedStringResource("widget.glanceName"))
+    .description(LocalizedStringResource("widget.glanceDetail"))
     .supportedFamilies([.accessoryCircular, .accessoryRectangular])
   }
 }

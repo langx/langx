@@ -2098,4 +2098,24 @@ export const es: Localized<EnMessages> = {
     notSent: 'No enviado',
     loading: 'Cargando…',
   },
+
+  /*
+   The widget gallery: the name under each widget and the line under that.
+
+   These are the only widget strings that exist. Everything a widget *draws*
+   is a word the app already wrote into the snapshot, which is how three
+   families ship in eight languages without a catalogue — but the gallery is
+   drawn by WidgetKit before the snapshot is read, so these eight have to
+   travel the same road the watch's words do.
+  */
+  widget: {
+    streakName: 'Racha',
+    streakDetail: 'Tus días seguidos. Atenuada hasta que hoy cuente.',
+    todayName: 'Hoy',
+    todayDetail: 'Racha, no leídos y tarjetas pendientes, en una fila.',
+    activityName: 'Actividad',
+    activityDetail: 'Tu práctica, un cuadro por día.',
+    glanceName: 'Vistazo',
+    glanceDetail: 'Racha y no leídos, para la pantalla bloqueada y StandBy.',
+  },
 }

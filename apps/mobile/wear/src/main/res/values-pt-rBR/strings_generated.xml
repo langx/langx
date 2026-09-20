@@ -10,4 +10,12 @@
   <string name="watch_sent">Enviado</string>
   <string name="watch_notSent">Não enviado</string>
   <string name="watch_loading">Carregando…</string>
+  <string name="widget_streakName">Sequência</string>
+  <string name="widget_streakDetail">Seus dias seguidos. Apagada até hoje contar.</string>
+  <string name="widget_todayName">Hoje</string>
+  <string name="widget_todayDetail">Sequência, não lidas e cartões do dia, lado a lado.</string>
+  <string name="widget_activityName">Atividade</string>
+  <string name="widget_activityDetail">Sua prática, um quadrado por dia.</string>
+  <string name="widget_glanceName">Relance</string>
+  <string name="widget_glanceDetail">Sequência e não lidas, para a tela bloqueada e StandBy.</string>
 </resources>
