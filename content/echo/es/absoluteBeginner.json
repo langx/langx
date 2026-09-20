@@ -2,7 +2,7 @@
   "id": "es:absoluteBeginner",
   "lang": "es",
   "level": "absoluteBeginner",
-  "contentVersion": 1,
+  "contentVersion": 2,
   "reviewed": false,
   "sources": [
     {
@@ -51,7 +51,7 @@
       "text": "buenos días",
       "gloss": {
         "en": "good morning",
-        "tr": "günaydin",
+        "tr": "günaydın",
         "de": "guten Morgen",
         "fr": "bonjour",
         "pt-BR": "bom dia",
@@ -63,7 +63,8 @@
         "sense": "Expresión cordial y formal de saludo usada entre el amanecer y el mediodía.",
         "translationCount": 42,
         "definition": "Expresión cordial y formal de saludo usada entre el amanecer y el mediodía.",
-        "otherSenses": ["Saludo utilizado entre el amanecer y el mediodía. (42)"]
+        "otherSenses": ["Saludo utilizado entre el amanecer y el mediodía. (42)"],
+        "edited": ["tr"]
       }
     },
     {
@@ -647,7 +648,7 @@
       "text": "No pasa nada.",
       "gloss": {
         "en": "There's no harm done.",
-        "tr": "Hiçbir şey olmuyor.",
+        "tr": "Önemli değil.",
         "de": "Das macht nichts.",
         "fr": "Il n'y a pas de mal.",
         "pt-BR": "Sem problemas.",
@@ -655,7 +656,8 @@
       },
       "freqRank": 72,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
@@ -851,7 +853,7 @@
       "kind": "phrase",
       "text": "Hace buen tiempo.",
       "gloss": {
-        "en": "It's nice.",
+        "en": "The weather is nice.",
         "tr": "Hava güzeldir.",
         "de": "Das Wetter ist schön.",
         "fr": "Il fait beau.",
@@ -860,7 +862,8 @@
       },
       "freqRank": 84,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
@@ -1005,7 +1008,7 @@
       "kind": "phrase",
       "text": "¿Qué has dicho?",
       "gloss": {
-        "en": "Come again?",
+        "en": "What did you say?",
         "tr": "Ne dedin?",
         "de": "Was hast du gesagt?",
         "fr": "Qu'as-tu dit ?",
@@ -1014,7 +1017,8 @@
       },
       "freqRank": 92,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
@@ -1073,7 +1077,7 @@
       "kind": "phrase",
       "text": "¿Qué haces aquí?",
       "gloss": {
-        "en": "How come you are here?",
+        "en": "What are you doing here?",
         "tr": "Burada ne yapıyorsun?",
         "de": "Was machst du hier?",
         "fr": "Que fais-tu ici ?",
@@ -1082,7 +1086,8 @@
       },
       "freqRank": 95,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
@@ -1159,7 +1164,7 @@
       "kind": "phrase",
       "text": "No quiero volver.",
       "gloss": {
-        "en": "I don't wanna go back.",
+        "en": "I don't want to go back.",
         "tr": "Dönmek istemiyorum.",
         "de": "Ich will nicht zurückgehen.",
         "pt-BR": "Não quero voltar.",
@@ -1168,7 +1173,8 @@
       },
       "freqRank": 102,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
@@ -1193,7 +1199,7 @@
       "kind": "phrase",
       "text": "No te entiendo.",
       "gloss": {
-        "en": "I don't see your point.",
+        "en": "I don't understand you.",
         "tr": "Sizi anlamıyorum.",
         "de": "Ich verstehe dich nicht.",
         "fr": "Je ne te comprends pas.",
@@ -1202,7 +1208,8 @@
       },
       "freqRank": 104,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
@@ -1535,7 +1542,7 @@
       "text": "Soy hijo único.",
       "gloss": {
         "en": "I am an only child.",
-        "tr": "Ben bir tek çocuğum.",
+        "tr": "Ben tek çocuğum.",
         "de": "Ich bin ein Einzelkind.",
         "fr": "Je suis enfant unique.",
         "pt-BR": "Sou filho único.",
@@ -1543,7 +1550,8 @@
       },
       "freqRank": 124,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
@@ -1688,7 +1696,7 @@
       "kind": "phrase",
       "text": "Es muy fácil.",
       "gloss": {
-        "en": "It's as easy as pie.",
+        "en": "It's very easy.",
         "tr": "O çok kolay.",
         "de": "Das ist total einfach.",
         "fr": "C'est très facile.",
@@ -1698,7 +1706,8 @@
       },
       "freqRank": 133,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
@@ -1979,7 +1988,7 @@
       "kind": "phrase",
       "text": "Tengo un perro.",
       "gloss": {
-        "en": "I keep a dog.",
+        "en": "I have a dog.",
         "tr": "Bir köpeğim var.",
         "de": "Ich habe einen Hund.",
         "fr": "J'ai un chien.",
@@ -1988,7 +1997,8 @@
       },
       "freqRank": 150,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
@@ -2048,7 +2058,7 @@
       "text": "No tengo palabras.",
       "gloss": {
         "en": "I'm at a loss for words.",
-        "tr": "Sözcük kaybındayım.",
+        "tr": "Söyleyecek söz bulamıyorum.",
         "de": "Ich finde keine Worte.",
         "fr": "J'en perds mes mots.",
         "pt-BR": "Não tenho palavras.",
@@ -2056,7 +2066,8 @@
       },
       "freqRank": 154,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
@@ -2233,23 +2244,6 @@
     {
       "index": 128,
       "kind": "phrase",
-      "text": "¿Quién la mató?",
-      "gloss": {
-        "en": "Who killed her?",
-        "tr": "Onu kim öldürdü?",
-        "de": "Wer hat sie umgebracht?",
-        "fr": "Qui l'a tuée ?",
-        "pt-BR": "Quem a matou?",
-        "ru": "Кто её убил?"
-      },
-      "freqRank": 165,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 129,
-      "kind": "phrase",
       "text": "Me llamo Jack.",
       "gloss": {
         "en": "My name is Jack.",
@@ -2265,7 +2259,7 @@
       }
     },
     {
-      "index": 130,
+      "index": 129,
       "kind": "phrase",
       "text": "¿Cómo te sientes?",
       "gloss": {
@@ -2282,7 +2276,7 @@
       }
     },
     {
-      "index": 131,
+      "index": 130,
       "kind": "phrase",
       "text": "¿Te sientes mejor?",
       "gloss": {
@@ -2299,7 +2293,7 @@
       }
     },
     {
-      "index": 132,
+      "index": 131,
       "kind": "phrase",
       "text": "¿Dónde vive él?",
       "gloss": {
@@ -2316,7 +2310,7 @@
       }
     },
     {
-      "index": 133,
+      "index": 132,
       "kind": "phrase",
       "text": "¿Él vive aquí?",
       "gloss": {
@@ -2333,7 +2327,7 @@
       }
     },
     {
-      "index": 134,
+      "index": 133,
       "kind": "phrase",
       "text": "¿Dónde vive John?",
       "gloss": {
@@ -2350,7 +2344,7 @@
       }
     },
     {
-      "index": 135,
+      "index": 134,
       "kind": "phrase",
       "text": "¿Quién vive aquí?",
       "gloss": {
@@ -2367,7 +2361,7 @@
       }
     },
     {
-      "index": 136,
+      "index": 135,
       "kind": "phrase",
       "text": "¿Sabes dónde vive?",
       "gloss": {
@@ -2384,7 +2378,7 @@
       }
     },
     {
-      "index": 137,
+      "index": 136,
       "kind": "phrase",
       "text": "¿Usted vive aquí?",
       "gloss": {
@@ -2401,11 +2395,11 @@
       }
     },
     {
-      "index": 138,
+      "index": 137,
       "kind": "phrase",
       "text": "Sé dónde vive.",
       "gloss": {
-        "en": "I know where you live.",
+        "en": "I know where he lives.",
         "tr": "Onun nerede yaşadığını biliyorum.",
         "de": "Ich weiß, wo er wohnt.",
         "fr": "Je sais où il habite.",
@@ -2414,11 +2408,12 @@
       },
       "freqRank": 175,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 139,
+      "index": 138,
       "kind": "phrase",
       "text": "Hoy hace sol.",
       "gloss": {
@@ -2435,7 +2430,7 @@
       }
     },
     {
-      "index": 140,
+      "index": 139,
       "kind": "phrase",
       "text": "No tengo hambre.",
       "gloss": {
@@ -2452,7 +2447,7 @@
       }
     },
     {
-      "index": 141,
+      "index": 140,
       "kind": "phrase",
       "text": "¿Sabes la respuesta?",
       "gloss": {
@@ -2469,24 +2464,7 @@
       }
     },
     {
-      "index": 142,
-      "kind": "phrase",
-      "text": "La respuesta es 42.",
-      "gloss": {
-        "en": "The answer is 42.",
-        "tr": "Cevap 42.",
-        "de": "Die Antwort lautet zweiundvierzig.",
-        "fr": "La réponse est 42.",
-        "pt-BR": "A resposta é 42.",
-        "ru": "Ответ 42."
-      },
-      "freqRank": 179,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 143,
+      "index": 141,
       "kind": "phrase",
       "text": "Eso es imposible.",
       "gloss": {
@@ -2503,7 +2481,7 @@
       }
     },
     {
-      "index": 144,
+      "index": 142,
       "kind": "phrase",
       "text": "¿Es esto normal?",
       "gloss": {
@@ -2520,7 +2498,7 @@
       }
     },
     {
-      "index": 145,
+      "index": 143,
       "kind": "phrase",
       "text": "¿Quién es Tom?",
       "gloss": {
@@ -2538,7 +2516,7 @@
       }
     },
     {
-      "index": 146,
+      "index": 144,
       "kind": "phrase",
       "text": "¿Tom tiene novia?",
       "gloss": {
@@ -2555,7 +2533,7 @@
       }
     },
     {
-      "index": 147,
+      "index": 145,
       "kind": "phrase",
       "text": "Buena suerte, Tom.",
       "gloss": {
@@ -2572,24 +2550,7 @@
       }
     },
     {
-      "index": 148,
-      "kind": "phrase",
-      "text": "Tom murió solo.",
-      "gloss": {
-        "en": "Tom died alone.",
-        "tr": "Tom yalnız öldü.",
-        "de": "Tom ist einsam gestorben.",
-        "fr": "Tom est mort seul.",
-        "pt-BR": "Tom morreu sozinho.",
-        "ru": "Том умер в одиночестве."
-      },
-      "freqRank": 185,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 149,
+      "index": 146,
       "kind": "phrase",
       "text": "Yo era profesor.",
       "gloss": {
@@ -2606,7 +2567,7 @@
       }
     },
     {
-      "index": 150,
+      "index": 147,
       "kind": "phrase",
       "text": "Tom, ¿dónde estás?",
       "gloss": {
@@ -2623,7 +2584,7 @@
       }
     },
     {
-      "index": 151,
+      "index": 148,
       "kind": "phrase",
       "text": "Yo soy profesor.",
       "gloss": {
@@ -2640,7 +2601,7 @@
       }
     },
     {
-      "index": 152,
+      "index": 149,
       "kind": "phrase",
       "text": "¿Conoces esta canción?",
       "gloss": {
@@ -2657,7 +2618,7 @@
       }
     },
     {
-      "index": 153,
+      "index": 150,
       "kind": "phrase",
       "text": "Odio esa canción.",
       "gloss": {
@@ -2674,7 +2635,7 @@
       }
     },
     {
-      "index": 154,
+      "index": 151,
       "kind": "phrase",
       "text": "No tengas miedo.",
       "gloss": {
@@ -2691,7 +2652,7 @@
       }
     },
     {
-      "index": 155,
+      "index": 152,
       "kind": "phrase",
       "text": "Buenos días, Mike.",
       "gloss": {
@@ -2709,7 +2670,7 @@
       }
     },
     {
-      "index": 156,
+      "index": 153,
       "kind": "phrase",
       "text": "No es necesario.",
       "gloss": {
@@ -2726,7 +2687,7 @@
       }
     },
     {
-      "index": 157,
+      "index": 154,
       "kind": "phrase",
       "text": "Siéntate donde quieras.",
       "gloss": {
@@ -2744,7 +2705,7 @@
       }
     },
     {
-      "index": 158,
+      "index": 155,
       "kind": "phrase",
       "text": "No tengo prisa.",
       "gloss": {
@@ -2761,7 +2722,7 @@
       }
     },
     {
-      "index": 159,
+      "index": 156,
       "kind": "phrase",
       "text": "Ella está muerta.",
       "gloss": {
@@ -2778,7 +2739,7 @@
       }
     },
     {
-      "index": 160,
+      "index": 157,
       "kind": "phrase",
       "text": "¿Es una broma?",
       "gloss": {
@@ -2795,7 +2756,7 @@
       }
     },
     {
-      "index": 161,
+      "index": 158,
       "kind": "phrase",
       "text": "Era un regalo.",
       "gloss": {
@@ -2812,7 +2773,7 @@
       }
     },
     {
-      "index": 162,
+      "index": 159,
       "kind": "phrase",
       "text": "Te deseo suerte.",
       "gloss": {
@@ -2829,7 +2790,7 @@
       }
     },
     {
-      "index": 163,
+      "index": 160,
       "kind": "phrase",
       "text": "Es una sorpresa.",
       "gloss": {
@@ -2846,7 +2807,7 @@
       }
     },
     {
-      "index": 164,
+      "index": 161,
       "kind": "phrase",
       "text": "¿Por qué estoy aquí?",
       "gloss": {
@@ -2863,7 +2824,7 @@
       }
     },
     {
-      "index": 165,
+      "index": 162,
       "kind": "phrase",
       "text": "No hay de qué.",
       "gloss": {
@@ -2881,41 +2842,7 @@
       }
     },
     {
-      "index": 166,
-      "kind": "phrase",
-      "text": "Sé que no sé.",
-      "gloss": {
-        "en": "I know that I do not know.",
-        "tr": "Bilmediğimi biliyorum.",
-        "de": "Ich weiß, dass ich es nicht weiß.",
-        "fr": "Je sais que je ne sais pas.",
-        "pt-BR": "Eu sei que eu não sei.",
-        "ru": "Я знаю, что я не знаю."
-      },
-      "freqRank": 203,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 167,
-      "kind": "phrase",
-      "text": "No puedo hacer nada.",
-      "gloss": {
-        "en": "I can't do anything.",
-        "tr": "Ben bir şey yapamam.",
-        "de": "Ich kann nichts tun.",
-        "fr": "Je ne peux rien faire.",
-        "pt-BR": "Não posso fazer nada.",
-        "ru": "Я ничего не могу сделать."
-      },
-      "freqRank": 204,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 168,
+      "index": 163,
       "kind": "phrase",
       "text": "¿De verdad? ¿Por qué?",
       "gloss": {
@@ -2932,7 +2859,41 @@
       }
     },
     {
-      "index": 169,
+      "index": 164,
+      "kind": "phrase",
+      "text": "No puedo hacer nada.",
+      "gloss": {
+        "en": "I can't do anything.",
+        "tr": "Ben bir şey yapamam.",
+        "de": "Ich kann nichts tun.",
+        "fr": "Je ne peux rien faire.",
+        "pt-BR": "Não posso fazer nada.",
+        "ru": "Я ничего не могу сделать."
+      },
+      "freqRank": 204,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "¿Qué es la verdad?",
+      "gloss": {
+        "en": "What is truth?",
+        "tr": "Gerçek nedir?",
+        "de": "Was ist die Wahrheit?",
+        "fr": "Qu'est-ce que la vérité ?",
+        "pt-BR": "O que é a verdade?",
+        "ru": "Что такое истина?"
+      },
+      "freqRank": 208,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 166,
       "kind": "phrase",
       "text": "No sé qué hacer.",
       "gloss": {
@@ -2950,41 +2911,7 @@
       }
     },
     {
-      "index": 170,
-      "kind": "phrase",
-      "text": "¿Qué es la verdad?",
-      "gloss": {
-        "en": "What is truth?",
-        "tr": "Gerçek nedir?",
-        "de": "Was ist die Wahrheit?",
-        "fr": "Qu'est-ce que la vérité ?",
-        "pt-BR": "O que é a verdade?",
-        "ru": "Что такое истина?"
-      },
-      "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 171,
-      "kind": "phrase",
-      "text": "No soy de aquí.",
-      "gloss": {
-        "en": "I'm not from here.",
-        "tr": "Buralı değilim.",
-        "de": "Ich bin nicht von hier.",
-        "fr": "Je ne suis pas d'ici.",
-        "pt-BR": "Eu não sou daqui.",
-        "ar": "أنا لست من هنا."
-      },
-      "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 172,
+      "index": 167,
       "kind": "phrase",
       "text": "Él estaba en casa.",
       "gloss": {
@@ -3001,7 +2928,24 @@
       }
     },
     {
-      "index": 173,
+      "index": 168,
+      "kind": "phrase",
+      "text": "No soy de aquí.",
+      "gloss": {
+        "en": "I'm not from here.",
+        "tr": "Buralı değilim.",
+        "de": "Ich bin nicht von hier.",
+        "fr": "Je ne suis pas d'ici.",
+        "pt-BR": "Eu não sou daqui.",
+        "ar": "أنا لست من هنا."
+      },
+      "freqRank": 206,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 169,
       "kind": "phrase",
       "text": "Esta es mi casa.",
       "gloss": {
@@ -3018,7 +2962,7 @@
       }
     },
     {
-      "index": 174,
+      "index": 170,
       "kind": "phrase",
       "text": "No sé quién es.",
       "gloss": {
@@ -3035,7 +2979,7 @@
       }
     },
     {
-      "index": 175,
+      "index": 171,
       "kind": "phrase",
       "text": "¿Dónde está tu casa?",
       "gloss": {
@@ -3052,7 +2996,7 @@
       }
     },
     {
-      "index": 176,
+      "index": 172,
       "kind": "phrase",
       "text": "No sé dónde estoy.",
       "gloss": {
@@ -3069,7 +3013,7 @@
       }
     },
     {
-      "index": 177,
+      "index": 173,
       "kind": "phrase",
       "text": "¿Qué quieres hacer ahora?",
       "gloss": {
@@ -3086,7 +3030,7 @@
       }
     },
     {
-      "index": 178,
+      "index": 174,
       "kind": "phrase",
       "text": "¿Quién es ese hombre?",
       "gloss": {
@@ -3103,7 +3047,7 @@
       }
     },
     {
-      "index": 179,
+      "index": 175,
       "kind": "phrase",
       "text": "Yo también tengo 17 años.",
       "gloss": {
@@ -3120,7 +3064,7 @@
       }
     },
     {
-      "index": 180,
+      "index": 176,
       "kind": "phrase",
       "text": "No estoy de acuerdo.",
       "gloss": {
@@ -3137,25 +3081,7 @@
       }
     },
     {
-      "index": 181,
-      "kind": "phrase",
-      "text": "La gente es gente.",
-      "gloss": {
-        "en": "People are people.",
-        "tr": "İnsanlar insandır.",
-        "de": "Menschen sind Menschen.",
-        "fr": "Les gens sont les gens.",
-        "pt-BR": "Pessoas são pessoas.",
-        "ru": "Люди есть люди.",
-        "ar": "الناس هم الناس."
-      },
-      "freqRank": 218,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 182,
+      "index": 177,
       "kind": "phrase",
       "text": "¿Dónde está tu padre?",
       "gloss": {
@@ -3172,7 +3098,7 @@
       }
     },
     {
-      "index": 183,
+      "index": 178,
       "kind": "phrase",
       "text": "Quiero a mi padre.",
       "gloss": {
@@ -3189,7 +3115,7 @@
       }
     },
     {
-      "index": 184,
+      "index": 179,
       "kind": "phrase",
       "text": "Alguien me lo dijo.",
       "gloss": {
@@ -3206,7 +3132,7 @@
       }
     },
     {
-      "index": 185,
+      "index": 180,
       "kind": "phrase",
       "text": "Ella no dijo nada.",
       "gloss": {
@@ -3223,7 +3149,7 @@
       }
     },
     {
-      "index": 186,
+      "index": 181,
       "kind": "phrase",
       "text": "¿Con quién quieres hablar?",
       "gloss": {
@@ -3240,12 +3166,12 @@
       }
     },
     {
-      "index": 187,
+      "index": 182,
       "kind": "phrase",
       "text": "Él tiene mucho dinero.",
       "gloss": {
         "en": "He has a lot of money.",
-        "tr": "O aşırı para harcıyor.",
+        "tr": "Onun çok parası var.",
         "de": "Er hat viel Geld.",
         "fr": "Il a beaucoup d'argent.",
         "pt-BR": "Ele tem muito dinheiro.",
@@ -3253,11 +3179,12 @@
       },
       "freqRank": 224,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 188,
+      "index": 183,
       "kind": "phrase",
       "text": "No soy tu madre.",
       "gloss": {
@@ -3274,7 +3201,7 @@
       }
     },
     {
-      "index": 189,
+      "index": 184,
       "kind": "phrase",
       "text": "Soy como mi madre.",
       "gloss": {
@@ -3291,7 +3218,7 @@
       }
     },
     {
-      "index": 190,
+      "index": 185,
       "kind": "phrase",
       "text": "Tú eres mi madre.",
       "gloss": {
@@ -3309,7 +3236,7 @@
       }
     },
     {
-      "index": 191,
+      "index": 186,
       "kind": "phrase",
       "text": "Él sabe la verdad.",
       "gloss": {
@@ -3326,7 +3253,7 @@
       }
     },
     {
-      "index": 192,
+      "index": 187,
       "kind": "phrase",
       "text": "Ella sabe la verdad.",
       "gloss": {
@@ -3343,7 +3270,7 @@
       }
     },
     {
-      "index": 193,
+      "index": 188,
       "kind": "phrase",
       "text": "¿Puedo ser tu amigo?",
       "gloss": {
@@ -3360,7 +3287,7 @@
       }
     },
     {
-      "index": 194,
+      "index": 189,
       "kind": "phrase",
       "text": "Él es su amigo.",
       "gloss": {
@@ -3377,7 +3304,7 @@
       }
     },
     {
-      "index": 195,
+      "index": 190,
       "kind": "phrase",
       "text": "Tú eres mi amigo.",
       "gloss": {
@@ -3394,7 +3321,7 @@
       }
     },
     {
-      "index": 196,
+      "index": 191,
       "kind": "phrase",
       "text": "Quiero a mi mamá.",
       "gloss": {
@@ -3412,7 +3339,7 @@
       }
     },
     {
-      "index": 197,
+      "index": 192,
       "kind": "phrase",
       "text": "Eso no se dice.",
       "gloss": {
@@ -3429,7 +3356,7 @@
       }
     },
     {
-      "index": 198,
+      "index": 193,
       "kind": "phrase",
       "text": "¿Qué quieres hacer hoy?",
       "gloss": {
@@ -3446,7 +3373,7 @@
       }
     },
     {
-      "index": 199,
+      "index": 194,
       "kind": "phrase",
       "text": "Hoy me siento bien.",
       "gloss": {
@@ -3463,7 +3390,7 @@
       }
     },
     {
-      "index": 200,
+      "index": 195,
       "kind": "phrase",
       "text": "La vida es buena.",
       "gloss": {
@@ -3480,7 +3407,7 @@
       }
     },
     {
-      "index": 201,
+      "index": 196,
       "kind": "phrase",
       "text": "Hoy no tengo dinero.",
       "gloss": {
@@ -3497,7 +3424,7 @@
       }
     },
     {
-      "index": 202,
+      "index": 197,
       "kind": "phrase",
       "text": "¿Qué te gusta hacer?",
       "gloss": {
@@ -3514,7 +3441,7 @@
       }
     },
     {
-      "index": 203,
+      "index": 198,
       "kind": "phrase",
       "text": "Me gusta estar solo.",
       "gloss": {
@@ -3531,7 +3458,7 @@
       }
     },
     {
-      "index": 204,
+      "index": 199,
       "kind": "phrase",
       "text": "Nadie sabe su nombre.",
       "gloss": {
@@ -3549,7 +3476,7 @@
       }
     },
     {
-      "index": 205,
+      "index": 200,
       "kind": "phrase",
       "text": "Yo sé tu nombre.",
       "gloss": {
@@ -3566,7 +3493,7 @@
       }
     },
     {
-      "index": 206,
+      "index": 201,
       "kind": "phrase",
       "text": "Tú también, hijo mío.",
       "gloss": {
@@ -3583,7 +3510,7 @@
       }
     },
     {
-      "index": 207,
+      "index": 202,
       "kind": "phrase",
       "text": "Tengo que hacerlo ahora.",
       "gloss": {
@@ -3600,7 +3527,7 @@
       }
     },
     {
-      "index": 208,
+      "index": 203,
       "kind": "phrase",
       "text": "No quiero hablar contigo.",
       "gloss": {
@@ -3617,7 +3544,7 @@
       }
     },
     {
-      "index": 209,
+      "index": 204,
       "kind": "phrase",
       "text": "¿Dónde está el problema?",
       "gloss": {
@@ -3635,7 +3562,7 @@
       }
     },
     {
-      "index": 210,
+      "index": 205,
       "kind": "phrase",
       "text": "Entonces, ¿qué problema tienes?",
       "gloss": {
@@ -3652,7 +3579,7 @@
       }
     },
     {
-      "index": 211,
+      "index": 206,
       "kind": "phrase",
       "text": "¿Qué hora es ahora?",
       "gloss": {
@@ -3669,7 +3596,7 @@
       }
     },
     {
-      "index": 212,
+      "index": 207,
       "kind": "phrase",
       "text": "¿Dónde está su familia?",
       "gloss": {
@@ -3686,7 +3613,7 @@
       }
     },
     {
-      "index": 213,
+      "index": 208,
       "kind": "phrase",
       "text": "¿Qué es el amor?",
       "gloss": {
@@ -3703,7 +3630,7 @@
       }
     },
     {
-      "index": 214,
+      "index": 209,
       "kind": "phrase",
       "text": "¿Quién es esta chica?",
       "gloss": {
@@ -3722,7 +3649,7 @@
       }
     },
     {
-      "index": 215,
+      "index": 210,
       "kind": "phrase",
       "text": "Todavía no lo sé.",
       "gloss": {
@@ -3739,7 +3666,7 @@
       }
     },
     {
-      "index": 216,
+      "index": 211,
       "kind": "phrase",
       "text": "¿Dónde está tu hermano?",
       "gloss": {
@@ -3757,7 +3684,7 @@
       }
     },
     {
-      "index": 217,
+      "index": 212,
       "kind": "phrase",
       "text": "Este es mi hermano.",
       "gloss": {
@@ -3774,7 +3701,7 @@
       }
     },
     {
-      "index": 218,
+      "index": 213,
       "kind": "phrase",
       "text": "He visto muchas cosas.",
       "gloss": {
@@ -3791,7 +3718,7 @@
       }
     },
     {
-      "index": 219,
+      "index": 214,
       "kind": "phrase",
       "text": "¿De qué estás hablando?",
       "gloss": {
@@ -3808,7 +3735,7 @@
       }
     },
     {
-      "index": 220,
+      "index": 215,
       "kind": "phrase",
       "text": "Gracias por la ayuda.",
       "gloss": {
@@ -3825,7 +3752,7 @@
       }
     },
     {
-      "index": 221,
+      "index": 216,
       "kind": "phrase",
       "text": "Adiós y buena suerte.",
       "gloss": {
@@ -3842,7 +3769,7 @@
       }
     },
     {
-      "index": 222,
+      "index": 217,
       "kind": "phrase",
       "text": "Deja que se vaya.",
       "gloss": {
@@ -3859,7 +3786,7 @@
       }
     },
     {
-      "index": 223,
+      "index": 218,
       "kind": "phrase",
       "text": "¿Por qué tienes miedo?",
       "gloss": {
@@ -3876,7 +3803,7 @@
       }
     },
     {
-      "index": 224,
+      "index": 219,
       "kind": "phrase",
       "text": "Ella es mi esposa.",
       "gloss": {
@@ -3893,7 +3820,7 @@
       }
     },
     {
-      "index": 225,
+      "index": 220,
       "kind": "phrase",
       "text": "¡Buenas noches a todos!",
       "gloss": {
@@ -3910,7 +3837,7 @@
       }
     },
     {
-      "index": 226,
+      "index": 221,
       "kind": "phrase",
       "text": "Mi casa es grande.",
       "gloss": {
@@ -3928,7 +3855,7 @@
       }
     },
     {
-      "index": 227,
+      "index": 222,
       "kind": "phrase",
       "text": "¿Dónde está mi coche?",
       "gloss": {
@@ -3945,7 +3872,7 @@
       }
     },
     {
-      "index": 228,
+      "index": 223,
       "kind": "phrase",
       "text": "Esto es un coche.",
       "gloss": {
@@ -3962,7 +3889,7 @@
       }
     },
     {
-      "index": 229,
+      "index": 224,
       "kind": "phrase",
       "text": "Estoy en el coche.",
       "gloss": {
@@ -3979,7 +3906,7 @@
       }
     },
     {
-      "index": 230,
+      "index": 225,
       "kind": "phrase",
       "text": "Tengo un coche viejo.",
       "gloss": {
@@ -3996,7 +3923,7 @@
       }
     },
     {
-      "index": 231,
+      "index": 226,
       "kind": "phrase",
       "text": "Estoy en mi coche.",
       "gloss": {
@@ -4013,7 +3940,7 @@
       }
     },
     {
-      "index": 232,
+      "index": 227,
       "kind": "phrase",
       "text": "Hoy no hay clase.",
       "gloss": {
@@ -4030,7 +3957,7 @@
       }
     },
     {
-      "index": 233,
+      "index": 228,
       "kind": "phrase",
       "text": "No tenemos clase hoy.",
       "gloss": {
@@ -4047,7 +3974,7 @@
       }
     },
     {
-      "index": 234,
+      "index": 229,
       "kind": "phrase",
       "text": "¿Por qué dices eso?",
       "gloss": {
@@ -4064,7 +3991,7 @@
       }
     },
     {
-      "index": 235,
+      "index": 230,
       "kind": "phrase",
       "text": "Haré lo que pueda.",
       "gloss": {
@@ -4081,7 +4008,7 @@
       }
     },
     {
-      "index": 236,
+      "index": 231,
       "kind": "phrase",
       "text": "Es solo un juego.",
       "gloss": {
@@ -4098,7 +4025,7 @@
       }
     },
     {
-      "index": 237,
+      "index": 232,
       "kind": "phrase",
       "text": "Deberías decir la verdad.",
       "gloss": {
@@ -4115,7 +4042,7 @@
       }
     },
     {
-      "index": 238,
+      "index": 233,
       "kind": "phrase",
       "text": "No puedo vivir así.",
       "gloss": {
@@ -4132,7 +4059,7 @@
       }
     },
     {
-      "index": 239,
+      "index": 234,
       "kind": "phrase",
       "text": "¿Dónde está la escuela?",
       "gloss": {
@@ -4149,12 +4076,12 @@
       }
     },
     {
-      "index": 240,
+      "index": 235,
       "kind": "phrase",
       "text": "La comida está lista.",
       "gloss": {
         "en": "The food is ready.",
-        "tr": "Öğle yemeği hazır.",
+        "tr": "Yemek hazır.",
         "de": "Das Essen ist fertig.",
         "fr": "Le repas est prêt.",
         "pt-BR": "A comida está pronta.",
@@ -4163,11 +4090,12 @@
       },
       "freqRank": 277,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 241,
+      "index": 236,
       "kind": "phrase",
       "text": "¡No es culpa mía!",
       "gloss": {
@@ -4185,7 +4113,7 @@
       }
     },
     {
-      "index": 242,
+      "index": 237,
       "kind": "phrase",
       "text": "¿Dónde está tu perro?",
       "gloss": {
@@ -4203,7 +4131,7 @@
       }
     },
     {
-      "index": 243,
+      "index": 238,
       "kind": "phrase",
       "text": "Él tiene un perro.",
       "gloss": {
@@ -4222,25 +4150,7 @@
       }
     },
     {
-      "index": 244,
-      "kind": "phrase",
-      "text": "La guerra es mala.",
-      "gloss": {
-        "en": "War is bad.",
-        "tr": "Savaş kötüdür.",
-        "de": "Krieg ist schlecht.",
-        "fr": "La guerre est mauvaise.",
-        "pt-BR": "A guerra é má.",
-        "ru": "Война — это плохо.",
-        "ar": "الحرب سيئة."
-      },
-      "freqRank": 281,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 245,
+      "index": 239,
       "kind": "phrase",
       "text": "¿Quién es tu abogado?",
       "gloss": {
@@ -4258,7 +4168,7 @@
       }
     },
     {
-      "index": 246,
+      "index": 240,
       "kind": "phrase",
       "text": "Ésta es su casa.",
       "gloss": {
@@ -4276,7 +4186,7 @@
       }
     },
     {
-      "index": 247,
+      "index": 241,
       "kind": "phrase",
       "text": "Quiero comprar una casa.",
       "gloss": {
@@ -4294,7 +4204,7 @@
       }
     },
     {
-      "index": 248,
+      "index": 242,
       "kind": "phrase",
       "text": "El perro es blanco.",
       "gloss": {
@@ -4312,7 +4222,7 @@
       }
     },
     {
-      "index": 249,
+      "index": 243,
       "kind": "phrase",
       "text": "Mi nombre es Tom.",
       "gloss": {
@@ -4330,7 +4240,7 @@
       }
     },
     {
-      "index": 250,
+      "index": 244,
       "kind": "phrase",
       "text": "Tom es mi amigo.",
       "gloss": {
@@ -4348,11 +4258,11 @@
       }
     },
     {
-      "index": 251,
+      "index": 245,
       "kind": "phrase",
       "text": "Mi hermano es profesor.",
       "gloss": {
-        "en": "My brother is a professor.",
+        "en": "My brother is a teacher.",
         "tr": "Erkek kardeşim öğretmendir.",
         "de": "Mein Bruder ist ein Professor.",
         "fr": "Mon frère est professeur.",
@@ -4362,11 +4272,12 @@
       },
       "freqRank": 288,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 252,
+      "index": 246,
       "kind": "phrase",
       "text": "No sé qué hora es.",
       "gloss": {
@@ -4384,11 +4295,11 @@
       }
     },
     {
-      "index": 253,
+      "index": 247,
       "kind": "phrase",
       "text": "Mi madre no puede venir.",
       "gloss": {
-        "en": "My mother can't attend.",
+        "en": "My mother can't come.",
         "tr": "Annem gelemez.",
         "de": "Meine Mutter kann nicht kommen.",
         "fr": "Ma mère ne peut pas venir.",
@@ -4398,11 +4309,12 @@
       },
       "freqRank": 290,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 254,
+      "index": 248,
       "kind": "phrase",
       "text": "No es de los nuestros.",
       "gloss": {
@@ -4420,7 +4332,7 @@
       }
     },
     {
-      "index": 255,
+      "index": 249,
       "kind": "phrase",
       "text": "¿De qué trata el libro?",
       "gloss": {
@@ -4438,7 +4350,7 @@
       }
     },
     {
-      "index": 256,
+      "index": 250,
       "kind": "phrase",
       "text": "¡No me lo puedo creer!",
       "gloss": {
@@ -4456,7 +4368,7 @@
       }
     },
     {
-      "index": 257,
+      "index": 251,
       "kind": "phrase",
       "text": "Tengo que irme a dormir.",
       "gloss": {
@@ -4474,7 +4386,7 @@
       }
     },
     {
-      "index": 258,
+      "index": 252,
       "kind": "phrase",
       "text": "Tom es un amigo mío.",
       "gloss": {
@@ -4492,7 +4404,7 @@
       }
     },
     {
-      "index": 259,
+      "index": 253,
       "kind": "phrase",
       "text": "Mi tío me dio su coche.",
       "gloss": {
@@ -4510,7 +4422,7 @@
       }
     },
     {
-      "index": 260,
+      "index": 254,
       "kind": "phrase",
       "text": "El perro es el mejor amigo del hombre.",
       "gloss": {
@@ -4529,7 +4441,7 @@
       }
     },
     {
-      "index": 261,
+      "index": 255,
       "kind": "phrase",
       "text": "Mi tío vive cerca de la escuela.",
       "gloss": {
@@ -4547,7 +4459,7 @@
       }
     },
     {
-      "index": 262,
+      "index": 256,
       "kind": "phrase",
       "text": "Ojos que no ven, corazón que no siente.",
       "gloss": {
@@ -4565,7 +4477,7 @@
       }
     },
     {
-      "index": 263,
+      "index": 257,
       "kind": "phrase",
       "text": "¿Cuál es el lugar más bonito del mundo?",
       "gloss": {

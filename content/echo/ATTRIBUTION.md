@@ -298,6 +298,38 @@ table on their own wiki: 36 of the 39 Spanish phrasebook entries that reached
 `absoluteBeginner` resolved to nothing. Where English is about half set
 expressions, these are around one in twenty.
 
+### What has been read so far, and what has not
+
+**`es/absoluteBeginner.json`, first pass.** The 264 Spanish fronts and the
+English column read line by line; the other six columns only linted, except
+Turkish, which was read line by line as well. It is still `"reviewed": false`,
+because five columns have not been read and the flag would say they had.
+
+Six items dropped, leaving 258: `¿Quién la mató?`, `Tom murió solo.`,
+`La respuesta es 42.`, `Sé que no sé.`, `La gente es gente.` and
+`La guerra es mala.` — Tatoeba filler and slogans rather than anything a
+learner would say in their first week. The death and illness sentences that
+are ordinary speech stayed, on the precedent of the English pass.
+
+Ten English glosses corrected, and the pattern in them is worth knowing
+before reading the next pack: **the English column is the loosest one**,
+because English has the most Tatoeba contributors and the most idiom. Every
+one of the ten had five or six other locales agreeing literally while English
+went its own way — `¿Qué has dicho?` answered "Come again?", `Es muy fácil.`
+answered "It's as easy as pie.", `Tengo un perro.` answered "I keep a dog."
+One was a person error rather than a register one: `Sé dónde vive.` said "I
+know where you live" where the German, French, Turkish and Russian all say
+"he". They were brought into line with the columns that agreed, not
+translated afresh.
+
+Six Turkish glosses corrected: `günaydin` for `günaydın`, a calque
+("Sözcük kaybındayım" for _no tengo palabras_), a plain mistranslation
+(`Él tiene mucho dinero.` answered "O aşırı para harcıyor.", he _spends_ a
+lot), `Öğle yemeği hazır.` for _la comida está lista_ (lunch, not food), and
+two clumsy constructions. Each carries `tr` in `review.edited`.
+
+Nothing has been read in the other fourteen files.
+
 The reason it exists is worth stating plainly, because the obvious shortcut is
 very tempting and it does not work. Wiktionary's translation tables are
 sense-carrying, which is exactly what a gloss needs — but picking a sense
