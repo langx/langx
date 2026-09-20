@@ -15,6 +15,19 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
+/*
+ * Resolved once, above `android { }`, and not inline in `defaultConfig`.
+ *
+ * `versionCode (expr) as Integer` reads like a cast and is not one: Groovy
+ * binds it as `versionCode(expr) as Integer`, so the coercion lands on the
+ * method's return value and the *argument* stays a String. With no `-P` the
+ * argument is the literal 1 and everything looks fine; pass
+ * `-PwearVersionCode=1000` and AGP fails with "Value is null", pointing at a
+ * line whose text says Integer. Naming the value first removes the trap.
+ */
+def wearVersionCode = (project.findProperty('wearVersionCode') ?: 1) as Integer
+def wearVersionName = (project.findProperty('wearVersionName') ?: '1.0') as String
+
 android {
   namespace 'tech.newchapter.languageXchange.wear'
   compileSdk rootProject.ext.compileSdkVersion
@@ -35,8 +48,24 @@ android {
      */
     minSdk 30
     targetSdk rootProject.ext.targetSdkVersion
-    versionCode 1
-    versionName '1.0'
+    /*
+     * Passed in for a release, and the release build refuses to run without it
+     * — see `buildTypes.release` below.
+     *
+     * The watch APK goes to Play under the phone app's own application id, so
+     * Play sees two artefacts for one package and requires their version codes
+     * to differ. A number committed here would be one more place to remember
+     * on every release, and the one that was committed (1) would have been
+     * rejected on sight.
+     *
+     * The fallback is 1 rather than 0 because AGP rejects a non-positive
+     * version code while *configuring* the project, which happens before any
+     * check of ours can run and would take `assembleDebug` down with it. So
+     * the placeholder has to be valid, and the release gate below is what
+     * makes sure it is never the thing that ships.
+     */
+    versionCode wearVersionCode
+    versionName wearVersionName
   }
 
   buildFeatures { compose true }
@@ -66,13 +95,71 @@ android {
       keyAlias 'androiddebugkey'
       keyPassword 'android'
     }
+    /*
+     * The **phone app's** upload key, not a key of the watch's own. Play App
+     * Signing re-signs what we upload with the app signing key, so in
+     * production both artefacts end up carrying the same certificate and the
+     * Data Layer pairs — but only if the upload itself is signed with the one
+     * upload key Play holds for this package. A second key would be rejected
+     * at upload, and a debug key would be rejected before that.
+     *
+     * Read from the environment because this repo is public and the keystore
+     * is not in it.
+     */
+    upload {
+      def store = System.getenv('LANGX_UPLOAD_KEYSTORE')
+      if (store) {
+        storeFile file(store)
+        storePassword System.getenv('LANGX_UPLOAD_KEYSTORE_PASSWORD')
+        keyAlias System.getenv('LANGX_UPLOAD_KEY_ALIAS')
+        keyPassword System.getenv('LANGX_UPLOAD_KEY_PASSWORD')
+      }
+    }
   }
 
   buildTypes {
     debug { signingConfig signingConfigs.shared }
     release {
       minifyEnabled false
-      signingConfig signingConfigs.shared
+      /*
+       * Signed with the upload key and refusing to build without it.
+       *
+       * This used to sign `release` with the debug keystore above. That was
+       * right for the only thing the release build had ever been asked to do —
+       * run on a paired emulator, where the watch and the phone had to carry
+       * the same key — and wrong for the only thing it is asked to do now.
+       * Play rejects a debug-signed upload, and it rejects it after the
+       * build, so the failure would arrive at the end of the slow part.
+       *
+       * Failing here instead, by name, is the whole point: the message says
+       * which variable is missing rather than leaving an unuploadable APK on
+       * disk that looks exactly like a good one.
+       */
+      signingConfig signingConfigs.upload
+    }
+  }
+
+  /*
+   * `assembleRelease` is the only task that needs the four variables and the
+   * version code, so the check is scoped to it: `assembleDebug` on an emulator
+   * keeps working with nothing exported, which is how the watch app is
+   * developed.
+   */
+  gradle.taskGraph.whenReady { graph ->
+    if (!graph.allTasks.any { it.project == project && it.name.toLowerCase().contains('release') }) return
+    def missing = [
+      'LANGX_UPLOAD_KEYSTORE',
+      'LANGX_UPLOAD_KEYSTORE_PASSWORD',
+      'LANGX_UPLOAD_KEY_ALIAS',
+      'LANGX_UPLOAD_KEY_PASSWORD',
+    ].findAll { !System.getenv(it) }
+    if (!project.hasProperty('wearVersionCode')) missing << '-PwearVersionCode=<n>'
+    if (missing) {
+      throw new GradleException(
+        "The Wear release build needs ${missing.join(', ')}. " +
+        'It signs with the phone app\'s upload key — the same key Play holds for ' +
+        'tech.newchapter.languageXchange — and takes a version code that differs ' +
+        'from the phone\'s. See docs/plans/phase-2-watch.md.')
     }
   }
 }

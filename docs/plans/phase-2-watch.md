@@ -275,6 +275,44 @@ lowering their wrist.
   in [`phase-1-mac-handoff.md`](phase-1-mac-handoff.md): eas-cli cannot patch
   App Groups.
 
+## Building the watch APK for Play
+
+The Wear app is a `com.android.application` module of the phone's Gradle build,
+so it produces **its own APK**. It is not inside the phone's app bundle — 2.6's
+`.aab` carries one module, `base/`, and nothing else. Getting the watch app to
+Play therefore means uploading a second artefact, and the checklist under
+_Advanced settings → Form factors → Wear OS_ is waiting for exactly that:
+"Release a Wear OS app bundle or APK to a testing track".
+
+Two things the emulator build never needed:
+
+- **The upload key.** `release` used to sign with `app/debug.keystore`, which
+  was right for a paired emulator — the Data Layer matches on application id
+  _and_ certificate — and is rejected by Play. It now signs with the phone
+  app's own upload key, read from `LANGX_UPLOAD_KEYSTORE`,
+  `LANGX_UPLOAD_KEYSTORE_PASSWORD`, `LANGX_UPLOAD_KEY_ALIAS` and
+  `LANGX_UPLOAD_KEY_PASSWORD`. The same key, not a key of the watch's own:
+  Play App Signing re-signs both artefacts with the one app signing key, which
+  is what makes the pairing hold in production.
+- **A version code.** Play sees two artefacts under one application id and
+  requires their version codes to differ, so it is passed in rather than
+  committed: `-PwearVersionCode=<n>` (and `-PwearVersionName=<x.y>`). The
+  committed `versionCode 1` would have been refused on sight.
+
+`assembleRelease` refuses to start without all five and names the ones that are
+missing; `assembleDebug` needs none of them and is untouched.
+
+    cd apps/mobile && npx expo prebuild --platform android
+    cd android && ./gradlew :wear:assembleRelease \
+      -PwearVersionCode=<n> -PwearVersionName=2.6
+    # wear/build/outputs/apk/release/wear-release.apk
+
+Verified 20 September 2026 against a throwaway key: the APK builds, signs, and
+reports `tech.newchapter.languageXchange`, the version code that was passed and
+`uses-feature android.hardware.type.watch`. **What is still unverified is Play
+itself** — no watch artefact has been uploaded, so which version code it
+accepts beside the phone's is known only from its documentation.
+
 ## Two traps worth knowing before repeating this
 
 - **A killed `CODE_SIGNING_ALLOWED=NO` build poisons the derived data.**
