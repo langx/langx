@@ -2,7 +2,7 @@
   "id": "fr:absoluteBeginner",
   "lang": "fr",
   "level": "absoluteBeginner",
-  "contentVersion": 3,
+  "contentVersion": 4,
   "reviewed": true,
   "sources": [
     {
@@ -10,11 +10,7 @@
       "licence": "CC BY-SA 4.0",
       "url": "https://kaikki.org/"
     },
-    {
-      "name": "Tatoeba",
-      "licence": "CC BY 2.0 FR",
-      "url": "https://tatoeba.org/"
-    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
       "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
       "licence": "CC BY-SA 4.0",
@@ -64,23 +60,14 @@
         ],
         "edited": ["pt-BR"]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/0-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/0-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-raising-hand"
     },
     {
       "index": 1,
       "kind": "phrase",
       "text": "pourquoi pas",
-      "gloss": {
-        "en": "why not",
-        "de": "warum nicht",
-        "es": "por qué no",
-        "ar": "لم لا"
-      },
+      "gloss": { "en": "why not", "de": "warum nicht", "es": "por qué no", "ar": "لم لا" },
       "freqRank": 3,
       "review": {
         "sense": "On pourrait le faire, pour quelle raison ne le ferait-on pas.",
@@ -95,12 +82,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/1-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/1-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 2,
@@ -140,12 +123,8 @@
         ],
         "edited": ["tr"]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/2-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/2-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:smiling-face-with-smiling-eyes"
     },
     {
       "index": 3,
@@ -177,12 +156,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/3-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/3-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:astonished-face"
     },
     {
       "index": 4,
@@ -219,12 +194,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/4-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/4-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:folded-hands"
     },
     {
       "index": 5,
@@ -263,12 +234,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/5-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/5-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:crescent-moon"
     },
     {
       "index": 6,
@@ -307,12 +274,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/6-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/6-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:waving-hand"
     },
     {
       "index": 7,
@@ -347,12 +310,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/7-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/7-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:four-leaf-clover"
     },
     {
       "index": 8,
@@ -386,21 +345,14 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/8-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/8-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:relieved-face"
     },
     {
       "index": 9,
       "kind": "phrase",
       "text": "bonne journée",
-      "gloss": {
-        "en": "have a nice day",
-        "ru": "всего хорошего"
-      },
+      "gloss": { "en": "have a nice day", "ru": "всего хорошего" },
       "freqRank": 11,
       "review": {
         "sense": "Formule de politesse utilisée lorsqu’on quitte quelqu’un.",
@@ -420,12 +372,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/9-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/9-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:smiling-face-with-smiling-eyes"
     },
     {
       "index": 10,
@@ -456,12 +404,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/10-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/10-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:luggage"
     },
     {
       "index": 11,
@@ -501,20 +445,14 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/11-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/11-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:fireworks"
     },
     {
       "index": 12,
       "kind": "phrase",
       "text": "à droite",
-      "gloss": {
-        "en": "on the right"
-      },
+      "gloss": { "en": "on the right" },
       "example": "La troupe fit un à droite.",
       "freqRank": 19,
       "review": {
@@ -541,22 +479,14 @@
         ],
         "edited": ["en"]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/12-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/12-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:right-arrow"
     },
     {
       "index": 13,
       "kind": "phrase",
       "text": "comment ça va",
-      "gloss": {
-        "en": "how are you",
-        "de": "wie geht’s",
-        "ru": "как дела"
-      },
+      "gloss": { "en": "how are you", "de": "wie geht’s", "ru": "как дела" },
       "freqRank": 21,
       "review": {
         "sense": "Salutation interrogative.",
@@ -576,12 +506,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/13-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/13-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-raising-hand"
     },
     {
       "index": 14,
@@ -609,12 +535,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/14-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/14-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:new-button"
     },
     {
       "index": 15,
@@ -651,22 +573,14 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/15-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/15-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:handshake"
     },
     {
       "index": 16,
       "kind": "phrase",
       "text": "je vous en prie",
-      "gloss": {
-        "en": "please",
-        "tr": "rica ederim",
-        "pt-BR": "eu vos suplico"
-      },
+      "gloss": { "en": "please", "tr": "rica ederim", "pt-BR": "eu vos suplico" },
       "freqRank": 36,
       "review": {
         "sense": "Je vous supplie de faire ça",
@@ -691,23 +605,14 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/16-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/16-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:folded-hands"
     },
     {
       "index": 17,
       "kind": "phrase",
       "text": "comment vas-tu",
-      "gloss": {
-        "en": "how are you",
-        "de": "wie geht es dir",
-        "es": "qué tal",
-        "ru": "как дела"
-      },
+      "gloss": { "en": "how are you", "de": "wie geht es dir", "es": "qué tal", "ru": "как дела" },
       "example": "Comment vas-tu ? — Ça va, et toi ?",
       "freqRank": 27,
       "review": {
@@ -733,12 +638,8 @@
           }
         ]
       },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/17-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/17-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-raising-hand"
     },
     {
       "index": 18,
@@ -752,16 +653,9 @@
         "ru": "Это кто?"
       },
       "freqRank": 40,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/18-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/18-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 19,
@@ -775,15 +669,9 @@
         "ru": "Вот мы и пришли."
       },
       "freqRank": 42,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/19-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/19-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 20,
@@ -797,15 +685,9 @@
         "ru": "Кто она?"
       },
       "freqRank": 41,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/20-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/20-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:woman"
     },
     {
       "index": 21,
@@ -819,15 +701,9 @@
         "ru": "Что она делает?"
       },
       "freqRank": 44,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/21-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/21-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:briefcase"
     },
     {
       "index": 22,
@@ -842,15 +718,9 @@
         "ru": "Кто я?"
       },
       "freqRank": 43,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/22-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/22-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:identification-card"
     },
     {
       "index": 23,
@@ -864,15 +734,9 @@
         "ru": "И не я."
       },
       "freqRank": 45,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/23-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/23-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-raising-hand"
     },
     {
       "index": 24,
@@ -886,15 +750,9 @@
         "ru": "Всё в порядке."
       },
       "freqRank": 46,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/24-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/24-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:ok-hand"
     },
     {
       "index": 25,
@@ -908,15 +766,9 @@
         "ru": "Я всё знаю."
       },
       "freqRank": 47,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/25-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/25-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:brain"
     },
     {
       "index": 26,
@@ -930,15 +782,9 @@
         "ru": "Как хочешь."
       },
       "freqRank": 48,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/26-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/26-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 27,
@@ -952,15 +798,9 @@
         "ru": "Я этого хочу."
       },
       "freqRank": 49,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/27-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/27-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 28,
@@ -975,16 +815,9 @@
         "ru": "Чего ты хочешь?"
       },
       "freqRank": 50,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/28-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/28-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 29,
@@ -998,15 +831,9 @@
         "ru": "Он здесь!"
       },
       "freqRank": 51,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/29-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/29-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 30,
@@ -1020,15 +847,9 @@
         "ru": "Хорошо. А ты?"
       },
       "freqRank": 52,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/30-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/30-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:ok-hand"
     },
     {
       "index": 31,
@@ -1042,16 +863,9 @@
         "ru": "Я — это ты."
       },
       "freqRank": 53,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/31-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/31-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person"
     },
     {
       "index": 32,
@@ -1065,15 +879,9 @@
         "ar": "من يقول هذا؟"
       },
       "freqRank": 54,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/32-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/32-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:speaking-head"
     },
     {
       "index": 33,
@@ -1089,16 +897,9 @@
         "ar": "أين أنت؟"
       },
       "freqRank": 56,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/33-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/33-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 34,
@@ -1113,15 +914,9 @@
         "ru": "Ты кто?"
       },
       "freqRank": 55,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/34-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/34-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:detective"
     },
     {
       "index": 35,
@@ -1135,15 +930,9 @@
         "ru": "Где я?"
       },
       "freqRank": 57,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/35-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/35-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:compass"
     },
     {
       "index": 36,
@@ -1157,15 +946,9 @@
         "ru": "Кто там?"
       },
       "freqRank": 58,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/36-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/36-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:door"
     },
     {
       "index": 37,
@@ -1180,15 +963,9 @@
         "ru": "Где они?"
       },
       "freqRank": 59,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/37-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/37-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 38,
@@ -1202,15 +979,9 @@
         "ru": "У меня всё хорошо."
       },
       "freqRank": 60,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/38-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/38-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:ok-hand"
     },
     {
       "index": 39,
@@ -1224,15 +995,9 @@
         "ru": "Да или нет?"
       },
       "freqRank": 61,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/39-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/39-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 40,
@@ -1247,15 +1012,8 @@
         "ru": "Пан или пропал."
       },
       "freqRank": 62,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/40-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/40-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
       "index": 41,
@@ -1269,15 +1027,9 @@
         "ru": "Ты хороший."
       },
       "freqRank": 63,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/41-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/41-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 42,
@@ -1291,15 +1043,9 @@
         "ru": "Спасибо за всё!"
       },
       "freqRank": 64,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/42-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/42-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:folded-hands"
     },
     {
       "index": 43,
@@ -1313,15 +1059,9 @@
         "ru": "Замечательно, спасибо."
       },
       "freqRank": 65,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/43-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/43-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:folded-hands"
     },
     {
       "index": 44,
@@ -1335,15 +1075,9 @@
         "ar": "لا ليس حقا."
       },
       "freqRank": 66,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/44-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/44-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 45,
@@ -1358,15 +1092,9 @@
         "ru": "Здесь и сейчас."
       },
       "freqRank": 67,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/45-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/45-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:stopwatch"
     },
     {
       "index": 46,
@@ -1380,16 +1108,9 @@
         "ru": "Кто вы?"
       },
       "freqRank": 68,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/46-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/46-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:detective"
     },
     {
       "index": 47,
@@ -1403,15 +1124,9 @@
         "ru": "Да, немного."
       },
       "freqRank": 69,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/47-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/47-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:ok-hand"
     },
     {
       "index": 48,
@@ -1425,15 +1140,9 @@
         "ru": "Сделай что-нибудь!"
       },
       "freqRank": 70,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/48-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/48-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:hammer-and-wrench"
     },
     {
       "index": 49,
@@ -1447,15 +1156,9 @@
         "ru": "Что ты делаешь?"
       },
       "freqRank": 71,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/49-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/49-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 50,
@@ -1469,15 +1172,9 @@
         "ru": "Почему всегда я?"
       },
       "freqRank": 72,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/50-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/50-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:index-pointing-at-the-viewer"
     },
     {
       "index": 51,
@@ -1491,15 +1188,9 @@
         "ru": "Ещё раз."
       },
       "freqRank": 73,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/51-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/51-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:repeat-button"
     },
     {
       "index": 52,
@@ -1514,15 +1205,9 @@
         "ru": "Я уверен."
       },
       "freqRank": 74,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/52-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/52-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:check-mark-button"
     },
     {
       "index": 53,
@@ -1536,15 +1221,9 @@
         "pt-BR": "Sim, é claro."
       },
       "freqRank": 75,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/53-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/53-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 54,
@@ -1558,15 +1237,9 @@
         "ru": "Нет, не очень."
       },
       "freqRank": 76,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/54-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/54-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 55,
@@ -1580,15 +1253,9 @@
         "ru": "Отец где?"
       },
       "freqRank": 77,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/55-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/55-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:man"
     },
     {
       "index": 56,
@@ -1602,15 +1269,9 @@
         "ru": "Я тебе верю."
       },
       "freqRank": 78,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/56-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/56-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 57,
@@ -1625,16 +1286,9 @@
         "ru": "Бог хороший."
       },
       "freqRank": 79,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/57-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/57-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:folded-hands"
     },
     {
       "index": 58,
@@ -1648,16 +1302,9 @@
         "ar": "من هو الله؟"
       },
       "freqRank": 80,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/58-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/58-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:folded-hands"
     },
     {
       "index": 59,
@@ -1671,15 +1318,9 @@
         "ru": "Я их люблю."
       },
       "freqRank": 81,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/59-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/59-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 60,
@@ -1693,15 +1334,9 @@
         "ru": "Эй ты! Подойди сюда."
       },
       "freqRank": 82,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/60-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/60-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:palm-up-hand"
     },
     {
       "index": 61,
@@ -1715,16 +1350,9 @@
         "ru": "Это правда?"
       },
       "freqRank": 83,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/61-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/61-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 62,
@@ -1738,15 +1366,9 @@
         "ru": "Ей восемь лет."
       },
       "freqRank": 84,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/62-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/62-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:birthday-cake"
     },
     {
       "index": 63,
@@ -1760,15 +1382,9 @@
         "ru": "Мне лучше."
       },
       "freqRank": 85,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/63-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/63-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:face-with-head-bandage"
     },
     {
       "index": 64,
@@ -1783,15 +1399,9 @@
         "ru": "Куда ты идёшь?"
       },
       "freqRank": 86,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/64-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/64-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:compass"
     },
     {
       "index": 65,
@@ -1805,15 +1415,9 @@
         "ru": "Ты меня видишь?"
       },
       "freqRank": 87,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/65-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/65-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:eyes"
     },
     {
       "index": 66,
@@ -1827,15 +1431,9 @@
         "ru": "Что я вижу?"
       },
       "freqRank": 88,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/66-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/66-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:eyes"
     },
     {
       "index": 67,
@@ -1851,15 +1449,9 @@
         "ar": "أنت محقّ."
       },
       "freqRank": 89,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/67-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/67-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:check-mark"
     },
     {
       "index": 68,
@@ -1874,15 +1466,9 @@
         "ru": "Спокойной ночи, мама."
       },
       "freqRank": 90,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/68-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/68-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:crescent-moon"
     },
     {
       "index": 69,
@@ -1896,15 +1482,9 @@
         "ru": "Он был одинок."
       },
       "freqRank": 91,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/69-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/69-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-standing"
     },
     {
       "index": 70,
@@ -1918,15 +1498,9 @@
         "ru": "Я хочу помочь."
       },
       "freqRank": 92,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/70-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/70-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:handshake"
     },
     {
       "index": 71,
@@ -1940,15 +1514,9 @@
         "ar": "أنظر إلى هذا المنزل."
       },
       "freqRank": 93,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/71-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/71-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:house"
     },
     {
       "index": 72,
@@ -1962,15 +1530,9 @@
         "ru": "Как хотите."
       },
       "freqRank": 94,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/72-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/72-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 73,
@@ -1984,15 +1546,9 @@
         "ru": "Вам чего?"
       },
       "freqRank": 95,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/73-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/73-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 74,
@@ -2006,15 +1562,9 @@
         "ru": "Никто не знает."
       },
       "freqRank": 96,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/74-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/74-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 75,
@@ -2028,15 +1578,9 @@
         "ru": "Мы здесь."
       },
       "freqRank": 97,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/75-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/75-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 76,
@@ -2050,15 +1594,9 @@
         "ru": "Где мы?"
       },
       "freqRank": 98,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/76-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/76-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:world-map"
     },
     {
       "index": 77,
@@ -2072,15 +1610,9 @@
         "ru": "Ты должен идти."
       },
       "freqRank": 99,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/77-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/77-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:door"
     },
     {
       "index": 78,
@@ -2094,15 +1626,9 @@
         "ru": "Не так быстро!"
       },
       "freqRank": 100,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/78-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/78-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:turtle"
     },
     {
       "index": 79,
@@ -2116,15 +1642,9 @@
         "ru": "Иди скорей сюда!"
       },
       "freqRank": 101,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/79-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/79-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:palm-up-hand"
     },
     {
       "index": 80,
@@ -2138,15 +1658,9 @@
         "ru": "Подумай о детях!"
       },
       "freqRank": 102,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/80-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/80-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:baby"
     },
     {
       "index": 81,
@@ -2161,15 +1675,9 @@
         "ru": "Какая хорошая идея!"
       },
       "freqRank": 103,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/81-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/81-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:light-bulb"
     },
     {
       "index": 82,
@@ -2183,15 +1691,9 @@
         "ru": "Она много говорит."
       },
       "freqRank": 104,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/82-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/82-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:speaking-head"
     },
     {
       "index": 83,
@@ -2206,16 +1708,9 @@
         "ar": "يتكلم بسرعة."
       },
       "freqRank": 105,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/83-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/83-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:speaking-head"
     },
     {
       "index": 84,
@@ -2229,15 +1724,9 @@
         "ru": "Спасибо за сегодня."
       },
       "freqRank": 106,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/84-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/84-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:folded-hands"
     },
     {
       "index": 85,
@@ -2251,15 +1740,9 @@
         "ru": "Он может прийти."
       },
       "freqRank": 107,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/85-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/85-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-walking"
     },
     {
       "index": 86,
@@ -2273,15 +1756,9 @@
         "ru": "Позвони ей завтра."
       },
       "freqRank": 108,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/86-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/86-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:mobile-phone"
     },
     {
       "index": 87,
@@ -2295,15 +1772,9 @@
         "ru": "Поздно."
       },
       "freqRank": 109,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/87-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/87-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:ten-o-clock"
     },
     {
       "index": 88,
@@ -2317,15 +1788,9 @@
         "ru": "Я могу помочь?"
       },
       "freqRank": 110,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/88-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/88-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:handshake"
     },
     {
       "index": 89,
@@ -2339,15 +1804,9 @@
         "ru": "Я знаю его."
       },
       "freqRank": 111,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/89-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/89-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:man"
     },
     {
       "index": 90,
@@ -2361,16 +1820,9 @@
         "ru": "Ты его знаешь?"
       },
       "freqRank": 114,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/90-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/90-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:man"
     },
     {
       "index": 91,
@@ -2384,15 +1836,9 @@
         "ru": "Я их знаю."
       },
       "freqRank": 112,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/91-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/91-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:busts-in-silhouette"
     },
     {
       "index": 92,
@@ -2406,15 +1852,9 @@
         "ru": "Можете идти."
       },
       "freqRank": 115,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/92-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/92-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:right-arrow"
     },
     {
       "index": 93,
@@ -2428,15 +1868,9 @@
         "ru": "Я тебя знаю."
       },
       "freqRank": 113,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/93-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/93-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:index-pointing-at-the-viewer"
     },
     {
       "index": 94,
@@ -2450,15 +1884,9 @@
         "ru": "Когда он придёт?"
       },
       "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/94-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/94-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-walking"
     },
     {
       "index": 95,
@@ -2472,15 +1900,9 @@
         "ru": "Мне надо выйти."
       },
       "freqRank": 116,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/95-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/95-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:door"
     },
     {
       "index": 96,
@@ -2494,15 +1916,9 @@
         "pt-BR": "Ela também vem?"
       },
       "freqRank": 120,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/96-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/96-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-walking"
     },
     {
       "index": 97,
@@ -2517,15 +1933,9 @@
         "ru": "Я тебя понимаю."
       },
       "freqRank": 117,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/97-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/97-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:brain"
     },
     {
       "index": 98,
@@ -2539,15 +1949,9 @@
         "ru": "Ты новенький?"
       },
       "freqRank": 121,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/98-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/98-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:new-button"
     },
     {
       "index": 99,
@@ -2561,16 +1965,9 @@
         "ru": "Я вас понимаю."
       },
       "freqRank": 118,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/99-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/99-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:brain"
     },
     {
       "index": 100,
@@ -2584,15 +1981,9 @@
         "ru": "Они друзья?"
       },
       "freqRank": 122,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/100-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/100-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:woman-and-man-holding-hands"
     },
     {
       "index": 101,
@@ -2606,15 +1997,9 @@
         "ru": "Она ушла."
       },
       "freqRank": 123,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/101-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/101-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:door"
     },
     {
       "index": 102,
@@ -2628,16 +2013,9 @@
         "ru": "Отпусти его!"
       },
       "freqRank": 124,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/102-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/102-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:door"
     },
     {
       "index": 103,
@@ -2651,15 +2029,9 @@
         "ru": "У них всё хорошо."
       },
       "freqRank": 127,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/103-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/103-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:ok-hand"
     },
     {
       "index": 104,
@@ -2673,15 +2045,9 @@
         "ru": "Отпусти меня!"
       },
       "freqRank": 125,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/104-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/104-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:door"
     },
     {
       "index": 105,
@@ -2695,15 +2061,9 @@
         "ru": "Давно не виделись."
       },
       "freqRank": 128,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/105-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/105-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:waving-hand"
     },
     {
       "index": 106,
@@ -2717,15 +2077,9 @@
         "ru": "Дай посмотреть."
       },
       "freqRank": 126,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/106-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/106-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:eyes"
     },
     {
       "index": 107,
@@ -2739,15 +2093,9 @@
         "ru": "А вот и поезд."
       },
       "freqRank": 129,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/107-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/107-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:train"
     },
     {
       "index": 108,
@@ -2762,15 +2110,9 @@
         "ru": "Он старый."
       },
       "freqRank": 130,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/108-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/108-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-beard"
     },
     {
       "index": 109,
@@ -2784,15 +2126,9 @@
         "ru": "Он пришёл?"
       },
       "freqRank": 131,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/109-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/109-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-walking"
     },
     {
       "index": 110,
@@ -2806,15 +2142,9 @@
         "ru": "Он пришёл!"
       },
       "freqRank": 132,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/110-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/110-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-walking"
     },
     {
       "index": 111,
@@ -2828,15 +2158,9 @@
         "ru": "Во сколько примерно?"
       },
       "freqRank": 133,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/111-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/111-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:one-o-clock"
     },
     {
       "index": 112,
@@ -2850,15 +2174,9 @@
         "ru": "Приходите послезавтра."
       },
       "freqRank": 134,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/112-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/112-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:tear-off-calendar"
     },
     {
       "index": 113,
@@ -2872,15 +2190,9 @@
         "ru": "Это моя комната."
       },
       "freqRank": 137,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/113-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/113-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:bed"
     },
     {
       "index": 114,
@@ -2894,15 +2206,9 @@
         "ru": "Пойдёмте с нами."
       },
       "freqRank": 135,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/114-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/114-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-walking"
     },
     {
       "index": 115,
@@ -2916,15 +2222,9 @@
         "ru": "Она красивая."
       },
       "freqRank": 138,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/115-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/115-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:cherry-blossom"
     },
     {
       "index": 116,
@@ -2938,15 +2238,9 @@
         "ru": "Приходите завтра утром."
       },
       "freqRank": 136,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/116-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/116-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:tear-off-calendar"
     },
     {
       "index": 117,
@@ -2960,15 +2254,9 @@
         "ru": "Я красивая."
       },
       "freqRank": 139,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/117-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/117-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:lipstick"
     },
     {
       "index": 118,
@@ -2982,15 +2270,9 @@
         "ru": "Ты готов?"
       },
       "freqRank": 140,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/118-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/118-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:chequered-flag"
     },
     {
       "index": 119,
@@ -3004,15 +2286,9 @@
         "ru": "Я готов."
       },
       "freqRank": 141,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/119-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/119-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:check-mark-button"
     },
     {
       "index": 120,
@@ -3026,15 +2302,9 @@
         "ru": "Всё готово."
       },
       "freqRank": 142,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/120-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/120-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:check-mark-button"
     },
     {
       "index": 121,
@@ -3049,15 +2319,9 @@
         "ar": "أنت جميل."
       },
       "freqRank": 145,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/121-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/121-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:lipstick"
     },
     {
       "index": 122,
@@ -3071,15 +2335,9 @@
         "ru": "Всё возможно."
       },
       "freqRank": 144,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/122-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/122-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:infinity"
     },
     {
       "index": 123,
@@ -3093,15 +2351,9 @@
         "ru": "Я молодой."
       },
       "freqRank": 146,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/123-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/123-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:baby"
     },
     {
       "index": 124,
@@ -3115,15 +2367,9 @@
         "ru": "Он врач?"
       },
       "freqRank": 147,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/124-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/124-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:stethoscope"
     },
     {
       "index": 125,
@@ -3137,15 +2383,9 @@
         "ru": "Мне надо позвонить..."
       },
       "freqRank": 148,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/125-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/125-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:telephone-receiver"
     },
     {
       "index": 126,
@@ -3160,15 +2400,9 @@
         "ru": "Какой прекрасный день!"
       },
       "freqRank": 150,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/126-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/126-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:rainbow"
     },
     {
       "index": 127,
@@ -3182,15 +2416,9 @@
         "ru": "Я хочу жить."
       },
       "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/127-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/127-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:seedling"
     },
     {
       "index": 128,
@@ -3204,15 +2432,9 @@
         "ru": "Ты слишком много думаешь."
       },
       "freqRank": 151,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/128-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/128-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thought-balloon"
     },
     {
       "index": 129,
@@ -3226,15 +2448,9 @@
         "ru": "Я хочу есть."
       },
       "freqRank": 152,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/129-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/129-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 130,
@@ -3248,16 +2464,9 @@
         "pt-BR": "Como isso funciona?"
       },
       "freqRank": 153,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/130-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/130-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:gear"
     },
     {
       "index": 131,
@@ -3271,15 +2480,9 @@
         "ru": "Важно всё."
       },
       "freqRank": 154,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/131-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/131-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:magnifying-glass-tilted-left"
     },
     {
       "index": 132,
@@ -3293,15 +2496,9 @@
         "ru": "Ты важен."
       },
       "freqRank": 155,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/132-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/132-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:index-pointing-at-the-viewer"
     },
     {
       "index": 133,
@@ -3315,15 +2512,9 @@
         "ru": "Что они делают?"
       },
       "freqRank": 156,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/133-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/133-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 134,
@@ -3337,15 +2528,9 @@
         "ru": "Он сильный."
       },
       "freqRank": 157,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/134-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/134-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:flexed-biceps"
     },
     {
       "index": 135,
@@ -3359,15 +2544,9 @@
         "ru": "Ты сильный."
       },
       "freqRank": 158,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/135-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/135-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:flexed-biceps"
     },
     {
       "index": 136,
@@ -3382,15 +2561,9 @@
         "ru": "Ты ненормальный?"
       },
       "freqRank": 159,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/136-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/136-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:face-with-rolling-eyes"
     },
     {
       "index": 137,
@@ -3404,15 +2577,9 @@
         "ar": "مهلا لحظة."
       },
       "freqRank": 160,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/137-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/137-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:timer-clock"
     },
     {
       "index": 138,
@@ -3426,15 +2593,9 @@
         "ru": "Не хотел бы ты попробовать?"
       },
       "freqRank": 162,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/138-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/138-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:palm-up-hand"
     },
     {
       "index": 139,
@@ -3448,15 +2609,9 @@
         "ru": "Подожди секундочку."
       },
       "freqRank": 161,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/139-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/139-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:timer-clock"
     },
     {
       "index": 140,
@@ -3470,15 +2625,9 @@
         "ru": "Я попробую."
       },
       "freqRank": 163,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/140-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/140-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:flexed-biceps"
     },
     {
       "index": 141,
@@ -3492,15 +2641,9 @@
         "ru": "Дай я попробую."
       },
       "freqRank": 164,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/141-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/141-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:flexed-biceps"
     },
     {
       "index": 142,
@@ -3514,15 +2657,9 @@
         "ru": "Я собираюсь работать."
       },
       "freqRank": 165,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/142-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/142-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:briefcase"
     },
     {
       "index": 143,
@@ -3536,15 +2673,9 @@
         "ru": "Выбери что-нибудь."
       },
       "freqRank": 166,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/143-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/143-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:shuffle-tracks-button"
     },
     {
       "index": 144,
@@ -3559,16 +2690,9 @@
         "ru": "Вы счастливы?"
       },
       "freqRank": 167,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/144-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/144-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:slightly-smiling-face"
     },
     {
       "index": 145,
@@ -3582,15 +2706,9 @@
         "ru": "Он счастлив."
       },
       "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/145-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/145-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:grinning-face"
     },
     {
       "index": 146,
@@ -3604,15 +2722,9 @@
         "ru": "Мы счастливы."
       },
       "freqRank": 169,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/146-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/146-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:beaming-face-with-smiling-eyes"
     },
     {
       "index": 147,
@@ -3626,15 +2738,9 @@
         "ru": "Все счастливы."
       },
       "freqRank": 170,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/147-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/147-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:grinning-face-with-big-eyes"
     },
     {
       "index": 148,
@@ -3648,16 +2754,9 @@
         "ru": "Можно войти?"
       },
       "freqRank": 171,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/148-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/148-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:door"
     },
     {
       "index": 149,
@@ -3671,15 +2770,9 @@
         "ru": "Можешь войти."
       },
       "freqRank": 172,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/149-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/149-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:door"
     },
     {
       "index": 150,
@@ -3693,15 +2786,9 @@
         "ru": "Где вы были?"
       },
       "freqRank": 173,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/150-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/150-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 151,
@@ -3715,15 +2802,9 @@
         "ru": "Я много работаю."
       },
       "freqRank": 174,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/151-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/151-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:briefcase"
     },
     {
       "index": 152,
@@ -3737,15 +2818,9 @@
         "ru": "Фильм начинается."
       },
       "freqRank": 178,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/152-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/152-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:clapper-board"
     },
     {
       "index": 153,
@@ -3759,15 +2834,9 @@
         "ru": "Я здесь работаю."
       },
       "freqRank": 175,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/153-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/153-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:briefcase"
     },
     {
       "index": 154,
@@ -3781,15 +2850,9 @@
         "ru": "У него было пятьдесят долларов."
       },
       "freqRank": 179,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/154-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/154-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:dollar-banknote"
     },
     {
       "index": 155,
@@ -3803,15 +2866,9 @@
         "ru": "Завтра начинаю."
       },
       "freqRank": 177,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/155-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/155-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:new-button"
     },
     {
       "index": 156,
@@ -3825,15 +2882,9 @@
         "ru": "Она умерла."
       },
       "freqRank": 180,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/156-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/156-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:coffin"
     },
     {
       "index": 157,
@@ -3847,15 +2898,9 @@
         "ru": "Ты когда возвращаешься?"
       },
       "freqRank": 181,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/157-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/157-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:back-arrow"
     },
     {
       "index": 158,
@@ -3869,15 +2914,9 @@
         "pt-BR": "Cuidado com o cão!"
       },
       "freqRank": 182,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/158-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/158-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:dog"
     },
     {
       "index": 159,
@@ -3891,15 +2930,9 @@
         "ru": "Вот твоя собака."
       },
       "freqRank": 183,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/159-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/159-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:dog"
     },
     {
       "index": 160,
@@ -3913,16 +2946,9 @@
         "ru": "Кто ищет, тот найдет."
       },
       "freqRank": 184,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/160-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/160-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:magnifying-glass-tilted-left"
     },
     {
       "index": 161,
@@ -3936,15 +2962,9 @@
         "ru": "Ты слишком много говоришь."
       },
       "freqRank": 185,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/161-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/161-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:speaking-head"
     },
     {
       "index": 162,
@@ -3958,15 +2978,9 @@
         "ru": "Закрой глаза."
       },
       "freqRank": 186,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/162-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/162-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:expressionless-face"
     },
     {
       "index": 163,
@@ -3980,15 +2994,9 @@
         "ru": "Куда ты ехала?"
       },
       "freqRank": 187,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/163-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/163-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:compass"
     },
     {
       "index": 164,
@@ -4003,15 +3011,9 @@
         "ru": "Он болен."
       },
       "freqRank": 188,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/164-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/164-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:face-with-thermometer"
     },
     {
       "index": 165,
@@ -4026,15 +3028,9 @@
         "ar": "أنا مريض."
       },
       "freqRank": 189,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/165-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/165-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:face-with-thermometer"
     },
     {
       "index": 166,
@@ -4048,15 +3044,9 @@
         "ru": "Он изменился."
       },
       "freqRank": 190,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/166-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/166-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:counterclockwise-arrows-button"
     },
     {
       "index": 167,
@@ -4070,15 +3060,9 @@
         "ru": "Джон много работает."
       },
       "freqRank": 191,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/167-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/167-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:hammer-and-wrench"
     },
     {
       "index": 168,
@@ -4092,15 +3076,9 @@
         "ru": "Иди сюда, Джон."
       },
       "freqRank": 192,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/168-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/168-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:palm-up-hand"
     },
     {
       "index": 169,
@@ -4114,15 +3092,9 @@
         "ru": "Вставай!"
       },
       "freqRank": 193,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/169-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/169-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:bed"
     },
     {
       "index": 170,
@@ -4136,15 +3108,9 @@
         "ar": "اغلق كتابك."
       },
       "freqRank": 194,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/170-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/170-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:closed-book"
     },
     {
       "index": 171,
@@ -4158,15 +3124,9 @@
         "ru": "Вот твоя книга."
       },
       "freqRank": 195,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/171-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/171-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:closed-book"
     },
     {
       "index": 172,
@@ -4181,15 +3141,9 @@
         "ru": "Он беден."
       },
       "freqRank": 196,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/172-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/172-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:coin"
     },
     {
       "index": 173,
@@ -4204,15 +3158,9 @@
         "ar": "أنا فقير."
       },
       "freqRank": 197,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/173-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/173-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:coin"
     },
     {
       "index": 174,
@@ -4226,15 +3174,9 @@
         "ru": "Тебе лучше поспать."
       },
       "freqRank": 200,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/174-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/174-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 175,
@@ -4248,15 +3190,9 @@
         "ru": "Я начну."
       },
       "freqRank": 198,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/175-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/175-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:new-button"
     },
     {
       "index": 176,
@@ -4270,15 +3206,9 @@
         "ru": "Правда или ложь?"
       },
       "freqRank": 201,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/176-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/176-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 177,
@@ -4294,15 +3224,9 @@
         "ar": "أريد أن أنام."
       },
       "freqRank": 199,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/177-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/177-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 178,
@@ -4317,15 +3241,9 @@
         "ru": "Не двигайся."
       },
       "freqRank": 203,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/178-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/178-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:raised-hand"
     },
     {
       "index": 179,
@@ -4340,15 +3258,9 @@
         "ru": "Я путешествую один."
       },
       "freqRank": 202,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/179-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/179-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:luggage"
     },
     {
       "index": 180,
@@ -4363,15 +3275,9 @@
         "ru": "Она доктор."
       },
       "freqRank": 204,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/180-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/180-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:stethoscope"
     },
     {
       "index": 181,
@@ -4386,15 +3292,9 @@
         "ar": "إنه طبيب."
       },
       "freqRank": 205,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/181-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/181-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:stethoscope"
     },
     {
       "index": 182,
@@ -4409,15 +3309,9 @@
         "ru": "Я врач."
       },
       "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/182-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/182-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:stethoscope"
     },
     {
       "index": 183,
@@ -4432,15 +3326,9 @@
         "ar": "نحن جائعون"
       },
       "freqRank": 207,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/183-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/183-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:pot-of-food"
     },
     {
       "index": 184,
@@ -4455,15 +3343,9 @@
         "ar": "هي سعيدة."
       },
       "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/184-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/184-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:grinning-face-with-smiling-eyes"
     },
     {
       "index": 185,
@@ -4478,15 +3360,9 @@
         "ru": "Холодно."
       },
       "freqRank": 211,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/185-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/185-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:cold-face"
     },
     {
       "index": 186,
@@ -4501,16 +3377,9 @@
         "ru": "Я Том."
       },
       "freqRank": 210,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/186-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/186-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:identification-card"
     },
     {
       "index": 187,
@@ -4525,15 +3394,9 @@
         "ru": "Ты грустный."
       },
       "freqRank": 212,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/187-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/187-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:crying-face"
     },
     {
       "index": 188,
@@ -4548,15 +3411,9 @@
         "ru": "Я ничего не знаю."
       },
       "freqRank": 213,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/188-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/188-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 189,
@@ -4571,15 +3428,9 @@
         "ru": "Что мне делать?"
       },
       "freqRank": 215,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/189-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/189-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thinking-face"
     },
     {
       "index": 190,
@@ -4595,15 +3446,9 @@
         "ar": "لا يمكنني."
       },
       "freqRank": 214,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/190-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/190-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 191,
@@ -4618,15 +3463,9 @@
         "ru": "Жизнь хороша."
       },
       "freqRank": 220,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/191-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/191-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:sunflower"
     },
     {
       "index": 192,
@@ -4642,15 +3481,9 @@
         "ar": "أؤمن بالله."
       },
       "freqRank": 216,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/192-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/192-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:folded-hands"
     },
     {
       "index": 193,
@@ -4666,15 +3499,9 @@
         "ar": "الدنيا صغيرة."
       },
       "freqRank": 221,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/193-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/193-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:globe-showing-europe-africa"
     },
     {
       "index": 194,
@@ -4689,15 +3516,9 @@
         "ar": "أفكر فيك."
       },
       "freqRank": 217,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/194-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/194-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thought-balloon"
     },
     {
       "index": 195,
@@ -4712,15 +3533,9 @@
         "ru": "Может быть, это и так."
       },
       "freqRank": 222,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/195-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/195-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thinking-face"
     },
     {
       "index": 196,
@@ -4735,15 +3550,9 @@
         "ru": "Я мужчина."
       },
       "freqRank": 218,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/196-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/196-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:man"
     },
     {
       "index": 197,
@@ -4758,15 +3567,9 @@
         "ru": "Привет! Как дела?"
       },
       "freqRank": 223,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/197-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/197-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-raising-hand"
     },
     {
       "index": 198,
@@ -4781,15 +3584,9 @@
         "ru": "Я женщина."
       },
       "freqRank": 219,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/198-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/198-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:woman"
     },
     {
       "index": 199,
@@ -4804,15 +3601,9 @@
         "ru": "Кто этот мужчина?"
       },
       "freqRank": 224,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/199-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/199-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:man"
     },
     {
       "index": 200,
@@ -4827,15 +3618,9 @@
         "ru": "В чем проблема?"
       },
       "freqRank": 225,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/200-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/200-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:warning"
     },
     {
       "index": 201,
@@ -4850,15 +3635,9 @@
         "ru": "Что не так?"
       },
       "freqRank": 226,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/201-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/201-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:warning"
     },
     {
       "index": 202,
@@ -4873,15 +3652,9 @@
         "ar": "هذا يعجبني كثيرا."
       },
       "freqRank": 228,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/202-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/202-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 203,
@@ -4896,15 +3669,9 @@
         "ru": "В чем было дело?"
       },
       "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/203-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/203-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:warning"
     },
     {
       "index": 204,
@@ -4919,15 +3686,9 @@
         "ar": "هل لديك سيارة؟"
       },
       "freqRank": 229,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/204-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/204-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:automobile"
     },
     {
       "index": 205,
@@ -4942,15 +3703,9 @@
         "ru": "Ты мой друг."
       },
       "freqRank": 230,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/205-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/205-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:handshake"
     },
     {
       "index": 206,
@@ -4965,15 +3720,9 @@
         "ru": "Можно мне с тобой поговорить?"
       },
       "freqRank": 231,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/206-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/206-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 207,
@@ -4989,15 +3738,9 @@
         "ar": "أين أخوك؟"
       },
       "freqRank": 232,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/207-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/207-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:men-holding-hands"
     },
     {
       "index": 208,
@@ -5013,15 +3756,9 @@
         "ar": "الحياة جميلة."
       },
       "freqRank": 234,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/208-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/208-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:sunflower"
     },
     {
       "index": 209,
@@ -5037,15 +3774,9 @@
         "ar": "أين غرفتك؟"
       },
       "freqRank": 233,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/209-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/209-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:bed"
     },
     {
       "index": 210,
@@ -5060,15 +3791,9 @@
         "ru": "Дай ему время."
       },
       "freqRank": 235,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/210-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/210-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 211,
@@ -5083,15 +3808,9 @@
         "ar": "طقس اليوم جميل."
       },
       "freqRank": 236,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/211-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/211-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:sun"
     },
     {
       "index": 212,
@@ -5107,15 +3826,9 @@
         "ar": "أعرف الحقيقة."
       },
       "freqRank": 237,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/212-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/212-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:light-bulb"
     },
     {
       "index": 213,
@@ -5130,15 +3843,9 @@
         "ar": "منزلي كبير."
       },
       "freqRank": 238,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/213-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/213-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:house"
     },
     {
       "index": 214,
@@ -5153,15 +3860,9 @@
         "ar": "أنا ولد."
       },
       "freqRank": 239,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/214-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/214-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:boy"
     },
     {
       "index": 215,
@@ -5176,15 +3877,9 @@
         "ru": "Скажите мне правду."
       },
       "freqRank": 240,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/215-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/215-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:speaking-head"
     },
     {
       "index": 216,
@@ -5199,15 +3894,9 @@
         "ru": "У тебя есть план?"
       },
       "freqRank": 241,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/216-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/216-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:clipboard"
     },
     {
       "index": 217,
@@ -5222,15 +3911,9 @@
         "ru": "Я не работаю."
       },
       "freqRank": 242,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/217-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/217-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:briefcase"
     },
     {
       "index": 218,
@@ -5245,15 +3928,9 @@
         "ru": "Он обожает это место."
       },
       "freqRank": 243,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/218-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/218-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 219,
@@ -5269,15 +3946,9 @@
         "ar": "أريد كلبا."
       },
       "freqRank": 245,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/219-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/219-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:dog"
     },
     {
       "index": 220,
@@ -5293,16 +3964,9 @@
         "ar": "لديه كلب."
       },
       "freqRank": 244,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/220-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/220-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:dog"
     },
     {
       "index": 221,
@@ -5317,15 +3981,9 @@
         "ru": "Где твоя собака?"
       },
       "freqRank": 246,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/221-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/221-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:dog"
     },
     {
       "index": 222,
@@ -5340,15 +3998,9 @@
         "ar": "عما تتحدث؟"
       },
       "freqRank": 247,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/222-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/222-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 223,
@@ -5363,15 +4015,9 @@
         "ar": "أين ذهب؟"
       },
       "freqRank": 248,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/223-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/223-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:compass"
     },
     {
       "index": 224,
@@ -5386,15 +4032,9 @@
         "ru": "Он читает книгу."
       },
       "freqRank": 249,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/224-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/224-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:open-book"
     },
     {
       "index": 225,
@@ -5409,15 +4049,9 @@
         "ar": "أريد كتابا."
       },
       "freqRank": 250,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/225-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/225-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:closed-book"
     },
     {
       "index": 226,
@@ -5432,15 +4066,9 @@
         "ru": "Где книга?"
       },
       "freqRank": 251,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/226-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/226-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:closed-book"
     },
     {
       "index": 227,
@@ -5455,16 +4083,9 @@
         "ar": "سام، ماذا تفعل؟"
       },
       "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/227-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/227-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 228,
@@ -5479,15 +4100,9 @@
         "ar": "أكره القهوة."
       },
       "freqRank": 253,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/228-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/228-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:hot-beverage"
     },
     {
       "index": 229,
@@ -5502,15 +4117,9 @@
         "ar": "مرحباً بك في المنزل."
       },
       "freqRank": 254,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/229-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/229-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:house"
     },
     {
       "index": 230,
@@ -5525,15 +4134,9 @@
         "ru": "Она твоя сестра?"
       },
       "freqRank": 255,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/230-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/230-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:women-holding-hands"
     },
     {
       "index": 231,
@@ -5548,15 +4151,9 @@
         "ru": "Она сводит меня с ума."
       },
       "freqRank": 256,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/231-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/231-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:face-with-rolling-eyes"
     },
     {
       "index": 232,
@@ -5572,15 +4169,9 @@
         "ar": "إسمي توم."
       },
       "freqRank": 257,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/232-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/232-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:identification-card"
     },
     {
       "index": 233,
@@ -5595,15 +4186,9 @@
         "ru": "Мы можем помочь Тому."
       },
       "freqRank": 258,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/233-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/233-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:handshake"
     },
     {
       "index": 234,
@@ -5618,15 +4203,9 @@
         "ru": "Том мой друг."
       },
       "freqRank": 259,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/234-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/234-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:handshake"
     },
     {
       "index": 235,
@@ -5641,15 +4220,9 @@
         "ru": "Он в опасности."
       },
       "freqRank": 260,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/235-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/235-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:warning"
     },
     {
       "index": 236,
@@ -5664,15 +4237,9 @@
         "ar": "إني في المنزل."
       },
       "freqRank": 263,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/236-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/236-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:house"
     },
     {
       "index": 237,
@@ -5687,15 +4254,9 @@
         "ru": "Он нас не любит."
       },
       "freqRank": 261,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/237-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/237-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thumbs-down"
     },
     {
       "index": 238,
@@ -5710,15 +4271,9 @@
         "ru": "Так не говорят."
       },
       "freqRank": 264,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/238-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/238-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:shushing-face"
     },
     {
       "index": 239,
@@ -5733,16 +4288,9 @@
         "ru": "Все это знают."
       },
       "freqRank": 265,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en", "tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/239-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en", "tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/239-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:light-bulb"
     },
     {
       "index": 240,
@@ -5757,15 +4305,9 @@
         "ar": "أنا في السيارة"
       },
       "freqRank": 266,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/240-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/240-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:automobile"
     },
     {
       "index": 241,
@@ -5780,15 +4322,9 @@
         "ar": "أين بيتها؟"
       },
       "freqRank": 268,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/241-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/241-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:house"
     },
     {
       "index": 242,
@@ -5803,15 +4339,9 @@
         "ar": "أنا في سيارتي."
       },
       "freqRank": 267,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/242-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/242-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:automobile"
     },
     {
       "index": 243,
@@ -5826,15 +4356,9 @@
         "ar": "غرفتي صغيرةٌ جداً."
       },
       "freqRank": 269,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/243-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/243-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:ant"
     },
     {
       "index": 244,
@@ -5849,15 +4373,9 @@
         "ru": "Ты красивая женщина."
       },
       "freqRank": 270,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/244-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/244-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:lipstick"
     },
     {
       "index": 245,
@@ -5872,16 +4390,9 @@
         "ar": "العالم مدرسة."
       },
       "freqRank": 272,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ru"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/245-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["ru"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/245-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:school"
     },
     {
       "index": 246,
@@ -5896,16 +4407,9 @@
         "ar": "لديه عائلة كبيرة."
       },
       "freqRank": 273,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/246-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/246-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:family"
     },
     {
       "index": 247,
@@ -5920,15 +4424,9 @@
         "ar": "أحبك بجنون."
       },
       "freqRank": 274,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/247-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/247-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:heart-with-arrow"
     },
     {
       "index": 248,
@@ -5943,15 +4441,9 @@
         "ar": "لا تنظر إلى الأسفل."
       },
       "freqRank": 275,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/248-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/248-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:backhand-index-pointing-down"
     },
     {
       "index": 249,
@@ -5966,15 +4458,9 @@
         "ar": "هذا الكلب لي."
       },
       "freqRank": 276,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/249-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/249-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:dog"
     },
     {
       "index": 250,
@@ -5989,15 +4475,9 @@
         "ar": "الأسود لي."
       },
       "freqRank": 277,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/250-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/250-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:black-circle"
     },
     {
       "index": 251,
@@ -6012,15 +4492,9 @@
         "ru": "Я ненавижу свою тёщу."
       },
       "freqRank": 278,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/251-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/251-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:anger-symbol"
     },
     {
       "index": 252,
@@ -6035,15 +4509,9 @@
         "ru": "Сегодня очень жарко."
       },
       "freqRank": 280,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/252-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/252-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:thermometer"
     },
     {
       "index": 253,
@@ -6058,15 +4526,9 @@
         "ar": "بدأت أحس بالجوع."
       },
       "freqRank": 279,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/253-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/253-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:drooling-face"
     },
     {
       "index": 254,
@@ -6081,15 +4543,9 @@
         "ru": "Ты ничего ему не сказал?"
       },
       "freqRank": 281,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/254-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/254-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:zipper-mouth-face"
     },
     {
       "index": 255,
@@ -6104,16 +4560,9 @@
         "ru": "Я всего лишь делаю свою работу."
       },
       "freqRank": 282,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/255-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/255-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:briefcase"
     },
     {
       "index": 256,
@@ -6128,15 +4577,9 @@
         "ru": "Где ты видел этих женщин?"
       },
       "freqRank": 283,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/256-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/256-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:woman"
     },
     {
       "index": 257,
@@ -6151,16 +4594,9 @@
         "ru": "Мне надо пойти чего-нибудь съесть."
       },
       "freqRank": 284,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/257-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/257-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 258,
@@ -6175,15 +4611,9 @@
         "ru": "Поезд отправляется в девять."
       },
       "freqRank": 287,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/258-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/258-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:train"
     },
     {
       "index": 259,
@@ -6198,15 +4628,9 @@
         "ar": "إنه يقرأ الآن."
       },
       "freqRank": 288,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/259-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/259-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:open-book"
     },
     {
       "index": 260,
@@ -6221,16 +4645,9 @@
         "ru": "Том выше меня."
       },
       "freqRank": 289,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/260-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/260-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:straight-ruler"
     },
     {
       "index": 261,
@@ -6245,15 +4662,9 @@
         "ar": "هل العالم في خطر؟"
       },
       "freqRank": 290,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/261-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/261-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:warning"
     },
     {
       "index": 262,
@@ -6268,15 +4679,9 @@
         "ru": "Вчера утром было очень холодно."
       },
       "freqRank": 291,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/262-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/262-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:cold-face"
     },
     {
       "index": 263,
@@ -6291,15 +4696,9 @@
         "ru": "В чём смысл жизни?"
       },
       "freqRank": 292,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/263-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/263-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 264,
@@ -6314,15 +4713,9 @@
         "ar": "أنا لا أستطيع أن أعيش بدونك."
       },
       "freqRank": 293,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/264-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/264-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:people-hugging"
     },
     {
       "index": 265,
@@ -6337,15 +4730,9 @@
         "ar": "قد يبدو أحياناً شاباً غريباً."
       },
       "freqRank": 294,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/265-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/265-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:face-with-raised-eyebrow"
     },
     {
       "index": 266,
@@ -6360,15 +4747,9 @@
         "ru": "Я не знаю, кого он ищет."
       },
       "freqRank": 295,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/266-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/266-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 267,
@@ -6383,16 +4764,9 @@
         "ar": "ينبغي أن تبدأَ أبكر ما يمكنك."
       },
       "freqRank": 296,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/267-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/267-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:sunrise"
     },
     {
       "index": 268,
@@ -6407,15 +4781,9 @@
         "ru": "Том не хочет идти один."
       },
       "freqRank": 297,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/268-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/268-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:person-standing"
     },
     {
       "index": 269,
@@ -6430,15 +4798,9 @@
         "ru": "Слишком много всего надо сделать!"
       },
       "freqRank": 298,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/269-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/269-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:clipboard"
     },
     {
       "index": 270,
@@ -6454,15 +4816,9 @@
         "ar": "لا أعرف كلمة مرورها."
       },
       "freqRank": 299,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/270-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/270-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:key"
     },
     {
       "index": 271,
@@ -6478,15 +4834,9 @@
         "ar": "كلمة السر هي \"كلمة السر\"."
       },
       "freqRank": 300,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
-      "voices": [
-        {
-          "key": "echo/packs/fr_absoluteBeginner/271-ff_siwis.m4a",
-          "voice": "ff_siwis"
-        }
-      ]
+      "review": { "glossedBy": "Tatoeba" },
+      "voices": [{ "key": "echo/packs/fr_absoluteBeginner/271-ff_siwis.m4a", "voice": "ff_siwis" }],
+      "image": "cue:key"
     }
   ]
 }

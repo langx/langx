@@ -16,21 +16,34 @@ personal use only, by Apple's SLA) and Coqui XTTS (CPML).
 pronunciation; two, in different registers, read as what they are. A human
 recording from Commons is better than both and stays first where it exists.
 
+**Two engines, and the language picks one.** Kokoro reads its six; every other
+language the service speaks is Piper's, and the voice tables in
+`packages/shared/src/speech.ts` — mirrored by `apps/tts/voices.json`, which is
+what this reads — are the definition of which. Nothing here takes an engine
+flag: a pack in `de` is Piper's because `de` is Piper's.
+
 Usage:
-    python3.12 -m venv .venv && .venv/bin/pip install kokoro-onnx soundfile
+    python3.12 -m venv .venv && .venv/bin/pip install kokoro-onnx soundfile piper-tts
     brew install espeak-ng          # the wheel's dylib looks for its build path
     # then, from the repository root:
     tools/echo-content/tts/generate.py --out <dir>
+    tools/echo-content/tts/generate.py --out <dir> --lang de --lang ru
 
-Model files (put them beside this script, or pass --model/--voices):
+Model files:
+    Kokoro's two go beside this script, or pass --model/--voices:
     https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/
+    Piper's go under --piper-dir (default ./piper) at the path `voices.json`
+    gives, the same layout `apps/tts/Dockerfile` builds:
+    https://huggingface.co/rhasspy/piper-voices/resolve/main/<model>
 """
 
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
+import wave
 from pathlib import Path
 
 # Mirrors `ECHO_SYNTH_VOICES` in `packages/shared/src/echoPacks.ts`, which is
@@ -38,13 +51,12 @@ from pathlib import Path
 # copy; a test in `apps/api/src/modules/tts/speech.test.ts` keeps all three
 # equal. The left of each pair is what espeak-ng calls the language.
 #
-# **Kokoro's six, and no Piper.** Piper reads thirty-one more languages in the
-# service, German and Russian among them, and cannot be run here: its wheel
-# compiles its build machine's espeak data path into the extension, so the
-# first synthesis on a Mac dies in C. See `load_piper` in `apps/tts/server.py`.
-# A pack in a language Kokoro does not read therefore ships with no readings of
-# its own — the card's own "Read it aloud" still answers for it, through the
-# service, where Piper works.
+# **Kokoro's six.** Everything else the service speaks is Piper's, and is read
+# by `PIPER` below rather than by this table. Piper's wheel compiles its build
+# machine's espeak data path into the extension, so the first synthesis on a
+# Mac dies in C and this half of the script can only be run on Linux — which is
+# the wheel rather than us, and `load_piper` in `apps/tts/server.py` documents
+# the same failure from the same cause.
 KOKORO = {
     "en": ("en-us", ("af_heart", "am_michael")),
     "es": ("es", ("ef_dora", "em_alex")),
@@ -56,6 +68,20 @@ KOKORO = {
 
 ROOT = Path(__file__).resolve().parents[3]
 CONTENT = ROOT / "content" / "echo"
+
+
+def piper_manifest() -> dict:
+    """LangX language code to the Piper voices that read it.
+
+    `apps/tts/voices.json`, which is the copy the service ships and the one
+    `SPEECH_VOICES` is checked against — so the id written into a pack here and
+    the id `echoSynthVoicesFor` answers with cannot drift apart.
+    """
+    with open(ROOT / "apps" / "tts" / "voices.json", encoding="utf8") as handle:
+        return json.load(handle)
+
+
+PIPER = piper_manifest()
 
 
 def kokoro(model: Path, voices: Path):
@@ -83,6 +109,66 @@ def kokoro(model: Path, voices: Path):
     return Kokoro(str(model), str(voices), espeak_config=EspeakConfig(lib_path=library, data_path=data))
 
 
+def load_piper(path: Path):
+    """One Piper voice, from the model file `voices.json` names.
+
+    **Linux only.** See the note above `KOKORO`; there is nothing to configure
+    here, the path is not a parameter and no environment variable reaches it.
+    """
+    from piper import PiperVoice
+
+    return PiperVoice.load(str(path))
+
+
+def piper_wav(voice, text: str, path: Path) -> None:
+    """One Piper reading, written as WAV.
+
+    Assembled from the chunks Piper yields, the way `piper_wav` in
+    `apps/tts/server.py` does. Yielding nothing is a real failure mode and
+    raising is the point: a zero-byte m4a uploads exactly as happily as a
+    good one.
+    """
+    with wave.open(str(path), "wb") as out:
+        written = False
+        for chunk in voice.synthesize(text):
+            if not written:
+                out.setframerate(chunk.sample_rate)
+                out.setsampwidth(chunk.sample_width)
+                out.setnchannels(chunk.sample_channels)
+                written = True
+            out.writeframes(chunk.audio_int16_bytes)
+        if not written:
+            raise ValueError(f"piper produced no audio for {text!r}")
+
+
+def kokoro_wav(k, text: str, voice: str, espeak: str, path: Path) -> None:
+    """One Kokoro reading, written as WAV."""
+    import soundfile as sf
+
+    samples, rate = k.create(text, voice=voice, speed=1.0, lang=espeak)
+    sf.write(path, samples, rate)
+
+
+def to_m4a(wav: Path, target: Path) -> None:
+    """The reading as AAC in MP4, which is what a card plays.
+
+    `afconvert` is macOS's and is not on a Linux box; ffmpeg is on both and is
+    what `apps/tts/server.py` already uses. Either way the output must stay AAC
+    in MP4 — a card is played on a phone, over a network somebody else is
+    paying for.
+    """
+    if shutil.which("afconvert"):
+        command = ["afconvert", "-f", "mp4f", "-d", "aac", str(wav), str(target)]
+    else:
+        command = [
+            "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+            "-i", str(wav),
+            "-c:a", "aac", "-b:a", "64k", "-ac", "1",
+            str(target),
+        ]
+    subprocess.run(command, check=True, capture_output=True)
+
+
 def packs(only=None):
     for lang in sorted(p for p in CONTENT.iterdir() if p.is_dir()):
         if only and lang.name not in only:
@@ -106,24 +192,42 @@ def main() -> int:
     ap.add_argument("--lang", action="append", help="only these pack languages")
     ap.add_argument("--model", type=Path, default=here / "kokoro-v1.0.onnx")
     ap.add_argument("--voices", type=Path, default=here / "voices-v1.0.bin")
+    ap.add_argument("--piper-dir", type=Path, default=here / "piper")
     args = ap.parse_args()
 
-    for f in (args.model, args.voices):
-        if not f.exists():
-            print(f"missing {f} — see the module docstring for where to get it", file=sys.stderr)
-            return 1
+    # Loaded on first use rather than up front, because the models a run needs
+    # follow from the languages it was given: `--lang de --lang ru` has no
+    # business wanting Kokoro's 350 MB, and a Kokoro run none of Piper's.
+    loaded = {}
 
-    import soundfile as sf
+    def kokoro_engine():
+        if "kokoro" not in loaded:
+            for f in (args.model, args.voices):
+                if not f.exists():
+                    raise SystemExit(f"missing {f} — see the module docstring for where to get it")
+            loaded["kokoro"] = kokoro(args.model, args.voices)
+        return loaded["kokoro"]
 
-    k = kokoro(args.model, args.voices)
+    def piper_engine(model: str):
+        if model not in loaded:
+            path = args.piper_dir / model
+            if not path.exists():
+                raise SystemExit(f"missing {path} — see the module docstring for where to get it")
+            loaded[model] = load_piper(path)
+        return loaded[model]
+
     made = skipped = 0
 
     for path, pack in packs(args.lang):
+        # The engine follows from the language and nothing else. Kokoro's six
+        # first, since those are the packs that lead with two registers;
+        # everything else the service speaks is Piper's, one voice each.
         spoken = KOKORO.get(pack["lang"])
-        if not spoken:
-            print(f"  {pack['id']}: no Kokoro voice for {pack['lang']}, left silent", flush=True)
+        piper = [] if spoken else PIPER.get(pack["lang"], [])
+        if not spoken and not piper:
+            print(f"  {pack['id']}: no voice reads {pack['lang']}, left silent", flush=True)
             continue
-        espeak, voices = spoken
+        espeak, voices = spoken if spoken else (None, tuple(v["id"] for v in piper))
         out = args.out / pack["id"].replace(":", "_")
         out.mkdir(parents=True, exist_ok=True)
         for item in pack["items"]:
@@ -140,20 +244,17 @@ def main() -> int:
                     skipped += 1
                     continue
                 wav = target.with_suffix(".wav")
-                samples, rate = k.create(item["text"], voice=voice, speed=1.0, lang=espeak)
-                sf.write(wav, samples, rate)
-                # AAC rather than the WAV: a card is played on a phone, over a
-                # network somebody else is paying for.
-                subprocess.run(
-                    ["afconvert", "-f", "mp4f", "-d", "aac", str(wav), str(target)],
-                    check=True,
-                    capture_output=True,
-                )
+                if spoken:
+                    kokoro_wav(kokoro_engine(), item["text"], voice, espeak, wav)
+                else:
+                    model = next(v["model"] for v in piper if v["id"] == voice)
+                    piper_wav(piper_engine(model), item["text"], wav)
+                to_m4a(wav, target)
                 wav.unlink()
                 made += 1
         pack["contentVersion"] += 1
         path.write_text(json.dumps(pack, indent=2, ensure_ascii=False) + "\n")
-        print(f"  {pack['id']}: {len(pack['items'])} items", flush=True)
+        print(f"  {pack['id']}: {len(pack['items'])} items, {len(voices)} voice(s)", flush=True)
 
     print(f"made {made}, skipped {skipped} already there")
     print("Run prettier over content/echo, then upload-echo-voices.ts.")

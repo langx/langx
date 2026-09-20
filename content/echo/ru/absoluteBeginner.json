@@ -2,7 +2,7 @@
   "id": "ru:absoluteBeginner",
   "lang": "ru",
   "level": "absoluteBeginner",
-  "contentVersion": 2,
+  "contentVersion": 4,
   "reviewed": true,
   "sources": [
     {
@@ -41,7 +41,14 @@
         "definition": "приветствие, вопрос о текущем состоянии дел",
         "otherSenses": [],
         "edited": ["en"]
-      }
+      },
+      "image": "cue:person-raising-hand",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/0-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 1,
@@ -69,7 +76,14 @@
             "tags": []
           }
         ]
-      }
+      },
+      "image": "cue:sunrise",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/1-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 2,
@@ -84,7 +98,14 @@
         "translationCount": 2,
         "definition": "разг., фам. обозначает просьбу",
         "otherSenses": []
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/2-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 3,
@@ -111,7 +132,14 @@
             "tags": []
           }
         ]
-      }
+      },
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/3-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 4,
@@ -136,7 +164,14 @@
             "tags": []
           }
         ]
-      }
+      },
+      "image": "cue:smiling-face-with-open-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/4-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 5,
@@ -161,7 +196,14 @@
           }
         ],
         "edited": ["en"]
-      }
+      },
+      "image": "cue:sun",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/5-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 6,
@@ -189,7 +231,14 @@
           }
         ],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:waving-hand",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/6-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 7,
@@ -210,7 +259,14 @@
         "translationCount": 131,
         "definition": "то же, что доброй ночи; формула речевого этикета, используется в качестве вежливого пожелания покоя, безмятежности при расставании перед сном",
         "otherSenses": []
-      }
+      },
+      "image": "cue:crescent-moon",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/7-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 8,
@@ -235,7 +291,14 @@
             "tags": []
           }
         ]
-      }
+      },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/8-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 9,
@@ -252,7 +315,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "frontWas": "Я - это ты."
-      }
+      },
+      "image": "cue:person",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/9-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 10,
@@ -268,7 +338,14 @@
       "freqRank": 57,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/10-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 11,
@@ -284,7 +361,14 @@
       "freqRank": 58,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:man",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/11-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 12,
@@ -300,7 +384,14 @@
       "freqRank": 61,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/12-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 13,
@@ -316,7 +407,14 @@
       "freqRank": 59,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/13-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 14,
@@ -332,7 +430,14 @@
       "freqRank": 62,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thumbs-up",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/14-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 15,
@@ -348,7 +453,14 @@
       "freqRank": 60,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/15-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 16,
@@ -364,7 +476,14 @@
       "freqRank": 64,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/16-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 17,
@@ -381,7 +500,14 @@
       "freqRank": 63,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/17-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 18,
@@ -397,7 +523,14 @@
       "freqRank": 65,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:palm-up-hand",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/18-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 19,
@@ -414,7 +547,14 @@
       "freqRank": 66,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:palm-up-hand",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/19-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 20,
@@ -430,7 +570,14 @@
       "freqRank": 67,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:stopwatch",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/20-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 21,
@@ -447,7 +594,14 @@
       "freqRank": 68,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/21-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 22,
@@ -463,7 +617,14 @@
       "freqRank": 70,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:game-die",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/22-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 23,
@@ -479,7 +640,14 @@
       "freqRank": 69,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/23-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 24,
@@ -495,7 +663,14 @@
       "freqRank": 71,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cross-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/24-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 25,
@@ -511,7 +686,14 @@
       "freqRank": 72,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/25-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 26,
@@ -527,7 +709,14 @@
       "freqRank": 74,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/26-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 27,
@@ -543,7 +732,14 @@
       "freqRank": 73,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/27-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 28,
@@ -561,7 +757,14 @@
       "freqRank": 75,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/28-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 29,
@@ -578,7 +781,14 @@
       "freqRank": 76,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/29-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 30,
@@ -594,7 +804,14 @@
       "freqRank": 77,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/30-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 31,
@@ -610,7 +827,14 @@
       "freqRank": 78,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/31-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 32,
@@ -626,7 +850,14 @@
       "freqRank": 79,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/32-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 33,
@@ -642,7 +873,14 @@
       "freqRank": 80,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:world-map",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/33-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 34,
@@ -658,7 +896,14 @@
       "freqRank": 81,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:repeat-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/34-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 35,
@@ -674,7 +919,14 @@
       "freqRank": 82,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/35-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 36,
@@ -690,7 +942,14 @@
       "freqRank": 83,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:chart-increasing",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/36-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 37,
@@ -708,7 +967,14 @@
       "freqRank": 84,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-walking",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/37-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 38,
@@ -724,7 +990,14 @@
       "freqRank": 85,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/38-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 39,
@@ -742,7 +1015,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:open-book",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/39-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 40,
@@ -758,7 +1038,14 @@
       "freqRank": 87,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:round-pushpin",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/40-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 41,
@@ -774,7 +1061,14 @@
       "freqRank": 88,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/41-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 42,
@@ -791,7 +1085,14 @@
       "freqRank": 89,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-heart",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/42-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 43,
@@ -808,7 +1109,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:worried-face",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/43-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 44,
@@ -826,7 +1134,14 @@
       "freqRank": 91,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/44-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 45,
@@ -842,7 +1157,14 @@
       "freqRank": 94,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/45-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 46,
@@ -858,7 +1180,14 @@
       "freqRank": 92,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/46-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 47,
@@ -874,7 +1203,14 @@
       "freqRank": 95,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:flexed-biceps",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/47-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 48,
@@ -890,7 +1226,14 @@
       "freqRank": 96,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/48-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 49,
@@ -906,7 +1249,14 @@
       "freqRank": 97,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cross-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/49-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 50,
@@ -922,7 +1272,14 @@
       "freqRank": 98,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:man",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/50-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 51,
@@ -938,7 +1295,14 @@
       "freqRank": 99,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family-man-boy",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/51-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 52,
@@ -955,7 +1319,14 @@
       "freqRank": 100,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family-man-boy",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/52-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 53,
@@ -972,7 +1343,14 @@
       "freqRank": 101,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/53-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 54,
@@ -989,7 +1367,14 @@
       "freqRank": 102,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:check-mark-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/54-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 55,
@@ -1006,7 +1391,14 @@
       "freqRank": 103,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/55-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 56,
@@ -1022,7 +1414,14 @@
       "freqRank": 104,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:package",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/56-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 57,
@@ -1038,7 +1437,14 @@
       "freqRank": 105,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/57-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 58,
@@ -1054,7 +1460,14 @@
       "freqRank": 106,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/58-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 59,
@@ -1070,7 +1483,14 @@
       "freqRank": 107,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/59-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 60,
@@ -1087,7 +1507,14 @@
       "freqRank": 109,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/60-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 61,
@@ -1103,7 +1530,14 @@
       "freqRank": 108,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/61-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 62,
@@ -1119,7 +1553,14 @@
       "freqRank": 110,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/62-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 63,
@@ -1135,7 +1576,14 @@
       "freqRank": 111,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/63-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 64,
@@ -1153,7 +1601,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/64-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 65,
@@ -1169,7 +1624,14 @@
       "freqRank": 113,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/65-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 66,
@@ -1185,7 +1647,14 @@
       "freqRank": 114,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/66-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 67,
@@ -1202,7 +1671,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "image": "cue:thumbs-up",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/67-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 68,
@@ -1218,7 +1694,14 @@
       "freqRank": 116,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/68-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 69,
@@ -1234,7 +1717,14 @@
       "freqRank": 117,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eyes",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/69-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 70,
@@ -1251,7 +1741,14 @@
       "freqRank": 118,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sunflower",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/70-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 71,
@@ -1267,7 +1764,14 @@
       "freqRank": 120,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/71-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 72,
@@ -1284,7 +1788,14 @@
       "freqRank": 119,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-heart",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/72-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 73,
@@ -1300,7 +1811,14 @@
       "freqRank": 121,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/73-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 74,
@@ -1317,7 +1835,14 @@
       "freqRank": 122,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:money-with-wings",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/74-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 75,
@@ -1333,7 +1858,14 @@
       "freqRank": 123,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/75-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 76,
@@ -1349,7 +1881,14 @@
       "freqRank": 124,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/76-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 77,
@@ -1366,7 +1905,14 @@
       "freqRank": 127,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/77-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 78,
@@ -1382,7 +1928,14 @@
       "freqRank": 125,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/78-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 79,
@@ -1398,7 +1951,14 @@
       "freqRank": 128,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/79-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 80,
@@ -1414,7 +1974,14 @@
       "freqRank": 126,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:stethoscope",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/80-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 81,
@@ -1431,7 +1998,14 @@
       "freqRank": 129,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/81-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 82,
@@ -1447,7 +2021,14 @@
       "freqRank": 130,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/82-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 83,
@@ -1463,7 +2044,14 @@
       "freqRank": 131,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:man",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/83-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 84,
@@ -1481,7 +2069,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:woman",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/84-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 85,
@@ -1497,7 +2092,14 @@
       "freqRank": 133,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/85-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 86,
@@ -1513,7 +2115,14 @@
       "freqRank": 135,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/86-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 87,
@@ -1529,7 +2138,14 @@
       "freqRank": 134,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/87-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 88,
@@ -1546,7 +2162,14 @@
       "freqRank": 136,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/88-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 89,
@@ -1562,7 +2185,14 @@
       "freqRank": 137,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-raising-hand",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/89-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 90,
@@ -1578,7 +2208,14 @@
       "freqRank": 138,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-raising-hand",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/90-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 91,
@@ -1596,7 +2233,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/91-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 92,
@@ -1612,7 +2256,14 @@
       "freqRank": 141,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cross-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/92-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 93,
@@ -1628,7 +2279,14 @@
       "freqRank": 140,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/93-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 94,
@@ -1645,7 +2303,14 @@
       "freqRank": 142,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/94-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 95,
@@ -1661,7 +2326,14 @@
       "freqRank": 143,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thinking-face",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/95-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 96,
@@ -1677,7 +2349,14 @@
       "freqRank": 144,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/96-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 97,
@@ -1693,7 +2372,14 @@
       "freqRank": 145,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ok-hand",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/97-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 98,
@@ -1709,7 +2395,14 @@
       "freqRank": 146,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speech-balloon",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/98-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 99,
@@ -1726,7 +2419,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "frontWas": "Ты - моя мать."
-      }
+      },
+      "image": "cue:family",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/99-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 100,
@@ -1742,7 +2442,14 @@
       "freqRank": 150,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/100-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 101,
@@ -1759,7 +2466,14 @@
       "freqRank": 148,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/101-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 102,
@@ -1776,7 +2490,14 @@
       "freqRank": 151,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/102-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 103,
@@ -1792,7 +2513,14 @@
       "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/103-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 104,
@@ -1808,7 +2536,14 @@
       "freqRank": 152,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eyes",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/104-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 105,
@@ -1824,7 +2559,14 @@
       "freqRank": 153,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/105-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 106,
@@ -1840,7 +2582,14 @@
       "freqRank": 154,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/106-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 107,
@@ -1858,7 +2607,14 @@
       "freqRank": 155,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/107-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 108,
@@ -1874,7 +2630,14 @@
       "freqRank": 156,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/108-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 109,
@@ -1890,7 +2653,14 @@
       "freqRank": 157,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/109-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 110,
@@ -1906,7 +2676,14 @@
       "freqRank": 158,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/110-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 111,
@@ -1922,7 +2699,14 @@
       "freqRank": 159,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/111-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 112,
@@ -1939,7 +2723,14 @@
       "freqRank": 160,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family-man-boy",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/112-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 113,
@@ -1955,7 +2746,14 @@
       "freqRank": 161,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:seedling",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/113-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 114,
@@ -1971,7 +2769,14 @@
       "freqRank": 162,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eyes",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/114-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 115,
@@ -1987,7 +2792,14 @@
       "freqRank": 163,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:turtle",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/115-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 116,
@@ -2003,7 +2815,14 @@
       "freqRank": 164,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/116-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 117,
@@ -2019,7 +2838,14 @@
       "freqRank": 165,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thought-balloon",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/117-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 118,
@@ -2035,7 +2861,14 @@
       "freqRank": 166,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:check-mark-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/118-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 119,
@@ -2051,7 +2884,14 @@
       "freqRank": 167,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cross-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/119-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 120,
@@ -2067,7 +2907,14 @@
       "freqRank": 170,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:check-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/120-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 121,
@@ -2083,7 +2930,14 @@
       "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:check-mark-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/121-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 122,
@@ -2100,7 +2954,14 @@
       "freqRank": 171,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/122-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 123,
@@ -2116,7 +2977,14 @@
       "freqRank": 169,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ear",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/123-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 124,
@@ -2133,7 +3001,14 @@
       "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/124-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 125,
@@ -2149,7 +3024,14 @@
       "freqRank": 173,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/125-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 126,
@@ -2166,7 +3048,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "frontWas": "Том - мой брат."
-      }
+      },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/126-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 127,
@@ -2183,7 +3072,14 @@
       "freqRank": 175,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/127-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 128,
@@ -2199,7 +3095,14 @@
       "freqRank": 176,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/128-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 129,
@@ -2215,7 +3118,14 @@
       "freqRank": 177,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sos-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/129-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 130,
@@ -2232,7 +3142,14 @@
       "freqRank": 178,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sos-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/130-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 131,
@@ -2248,7 +3165,14 @@
       "freqRank": 179,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sos-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/131-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 132,
@@ -2264,7 +3188,14 @@
       "freqRank": 180,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/132-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 133,
@@ -2282,7 +3213,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:sos-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/133-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 134,
@@ -2298,7 +3236,14 @@
       "freqRank": 182,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/134-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 135,
@@ -2315,7 +3260,14 @@
       "freqRank": 183,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/135-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 136,
@@ -2331,7 +3283,14 @@
       "freqRank": 184,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/136-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 137,
@@ -2347,7 +3306,14 @@
       "freqRank": 185,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/137-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 138,
@@ -2363,7 +3329,14 @@
       "freqRank": 186,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/138-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 139,
@@ -2380,7 +3353,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/139-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 140,
@@ -2398,7 +3378,14 @@
         "glossedBy": "Tatoeba",
         "edited": ["en"],
         "frontWas": "В чем проблема?"
-      }
+      },
+      "image": "cue:warning",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/140-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 141,
@@ -2414,7 +3401,14 @@
       "freqRank": 189,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:warning",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/141-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 142,
@@ -2431,7 +3425,14 @@
       "freqRank": 191,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/142-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 143,
@@ -2447,7 +3448,14 @@
       "freqRank": 190,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:warning",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/143-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 144,
@@ -2466,7 +3474,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/144-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 145,
@@ -2482,7 +3497,14 @@
       "freqRank": 193,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/145-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 146,
@@ -2498,7 +3520,14 @@
       "freqRank": 194,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:check-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/146-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 147,
@@ -2514,7 +3543,14 @@
       "freqRank": 195,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:birthday-cake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/147-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 148,
@@ -2530,7 +3566,14 @@
       "freqRank": 196,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sos-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/148-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 149,
@@ -2546,7 +3589,14 @@
       "freqRank": 197,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:gear",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/149-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 150,
@@ -2565,7 +3615,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:ring",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/150-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 151,
@@ -2581,7 +3638,14 @@
       "freqRank": 199,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/151-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 152,
@@ -2597,7 +3661,14 @@
       "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ring",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/152-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 153,
@@ -2613,7 +3684,14 @@
       "freqRank": 201,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/153-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 154,
@@ -2629,7 +3707,14 @@
       "freqRank": 202,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/154-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 155,
@@ -2645,7 +3730,14 @@
       "freqRank": 203,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:red-question-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/155-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 156,
@@ -2661,7 +3753,14 @@
       "freqRank": 204,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:eyes",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/156-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 157,
@@ -2677,7 +3776,14 @@
       "freqRank": 205,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/157-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 158,
@@ -2693,7 +3799,14 @@
       "freqRank": 206,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/158-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 159,
@@ -2710,7 +3823,14 @@
       "freqRank": 207,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/159-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 160,
@@ -2726,7 +3846,14 @@
       "freqRank": 209,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:broken-heart",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/160-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 161,
@@ -2744,7 +3871,14 @@
       "freqRank": 208,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/161-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 162,
@@ -2761,7 +3895,14 @@
       "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:girl",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/162-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 163,
@@ -2778,7 +3919,14 @@
       "freqRank": 211,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:girl",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/163-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 164,
@@ -2795,7 +3943,14 @@
       "freqRank": 212,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:girl",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/164-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 165,
@@ -2811,7 +3966,14 @@
       "freqRank": 213,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/165-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 166,
@@ -2827,7 +3989,14 @@
       "freqRank": 214,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/166-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 167,
@@ -2843,7 +4012,14 @@
       "freqRank": 215,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/167-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 168,
@@ -2859,7 +4035,14 @@
       "freqRank": 216,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:check-mark-button",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/168-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 169,
@@ -2875,7 +4058,14 @@
       "freqRank": 217,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-running",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/169-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 170,
@@ -2891,7 +4081,14 @@
       "freqRank": 218,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:place-of-worship",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/170-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 171,
@@ -2908,7 +4105,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/171-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 172,
@@ -2924,7 +4128,14 @@
       "freqRank": 220,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/172-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 173,
@@ -2940,7 +4151,14 @@
       "freqRank": 221,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/173-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 174,
@@ -2956,7 +4174,14 @@
       "freqRank": 222,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/174-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 175,
@@ -2972,7 +4197,14 @@
       "freqRank": 223,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thinking-face",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/175-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 176,
@@ -2988,7 +4220,14 @@
       "freqRank": 224,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/176-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 177,
@@ -3004,7 +4243,14 @@
       "freqRank": 225,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/177-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 178,
@@ -3020,7 +4266,14 @@
       "freqRank": 226,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:input-latin-letters",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/178-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 179,
@@ -3037,7 +4290,14 @@
       "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/179-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 180,
@@ -3053,7 +4313,14 @@
       "freqRank": 229,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:mobile-phone",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/180-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 181,
@@ -3069,7 +4336,14 @@
       "freqRank": 228,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:chair",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/181-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 182,
@@ -3085,7 +4359,14 @@
       "freqRank": 230,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-walking",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/182-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 183,
@@ -3103,7 +4384,14 @@
       "freqRank": 231,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/183-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 184,
@@ -3119,7 +4407,14 @@
       "freqRank": 232,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:speaking-head",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/184-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 185,
@@ -3135,7 +4430,14 @@
       "freqRank": 233,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/185-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 186,
@@ -3151,7 +4453,14 @@
       "freqRank": 234,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ten-o-clock",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/186-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 187,
@@ -3167,7 +4476,14 @@
       "freqRank": 236,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:briefcase",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/187-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 188,
@@ -3183,7 +4499,14 @@
       "freqRank": 235,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:ten-o-clock",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/188-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 189,
@@ -3199,7 +4522,14 @@
       "freqRank": 238,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/189-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 190,
@@ -3215,7 +4545,14 @@
       "freqRank": 239,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:women-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/190-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 191,
@@ -3233,7 +4570,14 @@
       "freqRank": 241,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:women-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/191-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 192,
@@ -3250,7 +4594,14 @@
       "freqRank": 240,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:women-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/192-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 193,
@@ -3266,7 +4617,14 @@
       "freqRank": 242,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:women-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/193-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 194,
@@ -3282,7 +4640,14 @@
       "freqRank": 243,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:shield",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/194-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 195,
@@ -3300,7 +4665,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "image": "cue:hot-beverage",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/195-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 196,
@@ -3316,7 +4688,14 @@
       "freqRank": 245,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hot-beverage",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/196-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 197,
@@ -3332,7 +4711,14 @@
       "freqRank": 246,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hot-beverage",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/197-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 198,
@@ -3348,7 +4734,14 @@
       "freqRank": 247,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/198-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 199,
@@ -3364,7 +4757,14 @@
       "freqRank": 248,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/199-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 200,
@@ -3382,7 +4782,14 @@
       "freqRank": 249,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:sleeping-face",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/200-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 201,
@@ -3398,7 +4805,14 @@
       "freqRank": 250,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/201-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 202,
@@ -3414,7 +4828,14 @@
       "freqRank": 251,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/202-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 203,
@@ -3431,7 +4852,14 @@
       "freqRank": 252,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/203-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 204,
@@ -3448,7 +4876,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "frontWas": "Том - мой муж."
-      }
+      },
+      "image": "cue:ring",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/204-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 205,
@@ -3464,7 +4899,14 @@
       "freqRank": 253,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:back-arrow",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/205-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 206,
@@ -3480,7 +4922,14 @@
       "freqRank": 255,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:automobile",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/206-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 207,
@@ -3498,7 +4947,14 @@
       "freqRank": 256,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-walking",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/207-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 208,
@@ -3514,7 +4970,14 @@
       "freqRank": 257,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:man",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/208-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 209,
@@ -3531,7 +4994,14 @@
       "freqRank": 258,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/209-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 210,
@@ -3547,7 +5017,14 @@
       "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:woman",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/210-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 211,
@@ -3564,7 +5041,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/211-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 212,
@@ -3580,7 +5064,14 @@
       "freqRank": 261,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/212-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 213,
@@ -3597,7 +5088,14 @@
       "freqRank": 262,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:brain",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/213-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 214,
@@ -3614,7 +5112,14 @@
       "freqRank": 263,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/214-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 215,
@@ -3631,7 +5136,14 @@
       "freqRank": 264,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family-man-woman-girl",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/215-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 216,
@@ -3648,7 +5160,14 @@
       "freqRank": 265,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/216-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 217,
@@ -3665,7 +5184,14 @@
       "freqRank": 266,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/217-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 218,
@@ -3682,7 +5208,14 @@
       "freqRank": 267,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/218-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 219,
@@ -3699,7 +5232,14 @@
       "freqRank": 268,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/219-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 220,
@@ -3716,7 +5256,14 @@
       "freqRank": 269,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thought-balloon",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/220-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 221,
@@ -3733,7 +5280,14 @@
       "freqRank": 270,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/221-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 222,
@@ -3750,7 +5304,14 @@
       "freqRank": 271,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-shrugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/222-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 223,
@@ -3768,7 +5329,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:thumbs-down",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/223-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 224,
@@ -3785,7 +5353,14 @@
       "freqRank": 273,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:handshake",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/224-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 225,
@@ -3803,7 +5378,14 @@
       "freqRank": 274,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hourglass-done",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/225-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 226,
@@ -3820,7 +5402,14 @@
       "freqRank": 276,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:zipper-mouth-face",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/226-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 227,
@@ -3837,7 +5426,14 @@
       "freqRank": 275,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:house",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/227-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 228,
@@ -3854,7 +5450,14 @@
       "freqRank": 277,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:light-bulb",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/228-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 229,
@@ -3871,7 +5474,14 @@
       "freqRank": 278,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:girl",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/229-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 230,
@@ -3888,7 +5498,14 @@
       "freqRank": 279,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:family",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/230-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 231,
@@ -3905,7 +5522,14 @@
       "freqRank": 280,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/231-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 232,
@@ -3922,7 +5546,14 @@
       "freqRank": 281,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-standing",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/232-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 233,
@@ -3939,7 +5570,14 @@
       "freqRank": 282,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/233-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 234,
@@ -3956,7 +5594,14 @@
       "freqRank": 284,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/234-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 235,
@@ -3973,7 +5618,14 @@
       "freqRank": 283,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:clapper-board",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/235-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 236,
@@ -3990,7 +5642,14 @@
       "freqRank": 286,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:palm-up-hand",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/236-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 237,
@@ -4008,7 +5667,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/237-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 238,
@@ -4025,7 +5691,14 @@
       "freqRank": 289,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/238-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 239,
@@ -4042,7 +5715,14 @@
       "freqRank": 287,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/239-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 240,
@@ -4059,7 +5739,14 @@
       "freqRank": 290,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/240-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 241,
@@ -4076,7 +5763,14 @@
       "freqRank": 288,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thumbs-up",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/241-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 242,
@@ -4094,7 +5788,14 @@
       "freqRank": 291,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/242-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 243,
@@ -4111,7 +5812,14 @@
       "freqRank": 300,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:school",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/243-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 244,
@@ -4128,7 +5836,14 @@
       "freqRank": 292,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:identification-card",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/244-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 245,
@@ -4146,7 +5861,14 @@
       "freqRank": 293,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:cross-mark",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/245-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 246,
@@ -4164,7 +5886,14 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:hourglass-done",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/246-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 247,
@@ -4181,7 +5910,14 @@
       "freqRank": 295,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:zipper-mouth-face",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/247-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 248,
@@ -4198,7 +5934,14 @@
       "freqRank": 298,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:folded-hands",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/248-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 249,
@@ -4215,7 +5958,14 @@
       "freqRank": 296,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:zipper-mouth-face",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/249-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 250,
@@ -4232,7 +5982,14 @@
       "freqRank": 299,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:thumbs-down",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/250-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     },
     {
       "index": 251,
@@ -4249,7 +6006,14 @@
       "freqRank": 297,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "image": "cue:people-hugging",
+      "voices": [
+        {
+          "key": "echo/packs/ru_absoluteBeginner/251-ru_RU-denis-medium.m4a",
+          "voice": "ru_RU-denis-medium"
+        }
+      ]
     }
   ]
 }
