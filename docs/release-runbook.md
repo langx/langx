@@ -79,11 +79,17 @@ reported success. Two things changed the same day. The zone's "Cache
 websites" rule now covers `langx.io` alone (it had a one-day edge TTL that
 overrode Pages' `max-age=0` on `app.langx.io`); Pages needs no zone rule, and
 `public/_headers` already marks the fingerprinted assets immutable. And
-`pnpm deploy:web` now ends with `scripts/verify-web-deploy.mjs`, which
-fetches the live index on the custom domain and the bundle it references and
-fails loudly if either is wrong — `pnpm verify:web` runs it on its own. If it
-ever fails again, purge the host (Caching → Configuration → Purge → Custom →
-Hostname `app.langx.io`) and check the cache rules.
+`pnpm deploy:web` now ends with `scripts/verify-web-deploy.mjs --built`,
+which fetches the live index on the custom domain and checks that the scripts
+it loads are the ones in the `dist/` it just uploaded, then fetches each of
+them. If it ever fails again, purge the host (Caching → Configuration → Purge
+→ Custom → Hostname `app.langx.io`) and check the cache rules.
+
+`pnpm verify:web` runs it on its own, without `--built`, and answers the
+weaker question: does the live index load every script it references. That is
+the one to reach for when the site looks wrong and you have no fresh build —
+the comparison is only meaningful seconds after an upload, and run against a
+stale `dist/` it would blame the edge for your checkout.
 
 The cluster, the Fly app, its secrets, the certificate, `TRUSTED_ORIGINS` and
 `EDGE_SECRET` are all in place — `api.langx.io` answers through Cloudflare's
