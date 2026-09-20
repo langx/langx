@@ -17,9 +17,13 @@
  * `docs/decisions.md` — "a machine may not choose what a line means".
  *
  * Usage:
- *   node tools/echo-content/lint-glosses.mjs                  # every pack
- *   node tools/echo-content/lint-glosses.mjs content/echo/es  # one language
- *   node tools/echo-content/lint-glosses.mjs --locale ar      # one column
+ *   node tools/echo-content/lint-glosses.mjs             # every pack
+ *   node tools/echo-content/lint-glosses.mjs es          # one language
+ *   node tools/echo-content/lint-glosses.mjs --locale ar # one column
+ *
+ * The argument is a language, not a path — every file this opens is one
+ * `content/echo` listed itself. Reading a path off the command line is the
+ * same code either way and CodeQL is right that it is not the same risk.
  */
 import { readdir, readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
@@ -94,12 +98,14 @@ function count(text, character) {
   return [...text].filter((one) => one === character).length
 }
 
-async function packs(where) {
+/** Every pack file, or every pack file of one language. */
+async function packs(lang) {
   const found = []
-  for (const entry of await readdir(where, { withFileTypes: true })) {
-    const path = join(where, entry.name)
-    if (entry.isDirectory()) found.push(...(await packs(path)))
-    else if (entry.name.endsWith('.json')) found.push(path)
+  for (const dir of await readdir(CONTENT, { withFileTypes: true })) {
+    if (!dir.isDirectory() || (lang && dir.name !== lang)) continue
+    for (const file of await readdir(join(CONTENT, dir.name))) {
+      if (file.endsWith('.json')) found.push(join(CONTENT, dir.name, file))
+    }
   }
   return found
 }
@@ -108,11 +114,18 @@ async function main() {
   const only = process.argv.includes('--locale')
     ? process.argv[process.argv.indexOf('--locale') + 1]
     : null
-  const where = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : CONTENT
+  const lang = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : null
+
+  const found = (await packs(lang)).sort()
+  if (found.length === 0) {
+    console.error(lang ? `No packs in content/echo/${lang}.` : 'No packs at all.')
+    process.exitCode = 1
+    return
+  }
 
   const totals = new Map()
   let read = 0
-  for (const path of (await packs(resolve(where))).sort()) {
+  for (const path of found) {
     const pack = JSON.parse(await readFile(path, 'utf8'))
     const flagged = []
     for (const item of pack.items) {

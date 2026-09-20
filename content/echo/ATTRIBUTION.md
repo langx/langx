@@ -286,7 +286,7 @@ packs have passed it; see "In use" above for what passing meant.
 
 **Fifteen files are drafts today** — Spanish, German, French, Russian and
 Italian, three levels each, 4,208 items and 29,099 glosses. Nobody has read
-them. `tools/echo-content/lint-glosses.mjs` has 92 things to say about them,
+them. `tools/echo-content/lint-glosses.mjs` had 92 things to say about them,
 which is the mechanical half of a first pass: 64 Russian copula dashes written
 as a hyphen, 13 Arabic sentences spaced before their punctuation, 3 Persian
 letters inside Arabic words. It cannot see a wrong sense or a translation of a
