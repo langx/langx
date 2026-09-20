@@ -596,21 +596,149 @@ is not, which is why its paperwork starts on day one.
    quick-reply action (no category exists at all), and the store assets.
    → verify: everything in `phase-2-watch.md`
 
-3. CarPlay: the REST send twin and its test, the bearer path, the
-   communication templates, the Siri intents
+3. CarPlay: the REST send twin and its test — **done, 20 September**, it was
+   what the watch reply needed first; then the bearer path, the communication
+   templates, the Siri intents
    → verify: the list under Surface C, against a real head unit as well as
      the simulator
+   → blocked on Apple, and `react-native-carplay` claims no version of this
+     stack — the spike has a real no-go branch
+
+4. Wear OS — **done, 20 September**, out of order because the design was
+   never actually separate. Tile and sign-out still open.
+
+5. Android Auto: the other car, and the one nobody has to approve
+   → verify: the same list as Surface C, in the Android Auto simulator
+
+6. iPad, Mac and the Duo's inner display: one two-pane layout, not three
+   → verify: a chat open on all four, and the four Duo poses
+
+7. Server-driven Live Activities: first a decision about a second push path,
+   then the path. The phone-driven activity from phase 1 ships before this.
+
+8. CallKit: a new product, listed so it is not invisible
+
+9. The two that undo something: an independent watch app, and Echo as a
+   CarPlay audio app. Neither starts without a decision that says so.
 ```
 
-## Not in this plan
+**The order above is not a queue.** Phases 0 and 3 wait on Apple, 5 waits on
+nobody, and 6 is the largest single piece of work here. What ships next is a
+question of what is worth a store build, which is the first thing to settle
+below.
 
-Android Auto and Wear OS — a separate plan, a separate set of constraints,
-and no reason to bundle them into an Apple-only piece of work. An independent
-watch app. Voice or video calling, in the car or anywhere else: CallKit is a
-different feature with a different entitlement conversation. iPad and Mac
-layouts. Live Activities driven by the server. Echo as a CarPlay audio app —
-ruled out by the category decision above, and worth revisiting only if Apple
-refuses the communication entitlement.
+## What used to be out of this plan
+
+Six things were excluded here, each with a reason. Behic asked on 20 September
+for them to come in. They are in — as phases 4 to 9 below — and **the reasons
+came with them**, because none of them has stopped being true. What changed is
+that they are now costed options rather than a closed list.
+
+Two of them contradict decisions already made and shipped. Those are not
+scheduling problems and they are marked as such: adopting either means undoing
+something that works.
+
+### Phase 4 — Wear OS ✅ done ahead of its own phase
+
+Excluded as "a separate plan, a separate set of constraints". The constraints
+were real — a Gradle module, Compose for Wear, the Data Layer, a config plugin
+to survive `prebuild` — and every one of them was paid on 20 September. What
+was wrong was the _design_ being separate: everything Surface B decided is true
+on either wrist, so there is one app and one payload. The record is in
+[`phase-2-watch.md`](phase-2-watch.md).
+
+Still open on this surface: the tile (Wear's complication), and sign-out
+clearing the watch.
+
+### Phase 5 — Android Auto
+
+The car, on the other platform. Genuinely a separate set of constraints from
+CarPlay: Android Auto's messaging templates are declarative (`CarAppService`,
+the Jetpack `androidx.car.app` library), Google's review is a quality
+checklist rather than a per-category entitlement, and there is **no Apple to
+wait for**. That last point makes it the cheaper car to reach, which is an
+argument for doing it _before_ CarPlay rather than after — the CarPlay
+entitlement has no published turnaround and may never arrive.
+
+It reuses what Phase 3 builds anyway: the REST send twin (done), the same
+`previewFor` summaries, the same read-aloud decision. What it does not reuse is
+Siri — replies would come from the Assistant instead.
+
+**Prerequisite:** the `react-native-carplay` no-go would not block it; this is
+native Kotlin either way.
+
+### Phase 6 — iPad and Mac layouts
+
+Excluded because they are the two-pane change, and the two-pane change was
+already deferred under _The iPhone Duo_ for being structural: `expo-router` is
+driving a stack and every route assumes it owns the screen.
+
+Folding this in means the two-pane work stops being a Duo question and becomes
+one job serving four devices — Duo inner display, iPad, Mac (which already runs
+this app as the iPad build, see the note in `docs/`), and any future large
+screen. That is a better shape than three separate layout efforts, and it is
+still the largest single piece of work in this document.
+
+**This answers open question 3 by absorbing it**: the two-pane layout does get
+its own plan, and this is the phase that writes it.
+
+### Phase 7 — Live Activities driven by the server
+
+Phase 1 kept a phone-driven activity — a scheduled exchange the phone can count
+down by itself. The server-driven kind was excluded for a specific reason that
+has not changed: **ActivityKit push updates need an APNs token per activity,
+and the Expo push service does not carry one.** A direct APNs path is a second
+delivery system for one feature, and the project has already tried and reverted
+a second delivery system on the other platform.
+
+So this phase is not "build the activity". It is: **decide whether one feature
+is worth a second push path**, and if so, build that path properly — token
+registration, rotation, the failure mode when it is down, and what happens to
+the Expo relay that keeps carrying everything else.
+
+The phone-driven activity from Phase 1 should ship first regardless. It is the
+one that needs no new infrastructure, and it will show whether anybody looks at
+the Dynamic Island before a second push system is paid for.
+
+### Phase 8 — CallKit: voice or video
+
+Excluded as "a different feature with a different entitlement conversation",
+and it still is. This is not a surface for an existing feature the way the
+widgets and the watch were — LangX has no calling. It is a new product
+decision with its own infrastructure (a media server or a third-party SDK),
+its own abuse surface, its own store-review questions, and, for the car, its
+own CarPlay category conversation.
+
+It is listed here so it stops being invisible, not because it is next.
+
+### Phase 9 — the two contradictions
+
+These two are in the plan now, and each one **undoes something that works**.
+Neither should be started without a decision that says so out loud.
+
+**An independent watch app.** Surface B calls the dependent design "the single
+most important decision in this plan": an independent app needs its own auth —
+a second credential store, a second thing to revoke when an account is deleted
+— and its own transport for a chat protocol that is socket-first. That is all
+still true, and the dependent app is now built, verified on both platforms, and
+answers the question it was built for. Independence buys one thing: the watch
+working when the phone is out of range. If that is worth a second credential
+store, it is worth saying so as a decision rather than discovering it as scope.
+
+**Echo as a CarPlay audio app.** This one is not additive at all. Apple grants
+the CarPlay entitlement **per category**, combining categories is explicitly a
+reason to be refused, and Behic chose Communication on 18 September with the
+reasoning recorded above: LangX is a messaging app, and asking for Audio in
+order to ship Echo would leave chat outside the car permanently. Adding Echo as
+an audio app therefore means one of:
+
+- a **second app** on the store, with its own listing, review and entitlement;
+- or **reversing the category**, which the plan already argued against and
+  which cannot be done cheaply once the Communication request is filed.
+
+The plan's own answer stands: revisit only if Apple **refuses** the
+communication entitlement. Until then this phase's real content is the
+contingency, not the build.
 
 ## What Behic decided, and what is still open
 
@@ -632,6 +760,17 @@ Still open:
    of the plan; the scheduled exchange is the one to build when it returns.
 2. **Does the watch app go into the store listing now**, with its own
    screenshots, or wait until CarPlay is approved and both land together?
-3. **Is the two-pane layout worth its own plan now?** It is the Duo's whole
-   point and it would serve iPad too, but it rewrites how navigation works —
-   and nobody can size it until the design kits are open on a Mac.
+3. ~~**Is the two-pane layout worth its own plan now?**~~ **Answered by
+   phase 6**, which absorbs it: one two-pane job serving the Duo's inner
+   display, iPad and Mac rather than three layout efforts. Still nobody can
+   size it until the design kits are open on a Mac.
+
+Added on 20 September, when phases 4 to 9 came in:
+
+4. **What is the next store build for?** Nothing left in phases 1 and 2 can
+   reach an installed app over the air — `runtimeVersion` is a fingerprint and
+   every remaining item there is native. The exception is the notification
+   quick-reply, which is JavaScript and a `categoryId` on the server.
+5. **Does Android Auto go before CarPlay?** It waits on nobody, and CarPlay's
+   entitlement has no published turnaround.
+6. **Do the two contradictions in phase 9 get a decision, or stay parked?**
