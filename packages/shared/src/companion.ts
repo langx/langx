@@ -74,6 +74,36 @@ export const companionSnapshotSchema = z.object({
     nextDue: z.string().nullable(),
   }),
   /**
+   * The activity map, as one character per day.
+   *
+   * **Optional, and the first field added after this schema shipped**, which
+   * is what the `version` note above is about: a widget extension is only
+   * replaced when the binary is, so an older extension will be handed a blob
+   * carrying this and must ignore it rather than fail. Absent means an app
+   * that predates the map widget, and the widget draws its empty state.
+   *
+   * A string rather than an array of objects because the array is the whole
+   * cost: 140 days is 140 `{day, intensity}` pairs and about six kilobytes of
+   * JSON, against 140 bytes here — in a blob that is rewritten on every read
+   * message and every finished review.
+   *
+   * One character per day, oldest first, seven days to a column exactly as
+   * `activityGrid` lays them out: `0`–`4` is the shade, and `.` is a day that
+   * has not happened yet, which the grid draws as a gap rather than as an
+   * empty square. The widget never recomputes the grid — `activityMap.ts` is
+   * where that rule lives and a second copy in Swift would be free to
+   * disagree about which square is today.
+   */
+  activity: z
+    .object({
+      /** `YYYY-MM-DD`, the server's idea of the reader's local day. */
+      today: z.string(),
+      /** How many columns the string holds, so Swift does not divide to find out. */
+      weeks: z.number().int().positive(),
+      days: z.string(),
+    })
+    .optional(),
+  /**
    * The three words the widget draws beside its three numbers, already in the
    * reader's language. Plural forms are not needed: each label sits under a
    * number rather than inside a sentence, which is the same reason the app's

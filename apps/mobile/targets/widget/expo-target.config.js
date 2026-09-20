@@ -38,5 +38,13 @@ module.exports = (config) => ({
     $accent: '#ffc409',
     // `colors.bg`, light and dark, so the widget sits on the app's own ground.
     $widgetBackground: { color: '#ffffff', darkColor: '#1c1f24' },
+    /*
+     * `colors.fill` — the ground each of the three numbers sits on, one step
+     * up from the widget's own background. A pair rather than a single value
+     * for the reason the pair above exists: a widget follows the system
+     * appearance, so a dark tile written as one colour is a black card on a
+     * white widget in the morning.
+     */
+    tile: { color: '#f4f5f7', darkColor: '#23272d' },
   },
 })

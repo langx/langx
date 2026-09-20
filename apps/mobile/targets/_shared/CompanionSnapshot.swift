@@ -35,6 +35,31 @@ struct CompanionSnapshot: Codable {
     let nextDue: String?
   }
 
+  /**
+   The activity map, one character per day.
+
+   Optional, and the first field added after this struct shipped — which is
+   what the note at the top of the file is about. An extension is only replaced
+   when the binary is, so a build without the map widget can be handed a blob
+   that carries this, and one *with* it can be handed a blob from an older app
+   that does not. Both cases are this being nil.
+  */
+  struct Activity: Codable {
+    let today: String
+    let weeks: Int
+    /// `0`–`4` shade a square; `.` is a day that has not happened yet and is
+    /// drawn as a gap. Oldest first, seven days to a column — the order
+    /// `activityGrid` lays out, which this side never recomputes.
+    let days: String
+
+    /// The string as columns of seven, or empty if it is not the length it claims.
+    var columns: [[Character]] {
+      let all = Array(days)
+      guard all.count == weeks * 7 else { return [] }
+      return (0..<weeks).map { Array(all[($0 * 7)..<($0 * 7 + 7)]) }
+    }
+  }
+
   struct Labels: Codable {
     let streak: String
     let unread: String
@@ -47,6 +72,7 @@ struct CompanionSnapshot: Codable {
   let unread: Int
   let streak: Streak
   let echo: Echo
+  let activity: Activity?
   let labels: Labels
 
   /**

@@ -3,11 +3,20 @@ import SwiftUI
 /**
  One thread, and the only thing this app does other than read: a reply.
 
- What is drawn is whatever the phone sent — which for an unread conversation
- is at least the message that made it unread, and more when the phone happened
- to have the thread cached. There is no "load more", deliberately: the watch
- never causes a fetch, and a button that sometimes worked and sometimes sat
- there would be worse than not offering one.
+ Drawn to `docs/plans/iphone-watch-and-carplay/watch.png` — the other person
+ named at the top beside their disc, their words on the left in `fill`, yours
+ on the right in `accentBg`, and one yellow pill at the bottom.
+
+ **The yellow is the rule, not a choice.** `MessageBubble.tsx` states it for
+ the app: yellow is the committing action, once per screen, and that is the
+ send button. So the bubbles here are blue and grey exactly as they are on the
+ phone, and Reply is the only yellow on the watch.
+
+ What is drawn is whatever the phone sent — for an unread conversation that is
+ at least the message that made it unread, and more when the phone happened to
+ have the thread cached. There is no "load more", deliberately: the watch
+ never causes a fetch, and a button that sometimes worked would be worse than
+ not offering one.
 
  The conversation is looked up by id on every redraw rather than held. A new
  payload can arrive while this screen is open — the other person writing
@@ -21,15 +30,15 @@ struct ThreadView: View {
   var body: some View {
     ScrollView {
       if let conversation = store.conversation(id: conversationId) {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
+          Header(name: conversation.name)
           ForEach(conversation.messages) { message in
             Bubble(message: message)
           }
           ReplyButton(conversationId: conversationId)
           Outcome(state: store.sending[conversationId])
         }
-        .padding(.horizontal, 4)
-        .navigationTitle(conversation.name)
+        .padding(.horizontal, 2)
       } else {
         /*
          The thread was in the last payload and is not in this one, which
@@ -40,6 +49,25 @@ struct ThreadView: View {
         Placeholder(key: "watch.openOnPhone")
       }
     }
+    // The name is in the view rather than the bar: a watch title truncates to
+    // nothing beside the clock, and the mockup puts the disc next to it.
+    .navigationBarTitleDisplayMode(.inline)
+  }
+}
+
+private struct Header: View {
+  let name: String
+
+  var body: some View {
+    HStack(spacing: 6) {
+      AvatarDisc(name: name, size: 22)
+      Text(name)
+        .font(.system(size: 15, weight: .bold, design: .rounded))
+        .foregroundStyle(Palette.text)
+        .lineLimit(1)
+      Spacer(minLength: 0)
+    }
+    .padding(.bottom, 2)
   }
 }
 
@@ -48,14 +76,17 @@ private struct Bubble: View {
 
   var body: some View {
     HStack {
-      if message.mine { Spacer(minLength: 24) }
+      if message.mine { Spacer(minLength: 20) }
       Text(message.body)
-        .font(.footnote)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 5)
-        .background(message.mine ? Color.accentColor.opacity(0.35) : Color.gray.opacity(0.25))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-      if !message.mine { Spacer(minLength: 24) }
+        .font(.system(size: 14))
+        .foregroundStyle(Palette.text)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 6)
+        .background(
+          message.mine ? Palette.accentBg : Palette.fill,
+          in: RoundedRectangle(cornerRadius: 13, style: .continuous)
+        )
+      if !message.mine { Spacer(minLength: 20) }
     }
   }
 }
@@ -73,19 +104,24 @@ private struct ReplyButton: View {
 
   var body: some View {
     TextFieldLink(prompt: Text("watch.reply")) {
-      Label("watch.reply", systemImage: "arrowshape.turn.up.left")
-        .font(.footnote)
+      Text("watch.reply")
+        .font(.system(size: 15, weight: .bold, design: .rounded))
+        .foregroundStyle(Palette.primaryInk)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 9)
+        .background(Palette.primary, in: Capsule())
     } onSubmit: { text in
       store.reply(to: conversationId, body: text)
     }
-    .buttonStyle(.bordered)
-    .padding(.top, 4)
+    .buttonStyle(.plain)
+    .padding(.top, 6)
     /*
      No phone in range means no send, and the button says so by being off
      rather than by failing when pressed. `isReachable` is the watch's only
      honest signal here — it is about this moment, not about pairing.
     */
     .disabled(!store.reachable)
+    .opacity(store.reachable ? 1 : 0.4)
   }
 }
 
@@ -94,8 +130,8 @@ private struct Outcome: View {
 
   var body: some View {
     switch state {
-    case .sending: line("watch.sending", .secondary)
-    case .sent: line("watch.sent", .secondary)
+    case .sending: line("watch.sending", Palette.textMuted)
+    case .sent: line("watch.sent", Palette.textMuted)
     case .failed: line("watch.notSent", .orange)
     case nil: EmptyView()
     }
@@ -105,5 +141,6 @@ private struct Outcome: View {
     Text(key)
       .font(.caption2)
       .foregroundStyle(colour)
+      .frame(maxWidth: .infinity)
   }
 }

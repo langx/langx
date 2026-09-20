@@ -1,6 +1,11 @@
 import { companionSnapshotSchema } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { buildCompanionSnapshot, countedToday, type CompanionSources } from './companionSnapshot'
+import {
+  buildCompanionSnapshot,
+  COMPANION_ACTIVITY_WEEKS,
+  countedToday,
+  type CompanionSources,
+} from './companionSnapshot'
 
 const sources: CompanionSources = {
   unread: 3,
@@ -130,5 +135,55 @@ describe('countedToday', () => {
 
     expect(countedToday(snapshot, new Date(2026, 8, 19, 23, 59))).toBe(true)
     expect(countedToday(snapshot, new Date(2026, 8, 20, 0, 1))).toBe(false)
+  })
+})
+
+describe('the activity map in the snapshot', () => {
+  const activity = {
+    today: '2026-09-19',
+    days: [
+      { day: '2026-09-19', actions: 5 },
+      { day: '2026-09-18', actions: 1 },
+    ],
+    streak: { current: 2, lastQualifiedDay: '2026-09-19' },
+    maxAgeDays: 7,
+  }
+
+  it('is absent when the caller did not ask for it', () => {
+    const snapshot = buildCompanionSnapshot(sources, 'en', t, at)
+
+    expect(snapshot.activity).toBeUndefined()
+    expect(() => companionSnapshotSchema.parse(snapshot)).not.toThrow()
+  })
+
+  it('travels as one character per day, seven to a column', () => {
+    const snapshot = buildCompanionSnapshot({ ...sources, activity }, 'en', t, at)
+
+    expect(snapshot.activity?.days).toHaveLength(COMPANION_ACTIVITY_WEEKS * 7)
+    expect(snapshot.activity?.weeks).toBe(COMPANION_ACTIVITY_WEEKS)
+    expect(companionSnapshotSchema.parse(snapshot)).toEqual(snapshot)
+  })
+
+  /*
+   * The two things the widget must not decide for itself. A day that has not
+   * happened is a gap, not an empty square, and the difference is what stops
+   * the last column reading as a week of failure every Monday.
+   */
+  it('marks days that have not happened yet, and shades the ones that did', () => {
+    const snapshot = buildCompanionSnapshot({ ...sources, activity }, 'en', t, at)
+    const days = snapshot.activity?.days ?? ''
+
+    expect(days).toMatch(/^[0-4.]+$/)
+    expect(days).toContain('.')
+    expect(days.replace(/[0.]/g, '').length).toBeGreaterThan(0)
+  })
+
+  /** Every character is one of the five shades or the gap — nothing else. */
+  it('uses no character the widget would have to guess at', () => {
+    const snapshot = buildCompanionSnapshot({ ...sources, activity }, 'en', t, at)
+
+    expect(new Set(snapshot.activity?.days ?? '')).toEqual(
+      new Set([...(snapshot.activity?.days ?? '')].filter((c) => '01234.'.includes(c))),
+    )
   })
 })

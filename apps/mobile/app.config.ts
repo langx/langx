@@ -268,6 +268,21 @@ const config: ExpoConfig = {
             resizeMode: 'none',
             updatePeriodMillis: 1800000,
           },
+          /*
+           * The activity map. Four cells wide like the summary and three tall
+           * rather than two: seven rows of squares need the height, and a map
+           * squeezed into 110dp is a bar code.
+           */
+          {
+            name: 'LangXActivity',
+            label: 'LangX',
+            minWidth: '250dp',
+            minHeight: '160dp',
+            targetCellWidth: 4,
+            targetCellHeight: 3,
+            resizeMode: 'none',
+            updatePeriodMillis: 1800000,
+          },
         ],
       },
     ],
