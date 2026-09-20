@@ -1,13 +1,16 @@
 /**
- * Turns `cues.json` into the pictures the packs point at.
+ * Turns the cue tables into the pictures the packs point at.
  *
  * Three files, and each one answers a different question:
  *
- * - `cues.json` — which concept is the cue for which phrase. The editorial
- *   half, one line each, and the only half worth reviewing. The concept is
- *   written as an emoji because an emoji is a name everyone already reads:
- *   `"I'm broke.": "💸"` needs no key, where `"I'm broke.":
- *   "money-with-wings"` needs one. Nothing ships the emoji character.
+ * - `cues.<lang>.json` — which concept is the cue for which phrase, one file
+ *   per pack language because the key is the phrase and a phrase is in a
+ *   language. The editorial half, one line each, and the only half worth
+ *   reviewing. The concept is written as an emoji because an emoji is a name
+ *   everyone already reads: `"I'm broke.": "💸"` needs no key, where
+ *   `"I'm broke.": "money-with-wings"` needs one. Nothing ships the emoji
+ *   character, and the slugs are shared: one picture serves every language
+ *   that points a phrase at it.
  * - `concepts.json` — what each of those emoji is called. A frozen table, so
  *   the slug a cue resolves to cannot drift under it, and the manifest
  *   `packContent.test.ts` checks the packs against.
@@ -46,13 +49,28 @@
  */
 import { Buffer } from 'node:buffer'
 import { spawn } from 'node:child_process'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import prettier from 'prettier'
 import { DRAWINGS } from './drawings.mjs'
 
 const HERE = import.meta.dirname
 const OUT = resolve(HERE, 'out')
+const CONTENT = resolve(HERE, '../../../content/echo')
+
+/** The cue table for each language that has packs, keyed by phrase. */
+async function cuesByLang() {
+  const found = new Map()
+  for (const entry of await readdir(CONTENT, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue
+    const path = join(HERE, `cues.${entry.name}.json`)
+    // A language with packs and no cue file yet is a language mid-draft, not
+    // an error: the cards simply carry no picture until somebody writes one.
+    const table = await readFile(path, 'utf8').catch(() => null)
+    found.set(entry.name, table ? JSON.parse(table) : {})
+  }
+  return found
+}
 
 /** The plate every picture sits on. See the note above, and ILLUSTRATION.md. */
 const PLATE = { width: 400, height: 300, radius: 28, fill: '#f4f5f7' }
@@ -129,22 +147,30 @@ async function writeJson(path, value) {
 
 async function main() {
   const apply = process.argv.includes('--apply')
-  const cues = JSON.parse(await readFile(join(HERE, 'cues.json'), 'utf8'))
+  const cues = await cuesByLang()
   const concepts = JSON.parse(await readFile(join(HERE, 'concepts.json'), 'utf8'))
   const slugOf = new Map(
     Object.entries(concepts).map(([emoji, slug]) => [stripVariation(emoji), slug]),
   )
 
-  /** slug → the phrases that point at it. */
+  /** slug → how many phrases point at it, and, per language, phrase → slug. */
   const used = new Map()
+  const bySlug = new Map()
   const unknown = []
-  for (const [phrase, emoji] of Object.entries(cues)) {
-    const slug = slugOf.get(stripVariation(emoji))
-    if (!slug) {
-      unknown.push(`${phrase} → ${emoji}`)
-      continue
+  let cards = 0
+  for (const [lang, table] of cues) {
+    const forLang = new Map()
+    bySlug.set(lang, forLang)
+    for (const [phrase, emoji] of Object.entries(table)) {
+      cards += 1
+      const slug = slugOf.get(stripVariation(emoji))
+      if (!slug) {
+        unknown.push(`${lang}: ${phrase} → ${emoji}`)
+        continue
+      }
+      used.set(slug, (used.get(slug) ?? 0) + 1)
+      forLang.set(phrase, slug)
     }
-    used.set(slug, [...(used.get(slug) ?? []), phrase])
   }
 
   /*
@@ -175,7 +201,7 @@ async function main() {
   }
 
   /*
-   * And then the packs themselves, because `cues.json` is the source and the
+   * And then the packs themselves, because the cue table is the source and the
    * `image` field is derived from it. Writing it by hand in three files of
    * eight hundred items is how the two drift.
    *
@@ -184,30 +210,32 @@ async function main() {
    * seeded row came from; a run that rewrote nothing must not claim a new
    * draft, and a run that rewrote something must not keep the old number.
    */
-  const bySlug = new Map()
-  for (const [slug, phrases] of used) for (const phrase of phrases) bySlug.set(phrase, slug)
-  for (const level of ['absoluteBeginner', 'beginner', 'intermediate']) {
-    const path = resolve(HERE, `../../../content/echo/en/${level}.json`)
-    const pack = JSON.parse(await readFile(path, 'utf8'))
-    let changed = 0
-    for (const item of pack.items) {
-      const slug = bySlug.get(item.text)
-      const next = slug ? `cue:${slug}` : undefined
-      if (item.image === next) continue
-      changed += 1
-      if (next) item.image = next
-      else delete item.image
+  for (const [lang, forLang] of bySlug) {
+    for (const file of (await readdir(join(CONTENT, lang))).filter((name) =>
+      name.endsWith('.json'),
+    )) {
+      const path = join(CONTENT, lang, file)
+      const pack = JSON.parse(await readFile(path, 'utf8'))
+      let changed = 0
+      for (const item of pack.items) {
+        const slug = forLang.get(item.text)
+        const next = slug ? `cue:${slug}` : undefined
+        if (item.image === next) continue
+        changed += 1
+        if (next) item.image = next
+        else delete item.image
+      }
+      if (changed === 0) {
+        console.log(`  ${pack.id}: cues unchanged`)
+        continue
+      }
+      pack.contentVersion += 1
+      console.log(`  ${pack.id}: ${changed} cue(s) changed → contentVersion ${pack.contentVersion}`)
+      if (apply) await writeJson(path, pack)
     }
-    if (changed === 0) {
-      console.log(`  ${pack.id}: cues unchanged`)
-      continue
-    }
-    pack.contentVersion += 1
-    console.log(`  ${pack.id}: ${changed} cue(s) changed → contentVersion ${pack.contentVersion}`)
-    if (apply) await writeJson(path, pack)
   }
 
-  console.log(`${Object.keys(cues).length} cards, ${used.size} concepts, all drawn here`)
+  console.log(`${cards} cards, ${used.size} concepts, all drawn here`)
   console.log(
     apply ? `  wrote ${used.size} PNG(s), ${(bytes / 1024 / 1024).toFixed(1)} MB` : '  (dry run)',
   )

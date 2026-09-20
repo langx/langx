@@ -171,8 +171,8 @@ export const echoPackItemSchema = z.object({
    * A slug rather than a file, because the cue is shared: "🤝" is the picture
    * for sixteen different phrases, and sixteen copies of one drawing is
    * sixteen chances for fifteen of them to go stale. `content/echo/images/`
-   * holds one file per slug and `tools/echo-content/images/cues.json` says
-   * which phrase points at which — see that file's header for why the cue is
+   * holds one file per slug and `tools/echo-content/images/cues.<lang>.json`
+   * says which phrase points at which — see that file's header for why the cue is
    * written there as an emoji and never shipped as one.
    *
    * This used to read `openmoji:<hex>` and to be documented as "for a noun you

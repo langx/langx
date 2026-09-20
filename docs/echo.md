@@ -294,8 +294,9 @@ One field, `image?: { url, width?, height?, origin: 'chat' | 'pack' | 'self' }`:
   sixteen phrases that are about agreeing, so 808 cards resolve to 348
   pictures.
 
-  `tools/echo-content/images/cues.json` says which phrase points at which, one
-  line each, and is the half worth reviewing. `build.mjs` beside it derives
+  `tools/echo-content/images/cues.<lang>.json` says which phrase points at
+  which, one file per pack language and one line each, and is the half worth
+  reviewing. `build.mjs` beside it derives
   everything else: the pictures, the `image` fields, `credits.json`, and the
   `contentVersion` bump when a cue actually changed.
 

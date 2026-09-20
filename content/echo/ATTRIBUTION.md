@@ -186,7 +186,7 @@ called, so that `💸` resolves to `money-with-wings` and names a file. A naming
 convention is not artwork, but it came from somewhere and this is where.
 
 **The pictures themselves are not committed.** They are rendered to PNG and
-uploaded to the bucket; the repository keeps the decision (`cues.json`), the
+uploaded to the bucket; the repository keeps the decision (`cues.<lang>.json`), the
 naming (`concepts.json`), the geometry (`drawings.mjs`) and the manifest
 (`credits.json`). PNG rather than the vector they are drawn as because
 expo-image hands an SVG to each platform's own decoder, and iOS's mishandles
@@ -197,9 +197,10 @@ belonged only on "a noun you can point at", with abstract items left plain. No
 item in any of these packs is a noun: they are eight hundred phrases, so the
 rule could never fire, and the field it described sat empty from the day it was
 written. What is there now is a cue for the _meaning_ — 💸 over "I'm broke." —
-which is a thing a phrase has. `tools/echo-content/images/cues.json` is the
-record of which meaning was chosen for which phrase, one line each, and is the
-half of this worth reading.
+which is a thing a phrase has. `tools/echo-content/images/cues.<lang>.json` is
+the record of which meaning was chosen for which phrase — one file per pack
+language, because the key is the phrase, and the slugs behind them are shared —
+one line each, and is the half of this worth reading.
 
 **What a cue is not.** It is not a translation and it is not a mnemonic we can
 defend in eight languages; it is a hook for the eye. Where no honest picture
