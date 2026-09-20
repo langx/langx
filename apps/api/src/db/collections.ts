@@ -310,9 +310,10 @@ export const COLLECTIONS = {
    * **one** announcement and nothing else. Written by
    * `scripts/precreate-v1-users.ts`, which opens no `user` row for them —
    * a deleted account must not come back as a live one. This is the only
-   * place a v1 email is stored in the clear; drop the collection once that
-   * one mail has gone out. See `docs/decisions.md` → _Every v1 account has a
-   * v2 `user` row_.
+   * place a v1 email is stored in the clear. **Dropped on 20 September 2026**,
+   * that one mail having gone out; the name stays only for the unsubscribe
+   * link in it, whose delete now finds nothing — the right answer. See
+   * `docs/decisions.md` → _Every v1 account has a v2 `user` row_.
    */
   v1DeletedContacts: 'v1DeletedContacts',
   /**

@@ -3024,6 +3024,19 @@ same mistake. The older script stays for its `--drop`, but that keys on the
 hand step once `--status` says `done` and every row is either claimed in
 `emailCampaigns` or gone by its own unsubscribe.
 
+**Done, 20 September 2026: `v1DeletedContacts` is dropped.** The campaign read
+`done` at 837/837 on 13 September; 827 rows were left, the other ten having
+been forgotten by their own unsubscribe, and every one of the 827 was claimed
+in `emailCampaigns` — nobody was still owed the mail. The claim rows survive
+the drop and carry only the Appwrite id, so the record that somebody was
+written to outlives the address they were written to at, which is the whole
+point. `--drop` was not what did it: its guard counts rows without `sentAt`,
+and `sentAt` is the old sender's column, so against a queued campaign it
+refuses at the full 827. The unique index on `email` came out of
+`apps/api/src/db/indexes.ts` in the same change — `ensureIndexes` creates the
+collection it indexes, and an empty one rebuilt on the next boot is not a
+dropped one.
+
 The letter itself is not the launch mail. These people have no `user` row,
 so nothing carried over and the magic link (`disableSignUp: true`) would
 reach nobody; it says the account is gone as they asked, offers a fresh
