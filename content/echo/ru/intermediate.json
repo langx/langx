@@ -2,7 +2,7 @@
   "id": "ru:intermediate",
   "lang": "ru",
   "level": "intermediate",
-  "contentVersion": 1,
+  "contentVersion": 2,
   "reviewed": false,
   "sources": [
     {
@@ -249,7 +249,7 @@
       "kind": "phrase",
       "text": "Он боится собаки.",
       "gloss": {
-        "en": "He is in fear of the dog.",
+        "en": "He is afraid of the dog.",
         "tr": "O, köpekten korkuyor.",
         "de": "Er fürchtet sich vor dem Hund.",
         "es": "Él le tiene miedo al perro.",
@@ -257,7 +257,8 @@
       },
       "freqRank": 33,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
@@ -391,7 +392,7 @@
     {
       "index": 22,
       "kind": "phrase",
-      "text": "Лошадь - это животное.",
+      "text": "Лошадь — это животное.",
       "gloss": {
         "en": "A horse is an animal.",
         "de": "Ein Pferd ist ein Tier.",
@@ -402,7 +403,8 @@
       },
       "freqRank": 42,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Лошадь - это животное."
       }
     },
     {
@@ -831,7 +833,7 @@
     {
       "index": 49,
       "kind": "phrase",
-      "text": "Мэри - жена Тома.",
+      "text": "Мэри — жена Тома.",
       "gloss": {
         "en": "Mary is Tom's wife.",
         "de": "Marie ist Toms Frau.",
@@ -841,7 +843,8 @@
       },
       "freqRank": 69,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Мэри - жена Тома."
       }
     },
     {
@@ -1173,7 +1176,7 @@
       "text": "Поблизости есть телефон?",
       "gloss": {
         "en": "Is there a phone nearby?",
-        "tr": "Yakınlar da telefon var mı?",
+        "tr": "Yakınlarda telefon var mı?",
         "de": "Gibt es in der Nähe ein Telefon?",
         "es": "¿Hay un teléfono cerca?",
         "fr": "Y a-t-il un téléphone à proximité ?",
@@ -1181,7 +1184,8 @@
       },
       "freqRank": 91,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
@@ -1398,7 +1402,7 @@
     {
       "index": 84,
       "kind": "phrase",
-      "text": "Том - наш сосед.",
+      "text": "Том — наш сосед.",
       "gloss": {
         "en": "Tom is our neighbor.",
         "tr": "Tom bizim komşumuz.",
@@ -1408,7 +1412,8 @@
       },
       "freqRank": 104,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Том - наш сосед."
       }
     },
     {
@@ -1430,7 +1435,7 @@
     {
       "index": 86,
       "kind": "phrase",
-      "text": "Том - хороший сосед.",
+      "text": "Том — хороший сосед.",
       "gloss": {
         "en": "Tom is a good neighbor.",
         "de": "Tom ist ein guter Nachbar.",
@@ -1440,7 +1445,8 @@
       },
       "freqRank": 105,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Том - хороший сосед."
       }
     },
     {
@@ -1659,7 +1665,7 @@
       "text": "Я пошёл пешком.",
       "gloss": {
         "en": "I went on foot.",
-        "tr": "Tabanvayla gittim.",
+        "tr": "Yürüyerek gittim.",
         "de": "Ich ging zu Fuß.",
         "es": "Iba a pie.",
         "fr": "J'allai à pied.",
@@ -1667,7 +1673,8 @@
       },
       "freqRank": 118,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
@@ -1851,7 +1858,7 @@
     {
       "index": 112,
       "kind": "phrase",
-      "text": "Животные - наши друзья.",
+      "text": "Животные — наши друзья.",
       "gloss": {
         "en": "Animals are our friends.",
         "tr": "Hayvanlar dostumuzdur.",
@@ -1863,13 +1870,14 @@
       },
       "freqRank": 132,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Животные - наши друзья."
       }
     },
     {
       "index": 113,
       "kind": "phrase",
-      "text": "Лошади - это животные.",
+      "text": "Лошади — это животные.",
       "gloss": {
         "en": "Horses are animals.",
         "de": "Pferde sind Tiere.",
@@ -1879,7 +1887,8 @@
       },
       "freqRank": 133,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Лошади - это животные."
       }
     },
     {
@@ -2467,16 +2476,15 @@
     {
       "index": 150,
       "kind": "phrase",
-      "text": "Все ненавидят полицию.",
+      "text": "Женщины меня ненавидят.",
       "gloss": {
-        "en": "Everyone hates the police.",
-        "tr": "Herkes polisten nefret ediyor.",
-        "de": "Alle hassen die Polizei.",
-        "es": "Todo el mundo odia a la policía.",
-        "fr": "Tout le monde déteste la police.",
-        "ar": "الكل يكره الشرطة."
+        "en": "Women hate me.",
+        "de": "Frauen hassen mich.",
+        "es": "Las mujeres me odian.",
+        "fr": "Les femmes me détestent.",
+        "pt-BR": "As mulheres me detestam."
       },
-      "freqRank": 171,
+      "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2500,15 +2508,15 @@
     {
       "index": 152,
       "kind": "phrase",
-      "text": "Женщины меня ненавидят.",
+      "text": "Объясни мне это.",
       "gloss": {
-        "en": "Women hate me.",
-        "de": "Frauen hassen mich.",
-        "es": "Las mujeres me odian.",
-        "fr": "Les femmes me détestent.",
-        "pt-BR": "As mulheres me detestam."
+        "en": "Explain it to me.",
+        "de": "Erkläre es mir.",
+        "es": "Explícamelo.",
+        "fr": "Explique-le-moi.",
+        "pt-BR": "Explica-me isso."
       },
-      "freqRank": 172,
+      "freqRank": 174,
       "review": {
         "glossedBy": "Tatoeba"
       }
@@ -2533,22 +2541,6 @@
     {
       "index": 154,
       "kind": "phrase",
-      "text": "Объясни мне это.",
-      "gloss": {
-        "en": "Explain it to me.",
-        "de": "Erkläre es mir.",
-        "es": "Explícamelo.",
-        "fr": "Explique-le-moi.",
-        "pt-BR": "Explica-me isso."
-      },
-      "freqRank": 174,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 155,
-      "kind": "phrase",
       "text": "Она готовит ему.",
       "gloss": {
         "en": "She cooks for him.",
@@ -2563,7 +2555,7 @@
       }
     },
     {
-      "index": 156,
+      "index": 155,
       "kind": "phrase",
       "text": "Сейчас ровно полночь.",
       "gloss": {
@@ -2579,7 +2571,7 @@
       }
     },
     {
-      "index": 157,
+      "index": 156,
       "kind": "phrase",
       "text": "Я ношу очки.",
       "gloss": {
@@ -2595,7 +2587,7 @@
       }
     },
     {
-      "index": 158,
+      "index": 157,
       "kind": "phrase",
       "text": "Когда ты вернёшься?",
       "gloss": {
@@ -2611,7 +2603,7 @@
       }
     },
     {
-      "index": 159,
+      "index": 158,
       "kind": "phrase",
       "text": "Том в аэропорту.",
       "gloss": {
@@ -2627,7 +2619,7 @@
       }
     },
     {
-      "index": 160,
+      "index": 159,
       "kind": "phrase",
       "text": "Он любит плавать.",
       "gloss": {
@@ -2643,7 +2635,7 @@
       }
     },
     {
-      "index": 161,
+      "index": 160,
       "kind": "phrase",
       "text": "Ты умеешь плавать?",
       "gloss": {
@@ -2659,7 +2651,7 @@
       }
     },
     {
-      "index": 162,
+      "index": 161,
       "kind": "phrase",
       "text": "Он умеет плавать.",
       "gloss": {
@@ -2675,7 +2667,7 @@
       }
     },
     {
-      "index": 163,
+      "index": 162,
       "kind": "phrase",
       "text": "Я умею плавать.",
       "gloss": {
@@ -2691,11 +2683,11 @@
       }
     },
     {
-      "index": 164,
+      "index": 163,
       "kind": "phrase",
       "text": "Под столом кошка.",
       "gloss": {
-        "en": "Under the table is a cat.",
+        "en": "There's a cat under the table.",
         "tr": "Masanın altında kedi var.",
         "de": "Unter dem Tisch ist eine Katze.",
         "es": "Hay un gato debajo de la mesa.",
@@ -2703,11 +2695,12 @@
       },
       "freqRank": 184,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 165,
+      "index": 164,
       "kind": "phrase",
       "text": "Мы из России.",
       "gloss": {
@@ -2723,12 +2716,12 @@
       }
     },
     {
-      "index": 166,
+      "index": 165,
       "kind": "phrase",
       "text": "Я из России.",
       "gloss": {
         "en": "I am from Russia.",
-        "tr": "Ben Rusyalıyım.",
+        "tr": "Ben Rusya'danım.",
         "de": "Ich komme aus Russland.",
         "es": "Soy de Rusia.",
         "fr": "Je viens de Russie.",
@@ -2737,11 +2730,12 @@
       },
       "freqRank": 186,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 167,
+      "index": 166,
       "kind": "phrase",
       "text": "Поблизости есть больница?",
       "gloss": {
@@ -2757,7 +2751,7 @@
       }
     },
     {
-      "index": 168,
+      "index": 167,
       "kind": "phrase",
       "text": "Что ты читаешь?",
       "gloss": {
@@ -2774,7 +2768,7 @@
       }
     },
     {
-      "index": 169,
+      "index": 168,
       "kind": "phrase",
       "text": "Где ты живёшь?",
       "gloss": {
@@ -2791,7 +2785,7 @@
       }
     },
     {
-      "index": 170,
+      "index": 169,
       "kind": "phrase",
       "text": "Это неплохая идея.",
       "gloss": {
@@ -2807,7 +2801,7 @@
       }
     },
     {
-      "index": 171,
+      "index": 170,
       "kind": "phrase",
       "text": "Я очень стар.",
       "gloss": {
@@ -2823,7 +2817,7 @@
       }
     },
     {
-      "index": 172,
+      "index": 171,
       "kind": "phrase",
       "text": "Мне нравится гулять.",
       "gloss": {
@@ -2839,7 +2833,7 @@
       }
     },
     {
-      "index": 173,
+      "index": 172,
       "kind": "phrase",
       "text": "Я люблю шоколад.",
       "gloss": {
@@ -2855,7 +2849,7 @@
       }
     },
     {
-      "index": 174,
+      "index": 173,
       "kind": "phrase",
       "text": "Дай мне ручку.",
       "gloss": {
@@ -2871,7 +2865,7 @@
       }
     },
     {
-      "index": 175,
+      "index": 174,
       "kind": "phrase",
       "text": "Вы в Европе!",
       "gloss": {
@@ -2887,7 +2881,7 @@
       }
     },
     {
-      "index": 176,
+      "index": 175,
       "kind": "phrase",
       "text": "«Ты русский?» — «Да».",
       "gloss": {
@@ -2903,7 +2897,7 @@
       }
     },
     {
-      "index": 177,
+      "index": 176,
       "kind": "phrase",
       "text": "Пойдем на пляж.",
       "gloss": {
@@ -2920,7 +2914,7 @@
       }
     },
     {
-      "index": 178,
+      "index": 177,
       "kind": "phrase",
       "text": "Некоторым это нравится.",
       "gloss": {
@@ -2936,7 +2930,7 @@
       }
     },
     {
-      "index": 179,
+      "index": 178,
       "kind": "phrase",
       "text": "Какой красивый цветок!",
       "gloss": {
@@ -2952,7 +2946,7 @@
       }
     },
     {
-      "index": 180,
+      "index": 179,
       "kind": "phrase",
       "text": "Она моложе меня.",
       "gloss": {
@@ -2968,11 +2962,11 @@
       }
     },
     {
-      "index": 181,
+      "index": 180,
       "kind": "phrase",
       "text": "Приведи мне пример.",
       "gloss": {
-        "en": "Quote me an example.",
+        "en": "Give me an example.",
         "tr": "Bana bir örnek ver.",
         "de": "Nenn mir ein Beispiel.",
         "es": "Dame un ejemplo.",
@@ -2980,11 +2974,12 @@
       },
       "freqRank": 201,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 182,
+      "index": 181,
       "kind": "phrase",
       "text": "Это долгая история.",
       "gloss": {
@@ -3000,7 +2995,7 @@
       }
     },
     {
-      "index": 183,
+      "index": 182,
       "kind": "phrase",
       "text": "Верь в удачу!",
       "gloss": {
@@ -3016,7 +3011,7 @@
       }
     },
     {
-      "index": 184,
+      "index": 183,
       "kind": "phrase",
       "text": "Том умер молодым.",
       "gloss": {
@@ -3032,7 +3027,7 @@
       }
     },
     {
-      "index": 185,
+      "index": 184,
       "kind": "phrase",
       "text": "Почему ты плачешь?",
       "gloss": {
@@ -3050,7 +3045,7 @@
       }
     },
     {
-      "index": 186,
+      "index": 185,
       "kind": "phrase",
       "text": "Нэнси из Лондона.",
       "gloss": {
@@ -3066,7 +3061,7 @@
       }
     },
     {
-      "index": 187,
+      "index": 186,
       "kind": "phrase",
       "text": "Мальчик поцеловал девочку.",
       "gloss": {
@@ -3082,11 +3077,11 @@
       }
     },
     {
-      "index": 188,
+      "index": 187,
       "kind": "phrase",
       "text": "Он её поцеловал.",
       "gloss": {
-        "en": "She was kissed by him.",
+        "en": "He kissed her.",
         "de": "Sie wurde von ihm geküsst.",
         "es": "Él la besó.",
         "fr": "Elle a été embrassée par lui.",
@@ -3094,11 +3089,12 @@
       },
       "freqRank": 208,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 189,
+      "index": 188,
       "kind": "phrase",
       "text": "Том поцеловал Мэри.",
       "gloss": {
@@ -3114,7 +3110,7 @@
       }
     },
     {
-      "index": 190,
+      "index": 189,
       "kind": "phrase",
       "text": "Я читаю газету.",
       "gloss": {
@@ -3131,7 +3127,7 @@
       }
     },
     {
-      "index": 191,
+      "index": 190,
       "kind": "phrase",
       "text": "Она открыла дверь.",
       "gloss": {
@@ -3147,7 +3143,7 @@
       }
     },
     {
-      "index": 192,
+      "index": 191,
       "kind": "phrase",
       "text": "Я не специалист.",
       "gloss": {
@@ -3163,7 +3159,7 @@
       }
     },
     {
-      "index": 193,
+      "index": 192,
       "kind": "phrase",
       "text": "Только пятнадцать минут.",
       "gloss": {
@@ -3179,7 +3175,7 @@
       }
     },
     {
-      "index": 194,
+      "index": 193,
       "kind": "phrase",
       "text": "Мой велосипед красный.",
       "gloss": {
@@ -3196,7 +3192,7 @@
       }
     },
     {
-      "index": 195,
+      "index": 194,
       "kind": "phrase",
       "text": "Чей это велосипед?",
       "gloss": {
@@ -3212,7 +3208,7 @@
       }
     },
     {
-      "index": 196,
+      "index": 195,
       "kind": "phrase",
       "text": "Это твой велосипед?",
       "gloss": {
@@ -3228,24 +3224,7 @@
       }
     },
     {
-      "index": 197,
-      "kind": "phrase",
-      "text": "Черные жизни важны.",
-      "gloss": {
-        "en": "Black lives matter.",
-        "de": "Schwarze Leben zählen.",
-        "es": "Las vidas negras importan.",
-        "fr": "La vie des Noirs compte.",
-        "pt-BR": "As vidas negras importam.",
-        "ar": "حياة السود مهمة."
-      },
-      "freqRank": 217,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 198,
+      "index": 196,
       "kind": "phrase",
       "text": "Я ем рис.",
       "gloss": {
@@ -3262,11 +3241,11 @@
       }
     },
     {
-      "index": 199,
+      "index": 197,
       "kind": "phrase",
       "text": "Это интересная информация.",
       "gloss": {
-        "en": "It is an interesting information.",
+        "en": "This is interesting information.",
         "de": "Das ist eine interessante Information.",
         "es": "Es una información interesante.",
         "fr": "C'est une information intéressante.",
@@ -3274,11 +3253,12 @@
       },
       "freqRank": 219,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["en"]
       }
     },
     {
-      "index": 200,
+      "index": 198,
       "kind": "phrase",
       "text": "Он читает газету.",
       "gloss": {
@@ -3295,7 +3275,7 @@
       }
     },
     {
-      "index": 201,
+      "index": 199,
       "kind": "phrase",
       "text": "Это интересная история.",
       "gloss": {
@@ -3311,7 +3291,7 @@
       }
     },
     {
-      "index": 202,
+      "index": 200,
       "kind": "phrase",
       "text": "Он читает книгу.",
       "gloss": {
@@ -3328,7 +3308,7 @@
       }
     },
     {
-      "index": 203,
+      "index": 201,
       "kind": "phrase",
       "text": "Это интересная книга.",
       "gloss": {
@@ -3344,7 +3324,7 @@
       }
     },
     {
-      "index": 204,
+      "index": 202,
       "kind": "phrase",
       "text": "Том не еврей.",
       "gloss": {
@@ -3360,7 +3340,7 @@
       }
     },
     {
-      "index": 205,
+      "index": 203,
       "kind": "phrase",
       "text": "Это не сахар.",
       "gloss": {
@@ -3376,7 +3356,7 @@
       }
     },
     {
-      "index": 206,
+      "index": 204,
       "kind": "phrase",
       "text": "Молоко в холодильнике.",
       "gloss": {
@@ -3392,7 +3372,7 @@
       }
     },
     {
-      "index": 207,
+      "index": 205,
       "kind": "phrase",
       "text": "Эта игра простая.",
       "gloss": {
@@ -3408,7 +3388,7 @@
       }
     },
     {
-      "index": 208,
+      "index": 206,
       "kind": "phrase",
       "text": "Они в библиотеке.",
       "gloss": {
@@ -3425,7 +3405,7 @@
       }
     },
     {
-      "index": 209,
+      "index": 207,
       "kind": "phrase",
       "text": "Он быстро учится.",
       "gloss": {
@@ -3442,7 +3422,7 @@
       }
     },
     {
-      "index": 210,
+      "index": 208,
       "kind": "phrase",
       "text": "Я съел яблоко.",
       "gloss": {
@@ -3459,7 +3439,7 @@
       }
     },
     {
-      "index": 211,
+      "index": 209,
       "kind": "phrase",
       "text": "У нее много собак.",
       "gloss": {
@@ -3476,7 +3456,7 @@
       }
     },
     {
-      "index": 212,
+      "index": 210,
       "kind": "phrase",
       "text": "Я хочу яблоко.",
       "gloss": {
@@ -3493,7 +3473,7 @@
       }
     },
     {
-      "index": 213,
+      "index": 211,
       "kind": "phrase",
       "text": "Что делает тебя счастливым?",
       "gloss": {
@@ -3510,7 +3490,7 @@
       }
     },
     {
-      "index": 214,
+      "index": 212,
       "kind": "phrase",
       "text": "Я играю в футбол.",
       "gloss": {
@@ -3527,7 +3507,7 @@
       }
     },
     {
-      "index": 215,
+      "index": 213,
       "kind": "phrase",
       "text": "Сколько лет твоей сестре?",
       "gloss": {
@@ -3545,7 +3525,7 @@
       }
     },
     {
-      "index": 216,
+      "index": 214,
       "kind": "phrase",
       "text": "Я очень люблю собак.",
       "gloss": {
@@ -3562,7 +3542,7 @@
       }
     },
     {
-      "index": 217,
+      "index": 215,
       "kind": "phrase",
       "text": "Он работает в банке.",
       "gloss": {
@@ -3579,7 +3559,7 @@
       }
     },
     {
-      "index": 218,
+      "index": 216,
       "kind": "phrase",
       "text": "Я не пью кофе.",
       "gloss": {
@@ -3596,7 +3576,7 @@
       }
     },
     {
-      "index": 219,
+      "index": 217,
       "kind": "phrase",
       "text": "В море есть острова.",
       "gloss": {
@@ -3613,7 +3593,7 @@
       }
     },
     {
-      "index": 220,
+      "index": 218,
       "kind": "phrase",
       "text": "Я не пил молоко.",
       "gloss": {
@@ -3630,7 +3610,7 @@
       }
     },
     {
-      "index": 221,
+      "index": 219,
       "kind": "phrase",
       "text": "Это символ нашего города.",
       "gloss": {
@@ -3647,7 +3627,7 @@
       }
     },
     {
-      "index": 222,
+      "index": 220,
       "kind": "phrase",
       "text": "Ты разбил мне сердце.",
       "gloss": {
@@ -3664,7 +3644,7 @@
       }
     },
     {
-      "index": 223,
+      "index": 221,
       "kind": "phrase",
       "text": "Я хочу научиться плавать.",
       "gloss": {
@@ -3681,7 +3661,7 @@
       }
     },
     {
-      "index": 224,
+      "index": 222,
       "kind": "phrase",
       "text": "Не будь плохим мальчиком.",
       "gloss": {
@@ -3698,7 +3678,7 @@
       }
     },
     {
-      "index": 225,
+      "index": 223,
       "kind": "phrase",
       "text": "Я живу в России.",
       "gloss": {
@@ -3715,7 +3695,7 @@
       }
     },
     {
-      "index": 226,
+      "index": 224,
       "kind": "phrase",
       "text": "Он живёт в Токио.",
       "gloss": {
@@ -3732,7 +3712,7 @@
       }
     },
     {
-      "index": 227,
+      "index": 225,
       "kind": "phrase",
       "text": "Я живу в Токио.",
       "gloss": {
@@ -3749,12 +3729,12 @@
       }
     },
     {
-      "index": 228,
+      "index": 226,
       "kind": "phrase",
       "text": "В году двенадцать месяцев.",
       "gloss": {
         "en": "A year has twelve months.",
-        "tr": "Bir yıl on iki aya sahiptir.",
+        "tr": "Bir yıl on iki aydır.",
         "de": "Ein Jahr hat zwölf Monate.",
         "es": "En un año hay doce meses.",
         "fr": "Il y a douze mois dans une année.",
@@ -3763,11 +3743,12 @@
       },
       "freqRank": 248,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 229,
+      "index": 227,
       "kind": "phrase",
       "text": "Крыша моего дома красная.",
       "gloss": {
@@ -3784,7 +3765,7 @@
       }
     },
     {
-      "index": 230,
+      "index": 228,
       "kind": "phrase",
       "text": "Мы живём в обществе.",
       "gloss": {
@@ -3801,7 +3782,7 @@
       }
     },
     {
-      "index": 231,
+      "index": 229,
       "kind": "phrase",
       "text": "У птиц есть крылья.",
       "gloss": {
@@ -3818,7 +3799,7 @@
       }
     },
     {
-      "index": 232,
+      "index": 230,
       "kind": "phrase",
       "text": "Настоящая дружба дороже денег.",
       "gloss": {
@@ -3835,7 +3816,7 @@
       }
     },
     {
-      "index": 233,
+      "index": 231,
       "kind": "phrase",
       "text": "Мне не нравится Алиса.",
       "gloss": {
@@ -3852,7 +3833,7 @@
       }
     },
     {
-      "index": 234,
+      "index": 232,
       "kind": "phrase",
       "text": "У меня длинные волосы.",
       "gloss": {
@@ -3869,7 +3850,7 @@
       }
     },
     {
-      "index": 235,
+      "index": 233,
       "kind": "phrase",
       "text": "Какое у тебя хобби?",
       "gloss": {
@@ -3886,7 +3867,7 @@
       }
     },
     {
-      "index": 236,
+      "index": 234,
       "kind": "phrase",
       "text": "У меня есть ручка.",
       "gloss": {
@@ -3903,7 +3884,7 @@
       }
     },
     {
-      "index": 237,
+      "index": 235,
       "kind": "phrase",
       "text": "Этой зимой очень холодно.",
       "gloss": {
@@ -3920,7 +3901,7 @@
       }
     },
     {
-      "index": 238,
+      "index": 236,
       "kind": "phrase",
       "text": "У нас есть кошки.",
       "gloss": {
@@ -3937,7 +3918,7 @@
       }
     },
     {
-      "index": 239,
+      "index": 237,
       "kind": "phrase",
       "text": "Они достигли своей цели.",
       "gloss": {
@@ -3954,7 +3935,7 @@
       }
     },
     {
-      "index": 240,
+      "index": 238,
       "kind": "phrase",
       "text": "У меня болит колено.",
       "gloss": {
@@ -3971,7 +3952,7 @@
       }
     },
     {
-      "index": 241,
+      "index": 239,
       "kind": "phrase",
       "text": "Том не любит кошек.",
       "gloss": {
@@ -3988,12 +3969,12 @@
       }
     },
     {
-      "index": 242,
+      "index": 240,
       "kind": "phrase",
       "text": "У него плохое зрение.",
       "gloss": {
         "en": "He has poor eyesight.",
-        "tr": "Onun görme yeteneği kötü.",
+        "tr": "Gözleri iyi görmüyor.",
         "de": "Er hat schlechte Augen.",
         "es": "Él tiene mala vista.",
         "fr": "Il a une mauvaise vue.",
@@ -4001,11 +3982,12 @@
       },
       "freqRank": 261,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 243,
+      "index": 241,
       "kind": "phrase",
       "text": "Франция, я люблю тебя!",
       "gloss": {
@@ -4022,7 +4004,7 @@
       }
     },
     {
-      "index": 244,
+      "index": 242,
       "kind": "phrase",
       "text": "Птица поет на дереве.",
       "gloss": {
@@ -4039,12 +4021,12 @@
       }
     },
     {
-      "index": 245,
+      "index": 243,
       "kind": "phrase",
       "text": "Том не верит в Бога.",
       "gloss": {
         "en": "Tom doesn't believe in God.",
-        "tr": "Tom Allah'a inanmıyor.",
+        "tr": "Tom Tanrı'ya inanmıyor.",
         "de": "Tom glaubt nicht an Gott.",
         "es": "Tom no cree en Dios.",
         "fr": "Tom ne croit pas en Dieu.",
@@ -4052,11 +4034,12 @@
       },
       "freqRank": 265,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
-      "index": 246,
+      "index": 244,
       "kind": "phrase",
       "text": "Вчера я играл в футбол.",
       "gloss": {
@@ -4073,7 +4056,7 @@
       }
     },
     {
-      "index": 247,
+      "index": 245,
       "kind": "phrase",
       "text": "Ты знаешь, где мы живем?",
       "gloss": {
@@ -4090,7 +4073,7 @@
       }
     },
     {
-      "index": 248,
+      "index": 246,
       "kind": "phrase",
       "text": "Вчера мы играли в футбол.",
       "gloss": {
@@ -4107,7 +4090,7 @@
       }
     },
     {
-      "index": 249,
+      "index": 247,
       "kind": "phrase",
       "text": "Я научился этому у тебя.",
       "gloss": {
@@ -4124,7 +4107,7 @@
       }
     },
     {
-      "index": 250,
+      "index": 248,
       "kind": "phrase",
       "text": "Он друг одной моей подруги.",
       "gloss": {
@@ -4141,7 +4124,7 @@
       }
     },
     {
-      "index": 251,
+      "index": 249,
       "kind": "phrase",
       "text": "Эмили правильно ответила на вопрос.",
       "gloss": {
@@ -4158,7 +4141,7 @@
       }
     },
     {
-      "index": 252,
+      "index": 250,
       "kind": "phrase",
       "text": "Все дороги ведут в Рим.",
       "gloss": {
@@ -4175,7 +4158,7 @@
       }
     },
     {
-      "index": 253,
+      "index": 251,
       "kind": "phrase",
       "text": "Том не умеет водить машину.",
       "gloss": {
@@ -4192,7 +4175,7 @@
       }
     },
     {
-      "index": 254,
+      "index": 252,
       "kind": "phrase",
       "text": "Я не умею водить машину.",
       "gloss": {
@@ -4209,7 +4192,7 @@
       }
     },
     {
-      "index": 255,
+      "index": 253,
       "kind": "phrase",
       "text": "Кто-то украл мой чемодан.",
       "gloss": {
@@ -4226,7 +4209,7 @@
       }
     },
     {
-      "index": 256,
+      "index": 254,
       "kind": "phrase",
       "text": "Как ты с ней познакомился?",
       "gloss": {
@@ -4243,9 +4226,9 @@
       }
     },
     {
-      "index": 257,
+      "index": 255,
       "kind": "phrase",
-      "text": "Английский - не мой родной язык.",
+      "text": "Английский — не мой родной язык.",
       "gloss": {
         "en": "English is not my first language.",
         "tr": "İngilizce benim ana dilim değil.",
@@ -4256,11 +4239,12 @@
       },
       "freqRank": 277,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Английский - не мой родной язык."
       }
     },
     {
-      "index": 258,
+      "index": 256,
       "kind": "phrase",
       "text": "Как называется её последний альбом?",
       "gloss": {
@@ -4277,7 +4261,7 @@
       }
     },
     {
-      "index": 259,
+      "index": 257,
       "kind": "phrase",
       "text": "У него была белая кошка.",
       "gloss": {
@@ -4294,7 +4278,7 @@
       }
     },
     {
-      "index": 260,
+      "index": 258,
       "kind": "phrase",
       "text": "Мы опоздали на наш поезд.",
       "gloss": {
@@ -4311,7 +4295,7 @@
       }
     },
     {
-      "index": 261,
+      "index": 259,
       "kind": "phrase",
       "text": "Мой брат живёт в Токио.",
       "gloss": {
@@ -4328,7 +4312,7 @@
       }
     },
     {
-      "index": 262,
+      "index": 260,
       "kind": "phrase",
       "text": "Ты номер, случайно, не запомнил?",
       "gloss": {
@@ -4345,7 +4329,7 @@
       }
     },
     {
-      "index": 263,
+      "index": 261,
       "kind": "phrase",
       "text": "Сколько у тебя близких друзей?",
       "gloss": {
@@ -4362,7 +4346,7 @@
       }
     },
     {
-      "index": 264,
+      "index": 262,
       "kind": "phrase",
       "text": "Ты разговариваешь со своей собакой?",
       "gloss": {
@@ -4379,7 +4363,7 @@
       }
     },
     {
-      "index": 265,
+      "index": 263,
       "kind": "phrase",
       "text": "Наука — это искусство поиска истины.",
       "gloss": {
@@ -4396,9 +4380,9 @@
       }
     },
     {
-      "index": 266,
+      "index": 264,
       "kind": "phrase",
-      "text": "Футбол - мой любимый вид спорта.",
+      "text": "Футбол — мой любимый вид спорта.",
       "gloss": {
         "en": "Football is my favorite sport.",
         "de": "Fußball ist mein Lieblingssport.",
@@ -4409,11 +4393,12 @@
       },
       "freqRank": 286,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Футбол - мой любимый вид спорта."
       }
     },
     {
-      "index": 267,
+      "index": 265,
       "kind": "phrase",
       "text": "Франция находится в Западной Европе.",
       "gloss": {
@@ -4430,7 +4415,7 @@
       }
     },
     {
-      "index": 268,
+      "index": 266,
       "kind": "phrase",
       "text": "Он один из моих старых друзей.",
       "gloss": {
@@ -4447,7 +4432,7 @@
       }
     },
     {
-      "index": 269,
+      "index": 267,
       "kind": "phrase",
       "text": "У него много денег в банке.",
       "gloss": {
@@ -4464,7 +4449,7 @@
       }
     },
     {
-      "index": 270,
+      "index": 268,
       "kind": "phrase",
       "text": "Мир меняется всё быстрее и быстрее.",
       "gloss": {
@@ -4481,7 +4466,7 @@
       }
     },
     {
-      "index": 271,
+      "index": 269,
       "kind": "phrase",
       "text": "Том сел не на тот поезд.",
       "gloss": {
@@ -4498,7 +4483,7 @@
       }
     },
     {
-      "index": 272,
+      "index": 270,
       "kind": "phrase",
       "text": "Я не умею играть на пианино.",
       "gloss": {
@@ -4515,7 +4500,7 @@
       }
     },
     {
-      "index": 273,
+      "index": 271,
       "kind": "phrase",
       "text": "Мой брат живет в Сан-Диего.",
       "gloss": {
@@ -4532,7 +4517,7 @@
       }
     },
     {
-      "index": 274,
+      "index": 272,
       "kind": "phrase",
       "text": "Прежде всего, дети нуждаются в любви.",
       "gloss": {
@@ -4549,7 +4534,7 @@
       }
     },
     {
-      "index": 275,
+      "index": 273,
       "kind": "phrase",
       "text": "Летом на юге Испании очень жарко.",
       "gloss": {
@@ -4566,9 +4551,9 @@
       }
     },
     {
-      "index": 276,
+      "index": 274,
       "kind": "phrase",
-      "text": "Ты - самый важный человек в моей жизни.",
+      "text": "Ты — самый важный человек в моей жизни.",
       "gloss": {
         "en": "You are the most important person in my life.",
         "tr": "Sen hayatımdaki en önemli kişisin.",
@@ -4579,28 +4564,12 @@
       },
       "freqRank": 296,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "frontWas": "Ты - самый важный человек в моей жизни."
       }
     },
     {
-      "index": 277,
-      "kind": "phrase",
-      "text": "В начале Бог создал небо и землю.",
-      "gloss": {
-        "en": "In the beginning God created the heavens and the earth.",
-        "de": "Im Anfang schuf Gott Himmel und Erde.",
-        "es": "En el principio creó Dios los cielos y la tierra.",
-        "fr": "Au commencement, Dieu créa les cieux et la terre.",
-        "pt-BR": "No princípio Deus criou os céus e a terra.",
-        "ar": "فِي الْبَدْءِ خَلَقَ اللهُ السَّمَاوَاتِ وَالأَرْضَ،"
-      },
-      "freqRank": 297,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 278,
+      "index": 275,
       "kind": "phrase",
       "text": "Вы можете мне сказать, что вы ищете?",
       "gloss": {
@@ -4617,7 +4586,7 @@
       }
     },
     {
-      "index": 279,
+      "index": 276,
       "kind": "phrase",
       "text": "Он приехал на автобусе или на поезде?",
       "gloss": {
@@ -4634,7 +4603,7 @@
       }
     },
     {
-      "index": 280,
+      "index": 277,
       "kind": "phrase",
       "text": "У меня есть друг, который живёт в Германии.",
       "gloss": {
