@@ -24,12 +24,21 @@ module.exports = () => ({
    */
   frameworks: ['SwiftUI', 'WatchConnectivity'],
   /*
-   * 11.0 is where `WKApplication` and the SwiftUI App lifecycle are settled,
-   * and it is old enough that no Apple Watch still paired with a supported
-   * iPhone is excluded. The phone app's own floor is unaffected — a watch is
-   * an accessory to it, not a gate on it.
+   * 9.0, which is the floor this target's own code sets: `NavigationStack`,
+   * `.navigationDestination` and `TextFieldLink` all arrive in watchOS 9, and
+   * nothing here needs anything newer. The phone app's own floor is
+   * unaffected — a watch is an accessory to it, not a gate on it.
+   *
+   * It was 11.0 first, on the reasoning that no watch still paired with a
+   * supported iPhone would be excluded. That is wrong: watchOS 11 dropped
+   * Series 5, Series 4 and the first SE, which stop at watchOS 10 and stay
+   * paired for years after. The way it fails is the reason to write this
+   * down — the phone simply never offers the watch app. It is absent from
+   * Watch → Available Apps, with no error, on a build that installs and runs
+   * perfectly on the phone, so it reads as a broken build rather than an
+   * excluded device. Found against build 163, on a watch running watchOS 10.
    */
-  deploymentTarget: '11.0',
+  deploymentTarget: '9.0',
   /*
    * The watch app needs an icon of its own, and nothing local says so. It
    * builds, installs and runs without one; `altool` rejects the upload:
