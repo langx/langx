@@ -2,7 +2,7 @@
   "id": "es:absoluteBeginner",
   "lang": "es",
   "level": "absoluteBeginner",
-  "contentVersion": 5,
+  "contentVersion": 6,
   "reviewed": true,
   "sources": [
     {
@@ -1949,7 +1949,8 @@
       "voices": [
         { "key": "echo/packs/es_absoluteBeginner/94-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_absoluteBeginner/94-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:ship"
     },
     {
       "index": 95,

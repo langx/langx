@@ -2,7 +2,7 @@
   "id": "es:beginner",
   "lang": "es",
   "level": "beginner",
-  "contentVersion": 5,
+  "contentVersion": 6,
   "reviewed": true,
   "sources": [
     {
@@ -1425,7 +1425,8 @@
       "voices": [
         { "key": "echo/packs/es_beginner/69-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_beginner/69-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:leaf-fluttering-in-wind"
     },
     {
       "index": 70,
@@ -1444,7 +1445,8 @@
       "voices": [
         { "key": "echo/packs/es_beginner/70-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_beginner/70-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:leaf-fluttering-in-wind"
     },
     {
       "index": 71,
@@ -2306,7 +2308,8 @@
       "voices": [
         { "key": "echo/packs/es_beginner/113-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_beginner/113-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 114,
@@ -3408,7 +3411,8 @@
       "voices": [
         { "key": "echo/packs/es_beginner/168-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_beginner/168-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 169,
@@ -4573,7 +4577,8 @@
       "voices": [
         { "key": "echo/packs/es_beginner/226-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_beginner/226-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:paw-prints"
     },
     {
       "index": 227,
@@ -5093,7 +5098,8 @@
       "voices": [
         { "key": "echo/packs/es_beginner/252-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_beginner/252-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:smiling-face-with-halo"
     },
     {
       "index": 253,

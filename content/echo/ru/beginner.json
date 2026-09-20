@@ -2,7 +2,7 @@
   "id": "ru:beginner",
   "lang": "ru",
   "level": "beginner",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -10,11 +10,7 @@
       "licence": "CC BY-SA 4.0",
       "url": "https://kaikki.org/"
     },
-    {
-      "name": "Tatoeba",
-      "licence": "CC BY 2.0 FR",
-      "url": "https://tatoeba.org/"
-    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
       "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
       "licence": "CC BY-SA 4.0",
@@ -41,10 +37,7 @@
       },
       "image": "cue:birthday-cake",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/0-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/0-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -59,15 +52,10 @@
         "fr": "Dans quelle rue ?"
       },
       "freqRank": 31,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:compass",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/1-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/1-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -82,15 +70,10 @@
         "ar": "اسمي هنري."
       },
       "freqRank": 32,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:identification-card",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/2-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/2-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -105,15 +88,10 @@
         "fr": "Tom a trouvé un travail."
       },
       "freqRank": 33,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/3-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/3-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -128,15 +106,10 @@
         "ar": "ماذا وجدت؟"
       },
       "freqRank": 34,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:magnifying-glass-tilted-left",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/4-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/4-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -151,15 +124,10 @@
         "pt-BR": "Eu encontrei o dinheiro."
       },
       "freqRank": 35,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dollar-banknote",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/5-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/5-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -174,15 +142,10 @@
         "pt-BR": "Você ouviu isso?"
       },
       "freqRank": 36,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ear",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/6-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/6-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -197,15 +160,10 @@
         "pt-BR": "O que você ouviu?"
       },
       "freqRank": 37,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ear",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/7-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/7-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -220,15 +178,10 @@
         "ar": "حسناً. أنا موافق."
       },
       "freqRank": 38,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thumbs-up",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/8-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/8-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -244,15 +197,10 @@
         "pt-BR": "Não estou de acordo."
       },
       "freqRank": 39,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thumbs-down",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/9-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/9-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -267,15 +215,10 @@
         "pt-BR": "Já não há que comer."
       },
       "freqRank": 40,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/10-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/10-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -290,15 +233,10 @@
         "pt-BR": "Não tenho nada para comer."
       },
       "freqRank": 41,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/11-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/11-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -313,15 +251,10 @@
         "pt-BR": "Ela pode vir."
       },
       "freqRank": 42,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-walking",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/12-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/12-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -337,15 +270,10 @@
         "ar": "هو عمي."
       },
       "freqRank": 43,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:man",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/13-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/13-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -360,15 +288,10 @@
         "pt-BR": "Como se chama isso?"
       },
       "freqRank": 44,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:label",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/14-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/14-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -383,15 +306,10 @@
         "pt-BR": "Aquilo foi incrível."
       },
       "freqRank": 45,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:astonished-face",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/15-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/15-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -406,15 +324,10 @@
         "pt-BR": "Não há nenhum deus."
       },
       "freqRank": 46,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:place-of-worship",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/16-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/16-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -429,15 +342,10 @@
         "pt-BR": "Eles são o futuro."
       },
       "freqRank": 47,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-not-done",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/17-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/17-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -452,15 +360,10 @@
         "pt-BR": "Que estamos a fazer?"
       },
       "freqRank": 48,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-shrugging",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/18-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/18-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -475,15 +378,10 @@
         "pt-BR": "Qual o nosso time?"
       },
       "freqRank": 49,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soccer-ball",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/19-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/19-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -498,15 +396,10 @@
         "ar": "أصبحنا أصدقاءا."
       },
       "freqRank": 50,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/20-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/20-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -521,15 +414,10 @@
         "fr": "As-tu acheté du café ?"
       },
       "freqRank": 51,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-beverage",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/21-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/21-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -544,15 +432,10 @@
         "ar": "ماذا اشتريت؟"
       },
       "freqRank": 52,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shopping-cart",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/22-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/22-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -567,15 +450,10 @@
         "ar": "أحببتك."
       },
       "freqRank": 53,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broken-heart",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/23-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/23-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -590,16 +468,10 @@
         "fr": "Mary est ma mère."
       },
       "freqRank": 54,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Мэри - моя мать."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Мэри - моя мать." },
       "image": "cue:family",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/24-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/24-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -614,15 +486,10 @@
         "pt-BR": "Tom amava a Mary."
       },
       "freqRank": 56,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/25-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/25-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -637,15 +504,10 @@
         "fr": "Mary a déjà commencé."
       },
       "freqRank": 55,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:new-button",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/26-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/26-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -660,15 +522,10 @@
         "ar": "ها هو مفتاحك."
       },
       "freqRank": 57,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/27-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/27-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -683,15 +540,10 @@
         "ar": "لقد فقدتُ المفتاح"
       },
       "freqRank": 58,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/28-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/28-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -706,15 +558,10 @@
         "ar": "الولد عطشان."
       },
       "freqRank": 59,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cup-with-straw",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/29-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/29-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -731,15 +578,10 @@
         "ar": "أنا عطشان."
       },
       "freqRank": 60,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cup-with-straw",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/30-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/30-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -754,15 +596,10 @@
         "fr": "J'ai besoin d'un avocat."
       },
       "freqRank": 61,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:balance-scale",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/31-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/31-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -777,15 +614,10 @@
         "ar": "امي محامية"
       },
       "freqRank": 62,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:balance-scale",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/32-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/32-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -801,15 +633,10 @@
         "ar": "انا لست محامي"
       },
       "freqRank": 63,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:balance-scale",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/33-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/33-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -824,15 +651,10 @@
         "fr": "Où habite John ?"
       },
       "freqRank": 64,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/34-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/34-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -848,15 +670,10 @@
         "ar": "نحن ضد الحرب."
       },
       "freqRank": 65,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crossed-swords",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/35-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/35-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -871,15 +688,10 @@
         "fr": "Je ne suis pas un enfant."
       },
       "freqRank": 66,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/36-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/36-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -894,15 +706,10 @@
         "pt-BR": "Isto é um jogo de palavras."
       },
       "freqRank": 67,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:winking-face-with-tongue",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/37-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/37-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -918,15 +725,10 @@
         "ar": "كان توم مشغولا."
       },
       "freqRank": 68,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/38-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/38-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -941,15 +743,10 @@
         "ar": "كنت مشغولا."
       },
       "freqRank": 69,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/39-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/39-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -964,15 +761,10 @@
         "pt-BR": "A Maria é tão bonita!"
       },
       "freqRank": 72,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lipstick",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/40-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/40-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -988,15 +780,10 @@
         "ar": "أنا مشغول جداً."
       },
       "freqRank": 70,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/41-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/41-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1012,15 +799,10 @@
         "pt-BR": "Ela é muito bonita."
       },
       "freqRank": 73,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cherry-blossom",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/42-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/42-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1035,15 +817,10 @@
         "ar": "أنا مشغولة الأن."
       },
       "freqRank": 71,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/43-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/43-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1058,15 +835,10 @@
         "ar": "أنت فتاة جميلة."
       },
       "freqRank": 74,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:girl",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/44-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/44-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1081,15 +853,10 @@
         "ar": "أين هو الفرق؟"
       },
       "freqRank": 76,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/45-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/45-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1104,15 +871,10 @@
         "pt-BR": "Você é uma bela mulher."
       },
       "freqRank": 75,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lipstick",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/46-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/46-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1128,15 +890,10 @@
         "pt-BR": "Quem escreveu isso?"
       },
       "freqRank": 77,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/47-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/47-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1151,15 +908,10 @@
         "ar": "كان توم سعيدا."
       },
       "freqRank": 78,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:grinning-face",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/48-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/48-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1174,15 +926,10 @@
         "pt-BR": "Não se pode confiar nele."
       },
       "freqRank": 79,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/49-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/49-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1197,15 +944,10 @@
         "fr": "Tu peux attendre ici."
       },
       "freqRank": 80,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:chair",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/50-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/50-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1220,15 +962,10 @@
         "fr": "Les hommes sont plus forts que les femmes."
       },
       "freqRank": 81,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:flexed-biceps",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/51-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/51-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1243,15 +980,10 @@
         "pt-BR": "Ele é mais forte que você."
       },
       "freqRank": 82,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:flexed-biceps",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/52-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/52-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1267,15 +999,10 @@
         "pt-BR": "Ninguém vai saber."
       },
       "freqRank": 83,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shushing-face",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/53-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/53-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1290,15 +1017,10 @@
         "ar": "أحب الأفلام."
       },
       "freqRank": 84,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:clapper-board",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/54-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/54-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1314,16 +1036,10 @@
         "ar": "الماء هو الحياة."
       },
       "freqRank": 89,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Вода - это жизнь."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Вода - это жизнь." },
       "image": "cue:droplet",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/55-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/55-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1338,15 +1054,10 @@
         "pt-BR": "Eu vou ajudá-lo."
       },
       "freqRank": 85,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/56-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/56-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1361,15 +1072,10 @@
         "pt-BR": "Eu preciso de água."
       },
       "freqRank": 90,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:potable-water",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/57-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/57-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1384,15 +1090,10 @@
         "pt-BR": "Vou ajudar-te."
       },
       "freqRank": 86,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/58-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/58-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1407,15 +1108,10 @@
         "ar": "ها هي كتبنا."
       },
       "freqRank": 91,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/59-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/59-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1430,15 +1126,10 @@
         "ar": "إتصلت به."
       },
       "freqRank": 87,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:telephone-receiver",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/60-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/60-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1454,15 +1145,10 @@
         "ar": "أين كتبي؟"
       },
       "freqRank": 92,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/61-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/61-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1478,15 +1164,10 @@
         "pt-BR": "Estou a ver um filme."
       },
       "freqRank": 88,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:clapper-board",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/62-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/62-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1501,15 +1182,10 @@
         "fr": "Mes livres sont neufs."
       },
       "freqRank": 93,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/63-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/63-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1525,15 +1201,10 @@
         "ar": "هذه كتبي."
       },
       "freqRank": 94,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/64-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/64-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1548,15 +1219,10 @@
         "pt-BR": "Ele abandonou a família."
       },
       "freqRank": 98,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broken-heart",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/65-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/65-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1572,15 +1238,10 @@
         "ar": "هذه كتبنا."
       },
       "freqRank": 95,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/66-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/66-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1595,15 +1256,10 @@
         "pt-BR": "Pai parou de beber."
       },
       "freqRank": 99,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:prohibited",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/67-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/67-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1618,15 +1274,10 @@
         "pt-BR": "Isso não é um relógio."
       },
       "freqRank": 97,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:timer-clock",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/68-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/68-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1641,15 +1292,10 @@
         "pt-BR": "O meu irmão é professor."
       },
       "freqRank": 100,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/69-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/69-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1665,15 +1311,10 @@
         "ar": "أين هي مفاتيحي؟"
       },
       "freqRank": 101,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/70-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/70-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1688,15 +1329,10 @@
         "ar": "أحتاج للمفاتيح."
       },
       "freqRank": 103,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/71-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/71-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1711,15 +1347,10 @@
         "ar": "أين هي مفاتيحك؟"
       },
       "freqRank": 102,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/72-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/72-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1734,15 +1365,10 @@
         "pt-BR": "Abre o teu coração."
       },
       "freqRank": 104,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/73-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/73-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1757,15 +1383,10 @@
         "pt-BR": "Não é música."
       },
       "freqRank": 105,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/74-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/74-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1780,15 +1401,10 @@
         "pt-BR": "Onde está meu quarto?"
       },
       "freqRank": 106,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/75-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/75-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1804,15 +1420,10 @@
         "ar": "زوجتي طبيبة."
       },
       "freqRank": 108,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/76-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/76-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1827,15 +1438,10 @@
         "fr": "Où est ta chambre ?"
       },
       "freqRank": 107,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/77-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/77-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1850,15 +1456,10 @@
         "pt-BR": "Nós precisamos de um médico."
       },
       "freqRank": 109,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/78-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/78-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1873,15 +1474,10 @@
         "ar": "إنها ليست طبيبة."
       },
       "freqRank": 110,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/79-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/79-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1896,15 +1492,10 @@
         "ar": "هل أبوك طبيب؟"
       },
       "freqRank": 111,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/80-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/80-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1919,15 +1510,10 @@
         "ar": "أنا لست طبيباً."
       },
       "freqRank": 112,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/81-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/81-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1942,15 +1528,10 @@
         "pt-BR": "Ele é o capitão da equipe."
       },
       "freqRank": 113,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soccer-ball",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/82-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/82-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1965,15 +1546,10 @@
         "pt-BR": "Tom ainda é jovem."
       },
       "freqRank": 114,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/83-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/83-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -1988,15 +1564,10 @@
         "pt-BR": "Isso é muito perigoso."
       },
       "freqRank": 115,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:warning",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/84-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/84-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2012,15 +1583,10 @@
         "ar": "أين تعمل؟"
       },
       "freqRank": 116,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/85-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/85-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2035,15 +1601,10 @@
         "ar": "ماذا تعمل؟"
       },
       "freqRank": 117,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/86-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/86-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2058,15 +1619,10 @@
         "ar": "لقد فقدت ذاكرتي."
       },
       "freqRank": 118,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/87-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/87-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2081,15 +1637,10 @@
         "fr": "Je veux des informations."
       },
       "freqRank": 119,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/88-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/88-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2104,15 +1655,10 @@
         "ar": "إنها تحب القراءة."
       },
       "freqRank": 120,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/89-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/89-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2127,15 +1673,10 @@
         "pt-BR": "Essa é minha mesa."
       },
       "freqRank": 121,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:chair",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/90-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/90-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2152,15 +1693,10 @@
         "ar": "بوب صديقي."
       },
       "freqRank": 123,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/91-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/91-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2176,15 +1712,10 @@
         "ar": "هذه ليست طاولة."
       },
       "freqRank": 122,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:chair",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/92-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/92-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2199,15 +1730,10 @@
         "pt-BR": "Verdadeiro ou falso?"
       },
       "freqRank": 124,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/93-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/93-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2222,15 +1748,10 @@
         "pt-BR": "Esta frase é uma mentira."
       },
       "freqRank": 125,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/94-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/94-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2245,15 +1766,10 @@
         "ar": "أنا أحب الشمس."
       },
       "freqRank": 126,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/95-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/95-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2268,15 +1784,10 @@
         "fr": "Non, je suis fatigué."
       },
       "freqRank": 128,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleepy-face",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/96-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/96-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2291,15 +1802,10 @@
         "pt-BR": "Eu sou o teu sol."
       },
       "freqRank": 127,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/97-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/97-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2314,16 +1820,10 @@
         "ar": "أبي مدرّس."
       },
       "freqRank": 132,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Мой отец - учитель."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Мой отец - учитель." },
       "image": "cue:school",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/98-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/98-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2338,15 +1838,10 @@
         "fr": "Je ne suis pas fatigué."
       },
       "freqRank": 129,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleepy-face",
       "voices": [
-        {
-          "key": "echo/packs/ru_beginner/99-ru_RU-denis-medium.m4a",
-          "voice": "ru_RU-denis-medium"
-        }
+        { "key": "echo/packs/ru_beginner/99-ru_RU-denis-medium.m4a", "voice": "ru_RU-denis-medium" }
       ]
     },
     {
@@ -2362,9 +1857,7 @@
         "ar": "أيمكنك فتح النافذة؟"
       },
       "freqRank": 135,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:window",
       "voices": [
         {
@@ -2385,9 +1878,7 @@
         "pt-BR": "Eu fiquei um pouco cansado."
       },
       "freqRank": 130,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleepy-face",
       "voices": [
         {
@@ -2408,9 +1899,7 @@
         "pt-BR": "Você morou aqui?"
       },
       "freqRank": 136,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -2431,9 +1920,7 @@
         "ar": "أنا متعب جدا."
       },
       "freqRank": 131,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:weary-face",
       "voices": [
         {
@@ -2454,9 +1941,7 @@
         "fr": "Qui va payer ?"
       },
       "freqRank": 137,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:receipt",
       "voices": [
         {
@@ -2478,9 +1963,7 @@
         "ar": "أنا لست مدرساً."
       },
       "freqRank": 133,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
         {
@@ -2501,9 +1984,7 @@
         "pt-BR": "Isso pertence a mim."
       },
       "freqRank": 138,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:package",
       "voices": [
         {
@@ -2524,9 +2005,7 @@
         "ar": "أنا مدرس أيضاً."
       },
       "freqRank": 134,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
         {
@@ -2548,9 +2027,7 @@
         "ar": "ها هو كلبك."
       },
       "freqRank": 139,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -2572,9 +2049,7 @@
         "pt-BR": "Onde está o seu cachorro?"
       },
       "freqRank": 140,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -2596,10 +2071,7 @@
         "pt-BR": "Este cachorro é meu."
       },
       "freqRank": 141,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:dog",
       "voices": [
         {
@@ -2620,9 +2092,7 @@
         "ar": "أنا لَستُ كلباً."
       },
       "freqRank": 142,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -2643,9 +2113,7 @@
         "pt-BR": "Isto é um mau sinal."
       },
       "freqRank": 143,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:warning",
       "voices": [
         {
@@ -2667,9 +2135,7 @@
         "pt-BR": "Onde está o meu livro?"
       },
       "freqRank": 145,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
         {
@@ -2690,9 +2156,7 @@
         "pt-BR": "Isto é só o começo."
       },
       "freqRank": 144,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:new-button",
       "voices": [
         {
@@ -2713,9 +2177,7 @@
         "fr": "Mon livre est neuf."
       },
       "freqRank": 146,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:new-button",
       "voices": [
         {
@@ -2736,10 +2198,7 @@
         "fr": "Ce livre est nouveau."
       },
       "freqRank": 147,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:new-button",
       "voices": [
         {
@@ -2760,9 +2219,7 @@
         "pt-BR": "Este livro é dela."
       },
       "freqRank": 148,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
         {
@@ -2784,9 +2241,7 @@
         "pt-BR": "Onde está o meu chá?"
       },
       "freqRank": 151,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:teacup-without-handle",
       "voices": [
         {
@@ -2808,9 +2263,7 @@
         "ar": "هذا كتابي."
       },
       "freqRank": 149,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
         {
@@ -2832,9 +2285,7 @@
         "pt-BR": "Café ou chá?"
       },
       "freqRank": 152,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-beverage",
       "voices": [
         {
@@ -2855,9 +2306,7 @@
         "ar": "هل هذا كتابك؟"
       },
       "freqRank": 150,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
         {
@@ -2878,9 +2327,7 @@
         "ar": "انه يحب الشاي."
       },
       "freqRank": 153,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:teacup-without-handle",
       "voices": [
         {
@@ -2901,9 +2348,7 @@
         "fr": "J'aime le thé."
       },
       "freqRank": 154,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:teacup-without-handle",
       "voices": [
         {
@@ -2924,9 +2369,7 @@
         "pt-BR": "Esses livros são velhos."
       },
       "freqRank": 155,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
         {
@@ -2947,9 +2390,7 @@
         "fr": "Où dort Tom ?"
       },
       "freqRank": 156,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
       "voices": [
         {
@@ -2970,9 +2411,7 @@
         "pt-BR": "Ele ainda está dormindo."
       },
       "freqRank": 157,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -2993,9 +2432,7 @@
         "pt-BR": "O bebê parece dormir."
       },
       "freqRank": 159,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -3016,9 +2453,7 @@
         "fr": "Il ne dort pas."
       },
       "freqRank": 158,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -3039,9 +2474,7 @@
         "fr": "Je ne suis pas soldat."
       },
       "freqRank": 160,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crossed-swords",
       "voices": [
         {
@@ -3062,9 +2495,7 @@
         "pt-BR": "O cachorro estava morto."
       },
       "freqRank": 162,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -3085,9 +2516,7 @@
         "pt-BR": "Vejo um menino."
       },
       "freqRank": 161,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:boy",
       "voices": [
         {
@@ -3108,9 +2537,7 @@
         "pt-BR": "Ela é mais alta que sua irmã."
       },
       "freqRank": 163,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:straight-ruler",
       "voices": [
         {
@@ -3131,9 +2558,7 @@
         "fr": "J'écoute la radio."
       },
       "freqRank": 164,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:radio",
       "voices": [
         {
@@ -3154,9 +2579,7 @@
         "pt-BR": "A Terra é o nosso lar."
       },
       "freqRank": 165,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -3177,9 +2600,7 @@
         "pt-BR": "Ouço música."
       },
       "freqRank": 166,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
         {
@@ -3200,9 +2621,7 @@
         "pt-BR": "Este é o último grupo?"
       },
       "freqRank": 167,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:busts-in-silhouette",
       "voices": [
         {
@@ -3223,9 +2642,7 @@
         "pt-BR": "Quando ele virá?"
       },
       "freqRank": 168,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-walking",
       "voices": [
         {
@@ -3246,9 +2663,7 @@
         "pt-BR": "Ela também virá?"
       },
       "freqRank": 169,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-walking",
       "voices": [
         {
@@ -3269,9 +2684,7 @@
         "fr": "Tom est un bon client."
       },
       "freqRank": 170,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shopping-cart",
       "voices": [
         {
@@ -3292,9 +2705,7 @@
         "ar": "تناول طعامك."
       },
       "freqRank": 171,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -3315,9 +2726,7 @@
         "pt-BR": "Comes muito?"
       },
       "freqRank": 172,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -3339,9 +2748,7 @@
         "pt-BR": "Que estás a comer?"
       },
       "freqRank": 173,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         {
@@ -3362,9 +2769,7 @@
         "pt-BR": "Foi tudo em vão."
       },
       "freqRank": 174,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cross-mark",
       "voices": [
         {
@@ -3385,9 +2790,7 @@
         "pt-BR": "Você acha que isso vai funcionar?"
       },
       "freqRank": 175,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:gear",
       "voices": [
         {
@@ -3409,9 +2812,7 @@
         "ar": "كان الجو بارداً البارحة."
       },
       "freqRank": 176,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cold-face",
       "voices": [
         {
@@ -3432,9 +2833,7 @@
         "pt-BR": "Está terrivelmente frio hoje."
       },
       "freqRank": 177,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cold-face",
       "voices": [
         {
@@ -3455,9 +2854,7 @@
         "pt-BR": "Vejo uma igreja."
       },
       "freqRank": 178,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:place-of-worship",
       "voices": [
         {
@@ -3478,9 +2875,7 @@
         "ar": "ليس غبياً."
       },
       "freqRank": 179,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
         {
@@ -3501,9 +2896,7 @@
         "ar": "توم ليس أحمق."
       },
       "freqRank": 180,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
         {
@@ -3524,9 +2917,7 @@
         "fr": "Les garçons ont soif."
       },
       "freqRank": 182,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cup-with-straw",
       "voices": [
         {
@@ -3547,9 +2938,7 @@
         "pt-BR": "O que é um computador?"
       },
       "freqRank": 183,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
         {
@@ -3570,15 +2959,14 @@
         "pt-BR": "Quero um computador."
       },
       "freqRank": 184,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/ru_beginner/152-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:laptop"
     },
     {
       "index": 153,
@@ -3592,9 +2980,7 @@
         "pt-BR": "Ela me telefonou."
       },
       "freqRank": 185,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:telephone-receiver",
       "voices": [
         {
@@ -3616,9 +3002,7 @@
         "ar": "ما هي الأمور التي تزعجك؟"
       },
       "freqRank": 186,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:worried-face",
       "voices": [
         {
@@ -3639,9 +3023,7 @@
         "pt-BR": "Que noite linda!"
       },
       "freqRank": 187,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:night-with-stars",
       "voices": [
         {
@@ -3663,9 +3045,7 @@
         "pt-BR": "Onde ele vive?"
       },
       "freqRank": 188,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -3686,9 +3066,7 @@
         "pt-BR": "Ela vive sozinha."
       },
       "freqRank": 189,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-standing",
       "voices": [
         {
@@ -3709,9 +3087,7 @@
         "pt-BR": "Onde eles moram?"
       },
       "freqRank": 190,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -3733,9 +3109,7 @@
         "ar": "قَرَأْتُ كِتَاباً."
       },
       "freqRank": 191,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -3756,9 +3130,7 @@
         "pt-BR": "Onde é a sua escola?"
       },
       "freqRank": 192,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
         {
@@ -3780,10 +3152,7 @@
         "ar": "العالم مدرسة."
       },
       "freqRank": 193,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Мир - это школа."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Мир - это школа." },
       "image": "cue:school",
       "voices": [
         {
@@ -3804,9 +3173,7 @@
         "ar": "هذه مدرستي."
       },
       "freqRank": 194,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
         {
@@ -3827,9 +3194,7 @@
         "pt-BR": "Eu não vou morrer."
       },
       "freqRank": 195,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:seedling",
       "voices": [
         {
@@ -3850,9 +3215,7 @@
         "pt-BR": "O meu número de telefone é 789."
       },
       "freqRank": 196,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:telephone",
       "voices": [
         {
@@ -3873,9 +3236,7 @@
         "pt-BR": "Tom está no telefone."
       },
       "freqRank": 198,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:telephone-receiver",
       "voices": [
         {
@@ -3896,9 +3257,7 @@
         "pt-BR": "O meu telefone é 9876-5432."
       },
       "freqRank": 197,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:telephone",
       "voices": [
         {
@@ -3919,9 +3278,7 @@
         "ar": "أين وُلدتَ؟"
       },
       "freqRank": 199,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
         {
@@ -3942,9 +3299,7 @@
         "ar": "نحن نحتاج إلي المطر."
       },
       "freqRank": 200,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-rain",
       "voices": [
         {
@@ -3965,9 +3320,7 @@
         "pt-BR": "Eu estou com vontade de dançar."
       },
       "freqRank": 201,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-dancing",
       "voices": [
         {
@@ -3989,9 +3342,7 @@
         "ar": "أحب أن أرقص."
       },
       "freqRank": 202,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-dancing",
       "voices": [
         {
@@ -4012,9 +3363,7 @@
         "pt-BR": "Não tem cerveja aqui."
       },
       "freqRank": 203,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:beer-mug",
       "voices": [
         {
@@ -4035,9 +3384,7 @@
         "pt-BR": "Queremos cerveja!"
       },
       "freqRank": 204,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:beer-mug",
       "voices": [
         {
@@ -4059,9 +3406,7 @@
         "pt-BR": "A ducha está quebrada."
       },
       "freqRank": 205,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soap",
       "voices": [
         {
@@ -4082,10 +3427,7 @@
         "pt-BR": "As crianças precisam de amor."
       },
       "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:red-heart",
       "voices": [
         {
@@ -4106,9 +3448,7 @@
         "pt-BR": "Este vinho é bom."
       },
       "freqRank": 207,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
       "voices": [
         {
@@ -4129,9 +3469,7 @@
         "pt-BR": "Eu gosto de vinho."
       },
       "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
       "voices": [
         {
@@ -4152,9 +3490,7 @@
         "pt-BR": "A felicidade não se compra."
       },
       "freqRank": 209,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
         {
@@ -4175,9 +3511,7 @@
         "ar": "ما هي السعادة؟"
       },
       "freqRank": 210,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:smiling-face-with-smiling-eyes",
       "voices": [
         {
@@ -4198,9 +3532,7 @@
         "pt-BR": "Preciso descansar."
       },
       "freqRank": 211,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
       "voices": [
         {
@@ -4221,9 +3553,7 @@
         "ar": "الحبّ لا يموت."
       },
       "freqRank": 212,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
         {
@@ -4244,9 +3574,7 @@
         "pt-BR": "Tom gosta de cantar."
       },
       "freqRank": 213,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
       "voices": [
         {
@@ -4267,9 +3595,7 @@
         "fr": "Je sais chanter."
       },
       "freqRank": 214,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
       "voices": [
         {
@@ -4290,9 +3616,7 @@
         "ar": "أحتاج إلى أن أدرس."
       },
       "freqRank": 215,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -4313,9 +3637,7 @@
         "pt-BR": "Eu gosto de estudar."
       },
       "freqRank": 216,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -4336,15 +3658,14 @@
         "fr": "Tom aime les animaux."
       },
       "freqRank": 217,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/ru_beginner/185-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:paw-prints"
     },
     {
       "index": 186,
@@ -4358,9 +3679,7 @@
         "fr": "Papa est-il dans la cuisine ?"
       },
       "freqRank": 219,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pot-of-food",
       "voices": [
         {
@@ -4381,9 +3700,7 @@
         "pt-BR": "Ficar em casa é chato."
       },
       "freqRank": 220,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:unamused-face",
       "voices": [
         {
@@ -4405,9 +3722,7 @@
         "pt-BR": "Você é a minha princesa."
       },
       "freqRank": 221,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:castle",
       "voices": [
         {
@@ -4428,9 +3743,7 @@
         "fr": "C'est un garçon intelligent."
       },
       "freqRank": 222,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
         {
@@ -4451,9 +3764,7 @@
         "pt-BR": "Está faltando o ponto final."
       },
       "freqRank": 223,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -4474,9 +3785,7 @@
         "pt-BR": "Isso não será fácil."
       },
       "freqRank": 224,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:weary-face",
       "voices": [
         {
@@ -4498,9 +3807,7 @@
         "ar": "المفتاح على الطاولة."
       },
       "freqRank": 225,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
         {
@@ -4521,9 +3828,7 @@
         "pt-BR": "Os livros estão sobre a mesa."
       },
       "freqRank": 226,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
         {
@@ -4544,9 +3849,7 @@
         "pt-BR": "A saúde vale mais que o dinheiro."
       },
       "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
         {
@@ -4567,9 +3870,7 @@
         "ar": "إنه مريض جداً."
       },
       "freqRank": 228,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-thermometer",
       "voices": [
         {
@@ -4590,9 +3891,7 @@
         "fr": "Je ne suis pas malade."
       },
       "freqRank": 229,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-thermometer",
       "voices": [
         {
@@ -4613,9 +3912,7 @@
         "pt-BR": "Você é o meu anjo."
       },
       "freqRank": 230,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sparkling-heart",
       "voices": [
         {
@@ -4636,9 +3933,7 @@
         "pt-BR": "Por favor, abra a porta."
       },
       "freqRank": 231,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:door",
       "voices": [
         {
@@ -4659,9 +3954,7 @@
         "fr": "Ne regarde pas la télévision."
       },
       "freqRank": 232,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:television",
       "voices": [
         {
@@ -4682,9 +3975,7 @@
         "pt-BR": "A televisão não funciona."
       },
       "freqRank": 233,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:television",
       "voices": [
         {
@@ -4707,9 +3998,7 @@
         "ar": "أشاهد التلفاز."
       },
       "freqRank": 234,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:television",
       "voices": [
         {
@@ -4730,9 +4019,7 @@
         "pt-BR": "Tom me odeia."
       },
       "freqRank": 235,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:anger-symbol",
       "voices": [
         {
@@ -4753,9 +4040,7 @@
         "pt-BR": "Não sou casada."
       },
       "freqRank": 236,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ring",
       "voices": [
         {
@@ -4776,9 +4061,7 @@
         "pt-BR": "Ela escreveu a palavra."
       },
       "freqRank": 239,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -4801,9 +4084,7 @@
         "ar": "أنا رأيت كلباً."
       },
       "freqRank": 237,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -4824,9 +4105,7 @@
         "ar": "أين تقع باريس؟"
       },
       "freqRank": 240,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:world-map",
       "voices": [
         {
@@ -4847,10 +4126,7 @@
         "fr": "Je téléphone à Thomas."
       },
       "freqRank": 238,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:mobile-phone",
       "voices": [
         {
@@ -4871,9 +4147,7 @@
         "ar": "هل ستبقى في البيت؟"
       },
       "freqRank": 241,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {
@@ -4895,15 +4169,14 @@
         "pt-BR": "Onde está meu cavalo?"
       },
       "freqRank": 242,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/ru_beginner/209-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 210,
@@ -4917,9 +4190,7 @@
         "pt-BR": "Sabes cozinhar?"
       },
       "freqRank": 243,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pot-of-food",
       "voices": [
         {
@@ -4940,9 +4211,7 @@
         "ar": "إنها في الحمام."
       },
       "freqRank": 244,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:restroom",
       "voices": [
         {
@@ -4963,9 +4232,7 @@
         "pt-BR": "Ontem foi domingo."
       },
       "freqRank": 245,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:calendar",
       "voices": [
         {
@@ -4987,9 +4254,7 @@
         "ar": "هل تأكل اللحم؟"
       },
       "freqRank": 246,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cut-of-meat",
       "voices": [
         {
@@ -5010,9 +4275,7 @@
         "ar": "هذا اللحم جيد."
       },
       "freqRank": 247,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cut-of-meat",
       "voices": [
         {
@@ -5033,9 +4296,7 @@
         "pt-BR": "Eu estou muito triste."
       },
       "freqRank": 248,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crying-face",
       "voices": [
         {
@@ -5057,9 +4318,7 @@
         "pt-BR": "Eu quero uma espada!"
       },
       "freqRank": 249,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crossed-swords",
       "voices": [
         {
@@ -5080,9 +4339,7 @@
         "pt-BR": "Agora eu sou livre."
       },
       "freqRank": 250,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:free-button",
       "voices": [
         {
@@ -5103,9 +4360,7 @@
         "fr": "Quelles belles fleurs !"
       },
       "freqRank": 251,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bouquet",
       "voices": [
         {
@@ -5127,9 +4382,7 @@
         "ar": "إنه من فرنسا."
       },
       "freqRank": 252,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -5150,9 +4403,7 @@
         "pt-BR": "Sou da França."
       },
       "freqRank": 253,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
         {
@@ -5173,9 +4424,7 @@
         "pt-BR": "Deus criou o mundo."
       },
       "freqRank": 254,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:folded-hands",
       "voices": [
         {
@@ -5197,9 +4446,7 @@
         "pt-BR": "Muitas pessoas fazem isso hoje em dia."
       },
       "freqRank": 255,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:busts-in-silhouette",
       "voices": [
         {
@@ -5221,9 +4468,7 @@
         "pt-BR": "O automóvel do meu pai é novo."
       },
       "freqRank": 256,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -5245,9 +4490,7 @@
         "ar": "أضعت مفتاحي."
       },
       "freqRank": 257,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:key",
       "voices": [
         {
@@ -5269,10 +4512,7 @@
         "ar": "ليس لدي أي كلام لأقوله."
       },
       "freqRank": 258,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:zipper-mouth-face",
       "voices": [
         {
@@ -5294,9 +4534,7 @@
         "ar": "من كتب هذا الكتاب؟"
       },
       "freqRank": 259,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -5319,9 +4557,7 @@
         "ar": "أعمل في مستشفى."
       },
       "freqRank": 260,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
         {
@@ -5343,9 +4579,7 @@
         "ar": "حيث يوجد الماء، توجد الحياة؟"
       },
       "freqRank": 261,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:droplet",
       "voices": [
         {
@@ -5367,9 +4601,7 @@
         "ar": "لديك كتابان"
       },
       "freqRank": 262,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
         {
@@ -5391,9 +4623,7 @@
         "ar": "صديقنا المفضّل طبيب."
       },
       "freqRank": 264,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
         {
@@ -5415,9 +4645,7 @@
         "pt-BR": "Tenho outros planos."
       },
       "freqRank": 263,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:clipboard",
       "voices": [
         {
@@ -5439,9 +4667,7 @@
         "ar": "أسكن في مدينة."
       },
       "freqRank": 265,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cityscape-at-dusk",
       "voices": [
         {
@@ -5463,9 +4689,7 @@
         "ar": "هذا لن ينتهي أبدا."
       },
       "freqRank": 266,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:infinity",
       "voices": [
         {
@@ -5488,9 +4712,7 @@
         "ar": "أحب قراءة الكُتُب."
       },
       "freqRank": 267,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
         {
@@ -5512,10 +4734,7 @@
         "ar": "أجل، ساعدني بوب."
       },
       "freqRank": 268,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["ar"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "image": "cue:handshake",
       "voices": [
         {
@@ -5537,9 +4756,7 @@
         "ar": "ما هذه الرائحة؟"
       },
       "freqRank": 269,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:nose",
       "voices": [
         {
@@ -5561,10 +4778,7 @@
         "ar": "الكلب أفضل صديق للإنسان."
       },
       "freqRank": 270,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "frontWas": "Собака - лучший друг человека."
-      },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Собака - лучший друг человека." },
       "image": "cue:dog",
       "voices": [
         {
@@ -5586,9 +4800,7 @@
         "pt-BR": "Eu tenho um cachorro."
       },
       "freqRank": 271,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -5611,9 +4823,7 @@
         "ar": "أريد أن أكتب كتاباً."
       },
       "freqRank": 273,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
         {
@@ -5635,9 +4845,7 @@
         "pt-BR": "Ele tem um cachorro."
       },
       "freqRank": 272,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
         {
@@ -5659,9 +4867,7 @@
         "pt-BR": "Este chá é muito bom."
       },
       "freqRank": 274,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:teacup-without-handle",
       "voices": [
         {
@@ -5683,9 +4889,7 @@
         "pt-BR": "Não tenho irmã."
       },
       "freqRank": 275,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:women-holding-hands",
       "voices": [
         {
@@ -5707,9 +4911,7 @@
         "ar": "السيارة قديمة و لكنها جيدة."
       },
       "freqRank": 276,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
         {
@@ -5731,15 +4933,14 @@
         "pt-BR": "Eu tenho um computador."
       },
       "freqRank": 277,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "voices": [
         {
           "key": "echo/packs/ru_beginner/244-ru_RU-denis-medium.m4a",
           "voice": "ru_RU-denis-medium"
         }
-      ]
+      ],
+      "image": "cue:laptop"
     },
     {
       "index": 245,
@@ -5754,9 +4955,7 @@
         "pt-BR": "Estou orgulhosa do meu filho."
       },
       "freqRank": 278,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family-man-boy",
       "voices": [
         {
@@ -5779,10 +4978,7 @@
         "ar": "ما تلك الضجة؟"
       },
       "freqRank": 281,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["en"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:loudspeaker",
       "voices": [
         {
@@ -5804,9 +5000,7 @@
         "pt-BR": "Estou orgulhoso de meus filhos."
       },
       "freqRank": 279,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
         {
@@ -5828,9 +5022,7 @@
         "ar": "حلقي يؤلمني."
       },
       "freqRank": 282,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-medical-mask",
       "voices": [
         {
@@ -5852,9 +5044,7 @@
         "ar": "أنا فخور بأخي."
       },
       "freqRank": 280,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:men-holding-hands",
       "voices": [
         {
@@ -5876,9 +5066,7 @@
         "pt-BR": "Com quem estavas a falar?"
       },
       "freqRank": 283,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
         {
@@ -5900,9 +5088,7 @@
         "ar": "لديها عينان جميلتان."
       },
       "freqRank": 284,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:eye",
       "voices": [
         {
@@ -5924,9 +5110,7 @@
         "ar": "متى وصلت إلى هناك؟"
       },
       "freqRank": 285,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:one-o-clock",
       "voices": [
         {
@@ -5948,9 +5132,7 @@
         "pt-BR": "Ele é parecido ao pai."
       },
       "freqRank": 286,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family-man-boy",
       "voices": [
         {
@@ -5972,9 +5154,7 @@
         "ar": "لا أريد البقاء هنا."
       },
       "freqRank": 287,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-gesturing-no",
       "voices": [
         {
@@ -5996,9 +5176,7 @@
         "ar": "أبواي يتحابان."
       },
       "freqRank": 288,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-and-man-holding-hands",
       "voices": [
         {
@@ -6020,9 +5198,7 @@
         "ar": "لديَ فكرة أفضل."
       },
       "freqRank": 289,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
         {
@@ -6044,9 +5220,7 @@
         "ar": "نمت لساعتين فقط."
       },
       "freqRank": 290,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleeping-face",
       "voices": [
         {
@@ -6068,9 +5242,7 @@
         "ar": "لا أحد يفهم ماذا يجري."
       },
       "freqRank": 291,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-shrugging",
       "voices": [
         {
@@ -6092,10 +5264,7 @@
         "pt-BR": "Ele, definitivamente, não vê televisão."
       },
       "freqRank": 292,
-      "review": {
-        "glossedBy": "Tatoeba",
-        "edited": ["tr"]
-      },
+      "review": { "glossedBy": "Tatoeba", "edited": ["tr"] },
       "image": "cue:television",
       "voices": [
         {
@@ -6117,9 +5286,7 @@
         "pt-BR": "Tenho tudo sob controle."
       },
       "freqRank": 293,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ok-hand",
       "voices": [
         {
@@ -6141,9 +5308,7 @@
         "pt-BR": "Assim será melhor para ambos."
       },
       "freqRank": 294,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thumbs-up",
       "voices": [
         {
@@ -6165,9 +5330,7 @@
         "ar": "أنا صديقه و سأبقى كذلك."
       },
       "freqRank": 295,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
         {
@@ -6189,9 +5352,7 @@
         "ar": "لم يكن اسمها في القائمة."
       },
       "freqRank": 296,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:clipboard",
       "voices": [
         {
@@ -6213,9 +5374,7 @@
         "ar": "لدي ابنتان و ابنان."
       },
       "freqRank": 297,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
         {
@@ -6237,9 +5396,7 @@
         "ar": "هو متزوج وله طفلان"
       },
       "freqRank": 299,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ring",
       "voices": [
         {
@@ -6261,9 +5418,7 @@
         "pt-BR": "Eu tenho três irmãos e quatro irmãs."
       },
       "freqRank": 298,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
         {
@@ -6285,9 +5440,7 @@
         "pt-BR": "Se eu fosse você, ia já para casa."
       },
       "freqRank": 300,
-      "review": {
-        "glossedBy": "Tatoeba"
-      },
+      "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
         {

@@ -2,7 +2,7 @@
   "id": "it:intermediate",
   "lang": "it",
   "level": "intermediate",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -2097,7 +2097,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/106-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/106-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:laptop"
     },
     {
       "index": 107,
@@ -2407,7 +2408,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/122-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/122-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 123,
@@ -2445,7 +2447,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/124-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/124-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:red-apple"
     },
     {
       "index": 125,
@@ -2521,7 +2524,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/128-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/128-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:red-apple"
     },
     {
       "index": 129,
@@ -3036,7 +3040,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/155-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/155-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:tomato"
     },
     {
       "index": 156,
@@ -3751,7 +3756,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/192-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/192-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 193,
@@ -3769,7 +3775,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/193-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/193-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 194,
@@ -4174,7 +4181,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/214-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/214-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:whale"
     },
     {
       "index": 215,
@@ -4538,7 +4546,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/233-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/233-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:snake"
     },
     {
       "index": 234,
@@ -4575,7 +4584,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/235-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/235-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:bread"
     },
     {
       "index": 236,
@@ -4922,7 +4932,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/253-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/253-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:paw-prints"
     },
     {
       "index": 254,
@@ -5074,7 +5085,8 @@
       "voices": [
         { "key": "echo/packs/it_intermediate/261-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_intermediate/261-im_nicola.m4a", "voice": "im_nicola" }
-      ]
+      ],
+      "image": "cue:fox"
     },
     {
       "index": 262,

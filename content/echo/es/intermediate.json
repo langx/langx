@@ -2,7 +2,7 @@
   "id": "es:intermediate",
   "lang": "es",
   "level": "intermediate",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -1704,7 +1704,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/83-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/83-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 84,
@@ -2303,7 +2304,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/113-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/113-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:baseball"
     },
     {
       "index": 114,
@@ -2764,7 +2766,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/136-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/136-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:horse"
     },
     {
       "index": 137,
@@ -3044,7 +3047,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/150-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/150-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 151,
@@ -3063,7 +3067,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/151-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/151-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:bicycle"
     },
     {
       "index": 152,
@@ -3102,7 +3107,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/153-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/153-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:red-apple"
     },
     {
       "index": 154,
@@ -3442,7 +3448,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/170-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/170-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:red-apple"
     },
     {
       "index": 171,
@@ -4123,7 +4130,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/204-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/204-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:flag-in-hole"
     },
     {
       "index": 205,
@@ -4202,7 +4210,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/208-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/208-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:bear"
     },
     {
       "index": 209,
@@ -4802,7 +4811,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/238-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/238-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:red-apple"
     },
     {
       "index": 239,
@@ -4861,7 +4871,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/241-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/241-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:tomato"
     },
     {
       "index": 242,
@@ -5442,7 +5453,8 @@
       "voices": [
         { "key": "echo/packs/es_intermediate/270-ef_dora.m4a", "voice": "ef_dora" },
         { "key": "echo/packs/es_intermediate/270-em_alex.m4a", "voice": "em_alex" }
-      ]
+      ],
+      "image": "cue:lion"
     },
     {
       "index": 271,

@@ -260,11 +260,15 @@ person. That derivation is ours and is the expensive half of a French pack.
 Every card in these packs carries a cue above the sentence. There are two
 sources for them and they are kept apart on purpose — see `LICENSE`.
 
-**Nothing in them is borrowed.** All 348 cue pictures are drawn for this app,
+**Nothing in them is borrowed.** All 371 cue pictures are drawn for this app,
 from the shapes in `tools/echo-content/images/drawings.mjs`, and every one of
-the 4,818 cards that carries a cue points at one of them. No picture was added
-for the five new languages: the same 348 serve all six, which is the point of
-keeping the slug rather than the phrase as what a card stores.
+the 4,894 cards that carries a cue points at one of them. The first 348 were
+drawn for the English packs and were not added to for the five new languages —
+the same set served all six, which is the point of keeping the slug rather
+than the phrase as what a card stores. The 23 added after them are what those
+five asked for and English never had: a horse, an apple, a bicycle, a paw
+print and nineteen more, each of which several cards across several languages
+now share.
 
 That is a change from how this started. The first version of the set was
 mostly **OpenMoji 15.1.0** (CC BY-SA 4.0, <https://openmoji.org>, taken from
