@@ -59,20 +59,34 @@ CONTENT = ROOT / "content" / "echo"
 
 
 def kokoro(model: Path, voices: Path):
-    # The bundled libespeak-ng has its build machine's data path compiled in, so
-    # it has to be pointed at a real one before anything phonemises.
-    import espeakng_loader
+    """Kokoro, reading through the system's espeak-ng rather than the wheel's.
 
-    espeakng_loader.make_library_available()
-    os.environ.setdefault("ESPEAK_DATA_PATH", espeakng_loader.get_data_path())
+    The bundled copy has its build machine's data path compiled into the
+    extension and ignores every way of pointing it elsewhere: the first
+    synthesis dies in C with "Error processing file
+    '/Users/runner/work/espeakng-loader/.../phontab'". `load_kokoro` in
+    `apps/tts/server.py` documents the same failure and the same fix — name
+    both paths explicitly. Homebrew's are the defaults here; `ESPEAK_LIBRARY`
+    and `ESPEAK_DATA` override them.
+    """
+    import ctypes.util
 
     from kokoro_onnx import Kokoro
+    from kokoro_onnx.config import EspeakConfig
 
-    return Kokoro(str(model), str(voices))
+    library = (
+        os.environ.get("ESPEAK_LIBRARY")
+        or ctypes.util.find_library("espeak-ng")
+        or "/opt/homebrew/lib/libespeak-ng.dylib"
+    )
+    data = os.environ.get("ESPEAK_DATA") or "/opt/homebrew/share/espeak-ng-data"
+    return Kokoro(str(model), str(voices), espeak_config=EspeakConfig(lib_path=library, data_path=data))
 
 
-def packs():
+def packs(only=None):
     for lang in sorted(p for p in CONTENT.iterdir() if p.is_dir()):
+        if only and lang.name not in only:
+            continue
         for path in sorted(lang.glob("*.json")):
             yield path, json.loads(path.read_text())
 
@@ -86,6 +100,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     here = Path(__file__).resolve().parent
     ap.add_argument("--out", required=True, type=Path)
+    # A pack whose readings are already made and uploaded should not be walked
+    # again: the run costs an hour and `contentVersion` goes up for a file
+    # nothing changed in, which is the one thing that field must not say.
+    ap.add_argument("--lang", action="append", help="only these pack languages")
     ap.add_argument("--model", type=Path, default=here / "kokoro-v1.0.onnx")
     ap.add_argument("--voices", type=Path, default=here / "voices-v1.0.bin")
     args = ap.parse_args()
@@ -100,7 +118,7 @@ def main() -> int:
     k = kokoro(args.model, args.voices)
     made = skipped = 0
 
-    for path, pack in packs():
+    for path, pack in packs(args.lang):
         spoken = KOKORO.get(pack["lang"])
         if not spoken:
             print(f"  {pack['id']}: no Kokoro voice for {pack['lang']}, left silent", flush=True)

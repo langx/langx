@@ -2,7 +2,7 @@
   "id": "es:absoluteBeginner",
   "lang": "es",
   "level": "absoluteBeginner",
-  "contentVersion": 2,
+  "contentVersion": 4,
   "reviewed": true,
   "sources": [
     {
@@ -43,7 +43,17 @@
         "translationCount": 26,
         "definition": "Expresión que se dice en respuesta a alguien que ha agradecido algo.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/0-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/0-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 1,
@@ -65,7 +75,17 @@
         "definition": "Expresión cordial y formal de saludo usada entre el amanecer y el mediodía.",
         "otherSenses": ["Saludo utilizado entre el amanecer y el mediodía. (42)"],
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/1-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/1-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 2,
@@ -88,7 +108,17 @@
           "Fórmula utilizada para despedirse de alguien cuando se va a dormir por la noche. (7)",
           "Saludo utilizado cuando ya se ha ido la luz del día. (4)"
         ]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/2-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/2-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 3,
@@ -105,7 +135,17 @@
       "freqRank": 40,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/3-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/3-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 4,
@@ -122,7 +162,17 @@
       "freqRank": 42,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/4-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/4-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 5,
@@ -139,7 +189,17 @@
       "freqRank": 41,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/5-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/5-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 6,
@@ -158,7 +218,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/6-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/6-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 7,
@@ -175,7 +245,17 @@
       "freqRank": 44,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/7-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/7-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 8,
@@ -192,7 +272,17 @@
       "freqRank": 45,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/8-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/8-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 9,
@@ -209,7 +299,17 @@
       "freqRank": 46,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/9-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/9-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 10,
@@ -226,7 +326,17 @@
       "freqRank": 48,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/10-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/10-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 11,
@@ -243,7 +353,17 @@
       "freqRank": 47,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/11-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/11-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 12,
@@ -260,7 +380,17 @@
       "freqRank": 49,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/12-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/12-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 13,
@@ -277,7 +407,17 @@
       "freqRank": 50,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/13-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/13-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 14,
@@ -295,7 +435,17 @@
       "freqRank": 51,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/14-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/14-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 15,
@@ -312,7 +462,17 @@
       "freqRank": 52,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/15-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/15-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 16,
@@ -330,7 +490,17 @@
       "freqRank": 53,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/16-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/16-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 17,
@@ -347,7 +517,17 @@
       "freqRank": 54,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/17-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/17-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 18,
@@ -364,7 +544,17 @@
       "freqRank": 56,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/18-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/18-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 19,
@@ -381,7 +571,17 @@
       "freqRank": 55,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/19-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/19-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 20,
@@ -398,7 +598,17 @@
       "freqRank": 57,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/20-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/20-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 21,
@@ -416,7 +626,17 @@
       "freqRank": 58,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/21-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/21-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 22,
@@ -433,7 +653,17 @@
       "freqRank": 59,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/22-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/22-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 23,
@@ -451,7 +681,17 @@
       "freqRank": 60,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/23-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/23-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 24,
@@ -468,7 +708,17 @@
       "freqRank": 61,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/24-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/24-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 25,
@@ -485,7 +735,17 @@
       "freqRank": 62,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/25-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/25-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 26,
@@ -502,7 +762,17 @@
       "freqRank": 63,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/26-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/26-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 27,
@@ -519,7 +789,17 @@
       "freqRank": 64,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/27-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/27-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 28,
@@ -536,7 +816,17 @@
       "freqRank": 65,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/28-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/28-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 29,
@@ -553,7 +843,17 @@
       "freqRank": 66,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/29-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/29-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 30,
@@ -571,7 +871,17 @@
       "freqRank": 67,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/30-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/30-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 31,
@@ -588,7 +898,17 @@
       "freqRank": 69,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/31-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/31-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 32,
@@ -605,7 +925,17 @@
       "freqRank": 68,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/32-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/32-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 33,
@@ -622,7 +952,17 @@
       "freqRank": 70,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/33-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/33-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 34,
@@ -640,7 +980,17 @@
       "freqRank": 71,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/34-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/34-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 35,
@@ -658,7 +1008,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/35-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/35-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 36,
@@ -675,7 +1035,17 @@
       "freqRank": 74,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/36-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/36-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 37,
@@ -692,7 +1062,17 @@
       "freqRank": 73,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/37-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/37-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 38,
@@ -709,7 +1089,17 @@
       "freqRank": 75,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/38-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/38-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 39,
@@ -726,7 +1116,17 @@
       "freqRank": 76,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/39-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/39-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 40,
@@ -743,7 +1143,17 @@
       "freqRank": 78,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/40-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/40-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 41,
@@ -760,7 +1170,17 @@
       "freqRank": 77,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/41-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/41-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 42,
@@ -777,7 +1197,17 @@
       "freqRank": 79,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/42-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/42-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 43,
@@ -794,7 +1224,17 @@
       "freqRank": 80,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/43-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/43-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 44,
@@ -811,7 +1251,17 @@
       "freqRank": 82,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/44-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/44-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 45,
@@ -829,7 +1279,17 @@
       "freqRank": 81,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/45-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/45-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 46,
@@ -846,7 +1306,17 @@
       "freqRank": 83,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/46-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/46-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 47,
@@ -864,7 +1334,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/47-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/47-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 48,
@@ -881,7 +1361,17 @@
       "freqRank": 85,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/48-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/48-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 49,
@@ -898,7 +1388,17 @@
       "freqRank": 86,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/49-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/49-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 50,
@@ -915,7 +1415,17 @@
       "freqRank": 87,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/50-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/50-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 51,
@@ -932,7 +1442,17 @@
       "freqRank": 88,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/51-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/51-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 52,
@@ -949,7 +1469,17 @@
       "freqRank": 89,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/52-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/52-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 53,
@@ -967,7 +1497,17 @@
       "freqRank": 90,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/53-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/53-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 54,
@@ -984,7 +1524,17 @@
       "freqRank": 91,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/54-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/54-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 55,
@@ -1001,7 +1551,17 @@
       "freqRank": 94,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/55-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/55-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 56,
@@ -1019,7 +1579,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/56-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/56-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 57,
@@ -1036,7 +1606,17 @@
       "freqRank": 96,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/57-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/57-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 58,
@@ -1053,7 +1633,17 @@
       "freqRank": 93,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/58-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/58-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 59,
@@ -1070,7 +1660,17 @@
       "freqRank": 97,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/59-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/59-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 60,
@@ -1088,7 +1688,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/60-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/60-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 61,
@@ -1105,7 +1715,17 @@
       "freqRank": 98,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/61-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/61-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 62,
@@ -1123,7 +1743,17 @@
       "freqRank": 99,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/62-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/62-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 63,
@@ -1140,7 +1770,17 @@
       "freqRank": 100,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/63-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/63-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 64,
@@ -1157,7 +1797,17 @@
       "freqRank": 101,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/64-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/64-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 65,
@@ -1175,7 +1825,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/65-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/65-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 66,
@@ -1192,7 +1852,17 @@
       "freqRank": 103,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/66-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/66-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 67,
@@ -1210,7 +1880,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/67-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/67-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 68,
@@ -1227,7 +1907,17 @@
       "freqRank": 105,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/68-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/68-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 69,
@@ -1244,7 +1934,17 @@
       "freqRank": 106,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/69-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/69-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 70,
@@ -1261,7 +1961,17 @@
       "freqRank": 107,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/70-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/70-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 71,
@@ -1278,7 +1988,17 @@
       "freqRank": 108,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/71-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/71-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 72,
@@ -1295,7 +2015,17 @@
       "freqRank": 109,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/72-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/72-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 73,
@@ -1312,7 +2042,17 @@
       "freqRank": 110,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/73-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/73-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 74,
@@ -1329,7 +2069,17 @@
       "freqRank": 111,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/74-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/74-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 75,
@@ -1346,7 +2096,17 @@
       "freqRank": 112,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/75-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/75-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 76,
@@ -1364,7 +2124,17 @@
       "freqRank": 114,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/76-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/76-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 77,
@@ -1381,7 +2151,17 @@
       "freqRank": 113,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/77-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/77-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 78,
@@ -1398,7 +2178,17 @@
       "freqRank": 115,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/78-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/78-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 79,
@@ -1415,7 +2205,17 @@
       "freqRank": 116,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/79-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/79-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 80,
@@ -1432,7 +2232,17 @@
       "freqRank": 118,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/80-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/80-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 81,
@@ -1449,7 +2259,17 @@
       "freqRank": 117,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/81-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/81-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 82,
@@ -1466,7 +2286,17 @@
       "freqRank": 120,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/82-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/82-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 83,
@@ -1483,7 +2313,17 @@
       "freqRank": 119,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/83-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/83-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 84,
@@ -1500,7 +2340,17 @@
       "freqRank": 121,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/84-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/84-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 85,
@@ -1517,7 +2367,17 @@
       "freqRank": 122,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/85-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/85-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 86,
@@ -1534,7 +2394,17 @@
       "freqRank": 123,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/86-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/86-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 87,
@@ -1552,7 +2422,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/87-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/87-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 88,
@@ -1569,7 +2449,17 @@
       "freqRank": 125,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/88-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/88-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 89,
@@ -1586,7 +2476,17 @@
       "freqRank": 126,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/89-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/89-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 90,
@@ -1603,7 +2503,17 @@
       "freqRank": 128,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/90-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/90-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 91,
@@ -1620,7 +2530,17 @@
       "freqRank": 127,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/91-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/91-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 92,
@@ -1637,7 +2557,17 @@
       "freqRank": 129,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/92-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/92-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 93,
@@ -1654,7 +2584,17 @@
       "freqRank": 130,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/93-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/93-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 94,
@@ -1671,7 +2611,17 @@
       "freqRank": 131,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/94-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/94-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 95,
@@ -1689,7 +2639,17 @@
       "freqRank": 132,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/95-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/95-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 96,
@@ -1708,7 +2668,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/96-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/96-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 97,
@@ -1726,7 +2696,17 @@
       "freqRank": 134,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/97-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/97-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 98,
@@ -1743,7 +2723,17 @@
       "freqRank": 135,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/98-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/98-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 99,
@@ -1760,7 +2750,17 @@
       "freqRank": 136,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/99-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/99-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 100,
@@ -1777,7 +2777,17 @@
       "freqRank": 137,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/100-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/100-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 101,
@@ -1794,7 +2804,17 @@
       "freqRank": 138,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/101-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/101-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 102,
@@ -1811,7 +2831,17 @@
       "freqRank": 139,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/102-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/102-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 103,
@@ -1828,7 +2858,17 @@
       "freqRank": 140,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/103-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/103-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 104,
@@ -1845,7 +2885,17 @@
       "freqRank": 141,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/104-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/104-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 105,
@@ -1862,7 +2912,17 @@
       "freqRank": 142,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/105-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/105-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 106,
@@ -1879,7 +2939,17 @@
       "freqRank": 143,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/106-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/106-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 107,
@@ -1896,7 +2966,17 @@
       "freqRank": 144,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/107-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/107-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 108,
@@ -1913,7 +2993,17 @@
       "freqRank": 145,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/108-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/108-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 109,
@@ -1930,7 +3020,17 @@
       "freqRank": 146,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/109-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/109-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 110,
@@ -1947,7 +3047,17 @@
       "freqRank": 147,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/110-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/110-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 111,
@@ -1964,7 +3074,17 @@
       "freqRank": 148,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/111-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/111-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 112,
@@ -1981,7 +3101,17 @@
       "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/112-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/112-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 113,
@@ -1999,7 +3129,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/113-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/113-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 114,
@@ -2016,7 +3156,17 @@
       "freqRank": 152,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/114-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/114-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 115,
@@ -2033,7 +3183,17 @@
       "freqRank": 151,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/115-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/115-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 116,
@@ -2050,7 +3210,17 @@
       "freqRank": 153,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/116-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/116-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 117,
@@ -2068,7 +3238,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/117-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/117-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 118,
@@ -2085,7 +3265,17 @@
       "freqRank": 156,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/118-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/118-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 119,
@@ -2102,7 +3292,17 @@
       "freqRank": 155,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/119-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/119-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 120,
@@ -2119,7 +3319,17 @@
       "freqRank": 157,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/120-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/120-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 121,
@@ -2136,7 +3346,17 @@
       "freqRank": 158,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/121-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/121-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 122,
@@ -2154,7 +3374,17 @@
       "freqRank": 159,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/122-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/122-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 123,
@@ -2171,7 +3401,17 @@
       "freqRank": 160,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/123-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/123-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 124,
@@ -2188,7 +3428,17 @@
       "freqRank": 161,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/124-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/124-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 125,
@@ -2205,7 +3455,17 @@
       "freqRank": 162,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/125-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/125-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 126,
@@ -2222,7 +3482,17 @@
       "freqRank": 163,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/126-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/126-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 127,
@@ -2239,7 +3509,17 @@
       "freqRank": 164,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/127-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/127-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 128,
@@ -2256,7 +3536,17 @@
       "freqRank": 166,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/128-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/128-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 129,
@@ -2273,7 +3563,17 @@
       "freqRank": 167,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/129-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/129-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 130,
@@ -2290,7 +3590,17 @@
       "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/130-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/130-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 131,
@@ -2307,7 +3617,17 @@
       "freqRank": 169,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/131-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/131-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 132,
@@ -2324,7 +3644,17 @@
       "freqRank": 171,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/132-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/132-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 133,
@@ -2341,7 +3671,17 @@
       "freqRank": 170,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/133-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/133-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 134,
@@ -2358,7 +3698,17 @@
       "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/134-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/134-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 135,
@@ -2375,7 +3725,17 @@
       "freqRank": 173,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/135-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/135-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 136,
@@ -2392,7 +3752,17 @@
       "freqRank": 174,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/136-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/136-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 137,
@@ -2410,7 +3780,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/137-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/137-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 138,
@@ -2427,7 +3807,17 @@
       "freqRank": 176,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/138-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/138-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 139,
@@ -2444,7 +3834,17 @@
       "freqRank": 177,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/139-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/139-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 140,
@@ -2461,7 +3861,17 @@
       "freqRank": 178,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/140-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/140-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 141,
@@ -2478,7 +3888,17 @@
       "freqRank": 180,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/141-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/141-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 142,
@@ -2495,7 +3915,17 @@
       "freqRank": 181,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/142-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/142-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 143,
@@ -2513,7 +3943,17 @@
       "freqRank": 182,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/143-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/143-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 144,
@@ -2530,7 +3970,17 @@
       "freqRank": 183,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/144-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/144-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 145,
@@ -2547,7 +3997,17 @@
       "freqRank": 184,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/145-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/145-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 146,
@@ -2564,7 +4024,17 @@
       "freqRank": 187,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/146-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/146-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 147,
@@ -2581,7 +4051,17 @@
       "freqRank": 186,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/147-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/147-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 148,
@@ -2598,7 +4078,17 @@
       "freqRank": 188,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/148-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/148-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 149,
@@ -2615,7 +4105,17 @@
       "freqRank": 189,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/149-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/149-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 150,
@@ -2632,7 +4132,17 @@
       "freqRank": 190,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/150-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/150-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 151,
@@ -2649,7 +4159,17 @@
       "freqRank": 191,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/151-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/151-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 152,
@@ -2667,7 +4187,17 @@
       "freqRank": 194,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/152-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/152-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 153,
@@ -2684,7 +4214,17 @@
       "freqRank": 192,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/153-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/153-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 154,
@@ -2702,7 +4242,17 @@
       "freqRank": 195,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/154-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/154-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 155,
@@ -2719,7 +4269,17 @@
       "freqRank": 193,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/155-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/155-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 156,
@@ -2736,7 +4296,17 @@
       "freqRank": 196,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/156-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/156-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 157,
@@ -2753,7 +4323,17 @@
       "freqRank": 197,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/157-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/157-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 158,
@@ -2770,7 +4350,17 @@
       "freqRank": 198,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/158-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/158-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 159,
@@ -2787,7 +4377,17 @@
       "freqRank": 199,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/159-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/159-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 160,
@@ -2804,7 +4404,17 @@
       "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/160-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/160-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 161,
@@ -2821,7 +4431,17 @@
       "freqRank": 201,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/161-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/161-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 162,
@@ -2839,7 +4459,17 @@
       "freqRank": 202,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/162-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/162-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 163,
@@ -2856,7 +4486,17 @@
       "freqRank": 207,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/163-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/163-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 164,
@@ -2873,7 +4513,17 @@
       "freqRank": 204,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/164-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/164-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 165,
@@ -2890,7 +4540,17 @@
       "freqRank": 208,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/165-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/165-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 166,
@@ -2908,7 +4568,17 @@
       "freqRank": 205,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/166-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/166-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 167,
@@ -2925,7 +4595,17 @@
       "freqRank": 209,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/167-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/167-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 168,
@@ -2942,7 +4622,17 @@
       "freqRank": 206,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/168-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/168-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 169,
@@ -2959,7 +4649,17 @@
       "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/169-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/169-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 170,
@@ -2976,7 +4676,17 @@
       "freqRank": 211,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/170-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/170-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 171,
@@ -2993,7 +4703,17 @@
       "freqRank": 212,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/171-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/171-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 172,
@@ -3010,7 +4730,17 @@
       "freqRank": 213,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/172-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/172-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 173,
@@ -3027,7 +4757,17 @@
       "freqRank": 214,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/173-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/173-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 174,
@@ -3044,7 +4784,17 @@
       "freqRank": 215,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/174-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/174-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 175,
@@ -3061,7 +4811,17 @@
       "freqRank": 216,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/175-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/175-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 176,
@@ -3078,7 +4838,17 @@
       "freqRank": 217,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/176-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/176-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 177,
@@ -3095,7 +4865,17 @@
       "freqRank": 219,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/177-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/177-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 178,
@@ -3112,7 +4892,17 @@
       "freqRank": 220,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/178-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/178-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 179,
@@ -3129,7 +4919,17 @@
       "freqRank": 221,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/179-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/179-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 180,
@@ -3146,7 +4946,17 @@
       "freqRank": 222,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/180-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/180-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 181,
@@ -3163,7 +4973,17 @@
       "freqRank": 223,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/181-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/181-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 182,
@@ -3181,7 +5001,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/182-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/182-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 183,
@@ -3198,7 +5028,17 @@
       "freqRank": 225,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/183-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/183-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 184,
@@ -3215,7 +5055,17 @@
       "freqRank": 226,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/184-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/184-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 185,
@@ -3233,7 +5083,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/185-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/185-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 186,
@@ -3250,7 +5110,17 @@
       "freqRank": 228,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/186-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/186-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 187,
@@ -3267,7 +5137,17 @@
       "freqRank": 229,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/187-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/187-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 188,
@@ -3284,7 +5164,17 @@
       "freqRank": 230,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/188-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/188-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 189,
@@ -3301,7 +5191,17 @@
       "freqRank": 231,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/189-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/189-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 190,
@@ -3318,7 +5218,17 @@
       "freqRank": 232,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/190-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/190-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 191,
@@ -3336,7 +5246,17 @@
       "freqRank": 233,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/191-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/191-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 192,
@@ -3353,7 +5273,17 @@
       "freqRank": 234,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/192-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/192-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 193,
@@ -3370,7 +5300,17 @@
       "freqRank": 235,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/193-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/193-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 194,
@@ -3387,7 +5327,17 @@
       "freqRank": 236,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/194-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/194-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 195,
@@ -3404,7 +5354,17 @@
       "freqRank": 238,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/195-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/195-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 196,
@@ -3421,7 +5381,17 @@
       "freqRank": 237,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/196-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/196-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 197,
@@ -3438,7 +5408,17 @@
       "freqRank": 239,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/197-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/197-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 198,
@@ -3455,7 +5435,17 @@
       "freqRank": 240,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/198-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/198-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 199,
@@ -3473,7 +5463,17 @@
       "freqRank": 241,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/199-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/199-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 200,
@@ -3490,7 +5490,17 @@
       "freqRank": 242,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/200-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/200-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 201,
@@ -3507,7 +5517,17 @@
       "freqRank": 243,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/201-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/201-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 202,
@@ -3524,7 +5544,17 @@
       "freqRank": 244,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/202-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/202-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 203,
@@ -3541,7 +5571,17 @@
       "freqRank": 245,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/203-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/203-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 204,
@@ -3559,7 +5599,17 @@
       "freqRank": 246,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/204-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/204-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 205,
@@ -3576,7 +5626,17 @@
       "freqRank": 247,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/205-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/205-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 206,
@@ -3593,7 +5653,17 @@
       "freqRank": 248,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/206-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/206-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 207,
@@ -3610,7 +5680,17 @@
       "freqRank": 250,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/207-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/207-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 208,
@@ -3627,7 +5707,17 @@
       "freqRank": 249,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/208-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/208-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 209,
@@ -3646,7 +5736,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["fr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/209-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/209-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 210,
@@ -3663,7 +5763,17 @@
       "freqRank": 252,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/210-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/210-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 211,
@@ -3681,7 +5791,17 @@
       "freqRank": 253,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/211-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/211-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 212,
@@ -3698,7 +5818,17 @@
       "freqRank": 254,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/212-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/212-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 213,
@@ -3715,7 +5845,17 @@
       "freqRank": 255,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/213-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/213-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 214,
@@ -3732,7 +5872,17 @@
       "freqRank": 256,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/214-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/214-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 215,
@@ -3749,7 +5899,17 @@
       "freqRank": 257,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/215-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/215-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 216,
@@ -3766,7 +5926,17 @@
       "freqRank": 258,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/216-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/216-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 217,
@@ -3783,7 +5953,17 @@
       "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/217-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/217-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 218,
@@ -3800,7 +5980,17 @@
       "freqRank": 260,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/218-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/218-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 219,
@@ -3817,7 +6007,17 @@
       "freqRank": 261,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/219-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/219-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 220,
@@ -3834,7 +6034,17 @@
       "freqRank": 262,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/220-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/220-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 221,
@@ -3852,7 +6062,17 @@
       "freqRank": 263,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/221-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/221-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 222,
@@ -3869,7 +6089,17 @@
       "freqRank": 264,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/222-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/222-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 223,
@@ -3886,7 +6116,17 @@
       "freqRank": 265,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/223-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/223-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 224,
@@ -3903,7 +6143,17 @@
       "freqRank": 266,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/224-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/224-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 225,
@@ -3920,7 +6170,17 @@
       "freqRank": 268,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/225-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/225-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 226,
@@ -3937,7 +6197,17 @@
       "freqRank": 267,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/226-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/226-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 227,
@@ -3954,7 +6224,17 @@
       "freqRank": 269,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/227-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/227-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 228,
@@ -3971,7 +6251,17 @@
       "freqRank": 270,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/228-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/228-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 229,
@@ -3988,7 +6278,17 @@
       "freqRank": 271,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/229-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/229-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 230,
@@ -4005,7 +6305,17 @@
       "freqRank": 272,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/230-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/230-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 231,
@@ -4022,7 +6332,17 @@
       "freqRank": 273,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/231-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/231-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 232,
@@ -4039,7 +6359,17 @@
       "freqRank": 274,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/232-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/232-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 233,
@@ -4056,7 +6386,17 @@
       "freqRank": 275,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/233-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/233-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 234,
@@ -4073,7 +6413,17 @@
       "freqRank": 276,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/234-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/234-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 235,
@@ -4092,7 +6442,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/235-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/235-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 236,
@@ -4110,7 +6470,17 @@
       "freqRank": 278,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/236-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/236-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 237,
@@ -4128,7 +6498,17 @@
       "freqRank": 279,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/237-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/237-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 238,
@@ -4147,7 +6527,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/238-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/238-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 239,
@@ -4165,7 +6555,17 @@
       "freqRank": 282,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/239-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/239-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 240,
@@ -4183,7 +6583,17 @@
       "freqRank": 283,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/240-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/240-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 241,
@@ -4201,7 +6611,17 @@
       "freqRank": 284,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/241-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/241-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 242,
@@ -4219,7 +6639,17 @@
       "freqRank": 285,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/242-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/242-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 243,
@@ -4237,7 +6667,17 @@
       "freqRank": 286,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/243-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/243-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 244,
@@ -4255,7 +6695,17 @@
       "freqRank": 287,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/244-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/244-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 245,
@@ -4274,7 +6724,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/245-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/245-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 246,
@@ -4292,7 +6752,17 @@
       "freqRank": 289,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/246-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/246-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 247,
@@ -4311,7 +6781,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/247-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/247-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 248,
@@ -4329,7 +6809,17 @@
       "freqRank": 291,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/248-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/248-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 249,
@@ -4347,7 +6837,17 @@
       "freqRank": 293,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/249-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/249-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 250,
@@ -4365,7 +6865,17 @@
       "freqRank": 292,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/250-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/250-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 251,
@@ -4383,7 +6893,17 @@
       "freqRank": 294,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/251-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/251-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 252,
@@ -4401,7 +6921,17 @@
       "freqRank": 295,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/252-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/252-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 253,
@@ -4419,7 +6949,17 @@
       "freqRank": 296,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/253-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/253-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 254,
@@ -4438,7 +6978,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/254-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/254-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 255,
@@ -4456,7 +7006,17 @@
       "freqRank": 297,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/255-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/255-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 256,
@@ -4474,7 +7034,17 @@
       "freqRank": 299,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/256-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/256-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     },
     {
       "index": 257,
@@ -4492,7 +7062,17 @@
       "freqRank": 300,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/es_absoluteBeginner/257-ef_dora.m4a",
+          "voice": "ef_dora"
+        },
+        {
+          "key": "echo/packs/es_absoluteBeginner/257-em_alex.m4a",
+          "voice": "em_alex"
+        }
+      ]
     }
   ]
 }

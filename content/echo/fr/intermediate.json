@@ -2,7 +2,7 @@
   "id": "fr:intermediate",
   "lang": "fr",
   "level": "intermediate",
-  "contentVersion": 2,
+  "contentVersion": 3,
   "reviewed": true,
   "sources": [
     {
@@ -58,7 +58,13 @@
             "tags": []
           }
         ]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/0-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 1,
@@ -74,7 +80,13 @@
       "freqRank": 8,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/1-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 2,
@@ -92,7 +104,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/2-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 3,
@@ -109,7 +127,13 @@
       "freqRank": 10,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/3-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 4,
@@ -125,7 +149,13 @@
       "freqRank": 11,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/4-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 5,
@@ -141,7 +171,13 @@
       "freqRank": 12,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/5-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 6,
@@ -158,7 +194,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/6-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 7,
@@ -174,7 +216,13 @@
       "freqRank": 14,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/7-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 8,
@@ -190,7 +238,13 @@
       "freqRank": 15,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/8-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 9,
@@ -208,7 +262,13 @@
       "freqRank": 18,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/9-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 10,
@@ -224,7 +284,13 @@
       "freqRank": 16,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/10-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 11,
@@ -241,7 +307,13 @@
       "freqRank": 19,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/11-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 12,
@@ -257,7 +329,13 @@
       "freqRank": 17,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/12-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 13,
@@ -273,7 +351,13 @@
       "freqRank": 20,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/13-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 14,
@@ -289,7 +373,13 @@
       "freqRank": 21,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/14-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 15,
@@ -305,7 +395,13 @@
       "freqRank": 22,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/15-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 16,
@@ -321,7 +417,13 @@
       "freqRank": 23,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/16-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 17,
@@ -338,7 +440,13 @@
       "freqRank": 24,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/17-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 18,
@@ -354,7 +462,13 @@
       "freqRank": 26,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/18-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 19,
@@ -370,7 +484,13 @@
       "freqRank": 25,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/19-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 20,
@@ -386,7 +506,13 @@
       "freqRank": 27,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/20-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 21,
@@ -402,7 +528,13 @@
       "freqRank": 28,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/21-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 22,
@@ -418,7 +550,13 @@
       "freqRank": 30,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/22-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 23,
@@ -434,7 +572,13 @@
       "freqRank": 29,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/23-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 24,
@@ -450,7 +594,13 @@
       "freqRank": 31,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/24-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 25,
@@ -466,7 +616,13 @@
       "freqRank": 32,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/25-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 26,
@@ -482,7 +638,13 @@
       "freqRank": 33,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/26-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 27,
@@ -498,7 +660,13 @@
       "freqRank": 36,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/27-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 28,
@@ -514,7 +682,13 @@
       "freqRank": 34,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/28-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 29,
@@ -531,7 +705,13 @@
       "freqRank": 37,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/29-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 30,
@@ -547,7 +727,13 @@
       "freqRank": 35,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/30-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 31,
@@ -563,7 +749,13 @@
       "freqRank": 38,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/31-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 32,
@@ -579,7 +771,13 @@
       "freqRank": 39,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/32-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 33,
@@ -595,7 +793,13 @@
       "freqRank": 40,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/33-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 34,
@@ -611,7 +815,13 @@
       "freqRank": 41,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/34-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 35,
@@ -627,7 +837,13 @@
       "freqRank": 42,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/35-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 36,
@@ -643,7 +859,13 @@
       "freqRank": 43,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/36-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 37,
@@ -659,7 +881,13 @@
       "freqRank": 44,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/37-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 38,
@@ -676,7 +904,13 @@
       "freqRank": 45,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/38-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 39,
@@ -692,7 +926,13 @@
       "freqRank": 46,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/39-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 40,
@@ -708,7 +948,13 @@
       "freqRank": 48,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/40-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 41,
@@ -724,7 +970,13 @@
       "freqRank": 49,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/41-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 42,
@@ -740,7 +992,13 @@
       "freqRank": 50,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/42-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 43,
@@ -756,7 +1014,13 @@
       "freqRank": 51,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/43-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 44,
@@ -773,7 +1037,13 @@
       "freqRank": 52,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/44-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 45,
@@ -790,7 +1060,13 @@
       "freqRank": 54,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/45-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 46,
@@ -807,7 +1083,13 @@
       "freqRank": 55,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/46-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 47,
@@ -823,7 +1105,13 @@
       "freqRank": 56,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/47-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 48,
@@ -839,7 +1127,13 @@
       "freqRank": 57,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/48-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 49,
@@ -855,7 +1149,13 @@
       "freqRank": 58,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/49-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 50,
@@ -872,7 +1172,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/50-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 51,
@@ -889,7 +1195,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/51-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 52,
@@ -905,7 +1217,13 @@
       "freqRank": 61,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/52-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 53,
@@ -921,7 +1239,13 @@
       "freqRank": 63,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/53-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 54,
@@ -937,7 +1261,13 @@
       "freqRank": 62,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/54-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 55,
@@ -953,7 +1283,13 @@
       "freqRank": 64,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/55-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 56,
@@ -969,7 +1305,13 @@
       "freqRank": 65,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/56-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 57,
@@ -986,7 +1328,13 @@
       "freqRank": 67,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/57-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 58,
@@ -1003,7 +1351,13 @@
       "freqRank": 66,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/58-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 59,
@@ -1019,7 +1373,13 @@
       "freqRank": 69,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/59-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 60,
@@ -1035,7 +1395,13 @@
       "freqRank": 68,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/60-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 61,
@@ -1051,7 +1417,13 @@
       "freqRank": 70,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/61-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 62,
@@ -1067,7 +1439,13 @@
       "freqRank": 71,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/62-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 63,
@@ -1084,7 +1462,13 @@
       "freqRank": 72,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/63-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 64,
@@ -1101,7 +1485,13 @@
       "freqRank": 73,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/64-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 65,
@@ -1117,7 +1507,13 @@
       "freqRank": 75,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/65-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 66,
@@ -1135,7 +1531,13 @@
       "freqRank": 74,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/66-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 67,
@@ -1151,7 +1553,13 @@
       "freqRank": 76,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/67-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 68,
@@ -1167,7 +1575,13 @@
       "freqRank": 77,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/68-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 69,
@@ -1183,7 +1597,13 @@
       "freqRank": 79,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/69-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 70,
@@ -1199,7 +1619,13 @@
       "freqRank": 78,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/70-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 71,
@@ -1215,7 +1641,13 @@
       "freqRank": 80,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/71-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 72,
@@ -1231,7 +1663,13 @@
       "freqRank": 81,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/72-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 73,
@@ -1247,7 +1685,13 @@
       "freqRank": 82,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/73-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 74,
@@ -1263,7 +1707,13 @@
       "freqRank": 84,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/74-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 75,
@@ -1279,7 +1729,13 @@
       "freqRank": 83,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/75-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 76,
@@ -1295,7 +1751,13 @@
       "freqRank": 85,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/76-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 77,
@@ -1311,7 +1773,13 @@
       "freqRank": 86,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/77-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 78,
@@ -1327,7 +1795,13 @@
       "freqRank": 87,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/78-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 79,
@@ -1343,7 +1817,13 @@
       "freqRank": 88,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/79-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 80,
@@ -1359,7 +1839,13 @@
       "freqRank": 89,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/80-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 81,
@@ -1375,7 +1861,13 @@
       "freqRank": 91,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/81-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 82,
@@ -1391,7 +1883,13 @@
       "freqRank": 92,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/82-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 83,
@@ -1407,7 +1905,13 @@
       "freqRank": 93,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/83-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 84,
@@ -1423,7 +1927,13 @@
       "freqRank": 96,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/84-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 85,
@@ -1439,7 +1949,13 @@
       "freqRank": 94,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/85-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 86,
@@ -1455,7 +1971,13 @@
       "freqRank": 97,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/86-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 87,
@@ -1471,7 +1993,13 @@
       "freqRank": 98,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/87-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 88,
@@ -1487,7 +2015,13 @@
       "freqRank": 99,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/88-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 89,
@@ -1505,7 +2039,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/89-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 90,
@@ -1521,7 +2061,13 @@
       "freqRank": 101,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/90-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 91,
@@ -1537,7 +2083,13 @@
       "freqRank": 102,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/91-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 92,
@@ -1553,7 +2105,13 @@
       "freqRank": 103,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/92-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 93,
@@ -1569,7 +2127,13 @@
       "freqRank": 104,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/93-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 94,
@@ -1585,7 +2149,13 @@
       "freqRank": 105,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/94-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 95,
@@ -1601,7 +2171,13 @@
       "freqRank": 106,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/95-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 96,
@@ -1617,7 +2193,13 @@
       "freqRank": 107,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/96-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 97,
@@ -1634,7 +2216,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/97-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 98,
@@ -1651,7 +2239,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/98-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 99,
@@ -1667,7 +2261,13 @@
       "freqRank": 110,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/99-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 100,
@@ -1684,7 +2284,13 @@
       "freqRank": 111,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/100-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 101,
@@ -1700,7 +2306,13 @@
       "freqRank": 112,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/101-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 102,
@@ -1716,7 +2328,13 @@
       "freqRank": 113,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/102-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 103,
@@ -1734,7 +2352,13 @@
       "freqRank": 114,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/103-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 104,
@@ -1751,7 +2375,13 @@
       "freqRank": 115,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/104-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 105,
@@ -1767,7 +2397,13 @@
       "freqRank": 116,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/105-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 106,
@@ -1784,7 +2420,13 @@
       "freqRank": 117,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/106-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 107,
@@ -1800,7 +2442,13 @@
       "freqRank": 118,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/107-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 108,
@@ -1816,7 +2464,13 @@
       "freqRank": 119,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/108-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 109,
@@ -1833,7 +2487,13 @@
       "freqRank": 120,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/109-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 110,
@@ -1849,7 +2509,13 @@
       "freqRank": 121,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/110-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 111,
@@ -1865,7 +2531,13 @@
       "freqRank": 122,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/111-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 112,
@@ -1881,7 +2553,13 @@
       "freqRank": 123,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/112-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 113,
@@ -1897,7 +2575,13 @@
       "freqRank": 124,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/113-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 114,
@@ -1913,7 +2597,13 @@
       "freqRank": 125,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/114-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 115,
@@ -1929,7 +2619,13 @@
       "freqRank": 126,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/115-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 116,
@@ -1945,7 +2641,13 @@
       "freqRank": 127,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/116-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 117,
@@ -1962,7 +2664,13 @@
       "freqRank": 128,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/117-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 118,
@@ -1979,7 +2687,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/118-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 119,
@@ -1995,7 +2709,13 @@
       "freqRank": 130,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/119-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 120,
@@ -2011,7 +2731,13 @@
       "freqRank": 131,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/120-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 121,
@@ -2027,7 +2753,13 @@
       "freqRank": 132,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/121-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 122,
@@ -2044,7 +2776,13 @@
       "freqRank": 133,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/122-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 123,
@@ -2060,7 +2798,13 @@
       "freqRank": 134,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/123-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 124,
@@ -2076,7 +2820,13 @@
       "freqRank": 135,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/124-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 125,
@@ -2092,7 +2842,13 @@
       "freqRank": 136,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/125-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 126,
@@ -2108,7 +2864,13 @@
       "freqRank": 137,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/126-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 127,
@@ -2124,7 +2886,13 @@
       "freqRank": 138,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/127-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 128,
@@ -2140,7 +2908,13 @@
       "freqRank": 139,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/128-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 129,
@@ -2156,7 +2930,13 @@
       "freqRank": 140,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/129-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 130,
@@ -2172,7 +2952,13 @@
       "freqRank": 141,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/130-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 131,
@@ -2188,7 +2974,13 @@
       "freqRank": 142,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/131-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 132,
@@ -2204,7 +2996,13 @@
       "freqRank": 143,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/132-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 133,
@@ -2221,7 +3019,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/133-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 134,
@@ -2237,7 +3041,13 @@
       "freqRank": 144,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/134-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 135,
@@ -2253,7 +3063,13 @@
       "freqRank": 146,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/135-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 136,
@@ -2269,7 +3085,13 @@
       "freqRank": 147,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/136-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 137,
@@ -2285,7 +3107,13 @@
       "freqRank": 148,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/137-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 138,
@@ -2301,7 +3129,13 @@
       "freqRank": 150,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/138-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 139,
@@ -2317,7 +3151,13 @@
       "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/139-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 140,
@@ -2333,7 +3173,13 @@
       "freqRank": 151,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/140-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 141,
@@ -2349,7 +3195,13 @@
       "freqRank": 152,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/141-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 142,
@@ -2365,7 +3217,13 @@
       "freqRank": 153,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/142-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 143,
@@ -2381,7 +3239,13 @@
       "freqRank": 154,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/143-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 144,
@@ -2397,7 +3261,13 @@
       "freqRank": 155,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/144-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 145,
@@ -2413,7 +3283,13 @@
       "freqRank": 157,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/145-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 146,
@@ -2429,7 +3305,13 @@
       "freqRank": 156,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/146-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 147,
@@ -2445,7 +3327,13 @@
       "freqRank": 160,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/147-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 148,
@@ -2461,7 +3349,13 @@
       "freqRank": 158,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/148-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 149,
@@ -2477,7 +3371,13 @@
       "freqRank": 161,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/149-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 150,
@@ -2493,7 +3393,13 @@
       "freqRank": 159,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/150-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 151,
@@ -2509,7 +3415,13 @@
       "freqRank": 162,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/151-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 152,
@@ -2525,7 +3437,13 @@
       "freqRank": 163,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/152-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 153,
@@ -2542,7 +3460,13 @@
       "freqRank": 164,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/153-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 154,
@@ -2559,7 +3483,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/154-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 155,
@@ -2576,7 +3506,13 @@
       "freqRank": 166,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/155-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 156,
@@ -2592,7 +3528,13 @@
       "freqRank": 167,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/156-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 157,
@@ -2608,7 +3550,13 @@
       "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/157-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 158,
@@ -2624,7 +3572,13 @@
       "freqRank": 169,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/158-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 159,
@@ -2640,7 +3594,13 @@
       "freqRank": 170,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/159-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 160,
@@ -2656,7 +3616,13 @@
       "freqRank": 171,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/160-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 161,
@@ -2672,7 +3638,13 @@
       "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/161-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 162,
@@ -2688,7 +3660,13 @@
       "freqRank": 174,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/162-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 163,
@@ -2704,7 +3682,13 @@
       "freqRank": 175,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/163-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 164,
@@ -2721,7 +3705,13 @@
       "freqRank": 176,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/164-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 165,
@@ -2737,7 +3727,13 @@
       "freqRank": 178,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/165-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 166,
@@ -2753,7 +3749,13 @@
       "freqRank": 177,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/166-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 167,
@@ -2769,7 +3771,13 @@
       "freqRank": 179,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/167-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 168,
@@ -2785,7 +3793,13 @@
       "freqRank": 180,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/168-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 169,
@@ -2801,7 +3815,13 @@
       "freqRank": 181,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/169-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 170,
@@ -2817,7 +3837,13 @@
       "freqRank": 182,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/170-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 171,
@@ -2834,7 +3860,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/171-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 172,
@@ -2851,7 +3883,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/172-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 173,
@@ -2867,7 +3905,13 @@
       "freqRank": 185,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/173-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 174,
@@ -2883,7 +3927,13 @@
       "freqRank": 186,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/174-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 175,
@@ -2899,7 +3949,13 @@
       "freqRank": 187,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/175-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 176,
@@ -2915,7 +3971,13 @@
       "freqRank": 188,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/176-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 177,
@@ -2931,7 +3993,13 @@
       "freqRank": 189,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/177-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 178,
@@ -2947,7 +4015,13 @@
       "freqRank": 190,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/178-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 179,
@@ -2963,7 +4037,13 @@
       "freqRank": 191,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/179-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 180,
@@ -2979,7 +4059,13 @@
       "freqRank": 193,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/180-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 181,
@@ -2996,7 +4082,13 @@
       "freqRank": 192,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/181-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 182,
@@ -3012,7 +4104,13 @@
       "freqRank": 194,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/182-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 183,
@@ -3028,7 +4126,13 @@
       "freqRank": 195,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/183-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 184,
@@ -3045,7 +4149,13 @@
       "freqRank": 196,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/184-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 185,
@@ -3061,7 +4171,13 @@
       "freqRank": 197,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/185-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 186,
@@ -3077,7 +4193,13 @@
       "freqRank": 198,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/186-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 187,
@@ -3093,7 +4215,13 @@
       "freqRank": 199,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/187-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 188,
@@ -3109,7 +4237,13 @@
       "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/188-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 189,
@@ -3125,7 +4259,13 @@
       "freqRank": 201,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/189-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 190,
@@ -3141,7 +4281,13 @@
       "freqRank": 202,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/190-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 191,
@@ -3157,7 +4303,13 @@
       "freqRank": 203,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/191-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 192,
@@ -3173,7 +4325,13 @@
       "freqRank": 204,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/192-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 193,
@@ -3189,7 +4347,13 @@
       "freqRank": 207,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/193-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 194,
@@ -3205,7 +4369,13 @@
       "freqRank": 205,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/194-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 195,
@@ -3221,7 +4391,13 @@
       "freqRank": 208,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/195-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 196,
@@ -3237,7 +4413,13 @@
       "freqRank": 206,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/196-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 197,
@@ -3253,7 +4435,13 @@
       "freqRank": 209,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/197-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 198,
@@ -3269,7 +4457,13 @@
       "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/198-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 199,
@@ -3285,7 +4479,13 @@
       "freqRank": 212,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/199-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 200,
@@ -3301,7 +4501,13 @@
       "freqRank": 211,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/200-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 201,
@@ -3317,7 +4523,13 @@
       "freqRank": 213,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/201-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 202,
@@ -3333,7 +4545,13 @@
       "freqRank": 214,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/202-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 203,
@@ -3349,7 +4567,13 @@
       "freqRank": 215,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/203-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 204,
@@ -3365,7 +4589,13 @@
       "freqRank": 217,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/204-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 205,
@@ -3381,7 +4611,13 @@
       "freqRank": 218,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/205-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 206,
@@ -3397,7 +4633,13 @@
       "freqRank": 219,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/206-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 207,
@@ -3413,7 +4655,13 @@
       "freqRank": 221,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/207-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 208,
@@ -3429,7 +4677,13 @@
       "freqRank": 220,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/208-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 209,
@@ -3445,7 +4699,13 @@
       "freqRank": 222,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/209-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 210,
@@ -3461,7 +4721,13 @@
       "freqRank": 223,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/210-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 211,
@@ -3477,7 +4743,13 @@
       "freqRank": 225,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/211-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 212,
@@ -3493,7 +4765,13 @@
       "freqRank": 224,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/212-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 213,
@@ -3509,7 +4787,13 @@
       "freqRank": 226,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/213-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 214,
@@ -3525,7 +4809,13 @@
       "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/214-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 215,
@@ -3541,7 +4831,13 @@
       "freqRank": 228,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/215-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 216,
@@ -3557,7 +4853,13 @@
       "freqRank": 229,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/216-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 217,
@@ -3574,7 +4876,13 @@
       "freqRank": 230,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/217-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 218,
@@ -3590,7 +4898,13 @@
       "freqRank": 234,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/218-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 219,
@@ -3606,7 +4920,13 @@
       "freqRank": 231,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/219-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 220,
@@ -3622,7 +4942,13 @@
       "freqRank": 235,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/220-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 221,
@@ -3639,7 +4965,13 @@
       "freqRank": 232,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/221-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 222,
@@ -3655,7 +4987,13 @@
       "freqRank": 236,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/222-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 223,
@@ -3672,7 +5010,13 @@
       "freqRank": 233,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/223-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 224,
@@ -3688,7 +5032,13 @@
       "freqRank": 237,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/224-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 225,
@@ -3704,7 +5054,13 @@
       "freqRank": 238,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/225-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 226,
@@ -3721,7 +5077,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/226-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 227,
@@ -3737,7 +5099,13 @@
       "freqRank": 240,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/227-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 228,
@@ -3753,7 +5121,13 @@
       "freqRank": 241,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/228-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 229,
@@ -3770,7 +5144,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/229-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 230,
@@ -3786,7 +5166,13 @@
       "freqRank": 244,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/230-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 231,
@@ -3802,7 +5188,13 @@
       "freqRank": 245,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/231-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 232,
@@ -3818,7 +5210,13 @@
       "freqRank": 246,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/232-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 233,
@@ -3834,7 +5232,13 @@
       "freqRank": 247,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/233-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 234,
@@ -3850,7 +5254,13 @@
       "freqRank": 248,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/234-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 235,
@@ -3866,7 +5276,13 @@
       "freqRank": 249,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/235-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 236,
@@ -3882,7 +5298,13 @@
       "freqRank": 250,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/236-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 237,
@@ -3898,7 +5320,13 @@
       "freqRank": 251,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/237-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 238,
@@ -3914,7 +5342,13 @@
       "freqRank": 254,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/238-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 239,
@@ -3930,7 +5364,13 @@
       "freqRank": 252,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/239-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 240,
@@ -3946,7 +5386,13 @@
       "freqRank": 255,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/240-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 241,
@@ -3963,7 +5409,13 @@
       "freqRank": 256,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/241-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 242,
@@ -3979,7 +5431,13 @@
       "freqRank": 257,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/242-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 243,
@@ -3995,7 +5453,13 @@
       "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/243-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 244,
@@ -4012,7 +5476,13 @@
       "freqRank": 258,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/244-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 245,
@@ -4028,7 +5498,13 @@
       "freqRank": 260,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/245-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 246,
@@ -4044,7 +5520,13 @@
       "freqRank": 261,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/246-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 247,
@@ -4060,7 +5542,13 @@
       "freqRank": 262,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/247-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 248,
@@ -4076,7 +5564,13 @@
       "freqRank": 263,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/248-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 249,
@@ -4093,7 +5587,13 @@
       "freqRank": 264,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/249-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 250,
@@ -4110,7 +5610,13 @@
       "freqRank": 265,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/250-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 251,
@@ -4127,7 +5633,13 @@
       "freqRank": 267,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/251-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 252,
@@ -4144,7 +5656,13 @@
       "freqRank": 268,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/252-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 253,
@@ -4161,7 +5679,13 @@
       "freqRank": 269,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/253-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 254,
@@ -4178,7 +5702,13 @@
       "freqRank": 270,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/254-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 255,
@@ -4196,7 +5726,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/255-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 256,
@@ -4214,7 +5750,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/256-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 257,
@@ -4231,7 +5773,13 @@
       "freqRank": 273,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/257-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 258,
@@ -4249,7 +5797,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["en"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/258-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 259,
@@ -4266,7 +5820,13 @@
       "freqRank": 275,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/259-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 260,
@@ -4283,7 +5843,13 @@
       "freqRank": 276,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/260-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 261,
@@ -4300,7 +5866,13 @@
       "freqRank": 278,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/261-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 262,
@@ -4318,7 +5890,13 @@
       "freqRank": 277,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/262-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 263,
@@ -4336,7 +5914,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/263-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 264,
@@ -4353,7 +5937,13 @@
       "freqRank": 280,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/264-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 265,
@@ -4370,7 +5960,13 @@
       "freqRank": 281,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/265-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 266,
@@ -4387,7 +5983,13 @@
       "freqRank": 283,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/266-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 267,
@@ -4404,7 +6006,13 @@
       "freqRank": 284,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/267-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 268,
@@ -4421,7 +6029,13 @@
       "freqRank": 285,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/268-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 269,
@@ -4438,7 +6052,13 @@
       "freqRank": 286,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/269-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 270,
@@ -4455,7 +6075,13 @@
       "freqRank": 287,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/270-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 271,
@@ -4472,7 +6098,13 @@
       "freqRank": 291,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/271-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 272,
@@ -4489,7 +6121,13 @@
       "freqRank": 290,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/272-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 273,
@@ -4506,7 +6144,13 @@
       "freqRank": 292,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/273-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 274,
@@ -4524,7 +6168,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "frontWas": "Il a peint la porte en bleue."
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/274-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 275,
@@ -4541,7 +6191,13 @@
       "freqRank": 294,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/275-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 276,
@@ -4558,7 +6214,13 @@
       "freqRank": 295,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/276-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 277,
@@ -4575,7 +6237,13 @@
       "freqRank": 296,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/277-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 278,
@@ -4592,7 +6260,13 @@
       "freqRank": 297,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/278-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 279,
@@ -4611,7 +6285,13 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/279-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     },
     {
       "index": 280,
@@ -4628,7 +6308,13 @@
       "freqRank": 300,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/fr_intermediate/280-ff_siwis.m4a",
+          "voice": "ff_siwis"
+        }
+      ]
     }
   ]
 }
