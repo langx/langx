@@ -19,6 +19,17 @@
 # web deploy, by hand or from here. It uploads to the Pages project and then
 # runs scripts/verify-web-deploy.mjs against app.langx.io, which is what turns
 # an upload that "succeeded" into a stale edge into a red run.
+#
+# **The `--built` comparison is passed here rather than from that script, and
+# the reason is not about deploys at all.** `runtimeVersion` is a fingerprint,
+# and `@expo/fingerprint` hashes `packageJson:scripts` — so a flag added to a
+# line in apps/mobile/package.json changes the runtime version, and an
+# over-the-air update only reaches an install whose fingerprint matches. On
+# 20 September 2026 exactly that happened: the flag moved the hash from
+# bbb9dce1 to e2c8b245, and every app already on a phone stopped receiving
+# updates, for a change that touches no native code. Nothing in this file is
+# hashed, so the strict question lives here now. Keep it that way: an edit to
+# any script in that package.json severs OTA for everyone already installed.
 name: Deploy web
 
 on:
@@ -75,3 +86,12 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: pnpm deploy:web
+
+      # The stricter question, which only something that knows the build is
+      # current may ask: is the live index *this* build, rather than merely a
+      # page whose scripts all load? `deploy:web` has just answered the weaker
+      # one seconds ago, so this repeats one fetch of the live index — the
+      # price of keeping the flag out of a file that decides who gets updates.
+      - name: Check the live host is this build
+        working-directory: apps/mobile
+        run: node scripts/verify-web-deploy.mjs --built
