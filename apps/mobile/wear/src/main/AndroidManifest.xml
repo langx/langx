@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The Wear OS app's manifest.
+
+  `standalone=false` is the declaration that matches the design: this app has
+  no session and no network call of its own, so it is useless on a watch whose
+  phone is not here. Saying so is what stops Play offering it to somebody with
+  an iPhone, and it is the Android spelling of the decision recorded in
+  docs/plans/iphone-watch-and-carplay.md -> Surface B.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <uses-feature android:name="android.hardware.type.watch" />
+
+  <application
+    android:allowBackup="false"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:supportsRtl="true"
+    android:theme="@android:style/Theme.DeviceDefault">
+
+    <meta-data
+      android:name="com.google.android.wearable.standalone"
+      android:value="false" />
+
+    <activity
+      android:name=".MainActivity"
+      android:exported="true"
+      android:taskAffinity=""
+      android:theme="@android:style/Theme.DeviceDefault">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>

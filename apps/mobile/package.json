@@ -13,6 +13,7 @@
     "verify:web": "node scripts/verify-web-deploy.mjs",
     "ios": "expo run:ios",
     "android": "expo run:android",
+    "gen:strings": "tsx scripts/generate-xcstrings.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p functions",
     "test": "vitest run"
   },
@@ -84,6 +85,7 @@
     "@react-native/metro-config": "0.86.3",
     "@types/react": "catalog:",
     "babel-preset-expo": "~57.0.8",
+    "tsx": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

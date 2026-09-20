@@ -2085,4 +2085,16 @@ export const tr: Localized<EnMessages> = {
     messages: 'Mesajlar',
     summary: 'Bu hafta: {messages} ve {corrections}.',
   },
+
+  watch: {
+    unread: 'Okunmamış',
+    nothingUnread: 'Okunmamış yok',
+    openOnPhone: 'LangX’i telefonunda aç',
+    phoneNotReachable: 'Telefon erişilebilir değil',
+    reply: 'Yanıtla',
+    sending: 'Gönderiliyor…',
+    sent: 'Gönderildi',
+    notSent: 'Gönderilemedi',
+    loading: 'Yükleniyor…',
+  },
 }

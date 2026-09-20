@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The service the system starts when the watch sends a reply.
+
+  Declared in the module rather than in the app's manifest so it travels with
+  the code that needs it — `expo prebuild` merges library manifests into the
+  app's, which is what makes a local Expo module able to own a component at
+  all.
+
+  `exported="true"` because the caller is the Wearable service, not the app.
+  The intent filter is what binds it: without the `BIND_LISTENER` action the
+  service is never started and a reply from the wrist vanishes with no error
+  anywhere.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application>
+    <service
+      android:name="expo.modules.wearlink.ReplyListenerService"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+      </intent-filter>
+    </service>
+  </application>
+</manifest>

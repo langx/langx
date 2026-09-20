@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
-import { useEchoSummary, useMe, useUnreadTotal } from '../api/queries'
+import { shiftDayKey } from '@langx/shared'
+import { useEffect, useMemo } from 'react'
+import { useActivity, useEchoSummary, useMe, useUnreadTotal } from '../api/queries'
 import { useLocale, useT } from '../i18n'
-import { buildCompanionSnapshot } from '../lib/companionSnapshot'
+import { buildCompanionSnapshot, COMPANION_ACTIVITY_WEEKS } from '../lib/companionSnapshot'
 import { clearCompanionSnapshot, writeCompanionSnapshot } from '../../modules/companion-snapshot'
 
 /**
@@ -12,9 +13,12 @@ import { clearCompanionSnapshot, writeCompanionSnapshot } from '../../modules/co
  * runs for people who open that screen, and the Home Screen has to be right
  * for everybody.
  *
- * It adds one request to an app launch — `GET /echo/summary`, which only the
- * Echo tab asked for before. The other two are already cached: the unread
- * total drives the tab badge, and the profile is read by half the app.
+ * It adds two requests to an app launch. `GET /echo/summary`, which only the
+ * Echo tab asked for before, and `GET /me/activity`, which only the profile
+ * screen did — that one feeds the activity map widget, and it is fetched
+ * unconditionally because nothing in JavaScript knows which widgets somebody
+ * has actually added. The other two are already cached: the unread total
+ * drives the tab badge, and the profile is read by half the app.
  *
  * Writes whenever any of the three change. That covers the app's own doing —
  * a chat read, a review finished, a check-in advancing the streak — because
@@ -29,10 +33,23 @@ export function useCompanionSnapshot({ enabled }: { enabled: boolean }): void {
   const me = useMe(enabled)
   const echo = useEchoSummary(enabled)
 
+  /*
+   * One week more than the widget draws, because `activityGrid` winds forward
+   * to the Sunday that closes today's week and would otherwise reach past the
+   * range. The server clamps it anyway; asking for the extra costs nothing and
+   * a short range would silently blank the oldest column.
+   */
+  const range = useMemo(() => {
+    const to = new Date().toISOString().slice(0, 10)
+    return { from: shiftDayKey(to, -(COMPANION_ACTIVITY_WEEKS + 1) * 7), to }
+  }, [])
+  const activity = useActivity(range.from, range.to, enabled)
+
   const unreadTotal = unread.data
   const streak = me.data?.streak
   const echoDue = echo.data?.due
   const echoNextDue = echo.data?.nextDue
+  const activityData = activity.data
 
   useEffect(() => {
     /*
@@ -52,10 +69,30 @@ export function useCompanionSnapshot({ enabled }: { enabled: boolean }): void {
 
     writeCompanionSnapshot(
       buildCompanionSnapshot(
-        { unread: unreadTotal, profile: { streak }, echo: { due: echoDue, nextDue: echoNextDue } },
+        {
+          unread: unreadTotal,
+          profile: { streak },
+          echo: { due: echoDue, nextDue: echoNextDue },
+          /*
+           * Left out rather than faked when the request has not landed. The
+           * map widget draws its empty state for a missing `activity`, which
+           * is momentary and honest; a grid built from no days would be a
+           * screen of blanks claiming somebody never showed up.
+           */
+          ...(activityData
+            ? {
+                activity: {
+                  today: activityData.today,
+                  days: activityData.days,
+                  streak: activityData.streak,
+                  maxAgeDays: activityData.repair.maxAgeDays,
+                },
+              }
+            : {}),
+        },
         locale,
         t,
       ),
     )
-  }, [enabled, unreadTotal, streak, echoDue, echoNextDue, locale, t])
+  }, [enabled, unreadTotal, streak, echoDue, echoNextDue, activityData, locale, t])
 }

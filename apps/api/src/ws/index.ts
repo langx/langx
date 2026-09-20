@@ -372,8 +372,9 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
            * which the handler only reaches once the unit is already gone. The
            * feed states the rule its own attachments follow: every file is
            * checked before anything is consumed, so a rejected file does not
-           * burn a unit the caller never got to use. Chat's only send path is
-           * this socket, so this is where it has to hold.
+           * burn a unit the caller never got to use. Media's only send path
+           * is this socket — text now also has a REST twin for the watch, and
+           * deliberately does not — so this is where it has to hold.
            */
           assertAttachmentsAllowed(
             input.attachments,

@@ -5,7 +5,18 @@ import {
   type Locale,
 } from '@langx/shared'
 import type { TranslateFn } from '../i18n/runtime'
+import { activityGrid, type ActivityCell } from './activityMap'
 import { deviceDayKey } from './deviceDay'
+
+/**
+ * How many weeks of the map travel to the widget.
+ *
+ * Fewer than the app's twenty. A medium widget is about 360pt wide and the
+ * squares have to stay big enough to read as squares rather than as noise at
+ * arm's length — sixteen columns at 18pt is the most that holds. The app keeps
+ * its twenty; this is a glance, not the screen.
+ */
+export const COMPANION_ACTIVITY_WEEKS = 16
 
 /**
  * What the app already holds, in the shape the four queries hand it over.
@@ -25,6 +36,54 @@ export interface CompanionSources {
   profile: { streak: { current: number; longest: number; lastQualifiedDay: string | null } }
   /** `GET /echo/summary`. */
   echo: Pick<EchoSummary, 'due' | 'nextDue'>
+  /**
+   * `GET /me/activity`, or undefined.
+   *
+   * Optional because the widget that draws it is optional: a reader with no
+   * activity widget on a screen still gets a snapshot, and one request per
+   * launch is not worth spending on a map nobody has added. The call site
+   * decides; this only says what the shape is when it comes.
+   */
+  activity?: {
+    today: string
+    days: { day: string; actions?: number; intensity?: number }[]
+    streak: { current: number; lastQualifiedDay: string | null }
+    maxAgeDays: number
+  }
+}
+
+/** `0`–`4` for a square, `.` for a day that has not happened. */
+function encodeCell(cell: ActivityCell): string {
+  return cell.state === 'future' ? '.' : String(cell.intensity)
+}
+
+/**
+ * The grid, flattened oldest-first, seven days to a column.
+ *
+ * `activityGrid` is asked rather than reimplemented — which square is today
+ * and which are still buyable are exactly the two things that are invisible in
+ * a screenshot, and the function that answers them has tests. The widget
+ * decodes this string and draws it; it never recomputes the shape.
+ */
+function encodeActivity(
+  activity: NonNullable<CompanionSources['activity']>,
+): NonNullable<CompanionSnapshot['activity']> {
+  const days = new Map<string, number>()
+  for (const day of activity.days) days.set(day.day, day.actions ?? day.intensity ?? 0)
+
+  const columns = activityGrid({
+    today: activity.today,
+    weeks: COMPANION_ACTIVITY_WEEKS,
+    days,
+    maxAgeDays: activity.maxAgeDays,
+    streak: activity.streak,
+  })
+
+  return {
+    today: activity.today,
+    weeks: COMPANION_ACTIVITY_WEEKS,
+    days: columns.map((column) => column.map(encodeCell).join('')).join(''),
+  }
 }
 
 /**
@@ -67,6 +126,7 @@ export function buildCompanionSnapshot(
        */
       nextDue: sources.echo.nextDue ?? null,
     },
+    ...(sources.activity ? { activity: encodeActivity(sources.activity) } : {}),
     labels: {
       streak: t('me.dayStreak'),
       unread: t('inbox.unread'),

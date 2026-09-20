@@ -37,6 +37,15 @@ jobs:
       - name: Format
         run: pnpm format:check
 
+      # The native targets cannot import `src/i18n`, so their words are copied
+      # into an Apple string catalogue that is committed rather than generated
+      # at build time. Committed means it can go stale, and a stale one ships a
+      # watch screen in yesterday's wording — so the generator runs here and
+      # fails if its output differs from what the branch carries.
+      - name: Native strings are current
+        working-directory: apps/mobile
+        run: pnpm gen:strings --check
+
       # `apps/api`'s tests each start their own MongoMemoryServer, and vitest
       # runs the files in parallel workers. On a cold cache they all reach for
       # the same mongod binary at once and race on its download and lockfile —

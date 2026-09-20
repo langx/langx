@@ -1,0 +1,43 @@
+/*
+ * `expo-module-gradle-plugin`, not a hand-written Android library block.
+ *
+ * The hand-written version compiled, installed, and then crashed the app on
+ * launch with `UnsupportedOperationException: This function has a reified type
+ * parameter and thus can only be inlined at compilation time, not called
+ * directly` — thrown from inside `definition()`, before any of this module's
+ * own code ran.
+ *
+ * Expo's module DSL (`Name`, `Function`, …) is built out of inline functions
+ * with reified type parameters, and `android.enableMinifyInReleaseBuilds` is
+ * on. The plugin is what brings the consumer ProGuard rules that keep R8 from
+ * turning those calls into real ones; without it the release build is broken
+ * in a way no debug build shows. It also supplies the Kotlin setup and the
+ * `expo-modules-core` dependency, so declaring either here is duplication that
+ * can drift from the SDK.
+ */
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.wearlink'
+version = '1.0.0'
+
+android {
+  namespace 'expo.modules.wearlink'
+  /*
+   * The plugin reads both and fails configuration without them —
+   * "'android.defaultConfig.versionName' is not defined", which does not say
+   * whose. Every module in `node_modules` carries the pair; a local one has to
+   * as well.
+   */
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}
+
+dependencies {
+  // The Data Layer — the Android half of what `WCSession` does on Apple.
+  implementation 'com.google.android.gms:play-services-wearable:19.0.0'
+}

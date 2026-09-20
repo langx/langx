@@ -6,17 +6,19 @@ import {
   listMessagesQuerySchema,
   listStarredQuerySchema,
   listCorrectionsQuerySchema,
+  sendTextMessageSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
-import { requireAuth, requireMember } from '../middleware/requireAuth'
+import { requireAuth, requireMember, requireVerifiedEmail } from '../middleware/requireAuth'
 import {
   countUnread,
   listConversations,
   listMessages,
   listMessagesAround,
   markConversationRead,
+  sendTextMessage,
 } from '../modules/chat/messages'
 import { assertConversationAccess } from '../modules/chat/access'
 import { listConversationMedia } from '../modules/chat/conversationMedia'
@@ -29,6 +31,7 @@ import {
   setConversationFlag,
 } from '../modules/chat/mutations'
 import { speakMessage } from '../modules/chat/speak'
+import { fanOutMessage } from '../ws/fanOut'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -276,6 +279,56 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
         })),
         nextCursor: page.nextCursor,
       })
+    },
+  )
+
+  /*
+   * Send a text message without a socket.
+   *
+   * The socket is still how the app sends: it is already open, the ack is the
+   * delivery receipt, and typing indicators need it anyway. This exists for
+   * the callers that cannot hold one. The first is the Apple Watch — a reply
+   * dictated on the wrist reaches an iPhone that may be asleep in a pocket,
+   * and WatchConnectivity wakes that app in the *background*, where there is
+   * no socket and no JavaScript, only a few seconds of native runtime. The
+   * plan called this the "REST send twin" and scheduled it for CarPlay, which
+   * needs it for exactly the same reason; the watch got here first.
+   *
+   * Every guard lives in `sendTextMessage` and every side effect in
+   * `fanOutMessage`, so this handler holds neither. That is the point rather
+   * than tidiness: a second send path that re-implemented access control,
+   * quota or token accounting would be a second set of rules free to drift
+   * from the socket's, and the drift would show up as somebody being charged
+   * twice or not at all. The two paths differ in transport and in nothing
+   * else.
+   *
+   * Text only, deliberately. `message:media` checks its files and its storage
+   * quota in the handler as well as in the module, so a REST twin of *that*
+   * would be the drift this comment warns about.
+   *
+   * `requireVerifiedEmail` matches `authenticateSocket`, which refuses an
+   * unverified account rather than letting the socket become the softer door.
+   * The rate limit is the REST spelling of the socket's token bucket for
+   * `message:send` — 20 with a slow refill — so neither transport is the
+   * cheaper way to flood a thread.
+   */
+  app.post(
+    '/conversations/:id/messages',
+    {
+      preHandler: requireVerifiedEmail,
+      schema: {
+        params: z.object({ id: z.string().trim().min(1) }),
+        body: sendTextMessageSchema.omit({ conversationId: true }),
+      },
+      config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const { message, conversation } = await sendTextMessage(app.mongo.db, request.userId, {
+        ...request.body,
+        conversationId: request.params.id,
+      })
+      await fanOutMessage(app, app.io, conversation, message, { pushWhenAway: true })
+      return reply.send(toMessageView(message, request.userId))
     },
   )
 
