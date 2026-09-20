@@ -16,10 +16,16 @@ import SwiftUI
  */
 struct UnreadList: View {
   @EnvironmentObject private var store: WatchStore
+  /*
+   Read here, above the override below, so the screens can be handed back the
+   direction the wearer actually reads in.
+  */
+  @Environment(\.layoutDirection) private var readingDirection
 
   var body: some View {
     NavigationStack {
       content
+        .environment(\.layoutDirection, readingDirection)
         /*
          The title is drawn in the content rather than given to
          `.navigationTitle`, because the mockup's is yellow and watchOS will
@@ -34,6 +40,18 @@ struct UnreadList: View {
         */
         .navigationBarTitleDisplayMode(.inline)
     }
+    /*
+     The navigation bar, and only the bar, is pinned left-to-right.
+
+     watchOS draws the time in the top right corner and never mirrors it,
+     while SwiftUI mirrors the back chevron along with everything else — so in
+     Arabic the chevron is drawn on top of the clock and the wearer loses
+     both. Pinning the bar costs an Arabic reader a chevron on the side they
+     do not expect; leaving it alone costs them the time, and a way back they
+     can see. The content above is given its real direction again, so the
+     rows, the bubbles and the text stay right-to-left.
+    */
+    .environment(\.layoutDirection, .leftToRight)
   }
 
   @ViewBuilder
@@ -59,7 +77,14 @@ struct UnreadList: View {
         }
       }
       .navigationDestination(for: String.self) { id in
+        /*
+         Given the direction again, because a destination inherits the
+         *stack's* environment rather than this view's — so without this the
+         bar fix above would follow the thread down and leave an Arabic
+         wearer reading right-to-left names in a left-to-right screen.
+        */
         ThreadView(conversationId: id)
+          .environment(\.layoutDirection, readingDirection)
       }
     }
   }

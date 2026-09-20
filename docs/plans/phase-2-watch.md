@@ -129,6 +129,29 @@ from Swift.
 So `OnCreate` activating the session and the Keychain read on a cold launch
 are observed rather than inferred. Sign-out is still not exercised.
 
+### Right-to-left put the chevron on the clock
+
+Found on 20 September, shooting the store screenshots in all eight languages —
+which is the only reason it was found at all, because nothing before that had
+run the watch app in Arabic.
+
+watchOS draws the time in the top-right corner and never mirrors it. SwiftUI
+mirrors the navigation bar with the layout direction, so in Arabic the back
+chevron was drawn **on top of the clock** and an Arabic wearer lost both: no
+readable time, and no visible way back.
+
+The fix pins the navigation bar — and only the bar — left-to-right, then hands
+the screens back the direction that was read before the override. Two things
+are worth knowing about it. A chevron on the left is not what an Arabic reader
+expects, and that is the price: the alternative is a control nobody can see.
+And a `navigationDestination` inherits the **stack's** environment rather than
+the view the modifier is attached to, so the thread screen needs the direction
+given to it a second time — without that, the first version of the fix left
+the list right-to-left and the thread left-to-right.
+
+Verified by capture in both directions: chevron clear of the clock and the
+names, bubbles and title still right-to-left in Arabic, and English unchanged.
+
 ## The Wear OS half
 
 The same app. One `watchPayloadSchema` blob, one REST send twin, one list of
