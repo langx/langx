@@ -241,9 +241,9 @@ describe('/webhooks/instagram', () => {
   })
 
   it('acknowledges a signed delivery immediately', async () => {
-    // The work is deliberately slow — it sleeps for up to ninety seconds
-    // before answering a comment — so the 200 cannot wait for it, or Meta
-    // retries and the retry spends a private reply that only exists once.
+    // The work deliberately waits before answering a comment, so the 200
+    // cannot wait for it, or Meta retries and the retry spends a private
+    // reply that only exists once.
     const response = await app.inject({
       method: 'POST',
       url: '/webhooks/instagram',

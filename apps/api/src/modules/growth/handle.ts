@@ -57,9 +57,9 @@ export interface GrowthDeps {
     warn(details: Record<string, unknown> | string, message?: string): void
   }
   /**
-   * Injected so a test does not sit out the ninety seconds a comment waits,
-   * or the eight a follow re-check does. The delays are real and deliberate;
-   * waiting for them to prove an ordering is not.
+   * Injected so a test does not sit out the seconds a comment waits, or the
+   * eight a follow re-check does. The delays are real and deliberate; waiting
+   * for them to prove an ordering is not.
    */
   sleep?: (ms: number) => Promise<void>
 }
