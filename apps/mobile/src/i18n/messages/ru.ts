@@ -831,6 +831,8 @@ export const ru: Localized<EnMessages> = {
   },
 
   notifications: {
+    replyAction: 'Ответить',
+    replyPlaceholder: 'Напишите ответ',
     messages: 'Сообщения',
     messagesBody: 'Когда вам пишут. На почту — только если вас давно не было.',
     streak: 'Напоминание о стрике',
@@ -2351,5 +2353,7 @@ export const ru: Localized<EnMessages> = {
     activityDetail: 'Ваши занятия: один квадрат в день.',
     glanceName: 'Взгляд',
     glanceDetail: 'Серия и непрочитанные для экрана блокировки и StandBy.',
+    exchangeStartsIn: 'Начало через',
+    exchangeEndsIn: 'Конец через',
   },
 }

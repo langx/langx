@@ -82,7 +82,16 @@ const config: ExpoConfig = {
     // system stack, which Apple's export rules exempt. Answering that here
     // answers it once — without it every upload sits in App Store Connect as
     // "Missing Compliance" and TestFlight will not hand the build to anyone.
-    infoPlist: { ITSAppUsesNonExemptEncryption: false },
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+      /*
+       Without this key `ActivityAuthorizationInfo().areActivitiesEnabled` is
+       false on every device and `Activity.request` throws, with nothing
+       anywhere naming the plist as the cause — the countdown for an agreed
+       call simply never appears. See `modules/live-activity`.
+      */
+      NSSupportsLiveActivities: true,
+    },
     // Adds the Sign in with Apple entitlement. Without it the native sheet
     // opens and then fails with no identity token, which reads like a bug in
     // the app rather than a missing capability.

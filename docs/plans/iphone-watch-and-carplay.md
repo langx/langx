@@ -813,8 +813,9 @@ Answered on 18 September 2026:
 
 Still open:
 
-1. ~~**When does the Live Activity come back?**~~ **Answered 20 September:
-   now, and the scheduled exchange is the trigger** — Behic's words were that
+1. ~~**When does the Live Activity come back?**~~ **Answered 20 September, and
+   built the same day** — see `phase-3-live-activity.md`. The trigger is the
+   scheduled exchange — Behic's words were that
    it should appear when something scheduled happens. So the phone-driven
    activity starts at a booked exchange and ends when it does, which is the
    one case in this app with a known start, a known end and a reason to watch

@@ -43,6 +43,8 @@ export const NATIVE_KEYS = [
   'widget.activityDetail',
   'widget.glanceName',
   'widget.glanceDetail',
+  'widget.exchangeStartsIn',
+  'widget.exchangeEndsIn',
 ] as const satisfies readonly Paths<EnMessages>[]
 
 export type NativeKey = (typeof NATIVE_KEYS)[number]

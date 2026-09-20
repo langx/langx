@@ -848,6 +848,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   notifications: {
+    replyAction: 'رد',
+    replyPlaceholder: 'اكتب ردًا',
     messages: 'الرسائل',
     messagesBody: 'عندما يكتب إليك أحد. وبالبريد فقط إن غبت مدة.',
     streak: 'تذكير السلسلة',
@@ -2440,5 +2442,7 @@ export const ar: Localized<EnMessages> = {
     activityDetail: 'تدريبك، مربع لكل يوم.',
     glanceName: 'لمحة',
     glanceDetail: 'السلسلة وغير المقروء لشاشة القفل و StandBy.',
+    exchangeStartsIn: 'يبدأ خلال',
+    exchangeEndsIn: 'ينتهي خلال',
   },
 }

@@ -770,6 +770,8 @@ export const de: Localized<EnMessages> = {
   },
 
   notifications: {
+    replyAction: 'Antworten',
+    replyPlaceholder: 'Antwort schreiben',
     messages: 'Nachrichten',
     messagesBody: 'Wenn dir jemand schreibt. Per E-Mail nur, wenn du länger weg warst.',
     streak: 'Streak-Erinnerung',
@@ -2157,5 +2159,7 @@ export const de: Localized<EnMessages> = {
     activityDetail: 'Dein Üben, ein Feld pro Tag.',
     glanceName: 'Blick',
     glanceDetail: 'Serie und Ungelesenes für Sperrbildschirm und StandBy.',
+    exchangeStartsIn: 'Beginnt in',
+    exchangeEndsIn: 'Endet in',
   },
 }

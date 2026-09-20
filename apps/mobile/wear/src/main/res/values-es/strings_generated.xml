@@ -18,4 +18,6 @@
   <string name="widget_activityDetail">Tu práctica, un cuadro por día.</string>
   <string name="widget_glanceName">Vistazo</string>
   <string name="widget_glanceDetail">Racha y no leídos, para la pantalla bloqueada y StandBy.</string>
+  <string name="widget_exchangeStartsIn">Empieza en</string>
+  <string name="widget_exchangeEndsIn">Termina en</string>
 </resources>

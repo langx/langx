@@ -767,6 +767,8 @@ export const fr: Localized<EnMessages> = {
   },
 
   notifications: {
+    replyAction: 'Répondre',
+    replyPlaceholder: 'Écrivez une réponse',
     messages: 'Messages',
     messagesBody: 'Quand quelqu’un vous écrit. Par e-mail seulement après une absence.',
     streak: 'Rappel de série',
@@ -2133,5 +2135,7 @@ export const fr: Localized<EnMessages> = {
     activityDetail: 'Votre pratique, un carré par jour.',
     glanceName: 'Coup d’œil',
     glanceDetail: 'Série et non lus, pour l’écran verrouillé et StandBy.',
+    exchangeStartsIn: 'Commence dans',
+    exchangeEndsIn: 'Se termine dans',
   },
 }

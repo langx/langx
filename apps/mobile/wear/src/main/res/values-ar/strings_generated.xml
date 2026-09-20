@@ -18,4 +18,6 @@
   <string name="widget_activityDetail">تدريبك، مربع لكل يوم.</string>
   <string name="widget_glanceName">لمحة</string>
   <string name="widget_glanceDetail">السلسلة وغير المقروء لشاشة القفل و StandBy.</string>
+  <string name="widget_exchangeStartsIn">يبدأ خلال</string>
+  <string name="widget_exchangeEndsIn">ينتهي خلال</string>
 </resources>

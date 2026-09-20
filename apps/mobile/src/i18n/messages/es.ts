@@ -762,6 +762,8 @@ export const es: Localized<EnMessages> = {
   },
 
   notifications: {
+    replyAction: 'Responder',
+    replyPlaceholder: 'Escribe una respuesta',
     messages: 'Mensajes',
     messagesBody: 'Cuando alguien te escribe. Por correo solo si llevas un tiempo sin entrar.',
     streak: 'Recordatorio de racha',
@@ -2117,5 +2119,7 @@ export const es: Localized<EnMessages> = {
     activityDetail: 'Tu práctica, un cuadro por día.',
     glanceName: 'Vistazo',
     glanceDetail: 'Racha y no leídos, para la pantalla bloqueada y StandBy.',
+    exchangeStartsIn: 'Empieza en',
+    exchangeEndsIn: 'Termina en',
   },
 }

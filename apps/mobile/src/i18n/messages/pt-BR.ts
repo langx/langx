@@ -758,6 +758,8 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   notifications: {
+    replyAction: 'Responder',
+    replyPlaceholder: 'Escreva uma resposta',
     messages: 'Mensagens',
     messagesBody: 'Quando alguém te escreve. Por e-mail só se você ficar um tempo fora.',
     streak: 'Lembrete de sequência',
@@ -2115,5 +2117,7 @@ export const ptBR: Localized<EnMessages> = {
     activityDetail: 'Sua prática, um quadrado por dia.',
     glanceName: 'Relance',
     glanceDetail: 'Sequência e não lidas, para a tela bloqueada e StandBy.',
+    exchangeStartsIn: 'Começa em',
+    exchangeEndsIn: 'Termina em',
   },
 }

@@ -91,6 +91,20 @@ export const PUSH_KINDS = [
 export type PushKind = (typeof PUSH_KINDS)[number]
 
 /**
+ * The notification category a message push carries, and the action on it.
+ *
+ * Both ends have to say the same word: the server puts `categoryId` on the
+ * push, the app registers a category with this identifier, and the response
+ * handler matches the action by its own. Three string literals in three files
+ * is how a quick-reply button silently stops appearing, so they are one
+ * constant each.
+ *
+ * Only messages get one. A correction or a follow has nothing to type back.
+ */
+export const PUSH_CATEGORY_MESSAGE = 'message'
+export const PUSH_ACTION_REPLY = 'reply'
+
+/**
  * Local hour (in the user's own timezone) at which the streak reminder is
  * worth sending: late enough that most people have had their chance to act,
  * early enough that they still can.

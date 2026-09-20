@@ -3,7 +3,7 @@ import type { ObjectId } from 'mongodb'
 import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
 import { countUnread, markDelivered, previewFor } from '../modules/chat/messages'
-import { attachmentsOf, notificationsAllowed } from '@langx/shared'
+import { attachmentsOf, notificationsAllowed, PUSH_CATEGORY_MESSAGE } from '@langx/shared'
 import { respondAsOfficial } from '../modules/official/assistant'
 import { devicesFor, devicesToPush, sendPush } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
@@ -173,6 +173,9 @@ async function deliver(
         conversationId: message.conversationId.toHexString(),
         senderId: message.senderId,
       },
+      // The Reply box on the notification. Older builds have not registered
+      // the category and ignore it, which is the behaviour they already had.
+      categoryId: PUSH_CATEGORY_MESSAGE,
     })
   } catch (error) {
     app.log.warn({ err: error }, 'post-send fan-out failed')

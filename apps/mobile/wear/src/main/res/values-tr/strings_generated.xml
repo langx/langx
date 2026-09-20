@@ -18,4 +18,6 @@
   <string name="widget_activityDetail">Çalışman, günde bir kare.</string>
   <string name="widget_glanceName">Bakış</string>
   <string name="widget_glanceDetail">Kilit ekranı ve StandBy için seri ve okunmamışlar.</string>
+  <string name="widget_exchangeStartsIn">Başlamasına</string>
+  <string name="widget_exchangeEndsIn">Bitmesine</string>
 </resources>

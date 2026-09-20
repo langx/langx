@@ -876,6 +876,8 @@ export const en = {
   },
 
   notifications: {
+    replyAction: 'Reply',
+    replyPlaceholder: 'Write a reply',
     messages: 'Messages',
     messagesBody: 'When somebody writes to you. By email only if you have been away a while.',
     streak: 'Streak reminder',
@@ -2298,6 +2300,8 @@ export const en = {
     activityDetail: 'Your practice, one square a day.',
     glanceName: 'Glance',
     glanceDetail: 'Streak and unread, for the Lock Screen and StandBy.',
+    exchangeStartsIn: 'Starts in',
+    exchangeEndsIn: 'Ends in',
   },
 } as const
 

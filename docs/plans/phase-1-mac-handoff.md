@@ -188,11 +188,33 @@ The risks this file listed before the run, with what the run did to them:
 
 And what the run added:
 
-- **The Lock Screen does not clear on sign-out** (claim 9). The one failure,
-  and the one to settle on a phone before this ships. Nothing the app can call
-  is missing — it writes, removes and asks WidgetKit to reload — so if a device
-  behaves the same way, the fix is a rule inside the widget rather than another
-  call from the app, and `writtenAt` is already in the blob waiting for one.
+- **The Lock Screen does not clear on sign-out** (claim 9). Still open, and
+  **reproduced again on 20 September** against a build carrying everything
+  since — so it is not something the widget work fixed on its way past.
+
+  What the second run added is the half that was inference before. The App
+  Group container was read straight after signing out and the blob is
+  **gone**: the plist is `{}`. So the app's side is not merely "nothing
+  missing", it is provably correct — `clear` removed the key and asked
+  WidgetKit to reload, and only `clear` empties that file. What stays on
+  screen is a _rendered entry_ WidgetKit has not replaced: four minutes later
+  the Lock Screen still read "3 · Day streak, 7 · Unread" for an account that
+  was signed out, while the Home Screen had already fallen back to the mark.
+
+  That rules out the fixes that were on the table. `writtenAt` cannot help:
+  the blob it would be read from no longer exists, and an entry cannot re-read
+  anything at render time — the whole timeline was built while the account was
+  still signed in. Nothing inside the widget can learn that the blob is gone
+  until `getTimeline` runs again, so the only lever left is **when it runs**,
+  and the timeline currently reaches to the next local midnight.
+
+  Shortening it for the accessory families would bound the wrongness to an
+  hour instead of a day, and is a mitigation rather than a fix: it would spend
+  refresh budget on every phone, for ever, against a case that happens once
+  per sign-out. Left undone deliberately. What would settle it is one run on a
+  real device — if a phone honours `reloadAllTimelines` for accessory widgets
+  and the simulator simply does not, there is nothing here to fix at all.
+
 - **A push has never woken the extension** (claim 7). The flag that made it
   impossible is fixed; that it now works is inference, not observation.
 - **All three widgets are called "LangX" in the gallery**, with no description

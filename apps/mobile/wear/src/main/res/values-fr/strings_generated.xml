@@ -18,4 +18,6 @@
   <string name="widget_activityDetail">Votre pratique, un carré par jour.</string>
   <string name="widget_glanceName">Coup d’œil</string>
   <string name="widget_glanceDetail">Série et non lus, pour l’écran verrouillé et StandBy.</string>
+  <string name="widget_exchangeStartsIn">Commence dans</string>
+  <string name="widget_exchangeEndsIn">Se termine dans</string>
 </resources>

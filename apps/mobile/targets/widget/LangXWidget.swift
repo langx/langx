@@ -13,7 +13,11 @@ import WidgetKit
 /// The three from `src/lib/theme/tokens.ts`, written out because an extension
 /// cannot import the app's tokens. Dark-scheme values: a widget draws on the
 /// wallpaper, and these have to hold against a photograph rather than a page.
-private enum Brand {
+///
+/// Not `private`: `ExchangeLiveActivity.swift` draws on the same ground, and a
+/// second copy of the palette in that file is the drift this one exists to
+/// avoid.
+enum Brand {
   static let streak = Color(red: 1.0, green: 0.663, blue: 0.239) // #ffa93d
   static let accent = Color(red: 0.486, green: 0.612, blue: 0.976) // #7c9cf9
   static let primary = Color(red: 1.0, green: 0.769, blue: 0.035) // #ffc409
@@ -487,5 +491,14 @@ struct LangXWidgets: WidgetBundle {
     LangXSummaryWidget()
     LangXActivityWidget()
     LangXAccessoryWidget()
+    /*
+     A Live Activity is a widget to `WidgetBundle` and nothing else here has
+     to know about it. Guarded because `ActivityConfiguration` is iOS 16.1 and
+     this target's floor is 17.0 — the guard costs nothing and says which
+     framework the line depends on.
+    */
+    if #available(iOS 16.1, *) {
+      ExchangeLiveActivity()
+    }
   }
 }

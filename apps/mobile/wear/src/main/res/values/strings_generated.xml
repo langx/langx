@@ -18,4 +18,6 @@
   <string name="widget_activityDetail">Your practice, one square a day.</string>
   <string name="widget_glanceName">Glance</string>
   <string name="widget_glanceDetail">Streak and unread, for the Lock Screen and StandBy.</string>
+  <string name="widget_exchangeStartsIn">Starts in</string>
+  <string name="widget_exchangeEndsIn">Ends in</string>
 </resources>

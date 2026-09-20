@@ -765,6 +765,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   notifications: {
+    replyAction: 'Yanıtla',
+    replyPlaceholder: 'Bir yanıt yaz',
     messages: 'Mesajlar',
     messagesBody: 'Biri sana yazdığında. E-posta yalnızca bir süredir uzaktaysan.',
     streak: 'Streak hatırlatması',
@@ -2116,5 +2118,7 @@ export const tr: Localized<EnMessages> = {
     activityDetail: 'Çalışman, günde bir kare.',
     glanceName: 'Bakış',
     glanceDetail: 'Kilit ekranı ve StandBy için seri ve okunmamışlar.',
+    exchangeStartsIn: 'Başlamasına',
+    exchangeEndsIn: 'Bitmesine',
   },
 }

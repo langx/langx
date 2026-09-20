@@ -18,4 +18,6 @@
   <string name="widget_activityDetail">Dein Üben, ein Feld pro Tag.</string>
   <string name="widget_glanceName">Blick</string>
   <string name="widget_glanceDetail">Serie und Ungelesenes für Sperrbildschirm und StandBy.</string>
+  <string name="widget_exchangeStartsIn">Beginnt in</string>
+  <string name="widget_exchangeEndsIn">Endet in</string>
 </resources>

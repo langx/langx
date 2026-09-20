@@ -162,6 +162,16 @@ export interface PushMessage {
    * of push wants.
    */
   badge?: number
+  /**
+   * The notification category, which is what puts a Reply box on the
+   * notification itself. Only the message push sets one — `PUSH_CATEGORY_MESSAGE`
+   * — because it is the only kind with something to type back.
+   *
+   * Registered by the app, named by the server: a phone whose build predates
+   * the category simply shows the notification without the action, which is
+   * what it did before. Nothing here has to know which build it is talking to.
+   */
+  categoryId?: string
 }
 
 /**
@@ -256,6 +266,7 @@ export class ExpoPushSender implements PushSender {
              */
             mutableContent: true,
             ...(message.badge !== undefined ? { badge: message.badge } : {}),
+            ...(message.categoryId !== undefined ? { categoryId: message.categoryId } : {}),
           })),
         ),
       })
