@@ -27,6 +27,14 @@ read as verified except what that file marks verified.
 - **A bearer token may live in a shared Keychain.** So the Siri send path is
   in scope, with the REST twin and the security review it implies.
 
+**Phase 2 has now been built and run** — 20 September 2026. The watch app
+compiles, draws real threads from a paired phone, and a reply dictated on the
+wrist reached the database. Three claims in this document turned out to be
+wrong and are corrected below where they appear; the claim-by-claim record,
+including the two things that were _not_ exercised, is in
+[`phase-2-watch.md`](phase-2-watch.md). The complication and the notification
+quick-reply are not built.
+
 The rest of the list at the end is still open.
 
 **The iPhone Duo arrived while this was being written.** Apple's developer
@@ -413,19 +421,28 @@ and its own transport for a chat protocol that is socket-first. A dependent
 app needs neither, and the cost — nothing works when the phone is out of
 range — is the correct trade for a companion that exists to glance at.
 
-**The free half is already free.** iPhone notifications mirror to a paired
-watch with no code at all, and the notification actions declared through
-`expo-notifications`' categories appear there too. So the first watch
-deliverable is not the app: it is **checking what our existing notifications
-look like on a wrist**, and adding a quick-reply action to the `messages`
-category if it is missing. That lands in a normal build, with no watch target
-at all.
+**Half of the free half was already free.** iPhone notifications mirror to a
+paired watch with no code at all. The claim that followed — that the actions
+declared through `expo-notifications`' categories appear there too — was
+wrong: **no category is declared anywhere in the app**, so there are no
+actions to mirror. The quick-reply action on the `messages` category still has
+to be written, and it still lands in a normal build with no watch target. It
+is not built as of 20 September 2026.
 
 **The app itself is three screens.** The chats that are unread, one thread
 read out in plain text, and a reply sent by dictation or scribble — handed to
-the phone over `WatchConnectivity`, which sends it on the socket the app
-already holds. Plus the complication: streak, or unread, chosen by the person
-in the watch app's own settings.
+the phone over `WatchConnectivity`. Built, and verified on a paired simulator.
+
+The sentence that used to end there said the phone "sends it on the socket the
+app already holds". It does not and cannot: WatchConnectivity wakes a closed
+app in the _background_, where there is no socket and no JavaScript. The reply
+goes out from Swift over the REST twin of `message:send` — the one phase 3
+below schedules for CarPlay, which now exists and has tests.
+
+The complication — streak, or unread, chosen by the person in the watch app's
+own settings — is **not built**. It needs a field the payload does not carry
+and an App Group between the two watch targets, because the phone's App Group
+does not reach the watch at all.
 
 Watch strings go through the generator below. The watch's own store
 screenshots and the listing update are in `docs/store` and are part of this
@@ -571,9 +588,13 @@ is not, which is why its paperwork starts on day one.
    pass over the app
    → verify: the list under The iPhone Duo
 
-2. Apple Watch: the notification pass first, then the dependent companion
-   and the complication, then the store assets
-   → verify: the list under Surface B
+2. Apple Watch — **built and run on a paired simulator** (20 September):
+   the payload contract, the WatchConnectivity bridge both ways, the REST
+   send twin it needs, the three screens, and the string generator the plan
+   left for later — which the watch is what finally required.
+   Still to do: the complication and its setting, the notification
+   quick-reply action (no category exists at all), and the store assets.
+   → verify: everything in `phase-2-watch.md`
 
 3. CarPlay: the REST send twin and its test, the bearer path, the
    communication templates, the Siri intents

@@ -1,0 +1,148 @@
+# Phase 2 — the Apple Watch app, as built
+
+Written and run on 19–20 September 2026, the day after the widgets shipped in
+2.5. The design is in [`iphone-watch-and-carplay.md`](iphone-watch-and-carplay.md)
+→ _Surface B_; this file is the record of what the code actually does, which is
+not the same document in three places.
+
+Like [`phase-1-mac-handoff.md`](phase-1-mac-handoff.md), it is a claim-by-claim
+record. Nothing here should be read as verified except what the table marks
+verified.
+
+## Three things the plan got wrong
+
+All three were found by writing the code, and none could have been known when
+the plan was written on an iPhone-only desk.
+
+**An App Group does not reach the watch.** The plan implies the complication
+reads the same snapshot the Home Screen widgets do. It cannot: an App Group is
+a container on one _device_, and the watch is a different device. Everything
+the watch knows travels over WatchConnectivity as
+`updateApplicationContext` — a single dictionary iOS replaces and redelivers,
+so a watch that was off while three messages arrived wakes holding the current
+state instead of replaying three stale ones.
+
+**There is no socket to send a reply on.** The plan says a reply is "handed to
+the phone over `WatchConnectivity`, which sends it on the socket the app
+already holds". A backgrounded iOS app holds no socket. WatchConnectivity
+wakes the app in the background, where there is no socket and no React runtime
+worth waiting for — a few seconds of native runtime and a `URLSession`. So the
+reply goes out from Swift over a REST twin of `message:send`, which the plan
+had scheduled for CarPlay in phase 3. The watch got there first.
+
+**There were no notification categories at all.** The plan says the actions
+declared through `expo-notifications`' categories already appear on a wrist. No
+`setNotificationCategoryAsync` call exists anywhere in the app. Mirroring is
+free, as the plan says; the quick-reply action is not, and is **not built** —
+see _What is not here_.
+
+## How it is put together
+
+```
+phone                                   watch
+─────                                   ─────
+useWatchLink                            WatchStore (WCSessionDelegate)
+  buildWatchPayload  ──updateApplicationContext──▶  UnreadList / ThreadView
+  setWatchCredentials → Keychain
+PhoneSession (WCSessionDelegate)  ◀──sendMessage──  reply, clientId minted here
+  ReplySender → POST /conversations/:id/messages
+```
+
+**The watch never causes a fetch.** The payload is rebuilt whenever the unread
+list changes, so a version that filled in missing threads would turn every
+arriving message into ten requests on a phone in somebody's pocket. It carries
+what the app already holds — always at least the message that made the thread
+unread, and the cached tail when there is one. This is why the thread screen
+can show one message where the phone shows twenty, and it is deliberate.
+
+**The cookie lives in the Keychain, not the App Group.** The widget snapshot is
+counts and names; this is a credential. No access group is asked for, because
+the sending code runs inside the app's own process. `kSecAttrAccessibleAfterFirstUnlock`
+and not `WhenUnlocked`: the whole point is a phone locked in a pocket.
+
+**`clientId` is minted on the wrist**, before the first attempt. A
+`sendMessage` whose reply handler never fires is indistinguishable from one
+never delivered, so the phone's retry reuses the id and the server's unique
+index refuses the second write. There is a test for it on the REST route.
+
+**No words travel.** The widgets are handed three already-translated labels
+because they sit beside numbers the app computed. The watch draws its own
+chrome and gets it from `targets/_shared/Localizable.xcstrings`, which
+`scripts/generate-xcstrings.ts` fills from the same eight catalogues — see
+_The string generator_ below.
+
+## The string generator
+
+The gap the plan left deliberately, and the watch is what closed it, because
+the watch is the first native surface with words of its own.
+
+`src/i18n/nativeKeys.ts` names the keys Swift may ask for; the generator copies
+exactly those into an Apple string catalogue that every target sees.
+`pnpm gen:strings --check` runs in CI and fails on a stale catalogue.
+
+Two deviations from the plan worth recording:
+
+- **The catalogue is committed, not generated during `prebuild`.** A prebuild
+  hook needs a TypeScript loader inside Expo's own process, and a committed
+  file puts eight translations in the diff where a reviewer can judge them.
+- **The lint rule is not an eslint rule.** eslint cannot read Swift. The check
+  lives in the generator instead and flags any string literal in `targets/**`
+  containing a space unless it is a generated key — prose has spaces, bundle
+  ids and date formats do not. It was proved to fire before being relied on.
+
+## What was checked, and how
+
+A **Release** build on an iPhone 17 Pro simulator paired with an Apple Watch
+Series 11 (46 mm), both on the machine's own local API against `langx_dev`,
+signed in as the seeded `test_anna`.
+
+| Claim                                         | Result                                                                                   |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| The watch target builds                       | ✅ `LangXWatch` compiles; embedded at `LangX.app/Watch/LangXWatch.app`                   |
+| Words come from the generated catalogue       | ✅ Title, empty state and the entry placeholder all resolved from `.xcstrings`           |
+| No payload draws the honest state             | ✅ "Open LangX on your iPhone" before the phone had spoken                               |
+| A signed-in phone feeds the watch             | ✅ The unread thread appeared with the partner's real name and last message              |
+| Tapping a row opens the thread                | ✅ Own messages right-aligned, the other side left                                       |
+| Reply is offered only when the phone is there | ✅ Button enabled with `isReachable` true                                                |
+| The system entry sheet opens                  | ✅ Dictation / scribble / keyboard, chosen by the wearer                                 |
+| **A reply from the wrist reaches the server** | ✅ `POST /conversations/:id/messages` → 200, row in `langx_dev` at the moment of the tap |
+| The sent message comes back to the watch      | ✅ New payload redrew the thread with it                                                 |
+| Outcome states draw                           | ✅ "Sending…" then cleared by the fresh payload                                          |
+| Sign-out empties the watch                    | ⬜ **not exercised**                                                                     |
+| A reply with the phone app closed             | ⬜ **not exercised** — the background-wake path is the one that most needs a real device |
+
+Two rows are blank rather than ticked. The second is the important one: every
+reply in this run went to a phone whose app was in the foreground, so the
+`OnCreate` activation and the Keychain read on a cold background launch are
+**inference, not observation**. They are also the reason the REST twin exists,
+so they are the first thing to check on a real watch.
+
+## What is not here
+
+- **The complication.** A `watch-widget` target reading a digest the watch app
+  stores. It needs its own App Group between the two watch targets, a `streak`
+  field the payload does not carry, and the settings screen the plan asks for
+  ("streak, or unread, chosen by the person"). Not started.
+- **The notification quick-reply action.** No categories exist yet; see above.
+- **Store assets.** The plan counts the watch's own screenshots and the listing
+  update as part of this phase's definition of done. Blocked on an open
+  question — whether the watch app enters the listing now or waits for CarPlay.
+- **App Groups on the two new App IDs.** Nothing needs them until the
+  complication does, and when it does, expect the manual portal work recorded
+  in [`phase-1-mac-handoff.md`](phase-1-mac-handoff.md): eas-cli cannot patch
+  App Groups.
+
+## Two traps worth knowing before repeating this
+
+- **A killed `CODE_SIGNING_ALLOWED=NO` build poisons the derived data.**
+  Rebuilding without the flag into the same `-derivedDataPath` does not
+  re-sign. The app then launches, sign-in _succeeds_, and every authenticated
+  screen says "Could not load this" while the API log shows **no requests at
+  all** — `expo-secure-store` cannot reach a keychain the app has no
+  entitlement for, and `apiFetch` throws before any fetch. Nothing names the
+  keychain. Build into a fresh path; re-signing the bundle by hand restores the
+  entitlements and breaks the nested signatures instead.
+- **Simulators do not propagate the watch app.** Installing the phone app on a
+  paired pair does not install the watch app the way a real pairing does —
+  `simctl install` it on the watch directly, and note that uninstalling the
+  phone app takes it away again.
