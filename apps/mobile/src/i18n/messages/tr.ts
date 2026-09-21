@@ -136,9 +136,6 @@ export const tr: Localized<EnMessages> = {
     discoverSortsTitle: 'Üç farklı bakış',
     discoverSortsBody:
       'Sana özel dillerine göre eşleştirir, Aktif az önce buradan ayrılanları gösterir, Yakında ise konumunu paylaştığında çalışır.',
-    discoverFiltersTitle: 'Listeyi daralt',
-    discoverFiltersBody:
-      'Seviyeye, yaşa veya ülkeye göre süz — ya da aradığın kişinin adını biliyorsan arama alanını kullan.',
     discoverCardTitle: 'Buradan başla',
     discoverCardBody:
       'Profilini okumak için birine dokun. LangX’teki neredeyse her değişim önce selam vermekle başlıyor.',
@@ -151,16 +148,8 @@ export const tr: Localized<EnMessages> = {
     tabFeedTitle: 'Sor ve öğren',
     tabFeedBody:
       'Akış tüm topluluğun ortak alanı: bir cümleni düzelttir, bir kelimenin nasıl söylendiğini dinle, aynısını başkası için yap.',
-    tabMeTitle: 'Senin alanın',
-    tabMeBody: 'Profilin, jetonların ve serin — ayarlar da dişli simgesinin arkasında.',
     sayHi: '{name} kişisine selam ver',
     notNow: 'Şimdi değil',
-    feedAskTitle: 'Tek bir şey sor',
-    feedAskBody:
-      'Emin olmadığın bir cümleyi ya da telaffuz edemediğin bir kelimeyi paylaş, insanlar cevaplasın.',
-    feedKindsTitle: 'İki tür yardım',
-    feedKindsBody:
-      'Düzeltmeler yazılı: biri cümleni düzeltir. Telaffuz sesli: biri kelimeyi senin için kaydeder.',
   },
   theme: {
     section: 'Görünüm',

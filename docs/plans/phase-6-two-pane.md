@@ -66,13 +66,28 @@ account against a local API.
 | Narrowing with a thread open          | ✅ back to `/chat/<id>`, pushed, back arrow returned, nothing lost    |
 | Widening again                        | ✅ back into the panel, by the redirect alone                         |
 | The empty half                        | ✅ "No conversation open", on the app's own ground                    |
-| Any of it on an iPad, a Mac or a Duo  | ⬜ **not yet**                                                        |
+| **On an iPad**                        | ✅ 21 September — see below                                           |
+| On a Mac or a Duo                     | ⬜ not yet                                                            |
 
-**The open one is what the phase is named for.** A browser window is the right
-test of the _rule_ — the layout asks how wide the window is, and a dragged
-window changes that exactly as a fold does — but it is not an iPad, a Mac or a
-Duo, and none of those has run this. The Duo also needs Xcode 27.1's Device Hub
-and the four poses, which waits on the simulator runtime.
+**The iPad, at last.** An iPad Pro 11-inch simulator on iOS 26.5, signed in,
+running the branch from Metro: Discover's list beside a profile and the chat
+list beside its empty half, **in portrait** — 834 points is over the 820 the
+hook asks for, so the iPad is two-paned the way it is held rather than only
+when turned. A row tap filled the panel and marked its row, and no back arrow
+appeared in either.
+
+That check cost more than it looks. Xcode updated to 27.0 (Swift 6.4) the
+night before, and `ExpoModulesJSI.xcframework` — which `expo-modules-jsi`
+builds on this machine and caches per slice on a hash of its _sources_ — was
+still the copy built on 19 September by Swift 6.3.1. Nothing about the sources
+had changed, so nothing rebuilt it, and every local iOS build died importing
+it. Deleting that one directory fixed it; the details are in the memory note,
+because the next person to hit it will be looking for the error text, not for
+this file.
+
+**The Mac and the Duo are still open.** A Mac needs the Mac to run the iPad
+build; the Duo needs Xcode 27.1's Device Hub and its four poses, and a beta
+Xcode cannot also be the one that submits a build for review.
 
 **One thing the browser caught**, which is why it was worth running rather than
 reasoning about: the empty half was white in dark mode. Neither pane paints the

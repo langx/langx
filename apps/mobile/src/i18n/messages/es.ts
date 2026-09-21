@@ -126,9 +126,6 @@ export const es: Localized<EnMessages> = {
     discoverSortsTitle: 'Tres formas de mirar',
     discoverSortsBody:
       'Para ti se ajusta a tus idiomas, Activos muestra a quien acaba de estar aquí y Cerca funciona cuando compartes tu ubicación.',
-    discoverFiltersTitle: 'Reduce la lista',
-    discoverFiltersBody:
-      'Filtra por nivel, edad o país, o usa la búsqueda cuando ya sabes a quién buscas.',
     discoverCardTitle: 'Empieza aquí',
     discoverCardBody:
       'Abre a cualquiera para leer su perfil. Saludar primero es como empieza casi todo intercambio en LangX.',
@@ -142,16 +139,8 @@ export const es: Localized<EnMessages> = {
     tabFeedTitle: 'Pregunta y aprende',
     tabFeedBody:
       'El Muro es la sala entera: haz que corrijan una frase, escucha cómo se dice una palabra y haz lo mismo por alguien más.',
-    tabMeTitle: 'Lo tuyo',
-    tabMeBody: 'Tu perfil, tus fichas y tu racha — y los ajustes, detrás del engranaje.',
     sayHi: 'Saluda a {name}',
     notNow: 'Ahora no',
-    feedAskTitle: 'Pide una sola cosa',
-    feedAskBody:
-      'Publica una frase que no tengas clara o una palabra que no sabes decir, y deja que te respondan.',
-    feedKindsTitle: 'Dos tipos de ayuda',
-    feedKindsBody:
-      'Las correcciones se escriben: alguien arregla tu frase. La pronunciación se habla: alguien graba la palabra para ti.',
   },
   theme: {
     section: 'Apariencia',

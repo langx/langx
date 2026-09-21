@@ -126,9 +126,6 @@ export const de: Localized<EnMessages> = {
     discoverSortsTitle: 'Drei Blickwinkel',
     discoverSortsBody:
       'Für dich richtet sich nach deinen Sprachen, Aktiv zeigt, wer gerade hier war, und In der Nähe wirkt, sobald du deinen Standort teilst.',
-    discoverFiltersTitle: 'Liste eingrenzen',
-    discoverFiltersBody:
-      'Filtere nach Niveau, Alter oder Land — oder such direkt, wenn du schon weißt, wen du suchst.',
     discoverCardTitle: 'Fang hier an',
     discoverCardBody:
       'Öffne jemanden, um das Profil zu lesen. Zuerst Hallo zu sagen, so beginnt fast jeder Austausch auf LangX.',
@@ -142,17 +139,8 @@ export const de: Localized<EnMessages> = {
     tabFeedTitle: 'Fragen und lernen',
     tabFeedBody:
       'Der Feed ist der ganze Raum: lass einen Satz korrigieren, hör, wie ein Wort klingt, und tu dasselbe für jemand anderen.',
-    tabMeTitle: 'Deins',
-    tabMeBody:
-      'Dein Profil, deine Token und deine Serie — und die Einstellungen hinter dem Zahnrad.',
     sayHi: 'Sag {name} Hallo',
     notNow: 'Jetzt nicht',
-    feedAskTitle: 'Frag nach einer Sache',
-    feedAskBody:
-      'Poste einen Satz, bei dem du unsicher bist, oder ein Wort, das du nicht aussprechen kannst — und lass andere antworten.',
-    feedKindsTitle: 'Zwei Arten von Hilfe',
-    feedKindsBody:
-      'Korrekturen sind geschrieben: jemand bessert deinen Satz aus. Aussprache ist gesprochen: jemand nimmt das Wort für dich auf.',
   },
   theme: {
     section: 'Darstellung',

@@ -123,9 +123,6 @@ export const ptBR: Localized<EnMessages> = {
     discoverSortsTitle: 'Três jeitos de olhar',
     discoverSortsBody:
       'Para você segue seus idiomas, Ativos mostra quem esteve aqui agora há pouco e Por perto funciona quando você compartilha sua localização.',
-    discoverFiltersTitle: 'Diminua a lista',
-    discoverFiltersBody:
-      'Filtre por nível, idade ou país — ou use a busca quando já souber de quem está atrás.',
     discoverCardTitle: 'Comece aqui',
     discoverCardBody:
       'Abra qualquer pessoa para ler o perfil. Dizer oi primeiro é como quase toda troca no LangX começa.',
@@ -139,16 +136,8 @@ export const ptBR: Localized<EnMessages> = {
     tabFeedTitle: 'Pergunte e aprenda',
     tabFeedBody:
       'O Feed é a sala inteira: peça para corrigirem uma frase, ouça como se fala uma palavra e faça o mesmo por outra pessoa.',
-    tabMeTitle: 'O seu canto',
-    tabMeBody: 'Seu perfil, seus tokens e sua sequência — e as configurações, atrás da engrenagem.',
     sayHi: 'Diga oi para {name}',
     notNow: 'Agora não',
-    feedAskTitle: 'Peça uma coisa só',
-    feedAskBody:
-      'Publique uma frase da qual não tem certeza ou uma palavra que não consegue falar, e deixe as pessoas responderem.',
-    feedKindsTitle: 'Dois tipos de ajuda',
-    feedKindsBody:
-      'Correções são escritas: alguém conserta sua frase. Pronúncia é falada: alguém grava a palavra para você.',
   },
   theme: {
     section: 'Aparência',
