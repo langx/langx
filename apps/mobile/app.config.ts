@@ -244,6 +244,14 @@ const config: ExpoConfig = {
      */
     './plugins/withAppIntents',
     /*
+     * The UIScene life cycle, which iOS 27 stopped treating as optional: an
+     * app built against its SDK without a scene manifest traps at launch.
+     * This is what App Review saw on 21 September — 2.1(a), crashed on
+     * launch — and Expo 57 ships the scene delegate without wiring it up.
+     * See `plugins/withSceneLifecycle.js`.
+     */
+    './plugins/withSceneLifecycle',
+    /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
      * so the views live in `widgets/` as TSX and the plugin only has to write

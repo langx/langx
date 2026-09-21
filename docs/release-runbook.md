@@ -494,6 +494,50 @@ upload keystore (alias `key0`, the v1 key Play trusts), the FCM V1 service
 account and the APNs key for push, and `GOOGLE_SERVICES_JSON` /
 `GOOGLE_SERVICES_PLIST` as file variables on every environment.
 
+## A new Xcode major is a new review risk
+
+**2.6 was rejected for crashing on launch — Guideline 2.1(a) — and the cause
+was the SDK, not the code.** Written down on 21 September 2026, the day it
+happened, because every part of it is invisible from a normal day's work.
+
+Xcode updated to 27.0 on the evening of 20 September. 2.5 had been built the
+day before with Xcode 26 and passed review. Every 2.6 binary was built with
+Xcode 27, and an app built against the iOS 27 SDK **must** adopt the UIScene
+life cycle: without a `UIApplicationSceneManifest` UIKit traps at launch in
+`_UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption` with `SIGTRAP`,
+which from the outside is an app that opens and closes again. Apple reviewed on
+an iPad and said so; it had nothing to do with iPads, and `supportsTablet` has
+been on since the first commit. Every iOS 27 device would have done the same.
+
+`plugins/withSceneLifecycle.js` is the fix, and it is ours because Expo 57
+ships `ExpoAppSceneDelegate` without wiring it up — neither `expo@57.0.24` nor
+`expo-template-bare-minimum@57.0.26` generates the manifest.
+
+**The rule that follows, and it is cheap:** when Xcode changes major version,
+before submitting anything, build **Release** for a simulator on the **new**
+OS and launch it. Not the dev client, not Debug against Metro — those start
+React Native from the app delegate and never exercise what the store binary
+does. It is one build and one launch:
+
+```bash
+xcodebuild -workspace ios/LangX.xcworkspace -scheme LangX -configuration Release \
+  -destination 'platform=iOS Simulator,id=<a device on the new OS>' build
+xcrun simctl install <id> <path>/LangX.app && xcrun simctl launch <id> tech.newchapter.languageXchange
+```
+
+If the app disappears, the reason is in the device log rather than in any
+crash dialog:
+
+```bash
+xcrun simctl spawn <id> log show --last 5m --predicate 'process == "LangX"' --style compact | tail -40
+```
+
+**And the second rule, from the same night:** the binary that goes to the
+store comes from `eas build`, not from a local Xcode build submitted by hand.
+2.6's builds 167 and 169 exist nowhere in EAS, so the one App Review crashed
+on cannot be reproduced from a recorded commit. A local build is for looking
+at; a submitted build is a record.
+
 ## Actions that succeed silently
 
 `src/lib/alert.ts` and `AlertHost` give the app a dialog that works in the
