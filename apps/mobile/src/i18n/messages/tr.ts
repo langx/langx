@@ -846,6 +846,8 @@ export const tr: Localized<EnMessages> = {
     emptyBody: 'Emin olmadığın bir cümleyi ya da söyleyemediğin bir kelimeyi sor — burada görünür.',
   },
   discover: {
+    pickTitle: 'Kimse açık değil',
+    pickBody: 'Listeden birini seç, profili burada açılsın.',
     boosted: 'Öne çıkanlar',
     boostedWhat: 'Bu ne?',
     boostedExplainTitle: 'Öne çıkan profiller',
@@ -936,6 +938,8 @@ export const tr: Localized<EnMessages> = {
     unrepliedEmptyBody: 'Her sohbete cevap vermişsin.',
     archivedEmptyTitle: 'Arşivde sohbet yok',
     archivedEmptyBody: 'Arşivlediğin sohbetler geri alana kadar burada durur.',
+    pickTitle: 'Açık sohbet yok',
+    pickBody: 'Listeden birini seç, burada açılsın.',
     emptyTitle: 'Henüz sohbet yok',
     emptyBody:
       'Keşfet’ten birine yaz. Ücretsiz planda günde {count} yeni sohbet başlatabilirsin — sana gelen mesaplara cevap vermek her zaman sınırsız.',

@@ -43,6 +43,8 @@ import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useDiscoveryTour } from '../../../src/hooks/useTour'
 import { useTips } from '../../../src/hooks/useTips'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useTwoPane, PANE_WIDTH } from '../../../src/hooks/useTwoPane'
+import { ProfileScreen } from '../../../src/screens/ProfileScreen'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
@@ -93,6 +95,15 @@ const FOCUS_REFRESH_DEBOUNCE_MS = 60_000
 
 export default function DiscoverScreen() {
   useScreenInteractive()
+  /*
+   * The same two halves the chat list has, and for the same reason: a row is
+   * a row at any width, and the space a wide window adds is only useful if
+   * something is put in it. Whose profile is showing lives here rather than
+   * in the route, because unlike a thread a profile has five parents — see
+   * `profile/[handle]` for why none of them redirects.
+   */
+  const twoPane = useTwoPane()
+  const [selected, setSelected] = useState<string | undefined>(undefined)
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -364,7 +375,7 @@ export default function DiscoverScreen() {
   const locationRevoked =
     query.error instanceof ApiRequestError && query.error.code === 'LOCATION_REQUIRED'
 
-  return (
+  const list = (
     <Screen fluid tabbed>
       <View style={styles.header}>
         {/*
@@ -567,12 +578,14 @@ export default function DiscoverScreen() {
               <Pressable
                 onPress={() => {
                   track({ name: 'discovery_card_tapped', properties: { slot: index } })
-                  openProfile(item.handle, '/(app)/(tabs)/discover')
+                  if (twoPane) setSelected(item.handle)
+                  else openProfile(item.handle, '/(app)/(tabs)/discover')
                 }}
                 style={({ pressed }) => [
                   styles.row,
                   index === items.length - 1 && styles.rowLast,
                   pressed && styles.pressed,
+                  twoPane && selected === item.handle && styles.rowSelected,
                 ]}
               >
                 <Avatar
@@ -625,9 +638,49 @@ export default function DiscoverScreen() {
       )}
     </Screen>
   )
+
+  if (!twoPane) return list
+
+  /*
+   * The profile beside the list it was picked from. Keyed on the handle for
+   * the reason the thread panel is keyed on the conversation: the screen
+   * holds a request, a scroll position and an open avatar, and the next
+   * person deserves none of them.
+   */
+  return (
+    <View style={styles.panes}>
+      <View style={styles.listPane}>{list}</View>
+      <View style={styles.detailPane}>
+        {selected === undefined ? (
+          <View style={styles.pick}>
+            <EmptyState icon="user" title={t('discover.pickTitle')} body={t('discover.pickBody')} />
+          </View>
+        ) : (
+          <ProfileScreen
+            key={selected}
+            handle={selected}
+            embedded
+            onClose={() => setSelected(undefined)}
+          />
+        )}
+      </View>
+    </View>
+  )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  /*
+   * The two halves, exactly as the chat list has them — the list at a fixed
+   * width and the profile taking the rest. The ground is painted here because
+   * neither half paints it: `Screen` paints its own, and the panel's is the
+   * profile's.
+   */
+  panes: { backgroundColor: colors.bg, flex: 1, flexDirection: 'row' },
+  listPane: { width: PANE_WIDTH },
+  detailPane: { borderLeftColor: colors.border, borderLeftWidth: 1, flex: 1 },
+  pick: { alignItems: 'center', flex: 1, justifyContent: 'center' },
+  /** The row whose profile is in the panel. Only drawn when there is one. */
+  rowSelected: { backgroundColor: colors.fill },
   flag: { fontSize: 15 },
   // The bottom half is the gap above the tip; `Tip` owns the one below it.
   header: { paddingBottom: spacing.sm, paddingTop: spacing.md },

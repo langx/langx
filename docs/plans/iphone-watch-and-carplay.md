@@ -618,8 +618,14 @@ is not, which is why its paperwork starts on day one.
    → verify: everything in `phase-5-android-auto.md`
    → the review is not free: see the phase, it becomes blocking on production
 
-6. iPad, Mac and the Duo's inner display: one two-pane layout, not three
-   → verify: a chat open on all four, and the four Duo poses
+6. iPad, Mac and the Duo's inner display: one two-pane layout, not three —
+   **first layer built, 20 September**: the conversation list and a thread
+   side by side wherever the window has room, the thread separated from its
+   route so it can be drawn in a panel, and `chat/[id]` redirecting into that
+   panel so every way into a thread behaves the same. Seen in a browser at two
+   widths; not yet on any of the three devices
+   → verify: everything in `phase-6-two-pane.md`, then a chat open on all four
+     and the four Duo poses
 
 7. Server-driven Live Activities: first a decision about a second push path,
    then the path. The phone-driven activity from phase 1 ships before this.
@@ -768,7 +774,7 @@ of this plan:
   testing first, because a car-quality failure at submission blocks the whole
   release rather than the car.
 
-### Phase 6 — iPad and Mac layouts
+### Phase 6 — iPad and Mac layouts 🟡 first layer built 20 September
 
 Excluded because they are the two-pane change, and the two-pane change was
 already deferred under _The iPhone Duo_ for being structural: `expo-router` is
@@ -781,7 +787,13 @@ screen. That is a better shape than three separate layout efforts, and it is
 still the largest single piece of work in this document.
 
 **This answers open question 3 by absorbing it**: the two-pane layout does get
-its own plan, and this is the phase that writes it.
+its own plan, and this is the phase that writes it —
+[`phase-6-two-pane.md`](phase-6-two-pane.md), started on 20 September. The
+first layer is in: one hook that asks how wide the window is, the chat list
+beside an open thread above that width, and the 2,533-line thread screen
+separated from its route so that it can be drawn in a panel at all. What
+remains is the part the phase is named for — seeing it on an iPad, on a Mac
+and through the Duo's four poses.
 
 ### Phase 7 — Live Activities driven by the server
 
