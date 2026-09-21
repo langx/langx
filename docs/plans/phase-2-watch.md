@@ -341,6 +341,31 @@ lowering their wrist.
   The Wear set cannot be uploaded until the app is opted into the **Wear OS
   form factor** in Play Console, which is Behic's to tick; Play asks for the
   screenshots only once it is.
+- **Sign-out emptying the watch.** Written 21 September, and the interesting
+  part is where it was missing rather than that it was.
+
+  `clearWatch()` and `clearWear()` existed and were called — from the effect
+  in `useWatchLink` that watches its own `enabled` flag. That flag never goes
+  false on the way out: signing out unmounts `(app)/_layout`, so the effect
+  body never runs again and only its cleanup does. The two calls covered
+  nothing at all. The widget snapshot was better off and still wrong — it was
+  cleared in the sign-out **button**, which is one of four ways a session
+  ends; an expired cookie, a deleted account and the suspended screen are the
+  other three.
+
+  All three now hang off the root's account-switch effect in
+  `app/_layout.tsx` — the one that already empties the query cache, for the
+  same reason and on the same signal. `isAccountSwitch` watches the session
+  id, so it fires on all four exits and on a switch between two accounts.
+
+  **What was checked:** the app boots on an iPad simulator with the two watch
+  modules now imported at the root (both no-ops there, which is the case that
+  would have crashed if the import were wrong), and the App Group blob is
+  written and live. **What was not:** the clear itself, on either wrist. That
+  needs a paired phone and watch and a signed-in session, and it is the same
+  check `phase-1-mac-handoff.md` owes for the Lock Screen — worth doing in
+  one pass rather than two.
+
 - **App Groups on the two new App IDs.** Nothing needs them until the
   complication does, and when it does, expect the manual portal work recorded
   in [`phase-1-mac-handoff.md`](phase-1-mac-handoff.md): eas-cli cannot patch

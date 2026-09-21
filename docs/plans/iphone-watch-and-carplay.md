@@ -661,8 +661,10 @@ was wrong was the _design_ being separate: everything Surface B decided is true
 on either wrist, so there is one app and one payload. The record is in
 [`phase-2-watch.md`](phase-2-watch.md).
 
-Still open on this surface: the tile (Wear's complication), and sign-out
-clearing the watch.
+Nothing is open on this surface that is not open on the Apple one too. The
+tile was built the same day, and sign-out emptying the watch was written on
+21 September — for both wrists at once, because the hole was in the app and
+not in either watch.
 
 ### Phase 5 — Android Auto ✅ built 20 September
 
