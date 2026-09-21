@@ -2131,6 +2131,9 @@ export const de: Localized<EnMessages> = {
   },
 
   watch: {
+    complication: 'Zifferblatt',
+    showsUnread: 'Ungelesen',
+    showsStreak: 'Serie',
     unread: 'Ungelesen',
     nothingUnread: 'Nichts Ungelesenes',
     openOnPhone: 'Öffne LangX auf deinem Telefon',
@@ -2165,6 +2168,7 @@ export const de: Localized<EnMessages> = {
     openChatsDetail: 'Direkt zur Chatliste.',
   },
   widget: {
+    faceDetail: 'Deine Serie oder was wartet, auf dem Zifferblatt.',
     streakName: 'Serie',
     streakDetail: 'Deine Tage in Folge. Blass, bis heute zählt.',
     todayName: 'Heute',

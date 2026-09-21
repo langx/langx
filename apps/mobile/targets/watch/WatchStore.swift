@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import WatchConnectivity
+import WidgetKit
 
 /**
  Everything the watch knows, and the only thing that talks to the phone.
@@ -87,6 +88,46 @@ final class WatchStore: NSObject, ObservableObject {
     )
   }
 
+  /**
+   What the wearer chose the complication should show.
+
+   Published rather than read from the container on demand: a computed
+   property backed by `UserDefaults` would be a disk read on every render,
+   and SwiftUI renders often. The container is still where it lives — the
+   complication is a different process and cannot see this property — so this
+   is a cache of it, seeded once at launch and written through.
+  */
+  @Published private(set) var complicationShows: WatchDigest.Shows = WatchDigest.load()?.shows ?? .unread
+
+  func setComplicationShows(_ shows: WatchDigest.Shows) {
+    complicationShows = shows
+    writeDigest(shows: shows)
+  }
+
+  /**
+   Write the digest and ask the face to redraw.
+
+   Called on every payload and whenever the wearer changes the choice. A
+   payload with no `streak` leaves the last one in place rather than erasing
+   it: the field is optional precisely because an older phone build does not
+   send it, and a complication that blanked whenever the phone was behind
+   would be worse than one that is a day stale.
+
+   No payload at all is different, and is handled by `clear` at sign-out:
+   there the number must go, because it belonged to somebody.
+  */
+  private func writeDigest(shows: WatchDigest.Shows? = nil) {
+    let previous = WatchDigest.load()
+    let unread = (payload?.conversations ?? []).reduce(0) { $0 + $1.unread }
+    WatchDigest.save(
+      WatchDigest(
+        version: WatchDigest.version,
+        unread: unread,
+        streak: payload?.streak ?? previous?.streak,
+        shows: shows ?? previous?.shows ?? .unread))
+    WidgetCenter.shared.reloadAllTimelines()
+  }
+
   private func apply(_ context: [String: Any]) {
     let json = (context["payload"] as? String) ?? ""
     Task { @MainActor in
@@ -98,6 +139,14 @@ final class WatchStore: NSObject, ObservableObject {
        visible in the thread itself.
       */
       self.sending.removeAll()
+      /*
+       And the complication, which is a different process and cannot see any
+       of the above. `WatchDigest` is the two numbers it draws; writing it
+       here rather than when the complication asks is the only order that
+       works, because an extension the system wakes on its own schedule has
+       no way to ask anybody anything.
+      */
+      self.writeDigest()
     }
   }
 }

@@ -26,6 +26,13 @@ export interface WatchSources {
   /** Partner id → display name, from the same profile cache the chat list uses. */
   names: Record<string, string | undefined>
   /**
+   * The streak, for the complication to draw. Optional because the caller may
+   * not have the profile yet — and a complication that showed a confident
+   * zero on a good day would be worse than one that showed the unread count
+   * instead.
+   */
+  streak?: number
+  /**
    * Whatever of each thread is *already cached*, newest last. Optional per
    * conversation and allowed to be missing entirely.
    *
@@ -105,5 +112,9 @@ export function buildWatchPayload(sources: WatchSources, now: Date = new Date())
     version: WATCH_PAYLOAD_VERSION,
     writtenAt: now.toISOString(),
     conversations,
+    // Spread rather than `streak: sources.streak`, because
+    // `exactOptionalPropertyTypes` refuses an explicit `undefined` for an
+    // optional field — the same shape `companionSnapshot.ts` uses.
+    ...(sources.streak === undefined ? {} : { streak: sources.streak }),
   }
 }

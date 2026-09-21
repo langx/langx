@@ -10,6 +10,9 @@
   <string name="watch_sent">Gesendet</string>
   <string name="watch_notSent">Nicht gesendet</string>
   <string name="watch_loading">Wird geladen…</string>
+  <string name="watch_complication">Zifferblatt</string>
+  <string name="watch_showsUnread">Ungelesen</string>
+  <string name="watch_showsStreak">Serie</string>
   <string name="widget_streakName">Serie</string>
   <string name="widget_streakDetail">Deine Tage in Folge. Blass, bis heute zählt.</string>
   <string name="widget_todayName">Heute</string>
@@ -18,6 +21,7 @@
   <string name="widget_activityDetail">Dein Üben, ein Feld pro Tag.</string>
   <string name="widget_glanceName">Blick</string>
   <string name="widget_glanceDetail">Serie und Ungelesenes für Sperrbildschirm und StandBy.</string>
+  <string name="widget_faceDetail">Deine Serie oder was wartet, auf dem Zifferblatt.</string>
   <string name="widget_exchangeStartsIn">Beginnt in</string>
   <string name="widget_exchangeEndsIn">Endet in</string>
   <string name="intents_openEcho">Echo öffnen</string>

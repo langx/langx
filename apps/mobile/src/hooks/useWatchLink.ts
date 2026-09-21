@@ -102,8 +102,15 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
   useEffect(() => {
     if (!active || meId === undefined) return
 
-    const payload = buildWatchPayload({ meId, conversations: unreadThreads, names })
+    const payload = buildWatchPayload({
+      meId,
+      conversations: unreadThreads,
+      names,
+      // Already loaded for the tab badge and the widgets; the complication is
+      // the third reader of it and causes no request of its own.
+      ...(me.data?.streak?.current === undefined ? {} : { streak: me.data.streak.current }),
+    })
     sendWatchPayload(payload)
     sendWearPayload(payload)
-  }, [active, meId, unreadThreads, names])
+  }, [active, meId, unreadThreads, names, me.data?.streak?.current])
 }

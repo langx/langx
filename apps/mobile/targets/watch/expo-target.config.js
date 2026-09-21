@@ -1,3 +1,5 @@
+const WATCH_APP_GROUP = require('../watchGroup')
+
 /**
  * The Apple Watch app — Surface B of docs/plans/iphone-watch-and-carplay.md.
  *
@@ -13,15 +15,21 @@ module.exports = () => ({
   name: 'LangXWatch',
   displayName: 'LangX',
   /*
-   * No App Group is mirrored from the app here, and that is the one thing
-   * about this target worth reading twice. An App Group is a container on a
-   * *device*; the watch is a different device, so the group the widgets and
-   * the notification service extension share with the app on the phone is not
-   * reachable from here at all. What the watch knows, the phone told it.
+   * **The phone's App Group is not mirrored here, and cannot be.** An App
+   * Group is a container on a *device*; the watch is a different device, so
+   * the group the widgets and the notification service extension share with
+   * the app is not reachable from the wrist at all. What the watch knows, the
+   * phone told it over WatchConnectivity.
    *
-   * The complication is the exception, and it is a group between the watch app
-   * and its own extension — declared in `targets/watch-complication`.
+   * This group is a different one: between the watch app and
+   * `LangXComplication`, two targets on the same watch. The app writes down
+   * what the phone told it and the complication — a separate process, drawn
+   * while the app is not running, with no session of its own — reads it.
+   * Declared in `targets/watchGroup.js` so both files name one string.
    */
+  entitlements: {
+    'com.apple.security.application-groups': [WATCH_APP_GROUP],
+  },
   frameworks: ['SwiftUI', 'WatchConnectivity'],
   /*
    * 9.0, which is the floor this target's own code sets: `NavigationStack`,
