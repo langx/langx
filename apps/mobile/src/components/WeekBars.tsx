@@ -28,8 +28,8 @@ const EMPTY_BAR = 2
 interface WeekBarsProps {
   /**
    * Seven days, oldest first. `total` is the blue bar; `stacked`, for a caller
-   * with a second series, sits on top of it in green — the Me tab's
-   * corrections over its messages. The visitors page has only the one.
+   * with a second series, sits on top of it in green — the corrections over
+   * the messages, which is what every caller draws today.
    */
   days: { day: string; total: number; stacked?: number }[]
   /** What the picture says, for a screen reader. */
@@ -42,8 +42,7 @@ interface WeekBarsProps {
  * No chart library: this is a few rectangles whose heights are a ratio, and
  * every library that draws it would either pull in `react-native-svg` or ship a
  * canvas shim to the web build. Whatever sits above or below it belongs to the
- * caller — the Me tab adds a legend, the visitors page a "visits" header —
- * which is why this is only the bars.
+ * caller — `WeeklyChart` adds the legend — which is why this is only the bars.
  */
 export function WeekBars({ days, accessibilityLabel }: WeekBarsProps) {
   const { colors } = useTheme()
