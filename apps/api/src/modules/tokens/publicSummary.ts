@@ -60,6 +60,7 @@ export interface PublicSummary {
    * right below this, in the activity chart.
    */
   rank: { percentile: number } | null
+  /** Their days, not the reader's — the window follows the profile's zone. */
   week?: { day: string; messages: number; corrections: number }[]
 }
 
@@ -80,7 +81,7 @@ export async function getPublicSummary(
     readAggregates(db, userId, at),
     countCorrectionsWritten(db, userId),
     getBadgeSummary(db, userId, at),
-    chart ? readActivityWeek(db, userId, at) : undefined,
+    chart ? readActivityWeek(db, userId, at, profile.timezone ?? 'UTC') : undefined,
   ])
 
   return {

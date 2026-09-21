@@ -252,6 +252,22 @@ So: caps and `dailyActivity` are UTC, **only** the streak is local. As a second
 line of defence, `updateProfile` rate-limits timezone changes to once every 7
 days; writing the same zone is never blocked.
 
+One later refinement, and it is a read, not a write. The profile's weekly chart
+used to pick its seven days in UTC too, which meant it turned over at 17:00 in
+Vancouver: at eight in the evening the column drawn as "today" was already
+tomorrow's letter, next to a streak tile that was still on the right day.
+`readActivityWeek` (and `weekWindow`, for the visitors chart under it) now
+picks **which** buckets to draw from the subject's own calendar. The buckets
+themselves are untouched and still UTC, so nothing above is weakened — a
+timezone change moves a window, and a window awards nothing.
+
+The cost is that a bar's contents are a UTC day under a local label, so west of
+UTC an evening's messages surface in the next day's bar. We took that over the
+alternative, which was a chart that turned over while the reader's day was
+still going. Both halves cannot be right without sub-day counters, and neither
+way of getting those — hour sub-buckets on the write path, or recounting from
+`messages` and `postCorrections` — is worth it for a chart.
+
 ## Phase 8 — ledger first, aggregates second; the order cannot be reversed
 
 `awardTokens` does two writes: the `tokenLedger` insert, where the unique

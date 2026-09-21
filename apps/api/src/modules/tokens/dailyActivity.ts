@@ -1,4 +1,11 @@
-import { TOKEN_RULES, activityScore, utcDayKey, type ActivityCounters } from '@langx/shared'
+import {
+  TOKEN_RULES,
+  activityScore,
+  localDayKey,
+  shiftDayKey,
+  utcDayKey,
+  type ActivityCounters,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
@@ -10,9 +17,14 @@ import { COLLECTIONS } from '../../db/collections'
  * - the daily-pool cron (Faz 9), which closes a UTC day and needs every
  *   active user's counters without scanning the ledger.
  *
- * UTC, not the user's local day, for the reason spelled out on
+ * The *bucket* is UTC, not the user's local day, for the reason spelled out on
  * `TokenRules.caps` — a local-day bucket lets a timezone change re-open a cap
  * inside a single leaderboard period.
+ *
+ * The *window* the profile chart draws is not: `readActivityWeek` picks which
+ * seven of these UTC buckets to show from the user's own calendar, so the
+ * chart turns over at their midnight rather than at 17:00 their time. Which
+ * buckets, not what is in them — see that function.
  */
 export interface DailyActivity {
   /** `<userId>:<day>` */
@@ -109,23 +121,36 @@ export async function recordActivity(
 export const ACTIVITY_WEEK_DAYS = 7
 
 /**
- * The last `ACTIVITY_WEEK_DAYS` UTC days ending at `at`, oldest first.
+ * The last `ACTIVITY_WEEK_DAYS` days ending on the user's own today, oldest
+ * first. `timeZone` defaults to UTC, which reproduces the old window exactly.
  *
  * By `_id` rather than a `{ userId, day: { $gte } }` range: `_id` is
  * `<userId>:<day>` and already unique-indexed, so seven point lookups need no
  * new compound index for a query that runs once per profile view. Missing days
  * come back as zero rows — see the note on `tokenSummarySchema.week`.
+ *
+ * The window is local; the buckets it names are still UTC days, and that skew
+ * is deliberate. At UTC-7 a bar therefore spans 17:00→17:00 local, so an
+ * evening's work lands in tomorrow's bucket and shows up a day late. That is
+ * the worse half of a trade we took knowingly: before this, the same work was
+ * drawn in the last bar but under the *next* day's letter, and the chart
+ * turned over while the reader's day was still going. Fixing both halves needs
+ * sub-day resolution, and neither way to get it is worth it — hour
+ * sub-buckets put a display concern on the write path every message takes
+ * (and still miss on the +5:30 zones), and recounting from `messages` and
+ * `postCorrections` with `$dateToString: { timezone }` makes a second source
+ * of truth for a number the pool already computes.
  */
 export async function readActivityWeek(
   db: Db,
   userId: string,
   at: Date = new Date(),
+  timeZone = 'UTC',
 ): Promise<{ day: string; messages: number; corrections: number }[]> {
-  const days = Array.from({ length: ACTIVITY_WEEK_DAYS }, (_, i) => {
-    const date = new Date(at)
-    date.setUTCDate(date.getUTCDate() - (ACTIVITY_WEEK_DAYS - 1 - i))
-    return utcDayKey(date)
-  })
+  const today = localDayKey(at, timeZone)
+  const days = Array.from({ length: ACTIVITY_WEEK_DAYS }, (_, i) =>
+    shiftDayKey(today, i - (ACTIVITY_WEEK_DAYS - 1)),
+  )
 
   const docs = await db
     .collection<DailyActivity>(COLLECTIONS.dailyActivity)
