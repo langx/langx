@@ -53,6 +53,10 @@ export const NATIVE_KEYS = [
   'intents.openEchoDetail',
   'intents.openChats',
   'intents.openChatsDetail',
+  'intents.openConversation',
+  'intents.openConversationDetail',
+  'intents.conversationType',
+  'intents.conversationParameter',
   /*
    * The car. Android Auto reads a `MessagingStyle` notification out loud and
    * answers it, and the notification is built in Kotlin — so the four words

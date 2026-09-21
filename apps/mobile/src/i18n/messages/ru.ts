@@ -2361,6 +2361,10 @@ export const ru: Localized<EnMessages> = {
     openEchoDetail: 'Сразу к карточкам на сегодня.',
     openChats: 'Открыть сообщения',
     openChatsDetail: 'Сразу к списку чатов.',
+    openConversation: 'Открыть чат',
+    openConversationDetail: 'Сразу перейти к переписке с тем, с кем вы общаетесь.',
+    conversationType: 'Чат',
+    conversationParameter: 'Чат с',
   },
   widget: {
     faceDetail: 'Серия или непрочитанные — на циферблате.',

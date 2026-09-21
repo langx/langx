@@ -28,6 +28,10 @@
   <string name="intents_openEchoDetail">Bugün sırası gelen kartlara doğrudan git.</string>
   <string name="intents_openChats">Mesajlarımı aç</string>
   <string name="intents_openChatsDetail">Doğrudan sohbet listesine git.</string>
+  <string name="intents_openConversation">Sohbet aç</string>
+  <string name="intents_openConversationDetail">Konuştuğun birinin sohbetine doğrudan git.</string>
+  <string name="intents_conversationType">Sohbet</string>
+  <string name="intents_conversationParameter">Sohbet ettiğin kişi</string>
   <string name="notifications_replyAction">Yanıtla</string>
   <string name="notifications_replyPlaceholder">Bir yanıt yaz</string>
   <string name="notifications_markAsRead">Okundu işaretle</string>

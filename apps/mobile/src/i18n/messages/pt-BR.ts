@@ -2123,6 +2123,10 @@ export const ptBR: Localized<EnMessages> = {
     openEchoDetail: 'Ir direto para os cartões de hoje.',
     openChats: 'Abrir minhas mensagens',
     openChatsDetail: 'Ir direto para a lista de conversas.',
+    openConversation: 'Abrir uma conversa',
+    openConversationDetail: 'Vá direto para a conversa com alguém com quem você fala.',
+    conversationType: 'Conversa',
+    conversationParameter: 'Conversa com',
   },
   widget: {
     faceDetail: 'Sua sequência, ou o que espera, no mostrador.',

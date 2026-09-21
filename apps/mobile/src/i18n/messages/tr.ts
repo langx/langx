@@ -2124,6 +2124,10 @@ export const tr: Localized<EnMessages> = {
     openEchoDetail: 'Bugün sırası gelen kartlara doğrudan git.',
     openChats: 'Mesajlarımı aç',
     openChatsDetail: 'Doğrudan sohbet listesine git.',
+    openConversation: 'Sohbet aç',
+    openConversationDetail: 'Konuştuğun birinin sohbetine doğrudan git.',
+    conversationType: 'Sohbet',
+    conversationParameter: 'Sohbet ettiğin kişi',
   },
   widget: {
     faceDetail: 'Saat kadranında serin ya da bekleyenler.',

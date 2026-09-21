@@ -41,7 +41,7 @@ import { configureObserve } from '../src/lib/observe'
 import { configureQueryNetwork } from '../src/lib/queryNetwork'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
-import { clearCompanionSnapshot } from '../modules/companion-snapshot'
+import { clearCompanionDirectory, clearCompanionSnapshot } from '../modules/companion-snapshot'
 import { clearWatch } from '../modules/watch-link'
 import { clearWear } from '../modules/wear-link'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
@@ -246,11 +246,13 @@ function RootShell() {
    * data in place and merely refetches it, which still paints somebody else's
    * rows first and leaves them there for good if the refetch fails.
    *
-   * **And the three companion surfaces**, which are the same problem on
-   * hardware the app does not own the screen of — a widget, an Apple Watch, a
-   * Wear OS watch. Each holds a blob the app wrote and redraws it on its own
+   * **And the companion surfaces**, which are the same problem on hardware
+   * the app does not own the screen of — a widget, an Apple Watch, a Wear OS
+   * watch. Each holds a blob the app wrote and redraws it on its own
    * schedule, so a signed-out account's streak and unread count stay on a
-   * Home Screen or a wrist until something says otherwise.
+   * Home Screen or a wrist until something says otherwise. The App Intents'
+   * conversation directory goes with them, and it is the one that matters
+   * most: the others are somebody's numbers, that one is their friends' names.
    *
    * **At the root rather than in `signOut()`**, and that placement is the
    * whole fix. The widget snapshot was cleared in the sign-out button, which
@@ -268,6 +270,7 @@ function RootShell() {
     if (isAccountSwitch(seenUserId.current, current)) {
       queryClient.clear()
       clearCompanionSnapshot()
+      clearCompanionDirectory()
       clearWatch()
       clearWear()
     }

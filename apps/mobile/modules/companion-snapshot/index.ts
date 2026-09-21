@@ -1,4 +1,4 @@
-import { type CompanionSnapshot } from '@langx/shared'
+import { type CompanionDirectory, type CompanionSnapshot } from '@langx/shared'
 import { requireOptionalNativeModule } from 'expo'
 import { Platform } from 'react-native'
 import { clearFlag, FLAG_KEYS, readJsonFlag, writeJsonFlag } from '../../src/lib/localFlags'
@@ -28,6 +28,9 @@ interface CompanionSnapshotNativeModule {
   clear: () => void
   /** Present only on a build made since the App Intents landed. */
   takePendingRoute?: () => string | null
+  /** Present only on a build made since the conversation intent landed. */
+  writeDirectory?: (json: string) => void
+  clearDirectory?: () => void
 }
 
 const native = requireOptionalNativeModule<CompanionSnapshotNativeModule>('CompanionSnapshot')
@@ -84,6 +87,23 @@ export function clearCompanionSnapshot(): void {
   native?.clear()
   if (!isAndroid) return
   void clearFlag(FLAG_KEYS.companionSnapshot).then(() => redrawAndroidWidgets(null))
+}
+
+/**
+ * Hand the App Intents the people they may be asked about.
+ *
+ * iOS only, and not because Android could not have one — because nothing on
+ * Android asks. The Wear app and the tile read their own payload, and the
+ * Android widgets draw numbers. A no-op everywhere else, like everything in
+ * this file.
+ */
+export function writeCompanionDirectory(directory: CompanionDirectory): void {
+  native?.writeDirectory?.(JSON.stringify(directory))
+}
+
+/** Sign-out. Separate from the snapshot's `clear`, and called beside it. */
+export function clearCompanionDirectory(): void {
+  native?.clearDirectory?.()
 }
 
 /**

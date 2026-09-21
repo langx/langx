@@ -2319,6 +2319,10 @@ export const en = {
     openEchoDetail: 'Go straight to the cards due today.',
     openChats: 'Open my messages',
     openChatsDetail: 'Go straight to the chat list.',
+    openConversation: 'Open a chat',
+    openConversationDetail: 'Go straight to the conversation with somebody you are talking to.',
+    conversationType: 'Conversation',
+    conversationParameter: 'Chat with',
   },
   widget: {
     faceDetail: 'Your streak, or what is waiting, on the watch face.',

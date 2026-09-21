@@ -2164,6 +2164,10 @@ export const de: Localized<EnMessages> = {
     openEchoDetail: 'Direkt zu den heute fälligen Karten.',
     openChats: 'Meine Nachrichten öffnen',
     openChatsDetail: 'Direkt zur Chatliste.',
+    openConversation: 'Chat öffnen',
+    openConversationDetail: 'Direkt zum Chat mit jemandem, mit dem du schreibst.',
+    conversationType: 'Chat',
+    conversationParameter: 'Chat mit',
   },
   widget: {
     faceDetail: 'Deine Serie oder was wartet, auf dem Zifferblatt.',

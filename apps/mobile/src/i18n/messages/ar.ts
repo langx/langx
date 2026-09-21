@@ -2455,6 +2455,10 @@ export const ar: Localized<EnMessages> = {
     openEchoDetail: 'انتقل مباشرة إلى بطاقات اليوم.',
     openChats: 'افتح رسائلي',
     openChatsDetail: 'انتقل مباشرة إلى قائمة المحادثات.',
+    openConversation: 'افتح محادثة',
+    openConversationDetail: 'انتقل مباشرة إلى المحادثة مع شخص تتحدث معه.',
+    conversationType: 'محادثة',
+    conversationParameter: 'محادثة مع',
   },
   widget: {
     faceDetail: 'سلسلتك أو ما ينتظرك، على واجهة الساعة.',

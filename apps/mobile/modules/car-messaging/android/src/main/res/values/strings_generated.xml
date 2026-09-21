@@ -28,6 +28,10 @@
   <string name="intents_openEchoDetail">Go straight to the cards due today.</string>
   <string name="intents_openChats">Open my messages</string>
   <string name="intents_openChatsDetail">Go straight to the chat list.</string>
+  <string name="intents_openConversation">Open a chat</string>
+  <string name="intents_openConversationDetail">Go straight to the conversation with somebody you are talking to.</string>
+  <string name="intents_conversationType">Conversation</string>
+  <string name="intents_conversationParameter">Chat with</string>
   <string name="notifications_replyAction">Reply</string>
   <string name="notifications_replyPlaceholder">Write a reply</string>
   <string name="notifications_markAsRead">Mark as read</string>

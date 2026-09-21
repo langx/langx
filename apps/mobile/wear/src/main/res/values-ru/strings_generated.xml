@@ -28,6 +28,10 @@
   <string name="intents_openEchoDetail">Сразу к карточкам на сегодня.</string>
   <string name="intents_openChats">Открыть сообщения</string>
   <string name="intents_openChatsDetail">Сразу к списку чатов.</string>
+  <string name="intents_openConversation">Открыть чат</string>
+  <string name="intents_openConversationDetail">Сразу перейти к переписке с тем, с кем вы общаетесь.</string>
+  <string name="intents_conversationType">Чат</string>
+  <string name="intents_conversationParameter">Чат с</string>
   <string name="notifications_replyAction">Ответить</string>
   <string name="notifications_replyPlaceholder">Напишите ответ</string>
   <string name="notifications_markAsRead">Отметить прочитанным</string>

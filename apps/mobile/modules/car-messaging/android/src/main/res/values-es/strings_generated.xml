@@ -28,6 +28,10 @@
   <string name="intents_openEchoDetail">Ir directo a las tarjetas de hoy.</string>
   <string name="intents_openChats">Abrir mis mensajes</string>
   <string name="intents_openChatsDetail">Ir directo a la lista de chats.</string>
+  <string name="intents_openConversation">Abrir un chat</string>
+  <string name="intents_openConversationDetail">Ve directo a la conversación con alguien con quien hablas.</string>
+  <string name="intents_conversationType">Conversación</string>
+  <string name="intents_conversationParameter">Chat con</string>
   <string name="notifications_replyAction">Responder</string>
   <string name="notifications_replyPlaceholder">Escribe una respuesta</string>
   <string name="notifications_markAsRead">Marcar como leído</string>

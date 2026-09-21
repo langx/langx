@@ -27,6 +27,7 @@ import {
   SIRI_PHRASES,
   SIRI_SHORTCUTS,
   SIRI_SOURCE,
+  tokensIn,
 } from '../src/i18n/siriPhrases'
 import { globSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
@@ -168,14 +169,28 @@ function siriPhraseProblems(): string[] {
 
   for (const locale of Object.keys(catalogs) as (keyof typeof SIRI_PHRASES)[]) {
     for (const shortcut of SIRI_SHORTCUTS) {
-      for (const phrase of SIRI_PHRASES[locale][shortcut]) {
+      SIRI_PHRASES[locale][shortcut].forEach((phrase, index) => {
         const count = applicationNameCount(phrase)
         if (count !== 1) {
           problems.push(
             `${locale}/${shortcut}: "${phrase}" has ${APPLICATION_NAME} ${count} times, not once`,
           )
         }
-      }
+        /*
+         * And every other token English had. A parameter dropped in one
+         * language is the same failure as the app name dropped in one
+         * language — that phrase matches nothing, in that language, for ever
+         * — and it is the likelier of the two, because `${conversation}`
+         * reads like a placeholder somebody could translate.
+         */
+        const want = [...tokensIn(SIRI_PHRASES[SIRI_SOURCE][shortcut][index] ?? '')].sort()
+        const have = [...tokensIn(phrase)].sort()
+        if (want.join() !== have.join()) {
+          problems.push(
+            `${locale}/${shortcut}: "${phrase}" names ${have.join(', ') || 'nothing'} where English names ${want.join(', ')}`,
+          )
+        }
+      })
     }
   }
   return problems
@@ -203,7 +218,11 @@ function unknownSiriPhrases(): string[] {
     const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
     for (const [, literal] of code.matchAll(/"([^"\n]*\\\(\.applicationName\)[^"\n]*)"/g)) {
       if (literal === undefined) continue
-      const key = literal.replace('\\(.applicationName)', APPLICATION_NAME)
+      // Swift spells a parameter `\(\.$name)` and the catalogue spells it
+      // `${name}`; one is the other, and this is the only place that knows.
+      const key = literal
+        .replace('\\(.applicationName)', APPLICATION_NAME)
+        .replace(/\\\(\\\.\$([a-zA-Z]+)\)/g, '${$1}')
       if (!known.has(key)) {
         problems.push(`${relative(process.cwd(), join(APP_INTENTS, file))}: "${literal}"`)
       }

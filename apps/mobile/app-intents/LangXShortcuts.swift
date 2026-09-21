@@ -56,5 +56,24 @@ struct LangXShortcuts: AppShortcutsProvider {
       shortTitle: "intents.openChats",
       systemImageName: "bubble.left.and.bubble.right"
     )
+    AppShortcut(
+      intent: OpenConversationIntent(),
+      /*
+       The one phrase with a parameter in it. `\(\.$conversation)` is filled
+       from `ConversationQuery.suggestedEntities`, which is why the directory
+       is capped: Siri matches a spoken name against a finite list, not
+       against everyone you have ever written to.
+
+       The parameter's *name* is the binding. Rename `conversation` on the
+       intent and every phrase here stops matching, in eight languages, with
+       nothing anywhere to say so — which is what the generator checks.
+       */
+      phrases: [
+        "Open my \(.applicationName) chat with \(\.$conversation)",
+        "Open \(\.$conversation) in \(.applicationName)",
+      ],
+      shortTitle: "intents.openConversation",
+      systemImageName: "person.crop.circle"
+    )
   }
 }
