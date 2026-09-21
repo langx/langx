@@ -1071,6 +1071,8 @@ export const en = {
     unrepliedEmptyBody: 'Every chat has had your reply.',
     archivedEmptyTitle: 'No archived chats',
     archivedEmptyBody: 'Archived chats stay here until you bring them back.',
+    pickTitle: 'No conversation open',
+    pickBody: 'Pick one from the list and it opens here.',
     emptyTitle: 'No chats yet',
     emptyBody:
       'Message someone from Discover. On the free plan you can start {count} new chats a day — replying to messages you receive is always unlimited.',

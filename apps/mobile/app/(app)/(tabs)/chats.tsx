@@ -1,7 +1,7 @@
 import { CONVERSATION_FILTERS, PLAN_LIMITS, type ConversationFilter } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
-import { router } from 'expo-router'
-import { useState } from 'react'
+import { router, useLocalSearchParams } from 'expo-router'
+import { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import {
   useDeleteConversation,
@@ -31,6 +31,8 @@ import { useLocale, useT } from '../../../src/i18n'
 import type { MessageKey } from '../../../src/i18n/runtime'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useTwoPane, PANE_WIDTH } from '../../../src/hooks/useTwoPane'
+import { ChatScreen } from '../../../src/screens/ChatScreen'
 import { OfficialMark } from '../../../src/components/OfficialMark'
 
 /** The design draws chat avatars at 56, the same size as Discover's rows. */
@@ -45,6 +47,39 @@ const EMPTY_COPY: Record<ConversationFilter, { title: MessageKey; body: MessageK
 
 export default function ChatsScreen() {
   useScreenInteractive()
+  /*
+   * Wide enough for both halves, asked of the window rather than the device —
+   * see `useTwoPane`. Everything below branches on this one boolean: the list
+   * is the same list either way, and the only difference is whether tapping a
+   * row opens a panel or pushes a screen.
+   */
+  const twoPane = useTwoPane()
+  /*
+   * Which thread the panel is holding. It arrives as a parameter because
+   * `chat/[id]` redirects here when there is room for two panes, so a
+   * notification, a widget link and a tap on a row all end up in the same
+   * place. A tap sets it directly; nothing navigates.
+   */
+  const { open, at } = useLocalSearchParams<{ open?: string; at?: string }>()
+  const [selected, setSelected] = useState<string | undefined>(open)
+  useEffect(() => {
+    if (open) setSelected(open)
+  }, [open])
+  /*
+   * The window lost the room for two panes while a thread was open — a Duo
+   * closing, an iPad entering Split View, a Mac window dragged narrow. The
+   * thread goes back to being a pushed screen rather than vanishing, which is
+   * what leaving it in `selected` would do: the panel stops being drawn and
+   * the person is looking at the list they were not reading.
+   *
+   * The reverse needs nothing. `chat/[id]` redirects here the moment there is
+   * room again, so widening puts the thread back in the panel by itself.
+   */
+  useEffect(() => {
+    if (twoPane || selected === undefined) return
+    setSelected(undefined)
+    router.push(`/(app)/chat/${selected}`)
+  }, [twoPane, selected])
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
@@ -130,7 +165,7 @@ export default function ChatsScreen() {
     isPaused: conversations.fetchStatus === 'paused',
   })
 
-  return (
+  const list = (
     <Screen fluid tabbed>
       <View style={styles.header}>
         <View style={styles.titleRow}>
@@ -268,7 +303,13 @@ export default function ChatsScreen() {
                 open={openRow === item._id}
                 onOpenChange={(open) => setOpenRow(open ? item._id : null)}
               >
-                <View style={[styles.row, index === items.length - 1 && styles.rowLast]}>
+                <View
+                  style={[
+                    styles.row,
+                    index === items.length - 1 && styles.rowLast,
+                    twoPane && selected === item._id && styles.rowSelected,
+                  ]}
+                >
                   <Pressable
                     /*
                      * An open row closes rather than opening the thread. Tapping
@@ -276,11 +317,15 @@ export default function ChatsScreen() {
                      * means "never mind", and navigating away from a drawer that
                      * was never closed leaves it open behind you.
                      */
-                    onPress={() =>
-                      openRow === item._id
-                        ? setOpenRow(null)
-                        : router.push(`/(app)/chat/${item._id}`)
-                    }
+                    onPress={() => {
+                      if (openRow === item._id) {
+                        setOpenRow(null)
+                      } else if (twoPane) {
+                        setSelected(item._id)
+                      } else {
+                        router.push(`/(app)/chat/${item._id}`)
+                      }
+                    }}
                     onLongPress={() => openMenu(item, partner?.displayName ?? '')}
                     style={({ pressed }) => [styles.thread, pressed && styles.pressed]}
                   >
@@ -349,9 +394,61 @@ export default function ChatsScreen() {
       )}
     </Screen>
   )
+
+  if (!twoPane) return list
+
+  /*
+   * Two panes, and the list is the same list — not a second, narrower copy of
+   * it. That is the whole reason the thread had to stop being a route file:
+   * `src/screens/ChatScreen` can be drawn here, beside the list, while
+   * `chat/[id]` keeps pushing it on a phone.
+   *
+   * The panel is keyed on the conversation. Without that, choosing another
+   * thread would keep the first one's composer draft, scroll position and
+   * pending sends and quietly show them under a new name.
+   */
+  return (
+    <View style={styles.panes}>
+      <View style={styles.listPane}>{list}</View>
+      <View style={styles.detailPane}>
+        {selected === undefined ? (
+          <View style={styles.pick}>
+            <EmptyState
+              icon="message-circle"
+              title={t('chats.pickTitle')}
+              body={t('chats.pickBody')}
+            />
+          </View>
+        ) : (
+          <ChatScreen
+            key={selected}
+            conversationId={selected}
+            embedded
+            onClose={() => setSelected(undefined)}
+            // Only for the thread the parameter named: "open at that message"
+            // belongs to the link that carried it, not to the next row tapped.
+            {...(at && open === selected ? { at } : {})}
+          />
+        )}
+      </View>
+    </View>
+  )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  /*
+   * The two halves. The list is given a fixed width and the thread takes what
+   * is left, rather than a share each: a conversation row is the same row at
+   * any window size, while a thread reads better the more room it has — and
+   * `Screen`'s own 720pt column stops it spreading a bubble across a monitor.
+   */
+  panes: { flex: 1, flexDirection: 'row' },
+  listPane: { width: PANE_WIDTH },
+  detailPane: { borderLeftColor: colors.border, borderLeftWidth: 1, flex: 1 },
+  /** The "nothing open" card, centred in the empty half. */
+  pick: { alignItems: 'center', flex: 1, justifyContent: 'center' },
+  /** The row whose thread is in the panel. Only drawn when there is one. */
+  rowSelected: { backgroundColor: colors.fill },
   // The bottom half is the gap above the tip; `Tip` owns the one below it.
   header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
   // The title's `flex: 1` is what holds the star on the trailing edge;

@@ -934,6 +934,8 @@ export const ptBR: Localized<EnMessages> = {
     unrepliedEmptyBody: 'Você respondeu a todas as conversas.',
     archivedEmptyTitle: 'Nenhuma conversa arquivada',
     archivedEmptyBody: 'As conversas arquivadas ficam aqui até você trazê-las de volta.',
+    pickTitle: 'Nenhuma conversa aberta',
+    pickBody: 'Escolha uma na lista e ela abre aqui.',
     emptyTitle: 'Ainda não há conversas',
     emptyBody:
       'Mande mensagem para alguém em Descobrir. No plano gratuito você pode começar {count} conversas novas por dia — responder ao que você recebe é sempre ilimitado.',

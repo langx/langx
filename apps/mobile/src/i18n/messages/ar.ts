@@ -1011,6 +1011,8 @@ export const ar: Localized<EnMessages> = {
     unrepliedEmptyBody: 'لقد رددت على كل محادثة.',
     archivedEmptyTitle: 'لا محادثات مؤرشفة',
     archivedEmptyBody: 'تبقى المحادثات المؤرشفة هنا حتى تعيدها.',
+    pickTitle: 'لا محادثة مفتوحة',
+    pickBody: 'اختر واحدة من القائمة لتفتح هنا.',
     emptyTitle: 'لا محادثات بعد',
     emptyBody:
       'راسل أحدًا من الاستكشاف. في الخطة المجانية يمكنك بدء {count} محادثات جديدة يوميًا — أما الرد على ما يصلك فبلا حدود دائمًا.',

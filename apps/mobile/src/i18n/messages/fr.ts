@@ -943,6 +943,8 @@ export const fr: Localized<EnMessages> = {
     unrepliedEmptyBody: 'Tu as répondu à chaque discussion.',
     archivedEmptyTitle: 'Aucune discussion archivée',
     archivedEmptyBody: 'Les discussions archivées restent ici jusqu’à ce que tu les récupères.',
+    pickTitle: 'Aucune conversation ouverte',
+    pickBody: 'Choisissez-en une dans la liste, elle s’ouvre ici.',
     emptyTitle: 'Aucune discussion',
     emptyBody:
       'Écris à quelqu’un depuis Découvrir. Sur le forfait gratuit tu peux lancer {count} nouvelles discussions par jour — répondre à ce que tu reçois est toujours illimité.',

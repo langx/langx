@@ -948,6 +948,8 @@ export const de: Localized<EnMessages> = {
     unrepliedEmptyBody: 'Auf jeden Chat hast du geantwortet.',
     archivedEmptyTitle: 'Kein archivierter Chat',
     archivedEmptyBody: 'Archivierte Chats bleiben hier, bis du sie zurückholst.',
+    pickTitle: 'Keine Unterhaltung geöffnet',
+    pickBody: 'Wähle eine aus der Liste, sie öffnet sich hier.',
     emptyTitle: 'Noch keine Chats',
     emptyBody:
       'Schreib jemandem aus Entdecken. Im kostenlosen Tarif kannst du {count} neue Chats am Tag beginnen — auf Nachrichten zu antworten ist immer unbegrenzt.',
