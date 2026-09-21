@@ -83,6 +83,13 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
    */
   useEffect(() => {
     if (!supported) return
+    /*
+     * Not the sign-out path, and it never was: signing out unmounts the
+     * layout this hook lives in, so the body never runs again. What empties a
+     * watch is the root's account-switch effect in `app/_layout.tsx`. This
+     * branch covers the one case that does happen while mounted — an account
+     * becoming a guest — and is left because it is one line and true.
+     */
     if (!enabled) {
       clearWatch()
       clearWear()

@@ -41,6 +41,9 @@ import { configureObserve } from '../src/lib/observe'
 import { configureQueryNetwork } from '../src/lib/queryNetwork'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
+import { clearCompanionSnapshot } from '../modules/companion-snapshot'
+import { clearWatch } from '../modules/watch-link'
+import { clearWear } from '../modules/wear-link'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
 import { I18nProvider, useT } from '../src/i18n'
 
@@ -231,27 +234,43 @@ function RootShell() {
   }, [userId, email])
 
   /**
-   * Empties the query cache when the person behind it changes.
+   * Empties everything the last account left behind, wherever it left it.
    *
-   * The client is made once and this tree never unmounts, so without this
-   * every answer fetched for one account survives into the next session:
-   * signing out and browsing as a guest showed the previous account's
-   * conversations, because `useConversations` is handed its cached pages
-   * before the guest's own (empty) list can come back. Not only chats —
-   * `keys.me`, the feed and discovery are all cached the same way.
+   * **The query cache**, because the client is made once and this tree never
+   * unmounts, so every answer fetched for one account is still sitting in it
+   * when the next one arrives: signing out and browsing as a guest showed the
+   * previous account's conversations, because `useConversations` is handed
+   * its cached pages before the guest's own (empty) list can come back. Not
+   * only chats — `keys.me`, the feed and discovery are all cached the same
+   * way. `clear()` rather than `invalidateQueries()`: invalidating leaves the
+   * data in place and merely refetches it, which still paints somebody else's
+   * rows first and leaves them there for good if the refetch fails.
    *
-   * `clear()` rather than `invalidateQueries()`: invalidating leaves the data
-   * in place and merely refetches it, which still paints somebody else's rows
-   * first and leaves them there for good if the refetch fails.
+   * **And the three companion surfaces**, which are the same problem on
+   * hardware the app does not own the screen of — a widget, an Apple Watch, a
+   * Wear OS watch. Each holds a blob the app wrote and redraws it on its own
+   * schedule, so a signed-out account's streak and unread count stay on a
+   * Home Screen or a wrist until something says otherwise.
    *
-   * At the root rather than in `signOut()` because sign-out is not the only
-   * way the session changes hands — an expired cookie ends one without
-   * passing through that button, and `sign-up.tsx` ends a guest's.
+   * **At the root rather than in `signOut()`**, and that placement is the
+   * whole fix. The widget snapshot was cleared in the sign-out button, which
+   * covered one of four exits; the two watches were cleared in `useWatchLink`
+   * when its `enabled` went false, which covered **none** — signing out
+   * unmounts `(app)/_layout`, so that effect's body never runs again and only
+   * its cleanup does. A cookie that expired, a deleted account and the
+   * suspended screen all end a session without passing through the button
+   * either. This runs on all four, because it watches the session rather than
+   * the gesture.
    */
   const seenUserId = useRef<string | null | undefined>(undefined)
   useEffect(() => {
     const current = userId ?? null
-    if (isAccountSwitch(seenUserId.current, current)) queryClient.clear()
+    if (isAccountSwitch(seenUserId.current, current)) {
+      queryClient.clear()
+      clearCompanionSnapshot()
+      clearWatch()
+      clearWear()
+    }
     seenUserId.current = current
   }, [userId, queryClient])
 
