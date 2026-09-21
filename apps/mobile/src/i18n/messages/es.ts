@@ -1196,6 +1196,10 @@ export const es: Localized<EnMessages> = {
       one: '{count} persona vio tu perfil',
       other: '{count} personas vieron tu perfil',
     },
+    earlier: {
+      one: '+{count} más',
+      other: '+{count} más',
+    },
   },
   feed: {
     topTag: 'Mejor',

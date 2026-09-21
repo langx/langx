@@ -1224,6 +1224,10 @@ export const de: Localized<EnMessages> = {
       one: '{count} Person hat dein Profil angesehen',
       other: '{count} Personen haben dein Profil angesehen',
     },
+    earlier: {
+      one: '+{count} weitere',
+      other: '+{count} weitere',
+    },
   },
   feed: {
     topTag: 'Top',

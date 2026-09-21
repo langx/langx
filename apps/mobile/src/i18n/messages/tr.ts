@@ -1197,6 +1197,10 @@ export const tr: Localized<EnMessages> = {
       one: 'Profiline {count} kişi baktı',
       other: 'Profiline {count} kişi baktı',
     },
+    earlier: {
+      one: '+{count} daha',
+      other: '+{count} daha',
+    },
   },
   feed: {
     topTag: 'En iyi',

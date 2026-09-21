@@ -425,7 +425,7 @@ happened, read by a bell in the Feed header and a screen behind it.
 | `walletPool`                                             | `tokens/pool.ts`, at the payout    | the pool day                        |
 | `profileVisits`                                          | `notifications/profileVisits.ts`   | the local day                       |
 
-### The four rules it runs on
+### The five rules it runs on
 
 - **Per event, where the push is batched — but collapsed into one row.**
   Nothing is dropped: the push sends one an hour and likes go out once a day,
@@ -441,6 +441,28 @@ happened, read by a bell in the Feed header and a screen behind it.
   noticed, and a row that moves inside a keyset page makes a cursor skip or
   repeat. The unread count groups identically, so the badge and the list can
   never disagree.
+
+- **The kinds that repeat fold onto themselves.** `badgeEarned`, `walletPool`
+  and `profileVisits` each have a ceiling of one row a day, which looked like
+  enough and was not: a week of them is the app saying the same three
+  sentences seven times over. There is no post to key them on, so the key is
+  the kind.
+
+  What a fold shows is **not** what a post pile shows, and the difference is in
+  the sentence. A pile's count _is_ the sentence — "and 3 others commented" —
+  while these carry a quantity the sentence needs, so the newest speaks
+  unchanged and the days behind it travel beside it, as `earlier`, rendered as
+  a `+N more` next to the time. Adding them up was the other candidate and is
+  wrong on the middle one: **yesterday's pool did not pay 750**. It is a
+  sentence about a day, and three days summed is a figure nobody was given.
+
+  Opening the row reads every day behind it, exactly as a pile does. That is
+  what makes the fold honest rather than a way of hiding unread rows under a
+  read one.
+
+  A consequence worth knowing before writing a test: those three kinds can no
+  longer supply a fixture of many rows. The keyset-tiebreak test uses
+  **follows** now, which are the one kind nothing collapses.
 
 - **Not gated by the switches.** `notificationsAllowed` is never called on this
   path. Those two channels are about what _leaves_; turning off social push is

@@ -160,7 +160,16 @@ export default function NotificationsScreen() {
                       {item.preview}
                     </Text>
                   ) : null}
-                  <Text style={styles.when}>{relativeTime(item.createdAt, { t, locale })}</Text>
+                  <Text style={styles.when}>
+                    {relativeTime(item.createdAt, { t, locale })}
+                    {/*
+                     * The days this row speaks for, where it speaks for any.
+                     * Beside the time rather than in the sentence: the
+                     * sentence is the newest day's and stays true, and how
+                     * far back the fold reaches is a fact about when.
+                     */}
+                    {item.earlier ? ` · ${t('inbox.earlier', { count: item.earlier })}` : ''}
+                  </Text>
                 </View>
                 {unread ? <View style={styles.dot} accessibilityLabel={t('inbox.unread')} /> : null}
               </Pressable>
