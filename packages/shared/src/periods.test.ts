@@ -3,6 +3,7 @@ import {
   aggregateId,
   isConsecutiveDay,
   localDayKey,
+  localDayStart,
   monthKey,
   nextStreak,
   periodKeys,
@@ -59,6 +60,60 @@ describe('streak days (user-local)', () => {
 
   it('falls back to UTC for an unusable timezone rather than throwing', () => {
     expect(localDayKey(new Date('2026-08-26T12:00:00Z'), 'Not/AZone')).toBe('2026-08-26')
+  })
+
+  it('finds the instant a local day begins, on either side of UTC', () => {
+    expect(localDayStart('2026-09-05', 'America/Vancouver').toISOString()).toBe(
+      '2026-09-05T07:00:00.000Z',
+    )
+    // Same zone in winter: the offset is a property of the instant, not the zone.
+    expect(localDayStart('2026-01-15', 'America/Vancouver').toISOString()).toBe(
+      '2026-01-15T08:00:00.000Z',
+    )
+    // East of UTC the day starts before UTC midnight of its own key, and a
+    // half-hour zone lands on the half hour.
+    expect(localDayStart('2026-09-05', 'Asia/Kolkata').toISOString()).toBe(
+      '2026-09-04T18:30:00.000Z',
+    )
+  })
+
+  it('reads the offset in force at the day’s start, not at UTC midnight', () => {
+    // Auckland's clocks go back at 03:00 on 5 April 2026, so UTC midnight of
+    // that key is already NZST (+12) while the day began in NZDT (+13). This
+    // is the case a single pass gets an hour wrong.
+    expect(localDayStart('2026-04-05', 'Pacific/Auckland').toISOString()).toBe(
+      '2026-04-04T11:00:00.000Z',
+    )
+  })
+
+  it('returns the transition itself where local midnight never happens', () => {
+    // These zones spring forward *at* midnight, so the day's first clock
+    // reading is 01:00 and no instant reads 00:00. The case a bare correction
+    // pass gets wrong in one direction and a third pass gets wrong in the other.
+    expect(localDayStart('2026-03-08', 'America/Havana').toISOString()).toBe(
+      '2026-03-08T05:00:00.000Z',
+    )
+    expect(localDayStart('2026-09-06', 'America/Santiago').toISOString()).toBe(
+      '2026-09-06T04:00:00.000Z',
+    )
+    expect(localDayStart('2026-03-29', 'Atlantic/Azores').toISOString()).toBe(
+      '2026-03-29T01:00:00.000Z',
+    )
+  })
+
+  it('lands inside the day, and one millisecond earlier does not', () => {
+    for (const zone of ['Europe/Istanbul', 'America/Vancouver', 'Asia/Kathmandu', 'UTC']) {
+      for (const day of ['2026-01-01', '2026-03-08', '2026-09-05', '2026-11-01']) {
+        const start = localDayStart(day, zone)
+        expect(localDayKey(start, zone)).toBe(day)
+        expect(localDayKey(new Date(start.getTime() - 1), zone)).not.toBe(day)
+      }
+    }
+  })
+
+  it('falls back to UTC midnight for an unusable timezone, and rejects a bad key', () => {
+    expect(localDayStart('2026-09-05', 'Not/AZone').toISOString()).toBe('2026-09-05T00:00:00.000Z')
+    expect(() => localDayStart('the fifth', 'Europe/Istanbul')).toThrow(TypeError)
   })
 
   it('shifts and compares day keys across month boundaries', () => {

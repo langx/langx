@@ -190,6 +190,45 @@ describe('profile views, a row per day', () => {
     expect(summary.week?.[0]?.day).toBe('2026-08-30')
   })
 
+  /**
+   * The other end of the same window. The last day already ended on their
+   * today; the count over it still began at UTC's midnight seven days back,
+   * which in Vancouver is 17:00 the evening before — so somebody whose only
+   * visit fell in those seven hours was counted into a week they had not
+   * started yet.
+   */
+  it('starts the week at the viewed person’s midnight, not seven hours before it', async () => {
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: 'me' }, { $set: { timezone: 'America/Vancouver' } })
+    // 2026-08-30T03:00Z: the 30th in UTC, still the evening of the 29th in
+    // Vancouver, where the window's first day is the 30th.
+    await recordProfileView(handle.db, xue, 'me', at(-(6 * 24 + 9) * 60 * MIN))
+
+    const summary = await getViewers(handle.db, 'me', { limit: 20 }, at((15 * 60 + 17) * MIN))
+
+    expect(summary.week?.[0]?.day).toBe('2026-08-30')
+    expect(summary.weekPeople).toBe(0)
+    // The bucket still counts it, and that is the older compromise rather
+    // than this one: rows are grouped by the stored UTC `day`, so the oldest
+    // bucket has always been a UTC day under a local label. Cutting it at
+    // local midnight too would empty half of it instead.
+    expect(summary.week?.[0]?.visits).toBe(1)
+  })
+
+  it('keeps a visit their week has started but UTC’s has not', async () => {
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: 'me' }, { $set: { timezone: 'Europe/Istanbul' } })
+    // 2026-08-29T22:00Z is 01:00 on the 30th in Istanbul, so inside their week.
+    await recordProfileView(handle.db, xue, 'me', at(-(6 * 24 + 14) * 60 * MIN))
+
+    const summary = await getViewers(handle.db, 'me', { limit: 20 }, at(10 * MIN))
+
+    expect(summary.week?.[0]?.day).toBe('2026-08-30')
+    expect(summary.weekPeople).toBe(1)
+  })
+
   it('reports people, not rows, to the digest — and never names a guest', async () => {
     await recordProfileView(handle.db, xue, 'me', at(-24 * 60 * MIN))
     await recordProfileView(handle.db, xue, 'me', at(0))

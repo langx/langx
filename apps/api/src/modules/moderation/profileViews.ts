@@ -3,6 +3,7 @@ import {
   MODERATION_PAGE_SIZE_DEFAULT,
   hasFeature,
   localDayKey,
+  localDayStart,
   shiftDayKey,
   utcDayKey,
   type ModerationListQuery,
@@ -230,12 +231,12 @@ async function visitsByDay(
   now: Date,
   timeZone: string,
 ): Promise<{ day: string; visits: number }[]> {
-  const { days, from } = weekWindow(now, timeZone)
+  const { days, utcFrom } = weekWindow(now, timeZone)
 
   const rows = await db
     .collection<ProfileView>(COLLECTIONS.profileViews)
     .aggregate<{ _id: string; visits: number }>([
-      { $match: { viewedId, viewerId: { $nin: hidden }, lastViewedAt: { $gte: from } } },
+      { $match: { viewedId, viewerId: { $nin: hidden }, lastViewedAt: { $gte: utcFrom } } },
       {
         $project: {
           count: { $ifNull: ['$count', 1] },
@@ -255,21 +256,36 @@ async function visitsByDay(
 }
 
 /**
- * The seven day keys the chart draws, oldest first, and the instant the first
- * one starts.
+ * The seven day keys the window covers, oldest first, and two cuts at the
+ * start of the oldest — because the two readers below ask different questions
+ * of it.
  *
- * The keys are the viewed person's own days, so the chart turns over at their
- * midnight — the same window `readActivityWeek` draws right above it on the
- * profile. `from`, though, stays UTC midnight of the first key on purpose:
- * rows are grouped by the stored `day`, which is a UTC day, so a filter cut at
- * their local midnight would drop part of the oldest bar.
+ * The keys are the viewed person's own days, so the window turns over at their
+ * midnight, the same one `readActivityWeek` uses on the profile.
+ *
+ * `utcFrom` is UTC midnight of the first key and stays UTC on purpose:
+ * `visitsByDay` groups rows by the stored `day`, which is a UTC day, so a cut
+ * at their local midnight would empty part of the oldest bucket. `localFrom`
+ * is when that day actually began where they are, and is the cut for a
+ * question asked of `lastViewedAt` — a timestamp, not a key. `peopleInWeek`
+ * used `utcFrom` and so began the week seven hours early in Vancouver,
+ * counting somebody who came only in those seven hours, and three hours late
+ * in Istanbul, dropping somebody who did.
  */
-function weekWindow(now: Date, timeZone: string): { days: string[]; from: Date } {
-  const today = localDayKey(now, timeZone)
-  const days = Array.from({ length: VIEWS_WEEK_DAYS }, (_, i) =>
-    shiftDayKey(today, i - (VIEWS_WEEK_DAYS - 1)),
-  )
-  return { days, from: new Date(`${days[0]}T00:00:00Z`) }
+function weekWindow(
+  now: Date,
+  timeZone: string,
+): { days: string[]; utcFrom: Date; localFrom: Date } {
+  // A binding rather than `days[0]`, which is `string | undefined` here and
+  // would interpolate into a template as the text "undefined" rather than
+  // failing to compile.
+  const first = shiftDayKey(localDayKey(now, timeZone), -(VIEWS_WEEK_DAYS - 1))
+  const days = Array.from({ length: VIEWS_WEEK_DAYS }, (_, i) => shiftDayKey(first, i))
+  return {
+    days,
+    utcFrom: new Date(`${first}T00:00:00Z`),
+    localFrom: localDayStart(first, timeZone),
+  }
 }
 
 /**
@@ -284,10 +300,12 @@ async function peopleInWeek(
   now: Date,
   timeZone: string,
 ): Promise<number> {
-  const { from } = weekWindow(now, timeZone)
-  const people = await db
-    .collection<ProfileView>(COLLECTIONS.profileViews)
-    .distinct('viewerId', { viewedId, viewerId: { $nin: hidden }, lastViewedAt: { $gte: from } })
+  const { localFrom } = weekWindow(now, timeZone)
+  const people = await db.collection<ProfileView>(COLLECTIONS.profileViews).distinct('viewerId', {
+    viewedId,
+    viewerId: { $nin: hidden },
+    lastViewedAt: { $gte: localFrom },
+  })
   return people.length
 }
 

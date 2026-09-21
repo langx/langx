@@ -276,11 +276,25 @@ does not account for under the document's own UTC day — a remainder rather tha
 an either/or, which is what makes a document written across the deploy come out
 once and whole. It is identically zero for everything written since.
 
-The visitors chart under it takes its window from the same calendar but still
-counts in UTC buckets: its rows are deduped on `{viewer, viewed, day}`, so the
-same trick would mean changing the key, and the viewed person's zone is not in
-scope where the row is written. Read-time grouping is the fix there, and it has
-not been done yet.
+The `/viewers` week went a shorter distance, because there is less there than
+the name suggests: nothing draws those per-day numbers. The screen renders one
+sentence, "N people in the last week", and the day array only survives as a sum
+for an API version that did not send the sentence. So its buckets stay on the
+stored UTC `day` — its rows are deduped on `{viewer, viewed, day}`, and moving
+that key to buy accuracy in a number nobody reads is not a trade.
+
+What did move is the sentence's boundary. `weekWindow` now returns two cuts at
+the start of the oldest day: `utcFrom`, UTC midnight of the first key, which is
+what grouping by a UTC `day` needs; and `localFrom`, the instant that day
+actually began where the person is, which is what a `lastViewedAt` filter
+needs. `peopleInWeek` had been using the first and so began the week seven
+hours early in Vancouver. The two are allowed to disagree at the oldest edge,
+and a test says so, because unifying them would empty half of the oldest
+bucket to fix a bucket nothing draws.
+
+`localDayStart` in `packages/shared/src/periods.ts` is the piece that was
+missing — `localDayKey` backwards. The naive `new Date(\`${key}T00:00:00Z\`)`
+is the UTC day's start, and the difference is the whole bug.
 
 ## Phase 8 — ledger first, aggregates second; the order cannot be reversed
 
