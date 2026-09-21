@@ -1,5 +1,14 @@
 # iPhone, Apple Watch and CarPlay — plan
 
+## Status on 21 September 2026
+
+**Five of the ten phases are built.** Phases 1, 2, 4, 5 and 6 — the widgets,
+the Apple Watch, Wear OS, Android Auto and the two-pane layout — are written,
+and what remains in each of them is a device, a Mac, a decision of Behic's or
+Apple. The table at the end of _Order of work_ sorts them by which. The rest
+of this section is the record as it was written, phase by phase, and is left
+in that order because each entry says what was true when it was decided.
+
 ## Status on 18 September 2026
 
 **Not started, and now decided.** Written as a plan on the day it was asked
@@ -575,16 +584,15 @@ is not, which is why its paperwork starts on day one.
      ends in a written no-go and surface C is re-planned natively
    → in parallel, and on day one: file the CarPlay entitlement request
 
-1. iPhone — **written, not yet run on a device** (19 September):
-   the snapshot contract and builder, the local module that writes it,
-   `@bacons/apple-targets` wiring, the three widget families, the
-   notification service extension, and the blob cleared at sign-out.
-   The string generator is **done** — the watch is what finally required it,
-   and the widgets' gallery names are what finally spend it.
-   The gallery names and the phone-driven Live Activity are **done**; two of
-   the three App Intents are done and the third waits on a directory of names
-   in the App Group — see `phase-1-app-intents.md`. Still to do: the Lock
-   Screen not clearing at sign-out, and the intent that sends a message.
+1. iPhone — **run on a Mac, 19 September**: the snapshot contract and
+   builder, the local module that writes it, `@bacons/apple-targets` wiring,
+   the three widget families, the notification service extension, the gallery
+   names, the phone-driven Live Activity, and two of the three App Intents.
+   The string generator is done — the watch is what finally required it.
+   Open, and all three now waiting on somebody rather than on work:
+   the Lock Screen not clearing at sign-out (a real device), the intent that
+   sends a message (Behic's credential decision), and Siri by voice (Behic's
+   config-plugin decision) — `phase-1-app-intents.md` has both.
    → verify: everything in `phase-1-mac-handoff.md`, on a Mac
 
 1b. iPhone Duo readiness: the lint rule against `Dimensions.get` — done; then,
@@ -592,12 +600,13 @@ is not, which is why its paperwork starts on day one.
    pass over the app
    → verify: the list under The iPhone Duo
 
-2. Apple Watch — **built and run on a paired simulator** (20 September):
-   the payload contract, the WatchConnectivity bridge both ways, the REST
-   send twin it needs, the three screens, and the string generator the plan
-   left for later — which the watch is what finally required.
-   Still to do: the complication and its setting, the notification
-   quick-reply action (no category exists at all), and the store assets.
+2. Apple Watch — **closed, 20–21 September**: the payload contract, the
+   WatchConnectivity bridge both ways, the REST send twin it needs, the three
+   screens, the string generator the plan left for later, the complication and
+   its setting, the notification quick-reply action, the store assets, and
+   sign-out emptying the wrist. Nothing is open here that a paired simulator
+   and a signed-in session would not settle in one pass — the same pass the
+   Lock Screen wants.
    → verify: everything in `phase-2-watch.md`
 
 3. CarPlay: the REST send twin and its test — **done, 20 September**, it was
@@ -609,7 +618,8 @@ is not, which is why its paperwork starts on day one.
      stack — the spike has a real no-go branch
 
 4. Wear OS — **done, 20 September**, out of order because the design was
-   never actually separate. Tile and sign-out still open.
+   never actually separate. The tile landed the same day and sign-out on
+   21 September, for both wrists at once.
 
 5. Android Auto — **built and exercised, 20 September**: the message drawn
    as a `MessagingStyle` conversation, answered from the car's reply action by
@@ -619,13 +629,13 @@ is not, which is why its paperwork starts on day one.
    → the review is not free: see the phase, it becomes blocking on production
 
 6. iPad, Mac and the Duo's inner display: one two-pane layout, not three —
-   **first layer built, 20 September**: the conversation list and a thread
-   side by side wherever the window has room, the thread separated from its
-   route so it can be drawn in a panel, and `chat/[id]` redirecting into that
-   panel so every way into a thread behaves the same. Seen in a browser at two
-   widths; not yet on any of the three devices
-   → verify: everything in `phase-6-two-pane.md`, then a chat open on all four
-     and the four Duo poses
+   **built 20–21 September** and verified on an iPad. All three lists that
+   open something are two-paned — chats, Discover, the feed — each thread,
+   profile and post separated from its route so it can be drawn in a panel,
+   `chat/[id]` redirecting into that panel, and one `TwoPane` holding the
+   arrangement. Me and Echo keep their single column on purpose. Open: a Mac,
+   and the Duo's four poses
+   → verify: everything in `phase-6-two-pane.md`
 
 7. Server-driven Live Activities: first a decision about a second push path,
    then the path. The phone-driven activity from phase 1 ships before this.
@@ -640,6 +650,18 @@ is not, which is why its paperwork starts on day one.
 nobody, and 6 is the largest single piece of work here. What ships next is a
 question of what is worth a store build, which is the first thing to settle
 below.
+
+**Where it actually stands on 21 September.** Everything in phases 1, 2, 4, 5
+and 6 that could be written has been written. What is left in them is not
+work, it is four kinds of waiting, and it is worth separating them because
+they unblock in different ways:
+
+| Waiting on          | What                                                                                          |
+| ------------------- | --------------------------------------------------------------------------------------------- |
+| **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto         |
+| **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                          |
+| **Behic**           | the Siri config plugin, the send intent's credential, Play Console's Wear OS and Android Auto |
+| **Apple**           | the CarPlay entitlement, and therefore phases 0 and 3                                         |
 
 ## What used to be out of this plan
 
