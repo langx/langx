@@ -21,6 +21,8 @@ interface AttachmentRow {
 }
 import { supportsPrefixDelete, supportsPut } from '../../storage/StorageProvider'
 import type { Conversation, Message } from '../chat/conversations'
+import type { LegacyMessage } from '../handles/legacyConversations'
+import type { LegacyProfile } from '../handles/legacyProfiles'
 import type { Profile } from '../profiles/profiles'
 
 const GRACE_MS = ACCOUNT_DELETION_GRACE_DAYS * 24 * 60 * 60 * 1000
@@ -110,7 +112,8 @@ export interface PurgeResult {
  *   reconcile) while making the rows genuinely anonymous. The *aggregates* are
  *   deleted, which is what removes the account from every leaderboard.
  * - Everything else — profile, devices, views, blocks, subscriptions, share
- *   cards, auth rows, and the images in the bucket — goes completely.
+ *   cards, auth rows, the v1 staging record behind a restored account, and the
+ *   images in the bucket — goes completely.
  */
 export async function purgeExpiredAccounts(
   db: Db,
@@ -149,6 +152,25 @@ export async function purgeExpiredAccounts(
         )
         .entries(),
     ].map(([hex, count]) => [new ObjectId(hex), count] as const)
+
+    /**
+     * The v1 staging record this account restored, if it came back from v1.
+     *
+     * Read here because the rest of the purge cannot find it: every sweep
+     * below keys on the v2 user id, and these rows are keyed on the Appwrite
+     * one. Nothing else has ever deleted them, so a restored account used to
+     * leave its whole v1 self behind — name, birth date, country, languages,
+     * the email hash, and the text of every message it sent in v1, since
+     * `importLegacyConversations` *copies* those rows rather than consuming
+     * them. That is the data the purge exists to remove, sitting in a
+     * collection the purge never looked at.
+     *
+     * `restoredBy` is the only link back, and it outlives this run — so the
+     * row has to go now, while there is still something pointing at it.
+     */
+    const staged = await db
+      .collection<LegacyProfile>(COLLECTIONS.legacyProfiles)
+      .findOne({ restoredBy: userId })
 
     // Their images have to leave the bucket too. Deleting the documents while
     // the files stay publicly fetchable by URL would make "permanently
@@ -207,9 +229,31 @@ export async function purgeExpiredAccounts(
         .find({ userId }, { projection: { imageUrl: 1 } })
         .toArray()
 
+      /*
+       * What the staging record still points at.
+       *
+       * Mostly the same objects the profile does — the restore copied these
+       * URLs onto it — and `deleteObject` is idempotent, so the overlap costs
+       * nothing. The part that is *not* redundant is anything the account
+       * replaced afterwards: change your avatar in v2 and the old v1 file is
+       * referenced by this row alone, so sweeping the profile misses it.
+       *
+       * Only this person's messages. A staged thread holds both halves, and
+       * the peer's bytes are not ours to take.
+       */
+      const stagedMedia = staged
+        ? await db
+            .collection<LegacyMessage>(COLLECTIONS.legacyMessages)
+            .find({ senderId: staged._id }, { projection: { media: 1 } })
+            .toArray()
+        : []
+
       const urls = [
         profile.avatarUrl,
         ...(profile.photos ?? []).map((p) => p.url),
+        staged?.avatarUrl,
+        ...(staged?.photos ?? []).map((p) => p.url),
+        ...stagedMedia.map((message) => message.media?.url),
         // Every file, not the first: a gallery leaves as many objects behind
         // as it put there. `attachmentsOf` reads both fields, so a v1-imported
         // message and one sent this morning sweep the same way.
@@ -410,6 +454,23 @@ export async function purgeExpiredAccounts(
       // fragment up after the profile is gone.
       db.collection(COLLECTIONS.shareCards).deleteMany({ userId }),
       db.collection(COLLECTIONS.knownDevices).deleteMany({ userId }),
+      /*
+       * The v1 self, for an account that restored one.
+       *
+       * `legacyRooms` deliberately stays. A staged thread is two people's
+       * words and the peer may not be back yet; once this side's staging
+       * record is gone the room can never import — `importLegacyConversations`
+       * needs both — so what is left holds nobody's data but theirs.
+       */
+      ...(staged
+        ? [
+            db.collection<LegacyProfile>(COLLECTIONS.legacyProfiles).deleteOne({ _id: staged._id }),
+            db.collection(COLLECTIONS.legacyMessages).deleteMany({ senderId: staged._id }),
+            // Keyed on the Appwrite id rather than the email hash: one v1
+            // account, whatever handle it reserved.
+            db.collection(COLLECTIONS.handleReservations).deleteMany({ legacyUserId: staged._id }),
+          ]
+        : []),
       // Better Auth's own rows. Deleting the `user` document is what makes the
       // email reusable and the account genuinely gone rather than orphaned.
       db.collection(COLLECTIONS.session).deleteMany({ userId: authId(userId) }),
