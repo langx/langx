@@ -5,6 +5,7 @@ import { feedDigestSection as buildSection } from '../../email/templates'
 import type { Post } from '../feed/documents'
 import type { Profile } from '../profiles/profiles'
 import type { DigestCandidate } from './digest'
+import { alreadySeenInApp } from './inbox'
 import { claimOnce } from './ledger'
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -80,6 +81,9 @@ export async function collectFeedReplies(
   return perAuthor
 }
 
+/** The three kinds the centre files a reply under, in the order it writes them. */
+const REPLY_KINDS = ['postCorrection', 'pronunciationAnswer', 'postComment'] as const
+
 /**
  * One reader's share of that, as a section.
  *
@@ -87,12 +91,12 @@ export async function collectFeedReplies(
  * for tomorrow's — the push already said it, and a second letter about the
  * same post on the same day is how a digest becomes noise.
  */
-export function feedRepliesSection(
+export async function feedRepliesSection(
   db: Db,
   profile: Profile,
   items: FeedDigestItem[] | undefined,
   now: Date,
-): DigestCandidate | null {
+): Promise<DigestCandidate | null> {
   if (!items || items.length === 0) return null
 
   // Busiest first: the post with the most to read is the one worth naming.
@@ -102,9 +106,24 @@ export function feedRepliesSection(
   const named = ranked.slice(0, FEED_DIGEST_MAX_POSTS)
   const day = localDayKey(now, profile.timezone ?? 'UTC')
 
+  /*
+   * Read off the bell over the same twenty-four hours the collector gathered,
+   * so what is weighed is what is being written about. The reply push is
+   * throttled to one per post per hour and says the rest are waiting in the
+   * app; somebody who went and read them has done the thing the push asked
+   * for, and the evening mail answering that with the same list is the app
+   * arguing with itself.
+   */
+  const seen = await alreadySeenInApp(db, profile._id, {
+    kinds: [...REPLY_KINDS],
+    since: new Date(now.getTime() - DAY_MS),
+  })
+
   return {
-    // The corrections are what the sentence was posted for.
-    trigger: true,
+    // The corrections are what the sentence was posted for — unless they have
+    // already been read, in which case they are worth a paragraph and not an
+    // envelope.
+    trigger: !seen,
     claim: () => claimOnce(db, 'feedDigest', profile._id, day),
     build: (locale: Locale) =>
       buildSection(locale, { items: named, morePosts: ranked.length - named.length }),

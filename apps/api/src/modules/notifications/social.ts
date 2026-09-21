@@ -4,6 +4,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
+import { alreadySeenInApp } from './inbox'
 import { claimOnce } from './ledger'
 
 /**
@@ -193,6 +194,17 @@ export async function runLikesRoundUpPass(
   const day = now.toISOString().slice(0, 10)
   let sent = 0
   for (const [authorId, { count, postId }] of perAuthor) {
+    /*
+     * Each of these likes wrote its inbox row the moment it was tapped, hours
+     * before this batch. Somebody who opened the bell and read them has seen
+     * the number this push is about, and buzzing them for it is the app
+     * catching up out loud.
+     *
+     * The window is the batch's own, so what is weighed is what is counted:
+     * one like since they last looked is one the push is still the first to
+     * mention, and the count it carries is the day's.
+     */
+    if (await alreadySeenInApp(db, authorId, { kinds: ['like'], since })) continue
     if (!(await claimOnce(db, 'social.likes', authorId, day))) continue
     await pushSocial(
       db,

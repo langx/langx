@@ -35,6 +35,7 @@ interface InboxRow {
   postId?: string
   preview?: string
   count?: number
+  earlier?: number
   actor?: { _id: string; handle: string }
 }
 
@@ -379,17 +380,29 @@ describe('notification centre', () => {
    * shares a millisecond. Inserting them one at a time would let the clock
    * separate them and the `_id` tiebreak would never be exercised — which is
    * the regression `dateIdCursor` exists to prevent.
+   *
+   * Follows, because what this needs is twenty-five rows that stay twenty-five
+   * rows: each one is a different person and the row opens *that* person, so
+   * it is the one kind nothing collapses. The actors are written in beside
+   * them — a row whose actor does not exist is dropped by `isDrawable`, and a
+   * page of dropped rows would pass this test while proving nothing.
    */
   it('pages exactly when every row shares a timestamp', async () => {
     const reader = await newUser('paging@example.com')
     const createdAt = new Date()
+    const actors = Array.from({ length: 25 }, (_unused, index) => ({
+      _id: new ObjectId().toHexString(),
+      handle: `pager${String(index)}`,
+      displayName: `Pager ${String(index)}`,
+    }))
+    await handle.db.collection(COLLECTIONS.profiles).insertMany(actors as never[])
     await handle.db.collection(COLLECTIONS.notifications).insertMany(
-      Array.from({ length: 25 }, (_unused, index) => ({
+      actors.map((actor) => ({
         _id: new ObjectId(),
         userId: reader.userId,
-        kind: 'badgeEarned' as const,
-        refId: `badge-${String(index)}`,
-        badgeId: `badge-${String(index)}`,
+        kind: 'follow' as const,
+        refId: actor._id,
+        actorId: actor._id,
         createdAt,
       })),
     )
@@ -519,6 +532,115 @@ describe('notification centre', () => {
 
     expect((await unread(mine)).json<{ total: number }>().total).toBe(0)
     expect((await unread(theirs)).json<{ total: number }>().total).toBe(1)
+  })
+
+  /**
+   * The three kinds that say the same sentence again every day. Each is
+   * already capped at one row per day, which is what made them look like they
+   * needed no grouping — but a week of them is the app repeating itself, which
+   * is the same unscannable list arriving more slowly.
+   */
+  describe('the kinds that repeat', () => {
+    /** Three days of the same round-up, newest last. */
+    async function threeDaysOf(
+      userId: string,
+      kind: 'profileVisits' | 'walletPool' | 'badgeEarned',
+      counts: number[],
+    ): Promise<void> {
+      for (const [index, count] of counts.entries()) {
+        await recordNotification(handle.db, {
+          userId,
+          kind,
+          refId: `2026-09-${String(10 + index).padStart(2, '0')}`,
+          ...(count > 0 ? { count } : {}),
+          at: new Date(`2026-09-${String(10 + index).padStart(2, '0')}T12:00:00Z`),
+        })
+      }
+    }
+
+    it('shows the newest day and says how many are behind it', async () => {
+      const reader = await newUser('repeat-visits@example.com')
+      await threeDaysOf(reader.userId, 'profileVisits', [9, 7, 10])
+      const rows = await inbox(reader, 1)
+
+      expect(rows).toHaveLength(1)
+      // The newest day's own number, untouched — three days of visitors were
+      // never one visit, and 26 is a number nobody counted.
+      expect(rows[0]?.count).toBe(10)
+      expect(rows[0]?.earlier).toBe(2)
+    })
+
+    /** "Yesterday's pool paid you 750 tokens" is a sentence about no day. */
+    it('never adds a payout up across days', async () => {
+      const reader = await newUser('repeat-pool@example.com')
+      await threeDaysOf(reader.userId, 'walletPool', [250, 250, 250])
+      const rows = await inbox(reader, 1)
+
+      expect(rows[0]?.count).toBe(250)
+      expect(rows[0]?.earlier).toBe(2)
+    })
+
+    it('leaves a lone round-up exactly as it was', async () => {
+      const reader = await newUser('repeat-one@example.com')
+      await threeDaysOf(reader.userId, 'profileVisits', [4])
+      const rows = await inbox(reader, 1)
+
+      expect(rows[0]?.count).toBe(4)
+      expect(rows[0]?.earlier).toBeUndefined()
+    })
+
+    /** The badge, the pool and the visits are three rows, not one pile. */
+    it('folds each kind onto itself and no further', async () => {
+      const reader = await newUser('repeat-kinds@example.com')
+      await threeDaysOf(reader.userId, 'profileVisits', [9, 10])
+      await threeDaysOf(reader.userId, 'walletPool', [250, 250])
+      await threeDaysOf(reader.userId, 'badgeEarned', [0, 0])
+      const rows = await inbox(reader, 3)
+
+      expect(rows).toHaveLength(3)
+      expect(rows.map((row) => row.kind).sort()).toEqual([
+        'badgeEarned',
+        'profileVisits',
+        'walletPool',
+      ])
+      for (const row of rows) expect(row.earlier).toBe(1)
+    })
+
+    /** The badge counts rows of the list, and the list is one row now. */
+    it('counts the fold as the one row it draws', async () => {
+      const reader = await newUser('repeat-unread@example.com')
+      await threeDaysOf(reader.userId, 'profileVisits', [9, 7, 10])
+      await inbox(reader, 1)
+
+      expect((await unread(reader)).json<{ total: number }>().total).toBe(1)
+    })
+
+    /**
+     * The other half of the fold being honest: the days behind the row are
+     * dealt with by the tap that dealt with the row. Leaving them unread would
+     * put the bell straight back up for something with nothing left to open.
+     */
+    it('reads every day behind the row that was opened', async () => {
+      const reader = await newUser('repeat-read@example.com')
+      await threeDaysOf(reader.userId, 'profileVisits', [9, 7, 10])
+      const rows = await inbox(reader, 1)
+
+      const marked = await markRead(reader, rows[0]?._id)
+      expect(marked.json<{ read: number }>().read).toBe(3)
+      expect((await unread(reader)).json<{ total: number }>().total).toBe(0)
+      expect((await inbox(reader))[0]?.read).toBe(true)
+    })
+
+    it('does not reach into another reader’s pile', async () => {
+      const mine = await newUser('repeat-mine@example.com')
+      const theirs = await newUser('repeat-theirs@example.com')
+      await threeDaysOf(mine.userId, 'profileVisits', [9, 10])
+      await threeDaysOf(theirs.userId, 'profileVisits', [3, 4])
+      const rows = await inbox(mine, 1)
+
+      await markRead(mine, rows[0]?._id)
+      expect((await unread(theirs)).json<{ total: number }>().total).toBe(1)
+    })
   })
 
   it('does not throw when the same row is recorded twice', async () => {

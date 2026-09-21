@@ -87,6 +87,21 @@ describe('notificationCopy', () => {
     expect(copy.params).toEqual({ name: 'sofia' })
   })
 
+  /**
+   * The fold is a fact about *when*, never a word in the sentence. A row
+   * speaking for three days still says the newest day's own number — three
+   * days of a pool never paid out in one, and 750 is a figure nobody was
+   * given.
+   */
+  it('keeps a folded row’s sentence about its own day', () => {
+    expect(notificationCopy(row({ kind: 'walletPool', count: 250, earlier: 2 })).params).toEqual({
+      count: 250,
+    })
+    expect(notificationCopy(row({ kind: 'profileVisits', count: 10, earlier: 2 })).params).toEqual({
+      count: 10,
+    })
+  })
+
   it('has a line for every kind there is', () => {
     for (const kind of IN_APP_NOTIFICATION_KINDS) {
       expect(notificationCopy(row({ kind, actor: SOFIA, count: 2 })).key).toMatch(/^inbox\./)

@@ -1312,6 +1312,12 @@ export const ru: Localized<EnMessages> = {
       many: '{count} человек посмотрели ваш профиль',
       other: '{count} человека посмотрели ваш профиль',
     },
+    earlier: {
+      one: '+{count} ещё',
+      few: '+{count} ещё',
+      many: '+{count} ещё',
+      other: '+{count} ещё',
+    },
   },
   feed: {
     topTag: 'Лучшая',

@@ -359,7 +359,19 @@ export interface Profile {
      * passenger: a badge that already buzzed a phone is not a reason to send
      * a mail, only something to mention in one that is going anyway.
      */
-    digestBadges?: { day: string; count: number; label: string | null; pushed: boolean }
+    digestBadges?: {
+      day: string
+      count: number
+      label: string | null
+      pushed: boolean
+      /**
+       * Which badges, so the digest can ask whether the bell already showed
+       * them. Absent on a row written before that check existed, which reads
+       * as "cannot tell" rather than "seen" — one evening of the old
+       * behaviour, not a silence nobody asked for.
+       */
+      ids?: string[]
+    }
   }
   /**
    * Who invited this account, if anybody. Written once by `attachReferral`

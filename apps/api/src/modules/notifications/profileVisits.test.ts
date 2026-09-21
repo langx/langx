@@ -56,6 +56,7 @@ describe('the profile-visit round-up', () => {
       COLLECTIONS.devices,
       COLLECTIONS.profileViews,
       COLLECTIONS.notificationLedger,
+      COLLECTIONS.notifications,
       COLLECTIONS.blocks,
     ]) {
       await handle.db.collection(name).deleteMany({})
@@ -229,6 +230,43 @@ describe('the profile-visit round-up', () => {
 
       await runDailyDigestPass(handle.db, email, mondayEvening)
       expect(sender.messages[0]?.subject).toContain('3')
+    })
+
+    /**
+     * The daily round-up wrote a row for each of these days and the bell has
+     * been showing them all week. A summary of visits somebody has already
+     * counted off one by one is a second telling, not a summary.
+     */
+    async function visitRow(userId: string, daysAgo: number, read: boolean): Promise<void> {
+      const at = new Date(mondayEvening.getTime() - daysAgo * DAY)
+      await handle.db.collection(COLLECTIONS.notifications).insertOne({
+        _id: new ObjectId(),
+        userId,
+        kind: 'profileVisits',
+        refId: at.toISOString().slice(0, 10),
+        count: 1,
+        createdAt: at,
+        ...(read ? { readAt: new Date(at.getTime() + 60 * 60 * 1000) } : {}),
+      })
+    }
+
+    it('writes no letter about a week already read on the bell', async () => {
+      const me = await newProfile()
+      for (const daysAgo of [2, 5]) await view(await newProfile(), me, daysAgo)
+      await visitRow(me, 2, true)
+      await visitRow(me, 5, true)
+
+      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 0 })
+      expect(sender.messages).toHaveLength(0)
+    })
+
+    it('still writes when one of the days is unread', async () => {
+      const me = await newProfile()
+      for (const daysAgo of [2, 5]) await view(await newProfile(), me, daysAgo)
+      await visitRow(me, 2, true)
+      await visitRow(me, 5, false)
+
+      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 1 })
     })
   })
 })

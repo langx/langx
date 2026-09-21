@@ -16,7 +16,7 @@ import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import type { DigestCandidate } from './digest'
-import { recordNotification } from './inbox'
+import { alreadySeenInApp, recordNotification } from './inbox'
 import { alreadyClaimed, claimOnce } from './ledger'
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -161,16 +161,24 @@ export async function profileVisitsSectionFor(
   const week = weekKey(now)
   if (await alreadyClaimed(db, 'profileVisitsEmail', profile._id, week)) return null
 
-  const summary = await viewSummarySince(
-    db,
-    profile._id,
-    new Date(now.getTime() - 7 * DAY_MS),
-    PROFILE_VISITS_EMAIL_MAX_NAMES,
-  )
+  const since = new Date(now.getTime() - 7 * DAY_MS)
+  const summary = await viewSummarySince(db, profile._id, since, PROFILE_VISITS_EMAIL_MAX_NAMES)
   if (!summary || summary.count === 0) return null
 
+  /*
+   * The daily round-up wrote a row for each of these seven days and the app
+   * has been showing them all week. A summary of visits somebody has already
+   * counted off one by one on the bell is a second telling, not a summary —
+   * so it rides along in a letter that is going out and no longer sends one.
+   *
+   * The window is the section's own, so the rows weighed are the visits being
+   * written about: a day inside it that is still unread is news the weekly
+   * line is the first mail to carry.
+   */
+  const seen = await alreadySeenInApp(db, profile._id, { kinds: ['profileVisits'], since })
+
   return {
-    trigger: true,
+    trigger: !seen,
     claim: () => claimOnce(db, 'profileVisitsEmail', profile._id, week),
     build: (locale: Locale) =>
       buildSection(locale, {

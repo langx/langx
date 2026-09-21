@@ -179,8 +179,7 @@ export async function recordNotifications(
  * ten rows saying so is a list nobody can scan — which is the whole purpose of
  * the screen. A follow is not in here on purpose: each one is a different
  * person and the row opens *that* person, so collapsing them would take the
- * destination away. The badge, the pool and the visit round-up are already one
- * per badge or per day.
+ * destination away.
  */
 const GROUPED_KINDS: InAppNotificationKind[] = [
   'postComment',
@@ -190,16 +189,42 @@ const GROUPED_KINDS: InAppNotificationKind[] = [
 ]
 
 /**
+ * The kinds that say the same sentence again every time, and therefore
+ * collapse onto themselves rather than onto a post.
+ *
+ * Each of these is already one row per badge, per pool day or per local day —
+ * which is what made it look like they needed no grouping at all. They do: the
+ * ceiling is per *day*, and a week of them is a screen of the app repeating
+ * itself three times over, which is the same list nobody can scan arriving by
+ * a slower route. There is no post to key them on, so the key is the kind.
+ *
+ * What the row then shows is **not** what a post pile shows, and the
+ * difference is in the sentence. A pile's count is the sentence — "and 3
+ * others commented" — while these carry a quantity the sentence needs, people
+ * or tokens, and a total spanning three days would be a number nothing paid
+ * out: "yesterday's pool" did not pay 750. So the newest speaks unchanged and
+ * the fold travels beside it, as `earlier`.
+ */
+const REPEATING_KINDS: InAppNotificationKind[] = ['badgeEarned', 'walletPool', 'profileVisits']
+
+/**
  * One key per collapsible pile, and the row's own id for everything else —
  * which makes a non-grouped kind a group of one and keeps the pipeline below
  * free of special cases.
  */
 const GROUP_KEY = {
-  $cond: [
-    { $and: [{ $in: ['$kind', GROUPED_KINDS] }, { $ne: [{ $type: '$postId' }, 'missing'] }] },
-    { $concat: ['$kind', ':', { $toString: '$postId' }] },
-    { $toString: '$_id' },
-  ],
+  $switch: {
+    branches: [
+      {
+        case: {
+          $and: [{ $in: ['$kind', GROUPED_KINDS] }, { $ne: [{ $type: '$postId' }, 'missing'] }],
+        },
+        then: { $concat: ['$kind', ':', { $toString: '$postId' }] },
+      },
+      { case: { $in: ['$kind', REPEATING_KINDS] }, then: '$kind' },
+    ],
+    default: { $toString: '$_id' },
+  },
 }
 
 interface GroupedRow {
@@ -355,6 +380,8 @@ export async function listNotifications(
   const items = rows.flatMap((row): InAppNotification[] => {
     if (!isDrawable(row, targets)) return []
     const extra = extraByRow.get(row._id.toHexString())
+    /** How many older rows this one speaks for. Never negative; often zero. */
+    const folded = extra?.others ?? 0
     const actor = row.actorId ? targets.actors.get(row.actorId) : undefined
     const post = row.postId ? targets.posts.get(row.postId.toHexString()) : undefined
 
@@ -380,11 +407,18 @@ export async function listNotifications(
          * the sentence already names the first — and on a visit round-up or a
          * pool payout it is the count the row was written with.
          */
-        ...(extra && extra.others > 0
-          ? { count: extra.others }
+        ...(folded > 0 && !REPEATING_KINDS.includes(row.kind)
+          ? { count: folded }
           : row.count !== undefined
             ? { count: row.count }
             : {}),
+        /*
+         * And the fold itself, where it could not become the count.
+         * A repeating kind's sentence needs its own quantity — ten people
+         * looked, 250 tokens arrived — so the days behind it are a second
+         * fact rather than a replacement for the first.
+         */
+        ...(folded > 0 && REPEATING_KINDS.includes(row.kind) ? { earlier: folded } : {}),
         ...(row.badgeId ? { badgeId: row.badgeId } : {}),
         read: extra ? extra.unread === 0 : row.readAt !== undefined,
         createdAt: row.createdAt.toISOString(),
@@ -479,9 +513,12 @@ export async function markNotificationsRead(
     if (!row) return { readAt: now.toISOString(), read: 0 }
     filter.kind = row.kind
     // The same rule `GROUP_KEY` applies, spelled out: a kind that collapses is
-    // marked across its post, and one that does not is marked on its own.
+    // marked across its post, a kind that repeats is marked across itself, and
+    // one that does neither is marked on its own. The middle case is why the
+    // `+N earlier` fold is honest — the days behind the row are dealt with by
+    // the tap that dealt with the row.
     if (GROUPED_KINDS.includes(row.kind) && row.postId) filter.postId = row.postId
-    else filter._id = row._id
+    else if (!REPEATING_KINDS.includes(row.kind)) filter._id = row._id
   }
 
   const result = await rows.updateMany(filter, { $set: { readAt: now } })
@@ -531,4 +568,55 @@ export async function likeTargetOwner(
     .findOne({ _id: targetId }, { projection: { authorId: 1, postId: 1 } })
   if (!row) return null
   return { authorId: row.authorId, postId: row.postId ?? row._id }
+}
+
+/**
+ * Has this person already read the app's own record of this news?
+ *
+ * The digest's passenger rule, applied to the half of the app that was not
+ * asked. A section stops being a reason to send once a push has delivered it,
+ * on the grounds that saying it twice is not news — and somebody who opened
+ * the bell and read the row has the same claim to be left alone. The evening
+ * mail was still writing to them, because nothing on that path had ever
+ * looked at this collection.
+ *
+ * Three answers, not two, and the third is why this returns false rather than
+ * true when it finds nothing:
+ *
+ * - something is still unread — say it, that is the point of saying it;
+ * - every row is read — they have seen it, so tonight's letter is a repeat;
+ * - **there are no rows at all** — the centre knows nothing about this, and an
+ *   absence must never be read as "seen". Every writer here swallows its own
+ *   failures on purpose, so a missing row means the inbox write did not land,
+ *   not that somebody dealt with it.
+ *
+ * The unread look goes first because it is the common case and the cheap one:
+ * an account with anything pending is answered in a single indexed read.
+ */
+export async function alreadySeenInApp(
+  db: Db,
+  userId: string,
+  /**
+   * What the message is about, as narrowly as the caller can say it. `refIds`
+   * where the row's key is the news itself — a badge, a pool day — and `since`
+   * where it is not, in which case it is the same window the pass collected
+   * over, so the rows counted are the rows being written about.
+   */
+  scope: { kinds: InAppNotificationKind[]; refIds?: string[]; since?: Date },
+): Promise<boolean> {
+  if (scope.refIds && scope.refIds.length === 0) return false
+
+  const rows = db.collection<NotificationDoc>(COLLECTIONS.notifications)
+  const filter: Document = { userId, kind: { $in: scope.kinds } }
+  if (scope.refIds) filter.refId = { $in: scope.refIds }
+  if (scope.since) filter.createdAt = { $gte: scope.since }
+
+  const unread = await rows.findOne(
+    { ...filter, readAt: { $exists: false } },
+    { projection: { _id: 1 } },
+  )
+  if (unread) return false
+
+  const seen = await rows.findOne(filter, { projection: { _id: 1 } })
+  return seen !== null
 }

@@ -1200,6 +1200,10 @@ export const fr: Localized<EnMessages> = {
       one: '{count} personne a consulté votre profil',
       other: '{count} personnes ont consulté votre profil',
     },
+    earlier: {
+      one: '+{count} de plus',
+      other: '+{count} de plus',
+    },
   },
   feed: {
     topTag: 'Meilleure',

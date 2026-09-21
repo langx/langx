@@ -1343,6 +1343,17 @@ export const en = {
       one: '{count} person looked at your profile',
       other: '{count} people looked at your profile',
     },
+    /**
+     * What a folded row says about the days behind it.
+     *
+     * Deliberately naming nothing — days for a visit round-up or a pool
+     * payout, badges for a badge. One line for three kinds beats three that
+     * differ only in a noun nobody reads.
+     */
+    earlier: {
+      one: '+{count} more',
+      other: '+{count} more',
+    },
   },
   feed: {
     topTag: 'Top',

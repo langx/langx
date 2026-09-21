@@ -1189,6 +1189,10 @@ export const ptBR: Localized<EnMessages> = {
       one: '{count} pessoa viu seu perfil',
       other: '{count} pessoas viram seu perfil',
     },
+    earlier: {
+      one: '+{count} mais',
+      other: '+{count} mais',
+    },
   },
   feed: {
     topTag: 'Melhor',

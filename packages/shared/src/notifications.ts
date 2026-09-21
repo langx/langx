@@ -535,6 +535,15 @@ export const inAppNotificationSchema = z.object({
   preview: z.string().optional(),
   /** Visits: people that day. Pool: tokens paid. Likes: how many others. */
   count: z.number().int().positive().optional(),
+  /**
+   * How many older rows this one speaks for, on the kinds that repeat.
+   *
+   * Beside `count` rather than inside it, because on those kinds the count is
+   * a quantity the sentence needs — people, tokens — and the pile is a second
+   * fact. A post pile has no such quantity, so there the group's size *is* the
+   * count and this is absent.
+   */
+  earlier: z.number().int().positive().optional(),
   badgeId: z.string().optional(),
   /** `read`, not `readAt`: the row draws a dot, and a timestamp is not one. */
   read: z.boolean(),

@@ -21,6 +21,8 @@ export interface InboxItem {
   postId?: string | undefined
   /** Likes: how many *other* people. Visits: how many looked. Pool: tokens. */
   count?: number | undefined
+  /** How many older rows of a repeating kind this one speaks for. */
+  earlier?: number | undefined
 }
 
 /**

@@ -1347,6 +1347,14 @@ export const ar: Localized<EnMessages> = {
       many: 'نظر {count} شخصًا إلى ملفك',
       other: 'نظر {count} شخص إلى ملفك',
     },
+    earlier: {
+      zero: '+{count} أخرى',
+      one: '+{count} أخرى',
+      two: '+{count} أخرى',
+      few: '+{count} أخرى',
+      many: '+{count} أخرى',
+      other: '+{count} أخرى',
+    },
   },
   feed: {
     topTag: 'الأفضل',
