@@ -476,6 +476,21 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(body.today.day).toBe(utcDayKey(now))
     })
 
+    it('counts a message into the sender’s own day, not the UTC one', async () => {
+      // UTC+14, so the sender's local day differs from the UTC one for most
+      // of the UTC day — and the message has to be in the last bar either
+      // way. This is the whole wiring: `awardForSend` reads the sender's
+      // zone, `recordActivity` files the increment under their local day,
+      // and `readActivityWeek` reads it back out.
+      const a = await newUser('week-local-day@example.com', { timezone: 'Pacific/Kiritimati' })
+      const b = await newUser('week-local-day-partner@example.com')
+      await startConversation(a, b.userId, 'kia orana')
+
+      const body = await summary(a)
+
+      expect(body.week.at(-1)?.messages).toBe(1)
+    })
+
     it('pays a milestone bonus once, on the day the streak reaches it', async () => {
       const a = await newUser('xp-milestone-a@example.com')
       const b = await newUser('xp-milestone-b@example.com')

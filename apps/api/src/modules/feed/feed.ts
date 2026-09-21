@@ -508,7 +508,7 @@ async function awardForPostCorrection(
   const frozen = Boolean(profile?.tokenFrozenAt)
   const at = correction.createdAt
 
-  await recordActivity(db, { userId, kind: 'correction', at })
+  await recordActivity(db, { userId, kind: 'correction', at, timeZone: profile?.timezone ?? 'UTC' })
   await awardTokens(db, {
     userId,
     kind: 'correction',
