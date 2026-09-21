@@ -44,14 +44,9 @@ describe('the step list', () => {
 })
 
 describe('where a step stands', () => {
-  it('sends the four tab steps to their own tab, left to right', () => {
+  it('sends the tab steps to their own tab, left to right', () => {
     const tabs = TOUR_STEPS.filter((step) => step.target.startsWith('tab'))
-    expect(tabs.map((step) => step.tab)).toEqual([
-      TOUR_TABS.chats,
-      TOUR_TABS.echo,
-      TOUR_TABS.feed,
-      TOUR_TABS.me,
-    ])
+    expect(tabs.map((step) => step.tab)).toEqual([TOUR_TABS.chats, TOUR_TABS.echo, TOUR_TABS.feed])
   })
 
   /** Otherwise the run ends pointing at a card on a screen nobody is on. */
@@ -60,7 +55,7 @@ describe('where a step stands', () => {
   })
 
   it('leaves the Discovery chrome steps where they already are', () => {
-    for (const step of TOUR_STEPS.slice(0, 3)) expect(step.tab).toBeUndefined()
+    for (const step of TOUR_STEPS.slice(0, 2)) expect(step.tab).toBeUndefined()
   })
 })
 
@@ -120,8 +115,8 @@ describe('walking the run', () => {
   it('skips a step whose target is not on screen', () => {
     const state = startTour({ guest: false })
     // The first step that is neither available nor on a tab of its own.
-    const resolved = resolveFrom(state, (target) => target === 'discoverFilters')
-    expect(currentStep(resolved!)?.target).toBe('discoverFilters')
+    const resolved = resolveFrom(state, (target) => target === 'discoverSorts')
+    expect(currentStep(resolved!)?.target).toBe('discoverSorts')
   })
 
   /**
@@ -130,8 +125,20 @@ describe('walking the run', () => {
    * run skip its whole tail the moment it left Discovery.
    */
   it('lets a step through when it is waiting for a mount', () => {
-    const resolved = resolveFrom(startTour({ guest: false }), () => false)
-    expect(resolved?.index).toBe(TOUR_STEPS.findIndex((step) => step.awaitsMount))
+    /*
+     * Written against a step of its own rather than against `TOUR_STEPS`: no
+     * step in the run waits for a mount since it was cut to six, and the
+     * resolver's promise is still the one that matters when one does again.
+     */
+    const state = {
+      steps: [
+        { target: 'tabFeed', tab: TOUR_TABS.feed, awaitsMount: true },
+      ] as const satisfies TourState['steps'],
+      index: 0,
+      guest: false,
+    }
+    const resolved = resolveFrom(state, () => false)
+    expect(resolved?.index).toBe(0)
   })
 
   /**
@@ -139,11 +146,13 @@ describe('walking the run', () => {
    * mounted — the tab-bar icons whatever tab is showing, Discovery throughout
    * — so "not registered" there means genuinely absent.
    */
-  it('waits only for the screen the run itself opens', () => {
-    expect(TOUR_STEPS.filter((step) => step.awaitsMount).map((step) => step.target)).toEqual([
-      'feedAsk',
-      'feedKinds',
-    ])
+  /**
+   * None since the run was cut to six: the two that waited were the Feed's
+   * own steps, and `tabFeed` says what they said. The rule the resolver keeps
+   * is tested a few lines down, against a step written for it.
+   */
+  it('waits for no screen at all now', () => {
+    expect(TOUR_STEPS.filter((step) => step.awaitsMount)).toEqual([])
   })
 
   /**

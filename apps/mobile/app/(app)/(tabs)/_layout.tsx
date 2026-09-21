@@ -282,7 +282,7 @@ export default function TabsLayout() {
         name="me"
         options={{
           title: t('tabs.me'),
-          tabBarIcon: ({ color }) => <TabIcon name="user" color={color} tour="tabMe" />,
+          tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
         }}
       />
     </Tabs>

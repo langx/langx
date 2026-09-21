@@ -33,6 +33,17 @@ const PAD = 6
 const RADIUS = 0
 /** Wide enough for two lines of body text, narrow enough to point at something. */
 const MAX_BUBBLE_WIDTH = 420
+/**
+ * The room beside the hole that makes standing there better than standing
+ * over the screen.
+ *
+ * On a phone there is never this much: the widest thing the tour points at is
+ * nearly the width of the window. On a two-pane window there always is — the
+ * tour explains a 360-point column while the other half of the screen holds
+ * an empty panel — and putting the bubble in that half stops it covering the
+ * very list it is describing.
+ */
+const MIN_BESIDE_WIDTH = 320
 
 export interface TourLayoutInput {
   anchor: TourRect
@@ -109,18 +120,29 @@ export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLay
    * thing this function refuses to wait for.
    */
   const placement = top + height / 2 < screen.height / 2 ? 'below' : 'above'
-  const bubbleWidth = Math.min(MAX_BUBBLE_WIDTH, Math.max(0, screen.width - GAP * 2))
+
+  /*
+   * Beside the hole when there is a half of the window doing nothing, over it
+   * otherwise. `placement` still says which edge the bubble is pinned by —
+   * the height is the one thing this function refuses to wait for — so a
+   * bubble that stands beside the hole only stops *clearing* it vertically:
+   * it lines its top up with the hole's top, or its bottom with the hole's
+   * bottom, and reads as being about the thing it is next to.
+   */
+  const sideRoom = screen.width - (right + GAP * 2)
+  const beside = sideRoom >= MIN_BESIDE_WIDTH
+  const bubbleWidth = beside
+    ? Math.min(MAX_BUBBLE_WIDTH, sideRoom)
+    : Math.min(MAX_BUBBLE_WIDTH, Math.max(0, screen.width - GAP * 2))
   // Centred on what it points at, then pulled back inside the screen — so a
   // bubble for the filter button at the trailing edge still reads as being
   // about the filter button.
-  const bubbleLeft = clamp(
-    anchor.x + anchor.width / 2 - bubbleWidth / 2,
-    GAP,
-    screen.width - bubbleWidth - GAP,
-  )
+  const bubbleLeft = beside
+    ? right + GAP
+    : clamp(anchor.x + anchor.width / 2 - bubbleWidth / 2, GAP, screen.width - bubbleWidth - GAP)
 
   if (placement === 'below') {
-    const bubbleTop = bottom + GAP
+    const bubbleTop = beside ? Math.max(insets.top + GAP, top) : bottom + GAP
     return {
       hole,
       mask,
@@ -135,7 +157,9 @@ export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLay
     }
   }
 
-  const bubbleBottom = Math.max(0, screen.height - top) + GAP
+  const bubbleBottom = beside
+    ? Math.max(insets.bottom + GAP, screen.height - bottom)
+    : Math.max(0, screen.height - top) + GAP
   return {
     hole,
     mask,

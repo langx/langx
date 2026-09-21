@@ -396,24 +396,22 @@ export default function DiscoverScreen() {
               I am looking for". */}
           <PeopleSearch from="/(app)/(tabs)/discover" onSearchingChange={setSearching} />
           {searching ? null : (
-            <TourTarget id="discoverFilters">
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={
-                  count > 0
-                    ? t('discover.filtersWithCount', { count })
-                    : isPro
-                      ? t('filters.title')
-                      : t('discover.filters')
-                }
-                onPress={() => router.push({ pathname: '/(app)/filters', params })}
-                style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
-                hitSlop={8}
-              >
-                <Feather name="sliders" size={22} color={colors.text} />
-                {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
-              </Pressable>
-            </TourTarget>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={
+                count > 0
+                  ? t('discover.filtersWithCount', { count })
+                  : isPro
+                    ? t('filters.title')
+                    : t('discover.filters')
+              }
+              onPress={() => router.push({ pathname: '/(app)/filters', params })}
+              style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
+              hitSlop={8}
+            >
+              <Feather name="sliders" size={22} color={colors.text} />
+              {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
+            </Pressable>
           )}
         </View>
         {/* Which direction this list is matched in. Without it the list

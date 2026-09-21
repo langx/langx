@@ -92,15 +92,37 @@ describe('tourLayout', () => {
     })
     expect(trailing.bubble.left).toBe(12)
     expect(trailing.bubble.left + trailing.bubble.width).toBeLessThanOrEqual(screen.width)
+  })
 
+  /**
+   * The two-pane case, which is the whole reason the rule exists: the tour
+   * explains a 360-point column while the other half of the window holds an
+   * empty panel, and a bubble centred on the anchor would cover the list it
+   * is describing rather than stand in the room next to it.
+   */
+  it('stands beside the element when a half of the window is free', () => {
     const wide = tourLayout({
-      anchor: { x: 400, y: 120, width: 40, height: 40 },
+      anchor: { x: 24, y: 120, width: 160, height: 34 },
       screen: { width: 1200, height: 900 },
       insets,
     })
-    // 420 wide, centred on 420 → its left edge lands at 210.
+    // The hole ends at 190; the bubble starts one gap later and lines its top
+    // up with the hole's rather than clearing it.
+    expect(wide.bubble.left).toBe(202)
     expect(wide.bubble.width).toBe(420)
-    expect(wide.bubble.left).toBe(210)
+    expect(wide.bubble.placement).toBe('below')
+    expect(wide.bubble.top).toBe(114)
+  })
+
+  /** A phone has no such room: 390 wide, and the bubble stays over the screen. */
+  it('stays over the element when there is no room beside it', () => {
+    const phone = tourLayout({
+      anchor: { x: 24, y: 120, width: 160, height: 34 },
+      screen,
+      insets,
+    })
+    expect(phone.bubble.left).toBe(12)
+    expect(phone.bubble.top).toBe(172)
   })
 
   /** A bubble taller than the room it has scrolls; it never runs off the screen. */

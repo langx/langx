@@ -154,9 +154,6 @@ export const en = {
     discoverSortsTitle: 'Three ways to look',
     discoverSortsBody:
       'For you is matched to your languages, Active is who has just been here, and Nearby uses your location once you share it.',
-    discoverFiltersTitle: 'Narrow it down',
-    discoverFiltersBody:
-      'Filter by level, age or country — or use the search field when you already know whose name you are after.',
     discoverCardTitle: 'Start here',
     discoverCardBody:
       'Open anyone to read their profile. Saying hello first is how almost every exchange on LangX begins.',
@@ -170,16 +167,8 @@ export const en = {
     tabFeedTitle: 'Ask and learn',
     tabFeedBody:
       'The Feed is the whole room: get a sentence corrected, hear how a word is said, and do the same for someone else.',
-    tabMeTitle: 'Yours',
-    tabMeBody: 'Your profile, your tokens and your streak — and Settings, behind the gear.',
     sayHi: 'Say hi to {name}',
     notNow: 'Not now',
-    feedAskTitle: 'Ask for one thing',
-    feedAskBody:
-      'Post a sentence you are unsure of, or a word you cannot say, and let people answer it.',
-    feedKindsTitle: 'Two kinds of help',
-    feedKindsBody:
-      'Corrections are written: someone fixes your sentence. Pronunciation is spoken: someone records the word for you.',
   },
   theme: {
     section: 'Appearance',

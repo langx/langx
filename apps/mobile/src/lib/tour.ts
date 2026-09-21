@@ -37,13 +37,9 @@ export interface TourRect {
 export const TOUR_TARGETS = [
   'discoverPair',
   'discoverSorts',
-  'discoverFilters',
   'tabChats',
   'tabEcho',
   'tabFeed',
-  'feedAsk',
-  'feedKinds',
-  'tabMe',
   'discoverCard',
 ] as const
 
@@ -114,7 +110,6 @@ export interface TourStep {
 export const TOUR_STEPS: readonly TourStep[] = [
   { target: 'discoverPair' },
   { target: 'discoverSorts' },
-  { target: 'discoverFilters' },
   { target: 'tabChats', tab: TOUR_TABS.chats },
   /*
    * Between Chats and Feed, which is where the tab sits — the run walks the
@@ -126,14 +121,26 @@ export const TOUR_STEPS: readonly TourStep[] = [
    */
   { target: 'tabEcho', tab: TOUR_TABS.echo },
   { target: 'tabFeed', tab: TOUR_TABS.feed },
-  // Standing on the Feed already, but still naming the tab — and the only two
-  // steps that wait for a mount, because the Feed is the one screen the run
-  // opens that nothing had rendered before.
-  { target: 'feedAsk', tab: TOUR_TABS.feed, awaitsMount: true },
-  { target: 'feedKinds', tab: TOUR_TABS.feed, awaitsMount: true },
-  { target: 'tabMe', tab: TOUR_TABS.me },
   { target: 'discoverCard', tab: TOUR_TABS.discover },
 ]
+
+/**
+ * **Six steps, and it was ten.** Behic asked for it shorter on 21 September,
+ * and the four that went were the four that repeated something:
+ *
+ * - `discoverFilters` said "narrow it down" a step after `discoverSorts` said
+ *   "three ways to look" — one screen, two steps, one idea.
+ * - `feedAsk` and `feedKinds` explained the Feed in detail immediately after
+ *   `tabFeed` had named it, which is three of ten steps for the tab somebody
+ *   reaches last. They were also the only steps that waited for a mount, so
+ *   dropping them takes the run's one race with it.
+ * - `tabMe` pointed at a tab labelled "Me" with a person on it.
+ *
+ * What is left is the shape the run always had: what this screen is, how to
+ * read it, where answers land, what Echo is, what the Feed is for, and then
+ * one card to open. The last step is the only one with an action in it and it
+ * is the reason the rest exist.
+ */
 
 /**
  * Which message words a step, given who is reading.
