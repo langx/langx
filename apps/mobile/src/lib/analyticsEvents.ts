@@ -325,13 +325,9 @@ export type AnalyticsEvent =
       properties: { step: TourTargetId; index: number }
     }
   | {
-      /**
-       * The last step was passed. Against `tour_started`, this is the funnel —
-       * and `opened_profile` splits the two ways it ends: the offer taken, or
-       * the run simply finished.
-       */
+      /** The last step was passed. Against `tour_started`, this is the funnel. */
       name: 'tour_completed'
-      properties: { is_guest: boolean; opened_profile: boolean }
+      properties: { is_guest: boolean }
     }
   | {
       /**

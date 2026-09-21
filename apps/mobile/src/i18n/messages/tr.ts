@@ -148,8 +148,6 @@ export const tr: Localized<EnMessages> = {
     tabFeedTitle: 'Sor ve öğren',
     tabFeedBody:
       'Akış tüm topluluğun ortak alanı: bir cümleni düzelttir, bir kelimenin nasıl söylendiğini dinle, aynısını başkası için yap.',
-    sayHi: '{name} kişisine selam ver',
-    notNow: 'Şimdi değil',
   },
   theme: {
     section: 'Görünüm',

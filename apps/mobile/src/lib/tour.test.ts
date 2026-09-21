@@ -18,8 +18,6 @@ import {
   TOUR_GUEST_BODIES,
   TOUR_TABS,
   tourBodyKey,
-  tourCta,
-  registerTourCta,
   type TourState,
 } from './tour'
 
@@ -74,23 +72,6 @@ describe('wording a step', () => {
         : `tour.${target}Body`
       expect(tourBodyKey(target, { guest: true })).toBe(expected)
     }
-  })
-})
-
-describe('the offer on the last step', () => {
-  it('is whatever registered last, and is gone once unregistered', () => {
-    const run = (): void => undefined
-    const unregister = registerTourCta({ name: 'Anna', run })
-    expect(tourCta()?.name).toBe('Anna')
-    unregister()
-    expect(tourCta()).toBeNull()
-  })
-
-  it('does not let a stale unregister drop the current offer', () => {
-    const unregisterFirst = registerTourCta({ name: 'Anna', run: () => undefined })
-    registerTourCta({ name: 'Olga', run: () => undefined })
-    unregisterFirst()
-    expect(tourCta()?.name).toBe('Olga')
   })
 })
 

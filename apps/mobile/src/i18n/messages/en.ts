@@ -167,8 +167,6 @@ export const en = {
     tabFeedTitle: 'Ask and learn',
     tabFeedBody:
       'The Feed is the whole room: get a sentence corrected, hear how a word is said, and do the same for someone else.',
-    sayHi: 'Say hi to {name}',
-    notNow: 'Not now',
   },
   theme: {
     section: 'Appearance',

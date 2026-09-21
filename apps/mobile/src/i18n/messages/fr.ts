@@ -140,8 +140,6 @@ export const fr: Localized<EnMessages> = {
     tabFeedTitle: 'Demande et apprends',
     tabFeedBody:
       'Le Fil, c’est toute la communauté : fais corriger une phrase, écoute comment un mot se prononce, et rends la pareille à quelqu’un.',
-    sayHi: 'Dis bonjour à {name}',
-    notNow: 'Pas maintenant',
   },
   theme: {
     section: 'Apparence',
