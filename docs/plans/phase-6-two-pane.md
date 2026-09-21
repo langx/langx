@@ -52,22 +52,32 @@ by itself.
 
 ## What is checked, and what is not
 
-| Check                                           | Result              |
-| ----------------------------------------------- | ------------------- |
-| `pnpm -r typecheck`                             | ✅                  |
-| `pnpm lint`, `pnpm format`                      | ✅                  |
-| The mobile suite (1,017 tests)                  | ✅                  |
-| The list and a thread side by side, in a window | ⬜ **not yet seen** |
-| A row tap filling the panel                     | ⬜ not yet seen     |
-| The redirect from a notification into the panel | ⬜ not yet seen     |
-| Narrowing a window with a thread open           | ⬜ not yet seen     |
-| Any of it on an iPad, a Mac or a Duo            | ⬜ not yet seen     |
+Looked at in a browser at 1280 and at 500 points wide, signed in as a seeded
+account against a local API.
 
-**Nothing in the bottom half of that table has been looked at.** The machine
-lost its network mid-session — no address on `en0`, so no Atlas, so no API to
-sign into — and every one of those checks needs a signed-in app with
-conversations in it. The layout is written and it compiles; whether it _looks_
-right is unknown, and this file will say so until somebody has seen it.
+| Check                                 | Result                                                                |
+| ------------------------------------- | --------------------------------------------------------------------- |
+| `pnpm -r typecheck`, `lint`, `format` | ✅                                                                    |
+| The mobile suite (1,017 tests)        | ✅                                                                    |
+| The list and a thread side by side    | ✅ 360 for the list, the rest for the thread                          |
+| A row tap fills the panel             | ✅ and the row it came from is marked                                 |
+| No back arrow in the panel            | ✅ the list it would return to is on screen                           |
+| A deep link lands in the panel        | ✅ `/chat/<id>` became `/chats?open=<id>`, the thread beside the list |
+| Narrowing with a thread open          | ✅ back to `/chat/<id>`, pushed, back arrow returned, nothing lost    |
+| Widening again                        | ✅ back into the panel, by the redirect alone                         |
+| The empty half                        | ✅ "No conversation open", on the app's own ground                    |
+| Any of it on an iPad, a Mac or a Duo  | ⬜ **not yet**                                                        |
+
+**The open one is what the phase is named for.** A browser window is the right
+test of the _rule_ — the layout asks how wide the window is, and a dragged
+window changes that exactly as a fold does — but it is not an iPad, a Mac or a
+Duo, and none of those has run this. The Duo also needs Xcode 27.1's Device Hub
+and the four poses, which waits on the simulator runtime.
+
+**One thing the browser caught**, which is why it was worth running rather than
+reasoning about: the empty half was white in dark mode. Neither pane paints the
+ground — `Screen` paints its own, and the panel's is the thread's — so what
+showed through was whatever sat behind the navigator.
 
 ## What this layer does not do
 

@@ -442,7 +442,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
    * any window size, while a thread reads better the more room it has — and
    * `Screen`'s own 720pt column stops it spreading a bubble across a monitor.
    */
-  panes: { flex: 1, flexDirection: 'row' },
+  // The ground, which neither half paints: `Screen` paints its own and the
+  // panel's own background is the thread's. Without it the empty half is
+  // whatever is behind the navigator — white, in a dark-mode browser.
+  panes: { backgroundColor: colors.bg, flex: 1, flexDirection: 'row' },
   listPane: { width: PANE_WIDTH },
   detailPane: { borderLeftColor: colors.border, borderLeftWidth: 1, flex: 1 },
   /** The "nothing open" card, centred in the empty half. */
