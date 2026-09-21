@@ -846,6 +846,8 @@ export const es: Localized<EnMessages> = {
       'Pregunta por una frase que no tienes clara, o una palabra que no sabes decir — aparecerá aquí.',
   },
   discover: {
+    pickTitle: 'Nadie abierto',
+    pickBody: 'Elige a alguien de la lista y su perfil se abrirá aquí.',
     boosted: 'Destacados',
     boostedWhat: '¿Qué es esto?',
     boostedExplainTitle: 'Perfiles destacados',

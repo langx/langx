@@ -846,6 +846,8 @@ export const tr: Localized<EnMessages> = {
     emptyBody: 'Emin olmadığın bir cümleyi ya da söyleyemediğin bir kelimeyi sor — burada görünür.',
   },
   discover: {
+    pickTitle: 'Kimse açık değil',
+    pickBody: 'Listeden birini seç, profili burada açılsın.',
     boosted: 'Öne çıkanlar',
     boostedWhat: 'Bu ne?',
     boostedExplainTitle: 'Öne çıkan profiller',

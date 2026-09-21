@@ -978,6 +978,8 @@ export const en = {
       'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
   },
   discover: {
+    pickTitle: 'Nobody open',
+    pickBody: 'Pick somebody from the list and their profile opens here.',
     boosted: 'Boosted',
     boostedWhat: 'What is this?',
     boostedExplainTitle: 'Boosted profiles',

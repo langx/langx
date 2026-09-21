@@ -851,6 +851,8 @@ export const fr: Localized<EnMessages> = {
       'Pose une question sur une phrase dont tu n’es pas sûr, ou un mot que tu n’arrives pas à dire — elle apparaîtra ici.',
   },
   discover: {
+    pickTitle: 'Personne d’ouvert',
+    pickBody: 'Choisissez quelqu’un dans la liste, son profil s’ouvre ici.',
     boosted: 'En avant',
     boostedWhat: 'Qu’est-ce que c’est ?',
     boostedExplainTitle: 'Profils mis en avant',

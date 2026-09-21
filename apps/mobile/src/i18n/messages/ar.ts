@@ -927,6 +927,8 @@ export const ar: Localized<EnMessages> = {
     emptyBody: 'اسأل عن جملة لست متأكدًا منها، أو كلمة لا تستطيع نطقها — ستظهر هنا.',
   },
   discover: {
+    pickTitle: 'لا أحد مفتوح',
+    pickBody: 'اختر شخصًا من القائمة ليفتح ملفه هنا.',
     boosted: 'مُبرَزون',
     boostedWhat: 'ما هذا؟',
     boostedExplainTitle: 'الملفات المُبرَزة',

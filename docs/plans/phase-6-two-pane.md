@@ -79,12 +79,30 @@ reasoning about: the empty half was white in dark mode. Neither pane paints the
 ground — `Screen` paints its own, and the panel's is the thread's — so what
 showed through was whatever sat behind the navigator.
 
+## Discover, the same way — and the one difference
+
+Behic asked for the rest of the app to follow, so Discover did: the list on
+the left, the profile of whoever is picked on the right, the row it came from
+marked. `profile/[handle].tsx` was 612 lines reading `useLocalSearchParams`
+and is now `src/screens/ProfileScreen`, the same move the thread made, with
+the same two props.
+
+**It does not redirect, and that is the difference worth writing down.** A
+thread has one parent — the conversation list — so sending every link to a
+thread into that list's panel is right. A profile has five: Discover, Chats,
+the viewer list, the leaderboard and a chat header. Somebody opening a profile
+from a thread and landing in Discover would be a worse answer than a
+full-screen page, so `profile/[handle]` still pushes, and only Discover's own
+rows fill Discover's own panel.
+
+Seen in the same browser: the empty half, a row filling it, the row marked,
+and no back arrow in the panel.
+
 ## What this layer does not do
 
-- **The other tabs.** Discover, Feed and Me are still one column on a wide
-  window. The chat list is where the two-pane shape is obvious and it is the
-  one the plan names; the rest is a separate decision about what belongs
-  beside them.
+- **Feed and Me.** Still one column on a wide window. Feed's twin would be a
+  post and its corrections, which is the same shape again; Me is a settings
+  index and a second pane there is a design question rather than a repeat.
 - **`chat/new`.** Composing to somebody new is still a pushed screen. It
   redirects to the thread once the conversation exists, which lands in the
   panel from there.

@@ -842,6 +842,8 @@ export const ptBR: Localized<EnMessages> = {
       'Pergunte sobre uma frase da qual não tem certeza, ou uma palavra que não consegue dizer — ela aparece aqui.',
   },
   discover: {
+    pickTitle: 'Ninguém aberto',
+    pickBody: 'Escolha alguém na lista e o perfil abre aqui.',
     boosted: 'Em destaque',
     boostedWhat: 'O que é isso?',
     boostedExplainTitle: 'Perfis em destaque',
