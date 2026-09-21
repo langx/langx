@@ -1201,6 +1201,8 @@ export const ptBR: Localized<EnMessages> = {
     },
   },
   feed: {
+    pickTitle: 'Nenhum post aberto',
+    pickBody: 'Escolha um no feed e ele abre aqui.',
     topTag: 'Melhor',
     ask: '+ Perguntar',
     askTitle: 'Sua frase em {language}',

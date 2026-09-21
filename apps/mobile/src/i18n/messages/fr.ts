@@ -1212,6 +1212,8 @@ export const fr: Localized<EnMessages> = {
     },
   },
   feed: {
+    pickTitle: 'Aucun post ouvert',
+    pickBody: 'Choisissez-en un dans le fil, il s’ouvre ici.',
     topTag: 'Meilleure',
     ask: '+ Demander',
     askTitle: 'Ta phrase en {language}',

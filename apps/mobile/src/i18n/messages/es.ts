@@ -1208,6 +1208,8 @@ export const es: Localized<EnMessages> = {
     },
   },
   feed: {
+    pickTitle: 'Ninguna publicación abierta',
+    pickBody: 'Elige una del feed y se abrirá aquí.',
     topTag: 'Mejor',
     ask: '+ Preguntar',
     askTitle: 'Tu frase en {language}',

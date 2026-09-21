@@ -1209,6 +1209,8 @@ export const tr: Localized<EnMessages> = {
     },
   },
   feed: {
+    pickTitle: 'Açık gönderi yok',
+    pickBody: 'Akıştan birini seç, burada açılsın.',
     topTag: 'En iyi',
     ask: '+ Sor',
     askTitle: '{language} dilindeki cümlen',

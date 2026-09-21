@@ -73,6 +73,8 @@ import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useTwoPane, PANE_WIDTH } from '../../../src/hooks/useTwoPane'
+import { PostScreen } from '../../../src/screens/PostScreen'
 import { useReviewPrompt } from '../../../src/hooks/useReviewPrompt'
 
 /**
@@ -114,6 +116,15 @@ function CorrectedLine({ original, corrected }: { original: string; corrected: s
 
 export default function FeedScreen() {
   useScreenInteractive()
+  /*
+   * The third list to take two panes, after the chat list and Discover. Which
+   * post is open lives here rather than in the route: a post has three
+   * parents — this feed, the corrections list and a correction's own page —
+   * so `post/[id]` still pushes and only these rows fill this panel. Same
+   * reasoning as `profile/[handle]`.
+   */
+  const twoPane = useTwoPane()
+  const [selected, setSelected] = useState<string | undefined>(undefined)
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -370,7 +381,7 @@ export default function FeedScreen() {
     )
   }
 
-  return (
+  const list = (
     <Screen fluid tabbed>
       <Animated.View
         ref={keyboard.frameRef}
@@ -483,9 +494,10 @@ export default function FeedScreen() {
             }
             renderItem={({ item }) => {
               const mine = item.author._id === me.data?._id
-              const open = () => openPost(item._id, '/(app)/(tabs)/feed')
+              const open = () =>
+                twoPane ? setSelected(item._id) : openPost(item._id, '/(app)/(tabs)/feed')
               return (
-                <View style={styles.row}>
+                <View style={[styles.row, twoPane && selected === item._id && styles.rowSelected]}>
                   <Pressable
                     style={styles.who}
                     accessibilityRole="button"
@@ -681,11 +693,51 @@ export default function FeedScreen() {
       </Animated.View>
     </Screen>
   )
+
+  if (!twoPane) return list
+
+  /*
+   * The post beside the feed it was picked from, keyed on its id so the next
+   * one starts clean — the screen holds a draft correction, a scroll position
+   * and an open image viewer.
+   */
+  return (
+    <View style={styles.panes}>
+      <View style={styles.listPane}>{list}</View>
+      <View style={styles.detailPane}>
+        {selected === undefined ? (
+          <View style={styles.pick}>
+            <EmptyState
+              icon="message-square"
+              title={t('feed.pickTitle')}
+              body={t('feed.pickBody')}
+            />
+          </View>
+        ) : (
+          <PostScreen
+            key={selected}
+            postId={selected}
+            embedded
+            onClose={() => setSelected(undefined)}
+          />
+        )}
+      </View>
+    </View>
+  )
 }
 
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+  /*
+   * The two halves, as on the chat list and Discover. The ground is painted
+   * here because neither half paints it — `Screen` paints its own and the
+   * panel's is the post's.
+   */
+  panes: { backgroundColor: colors.bg, flex: 1, flexDirection: 'row' },
+  listPane: { width: PANE_WIDTH },
+  detailPane: { borderLeftColor: colors.border, borderLeftWidth: 1, flex: 1 },
+  pick: { alignItems: 'center', flex: 1, justifyContent: 'center' },
   // The bottom half is the gap above the tip; `Tip` owns the one below it.
   header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
   // 48 tall whether or not the ask label is there, so the segments do not move.
@@ -725,6 +777,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     gap: 14,
     paddingVertical: 22,
   },
+  /** The post that is in the panel. Only drawn when there is one. */
+  rowSelected: { backgroundColor: colors.fill },
   who: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   whoText: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 15 },

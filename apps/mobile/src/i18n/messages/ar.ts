@@ -1363,6 +1363,8 @@ export const ar: Localized<EnMessages> = {
     },
   },
   feed: {
+    pickTitle: 'لا منشور مفتوح',
+    pickBody: 'اختر واحدًا من التغذية ليفتح هنا.',
     topTag: 'الأفضل',
     ask: '+ اسأل',
     askTitle: 'جملتك بلغة {language}',

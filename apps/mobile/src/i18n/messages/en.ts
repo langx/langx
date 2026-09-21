@@ -1362,6 +1362,8 @@ export const en = {
     },
   },
   feed: {
+    pickTitle: 'No post open',
+    pickBody: 'Pick one from the feed and it opens here.',
     topTag: 'Top',
     ask: '+ Ask',
     askTitle: 'Your sentence in {language}',
