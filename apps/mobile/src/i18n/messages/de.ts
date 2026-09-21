@@ -1236,6 +1236,8 @@ export const de: Localized<EnMessages> = {
     },
   },
   feed: {
+    pickTitle: 'Kein Beitrag geöffnet',
+    pickBody: 'Wähle einen aus dem Feed, er öffnet sich hier.',
     topTag: 'Top',
     ask: '+ Fragen',
     askTitle: 'Dein Satz auf {language}',

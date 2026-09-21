@@ -98,11 +98,26 @@ rows fill Discover's own panel.
 Seen in the same browser: the empty half, a row filling it, the row marked,
 and no back arrow in the panel.
 
+## The feed, the third and last list
+
+The same shape once more: the feed on the left, the picked post and its
+corrections on the right. `post/[id].tsx` was 1,080 lines reading
+`useLocalSearchParams` and is now `src/screens/PostScreen`.
+
+It follows the profile's rule rather than the thread's — **no redirect** — for
+the same reason: a post has three parents (this feed, the corrections list and
+a correction's own page), so only the feed's own rows fill the feed's own
+panel.
+
+Seen in the browser at 1440: the empty half, and a pronunciation post opening
+into the panel with its recordings, comments and comment box, no back arrow.
+
 ## What this layer does not do
 
-- **Feed and Me.** Still one column on a wide window. Feed's twin would be a
-  post and its corrections, which is the same shape again; Me is a settings
-  index and a second pane there is a design question rather than a repeat.
+- **Me.** Still one column on a wide window. It is a settings index, and a
+  second pane there is a design question rather than a repeat of this one:
+  what belongs beside a list of links is not obvious the way a thread beside
+  a conversation list is.
 - **`chat/new`.** Composing to somebody new is still a pushed screen. It
   redirects to the thread once the conversation exists, which lands in the
   panel from there.

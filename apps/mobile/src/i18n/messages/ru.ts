@@ -1326,6 +1326,8 @@ export const ru: Localized<EnMessages> = {
     },
   },
   feed: {
+    pickTitle: 'Запись не выбрана',
+    pickBody: 'Выберите её в ленте — она откроется здесь.',
     topTag: 'Лучшая',
     ask: '+ Спросить',
     askTitle: 'Твоё предложение на языке {language}',
