@@ -276,11 +276,29 @@ lowering their wrist.
   English. `adb shell am broadcast … remove-tile` then `add-tile` is what
   forces a fresh one; without it a change looks like it did nothing.
 
-- **The complication.** A `watch-widget` target reading a digest the watch app
-  stores. It needs its own App Group between the two watch targets, a `streak`
-  field the payload does not carry, and the settings screen the plan asks for
-  ("streak, or unread, chosen by the person"). Not started.
-- **The notification quick-reply action.** No categories exist yet; see above.
+- ~~**The notification quick-reply action.**~~ Built 20 September. The server
+  names `PUSH_CATEGORY_MESSAGE` on a message push, the app registers a
+  category with a text input, and the answer goes out over the REST send twin
+  — the same route the watch reply uses, so there is one send path with three
+  ways into it. It was the one remaining item in this phase that reaches an
+  installed app over the air.
+
+- **The complication — still not started, and the only thing in this phase
+  that is blocked on somebody rather than on work.** A `watch-widget` target
+  reading a digest the watch app stores. The Wear tile above is _not_ its
+  twin arriving early: Wear's tile reads the Data Layer, which is already
+  there, while an Apple complication and the watch app are two targets on the
+  same watch with no shared container until one is registered. It needs:
+
+  1. **An App Group between the two watch targets.** Not the phone's — a
+     watch is a different device and the phone's container is not on it. This
+     is manual portal work on two new App IDs; `eas-cli` cannot patch App
+     Groups, which [`phase-1-mac-handoff.md`](phase-1-mac-handoff.md)
+     records the cost of.
+  2. A `streak` field the payload does not carry.
+  3. The settings screen the plan asks for: "streak, or unread, chosen by
+     the person".
+
 - ~~**Store assets.**~~ Done, 20 September. Behic answered the open question —
   the watch enters the listing with its first build rather than waiting for
   CarPlay — so both sets were shot from the running apps rather than drawn:
