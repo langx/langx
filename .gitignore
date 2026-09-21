@@ -33,6 +33,21 @@ expo-env.d.ts
 apps/mobile/ios/
 apps/mobile/android/
 
+# Other sessions' worktrees, which live inside this checkout and are each a
+# full copy of it — 48 GB of them on the machine this was written on.
+#
+# Git already skips them here through `.git/info/exclude`, which is local and
+# uncommitted, so this line looks redundant and is not. EAS reads `.gitignore`
+# and does not read `info/exclude`: building from this checkout put every
+# worktree's `apps/mobile/ios/` into the upload, because those patterns are
+# root-anchored and match nothing under `.claude/`. The archive went from 14 MB
+# to 809 MB and took 23 minutes instead of 51 seconds, on 20 September 2026.
+#
+# Not an `.easignore`, which would have been the obvious place: EAS uses that
+# file *instead of* `.gitignore`, so it would need a copy of everything here —
+# including the `.env` rules. A drifting copy of those uploads a secret.
+.claude/worktrees/
+
 # os / editor
 .DS_Store
 *.log
