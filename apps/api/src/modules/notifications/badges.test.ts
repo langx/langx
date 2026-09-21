@@ -8,7 +8,7 @@ import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
 import type { Profile } from '../profiles/profiles'
 import { LoggingPushSender, type Device } from '../push/devices'
-import { runBadgeRoundUpPass } from './badges'
+import { badgeSectionFor, runBadgeRoundUpPass } from './badges'
 
 function zoneWhereItIsRoundUpHour(now: Date): string {
   const offset = (now.getUTCHours() - BADGE_ROUND_UP_LOCAL_HOUR + 24) % 24
@@ -296,6 +296,49 @@ describe('the badge round-up', () => {
       .find({ userId, kind: 'badgeEarned' })
       .toArray()
     expect(rows.map((row) => row.refId)).toContain('messages.100')
+  })
+
+  /**
+   * The round-up writes the inbox row at six and the digest collects the rest
+   * an hour later. Somebody who opened the app in between has read the news,
+   * and on the web — where `pushed` is false because there is no phone — the
+   * bell was the only way they could have.
+   */
+  describe('what tonight’s digest makes of it', () => {
+    async function earnOne(): Promise<Profile> {
+      const userId = await newProfile()
+      await runBadgeRoundUpPass(handle.db, push, now)
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
+      await runBadgeRoundUpPass(handle.db, push, now)
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: userId })
+      return profile as Profile
+    }
+
+    it('keeps the badge ids, so the section can ask', async () => {
+      expect((await earnOne()).stats.digestBadges?.ids).toEqual(['messages.100'])
+    })
+
+    it('is still the news while the row is unread', async () => {
+      const section = await badgeSectionFor(handle.db, await earnOne(), now)
+      expect(section?.trigger).toBe(true)
+    })
+
+    it('rides along instead once the bell has shown it', async () => {
+      const profile = await earnOne()
+      await handle.db
+        .collection(COLLECTIONS.notifications)
+        .updateOne(
+          { userId: profile._id, kind: 'badgeEarned', refId: 'messages.100' },
+          { $set: { readAt: now } },
+        )
+
+      const section = await badgeSectionFor(handle.db, profile, now)
+      expect(section?.trigger).toBe(false)
+    })
   })
 
   /**

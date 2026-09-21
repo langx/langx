@@ -6,6 +6,7 @@ import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import type { DigestCandidate } from './digest'
+import { alreadySeenInApp } from './inbox'
 import { claimOnce } from './ledger'
 
 /**
@@ -85,6 +86,18 @@ export async function runPoolPayoutPass(
     const profile = byId.get(userId)
     if (!profile) continue
     if (localHour(now, profile.timezone ?? 'UTC') !== WALLET_LOCAL_HOUR) continue
+    /*
+     * The inbox heard at four in the morning, with the money; this runs at
+     * nine. Anybody who opened the app in those five hours has read the line
+     * already, and a phone buzzing to repeat it is the app telling somebody
+     * something they told *it* they had seen.
+     *
+     * The claim below is deliberately left unmade. A pool day that is read
+     * before nine and a pool day nobody looked at are different situations,
+     * and claiming here would make the first one indistinguishable from a
+     * push that went out — so a re-run could never tell the difference.
+     */
+    if (await alreadySeenInApp(db, userId, { kinds: ['walletPool'], refIds: [day] })) continue
     if (!(await claimOnce(db, 'wallet.pool', profile._id, day))) continue
     if (
       await pushWallet(db, sender, profile, (t) => ({
@@ -126,20 +139,25 @@ export async function collectPoolPayouts(db: Db, now: Date): Promise<Map<string,
  * A passenger for anybody with a phone: the push said this at nine in the
  * morning and a mail repeating it twelve hours later is not news. For the web
  * audience, which has no push at all, it is the only way the pool is ever
- * visible, and there it is worth the mail.
+ * visible, and there it is worth the mail — unless they have already read it
+ * on the bell, which is the same reader seeing the same sentence twice by a
+ * different route.
  */
-export function walletPoolSectionFor(
+export async function walletPoolSectionFor(
   db: Db,
   profile: Profile,
   amount: number | undefined,
   hasPushDevice: boolean,
   now: Date,
-): DigestCandidate | null {
+): Promise<DigestCandidate | null> {
   if (!amount || amount <= 0) return null
   const day = poolDay(now)
+  const seen =
+    !hasPushDevice &&
+    (await alreadySeenInApp(db, profile._id, { kinds: ['walletPool'], refIds: [day] }))
 
   return {
-    trigger: !hasPushDevice,
+    trigger: !hasPushDevice && !seen,
     claim: () => claimOnce(db, 'wallet.poolDigest', profile._id, day),
     build: (locale: Locale) => walletPoolSection(locale, { count: amount }),
   }

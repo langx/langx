@@ -31,6 +31,7 @@ describe('the feed reacting to somebody', () => {
       COLLECTIONS.profiles,
       COLLECTIONS.devices,
       COLLECTIONS.notificationLedger,
+      COLLECTIONS.notifications,
       COLLECTIONS.likes,
       COLLECTIONS.posts,
       COLLECTIONS.postCorrections,
@@ -184,6 +185,48 @@ describe('the feed reacting to somebody', () => {
     it('sends nothing when nobody liked anything', async () => {
       expect(await runLikesRoundUpPass(handle.db, push, NOW)).toEqual({ sent: 0 })
       expect(push.sent).toHaveLength(0)
+    })
+
+    /**
+     * Each like wrote its inbox row when it was tapped, hours before this
+     * batch. Somebody who read them has already seen the number.
+     */
+    async function likeRow(userId: string, refId: string, read: boolean) {
+      await handle.db.collection(COLLECTIONS.notifications).insertOne({
+        _id: new ObjectId(),
+        userId,
+        kind: 'like',
+        refId,
+        createdAt: new Date(NOW.getTime() - 60 * 60 * 1000),
+        ...(read ? { readAt: new Date(NOW.getTime() - 30 * 60 * 1000) } : {}),
+      })
+    }
+
+    it('says nothing to somebody who already read the likes on the bell', async () => {
+      const author = await newProfile()
+      const postId = new ObjectId()
+      await handle.db
+        .collection(COLLECTIONS.posts)
+        .insertOne({ _id: postId, authorId: author, body: 'hi', language: 'en' })
+      await likePost(postId, 2)
+      await likeRow(author, 'post:a:one', true)
+      await likeRow(author, 'post:a:two', true)
+
+      expect(await runLikesRoundUpPass(handle.db, push, NOW)).toEqual({ sent: 0 })
+      expect(push.sent).toHaveLength(0)
+    })
+
+    it('still buzzes when one of them has not been seen', async () => {
+      const author = await newProfile()
+      const postId = new ObjectId()
+      await handle.db
+        .collection(COLLECTIONS.posts)
+        .insertOne({ _id: postId, authorId: author, body: 'hi', language: 'en' })
+      await likePost(postId, 2)
+      await likeRow(author, 'post:a:one', true)
+      await likeRow(author, 'post:a:two', false)
+
+      expect(await runLikesRoundUpPass(handle.db, push, NOW)).toEqual({ sent: 1 })
     })
   })
 })

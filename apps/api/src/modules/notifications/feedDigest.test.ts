@@ -35,6 +35,7 @@ describe("the day's replies to somebody's posts", () => {
       COLLECTIONS.profiles,
       COLLECTIONS.user,
       COLLECTIONS.notificationLedger,
+      COLLECTIONS.notifications,
       COLLECTIONS.posts,
       COLLECTIONS.postCorrections,
       COLLECTIONS.postComments,
@@ -153,6 +154,60 @@ describe("the day's replies to somebody's posts", () => {
     await newProfile()
     expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 0 })
     expect(sender.messages).toHaveLength(0)
+  })
+
+  /**
+   * The reply push says the rest are waiting in the app. Somebody who went
+   * and read them has done what it asked, and a letter that evening repeating
+   * the list is the app arguing with itself.
+   */
+  describe('replies already read on the bell', () => {
+    async function replyRow(userId: string, refId: string, read: boolean) {
+      await handle.db.collection(COLLECTIONS.notifications).insertOne({
+        _id: new ObjectId(),
+        userId,
+        kind: 'postCorrection',
+        refId,
+        postId: new ObjectId(),
+        createdAt: new Date(EVENING.getTime() - HOUR),
+        ...(read ? { readAt: new Date(EVENING.getTime() - HOUR / 2) } : {}),
+      })
+    }
+
+    it('does not write a letter of its own', async () => {
+      const author = await newProfile()
+      await reply(COLLECTIONS.postCorrections, await newPost(author, 'hello'))
+      await replyRow(author, 'one', true)
+
+      expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 0 })
+      expect(sender.messages).toHaveLength(0)
+    })
+
+    it('still writes when one of them is unread', async () => {
+      const author = await newProfile()
+      await reply(COLLECTIONS.postCorrections, await newPost(author, 'hello'))
+      await replyRow(author, 'one', true)
+      await replyRow(author, 'two', false)
+
+      expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
+    })
+
+    /** Yesterday's reading says nothing about today's replies. */
+    it('is not silenced by a row older than the day it covers', async () => {
+      const author = await newProfile()
+      await reply(COLLECTIONS.postCorrections, await newPost(author, 'hello'))
+      await handle.db.collection(COLLECTIONS.notifications).insertOne({
+        _id: new ObjectId(),
+        userId: author,
+        kind: 'postCorrection',
+        refId: 'old',
+        postId: new ObjectId(),
+        createdAt: new Date(EVENING.getTime() - 40 * HOUR),
+        readAt: new Date(EVENING.getTime() - 39 * HOUR),
+      })
+
+      expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
+    })
   })
 
   it('names the busiest posts and counts the rest', async () => {

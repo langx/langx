@@ -27,6 +27,10 @@ that true rather than aspirational:
   something happened — or a _passenger_, which rides along in a mail that is
   going anyway and may never summon one. The suggestions are a passenger, and
   so is anything a push has already delivered to a phone.
+- **Read is read, whichever screen read it.** The four sections that also have
+  a row in the notification centre ask it before they claim to be news, and a
+  pile with nothing unread left in it is a passenger for the same reason a
+  push already sent is — see _Reading counts_ below.
 - **Marketing runs an hour later and stands down.** The nine nudges and the
   monthly recap moved to 20:00 local, and both skip anybody whose digest has
   already gone out today.
@@ -210,8 +214,8 @@ every one claims a row in `notificationLedger` before it sends.
 | Meeting reminder                                 | `meetings`      | an hour before | message id                                        |
 | **Somebody followed you**                        | `social`        | on the follow  | one per follower, **ever**                        |
 | **A correction, answer or comment on your post** | `social`        | on the reply   | one per post per **hour**                         |
-| **Your posts' likes**                            | `social`        | daily batch    | UTC day                                           |
-| **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local    | pool day                                          |
+| **Your posts' likes**                            | `social`        | daily batch    | UTC day, and not if the bell's rows are read      |
+| **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local    | pool day, and not if the bell's row is read       |
 | **Your hourly gift is ready**                    | `wallet`        | waking hours   | UTC day, and only if they have taken one before   |
 | **Cards are due in Echo**                        | `echo`          | 19:00 local    | local day, and only if nothing was reviewed today |
 
@@ -221,21 +225,47 @@ so it runs from what cannot wait to what could have waited a fortnight. A
 _passenger_ never causes the mail to be sent; it is only ever included in one
 that was going anyway.
 
-| Section                            | Kind            | Trigger?                 | Period key                               |
-| ---------------------------------- | --------------- | ------------------------ | ---------------------------------------- |
-| Unread messages, with faces        | `messages`      | yes                      | `lastActiveAt` — one absence, one saying |
-| Your streak breaks tonight         | `streak`        | no push device, savable  | local day                                |
-| Tomorrow's calls                   | `meetings`      | yes                      | tomorrow's local day                     |
-| The day's replies to your posts    | `social`        | yes                      | local day                                |
-| Badges earned                      | `badges`        | only if no push went     | local day                                |
-| Yesterday's pool paid you N tokens | `wallet`        | only with no push device | pool day                                 |
-| Who looked at you                  | `profileVisits` | yes, Mondays             | ISO week                                 |
-| People you could practise with     | `promotions`    | **no — passenger**       | fortnight                                |
+| Section                            | Kind            | Trigger?                | Period key                               |
+| ---------------------------------- | --------------- | ----------------------- | ---------------------------------------- |
+| Unread messages, with faces        | `messages`      | yes                     | `lastActiveAt` — one absence, one saying |
+| Your streak breaks tonight         | `streak`        | no push device, savable | local day                                |
+| Tomorrow's calls                   | `meetings`      | yes                     | tomorrow's local day                     |
+| The day's replies to your posts    | `social`        | unless read in the app  | local day                                |
+| Badges earned                      | `badges`        | no push, and unread     | local day                                |
+| Yesterday's pool paid you N tokens | `wallet`        | no push device, unread  | pool day                                 |
+| Who looked at you                  | `profileVisits` | Mondays, unless read    | ISO week                                 |
+| People you could practise with     | `promotions`    | **no — passenger**      | fortnight                                |
 
 Two of those sections say something the phone has already said, and that is
 what the trigger column is for: they are worth a line in a letter that is
 going out, and never worth one of their own. The hourly gift is in neither
 table — a button becoming available is not something that happened.
+
+### Reading counts
+
+The four sections whose news also sits in the notification centre — replies,
+badges, the pool, the visitors — ask `alreadySeenInApp` before they claim to
+be a trigger, and so do the two pushes that fire hours after their own row was
+written: the pool at nine, and the likes batch. A pile with nothing unread
+left in it stops being a reason to send.
+
+It answers three ways, not two, and the third is the load-bearing one:
+
+| What it finds          | Answer   | Why                                                                                 |
+| ---------------------- | -------- | ----------------------------------------------------------------------------------- |
+| something still unread | not seen | That is the thing worth saying, and saying it is the point                          |
+| every row read         | seen     | Tonight's letter would be a repeat of a screen they closed                          |
+| **no rows at all**     | not seen | An absence is not consent to go quiet — every writer swallows its own failures here |
+
+The window is each caller's own — a badge's ids, a pool day, the same
+twenty-four hours the reply collector gathered, the seven days the visitors
+section counts — so what is weighed is what is being written about. One unread
+day inside it and the mail goes as it always did.
+
+This does not turn the centre into a ninth switch, which is the rule directly
+above the one it borrows from. Nothing here gates what the app _records_;
+reading is a thing the reader did, and the channels declining to repeat it
+back is the only reasonable answer to it.
 
 The unread section and the suggestions carry **faces**: up to three people,
 photo fetched from our own bucket and attached to the mail, initials on a
@@ -368,6 +398,11 @@ Four mechanisms, and each is in the database rather than in a caller's care.
   own clock, for everything promotional.
 - **An unverified address.** Nothing is ever sent to one — it may belong to
   somebody else.
+- **Having read it already.** `alreadySeenInApp` — the four digest sections
+  and the two delayed pushes whose news also has a row in the notification
+  centre. It stops a mail from being _sent_, never a paragraph from being
+  written: a section it silences still rides along in a letter going out for
+  something else. See _Reading counts_.
 
 ---
 
@@ -412,6 +447,13 @@ happened, read by a bell in the Feed header and a screen behind it.
   a request not to be buzzed, not a request to be blinded. The badge write in
   `badges.ts` sits deliberately **above** the `wantsPush`/`wantsEmail` check,
   and a test pins it there.
+
+  It reads the other way round, though, and only the other way round: having
+  read a row here is what stops the evening repeating it, through
+  `alreadySeenInApp`. The arrow matters. A switch must never decide what is
+  recorded; what was recorded and then dealt with may perfectly well decide
+  whether anything still needs to leave.
+
 - **Unique for ninety days.** `{userId, kind, refId}` is unique and the insert
   failing _is_ the check; `ttl_90d` then bounds it, so refollowing next season
   is news again. That is right for a feed and wrong for a send-ledger — which

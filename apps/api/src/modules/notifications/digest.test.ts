@@ -43,6 +43,7 @@ describe('the one notification email of the day', () => {
       COLLECTIONS.messages,
       COLLECTIONS.tokenLedger,
       COLLECTIONS.notificationLedger,
+      COLLECTIONS.notifications,
       COLLECTIONS.blocks,
     ]) {
       await handle.db.collection(name).deleteMany({})
@@ -239,6 +240,54 @@ describe('the one notification email of the day', () => {
       // time under the suggestions, which link to a profile.
       expect(html).toContain('Fay Weldon')
       expect(html.split(fayHandle)).toHaveLength(2)
+    })
+  })
+
+  /**
+   * The other half of the passenger rule: a push already delivering something
+   * made it not worth an envelope, and so does the reader having opened the
+   * bell and read it. The paragraph is still worth a place in a letter that
+   * is going anyway.
+   */
+  describe('news the bell has already shown', () => {
+    /** What the pool left in the notification centre when it paid. */
+    async function poolRow(userId: string, read: boolean): Promise<void> {
+      await handle.db.collection(COLLECTIONS.notifications).insertOne({
+        _id: new ObjectId(),
+        userId,
+        kind: 'walletPool',
+        refId: utcDayKey(new Date(EVENING.getTime() - DAY)),
+        count: 7,
+        createdAt: new Date(EVENING.getTime() - 15 * HOUR),
+        ...(read ? { readAt: new Date(EVENING.getTime() - 8 * HOUR) } : {}),
+      })
+    }
+
+    it('sends no letter when the only news is a payout already read', async () => {
+      const reader = await newProfile()
+      await poolPaid(reader, 7)
+      await poolRow(reader, true)
+
+      expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 0 })
+      expect(sender.messages).toHaveLength(0)
+    })
+
+    it('still rides along in a letter going out anyway', async () => {
+      const reader = await newProfile()
+      await poolPaid(reader, 7)
+      await poolRow(reader, true)
+      await unreadThread(reader, await newProfile())
+
+      expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
+      expect(sender.messages[0]?.html).toContain('7')
+    })
+
+    it('writes as before while the row is unread', async () => {
+      const reader = await newProfile()
+      await poolPaid(reader, 7)
+      await poolRow(reader, false)
+
+      expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
     })
   })
 

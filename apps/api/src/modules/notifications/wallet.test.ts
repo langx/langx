@@ -31,6 +31,7 @@ describe('tokens arriving', () => {
       COLLECTIONS.profiles,
       COLLECTIONS.devices,
       COLLECTIONS.notificationLedger,
+      COLLECTIONS.notifications,
       COLLECTIONS.tokenLedger,
     ]) {
       await handle.db.collection(name).deleteMany({})
@@ -113,7 +114,51 @@ describe('tokens arriving', () => {
       await newProfile()
       expect(await runPoolPayoutPass(handle.db, push, MORNING)).toEqual({ sent: 0 })
     })
+
+    /**
+     * The inbox row is written at four in the morning with the money, five
+     * hours before this pass runs. Somebody who opened the app in between has
+     * read the sentence this push carries.
+     */
+    it('says nothing to somebody who already read it on the bell', async () => {
+      const userId = await newProfile()
+      await paidYesterday(userId, 43)
+      await poolRow(userId, { read: true })
+
+      expect(await runPoolPayoutPass(handle.db, push, MORNING)).toEqual({ sent: 0 })
+      expect(push.sent).toHaveLength(0)
+    })
+
+    it('still buzzes while the row is sitting there unread', async () => {
+      const userId = await newProfile()
+      await paidYesterday(userId, 43)
+      await poolRow(userId, { read: false })
+
+      expect(await runPoolPayoutPass(handle.db, push, MORNING)).toEqual({ sent: 1 })
+    })
+
+    /** A row for some other day says nothing about this morning's news. */
+    it('is not silenced by a different pool day', async () => {
+      const userId = await newProfile()
+      await paidYesterday(userId, 43)
+      await poolRow(userId, { read: true, day: '2026-09-11' })
+
+      expect(await runPoolPayoutPass(handle.db, push, MORNING)).toEqual({ sent: 1 })
+    })
   })
+
+  /** What `runDailyPool` leaves in the notification centre at the payout. */
+  async function poolRow(userId: string, opts: { read: boolean; day?: string }): Promise<void> {
+    await handle.db.collection(COLLECTIONS.notifications).insertOne({
+      _id: new ObjectId(),
+      userId,
+      kind: 'walletPool',
+      refId: opts.day ?? '2026-09-13',
+      count: 43,
+      createdAt: new Date(MORNING.getTime() - 5 * 60 * 60 * 1000),
+      ...(opts.read ? { readAt: new Date(MORNING.getTime() - 60 * 60 * 1000) } : {}),
+    })
+  }
 
   describe('the hourly gift', () => {
     const ready = new Date(MORNING.getTime() - TOKEN_RULES.gift.cooldownMs - 60_000)

@@ -15,7 +15,7 @@ import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { getBadgeSummary } from '../tokens/badges'
 import type { DigestCandidate } from './digest'
-import { recordNotifications } from './inbox'
+import { alreadySeenInApp, recordNotifications } from './inbox'
 import { claimOnce } from './ledger'
 
 /**
@@ -198,6 +198,9 @@ export async function runBadgeRoundUpPass(
             count: fresh.length,
             label: only?.label ?? null,
             pushed,
+            // The ids as well as the count, so tonight's section can ask the
+            // bell whether these exact badges have already been read.
+            ids: fresh,
           },
         },
       },
@@ -213,15 +216,30 @@ export async function runBadgeRoundUpPass(
  * Tuesday for a badge they got today is exactly the failure `notifiedBadgeIds`
  * exists to prevent.
  */
-export function badgeSectionFor(db: Db, profile: Profile, now: Date): DigestCandidate | null {
+export async function badgeSectionFor(
+  db: Db,
+  profile: Profile,
+  now: Date,
+): Promise<DigestCandidate | null> {
   const pending = profile.stats?.digestBadges
   if (!pending) return null
   if (pending.day !== localDayKey(now, profile.timezone ?? 'UTC')) return null
 
+  /*
+   * The round-up wrote the inbox row at six and the push, where there was a
+   * phone to send it to, an instant later. Somebody who opened the app in
+   * that hour has read the news already — and on the web, where there is no
+   * push at all and `pushed` is therefore false, reading the bell was the
+   * only way they could have.
+   */
+  const seen =
+    pending.ids !== undefined &&
+    (await alreadySeenInApp(db, profile._id, { kinds: ['badgeEarned'], refIds: pending.ids }))
+
   return {
-    // A badge that already buzzed a phone rides along; one that did not is
-    // the news itself.
-    trigger: !pending.pushed,
+    // A badge that already buzzed a phone rides along, and so does one the
+    // bell has already shown; one nobody has heard of is the news itself.
+    trigger: !pending.pushed && !seen,
     claim: () => claimOnce(db, 'badgeDigest', profile._id, pending.day),
     build: (locale: Locale) =>
       badgeEarnedSection(locale, { count: pending.count, label: pending.label }),

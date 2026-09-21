@@ -532,3 +532,54 @@ export async function likeTargetOwner(
   if (!row) return null
   return { authorId: row.authorId, postId: row.postId ?? row._id }
 }
+
+/**
+ * Has this person already read the app's own record of this news?
+ *
+ * The digest's passenger rule, applied to the half of the app that was not
+ * asked. A section stops being a reason to send once a push has delivered it,
+ * on the grounds that saying it twice is not news — and somebody who opened
+ * the bell and read the row has the same claim to be left alone. The evening
+ * mail was still writing to them, because nothing on that path had ever
+ * looked at this collection.
+ *
+ * Three answers, not two, and the third is why this returns false rather than
+ * true when it finds nothing:
+ *
+ * - something is still unread — say it, that is the point of saying it;
+ * - every row is read — they have seen it, so tonight's letter is a repeat;
+ * - **there are no rows at all** — the centre knows nothing about this, and an
+ *   absence must never be read as "seen". Every writer here swallows its own
+ *   failures on purpose, so a missing row means the inbox write did not land,
+ *   not that somebody dealt with it.
+ *
+ * The unread look goes first because it is the common case and the cheap one:
+ * an account with anything pending is answered in a single indexed read.
+ */
+export async function alreadySeenInApp(
+  db: Db,
+  userId: string,
+  /**
+   * What the message is about, as narrowly as the caller can say it. `refIds`
+   * where the row's key is the news itself — a badge, a pool day — and `since`
+   * where it is not, in which case it is the same window the pass collected
+   * over, so the rows counted are the rows being written about.
+   */
+  scope: { kinds: InAppNotificationKind[]; refIds?: string[]; since?: Date },
+): Promise<boolean> {
+  if (scope.refIds && scope.refIds.length === 0) return false
+
+  const rows = db.collection<NotificationDoc>(COLLECTIONS.notifications)
+  const filter: Document = { userId, kind: { $in: scope.kinds } }
+  if (scope.refIds) filter.refId = { $in: scope.refIds }
+  if (scope.since) filter.createdAt = { $gte: scope.since }
+
+  const unread = await rows.findOne(
+    { ...filter, readAt: { $exists: false } },
+    { projection: { _id: 1 } },
+  )
+  if (unread) return false
+
+  const seen = await rows.findOne(filter, { projection: { _id: 1 } })
+  return seen !== null
+}
