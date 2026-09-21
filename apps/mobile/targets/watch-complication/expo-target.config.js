@@ -25,8 +25,15 @@ module.exports = () => ({
    * child, and the simulator refuses the whole watch app with "Failed to set
    * app extension placeholders" rather than naming the extension or the
    * rule.
+   *
+   * `.widget` and not `.complication`, which reads better and is not
+   * available: Apple refuses to register that exact identifier — "An App ID
+   * with identifier '…watch.complication' is not available" — while the
+   * sibling string is accepted, so it is the name that is taken rather than
+   * anything structural. The registered App ID is
+   * `tech.newchapter.languageXchange.watch.widget` and this has to match it.
    */
-  bundleIdentifier: 'tech.newchapter.languageXchange.watch.complication',
+  bundleIdentifier: 'tech.newchapter.languageXchange.watch.widget',
   /*
    * Declared rather than left to `appGroupsByDefault`, so that this file and
    * the watch app's name the same string and a rename cannot move one without

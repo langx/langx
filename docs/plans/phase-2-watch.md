@@ -318,10 +318,20 @@ lowering their wrist.
   accessory family has no container to paint anyway, because the face
   supplies the backdrop and tints the content itself.
 
-  **The portal work is still owed before a device build.** App Groups work on
-  a simulator without being registered, which is what made all of the above
-  verifiable today; a build for a real watch needs the group on both App IDs,
-  and `eas-cli` cannot patch App Groups.
+  **The portal work is done**, 20 September, and it is worth recording what
+  it consisted of because `eas-cli` cannot do any of it. The App Group
+  `group.tech.newchapter.languageXchange.watch` ("LangX watch") is registered
+  and enabled on both App IDs — the watch app's, which already existed, and
+  the extension's, which did not. Apple warns on each change that provisioning
+  profiles containing the App ID are invalidated and regenerate on the next
+  build; that is expected and is the price of adding any capability.
+
+  **The extension is `…watch.widget`, not `…watch.complication`.** Apple
+  refuses to register the second one — "An App ID with identifier
+  '…watch.complication' is not available" — while the sibling string is
+  accepted immediately, so the name is taken rather than the shape being
+  wrong. The target config names the registered identifier, because the two
+  have to match and the portal is the side that cannot be changed.
 
 - ~~**Store assets.**~~ Done, 20 September. Behic answered the open question —
   the watch enters the listing with its first build rather than waiting for
