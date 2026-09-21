@@ -236,6 +236,14 @@ const config: ExpoConfig = {
      */
     './plugins/withWearApp',
     /*
+     * The App Intents and the Siri phrases, which have to be compiled into
+     * the **app** target rather than an extension — a rule with no build
+     * error behind it, only a shortcut nobody can say out loud. `ios/` is
+     * generated, so this copies `apps/mobile/app-intents/` in and adds it to
+     * the target. See `plugins/withAppIntents.js`.
+     */
+    './plugins/withAppIntents',
+    /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
      * so the views live in `widgets/` as TSX and the plugin only has to write

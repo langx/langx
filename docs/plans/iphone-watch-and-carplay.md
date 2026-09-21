@@ -589,10 +589,10 @@ is not, which is why its paperwork starts on day one.
    the three widget families, the notification service extension, the gallery
    names, the phone-driven Live Activity, and two of the three App Intents.
    The string generator is done — the watch is what finally required it.
-   Open, and all three now waiting on somebody rather than on work:
-   the Lock Screen not clearing at sign-out (a real device), the intent that
-   sends a message (Behic's credential decision), and Siri by voice (Behic's
-   config-plugin decision) — `phase-1-app-intents.md` has both.
+   Siri by voice followed on 21 September, with the config plugin it always
+   needed. Open: the Lock Screen not clearing at sign-out (a real device), and
+   the intent that sends a message (Behic's credential decision) — see
+   `phase-1-app-intents.md`.
    → verify: everything in `phase-1-mac-handoff.md`, on a Mac
 
 1b. iPhone Duo readiness: the lint rule against `Dimensions.get` — done; then,

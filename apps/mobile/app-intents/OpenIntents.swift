@@ -8,19 +8,20 @@ import AppIntents
  touched, and the app does the rest exactly as it does when the widget is
  tapped.
 
- **Why this lives in the widget extension.** App Intents are found through
- metadata a build step extracts, and that step runs for an app or an
- extension — **not** for the static library a CocoaPods-based Expo module
- compiles into. An intent declared in a module builds, links, and is then
- invisible to Shortcuts, to Siri and to the Action Button, with nothing
- anywhere to say why. The extension is the one target in this project that
- already compiles Swift *and* already carries the string catalogue these
- titles come from; putting them in the app target instead would mean teaching
- a config plugin to add both, which was tried first and is a great deal of
- machinery for the same result.
+ **Why this lives in the app target, and why it did not at first.** App
+ Intents are found through metadata a build step extracts, and that step runs
+ for an app or an extension — **not** for the static library a
+ CocoaPods-based Expo module compiles into. An intent declared in a module
+ builds, links, and is then invisible to Shortcuts, to Siri and to the Action
+ Button, with nothing anywhere to say why. So these began in the widget
+ extension, which was the one target already compiling Swift and already
+ carrying the string catalogue these titles come from.
 
- `openAppWhenRun` from an extension opens the extension's containing app,
- which is the app.
+ What moved them is Siri by voice: `AppShortcutsProvider` has to be in the
+ main app target and the intents it names have to be reachable from there.
+ This project has no committed `ios/`, so "in the app target" means a config
+ plugin — `plugins/withAppIntents.js` — and that plugin is now the reason
+ this file can sit here rather than beside the widgets.
 
  `openAppWhenRun` is the honest setting: this is an "open something" action
  and there is nothing to report back. A parameterised summary would promise a

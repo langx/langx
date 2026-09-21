@@ -16,10 +16,14 @@ module.exports = (config) => ({
     'com.apple.security.application-groups':
       config.ios.entitlements['com.apple.security.application-groups'],
   },
-  // `AppIntents` is here for `OpenIntents.swift`, not for the widgets: the
-  // extension is where the intents live, because the metadata step that makes
-  // Shortcuts and Siri aware of them does not run for an Expo module.
-  frameworks: ['SwiftUI', 'WidgetKit', 'AppIntents'],
+  /*
+   * `AppIntents` was here for `OpenIntents.swift` and is gone with it. The
+   * intents moved to the app target on 21 September, because that is the only
+   * target an `AppShortcutsProvider` can live in — see
+   * `plugins/withAppIntents.js`. Declaring them in both places would put two
+   * of every action in the Shortcuts app.
+   */
+  frameworks: ['SwiftUI', 'WidgetKit'],
   /*
    * 16.4, which is the app's own floor — a phone that cannot install the app
    * has nothing to add a widget to, so there is no reason to sit above it.
