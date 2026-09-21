@@ -20,4 +20,8 @@
   <string name="widget_glanceDetail">Série et non lus, pour l’écran verrouillé et StandBy.</string>
   <string name="widget_exchangeStartsIn">Commence dans</string>
   <string name="widget_exchangeEndsIn">Se termine dans</string>
+  <string name="intents_openEcho">Ouvrir Echo</string>
+  <string name="intents_openEchoDetail">Aller directement aux cartes du jour.</string>
+  <string name="intents_openChats">Ouvrir mes messages</string>
+  <string name="intents_openChatsDetail">Aller directement à la liste des conversations.</string>
 </resources>

@@ -20,4 +20,8 @@
   <string name="widget_glanceDetail">Racha y no leídos, para la pantalla bloqueada y StandBy.</string>
   <string name="widget_exchangeStartsIn">Empieza en</string>
   <string name="widget_exchangeEndsIn">Termina en</string>
+  <string name="intents_openEcho">Abrir Echo</string>
+  <string name="intents_openEchoDetail">Ir directo a las tarjetas de hoy.</string>
+  <string name="intents_openChats">Abrir mis mensajes</string>
+  <string name="intents_openChatsDetail">Ir directo a la lista de chats.</string>
 </resources>

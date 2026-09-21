@@ -20,4 +20,8 @@
   <string name="widget_glanceDetail">Serie und Ungelesenes für Sperrbildschirm und StandBy.</string>
   <string name="widget_exchangeStartsIn">Beginnt in</string>
   <string name="widget_exchangeEndsIn">Endet in</string>
+  <string name="intents_openEcho">Echo öffnen</string>
+  <string name="intents_openEchoDetail">Direkt zu den heute fälligen Karten.</string>
+  <string name="intents_openChats">Meine Nachrichten öffnen</string>
+  <string name="intents_openChatsDetail">Direkt zur Chatliste.</string>
 </resources>

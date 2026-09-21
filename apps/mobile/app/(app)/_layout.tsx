@@ -11,6 +11,7 @@ import { useDailyCheckIn } from '../../src/hooks/useDailyCheckIn'
 import { useCompanionSnapshot } from '../../src/hooks/useCompanionSnapshot'
 import { useWatchLink } from '../../src/hooks/useWatchLink'
 import { useExchangeActivity } from '../../src/hooks/useExchangeActivity'
+import { usePendingRoute } from '../../src/hooks/usePendingRoute'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { useSocket } from '../../src/hooks/useSocket'
@@ -60,6 +61,7 @@ export default function AppLayout() {
   useCompanionSnapshot({ enabled: !isGuest })
   useWatchLink({ enabled: !isGuest })
   useExchangeActivity({ enabled: !isGuest })
+  usePendingRoute({ enabled: !isGuest })
 
   return (
     /*

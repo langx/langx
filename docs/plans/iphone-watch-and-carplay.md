@@ -581,9 +581,10 @@ is not, which is why its paperwork starts on day one.
    notification service extension, and the blob cleared at sign-out.
    The string generator is **done** — the watch is what finally required it,
    and the widgets' gallery names are what finally spend it.
-   Still to do: the three App Intents, the gallery names and descriptions,
-   the Lock Screen not clearing at sign-out, and the phone-driven Live
-   Activity that answer 1 below brings back.
+   The gallery names and the phone-driven Live Activity are **done**; two of
+   the three App Intents are done and the third waits on a directory of names
+   in the App Group — see `phase-1-app-intents.md`. Still to do: the Lock
+   Screen not clearing at sign-out, and the intent that sends a message.
    → verify: everything in `phase-1-mac-handoff.md`, on a Mac
 
 1b. iPhone Duo readiness: the lint rule against `Dimensions.get` — done; then,

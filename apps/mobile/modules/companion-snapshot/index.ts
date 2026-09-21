@@ -26,6 +26,8 @@ import { clearFlag, FLAG_KEYS, readJsonFlag, writeJsonFlag } from '../../src/lib
 interface CompanionSnapshotNativeModule {
   write: (json: string) => void
   clear: () => void
+  /** Present only on a build made since the App Intents landed. */
+  takePendingRoute?: () => string | null
 }
 
 const native = requireOptionalNativeModule<CompanionSnapshotNativeModule>('CompanionSnapshot')
@@ -93,4 +95,16 @@ export function clearCompanionSnapshot(): void {
  */
 export function readCompanionSnapshot(): Promise<CompanionSnapshot | null> {
   return readJsonFlag<CompanionSnapshot>(FLAG_KEYS.companionSnapshot)
+}
+
+/**
+ * The screen an App Intent asked for, or null.
+ *
+ * Read once and cleared by the native side. `?.()` twice over: the module is
+ * absent on Android and on the web, and the function is absent on an iOS
+ * build made before the intents existed — an older binary running a newer
+ * bundle over the air is the ordinary case here, not the exotic one.
+ */
+export function takePendingRoute(): string | null {
+  return native?.takePendingRoute?.() ?? null
 }

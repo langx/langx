@@ -152,6 +152,7 @@ function androidFiles(): Map<string, string> {
  */
 function unlocalizedSwiftLiterals(): string[] {
   const allowed = new Set<string>(NATIVE_KEYS)
+  const namespaces = new Set(NATIVE_KEYS.map((key) => key.split('.')[0]))
   const problems: string[] = []
 
   for (const file of globSync('**/*.swift', { cwd: TARGETS })) {
@@ -159,11 +160,37 @@ function unlocalizedSwiftLiterals(): string[] {
     // Comments are prose by definition and explain the code rather than
     // appearing on a screen, so they are stripped before the scan.
     const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
+    const where = relative(process.cwd(), join(TARGETS, file))
 
     for (const [, literal] of code.matchAll(/"([^"\\\n]*)"/g)) {
-      if (literal === undefined || !literal.includes(' ')) continue
+      if (literal === undefined) continue
       if (allowed.has(literal)) continue
-      problems.push(`${relative(process.cwd(), join(TARGETS, file))}: "${literal}"`)
+
+      if (literal.includes(' ')) {
+        problems.push(`${where}: "${literal}"`)
+        continue
+      }
+      /*
+       * A key that does not exist, which the space test cannot see.
+       *
+       * `LocalizedStringResource("intents.openReview")` against a catalogue
+       * that only has `intents.openEcho` compiles, links, extracts into the
+       * App Intents metadata, and then shows the wearer or the Shortcuts app
+       * the raw key. It looks like a typo in the product rather than a
+       * missing translation. The same fallback-to-itself behaviour that makes
+       * the space test necessary is what makes this necessary too.
+       *
+       * The test is the *namespace*, not the shape. A dotted path alone
+       * catches `group.tech.newchapter.languageXchange` — the App Group, a
+       * reverse-DNS identifier these files are full of. What cannot be
+       * innocent is a literal whose first segment is one this generator
+       * emits: if it starts with `watch.` or `intents.` it was meant to be a
+       * key, and the list of namespaces maintains itself.
+       */
+      const namespace = literal.split('.')[0]
+      if (namespace !== undefined && namespaces.has(namespace)) {
+        problems.push(`${where}: "${literal}" (looks like a key, and is not one)`)
+      }
     }
   }
   return problems

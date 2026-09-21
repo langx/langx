@@ -20,4 +20,8 @@
   <string name="widget_glanceDetail">Sequência e não lidas, para a tela bloqueada e StandBy.</string>
   <string name="widget_exchangeStartsIn">Começa em</string>
   <string name="widget_exchangeEndsIn">Termina em</string>
+  <string name="intents_openEcho">Abrir o Echo</string>
+  <string name="intents_openEchoDetail">Ir direto para os cartões de hoje.</string>
+  <string name="intents_openChats">Abrir minhas mensagens</string>
+  <string name="intents_openChatsDetail">Ir direto para a lista de conversas.</string>
 </resources>

@@ -19,6 +19,8 @@ public class CompanionSnapshotModule: Module {
   /// Must match `com.apple.security.application-groups` in `app.config.ts`.
   private static let appGroup = "group.tech.newchapter.languageXchange"
   private static let key = "companionSnapshot"
+  /// Must match `PendingRoute.swift` in the app target.
+  private static let routeKey = "pendingRoute"
 
   public func definition() -> ModuleDefinition {
     Name("CompanionSnapshot")
@@ -38,6 +40,24 @@ public class CompanionSnapshotModule: Module {
     Function("clear") {
       defaults()?.removeObject(forKey: Self.key)
       reload()
+    }
+
+    /**
+     The screen an App Intent asked for, read once and cleared.
+
+     Here rather than in a module of its own because this file is already the
+     app's one door to the App Group, and a second door to the same container
+     would be two places to get the suite name wrong. The intents write
+     through `PendingRoute.swift` in the app target; see
+     `plugins/withAppIntents.js` for why they cannot live in a module at all.
+
+     Cleared on read, because an instruction given once that survived its own
+     delivery would send somebody to Echo every time they opened the app.
+     */
+    Function("takePendingRoute") { () -> String? in
+      guard let route = defaults()?.string(forKey: Self.routeKey) else { return nil }
+      defaults()?.removeObject(forKey: Self.routeKey)
+      return route
     }
   }
 
