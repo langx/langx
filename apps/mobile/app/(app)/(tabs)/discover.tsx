@@ -43,7 +43,8 @@ import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useDiscoveryTour } from '../../../src/hooks/useTour'
 import { useTips } from '../../../src/hooks/useTips'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
-import { useTwoPane, PANE_WIDTH } from '../../../src/hooks/useTwoPane'
+import { useTwoPane } from '../../../src/hooks/useTwoPane'
+import { TwoPane } from '../../../src/components/TwoPane'
 import { ProfileScreen } from '../../../src/screens/ProfileScreen'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
@@ -646,37 +647,24 @@ export default function DiscoverScreen() {
    * person deserves none of them.
    */
   return (
-    <View style={styles.panes}>
-      <View style={styles.listPane}>{list}</View>
-      <View style={styles.detailPane}>
-        {selected === undefined ? (
-          <View style={styles.pick}>
-            <EmptyState icon="user" title={t('discover.pickTitle')} body={t('discover.pickBody')} />
-          </View>
-        ) : (
+    <TwoPane
+      list={list}
+      empty={{ icon: 'user', title: t('discover.pickTitle'), body: t('discover.pickBody') }}
+      detail={
+        selected === undefined ? null : (
           <ProfileScreen
             key={selected}
             handle={selected}
             embedded
             onClose={() => setSelected(undefined)}
           />
-        )}
-      </View>
-    </View>
+        )
+      }
+    />
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  /*
-   * The two halves, exactly as the chat list has them — the list at a fixed
-   * width and the profile taking the rest. The ground is painted here because
-   * neither half paints it: `Screen` paints its own, and the panel's is the
-   * profile's.
-   */
-  panes: { backgroundColor: colors.bg, flex: 1, flexDirection: 'row' },
-  listPane: { width: PANE_WIDTH },
-  detailPane: { borderLeftColor: colors.border, borderLeftWidth: 1, flex: 1 },
-  pick: { alignItems: 'center', flex: 1, justifyContent: 'center' },
   /** The row whose profile is in the panel. Only drawn when there is one. */
   rowSelected: { backgroundColor: colors.fill },
   flag: { fontSize: 15 },

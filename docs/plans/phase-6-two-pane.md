@@ -127,12 +127,29 @@ panel.
 Seen in the browser at 1440: the empty half, and a pronunciation post opening
 into the panel with its recordings, comments and comment box, no back arrow.
 
+## Me and Echo keep their single column, on purpose
+
+Both were opened at 1440 before deciding. Neither is a list with a detail:
+Me is a profile and a settings index, Echo is a stage with one number and one
+button on it. `Screen`'s own 720-point column already centres them, which is
+what a page of that shape wants on a monitor — the alternative is a second
+pane with nothing to put in it, or a line of text stretched across a desk.
+
+So the rule the phase ends with is not "every tab gets two panes". It is
+**every list that opens something gets two panes**, and there were exactly
+three of those.
+
+## One copy of the arrangement
+
+The three tabs drew the same two halves three times, down to the same four
+styles, before `src/components/TwoPane.tsx` existed. It holds the arrangement
+— the fixed width on the list, the border between, the ground that neither
+half paints — and nothing else. Whether there _are_ two panes is still asked
+in the tab, because that is also where the answer changes what a row does: a
+tap fills a panel or pushes a route.
+
 ## What this layer does not do
 
-- **Me.** Still one column on a wide window. It is a settings index, and a
-  second pane there is a design question rather than a repeat of this one:
-  what belongs beside a list of links is not obvious the way a thread beside
-  a conversation list is.
 - **`chat/new`.** Composing to somebody new is still a pushed screen. It
   redirects to the thread once the conversation exists, which lands in the
   panel from there.
