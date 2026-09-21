@@ -21,10 +21,11 @@ import { COLLECTIONS } from '../../db/collections'
  * `TokenRules.caps` — a local-day bucket lets a timezone change re-open a cap
  * inside a single leaderboard period.
  *
- * The *window* the profile chart draws is not: `readActivityWeek` picks which
- * seven of these UTC buckets to show from the user's own calendar, so the
- * chart turns over at their midnight rather than at 17:00 their time. Which
- * buckets, not what is in them — see that function.
+ * The profile chart is not on that clock, and does not have to be: it awards
+ * nothing. It picks its seven days from the user's own calendar, and reads
+ * them out of `perLocalDay` — a second tally the same write keeps, split by
+ * the local day the actor was living in. So a bar is a day they lived, inside
+ * a document still bucketed by the day the pool closes on.
  */
 export interface DailyActivity {
   /** `<userId>:<day>` */
@@ -38,6 +39,16 @@ export interface DailyActivity {
   partners: string[]
   /** Messages per partner, for the per-partner cap. Only text messages count. */
   perPartner: Record<string, number>
+  /**
+   * The two counters the chart draws, split again by the *actor's* local day.
+   * At most two keys: one UTC day covers at most two local days in any zone.
+   *
+   * A second tally of the same events, not a second source of truth — the
+   * top-level counters stay whole and are what the caps and the pool read.
+   * Absent on documents written before this field existed; `readActivityWeek`
+   * draws what it does not account for under the document's own UTC day.
+   */
+  perLocalDay?: Record<string, { messages: number; corrections: number }>
   updatedAt: Date
 }
 
@@ -90,7 +101,18 @@ export function scoreOf(doc: DailyActivity | null): number {
  */
 export async function recordActivity(
   db: Db,
-  input: { userId: string; kind: ActivityKind; partnerId?: string; at?: Date },
+  input: {
+    userId: string
+    kind: ActivityKind
+    partnerId?: string
+    at?: Date
+    /**
+     * The *acting* user's zone, and only for `perLocalDay` — the document's
+     * own bucket stays UTC. Defaults to UTC, which files the sub-key under
+     * the same name as the bucket and so changes nothing.
+     */
+    timeZone?: string
+  },
 ): Promise<DailyActivity> {
   const at = input.at ?? new Date()
   const day = utcDayKey(at)
@@ -99,6 +121,24 @@ export async function recordActivity(
   inc[COUNTER_FIELD[input.kind]] = 1
   if (input.kind === 'message' && input.partnerId) {
     inc[`perPartner.${input.partnerId}`] = 1
+  }
+  /*
+   * Only the two kinds the chart draws. `mutualConversations` is not one of
+   * them, and the mutual write is also made for the *partner*, whose zone is
+   * not in scope where it happens — asking for it would be a query per
+   * message, to split a number nothing splits.
+   *
+   * Both sub-counters are always in the `$inc`, one of them by zero, for the
+   * same reason the three above are: the sub-document is fully shaped from
+   * its first write, so `readActivityWeek` can subtract without guarding
+   * every field. `YYYY-MM-DD` is safe as a path component — it is not all
+   * digits, so it cannot be read as an array index.
+   */
+  if (input.kind === 'message' || input.kind === 'correction') {
+    const localDay = localDayKey(at, input.timeZone ?? 'UTC')
+    inc[`perLocalDay.${localDay}.messages`] = 0
+    inc[`perLocalDay.${localDay}.corrections`] = 0
+    inc[`perLocalDay.${localDay}.${COUNTER_FIELD[input.kind]}`] = 1
   }
 
   const result = await db.collection<DailyActivity>(COLLECTIONS.dailyActivity).findOneAndUpdate(
@@ -121,25 +161,25 @@ export async function recordActivity(
 export const ACTIVITY_WEEK_DAYS = 7
 
 /**
- * The last `ACTIVITY_WEEK_DAYS` days ending on the user's own today, oldest
- * first. `timeZone` defaults to UTC, which reproduces the old window exactly.
+ * The last `ACTIVITY_WEEK_DAYS` days the user themselves lived, oldest first.
+ * `timeZone` defaults to UTC, which reproduces what this returned before any
+ * of it was local.
+ *
+ * Both halves are theirs: which seven days, from `localDayKey`, and what is
+ * in each one, from the `perLocalDay` tally the write keeps. So a bar holds
+ * their midnight-to-midnight, not a UTC day wearing their label, and the
+ * evening they are looking at the chart during is in the bar they expect.
  *
  * By `_id` rather than a `{ userId, day: { $gte } }` range: `_id` is
- * `<userId>:<day>` and already unique-indexed, so seven point lookups need no
- * new compound index for a query that runs once per profile view. Missing days
- * come back as zero rows — see the note on `tokenSummarySchema.week`.
+ * `<userId>:<day>` and already unique-indexed, so a handful of point lookups
+ * need no new compound index for a query that runs once per profile view.
+ * Missing days come back as zero rows — see the note on
+ * `tokenSummarySchema.week`.
  *
- * The window is local; the buckets it names are still UTC days, and that skew
- * is deliberate. At UTC-7 a bar therefore spans 17:00→17:00 local, so an
- * evening's work lands in tomorrow's bucket and shows up a day late. That is
- * the worse half of a trade we took knowingly: before this, the same work was
- * drawn in the last bar but under the *next* day's letter, and the chart
- * turned over while the reader's day was still going. Fixing both halves needs
- * sub-day resolution, and neither way to get it is worth it — hour
- * sub-buckets put a display concern on the write path every message takes
- * (and still miss on the +5:30 zones), and recounting from `messages` and
- * `postCorrections` with `$dateToString: { timezone }` makes a second source
- * of truth for a number the pool already computes.
+ * One thing it deliberately does not line up with: `summary.today` is still
+ * the UTC day, because that is the day the pool closes on. West of UTC the
+ * two disagree in the evening. They are on different screens, and the pool's
+ * number has always been the pool's.
  */
 export async function readActivityWeek(
   db: Db,
@@ -152,16 +192,64 @@ export async function readActivityWeek(
     shiftDayKey(today, i - (ACTIVITY_WEEK_DAYS - 1)),
   )
 
+  /*
+   * Zone offsets run from -12 to +14, so a local day never spills past one
+   * UTC day either side of its own key — whatever the zone. The documents
+   * that can carry this window are therefore the seven plus one at each end,
+   * and nine is nine for everybody, with nothing to branch on.
+   */
+  const utcDays = Array.from({ length: ACTIVITY_WEEK_DAYS + 2 }, (_, i) =>
+    shiftDayKey(today, i - ACTIVITY_WEEK_DAYS),
+  )
+
   const docs = await db
     .collection<DailyActivity>(COLLECTIONS.dailyActivity)
-    .find({ _id: { $in: days.map((day) => dailyActivityId(userId, day)) } })
+    .find({ _id: { $in: utcDays.map((day) => dailyActivityId(userId, day)) } })
     .toArray()
-  const byDay = new Map(docs.map((doc) => [doc.day, doc]))
+
+  const totals = new Map(days.map((day) => [day, { messages: 0, corrections: 0 }]))
+  const add = (day: string, messages: number, corrections: number): void => {
+    const row = totals.get(day)
+    // Days outside the window: the two edge documents are fetched for the
+    // part of them that reaches in, and the rest of them is not ours.
+    if (!row) return
+    row.messages += messages
+    row.corrections += corrections
+  }
+
+  for (const doc of docs) {
+    let split = { messages: 0, corrections: 0 }
+    for (const [day, counts] of Object.entries(doc.perLocalDay ?? {})) {
+      add(day, counts.messages, counts.corrections)
+      split = {
+        messages: split.messages + counts.messages,
+        corrections: split.corrections + counts.corrections,
+      }
+    }
+    /*
+     * Whatever the split does not account for predates it, and keeps the
+     * shape it was drawn with: the whole-day total under the document's own
+     * UTC key. A remainder rather than an either/or, so a document written
+     * across the deploy — part of its day counted one way, part the other —
+     * is drawn once and entirely.
+     *
+     * It disarms itself. Every `$inc` of `messages` now carries one of
+     * `perLocalDay.<day>.messages`, so for a document written wholly after
+     * the deploy this is exactly zero, and eight days on it is zero for all
+     * of them. Clamped because a negative would not draw a short bar, it
+     * would eat a correct neighbouring one.
+     */
+    add(
+      doc.day,
+      Math.max(0, doc.messages - split.messages),
+      Math.max(0, doc.corrections - split.corrections),
+    )
+  }
 
   return days.map((day) => ({
     day,
-    messages: byDay.get(day)?.messages ?? 0,
-    corrections: byDay.get(day)?.corrections ?? 0,
+    messages: totals.get(day)?.messages ?? 0,
+    corrections: totals.get(day)?.corrections ?? 0,
   }))
 }
 

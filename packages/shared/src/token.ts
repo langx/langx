@@ -680,9 +680,9 @@ export const tokenSummarySchema = z.object({
   lifetime: z.object({ corrections: z.number().int() }),
   /**
    * The seven days ending on the reader's own today, oldest first, for the
-   * profile chart — their calendar, so the chart turns over at their midnight.
-   * The counts behind each day are still UTC buckets; `readActivityWeek` has
-   * the note on what that skews and why it stays.
+   * profile chart — their calendar on both counts: which days, and what each
+   * one holds. A day here is their midnight to their midnight, so it does not
+   * line up with `today` above, which is and stays the pool's UTC day.
    *
    * Always exactly seven entries: a day with no activity is a zero row rather
    * than a gap, so the client can index by position instead of matching dates,

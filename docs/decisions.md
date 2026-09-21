@@ -252,21 +252,35 @@ So: caps and `dailyActivity` are UTC, **only** the streak is local. As a second
 line of defence, `updateProfile` rate-limits timezone changes to once every 7
 days; writing the same zone is never blocked.
 
-One later refinement, and it is a read, not a write. The profile's weekly chart
-used to pick its seven days in UTC too, which meant it turned over at 17:00 in
-Vancouver: at eight in the evening the column drawn as "today" was already
-tomorrow's letter, next to a streak tile that was still on the right day.
-`readActivityWeek` (and `weekWindow`, for the visitors chart under it) now
-picks **which** buckets to draw from the subject's own calendar. The buckets
-themselves are untouched and still UTC, so nothing above is weakened — a
-timezone change moves a window, and a window awards nothing.
+One later refinement, and it does not touch any of the above. The profile's
+weekly chart used to be UTC on both counts, which meant it turned over at 17:00
+in Vancouver: at eight in the evening the column drawn as "today" was already
+tomorrow's letter, next to a streak tile that was still on the right day. The
+chart is now the subject's own week — which seven days, from `localDayKey`, and
+what is in each one, from `perLocalDay`.
 
-The cost is that a bar's contents are a UTC day under a local label, so west of
-UTC an evening's messages surface in the next day's bar. We took that over the
-alternative, which was a chart that turned over while the reader's day was
-still going. Both halves cannot be right without sub-day counters, and neither
-way of getting those — hour sub-buckets on the write path, or recounting from
-`messages` and `postCorrections` — is worth it for a chart.
+`perLocalDay` is the part worth knowing about. The document is still one per
+user per UTC day, `_id` and all; inside it, the same write also tallies the two
+counters the chart draws against the local day the actor was living in. At most
+two keys, since one UTC day covers at most two local days. Nothing above is
+weakened: the caps and the pool read the whole-day counters, which stay whole,
+and a timezone change re-labels future increments rather than re-opening
+anything. The zone costs no query — every `recordActivity` call site already
+holds the actor's profile.
+
+Two consequences, both deliberate. `summary.week` and `summary.today` now
+disagree in the evening west of UTC, because the first is the reader's day and
+the second is the pool's; they are on different screens. And a document written
+before `perLocalDay` existed has no split, so the read draws the part its split
+does not account for under the document's own UTC day — a remainder rather than
+an either/or, which is what makes a document written across the deploy come out
+once and whole. It is identically zero for everything written since.
+
+The visitors chart under it takes its window from the same calendar but still
+counts in UTC buckets: its rows are deduped on `{viewer, viewed, day}`, so the
+same trick would mean changing the key, and the viewed person's zone is not in
+scope where the row is written. Read-time grouping is the fix there, and it has
+not been done yet.
 
 ## Phase 8 — ledger first, aggregates second; the order cannot be reversed
 

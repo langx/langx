@@ -75,6 +75,11 @@ export async function awardForSend(
   // from a history that was never interrupted.
   const frozen = Boolean(sender?.tokenFrozenAt)
 
+  // The chart's bars are the sender's own days; the document's bucket is
+  // still the UTC one the caps and the pool close on. `sender` is the
+  // pre-image of the update above, which does not touch `timezone`.
+  const timeZone = sender?.timezone ?? 'UTC'
+
   let tokens = 0
   let capped = false
 
@@ -82,7 +87,7 @@ export async function awardForSend(
     // Uncapped on purpose: corrections are unlimited on both tiers
     // (`PLAN_LIMITS.correctionsPer24h`) and teaching is the behaviour the
     // whole economy exists to reward.
-    await recordActivity(db, { userId: senderId, kind: 'correction', at })
+    await recordActivity(db, { userId: senderId, kind: 'correction', at, timeZone })
     const award = await awardTokens(db, {
       userId: senderId,
       kind: 'correction',
@@ -96,6 +101,7 @@ export async function awardForSend(
       userId: senderId,
       kind: 'message',
       at,
+      timeZone,
       ...(partnerId ? { partnerId } : {}),
     })
     const perPartner = partnerId ? (activity.perPartner[partnerId] ?? 0) : 0
