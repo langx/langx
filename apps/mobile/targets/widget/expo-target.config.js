@@ -21,13 +21,18 @@ module.exports = (config) => ({
   // Shortcuts and Siri aware of them does not run for an Expo module.
   frameworks: ['SwiftUI', 'WidgetKit', 'AppIntents'],
   /*
-   * 17.0, not the app's own floor. `containerBackground` is required of every
-   * Home Screen widget from iOS 17, and writing the pre-17 path as well would
-   * double every view for the phones that will have updated by the time this
-   * ships. The app itself keeps supporting older iOS; those phones simply have
-   * no widget to add.
+   * 16.4, which is the app's own floor — a phone that cannot install the app
+   * has nothing to add a widget to, so there is no reason to sit above it.
+   *
+   * It was 17.0 first, because `containerBackground` is required of every Home
+   * Screen widget from iOS 17 and does not exist before it, and writing the
+   * second path looked like doubling every view. It was one `@ViewBuilder`
+   * extension — `widgetGround` in `LangXWidget.swift` — and the views did not
+   * change at all. The cost of the 17.0 floor was the part nobody sees: a
+   * phone on iOS 16 had the app and no widget, and was told nothing about why,
+   * which is exactly how the watch app went missing at `deploymentTarget: 11`.
    */
-  deploymentTarget: '17.0',
+  deploymentTarget: '16.4',
   /*
    * The mark the empty state draws, which is the badge the splash already
    * uses — same file, so the widget's "not signed in" face and the app's first

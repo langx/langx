@@ -411,11 +411,38 @@ private struct RectangularView: View {
 
 // MARK: - Widgets
 
+/**
+ The widget's own background, on both sides of iOS 17.
+
+ `containerBackground` is required from iOS 17 — a Home Screen widget that does
+ not call it is drawn with no background at all — and it does not exist before
+ that, where a widget paints its own with `.background`. This target asked for
+ iOS 17 to avoid writing the second path, on the reasoning that it would double
+ every view. It does not: the views are untouched and this is the whole of it.
+
+ `opaque: false` is the Lock Screen and StandBy pair. The system draws those
+ families vibrant against the wallpaper, so a colour behind them before 17 is a
+ dark rectangle where the photograph should be — they get nothing instead.
+ */
+private extension View {
+  @ViewBuilder
+  func widgetGround(_ colour: Color, opaque: Bool = true) -> some View {
+    if #available(iOS 17.0, *) {
+      containerBackground(colour, for: .widget)
+    } else if opaque {
+      background(colour)
+    } else {
+      self
+    }
+  }
+}
+
+
 struct LangXStreakWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXStreakWidget", provider: CompanionProvider()) { entry in
       SmallView(snapshot: entry.snapshot, now: entry.date)
-        .containerBackground(Brand.ground, for: .widget)
+        .widgetGround(Brand.ground)
     }
     .configurationDisplayName(LocalizedStringResource("widget.streakName"))
     .description(LocalizedStringResource("widget.streakDetail"))
@@ -427,7 +454,7 @@ struct LangXSummaryWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXSummaryWidget", provider: CompanionProvider()) { entry in
       MediumView(snapshot: entry.snapshot, now: entry.date)
-        .containerBackground(Brand.ground, for: .widget)
+        .widgetGround(Brand.ground)
     }
     .configurationDisplayName(LocalizedStringResource("widget.todayName"))
     .description(LocalizedStringResource("widget.todayDetail"))
@@ -447,7 +474,7 @@ struct LangXActivityWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXActivityWidget", provider: CompanionProvider()) { entry in
       ActivityView(snapshot: entry.snapshot, now: entry.date)
-        .containerBackground(Brand.ground, for: .widget)
+        .widgetGround(Brand.ground)
     }
     .configurationDisplayName(LocalizedStringResource("widget.activityName"))
     .description(LocalizedStringResource("widget.activityDetail"))
@@ -462,7 +489,7 @@ struct LangXAccessoryWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "LangXAccessoryWidget", provider: CompanionProvider()) { entry in
       AccessoryRouter(entry: entry)
-        .containerBackground(Brand.ground, for: .widget)
+        .widgetGround(Brand.ground, opaque: false)
     }
     .configurationDisplayName(LocalizedStringResource("widget.glanceName"))
     .description(LocalizedStringResource("widget.glanceDetail"))
