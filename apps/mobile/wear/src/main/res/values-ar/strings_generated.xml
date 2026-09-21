@@ -28,6 +28,10 @@
   <string name="intents_openEchoDetail">انتقل مباشرة إلى بطاقات اليوم.</string>
   <string name="intents_openChats">افتح رسائلي</string>
   <string name="intents_openChatsDetail">انتقل مباشرة إلى قائمة المحادثات.</string>
+  <string name="intents_openConversation">افتح محادثة</string>
+  <string name="intents_openConversationDetail">انتقل مباشرة إلى المحادثة مع شخص تتحدث معه.</string>
+  <string name="intents_conversationType">محادثة</string>
+  <string name="intents_conversationParameter">محادثة مع</string>
   <string name="notifications_replyAction">رد</string>
   <string name="notifications_replyPlaceholder">اكتب ردًا</string>
   <string name="notifications_markAsRead">تحديد كمقروء</string>

@@ -2,6 +2,7 @@ import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { AppState } from 'react-native'
 import { takePendingRoute } from '../../modules/companion-snapshot'
+import { pendingRouteHref } from '../lib/pendingRoute'
 
 /**
  * Sends the app where an App Intent asked it to go.
@@ -25,14 +26,10 @@ export function usePendingRoute({ enabled }: { enabled: boolean }): void {
     if (!enabled) return
 
     const go = () => {
-      const route = takePendingRoute()
-      /*
-       * Only the routes this app actually has, checked here rather than
-       * trusted. The value comes from the App Group, which is ours — but a
-       * router push of an unknown path is a blank screen, and an allowlist
-       * costs one line where the alternative costs a bug report.
-       */
-      if (route === '/echo' || route === '/chats') router.push(route)
+      // Only the routes this app actually has; `pendingRouteHref` says which
+      // and why, and is where the conversation id is checked.
+      const href = pendingRouteHref(takePendingRoute())
+      if (href) router.push(href)
     }
 
     go()

@@ -3,3 +3,5 @@
 "Start my ${applicationName} review" = "${applicationName} tekrarıma başla";
 "Open my ${applicationName} messages" = "${applicationName} mesajlarımı aç";
 "Show my ${applicationName} chats" = "${applicationName} sohbetlerimi göster";
+"Open my ${applicationName} chat with ${conversation}" = "${applicationName} sohbetimi ${conversation} ile aç";
+"Open ${conversation} in ${applicationName}" = "${conversation} sohbetini ${applicationName} ile aç";

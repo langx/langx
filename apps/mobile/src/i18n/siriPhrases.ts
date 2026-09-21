@@ -32,14 +32,29 @@ import type { Locale } from '@langx/shared'
 export const APPLICATION_NAME = '${applicationName}'
 
 /**
+ * The conversation an `OpenConversationIntent` phrase names.
+ *
+ * `\(\.$conversation)` in Swift, and the parameter's own name is what binds
+ * the two — rename the property and every phrase stops matching, in eight
+ * languages at once, with nothing to say so. The generator checks the pairing
+ * against the Swift rather than trusting it.
+ */
+export const CONVERSATION = '${conversation}'
+
+/**
  * The shortcuts, in the order Siri offers them.
  *
- * Two, because two intents exist: `OpenEchoReviewIntent` and
- * `OpenChatsIntent` in `app-intents/OpenIntents.swift`. The third of the
- * plan's intents — send a message to a named person — is not here because it
- * is not built; see `docs/plans/phase-1-app-intents.md`.
+ * Three, for the three intents in `app-intents/OpenIntents.swift`. The last
+ * one carries a **second** token, `${conversation}`, which is the parameter
+ * Siri fills from the directory the app writes — and which obeys the same
+ * rule as the app's name: present in every language, or that language's
+ * phrase matches nothing.
+ *
+ * What is still missing is the plan's fourth idea, sending a message to a
+ * named person, and it is missing for a reason that has nothing to do with
+ * phrases; see `docs/plans/phase-1-app-intents.md`.
  */
-export const SIRI_SHORTCUTS = ['openEchoReview', 'openChats'] as const
+export const SIRI_SHORTCUTS = ['openEchoReview', 'openChats', 'openConversation'] as const
 
 export type SiriShortcut = (typeof SIRI_SHORTCUTS)[number]
 
@@ -58,10 +73,18 @@ export const SIRI_PHRASES: Record<Locale, Record<SiriShortcut, readonly [string,
   en: {
     openEchoReview: [`Open my ${APPLICATION_NAME} review`, `Start my ${APPLICATION_NAME} review`],
     openChats: [`Open my ${APPLICATION_NAME} messages`, `Show my ${APPLICATION_NAME} chats`],
+    openConversation: [
+      `Open my ${APPLICATION_NAME} chat with ${CONVERSATION}`,
+      `Open ${CONVERSATION} in ${APPLICATION_NAME}`,
+    ],
   },
   tr: {
     openEchoReview: [`${APPLICATION_NAME} tekrarımı aç`, `${APPLICATION_NAME} tekrarıma başla`],
     openChats: [`${APPLICATION_NAME} mesajlarımı aç`, `${APPLICATION_NAME} sohbetlerimi göster`],
+    openConversation: [
+      `${APPLICATION_NAME} sohbetimi ${CONVERSATION} ile aç`,
+      `${CONVERSATION} sohbetini ${APPLICATION_NAME} ile aç`,
+    ],
   },
   es: {
     openEchoReview: [
@@ -72,6 +95,10 @@ export const SIRI_PHRASES: Record<Locale, Record<SiriShortcut, readonly [string,
       `Abrir mis mensajes de ${APPLICATION_NAME}`,
       `Mostrar mis chats de ${APPLICATION_NAME}`,
     ],
+    openConversation: [
+      `Abrir mi chat de ${APPLICATION_NAME} con ${CONVERSATION}`,
+      `Abrir ${CONVERSATION} en ${APPLICATION_NAME}`,
+    ],
   },
   ru: {
     openEchoReview: [
@@ -79,10 +106,18 @@ export const SIRI_PHRASES: Record<Locale, Record<SiriShortcut, readonly [string,
       `Начать повторение в ${APPLICATION_NAME}`,
     ],
     openChats: [`Открыть сообщения в ${APPLICATION_NAME}`, `Показать чаты в ${APPLICATION_NAME}`],
+    openConversation: [
+      `Открыть чат с ${CONVERSATION} в ${APPLICATION_NAME}`,
+      `Открыть ${CONVERSATION} в ${APPLICATION_NAME}`,
+    ],
   },
   ar: {
     openEchoReview: [`افتح مراجعة ${APPLICATION_NAME}`, `ابدأ مراجعة ${APPLICATION_NAME}`],
     openChats: [`افتح رسائل ${APPLICATION_NAME}`, `اعرض محادثات ${APPLICATION_NAME}`],
+    openConversation: [
+      `افتح محادثة ${APPLICATION_NAME} مع ${CONVERSATION}`,
+      `افتح ${CONVERSATION} في ${APPLICATION_NAME}`,
+    ],
   },
   fr: {
     openEchoReview: [
@@ -92,6 +127,10 @@ export const SIRI_PHRASES: Record<Locale, Record<SiriShortcut, readonly [string,
     openChats: [
       `Ouvrir mes messages ${APPLICATION_NAME}`,
       `Afficher mes conversations ${APPLICATION_NAME}`,
+    ],
+    openConversation: [
+      `Ouvrir ma conversation ${APPLICATION_NAME} avec ${CONVERSATION}`,
+      `Ouvrir ${CONVERSATION} dans ${APPLICATION_NAME}`,
     ],
   },
   de: {
@@ -103,6 +142,10 @@ export const SIRI_PHRASES: Record<Locale, Record<SiriShortcut, readonly [string,
       `Meine ${APPLICATION_NAME} Nachrichten öffnen`,
       `Meine ${APPLICATION_NAME} Chats zeigen`,
     ],
+    openConversation: [
+      `Meinen ${APPLICATION_NAME} Chat mit ${CONVERSATION} öffnen`,
+      `${CONVERSATION} in ${APPLICATION_NAME} öffnen`,
+    ],
   },
   'pt-BR': {
     openEchoReview: [
@@ -113,6 +156,10 @@ export const SIRI_PHRASES: Record<Locale, Record<SiriShortcut, readonly [string,
       `Abrir minhas mensagens do ${APPLICATION_NAME}`,
       `Mostrar meus chats do ${APPLICATION_NAME}`,
     ],
+    openConversation: [
+      `Abrir minha conversa do ${APPLICATION_NAME} com ${CONVERSATION}`,
+      `Abrir ${CONVERSATION} no ${APPLICATION_NAME}`,
+    ],
   },
 }
 
@@ -122,4 +169,18 @@ export const SIRI_SOURCE: Locale = 'en'
 /** How many times `APPLICATION_NAME` appears in a phrase. Apple wants one. */
 export function applicationNameCount(phrase: string): number {
   return phrase.split(APPLICATION_NAME).length - 1
+}
+
+/**
+ * Every `${token}` in a phrase, in the order they appear.
+ *
+ * Used to compare a translation against its English source: a phrase says the
+ * same thing in eight languages only if it names the same things, and a token
+ * dropped or duplicated in one of them is a phrase that language never
+ * matches. Order is kept because it makes a failure readable, not because
+ * Apple cares about it — `${conversation}` may lead in Russian and trail in
+ * English, and both are right.
+ */
+export function tokensIn(phrase: string): string[] {
+  return [...phrase.matchAll(/\$\{([a-zA-Z]+)\}/g)].map(([, token]) => token ?? '')
 }

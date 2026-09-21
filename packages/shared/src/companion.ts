@@ -117,3 +117,59 @@ export const companionSnapshotSchema = z.object({
 })
 
 export type CompanionSnapshot = z.infer<typeof companionSnapshotSchema>
+
+/**
+ * How many conversations the directory carries.
+ *
+ * A cap rather than the whole list, because this blob is rewritten whenever
+ * the conversation list changes and it sits in a container two processes
+ * read. Twenty is what somebody could plausibly name out loud — the people
+ * they are actually talking to — and the order is the list's own, which is
+ * most recent first. Somebody with a hundred conversations is not going to
+ * ask Siri for the ninetieth.
+ */
+export const COMPANION_DIRECTORY_LIMIT = 20
+
+export const COMPANION_DIRECTORY_VERSION = 1
+
+/**
+ * Who an App Intent is allowed to name.
+ *
+ * Separate from `companionSnapshotSchema` and not a field inside it, although
+ * both blobs live in the same App Group container and are written by the same
+ * module. Two reasons, and the second is the load-bearing one:
+ *
+ * - The snapshot is **what the widgets read**, and its comment says so. A
+ *   widget has no use for a list of people and should not be handed one.
+ * - This blob is other people's names. Keeping it in its own key means the
+ *   thing that carries personal data is one grep away from every reader, and
+ *   that a widget extension being given a container does not imply being
+ *   given a directory.
+ *
+ * It is written while signed in and removed with the session — the same root
+ * effect that empties the snapshot and the two watches. Nothing here is
+ * durable state; it is a cache of what the app already has on screen.
+ */
+export const companionDirectorySchema = z.object({
+  version: z.literal(COMPANION_DIRECTORY_VERSION),
+  writtenAt: z.string().datetime(),
+  conversations: z
+    .array(
+      z.object({
+        /** The conversation id, which is what a route needs: `/chat/<id>`. */
+        id: z.string(),
+        /**
+         * The other person, as the app already draws them in the chat list.
+         *
+         * A display name rather than a handle, because this is matched
+         * against speech and read aloud by Siri. It is also why an entry with
+         * no name is dropped rather than carried as "Unknown": a person Siri
+         * cannot name is a person nobody can ask for.
+         */
+        name: z.string().min(1),
+      }),
+    )
+    .max(COMPANION_DIRECTORY_LIMIT),
+})
+
+export type CompanionDirectory = z.infer<typeof companionDirectorySchema>

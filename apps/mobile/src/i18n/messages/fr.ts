@@ -2141,6 +2141,11 @@ export const fr: Localized<EnMessages> = {
     openEchoDetail: 'Aller directement aux cartes du jour.',
     openChats: 'Ouvrir mes messages',
     openChatsDetail: 'Aller directement à la liste des conversations.',
+    openConversation: 'Ouvrir une conversation',
+    openConversationDetail:
+      'Allez directement à la conversation avec une personne à qui vous parlez.',
+    conversationType: 'Conversation',
+    conversationParameter: 'Conversation avec',
   },
   widget: {
     faceDetail: 'Votre série, ou ce qui attend, sur le cadran.',

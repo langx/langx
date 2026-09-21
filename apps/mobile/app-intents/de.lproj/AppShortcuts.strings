@@ -3,3 +3,5 @@
 "Start my ${applicationName} review" = "Meine ${applicationName} Wiederholung starten";
 "Open my ${applicationName} messages" = "Meine ${applicationName} Nachrichten öffnen";
 "Show my ${applicationName} chats" = "Meine ${applicationName} Chats zeigen";
+"Open my ${applicationName} chat with ${conversation}" = "Meinen ${applicationName} Chat mit ${conversation} öffnen";
+"Open ${conversation} in ${applicationName}" = "${conversation} in ${applicationName} öffnen";

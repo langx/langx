@@ -8,6 +8,7 @@ import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useLocationRefresh } from '../../src/hooks/useLocationRefresh'
 import { useDailyCheckIn } from '../../src/hooks/useDailyCheckIn'
+import { useCompanionDirectory } from '../../src/hooks/useCompanionDirectory'
 import { useCompanionSnapshot } from '../../src/hooks/useCompanionSnapshot'
 import { useWatchLink } from '../../src/hooks/useWatchLink'
 import { useExchangeActivity } from '../../src/hooks/useExchangeActivity'
@@ -59,6 +60,7 @@ export default function AppLayout() {
   // iOS only in effect: the module behind it is absent everywhere else, so
   // this is a no-op on Android and on the web rather than a branch here.
   useCompanionSnapshot({ enabled: !isGuest })
+  useCompanionDirectory({ enabled: !isGuest })
   useWatchLink({ enabled: !isGuest })
   useExchangeActivity({ enabled: !isGuest })
   usePendingRoute({ enabled: !isGuest })

@@ -3,3 +3,5 @@
 "Start my ${applicationName} review" = "ابدأ مراجعة ${applicationName}";
 "Open my ${applicationName} messages" = "افتح رسائل ${applicationName}";
 "Show my ${applicationName} chats" = "اعرض محادثات ${applicationName}";
+"Open my ${applicationName} chat with ${conversation}" = "افتح محادثة ${applicationName} مع ${conversation}";
+"Open ${conversation} in ${applicationName}" = "افتح ${conversation} في ${applicationName}";

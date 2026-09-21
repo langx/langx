@@ -19,6 +19,8 @@ public class CompanionSnapshotModule: Module {
   /// Must match `com.apple.security.application-groups` in `app.config.ts`.
   private static let appGroup = "group.tech.newchapter.languageXchange"
   private static let key = "companionSnapshot"
+  /// Must match `ConversationDirectory.swift` in the app target.
+  private static let directoryKey = "companionDirectory"
   /// Must match `PendingRoute.swift` in the app target.
   private static let routeKey = "pendingRoute"
 
@@ -40,6 +42,25 @@ public class CompanionSnapshotModule: Module {
     Function("clear") {
       defaults()?.removeObject(forKey: Self.key)
       reload()
+    }
+
+    /*
+     Who an App Intent may name, in its own key rather than inside the
+     snapshot: the snapshot is what the widgets read, and a widget has no use
+     for a list of people. Same container, same rules, different question —
+     and a `clear` of one is not a clear of the other, which is why sign-out
+     calls both.
+
+     No `reload()` here. WidgetKit draws nothing from this, and asking it to
+     redraw on every change to the conversation list would spend a phone's
+     refresh budget on an answer no widget shows.
+     */
+    Function("writeDirectory") { (json: String) in
+      defaults()?.set(json, forKey: Self.directoryKey)
+    }
+
+    Function("clearDirectory") {
+      defaults()?.removeObject(forKey: Self.directoryKey)
     }
 
     /**

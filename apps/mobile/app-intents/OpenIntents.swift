@@ -61,3 +61,33 @@ struct OpenChatsIntent: AppIntent {
     return .result()
   }
 }
+
+/**
+ "Open my chat with …" — the third of the plan's intents, minus the sending.
+
+ The plan asks for _open a named conversation_ and _send a message to a named
+ person_, and this is the first of the two. It needs no credential, because it
+ opens rather than sends: the directory says which conversations can be named
+ and `PendingRoute` says which one to open, exactly as the two intents above
+ do. The send still waits on a decision about where a credential may live —
+ see `docs/plans/phase-1-app-intents.md`.
+
+ The parameter has no `requestValueDialog`. A missing value is asked for by
+ the system with the type's own display representation, which is already
+ translated; a dialog here would be a sentence written in Swift.
+ */
+@available(iOS 16.0, *)
+struct OpenConversationIntent: AppIntent {
+  static var title: LocalizedStringResource = "intents.openConversation"
+  static var description = IntentDescription("intents.openConversationDetail")
+  static var openAppWhenRun = true
+
+  @Parameter(title: "intents.conversationParameter")
+  var conversation: ConversationEntity
+
+  @MainActor
+  func perform() async throws -> some IntentResult {
+    PendingRoute.write("/chat/\(conversation.id)")
+    return .result()
+  }
+}

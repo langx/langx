@@ -6,6 +6,7 @@ import {
   SIRI_PHRASES,
   SIRI_SHORTCUTS,
   SIRI_SOURCE,
+  tokensIn,
 } from './siriPhrases'
 
 const locales = Object.keys(catalogs) as (keyof typeof SIRI_PHRASES)[]
@@ -52,6 +53,28 @@ describe('the Siri phrases', () => {
           length: source.length,
         })
       }
+    }
+  })
+
+  /**
+   * A translation says the same thing only if it names the same things.
+   * `${conversation}` is the one at risk — it reads like a placeholder
+   * somebody could helpfully translate, and a phrase that loses it matches
+   * nothing in that language for ever.
+   */
+  it('name the same tokens English names', () => {
+    for (const shortcut of SIRI_SHORTCUTS) {
+      SIRI_PHRASES[SIRI_SOURCE][shortcut].forEach((source, index) => {
+        const want = [...tokensIn(source)].sort()
+        for (const locale of locales) {
+          const phrase = SIRI_PHRASES[locale][shortcut][index] ?? ''
+          expect({ locale, phrase, tokens: [...tokensIn(phrase)].sort() }).toEqual({
+            locale,
+            phrase,
+            tokens: want,
+          })
+        }
+      })
     }
   })
 

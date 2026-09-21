@@ -590,9 +590,10 @@ is not, which is why its paperwork starts on day one.
    names, the phone-driven Live Activity, and two of the three App Intents.
    The string generator is done — the watch is what finally required it.
    Siri by voice followed on 21 September, with the config plugin it always
-   needed. Open: the Lock Screen not clearing at sign-out (a real device), and
-   the intent that sends a message (Behic's credential decision) — see
-   `phase-1-app-intents.md`.
+   needed, and the third intent — opening a named conversation — the same day.
+   Open: the Lock Screen not clearing at sign-out (a real device), and
+   **sending** a message from an intent, which is Behic's credential decision
+   and the only part of phase 1 still unwritten — see `phase-1-app-intents.md`.
    → verify: everything in `phase-1-mac-handoff.md`, on a Mac
 
 1b. iPhone Duo readiness: the lint rule against `Dimensions.get` — done; then,
