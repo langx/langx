@@ -28,8 +28,20 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const TARGETS = join(HERE, '../targets')
 const OUT = join(TARGETS, '_shared/Localizable.xcstrings')
-/** The Wear OS module, which needs the same words in Android's own shape. */
-const WEAR_RES = join(HERE, '../wear/src/main/res')
+/**
+ * The two Android modules that draw words of their own, both of which need
+ * the same keys in Android's own shape.
+ *
+ * They are separate builds, not one: `wear/` is its own application and its
+ * own APK, while `modules/car-messaging` is a library that merges into the
+ * phone's. So the same `strings_generated.xml` is written twice rather than
+ * shared — a resource in one is not visible to the other, and neither can
+ * reach an Apple string catalogue any more than Swift can read `en.ts`.
+ */
+const ANDROID_RES = [
+  join(HERE, '../wear/src/main/res'),
+  join(HERE, '../modules/car-messaging/android/src/main/res'),
+]
 
 /**
  * The source language, which Apple treats differently from the rest: its
@@ -220,7 +232,11 @@ if (process.argv.includes('--check')) {
 
   const stale = [
     ...(readOr(OUT) === next ? [] : ['targets/_shared/Localizable.xcstrings']),
-    ...[...android].filter(([path, body]) => readOr(join(WEAR_RES, path)) !== body).map(([p]) => p),
+    ...ANDROID_RES.flatMap((res) =>
+      [...android]
+        .filter(([path, body]) => readOr(join(res, path)) !== body)
+        .map(([path]) => relative(join(HERE, '..'), join(res, path))),
+    ),
   ]
   if (stale.length > 0) {
     console.error(
@@ -234,12 +250,14 @@ if (process.argv.includes('--check')) {
   )
 } else {
   writeFileSync(OUT, next)
-  for (const [path, body] of android) {
-    const full = join(WEAR_RES, path)
-    mkdirSync(dirname(full), { recursive: true })
-    writeFileSync(full, body)
+  for (const res of ANDROID_RES) {
+    for (const [path, body] of android) {
+      const full = join(res, path)
+      mkdirSync(dirname(full), { recursive: true })
+      writeFileSync(full, body)
+    }
   }
   console.log(
-    `Wrote ${NATIVE_KEYS.length} keys × ${Object.keys(catalogs).length} locales to the Apple catalogue and ${android.size} Android resource files`,
+    `Wrote ${NATIVE_KEYS.length} keys × ${Object.keys(catalogs).length} locales to the Apple catalogue and ${android.size * ANDROID_RES.length} Android resource files`,
   )
 }

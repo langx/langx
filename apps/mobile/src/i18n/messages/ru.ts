@@ -834,6 +834,8 @@ export const ru: Localized<EnMessages> = {
   notifications: {
     replyAction: 'Ответить',
     replyPlaceholder: 'Напишите ответ',
+    markAsRead: 'Отметить прочитанным',
+    replyFailed: 'Ответ не отправлен',
     messages: 'Сообщения',
     messagesBody: 'Когда вам пишут. На почту — только если вас давно не было.',
     streak: 'Напоминание о стрике',

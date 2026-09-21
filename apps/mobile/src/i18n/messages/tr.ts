@@ -768,6 +768,8 @@ export const tr: Localized<EnMessages> = {
   notifications: {
     replyAction: 'Yanıtla',
     replyPlaceholder: 'Bir yanıt yaz',
+    markAsRead: 'Okundu işaretle',
+    replyFailed: 'Yanıt gönderilemedi',
     messages: 'Mesajlar',
     messagesBody: 'Biri sana yazdığında. E-posta yalnızca bir süredir uzaktaysan.',
     streak: 'Streak hatırlatması',

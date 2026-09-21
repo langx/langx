@@ -53,6 +53,18 @@ export const NATIVE_KEYS = [
   'intents.openEchoDetail',
   'intents.openChats',
   'intents.openChatsDetail',
+  /*
+   * The car. Android Auto reads a `MessagingStyle` notification out loud and
+   * answers it, and the notification is built in Kotlin — so the four words
+   * on it cannot come from `t()` the way the rest of the shade's do. Three
+   * are already written; `messageMeta.you` is the name Android wants for the
+   * person being written to, and it is the same "You" the chat screen uses.
+   */
+  'notifications.replyAction',
+  'notifications.replyPlaceholder',
+  'notifications.markAsRead',
+  'notifications.replyFailed',
+  'messageMeta.you',
 ] as const satisfies readonly Paths<EnMessages>[]
 
 export type NativeKey = (typeof NATIVE_KEYS)[number]

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  What Android Auto reads to decide whether this app has anything to say in a
+  car. `notification` is the whole declaration for a messaging app: the car
+  reads a MessagingStyle notification out and answers it, and there is no
+  templated experience to declare because `CarAppService`'s categories are
+  navigation, POI, settings and feature cluster — there is no messaging one.
+
+  It must not ship without the notification itself being built properly. This
+  tells the car to show our notifications; a notification the car cannot read
+  out or answer is a car-quality failure, and that review blocks the whole
+  production submission rather than just the car.
+-->
+<automotiveApp>
+  <uses name="notification" />
+</automotiveApp>

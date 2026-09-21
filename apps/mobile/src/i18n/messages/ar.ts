@@ -851,6 +851,8 @@ export const ar: Localized<EnMessages> = {
   notifications: {
     replyAction: 'رد',
     replyPlaceholder: 'اكتب ردًا',
+    markAsRead: 'تحديد كمقروء',
+    replyFailed: 'لم يُرسل الرد',
     messages: 'الرسائل',
     messagesBody: 'عندما يكتب إليك أحد. وبالبريد فقط إن غبت مدة.',
     streak: 'تذكير السلسلة',

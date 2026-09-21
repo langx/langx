@@ -770,6 +770,8 @@ export const fr: Localized<EnMessages> = {
   notifications: {
     replyAction: 'Répondre',
     replyPlaceholder: 'Écrivez une réponse',
+    markAsRead: 'Marquer comme lu',
+    replyFailed: 'Réponse non envoyée',
     messages: 'Messages',
     messagesBody: 'Quand quelqu’un vous écrit. Par e-mail seulement après une absence.',
     streak: 'Rappel de série',
