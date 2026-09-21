@@ -656,12 +656,12 @@ and 6 that could be written has been written. What is left in them is not
 work, it is four kinds of waiting, and it is worth separating them because
 they unblock in different ways:
 
-| Waiting on          | What                                                                                          |
-| ------------------- | --------------------------------------------------------------------------------------------- |
-| **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto         |
-| **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                          |
-| **Behic**           | the Siri config plugin, the send intent's credential, Play Console's Wear OS and Android Auto |
-| **Apple**           | the CarPlay entitlement, and therefore phases 0 and 3                                         |
+| Waiting on          | What                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------- |
+| **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto |
+| **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                  |
+| **Behic**           | the send intent's credential, Play Console's Wear OS and Android Auto                 |
+| **Apple**           | the CarPlay entitlement, and therefore phases 0 and 3                                 |
 
 ## What used to be out of this plan
 
