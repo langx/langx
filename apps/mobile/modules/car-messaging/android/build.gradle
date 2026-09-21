@@ -1,0 +1,52 @@
+/*
+ * No `modules` in `expo-module.config.json` and nothing for JavaScript to
+ * call: this is a native-only module, autolinked for the one thing
+ * autolinking gives it — a Gradle project whose manifest and resources merge
+ * into the app's. The alternative was a config plugin copying Kotlin into the
+ * generated `android/app`, the way `withWearApp` copies the watch; a library
+ * that stands on its own is less machinery than a copy step.
+ */
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.carmessaging'
+version = '1.0.0'
+
+android {
+  namespace 'expo.modules.carmessaging'
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}
+
+/*
+ * The version of expo-notifications this is compiled against, asked of node
+ * rather than written down. Expo ships its modules as prebuilt artifacts now
+ * — `:expo-notifications` is not a Gradle project at all, only
+ * `host.exp.exponent:expo.modules.notifications` in a local maven repository
+ * — so the coordinate needs a version, and a hard-coded one would have to be
+ * remembered at every SDK bump. This way the bump either keeps working or
+ * fails at the compile, which is the right place for it to be noticed.
+ */
+def expoNotificationsVersion = providers.exec {
+  workingDir(rootDir)
+  commandLine('node', '--print', "require('expo-notifications/package.json').version")
+}.standardOutput.asText.get().trim()
+
+dependencies {
+  /*
+   * The notification pipeline this extends. Every class it subclasses —
+   * `NotificationsService`, `ExpoPresentationDelegate` — is `open`, which is
+   * the extension point Expo left; none of it is API, so an SDK upgrade is
+   * where this breaks.
+   */
+  implementation "host.exp.exponent:expo.modules.notifications:${expoNotificationsVersion}"
+  /*
+   * The credential store and the one authenticated POST, which the wrist
+   * reply needed first. Same cookie, same route, one implementation.
+   */
+  implementation project(':wear-link')
+}

@@ -885,6 +885,8 @@ export const en = {
   notifications: {
     replyAction: 'Reply',
     replyPlaceholder: 'Write a reply',
+    markAsRead: 'Mark as read',
+    replyFailed: 'Reply not sent',
     messages: 'Messages',
     messagesBody: 'When somebody writes to you. By email only if you have been away a while.',
     streak: 'Streak reminder',

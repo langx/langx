@@ -773,6 +773,8 @@ export const de: Localized<EnMessages> = {
   notifications: {
     replyAction: 'Antworten',
     replyPlaceholder: 'Antwort schreiben',
+    markAsRead: 'Als gelesen markieren',
+    replyFailed: 'Antwort nicht gesendet',
     messages: 'Nachrichten',
     messagesBody: 'Wenn dir jemand schreibt. Per E-Mail nur, wenn du länger weg warst.',
     streak: 'Streak-Erinnerung',

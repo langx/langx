@@ -761,6 +761,8 @@ export const ptBR: Localized<EnMessages> = {
   notifications: {
     replyAction: 'Responder',
     replyPlaceholder: 'Escreva uma resposta',
+    markAsRead: 'Marcar como lida',
+    replyFailed: 'Resposta não enviada',
     messages: 'Mensagens',
     messagesBody: 'Quando alguém te escreve. Por e-mail só se você ficar um tempo fora.',
     streak: 'Lembrete de sequência',

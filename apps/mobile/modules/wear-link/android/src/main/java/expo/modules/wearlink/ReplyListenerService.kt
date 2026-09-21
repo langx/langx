@@ -4,8 +4,6 @@ import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
-import java.net.HttpURLConnection
-import java.net.URL
 import org.json.JSONObject
 
 /**
@@ -54,43 +52,20 @@ class ReplyListenerService : WearableListenerService() {
     Wearable.getDataClient(this).putDataItem(result.asPutDataRequest().setUrgent())
   }
 
-  private fun send(conversationId: String, body: String, clientId: String): Boolean {
-    val credentials = WearCredentials.load(this) ?: return false
-
-    return try {
-      val url = URL("${credentials.baseUrl}/conversations/$conversationId/messages")
-      val connection = url.openConnection() as HttpURLConnection
-      connection.requestMethod = "POST"
-      connection.doOutput = true
-      connection.setRequestProperty("Content-Type", "application/json")
-      connection.setRequestProperty("Cookie", credentials.cookie)
-      /*
-       Fifteen seconds, matching the Apple side. `sendMessage`'s own patience
-       is longer, but a person looking at a watch face has far less — and a
-       send that was actually committed is not lost by saying it failed,
-       because the retry carries the same `clientId` and the unique index
-       refuses the second write.
-      */
-      connection.connectTimeout = TIMEOUT_MS
-      connection.readTimeout = TIMEOUT_MS
-
-      connection.outputStream.use { stream ->
-        stream.write(JSONObject().put("body", body).put("clientId", clientId).toString().toByteArray())
-      }
-
-      /*
-       Anything but 2xx is "not sent", including the refusals that are the
-       server working correctly — a suspended account, a thread the sender was
-       removed from. The watch has one line to say it in and no screen to
-       explain it on; the phone does, and that is where somebody is being sent.
-      */
-      val status = connection.responseCode
-      connection.disconnect()
-      status in 200..299
-    } catch (error: Throwable) {
-      false
-    }
-  }
+  /**
+   * Fifteen seconds, and the reason it is this rather than `sendMessage`'s own
+   * far longer patience: a person looking at a watch face has much less. A
+   * send that was actually committed is not lost by saying it failed, because
+   * the retry carries the same `clientId` and the unique index refuses the
+   * second write.
+   */
+  private fun send(conversationId: String, body: String, clientId: String): Boolean =
+      NativeSend.post(
+          this,
+          "/conversations/$conversationId/messages",
+          JSONObject().put("body", body).put("clientId", clientId),
+          TIMEOUT_MS,
+      )
 
   private companion object {
     /** Must match the paths in `wear/PhoneLink.kt`. */

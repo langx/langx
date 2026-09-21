@@ -1,0 +1,42 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application>
+    <!--
+      The car looks for this before it shows anything of ours. See
+      res/xml/automotive_app_desc.xml for what it declares and what that costs.
+    -->
+    <meta-data
+      android:name="com.google.android.gms.car.application"
+      android:resource="@xml/automotive_app_desc" />
+
+    <!--
+      How a message notification comes to be built here rather than by
+      expo-notifications.
+
+      `NotificationsService.doWork` asks the package manager which receiver in
+      this package handles `NOTIFICATION_EVENT` and takes the *first* answer,
+      which is the highest priority. Expo registers its own at **-1** for
+      exactly this reason: an app that wants the pipeline puts one at the
+      default 0 and wins, without any patch or fork. Everything else about the
+      service is inherited, so scheduling, dismissal and boot still behave.
+    -->
+    <receiver
+      android:name=".MessageNotificationsService"
+      android:enabled="true"
+      android:exported="false">
+      <intent-filter android:priority="0">
+        <action android:name="expo.modules.notifications.NOTIFICATION_EVENT" />
+      </intent-filter>
+    </receiver>
+
+    <!--
+      A receiver, not an Activity: Google's page says in as many words that an
+      Activity or Fragment handling a car action "can cause your app to be
+      blocked from Android Auto". It is also the only thing that can work —
+      the app may not be running, and a reply cannot wait for a React runtime.
+    -->
+    <receiver
+      android:name=".MessageActionReceiver"
+      android:enabled="true"
+      android:exported="false" />
+  </application>
+</manifest>

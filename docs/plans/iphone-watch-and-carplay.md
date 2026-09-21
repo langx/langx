@@ -611,10 +611,11 @@ is not, which is why its paperwork starts on day one.
 4. Wear OS — **done, 20 September**, out of order because the design was
    never actually separate. Tile and sign-out still open.
 
-5. Android Auto: the other car, and the one nobody has to approve —
-   **and it goes before CarPlay** (Behic, 20 September), because phase 3 waits
-   on an Apple queue with no published turnaround and this waits on nobody
-   → verify: the same list as Surface C, in the Android Auto simulator
+5. Android Auto — **built and exercised, 20 September**: the message drawn
+   as a `MessagingStyle` conversation, answered from the car's reply action by
+   a broadcast receiver with no app running, and marked read. Still to do: a
+   real head unit, and the Play Console opt-in, which is Behic's
+   → verify: everything in `phase-5-android-auto.md`
    → the review is not free: see the phase, it becomes blocking on production
 
 6. iPad, Mac and the Duo's inner display: one two-pane layout, not three
@@ -657,7 +658,7 @@ on either wrist, so there is one app and one payload. The record is in
 Still open on this surface: the tile (Wear's complication), and sign-out
 clearing the watch.
 
-### Phase 5 — Android Auto
+### Phase 5 — Android Auto ✅ built 20 September
 
 The car, on the other platform. Genuinely a separate set of constraints from
 CarPlay: Android Auto's messaging templates are declarative (`CarAppService`,
@@ -751,6 +752,21 @@ shows something it cannot read out or answer, which is a car-quality failure
 on a checklist that blocks the whole release.
 
 Sources: [Notifications for Android Auto](https://developer.android.com/training/cars/communication/notification-messaging).
+
+**Built on 20 September, as the four items above.**
+[`phase-5-android-auto.md`](phase-5-android-auto.md) has what it is and what
+was checked. Two things from it belong here, because they change other parts
+of this plan:
+
+- **The reply button was already broken on Android, and this fixed it.** The
+  category's own action hands the answer to Expo's response path, which is
+  JavaScript; on Android the process starts without a React runtime, so a
+  reply from the shade sat unsent until somebody opened the app. It now goes
+  out from Kotlin over the same REST twin the watch uses — one send path with
+  four ways into it.
+- **The Play Console opt-in is still Behic's**, and the order matters: closed
+  testing first, because a car-quality failure at submission blocks the whole
+  release rather than the car.
 
 ### Phase 6 — iPad and Mac layouts
 
@@ -887,7 +903,9 @@ Added on 20 September, when phases 4 to 9 came in:
 4. **What is the next store build for?** Nothing left in phases 1 and 2 can
    reach an installed app over the air — `runtimeVersion` is a fingerprint and
    every remaining item there is native. The exception is the notification
-   quick-reply, which is JavaScript and a `categoryId` on the server.
+   quick-reply, which is JavaScript and a `categoryId` on the server. Phase 5
+   added to the answer: Android Auto is native too, and its reply fix is the
+   first thing in this plan that improves the phone rather than an accessory.
 5. ~~**Does Android Auto go before CarPlay?**~~ **Answered 20 September:
    yes.** Recorded in the order of work and in phase 5, along with what the
    car-quality review costs once the form factor is on.
