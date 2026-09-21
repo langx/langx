@@ -84,6 +84,22 @@ export const watchPayloadSchema = z.object({
    * which means the phone has not spoken yet.
    */
   conversations: z.array(watchConversationSchema).max(WATCH_MAX_CONVERSATIONS),
+  /**
+   * The streak, for the complication.
+   *
+   * Optional, and it has to stay optional: watchOS installs the watch app on
+   * its own schedule, so a watch running the build before this one will be
+   * handed a payload carrying it and a watch running this build can be handed
+   * one without. Neither is an error — the complication falls back to the
+   * unread count, which every payload has.
+   *
+   * A number rather than the whole streak object the companion snapshot
+   * carries. The complication draws one glyph on a watch face; `longest` and
+   * `lastQualifiedDay` answer questions nobody asks at that size, and a field
+   * that travels every time the unread count changes should be as small as
+   * what it says.
+   */
+  streak: z.number().int().nonnegative().optional(),
 })
 
 export type WatchMessage = z.infer<typeof watchMessageSchema>

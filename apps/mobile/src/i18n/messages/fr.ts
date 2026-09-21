@@ -2111,6 +2111,9 @@ export const fr: Localized<EnMessages> = {
   },
 
   watch: {
+    complication: 'Cadran',
+    showsUnread: 'Non lus',
+    showsStreak: 'Série',
     unread: 'Non lus',
     nothingUnread: 'Rien de non lu',
     openOnPhone: 'Ouvrez LangX sur votre téléphone',
@@ -2145,6 +2148,7 @@ export const fr: Localized<EnMessages> = {
     openChatsDetail: 'Aller directement à la liste des conversations.',
   },
   widget: {
+    faceDetail: 'Votre série, ou ce qui attend, sur le cadran.',
     streakName: 'Série',
     streakDetail: 'Vos jours d’affilée. Pâle tant qu’aujourd’hui ne compte pas.',
     todayName: 'Aujourd’hui',

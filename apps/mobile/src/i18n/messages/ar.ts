@@ -2422,6 +2422,9 @@ export const ar: Localized<EnMessages> = {
   },
 
   watch: {
+    complication: 'واجهة الساعة',
+    showsUnread: 'غير المقروءة',
+    showsStreak: 'السلسلة',
     unread: 'غير المقروءة',
     nothingUnread: 'لا رسائل غير مقروءة',
     openOnPhone: 'افتح LangX على الهاتف',
@@ -2456,6 +2459,7 @@ export const ar: Localized<EnMessages> = {
     openChatsDetail: 'انتقل مباشرة إلى قائمة المحادثات.',
   },
   widget: {
+    faceDetail: 'سلسلتك أو ما ينتظرك، على واجهة الساعة.',
     streakName: 'السلسلة',
     streakDetail: 'أيامك المتتالية. باهتة حتى يُحتسب اليوم.',
     todayName: 'اليوم',

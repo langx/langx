@@ -2289,6 +2289,9 @@ export const en = {
    one source of truth â it simply reaches the watch by a different road.
   */
   watch: {
+    complication: 'Watch face',
+    showsUnread: 'Unread',
+    showsStreak: 'Streak',
     unread: 'Unread',
     nothingUnread: 'Nothing unread',
     openOnPhone: 'Open LangX on your phone',
@@ -2323,6 +2326,7 @@ export const en = {
     openChatsDetail: 'Go straight to the chat list.',
   },
   widget: {
+    faceDetail: 'Your streak, or what is waiting, on the watch face.',
     streakName: 'Streak',
     streakDetail: 'Your run of days. Dim until today counts.',
     todayName: 'Today',

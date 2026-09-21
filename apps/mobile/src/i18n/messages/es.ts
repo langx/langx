@@ -2095,6 +2095,9 @@ export const es: Localized<EnMessages> = {
   },
 
   watch: {
+    complication: 'Esfera',
+    showsUnread: 'No leídos',
+    showsStreak: 'Racha',
     unread: 'No leídos',
     nothingUnread: 'Nada sin leer',
     openOnPhone: 'Abre LangX en tu teléfono',
@@ -2129,6 +2132,7 @@ export const es: Localized<EnMessages> = {
     openChatsDetail: 'Ir directo a la lista de chats.',
   },
   widget: {
+    faceDetail: 'Tu racha, o lo que espera, en la esfera del reloj.',
     streakName: 'Racha',
     streakDetail: 'Tus días seguidos. Atenuada hasta que hoy cuente.',
     todayName: 'Hoy',

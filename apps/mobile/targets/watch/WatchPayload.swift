@@ -36,6 +36,16 @@ struct WatchPayload: Codable {
   let version: Int
   let writtenAt: String
   let conversations: [Conversation]
+  /**
+   The streak, for the complication.
+
+   Optional here and optional in the schema, and the obligation is the one at
+   the top of this file: watchOS installs the watch app on its own schedule,
+   so a watch running yesterday's build can be handed a payload carrying this
+   and a watch running today's can be handed one without. The complication
+   falls back to the unread count, which every payload has.
+  */
+  let streak: Int?
 
   /**
    Decode what arrived, or nil.

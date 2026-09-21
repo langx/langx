@@ -276,11 +276,53 @@ lowering their wrist.
   English. `adb shell am broadcast … remove-tile` then `add-tile` is what
   forces a fresh one; without it a change looks like it did nothing.
 
-- **The complication.** A `watch-widget` target reading a digest the watch app
-  stores. It needs its own App Group between the two watch targets, a `streak`
-  field the payload does not carry, and the settings screen the plan asks for
-  ("streak, or unread, chosen by the person"). Not started.
-- **The notification quick-reply action.** No categories exist yet; see above.
+- ~~**The notification quick-reply action.**~~ Built 20 September. The server
+  names `PUSH_CATEGORY_MESSAGE` on a message push, the app registers a
+  category with a text input, and the answer goes out over the REST send twin
+  — the same route the watch reply uses, so there is one send path with three
+  ways into it. It was the one remaining item in this phase that reaches an
+  installed app over the air.
+
+- ~~**The complication.**~~ Built 20 September, and the App Group it needs is
+  registered on the **two watch targets only** — not the phone's, which is a
+  container on a different device.
+
+  `LangXComplication` is a `watch-widget` target drawing one number in the
+  accessory families. It reads `WatchDigest` out of the group, which the
+  watch app writes whenever a payload lands: a complication is a separate
+  process, drawn while the app is not running, with no `WCSession` of its own
+  — only one session exists per app and the watch app owns it. The digest is
+  two numbers and a choice rather than the payload, because a payload is
+  names and sentences and this draws a glyph.
+
+  The payload gained an optional `streak` for it, carried end to end from the
+  profile the app already loads. The wearer chooses which number the face
+  shows, from a row at the bottom of the unread list — two rows rather than a
+  toggle, because "Streak" and "Unread" say what they mean and a toggle would
+  need a label that does not.
+
+  **What was checked:** the digest written on a real payload
+  (`{"streak":3,"unread":7,"shows":"unread","version":1}`), LangX offered in
+  the complication picker under its catalogue name, and the number drawn on
+  an Infograph face. **What was not:** the streak setting changing the face,
+  and sign-out clearing the digest.
+
+  **Two things cost a round each.** An extension's bundle identifier has to
+  be prefixed by its _container's_ — for this one the watch app,
+  `…languageXchange.watch` — and `@bacons/apple-targets` derives it from the
+  phone app instead, giving `…languageXchange.watch-widget`, a sibling rather
+  than a child. The simulator refuses the whole watch app with "Failed to set
+  app extension placeholders" and names neither the extension nor the rule;
+  `bundleIdentifier` in the target config is the fix. And
+  `containerBackground` is watchOS 10 while this target's floor is 9.0 — an
+  accessory family has no container to paint anyway, because the face
+  supplies the backdrop and tints the content itself.
+
+  **The portal work is still owed before a device build.** App Groups work on
+  a simulator without being registered, which is what made all of the above
+  verifiable today; a build for a real watch needs the group on both App IDs,
+  and `eas-cli` cannot patch App Groups.
+
 - ~~**Store assets.**~~ Done, 20 September. Behic answered the open question —
   the watch enters the listing with its first build rather than waiting for
   CarPlay — so both sets were shot from the running apps rather than drawn:

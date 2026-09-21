@@ -2331,6 +2331,9 @@ export const ru: Localized<EnMessages> = {
   },
 
   watch: {
+    complication: 'Циферблат',
+    showsUnread: 'Непрочитанные',
+    showsStreak: 'Серия',
     unread: 'Непрочитанные',
     nothingUnread: 'Нет непрочитанных',
     openOnPhone: 'Откройте LangX на телефоне',
@@ -2365,6 +2368,7 @@ export const ru: Localized<EnMessages> = {
     openChatsDetail: 'Сразу к списку чатов.',
   },
   widget: {
+    faceDetail: 'Серия или непрочитанные — на циферблате.',
     streakName: 'Серия',
     streakDetail: 'Дни подряд. Тускнеет, пока сегодня не засчитано.',
     todayName: 'Сегодня',

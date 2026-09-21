@@ -2093,6 +2093,9 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   watch: {
+    complication: 'Mostrador',
+    showsUnread: 'Não lidas',
+    showsStreak: 'Sequência',
     unread: 'Não lidas',
     nothingUnread: 'Nada não lido',
     openOnPhone: 'Abra o LangX no seu telefone',
@@ -2127,6 +2130,7 @@ export const ptBR: Localized<EnMessages> = {
     openChatsDetail: 'Ir direto para a lista de conversas.',
   },
   widget: {
+    faceDetail: 'Sua sequência, ou o que espera, no mostrador.',
     streakName: 'Sequência',
     streakDetail: 'Seus dias seguidos. Apagada até hoje contar.',
     todayName: 'Hoje',

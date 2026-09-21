@@ -10,6 +10,9 @@
   <string name="watch_sent">Отправлено</string>
   <string name="watch_notSent">Не отправлено</string>
   <string name="watch_loading">Загрузка…</string>
+  <string name="watch_complication">Циферблат</string>
+  <string name="watch_showsUnread">Непрочитанные</string>
+  <string name="watch_showsStreak">Серия</string>
   <string name="widget_streakName">Серия</string>
   <string name="widget_streakDetail">Дни подряд. Тускнеет, пока сегодня не засчитано.</string>
   <string name="widget_todayName">Сегодня</string>
@@ -18,6 +21,7 @@
   <string name="widget_activityDetail">Ваши занятия: один квадрат в день.</string>
   <string name="widget_glanceName">Взгляд</string>
   <string name="widget_glanceDetail">Серия и непрочитанные для экрана блокировки и StandBy.</string>
+  <string name="widget_faceDetail">Серия или непрочитанные — на циферблате.</string>
   <string name="widget_exchangeStartsIn">Начало через</string>
   <string name="widget_exchangeEndsIn">Конец через</string>
   <string name="intents_openEcho">Открыть Echo</string>

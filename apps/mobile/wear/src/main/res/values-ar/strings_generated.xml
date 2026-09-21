@@ -10,6 +10,9 @@
   <string name="watch_sent">تم الإرسال</string>
   <string name="watch_notSent">لم يُرسل</string>
   <string name="watch_loading">جارٍ التحميل…</string>
+  <string name="watch_complication">واجهة الساعة</string>
+  <string name="watch_showsUnread">غير المقروءة</string>
+  <string name="watch_showsStreak">السلسلة</string>
   <string name="widget_streakName">السلسلة</string>
   <string name="widget_streakDetail">أيامك المتتالية. باهتة حتى يُحتسب اليوم.</string>
   <string name="widget_todayName">اليوم</string>
@@ -18,6 +21,7 @@
   <string name="widget_activityDetail">تدريبك، مربع لكل يوم.</string>
   <string name="widget_glanceName">لمحة</string>
   <string name="widget_glanceDetail">السلسلة وغير المقروء لشاشة القفل و StandBy.</string>
+  <string name="widget_faceDetail">سلسلتك أو ما ينتظرك، على واجهة الساعة.</string>
   <string name="widget_exchangeStartsIn">يبدأ خلال</string>
   <string name="widget_exchangeEndsIn">ينتهي خلال</string>
   <string name="intents_openEcho">افتح Echo</string>

@@ -10,6 +10,9 @@
   <string name="watch_sent">Enviado</string>
   <string name="watch_notSent">No enviado</string>
   <string name="watch_loading">Cargando…</string>
+  <string name="watch_complication">Esfera</string>
+  <string name="watch_showsUnread">No leídos</string>
+  <string name="watch_showsStreak">Racha</string>
   <string name="widget_streakName">Racha</string>
   <string name="widget_streakDetail">Tus días seguidos. Atenuada hasta que hoy cuente.</string>
   <string name="widget_todayName">Hoy</string>
@@ -18,6 +21,7 @@
   <string name="widget_activityDetail">Tu práctica, un cuadro por día.</string>
   <string name="widget_glanceName">Vistazo</string>
   <string name="widget_glanceDetail">Racha y no leídos, para la pantalla bloqueada y StandBy.</string>
+  <string name="widget_faceDetail">Tu racha, o lo que espera, en la esfera del reloj.</string>
   <string name="widget_exchangeStartsIn">Empieza en</string>
   <string name="widget_exchangeEndsIn">Termina en</string>
   <string name="intents_openEcho">Abrir Echo</string>

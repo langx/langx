@@ -2094,6 +2094,9 @@ export const tr: Localized<EnMessages> = {
   },
 
   watch: {
+    complication: 'Saat kadranı',
+    showsUnread: 'Okunmamış',
+    showsStreak: 'Seri',
     unread: 'Okunmamış',
     nothingUnread: 'Okunmamış yok',
     openOnPhone: 'LangX’i telefonunda aç',
@@ -2128,6 +2131,7 @@ export const tr: Localized<EnMessages> = {
     openChatsDetail: 'Doğrudan sohbet listesine git.',
   },
   widget: {
+    faceDetail: 'Saat kadranında serin ya da bekleyenler.',
     streakName: 'Seri',
     streakDetail: 'Üst üste günlerin. Bugün sayılana kadar soluk.',
     todayName: 'Bugün',

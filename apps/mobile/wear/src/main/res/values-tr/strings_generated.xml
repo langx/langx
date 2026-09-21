@@ -10,6 +10,9 @@
   <string name="watch_sent">Gönderildi</string>
   <string name="watch_notSent">Gönderilemedi</string>
   <string name="watch_loading">Yükleniyor…</string>
+  <string name="watch_complication">Saat kadranı</string>
+  <string name="watch_showsUnread">Okunmamış</string>
+  <string name="watch_showsStreak">Seri</string>
   <string name="widget_streakName">Seri</string>
   <string name="widget_streakDetail">Üst üste günlerin. Bugün sayılana kadar soluk.</string>
   <string name="widget_todayName">Bugün</string>
@@ -18,6 +21,7 @@
   <string name="widget_activityDetail">Çalışman, günde bir kare.</string>
   <string name="widget_glanceName">Bakış</string>
   <string name="widget_glanceDetail">Kilit ekranı ve StandBy için seri ve okunmamışlar.</string>
+  <string name="widget_faceDetail">Saat kadranında serin ya da bekleyenler.</string>
   <string name="widget_exchangeStartsIn">Başlamasına</string>
   <string name="widget_exchangeEndsIn">Bitmesine</string>
   <string name="intents_openEcho">Echo’yu aç</string>

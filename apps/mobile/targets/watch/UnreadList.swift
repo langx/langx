@@ -75,6 +75,23 @@ struct UnreadList: View {
             Palette.fill.clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
           )
         }
+
+        /*
+         The last row, and the only screen on this watch that is not about a
+         conversation. It is here rather than behind a toolbar button because
+         a watch toolbar is one glyph wide and a glyph that means "which
+         number goes on your watch face" does not exist.
+        */
+        NavigationLink(value: Destination.settings) {
+          Text("watch.complication")
+            .font(.system(size: 14, design: .rounded))
+            .foregroundStyle(Palette.textMuted)
+        }
+        .listRowBackground(Color.clear)
+      }
+      .navigationDestination(for: Destination.self) { _ in
+        ComplicationSettings()
+          .environment(\.layoutDirection, readingDirection)
       }
       .navigationDestination(for: String.self) { id in
         /*
@@ -87,6 +104,50 @@ struct UnreadList: View {
           .environment(\.layoutDirection, readingDirection)
       }
     }
+  }
+}
+
+/// One case, and it exists so `navigationDestination` can tell a settings
+/// push apart from a conversation id — both would otherwise be `String`.
+enum Destination: Hashable {
+  case settings
+}
+
+/**
+ Which number the complication draws.
+
+ Two rows rather than a toggle: a toggle needs a label saying what "on"
+ means, and "Streak" and "Unread" say it without one. The choice is written
+ into the group the complication reads, and the face redraws as it is made.
+ */
+private struct ComplicationSettings: View {
+  @EnvironmentObject private var store: WatchStore
+
+  var body: some View {
+    List {
+      row(.unread, "watch.showsUnread")
+      row(.streak, "watch.showsStreak")
+    }
+  }
+
+  private func row(_ shows: WatchDigest.Shows, _ key: LocalizedStringKey) -> some View {
+    Button {
+      store.setComplicationShows(shows)
+    } label: {
+      HStack {
+        Text(key)
+          .foregroundStyle(Palette.text)
+        Spacer(minLength: 0)
+        if store.complicationShows == shows {
+          Image(systemName: "checkmark")
+            .foregroundStyle(Palette.primary)
+        }
+      }
+    }
+    .buttonStyle(.plain)
+    .listRowBackground(
+      Palette.fill.clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+    )
   }
 }
 
