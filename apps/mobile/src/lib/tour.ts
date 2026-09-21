@@ -8,8 +8,8 @@
  * `TourTarget`, and the rules are here.
  *
  * Deliberately **not** part of `tips.ts`. A tip is one sentence a screen offers
- * whenever it has one to spare; the tour is an ordered run that happens once,
- * covers the screen, and ends on an action. Sharing a store would mean one
+ * whenever it has one to spare; the tour is an ordered run that happens once
+ * and covers the screen while it plays. Sharing a store would mean one
  * dismissal deciding both.
  */
 
@@ -99,8 +99,8 @@ export interface TourStep {
  * The screen's own chrome first, in the order a reader's eye takes it; then
  * the four tabs they have not opened yet — standing on each one, with the
  * real screen behind the dim; then back to Discovery for the card, last,
- * because it is the only step that leads anywhere and the tour should end on
- * the thing to actually do.
+ * because a card is the thing to actually do and the run should leave them
+ * looking at one.
  *
  * The anchor on a tab step stays the **tab-bar icon**, not something on the
  * screen that was just opened. The bar is mounted whatever tab is showing, so
@@ -138,8 +138,13 @@ export const TOUR_STEPS: readonly TourStep[] = [
  *
  * What is left is the shape the run always had: what this screen is, how to
  * read it, where answers land, what Echo is, what the Feed is for, and then
- * one card to open. The last step is the only one with an action in it and it
- * is the reason the rest exist.
+ * one card to open.
+ *
+ * **The last step used to offer to open a profile for you**, in a button that
+ * named whoever was at the top of the list. Behic had it removed the same day:
+ * a tour that ends by opening somebody's profile has decided something on the
+ * reader's behalf, and the person it picked was only ever "whoever sorted
+ * first". The step still points at the card — it just lets them choose it.
  */
 
 /**
@@ -290,33 +295,6 @@ export function measureTourTarget(id: TourTargetId): Promise<TourRect | null> {
   return measure ? measure() : Promise.resolve(null)
 }
 
-/**
- * The action the last step offers, when the screen has one to offer.
- *
- * Registered by whoever owns the target — Discovery hands over its first card —
- * because only that screen knows whose profile it is. A run with nothing
- * registered simply has no button, which is what a list that emptied while the
- * tour was playing leaves behind.
- */
-export interface TourCta {
-  /** Shown in the button, so the offer names a person rather than a noun. */
-  name: string
-  run: () => void
-}
-
-let cta: TourCta | null = null
-
-export function registerTourCta(next: TourCta): () => void {
-  cta = next
-  return () => {
-    if (cta === next) cta = null
-  }
-}
-
-export function tourCta(): TourCta | null {
-  return cta
-}
-
 export function setTourState(next: TourState | null): void {
   open = next
   publish()
@@ -329,7 +307,6 @@ export function tourState(): TourState | null {
 /** Test seam: drops the run and every registration. */
 export function resetTourForTest(): void {
   open = null
-  cta = null
   listeners.clear()
   targets.clear()
 }

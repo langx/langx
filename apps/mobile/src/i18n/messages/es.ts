@@ -139,8 +139,6 @@ export const es: Localized<EnMessages> = {
     tabFeedTitle: 'Pregunta y aprende',
     tabFeedBody:
       'El Muro es la sala entera: haz que corrijan una frase, escucha cómo se dice una palabra y haz lo mismo por alguien más.',
-    sayHi: 'Saluda a {name}',
-    notNow: 'Ahora no',
   },
   theme: {
     section: 'Apariencia',

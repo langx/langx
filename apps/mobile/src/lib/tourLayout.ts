@@ -8,13 +8,20 @@ import type { TourRect } from './tour'
  * every other, which is exactly what a test can hold still and a simulator
  * cannot.
  *
- * **There is no mask here, and no SVG.** The dim is one view with an enormous
- * border: a border's inner corner radius is its outer radius minus its width,
- * so a single bordered box with nothing in the middle leaves a hole of any
- * corner we ask for, with the real UI showing through it. Four panels around
- * the anchor was the first attempt, and it could only ever leave a square
- * hole — which is fine for the rectangles and wrong for the one target that
- * wants a circle.
+ * **There is no mask here, and no SVG.** `react-native-svg` is a native module
+ * — a new binary and no way to send this over the air — so the dim is built
+ * out of plain views: four rectangles butted against the hole's four straight
+ * edges, and a small square at each corner with its inner corner rounded away.
+ * Eight boxes, none of them unusual.
+ *
+ * **It was one box, and that is the bug this replaced.** A single view with a
+ * border thick enough to reach every screen edge leaves a hole of any radius
+ * for free, because a border's inner corner radius is its outer radius minus
+ * its width. It also puts a 4750-point square with a 2375-point radius on
+ * screen, and neither renderer paints that reliably: on the tab steps the dim
+ * simply did not appear — the element was there, the right size and the right
+ * colour, and the screen stayed bright — while the same step drawn a second
+ * time was fine. Nothing here is larger than the screen any more.
  */
 
 /** Between the hole and the bubble, and between the bubble and the screen edge. */
@@ -51,16 +58,38 @@ export interface TourLayoutInput {
   insets: { top: number; bottom: number }
 }
 
+/** One plain rectangle of dim. */
+export interface TourPanel {
+  /** Which side of the hole it covers. Also its key when the four are drawn. */
+  side: 'top' | 'bottom' | 'left' | 'right'
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
+/**
+ * One corner of the hole, filled back in so the corner reads as round.
+ *
+ * A square of `hole.radius` sitting in a corner of the hole, with the corner
+ * pointing *into* the hole rounded away by its own width — which leaves
+ * exactly the square minus a quarter disc, and that is the difference between
+ * a square hole and a rounded one.
+ */
+export interface TourCorner {
+  at: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
+  left: number
+  top: number
+  size: number
+}
+
 export interface TourLayout {
   /** The lit rectangle: the anchor, grown by `PAD` and clamped to the screen. */
   hole: TourRect & { radius: number }
-  /**
-   * The dim, as one bordered box. Its border is the dim; its hollow middle is
-   * the hole. Wide enough to cover the screen from wherever the hole is.
-   */
-  mask: { left: number; top: number; width: number; height: number }
-  /** `borderWidth` for the mask, and the radius that rounds its inside. */
-  border: { width: number; radius: number }
+  /** The dim. Four rectangles butted against the hole's straight edges. */
+  dim: readonly TourPanel[]
+  /** Empty when the hole is square, which is every target but the tab icons. */
+  corners: readonly TourCorner[]
   /**
    * Anchored by one edge only, so the bubble's height never has to be known
    * in advance. Measuring it first would mean one frame drawn in the wrong
@@ -84,6 +113,27 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), Math.max(min, max))
 }
 
+/**
+ * The dim with nothing cut out of it.
+ *
+ * What the overlay paints between two steps, while the next one is still
+ * finding its target — which is what keeps the same four views mounted from
+ * the first step to the last. They used to be torn down and rebuilt on every
+ * step, and a view inserted during a tab change was sometimes never painted:
+ * the right size, the right colour, in the tree, on a screen that stayed
+ * bright. Four panels that only ever move do not give the renderer that
+ * chance, and they also close the half-second of undimmed screen each step
+ * opened with.
+ */
+export function tourCover(screen: { width: number; height: number }): readonly TourPanel[] {
+  return [
+    { side: 'top', left: 0, top: 0, width: screen.width, height: screen.height },
+    { side: 'bottom', left: 0, top: screen.height, width: screen.width, height: 0 },
+    { side: 'left', left: 0, top: screen.height, width: 0, height: 0 },
+    { side: 'right', left: screen.width, top: screen.height, width: 0, height: 0 },
+  ]
+}
+
 export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLayout {
   const left = clamp(anchor.x - PAD, 0, screen.width)
   const top = clamp(anchor.y - PAD, 0, screen.height)
@@ -93,24 +143,40 @@ export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLay
   const height = bottom - top
   // A radius larger than half the shorter side is not a rounder rectangle, it
   // is a pill — which is exactly what `radius: 999` on a tab icon asks for,
-  // and what the border arithmetic below needs bounded to stay a rectangle.
+  // and the bound the corner pieces need: each one is a square of `radius`,
+  // and two of them meeting in the middle of an edge would be a lens, not a
+  // corner.
   const radius = Math.min(anchor.radius ?? RADIUS, Math.min(width, height) / 2)
   const hole = { x: left, y: top, width, height, radius }
 
   /*
-   * One border, thick enough to reach every edge of the screen from a hole
-   * anywhere on it. The inner radius React Native (and CSS) derives is
-   * `borderRadius - borderWidth`, so the outer radius has to carry the border
-   * width as well as the corner we actually want.
+   * Four rectangles, butted against the hole rather than overlapping it or
+   * each other: the dim is translucent, so anywhere two panels met twice
+   * would be a darker seam. The top and bottom ones run the full width and
+   * the sides fill the band the hole is in, which is the one arrangement
+   * where no pair touches.
    */
-  const border = { width: screen.width + screen.height, radius: 0 }
-  border.radius = border.width + radius
-  const mask = {
-    left: left - border.width,
-    top: top - border.width,
-    width: width + border.width * 2,
-    height: height + border.width * 2,
-  }
+  const dim: TourPanel[] = [
+    { side: 'top', left: 0, top: 0, width: screen.width, height: Math.max(0, top) },
+    {
+      side: 'bottom',
+      left: 0,
+      top: bottom,
+      width: screen.width,
+      height: Math.max(0, screen.height - bottom),
+    },
+    { side: 'left', left: 0, top, width: Math.max(0, left), height },
+    { side: 'right', left: right, top, width: Math.max(0, screen.width - right), height },
+  ]
+
+  const corners: TourCorner[] = radius
+    ? [
+        { at: 'topLeft', left, top, size: radius },
+        { at: 'topRight', left: right - radius, top, size: radius },
+        { at: 'bottomLeft', left, top: bottom - radius, size: radius },
+        { at: 'bottomRight', left: right - radius, top: bottom - radius, size: radius },
+      ]
+    : []
 
   /*
    * Which side of the hole the bubble takes is decided by where the hole is,
@@ -145,8 +211,8 @@ export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLay
     const bubbleTop = beside ? Math.max(insets.top + GAP, top) : bottom + GAP
     return {
       hole,
-      mask,
-      border,
+      dim,
+      corners,
       bubble: {
         placement,
         left: bubbleLeft,
@@ -162,8 +228,8 @@ export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLay
     : Math.max(0, screen.height - top) + GAP
   return {
     hole,
-    mask,
-    border,
+    dim,
+    corners,
     bubble: {
       placement,
       left: bubbleLeft,

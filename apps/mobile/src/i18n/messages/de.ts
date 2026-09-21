@@ -139,8 +139,6 @@ export const de: Localized<EnMessages> = {
     tabFeedTitle: 'Fragen und lernen',
     tabFeedBody:
       'Der Feed ist der ganze Raum: lass einen Satz korrigieren, hör, wie ein Wort klingt, und tu dasselbe für jemand anderen.',
-    sayHi: 'Sag {name} Hallo',
-    notNow: 'Jetzt nicht',
   },
   theme: {
     section: 'Darstellung',

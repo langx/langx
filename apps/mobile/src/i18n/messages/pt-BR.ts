@@ -136,8 +136,6 @@ export const ptBR: Localized<EnMessages> = {
     tabFeedTitle: 'Pergunte e aprenda',
     tabFeedBody:
       'O Feed é a sala inteira: peça para corrigirem uma frase, ouça como se fala uma palavra e faça o mesmo por outra pessoa.',
-    sayHi: 'Diga oi para {name}',
-    notNow: 'Agora não',
   },
   theme: {
     section: 'Aparência',

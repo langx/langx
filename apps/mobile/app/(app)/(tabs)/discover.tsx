@@ -2,7 +2,7 @@ import { countryFlag, formatDistance, type DiscoverySort } from '@langx/shared'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../../src/lib/navigation'
 import { track } from '../../../src/lib/analytics'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../../src/api/queries'
@@ -33,7 +33,6 @@ import {
 } from '../../../src/lib/location'
 import { openPaywall } from '../../../src/lib/paywall'
 import { shouldGateGuest } from '../../../src/lib/guestGate'
-import { registerTourCta } from '../../../src/lib/tour'
 import { authClient } from '../../../src/lib/auth-client'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { listState } from '../../../src/lib/listState'
@@ -335,20 +334,6 @@ export default function DiscoverScreen() {
   const count = activeCount(effective)
   const tips = useTips()
   const { data: session } = authClient.useSession()
-  /*
-   * What the tour's last step offers. The first row, because that is the row
-   * the step is pointing at — and re-registered whenever it changes, so a list
-   * that refreshed mid-run offers whoever is at the top now.
-   */
-  const first = items[0]
-  useEffect(() => {
-    if (!first) return
-    return registerTourCta({
-      name: first.displayName,
-      run: () => openProfile(first.handle, '/(app)/(tabs)/discover'),
-    })
-  }, [first])
-
   /*
    * Over a list that has settled, whatever it settled on — not only one with
    * rows in it.
