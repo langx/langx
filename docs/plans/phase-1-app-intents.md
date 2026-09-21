@@ -1,14 +1,15 @@
-# The App Intents — two of three, and where the third stops
+# The App Intents — and where the last one stops
 
 The plan asks for three: _open the Echo review_, _open a named conversation_,
-and _send a message to a named person_. Two of them route and nothing else,
-and those two are built. The third needs something that does not exist yet,
-and this file says exactly what.
+and _send a message to a named person_. The first two route and nothing else,
+and both are built, with spoken phrases in eight languages. The third needs a
+decision that is not this file's to make.
 
-## Where they live, and the hour it cost
+## Where they live, and the two hours it cost
 
-**In the widget extension, not in a local Expo module and not in the app
-target.**
+**In the main app target** — and they spent a day in the widget extension
+first, which is worth keeping because both halves of the reason are still
+true.
 
 App Intents are found through metadata a build step extracts. That step runs
 for an app or an app extension — **not** for the static library a
@@ -17,29 +18,32 @@ builds, links, and is then invisible to Shortcuts, to Siri and to the Action
 Button, with nothing anywhere to say why. So a module was never an option.
 
 The app target was tried first, through a config plugin in the shape of
-`withWearApp.js`: copy the Swift in, copy the string catalogue in, add both to
-the target. The Swift part worked. The catalogue did not, twice, and the
-second failure is the one worth writing down — **the `xcode` package's
-extension table predates `.xcstrings`**, so `addResourceFileToGroup` creates
-the file reference, puts it in a group, and never adds it to the Resources
-build phase. The reference exists, the file is not copied into the bundle, and
-every `LocalizedStringResource` falls back to its own key.
+`withWearApp.js`, and abandoned over the string catalogue: **the `xcode`
+package's extension table predates `.xcstrings`**, so `addResourceFileToGroup`
+creates the file reference, puts it in a group, and never adds it to the
+Resources build phase. The reference exists, the file is not copied into the
+bundle, and every `LocalizedStringResource` falls back to its own key. The
+extension already compiled Swift and already carried the catalogue — thanks to
+`@bacons/apple-targets` — so moving the files to `targets/widget/` deleted the
+plugin, the copy step and the problem.
 
-The extension is the target that already compiles Swift **and** already
-carries the catalogue, because `@bacons/apple-targets` puts it there for the
-watch and the widgets. Moving the two files into `targets/widget/` deleted the
-plugin, the copy step and the problem. `AppIntents` is added to that target's
-`frameworks` and nothing else changed.
+**Siri brought the plugin back**, on 21 September, because an
+`AppShortcutsProvider` cannot live anywhere but the app target. The catalogue
+problem did not come back with it: phrases are not read from `Localizable` at
+all, and the app target already carries `targets/_shared` — including the
+catalogue the titles come from — because `@bacons/apple-targets` puts `_shared`
+in its membership too. `plugins/withAppIntents.js` copies `app-intents/` in
+and wires it up; the section below has the rest of what that cost.
 
 ## What was checked
 
-| Claim                                    | Result                                                                                          |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| The metadata step runs for the extension | ✅ `LangXWidget.appex/Metadata.appintents/extract.actionsdata` exists                           |
-| Both intents are in it, and discoverable | ✅ `OpenChatsIntent` and `OpenEchoReviewIntent`, `isDiscoverable: true`, `openAppWhenRun: true` |
-| Their words come from the catalogue      | ✅ the metadata carries `key: "intents.openEcho"`, not a sentence                               |
-| A route survives the launch              | ⬜ not exercised end to end                                                                     |
-| Siri answers a phrase                    | ❌ **not built** — see below                                                                    |
+| Claim                                     | Result                                                                                          |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| The metadata step runs for the app target | ✅ `LangX.app/Metadata.appintents/extract.actionsdata` exists                                   |
+| Both intents are in it, and discoverable  | ✅ `OpenChatsIntent` and `OpenEchoReviewIntent`, `isDiscoverable: true`, `openAppWhenRun: true` |
+| Their words come from the catalogue       | ✅ the metadata carries `key: "intents.openEcho"`, not a sentence                               |
+| A route survives the launch               | ⬜ not exercised end to end                                                                     |
+| Siri has phrases to match                 | ✅ built 21 September — see below                                                               |
 
 **The metadata caught a mistake the compiler could not.** The Swift asked for
 `intents.openReview` while the catalogue had `intents.openEcho`: it compiles,
