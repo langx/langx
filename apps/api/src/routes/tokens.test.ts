@@ -459,6 +459,23 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(summaryBody.today.day).toBe(utcDayKey(now))
     })
 
+    it('ends the chart week on the profile’s own today', async () => {
+      // The complaint this fixes: in Vancouver at 20:17 the last column — the
+      // one the client draws as today — carried the next day’s letter, because
+      // UTC had already turned over. `today.day` stays UTC on purpose: it is
+      // the pool’s day, and the pool closes on the UTC one.
+      const zone = 'America/Vancouver'
+      const user = await newUser('week-window-tz@example.com', { timezone: zone })
+
+      const now = new Date()
+      const body = await summary(user)
+
+      expect(body.week).toHaveLength(7)
+      expect(body.week.at(-1)?.day).toBe(localDayKey(now, zone))
+      expect(body.week[0]?.day).toBe(shiftDayKey(localDayKey(now, zone), -6))
+      expect(body.today.day).toBe(utcDayKey(now))
+    })
+
     it('pays a milestone bonus once, on the day the streak reaches it', async () => {
       const a = await newUser('xp-milestone-a@example.com')
       const b = await newUser('xp-milestone-b@example.com')
@@ -1067,6 +1084,26 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       // rather than a zero that would pass whatever the query did.
       expect(body.tokens).toBeGreaterThan(0)
       expect(body.week).toHaveLength(7)
+      void owner
+    })
+
+    it('draws the week in the profile owner’s zone, not the reader’s', async () => {
+      const zone = 'Pacific/Kiritimati'
+      const owner = await newUser('stats-tz@example.com', { handle: 'statstz', timezone: zone })
+      const viewer = await newUser('stats-tz-viewer@example.com')
+
+      const now = new Date()
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/statstz/summary',
+        headers: { cookie: viewer.cookie },
+      })
+
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<{ week: { day: string }[] }>()
+      // UTC+14, so for most of the UTC day this is not the UTC key — which is
+      // the whole point: the chart is a statement about the owner's week.
+      expect(body.week.at(-1)?.day).toBe(localDayKey(now, zone))
       void owner
     })
 

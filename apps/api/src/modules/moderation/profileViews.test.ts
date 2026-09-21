@@ -174,6 +174,22 @@ describe('profile views, a row per day', () => {
     expect(second.weekPeople).toBeUndefined()
   })
 
+  it('ends the week on the viewed person’s own today, not on the UTC one', async () => {
+    // 20:17 on Saturday in Vancouver, where UTC is already on Sunday. The
+    // chart used to turn over with UTC, so the last bar — the one drawn as
+    // today — belonged to a day the reader had not reached yet.
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: 'me' }, { $set: { timezone: 'America/Vancouver' } })
+    await recordProfileView(handle.db, xue, 'me', at(0))
+
+    const summary = await getViewers(handle.db, 'me', { limit: 20 }, at(15 * 60 * MIN + 17 * MIN))
+
+    expect(summary.week?.at(-1)?.day).toBe('2026-09-05')
+    expect(summary.week?.at(-1)?.visits).toBe(1)
+    expect(summary.week?.[0]?.day).toBe('2026-08-30')
+  })
+
   it('reports people, not rows, to the digest — and never names a guest', async () => {
     await recordProfileView(handle.db, xue, 'me', at(-24 * 60 * MIN))
     await recordProfileView(handle.db, xue, 'me', at(0))

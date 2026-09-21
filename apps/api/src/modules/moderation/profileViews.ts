@@ -2,6 +2,8 @@ import {
   ERROR_CODES,
   MODERATION_PAGE_SIZE_DEFAULT,
   hasFeature,
+  localDayKey,
+  shiftDayKey,
   utcDayKey,
   type ModerationListQuery,
 } from '@langx/shared'
@@ -226,8 +228,9 @@ async function visitsByDay(
   viewedId: string,
   hidden: string[],
   now: Date,
+  timeZone: string,
 ): Promise<{ day: string; visits: number }[]> {
-  const { days, from } = weekWindow(now)
+  const { days, from } = weekWindow(now, timeZone)
 
   const rows = await db
     .collection<ProfileView>(COLLECTIONS.profileViews)
@@ -251,12 +254,21 @@ async function visitsByDay(
   return days.map((day) => ({ day, visits: byDay.get(day) ?? 0 }))
 }
 
-/** The seven day keys the chart draws, oldest first, and the instant the first one starts. */
-function weekWindow(now: Date): { days: string[]; from: Date } {
-  const days: string[] = []
-  for (let back = VIEWS_WEEK_DAYS - 1; back >= 0; back--) {
-    days.push(utcDayKey(new Date(now.getTime() - back * 24 * 60 * 60 * 1000)))
-  }
+/**
+ * The seven day keys the chart draws, oldest first, and the instant the first
+ * one starts.
+ *
+ * The keys are the viewed person's own days, so the chart turns over at their
+ * midnight — the same window `readActivityWeek` draws right above it on the
+ * profile. `from`, though, stays UTC midnight of the first key on purpose:
+ * rows are grouped by the stored `day`, which is a UTC day, so a filter cut at
+ * their local midnight would drop part of the oldest bar.
+ */
+function weekWindow(now: Date, timeZone: string): { days: string[]; from: Date } {
+  const today = localDayKey(now, timeZone)
+  const days = Array.from({ length: VIEWS_WEEK_DAYS }, (_, i) =>
+    shiftDayKey(today, i - (VIEWS_WEEK_DAYS - 1)),
+  )
   return { days, from: new Date(`${days[0]}T00:00:00Z`) }
 }
 
@@ -270,8 +282,9 @@ async function peopleInWeek(
   viewedId: string,
   hidden: string[],
   now: Date,
+  timeZone: string,
 ): Promise<number> {
-  const { from } = weekWindow(now)
+  const { from } = weekWindow(now, timeZone)
   const people = await db
     .collection<ProfileView>(COLLECTIONS.profileViews)
     .distinct('viewerId', { viewedId, viewerId: { $nin: hidden }, lastViewedAt: { $gte: from } })
@@ -414,8 +427,8 @@ export async function getViewers(
   }
   if (!query.cursor) {
     const [week, weekPeople] = await Promise.all([
-      visitsByDay(db, userId, hidden, now),
-      peopleInWeek(db, userId, hidden, now),
+      visitsByDay(db, userId, hidden, now, me.timezone ?? 'UTC'),
+      peopleInWeek(db, userId, hidden, now, me.timezone ?? 'UTC'),
     ])
     summary.week = week
     summary.weekPeople = weekPeople
