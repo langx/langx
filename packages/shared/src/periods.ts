@@ -105,6 +105,80 @@ export function localHour(date: Date, timeZone: string): number {
   }
 }
 
+const startFormatters = new Map<string, Intl.DateTimeFormat>()
+
+function startFormatter(timeZone: string): Intl.DateTimeFormat {
+  let fmt = startFormatters.get(timeZone)
+  if (!fmt) {
+    // `hourCycle: 'h23'` rather than `hour12: false`, which reads midnight as
+    // hour 24 in some engines and would put the answer a day out.
+    fmt = new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23',
+    })
+    startFormatters.set(timeZone, fmt)
+  }
+  return fmt
+}
+
+/** The zone's offset from UTC at `instant`, in milliseconds. */
+function offsetAt(instant: number, timeZone: string): number {
+  const parts = startFormatter(timeZone).formatToParts(new Date(instant))
+  const read = (type: Intl.DateTimeFormatPartTypes): number =>
+    Number(parts.find((part) => part.type === type)?.value)
+  const wall = Date.UTC(
+    read('year'),
+    read('month') - 1,
+    read('day'),
+    read('hour'),
+    read('minute'),
+    read('second'),
+  )
+  return wall - instant
+}
+
+/**
+ * The instant a `YYYY-MM-DD` local day begins — `localDayKey` read backwards,
+ * for the times a window has to be cut on a timestamp rather than compared
+ * against a key. `new Date(`${key}T00:00:00Z`)` is the *UTC* day's start,
+ * which in Vancouver is seven hours early and in Istanbul three hours late.
+ *
+ * Intl only ever answers "what is the offset at this instant", never "which
+ * instant reads this wall clock", so this guesses and corrects: UTC midnight
+ * of the key less the offset there, then less the offset measured at that
+ * guess. The first measurement can sit on the far side of a DST change —
+ * Auckland's clocks go back at 03:00 on 5 April 2026, so UTC midnight of that
+ * key is already NZST (+12) while the day itself began in NZDT (+13), and one
+ * pass alone lands an hour late.
+ *
+ * The correction is then checked rather than repeated, because on the days a
+ * zone springs forward *at* midnight — Cuba, Chile and the Azores each do —
+ * no instant reads 00:00 at all, the two guesses straddle the jump, and which
+ * one is real depends on the sign of the offset. Iterating again just
+ * oscillates. Checked, the answer is exact for every zone tzdata currently
+ * ships: the day begins at the transition, whose clock reads 01:00.
+ *
+ * Falls back to UTC midnight for an unusable zone, like `localDayKey` and for
+ * the same reason; throws on a malformed key, like `shiftDayKey`.
+ */
+export function localDayStart(dayKey: string, timeZone: string): Date {
+  const utcMidnight = Date.parse(`${dayKey}T00:00:00Z`)
+  if (Number.isNaN(utcMidnight)) throw new TypeError(`Invalid day key: ${dayKey}`)
+  try {
+    const guess = utcMidnight - offsetAt(utcMidnight, timeZone)
+    const corrected = utcMidnight - offsetAt(guess, timeZone)
+    return new Date(localDayKey(new Date(corrected), timeZone) === dayKey ? corrected : guess)
+  } catch {
+    return new Date(utcMidnight)
+  }
+}
+
 /** Shift a `YYYY-MM-DD` key by whole days. */
 export function shiftDayKey(dayKey: string, days: number): string {
   const ms = Date.parse(`${dayKey}T00:00:00Z`)
