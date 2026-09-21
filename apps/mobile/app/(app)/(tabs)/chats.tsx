@@ -31,7 +31,8 @@ import { useLocale, useT } from '../../../src/i18n'
 import type { MessageKey } from '../../../src/i18n/runtime'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
-import { useTwoPane, PANE_WIDTH } from '../../../src/hooks/useTwoPane'
+import { useTwoPane } from '../../../src/hooks/useTwoPane'
+import { TwoPane } from '../../../src/components/TwoPane'
 import { ChatScreen } from '../../../src/screens/ChatScreen'
 import { OfficialMark } from '../../../src/components/OfficialMark'
 
@@ -408,18 +409,15 @@ export default function ChatsScreen() {
    * pending sends and quietly show them under a new name.
    */
   return (
-    <View style={styles.panes}>
-      <View style={styles.listPane}>{list}</View>
-      <View style={styles.detailPane}>
-        {selected === undefined ? (
-          <View style={styles.pick}>
-            <EmptyState
-              icon="message-circle"
-              title={t('chats.pickTitle')}
-              body={t('chats.pickBody')}
-            />
-          </View>
-        ) : (
+    <TwoPane
+      list={list}
+      empty={{
+        icon: 'message-circle',
+        title: t('chats.pickTitle'),
+        body: t('chats.pickBody'),
+      }}
+      detail={
+        selected === undefined ? null : (
           <ChatScreen
             key={selected}
             conversationId={selected}
@@ -429,27 +427,13 @@ export default function ChatsScreen() {
             // belongs to the link that carried it, not to the next row tapped.
             {...(at && open === selected ? { at } : {})}
           />
-        )}
-      </View>
-    </View>
+        )
+      }
+    />
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  /*
-   * The two halves. The list is given a fixed width and the thread takes what
-   * is left, rather than a share each: a conversation row is the same row at
-   * any window size, while a thread reads better the more room it has — and
-   * `Screen`'s own 720pt column stops it spreading a bubble across a monitor.
-   */
-  // The ground, which neither half paints: `Screen` paints its own and the
-  // panel's own background is the thread's. Without it the empty half is
-  // whatever is behind the navigator — white, in a dark-mode browser.
-  panes: { backgroundColor: colors.bg, flex: 1, flexDirection: 'row' },
-  listPane: { width: PANE_WIDTH },
-  detailPane: { borderLeftColor: colors.border, borderLeftWidth: 1, flex: 1 },
-  /** The "nothing open" card, centred in the empty half. */
-  pick: { alignItems: 'center', flex: 1, justifyContent: 'center' },
   /** The row whose thread is in the panel. Only drawn when there is one. */
   rowSelected: { backgroundColor: colors.fill },
   // The bottom half is the gap above the tip; `Tip` owns the one below it.

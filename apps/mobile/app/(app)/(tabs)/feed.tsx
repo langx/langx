@@ -72,7 +72,8 @@ import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
-import { useTwoPane, PANE_WIDTH } from '../../../src/hooks/useTwoPane'
+import { useTwoPane } from '../../../src/hooks/useTwoPane'
+import { TwoPane } from '../../../src/components/TwoPane'
 import { PostScreen } from '../../../src/screens/PostScreen'
 import { useReviewPrompt } from '../../../src/hooks/useReviewPrompt'
 
@@ -697,42 +698,26 @@ export default function FeedScreen() {
    * and an open image viewer.
    */
   return (
-    <View style={styles.panes}>
-      <View style={styles.listPane}>{list}</View>
-      <View style={styles.detailPane}>
-        {selected === undefined ? (
-          <View style={styles.pick}>
-            <EmptyState
-              icon="message-square"
-              title={t('feed.pickTitle')}
-              body={t('feed.pickBody')}
-            />
-          </View>
-        ) : (
+    <TwoPane
+      list={list}
+      empty={{ icon: 'message-square', title: t('feed.pickTitle'), body: t('feed.pickBody') }}
+      detail={
+        selected === undefined ? null : (
           <PostScreen
             key={selected}
             postId={selected}
             embedded
             onClose={() => setSelected(undefined)}
           />
-        )}
-      </View>
-    </View>
+        )
+      }
+    />
   )
 }
 
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  /*
-   * The two halves, as on the chat list and Discover. The ground is painted
-   * here because neither half paints it — `Screen` paints its own and the
-   * panel's is the post's.
-   */
-  panes: { backgroundColor: colors.bg, flex: 1, flexDirection: 'row' },
-  listPane: { width: PANE_WIDTH },
-  detailPane: { borderLeftColor: colors.border, borderLeftWidth: 1, flex: 1 },
-  pick: { alignItems: 'center', flex: 1, justifyContent: 'center' },
   // The bottom half is the gap above the tip; `Tip` owns the one below it.
   header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
   // 48 tall whether or not the ask label is there, so the segments do not move.

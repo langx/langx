@@ -774,7 +774,7 @@ of this plan:
   testing first, because a car-quality failure at submission blocks the whole
   release rather than the car.
 
-### Phase 6 — iPad and Mac layouts 🟡 first layer built 20 September
+### Phase 6 — iPad and Mac layouts 🟢 built 20–21 September, iPad verified
 
 Excluded because they are the two-pane change, and the two-pane change was
 already deferred under _The iPhone Duo_ for being structural: `expo-router` is
