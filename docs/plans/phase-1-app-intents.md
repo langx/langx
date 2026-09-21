@@ -77,9 +77,21 @@ _Send a message to a named person_ needs two things this does not have:
    people who are already waiting on you is a strange product. The directory
    is the conversation list the app already holds, written to the App Group
    the way the snapshot is.
-2. **Nothing else.** The send itself is solved: `ReplySender.swift` already
-   posts to the REST twin from native code with a cookie from the Keychain,
-   which is what the watch reply does. The bearer token the plan reserved for
-   this is **not needed** — that paragraph assumed a separate Intents
-   extension with its own container, and an intent in the widget extension
-   shares the App Group the credentials already sit beside.
+2. **A decision about where the credential lives.** This paragraph said the
+   opposite when it was written, and the correction is the useful part.
+
+   `ReplySender.swift` does already post to the REST twin from native code,
+   which is what the watch reply does — but it reads the cookie from
+   `WatchCredentials`, and that is the **Keychain** with no access group,
+   deliberately: "same process" is the comment on it. An App Intent in the
+   widget extension is a _different_ process, so it cannot read a keychain
+   item the app wrote without a shared access group, which is a new
+   entitlement and manual portal work. The App Group is readable from both,
+   and it is exactly where the plan decided a credential should not go.
+
+   So the choice is a keychain access group or a second presentation of the
+   session, and either way it is the security review
+   [`iphone-watch-and-carplay.md`](iphone-watch-and-carplay.md) reserved —
+   Behic's to make, not this file's to assume. The bearer token that section
+   describes may turn out to be the right answer after all; what is now clear
+   is that the intent does **not** get the send for free.

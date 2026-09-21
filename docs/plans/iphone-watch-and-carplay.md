@@ -702,6 +702,56 @@ one extra round trip, and it is cheaper than a blocked store release.
 Sources: Android's [Distribute to cars](https://developer.android.com/training/cars/distribute)
 and [Car app quality](https://developer.android.com/docs/quality-guidelines/car-app-quality).
 
+### What this phase is actually made of — corrected 20 September
+
+The paragraph above this one said Android Auto's messaging is "declarative
+(`CarAppService`, the Jetpack `androidx.car.app` library)". **That is wrong,
+and it is wrong in a way that changes the size of the phase.**
+
+`CarAppService`'s categories are navigation, POI, settings and feature
+cluster. **There is no messaging category.** Android Auto's messaging support
+is _notification-based_: the car reads and answers a `MessagingStyle`
+notification, and the app's job is to build one properly. Google's page for
+it is explicit that a templated experience is a **separate, additional**
+thing, and only for showing history from before the drive began.
+
+What a message notification has to carry:
+
+| Piece        | Requirement                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Style        | `MessagingStyle`, with a `Person` for the reader and for each sender                                               |
+| Reply        | `SEMANTIC_ACTION_REPLY`, `setShowsUserInterface(false)`, a `RemoteInput`, `PendingIntent` with `FLAG_MUTABLE`      |
+| Mark as read | `SEMANTIC_ACTION_MARK_AS_READ`, invisible action, no `RemoteInput`                                                 |
+| Handler      | a background service — never an Activity                                                                           |
+| Declaration  | `com.google.android.gms.car.application` meta-data → `automotive_app_desc.xml` with `<uses name="notification" />` |
+
+**And here is the cost this plan did not know about.** Our Android
+notifications are built by `expo-notifications`, from a push delivered by
+Expo's relay. It does not build `MessagingStyle` — checked, 20 September:
+there is no reference to it anywhere in the package's Android source. Its
+`ExpoNotificationBuilder` and `ExpoPresentationDelegate` are `open`, so a
+subclass is possible, but wiring one in means subclassing Expo's notification
+service, registering it through a config plugin, and then keeping that
+subclass working across every SDK upgrade — against internals that are not
+API.
+
+So the phase is not "declare a category and reuse the summaries". It is:
+
+1. A custom Android notification presenter, in Kotlin, that builds
+   `MessagingStyle` for a message push and leaves every other kind alone.
+2. The two semantic actions, and a service to receive them — the reply can go
+   straight down the REST twin, exactly as the notification quick-reply
+   already does.
+3. The declaration, which is two files and is the only cheap part.
+4. Optionally, later, the templated experience for history.
+
+**The declaration must not ship on its own.** It tells Android Auto the app
+does notifications in the car; without `MessagingStyle` behind it the car
+shows something it cannot read out or answer, which is a car-quality failure
+on a checklist that blocks the whole release.
+
+Sources: [Notifications for Android Auto](https://developer.android.com/training/cars/communication/notification-messaging).
+
 ### Phase 6 — iPad and Mac layouts
 
 Excluded because they are the two-pane change, and the two-pane change was
