@@ -541,10 +541,46 @@ CarPlay in Swift is the most native code this app would own, in the surface
 with the fewest users.
 
 **What is _not_ blocked by this.** The CarPlay Communication entitlement
-arrived on 21 September, so the paperwork half is done and nothing expires.
-The REST send twin, `previewFor` and the read-aloud decision were all built
-for the watch and the car together; none of them cares which language the car
-UI is written in.
+arrived on 21 September and Behic confirmed the mail, so the paperwork half is
+done and nothing expires. The REST send twin, `previewFor` and the read-aloud
+decision were all built for the watch and the car together; none of them cares
+which language the car UI is written in.
+
+### The native branch, probed the same evening
+
+**The September estimate of what native costs is out of date, and that is the
+useful part.** This section used to say a Swift scene "would have to rebuild
+the socket, the cookie, the API client and the catalogues". That was true when
+it was written. Then the watch needed all four and got them: a payload the app
+writes into a shared container, credentials in the Keychain, a REST send twin
+(`NativeSend`), and `targets/_shared/Localizable.xcstrings`, which the app
+target compiles as of the App Intents work. CarPlay would be the **fourth
+reader** of that arrangement rather than the first writer of a new one.
+
+So a probe, to find the next wall rather than to build anything: the CarPlay
+entitlement, a `CPTemplateApplicationSceneSessionRoleApplication` role added
+to the scene manifest `withSceneLifecycle` already owns, and a
+`CPTemplateApplicationSceneDelegate` that fills a `CPListTemplate` from
+`ConversationDirectory` — the App Group blob the App Intents read.
+
+**It compiles and links, and the app launches with it.** Every wall the
+JavaScript route hit, the native one walks past: no third-party dependency,
+nothing referencing the old renderer, and the data already in a container
+Swift can read without asking JavaScript anything.
+
+**What the probe did not prove** is the only thing left: that the scene
+_attaches_. A CarPlay display is a Simulator menu item — I/O → External
+Displays → CarPlay — and nothing reachable from a script attaches one. The
+device preference that looks like it (`SimulatorExternalDisplay`) does not,
+and the menu needs an Accessibility permission this machine has not granted.
+So the list was never drawn, and until somebody clicks that menu item the
+claim is "builds and runs", not "works in a car".
+
+The probe was reverted rather than merged; it is forty lines and the finding
+is what matters. **The decision it leaves is unchanged in shape and much
+cheaper than it looked**: CarPlay in Swift is a scene delegate and a template
+over data three other surfaces already publish, not a second implementation of
+the app.
 
 **Reading aloud costs nothing.** The message is read by the on-device
 `AVSpeechSynthesizer` in the language `detectSpeechLanguage` already picks,
