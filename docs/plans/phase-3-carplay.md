@@ -1,8 +1,8 @@
 # Phase 3 — CarPlay: the chat list, read out loud
 
 Written on 22 September 2026, the day after the entitlement arrived and the
-day the JavaScript route died. What follows is what it is, what was checked,
-and the four things that are not.
+day the JavaScript route died — the list first, then answering, a few hours
+apart. What follows is what it is, what was checked, and what is not.
 
 The phase's shape is in
 [`iphone-watch-and-carplay.md`](iphone-watch-and-carplay.md) → _Surface C_ and
@@ -35,13 +35,15 @@ no second definition of anything.
 
 ## What was built
 
-| Piece                           | Where                                     |
-| ------------------------------- | ----------------------------------------- |
-| The scene, the list, the states | `carplay/CarPlayScene.swift`              |
-| Reading a message out           | `CarPlaySpeaker`, same file               |
-| The blob it reads               | `app-intents/ConversationDirectory.swift` |
-| The four fields the car needs   | `packages/shared/src/companion.ts`        |
-| Entitlement, manifest, sources  | `plugins/withCarPlay.js`                  |
+| Piece                           | Where                                         |
+| ------------------------------- | --------------------------------------------- |
+| The scene, the list, the states | `carplay/CarPlayScene.swift`                  |
+| Reading a message out           | `CarPlaySpeaker`, same file                   |
+| The blob every surface reads    | `targets/_shared/ConversationDirectory.swift` |
+| The four fields the car needs   | `packages/shared/src/companion.ts`            |
+| Entitlement, manifest, sources  | `plugins/withCarPlay.js`                      |
+| Answering, by voice             | `targets/intents/`                            |
+| The Siri capability and the key | `plugins/withSiriMessaging.js`                |
 
 **One list, three states**, the same three every companion surface here has.
 No blob means nobody is signed in on this phone and the answer is to open the
@@ -80,13 +82,18 @@ Swift GET would fix the staleness, and the credential for it already exists.
 ## What was checked
 
 - **The Swift compiles against the iOS 27 SDK at the app's own floor**:
-  `swiftc -typecheck -target arm64-apple-ios16.4-simulator` over the scene and
-  the directory, clean, no warnings. That is what settles the API surface —
-  `CPListItem.handler`, `updateSections`, the speech delegate's two callbacks.
-- **`expo prebuild` produces the three things iOS needs**: the
+  `swiftc -typecheck -target arm64-apple-ios16.4-simulator` over the scene,
+  the extension and the directory, clean, no warnings. That is what settles
+  the API surface — `CPListItem.handler`, `updateSections`, the speech
+  delegate's two callbacks, and every resolution result the three intent
+  protocols want.
+- **`expo prebuild` produces what iOS needs**: the
   `CPTemplateApplicationSceneSessionRoleApplication` role beside the window
-  role in `Info.plist`, `com.apple.developer.carplay-communication` in the
-  entitlements, and `CarPlayScene.swift` in the app target's sources.
+  role in `Info.plist`, `com.apple.developer.carplay-communication`,
+  `com.apple.developer.siri` and the Keychain group in the entitlements,
+  `audio` in `UIBackgroundModes`, `CarPlayScene.swift` in the app target's
+  sources, and a `LangXIntents` target at deployment target 16.4 carrying the
+  App Group, the Keychain group and the three `IntentsSupported` entries.
 - **The generator refuses a sentence written in the car**, now that it scans
   `carplay/` as it scans `targets/` — and its "prose has a space" heuristic
   gained "and a letter", because `" · "` is punctuation and was flagged.
@@ -108,38 +115,78 @@ type-checks against the SDK, and it has not been through an app build.
   screen. The simulator can show one — _I/O → External Displays → CarPlay_ —
   and that is one click on the Mac that is running it.
 - **Whether the message is audible.** A CarPlay scene can be active while the
-  app itself is in the background, and activating an audio session there needs
-  the `audio` background mode. It is deliberately **not** added: it would also
-  let every other sound in the app keep playing after somebody leaves it,
-  which is a product decision rather than a build setting. If the car is
-  silent, that is the line to add and the question to ask first.
+  app itself is in the background, so activating an audio session there needs
+  the `audio` background mode. It **is** added, by Behic's decision on
+  22 September, and it is not free: with it, any sound the app is playing
+  keeps playing when somebody leaves the app — Echo and the chat screen's
+  read-aloud are the two that can be. Android is untouched; `expo-audio` keeps
+  `enableBackgroundPlayback: false`, which is what keeps
+  `FOREGROUND_SERVICE_MEDIA_PLAYBACK` out of the Android manifest.
+- **Siri has never been asked anything.** The extension compiles and the app
+  declares the three intents; whether Siri routes a spoken reply to it, and
+  whether the resolver's name matching is any good out loud, is unseen.
 - **The live refresh.** The notification path is in-process and ordinary, and
   it has not been watched happening.
-- **Signing with the new entitlement.** The entitlement was granted for the
-  App ID on 21 September, but a provisioning profile minted before that does
-  not carry it. The first build after this lands needs its profile
-  regenerated, and it fails at signing rather than at compile if it is not —
-  with a message about an entitlement, not about the plugin.
+- **Signing.** Three things have to be true in the developer portal before
+  the next build signs, and none of them can be done from here:
+  1. The CarPlay entitlement, granted for the App ID on 21 September — a
+     profile minted before that date does not carry it.
+  2. **Siri**, which is a capability on the App ID and is new as of this
+     change.
+  3. A **new App ID for the Intents extension**,
+     `tech.newchapter.languageXchange.intent`, with the App Group on it —
+     `eas-cli` cannot patch App Groups, which is the manual pass recorded in
+     `phase-1-mac-handoff.md`. The Keychain group needs no portal work; it is
+     derived from the team prefix.
 
-## What is not built: answering
+  All three fail at _signing_, with a message about an entitlement rather than
+  about any file in this change. The runbook says so too.
 
-Replying is Siri's, and that is Apple's rule: a CarPlay communication app
-never draws a keyboard, so a dictated answer comes through SiriKit's
-`INSendMessageIntent`. That is the one piece of this surface still unwritten,
-and the plan has always costed it as _a bearer token in a shared Keychain, an
-Intents extension, and a security review_.
+## Answering, which is Siri's
 
-**Half of that cost may not apply here**, and it is worth probing before it is
-paid. The Siri send path is expensive because an Intents extension is a
-_separate process_ with its own container. The CarPlay scene is not: it is the
-app, and the session cookie that `setWatchCredentials` already writes for the
-watch reply is readable from it without an access group, a bearer token or a
-new grant. A "Reply" that started dictation without SiriKit is not possible;
-a car list that refreshes itself, and a send path for whatever eventually
-dictates, both are.
+A CarPlay communication app never draws a keyboard — Apple does not allow one
+while driving — so the reply is dictated to Siri and arrives as an
+`INSendMessageIntent`. SiriKit's messaging domain is handled by an **Intents
+extension**, in its own process, which is why `targets/intents/` exists.
 
-Nothing here contradicts the security review the token deserves. It changes
-what that review has to be _for_: the Intents extension, and only it.
+It answers three intents, which is the set Apple asks a CarPlay messaging app
+for:
+
+| Intent                        | What it does                                                       |
+| ----------------------------- | ------------------------------------------------------------------ |
+| `INSendMessageIntent`         | resolves the spoken name against the directory and posts the reply |
+| `INSearchForMessagesIntent`   | hands Siri the unread previews to read out                         |
+| `INSetMessageAttributeIntent` | marks those conversations read                                     |
+
+**Nothing is guessed.** One name match sends, several ask Siri to
+disambiguate, none is unsupported. A handler that picked the first of two
+people called Maria would be a message sent to the wrong person by somebody
+who cannot see it happen.
+
+**The credential is the one that already existed, in a group.** The plan had
+costed this as a bearer token: Better Auth's bearer plugin, a token written at
+sign-in, a second thing to revoke. None of that was needed. The watch reply
+already keeps the session cookie in the Keychain, and an extension can read
+that item if both sides name a **Keychain access group**. So the change is one
+entitlement on each side and one plist key naming the group — the same
+session, the same item, one more process of ours reading it.
+
+That is a real widening and it is the smallest one available: the group is the
+app's own identifier with the team prefix, nothing outside this bundle is in
+it, and the item is still cleared at sign-out. The bearer token the plan
+described would have been a _second_ credential with a second lifetime to get
+wrong. Recorded here rather than in `docs/decisions.md` until somebody has
+seen it work.
+
+**What the car screen does not do is start Siri.** There is no public API for
+it, and Apple's arrangement is the car's own voice button. So the CarPlay list
+speaks on a tap and answering is a separate sentence the driver says — which
+is why the two halves of this phase could be built hours apart without one
+waiting for the other.
+
+**Sending happens with the phone locked**, deliberately: `IntentsRestrictedWhile
+Locked` is empty in the extension's `Info.plist`. The whole point is a phone in
+a pocket.
 
 ## The two traps this cost
 

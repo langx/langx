@@ -49,6 +49,30 @@ const withCarPlay = (config) => {
   })
 
   config = withInfoPlist(config, (modConfig) => {
+    /*
+     * Audio in the background, which is what makes the car audible at all.
+     *
+     * A CarPlay scene can be active while the app itself is in the
+     * background — that is the ordinary case, a phone in a pocket with the
+     * car plugged in — and activating an `AVAudioSession` there without this
+     * fails. The message is then read to nobody.
+     *
+     * It is not free and it is not only about the car: with this set, any
+     * sound the app is playing keeps playing when somebody leaves the app.
+     * Echo and the chat screen's read-aloud are the two that can be playing,
+     * and they now continue rather than stopping at the Home gesture. That is
+     * a deliberate trade — Behic's, on 22 September — and it is the reason
+     * this key is added by the CarPlay plugin rather than by `app.config.ts`:
+     * if the car ever goes away, so does the line.
+     *
+     * Android is untouched. `expo-audio` keeps `enableBackgroundPlayback:
+     * false`, which is what keeps `FOREGROUND_SERVICE_MEDIA_PLAYBACK` out of
+     * the Android manifest and the Play declaration with it.
+     */
+    const modes = new Set(modConfig.modResults.UIBackgroundModes ?? [])
+    modes.add('audio')
+    modConfig.modResults.UIBackgroundModes = [...modes]
+
     const manifest = modConfig.modResults.UIApplicationSceneManifest
 
     /*
