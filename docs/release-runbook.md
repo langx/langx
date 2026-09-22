@@ -494,6 +494,20 @@ upload keystore (alias `key0`, the v1 key Play trusts), the FCM V1 service
 account and the APNs key for push, and `GOOGLE_SERVICES_JSON` /
 `GOOGLE_SERVICES_PLIST` as file variables on every environment.
 
+## The next iOS build needs a new provisioning profile
+
+**Since 22 September 2026 the app declares
+`com.apple.developer.carplay-communication`.** Apple granted it for the App ID
+on 21 September, but an entitlement is granted to the _identifier_ and carried
+by the _profile_ — every profile minted before that date lacks it, and a build
+signed with one fails at the signing step with a message about a missing
+entitlement rather than about CarPlay.
+
+So the first build of 2.7, local or cloud, needs its iOS credentials
+regenerated. It is the same interactive `eas credentials` pass the App Group
+needed when the widgets landed; see
+[`plans/phase-3-carplay.md`](plans/phase-3-carplay.md).
+
 ## A new Xcode major is a new review risk
 
 **2.6 was rejected for crashing on launch — Guideline 2.1(a) — and the cause
