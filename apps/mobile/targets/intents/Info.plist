@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Three intents, which is what Apple asks a CarPlay messaging app for: send a
+  message, find the ones that arrived, and mark them read. They are declared
+  here rather than in the app because Siri looks for the *extension* that
+  handles them.
+
+  `IntentsRestrictedWhileLocked` is deliberately empty. Everything this
+  extension does is meant to happen with the phone locked in a pocket while
+  somebody drives; restricting any of it would mean Siri answering "you'll
+  need to unlock your iPhone first" to the one person who must not be looking
+  at it.
+-->
+<plist version="1.0">
+  <dict>
+    <key>NSExtension</key>
+    <dict>
+      <key>NSExtensionAttributes</key>
+      <dict>
+        <key>IntentsSupported</key>
+        <array>
+          <string>INSendMessageIntent</string>
+          <string>INSearchForMessagesIntent</string>
+          <string>INSetMessageAttributeIntent</string>
+        </array>
+        <key>IntentsRestrictedWhileLocked</key>
+        <array/>
+      </dict>
+      <key>NSExtensionPointIdentifier</key>
+      <string>com.apple.intents-service</string>
+      <key>NSExtensionPrincipalClass</key>
+      <string>$(PRODUCT_MODULE_NAME).IntentHandler</string>
+    </dict>
+    <!--
+      The Keychain group the app writes the session cookie into, with the team
+      prefix expanded at build time. Read by `IntentSession`; the same key is
+      in the app's own Info.plist, put there by `plugins/withSiriMessaging.js`.
+    -->
+    <key>LangXKeychainAccessGroup</key>
+    <string>$(AppIdentifierPrefix)tech.newchapter.languageXchange</string>
+  </dict>
+</plist>

@@ -2,12 +2,13 @@
 
 ## Status on 21 September 2026
 
-**Five of the ten phases are built.** Phases 1, 2, 4, 5 and 6 — the widgets,
+**Six of the ten phases are built.** Phases 1, 2, 4, 5 and 6 — the widgets,
 the Apple Watch, Wear OS, Android Auto and the two-pane layout — are written,
-and what remains in each of them is a device, a Mac, a decision of Behic's or
-Apple. The table at the end of _Order of work_ sorts them by which. The rest
-of this section is the record as it was written, phase by phase, and is left
-in that order because each entry says what was true when it was decided.
+and phase 3, CarPlay, joined them on 22 September. What remains in each of
+them is a device, a Mac, a decision of Behic's or Apple. The table at the end
+of _Order of work_ sorts them by which. The rest of this section is the record
+as it was written, phase by phase, and is left in that order because each
+entry says what was true when it was decided.
 
 ## Status on 18 September 2026
 
@@ -128,6 +129,15 @@ it the Play declaration that version 121 sat overdue on. An iOS-only feature
 must not be allowed to put that permission back into the Android manifest.
 Whatever plays audio in the car is iOS-only native code, not a change to the
 shared audio module.
+
+**And that is exactly how the car got its voice.** On 22 September the CarPlay
+plugin added `audio` to `UIBackgroundModes` — iOS only, in the plugin rather
+than in `app.config.ts`, so it leaves with the car if the car ever leaves.
+Without it a CarPlay scene cannot activate an audio session while the app is
+backgrounded, which is the ordinary case, and the message is read to nobody.
+The cost is on this side of the platform line and is real: any sound the app
+is playing now keeps playing when somebody leaves the app. `expo-audio`'s
+Android flag is untouched.
 
 ## The rule all three obey
 
@@ -610,7 +620,7 @@ than a detail inside it, and it wanted a decision before any of it was
 written: CarPlay in Swift is the most native code this app would own, in the
 surface with the fewest users.
 
-### It is native, and the list half of it is built — 22 September 2026
+### It is native, and it is built — 22 September 2026
 
 Behic said write it. The estimate above was wrong in the direction that
 matters: **none of those four things had to be rebuilt.** The watch had
@@ -621,12 +631,13 @@ definition of the shape — so the car is a fourth reader of the App Intents'
 new dependency.
 
 What is on the screen: the chat list, a row per person with what is waiting
-and when, and the message **spoken** on a tap rather than drawn. What is not:
-answering, which is Siri's and is the next section. The claim-by-claim record,
-including the four things that have not been checked and the one click that
-would check the first of them, is in
-[`phase-3-carplay.md`](phase-3-carplay.md). Nothing here has been seen on a
-car screen.
+and when, and the message **spoken** on a tap rather than drawn. Answering
+followed the same day — an Intents extension for SiriKit's three messaging
+intents — and cost less than this plan had costed it; the section below is
+corrected where it said otherwise. The claim-by-claim record, including
+everything that has not been checked and the one click that would check the
+first of it, is in [`phase-3-carplay.md`](phase-3-carplay.md). **Nothing here
+has been seen on a car screen, and Siri has never been asked anything.**
 
 **What is _not_ blocked by this.** The CarPlay Communication entitlement
 arrived on 21 September, so the paperwork half is done and nothing expires.
@@ -661,10 +672,13 @@ things that do not exist today:
    handler calls. Not a parallel implementation: the same function, so the
    access check, the quota and the token accounting cannot diverge. A test
    asserts both paths refuse the same cases.
-2. **A bearer token the extension can hold.** Better Auth's bearer plugin,
-   with the token written to a shared Keychain access group at sign-in and
-   cleared at sign-out and on account deletion. It is the same session with a
-   second presentation, not a new grant and not a long-lived key.
+2. ~~**A bearer token the extension can hold.**~~ **Not needed, 22 September.**
+   The proposal was Better Auth's bearer plugin with a token written to a
+   shared Keychain access group. What was built is the access group _without_
+   the token: the watch reply already keeps the session cookie in the
+   Keychain, and an item in a group is readable by the extension as it
+   stands. Same session, same item, one more process of ours — instead of a
+   second credential with a second lifetime to get wrong.
 
 Both are small. Neither is free: the second one puts a credential somewhere a
 cookie was deliberately never put, and it deserves the security review that
@@ -674,15 +688,18 @@ and cannot answer — is off the table, and the token's lifecycle is part of
 Phase 3's definition of done: written at sign-in, cleared at sign-out and on
 account deletion, and never outliving the session it presents.
 
-**What the car itself does not need.** Writing the scene made the boundary
-sharper than this paragraph had it. The expensive half is expensive because an
-Intents extension is a _separate process_ with its own container — and the
-CarPlay scene is not one. It is the app, so the cookie `setWatchCredentials`
-already puts in the Keychain for the watch reply is in reach of it with no
-access group, no bearer token and no new grant. Dictation still has to be
-Siri's, so answering still wants the extension; a car list that refreshes
-itself while driving does not, and today's does not refresh. That is the next
-cheap thing on this surface, and it is unprobed rather than proven.
+**What it cost in the end.** Writing it made the boundary sharper than this
+section had it. The expensive half was expensive because an Intents extension
+is a _separate process_ with its own container — true, and the answer to it
+was a Keychain access group rather than a new kind of credential. The CarPlay
+scene is not a separate process at all: it is the app, which is why the list
+needed none of this.
+
+What is still not built is a car list that refreshes itself while driving.
+Nothing runs when only the car is connected — no window scene, no React
+Native — so the rows are as old as the last time somebody looked at their
+phone. The same cookie would fix it with a `GET`, and that is the next cheap
+thing on this surface.
 
 **Verify:** the CarPlay simulator listing the same conversations as the
 phone, in the same order; a message read in the right language with the
@@ -748,14 +765,15 @@ is not, which is why its paperwork starts on day one.
    Lock Screen wants.
    → verify: everything in `phase-2-watch.md`
 
-3. CarPlay: the REST send twin and its test — **done, 20 September**, it was
-   what the watch reply needed first; the scene, the chat list and reading a
-   message aloud — **written 22 September, seen by nobody**; then the bearer
-   path and the Siri intents, which is answering
+3. CarPlay — **written 22 September, seen by nobody**: the REST send twin
+   (done 20 September, the watch needed it first), the scene, the chat list,
+   reading a message aloud, and the Intents extension that answers by voice.
+   The bearer token this phase was costed with was not needed — a Keychain
+   access group carries the cookie that already exists.
    → verify: everything in `phase-3-carplay.md`, starting with one click at
      Simulator → I/O → External Displays → CarPlay
-   → no longer blocked on Apple: the entitlement arrived 21 September, and
-     the JavaScript route's no-go is what made it Swift
+   → open: the portal work three entitlements now need, and a list that
+     refreshes itself while driving
 
 4. Wear OS — **done, 20 September**, out of order because the design was
    never actually separate. The tile landed the same day and sign-out on
@@ -796,12 +814,13 @@ and 6 that could be written has been written. What is left in them is not
 work, it is four kinds of waiting, and it is worth separating them because
 they unblock in different ways:
 
-| Waiting on          | What                                                                                  |
-| ------------------- | ------------------------------------------------------------------------------------- |
-| **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto |
-| **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                  |
-| **Behic**           | the send intent's credential, Play Console's Wear OS and Android Auto                 |
-| **A screen**        | the CarPlay list, on the simulator's car display or a real head unit                  |
+| Waiting on          | What                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------- |
+| **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto                   |
+| **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                                    |
+| **Behic**           | the send intent's credential, Play Console's Wear OS and Android Auto                                   |
+| **A screen**        | the CarPlay list and a spoken reply, on the simulator's car display or a real head unit                 |
+| **The portal**      | Siri on the App ID, the extension's own App ID with the App Group, and a profile that carries all three |
 
 ## What used to be out of this plan
 

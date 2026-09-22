@@ -494,19 +494,34 @@ upload keystore (alias `key0`, the v1 key Play trusts), the FCM V1 service
 account and the APNs key for push, and `GOOGLE_SERVICES_JSON` /
 `GOOGLE_SERVICES_PLIST` as file variables on every environment.
 
-## The next iOS build needs a new provisioning profile
+## The next iOS build needs portal work before it will sign
 
-**Since 22 September 2026 the app declares
-`com.apple.developer.carplay-communication`.** Apple granted it for the App ID
-on 21 September, but an entitlement is granted to the _identifier_ and carried
-by the _profile_ — every profile minted before that date lacks it, and a build
-signed with one fails at the signing step with a message about a missing
-entitlement rather than about CarPlay.
+**Three things changed under the app's identity on 22 September 2026**, and
+each of them fails at the _signing_ step with a message about an entitlement
+rather than about the feature that added it.
 
-So the first build of 2.7, local or cloud, needs its iOS credentials
-regenerated. It is the same interactive `eas credentials` pass the App Group
-needed when the widgets landed; see
+1. **CarPlay.** The app declares `com.apple.developer.carplay-communication`.
+   Apple granted it for the App ID on 21 September, but an entitlement is
+   granted to the _identifier_ and carried by the _profile_ — every profile
+   minted before that date lacks it.
+2. **Siri.** `com.apple.developer.siri` is new, and the capability has to be
+   switched on for the App ID as well.
+3. **A second App ID.** The Intents extension is its own target and its own
+   bundle — `tech.newchapter.languageXchange.intent` — and it needs the App
+   Group on it, which `eas-cli` cannot patch. That is the manual portal pass
+   recorded in [`plans/phase-1-mac-handoff.md`](plans/phase-1-mac-handoff.md),
+   the same one the watch targets needed. The Keychain access group needs
+   none: it is derived from the team prefix.
+
+So the first build of 2.7, local or cloud, needs the portal visited and its
+iOS credentials regenerated. See
 [`plans/phase-3-carplay.md`](plans/phase-3-carplay.md).
+
+**One behaviour changed with it.** `UIBackgroundModes` now contains `audio`,
+which is what lets the car read a message aloud while the app is in the
+background — and also means any sound the app is playing keeps playing when
+somebody leaves the app. Worth a look during the release pass on Echo and on
+the chat screen's read-aloud. Android is untouched.
 
 ## A new Xcode major is a new review risk
 

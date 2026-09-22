@@ -244,6 +244,14 @@ const config: ExpoConfig = {
      */
     './plugins/withAppIntents',
     /*
+     * Answering by voice, which is the other half of the car: the Siri
+     * capability, the Keychain group the Intents extension reads the session
+     * cookie from, and the app's claim on the three messaging intents. The
+     * handler itself is a target — `targets/intents/`. See
+     * `plugins/withSiriMessaging.js`.
+     */
+    './plugins/withSiriMessaging',
+    /*
      * CarPlay, which is a second scene of the app rather than an extension:
      * Swift in the app target, an entitlement Apple granted per App ID, and a
      * scene role added to the manifest the plugin below writes.
