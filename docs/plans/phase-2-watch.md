@@ -366,6 +366,17 @@ lowering their wrist.
   check `phase-1-mac-handoff.md` owes for the Lock Screen — worth doing in
   one pass rather than two.
 
+- **Recent conversations instead of unread ones.** Decided 22 September,
+  not yet built. `useWatchLink` filters on `unread > 0`, so a wrist with
+  nothing waiting is an empty wrist — on an app whose whole point is starting
+  a sentence with somebody. The payload already carries what is needed (ten
+  threads, ten messages each, the partner's name) and the reply already works,
+  so the change is the filter plus the two strings that say _unread_ in the
+  title and the empty state, in eight languages. The Wear tile is deliberately
+  not part of it: a tile answers "how many are waiting". See
+  [`iphone-watch-and-carplay.md`](iphone-watch-and-carplay.md) → _The chat
+  list, on every surface that can hold one_.
+
 - **App Groups on the two new App IDs.** Nothing needs them until the
   complication does, and when it does, expect the manual portal work recorded
   in [`phase-1-mac-handoff.md`](phase-1-mac-handoff.md): eas-cli cannot patch
