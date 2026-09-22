@@ -763,7 +763,7 @@ they unblock in different ways:
 | **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto |
 | **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                  |
 | **Behic**           | the send intent's credential, Play Console's Wear OS and Android Auto                 |
-| **Apple**           | the CarPlay entitlement, and therefore phases 0 and 3                                 |
+| **A decision**      | whether CarPlay is worth a Swift scene, and where a credential may live               |
 
 ## What used to be out of this plan
 
