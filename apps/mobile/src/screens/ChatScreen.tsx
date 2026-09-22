@@ -17,7 +17,7 @@ import {
   type MessageAsk,
   type MessageTranslation,
 } from '@langx/shared'
-import { onlineManager, useQueryClient } from '@tanstack/react-query'
+import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import { type NativeStackNavigationProp, router, useFocusEffect, useNavigation } from 'expo-router'
 import { useAudioPlayer } from 'expo-audio'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -31,6 +31,7 @@ import {
   View,
 } from 'react-native'
 import {
+  keys,
   markConversationRead,
   uploadMessageMedia,
   useBlockUser,
@@ -113,7 +114,11 @@ import {
 import { shareLink } from '../lib/share'
 import { addMeetingToCalendar } from '../lib/addToCalendar'
 import { showToast } from '../lib/toast'
-import { messagesNewestFirst } from '../lib/messageCache'
+import {
+  appendIncomingMessage,
+  messagesNewestFirst,
+  type MessagePageDto,
+} from '../lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../lib/messageGroups'
 import { useDisplayNames, useLocale, useT } from '../i18n'
 import { planJump } from '../lib/messageJump'
@@ -904,6 +909,32 @@ export function ChatScreen({
     setPendingMedia([{ kind: 'audio', ...recording }])
   }
 
+  /**
+   * Writes a message the server has just acked into the thread.
+   *
+   * The ack beats the echo, every time and not by accident: the Mongo adapter
+   * publishes a broadcast to the collection and only delivers it locally a
+   * tick later, while the ack goes straight back down the socket. So retiring
+   * the stand-in row on the ack alone left the thread without the message for
+   * the few milliseconds in between — one frame in which the bubble and its
+   * day separator vanished and the whole list slid down by their height, and
+   * then back. Writing the acked message in first closes that gap; the echo
+   * that follows is a duplicate, and `appendIncomingMessage` drops it.
+   *
+   * `setQueriesData` on the prefix for the reason `useSocket` gives: a jump
+   * window open on this thread is a second cache under the same key.
+   */
+  function landed(message: MessageDto | undefined): void {
+    // An API too old to answer with the message would otherwise put
+    // `undefined` in the thread, which renders as a crash rather than as a
+    // missing row.
+    if (!message?._id) return
+    queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
+      { queryKey: keys.messages(conversationId) },
+      (old) => appendIncomingMessage(old, message, viewerId) ?? old,
+    )
+  }
+
   async function sendAttachments(
     items: readonly PendingAttachment[],
     body: string | undefined,
@@ -958,7 +989,7 @@ export function ChatScreen({
       // The bytes are up; the socket round-trip is what is left.
       setPending((list) => updatePending(list, clientId, uploadSent(startOf(list, clientId))))
       const socket = await getSocket()
-      await emitWithAck(socket, 'message:media', {
+      const saved = await emitWithAck<MessageDto>(socket, 'message:media', {
         conversationId,
         attachments: uploaded,
         ...(body ? { body } : {}),
@@ -969,6 +1000,9 @@ export function ChatScreen({
         ...(answersAskId ? { answersMessageId: answersAskId } : {}),
       })
       track({ name: 'message_sent', properties: { kind: first.kind, reply: replyingTo !== null } })
+      // In first, then the uploading row goes: same batch, no frame without
+      // the message. See `landed`.
+      landed(saved)
       setPending((list) => removePending(list, clientId))
       setReplyingTo(null)
       setAnsweringAskId(null)
@@ -1035,7 +1069,7 @@ export function ChatScreen({
         throw Object.assign(new Error('offline'), { code: 'OFFLINE' })
       }
       const socket = await getSocket()
-      await emitWithAck(socket, 'message:send', {
+      const saved = await emitWithAck<MessageDto>(socket, 'message:send', {
         conversationId,
         body,
         clientId,
@@ -1043,6 +1077,9 @@ export function ChatScreen({
         ...(ask ? { ask } : {}),
         ...(translation ? { translation } : {}),
       })
+      // Before the `finally` below takes the stand-in away, and in the same
+      // batch as it, so the row is never gone from the thread.
+      landed(saved)
       setUnsent((list) => removeUnsent(list, clientId))
       track({
         name: 'message_sent',
