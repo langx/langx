@@ -338,7 +338,13 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then((input) => sendTextMessage(app.mongo.db, userId, input))
         .then(({ message, conversation }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
-          ack?.({ ok: true, data: message })
+          /*
+           * The projection, not the raw document — the same object the echo
+           * carries, and what every other ack in this file already answers
+           * with. The sender now draws the message from whichever of the two
+           * arrives first, so the two have to agree.
+           */
+          ack?.({ ok: true, data: toMessageView(message, userId) })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -400,7 +406,8 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         })
         .then(({ message, conversation }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
-          ack?.({ ok: true, data: message })
+          // Projected, for the reason `message:send` gives above.
+          ack?.({ ok: true, data: toMessageView(message, userId) })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })

@@ -310,6 +310,39 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     expect(ack.data?.body).toBe('acked?')
   })
 
+  /*
+   * The sender draws the message from whichever of the two arrives first, and
+   * the ack always wins — the adapter publishes a broadcast before it delivers
+   * it locally. An ack that answered with anything other than what the echo
+   * carries would put a different object in the thread than every other client
+   * holds, and nothing would correct it until the next fetch.
+   */
+  it('acks the sender with the same message the echo carries', async () => {
+    const alice = await newUser('ws-ack-shape-alice@example.com')
+    const bob = await newUser('ws-ack-shape-bob@example.com')
+    const conversation = await startConversation(alice, bob.userId, 'hi bob')
+    const aliceSocket = await connectSocket(alice.cookie)
+
+    const echoed = waitForEvent<Record<string, unknown>>(
+      aliceSocket,
+      'message:new',
+      2000,
+      (message) => message.body === 'both ways',
+    )
+    const ack = await new Promise<{ ok: boolean; data?: Record<string, unknown> }>((resolve) => {
+      aliceSocket.emit(
+        'message:send',
+        { conversationId: conversation._id, body: 'both ways', clientId: 'c-ack-shape' },
+        (response: { ok: boolean; data?: Record<string, unknown> }) => resolve(response),
+      )
+    })
+
+    expect(ack.data).toEqual(await echoed)
+    // The retry key rides back on the ack too: it is what retires the row the
+    // sender drew before the send, and it is only ever sent to its author.
+    expect(ack.data?.clientId).toBe('c-ack-shape')
+  })
+
   it('no message loss across a reconnect — history has it even if the recipient was offline', async () => {
     const alice = await newUser('ws-reconnect-alice@example.com')
     const bob = await newUser('ws-reconnect-bob@example.com')
