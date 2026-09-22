@@ -1,8 +1,15 @@
 import { useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native'
 import { router } from 'expo-router'
-import { useCorrectionsWritten, useMyPosts, type MessageDto } from '../../src/api/queries'
+import {
+  useAuthoredCorrections,
+  useCorrectionsWritten,
+  useMe,
+  useMyPosts,
+  type MessageDto,
+} from '../../src/api/queries'
 import type { FeedPost } from '../../src/api/types'
+import type { AuthoredCorrection } from '@langx/shared'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
@@ -32,12 +39,13 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * asked and opens the post. Interleaving them by date would make a list where
  * the next row is a different kind of thing every time.
  *
- * The corrections half is chat corrections only. Post corrections live in
- * another collection with a different shape (no `original` of their own — the
- * original is the post's body), the feed already lists them per post, and
- * merging the two in one query is not possible. The count on the profile
- * includes both, so this tab says which half it is showing rather than quietly
- * disagreeing with the tile.
+ * The corrections half is two requests drawn as one list. Chat corrections and
+ * post corrections live in different collections with different shapes (a
+ * post correction has no `original` of its own — the original is the post's
+ * body), so no single query returns both; the screen merges the pages it has
+ * by date instead. It used to show the chat half alone, and the number on the
+ * tile that opens it counts both, so somebody whose only correction was on a
+ * post arrived at "No corrections yet" under a tile that said 1.
  */
 export default function WritingScreen() {
   useScreenInteractive()
@@ -47,6 +55,11 @@ export default function WritingScreen() {
   const [tab, setTab] = useState<'corrections' | 'posts'>('corrections')
 
   const page = useCorrectionsWritten()
+  // Your own post corrections come from the public route under your own
+  // handle — the same list a visitor to your profile reads, and the API has no
+  // private twin of it because nothing on it is private.
+  const me = useMe()
+  const authored = useAuthoredCorrections(me.data?.handle ?? '')
   // Both queries mount, because switching tabs must not stall on a request
   // that could have been made while the first tab was being read.
   const posts = useMyPosts()
@@ -54,6 +67,25 @@ export default function WritingScreen() {
   const corrections = useMemo(
     () => dedupeById(page.data?.pages.flatMap((p) => p.items) ?? []),
     [page.data],
+  )
+  const authoredCorrections = useMemo(
+    () => dedupeById(authored.data?.pages.flatMap((p) => p.items) ?? []),
+    [authored.data],
+  )
+  /*
+   * Newest first across both sources. The merge is only exact down to the
+   * older of the two cursors, which is why the end of the list advances both
+   * pages together rather than whichever happens to be shorter: a chat page
+   * fetched three ahead of the post page would show last month's chats above
+   * last week's posts.
+   */
+  const merged = useMemo<WritingRow[]>(
+    () =>
+      [
+        ...corrections.map((item): WritingRow => ({ kind: 'chat', item })),
+        ...authoredCorrections.map((item): WritingRow => ({ kind: 'post', item })),
+      ].sort((a, b) => b.item.createdAt.localeCompare(a.item.createdAt)),
+    [corrections, authoredCorrections],
   )
   const myPosts = useMemo(
     () => dedupeById(posts.data?.pages.flatMap((p) => p.items) ?? []),
@@ -64,13 +96,23 @@ export default function WritingScreen() {
     corrections.flatMap((c) => (c.recipientId ? [c.recipientId] : [])),
   )
 
-  const active = tab === 'corrections' ? page : posts
-  const state = listState({
-    isPending: active.isPending,
-    isError: active.isError,
-    itemCount: tab === 'corrections' ? corrections.length : myPosts.length,
-    isPaused: active.fetchStatus === 'paused',
-  })
+  const state = listState(
+    tab === 'corrections'
+      ? {
+          isPending: page.isPending || authored.isPending,
+          isError: page.isError || authored.isError,
+          itemCount: merged.length,
+          isPaused: page.fetchStatus === 'paused' || authored.fetchStatus === 'paused',
+        }
+      : {
+          isPending: posts.isPending,
+          isError: posts.isError,
+          itemCount: myPosts.length,
+          isPaused: posts.fetchStatus === 'paused',
+        },
+  )
+  const hasMoreCorrections = page.hasNextPage || authored.hasNextPage
+  const fetchingCorrections = page.isFetchingNextPage || authored.isFetchingNextPage
 
   return (
     <Screen fluid>
@@ -102,7 +144,16 @@ export default function WritingScreen() {
       ) : state === 'failed' ? (
         // Above the empty state rather than folded into it: "No corrections
         // yet" is news about your account, and a failed request is not.
-        <LoadFailed onRetry={() => void active.refetch()} />
+        <LoadFailed
+          onRetry={() => {
+            if (tab === 'corrections') {
+              void page.refetch()
+              void authored.refetch()
+            } else {
+              void posts.refetch()
+            }
+          }}
+        />
       ) : state === 'empty' ? (
         <EmptyState
           icon={tab === 'corrections' ? 'edit-3' : 'message-square'}
@@ -111,25 +162,33 @@ export default function WritingScreen() {
         />
       ) : tab === 'corrections' ? (
         <FlatList
-          data={corrections}
-          keyExtractor={(item) => String(item._id)}
+          data={merged}
+          keyExtractor={(row) => `${row.kind}:${String(row.item._id)}`}
           contentContainerStyle={styles.list}
           onEndReached={() => {
-            if (page.hasNextPage && !page.isFetchingNextPage) void page.fetchNextPage()
+            if (!hasMoreCorrections || fetchingCorrections) return
+            if (page.hasNextPage) void page.fetchNextPage()
+            if (authored.hasNextPage) void authored.fetchNextPage()
           }}
           onEndReachedThreshold={0.4}
           ListFooterComponent={
-            page.isFetchingNextPage ? <ActivityIndicator style={styles.loading} /> : null
+            fetchingCorrections ? <ActivityIndicator style={styles.loading} /> : null
           }
-          renderItem={({ item }) => (
-            <Row
-              message={item}
-              recipient={item.recipientId ? recipients[item.recipientId]?.displayName : undefined}
-              t={t}
-              locale={locale}
-              styles={styles}
-            />
-          )}
+          renderItem={({ item: row }) =>
+            row.kind === 'chat' ? (
+              <Row
+                message={row.item}
+                recipient={
+                  row.item.recipientId ? recipients[row.item.recipientId]?.displayName : undefined
+                }
+                t={t}
+                locale={locale}
+                styles={styles}
+              />
+            ) : (
+              <PostCorrectionRow correction={row.item} styles={styles} />
+            )
+          }
         />
       ) : (
         <FlatList
@@ -147,6 +206,44 @@ export default function WritingScreen() {
         />
       )}
     </Screen>
+  )
+}
+
+type WritingRow = { kind: 'chat'; item: MessageDto } | { kind: 'post'; item: AuthoredCorrection }
+
+/**
+ * A correction you wrote on a post: the post's sentence struck through and
+ * your fix under it, the way `post-corrections.tsx` draws the same row for a
+ * visitor. The top line is the post's language rather than "For {name}" —
+ * the row does not carry the post's author, and the language is what tells
+ * this row apart from a chat correction in the same list.
+ *
+ * Tapping opens the post, where the other corrections and the author are.
+ */
+function PostCorrectionRow({
+  correction,
+  styles,
+}: {
+  correction: AuthoredCorrection
+  styles: ReturnType<typeof useStyles>
+}) {
+  const t = useT()
+  const { locale } = useLocale()
+  const names = useDisplayNames()
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={() => openPost(correction.postId, '/(app)/corrections')}
+      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+    >
+      <View style={styles.top}>
+        <Text style={styles.language}>{names.language(correction.language)}</Text>
+        <Text style={styles.when}>{relativeTime(correction.createdAt, { t, locale })}</Text>
+      </View>
+      <Text style={styles.original}>{correction.original}</Text>
+      <Text style={styles.corrected}>{correction.corrected}</Text>
+    </Pressable>
   )
 }
 

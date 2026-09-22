@@ -1455,6 +1455,9 @@ export function useCorrectPost() {
       // A correction pays, and may cross a badge threshold.
       void client.invalidateQueries({ queryKey: keys.tokens })
       void client.invalidateQueries({ queryKey: keys.badges })
+      // "Your writing" lists these under your own handle; the prefix rather
+      // than the exact key because the handle is not known here.
+      void client.invalidateQueries({ queryKey: ['profileCorrections'] })
     },
   })
 }
@@ -1561,6 +1564,7 @@ export function useDeleteCorrection() {
     onSuccess: (_result, { postId }) => {
       void client.invalidateQueries({ queryKey: ['feed'] })
       void client.invalidateQueries({ queryKey: keys.postCorrections(postId) })
+      void client.invalidateQueries({ queryKey: ['profileCorrections'] })
     },
   })
 }
