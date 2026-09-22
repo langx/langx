@@ -84,11 +84,15 @@ const withAppIntents = (config) => {
       IOSConfig.XcodeUtils.addBuildSourceFileToGroup({ filepath, groupName: target, project })
     }
 
-    addPhrases(
-      project,
-      target,
-      readdirSync(from).filter((file) => file.endsWith('.lproj')),
-    )
+    const lprojs = readdirSync(from).filter((file) => file.endsWith('.lproj'))
+    addPhrases(project, target, lprojs, 'AppShortcuts.strings', 'text.plist.strings')
+    /*
+     * The SiriKit messaging examples, the same way and for the same reason:
+     * one file per language, bound to its language only by the variant
+     * group. Missing, they do not fail the build — App Store Connect mails
+     * ITMS-90626 for each intent in each language after the upload.
+     */
+    addPhrases(project, target, lprojs, 'AppIntentVocabulary.plist', 'text.plist.xml')
     return modConfig
   })
 }
@@ -110,8 +114,7 @@ const withAppIntents = (config) => {
  * not look up — which is the same shape as every other failure in this
  * feature: present, plausible and silent.
  */
-function addPhrases(project, target, lprojs) {
-  const name = 'AppShortcuts.strings'
+function addPhrases(project, target, lprojs, name, fileType) {
   if (project.findPBXVariantGroupKey({ name })) return
 
   const groupKey = project.pbxCreateVariantGroup(name)
@@ -138,7 +141,7 @@ function addPhrases(project, target, lprojs) {
       name: `"${locale}"`,
       path: `"${target}/${GROUP}/${lproj}/${name}"`,
       sourceTree: '"<group>"',
-      lastKnownFileType: 'text.plist.strings',
+      lastKnownFileType: fileType,
       fileEncoding: 4,
     }
     project.pbxFileReferenceSection()[`${fileRef}_comment`] = name

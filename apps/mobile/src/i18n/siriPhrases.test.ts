@@ -3,9 +3,12 @@ import { catalogs } from './catalogs'
 import {
   APPLICATION_NAME,
   applicationNameCount,
+  SIRI_INTENT_EXAMPLES,
+  SIRI_MESSAGING_INTENTS,
   SIRI_PHRASES,
   SIRI_SHORTCUTS,
   SIRI_SOURCE,
+  SPOKEN_APP_NAME,
   tokensIn,
 } from './siriPhrases'
 
@@ -94,6 +97,33 @@ describe('the Siri phrases', () => {
         for (const phrase of SIRI_PHRASES[locale][shortcut]) {
           expect(phrase.replace(APPLICATION_NAME, '').trim().length).toBeGreaterThan(2)
         }
+      }
+    }
+  })
+})
+
+describe('the SiriKit example phrases', () => {
+  /*
+   * App Store Connect sends ITMS-90626 for every intent × language pair that
+   * has none — after the upload, when the binary is already there. This is
+   * the same rule, before it costs a build.
+   */
+  it('give every messaging intent an example in every language', () => {
+    expect(Object.keys(SIRI_INTENT_EXAMPLES).sort()).toEqual([...locales].sort())
+    for (const locale of locales) {
+      for (const intent of SIRI_MESSAGING_INTENTS) {
+        expect(SIRI_INTENT_EXAMPLES[locale][intent].trim(), `${locale} ${intent}`).not.toBe('')
+      }
+    }
+  })
+
+  /** An example is shown as written, so it names the app literally — no token. */
+  it('name the app literally, and never through the App Shortcuts token', () => {
+    for (const locale of locales) {
+      for (const intent of SIRI_MESSAGING_INTENTS) {
+        const example = SIRI_INTENT_EXAMPLES[locale][intent]
+        expect(example, `${locale} ${intent}`).toContain(SPOKEN_APP_NAME)
+        expect(example, `${locale} ${intent}`).not.toContain(APPLICATION_NAME)
       }
     }
   })
