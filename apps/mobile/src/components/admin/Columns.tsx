@@ -87,8 +87,19 @@ const useStyles = makeStyles(({ colors }) => ({
   // a border, which would add ink that is not data.
   plot: { alignItems: 'flex-end', flexDirection: 'row', gap: 2 },
   column: { alignItems: 'center', flex: 1 },
-  // Rounded at the data end, square on the baseline it grows from.
-  bar: { alignSelf: 'stretch', borderTopLeftRadius: 4, borderTopRightRadius: 4, maxWidth: 24 },
+  /*
+   * Rounded at the data end, square on the baseline it grows from.
+   *
+   * `width` rather than `alignSelf: 'stretch'`, and the difference is not
+   * cosmetic: a stretched item whose width is clamped by `maxWidth` is laid
+   * out from the start of its slot, not centred in it — flexbox treats a
+   * clamped stretch as `flex-start`, and Yoga agrees. So on the seven-column
+   * charts, the only ones whose slots are wider than the cap, every bar sat a
+   * quarter of a slot left of the label under it and the whole series read as
+   * shifted by a day. A percentage width clamped the same way inherits the
+   * column's own `alignItems: 'center'` and lands over its label.
+   */
+  bar: { borderTopLeftRadius: 4, borderTopRightRadius: 4, maxWidth: 24, width: '100%' },
   empty: { height: 2, opacity: 0.3 },
   baseline: { backgroundColor: colors.border, height: 1, marginTop: 4 },
   labels: { flexDirection: 'row', gap: 2, marginTop: 6 },
