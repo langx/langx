@@ -913,6 +913,7 @@ export const tr: Localized<EnMessages> = {
     deleteTitle: 'Bu sohbet silinsin mi?',
     deleteBody: 'Karşı tarafta kalır; tekrar yazarsa burada yeniden açılır.',
     deleted: 'Sohbet silindi',
+    unreadNew: { one: '{count} yeni', other: '{count} yeni' },
     tab_all: 'Tümü',
     tab_unreplied: 'Cevapsız',
     tab_archived: 'Arşiv',

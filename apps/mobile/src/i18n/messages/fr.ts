@@ -920,6 +920,7 @@ export const fr: Localized<EnMessages> = {
     deleteTitle: 'Supprimer cette conversation ?',
     deleteBody: 'Elle reste de leur côté et revient ici s’ils vous réécrivent.',
     deleted: 'Conversation supprimée',
+    unreadNew: { one: '{count} nouveau', other: '{count} nouveaux' },
     tab_all: 'Tous',
     tab_unreplied: 'Sans réponse',
     tab_archived: 'Archivés',

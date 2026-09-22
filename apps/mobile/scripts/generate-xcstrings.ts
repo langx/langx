@@ -43,6 +43,12 @@ const OUT = join(TARGETS, '_shared/Localizable.xcstrings')
  */
 const APP_INTENTS = join(HERE, '../app-intents')
 /**
+ * The CarPlay scene, which `plugins/withCarPlay.js` copies into the same
+ * target. Scanned for the same reason: a car draws two sentences — the empty
+ * state and what to do about it — and both must come from the catalogues.
+ */
+const CARPLAY = join(HERE, '../carplay')
+/**
  * The two Android modules that draw words of their own, both of which need
  * the same keys in Android's own shape.
  *
@@ -285,12 +291,15 @@ function androidFiles(): Map<string, string> {
  * how an English sentence ends up hard-coded on a Turkish watch with nothing
  * to show for it — no warning, no crash, a screen that looks finished.
  *
- * **The test is a space.** Rather than list the dozens of SwiftUI parameters
- * that localize, this flags any string literal containing one, anywhere in a
- * target, unless it is a key this generator emits. Prose has spaces; keys,
- * bundle identifiers, date formats and `UserDefaults` keys do not. It is a
- * heuristic, and it is the one that catches the failure this is about while
- * leaving the identifiers these files are full of alone.
+ * **The test is a space, and a letter.** Rather than list the dozens of
+ * SwiftUI parameters that localize, this flags any string literal containing
+ * a space, anywhere in a target, unless it is a key this generator emits.
+ * Prose has spaces; keys, bundle identifiers, date formats and `UserDefaults`
+ * keys do not. A literal with no letter in it is not prose either — the car's
+ * rows are joined with `" · "` — so the two tests together are what a
+ * sentence has to pass. It is a heuristic, and it is the one that catches the
+ * failure this is about while leaving the identifiers these files are full of
+ * alone.
  *
  * Interpolations are skipped — a literal with a `\(…)` in it is a format
  * string, and the only ones here are in log lines nobody reads on a wrist.
@@ -307,6 +316,7 @@ function unlocalizedSwiftLiterals(): string[] {
     // The app target's Swift lives outside `targets/` but obeys the same
     // rule: it draws words, and none of them may be written in it.
     ...globSync('**/*.swift', { cwd: APP_INTENTS }).map((file) => join(APP_INTENTS, file)),
+    ...globSync('**/*.swift', { cwd: CARPLAY }).map((file) => join(CARPLAY, file)),
   ]
 
   for (const path of swift) {
@@ -320,7 +330,7 @@ function unlocalizedSwiftLiterals(): string[] {
       if (literal === undefined) continue
       if (allowed.has(literal)) continue
 
-      if (literal.includes(' ')) {
+      if (literal.includes(' ') && /\p{L}/u.test(literal)) {
         problems.push(`${where}: "${literal}"`)
         continue
       }

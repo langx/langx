@@ -1048,6 +1048,12 @@ export const en = {
     deleteTitle: 'Delete this chat?',
     deleteBody: 'It stays on their side, and comes back here if they write again.',
     deleted: 'Chat deleted',
+    /*
+     The car's second line, "3 new", which no other surface draws: CarPlay has
+     no badge and Swift has no plural rules, so the phrase is written here and
+     carried in the App Group blob the way the widgets' labels are.
+    */
+    unreadNew: { one: '{count} new', other: '{count} new' },
     tab_all: 'All',
     tab_unreplied: 'Unreplied',
     tab_archived: 'Archived',

@@ -911,6 +911,7 @@ export const ptBR: Localized<EnMessages> = {
     deleteTitle: 'Excluir esta conversa?',
     deleteBody: 'Ela fica do lado deles e volta aqui se escreverem de novo.',
     deleted: 'Conversa excluída',
+    unreadNew: { one: '{count} nova', other: '{count} novas' },
     tab_all: 'Todos',
     tab_unreplied: 'Sem resposta',
     tab_archived: 'Arquivados',

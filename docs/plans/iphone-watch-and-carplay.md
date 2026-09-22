@@ -606,9 +606,27 @@ a project-wide change we would be making for nothing.
 Swift reaches the app's socket, cookie, API client and catalogues through none
 of the paths JavaScript would have reused — the argument above for the JS
 route stands, and the route is closed. That is a re-plan of phase 3 rather
-than a detail inside it, and it wants a decision before any of it is written:
-CarPlay in Swift is the most native code this app would own, in the surface
-with the fewest users.
+than a detail inside it, and it wanted a decision before any of it was
+written: CarPlay in Swift is the most native code this app would own, in the
+surface with the fewest users.
+
+### It is native, and the list half of it is built — 22 September 2026
+
+Behic said write it. The estimate above was wrong in the direction that
+matters: **none of those four things had to be rebuilt.** The watch had
+already turned each one into something a second native surface could read —
+a blob in the App Group, a REST send twin, a compiled string catalogue, one
+definition of the shape — so the car is a fourth reader of the App Intents'
+`companionDirectory` rather than a second app. Two hundred lines of Swift, no
+new dependency.
+
+What is on the screen: the chat list, a row per person with what is waiting
+and when, and the message **spoken** on a tap rather than drawn. What is not:
+answering, which is Siri's and is the next section. The claim-by-claim record,
+including the four things that have not been checked and the one click that
+would check the first of them, is in
+[`phase-3-carplay.md`](phase-3-carplay.md). Nothing here has been seen on a
+car screen.
 
 **What is _not_ blocked by this.** The CarPlay Communication entitlement
 arrived on 21 September, so the paperwork half is done and nothing expires.
@@ -655,6 +673,16 @@ so the fallback this paragraph used to describe — a CarPlay app that reads
 and cannot answer — is off the table, and the token's lifecycle is part of
 Phase 3's definition of done: written at sign-in, cleared at sign-out and on
 account deletion, and never outliving the session it presents.
+
+**What the car itself does not need.** Writing the scene made the boundary
+sharper than this paragraph had it. The expensive half is expensive because an
+Intents extension is a _separate process_ with its own container — and the
+CarPlay scene is not one. It is the app, so the cookie `setWatchCredentials`
+already puts in the Keychain for the watch reply is in reach of it with no
+access group, no bearer token and no new grant. Dictation still has to be
+Siri's, so answering still wants the extension; a car list that refreshes
+itself while driving does not, and today's does not refresh. That is the next
+cheap thing on this surface, and it is unprobed rather than proven.
 
 **Verify:** the CarPlay simulator listing the same conversations as the
 phone, in the same order; a message read in the right language with the
@@ -721,12 +749,13 @@ is not, which is why its paperwork starts on day one.
    → verify: everything in `phase-2-watch.md`
 
 3. CarPlay: the REST send twin and its test — **done, 20 September**, it was
-   what the watch reply needed first; then the bearer path, the communication
-   templates, the Siri intents
-   → verify: the list under Surface C, against a real head unit as well as
-     the simulator
-   → blocked on Apple, and `react-native-carplay` claims no version of this
-     stack — the spike has a real no-go branch
+   what the watch reply needed first; the scene, the chat list and reading a
+   message aloud — **written 22 September, seen by nobody**; then the bearer
+   path and the Siri intents, which is answering
+   → verify: everything in `phase-3-carplay.md`, starting with one click at
+     Simulator → I/O → External Displays → CarPlay
+   → no longer blocked on Apple: the entitlement arrived 21 September, and
+     the JavaScript route's no-go is what made it Swift
 
 4. Wear OS — **done, 20 September**, out of order because the design was
    never actually separate. The tile landed the same day and sign-out on
@@ -772,7 +801,7 @@ they unblock in different ways:
 | **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto |
 | **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                  |
 | **Behic**           | the send intent's credential, Play Console's Wear OS and Android Auto                 |
-| **A decision**      | whether CarPlay is worth a Swift scene, and where a credential may live               |
+| **A screen**        | the CarPlay list, on the simulator's car display or a real head unit                  |
 
 ## What used to be out of this plan
 
