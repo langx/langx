@@ -184,3 +184,81 @@ export function applicationNameCount(phrase: string): number {
 export function tokensIn(phrase: string): string[] {
   return [...phrase.matchAll(/\$\{([a-zA-Z]+)\}/g)].map(([, token]) => token ?? '')
 }
+
+/**
+ * The three SiriKit messaging intents the Intents extension answers — see
+ * `targets/intents/Info.plist`, which declares the same three.
+ */
+export const SIRI_MESSAGING_INTENTS = [
+  'INSendMessageIntent',
+  'INSearchForMessagesIntent',
+  'INSetMessageAttributeIntent',
+] as const
+
+export type SiriMessagingIntent = (typeof SIRI_MESSAGING_INTENTS)[number]
+
+/**
+ * The app's name as it is spoken in an example, literally.
+ *
+ * Not `APPLICATION_NAME`: that token is an App Shortcuts placeholder iOS
+ * substitutes, and `AppIntentVocabulary.plist` is an older mechanism that
+ * substitutes nothing. An example is shown to the person as written.
+ */
+export const SPOKEN_APP_NAME = 'LangX'
+
+/**
+ * One example sentence per messaging intent, per language, for the
+ * `AppIntentVocabulary.plist` iOS reads them from.
+ *
+ * **Apple checks these at upload, not at build.** Build 172 of 2.6 compiled,
+ * signed and uploaded without them, and App Store Connect then sent
+ * ITMS-90626 — *Invalid Siri Support: no example phrase was provided* — for
+ * all three intents in all eight languages: twenty-four warnings, delivered
+ * after the binary was already there. Siri shows these to somebody who asks
+ * what LangX can do, which is why each one names the app and a person.
+ *
+ * The person is Sofia, the demo account every example in this repo uses, and
+ * never a real user's name.
+ */
+export const SIRI_INTENT_EXAMPLES: Record<Locale, Record<SiriMessagingIntent, string>> = {
+  en: {
+    INSendMessageIntent: 'Send a message to Sofia on LangX',
+    INSearchForMessagesIntent: 'Read my new messages on LangX',
+    INSetMessageAttributeIntent: 'Mark my LangX messages as read',
+  },
+  tr: {
+    INSendMessageIntent: "LangX'te Sofia'ya mesaj gönder",
+    INSearchForMessagesIntent: "LangX'teki yeni mesajlarımı oku",
+    INSetMessageAttributeIntent: 'LangX mesajlarımı okundu olarak işaretle',
+  },
+  es: {
+    INSendMessageIntent: 'Envía un mensaje a Sofia en LangX',
+    INSearchForMessagesIntent: 'Lee mis mensajes nuevos de LangX',
+    INSetMessageAttributeIntent: 'Marca mis mensajes de LangX como leídos',
+  },
+  ru: {
+    INSendMessageIntent: 'Отправь сообщение Софии в LangX',
+    INSearchForMessagesIntent: 'Прочитай мои новые сообщения в LangX',
+    INSetMessageAttributeIntent: 'Отметь мои сообщения в LangX как прочитанные',
+  },
+  ar: {
+    INSendMessageIntent: 'أرسل رسالة إلى صوفيا على LangX',
+    INSearchForMessagesIntent: 'اقرأ رسائلي الجديدة على LangX',
+    INSetMessageAttributeIntent: 'علّم رسائل LangX كمقروءة',
+  },
+  fr: {
+    INSendMessageIntent: 'Envoie un message à Sofia sur LangX',
+    INSearchForMessagesIntent: 'Lis mes nouveaux messages LangX',
+    INSetMessageAttributeIntent: 'Marque mes messages LangX comme lus',
+  },
+  de: {
+    INSendMessageIntent: 'Sende eine Nachricht an Sofia mit LangX',
+    INSearchForMessagesIntent: 'Lies meine neuen LangX Nachrichten',
+    INSetMessageAttributeIntent: 'Markiere meine LangX Nachrichten als gelesen',
+  },
+  'pt-BR': {
+    INSendMessageIntent: 'Envie uma mensagem para Sofia no LangX',
+    INSearchForMessagesIntent: 'Leia minhas novas mensagens do LangX',
+    INSetMessageAttributeIntent: 'Marque minhas mensagens do LangX como lidas',
+  },
+}
