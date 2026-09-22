@@ -35,9 +35,9 @@ had scheduled for CarPlay in phase 3. The watch got there first.
 
 **There were no notification categories at all.** The plan says the actions
 declared through `expo-notifications`' categories already appear on a wrist. No
-`setNotificationCategoryAsync` call exists anywhere in the app. Mirroring is
-free, as the plan says; the quick-reply action is not, and is **not built** —
-see _What is not here_.
+`setNotificationCategoryAsync` call existed anywhere in the app. Mirroring is
+free, as the plan says; the quick-reply action was not, and was written the
+same week — see the entry below.
 
 ## How it is put together
 
@@ -45,7 +45,7 @@ see _What is not here_.
 phone                                   watch
 ─────                                   ─────
 useWatchLink                            WatchStore (WCSessionDelegate)
-  buildWatchPayload  ──updateApplicationContext──▶  UnreadList / ThreadView
+  buildWatchPayload  ──updateApplicationContext──▶  ChatList / ThreadView
   setWatchCredentials → Keychain
 PhoneSession (WCSessionDelegate)  ◀──sendMessage──  reply, clientId minted here
   ReplySender → POST /conversations/:id/messages
