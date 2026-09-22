@@ -15,7 +15,7 @@ import {
 export interface WatchSources {
   /** The signed-in account, to decide whose side of a thread a message is on. */
   meId: string
-  /** `GET /conversations`, already filtered to the unread ones by the caller. */
+  /** `GET /conversations`, already cut to the newest few by the caller. */
   conversations: {
     _id: string
     participants: readonly string[]
@@ -38,11 +38,11 @@ export interface WatchSources {
    *
    * The watch never causes a fetch. That is the same rule the widgets follow
    * and it is load-bearing here for a different reason: this payload is
-   * rebuilt whenever the unread list changes, and a version that filled in
-   * the missing threads would turn every arriving message into ten requests
-   * on a phone that may be on cellular in somebody's pocket. So the thread
-   * screen shows what the phone happened to know, which for an unread
-   * conversation is always at least the message that made it unread.
+   * rebuilt whenever the conversation list changes, and a version that filled
+   * in the missing threads would turn every arriving message into ten
+   * requests on a phone that may be on cellular in somebody's pocket. So the
+   * thread screen shows what the phone happened to know, which is always at
+   * least the last message the list itself carries.
    */
   threads?: Record<
     string,
@@ -58,8 +58,9 @@ function iso(at: Date | string): string {
  * Assemble what the phone sends the watch. Pure: the caller transmits it.
  *
  * Ordering is the conversation list's own — most recently updated first —
- * rather than by unread count. A wrist is glanced at, and the question it
- * answers is "what just happened", not "who owes me the most".
+ * rather than by unread count, and unread threads are not sorted to the top
+ * either. A wrist is glanced at, and the question it answers is "what just
+ * happened", not "who owes me the most".
  *
  * A conversation whose partner is not in the name cache is **dropped, not
  * labelled**. An unnamed row on a watch is a row nobody can act on, and the

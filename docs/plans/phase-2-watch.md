@@ -35,9 +35,9 @@ had scheduled for CarPlay in phase 3. The watch got there first.
 
 **There were no notification categories at all.** The plan says the actions
 declared through `expo-notifications`' categories already appear on a wrist. No
-`setNotificationCategoryAsync` call exists anywhere in the app. Mirroring is
-free, as the plan says; the quick-reply action is not, and is **not built** —
-see _What is not here_.
+`setNotificationCategoryAsync` call existed anywhere in the app. Mirroring is
+free, as the plan says; the quick-reply action was not, and was written the
+same week — see the entry below.
 
 ## How it is put together
 
@@ -45,7 +45,7 @@ see _What is not here_.
 phone                                   watch
 ─────                                   ─────
 useWatchLink                            WatchStore (WCSessionDelegate)
-  buildWatchPayload  ──updateApplicationContext──▶  UnreadList / ThreadView
+  buildWatchPayload  ──updateApplicationContext──▶  ChatList / ThreadView
   setWatchCredentials → Keychain
 PhoneSession (WCSessionDelegate)  ◀──sendMessage──  reply, clientId minted here
   ReplySender → POST /conversations/:id/messages
@@ -366,14 +366,29 @@ lowering their wrist.
   check `phase-1-mac-handoff.md` owes for the Lock Screen — worth doing in
   one pass rather than two.
 
-- **Recent conversations instead of unread ones.** Decided 22 September,
-  not yet built. `useWatchLink` filters on `unread > 0`, so a wrist with
-  nothing waiting is an empty wrist — on an app whose whole point is starting
-  a sentence with somebody. The payload already carries what is needed (ten
-  threads, ten messages each, the partner's name) and the reply already works,
-  so the change is the filter plus the two strings that say _unread_ in the
-  title and the empty state, in eight languages. The Wear tile is deliberately
-  not part of it: a tile answers "how many are waiting". See
+- ~~**Recent conversations instead of unread ones.**~~ Built 22 September,
+  and it cost less than the decision did. `useWatchLink` filtered on
+  `unread > 0`, so a wrist with nothing waiting was an empty wrist — on an app
+  whose whole point is starting a sentence with somebody. The filter is now a
+  `.slice(0, WATCH_MAX_CONVERSATIONS)`, taken at the hook rather than left to
+  `buildWatchPayload`, because everything after that line costs a profile
+  lookup per conversation and only ten of them travel.
+
+  **The words came from the app instead of the translators.** The title and
+  the empty state were `watch.unread` and `watch.nothingUnread`; they are now
+  `tabs.chats` and `chats.emptyTitle` — the phone's own tab and the phone's
+  own empty chat list, already written in eight languages and now guaranteed
+  to keep agreeing with the screen the wearer taps. The two old keys stay,
+  because the **Wear tile still uses them**: a tile answers "how many are
+  waiting", which is a different question from "who have I been talking to",
+  and both it and the complication read each row's own `unread`, so neither
+  moved when the list around them did. `UnreadList` is `ChatList` on both
+  watches for the same reason the strings changed.
+
+  **What was checked:** typecheck, the payload tests, and the generator's own
+  `--check`, which is what proves the two borrowed keys exist in all eight
+  catalogues. **What was not:** either wrist. It needs the same paired-device
+  pass the sign-out clear above is waiting for. See
   [`iphone-watch-and-carplay.md`](iphone-watch-and-carplay.md) → _The chat
   list, on every surface that can hold one_.
 

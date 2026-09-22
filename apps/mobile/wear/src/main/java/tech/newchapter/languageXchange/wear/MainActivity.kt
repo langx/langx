@@ -87,8 +87,8 @@ class MainActivity : ComponentActivity() {
       }
 
       Box(modifier = Modifier.fillMaxSize().background(Palette.background)) {
-        SwipeDismissableNavHost(navController = navigation, startDestination = "unread") {
-          composable("unread") { UnreadList(link, navigation) }
+        SwipeDismissableNavHost(navController = navigation, startDestination = "chats") {
+          composable("chats") { ChatList(link, navigation) }
           composable("thread/{id}") { entry ->
             ThreadScreen(link, entry.arguments?.getString("id").orEmpty(), ::askForReply)
           }
@@ -115,21 +115,27 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- * The first screen: who is waiting.
+ * The first screen: the chat list, as the phone draws it.
+ *
+ * Recent conversations, not only unread ones — the argument is in
+ * `docs/plans/iphone-watch-and-carplay.md` → _The chat list, on every surface
+ * that can hold one_, and it is the dot below that still marks who is waiting.
+ * The tile is the surface that stayed unread-only, because a glance asks a
+ * different question.
  *
  * Three states, and the difference between the last two is the one worth
  * getting right. **Conversations** is the ordinary case. **No payload** means
  * the phone has never spoken to this watch, and the answer is to go and open
- * the app. **An empty list** means it spoke and there is nothing unread, which
- * is good news and must not look like a failure.
+ * the app. **An empty list** means it spoke and this account has no chats at
+ * all, which is a new account rather than a failure.
  */
 @Composable
-private fun UnreadList(link: PhoneLink, navigation: NavHostController) {
+private fun ChatList(link: PhoneLink, navigation: NavHostController) {
   val payload = link.payload
 
   when {
     payload == null -> Placeholder(R.string.watch_openOnPhone)
-    payload.conversations.isEmpty() -> Placeholder(R.string.watch_nothingUnread)
+    payload.conversations.isEmpty() -> Placeholder(R.string.chats_emptyTitle)
     else ->
         ScalingLazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -137,7 +143,7 @@ private fun UnreadList(link: PhoneLink, navigation: NavHostController) {
         ) {
           item {
             Text(
-                text = stringResource(R.string.watch_unread),
+                text = stringResource(R.string.tabs_chats),
                 color = Palette.primary,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,

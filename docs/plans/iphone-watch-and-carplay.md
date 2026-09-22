@@ -42,7 +42,9 @@ wrist reached the database. Three claims in this document turned out to be
 wrong and are corrected below where they appear; the claim-by-claim record,
 including the two things that were _not_ exercised, is in
 [`phase-2-watch.md`](phase-2-watch.md). The complication and the notification
-quick-reply are not built.
+quick-reply were not built that day and were built the next one; the sentence
+that said so stood stale here for two days, which is the reason this file now
+says where each claim was checked.
 
 The rest of the list at the end is still open.
 
@@ -436,18 +438,23 @@ anyone, which is not a state the phone has.
 
 ### The watch, both of them — one filter
 
-`useWatchLink` sends conversations where `unread > 0`. Nothing else stands in
-the way: `watchPayloadSchema` already carries the last ten messages of each
-thread and the partner's name, the reply already posts through `NativeSend`,
-and `WATCH_MAX_CONVERSATIONS` is already ten. Sending the ten most recent
-instead of the unread ones gives both wrists the list the phone draws, and
-Wear gets it for nothing because it reads the same payload.
+**Built the same day.** `useWatchLink` sent conversations where `unread > 0`;
+it now sends the ten most recent. Nothing else stood in the way:
+`watchPayloadSchema` already carried the last ten messages of each thread and
+the partner's name, the reply already posted through `NativeSend`, and
+`WATCH_MAX_CONVERSATIONS` was already ten. Wear got it for nothing, because it
+reads the same payload.
 
-The real cost is words. The watch's title and empty state say _unread_
-(`watch.unread`, `watch.nothingUnread`) and would have to say _chats_ and
-_no chats yet_, in eight languages. The **Wear tile stays unread-based** — a
-tile answers "how many are waiting", which is a different question from "who
-have I been talking to", and it is the question a glance wants.
+The cost was expected to be words — the title and empty state said _unread_ —
+and it turned out to be none. They now use `tabs.chats` and
+`chats.emptyTitle`, the phone's own tab name and its own empty chat list: the
+eight translations existed, and borrowing them is what makes the wrist agree
+with the screen it is a companion to rather than drifting from it. The two
+`watch.*` keys stay for the **Wear tile, which stays unread-based** — a tile
+answers "how many are waiting", which is a different question from "who have I
+been talking to", and it is the question a glance wants. The tile and the
+complication both sum each row's own `unread`, so a list that now carries read
+conversations too leaves their number unchanged.
 
 ### CarPlay — the same list, without the words in it
 
@@ -494,14 +501,16 @@ range — is the correct trade for a companion that exists to glance at.
 **Half of the free half was already free.** iPhone notifications mirror to a
 paired watch with no code at all. The claim that followed — that the actions
 declared through `expo-notifications`' categories appear there too — was
-wrong: **no category is declared anywhere in the app**, so there are no
-actions to mirror. The quick-reply action on the `messages` category still has
-to be written, and it still lands in a normal build with no watch target. It
-is not built as of 20 September 2026.
+wrong when it was written: **no category was declared anywhere in the app**,
+so there was nothing to mirror. The quick-reply action on the `messages`
+category was written on 20 September and lands in a normal build with no watch
+target, over the air.
 
-**The app itself is three screens.** The chats that are unread, one thread
-read out in plain text, and a reply sent by dictation or scribble — handed to
-the phone over `WatchConnectivity`. Built, and verified on a paired simulator.
+**The app itself is three screens.** The chat list, one thread read out in
+plain text, and a reply sent by dictation or scribble — handed to the phone
+over `WatchConnectivity`. Built, and verified on a paired simulator. The list
+was the unread chats until 22 September; see _The chat list, on every surface
+that can hold one_ for why it is all of them now.
 
 The sentence that used to end there said the phone "sends it on the socket the
 app already holds". It does not and cannot: WatchConnectivity wakes a closed
@@ -510,9 +519,9 @@ goes out from Swift over the REST twin of `message:send` — the one phase 3
 below schedules for CarPlay, which now exists and has tests.
 
 The complication — streak, or unread, chosen by the person in the watch app's
-own settings — is **not built**. It needs a field the payload does not carry
-and an App Group between the two watch targets, because the phone's App Group
-does not reach the watch at all.
+own settings — was built on 20 September. It needed a field the payload did
+not carry, which is why `streak` is optional in it, and an App Group between
+the two watch targets: the phone's App Group does not reach the watch at all.
 
 Watch strings go through the generator below. The watch's own store
 screenshots and the listing update are in `docs/store` and are part of this

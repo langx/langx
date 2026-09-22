@@ -26,6 +26,19 @@ import type { Paths } from '@langx/shared'
  * rendering words the app already wrote into the snapshot.
  */
 export const NATIVE_KEYS = [
+  /*
+   * The watch app's own list is the phone's chat list, so it borrows the
+   * phone's words for it rather than being given two of its own. Eight
+   * translations that already exist and already agree with the tab the wearer
+   * taps on the phone — and if that word is ever changed, both change.
+   */
+  'tabs.chats',
+  'chats.emptyTitle',
+  /*
+   * These two are the Wear tile's, and only the tile's. It answers "how many
+   * are waiting", which stayed the right question for a glance when the app's
+   * own screen stopped asking it.
+   */
   'watch.unread',
   'watch.nothingUnread',
   'watch.openOnPhone',

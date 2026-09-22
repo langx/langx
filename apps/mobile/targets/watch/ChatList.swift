@@ -1,20 +1,24 @@
 import SwiftUI
 
 /**
- The first screen: who is waiting.
+ The first screen: the chat list, as the phone draws it.
 
  Drawn to `docs/plans/iphone-watch-and-carplay/watch.png` — an accent title, a
  card per person with their initial on a coloured disc, and a dot for the ones
  that are unread.
 
+ It shows recent conversations rather than only unread ones, which is what
+ makes the dot mean something: a wrist that has answered everything is still a
+ wrist somebody can start a sentence from.
+
  Three states, and the difference between the last two is the one worth
  getting right. **Conversations** is the ordinary case. **No payload** means
  the phone has never spoken to this watch — a fresh install, or a signed-out
  account — and the answer is to go and open the app. **An empty list** means
- the phone spoke and there is nothing unread, which is good news and must not
- look like a failure.
+ the phone spoke and this account has no chats at all, which is a new account
+ rather than a failure.
  */
-struct UnreadList: View {
+struct ChatList: View {
   @EnvironmentObject private var store: WatchStore
   /*
    Read here, above the override below, so the screens can be handed back the
@@ -59,10 +63,10 @@ struct UnreadList: View {
     if store.payload == nil {
       Placeholder(key: "watch.openOnPhone")
     } else if store.conversations.isEmpty {
-      Placeholder(key: "watch.nothingUnread")
+      Placeholder(key: "chats.emptyTitle")
     } else {
       List {
-        Text("watch.unread")
+        Text("tabs.chats")
           .font(.system(size: 20, weight: .bold, design: .rounded))
           .foregroundStyle(Palette.primary)
           .listRowBackground(Color.clear)
