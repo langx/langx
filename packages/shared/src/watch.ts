@@ -20,7 +20,7 @@ import { z } from 'zod'
  * **The whole thread comes with the list.** A dependent watch app that fetched
  * a thread when you tapped it would show a spinner every time, and would show
  * nothing at all when the phone is in another room — the state this design
- * accepts. So one push carries the unread conversations *and* the tail of each
+ * accepts. So one push carries the recent conversations *and* the tail of each
  * one, and tapping is instant or honest.
  *
  * **No words travel.** The widgets are handed their three labels already
@@ -79,9 +79,14 @@ export const watchPayloadSchema = z.object({
   version: z.literal(WATCH_PAYLOAD_VERSION),
   writtenAt: z.string().datetime(),
   /**
-   * Unread threads, most recent first. Empty is a real answer and means the
-   * watch draws "nothing unread" — it is not the same as having no payload,
-   * which means the phone has not spoken yet.
+   * The chat list, most recent first — not only the unread ones. The wrist
+   * shows what the phone shows, because a watch that could only answer people
+   * already waiting on you cannot start a conversation; each row carries its
+   * own `unread`, which is what the dot, the tile and the complication count.
+   *
+   * Empty is a real answer and means the watch draws "no chats yet" — it is
+   * not the same as having no payload, which means the phone has not spoken
+   * yet.
    */
   conversations: z.array(watchConversationSchema).max(WATCH_MAX_CONVERSATIONS),
   /**

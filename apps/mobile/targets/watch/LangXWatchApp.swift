@@ -15,7 +15,7 @@ struct LangXWatchApp: App {
 
   var body: some Scene {
     WindowGroup {
-      UnreadList()
+      ChatList()
         .environmentObject(store)
     }
   }

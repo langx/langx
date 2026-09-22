@@ -54,8 +54,8 @@ describe('buildWatchPayload', () => {
   })
 
   /*
-   * The rule that keeps the watch from causing traffic. An unread conversation
-   * always has a last message, so there is always something to draw — the
+   * The rule that keeps the watch from causing traffic. Every conversation on
+   * the list has a last message, so there is always something to draw — the
    * cached thread is an improvement on it, never a precondition.
    */
   it('falls back to the list’s last message when no thread is cached', () => {
@@ -120,8 +120,8 @@ describe('buildWatchPayload', () => {
     expect(messages.at(-1)?.body).toBe('line 29')
   })
 
-  /** Nothing unread is a real answer, and a different one from never having spoken. */
-  it('is an empty list rather than nothing when there is nothing unread', () => {
+  /** No chats is a real answer, and a different one from never having spoken. */
+  it('is an empty list rather than nothing when there are no conversations', () => {
     const payload = buildWatchPayload({ ...sources, conversations: [] }, at)
 
     expect(payload.conversations).toEqual([])

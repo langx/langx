@@ -2287,6 +2287,12 @@ export const en = {
     complication: 'Watch face',
     showsUnread: 'Unread',
     showsStreak: 'Streak',
+    /*
+     The Wear tile's two words, and the tile's alone. The app's own screen
+     lists recent conversations and borrows `tabs.chats` and
+     `chats.emptyTitle` for its title and empty state; a tile answers "how
+     many are waiting", which is still this question.
+    */
     unread: 'Unread',
     nothingUnread: 'Nothing unread',
     openOnPhone: 'Open LangX on your phone',

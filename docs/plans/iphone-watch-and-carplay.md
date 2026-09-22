@@ -436,18 +436,23 @@ anyone, which is not a state the phone has.
 
 ### The watch, both of them — one filter
 
-`useWatchLink` sends conversations where `unread > 0`. Nothing else stands in
-the way: `watchPayloadSchema` already carries the last ten messages of each
-thread and the partner's name, the reply already posts through `NativeSend`,
-and `WATCH_MAX_CONVERSATIONS` is already ten. Sending the ten most recent
-instead of the unread ones gives both wrists the list the phone draws, and
-Wear gets it for nothing because it reads the same payload.
+**Built the same day.** `useWatchLink` sent conversations where `unread > 0`;
+it now sends the ten most recent. Nothing else stood in the way:
+`watchPayloadSchema` already carried the last ten messages of each thread and
+the partner's name, the reply already posted through `NativeSend`, and
+`WATCH_MAX_CONVERSATIONS` was already ten. Wear got it for nothing, because it
+reads the same payload.
 
-The real cost is words. The watch's title and empty state say _unread_
-(`watch.unread`, `watch.nothingUnread`) and would have to say _chats_ and
-_no chats yet_, in eight languages. The **Wear tile stays unread-based** — a
-tile answers "how many are waiting", which is a different question from "who
-have I been talking to", and it is the question a glance wants.
+The cost was expected to be words — the title and empty state said _unread_ —
+and it turned out to be none. They now use `tabs.chats` and
+`chats.emptyTitle`, the phone's own tab name and its own empty chat list: the
+eight translations existed, and borrowing them is what makes the wrist agree
+with the screen it is a companion to rather than drifting from it. The two
+`watch.*` keys stay for the **Wear tile, which stays unread-based** — a tile
+answers "how many are waiting", which is a different question from "who have I
+been talking to", and it is the question a glance wants. The tile and the
+complication both sum each row's own `unread`, so a list that now carries read
+conversations too leaves their number unchanged.
 
 ### CarPlay — the same list, without the words in it
 

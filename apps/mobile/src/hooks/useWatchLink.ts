@@ -1,3 +1,4 @@
+import { WATCH_MAX_CONVERSATIONS } from '@langx/shared'
 import { useEffect, useMemo } from 'react'
 import { useConversations, useMe } from '../api/queries'
 import { authClient } from '../lib/auth-client'
@@ -51,19 +52,34 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
   const me = useMe(active)
   const conversations = useConversations('all')
 
-  const unreadThreads = useMemo(() => {
+  /*
+   * The most recent conversations, not the unread ones.
+   *
+   * It used to filter on `unread > 0`, which made a wrist that had answered
+   * everything an empty wrist — on an app whose whole point is starting a
+   * sentence with somebody. The phone's own list is not filtered that way and
+   * neither is this any more; the unread ones are still marked, by the dot
+   * the watch draws from each row's own count.
+   *
+   * Cut to the cap *here* rather than leaving it to `buildWatchPayload`,
+   * which caps too. Everything below this line is per conversation — a
+   * profile the cache may have to fetch, a name, a walk over a thread — and
+   * an account with three hundred chats would pay all of it for the ten rows
+   * that travel.
+   */
+  const recentThreads = useMemo(() => {
     if (!active) return []
     return (conversations.data?.pages ?? [])
       .flatMap((page) => page.items)
-      .filter((conversation) => conversation.unread > 0)
+      .slice(0, WATCH_MAX_CONVERSATIONS)
   }, [active, conversations.data])
 
   const partnerIds = useMemo(
     () =>
-      unreadThreads
+      recentThreads
         .map((conversation) => conversation.participants.find((p) => p !== me.data?._id))
         .filter((id): id is string => typeof id === 'string'),
-    [unreadThreads, me.data?._id],
+    [recentThreads, me.data?._id],
   )
   const partners = useProfileCache(partnerIds)
 
@@ -111,7 +127,7 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
 
     const payload = buildWatchPayload({
       meId,
-      conversations: unreadThreads,
+      conversations: recentThreads,
       names,
       // Already loaded for the tab badge and the widgets; the complication is
       // the third reader of it and causes no request of its own.
@@ -119,5 +135,5 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
     })
     sendWatchPayload(payload)
     sendWearPayload(payload)
-  }, [active, meId, unreadThreads, names, me.data?.streak?.current])
+  }, [active, meId, recentThreads, names, me.data?.streak?.current])
 }
