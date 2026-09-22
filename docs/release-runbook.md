@@ -507,7 +507,9 @@ life cycle: without a `UIApplicationSceneManifest` UIKit traps at launch in
 `_UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption` with `SIGTRAP`,
 which from the outside is an app that opens and closes again. Apple reviewed on
 an iPad and said so; it had nothing to do with iPads, and `supportsTablet` has
-been on since the first commit. Every iOS 27 device would have done the same.
+been on since the first commit. Every iOS 27 device does the same — checked
+afterwards on an iPhone simulator running 27, which crashed before the fix and
+launches after it, exactly as the iPad did.
 
 `plugins/withSceneLifecycle.js` is the fix, and it is ours because Expo 57
 ships `ExpoAppSceneDelegate` without wiring it up — neither `expo@57.0.24` nor
