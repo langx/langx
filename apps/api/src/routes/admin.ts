@@ -38,7 +38,7 @@ import {
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
-import { readAdminPulse } from '../modules/admin/pulse'
+import { listOnline, readAdminPulse } from '../modules/admin/pulse'
 import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
 import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
@@ -102,6 +102,18 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
    */
   app.get('/admin/pulse', { preHandler: requireAdmin }, async (_request, reply) => {
     return reply.send(await readAdminPulse(app.mongo.db))
+  })
+
+  /**
+   * The people behind that count.
+   *
+   * No paging, unlike every other list in this file: the population is
+   * whoever was seen in the last five minutes, so a cursor would page through
+   * a set that has changed underneath it. One capped, indexed read instead —
+   * see `ONLINE_LIST_LIMIT`.
+   */
+  app.get('/admin/online', { preHandler: requireAdmin }, async (_request, reply) => {
+    return reply.send({ items: await listOnline(app.mongo.db) })
   })
 
   /**

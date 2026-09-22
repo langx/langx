@@ -22,7 +22,13 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { withJobHealth, type JobHealth } from '../modules/admin/jobHealth'
 import { verifyBountyToken } from '../email/bountyToken'
 import { signReviewToken } from '../email/reviewToken'
-import { PULSE_POINTS, recordPresenceSample, type AdminPulse } from '../modules/admin/pulse'
+import {
+  PULSE_POINTS,
+  countOnline,
+  listOnline,
+  recordPresenceSample,
+  type AdminPulse,
+} from '../modules/admin/pulse'
 import { forgetAdminStats, type AdminStats } from '../modules/admin/stats'
 import type { Message } from '../modules/chat/conversations'
 import type { Profile } from '../modules/profiles/profiles'
@@ -311,6 +317,42 @@ describe('the operator panel', () => {
       expect(recorded).toHaveLength(1)
       expect(recorded[0]!.at).toBe(pulse.history.at(-1)!.at)
       expect(recorded[0]!.online).toBe(pulse.online)
+    })
+
+    it('lists the people it counted, behind the same guard', async () => {
+      expect((await get(null, '/admin/online')).statusCode).toBe(401)
+      const member = await newUser()
+      expect((await get(member, '/admin/online')).statusCode).toBe(403)
+
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const now = new Date()
+      await profiles().updateOne({ _id: admin.userId }, { $set: { 'stats.lastActiveAt': now } })
+      // Somebody who was here half an hour ago is not in the app now.
+      const away = await newUser()
+      await profiles().updateOne(
+        { _id: away.userId },
+        { $set: { 'stats.lastActiveAt': new Date(now.getTime() - 30 * 60 * 1000) } },
+      )
+
+      const { items } = (await get(admin, '/admin/online')).json<{
+        items: { userId: string; handle: string; lastActiveAt: string }[]
+      }>()
+      const ids = items.map((row) => row.userId)
+      expect(ids).toContain(admin.userId)
+      expect(ids).not.toContain(away.userId)
+
+      // Most recently seen first, which is the only order this list has.
+      const seen = items.map((row) => Date.parse(row.lastActiveAt))
+      expect(seen).toEqual([...seen].sort((a, b) => b - a))
+
+      /*
+       * The list and the number on the card above it are one question asked
+       * twice, and a list that disagreed with its own headline would be worse
+       * than no list. Both on one clock, because the window is five minutes
+       * wide and two calls a moment apart could otherwise straddle its edge.
+       */
+      expect(await listOnline(handle.db, now)).toHaveLength(await countOnline(handle.db, now))
     })
 
     it('keeps one row per minute however many instances sample it', async () => {

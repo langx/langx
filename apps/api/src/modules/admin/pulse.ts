@@ -1,5 +1,5 @@
 import { ONLINE_WINDOW_MS } from '@langx/shared'
-import type { Db } from 'mongodb'
+import type { Db, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
@@ -86,9 +86,55 @@ function bucketOf(at: Date): Date {
  * five minutes instead of seven days, which is what makes the two comparable.
  */
 export async function countOnline(db: Db, now: Date = new Date()): Promise<number> {
-  return db
+  return db.collection<Profile>(COLLECTIONS.profiles).countDocuments(onlineFilter(now))
+}
+
+/** Shared by the count and the list behind it, so the two cannot disagree. */
+function onlineFilter(now: Date): Filter<Profile> {
+  return { 'stats.lastActiveAt': { $gte: new Date(now.getTime() - ONLINE_WINDOW_MS) } }
+}
+
+/** One row of the list behind the live count. */
+export interface OnlineRow {
+  userId: string
+  handle: string
+  displayName: string
+  /** Guests are in the count, so they are in the list — and marked, since they have no name. */
+  guest: boolean
+  lastActiveAt: string
+}
+
+/**
+ * Enough rows that the list is the whole count at any scale this panel is
+ * read at, and a ceiling rather than a page: the population is whoever was
+ * seen in the last five minutes, so there is no cursor to hold on to — the
+ * second page would be a different set of people by the time it was asked for.
+ */
+export const ONLINE_LIST_LIMIT = 500
+
+/**
+ * Who the live count is counting, most recently seen first.
+ *
+ * The same filter as `countOnline`, served by the same `last_active` index —
+ * the number on the card and the length of this list are the same question
+ * asked twice, and a list that disagreed with the number above it would be
+ * worse than no list.
+ */
+export async function listOnline(db: Db, now: Date = new Date()): Promise<OnlineRow[]> {
+  const rows = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .countDocuments({ 'stats.lastActiveAt': { $gte: new Date(now.getTime() - ONLINE_WINDOW_MS) } })
+    .find(onlineFilter(now))
+    .sort({ 'stats.lastActiveAt': -1 })
+    .limit(ONLINE_LIST_LIMIT)
+    .toArray()
+
+  return rows.map((profile) => ({
+    userId: profile._id,
+    handle: profile.handle,
+    displayName: profile.displayName,
+    guest: profile.guest === true,
+    lastActiveAt: profile.stats.lastActiveAt.toISOString(),
+  }))
 }
 
 /**

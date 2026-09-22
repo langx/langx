@@ -83,6 +83,8 @@ export const ADMIN = {
       now: 'now',
       /** Before the first minute has been sampled, and after a restart. */
       warmingUp: 'The first minute is still being recorded.',
+      /** The card opens the list of who those people are. */
+      seeWho: 'Tap to see who',
     },
 
     /** Charts. Each is a single series, so each says what it plots. */
@@ -270,6 +272,20 @@ export const ADMIN = {
     blockedBy: 'blocked by',
     history: 'What we have done',
     noHistory: 'Nothing yet.',
+  },
+
+  online: {
+    title: 'In the app now',
+    empty: 'Nobody is in the app right now.',
+    /**
+     * Everybody on this screen was seen inside the five-minute window, so the
+     * distance from now is the whole story and a clock time would be one more
+     * subtraction to do by eye.
+     */
+    seen: (seconds: number) =>
+      seconds < 60 ? `seen ${seconds}s ago` : `seen ${Math.floor(seconds / 60)}m ago`,
+    /** A guest has no display name and a synthetic handle, so the row says what it is. */
+    guest: 'guest',
   },
 
   members: {

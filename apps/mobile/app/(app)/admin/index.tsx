@@ -1,6 +1,6 @@
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import {
   useAdminFunnel,
   useAdminPulse,
@@ -277,6 +277,10 @@ const FUNNEL_WINDOWS: readonly { value: AdminFunnelWindow; label: string }[] = [
  * recorded server-side so the chart has a past the moment this opens rather
  * than drawing itself while somebody watches. A minute nobody sampled is a gap
  * and not a zero — see `modules/admin/pulse.ts`.
+ *
+ * The whole card is the target rather than the chart alone: the number, the
+ * chart and the window under it are three views of one set of people, so any
+ * of them is a reasonable place to press to go and read their names.
  */
 function LiveCard() {
   const styles = useStyles()
@@ -290,7 +294,12 @@ function LiveCard() {
   const peak = Math.max(...recorded.map((point) => point.online ?? 0), 0)
 
   return (
-    <View style={styles.live}>
+    <Pressable
+      style={styles.live}
+      onPress={() => router.push('/(app)/admin/online')}
+      accessibilityRole="button"
+      accessibilityLabel={`${online} ${ADMIN.home.live.online}, ${ADMIN.home.live.seeWho}`}
+    >
       <View style={styles.liveTop}>
         <View style={styles.badge}>
           <View style={[styles.dot, { backgroundColor: colors.success }]} />
@@ -305,7 +314,9 @@ function LiveCard() {
         <Text style={styles.hero}>{online.toLocaleString('en')}</Text>
         <Text style={styles.heroLabel}>{ADMIN.home.live.online}</Text>
       </View>
-      <Text style={styles.muted}>{ADMIN.home.live.window(Math.round(windowMs / 60000))}</Text>
+      <Text style={styles.muted}>
+        {ADMIN.home.live.window(Math.round(windowMs / 60000))} · {ADMIN.home.live.seeWho}
+      </Text>
 
       <View style={styles.liveChart}>
         {recorded.length === 0 ? (
@@ -325,7 +336,7 @@ function LiveCard() {
           </>
         )}
       </View>
-    </View>
+    </Pressable>
   )
 }
 
