@@ -1344,6 +1344,8 @@ export const ptBR: Localized<EnMessages> = {
     inviteBody: 'Ganhe tokens quando a pessoa começar a usar o LangX',
     dayStreak: 'Sequência de dias',
     followsTitle: 'Seguidores e seguindo',
+    nextBadge: 'Próximo: {label}',
+    hiddenFromOthers: 'Oculto para os outros',
   },
 
   editProfile: {

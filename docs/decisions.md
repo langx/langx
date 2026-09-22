@@ -5198,3 +5198,40 @@ all. Onboarding still calls the sender, for the slice whose staged record was
 too thin to build a profile from, and the shared `welcomeback:<userId>`
 `clientId` is what lets both paths and the backfill script run without knowing
 about each other.
+
+---
+
+## The Me tab is the public profile, plus what only its owner can use
+
+**22 September 2026.** The owner's tab had grown into its own arrangement: an
+80px avatar where every other profile draws 96, the photos under the upgrade
+card at the very bottom, badges as a bare count, no interests at all, and a
+fifth stat tile alone on a row because four was all that fit. It read as a
+thinner profile than the one strangers were shown, and the gap was the
+emptiness people saw.
+
+So the tab now follows the public profile's order — hero, photos, languages,
+numbers, chart, badges, bio, interests — and only then the rows nobody else
+gets: wallet, viewers, follows, preview. Three things about it were decisions:
+
+**The badge count became the shelf.** The public profile's `BadgeStrip`, with
+the nearest unearned badge and its bar under it. "0 badges" was the whole of
+what a new account read there; "Next: 7 days · 3 / 7" is a target on a screen
+otherwise about what has already happened. The count survives as "3 of 25
+earned" in the shelf's header.
+
+**The bell moved here from the Feed header**, and the tab badge with it. A
+like, a follow and a correction on your sentence are about you, not about the
+feed, and a bell on the feed was found by people who happened to be there.
+The reason it never got a tab of its own has not changed — a bell is somewhere
+you go when a number appears — and the `notifications` screen goes back to
+this tab now.
+
+**A privacy switch marks; it no longer hides from the owner.** "Hide my city"
+used to withhold the city on this screen too, so the two views could not
+disagree — and read, on the one screen that is about its owner, as the
+location having been lost. The city stays, and `HiddenFromOthers` under the
+name says who does not see it; the week's chart gets the same mark when "Show
+my week chart" is off. Tapping either opens the privacy settings. The rule is
+that the owner always sees their own data and is told which of it is theirs
+alone.

@@ -1,6 +1,12 @@
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { queryFailed } from '../../../src/lib/listState'
-import { wornCosmetic, TIER_BADGES, TIER_NAMES, tierUnlocking } from '@langx/shared'
+import {
+  badgeStripMarks,
+  wornCosmetic,
+  TIER_BADGES,
+  TIER_NAMES,
+  tierUnlocking,
+} from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
@@ -11,13 +17,16 @@ import {
   useEchoSummary,
   useEffectiveTier,
   useMe,
+  useNotificationUnread,
   useProfile,
   useQuota,
   useViewers,
   useWallet,
   useTokens,
 } from '../../../src/api/queries'
+import { BadgeStrip } from '../../../src/components/BadgeStrip'
 import { DebugQuotaPanel } from '../../../src/components/DebugQuotaPanel'
+import { HiddenFromOthers } from '../../../src/components/HiddenFromOthers'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
@@ -26,17 +35,30 @@ import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { ListRow } from '../../../src/components/ui/ListRow'
+import { ProgressBar } from '../../../src/components/ui/ProgressBar'
 import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { openFollows, openLanguages, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
-import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
+import { badgeLabel, interestLabel, useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { compactCount } from '../../../src/lib/format'
+import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
+/**
+ * Your own tab: the public profile's skeleton, with the owner's extras.
+ *
+ * It used to be its own arrangement — a smaller avatar, the photos under the
+ * upgrade card at the very bottom, badges as a count, no interests — and read
+ * as a thinner profile than the one everybody else was shown. The order here
+ * is the public profile's (hero, photos, languages, numbers, chart, badges,
+ * bio, interests) so the two views of one profile read alike, and what only
+ * the owner can use follows: the rows into the wallet, the viewers and the
+ * follow lists, the upgrade card, the edit button.
+ */
 export default function MeScreen() {
   useScreenInteractive()
   const { colors } = useTheme()
@@ -54,6 +76,10 @@ export default function MeScreen() {
   const echo = useEchoSummary()
   const quota = useQuota()
   const viewers = useViewers()
+  // The number on the bell. The same cache entry as the tab's badge, so the
+  // two cannot disagree and there is one request between them.
+  const unread = useNotificationUnread()
+  const news = unreadBadge(unread.data)
   /*
    * Your own public profile, for the follower and following counts:
    * `/profiles/me` does not carry them, and this is the one screen that shows
@@ -77,11 +103,12 @@ export default function MeScreen() {
       echo.refetch(),
       quota.refetch(),
       ownProfile.refetch(),
-      // The badge count and the viewer count are tiles on this screen like
-      // any other, and were the two the pull did not reach: pulling redrew
+      // The badge shelf and the viewer count are on this screen like any
+      // other number, and were the two the pull did not reach: pulling redrew
       // every number around them and left those two as they were.
       badges.refetch(),
       viewers.refetch(),
+      unread.refetch(),
     ]),
   )
 
@@ -98,7 +125,7 @@ export default function MeScreen() {
         {queryFailed(me) ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
-          <ProfileSkeleton avatarSize={80} />
+          <ProfileSkeleton avatarSize={96} />
         )}
       </Screen>
     )
@@ -112,29 +139,89 @@ export default function MeScreen() {
   const summary = xp.data
   const viewerPage = viewers.data?.pages[0]
   const follows = ownProfile.data?.follow
+  const shelf = badges.data
+  const nextBadge = shelf?.next ?? null
 
+  /*
+   * The city is drawn whether or not "Hide my city" is on: it is the owner's
+   * own screen, and what the switch changes is who else sees it — said by the
+   * mark under the name rather than by the city going missing, which is what
+   * used to happen and read as the location having been lost.
+   */
+  const cityHidden = Boolean(profile.privacy.hideCity && profile.cityName)
   // The same mark TierBadge draws in its chip, folded into the meta line the
   // way v3 writes it — read from the shared table rather than re-typed, which
   // is how this line and the chip came to disagree about a renamed plan.
   const meta = [
     `@${profile.handle}`,
     TIER_BADGES[tier],
-    // The city is worked out from a shared location, so most people have none
-    // and nobody typed it. Withheld here too when "Hide my city" is on, so this
-    // line and what other people see cannot disagree about the setting.
-    placeLabel(
-      {
-        city: profile.privacy.hideCity ? undefined : profile.cityName,
-        country: profile.country,
-      },
-      names.country,
-    ) ?? null,
+    placeLabel({ city: profile.cityName, country: profile.country }, names.country) ?? null,
   ]
     .filter(Boolean)
     .join(' · ')
 
   return (
     <Screen scroll tabbed {...pull}>
+      {/*
+        The screen's controls, in a row of their own above the hero: three
+        glyphs beside a 96px avatar left the name about a hundred pixels on a
+        phone, and the meta line under it wrapped inside itself.
+
+        The bell used to be in the Feed header, which made the notification
+        centre a thing about the feed — it is not; a like, a follow and a
+        correction on your sentence are all about you, and this is the tab
+        that is. It is still the only way in: a bell is somewhere you go when
+        a number appears, not a place you live, so it gets no tab.
+      */}
+      <View style={styles.topRow}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('inbox.bell')}
+          hitSlop={8}
+          onPress={() => router.push('/(app)/notifications')}
+          style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
+        >
+          <Feather name="bell" size={22} color={colors.text} />
+          {news ? (
+            <View style={styles.bellBadge}>
+              <Text style={styles.bellCount}>{news}</Text>
+            </View>
+          ) : null}
+        </Pressable>
+        {/*
+          The scanner, beside the gear: a sign-in QR on a laptop screen used
+          to need Settings → Account → Sign in on another device → type the
+          code. Native only — the web build shows that QR, it does not read
+          one.
+        */}
+        {Platform.OS !== 'web' ? (
+          <Pressable
+            onPress={() => router.push('/(app)/scan')}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={t('me.scan')}
+            style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
+          >
+            <Feather name="maximize" size={22} color={colors.textMuted} />
+          </Pressable>
+        ) : null}
+        {/*
+          Settings used to be a button below the token store, at the bottom of a
+          screen that scrolls for a while — reachable, but only by someone who
+          already knew it was there. It is the only way into that screen, so it
+          gets the corner instead.
+        */}
+        <Pressable
+          onPress={() => router.push('/(app)/settings')}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={t('me.settings')}
+          style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
+        >
+          <Feather name="settings" size={22} color={colors.textMuted} />
+        </Pressable>
+      </View>
+
       <View style={styles.hero}>
         {/*
           A photo opens full screen, as on the public profile; a generated face
@@ -151,7 +238,7 @@ export default function MeScreen() {
               url={profile.avatarUrl}
               name={profile.displayName}
               seed={profile._id}
-              size={80}
+              size={96}
               frame={wornFrame?.tone}
             />
           </Pressable>
@@ -160,7 +247,7 @@ export default function MeScreen() {
             url={profile.avatarUrl}
             name={profile.displayName}
             seed={profile._id}
-            size={80}
+            size={96}
             frame={wornFrame?.tone}
           />
         )}
@@ -187,40 +274,14 @@ export default function MeScreen() {
               {profile.pronouns}
             </Text>
           ) : null}
+          {cityHidden ? <HiddenFromOthers style={styles.heroHidden} /> : null}
         </View>
-        {/*
-          Settings used to be a button below the token store, at the bottom of a
-          screen that scrolls for a while — reachable, but only by someone who
-          already knew it was there. It is the only way into that screen, so it
-          gets the corner instead.
-        */}
-        {/*
-          The scanner, beside the gear: a sign-in QR on a laptop screen used
-          to need Settings → Account → Sign in on another device → type the
-          code. Native only — the web build shows that QR, it does not read
-          one.
-        */}
-        {Platform.OS !== 'web' ? (
-          <Pressable
-            onPress={() => router.push('/(app)/scan')}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={t('me.scan')}
-            style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-          >
-            <Feather name="maximize" size={22} color={colors.textMuted} />
-          </Pressable>
-        ) : null}
-        <Pressable
-          onPress={() => router.push('/(app)/settings')}
-          hitSlop={8}
-          accessibilityRole="button"
-          accessibilityLabel={t('me.settings')}
-          style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-        >
-          <Feather name="settings" size={22} color={colors.textMuted} />
-        </Pressable>
       </View>
+
+      {/* Under the hero, where the public profile draws it — not under the
+          upgrade card at the bottom, where it was the last thing on the screen
+          and the first thing a stranger sees. */}
+      <PhotoGallery photos={profile.photos ?? []} />
 
       {/*
         The same two columns everybody else sees, in the same place — under the
@@ -243,9 +304,16 @@ export default function MeScreen() {
         />
       </Pressable>
 
+      {/*
+        Three across, and all three about the week the chart under them draws.
+        There were four, plus a fifth — the Echo count — alone on a row of its
+        own because five would not fit, which left three quarters of that row
+        empty. The badge count became the shelf below, and the balance became
+        the wallet row, so the ones left are the ones the chart explains.
+      */}
       <View style={styles.tiles}>
-        {/* Same affordance as the wallet tile beside it: a number nobody can
-            act on reads as decoration. */}
+        {/* Same affordance as the rows below: a number nobody can act on
+            reads as decoration, and the "›" is the hint that it opens. */}
         <StatTile
           icon="zap"
           label={`${t('me.dayStreak')} ›`}
@@ -263,35 +331,8 @@ export default function MeScreen() {
           valueSize={26}
           onPress={() => router.push('/(app)/corrections')}
         />
-        {/* How many of the catalogue's badges are earned — "0" is a real
-            answer, and the tile is the way into the list. */}
-        <StatTile
-          label={`${t('me.badges')} ›`}
-          value={String(badges.data?.earnedCount ?? 0)}
-          valueSize={26}
-          onPress={() => router.push('/(app)/badges')}
-        />
-        {/* The balance is the way into the wallet — a number nobody can act
-            on reads as decoration, and the wallet has nowhere else to be
-            reached from. The "›" is the hint that it opens. */}
-        <StatTile
-          label={`${t('me.wallet')} ›`}
-          value={compactCount(balance, locale)}
-          valueSize={26}
-          onPress={() => router.push('/(app)/wallet')}
-        />
-      </View>
-
-      {/*
-        Its own row rather than a fifth tile in the one above: five across
-        leaves 59px each at 375px, and "Corrections" — 11 characters in
-        English, German, Russian and Turkish alike — needs more than that, so
-        the new tile would have wrapped the labels beside it. Here instead,
-        against the chart, because both are about the week: the day's number
-        is already the first thing the Echo tab itself says, and the one worth
-        putting on this screen is whether the week counted.
-      */}
-      <View style={styles.echoTile}>
+        {/* The day's number is already the first thing the Echo tab itself
+            says, so the one worth putting here is whether the week counted. */}
         <StatTile
           label={`${t('me.echoWeek')} ›`}
           value={compactCount(echo.data?.reviewedThisWeek ?? 0, locale)}
@@ -300,23 +341,111 @@ export default function MeScreen() {
         />
       </View>
 
-      <WeeklyChart week={summary?.week} />
+      {/* Drawn whatever "Show my week chart" says — it is the owner's data —
+          and marked when nobody else gets to see it. */}
+      <WeeklyChart
+        week={summary?.week}
+        hiddenFromOthers={profile.privacy.weekChartVisible === false}
+      />
+
+      {/*
+        The shelf, where the public profile draws it: the pictures, not a
+        count of them, and under them the nearest badge not yet earned with
+        how far it is. A count said "0" to a new account and nothing else;
+        the next badge and its bar give the same account something to aim at
+        on a screen that is otherwise about what has already happened. The
+        strip draws nothing until there is a badge to draw.
+      */}
+      {shelf ? (
+        <View style={styles.shelf}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('me.badges')}
+            onPress={() => router.push('/(app)/badges')}
+            style={({ pressed }) => [styles.shelfHead, pressed && styles.pressed]}
+          >
+            <Text style={styles.shelfTitle}>{t('me.badges')}</Text>
+            <Text style={styles.shelfCount}>
+              {t('badges.earnedOf', { earned: shelf.earnedCount, total: shelf.badges.length })}
+            </Text>
+            <Feather name="chevron-right" size={18} color={colors.textFaint} />
+          </Pressable>
+          <BadgeStrip
+            badges={badgeStripMarks(shelf.badges.filter((badge) => badge.earned))}
+            onPress={() => router.push('/(app)/badges')}
+          />
+          {nextBadge ? (
+            <View style={styles.next}>
+              <View style={styles.nextRow}>
+                <Text style={styles.nextLabel} numberOfLines={1}>
+                  {t('me.nextBadge', {
+                    label: badgeLabel({ t, locale }, nextBadge.kind, nextBadge.threshold),
+                  })}
+                </Text>
+                <Text style={styles.nextCount}>
+                  {nextBadge.current.toLocaleString(locale)} /{' '}
+                  {nextBadge.threshold.toLocaleString(locale)}
+                </Text>
+              </View>
+              <ProgressBar
+                value={nextBadge.current / nextBadge.threshold}
+                accessibilityLabel={t('me.nextBadge', {
+                  label: badgeLabel({ t, locale }, nextBadge.kind, nextBadge.threshold),
+                })}
+              />
+            </View>
+          ) : null}
+        </View>
+      ) : null}
 
       {/*
         The about text, on the owner's own screen. It was only ever drawn on
         the public profile, so someone whose v1 bio had come back concluded
         from here that it had not — the one screen that must not invite that
-        reading about its own owner. Under the week's chart, in the same place
-        as on the public profile, so the two views of one profile read alike.
+        reading about its own owner. The interests share its block, as on the
+        public profile, so the hairline is drawn under whichever comes last.
       */}
       {profile.bio ? (
-        <View style={styles.bio}>
+        <View style={[styles.bio, profile.interests.length === 0 && styles.divided]}>
           <Text style={styles.bioText}>{profile.bio}</Text>
         </View>
       ) : null}
 
-      {/* First of the rows, because it is the one that answers a question
-          somebody actually arrives with: where the thing I asked went. */}
+      {/* The public profile's read-only tags, and one button rather than a
+          chip each: on the owner's screen a tap edits, and there is one
+          screen to edit them on. */}
+      {profile.interests.length > 0 ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('profile.interests')}
+          onPress={() => router.push('/(app)/edit-profile')}
+          style={({ pressed }) => [
+            styles.interests,
+            styles.divided,
+            // Without a bio the tags are the block's first line and take its top air.
+            !profile.bio && styles.interestsFirst,
+            pressed && styles.pressed,
+          ]}
+        >
+          <Text style={styles.kicker}>{t('profile.interests')}</Text>
+          <View style={styles.tags}>
+            {profile.interests.map((interest) => (
+              <View key={interest} style={styles.tag}>
+                <Text style={styles.tagLabel}>{interestLabel(t, interest)}</Text>
+              </View>
+            ))}
+          </View>
+        </Pressable>
+      ) : null}
+
+      {/* The balance is the way into the wallet, which has nowhere else to be
+          reached from — a row with the number on it, now that the tiles above
+          are the week's. */}
+      <ListRow
+        title={t('me.wallet')}
+        value={compactCount(balance, locale)}
+        onPress={() => router.push('/(app)/wallet')}
+      />
 
       {/* Free users get the count and a locked list; that contrast is the
           entire argument for Pro, so it is shown rather than hidden. */}
@@ -350,13 +479,13 @@ export default function MeScreen() {
         Last of the rows: looking at the profile the way a stranger does is the
         *result* of everything above it. Sharing it and inviting people moved
         to Settings → Share & invite — they are things you do with the account,
-        not facts about it, and the numbers above are now the way into the
-        badges and the wallet.
+        not facts about it.
       */}
       <ListRow
         title={t('me.previewProfile')}
         subtitle={t('me.previewProfileBody')}
         onPress={() => openProfile(profile.handle, '/(app)/(tabs)/me')}
+        last
       />
 
       {tier !== 'pro_plus' ? (
@@ -389,8 +518,6 @@ export default function MeScreen() {
         </Pressable>
       ) : null}
 
-      <PhotoGallery photos={profile.photos ?? []} />
-
       <DebugQuotaPanel />
 
       <Button
@@ -402,40 +529,68 @@ export default function MeScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  // 20 below the status bar in the design; `Screen` already gives 6 of it.
+const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+  // `ScreenHeader`'s row, without a title: the glyphs sit hard right on it.
+  topRow: { flexDirection: 'row', justifyContent: 'flex-end', paddingTop: spacing.xs },
+  iconButton: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
+  // On the bell's shoulder, whatever the touch target is padded out to.
+  bellBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.danger,
+    borderRadius: radius.pill,
+    minWidth: 16,
+    paddingHorizontal: 4,
+    position: 'absolute',
+    right: 0,
+    top: 2,
+  },
+  bellCount: { color: colors.textInverse, fontSize: 10, fontWeight: '700' },
+  pressed: { opacity: 0.6 },
   hero: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: 20,
     paddingBottom: spacing.sm,
-    paddingTop: 14,
+    paddingTop: spacing.xs,
   },
   heroText: { flex: 1, gap: 2, minWidth: 0 },
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   pronouns: { color: colors.textFaint, fontSize: 13 },
   name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 24 },
   meta: { color: colors.textMuted, fontSize: 14 },
-  iconButton: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
-  pressed: { opacity: 0.6 },
+  heroHidden: { marginTop: 2 },
   languages: { paddingVertical: 20 },
-  echoTile: { flexDirection: 'row', paddingTop: spacing.lg },
-  tiles: {
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    gap: 10,
-    paddingBottom: 20,
-    paddingTop: spacing.xl,
-  },
-  // The bio draws the hairline the first row below it sits on. Without a bio
-  // the chart's own hairline is that line, which is why the rows draw none.
-  bio: {
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    paddingVertical: 22,
-  },
+  // No hairline of its own: the chart under it draws the one this row sits on.
+  tiles: { flexDirection: 'row', gap: 10, paddingBottom: spacing.xs, paddingTop: spacing.xl },
+  divided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
+  shelf: { borderBottomColor: colors.border, borderBottomWidth: 1 },
+  shelfHead: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingTop: 18 },
+  // `ListRow`'s title: this row is that row with the strip for a subtitle.
+  shelfTitle: { color: colors.text, flex: 1, fontSize: 17, fontWeight: '600' },
+  shelfCount: { color: colors.textMuted, fontSize: 14 },
+  next: { gap: 8, paddingBottom: 18 },
+  nextRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
+  nextLabel: { color: colors.textMuted, flex: 1, fontSize: 13 },
+  nextCount: { color: colors.textFaint, fontSize: 13, fontVariant: ['tabular-nums'] },
+  bio: { paddingBottom: 18, paddingTop: 22 },
   bioText: { color: colors.text, fontSize: 16, lineHeight: 25 },
+  interests: { gap: 10, paddingBottom: 22, paddingTop: 4 },
+  interestsFirst: { paddingTop: 22 },
+  kicker: {
+    color: colors.textFaint,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  tag: {
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.pill,
+    paddingHorizontal: 14,
+    paddingVertical: spacing.sm,
+  },
+  tagLabel: { color: colors.accent, fontSize: 13, fontWeight: '700' },
   // 20, not `radius.lg`: the one card on this screen is rounder than its controls.
   proCard: {
     backgroundColor: colors.accentBg,

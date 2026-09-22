@@ -2,11 +2,17 @@ import { Text, View } from 'react-native'
 import type { TokenSummary } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
+import { HiddenFromOthers } from './HiddenFromOthers'
 import { WeekBars, WeekBarsSkeleton } from './WeekBars'
 
 interface WeeklyChartProps {
   /** Undefined while the summary loads: the slot is kept, the bars pulse. */
   week?: TokenSummary['week'] | undefined
+  /**
+   * The owner's own tab, with "Show my week chart" off: the chart is still
+   * drawn — it is their data — and the legend says nobody else sees it.
+   */
+  hiddenFromOthers?: boolean
 }
 
 /**
@@ -17,7 +23,7 @@ interface WeeklyChartProps {
  * tiles, so all the chart has to say is which colour is which. The bars
  * themselves are `WeekBars`, shared with the visitors page.
  */
-export function WeeklyChart({ week }: WeeklyChartProps) {
+export function WeeklyChart({ week, hiddenFromOthers = false }: WeeklyChartProps) {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
@@ -52,6 +58,7 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
           <View style={[styles.swatch, { backgroundColor: colors.success }]} />
           <Text style={styles.legendLabel}>{t('me.corrections')}</Text>
         </View>
+        {hiddenFromOthers ? <HiddenFromOthers style={styles.hidden} /> : null}
       </View>
     </View>
   )
@@ -64,7 +71,14 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
     paddingBottom: spacing.sm,
     paddingTop: spacing.md,
   },
-  legend: { flexDirection: 'row', gap: spacing.lg, paddingBottom: spacing.sm },
+  legend: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.lg,
+    paddingBottom: spacing.sm,
+  },
+  // Hard right, where the legend's own items are not.
+  hidden: { marginLeft: 'auto' },
   legendItem: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   // 3, not a radius token: a 10px square on `sm` would already be a dot.
   swatch: { borderRadius: 3, height: 10, width: 10 },

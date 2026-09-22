@@ -1351,6 +1351,8 @@ export const tr: Localized<EnMessages> = {
     inviteBody: 'LangX’i kullanmaya başlayınca token kazan',
     dayStreak: 'Günlük seri',
     followsTitle: 'Takipçiler ve takip edilenler',
+    nextBadge: 'Sıradaki: {label}',
+    hiddenFromOthers: 'Başkalarından gizli',
   },
 
   editProfile: {

@@ -1572,6 +1572,8 @@ export const ar: Localized<EnMessages> = {
     inviteBody: 'اكسب توكنات عندما يبدأ باستخدام LangX',
     dayStreak: 'سلسلة الأيام',
     followsTitle: 'المتابعون ومن تتابعهم',
+    nextBadge: 'التالي: {label}',
+    hiddenFromOthers: 'مخفي عن الآخرين',
   },
 
   editProfile: {

@@ -141,13 +141,13 @@ export default function TabsLayout() {
   // or absent, and an explicit `undefined` is neither.
   const badge = unreadBadge(unread.data)
   /*
-   * The bell's number, on the tab as well as in the Feed header.
+   * The bell's number, on the tab as well as in the Me header.
    *
    * Same guest gate and the same reason: a guest follows nobody and posts
    * nothing, so the request could only ever answer zero — and would 401
    * rather than answer it.
    */
-  const feedBadge = unreadBadge(useNotificationUnread(!shouldGateGuest(session?.user)).data)
+  const meBadge = unreadBadge(useNotificationUnread(!shouldGateGuest(session?.user)).data)
   /*
    * Cards due. Same guest gate: a guest has no cards, and the request would
    * 401 rather than answer zero.
@@ -259,15 +259,22 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.feed'),
           tabBarIcon: ({ color }) => <TabIcon name="align-left" color={color} tour="tabFeed" />,
+        }}
+      />
+      <Tabs.Screen
+        name="me"
+        options={{
+          title: t('tabs.me'),
+          tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
           /*
            * The notification centre lives behind the bell in this tab's
            * header, so the tab is where its count has to show — somebody on
            * Chats has no other way of learning there is anything to read.
            * Spread rather than passed as `undefined`, like the badge above.
            */
-          ...(feedBadge
+          ...(meBadge
             ? {
-                tabBarBadge: feedBadge,
+                tabBarBadge: meBadge,
                 tabBarBadgeStyle: {
                   backgroundColor: colors.danger,
                   color: colors.textInverse,
@@ -276,13 +283,6 @@ export default function TabsLayout() {
                 },
               }
             : {}),
-        }}
-      />
-      <Tabs.Screen
-        name="me"
-        options={{
-          title: t('tabs.me'),
-          tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
         }}
       />
     </Tabs>
