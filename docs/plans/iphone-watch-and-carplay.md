@@ -502,9 +502,49 @@ the app's existing runtime and reuses the socket, the session cookie, the API
 client and the i18n catalogue with no second implementation of any of them. A
 native CarPlay scene would have to rebuild all four in Swift. The cost is a
 third-party dependency on the app's most fragile axis: community forks
-disagree about the New Architecture, and support for Expo 57 / React Native
-0.86 is **unverified**. That is exactly what Phase 0 is for, and Phase 0 has
-a real no-go branch.
+disagree about the New Architecture.
+
+### Phase 0 ran on 21 September 2026, and it is a **no-go**
+
+The build half, on the Mac the desk half was waiting for.
+`@g4rb4g3/react-native-carplay@2.7.22` installs, autolinks and its pod builds
+— and then the app does not link. Two walls, and only the first is a
+configuration problem:
+
+1. **`RNCarPlay.m` imports `"react_native_carplay/react_native_carplay-Swift.h"`.**
+   That path only resolves when the pod is a framework, and this project links
+   pods statically (`ios.useFrameworks` is unset). One line, patchable, and
+   patching it gets past compilation.
+2. **`RNCarPlayApp.o` references `RCTRootContentView`.** That class belongs to
+   the old renderer and is gone from React Native 0.86 under the New
+   Architecture, so the link fails with `Undefined symbols for architecture
+arm64`. This is not configuration. The library mounts React into the car
+   scene through a view hierarchy that no longer exists, and fixing it means
+   rewriting the part of the library that does the one thing we wanted it for.
+
+```
+Undefined symbols for architecture arm64:
+  "_OBJC_CLASS_$_RCTRootContentView", referenced from:
+       in libreact-native-carplay.a[6](RNCarPlayApp.o)
+```
+
+The peer range said 0.74/0.76/0.79 and the peer range was right. Turning
+`use_frameworks!` on would clear the first wall and not the second, and it is
+a project-wide change we would be making for nothing.
+
+**So surface C is native, or it is not built.** A CarPlay scene written in
+Swift reaches the app's socket, cookie, API client and catalogues through none
+of the paths JavaScript would have reused — the argument above for the JS
+route stands, and the route is closed. That is a re-plan of phase 3 rather
+than a detail inside it, and it wants a decision before any of it is written:
+CarPlay in Swift is the most native code this app would own, in the surface
+with the fewest users.
+
+**What is _not_ blocked by this.** The CarPlay Communication entitlement
+arrived on 21 September, so the paperwork half is done and nothing expires.
+The REST send twin, `previewFor` and the read-aloud decision were all built
+for the watch and the car together; none of them cares which language the car
+UI is written in.
 
 **Reading aloud costs nothing.** The message is read by the on-device
 `AVSpeechSynthesizer` in the language `detectSpeechLanguage` already picks,
@@ -578,11 +618,11 @@ Each phase is a store build. Phases 1 and 2 are independent of Apple; phase 3
 is not, which is why its paperwork starts on day one.
 
 ```
-0. Spike: react-native-carplay on Expo 57 / RN 0.86, New Architecture, one
-   list template fed by the real API
-   → verify: conversations appear in the CarPlay simulator, or the phase
-     ends in a written no-go and surface C is re-planned natively
-   → in parallel, and on day one: file the CarPlay entitlement request
+0. Spike: react-native-carplay on Expo 57 / RN 0.86, New Architecture —
+   **run 21 September, and it is the no-go branch**: the library links
+   against `RCTRootContentView`, which the New Architecture removed. See
+   _The CarPlay dependency_ above. Surface C is native or it is nothing.
+   The entitlement arrived the same day, so phase 3's paperwork is done.
 
 1. iPhone — **run on a Mac, 19 September**: the snapshot contract and
    builder, the local module that writes it, `@bacons/apple-targets` wiring,
