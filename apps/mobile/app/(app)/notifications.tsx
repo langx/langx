@@ -69,7 +69,7 @@ export default function NotificationsScreen() {
     <Screen fluid>
       <ScreenHeader
         title={t('inbox.title')}
-        onBack={() => goBackTo('/(app)/(tabs)/feed')}
+        onBack={() => goBackTo('/(app)/(tabs)/me')}
         /*
          * Reading the list does **not** mark it read, which is why this is a
          * button rather than a thing that happens to you. Somebody who opens

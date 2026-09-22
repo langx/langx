@@ -1355,6 +1355,8 @@ export const fr: Localized<EnMessages> = {
     inviteBody: 'Gagne des tokens quand la personne se met à utiliser LangX',
     dayStreak: 'Série de jours',
     followsTitle: 'Abonnés et abonnements',
+    nextBadge: 'Prochain : {label}',
+    hiddenFromOthers: 'Masqué aux autres',
   },
 
   editProfile: {

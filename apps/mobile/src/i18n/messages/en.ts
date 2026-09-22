@@ -1514,6 +1514,8 @@ export const en = {
     inviteBody: 'Earn tokens when they start using LangX',
     dayStreak: 'Day streak',
     followsTitle: 'Followers and following',
+    nextBadge: 'Next: {label}',
+    hiddenFromOthers: 'Hidden from others',
   },
 
   editProfile: {

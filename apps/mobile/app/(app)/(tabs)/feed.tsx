@@ -34,7 +34,6 @@ import {
   useCorrectPost,
   useFeed,
   useMe,
-  useNotificationUnread,
   useRemoveEcho,
 } from '../../../src/api/queries'
 import type { FeedPost } from '../../../src/api/types'
@@ -53,7 +52,6 @@ import { reportWriteError } from '../../../src/lib/reportWriteError'
 import { chooseAlert, showAlert } from '../../../src/lib/alert'
 import { errorCodeOf } from '../../../src/lib/errors'
 import { requireAccount } from '../../../src/lib/requireAccount'
-import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { LikeButton } from '../../../src/components/LikeButton'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Tip } from '../../../src/components/Tip'
@@ -130,10 +128,6 @@ export default function FeedScreen() {
   const t = useT()
   const names = useDisplayNames()
   const { locale } = useLocale()
-
-  // The number on the bell. Shares its cache entry with the Feed tab's badge,
-  // so the two cannot disagree and there is one request between them.
-  const news = unreadBadge(useNotificationUnread().data)
 
   const [section, setSection] = useState<PostKind>('correction')
   /**
@@ -396,26 +390,6 @@ export default function FeedScreen() {
               style={({ pressed }) => [styles.askButton, pressed && styles.askPressed]}
             >
               <Text style={styles.ask}>{pronouncing ? t('feed.pronounceAsk') : t('feed.ask')}</Text>
-            </Pressable>
-            {/*
-            The way into the notification centre, and the only one. A tab of
-            its own was the alternative and the answer has not changed now
-            that the fifth slot is Echo: a bell is somewhere you go when a
-            number appears, not a place you live.
-          */}
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('inbox.bell')}
-              hitSlop={8}
-              onPress={() => router.push('/(app)/notifications')}
-              style={({ pressed }) => [styles.bell, pressed && styles.pressed]}
-            >
-              <Feather name="bell" size={22} color={colors.text} />
-              {news ? (
-                <View style={styles.bellBadge}>
-                  <Text style={styles.bellCount}>{news}</Text>
-                </View>
-              ) : null}
             </Pressable>
           </View>
           <View style={styles.sections}>
@@ -732,20 +706,6 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingHorizontal: 14,
   },
   askPressed: { backgroundColor: colors.accentBg },
-  bell: { alignItems: 'center', height: 40, justifyContent: 'center', width: 32 },
-  // Anchored to the glyph rather than the pressable, so the count sits on the
-  // bell's shoulder whatever the touch target is padded out to.
-  bellBadge: {
-    alignItems: 'center',
-    backgroundColor: colors.danger,
-    borderRadius: radius.pill,
-    minWidth: 16,
-    paddingHorizontal: 4,
-    position: 'absolute',
-    right: 0,
-    top: 4,
-  },
-  bellCount: { color: colors.textInverse, fontSize: 10, fontWeight: '700' },
   ask: { color: colors.accent, fontSize: 15, fontWeight: '700' },
   sections: { marginTop: 18 },
   avoid: { flex: 1 },

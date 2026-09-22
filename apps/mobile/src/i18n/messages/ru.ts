@@ -1512,6 +1512,8 @@ export const ru: Localized<EnMessages> = {
     inviteBody: 'Получайте токены, когда он начнёт пользоваться LangX',
     dayStreak: 'Серия дней',
     followsTitle: 'Подписчики и подписки',
+    nextBadge: 'Следующий: {label}',
+    hiddenFromOthers: 'Скрыто от других',
   },
 
   editProfile: {

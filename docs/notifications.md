@@ -414,7 +414,7 @@ unreadable by design, so somebody who missed the push had no way of ever
 learning what it said.
 
 The `notifications` collection is the other half: a row per thing that
-happened, read by a bell in the Feed header and a screen behind it.
+happened, read by a bell in the Me header and a screen behind it.
 
 | Kind                                                     | Written where                      | `refId` — what makes it arrive once |
 | -------------------------------------------------------- | ---------------------------------- | ----------------------------------- |
