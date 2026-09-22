@@ -813,7 +813,7 @@ export const ptBR: Localized<EnMessages> = {
   corrections: {
     emptyTitle: 'Ainda sem correções',
     emptyBody:
-      'Segure uma mensagem e escolha Corrigir — é a coisa mais útil que você pode fazer aqui.',
+      'Segure uma mensagem e escolha Corrigir, ou corrija uma frase publicada no feed — é a coisa mais útil que você pode fazer aqui.',
     combinedTitle: 'O que você escreveu',
     tabCorrections: 'Correções',
     tabPosts: 'Publicações',

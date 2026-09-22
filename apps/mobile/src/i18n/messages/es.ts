@@ -816,7 +816,8 @@ export const es: Localized<EnMessages> = {
 
   corrections: {
     emptyTitle: 'Aún no hay correcciones',
-    emptyBody: 'Mantén pulsado un mensaje y elige Corregir: es lo más útil que puedes hacer aquí.',
+    emptyBody:
+      'Mantén pulsado un mensaje y elige Corregir, o corrige una frase publicada en el feed: es lo más útil que puedes hacer aquí.',
     combinedTitle: 'Lo que has escrito',
     tabCorrections: 'Correcciones',
     tabPosts: 'Publicaciones',

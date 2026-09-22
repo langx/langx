@@ -902,7 +902,8 @@ export const ar: Localized<EnMessages> = {
 
   corrections: {
     emptyTitle: 'لا تصحيحات بعد',
-    emptyBody: 'اضغط مطولًا على رسالة واختر «صحّح» — أنفع ما يمكنك فعله هنا.',
+    emptyBody:
+      'اضغط مطولًا على رسالة واختر «صحّح»، أو صحّح جملة منشورة في الخلاصة — أنفع ما يمكنك فعله هنا.',
     combinedTitle: 'ما كتبته',
     tabCorrections: 'التصحيحات',
     tabPosts: 'المنشورات',
