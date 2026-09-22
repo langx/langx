@@ -942,7 +942,7 @@ export const en = {
   corrections: {
     emptyTitle: 'No corrections yet',
     emptyBody:
-      'Hold a message in a chat and choose Correct — it is the most useful thing you can do here.',
+      'Hold a message in a chat and choose Correct, or fix a sentence someone posted in the feed — it is the most useful thing you can do here.',
     combinedTitle: 'Your writing',
     tabCorrections: 'Corrections',
     tabPosts: 'Posts',

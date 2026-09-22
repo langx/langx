@@ -825,7 +825,7 @@ export const de: Localized<EnMessages> = {
   corrections: {
     emptyTitle: 'Noch keine Korrekturen',
     emptyBody:
-      'Halte eine Nachricht gedrückt und wähle Korrigieren — das Nützlichste, was du hier tun kannst.',
+      'Halte eine Nachricht gedrückt und wähle Korrigieren, oder korrigiere einen Satz aus dem Feed — das Nützlichste, was du hier tun kannst.',
     combinedTitle: 'Was du geschrieben hast',
     tabCorrections: 'Korrekturen',
     tabPosts: 'Beiträge',

@@ -818,7 +818,7 @@ export const tr: Localized<EnMessages> = {
   corrections: {
     emptyTitle: 'Henüz düzeltme yok',
     emptyBody:
-      'Bir sohbette mesaja basılı tut ve Düzelt’i seç — burada yapabileceğin en faydalı şey bu.',
+      'Bir sohbette mesaja basılı tutup Düzelt’i seç ya da akışta paylaşılan bir cümleyi düzelt — burada yapabileceğin en faydalı şey bu.',
     combinedTitle: 'Yazdıkların',
     tabCorrections: 'Düzeltmeler',
     tabPosts: 'Gönderiler',
