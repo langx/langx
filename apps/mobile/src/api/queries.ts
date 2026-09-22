@@ -262,6 +262,7 @@ export const keys = {
    */
   adminStats: ['admin', 'stats'] as const,
   adminPulse: ['admin', 'pulse'] as const,
+  adminOnline: ['admin', 'online'] as const,
   adminFunnel: (window: string) => ['admin', 'funnel', window] as const,
   adminReports: (status: string) => ['admin', 'reports', status] as const,
   adminReport: (id: string) => ['admin', 'reports', 'one', id] as const,
@@ -2548,15 +2549,24 @@ export function useRevokeOtherSessions() {
 
 export interface AdminStatsDto {
   generatedAt: string
+  /**
+   * The zone the day-grained numbers are cut in — the operator's own, or `UTC`
+   * when their profile carries none. The panel prints it, because a screen
+   * whose days turn over somewhere has to say where.
+   */
+  timeZone: string
   queue: { reports: number; appeals: number; feedback: number }
   audience: {
     profiles: number
     messages: number
+    /** UTC days, both — see the note at the top of `modules/admin/stats.ts`. */
     activeToday: number
     activeDaily: { day: string; count: number }[]
     seenLastWeek: number
     joinedToday: number
     joinedLastWeek: number
+    /** New members, messages and corrections per day of `timeZone`. */
+    daily: { day: string; members: number; messages: number; corrections: number }[]
     builds: { platform: string; version: string; count: number }[]
   }
   money: {
@@ -2739,6 +2749,31 @@ export function useAdminPulse(enabled = true) {
 
 /** How often the operator panel asks who is online. */
 export const ADMIN_PULSE_POLL_MS = 15 * 1000
+
+/** One row of the list behind the live count. */
+export interface AdminOnlineDto {
+  userId: string
+  handle: string
+  displayName: string
+  /** A browsing session with no account behind it. Counted, so listed. */
+  guest: boolean
+  lastActiveAt: string
+}
+
+/**
+ * Who those people are — the list behind the live card.
+ *
+ * On the same poll as the count it opens from: the list is about this minute,
+ * so a screen that kept showing who was here when it opened would be the one
+ * place in the panel where "now" went stale while somebody watched it.
+ */
+export function useAdminOnline() {
+  return useQuery({
+    queryKey: keys.adminOnline,
+    queryFn: () => api.get<{ items: AdminOnlineDto[] }>('/admin/online'),
+    refetchInterval: ADMIN_PULSE_POLL_MS,
+  })
+}
 
 /** The two windows the funnel offers. Mirrors `FUNNEL_WINDOWS` on the server. */
 export type AdminFunnelWindow = '30d' | 'all'

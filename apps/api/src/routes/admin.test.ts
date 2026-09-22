@@ -22,8 +22,14 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { withJobHealth, type JobHealth } from '../modules/admin/jobHealth'
 import { verifyBountyToken } from '../email/bountyToken'
 import { signReviewToken } from '../email/reviewToken'
-import { PULSE_POINTS, recordPresenceSample, type AdminPulse } from '../modules/admin/pulse'
-import { forgetAdminStats, type AdminStats } from '../modules/admin/stats'
+import {
+  PULSE_POINTS,
+  countOnline,
+  listOnline,
+  recordPresenceSample,
+  type AdminPulse,
+} from '../modules/admin/pulse'
+import { forgetAdminStats, readAdminStats, type AdminStats } from '../modules/admin/stats'
 import type { Message } from '../modules/chat/conversations'
 import type { Profile } from '../modules/profiles/profiles'
 import { ensureOfficialAccounts } from '../modules/official/accounts'
@@ -271,6 +277,81 @@ describe('the operator panel', () => {
     })
   })
 
+  describe('the day the dashboard is cut in', () => {
+    /*
+     * The panel is read in Toronto, where a UTC day turns over at 20:00. The
+     * screenshot that started this was taken at 21:47 on Monday the 21st —
+     * 01:47 UTC on Tuesday the 22nd — and every strip said Tuesday, with
+     * today's column a two-hour stub under tomorrow's date.
+     *
+     * Through `readAdminStats` rather than the route, because the clock is the
+     * subject: the function takes `now`, so the case can be that evening
+     * exactly instead of whenever the suite happens to run.
+     */
+    const TORONTO = 'America/Toronto'
+    const THAT_EVENING = new Date('2026-09-22T01:47:00.000Z')
+
+    it('ends the strips on the operator’s day, not on a UTC day they have not reached', async () => {
+      const stats = await readAdminStats(handle.db, THAT_EVENING, TORONTO)
+
+      expect(stats.timeZone).toBe(TORONTO)
+      // Monday the 21st in Toronto, which is where the reader is.
+      expect(stats.audience.daily.at(-1)?.day).toBe('2026-09-21')
+      expect(stats.money.tokensDaily.at(-1)?.day).toBe('2026-09-21')
+      // A full window either way, and in order.
+      expect(stats.money.tokensDaily).toHaveLength(7)
+      expect(stats.audience.daily.at(0)?.day).toBe('2026-08-23')
+
+      /*
+       * The one strip that cannot move, and the reason it is labelled UTC on
+       * the screen rather than relabelled: `dailyActivity` is one document per
+       * user per UTC day, with no sub-day grain to re-cut.
+       */
+      expect(stats.audience.activeDaily.at(-1)?.day).toBe('2026-09-22')
+    })
+
+    it('is UTC for an operator whose profile has no zone, exactly as before', async () => {
+      forgetAdminStats()
+      const stats = await readAdminStats(handle.db, THAT_EVENING)
+
+      expect(stats.timeZone).toBe('UTC')
+      expect(stats.audience.daily.at(-1)?.day).toBe('2026-09-22')
+      expect(stats.money.tokensDaily.at(-1)?.day).toBe('2026-09-22')
+    })
+
+    it('counts a sign-up into the day it happened where the reader is', async () => {
+      const membersOn = async (zone: string, day: string): Promise<number> => {
+        forgetAdminStats()
+        const stats = await readAdminStats(handle.db, THAT_EVENING, zone)
+        return stats.audience.daily.find((row) => row.day === day)?.members ?? 0
+      }
+
+      /*
+       * A delta rather than an absolute: the suite's own fixtures join at
+       * whatever time it runs, and if that is a Toronto evening they land in
+       * these same buckets. What is asserted is where *this* account goes.
+       */
+      const before = {
+        torontoMonday: await membersOn(TORONTO, '2026-09-21'),
+        utcMonday: await membersOn('UTC', '2026-09-21'),
+        utcTuesday: await membersOn('UTC', '2026-09-22'),
+      }
+
+      // 21:30 in Toronto on the Monday — a quarter of an hour before the
+      // screenshot, and already Tuesday in UTC. This is the sign-up the old
+      // dashboard drew under a date the reader had not reached.
+      const joined = await newUser()
+      await profiles().updateOne(
+        { _id: joined.userId },
+        { $set: { createdAt: new Date('2026-09-22T01:30:00.000Z') } },
+      )
+
+      expect(await membersOn(TORONTO, '2026-09-21')).toBe(before.torontoMonday + 1)
+      expect(await membersOn('UTC', '2026-09-21')).toBe(before.utcMonday)
+      expect(await membersOn('UTC', '2026-09-22')).toBe(before.utcTuesday + 1)
+    })
+  })
+
   describe('the live count', () => {
     it('is behind the same guard as the rest of the panel', async () => {
       expect((await get(null, '/admin/pulse')).statusCode).toBe(401)
@@ -311,6 +392,42 @@ describe('the operator panel', () => {
       expect(recorded).toHaveLength(1)
       expect(recorded[0]!.at).toBe(pulse.history.at(-1)!.at)
       expect(recorded[0]!.online).toBe(pulse.online)
+    })
+
+    it('lists the people it counted, behind the same guard', async () => {
+      expect((await get(null, '/admin/online')).statusCode).toBe(401)
+      const member = await newUser()
+      expect((await get(member, '/admin/online')).statusCode).toBe(403)
+
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const now = new Date()
+      await profiles().updateOne({ _id: admin.userId }, { $set: { 'stats.lastActiveAt': now } })
+      // Somebody who was here half an hour ago is not in the app now.
+      const away = await newUser()
+      await profiles().updateOne(
+        { _id: away.userId },
+        { $set: { 'stats.lastActiveAt': new Date(now.getTime() - 30 * 60 * 1000) } },
+      )
+
+      const { items } = (await get(admin, '/admin/online')).json<{
+        items: { userId: string; handle: string; lastActiveAt: string }[]
+      }>()
+      const ids = items.map((row) => row.userId)
+      expect(ids).toContain(admin.userId)
+      expect(ids).not.toContain(away.userId)
+
+      // Most recently seen first, which is the only order this list has.
+      const seen = items.map((row) => Date.parse(row.lastActiveAt))
+      expect(seen).toEqual([...seen].sort((a, b) => b - a))
+
+      /*
+       * The list and the number on the card above it are one question asked
+       * twice, and a list that disagreed with its own headline would be worse
+       * than no list. Both on one clock, because the window is five minutes
+       * wide and two calls a moment apart could otherwise straddle its edge.
+       */
+      expect(await listOnline(handle.db, now)).toHaveLength(await countOnline(handle.db, now))
     })
 
     it('keeps one row per minute however many instances sample it', async () => {

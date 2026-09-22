@@ -38,7 +38,7 @@ import {
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
-import { readAdminPulse } from '../modules/admin/pulse'
+import { listOnline, readAdminPulse } from '../modules/admin/pulse'
 import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
 import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
@@ -87,8 +87,20 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
   const limit = (max: number, timeWindow: string) =>
     app.env.NODE_ENV === 'test' ? false : { max, timeWindow }
 
-  app.get('/admin/stats', { preHandler: requireAdmin }, async (_request, reply) => {
-    return reply.send(await readAdminStats(app.mongo.db))
+  /**
+   * The dashboard, cut in the operator's own day.
+   *
+   * The zone comes from their profile rather than from a query parameter: it
+   * is the same `timezone` the wallet and every scheduled notification already
+   * read, so the panel cannot disagree with the rest of the app about when the
+   * reader's day starts. One keyed read on a route that already makes twenty,
+   * and no zone on the profile means UTC — which is what this returned before
+   * any of it was local. See the note at the top of `modules/admin/stats.ts`
+   * for which numbers move with it and which three cannot.
+   */
+  app.get('/admin/stats', { preHandler: requireAdmin }, async (request, reply) => {
+    const operator = await getProfile(app.mongo.db, request.userId)
+    return reply.send(await readAdminStats(app.mongo.db, new Date(), operator?.timezone ?? 'UTC'))
   })
 
   /**
@@ -102,6 +114,18 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
    */
   app.get('/admin/pulse', { preHandler: requireAdmin }, async (_request, reply) => {
     return reply.send(await readAdminPulse(app.mongo.db))
+  })
+
+  /**
+   * The people behind that count.
+   *
+   * No paging, unlike every other list in this file: the population is
+   * whoever was seen in the last five minutes, so a cursor would page through
+   * a set that has changed underneath it. One capped, indexed read instead —
+   * see `ONLINE_LIST_LIMIT`.
+   */
+  app.get('/admin/online', { preHandler: requireAdmin }, async (_request, reply) => {
+    return reply.send({ items: await listOnline(app.mongo.db) })
   })
 
   /**
