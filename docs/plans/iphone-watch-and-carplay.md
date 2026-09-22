@@ -419,6 +419,67 @@ behaving in each, and both safe-area edges respected rather than mirrored. Then
 the store listing's screenshot set, against whatever Apple requires for the
 device.
 
+## The chat list, on every surface that can hold one
+
+**Decided 22 September 2026.** Behic asked whether the car should show the
+app's own chat list rather than something invented for it, and whether the
+watches should show recent conversations instead of only the ones waiting on
+you. Yes to both, and the second is the more interesting answer because it
+corrects something already shipped.
+
+**Every surface shows recent conversations, not only unread ones.** The App
+Intents file already wrote the argument down without noticing it applied
+elsewhere: _an intent that could message only people who are already waiting
+on you is a strange product_. The watch is exactly that today. Somebody who
+has answered everything sees an empty wrist and cannot start a sentence with
+anyone, which is not a state the phone has.
+
+### The watch, both of them — one filter
+
+`useWatchLink` sends conversations where `unread > 0`. Nothing else stands in
+the way: `watchPayloadSchema` already carries the last ten messages of each
+thread and the partner's name, the reply already posts through `NativeSend`,
+and `WATCH_MAX_CONVERSATIONS` is already ten. Sending the ten most recent
+instead of the unread ones gives both wrists the list the phone draws, and
+Wear gets it for nothing because it reads the same payload.
+
+The real cost is words. The watch's title and empty state say _unread_
+(`watch.unread`, `watch.nothingUnread`) and would have to say _chats_ and
+_no chats yet_, in eight languages. The **Wear tile stays unread-based** — a
+tile answers "how many are waiting", which is a different question from "who
+have I been talking to", and it is the question a glance wants.
+
+### CarPlay — the same list, without the words in it
+
+The rows are the phone's: the person, the unread count, when. **The last
+message is not on them.** Apple removed the CarPlay message popup in iOS 18
+deliberately and reads messages aloud instead, so a row carrying the body
+would be swimming against the platform; `CPListItem`'s second line is spent
+on "5 new · 7h" and the message itself is spoken when the row is tapped.
+
+This is a warning rather than a rule: the evidence is Apple's own behaviour
+on the user's side, not a line of the CarPlay HIG anybody here has read. It
+is worth confirming before the template is written, and it is cheap to
+confirm.
+
+The queue — no list, the oldest unread with _reply_ and _next_ — was the
+alternative, and it is the safer shape by the measure a car cares about. It
+is set aside rather than lost: it needs one screen, and it is the obvious
+thing to add if the list turns out to be too much to read while moving.
+
+### Android Auto — it cannot, and that is the platform's answer
+
+There is no list to make app-like. `CarAppService`'s categories are
+navigation, POI, settings and feature cluster; **messaging is not one of
+them**, which is why phase 5 is a notification built properly rather than a
+screen. So parity stops at three surfaces out of four, and the thing that
+looks like the gap is already filled from the other side: the `MessagingStyle`
+notification carries the conversation's history, and a reply from the car
+works with no app running.
+
+If Google ever adds a messaging category, this is the section to come back
+to. Nothing in `car-messaging` would have to be undone to add one.
+
 ## Surface B — Apple Watch
 
 **The watch app is dependent, not independent.** It has no session, makes no
