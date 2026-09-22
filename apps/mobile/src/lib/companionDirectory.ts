@@ -8,9 +8,25 @@ interface DirectoryInput {
   /** The viewer, so the other participant can be picked out of each pair. */
   meId: string
   /** The conversation list as the app already holds it, most recent first. */
-  conversations: readonly { _id: string; participants: readonly string[] }[]
+  conversations: readonly {
+    _id: string
+    participants: readonly string[]
+    unread: number
+    updatedAt: Date | string
+    /** Already a one-line summary when it arrives; see the schema. */
+    lastMessage?: { body: string } | undefined
+  }[]
   /** Display names by profile id, from the cache the chat list already fills. */
   names: Readonly<Record<string, string | undefined>>
+  /**
+   * "3 new", in the reader's language and with its own plural rule.
+   *
+   * Passed in rather than imported, so this file stays loadable by a test
+   * that has no i18n context — and so the one copy of the rule that a count
+   * takes a plural entry stays in the catalogues. Called only for a
+   * conversation that has something waiting.
+   */
+  unreadLabel: (count: number) => string
   now?: Date
 }
 
@@ -34,11 +50,22 @@ interface DirectoryInput {
  *   guessing; the more recent thread is the better guess to have made.
  * - **The order is the list's own**, so the cap keeps the conversations
  *   somebody is actually in rather than an arbitrary twenty.
+ *
+ * Since 22 September each entry also carries what a CarPlay row draws and
+ * reads aloud — the unread count, that count as a phrase, when the thread
+ * last moved, and the chat list's own one-line preview. An App Intent ignores
+ * all four; see `companionDirectorySchema` for why they are in this blob
+ * rather than in a second one.
  */
+function iso(at: Date | string): string {
+  return typeof at === 'string' ? new Date(at).toISOString() : at.toISOString()
+}
+
 export function buildCompanionDirectory({
   meId,
   conversations,
   names,
+  unreadLabel,
   now = new Date(),
 }: DirectoryInput): CompanionDirectory {
   const seen = new Set<string>()
@@ -52,7 +79,14 @@ export function buildCompanionDirectory({
     const key = name.toLocaleLowerCase()
     if (seen.has(key)) continue
     seen.add(key)
-    entries.push({ id: conversation._id, name })
+    entries.push({
+      id: conversation._id,
+      name,
+      unread: conversation.unread,
+      ...(conversation.unread > 0 ? { unreadLabel: unreadLabel(conversation.unread) } : {}),
+      at: iso(conversation.updatedAt),
+      ...(conversation.lastMessage === undefined ? {} : { preview: conversation.lastMessage.body }),
+    })
   }
 
   return {

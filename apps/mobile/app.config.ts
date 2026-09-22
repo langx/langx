@@ -244,6 +244,20 @@ const config: ExpoConfig = {
      */
     './plugins/withAppIntents',
     /*
+     * CarPlay, which is a second scene of the app rather than an extension:
+     * Swift in the app target, an entitlement Apple granted per App ID, and a
+     * scene role added to the manifest the plugin below writes.
+     *
+     * **Listed before that plugin although it runs after it.** Expo composes
+     * mods by wrapping: each `withInfoPlist` calls the one registered before
+     * it and then acts, so the *last* plugin listed is the *first* to touch
+     * the file. Registered the other way round, this one looks for a scene
+     * manifest that does not exist yet — which it says, loudly, rather than
+     * writing a car-only manifest and leaving the phone to launch into
+     * nothing. See `plugins/withCarPlay.js`.
+     */
+    './plugins/withCarPlay',
+    /*
      * The UIScene life cycle, which iOS 27 stopped treating as optional: an
      * app built against its SDK without a scene manifest traps at launch.
      * This is what App Review saw on 21 September — 2.1(a), crashed on

@@ -913,6 +913,7 @@ export const es: Localized<EnMessages> = {
     deleteTitle: '¿Eliminar este chat?',
     deleteBody: 'Se queda en su lado y vuelve aquí si escriben otra vez.',
     deleted: 'Chat eliminado',
+    unreadNew: { one: '{count} nuevo', other: '{count} nuevos' },
     tab_all: 'Todos',
     tab_unreplied: 'Sin responder',
     tab_archived: 'Archivados',

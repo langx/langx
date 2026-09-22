@@ -149,6 +149,13 @@ export const COMPANION_DIRECTORY_VERSION = 1
  * It is written while signed in and removed with the session — the same root
  * effect that empties the snapshot and the two watches. Nothing here is
  * durable state; it is a cache of what the app already has on screen.
+ *
+ * **CarPlay reads it too**, since 22 September, which is why the entries
+ * below carry more than a name. That is not a second design: a car list is
+ * the same twenty conversations somebody could name out loud, drawn instead
+ * of spoken. The one place it shows is the dedupe — two people with the same
+ * display name leave one row, which is Siri's rule inherited rather than
+ * chosen, and the more recent thread is the one that stays.
  */
 export const companionDirectorySchema = z.object({
   version: z.literal(COMPANION_DIRECTORY_VERSION),
@@ -167,6 +174,41 @@ export const companionDirectorySchema = z.object({
          * cannot name is a person nobody can ask for.
          */
         name: z.string().min(1),
+        /**
+         * How many messages are waiting, and the same number as a phrase.
+         *
+         * Both, for the reason the snapshot carries `unread` beside
+         * `labels.unread`: the number is the fact something native may act on
+         * — read the unread ones, mark the row — and the phrase is the
+         * sentence a car draws, in a language Swift has no catalogue for.
+         * `unreadLabel` is absent rather than "0 new" when nothing is
+         * waiting, because a row that says nothing is waiting is a row saying
+         * something.
+         *
+         * **The four fields below were added after this blob shipped**, so a
+         * Swift reader must treat every one of them as optional whatever the
+         * schema says here. A blob written by the build before this one
+         * outlives that build: somebody updates the app, does not open it,
+         * and asks Siri for a conversation the next morning. The writer fills
+         * them in; the reader may not assume it did.
+         */
+        unread: z.number().int().nonnegative(),
+        unreadLabel: z.string().optional(),
+        /**
+         * When the conversation last moved, so a car can say "7h" in its own
+         * language. Carried as an instant rather than as words: the phone
+         * writes this blob when something changes, and a phrase would keep
+         * saying "7h" for the rest of the drive.
+         */
+        at: z.string().datetime(),
+        /**
+         * The one line the chat list shows, which is what CarPlay reads
+         * aloud. Already a summary rather than a body — a photo, a voice note
+         * and a correction each arrive here as the words `previewFor` chose,
+         * the same ones the watch is sent. Absent for a conversation with
+         * nothing in it yet.
+         */
+        preview: z.string().optional(),
       }),
     )
     .max(COMPANION_DIRECTORY_LIMIT),

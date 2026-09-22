@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { useConversations, useMe } from '../api/queries'
 import { buildCompanionDirectory } from '../lib/companionDirectory'
 import { useProfileCache } from './useProfileCache'
+import { useT } from '../i18n'
 import { writeCompanionDirectory } from '../../modules/companion-snapshot'
 
 /**
@@ -21,6 +22,11 @@ import { writeCompanionDirectory } from '../../modules/companion-snapshot'
  * itself is a no-op off iOS anyway; this is about not warming a request for
  * an answer nobody wants.
  *
+ * **CarPlay is the second reader**, and the reason each entry now carries an
+ * unread count, a phrase for it, a time and a preview. It costs one more
+ * `t()` per unread conversation and nothing else: the list, the names and the
+ * previews were all already here.
+ *
  * Emptied at sign-out by the root's account-switch effect, with the snapshot
  * and the two watches. This is a cache of what is already on screen, not
  * state: it is written whenever the list changes and nothing depends on the
@@ -28,6 +34,7 @@ import { writeCompanionDirectory } from '../../modules/companion-snapshot'
  */
 export function useCompanionDirectory({ enabled }: { enabled: boolean }): void {
   const active = enabled && Platform.OS === 'ios'
+  const t = useT()
 
   const me = useMe(active)
   const conversations = useConversations('all')
@@ -55,6 +62,13 @@ export function useCompanionDirectory({ enabled }: { enabled: boolean }): void {
 
   useEffect(() => {
     if (!active || meId === undefined) return
-    writeCompanionDirectory(buildCompanionDirectory({ meId, conversations: items, names }))
-  }, [active, meId, items, names])
+    writeCompanionDirectory(
+      buildCompanionDirectory({
+        meId,
+        conversations: items,
+        names,
+        unreadLabel: (count) => t('chats.unreadNew', { count }),
+      }),
+    )
+  }, [active, meId, items, names, t])
 }
