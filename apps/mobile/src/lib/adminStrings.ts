@@ -55,7 +55,7 @@ export const ADMIN = {
     },
     joinedToday: 'Joined today',
     joinedWeek: 'Joined this week',
-    activeToday: 'Active today',
+    activeToday: 'Active today (UTC)',
     seenWeek: 'Seen this week',
     profiles: 'Profiles',
     messages: 'Messages',
@@ -66,7 +66,7 @@ export const ADMIN = {
     free: 'Free',
     paidShare: (paid: number, total: number) =>
       `${paid} of ${total} members are paying · ${adminPercent(paid, total)}`,
-    poolYesterday: 'Yesterday’s pool',
+    poolYesterday: 'Yesterday’s pool (UTC)',
     poolPaid: 'paid',
     poolDistributed: 'distributed',
     poolNone: 'No pool has run yet.',
@@ -87,9 +87,22 @@ export const ADMIN = {
       seeWho: 'Tap to see who',
     },
 
+    /**
+     * Which clock the days on this screen turn over on.
+     *
+     * Printed rather than assumed: most of the strips are cut in the
+     * operator's own zone and three of them cannot be — `Active each day`,
+     * the assistant's calls and the pool are UTC by construction, and the
+     * note at the top of `modules/admin/stats.ts` says why. An unmarked UTC
+     * column under a local date is the bug this pair of strings exists to
+     * stop: read in Toronto, it put today's numbers under tomorrow's label.
+     */
+    daysIn: (zone: string) => `Days turn over in ${zone}`,
+
     /** Charts. Each is a single series, so each says what it plots. */
     charts: {
       activeDaily: 'Active each day',
+      activeDailyNote: 'UTC days',
       newMembers: 'Joined each day',
       messagesDaily: 'Messages each day',
       correctionsDaily: 'Corrections each day',
@@ -327,7 +340,7 @@ export const ADMIN = {
     purge: 'Waiting to be purged',
     purgeAccounts: 'accounts',
     purgeAnalytics: 'analytics rows',
-    assistant: 'Copilot calls today',
+    assistant: 'Copilot calls today (UTC)',
     campaigns: 'Email campaigns',
     config: 'Config',
     maintenance: 'Maintenance',

@@ -29,7 +29,7 @@ import {
   recordPresenceSample,
   type AdminPulse,
 } from '../modules/admin/pulse'
-import { forgetAdminStats, type AdminStats } from '../modules/admin/stats'
+import { forgetAdminStats, readAdminStats, type AdminStats } from '../modules/admin/stats'
 import type { Message } from '../modules/chat/conversations'
 import type { Profile } from '../modules/profiles/profiles'
 import { ensureOfficialAccounts } from '../modules/official/accounts'
@@ -274,6 +274,81 @@ describe('the operator panel', () => {
 
       // Read from the public module rather than recomputed beside it.
       expect(stats.public.totals.members).toBeGreaterThan(0)
+    })
+  })
+
+  describe('the day the dashboard is cut in', () => {
+    /*
+     * The panel is read in Toronto, where a UTC day turns over at 20:00. The
+     * screenshot that started this was taken at 21:47 on Monday the 21st —
+     * 01:47 UTC on Tuesday the 22nd — and every strip said Tuesday, with
+     * today's column a two-hour stub under tomorrow's date.
+     *
+     * Through `readAdminStats` rather than the route, because the clock is the
+     * subject: the function takes `now`, so the case can be that evening
+     * exactly instead of whenever the suite happens to run.
+     */
+    const TORONTO = 'America/Toronto'
+    const THAT_EVENING = new Date('2026-09-22T01:47:00.000Z')
+
+    it('ends the strips on the operator’s day, not on a UTC day they have not reached', async () => {
+      const stats = await readAdminStats(handle.db, THAT_EVENING, TORONTO)
+
+      expect(stats.timeZone).toBe(TORONTO)
+      // Monday the 21st in Toronto, which is where the reader is.
+      expect(stats.audience.daily.at(-1)?.day).toBe('2026-09-21')
+      expect(stats.money.tokensDaily.at(-1)?.day).toBe('2026-09-21')
+      // A full window either way, and in order.
+      expect(stats.money.tokensDaily).toHaveLength(7)
+      expect(stats.audience.daily.at(0)?.day).toBe('2026-08-23')
+
+      /*
+       * The one strip that cannot move, and the reason it is labelled UTC on
+       * the screen rather than relabelled: `dailyActivity` is one document per
+       * user per UTC day, with no sub-day grain to re-cut.
+       */
+      expect(stats.audience.activeDaily.at(-1)?.day).toBe('2026-09-22')
+    })
+
+    it('is UTC for an operator whose profile has no zone, exactly as before', async () => {
+      forgetAdminStats()
+      const stats = await readAdminStats(handle.db, THAT_EVENING)
+
+      expect(stats.timeZone).toBe('UTC')
+      expect(stats.audience.daily.at(-1)?.day).toBe('2026-09-22')
+      expect(stats.money.tokensDaily.at(-1)?.day).toBe('2026-09-22')
+    })
+
+    it('counts a sign-up into the day it happened where the reader is', async () => {
+      const membersOn = async (zone: string, day: string): Promise<number> => {
+        forgetAdminStats()
+        const stats = await readAdminStats(handle.db, THAT_EVENING, zone)
+        return stats.audience.daily.find((row) => row.day === day)?.members ?? 0
+      }
+
+      /*
+       * A delta rather than an absolute: the suite's own fixtures join at
+       * whatever time it runs, and if that is a Toronto evening they land in
+       * these same buckets. What is asserted is where *this* account goes.
+       */
+      const before = {
+        torontoMonday: await membersOn(TORONTO, '2026-09-21'),
+        utcMonday: await membersOn('UTC', '2026-09-21'),
+        utcTuesday: await membersOn('UTC', '2026-09-22'),
+      }
+
+      // 21:30 in Toronto on the Monday — a quarter of an hour before the
+      // screenshot, and already Tuesday in UTC. This is the sign-up the old
+      // dashboard drew under a date the reader had not reached.
+      const joined = await newUser()
+      await profiles().updateOne(
+        { _id: joined.userId },
+        { $set: { createdAt: new Date('2026-09-22T01:30:00.000Z') } },
+      )
+
+      expect(await membersOn(TORONTO, '2026-09-21')).toBe(before.torontoMonday + 1)
+      expect(await membersOn('UTC', '2026-09-21')).toBe(before.utcMonday)
+      expect(await membersOn('UTC', '2026-09-22')).toBe(before.utcTuesday + 1)
     })
   })
 

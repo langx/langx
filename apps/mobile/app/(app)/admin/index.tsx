@@ -56,6 +56,12 @@ export default function AdminHomeScreen() {
   const audience = stats.data?.audience
   const money = stats.data?.money
   const shared = stats.data?.public
+  /*
+   * The charts' own series, cut in the operator's zone rather than in UTC —
+   * `shared` keeps the totals, the streaks and the languages, which are
+   * counts over everything and have no day in them.
+   */
+  const daily = audience?.daily ?? []
 
   const refresh = (): void => {
     void stats.refetch()
@@ -123,6 +129,13 @@ export default function AdminHomeScreen() {
             </View>
 
             <Heading>{ADMIN.home.sections.audience}</Heading>
+            {/*
+             * Where the days on this screen turn over. One line, once: the
+             * strips below are the reader's own days except where a caption
+             * or a label says UTC, and which zone that is cannot be guessed
+             * from the numbers.
+             */}
+            <Text style={styles.muted}>{ADMIN.home.daysIn(stats.data?.timeZone ?? '')}</Text>
             <View style={styles.tiles}>
               <StatTile value={count(audience?.joinedToday)} label={ADMIN.home.joinedToday} />
               <StatTile value={count(audience?.joinedLastWeek)} label={ADMIN.home.joinedWeek} />
@@ -130,15 +143,21 @@ export default function AdminHomeScreen() {
               <StatTile value={count(audience?.seenLastWeek)} label={ADMIN.home.seenWeek} />
             </View>
 
+            {/*
+             * The one strip on this screen that is not the reader's own day,
+             * and it says so in its caption. `dailyActivity` is bucketed per
+             * UTC day with no sub-day grain to re-cut — see the note at the
+             * top of `modules/admin/stats.ts`.
+             */}
             <Chart
               title={ADMIN.home.charts.activeDaily}
-              caption={ADMIN.home.charts.lastWeek}
+              caption={`${ADMIN.home.charts.lastWeek} · ${ADMIN.home.charts.activeDailyNote}`}
               points={(audience?.activeDaily ?? []).map(dayPoint)}
             />
             <Chart
               title={ADMIN.home.charts.newMembers}
-              caption={ADMIN.home.charts.lastDays(shared?.days ?? 30)}
-              points={(shared?.daily ?? []).map((day) => ({ key: day.day, value: day.members }))}
+              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
+              points={daily.map((day) => ({ key: day.day, value: day.members }))}
             />
 
             <Heading>{ADMIN.home.sections.talking}</Heading>
@@ -155,8 +174,8 @@ export default function AdminHomeScreen() {
 
             <Chart
               title={ADMIN.home.charts.messagesDaily}
-              caption={ADMIN.home.charts.lastDays(shared?.days ?? 30)}
-              points={(shared?.daily ?? []).map((day) => ({ key: day.day, value: day.messages }))}
+              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
+              points={daily.map((day) => ({ key: day.day, value: day.messages }))}
             />
             {/*
              * Green, because a correction is always the green pair in this app
@@ -166,12 +185,9 @@ export default function AdminHomeScreen() {
              */}
             <Chart
               title={ADMIN.home.charts.correctionsDaily}
-              caption={ADMIN.home.charts.lastDays(shared?.days ?? 30)}
+              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
               color={colors.success}
-              points={(shared?.daily ?? []).map((day) => ({
-                key: day.day,
-                value: day.corrections,
-              }))}
+              points={daily.map((day) => ({ key: day.day, value: day.corrections }))}
             />
 
             <View style={styles.tiles}>
