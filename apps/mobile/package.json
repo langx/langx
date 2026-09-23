@@ -84,7 +84,7 @@
     "@cloudflare/workers-types": "^5.20260904.1",
     "@react-native/metro-config": "0.86.3",
     "@types/react": "catalog:",
-    "babel-preset-expo": "~57.0.8",
+    "babel-preset-expo": "~57.0.12",
     "tsx": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
