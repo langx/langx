@@ -331,6 +331,7 @@ tangerine and got a lemon of its own.
 | [Tatoeba](https://tatoeba.org/), `cmn`                                                                                                                                                     | 89,065 Mandarin sentences and their human translations           | CC BY 2.0 FR | Every sentence, and every gloss                        |
 | [pypinyin](https://github.com/mozillazg/python-pinyin)                                                                                                                                     | Contextual pinyin for a whole sentence                           | MIT          | The draft of `reading`                                 |
 | [jieba](https://github.com/fxsjy/jieba)                                                                                                                                                    | Word segmentation with parts of speech                           | MIT          | A second opinion on where words end                    |
+| [misaki](https://github.com/hexgrad/misaki)                                                                                                                                                | Kokoro's own pinyin-to-phoneme table                             | Apache-2.0   | The phonemes the readings are synthesised from         |
 
 Taken on 23 September 2026, `wordlists/exclusive/old/<n>.json` from the
 complete-hsk-vocabulary repository. The list is a syllabus — Hanban published
@@ -355,7 +356,7 @@ is made for Turkish: direct links alone would have left a Turkish reader on
 the English back for four cards in five. The reading below checked the Turkish
 against the Chinese, not against the English it came through.
 
-**Cue pictures from the same 372, and no synthesised readings.** No new
+**Cue pictures from the same 372.** No new
 concept was drawn: `tools/echo-content/images/cues.zh.json` points 1,586 of
 the 1,639 sentences at a picture the other six languages already use, chosen
 on 23 September by six Claude subagents, one per pack, and then thinned by
@@ -364,9 +365,13 @@ as a raised hand or a crossed arm, 💯 over _a century is a hundred years_, a
 shirt over a hat). The 53 without one are abstractions (_selfish_,
 _optimist_, _monopoly_) and things the palette has no honest drawing of: a
 basketball, a watermelon, a shoe, tofu, a tiger, a tent, a cave, a prison.
-Those are the list to draw from when the palette next grows. No voice reads
-Chinese here — `packages/shared/src/speech.ts` says why — which is the reason
-`reading` exists.
+Those are the list to draw from when the palette next grows.
+
+**Two synthesised readings each**, in Kokoro's `zf_xiaoyi` and `zm_yunxi`, made
+from the reviewed pinyin rather than from the characters: misaki (Apache-2.0)
+turns each syllable into Kokoro's phonemes, so a pack card is read in the tones
+somebody checked. Why misaki and not espeak-ng, which reads every other Kokoro
+language, is in `docs/echo.md` — espeak drops Mandarin's tones.
 
 ### What the review of the Mandarin six was, exactly
 

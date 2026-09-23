@@ -40,7 +40,7 @@ export interface SpeechVoice {
 /**
  * Every voice we can read a sentence in, by language.
  *
- * **Two engines, one table.** Kokoro reads the six languages it was trained
+ * **Two engines, one table.** Kokoro reads the seven languages it was trained
  * for and reads them best, so those stay with it — and stay on the cache keys
  * they already occupy. Piper covers the other thirty-one: smaller models, one
  * per language, phonemised through the same espeak-ng, at a quality below
@@ -51,17 +51,17 @@ export interface SpeechVoice {
  * on a card; chat plays only `[0]`, which is also the voice Echo synthesises
  * first — so a sentence that is both echoed and played shares one object.
  *
- * Twenty-three languages the catalogue has voices for are missing from this
+ * Twenty-two languages the catalogue has voices for are missing from this
  * table, for three different reasons and it is worth keeping them apart.
  *
  * **Sixteen for the licence**, Turkish and Arabic among them — see
  * `SpeechLicense`. Nothing but a new model changes those.
  *
- * **Two this engine cannot use.** `lt_LT-reginute1-medium` is built for a
- * `lithuanian` phoneme type `piper-tts` does not implement, and Chinese needs
- * `piper-tts[zh]`, which pulls `transformers` and then downloads a g2pW model
- * at first use — a large dependency and a network call on a machine that
- * sleeps, for one language.
+ * **One this engine cannot use.** `lt_LT-reginute1-medium` is built for a
+ * `lithuanian` phoneme type `piper-tts` does not implement. Chinese used to be
+ * the second — Piper's needs `piper-tts[zh]`, which pulls `transformers` and
+ * downloads a g2pW model at first use — and is read by Kokoro instead, through
+ * misaki rather than espeak-ng; see `zh_phonemes` in `apps/tts/server.py`.
  *
  * **Five for their weight against their use here.** Marathi, Telugu, Nepali,
  * Welsh and Kazakh are 409 MB of the image between them — Kazakh alone is 128,
@@ -75,7 +75,7 @@ export interface SpeechVoice {
  */
 export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly SpeechVoice[]>>> = {
   /*
-   * Kokoro's six, from `ECHO_SYNTH_VOICES` — which stays the definition for
+   * Kokoro's seven, from `ECHO_SYNTH_VOICES` — which stays the definition for
    * Echo and the table `apps/tts/server.py` mirrors. Spelled out here rather
    * than spread in, so this file reads as one list and a reader can see which
    * engine answers for a language without following an import.
@@ -100,6 +100,10 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
   hi: [
     { id: 'hf_alpha', engine: 'kokoro', license: 'Apache-2.0' },
     { id: 'hm_omega', engine: 'kokoro', license: 'Apache-2.0' },
+  ],
+  zh: [
+    { id: 'zf_xiaoyi', engine: 'kokoro', license: 'Apache-2.0' },
+    { id: 'zm_yunxi', engine: 'kokoro', license: 'Apache-2.0' },
   ],
   bg: [
     {

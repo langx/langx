@@ -16,7 +16,7 @@ that `piper-tts` 1.8.0 does not know.
 import json
 import sys
 
-from server import kokoro_wav, load_kokoro, load_piper, piper_wav, to_aac
+from server import kokoro_wav, load_kokoro, load_piper, piper_wav, to_aac, zh_phonemes
 
 
 def main() -> int:
@@ -26,6 +26,15 @@ def main() -> int:
         print("kokoro produced nothing", flush=True)
         return 1
     print("kokoro ok", flush=True)
+
+    # Chinese goes through misaki rather than espeak-ng, so it is its own path
+    # and can fail on its own: a wheel that did not install, or a jieba that
+    # cannot write its dictionary cache.
+    samples, rate = kokoro.create(zh_phonemes("你好"), voice="zf_xiaoyi", is_phonemes=True)
+    if not to_aac(kokoro_wav(samples, rate)):
+        print("kokoro produced nothing for chinese", flush=True)
+        return 1
+    print("zh ok", flush=True)
 
     failures = []
     with open("voices.json", encoding="utf8") as handle:

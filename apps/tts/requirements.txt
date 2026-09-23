@@ -2,6 +2,11 @@
 kokoro-onnx==0.4.9
 soundfile==0.13.1
 
+# Chinese's phonemiser: espeak-ng strips Mandarin's tones. Apache-2.0, and its
+# `zh` extra is jieba, pypinyin, pypinyin-dict and cn2an, all MIT. See
+# `zh_phonemes` in server.py.
+misaki[zh]==0.9.4
+
 # Piper for the thirty-one languages Kokoro does not read; see server.py.
 # GPL-3, and it runs as its own service that we do not distribute.
 piper-tts==1.8.0

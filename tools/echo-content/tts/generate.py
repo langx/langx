@@ -16,14 +16,21 @@ personal use only, by Apple's SLA) and Coqui XTTS (CPML).
 pronunciation; two, in different registers, read as what they are. A human
 recording from Commons is better than both and stays first where it exists.
 
-**Two engines, and the language picks one.** Kokoro reads its six; every other
-language the service speaks is Piper's, and the voice tables in
+**Two engines, and the language picks one.** Kokoro reads its seven; every
+other language the service speaks is Piper's, and the voice tables in
 `packages/shared/src/speech.ts` — mirrored by `apps/tts/voices.json`, which is
 what this reads — are the definition of which. Nothing here takes an engine
 flag: a pack in `de` is Piper's because `de` is Piper's.
 
+**Chinese is read from its pinyin, not its characters.** Every other language
+goes through espeak-ng, and espeak strips Mandarin's tones; the service reads a
+member's Chinese card through misaki instead, which guesses a polyphone wrong
+now and then (你得去 as *dé*). A pack item carries `reading` — pinyin that
+somebody read — so the tones here are the reviewed ones, turned into Kokoro's
+phonemes by misaki's own pinyin table. See `zh_phonemes`.
+
 Usage:
-    python3.12 -m venv .venv && .venv/bin/pip install kokoro-onnx soundfile piper-tts
+    python3.12 -m venv .venv && .venv/bin/pip install kokoro-onnx soundfile piper-tts 'misaki[zh]'
     brew install espeak-ng          # the wheel's dylib looks for its build path
     # then, from the repository root:
     tools/echo-content/tts/generate.py --out <dir>
@@ -64,6 +71,7 @@ KOKORO = {
     "it": ("it", ("if_sara", "im_nicola")),
     "pt": ("pt-br", ("pf_dora", "pm_alex")),
     "hi": ("hi", ("hf_alpha", "hm_omega")),
+    "zh": ("cmn", ("zf_xiaoyi", "zm_yunxi")),
 }
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -141,11 +149,110 @@ def piper_wav(voice, text: str, path: Path) -> None:
             raise ValueError(f"piper produced no audio for {text!r}")
 
 
-def kokoro_wav(k, text: str, voice: str, espeak: str, path: Path) -> None:
+def zh_words(text: str, reading: str) -> list[list[str]]:
+    """The reading as words of `TONE3` syllables (`de5`, `dei3`), one per character.
+
+    The reading is written the way a textbook writes it — words joined,
+    `xǐhuan`, `liàn'ài` — so its syllables are not found by splitting but by
+    aligning it against the characters: each character's possible readings,
+    stripped of tone, are tried against what is left of the current word, and
+    the tone is read off the letters that matched. Word by word, because across
+    a word boundary the longest reading can eat the next word's initial —
+    母亲高 is *mǔqīn gāo*, and 亲 may also be *qìng*.
+
+    A syllable ending in `r` where the character is 儿 is erhua (一会儿,
+    *yíhuìr*): the `r` belongs to the syllable before it and is returned there,
+    as `huir4`.
+    """
+    import re
+    import unicodedata
+
+    from pypinyin import Style, pinyin
+
+    marks = {"\u0304": "1", "\u0301": "2", "\u030c": "3", "\u0300": "4"}
+
+    def bare(s: str) -> str:
+        decomposed = unicodedata.normalize("NFD", s.lower())
+        return "".join(c for c in decomposed if c.isascii() and c.isalpha())
+
+    def tone3(syllable: str) -> str:
+        decomposed = unicodedata.normalize("NFD", syllable.lower())
+        tone = next((marks[c] for c in decomposed if c in marks), "5")
+        base = "".join(c for c in decomposed if c not in marks).replace("u\u0308", "v")
+        return base + tone
+
+    chars = iter(ch for ch in text if "\u4e00" <= ch <= "\u9fff")
+    words = []
+    for group in re.findall(r"[^\s.,?!:;\"]+", reading):
+        rest = unicodedata.normalize("NFC", group.replace("'", ""))
+        word: list[str] = []
+        while bare(rest):
+            ch = next(chars)
+            if ch == "儿" and word and bare(rest) == "r":
+                word[-1] = word[-1][:-1] + "r" + word[-1][-1]
+                rest = ""
+                break
+            candidates = sorted(
+                {bare(c) for c in pinyin(ch, style=Style.TONE, heteronym=True)[0]},
+                key=len,
+                reverse=True,
+            )
+            match = next((c for c in candidates if bare(rest).startswith(c)), None)
+            if match is None:
+                raise ValueError(f"{text}: the reading does not spell {ch} at {rest!r}")
+            taken = ""
+            while bare(taken) != match:
+                taken += rest[len(taken)]
+            word.append(tone3(taken))
+            rest = rest[len(taken) :]
+        words.append(word)
+    if next(chars, None) is not None:
+        raise ValueError(f"{text}: the reading ends before the characters do")
+    return words
+
+
+def zh_phonemes(text: str, reading: str) -> str:
+    """A pack item's pinyin as Kokoro's phonemes, one word per word of the reading.
+
+    misaki's `py2ipa` is the table the service's own phonemiser ends in, so a
+    pack and a member's card are the same phoneme set — only the choice of tone
+    differs, and here it is the reviewed one. The word breaks matter: Kokoro
+    reads `ni↓ xau↓` as two words and `ni↓xau↓` as one.
+    """
+    import re
+
+    from misaki import zh
+
+    def syllable(py: str) -> str:
+        # misaki has no erhua, so the r is read onto the syllable before the
+        # tone: huìr is `xwei` + `ɻ` + `↘`.
+        erhua = py[-2:-1] == "r" and py[:-2] not in ("e", "")
+        ipa = zh.ZHG2P.py2ipa(py[:-2] + py[-1] if erhua else py).replace("\u032f", "")
+        if erhua:
+            ipa = re.sub(r"([→↗↓↘]?)$", "ɻ\\1", ipa, count=1)
+        return ipa
+
+    punctuation = [m for m in re.findall(r"[^\s.,?!:;\"]+|[.,?!:;]", reading)]
+    words = iter(zh_words(text, reading))
+    out: list[str] = []
+    for token in punctuation:
+        if token in ".,?!:;":
+            if out:
+                out[-1] += token
+            continue
+        out.append("".join(syllable(py) for py in next(words)))
+    return " ".join(out)
+
+
+def kokoro_wav(k, item: dict, lang: str, voice: str, espeak: str, path: Path) -> None:
     """One Kokoro reading, written as WAV."""
     import soundfile as sf
 
-    samples, rate = k.create(text, voice=voice, speed=1.0, lang=espeak)
+    if lang == "zh":
+        phonemes = zh_phonemes(item["text"], item["reading"])
+        samples, rate = k.create(phonemes, voice=voice, speed=1.0, is_phonemes=True)
+    else:
+        samples, rate = k.create(item["text"], voice=voice, speed=1.0, lang=espeak)
     sf.write(path, samples, rate)
 
 
@@ -277,14 +384,18 @@ def main() -> int:
         espeak, voices = spoken if spoken else (None, tuple(v["id"] for v in piper))
         out = args.out / pack["id"].replace(":", "_")
         out.mkdir(parents=True, exist_ok=True)
+        changed = False
         for item in pack["items"]:
             # Written whether or not the audio was regenerated: the key is
             # derived, so recording it is not a claim that a file exists yet —
             # `upload-echo-voices.ts` is what puts the bytes where this points.
-            item["voices"] = [
+            wanted = [
                 {"key": voice_key(pack["id"], item["index"], voice), "voice": voice}
                 for voice in voices
             ]
+            if item.get("voices") != wanted:
+                item["voices"] = wanted
+                changed = True
             for voice in voices:
                 target = out / f"{item['index']}-{voice}.m4a"
                 if target.exists():
@@ -292,16 +403,20 @@ def main() -> int:
                     continue
                 wav = target.with_suffix(".wav")
                 if spoken:
-                    kokoro_wav(kokoro_engine(), item["text"], voice, espeak, wav)
+                    kokoro_wav(kokoro_engine(), item, pack["lang"], voice, espeak, wav)
                 else:
                     model = next(v["model"] for v in piper if v["id"] == voice)
                     piper_wav(piper_engine(model), item["text"], wav)
                 to_m4a(wav, target)
                 wav.unlink()
                 made += 1
-        pack["contentVersion"] += 1
-        write_pack(path, pack)
-        written.append(path)
+        # Only when a key actually changed: a second run on a machine that is
+        # making the audio to upload — the keys are already committed — must
+        # leave the pack as it found it, not claim a new draft of it.
+        if changed:
+            pack["contentVersion"] += 1
+            write_pack(path, pack)
+            written.append(path)
         print(f"  {pack['id']}: {len(pack['items'])} items, {len(voices)} voice(s)", flush=True)
 
     formatted = format_packs(written)

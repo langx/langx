@@ -69,10 +69,12 @@ export type EchoVoice = z.infer<typeof echoVoiceSchema>
  *
  * Two per language where the model has both registers, for the reason the
  * schema above is a list: one synthetic reading reads as *the* pronunciation.
- * French has one voice in the model, so French gets one. Japanese and Chinese
- * are absent on purpose — the model has voices for them, but the service
- * phonemises through espeak-ng, which is not what those voices were trained
- * on, and a reading a native speaker would wince at is worse than none.
+ * French has one voice in the model, so French gets one. Japanese is absent on
+ * purpose — the model has voices for it, but the service phonemises through
+ * espeak-ng, which is not what those voices were trained on, and a reading a
+ * native speaker would wince at is worse than none. Chinese was absent for the
+ * same reason until it was given its own phonemiser; see `zh_phonemes` in
+ * `apps/tts/server.py`, and the measurement there.
  *
  * Shared rather than API-only because the app reads it too: the card screen
  * offers "Read it aloud" only for a language that has an entry here, so a
@@ -85,6 +87,10 @@ export const ECHO_SYNTH_VOICES: Readonly<Record<string, readonly string[]>> = {
   it: ['if_sara', 'im_nicola'],
   pt: ['pf_dora', 'pm_alex'],
   hi: ['hf_alpha', 'hm_omega'],
+  // The best two of Kokoro's eight Chinese voices, measured: a speech
+  // recogniser read back 97% of the characters from each, and 76% from
+  // `zf_xiaoni`, the worst.
+  zh: ['zf_xiaoyi', 'zm_yunxi'],
 }
 
 /**
