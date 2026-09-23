@@ -2426,6 +2426,7 @@ export const ar: Localized<EnMessages> = {
 
   carplay: {
     readFailed: 'تعذّرت القراءة بصوت عالٍ',
+    listen: 'استمع إلى آخر رسالة',
   },
 
   watch: {

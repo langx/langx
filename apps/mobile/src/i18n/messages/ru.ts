@@ -2331,6 +2331,7 @@ export const ru: Localized<EnMessages> = {
 
   carplay: {
     readFailed: 'Не удалось прочитать вслух',
+    listen: 'Прослушать последнее сообщение',
   },
 
   watch: {

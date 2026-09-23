@@ -40,6 +40,7 @@ export const NATIVE_KEYS = [
    * the alert's button is the app's own OK.
    */
   'carplay.readFailed',
+  'carplay.listen',
   'common.ok',
   /*
    * These two are the Wear tile's, and only the tile's. It answers "how many

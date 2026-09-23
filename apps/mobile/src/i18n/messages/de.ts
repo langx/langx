@@ -2134,6 +2134,7 @@ export const de: Localized<EnMessages> = {
 
   carplay: {
     readFailed: 'Vorlesen nicht möglich',
+    listen: 'Letzte Nachricht anhören',
   },
 
   watch: {

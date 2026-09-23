@@ -2094,6 +2094,7 @@ export const tr: Localized<EnMessages> = {
 
   carplay: {
     readFailed: 'Sesli okunamadı',
+    listen: 'Son mesajı dinle',
   },
 
   watch: {

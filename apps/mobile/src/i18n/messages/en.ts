@@ -2294,12 +2294,13 @@ export const en = {
   */
   /*
    CarPlay's own words, drawn by Swift in the car — see `carplay/` and
-   `src/i18n/nativeKeys.ts`. One sentence: the alert a driver sees when a tap
-   was received and the message could not be spoken, so that "nothing
-   happened" is never the answer to a tap.
+   `src/i18n/nativeKeys.ts`. Two: the one row of a conversation's screen,
+   which reads its last message aloud, and the alert a driver sees when that
+   could not be done, so that "nothing happened" is never the answer to a tap.
   */
   carplay: {
     readFailed: 'Could not read this aloud',
+    listen: 'Listen to the last message',
   },
 
   watch: {

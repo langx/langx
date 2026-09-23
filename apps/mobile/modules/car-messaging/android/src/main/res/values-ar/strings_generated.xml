@@ -4,6 +4,7 @@
   <string name="tabs_chats">المحادثات</string>
   <string name="chats_emptyTitle">لا محادثات بعد</string>
   <string name="carplay_readFailed">تعذّرت القراءة بصوت عالٍ</string>
+  <string name="carplay_listen">استمع إلى آخر رسالة</string>
   <string name="common_ok">حسنًا</string>
   <string name="watch_unread">غير المقروءة</string>
   <string name="watch_nothingUnread">لا رسائل غير مقروءة</string>

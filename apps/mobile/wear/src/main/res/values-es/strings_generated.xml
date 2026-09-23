@@ -4,6 +4,7 @@
   <string name="tabs_chats">Chats</string>
   <string name="chats_emptyTitle">Aún no hay chats</string>
   <string name="carplay_readFailed">No se pudo leer en voz alta</string>
+  <string name="carplay_listen">Escuchar el último mensaje</string>
   <string name="common_ok">Aceptar</string>
   <string name="watch_unread">No leídos</string>
   <string name="watch_nothingUnread">Nada sin leer</string>

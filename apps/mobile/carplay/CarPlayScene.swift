@@ -34,7 +34,9 @@ import UIKit
  */
 @available(iOS 14.0, *)
 @objc(CarPlaySceneDelegate)
-final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate,
+  CPInterfaceControllerDelegate
+{
   private var interfaceController: CPInterfaceController?
   /*
    The chat tab's own name, as the watch's list is titled — not the app's.
@@ -56,12 +58,15 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
   */
   private var drawn: String?
   private var everDrawn = false
+  /// The conversation that is open, so leaving it — and only it — stops the voice.
+  private var conversationScreen: CPListTemplate?
 
   func templateApplicationScene(
     _ templateApplicationScene: CPTemplateApplicationScene,
     didConnect interfaceController: CPInterfaceController
   ) {
     self.interfaceController = interfaceController
+    interfaceController.delegate = self
     reload()
 
     /*
@@ -132,8 +137,8 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
    message**. Apple took the message popup out of CarPlay in iOS 18 and reads
    messages aloud instead; a row carrying the body would be asking somebody to
    read while driving, which is the thing the whole surface is arranged to
-   avoid. The body is spoken on a tap, by the synthesizer, from the same one
-   line the chat list shows.
+   avoid. A tap opens the conversation, and the body is spoken there, by the
+   synthesizer, from the same one line the chat list shows.
 
    The count comes as a phrase the app wrote, because Swift has neither the
    eight catalogues nor their plural rules; the time is formatted here,
@@ -147,33 +152,74 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
       detailText: parts.compactMap { $0 }.joined(separator: " · ")
     )
 
-    /*
-     Every tap answers, one way or the other.
-
-     The first build to reach a car answered nothing: the row was tapped, the
-     speech never became sound, and the only failure path was silence — so
-     from the driver's seat it read as a list that cannot be tapped. Now the
-     playing indicator goes up the moment the tap arrives, before any audio
-     exists, and if the audio does not start the driver is told so. A row
-     with nothing to read says that too, rather than doing nothing.
-    */
-    item.handler = { [weak self, weak item] _, completion in
+    item.handler = { [weak self] _, completion in
       defer { completion() }
-      guard let self, let item else { return }
-      guard let preview = conversation.preview else {
-        self.showReadFailed()
-        return
-      }
-      item.isPlaying = true
-      self.speaker.speak(
-        preview,
-        whenDone: { [weak item] in item?.isPlaying = false },
-        whenFailed: { [weak self, weak item] in
-          item?.isPlaying = false
-          self?.showReadFailed()
-        })
+      self?.open(conversation)
     }
     return item
+  }
+
+  /**
+   One conversation, and its last message read out as the screen opens.
+
+   **A screen, because that is what a tap on a chat means.** The first
+   version read the message in place, from the list, and the first person to
+   drive with it tapped a row, saw nothing open, and concluded — correctly,
+   from where he sat — that the rows could not be tapped. On a phone a
+   conversation is somewhere you go; the car keeps that.
+
+   **What is on it is one row, not the message.** Apple took the message
+   popup out of CarPlay in iOS 18 and reads messages aloud instead, so the
+   body is spoken rather than drawn. The row is how to hear it again, with
+   what is waiting and when underneath — the same line the list showed — and
+   its playing indicator is up for as long as the voice is.
+
+   **Every tap answers.** The indicator goes up the moment reading is asked
+   for, before any audio exists, and if the audio never starts the driver is
+   told so. A conversation with nothing to read says that too.
+  */
+  private func open(_ conversation: DirectoryConversation) {
+    guard let interfaceController else { return }
+
+    let parts = [conversation.unreadLabel, conversation.at.map(CarPlayScene.when)]
+    let listen = CPListItem(
+      text: String(localized: "carplay.listen"),
+      detailText: parts.compactMap { $0 }.joined(separator: " · ")
+    )
+    listen.handler = { [weak self, weak listen] _, completion in
+      defer { completion() }
+      guard let self, let listen else { return }
+      self.read(conversation, on: listen)
+    }
+
+    let screen = CPListTemplate(title: conversation.name, sections: [CPListSection(items: [listen])])
+    conversationScreen = screen
+    interfaceController.pushTemplate(screen, animated: true) { [weak self, weak listen] _, _ in
+      guard let self, let listen else { return }
+      self.read(conversation, on: listen)
+    }
+  }
+
+  private func read(_ conversation: DirectoryConversation, on item: CPListItem) {
+    guard let preview = conversation.preview else {
+      showReadFailed()
+      return
+    }
+    item.isPlaying = true
+    speaker.speak(
+      preview,
+      whenDone: { [weak item] in item?.isPlaying = false },
+      whenFailed: { [weak self, weak item] in
+        item?.isPlaying = false
+        self?.showReadFailed()
+      })
+  }
+
+  /// Back from a conversation stops its voice: the driver has left it.
+  func templateDidDisappear(_ aTemplate: CPTemplate, animated: Bool) {
+    guard aTemplate === conversationScreen else { return }
+    conversationScreen = nil
+    speaker.stop()
   }
 
   /**

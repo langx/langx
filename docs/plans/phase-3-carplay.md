@@ -124,17 +124,20 @@ try.
 
 **Two things were wrong, and both are fixed for the next build:**
 
-- **"None of them can be tapped."** The tap almost certainly arrived — the
-  speech did not become sound, and silence was the only failure the code had.
-  From the driver's seat that is indistinguishable from a dead list. The
-  session now uses `.voicePrompt` with `.duckOthers` and
+- **"None of them can be tapped" — and "I can't get into the chat for it to
+  read."** Both halves were right. The tap arrived and read the message in
+  place, from the list; the speech never became sound, and silence was the
+  only failure path, so nothing visibly happened. And a tap on a chat, on a
+  phone, is a place you go. So a tap now **opens the conversation**: a screen
+  titled with the person's name, one row — `carplay.listen`, with what is
+  waiting and when underneath — and the last message read aloud as it opens.
+  The body is still not drawn. The row's playing indicator goes up the moment
+  reading is asked for; the session is `.voicePrompt` with `.duckOthers` and
   `.interruptSpokenAudioAndMixWithOthers`, which is what Apple's forums point
-  to for a silent `AVSpeechSynthesizer` in CarPlay; the row's playing
-  indicator goes up the moment the tap arrives; and if the session cannot be
-  activated, or the synthesizer has not started within three seconds, the car
-  shows an alert — `carplay.readFailed`, in eight languages. The next test
-  therefore separates "no response" from "response, no sound", which this one
-  could not.
+  to for a silent `AVSpeechSynthesizer` in CarPlay; and if the session cannot
+  be activated, or the synthesizer has not started within three seconds, the
+  car shows `carplay.readFailed`. Going back stops the voice. The next test
+  separates "no response" from "response, no sound", which this one could not.
 - **The title.** "LangX" drawn as a large heading beside the app's own icon in
   the rail — the brand twice, and nothing saying what the screen is. It is
   now `tabs.chats`, the title the watch's list uses.

@@ -2093,6 +2093,7 @@ export const ptBR: Localized<EnMessages> = {
 
   carplay: {
     readFailed: 'Não foi possível ler em voz alta',
+    listen: 'Ouvir a última mensagem',
   },
 
   watch: {
