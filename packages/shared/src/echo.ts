@@ -176,6 +176,12 @@ export const echoCardSchema = z.object({
   _id: z.string(),
   /** The sentence, as it was written. Never translated interface copy. */
   front: z.string(),
+  /**
+   * How the front is read, copied from a pack whose script does not say —
+   * pinyin, on a Chinese card. Absent everywhere else, and taken off when the
+   * front is rewritten: it reads a sentence that is gone.
+   */
+  reading: z.string().optional(),
   /** What it means, in the reader's language. Empty when nothing could translate it. */
   back: z.string(),
   /** Filled only by a phrase card, whose author typed one. */

@@ -345,6 +345,7 @@ export const ar: Localized<EnMessages> = {
       other: 'أُضيفت {count} بطاقة',
     },
     packProgress: 'بدأت {done} من {total}',
+    packHsk: 'HSK {level}',
     producePrompt: 'اكتبها بـ{language}',
     produceHint: 'اكتب العبارة',
     check: 'تحقّق',

@@ -67,10 +67,14 @@ const RULES = [
   ['newline', (text) => text.includes('\n') && JSON.stringify(text)],
   // "It's too big." glossed with an unrelated Tatoeba sentence about Tom: the
   // wrong sentence is usually the longer one, and length is what a rule can see.
+  // Measured against the pinyin where there is one: a Chinese character is a
+  // syllable, so every gloss of a Chinese sentence is "three times" its front.
   [
     'three times the front',
-    (text, item, locale, pack) =>
-      locale !== pack.lang && item.text.length >= 8 && text.length > item.text.length * 3 && text,
+    (text, item, locale, pack) => {
+      const front = item.reading ?? item.text
+      return locale !== pack.lang && front.length >= 8 && text.length > front.length * 3 && text
+    },
   ],
   ['unbalanced brackets', (text) => count(text, '(') !== count(text, ')') && text],
   // Arabic and Russian glosses written with the neighbouring language's letters.

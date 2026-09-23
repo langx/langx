@@ -386,6 +386,8 @@ export const en = {
       other: '{count} cards added',
     },
     packProgress: '{done} of {total} started',
+    /** A Chinese pack's name: the HSK level it is, which is how learners measure themselves. */
+    packHsk: 'HSK {level}',
     producePrompt: 'Write it in {language}',
     produceHint: 'Type the phrase',
     check: 'Check',

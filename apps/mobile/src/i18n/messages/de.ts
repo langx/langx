@@ -317,6 +317,7 @@ export const de: Localized<EnMessages> = {
       other: '{count} Karten hinzugefügt',
     },
     packProgress: '{done} von {total} begonnen',
+    packHsk: 'HSK {level}',
     producePrompt: 'Schreib es auf {language}',
     produceHint: 'Den Ausdruck tippen',
     check: 'Prüfen',

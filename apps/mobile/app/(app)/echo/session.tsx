@@ -551,6 +551,13 @@ export default function EchoSessionScreen() {
           {revealed ? (
             <>
               <View style={styles.rule} />
+              {/*
+                Pinyin, on a Chinese card, with the answer rather than above
+                the sentence: reading the characters is part of what the card
+                asks, and there is no synthesised voice for Chinese to have
+                given it away anyway.
+              */}
+              {card.reading ? <Text style={styles.reading}>{card.reading}</Text> : null}
               {producing ? (
                 <>
                   <Text style={styles.yourAnswerLabel}>{t('echo.yourAnswer')}</Text>
@@ -762,6 +769,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   pressed: { opacity: 0.6 },
   rule: { backgroundColor: colors.border, height: 1, width: '60%' },
   back: { color: colors.text, fontSize: 18, lineHeight: 26, textAlign: 'center' },
+  reading: { color: colors.textMuted, fontSize: 17, lineHeight: 24, textAlign: 'center' },
   prompt: { color: colors.textFaint, fontSize: 13, fontWeight: '700', textAlign: 'center' },
   input: {
     ...font.body,

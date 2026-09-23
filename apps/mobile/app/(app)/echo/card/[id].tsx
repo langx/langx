@@ -106,6 +106,7 @@ function Card({ card }: { card: EchoCard }) {
       {card.image ? <Picture key={card.image.url} image={card.image} /> : null}
       {/* The sentence and its meaning. Data, never interface copy. */}
       <Text style={styles.front}>{card.front}</Text>
+      {card.reading ? <Text style={styles.reading}>{card.reading}</Text> : null}
       {card.back ? <Text style={styles.back}>{card.back}</Text> : null}
       {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
 
@@ -383,6 +384,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   pictureFill: { height: '100%', width: '100%' },
   front: { ...font.heading, color: colors.text, fontSize: 24, lineHeight: 32 },
   back: { color: colors.text, fontSize: 17, lineHeight: 24 },
+  reading: { color: colors.textMuted, fontSize: 16, lineHeight: 22 },
   example: { color: colors.textMuted, fontSize: 15, fontStyle: 'italic' },
   block: { gap: spacing.xs },
   label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },

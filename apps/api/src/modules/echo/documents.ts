@@ -30,6 +30,8 @@ export interface EchoCardDoc {
   userId: string
   lang: string
   front: string
+  /** Pinyin, copied from a Chinese pack. See the DTO. */
+  reading?: string
   back: string
   example?: string
   /**
@@ -123,6 +125,7 @@ export function toEchoCard(doc: EchoCardDoc): EchoCard {
   return {
     _id: doc._id.toHexString(),
     front: doc.front,
+    ...(doc.reading ? { reading: doc.reading } : {}),
     back: doc.back,
     ...(doc.example ? { example: doc.example } : {}),
     lang: doc.lang,

@@ -5137,6 +5137,16 @@ from the volunteer above it. `echoVoiceSchema` is a separate type from
 `echoAudioSchema` for that reason alone — the two are not interchangeable and
 the schema should not let them be confused.
 
+### Pinyin is drafted by a machine and read by a person
+
+Pinyin sits between the two. Like a synthesised voice it adds no meaning — the
+sentence is decided — but unlike one it can be _wrong_ in a way a learner
+copies: 觉 is _jué_ in 觉得 and _jiào_ in 睡觉, 得 is _de_, _dé_ or _děi_, and a
+wrong tone on the card is a wrong tone in somebody's mouth. So the Chinese
+packs' `reading` is drafted by `tools/echo-content/hsk/pick.py` and goes
+through the same gate as a gloss: the pack is `"reviewed": false` until the
+reading column has been read, and the seed refuses it until then.
+
 ## A badge can be a cohort, and `next` must never offer one
 
 Every badge kind was a monotonic counter with thresholds along it, and the

@@ -342,6 +342,7 @@ export const ru: Localized<EnMessages> = {
       other: 'Добавлено {count} карточки',
     },
     packProgress: 'Начато {done} из {total}',
+    packHsk: 'HSK {level}',
     producePrompt: 'Напишите на языке: {language}',
     produceHint: 'Введите фразу',
     check: 'Проверить',
