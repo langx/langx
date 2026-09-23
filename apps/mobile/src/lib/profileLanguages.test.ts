@@ -61,8 +61,18 @@ describe('applying a language edit', () => {
   })
 
   it('reads the stored list in priority order, not array order', () => {
-    const next = applyLanguageEdit(many, { kind: 'moveLearning', code: 'de', direction: 'up' })
+    const next = applyLanguageEdit(many, { kind: 'moveLearning', code: 'de', to: 0 })
     expect(next.learning.map((l) => l.code)).toEqual(['de', 'en', 'fr'])
+  })
+
+  /** A drag can cross more than one row, which the arrows never could. */
+  it('moves a learning language straight to the row it is dropped on', () => {
+    const next = applyLanguageEdit(many, { kind: 'moveLearning', code: 'en', to: 2 })
+    expect(next.learning).toEqual([
+      { code: 'de', level: 'beginner', priority: 1 },
+      { code: 'fr', level: 'beginner', priority: 2 },
+      { code: 'en', level: 'intermediate', priority: 3 },
+    ])
   })
 
   /** A gap in the priorities is a reorder nobody asked for, later. */
@@ -83,7 +93,7 @@ describe('applying a language edit', () => {
   it('never mutates what it was given', () => {
     const before = JSON.stringify(many)
     applyLanguageEdit(many, { kind: 'removeLearning', code: 'en' })
-    applyLanguageEdit(many, { kind: 'moveLearning', code: 'fr', direction: 'up' })
+    applyLanguageEdit(many, { kind: 'moveLearning', code: 'fr', to: 1 })
     expect(JSON.stringify(many)).toBe(before)
   })
 
@@ -160,12 +170,12 @@ describe('refusing a language edit', () => {
   })
 
   it('has nothing to do at the ends of the list, or for a level already set', () => {
-    expect(
-      refuseLanguageEdit(many, { kind: 'moveLearning', code: 'en', direction: 'up' }, FREE),
-    ).toEqual({ kind: 'noop' })
-    expect(
-      refuseLanguageEdit(many, { kind: 'moveLearning', code: 'fr', direction: 'down' }, FREE),
-    ).toEqual({ kind: 'noop' })
+    expect(refuseLanguageEdit(many, { kind: 'moveLearning', code: 'en', to: 0 }, FREE)).toEqual({
+      kind: 'noop',
+    })
+    expect(refuseLanguageEdit(many, { kind: 'moveLearning', code: 'fr', to: 3 }, FREE)).toEqual({
+      kind: 'noop',
+    })
     expect(
       refuseLanguageEdit(many, { kind: 'setLevel', code: 'en', level: 'intermediate' }, FREE),
     ).toEqual({ kind: 'noop' })
@@ -192,8 +202,8 @@ describe('refusing a language edit', () => {
           ?.kind === 'duplicate',
       last: refuseLanguageEdit(free, { kind: 'removeNative', code: 'tr' }, FREE)?.kind === 'last',
       noop:
-        refuseLanguageEdit(many, { kind: 'moveLearning', code: 'en', direction: 'up' }, FREE)
-          ?.kind === 'noop',
+        refuseLanguageEdit(many, { kind: 'moveLearning', code: 'en', to: 0 }, FREE)?.kind ===
+        'noop',
     }
     expect(Object.values(produced).every(Boolean)).toBe(true)
   })

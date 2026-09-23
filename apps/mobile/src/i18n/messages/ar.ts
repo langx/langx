@@ -1631,6 +1631,7 @@ export const ar: Localized<EnMessages> = {
     overlapRefused: 'لا يمكن أن تكون اللغة أمًّا ولغة تتعلّمها في الوقت نفسه.',
     moveUp: 'رفع {language}',
     moveDown: 'خفض {language}',
+    reorder: 'إعادة ترتيب {language}',
     removeTitle: 'إزالة {language}؟',
     removeBody: 'تختفي من ملفك فورًا.',
     lastNative: 'تحتاج إلى لغة أم واحدة على الأقل. غيّر هذه بدل إزالتها.',

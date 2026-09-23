@@ -1583,6 +1583,7 @@ export const en = {
     overlapRefused: 'A language cannot be both native and one you are learning.',
     moveUp: 'Move {language} up',
     moveDown: 'Move {language} down',
+    reorder: 'Reorder {language}',
     removeTitle: 'Remove {language}?',
     removeBody: 'It comes off your profile straight away.',
     lastNative: 'You need at least one native language. Change this one rather than removing it.',
