@@ -74,8 +74,8 @@ import type { Profile } from '../profiles/profiles'
  */
 
 /**
- * The "this week" counts, and how far back the pool is looked for. The strips
- * run over the public module's `WINDOW_DAYS`.
+ * How far back the pool is looked for. Everything else on the dashboard runs
+ * over the public module's `WINDOW_DAYS`.
  */
 export const STATS_DAYS = 7
 
@@ -111,10 +111,10 @@ export interface AdminStats {
     /** UTC days, both of them — see the note at the top of this file. */
     activeToday: number
     activeDaily: DayCount[]
-    seenLastWeek: number
+    seenLastMonth: number
     /** The operator's day. */
     joinedToday: number
-    joinedLastWeek: number
+    joinedLastMonth: number
     /**
      * The three charts over the window, cut in the operator's zone. The same
      * measures `public.daily` publishes in UTC, which is why they share a
@@ -167,10 +167,11 @@ export function forgetAdminStats(): void {
 
 async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<AdminStats> {
   const today = localDayKey(now, timeZone)
-  // The strips run over the same month as the three charts from the public
-  // module rather than over the week: a week was too short to show a trend.
+  // The strips and the counts run over the same month as the three charts from
+  // the public module rather than over the week: a week was too short to show
+  // a trend.
   const days = Array.from({ length: WINDOW_DAYS }, (_, i) => shiftDayKey(today, -i)).reverse()
-  const weekAgo = new Date(now.getTime() - STATS_DAYS * 24 * 60 * 60 * 1000)
+  const monthAgo = new Date(now.getTime() - WINDOW_DAYS * 24 * 60 * 60 * 1000)
 
   /*
    * The UTC window, for the three numbers that stay on that clock. Kept as a
@@ -190,9 +191,9 @@ async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<A
     profileCount,
     messageCount,
     activeDaily,
-    seenLastWeek,
+    seenLastMonth,
     joinedToday,
-    joinedLastWeek,
+    joinedLastMonth,
     builds,
     tiers,
     pool,
@@ -221,9 +222,9 @@ async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<A
         count: await countActiveToday(db, new Date(`${day}T12:00:00.000Z`)),
       })),
     ),
-    profiles.countDocuments({ 'stats.lastActiveAt': { $gte: weekAgo } }),
+    profiles.countDocuments({ 'stats.lastActiveAt': { $gte: monthAgo } }),
     profiles.countDocuments({ createdAt: { $gte: midnight }, guest: { $exists: false } }),
-    profiles.countDocuments({ createdAt: { $gte: weekAgo }, guest: { $exists: false } }),
+    profiles.countDocuments({ createdAt: { $gte: monthAgo }, guest: { $exists: false } }),
     countBuilds(db),
     countTiers(db, now),
     lastPool(db, utcToday),
@@ -248,9 +249,9 @@ async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<A
       messages: messageCount,
       activeToday: activeDaily[activeDaily.length - 1]?.count ?? 0,
       activeDaily,
-      seenLastWeek,
+      seenLastMonth,
       joinedToday,
-      joinedLastWeek,
+      joinedLastMonth,
       daily,
       builds,
     },

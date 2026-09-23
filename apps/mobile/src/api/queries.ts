@@ -2566,9 +2566,9 @@ export interface AdminStatsDto {
     /** UTC days, both — see the note at the top of `modules/admin/stats.ts`. */
     activeToday: number
     activeDaily: { day: string; count: number }[]
-    seenLastWeek: number
+    seenLastMonth: number
     joinedToday: number
-    joinedLastWeek: number
+    joinedLastMonth: number
     /** New members, messages and corrections per day of `timeZone`. */
     daily: { day: string; members: number; messages: number; corrections: number }[]
     builds: { platform: string; version: string; count: number }[]

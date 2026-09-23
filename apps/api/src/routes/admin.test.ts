@@ -251,9 +251,9 @@ describe('the operator panel', () => {
 
       // Every profile made in this file joined today, so the two agree.
       expect(stats.audience.joinedToday).toBeGreaterThan(0)
-      expect(stats.audience.joinedToday).toBe(stats.audience.joinedLastWeek)
+      expect(stats.audience.joinedToday).toBe(stats.audience.joinedLastMonth)
       expect(stats.audience.profiles).toBeGreaterThan(0)
-      expect(stats.audience.seenLastWeek).toBeGreaterThan(0)
+      expect(stats.audience.seenLastMonth).toBeGreaterThan(0)
 
       // A full strip, oldest first, zeros included rather than absent — a
       // missing day in a chart reads as missing data, not as a quiet one.

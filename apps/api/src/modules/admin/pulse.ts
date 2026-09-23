@@ -82,8 +82,8 @@ function bucketOf(at: Date): Date {
  *
  * Guests are counted, deliberately: this says who is *in the app*, and a
  * browsing session with no account behind it is still a person looking at it.
- * It is the same population `seenLastWeek` on the dashboard counts, only over
- * five minutes instead of seven days, which is what makes the two comparable.
+ * It is the same population `seenLastMonth` on the dashboard counts, only over
+ * five minutes instead of thirty days, which is what makes the two comparable.
  */
 export async function countOnline(db: Db, now: Date = new Date()): Promise<number> {
   return db.collection<Profile>(COLLECTIONS.profiles).countDocuments(onlineFilter(now))
