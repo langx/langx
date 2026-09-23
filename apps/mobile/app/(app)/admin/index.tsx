@@ -429,16 +429,10 @@ function Chart({
 }) {
   const styles = useStyles()
   /*
-   * Thirty columns are too narrow to label one by one — a date under each at
-   * 10px is unreadable whatever it says — so a series that carries no labels
-   * of its own gets its two ends instead. That is the whole x axis it needs:
-   * the caption above says how long the window is, and these say where it
-   * starts and stops.
+   * No x axis. Every series here ends today and the caption above says how
+   * many days it covers, so dates under the columns only repeat it — and at
+   * thirty columns a date under each is unreadable at any size.
    */
-  const ends = points.some((point) => point.label)
-    ? null
-    : [points[0]?.key, points.at(-1)?.key].map(monthDay)
-
   return (
     <View style={styles.chart}>
       <View style={styles.chartHead}>
@@ -450,23 +444,8 @@ function Chart({
         {...(color ? { color } : {})}
         accessibilityLabel={`${title}, ${caption}`}
       />
-      {ends ? (
-        <View style={styles.axis}>
-          <Text style={styles.axisLabel}>{ends[0]}</Text>
-          <Text style={styles.axisLabel}>{ends[1]}</Text>
-        </View>
-      ) : null}
     </View>
   )
-}
-
-/** `2026-09-19` as `Sep 19`. English, like the rest of this surface. */
-function monthDay(day: string | undefined): string {
-  if (!day) return ''
-  const at = new Date(`${day}T00:00:00Z`)
-  return Number.isNaN(at.getTime())
-    ? ''
-    : at.toLocaleDateString('en', { day: 'numeric', month: 'short', timeZone: 'UTC' })
 }
 
 function Heading({ children }: { children: string }) {
@@ -480,13 +459,9 @@ function QueueCount({ count: n }: { count: number }) {
   return <Text style={[styles.queueCount, n > 0 && styles.queueCountOpen]}>{n}</Text>
 }
 
-/**
- * A day key as one column. `slice(8)` is the day of the month — the labels sit
- * under a thirty-column chart at 10px, and a full date there is illegible
- * whatever it says.
- */
+/** A day key as one column. */
 function dayPoint(day: { day: string; count: number }): ColumnPoint {
-  return { key: day.day, value: day.count, label: day.day.slice(8) }
+  return { key: day.day, value: day.count }
 }
 
 function languageRow(language: { code: string; name: string; count: number }): BarListRow {
