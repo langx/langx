@@ -2292,6 +2292,16 @@ export const en = {
    Apple string catalogue the watch target compiles. So this block is still the
    one source of truth â it simply reaches the watch by a different road.
   */
+  /*
+   CarPlay's own words, drawn by Swift in the car — see `carplay/` and
+   `src/i18n/nativeKeys.ts`. One sentence: the alert a driver sees when a tap
+   was received and the message could not be spoken, so that "nothing
+   happened" is never the answer to a tap.
+  */
+  carplay: {
+    readFailed: 'Could not read this aloud',
+  },
+
   watch: {
     complication: 'Watch face',
     showsUnread: 'Unread',

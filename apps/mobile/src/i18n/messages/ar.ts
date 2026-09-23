@@ -2424,6 +2424,10 @@ export const ar: Localized<EnMessages> = {
     summary: 'هذا الأسبوع: {messages} و{corrections}.',
   },
 
+  carplay: {
+    readFailed: 'تعذّرت القراءة بصوت عالٍ',
+  },
+
   watch: {
     complication: 'واجهة الساعة',
     showsUnread: 'غير المقروءة',
