@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Ionicons } from '@expo/vector-icons'
-import { memo, useCallback, useEffect, useRef, type ReactNode } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
 import {
   Animated,
   Platform,
@@ -28,6 +28,7 @@ import {
   type MessageType,
 } from '@langx/shared'
 import { isBigEmoji } from '../lib/singleEmoji'
+import { diffCorrection } from '../lib/correctionDiff'
 import type { AnchorRect } from '../lib/messageMenu'
 import {
   SWIPE_ACTIVATE_PX,
@@ -126,6 +127,35 @@ export interface MessageBubbleProps {
   /** Opens the full-screen viewer. The thread owns it, so paging can leave this bubble. */
   /** Opens the viewer on this message's attachments, at the one that was tapped. */
   onOpenMedia: (items: Media[], index: number) => void
+}
+
+/**
+ * The two lines of a correction card, with only the words that changed marked:
+ * struck and red on the original, green on the rewrite. Striking the whole
+ * original said "this was wrong" about a sentence that was mostly right and
+ * left the reader to spot the difference themselves.
+ */
+function CorrectionLines({ original, corrected }: { original: string; corrected: string }) {
+  const styles = useStyles()
+  const diff = useMemo(() => diffCorrection(original, corrected), [original, corrected])
+  return (
+    <>
+      <Text style={styles.correctionOriginal}>
+        {diff.original.map((segment, index) => (
+          <Text key={index} style={segment.changed ? styles.correctionRemoved : null}>
+            {segment.text}
+          </Text>
+        ))}
+      </Text>
+      <Text style={styles.correctionText}>
+        {diff.corrected.map((segment, index) => (
+          <Text key={index} style={segment.changed ? styles.correctionAdded : null}>
+            {segment.text}
+          </Text>
+        ))}
+      </Text>
+    </>
+  )
 }
 
 /**
@@ -404,12 +434,14 @@ export const MessageBubble = memo(function MessageBubble({
           {mine ? t('chat.yourCorrection') : t('chat.correctionFrom', { name: partnerName })}
         </Text>
         {/*
-          The whole original struck through, the whole rewrite in weight: two
-          cues that survive colour-blindness, and no colour on the words
-          themselves — the green is the card's, not the sentence's.
+          Colour marks what changed, and the strike and the weight carry the
+          same news for anyone who cannot tell the red from the green.
         */}
-        {correction ? <Text style={styles.correctionOriginal}>{correction.original}</Text> : null}
-        <Text style={styles.correctionText}>{message.body}</Text>
+        {correction ? (
+          <CorrectionLines original={correction.original} corrected={message.body} />
+        ) : (
+          <Text style={styles.correctionText}>{message.body}</Text>
+        )}
         {correction?.note ? <Text style={styles.correctionNote}>{correction.note}</Text> : null}
         {badge}
         <View style={styles.correctionMeta}>{meta}</View>
@@ -1054,8 +1086,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     ...font.body,
     color: colors.textMuted,
     lineHeight: 22,
-    textDecorationLine: 'line-through',
   },
+  correctionRemoved: { color: colors.danger, textDecorationLine: 'line-through' },
   correctionText: {
     ...font.body,
     color: colors.text,
@@ -1063,6 +1095,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     fontWeight: '600',
     lineHeight: 23,
   },
+  correctionAdded: { color: colors.success, fontWeight: '800' },
   correctionNote: {
     ...font.body,
     // A fifth of the success green, as the prototype rules it: the line has
