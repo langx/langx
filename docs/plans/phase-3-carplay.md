@@ -114,6 +114,35 @@ in review. Its signed IPA was opened before upload: CarPlay, Siri and the
 Keychain group in the app's entitlements, `LangXIntents.appex` inside with its
 own, both scene roles in `Info.plist`, eight `AppIntentVocabulary.plist`s.
 
+## The first car — 23 September, build 173 from TestFlight
+
+**The scene attaches and the list is right.** Behic's Toyota drew the chat
+list with real conversations, most recent first, each with a relative time
+("6 mins ago", "2 hrs ago") in the system's own words — the blob, the decoder,
+the manifest role and the entitlement all working end to end, on the first
+try.
+
+**Two things were wrong, and both are fixed for the next build:**
+
+- **"None of them can be tapped."** The tap almost certainly arrived — the
+  speech did not become sound, and silence was the only failure the code had.
+  From the driver's seat that is indistinguishable from a dead list. The
+  session now uses `.voicePrompt` with `.duckOthers` and
+  `.interruptSpokenAudioAndMixWithOthers`, which is what Apple's forums point
+  to for a silent `AVSpeechSynthesizer` in CarPlay; the row's playing
+  indicator goes up the moment the tap arrives; and if the session cannot be
+  activated, or the synthesizer has not started within three seconds, the car
+  shows an alert — `carplay.readFailed`, in eight languages. The next test
+  therefore separates "no response" from "response, no sound", which this one
+  could not.
+- **The title.** "LangX" drawn as a large heading beside the app's own icon in
+  the rail — the brand twice, and nothing saying what the screen is. It is
+  now `tabs.chats`, the title the watch's list uses.
+
+What this still cannot see is sound that started and never reached the car's
+speakers. That is the car's routing, the forum thread has no answer to it, and
+if the next test ends there it is the one problem here with no known fix.
+
 ## What was not checked, and what it would take
 
 - **A car, or the simulator's car.** Nothing here has been seen on a CarPlay

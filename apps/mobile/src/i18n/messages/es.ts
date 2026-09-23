@@ -2094,6 +2094,10 @@ export const es: Localized<EnMessages> = {
     summary: 'Esta semana: {messages} y {corrections}.',
   },
 
+  carplay: {
+    readFailed: 'No se pudo leer en voz alta',
+  },
+
   watch: {
     complication: 'Esfera',
     showsUnread: 'No leídos',

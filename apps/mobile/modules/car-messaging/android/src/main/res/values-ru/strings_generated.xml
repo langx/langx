@@ -3,6 +3,8 @@
 <resources>
   <string name="tabs_chats">Чаты</string>
   <string name="chats_emptyTitle">Чатов пока нет</string>
+  <string name="carplay_readFailed">Не удалось прочитать вслух</string>
+  <string name="common_ok">ОК</string>
   <string name="watch_unread">Непрочитанные</string>
   <string name="watch_nothingUnread">Нет непрочитанных</string>
   <string name="watch_openOnPhone">Откройте LangX на телефоне</string>

@@ -2329,6 +2329,10 @@ export const ru: Localized<EnMessages> = {
     summary: 'На этой неделе: {messages} и {corrections}.',
   },
 
+  carplay: {
+    readFailed: 'Не удалось прочитать вслух',
+  },
+
   watch: {
     complication: 'Циферблат',
     showsUnread: 'Непрочитанные',

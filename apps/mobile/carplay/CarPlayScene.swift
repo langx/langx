@@ -36,7 +36,13 @@ import UIKit
 @objc(CarPlaySceneDelegate)
 final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
   private var interfaceController: CPInterfaceController?
-  private let list = CPListTemplate(title: "LangX", sections: [])
+  /*
+   The chat tab's own name, as the watch's list is titled — not the app's.
+   The first car it was seen in, on 23 September, drew "LangX" as a large
+   heading beside the app's own icon in the rail: the brand twice, and the
+   one word that says what this screen is nowhere.
+  */
+  private let list = CPListTemplate(title: String(localized: "tabs.chats"), sections: [])
   private let speaker = CarPlaySpeaker()
   private var writes: NSObjectProtocol?
   /*
@@ -141,13 +147,53 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
       detailText: parts.compactMap { $0 }.joined(separator: " · ")
     )
 
+    /*
+     Every tap answers, one way or the other.
+
+     The first build to reach a car answered nothing: the row was tapped, the
+     speech never became sound, and the only failure path was silence — so
+     from the driver's seat it read as a list that cannot be tapped. Now the
+     playing indicator goes up the moment the tap arrives, before any audio
+     exists, and if the audio does not start the driver is told so. A row
+     with nothing to read says that too, rather than doing nothing.
+    */
     item.handler = { [weak self, weak item] _, completion in
       defer { completion() }
-      guard let self, let preview = conversation.preview else { return }
-      self.speaker.speak(preview) { [weak item] in item?.isPlaying = false }
-      item?.isPlaying = true
+      guard let self, let item else { return }
+      guard let preview = conversation.preview else {
+        self.showReadFailed()
+        return
+      }
+      item.isPlaying = true
+      self.speaker.speak(
+        preview,
+        whenDone: { [weak item] in item?.isPlaying = false },
+        whenFailed: { [weak self, weak item] in
+          item?.isPlaying = false
+          self?.showReadFailed()
+        })
     }
     return item
+  }
+
+  /**
+   The one thing this surface says in a sentence of its own.
+
+   An alert, because it is the only template every CarPlay category may
+   present over a list, and because it goes away with one tap. Not presented
+   over another one — two failures in a row are the same news.
+  */
+  private func showReadFailed() {
+    guard let interfaceController, interfaceController.presentedTemplate == nil else { return }
+    let alert = CPAlertTemplate(
+      titleVariants: [String(localized: "carplay.readFailed")],
+      actions: [
+        CPAlertAction(title: String(localized: "common.ok"), style: .default) {
+          [weak interfaceController] _ in
+          interfaceController?.dismissTemplate(animated: true, completion: nil)
+        }
+      ])
+    interfaceController.presentTemplate(alert, animated: true, completion: nil)
   }
 }
 
@@ -187,11 +233,11 @@ enum CarPlayScene {
 
  **Whether it is audible is the one thing that cannot be settled at a desk.**
  A CarPlay scene can be active while the app itself is in the background, and
- activating an audio session there needs the `audio` background mode. It is
- deliberately not added: it would let every other sound in the app keep
- playing when somebody leaves it, which is a product decision rather than a
- build setting. If the car turns out to be silent, that is the line to add and
- the question to ask first.
+ activating an audio session there needs the `audio` background mode — added
+ by `plugins/withCarPlay.js` on Behic's decision, with the cost it names. The
+ first car it reached, on 23 September, still stayed silent; the session
+ configuration below is the second attempt, and a failure is now reported to
+ the driver rather than swallowed.
  */
 @available(iOS 14.0, *)
 final class CarPlaySpeaker: NSObject, AVSpeechSynthesizerDelegate {
@@ -199,12 +245,16 @@ final class CarPlaySpeaker: NSObject, AVSpeechSynthesizerDelegate {
    `nonisolated(unsafe)` because `AVSpeechSynthesizerDelegate` is declared
    `NS_SWIFT_SENDABLE`, which makes this class `Sendable` and the synthesizer
    inside it a warning. The claim it makes is true here and kept true below:
-   everything that touches the three properties runs on the main queue —
+   everything that touches these properties runs on the main queue —
    `speak` and `stop` are called from CarPlay's own handlers, and the two
    delegate callbacks hop before they do anything.
   */
   nonisolated(unsafe) private let synthesizer = AVSpeechSynthesizer()
   nonisolated(unsafe) private var whenDone: (() -> Void)?
+  nonisolated(unsafe) private var whenFailed: (() -> Void)?
+  /// Whether the synthesizer said it began — the only evidence of sound this
+  /// side of the car's speakers there is.
+  nonisolated(unsafe) private var started = false
   /*
    Which utterance the two callbacks below are allowed to act on.
 
@@ -221,24 +271,55 @@ final class CarPlaySpeaker: NSObject, AVSpeechSynthesizerDelegate {
     synthesizer.delegate = self
   }
 
-  func speak(_ text: String, whenDone: @escaping () -> Void) {
+  func speak(
+    _ text: String, whenDone: @escaping () -> Void, whenFailed: @escaping () -> Void
+  ) {
     if synthesizer.isSpeaking { synthesizer.stopSpeaking(at: .immediate) }
     clear()
 
     /*
-     `.spokenAudio` with `.duckOthers` is what a navigation prompt does: the
-     music stays on, quieter, and comes back. `.playback` on its own would
-     stop whatever the car was playing and not start it again.
+     `.voicePrompt` with `.duckOthers` and `.interruptSpokenAudioAndMixWithOthers`
+     is what a navigation prompt does, and it is the configuration Apple's
+     forums point to when `AVSpeechSynthesizer` is silent in CarPlay — which is
+     what the first build did in the first car, with `.spokenAudio`. The music
+     stays on, quieter, and comes back; a podcast pauses rather than talking
+     over the message.
+
+     Thrown rather than ignored now. A session that cannot be activated is a
+     message nobody will hear, and the driver is owed being told.
     */
     let session = AVAudioSession.sharedInstance()
-    try? session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
-    try? session.setActive(true)
+    do {
+      try session.setCategory(
+        .playback, mode: .voicePrompt,
+        options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
+      try session.setActive(true)
+    } catch {
+      whenDone()
+      whenFailed()
+      return
+    }
 
     let utterance = AVSpeechUtterance(string: text)
     utterance.voice = AVSpeechSynthesisVoice(language: language(of: text))
     current = utterance
+    started = false
     self.whenDone = whenDone
+    self.whenFailed = whenFailed
     synthesizer.speak(utterance)
+
+    /*
+     Three seconds for the synthesizer to say it started. It usually says so
+     within a fraction of one; when it never does, the utterance is dropped
+     and the failure reported, instead of a playing indicator that stays up
+     over silence. What this cannot see is sound that started and then never
+     reached the car's speakers — that is the car's audio routing, and the
+     forum thread above has no answer to it either.
+    */
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+      guard let self, self.current === utterance, !self.started else { return }
+      self.fail()
+    }
   }
 
   /// The car went away mid-sentence. Nothing is left speaking, and no row is
@@ -248,6 +329,14 @@ final class CarPlaySpeaker: NSObject, AVSpeechSynthesizerDelegate {
     current = nil
     clear()
     deactivate()
+  }
+
+  func speechSynthesizer(
+    _ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance
+  ) {
+    DispatchQueue.main.async {
+      if utterance === self.current { self.started = true }
+    }
   }
 
   func speechSynthesizer(
@@ -272,6 +361,18 @@ final class CarPlaySpeaker: NSObject, AVSpeechSynthesizerDelegate {
   private func clear() {
     whenDone?()
     whenDone = nil
+    whenFailed = nil
+  }
+
+  /// Gives up on the current utterance and says so — once.
+  private func fail() {
+    let failed = whenFailed
+    whenFailed = nil
+    current = nil
+    if synthesizer.isSpeaking { synthesizer.stopSpeaking(at: .immediate) }
+    clear()
+    deactivate()
+    failed?()
   }
 
   private func deactivate() {
