@@ -30,6 +30,7 @@ import { Button } from '../src/components/ui/Button'
 import { MessageBannerHost } from '../src/components/MessageBannerHost'
 import { ToastHost } from '../src/components/ToastHost'
 import { TourHost } from '../src/components/TourHost'
+import { WebTitle } from '../src/components/WebTitle'
 import { authClient } from '../src/lib/auth-client'
 import { useGuestSessionReset } from '../src/hooks/useGuestSessionReset'
 import { usePendingInvite } from '../src/hooks/usePendingInvite'
@@ -116,17 +117,14 @@ function RootLayout() {
      */
     <GestureHandlerRootView style={{ flex: 1 }}>
       {/*
-       * The browser tab's name. expo-router turns React Navigation's own
-       * document title off, so without this the static export ships an empty
-       * `<title>` and the tab shows the bare URL. Web only: on iOS a `<title>`
-       * in `Head` publishes an NSUserActivity for Handoff and Spotlight, which
-       * is a different feature from a label on a tab. The favicon comes from
-       * `web.favicon` in app.config.ts; the touch icon is what iOS uses for a
-       * home-screen shortcut and in Safari's own tab and favourites grids.
+       * The touch icon is what iOS uses for a home-screen shortcut and in
+       * Safari's own tab and favourites grids; the favicon comes from
+       * `web.favicon` in app.config.ts. The title is `WebTitle`, further in,
+       * because it needs the query client for the unread count. Web only, like
+       * that one: `Head` on iOS is Handoff, not a document head.
        */}
       {Platform.OS === 'web' ? (
         <Head>
-          <title>LangX</title>
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         </Head>
       ) : null}
@@ -343,6 +341,7 @@ function RootShell() {
     <>
       <QueryClientProvider client={queryClient}>
         <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+        <WebTitle />
         {showSpinner ? (
           <SplashFill>
             {stalled ? (
