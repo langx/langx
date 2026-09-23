@@ -1,5 +1,6 @@
 import {
   type FeedbackInput,
+  type LinkPreviewResponse,
   type ConversationFilter,
   type EquippableKind,
   type Equipped,
@@ -195,6 +196,8 @@ export const keys = {
    */
   messagesAround: (id: string, anchorId: string) => ['messages', id, 'around', anchorId] as const,
   starred: ['starred'] as const,
+  /** Its own prefix: nothing patches it, and it is about a page, not a conversation. */
+  linkPreview: (url: string) => ['linkPreview', url] as const,
   corrections: ['corrections'] as const,
   activity: (from: string, to: string) => ['activity', from, to] as const,
   tokens: ['tokens'] as const,
@@ -300,6 +303,25 @@ export function useUnreadTotal(enabled = true) {
     queryKey: keys.unread,
     queryFn: async () => (await api.get<{ total: number }>('/me/unread')).total,
     enabled,
+  })
+}
+
+/**
+ * The card under a link in a chat, or `null` when the page has none.
+ *
+ * Kept for the life of the app: the server already caches each address for a
+ * week, and a thread scrolled back through should not ask again for a card it
+ * drew a minute ago. No retry — a card that does not arrive is a link without
+ * a card, which is exactly what a message looked like before this existed.
+ */
+export function useLinkPreview(url: string) {
+  return useQuery({
+    queryKey: keys.linkPreview(url),
+    queryFn: async () =>
+      (await api.get<LinkPreviewResponse>(`/link-preview?url=${encodeURIComponent(url)}`)).preview,
+    staleTime: Infinity,
+    gcTime: 60 * 60 * 1000,
+    retry: false,
   })
 }
 
