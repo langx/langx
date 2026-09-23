@@ -1,38 +1,49 @@
+import Feather from '@expo/vector-icons/Feather'
 import { isVideoContentType } from '@langx/shared'
 import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
-  Animated,
-  I18nManager,
+  AccessibilityInfo,
+  ActivityIndicator,
   Modal,
-  PanResponder,
   Platform,
   Pressable,
   Text,
   View,
   type ViewStyle,
 } from 'react-native'
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useT } from '../i18n'
-import { makeStyles, spacing } from '../lib/theme'
+import { showAlert } from '../lib/alert'
 import {
+  AXIS_LOCK_PX,
   DISMISS_DRAG_PX,
   DOUBLE_TAP_MS,
   DOUBLE_TAP_SCALE,
   MIN_SCALE,
-  type Point,
   type Size,
   albumSlots,
   clampOffset,
-  clampScale,
-  distanceBetween,
   fittedSize,
-  isDoubleTap,
-  midpointOf,
+  maxOffset,
   offsetForFocus,
+  resist,
+  resistScaleChange,
+  settleZoom,
   swipeStep,
+  zoomAbout,
 } from '../lib/pinch'
+import { saveMediaToDevice } from '../lib/saveMedia'
+import { makeStyles, spacing, useTheme } from '../lib/theme'
 
 /**
  * The browser's own pinch-zoom and scroll would fight ours, and unlike
@@ -100,10 +111,19 @@ function FullscreenVideo({ url }: { url: string }) {
  * and a feed card want the second half and already have their own first half,
  * and three viewers is three sets of gesture bugs.
  *
- * The gesture is `PanResponder` and `Animated`, for the reason `pinch.ts`
- * records. `evt.nativeEvent.touches` is where the second finger lives —
- * `gestureState` only ever describes the centroid, so a pinch is invisible to
- * it.
+ * **gesture-handler and Reanimated, and it used to be `PanResponder` and
+ * `Animated`** — the same move `SwipeableRow` made, for the same reason and a
+ * worse version of it. Every pinch frame was a `setValue` across the bridge,
+ * and the arithmetic behind it was absolute: each frame recomputed the offset
+ * from the fingers' midpoint alone, so a second pinch on a zoomed picture
+ * jumped, a pinch on the black letterbox spent every frame against the clamp
+ * with the picture sliding out from under the fingers, and lifting one finger
+ * mid-pinch threw the picture to wherever it had been before the pinch began.
+ * Now the pinch and the pan are recognised natively on the whole stage —
+ * picture and letterbox alike — every frame is applied to where the picture
+ * already is (`zoomAbout`, `resist`), and the release is a spring on the UI
+ * thread. Anything a gesture callback below calls is a worklet; see
+ * `lib/pinch.ts` for why that is not optional.
  *
  * The album is a strip of three, not one picture swapped for the next. It
  * used to be the latter: a page turn slid the open picture off the screen,
@@ -115,6 +135,7 @@ function FullscreenVideo({ url }: { url: string }) {
  */
 export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoViewerProps) {
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   /*
    * A `Modal` is outside every `SafeAreaView` and every `Screen`, so the
@@ -124,9 +145,10 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
    */
   const insets = useSafeAreaInsets()
 
-  const scale = useRef(new Animated.Value(MIN_SCALE)).current
-  const translateX = useRef(new Animated.Value(0)).current
-  const translateY = useRef(new Animated.Value(0)).current
+  /** The open picture's zoom, and its offset from the frame's centre. */
+  const scale = useSharedValue(MIN_SCALE)
+  const offsetX = useSharedValue(0)
+  const offsetY = useSharedValue(0)
   /**
    * Where the strip of three has been dragged to, in pixels. It rests at
    * `-turned * width`, never at zero: the strip is laid out `turned` pages
@@ -135,67 +157,74 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
    * instead would race the re-render, and whichever of the two landed first
    * would show the wrong picture for a frame.
    */
-  const pageX = useRef(new Animated.Value(0)).current
+  const pageX = useSharedValue(0)
+  /**
+   * `turned` twice: the ref is what the render lays the strip out by, the
+   * shared value is the same number for the worklets, which cannot read a ref.
+   */
   const turned = useRef(0)
+  const turnedAt = useSharedValue(0)
 
   /**
-   * `Animated.Value` cannot be read back synchronously, and a gesture needs the
-   * value it is continuing from on every frame. These mirror the three above;
-   * everything writes both or neither.
+   * The frame, and what `contentFit="contain"` draws of the open picture in
+   * it — the pan bounds. Shared values because the gestures read them on the
+   * UI thread; `frame` is kept on this side too for the JS-side page turn.
    */
-  const rest = useRef({ scale: MIN_SCALE, x: 0, y: 0 })
   const frame = useRef<Size>({ width: 0, height: 0 })
+  const frameW = useSharedValue(0)
+  const frameH = useSharedValue(0)
+  const contentW = useSharedValue(0)
+  const contentH = useSharedValue(0)
   /**
    * By URL rather than one size for "the picture": three are mounted, each
    * reports its own size when it loads, and the one in the middle changes
    * without any of them loading again.
    */
   const naturals = useRef(new Map<string, Size>())
-  const start = useRef({ distance: 0, scale: MIN_SCALE, x: 0, y: 0, focus: { x: 0, y: 0 } })
-  const lastTap = useRef<{ at: number } | null>(null)
-  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   /**
-   * The responder below is created once and keeps the first render's
-   * closures, so anything it needs from props has to be read through a ref
-   * that every render rewrites. `rest` and friends already work this way for
-   * the gesture's own numbers; this is the same for the album.
+   * What the current one-finger drag is doing, decided on its first frame and
+   * kept until it lifts, so a drag that wanders diagonally does not flip
+   * between turning the page and dismissing. A pinch always makes it `ZOOM`.
+   */
+  const panMode = useSharedValue<PanMode>(PAN_IDLE)
+  const pinching = useSharedValue(false)
+  const panning = useSharedValue(false)
+
+  /**
+   * The page turn runs on the JS side and outlives the render that started
+   * it, so anything it needs from props has to be read through a ref that
+   * every render rewrites.
    */
   const latest = useRef({ index, photos, onIndexChange })
   latest.current = { index, photos, onIndexChange }
 
-  /**
-   * Where the close disc sits, in the same window coordinates the gesture
-   * reads. Kept in a ref for the reason `latest` is: the responder is built
-   * once and would otherwise hold the first render's inset. The gesture
-   * layer refuses a touch that starts here, so the disc gets it even on a
-   * platform that paints the transformed picture over an absolutely
-   * positioned sibling — which is what made the ✕ unreachable once a photo
-   * filled the screen.
-   */
-  const closeZone = useRef({ top: 0, bottom: 0, start: 0, end: 0 })
-  closeZone.current = {
-    top: insets.top + spacing.sm - CLOSE_HIT_SLOP,
-    bottom: insets.top + spacing.sm + CLOSE_SIZE + CLOSE_HIT_SLOP,
-    start: spacing.lg - CLOSE_HIT_SLOP,
-    end: spacing.lg + CLOSE_SIZE + CLOSE_HIT_SLOP,
-  }
-  function overClose(x: number, y: number): boolean {
-    const zone = closeZone.current
-    if (y < zone.top || y > zone.bottom) return false
-    const width = frame.current.width
-    // `end` is the right edge in a left-to-right layout and the left in Arabic.
-    const fromEdge = I18nManager.isRTL ? x : width - x
-    return fromEdge >= zone.start && fromEdge <= zone.end
+  /** Which picture a save is running or has just finished for. */
+  const [saving, setSaving] = useState<{ url: string; phase: 'saving' | 'saved' } | null>(null)
+  const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function syncContent(): void {
+    const { index: open, photos: album } = latest.current
+    const natural = naturals.current.get(album[open ?? -1]?.url ?? '') ?? { width: 0, height: 0 }
+    const fitted = fittedSize(natural, frame.current)
+    contentW.value = fitted.width
+    contentH.value = fitted.height
   }
 
-  /** Where `pageX` rests for the strip as it is currently laid out. */
-  function stripRest(): number {
-    return -turned.current * frame.current.width
+  function rememberSize(url: string, width: number | undefined, height: number | undefined): void {
+    naturals.current.set(url, { width: width ?? 0, height: height ?? 0 })
+    syncContent()
   }
 
   function settleStrip(): void {
-    Animated.spring(pageX, { toValue: stripRest(), useNativeDriver: true, bounciness: 0 }).start()
+    pageX.value = withSpring(-turned.current * frame.current.width, SPRING)
+  }
+
+  /** The end of a page turn, back on the JS side once the slide has landed. */
+  function landTurn(to: number, next: number): void {
+    turned.current = to
+    turnedAt.value = to
+    latest.current.onIndexChange?.(next)
   }
 
   /**
@@ -210,200 +239,226 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
       return
     }
     const to = turned.current + step
-    Animated.timing(pageX, {
-      toValue: -to * frame.current.width,
-      duration: 160,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
+    const next = (at + album.length + step) % album.length
+    pageX.value = withTiming(-to * frame.current.width, { duration: 160 }, (finished) => {
       // Cut short by a finger landing mid-slide: the strip is wherever that
       // finger now has it, and its release decides.
-      if (!finished) return
-      turned.current = to
-      change((at + album.length + step) % album.length)
+      if (finished) runOnJS(landTurn)(to, next)
     })
   }
-
-  const settle = useCallback(
-    (next: { scale: number; x: number; y: number }, animate: boolean) => {
-      rest.current = next
-      if (animate) {
-        Animated.parallel([
-          Animated.spring(scale, { toValue: next.scale, useNativeDriver: true, bounciness: 0 }),
-          Animated.spring(translateX, { toValue: next.x, useNativeDriver: true, bounciness: 0 }),
-          Animated.spring(translateY, { toValue: next.y, useNativeDriver: true, bounciness: 0 }),
-        ]).start()
-        return
-      }
-      scale.setValue(next.scale)
-      translateX.setValue(next.x)
-      translateY.setValue(next.y)
-    },
-    [scale, translateX, translateY],
-  )
-
-  const reset = useCallback(() => settle({ scale: MIN_SCALE, x: 0, y: 0 }, false), [settle])
 
   // A new picture starts life-size. Without this, paging while zoomed lands the
   // next one already halfway off the screen.
   useEffect(() => {
-    reset()
+    scale.value = MIN_SCALE
+    offsetX.value = 0
+    offsetY.value = 0
+    syncContent()
     // Closed: nothing is on screen, so this is the one moment the strip can go
     // back to the start without anyone seeing it move.
     if (index === null) {
       turned.current = 0
-      pageX.setValue(0)
+      turnedAt.value = 0
+      pageX.value = 0
     }
-  }, [index, reset, pageX])
+    // Shared values and refs only besides `index`; listing the functions
+    // would rebuild this on every render.
+  }, [index])
 
   useEffect(
     () => () => {
-      if (tapTimer.current) clearTimeout(tapTimer.current)
+      if (savedTimer.current) clearTimeout(savedTimer.current)
     },
     [],
   )
 
-  function clampTo(offset: Point, at: number): Point {
-    const { index: open, photos: album } = latest.current
-    const natural = naturals.current.get(album[open ?? -1]?.url ?? '') ?? { width: 0, height: 0 }
-    return clampOffset(offset, at, frame.current, fittedSize(natural, frame.current))
+  function settleZoomNow(): void {
+    'worklet'
+    const next = settleZoom(
+      { x: offsetX.value, y: offsetY.value },
+      scale.value,
+      { width: frameW.value, height: frameH.value },
+      { width: contentW.value, height: contentH.value },
+    )
+    scale.value = withSpring(next.scale, SPRING)
+    offsetX.value = withSpring(next.offset.x, SPRING)
+    offsetY.value = withSpring(next.offset.y, SPRING)
   }
 
-  function toggleZoom(focus: Point): void {
-    if (rest.current.scale > MIN_SCALE) {
-      settle({ scale: MIN_SCALE, x: 0, y: 0 }, true)
-      return
-    }
-    const next = DOUBLE_TAP_SCALE
-    const offset = clampTo(offsetForFocus(focus, next), next)
-    settle({ scale: next, ...offset }, true)
+  function settleStripNow(): void {
+    'worklet'
+    pageX.value = withSpring(-turnedAt.value * frameW.value, SPRING)
   }
 
-  const pan = useRef(
-    PanResponder.create({
-      // Claimed on touch-down, unlike the list rows: this view is the whole
-      // modal, so there is no tap of anyone else's to swallow.
-      onStartShouldSetPanResponder: (event) =>
-        !overClose(event.nativeEvent.pageX, event.nativeEvent.pageY),
-      onMoveShouldSetPanResponder: (event) =>
-        !overClose(event.nativeEvent.pageX, event.nativeEvent.pageY),
-      onPanResponderGrant: (event) => {
-        const touches = event.nativeEvent.touches
-        start.current = {
-          distance:
-            touches.length >= 2 ? distanceBetween(pointOf(touches[0]), pointOf(touches[1])) : 0,
-          scale: rest.current.scale,
-          x: rest.current.x,
-          y: rest.current.y,
-          focus: { x: 0, y: 0 },
-        }
-      },
-      onPanResponderMove: (event, gesture) => {
-        const touches = event.nativeEvent.touches
-        if (touches.length >= 2) {
-          const a = pointOf(touches[0])
-          const b = pointOf(touches[1])
-          const spread = distanceBetween(a, b)
-          // The second finger can land after the first, so the reference
-          // distance is taken here rather than only in `onPanResponderGrant`.
-          if (start.current.distance === 0) {
-            start.current = { ...start.current, distance: spread, scale: rest.current.scale }
-          }
-          const centre = midpointOf(a, b)
-          const focus = {
-            x: centre.x - frame.current.width / 2,
-            y: centre.y - frame.current.height / 2,
-          }
-          const next = clampScale((start.current.scale * spread) / start.current.distance)
-          const offset = clampTo(offsetForFocus(focus, next), next)
-          rest.current = { scale: next, ...offset }
-          scale.setValue(next)
-          translateX.setValue(offset.x)
-          translateY.setValue(offset.y)
-          return
-        }
+  const multiple = photos.length > 1
 
-        if (rest.current.scale > MIN_SCALE) {
-          const offset = clampTo(
-            { x: start.current.x + gesture.dx, y: start.current.y + gesture.dy },
-            rest.current.scale,
-          )
-          rest.current = { ...rest.current, ...offset }
-          translateX.setValue(offset.x)
-          translateY.setValue(offset.y)
-          return
-        }
+  const pinch = Gesture.Pinch()
+    .onStart(() => {
+      pinching.value = true
+      // A second finger landing mid page-turn or mid-dismiss takes the gesture
+      // over; the strip goes back to rest rather than staying half-turned.
+      if (panMode.value === PAN_PAGE) settleStripNow()
+      panMode.value = PAN_ZOOM
+    })
+    .onChange((event) => {
+      const next = zoomAbout(
+        { x: offsetX.value, y: offsetY.value },
+        scale.value,
+        { x: event.focalX - frameW.value / 2, y: event.focalY - frameH.value / 2 },
+        resistScaleChange(scale.value, event.scaleChange),
+      )
+      scale.value = next.scale
+      offsetX.value = next.offset.x
+      offsetY.value = next.offset.y
+    })
+    .onEnd(() => {
+      pinching.value = false
+      // A finger still down carries on as a pan, and that pan's release settles.
+      if (!panning.value) settleZoomNow()
+    })
 
+  const pan = Gesture.Pan()
+    // The centroid of every finger down, so going from two fingers to one or
+    // back moves the picture by what the fingers did and nothing else.
+    .averageTouches(true)
+    .onStart(() => {
+      panning.value = true
+      panMode.value = pinching.value || scale.value > MIN_SCALE ? PAN_ZOOM : PAN_IDLE
+    })
+    .onChange((event) => {
+      if (panMode.value === PAN_IDLE) {
+        // Not yet: too little travel to tell sideways from down. The web's
+        // gesture-handler measures from where the pan was recognised, so its
+        // first frame is 0,0 — which read as "not sideways" and made every
+        // page turn a dismissal.
+        if (Math.hypot(event.translationX, event.translationY) < AXIS_LOCK_PX) return
         // Life-size: a sideways drag through an album is a page turn and the
         // whole strip follows the finger, so the next picture is in view
         // before the gesture is committed to; anything else is a dismissal,
         // and the open picture follows that on its own.
-        if (latest.current.photos.length > 1 && Math.abs(gesture.dx) > Math.abs(gesture.dy)) {
-          pageX.setValue(stripRest() + gesture.dx)
-          translateX.setValue(0)
-          translateY.setValue(0)
-          return
-        }
-        translateY.setValue(gesture.dy)
-        translateX.setValue(gesture.dx / 3)
-      },
-      onPanResponderRelease: (event, gesture) => {
-        const travelled = Math.hypot(gesture.dx, gesture.dy)
-        const now = Date.now()
+        panMode.value =
+          multiple && Math.abs(event.translationX) > Math.abs(event.translationY)
+            ? PAN_PAGE
+            : PAN_DISMISS
+      }
+      if (panMode.value === PAN_ZOOM) {
+        const limit = maxOffset(
+          scale.value,
+          { width: frameW.value, height: frameH.value },
+          { width: contentW.value, height: contentH.value },
+        )
+        offsetX.value += resist(offsetX.value, event.changeX, limit.x)
+        offsetY.value += resist(offsetY.value, event.changeY, limit.y)
+        return
+      }
+      if (panMode.value === PAN_PAGE) {
+        pageX.value = -turnedAt.value * frameW.value + event.translationX
+        return
+      }
+      offsetY.value = event.translationY
+      offsetX.value = event.translationX / 3
+    })
+    .onEnd((event) => {
+      panning.value = false
+      const mode = panMode.value
+      panMode.value = PAN_IDLE
+      // Still pinching: the pinch's release settles.
+      if (pinching.value) return
+      if (mode === PAN_PAGE) {
+        // gesture-handler reports px/s; `swipeStep` is in px/ms like the rest.
+        const step = swipeStep(event.translationX, event.translationY, event.velocityX / 1000)
+        if (step !== 0) runOnJS(turn)(step)
+        else settleStripNow()
+        return
+      }
+      if (mode === PAN_DISMISS && Math.abs(event.translationY) > DISMISS_DRAG_PX) {
+        runOnJS(onClose)()
+        return
+      }
+      settleZoomNow()
+    })
 
-        if (event.nativeEvent.touches.length === 0 && travelled <= 12) {
-          const focus = {
-            x: gesture.x0 - frame.current.width / 2,
-            y: gesture.y0 - frame.current.height / 2,
-          }
-          if (isDoubleTap(lastTap.current, now, travelled)) {
-            if (tapTimer.current) clearTimeout(tapTimer.current)
-            lastTap.current = null
-            toggleZoom(focus)
-            return
-          }
-          lastTap.current = { at: now }
-          /*
-           * A single tap closes, but only once a second one can no longer
-           * arrive. Acting immediately would make double-tap-to-zoom
-           * unreachable — the viewer would already be gone.
-           */
-          if (rest.current.scale === MIN_SCALE) {
-            if (tapTimer.current) clearTimeout(tapTimer.current)
-            tapTimer.current = setTimeout(onClose, DOUBLE_TAP_MS)
-          }
-          return
-        }
+  const doubleTap = Gesture.Tap()
+    .numberOfTaps(2)
+    .maxDelay(DOUBLE_TAP_MS)
+    .onEnd((event, success) => {
+      if (!success) return
+      if (scale.value > MIN_SCALE) {
+        scale.value = withSpring(MIN_SCALE, SPRING)
+        offsetX.value = withSpring(0, SPRING)
+        offsetY.value = withSpring(0, SPRING)
+        return
+      }
+      // Zoomed about the point tapped, so the face somebody tapped stays
+      // under their finger rather than walking off the edge.
+      const focus = { x: event.x - frameW.value / 2, y: event.y - frameH.value / 2 }
+      const offset = clampOffset(
+        offsetForFocus(focus, DOUBLE_TAP_SCALE),
+        DOUBLE_TAP_SCALE,
+        { width: frameW.value, height: frameH.value },
+        { width: contentW.value, height: contentH.value },
+      )
+      scale.value = withSpring(DOUBLE_TAP_SCALE, SPRING)
+      offsetX.value = withSpring(offset.x, SPRING)
+      offsetY.value = withSpring(offset.y, SPRING)
+    })
 
-        lastTap.current = null
+  /*
+   * A single tap closes, but only once a second one can no longer arrive —
+   * `Exclusive` holds it until the double tap has failed. Acting immediately
+   * would make double-tap-to-zoom unreachable: the viewer would already be
+   * gone. Zoomed, a tap does nothing, so a stray one does not throw away the
+   * spot somebody zoomed in on.
+   */
+  const singleTap = Gesture.Tap().onEnd((_event, success) => {
+    if (success && scale.value <= MIN_SCALE) runOnJS(onClose)()
+  })
 
-        if (rest.current.scale === MIN_SCALE) {
-          const step =
-            latest.current.photos.length > 1 ? swipeStep(gesture.dx, gesture.dy, gesture.vx) : 0
-          if (step !== 0) {
-            turn(step)
-            return
-          }
-          if (Math.abs(gesture.dy) > DISMISS_DRAG_PX) {
-            onClose()
-            return
-          }
-          settle({ scale: MIN_SCALE, x: 0, y: 0 }, true)
-          settleStrip()
-          return
-        }
-        settle({ ...rest.current, ...clampTo(rest.current, rest.current.scale) }, true)
-      },
-      onPanResponderTerminate: () => {
-        settle(rest.current, true)
-        settleStrip()
-      },
-    }),
-  ).current
+  const gesture = Gesture.Race(
+    Gesture.Simultaneous(pinch, pan),
+    Gesture.Exclusive(doubleTap, singleTap),
+  )
+
+  const stripStyle = useAnimatedStyle(() => ({ transform: [{ translateX: pageX.value }] }))
+  const openStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: offsetX.value },
+      { translateY: offsetY.value },
+      { scale: scale.value },
+    ],
+  }))
 
   if (index === null) return null
   const photo = photos[index]
   if (!photo) return null
   const slots = albumSlots(index, photos.length)
+  const savePhase = saving?.url === photo.url ? saving.phase : null
+
+  async function save(media: { url: string; contentType?: string }): Promise<void> {
+    if (savedTimer.current) clearTimeout(savedTimer.current)
+    setSaving({ url: media.url, phase: 'saving' })
+    const clear = () => setSaving((current) => (current?.url === media.url ? null : current))
+    try {
+      if ((await saveMediaToDevice(media)) === 'denied') {
+        clear()
+        await showAlert(t('photo.saveFailed'), t('photo.saveDenied'))
+        return
+      }
+    } catch {
+      clear()
+      await showAlert(t('photo.saveFailed'), t('common.retry'))
+      return
+    }
+    /*
+     * Confirmed here, on the button, rather than with a toast: `ToastHost` is
+     * mounted at the root, and a `Modal` is drawn above everything at the root,
+     * so a toast would land behind the very viewer it is about. A failure is
+     * an alert, which is a `Modal` of its own and does show on top.
+     */
+    setSaving({ url: media.url, phase: 'saved' })
+    AccessibilityInfo.announceForAccessibility(t('photo.saved'))
+    savedTimer.current = setTimeout(clear, 1500)
+  }
 
   return (
     <Modal
@@ -414,7 +469,12 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
       // screen behind it and the reader loses their place.
       onRequestClose={onClose}
     >
-      <View style={styles.backdrop}>
+      {/*
+        A root of its own: a `Modal` is a separate native window, outside the
+        `GestureHandlerRootView` in `app/_layout.tsx`, and without one here
+        Android delivers the viewer's gestures to nothing at all.
+      */}
+      <GestureHandlerRootView style={styles.backdrop}>
         {isVideoContentType(photo.contentType ?? '') ? (
           /*
            * No pinch and no pan for a video: the gesture layer below exists to
@@ -426,101 +486,131 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
             <FullscreenVideo url={photo.url} />
           </View>
         ) : (
-          <Animated.View
-            style={[styles.stage, WEB_NO_TOUCH_ACTION]}
-            onLayout={(event) => {
-              const { width, height } = event.nativeEvent.layout
-              frame.current = { width, height }
-            }}
-            {...pan.panHandlers}
-          >
-            {/*
-              Three frames wide and laid out `turned` pages along, in percent
-              so it needs no measurement before the first draw. Together with
-              `pageX` resting at `-turned * width` the middle slot always sits
-              in the middle; see `pageX` for why the two are kept in step
-              rather than both reset.
-            */}
+          <GestureDetector gesture={gesture}>
             <Animated.View
-              style={[
-                styles.strip,
-                { left: `${(turned.current - 1) * 100}%`, transform: [{ translateX: pageX }] },
-              ]}
+              style={[styles.stage, WEB_NO_TOUCH_ACTION]}
+              onLayout={(event) => {
+                const { width, height } = event.nativeEvent.layout
+                frame.current = { width, height }
+                frameW.value = width
+                frameH.value = height
+                // A rotation changes the width a page is, and so where the
+                // strip rests.
+                pageX.value = -turned.current * width
+                syncContent()
+              }}
             >
-              {slots.map((slot) => {
-                const neighbour = slot.at === null ? null : photos[slot.at]
-                if (slot.at === index) {
+              {/*
+                Three frames wide and laid out `turned` pages along, in percent
+                so it needs no measurement before the first draw. Together with
+                `pageX` resting at `-turned * width` the middle slot always sits
+                in the middle; see `pageX` for why the two are kept in step
+                rather than both reset.
+              */}
+              <Animated.View
+                style={[styles.strip, { left: `${(turned.current - 1) * 100}%` }, stripStyle]}
+              >
+                {slots.map((slot) => {
+                  const neighbour = slot.at === null ? null : photos[slot.at]
+                  if (slot.at === index) {
+                    return (
+                      <Animated.View key={slot.key} style={[styles.slot, openStyle]}>
+                        <Image
+                          source={{ uri: photo.url }}
+                          style={styles.full}
+                          contentFit="contain"
+                          onLoad={(event) =>
+                            rememberSize(photo.url, event.source?.width, event.source?.height)
+                          }
+                        />
+                      </Animated.View>
+                    )
+                  }
+                  // `Animated.View` like the middle one, not `View`: a key that moves
+                  // between slots of two different types is remounted, picture and all.
                   return (
-                    <Animated.View
-                      key={slot.key}
-                      style={[
-                        styles.slot,
-                        { transform: [{ translateX }, { translateY }, { scale }] },
-                      ]}
-                    >
-                      <Image
-                        source={{ uri: photo.url }}
-                        style={styles.full}
-                        contentFit="contain"
-                        onLoad={(event) => {
-                          naturals.current.set(photo.url, {
-                            width: event.source?.width ?? 0,
-                            height: event.source?.height ?? 0,
-                          })
-                        }}
-                      />
+                    <Animated.View key={slot.key} style={styles.slot}>
+                      {/* A video next door is left as scrim: it plays only once it is opened. */}
+                      {neighbour && !isVideoContentType(neighbour.contentType ?? '') ? (
+                        <Image
+                          source={{ uri: neighbour.url }}
+                          style={styles.full}
+                          contentFit="contain"
+                          onLoad={(event) =>
+                            rememberSize(neighbour.url, event.source?.width, event.source?.height)
+                          }
+                        />
+                      ) : null}
                     </Animated.View>
                   )
-                }
-                // `Animated.View` like the middle one, not `View`: a key that moves
-                // between slots of two different types is remounted, picture and all.
-                return (
-                  <Animated.View key={slot.key} style={styles.slot}>
-                    {/* A video next door is left as scrim: it plays only once it is opened. */}
-                    {neighbour && !isVideoContentType(neighbour.contentType ?? '') ? (
-                      <Image
-                        source={{ uri: neighbour.url }}
-                        style={styles.full}
-                        contentFit="contain"
-                        onLoad={(event) => {
-                          naturals.current.set(neighbour.url, {
-                            width: event.source?.width ?? 0,
-                            height: event.source?.height ?? 0,
-                          })
-                        }}
-                      />
-                    ) : null}
-                  </Animated.View>
-                )
-              })}
+                })}
+              </Animated.View>
             </Animated.View>
-          </Animated.View>
+          </GestureDetector>
         )}
 
         {/*
           The chrome sits on a layer of its own above the stage. `zIndex` on
-          the disc alone was not enough everywhere: react-native-web paints a
-          transformed sibling over it, and Android wants `elevation` before it
+          the discs alone was not enough everywhere: react-native-web paints a
+          transformed sibling over them, and Android wants `elevation` before it
           reorders touch targets. `box-none` keeps the layer itself out of the
-          way, so a tap between the controls still reaches the picture.
+          way, so a tap between the controls still reaches the picture — and
+          because the stage is a sibling rather than an ancestor, a touch that
+          starts on a disc never reaches the stage's gestures at all.
         */}
         <View style={styles.chrome} pointerEvents="box-none">
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('photo.close')}
             style={({ pressed }) => [
+              styles.disc,
               styles.close,
               { top: insets.top + spacing.sm },
-              pressed && styles.closePressed,
+              pressed && styles.discPressed,
             ]}
             onPress={onClose}
-            hitSlop={CLOSE_HIT_SLOP}
+            hitSlop={DISC_HIT_SLOP}
           >
             <Text style={styles.closeText}>✕</Text>
           </Pressable>
 
+          {/*
+            Whatever is open, photo or video, goes to the phone's gallery — or
+            the browser's downloads. Across from ✕ so neither is hit for the
+            other.
+          */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={savePhase === 'saved' ? t('photo.saved') : t('photo.save')}
+            accessibilityState={{ busy: savePhase === 'saving' }}
+            disabled={savePhase !== null}
+            style={({ pressed }) => [
+              styles.disc,
+              styles.save,
+              { top: insets.top + spacing.sm },
+              pressed && styles.discPressed,
+            ]}
+            onPress={() => void save(photo)}
+            hitSlop={DISC_HIT_SLOP}
+          >
+            {savePhase === 'saving' ? (
+              <ActivityIndicator size="small" color={colors.onScrim} />
+            ) : (
+              <Feather
+                name={savePhase === 'saved' ? 'check' : 'download'}
+                size={18}
+                color={colors.onScrim}
+              />
+            )}
+          </Pressable>
+
           {photos.length > 1 ? (
-            <View style={[styles.pager, { paddingBottom: insets.bottom + spacing.lg }]}>
+            // `box-none` too: the row spans the whole width, and the picture
+            // either side of the arrows is still picture.
+            <View
+              style={[styles.pager, { paddingBottom: insets.bottom + spacing.lg }]}
+              pointerEvents="box-none"
+            >
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t('photo.previous')}
@@ -543,18 +633,24 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
             </View>
           ) : null}
         </View>
-      </View>
+      </GestureHandlerRootView>
     </Modal>
   )
 }
 
-/** The disc's diameter and the slop around it; 36 + 12 + 12 is the platform's 44pt target and then some. */
-const CLOSE_SIZE = 36
-const CLOSE_HIT_SLOP = 12
+/** What a one-finger drag is doing; see `panMode`. Numbers, because worklets compare them. */
+type PanMode = 0 | 1 | 2 | 3
+const PAN_IDLE: PanMode = 0
+const PAN_ZOOM: PanMode = 1
+const PAN_PAGE: PanMode = 2
+const PAN_DISMISS: PanMode = 3
 
-function pointOf(touch: { pageX: number; pageY: number } | undefined): Point {
-  return { x: touch?.pageX ?? 0, y: touch?.pageY ?? 0 }
-}
+/** `bounciness: 0`'s successor, as `SwipeableRow` has it: a settle that overshoots shows scrim. */
+const SPRING = { damping: 20, stiffness: 220, overshootClamping: true }
+
+/** A disc's diameter and the slop around it; 36 + 12 + 12 is the platform's 44pt target and then some. */
+const DISC_SIZE = 36
+const DISC_HIT_SLOP = 12
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   // `relative`, so the chrome's z-order is decided against this and not
@@ -576,17 +672,18 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
    * A disc on a scrim rather than a bare glyph: over a light photo the glyph
    * alone disappeared. 36pt plus the hit slop is the platform's 44pt target.
    */
-  close: {
+  disc: {
     alignItems: 'center',
     backgroundColor: colors.scrim,
-    borderRadius: 18,
-    end: spacing.lg,
-    height: CLOSE_SIZE,
+    borderRadius: DISC_SIZE / 2,
+    height: DISC_SIZE,
     justifyContent: 'center',
     position: 'absolute',
-    width: CLOSE_SIZE,
+    width: DISC_SIZE,
   },
-  closePressed: { opacity: 0.7 },
+  discPressed: { opacity: 0.7 },
+  close: { end: spacing.lg },
+  save: { start: spacing.lg },
   closeText: { color: colors.onScrim, fontSize: 18, fontWeight: '600' },
   pager: {
     alignItems: 'center',

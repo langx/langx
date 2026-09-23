@@ -72,6 +72,11 @@ export const ru: Localized<EnMessages> = {
     previous: 'Предыдущее фото',
     next: 'Следующее фото',
     counter: '{index} / {total}',
+    save: 'Сохранить',
+    saved: 'Сохранено',
+    saveFailed: 'Не удалось сохранить',
+    saveDenied:
+      'LangX нужно разрешение на добавление фото и видео в галерею. Его можно дать в Настройках.',
   },
   tips: {
     composerCorrect: 'Удерживайте, чтобы исправить',

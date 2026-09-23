@@ -62,6 +62,11 @@ export const de: Localized<EnMessages> = {
     previous: 'Vorheriges Foto',
     next: 'Nächstes Foto',
     counter: '{index} / {total}',
+    save: 'Speichern',
+    saved: 'Gespeichert',
+    saveFailed: 'Speichern fehlgeschlagen',
+    saveDenied:
+      'LangX braucht die Erlaubnis, Fotos und Videos zu deiner Mediathek hinzuzufügen. Du kannst sie in den Einstellungen erteilen.',
   },
   tips: {
     composerCorrect: 'Gedrückt halten zum Korrigieren',

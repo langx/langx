@@ -75,6 +75,11 @@ export const ar: Localized<EnMessages> = {
     previous: 'الصورة السابقة',
     next: 'الصورة التالية',
     counter: '{index} / {total}',
+    save: 'حفظ',
+    saved: 'تم الحفظ',
+    saveFailed: 'تعذّر الحفظ',
+    saveDenied:
+      'يحتاج LangX إلى إذن لإضافة الصور ومقاطع الفيديو إلى مكتبتك. يمكنك منحه من الإعدادات.',
   },
   tips: {
     composerCorrect: 'اضغط مطوّلًا للتصحيح',
