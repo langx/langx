@@ -3,7 +3,7 @@
   "lang": "zh",
   "level": "intermediate",
   "hsk": 3,
-  "contentVersion": 1,
+  "contentVersion": 2,
   "reviewed": true,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -27,7 +27,8 @@
         "ru": "Опять двадцать пять!"
       },
       "freqRank": 91,
-      "review": { "words": "又 来 了", "indirect": ["tr"] }
+      "review": { "words": "又 来 了", "indirect": ["tr"] },
+      "image": "cue:repeat-button"
     },
     {
       "index": 1,
@@ -48,7 +49,8 @@
         "words": "我 不 需要",
         "indirect": ["es", "pt-BR", "ru", "tr"],
         "edited": ["pt-BR"]
-      }
+      },
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 2,
@@ -65,7 +67,8 @@
         "ru": "На это нужно время."
       },
       "freqRank": 131,
-      "review": { "words": "这 需要 时间", "indirect": ["es", "pt-BR", "tr"] }
+      "review": { "words": "这 需要 时间", "indirect": ["es", "pt-BR", "tr"] },
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 3,
@@ -83,7 +86,8 @@
         "ar": "أحتاج إليك."
       },
       "freqRank": 131,
-      "review": { "words": "我 需要 你", "indirect": ["ar", "tr"] }
+      "review": { "words": "我 需要 你", "indirect": ["ar", "tr"] },
+      "image": "cue:people-hugging"
     },
     {
       "index": 4,
@@ -101,7 +105,8 @@
         "ar": "تعال معنا."
       },
       "freqRank": 135,
-      "review": { "words": "跟 我们 来", "indirect": ["ar", "fr", "pt-BR", "tr"] }
+      "review": { "words": "跟 我们 来", "indirect": ["ar", "fr", "pt-BR", "tr"] },
+      "image": "cue:person-walking"
     },
     {
       "index": 5,
@@ -117,7 +122,8 @@
         "ru": "Мне надо это знать."
       },
       "freqRank": 174,
-      "review": { "words": "我 应该 知道", "indirect": ["es", "ru", "tr"], "edited": ["tr"] }
+      "review": { "words": "我 应该 知道", "indirect": ["es", "ru", "tr"], "edited": ["tr"] },
+      "image": "cue:brain"
     },
     {
       "index": 6,
@@ -134,7 +140,8 @@
         "ru": "Ему нужны деньги."
       },
       "freqRank": 218,
-      "review": { "words": "他 需要 钱", "indirect": ["tr"] }
+      "review": { "words": "他 需要 钱", "indirect": ["tr"] },
+      "image": "cue:dollar-banknote"
     },
     {
       "index": 7,
@@ -156,7 +163,8 @@
         "words": "你 好 世界",
         "unlisted": ["你好"],
         "indirect": ["ar", "fr", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:globe-showing-europe-africa"
     },
     {
       "index": 8,
@@ -174,7 +182,8 @@
         "ar": "إن ذلك ليس مهماً."
       },
       "freqRank": 240,
-      "review": { "words": "这 不 重要", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] }
+      "review": { "words": "这 不 重要", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] },
+      "image": "cue:person-shrugging"
     },
     {
       "index": 9,
@@ -191,7 +200,8 @@
         "ru": "Ты должен уйти."
       },
       "freqRank": 241,
-      "review": { "words": "你 必须 走", "indirect": ["es", "pt-BR", "tr"] }
+      "review": { "words": "你 必须 走", "indirect": ["es", "pt-BR", "tr"] },
+      "image": "cue:door"
     },
     {
       "index": 10,
@@ -212,7 +222,8 @@
         "words": "他 很 老",
         "indirect": ["es", "pt-BR", "ru", "tr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:person-beard"
     },
     {
       "index": 11,
@@ -229,7 +240,8 @@
         "ru": "Я не старый."
       },
       "freqRank": 266,
-      "review": { "words": "我 不 老", "indirect": ["es", "pt-BR", "ru", "tr"] }
+      "review": { "words": "我 不 老", "indirect": ["es", "pt-BR", "ru", "tr"] },
+      "image": "cue:birthday-cake"
     },
     {
       "index": 12,
@@ -246,7 +258,8 @@
         "ru": "Возьми мой."
       },
       "freqRank": 287,
-      "review": { "words": "拿 我 的", "indirect": ["es", "pt-BR", "ru", "tr"] }
+      "review": { "words": "拿 我 的", "indirect": ["es", "pt-BR", "ru", "tr"] },
+      "image": "cue:palm-up-hand"
     },
     {
       "index": 13,
@@ -264,7 +277,8 @@
         "ar": "لماذا أنا؟"
       },
       "freqRank": 299,
-      "review": { "words": "为什么 是 我", "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "为什么 是 我", "indirect": ["pt-BR", "tr"] },
+      "image": "cue:weary-face"
     },
     {
       "index": 14,
@@ -278,7 +292,8 @@
         "ru": "Зачем вы работаете?"
       },
       "freqRank": 299,
-      "review": { "words": "你 为什么 工作", "indirect": ["ru"] }
+      "review": { "words": "你 为什么 工作", "indirect": ["ru"] },
+      "image": "cue:briefcase"
     },
     {
       "index": 15,
@@ -296,7 +311,8 @@
         "ar": "نعم، بالطبع."
       },
       "freqRank": 423,
-      "review": { "words": "当然 是 的", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "当然 是 的", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:thumbs-up"
     },
     {
       "index": 16,
@@ -313,7 +329,8 @@
         "ru": "Я верю в него."
       },
       "freqRank": 431,
-      "review": { "words": "我 相信 他", "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "我 相信 他", "indirect": ["pt-BR", "tr"] },
+      "image": "cue:thumbs-up"
     },
     {
       "index": 17,
@@ -329,7 +346,8 @@
         "ru": "Он усердно работает."
       },
       "freqRank": 505,
-      "review": { "words": "他 努力 工作", "indirect": ["ru", "tr"], "edited": ["fr"] }
+      "review": { "words": "他 努力 工作", "indirect": ["ru", "tr"], "edited": ["fr"] },
+      "image": "cue:hammer-and-wrench"
     },
     {
       "index": 18,
@@ -347,7 +365,8 @@
         "ar": "أصدقك."
       },
       "freqRank": 431,
-      "review": { "words": "我 相信 你", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "我 相信 你", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:thumbs-up"
     },
     {
       "index": 19,
@@ -365,7 +384,8 @@
         "ar": "إنك تعمل بجد."
       },
       "freqRank": 505,
-      "review": { "words": "你 工作 努力", "indirect": ["es", "pt-BR", "ru", "tr"] }
+      "review": { "words": "你 工作 努力", "indirect": ["es", "pt-BR", "ru", "tr"] },
+      "image": "cue:hammer-and-wrench"
     },
     {
       "index": 20,
@@ -380,7 +400,8 @@
         "ru": "Я покупаю цветы."
       },
       "freqRank": 435,
-      "review": { "words": "我 买 花", "indirect": ["ru", "tr"], "edited": ["tr"] }
+      "review": { "words": "我 买 花", "indirect": ["ru", "tr"], "edited": ["tr"] },
+      "image": "cue:bouquet"
     },
     {
       "index": 21,
@@ -397,7 +418,8 @@
         "ar": "شكرًا مقدمًا."
       },
       "freqRank": 520,
-      "review": { "words": "先 谢谢 了", "indirect": ["ar", "es", "tr"], "edited": ["tr"] }
+      "review": { "words": "先 谢谢 了", "indirect": ["ar", "es", "tr"], "edited": ["tr"] },
+      "image": "cue:folded-hands"
     },
     {
       "index": 22,
@@ -415,7 +437,8 @@
         "ar": "أحتاج للمساعدة."
       },
       "freqRank": 499,
-      "review": { "words": "我 需要 帮助", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] }
+      "review": { "words": "我 需要 帮助", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] },
+      "image": "cue:sos-button"
     },
     {
       "index": 23,
@@ -429,7 +452,8 @@
         "fr": "Il n'y a pas moyen."
       },
       "freqRank": 538,
-      "review": { "words": "没 有 办法", "unlisted": ["没有"], "edited": ["reading", "en", "tr"] }
+      "review": { "words": "没 有 办法", "unlisted": ["没有"], "edited": ["reading", "en", "tr"] },
+      "image": "cue:person-shrugging"
     },
     {
       "index": 24,
@@ -446,7 +470,8 @@
         "ru": "Это трудно."
       },
       "freqRank": 544,
-      "review": { "words": "这 很 难", "indirect": ["tr"] }
+      "review": { "words": "这 很 难", "indirect": ["tr"] },
+      "image": "cue:weary-face"
     },
     {
       "index": 25,
@@ -462,7 +487,8 @@
         "ru": "Я не обратил внимания."
       },
       "freqRank": 547,
-      "review": { "words": "我 没 注意", "indirect": ["ru", "tr"], "edited": ["tr"] }
+      "review": { "words": "我 没 注意", "indirect": ["ru", "tr"], "edited": ["tr"] },
+      "image": "cue:see-no-evil-monkey"
     },
     {
       "index": 26,
@@ -479,7 +505,8 @@
         "ru": "Это легко."
       },
       "freqRank": 664,
-      "review": { "words": "这 很 容易", "indirect": ["fr", "pt-BR", "tr"] }
+      "review": { "words": "这 很 容易", "indirect": ["fr", "pt-BR", "tr"] },
+      "image": "cue:ok-hand"
     },
     {
       "index": 27,
@@ -496,7 +523,8 @@
         "ru": "Ты не понимаешь."
       },
       "freqRank": 676,
-      "review": { "words": "你 不 明白", "indirect": ["es", "pt-BR", "ru", "tr"] }
+      "review": { "words": "你 不 明白", "indirect": ["es", "pt-BR", "ru", "tr"] },
+      "image": "cue:pensive-face"
     },
     {
       "index": 28,
@@ -513,7 +541,8 @@
         "ru": "Я не понимаю."
       },
       "freqRank": 676,
-      "review": { "words": "我 不 明白", "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "我 不 明白", "indirect": ["pt-BR", "tr"] },
+      "image": "cue:confused-face"
     },
     {
       "index": 29,
@@ -531,7 +560,8 @@
         "ar": "أما زلت تذكر؟"
       },
       "freqRank": 699,
-      "review": { "words": "你 记得 吗", "indirect": ["ar", "tr"] }
+      "review": { "words": "你 记得 吗", "indirect": ["ar", "tr"] },
+      "image": "cue:brain"
     },
     {
       "index": 30,
@@ -549,7 +579,8 @@
         "ar": "أنا أفهم"
       },
       "freqRank": 676,
-      "review": { "words": "我 明白 了", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "我 明白 了", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:light-bulb"
     },
     {
       "index": 31,
@@ -567,7 +598,8 @@
         "ar": "ندرس الموسيقى."
       },
       "freqRank": 789,
-      "review": { "words": "我们 学习 音乐", "indirect": ["ar", "ru", "tr"] }
+      "review": { "words": "我们 学习 音乐", "indirect": ["ar", "ru", "tr"] },
+      "image": "cue:musical-score"
     },
     {
       "index": 32,
@@ -583,7 +615,8 @@
         "ar": "أنا أحب الموسيقى."
       },
       "freqRank": 742,
-      "review": { "words": "我 爱 音乐", "indirect": ["ar", "fr", "ru"] }
+      "review": { "words": "我 爱 音乐", "indirect": ["ar", "fr", "ru"] },
+      "image": "cue:musical-note"
     },
     {
       "index": 33,
@@ -600,7 +633,8 @@
         "ru": "Как мило!"
       },
       "freqRank": 799,
-      "review": { "words": "多 可爱 啊", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "多 可爱 啊", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:sparkling-heart"
     },
     {
       "index": 34,
@@ -622,7 +656,8 @@
         "words": "她 很 可爱",
         "indirect": ["ar", "es", "pt-BR", "ru", "tr"],
         "edited": ["en", "tr", "es", "pt-BR", "ar"]
-      }
+      },
+      "image": "cue:sparkling-heart"
     },
     {
       "index": 35,
@@ -642,7 +677,8 @@
         "words": "请 马上 离开",
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:door"
     },
     {
       "index": 36,
@@ -660,7 +696,8 @@
         "ar": "لماذا تبكي؟"
       },
       "freqRank": 898,
-      "review": { "words": "你 为什么 哭", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+      "review": { "words": "你 为什么 哭", "indirect": ["ar", "pt-BR", "ru", "tr"] },
+      "image": "cue:crying-face"
     },
     {
       "index": 37,
@@ -677,7 +714,8 @@
         "ru": "Она плакала."
       },
       "freqRank": 898,
-      "review": { "words": "她 哭 了", "indirect": ["es", "fr", "pt-BR", "tr"] }
+      "review": { "words": "她 哭 了", "indirect": ["es", "fr", "pt-BR", "tr"] },
+      "image": "cue:loudly-crying-face"
     },
     {
       "index": 38,
@@ -694,7 +732,12 @@
         "ru": "Мама плакала."
       },
       "freqRank": 898,
-      "review": { "words": "妈妈 哭 了", "indirect": ["fr", "pt-BR", "ru", "tr"], "edited": ["tr"] }
+      "review": {
+        "words": "妈妈 哭 了",
+        "indirect": ["fr", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      },
+      "image": "cue:loudly-crying-face"
     },
     {
       "index": 39,
@@ -710,7 +753,8 @@
         "ru": "Мне хотелось плакать."
       },
       "freqRank": 898,
-      "review": { "words": "我 想 哭", "indirect": ["tr"] }
+      "review": { "words": "我 想 哭", "indirect": ["tr"] },
+      "image": "cue:crying-face"
     },
     {
       "index": 40,
@@ -727,7 +771,8 @@
         "ar": "حسناً. أنا موافق."
       },
       "freqRank": 985,
-      "review": { "words": "好 我 同意", "indirect": ["ar", "de", "ru", "tr"] }
+      "review": { "words": "好 我 同意", "indirect": ["ar", "de", "ru", "tr"] },
+      "image": "cue:thumbs-up"
     },
     {
       "index": 41,
@@ -745,7 +790,8 @@
         "ar": "أنا متزوج."
       },
       "freqRank": 982,
-      "review": { "words": "我 结婚 了", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+      "review": { "words": "我 结婚 了", "indirect": ["ar", "pt-BR", "ru", "tr"] },
+      "image": "cue:ring"
     },
     {
       "index": 42,
@@ -762,7 +808,8 @@
         "ru": "Он очень молод."
       },
       "freqRank": 1100,
-      "review": { "words": "他 很 年轻", "indirect": ["pt-BR"] }
+      "review": { "words": "他 很 年轻", "indirect": ["pt-BR"] },
+      "image": "cue:boy"
     },
     {
       "index": 43,
@@ -776,7 +823,8 @@
         "ru": "Я не согласен."
       },
       "freqRank": 985,
-      "review": { "words": "我 不 同意", "edited": ["en", "tr"] }
+      "review": { "words": "我 不 同意", "edited": ["en", "tr"] },
+      "image": "cue:thumbs-down"
     },
     {
       "index": 44,
@@ -792,7 +840,8 @@
         "ru": "Женщина молодая."
       },
       "freqRank": 1100,
-      "review": { "words": "女人 很 年轻", "indirect": ["tr"] }
+      "review": { "words": "女人 很 年轻", "indirect": ["tr"] },
+      "image": "cue:woman"
     },
     {
       "index": 45,
@@ -810,7 +859,8 @@
         "ar": "أوافقه الرأي."
       },
       "freqRank": 985,
-      "review": { "words": "我 同意 他", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+      "review": { "words": "我 同意 他", "indirect": ["ar", "pt-BR", "ru", "tr"] },
+      "image": "cue:handshake"
     },
     {
       "index": 46,
@@ -827,7 +877,8 @@
         "ru": "Мы немолоды."
       },
       "freqRank": 1100,
-      "review": { "words": "我们 不 年轻", "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "我们 不 年轻", "indirect": ["pt-BR", "tr"] },
+      "image": "cue:birthday-cake"
     },
     {
       "index": 47,
@@ -845,7 +896,8 @@
         "ar": "أوافقك الرأي."
       },
       "freqRank": 985,
-      "review": { "words": "我 同意 你", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] }
+      "review": { "words": "我 同意 你", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] },
+      "image": "cue:handshake"
     },
     {
       "index": 48,
@@ -861,7 +913,8 @@
         "ru": "Как давно это было?"
       },
       "freqRank": 1103,
-      "review": { "words": "多 久 以前", "unlisted": ["多久"], "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "多 久 以前", "unlisted": ["多久"], "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 49,
@@ -882,7 +935,8 @@
         "words": "要 多 久",
         "unlisted": ["多久"],
         "indirect": ["ar", "es", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:stopwatch"
     },
     {
       "index": 50,
@@ -896,7 +950,8 @@
         "fr": "La pause est terminée."
       },
       "freqRank": 1225,
-      "review": { "words": "休息 结束 了", "indirect": ["tr"] }
+      "review": { "words": "休息 结束 了", "indirect": ["tr"] },
+      "image": "cue:alarm-clock"
     },
     {
       "index": 51,
@@ -913,7 +968,8 @@
         "ar": "التلفزيون لا يشتغل."
       },
       "freqRank": 1239,
-      "review": { "words": "电视 坏 了", "indirect": ["ar", "fr", "ru", "tr"] }
+      "review": { "words": "电视 坏 了", "indirect": ["ar", "fr", "ru", "tr"] },
+      "image": "cue:television"
     },
     {
       "index": 52,
@@ -930,7 +986,8 @@
         "ru": "Я привык."
       },
       "freqRank": 1251,
-      "review": { "words": "我 习惯 了", "indirect": ["es", "pt-BR", "tr"] }
+      "review": { "words": "我 习惯 了", "indirect": ["es", "pt-BR", "tr"] },
+      "image": "cue:repeat-button"
     },
     {
       "index": 53,
@@ -951,7 +1008,8 @@
         "words": "洗 脸 吧",
         "unlisted": ["洗脸"],
         "indirect": ["fr", "pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:soap"
     },
     {
       "index": 54,
@@ -965,7 +1023,8 @@
         "ru": "Не выходи из комнаты."
       },
       "freqRank": 1357,
-      "review": { "words": "别 离开 房间", "indirect": ["tr"] }
+      "review": { "words": "别 离开 房间", "indirect": ["tr"] },
+      "image": "cue:door"
     },
     {
       "index": 55,
@@ -982,7 +1041,12 @@
         "ru": "Вы должны быть осторожны."
       },
       "freqRank": 1411,
-      "review": { "words": "您 得 小心", "indirect": ["es", "pt-BR", "ru", "tr"], "edited": ["tr"] }
+      "review": {
+        "words": "您 得 小心",
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      },
+      "image": "cue:warning"
     },
     {
       "index": 56,
@@ -1000,7 +1064,8 @@
         "ar": "أنا لست جائع."
       },
       "freqRank": 1477,
-      "review": { "words": "我 不 饿", "indirect": ["ar", "fr", "pt-BR", "tr"] }
+      "review": { "words": "我 不 饿", "indirect": ["ar", "fr", "pt-BR", "tr"] },
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 57,
@@ -1017,7 +1082,8 @@
         "ru": "Не бойся."
       },
       "freqRank": 1536,
-      "review": { "words": "不 要 害怕", "unlisted": ["不要"], "indirect": ["pt-BR"] }
+      "review": { "words": "不 要 害怕", "unlisted": ["不要"], "indirect": ["pt-BR"] },
+      "image": "cue:fearful-face"
     },
     {
       "index": 58,
@@ -1035,7 +1101,8 @@
         "ar": "أنا جائع جداً."
       },
       "freqRank": 1477,
-      "review": { "words": "我 好 饿", "indirect": ["ar", "fr", "pt-BR", "ru", "tr"] }
+      "review": { "words": "我 好 饿", "indirect": ["ar", "fr", "pt-BR", "ru", "tr"] },
+      "image": "cue:drooling-face"
     },
     {
       "index": 59,
@@ -1053,7 +1120,8 @@
         "ar": "هل أنتَ خائف؟"
       },
       "freqRank": 1536,
-      "review": { "words": "你 害怕 吗", "indirect": ["ar", "fr", "pt-BR", "ru", "tr"] }
+      "review": { "words": "你 害怕 吗", "indirect": ["ar", "fr", "pt-BR", "ru", "tr"] },
+      "image": "cue:fearful-face"
     },
     {
       "index": 60,
@@ -1071,7 +1139,8 @@
         "ar": "أنا جائع جداً."
       },
       "freqRank": 1477,
-      "review": { "words": "我 非常 饿", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+      "review": { "words": "我 非常 饿", "indirect": ["ar", "pt-BR", "ru", "tr"] },
+      "image": "cue:drooling-face"
     },
     {
       "index": 61,
@@ -1093,7 +1162,8 @@
         "words": "照顾 好 自己",
         "indirect": ["ar", "es", "pt-BR", "tr"],
         "edited": ["ar"]
-      }
+      },
+      "image": "cue:waving-hand"
     },
     {
       "index": 62,
@@ -1110,7 +1180,8 @@
         "ru": "Я голоден."
       },
       "freqRank": 1477,
-      "review": { "words": "我 饿 了", "indirect": ["pt-BR", "tr"], "edited": ["en"] }
+      "review": { "words": "我 饿 了", "indirect": ["pt-BR", "tr"], "edited": ["en"] },
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 63,
@@ -1126,7 +1197,8 @@
         "ru": "Кто присматривает за детьми?"
       },
       "freqRank": 1631,
-      "review": { "words": "谁 照顾 孩子", "indirect": ["tr"] }
+      "review": { "words": "谁 照顾 孩子", "indirect": ["tr"] },
+      "image": "cue:baby"
     },
     {
       "index": 64,
@@ -1144,7 +1216,8 @@
         "ar": "أنا أخاف الكلاب."
       },
       "freqRank": 1536,
-      "review": { "words": "我 害怕 狗", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "我 害怕 狗", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:dog"
     },
     {
       "index": 65,
@@ -1161,7 +1234,8 @@
         "ar": "إنه ذكي."
       },
       "freqRank": 1918,
-      "review": { "words": "他 很 聪明", "indirect": ["tr"], "edited": ["en", "tr"] }
+      "review": { "words": "他 很 聪明", "indirect": ["tr"], "edited": ["en", "tr"] },
+      "image": "cue:brain"
     },
     {
       "index": 66,
@@ -1177,7 +1251,8 @@
         "ru": "Я должен помочь."
       },
       "freqRank": 1860,
-      "review": { "words": "我 必须 帮忙", "indirect": ["es", "pt-BR", "ru"] }
+      "review": { "words": "我 必须 帮忙", "indirect": ["es", "pt-BR", "ru"] },
+      "image": "cue:handshake"
     },
     {
       "index": 67,
@@ -1194,7 +1269,8 @@
         "ru": "Ты очень умный."
       },
       "freqRank": 1918,
-      "review": { "words": "你 很 聪明", "indirect": ["es", "fr", "pt-BR", "tr"] }
+      "review": { "words": "你 很 聪明", "indirect": ["es", "fr", "pt-BR", "tr"] },
+      "image": "cue:brain"
     },
     {
       "index": 68,
@@ -1211,7 +1287,8 @@
         "ru": "Кошки умны."
       },
       "freqRank": 1918,
-      "review": { "words": "猫 很 聪明", "indirect": ["fr", "pt-BR", "ru", "tr"] }
+      "review": { "words": "猫 很 聪明", "indirect": ["fr", "pt-BR", "ru", "tr"] },
+      "image": "cue:cat"
     },
     {
       "index": 69,
@@ -1228,7 +1305,8 @@
         "ru": "Почему он сердится?"
       },
       "freqRank": 2113,
-      "review": { "words": "为什么 他 生气", "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "为什么 他 生气", "indirect": ["pt-BR", "tr"] },
+      "image": "cue:angry-face"
     },
     {
       "index": 70,
@@ -1246,7 +1324,12 @@
         "ar": "غضب."
       },
       "freqRank": 2113,
-      "review": { "words": "他 生气 了", "indirect": ["ar", "es", "pt-BR", "tr"], "edited": ["fr"] }
+      "review": {
+        "words": "他 生气 了",
+        "indirect": ["ar", "es", "pt-BR", "tr"],
+        "edited": ["fr"]
+      },
+      "image": "cue:angry-face"
     },
     {
       "index": 71,
@@ -1263,7 +1346,8 @@
         "ru": "Почему ты злишься?"
       },
       "freqRank": 2113,
-      "review": { "words": "你 为什么 生气", "indirect": ["de", "pt-BR", "ru", "tr"] }
+      "review": { "words": "你 为什么 生气", "indirect": ["de", "pt-BR", "ru", "tr"] },
+      "image": "cue:anger-symbol"
     },
     {
       "index": 72,
@@ -1279,7 +1363,8 @@
         "ru": "Он очень сердит."
       },
       "freqRank": 2113,
-      "review": { "words": "他 非常 生气", "indirect": ["tr"] }
+      "review": { "words": "他 非常 生气", "indirect": ["tr"] },
+      "image": "cue:enraged-face"
     },
     {
       "index": 73,
@@ -1297,7 +1382,8 @@
         "ar": "أنا غاضب!"
       },
       "freqRank": 2113,
-      "review": { "words": "我 很 生气", "indirect": ["ar", "ru"], "edited": ["en", "tr"] }
+      "review": { "words": "我 很 生气", "indirect": ["ar", "ru"], "edited": ["en", "tr"] },
+      "image": "cue:enraged-face"
     },
     {
       "index": 74,
@@ -1314,7 +1400,8 @@
         "ru": "Лошади едят траву."
       },
       "freqRank": 2467,
-      "review": { "words": "马 吃 草", "indirect": ["es", "fr", "pt-BR", "tr"] }
+      "review": { "words": "马 吃 草", "indirect": ["es", "fr", "pt-BR", "tr"] },
+      "image": "cue:horse"
     },
     {
       "index": 75,
@@ -1347,7 +1434,8 @@
         "ru": "Она очень тихая."
       },
       "freqRank": 2501,
-      "review": { "words": "她 很 安静", "indirect": ["es", "fr", "tr"] }
+      "review": { "words": "她 很 安静", "indirect": ["es", "fr", "tr"] },
+      "image": "cue:shushing-face"
     },
     {
       "index": 77,
@@ -1365,7 +1453,8 @@
         "ar": "أنا حزين."
       },
       "freqRank": 2714,
-      "review": { "words": "我 很 难过", "indirect": ["ar", "ru", "tr"] }
+      "review": { "words": "我 很 难过", "indirect": ["ar", "ru", "tr"] },
+      "image": "cue:crying-face"
     },
     {
       "index": 78,
@@ -1380,7 +1469,8 @@
         "ru": "У тебя гости."
       },
       "freqRank": 2750,
-      "review": { "words": "你 有 客人", "indirect": ["fr", "tr"] }
+      "review": { "words": "你 有 客人", "indirect": ["fr", "tr"] },
+      "image": "cue:door"
     },
     {
       "index": 79,
@@ -1397,7 +1487,8 @@
         "ru": "Я люблю математику."
       },
       "freqRank": 3024,
-      "review": { "words": "我 喜欢 数学", "indirect": ["ru", "tr"] }
+      "review": { "words": "我 喜欢 数学", "indirect": ["ru", "tr"] },
+      "image": "cue:divide"
     },
     {
       "index": 80,
@@ -1413,7 +1504,8 @@
         "pt-BR": "A cozinha não está limpa."
       },
       "freqRank": 3076,
-      "review": { "words": "厨房 不 干净", "indirect": ["fr", "pt-BR"], "edited": ["tr"] }
+      "review": { "words": "厨房 不 干净", "indirect": ["fr", "pt-BR"], "edited": ["tr"] },
+      "image": "cue:broom"
     },
     {
       "index": 81,
@@ -1430,7 +1522,8 @@
         "ru": "Она на кухне."
       },
       "freqRank": 3076,
-      "review": { "words": "她 在 厨房", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "她 在 厨房", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:pot-of-food"
     },
     {
       "index": 82,
@@ -1445,7 +1538,8 @@
         "ru": "Я принял душ."
       },
       "freqRank": 3512,
-      "review": { "words": "我 洗澡 了", "indirect": ["fr", "ru"] }
+      "review": { "words": "我 洗澡 了", "indirect": ["fr", "ru"] },
+      "image": "cue:bathtub"
     },
     {
       "index": 83,
@@ -1461,7 +1555,8 @@
         "ru": "Он простудился."
       },
       "freqRank": 3621,
-      "review": { "words": "他 感冒 了", "indirect": ["fr", "ru", "tr"] }
+      "review": { "words": "他 感冒 了", "indirect": ["fr", "ru", "tr"] },
+      "image": "cue:sneezing-face"
     },
     {
       "index": 84,
@@ -1476,7 +1571,8 @@
         "ru": "Ребёнок простудился."
       },
       "freqRank": 3621,
-      "review": { "words": "孩子 感冒 了", "indirect": ["ru"] }
+      "review": { "words": "孩子 感冒 了", "indirect": ["ru"] },
+      "image": "cue:sneezing-face"
     },
     {
       "index": 85,
@@ -1493,7 +1589,8 @@
         "ru": "Я заболел."
       },
       "freqRank": 3621,
-      "review": { "words": "我 感冒 了", "edited": ["en"] }
+      "review": { "words": "我 感冒 了", "edited": ["en"] },
+      "image": "cue:sneezing-face"
     },
     {
       "index": 86,
@@ -1511,7 +1608,8 @@
         "ar": "السباحة أمر سهل."
       },
       "freqRank": 3695,
-      "review": { "words": "游泳 很 容易", "indirect": ["ar", "de", "pt-BR", "ru", "tr"] }
+      "review": { "words": "游泳 很 容易", "indirect": ["ar", "de", "pt-BR", "ru", "tr"] },
+      "image": "cue:person-swimming"
     },
     {
       "index": 87,
@@ -1528,7 +1626,8 @@
         "ru": "Я в интернете."
       },
       "freqRank": 4061,
-      "review": { "words": "我 上网 了", "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "我 上网 了", "indirect": ["pt-BR", "tr"] },
+      "image": "cue:laptop"
     },
     {
       "index": 88,
@@ -1544,7 +1643,8 @@
         "ru": "Бананы вкусны."
       },
       "freqRank": 5473,
-      "review": { "words": "香蕉 很 好吃", "indirect": ["de", "fr", "tr"] }
+      "review": { "words": "香蕉 很 好吃", "indirect": ["de", "fr", "tr"] },
+      "image": "cue:banana"
     },
     {
       "index": 89,
@@ -1562,7 +1662,8 @@
         "ar": "آكل الخبز."
       },
       "freqRank": 4138,
-      "review": { "words": "我 吃 面包", "indirect": ["ar", "ru", "tr"] }
+      "review": { "words": "我 吃 面包", "indirect": ["ar", "ru", "tr"] },
+      "image": "cue:bread"
     },
     {
       "index": 90,
@@ -1580,7 +1681,8 @@
         "ar": "إنها تمطر مجدداً!"
       },
       "freqRank": 5648,
-      "review": { "words": "又 下雨 了", "indirect": ["ar", "es", "pt-BR", "tr"] }
+      "review": { "words": "又 下雨 了", "indirect": ["ar", "es", "pt-BR", "tr"] },
+      "image": "cue:umbrella-with-rain-drops"
     },
     {
       "index": 91,
@@ -1596,7 +1698,8 @@
         "pt-BR": "Eu estou realmente preocupada."
       },
       "freqRank": 4461,
-      "review": { "words": "我 很 着急", "unlisted": ["很着急"], "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "我 很 着急", "unlisted": ["很着急"], "indirect": ["pt-BR", "tr"] },
+      "image": "cue:worried-face"
     },
     {
       "index": 92,
@@ -1613,7 +1716,8 @@
         "ar": "ليس لديك أي حُمّى."
       },
       "freqRank": 5836,
-      "review": { "words": "你 没 发烧", "indirect": ["ar", "es", "ru", "tr"] }
+      "review": { "words": "你 没 发烧", "indirect": ["ar", "es", "ru", "tr"] },
+      "image": "cue:thermometer"
     },
     {
       "index": 93,
@@ -1631,7 +1735,8 @@
         "ar": "لدي حمى."
       },
       "freqRank": 5836,
-      "review": { "words": "我 发烧 了", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] }
+      "review": { "words": "我 发烧 了", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] },
+      "image": "cue:face-with-thermometer"
     },
     {
       "index": 94,
@@ -1646,7 +1751,8 @@
         "pt-BR": "O lápis é comprido?"
       },
       "freqRank": 9108,
-      "review": { "words": "铅笔 长 吗", "indirect": ["pt-BR", "tr"], "edited": ["reading", "tr"] }
+      "review": { "words": "铅笔 长 吗", "indirect": ["pt-BR", "tr"], "edited": ["reading", "tr"] },
+      "image": "cue:memo"
     },
     {
       "index": 95,
@@ -1661,7 +1767,8 @@
         "ru": "Я пью фруктовый сок."
       },
       "freqRank": 7765,
-      "review": { "words": "我 喝 果汁", "indirect": ["es", "tr"] }
+      "review": { "words": "我 喝 果汁", "indirect": ["es", "tr"] },
+      "image": "cue:cup-with-straw"
     },
     {
       "index": 96,
@@ -1676,7 +1783,8 @@
         "fr": "Tu remets encore ça."
       },
       "freqRank": 91,
-      "review": { "words": "你 又 来 了", "indirect": ["es", "tr"], "edited": ["tr"] }
+      "review": { "words": "你 又 来 了", "indirect": ["es", "tr"], "edited": ["tr"] },
+      "image": "cue:face-with-rolling-eyes"
     },
     {
       "index": 97,
@@ -1698,7 +1806,8 @@
         "words": "我 很 渴",
         "unlisted": ["很渴"],
         "indirect": ["ar", "pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:cup-with-straw"
     },
     {
       "index": 98,
@@ -1719,7 +1828,8 @@
         "words": "你 应该 自己 做",
         "indirect": ["ar", "de", "ru", "tr"],
         "edited": ["en"]
-      }
+      },
+      "image": "cue:index-pointing-at-the-viewer"
     },
     {
       "index": 99,
@@ -1737,7 +1847,8 @@
         "ar": "أنا عطشان."
       },
       "freqRank": 9442,
-      "review": { "words": "我 渴 了", "indirect": ["ar", "tr"] }
+      "review": { "words": "我 渴 了", "indirect": ["ar", "tr"] },
+      "image": "cue:cup-with-straw"
     },
     {
       "index": 100,
@@ -1755,7 +1866,8 @@
         "ar": "ما أطولك!"
       },
       "freqRank": 290,
-      "review": { "words": "你 真 高 啊", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "你 真 高 啊", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:straight-ruler"
     },
     {
       "index": 101,
@@ -1772,7 +1884,12 @@
         "ar": "صنعتها بنفسي."
       },
       "freqRank": 56,
-      "review": { "words": "我 自己 做 的", "indirect": ["ar", "fr", "ru", "tr"], "edited": ["tr"] }
+      "review": {
+        "words": "我 自己 做 的",
+        "indirect": ["ar", "fr", "ru", "tr"],
+        "edited": ["tr"]
+      },
+      "image": "cue:hammer-and-wrench"
     },
     {
       "index": 102,
@@ -1794,7 +1911,8 @@
         "words": "你 为什么 不 吃",
         "unlisted": ["不吃"],
         "indirect": ["ar", "es", "pt-BR", "ru"]
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 103,
@@ -1815,7 +1933,8 @@
         "words": "我 需要 出 去",
         "unlisted": ["出去"],
         "indirect": ["es", "fr", "pt-BR", "ru"]
-      }
+      },
+      "image": "cue:door"
     },
     {
       "index": 104,
@@ -1830,7 +1949,8 @@
         "ru": "Он очень хорошо его знает."
       },
       "freqRank": 336,
-      "review": { "words": "他 非常 了解 他", "edited": ["tr"] }
+      "review": { "words": "他 非常 了解 他", "edited": ["tr"] },
+      "image": "cue:busts-in-silhouette"
     },
     {
       "index": 105,
@@ -1846,7 +1966,8 @@
         "ru": "Я волновался за тебя."
       },
       "freqRank": 277,
-      "review": { "words": "我 很 担心 你", "indirect": ["fr", "tr"] }
+      "review": { "words": "我 很 担心 你", "indirect": ["fr", "tr"] },
+      "image": "cue:worried-face"
     },
     {
       "index": 106,
@@ -1867,7 +1988,8 @@
         "words": "她 正在 写 信",
         "unlisted": ["写信"],
         "indirect": ["de", "es", "pt-BR"]
-      }
+      },
+      "image": "cue:writing-hand"
     },
     {
       "index": 107,
@@ -1884,7 +2006,8 @@
         "ru": "Я покупал цветы."
       },
       "freqRank": 435,
-      "review": { "words": "我 买 了 花", "indirect": ["de", "tr"], "edited": ["tr"] }
+      "review": { "words": "我 买 了 花", "indirect": ["de", "tr"], "edited": ["tr"] },
+      "image": "cue:bouquet"
     },
     {
       "index": 108,
@@ -1901,7 +2024,8 @@
         "ru": "Ну мы закончили?"
       },
       "freqRank": 486,
-      "review": { "words": "我们 完成 了 吗", "indirect": ["es", "pt-BR"], "edited": ["tr"] }
+      "review": { "words": "我们 完成 了 吗", "indirect": ["es", "pt-BR"], "edited": ["tr"] },
+      "image": "cue:chequered-flag"
     },
     {
       "index": 109,
@@ -1917,7 +2041,8 @@
         "ru": "Я должен знать завтра."
       },
       "freqRank": 469,
-      "review": { "words": "我 明天 需要 知道", "indirect": ["ru"] }
+      "review": { "words": "我 明天 需要 知道", "indirect": ["ru"] },
+      "image": "cue:tear-off-calendar"
     },
     {
       "index": 110,
@@ -1935,7 +2060,8 @@
         "ar": "دائماً ما أراه ضاحكاً."
       },
       "freqRank": 638,
-      "review": { "words": "他 总是 在 笑", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "他 总是 在 笑", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:face-with-tears-of-joy"
     },
     {
       "index": 111,
@@ -1950,7 +2076,8 @@
         "ru": "Я думал, ты знал."
       },
       "freqRank": 567,
-      "review": { "words": "我 以为 你 知道", "indirect": ["de"] }
+      "review": { "words": "我 以为 你 知道", "indirect": ["de"] },
+      "image": "cue:thought-balloon"
     },
     {
       "index": 112,
@@ -1967,7 +2094,8 @@
         "ru": "Ему очень нравится музыка."
       },
       "freqRank": 742,
-      "review": { "words": "他 很 喜欢 音乐", "indirect": ["de", "pt-BR", "tr"] }
+      "review": { "words": "他 很 喜欢 音乐", "indirect": ["de", "pt-BR", "tr"] },
+      "image": "cue:musical-note"
     },
     {
       "index": 113,
@@ -1985,7 +2113,8 @@
         "ar": "أتحب الموسيقى؟"
       },
       "freqRank": 742,
-      "review": { "words": "你 喜欢 音乐 吗", "indirect": ["ar", "ru", "tr"] }
+      "review": { "words": "你 喜欢 音乐 吗", "indirect": ["ar", "ru", "tr"] },
+      "image": "cue:musical-note"
     },
     {
       "index": 114,
@@ -2001,7 +2130,8 @@
         "ar": "لا أفهم الموسيقى."
       },
       "freqRank": 742,
-      "review": { "words": "我 不 懂 音乐", "indirect": ["ar", "tr"] }
+      "review": { "words": "我 不 懂 音乐", "indirect": ["ar", "tr"] },
+      "image": "cue:musical-score"
     },
     {
       "index": 115,
@@ -2023,7 +2153,8 @@
         "words": "银行 在 哪 里",
         "unlisted": ["哪里"],
         "indirect": ["ar", "es", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:dollar-banknote"
     },
     {
       "index": 116,
@@ -2040,7 +2171,8 @@
         "ru": "Я работаю в банке."
       },
       "freqRank": 769,
-      "review": { "words": "我 在 银行 工作", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "我 在 银行 工作", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:briefcase"
     },
     {
       "index": 117,
@@ -2056,7 +2188,8 @@
         "ru": "Вы должны начать немедленно."
       },
       "freqRank": 847,
-      "review": { "words": "你 必须 马上 开始", "indirect": ["ru", "tr"] }
+      "review": { "words": "你 必须 马上 开始", "indirect": ["ru", "tr"] },
+      "image": "cue:fast-forward-button"
     },
     {
       "index": 118,
@@ -2072,7 +2205,8 @@
         "ru": "Я очень занят в эти дни."
       },
       "freqRank": 859,
-      "review": { "words": "我 最近 很 忙", "indirect": ["ru", "tr"], "edited": ["tr"] }
+      "review": { "words": "我 最近 很 忙", "indirect": ["ru", "tr"], "edited": ["tr"] },
+      "image": "cue:person-running"
     },
     {
       "index": 119,
@@ -2089,7 +2223,8 @@
         "ru": "Почему я плачу?"
       },
       "freqRank": 898,
-      "review": { "words": "为什么 我 在 哭", "indirect": ["fr", "ru"] }
+      "review": { "words": "为什么 我 在 哭", "indirect": ["fr", "ru"] },
+      "image": "cue:crying-face"
     },
     {
       "index": 120,
@@ -2106,7 +2241,8 @@
         "ru": "Я тоже плакал."
       },
       "freqRank": 898,
-      "review": { "words": "我 也 哭 了", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "我 也 哭 了", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:loudly-crying-face"
     },
     {
       "index": 121,
@@ -2128,7 +2264,8 @@
         "words": "大家 都 同意 你",
         "indirect": ["ar", "pt-BR", "ru", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:thumbs-up"
     },
     {
       "index": 122,
@@ -2145,7 +2282,8 @@
         "ru": "Я использую компьютер."
       },
       "freqRank": 946,
-      "review": { "words": "我 正在 用 电脑", "indirect": ["de", "fr", "tr"] }
+      "review": { "words": "我 正在 用 电脑", "indirect": ["de", "fr", "tr"] },
+      "image": "cue:laptop"
     },
     {
       "index": 123,
@@ -2166,7 +2304,8 @@
         "words": "他 教 我们 历史",
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:scroll"
     },
     {
       "index": 124,
@@ -2184,7 +2323,8 @@
         "ar": "لا أوافقه."
       },
       "freqRank": 985,
-      "review": { "words": "我 不 同意 他", "indirect": ["ar", "ru", "tr"] }
+      "review": { "words": "我 不 同意 他", "indirect": ["ar", "ru", "tr"] },
+      "image": "cue:thumbs-down"
     },
     {
       "index": 125,
@@ -2201,7 +2341,8 @@
         "ru": "Возьми книгу и прочитай!"
       },
       "freqRank": 1013,
-      "review": { "words": "拿 本 书 读", "unlisted": ["本书"], "indirect": ["es", "pt-BR", "tr"] }
+      "review": { "words": "拿 本 书 读", "unlisted": ["本书"], "indirect": ["es", "pt-BR", "tr"] },
+      "image": "cue:open-book"
     },
     {
       "index": 126,
@@ -2218,7 +2359,8 @@
         "ru": "Он моложе меня."
       },
       "freqRank": 1100,
-      "review": { "words": "他 比 我 年轻", "indirect": ["es", "ru", "tr"], "edited": ["pt-BR"] }
+      "review": { "words": "他 比 我 年轻", "indirect": ["es", "ru", "tr"], "edited": ["pt-BR"] },
+      "image": "cue:birthday-cake"
     },
     {
       "index": 127,
@@ -2235,7 +2377,8 @@
         "ru": "Мне нужно вернуться в офис."
       },
       "freqRank": 1162,
-      "review": { "words": "我 必须 回 办公室", "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "我 必须 回 办公室", "indirect": ["pt-BR", "tr"] },
+      "image": "cue:briefcase"
     },
     {
       "index": 128,
@@ -2273,7 +2416,8 @@
         "ar": "شكرا على هديتك."
       },
       "freqRank": 1673,
-      "review": { "words": "谢谢 你 的 礼物", "indirect": ["ar", "es", "tr"] }
+      "review": { "words": "谢谢 你 的 礼物", "indirect": ["ar", "es", "tr"] },
+      "image": "cue:wrapped-gift"
     },
     {
       "index": 130,
@@ -2290,7 +2434,8 @@
         "ru": "Я могу помочь?"
       },
       "freqRank": 1860,
-      "review": { "words": "我 能 帮忙 吗", "indirect": ["es", "pt-BR", "tr"] }
+      "review": { "words": "我 能 帮忙 吗", "indirect": ["es", "pt-BR", "tr"] },
+      "image": "cue:handshake"
     },
     {
       "index": 131,
@@ -2313,7 +2458,8 @@
         "unlisted": ["没有"],
         "indirect": ["ru", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:candy"
     },
     {
       "index": 132,
@@ -2335,7 +2481,8 @@
         "unlisted": ["有没有"],
         "indirect": ["pt-BR", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:candy"
     },
     {
       "index": 133,
@@ -2351,7 +2498,8 @@
         "ru": "Ты сердишься?"
       },
       "freqRank": 2113,
-      "review": { "words": "你 生气 了 吗", "edited": ["en", "tr"] }
+      "review": { "words": "你 生气 了 吗", "edited": ["en", "tr"] },
+      "image": "cue:angry-face"
     },
     {
       "index": 134,
@@ -2369,7 +2517,8 @@
         "ar": "الأشجار خضراء."
       },
       "freqRank": 2608,
-      "review": { "words": "树 是 绿 的", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+      "review": { "words": "树 是 绿 的", "indirect": ["ar", "pt-BR", "ru", "tr"] },
+      "image": "cue:leaf-fluttering-in-wind"
     },
     {
       "index": 135,
@@ -2386,7 +2535,8 @@
         "ru": "Ты хорош в арифметике?"
       },
       "freqRank": 3024,
-      "review": { "words": "你 数学 好 吗", "indirect": ["pt-BR", "tr"] }
+      "review": { "words": "你 数学 好 吗", "indirect": ["pt-BR", "tr"] },
+      "image": "cue:divide"
     },
     {
       "index": 136,
@@ -2403,7 +2553,8 @@
         "ru": "Я слишком низкий."
       },
       "freqRank": 3952,
-      "review": { "words": "我 太 矮 了", "unlisted": ["太矮"], "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "我 太 矮 了", "unlisted": ["太矮"], "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:straight-ruler"
     },
     {
       "index": 137,
@@ -2421,7 +2572,8 @@
         "ar": "لا تقلق."
       },
       "freqRank": 4461,
-      "review": { "words": "你 不 要 着急", "unlisted": ["不要"], "indirect": ["ar", "ru", "tr"] }
+      "review": { "words": "你 不 要 着急", "unlisted": ["不要"], "indirect": ["ar", "ru", "tr"] },
+      "image": "cue:relieved-face"
     },
     {
       "index": 138,
@@ -2438,7 +2590,8 @@
         "ru": "Я ниже тебя."
       },
       "freqRank": 3952,
-      "review": { "words": "我 比 你 矮", "indirect": ["pt-BR", "ru"] }
+      "review": { "words": "我 比 你 矮", "indirect": ["pt-BR", "ru"] },
+      "image": "cue:straight-ruler"
     },
     {
       "index": 139,
@@ -2454,7 +2607,8 @@
         "ru": "Наконец-то пошёл дождь."
       },
       "freqRank": 5648,
-      "review": { "words": "终于 开始 下雨 了", "indirect": ["es", "tr"] }
+      "review": { "words": "终于 开始 下雨 了", "indirect": ["es", "tr"] },
+      "image": "cue:cloud-with-rain"
     },
     {
       "index": 140,
@@ -2471,7 +2625,8 @@
         "ru": "Я наелся!"
       },
       "freqRank": 4742,
-      "review": { "words": "我 吃 饱 了", "unlisted": ["吃饱"], "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "我 吃 饱 了", "unlisted": ["吃饱"], "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 141,
@@ -2492,7 +2647,8 @@
         "words": "盘子 在 哪 里",
         "unlisted": ["哪里"],
         "indirect": ["es", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 142,
@@ -2509,7 +2665,8 @@
         "ar": "هل لديك أي أقلام رصاص؟"
       },
       "freqRank": 9108,
-      "review": { "words": "你 有 铅笔 吗", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "你 有 铅笔 吗", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:memo"
     },
     {
       "index": 143,
@@ -2525,7 +2682,8 @@
         "ru": "Поешь с нами."
       },
       "freqRank": 172,
-      "review": { "words": "跟 我们 一起 吃 吧", "indirect": ["ru", "tr"] }
+      "review": { "words": "跟 我们 一起 吃 吧", "indirect": ["ru", "tr"] },
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 144,
@@ -2541,7 +2699,8 @@
         "ru": "У тебя есть фотоаппарат?"
       },
       "freqRank": 10452,
-      "review": { "words": "你 有 照相机 吗", "indirect": ["tr"], "edited": ["tr"] }
+      "review": { "words": "你 有 照相机 吗", "indirect": ["tr"], "edited": ["tr"] },
+      "image": "cue:camera"
     },
     {
       "index": 145,
@@ -2558,7 +2717,8 @@
         "ru": "Он так же высок, как и она."
       },
       "freqRank": 290,
-      "review": { "words": "他 和 她 一样 高", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "他 和 她 一样 高", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:straight-ruler"
     },
     {
       "index": 146,
@@ -2581,7 +2741,8 @@
         "unlisted": ["一个"],
         "indirect": ["ar", "fr", "pt-BR", "ru", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:person-standing"
     },
     {
       "index": 147,
@@ -2597,7 +2758,8 @@
         "ru": "Он со мной одного роста."
       },
       "freqRank": 290,
-      "review": { "words": "他 和 我 一样 高", "edited": ["tr"] }
+      "review": { "words": "他 和 我 一样 高", "edited": ["tr"] },
+      "image": "cue:straight-ruler"
     },
     {
       "index": 148,
@@ -2615,7 +2777,8 @@
         "ar": "في أي ظروف ظهر الخطأ؟"
       },
       "freqRank": 323,
-      "review": { "words": "问题 是 怎么 出现 的", "edited": ["en", "tr", "es"] }
+      "review": { "words": "问题 是 怎么 出现 的", "edited": ["en", "tr", "es"] },
+      "image": "cue:warning"
     },
     {
       "index": 149,
@@ -2636,7 +2799,8 @@
         "unlisted": ["写信"],
         "indirect": ["ru", "tr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:envelope"
     },
     {
       "index": 150,
@@ -2653,7 +2817,8 @@
         "ru": "Мы должны идти в школу."
       },
       "freqRank": 430,
-      "review": { "words": "我们 必须 去 学校 了", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "我们 必须 去 学校 了", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:school"
     },
     {
       "index": 151,
@@ -2675,7 +2840,8 @@
         "words": "我 需要 他 的 帮助",
         "indirect": ["ar", "pt-BR", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:sos-button"
     },
     {
       "index": 152,
@@ -2691,7 +2857,8 @@
         "ru": "Что нам нужно, так это помощь."
       },
       "freqRank": 499,
-      "review": { "words": "我们 需要 的 是 帮助", "indirect": ["tr"] }
+      "review": { "words": "我们 需要 的 是 帮助", "indirect": ["tr"] },
+      "image": "cue:sos-button"
     },
     {
       "index": 153,
@@ -2713,7 +2880,8 @@
         "words": "我 需要 你 的 帮助",
         "indirect": ["ar", "pt-BR", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:sos-button"
     },
     {
       "index": 154,
@@ -2729,7 +2897,8 @@
         "ru": "Ты этого не заметил?"
       },
       "freqRank": 547,
-      "review": { "words": "你 没 注意 到 吗", "indirect": ["fr", "tr"] }
+      "review": { "words": "你 没 注意 到 吗", "indirect": ["fr", "tr"] },
+      "image": "cue:eyes"
     },
     {
       "index": 155,
@@ -2746,7 +2915,8 @@
         "ru": "Это моя лошадь."
       },
       "freqRank": 605,
-      "review": { "words": "这 是 我 的 马", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "这 是 我 的 马", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:horse"
     },
     {
       "index": 156,
@@ -2769,7 +2939,8 @@
         "unlisted": ["一只"],
         "indirect": ["ar", "fr"],
         "edited": ["ar"]
-      }
+      },
+      "image": "cue:dog"
     },
     {
       "index": 157,
@@ -2791,7 +2962,8 @@
         "unlisted": ["四只"],
         "indirect": ["de", "ru", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:dog"
     },
     {
       "index": 158,
@@ -2812,7 +2984,8 @@
         "words": "我 喜欢 这 只 狗",
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:dog"
     },
     {
       "index": 159,
@@ -2834,7 +3007,8 @@
         "words": "这 是 一 条 狗",
         "unlisted": ["一条"],
         "indirect": ["ar", "de", "es", "ru"]
-      }
+      },
+      "image": "cue:dog"
     },
     {
       "index": 160,
@@ -2856,7 +3030,8 @@
         "words": "我 有 一 条 狗",
         "unlisted": ["一条"],
         "indirect": ["ar", "pt-BR", "ru"]
-      }
+      },
+      "image": "cue:dog"
     },
     {
       "index": 161,
@@ -2875,7 +3050,8 @@
         "unlisted": ["门口"],
         "indirect": ["tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:door"
     },
     {
       "index": 162,
@@ -2892,7 +3068,8 @@
         "ru": "Другие студенты смеялись."
       },
       "freqRank": 651,
-      "review": { "words": "其他 学生 都 笑 了", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "其他 学生 都 笑 了", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:face-with-tears-of-joy"
     },
     {
       "index": 163,
@@ -2914,7 +3091,8 @@
         "unlisted": ["只有"],
         "indirect": ["de", "pt-BR", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:brain"
     },
     {
       "index": 164,
@@ -2935,7 +3113,8 @@
         "words": "他 喜欢 这 种 音乐",
         "unlisted": ["这种"],
         "indirect": ["de", "es", "ru"]
-      }
+      },
+      "image": "cue:musical-note"
     },
     {
       "index": 165,
@@ -2951,7 +3130,8 @@
         "ru": "Я знаю, что она прекрасна."
       },
       "freqRank": 799,
-      "review": { "words": "我 知道 她 很 可爱", "indirect": ["pt-BR"] }
+      "review": { "words": "我 知道 她 很 可爱", "indirect": ["pt-BR"] },
+      "image": "cue:sparkling-heart"
     },
     {
       "index": 166,
@@ -2973,7 +3153,8 @@
         "words": "请 你 不 要 哭",
         "unlisted": ["不要"],
         "indirect": ["ar", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:loudly-crying-face"
     },
     {
       "index": 167,
@@ -2991,7 +3172,8 @@
         "ar": "سيختتم المؤتمر أعماله غداً."
       },
       "freqRank": 928,
-      "review": { "words": "会议 明天 就 结束 了", "indirect": ["ar", "es", "pt-BR", "tr"] }
+      "review": { "words": "会议 明天 就 结束 了", "indirect": ["ar", "es", "pt-BR", "tr"] },
+      "image": "cue:busts-in-silhouette"
     },
     {
       "index": 168,
@@ -3012,7 +3194,8 @@
         "unlisted": ["没有"],
         "indirect": ["es", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:ring"
     },
     {
       "index": 169,
@@ -3029,7 +3212,8 @@
         "ru": "Ты серьезно?"
       },
       "freqRank": 1020,
-      "review": { "words": "你 是 认真 的 吗", "indirect": ["es", "pt-BR", "tr"] }
+      "review": { "words": "你 是 认真 的 吗", "indirect": ["es", "pt-BR", "tr"] },
+      "image": "cue:face-with-raised-eyebrow"
     },
     {
       "index": 170,
@@ -3050,7 +3234,8 @@
         "words": "附近 有 一 家 医院",
         "unlisted": ["一家"],
         "indirect": ["ar", "es", "tr"]
-      }
+      },
+      "image": "cue:stethoscope"
     },
     {
       "index": 171,
@@ -3071,7 +3256,8 @@
         "unlisted": ["两只"],
         "indirect": ["pt-BR", "tr"],
         "edited": ["reading", "en"]
-      }
+      },
+      "image": "cue:footprints"
     },
     {
       "index": 172,
@@ -3088,7 +3274,8 @@
         "ru": "Можно мне выключить телевизор?"
       },
       "freqRank": 1129,
-      "review": { "words": "我 能 关 电视 吗", "indirect": ["es", "pt-BR", "tr"] }
+      "review": { "words": "我 能 关 电视 吗", "indirect": ["es", "pt-BR", "tr"] },
+      "image": "cue:television"
     },
     {
       "index": 173,
@@ -3107,7 +3294,8 @@
         "words": "你 几 点 离开 办公室",
         "unlisted": ["几点"],
         "edited": ["reading", "en", "tr"]
-      }
+      },
+      "image": "cue:one-o-clock"
     },
     {
       "index": 174,
@@ -3130,7 +3318,8 @@
         "unlisted": ["两只"],
         "indirect": ["ar", "fr", "pt-BR", "ru"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:cat"
     },
     {
       "index": 175,
@@ -3146,7 +3335,8 @@
         "ru": "Он быстро устаёт."
       },
       "freqRank": 1197,
-      "review": { "words": "他 很 容易 觉得 累", "indirect": ["ru", "tr"] }
+      "review": { "words": "他 很 容易 觉得 累", "indirect": ["ru", "tr"] },
+      "image": "cue:sleepy-face"
     },
     {
       "index": 176,
@@ -3167,7 +3357,8 @@
         "unlisted": ["十七岁"],
         "indirect": ["ru", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:wedding"
     },
     {
       "index": 177,
@@ -3184,7 +3375,8 @@
         "ru": "У него есть своя комната."
       },
       "freqRank": 1357,
-      "review": { "words": "他 有 自己 的 房间", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "他 有 自己 的 房间", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:bed"
     },
     {
       "index": 178,
@@ -3201,7 +3393,8 @@
         "ru": "Её волосы очень короткие."
       },
       "freqRank": 1533,
-      "review": { "words": "她 的 头发 很 短", "indirect": ["de", "pt-BR", "tr"] }
+      "review": { "words": "她 的 头发 很 短", "indirect": ["de", "pt-BR", "tr"] },
+      "image": "cue:person-getting-haircut"
     },
     {
       "index": 179,
@@ -3217,7 +3410,8 @@
         "ru": "Он зашёл в свою комнату."
       },
       "freqRank": 1357,
-      "review": { "words": "他 进 了 自己 房间", "indirect": ["fr", "ru"] }
+      "review": { "words": "他 进 了 自己 房间", "indirect": ["fr", "ru"] },
+      "image": "cue:door"
     },
     {
       "index": 180,
@@ -3238,7 +3432,8 @@
         "unlisted": ["你老"],
         "indirect": ["es"],
         "edited": ["reading", "tr"]
-      }
+      },
+      "image": "cue:unamused-face"
     },
     {
       "index": 181,
@@ -3260,7 +3455,8 @@
         "unlisted": ["慢慢"],
         "indirect": ["es", "pt-BR", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:turtle"
     },
     {
       "index": 182,
@@ -3277,7 +3473,8 @@
         "ru": "Я вчера пошёл в парк."
       },
       "freqRank": 2134,
-      "review": { "words": "我 昨天 去 了 公园", "indirect": ["ru", "tr"] }
+      "review": { "words": "我 昨天 去 了 公园", "indirect": ["ru", "tr"] },
+      "image": "cue:person-walking"
     },
     {
       "index": 183,
@@ -3292,7 +3489,8 @@
         "ru": "Девушка! Я плохо себя чувствую!"
       },
       "freqRank": 2343,
-      "review": { "words": "小姐 我 觉得 不 舒服", "edited": ["tr"] }
+      "review": { "words": "小姐 我 觉得 不 舒服", "edited": ["tr"] },
+      "image": "cue:face-with-thermometer"
     },
     {
       "index": 184,
@@ -3309,7 +3507,8 @@
         "ru": "Можно мне немного отдохнуть?"
       },
       "freqRank": 2207,
-      "review": { "words": "我 能 休息 一会儿 吗", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "我 能 休息 一会儿 吗", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:chair"
     },
     {
       "index": 185,
@@ -3330,7 +3529,8 @@
         "words": "你 的 狗 非常 胖",
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["en", "tr", "de", "pt-BR", "ru"]
-      }
+      },
+      "image": "cue:dog"
     },
     {
       "index": 186,
@@ -3352,7 +3552,8 @@
         "unlisted": ["这里", "没有"],
         "indirect": ["es", "pt-BR", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:beer-mug"
     },
     {
       "index": 187,
@@ -3368,7 +3569,8 @@
         "ru": "Он пел за работой."
       },
       "freqRank": 2876,
-      "review": { "words": "他 一边 唱歌 一边 工作", "indirect": ["ru", "tr"] }
+      "review": { "words": "他 一边 唱歌 一边 工作", "indirect": ["ru", "tr"] },
+      "image": "cue:microphone"
     },
     {
       "index": 188,
@@ -3384,7 +3586,8 @@
         "ru": "Это мне дедушка купил!"
       },
       "freqRank": 3099,
-      "review": { "words": "爷爷 买 给 我 的", "indirect": ["tr"] }
+      "review": { "words": "爷爷 买 给 我 的", "indirect": ["tr"] },
+      "image": "cue:wrapped-gift"
     },
     {
       "index": 189,
@@ -3405,7 +3608,8 @@
         "words": "他 骑 自行车 去 的",
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["pt-BR"]
-      }
+      },
+      "image": "cue:bicycle"
     },
     {
       "index": 190,
@@ -3428,7 +3632,8 @@
         "unlisted": ["两只"],
         "indirect": ["ar", "es", "pt-BR"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:ear"
     },
     {
       "index": 191,
@@ -3445,7 +3650,8 @@
         "ru": "Он научил меня плавать."
       },
       "freqRank": 3695,
-      "review": { "words": "他 教 了 我 游泳", "indirect": ["ru", "tr"], "edited": ["reading"] }
+      "review": { "words": "他 教 了 我 游泳", "indirect": ["ru", "tr"], "edited": ["reading"] },
+      "image": "cue:person-swimming"
     },
     {
       "index": 192,
@@ -3466,7 +3672,8 @@
         "words": "那 是 一 家 宾馆",
         "unlisted": ["一家"],
         "indirect": ["ar", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:hotel"
     },
     {
       "index": 193,
@@ -3503,7 +3710,8 @@
         "ru": "Ты говоришь на путунхуа?"
       },
       "freqRank": 14869,
-      "review": { "words": "你 会 讲 普通话 吗" }
+      "review": { "words": "你 会 讲 普通话 吗" },
+      "image": "cue:speaking-head"
     },
     {
       "index": 195,
@@ -3525,7 +3733,8 @@
         "words": "这 是 一 个 句子",
         "unlisted": ["一个"],
         "indirect": ["es", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:speech-balloon"
     },
     {
       "index": 196,
@@ -3545,7 +3754,8 @@
         "unlisted": ["不用"],
         "indirect": ["tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:relieved-face"
     },
     {
       "index": 197,
@@ -3563,7 +3773,12 @@
         "ar": "هذا قاموسي."
       },
       "freqRank": 13961,
-      "review": { "words": "这 是 我 的 字典", "indirect": ["ar", "pt-BR", "tr"], "edited": ["tr"] }
+      "review": {
+        "words": "这 是 我 的 字典",
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["tr"]
+      },
+      "image": "cue:closed-book"
     },
     {
       "index": 198,
@@ -3583,7 +3798,8 @@
         "words": "我们 不 再 需要 你 了",
         "unlisted": ["不再"],
         "indirect": ["pt-BR", "tr"]
-      }
+      },
+      "image": "cue:door"
     },
     {
       "index": 199,
@@ -3622,7 +3838,8 @@
         "unlisted": ["一位"],
         "indirect": ["ar", "es", "pt-BR"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:person"
     },
     {
       "index": 201,
@@ -3643,7 +3860,8 @@
         "unlisted": ["想着"],
         "indirect": ["pt-BR", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:thought-balloon"
     },
     {
       "index": 202,
@@ -3666,7 +3884,8 @@
         "unlisted": ["来看"],
         "indirect": ["ar", "pt-BR"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:house"
     },
     {
       "index": 203,
@@ -3688,7 +3907,8 @@
         "words": "你 不 想 知道 为什么 吗",
         "unlisted": ["不想"],
         "indirect": ["ar", "de", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:red-question-mark"
     },
     {
       "index": 204,
@@ -3705,7 +3925,8 @@
         "ar": "اعطني فرصة!"
       },
       "freqRank": 393,
-      "review": { "words": "给 我 一 次 机会 吧", "unlisted": ["一次"], "indirect": ["ar", "de"] }
+      "review": { "words": "给 我 一 次 机会 吧", "unlisted": ["一次"], "indirect": ["ar", "de"] },
+      "image": "cue:folded-hands"
     },
     {
       "index": 205,
@@ -3726,7 +3947,8 @@
         "unlisted": ["这个"],
         "indirect": ["ru"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:man"
     },
     {
       "index": 206,
@@ -3741,7 +3963,8 @@
         "fr": "Son travail est complet maintenant."
       },
       "freqRank": 486,
-      "review": { "words": "他 的 工作 现在 完成 了", "indirect": ["tr"], "edited": ["tr"] }
+      "review": { "words": "他 的 工作 现在 完成 了", "indirect": ["tr"], "edited": ["tr"] },
+      "image": "cue:check-mark-button"
     },
     {
       "index": 207,
@@ -3761,7 +3984,8 @@
         "unlisted": ["别的"],
         "indirect": ["tr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:light-bulb"
     },
     {
       "index": 208,
@@ -3798,7 +4022,8 @@
         "ru": "Тебе нужна эта книга?"
       },
       "freqRank": 560,
-      "review": { "words": "你 需要 这 本 书 吗", "unlisted": ["本书"], "indirect": ["ru"] }
+      "review": { "words": "你 需要 这 本 书 吗", "unlisted": ["本书"], "indirect": ["ru"] },
+      "image": "cue:open-book"
     },
     {
       "index": 210,
@@ -3814,7 +4039,8 @@
         "ru": "Она хочет жить в городе."
       },
       "freqRank": 593,
-      "review": { "words": "她 想 住 在 城市 里", "indirect": ["de", "fr"] }
+      "review": { "words": "她 想 住 在 城市 里", "indirect": ["de", "fr"] },
+      "image": "cue:cityscape-at-dusk"
     },
     {
       "index": 211,
@@ -3835,7 +4061,8 @@
         "unlisted": ["这些"],
         "indirect": ["de"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:scroll"
     },
     {
       "index": 212,
@@ -3851,7 +4078,8 @@
         "ru": "Расскажи мне хорошую историю."
       },
       "freqRank": 772,
-      "review": { "words": "给 我 讲 个 好 故事", "indirect": ["ru"], "edited": ["tr"] }
+      "review": { "words": "给 我 讲 个 好 故事", "indirect": ["ru"], "edited": ["tr"] },
+      "image": "cue:scroll"
     },
     {
       "index": 213,
@@ -3873,7 +4101,8 @@
         "words": "这 个 故事 是 真 的",
         "unlisted": ["这个", "真的"],
         "indirect": ["ar", "ru", "tr"]
-      }
+      },
+      "image": "cue:scroll"
     },
     {
       "index": 214,
@@ -3891,7 +4120,8 @@
         "ar": "هل تحدثني؟"
       },
       "freqRank": 880,
-      "review": { "words": "你 在 跟 我 说话 吗", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "你 在 跟 我 说话 吗", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:speaking-head"
     },
     {
       "index": 215,
@@ -3911,7 +4141,8 @@
         "words": "不 要 哭 我 爱 你",
         "unlisted": ["不要", "我爱你"],
         "indirect": ["es", "pt-BR"]
-      }
+      },
+      "image": "cue:red-heart"
     },
     {
       "index": 216,
@@ -3926,7 +4157,8 @@
         "pt-BR": "A reunião durou até as cinco."
       },
       "freqRank": 928,
-      "review": { "words": "会议 一直 开 到 五 点", "unlisted": ["五点"], "indirect": ["tr"] }
+      "review": { "words": "会议 一直 开 到 五 点", "unlisted": ["五点"], "indirect": ["tr"] },
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 217,
@@ -3942,7 +4174,8 @@
         "ru": "Она вышла за него замуж в прошлом году."
       },
       "freqRank": 982,
-      "review": { "words": "她 去年 跟 他 结婚 了", "indirect": ["ru", "tr"], "edited": ["tr"] }
+      "review": { "words": "她 去年 跟 他 结婚 了", "indirect": ["ru", "tr"], "edited": ["tr"] },
+      "image": "cue:wedding"
     },
     {
       "index": 218,
@@ -3964,7 +4197,8 @@
         "unlisted": ["三岁"],
         "indirect": ["pt-BR", "ru"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:birthday-cake"
     },
     {
       "index": 219,
@@ -3984,7 +4218,8 @@
         "unlisted": ["这个"],
         "indirect": ["fr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:person-raising-hand"
     },
     {
       "index": 220,
@@ -3999,7 +4234,8 @@
         "fr": "J'ai entendu la porte se fermer."
       },
       "freqRank": 1129,
-      "review": { "words": "我 听 到 门 关 了", "unlisted": ["听到"], "indirect": ["tr"] }
+      "review": { "words": "我 听 到 门 关 了", "unlisted": ["听到"], "indirect": ["tr"] },
+      "image": "cue:door"
     },
     {
       "index": 221,
@@ -4020,7 +4256,8 @@
         "words": "这 只 猫 在 吃 东西",
         "indirect": ["ru", "tr"],
         "edited": ["reading", "en", "tr"]
-      }
+      },
+      "image": "cue:cat"
     },
     {
       "index": 222,
@@ -4035,7 +4272,8 @@
         "fr": "Je voudrais un poisson."
       },
       "freqRank": 1189,
-      "review": { "words": "我 想 要 一 条 鱼", "unlisted": ["想要", "一条"], "indirect": ["tr"] }
+      "review": { "words": "我 想 要 一 条 鱼", "unlisted": ["想要", "一条"], "indirect": ["tr"] },
+      "image": "cue:fish"
     },
     {
       "index": 223,
@@ -4057,7 +4295,8 @@
         "words": "不 用 谢谢 我 累 了",
         "unlisted": ["不用"],
         "indirect": ["ar", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:sleepy-face"
     },
     {
       "index": 224,
@@ -4074,7 +4313,8 @@
         "ar": "آه، تعطل حاسوبي."
       },
       "freqRank": 1239,
-      "review": { "words": "啊 我 的 电脑 坏 了", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "啊 我 的 电脑 坏 了", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:laptop"
     },
     {
       "index": 225,
@@ -4096,7 +4336,8 @@
         "words": "这 是 给 你 的 礼物",
         "indirect": ["ar", "de", "pt-BR", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:wrapped-gift"
     },
     {
       "index": 226,
@@ -4118,7 +4359,8 @@
         "words": "我 先 谢谢 你 的 帮忙",
         "indirect": ["ar", "de", "pt-BR", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:folded-hands"
     },
     {
       "index": 227,
@@ -4139,7 +4381,8 @@
         "words": "您 想 要 茶 还是 咖啡",
         "unlisted": ["想要"],
         "indirect": ["pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:hot-beverage"
     },
     {
       "index": 228,
@@ -4160,7 +4403,8 @@
         "unlisted": ["一米"],
         "indirect": ["ru", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:straight-ruler"
     },
     {
       "index": 229,
@@ -4181,7 +4425,8 @@
         "unlisted": ["听到"],
         "indirect": ["ru", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:microphone"
     },
     {
       "index": 230,
@@ -4199,7 +4444,8 @@
         "ar": "أختي تشبه أمي."
       },
       "freqRank": 2093,
-      "review": { "words": "我 妹妹 很 像 我 妈妈", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "我 妹妹 很 像 我 妈妈", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:family-man-woman-girl"
     },
     {
       "index": 231,
@@ -4220,7 +4466,8 @@
         "words": "这 辆 自行车 是 谁 的",
         "unlisted": ["这辆"],
         "indirect": ["pt-BR", "tr"]
-      }
+      },
+      "image": "cue:bicycle"
     },
     {
       "index": 232,
@@ -4241,7 +4488,8 @@
         "words": "我 吃 了 三 块 蛋糕",
         "unlisted": ["三块"],
         "indirect": ["pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:shortcake"
     },
     {
       "index": 233,
@@ -4259,7 +4507,8 @@
         "ar": "هل ترغب في الرقص معي؟"
       },
       "freqRank": 3920,
-      "review": { "words": "你 愿意 和 我 跳舞 吗", "indirect": ["ar", "es", "tr"] }
+      "review": { "words": "你 愿意 和 我 跳舞 吗", "indirect": ["ar", "es", "tr"] },
+      "image": "cue:woman-dancing"
     },
     {
       "index": 234,
@@ -4277,7 +4526,8 @@
         "ar": "يعيش عمي قرب المدرسة."
       },
       "freqRank": 3510,
-      "review": { "words": "我 叔叔 住 在 学校 附近", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+      "review": { "words": "我 叔叔 住 在 学校 附近", "indirect": ["ar", "pt-BR", "ru", "tr"] },
+      "image": "cue:school"
     },
     {
       "index": 235,
@@ -4294,7 +4544,12 @@
         "ru": "Мужчина ест хлеб."
       },
       "freqRank": 4138,
-      "review": { "words": "这 个 男人 在 吃 面包", "unlisted": ["这个"], "indirect": ["ru", "tr"] }
+      "review": {
+        "words": "这 个 男人 在 吃 面包",
+        "unlisted": ["这个"],
+        "indirect": ["ru", "tr"]
+      },
+      "image": "cue:bread"
     },
     {
       "index": 236,
@@ -4315,7 +4570,8 @@
         "words": "我 已经 吃 饱 了 谢谢",
         "unlisted": ["吃饱"],
         "indirect": ["pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 237,
@@ -4331,7 +4587,8 @@
         "ru": "Это удобный стул."
       },
       "freqRank": 4472,
-      "review": { "words": "这 是 张 舒服 的 椅子", "indirect": ["ru", "tr"] }
+      "review": { "words": "这 是 张 舒服 的 椅子", "indirect": ["ru", "tr"] },
+      "image": "cue:chair"
     },
     {
       "index": 238,
@@ -4348,7 +4605,8 @@
         "ar": "لا أعتقد أنها ستمطر غدا."
       },
       "freqRank": 5648,
-      "review": { "words": "我 不 认为 明天 会 下雨", "indirect": ["ar", "pt-BR", "tr"] }
+      "review": { "words": "我 不 认为 明天 会 下雨", "indirect": ["ar", "pt-BR", "tr"] },
+      "image": "cue:sun-behind-rain-cloud"
     },
     {
       "index": 239,
@@ -4370,7 +4628,8 @@
         "words": "这 把 伞 是 谁 的",
         "indirect": ["ar", "pt-BR", "tr"],
         "edited": ["ar"]
-      }
+      },
+      "image": "cue:umbrella-with-rain-drops"
     },
     {
       "index": 240,
@@ -4385,7 +4644,8 @@
         "pt-BR": "Tenho que limpar meu quarto."
       },
       "freqRank": 6258,
-      "review": { "words": "我 应该 打扫 我 的 房间", "indirect": ["tr"] }
+      "review": { "words": "我 应该 打扫 我 的 房间", "indirect": ["tr"] },
+      "image": "cue:broom"
     },
     {
       "index": 241,
@@ -4406,7 +4666,8 @@
         "unlisted": ["请问", "哪里"],
         "indirect": ["ar", "tr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:restroom"
     },
     {
       "index": 242,
@@ -4422,7 +4683,8 @@
         "ru": "Это фотоаппарат моей сестры."
       },
       "freqRank": 10452,
-      "review": { "words": "那 是 我 妹妹 的 照相机", "indirect": ["ru", "tr"], "edited": ["tr"] }
+      "review": { "words": "那 是 我 妹妹 的 照相机", "indirect": ["ru", "tr"], "edited": ["tr"] },
+      "image": "cue:camera"
     },
     {
       "index": 243,
@@ -4445,7 +4707,8 @@
         "unlisted": ["不是"],
         "indirect": ["ar", "pt-BR", "tr"],
         "edited": ["ar"]
-      }
+      },
+      "image": "cue:index-pointing-at-the-viewer"
     },
     {
       "index": 244,
@@ -4461,7 +4724,8 @@
         "ru": "Она одинаково любила своих детей."
       },
       "freqRank": 235,
-      "review": { "words": "她 的 孩子 她 都 一样 爱", "indirect": ["ru"], "edited": ["en", "tr"] }
+      "review": { "words": "她 的 孩子 她 都 一样 爱", "indirect": ["ru"], "edited": ["en", "tr"] },
+      "image": "cue:family"
     },
     {
       "index": 245,
@@ -4478,7 +4742,8 @@
         "ar": "أنا لا أظن أنها تشبه أمَّها"
       },
       "freqRank": 527,
-      "review": { "words": "我 不 觉得 她 像 她 妈妈", "indirect": ["ar", "ru", "tr"] }
+      "review": { "words": "我 不 觉得 她 像 她 妈妈", "indirect": ["ar", "ru", "tr"] },
+      "image": "cue:family-man-woman-girl"
     },
     {
       "index": 246,
@@ -4499,7 +4764,8 @@
         "unlisted": ["没有"],
         "indirect": ["es", "tr"],
         "edited": ["reading", "en"]
-      }
+      },
+      "image": "cue:envelope"
     },
     {
       "index": 247,
@@ -4521,7 +4787,8 @@
         "words": "您 为什么 想 买 这 本 书",
         "unlisted": ["本书"],
         "indirect": ["ar", "pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:open-book"
     },
     {
       "index": 248,
@@ -4542,7 +4809,8 @@
         "unlisted": ["真的"],
         "indirect": ["fr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:sos-button"
     },
     {
       "index": 249,
@@ -4558,7 +4826,8 @@
         "ru": "Я не понимаю, что он говорит."
       },
       "freqRank": 676,
-      "review": { "words": "我 不 明白 他 在 讲 什么", "indirect": ["ru", "tr"] }
+      "review": { "words": "我 不 明白 他 在 讲 什么", "indirect": ["ru", "tr"] },
+      "image": "cue:confused-face"
     },
     {
       "index": 250,
@@ -4573,7 +4842,8 @@
         "fr": "Tu sais très bien ce que je veux."
       },
       "freqRank": 766,
-      "review": { "words": "你 很 清楚 我 想 要 什么", "unlisted": ["想要"], "indirect": ["tr"] }
+      "review": { "words": "你 很 清楚 我 想 要 什么", "unlisted": ["想要"], "indirect": ["tr"] },
+      "image": "cue:thought-balloon"
     },
     {
       "index": 251,
@@ -4589,7 +4859,8 @@
         "ru": "Я не помню твоего имени."
       },
       "freqRank": 829,
-      "review": { "words": "我 不 记得 你 的 名字 了", "indirect": ["de", "tr"], "edited": ["tr"] }
+      "review": { "words": "我 不 记得 你 的 名字 了", "indirect": ["de", "tr"], "edited": ["tr"] },
+      "image": "cue:identification-card"
     },
     {
       "index": 252,
@@ -4605,7 +4876,8 @@
         "ru": "Он постоянно беспокоится о своей дочери."
       },
       "freqRank": 879,
-      "review": { "words": "他 一直 很 担心 他 的 女儿", "indirect": ["ru", "tr"] }
+      "review": { "words": "他 一直 很 担心 他 的 女儿", "indirect": ["ru", "tr"] },
+      "image": "cue:worried-face"
     },
     {
       "index": 253,
@@ -4626,7 +4898,8 @@
         "words": "明天 会 不 会 又 很 热",
         "unlisted": ["不会"],
         "indirect": ["pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:sun"
     },
     {
       "index": 254,
@@ -4646,7 +4919,8 @@
         "words": "他 说话 就 像 一 位 老师",
         "unlisted": ["一位"],
         "indirect": ["es", "tr"]
-      }
+      },
+      "image": "cue:speaking-head"
     },
     {
       "index": 255,
@@ -4667,7 +4941,8 @@
         "words": "我 希望 住 在 你 家 附近",
         "unlisted": ["你家"],
         "indirect": ["ar", "ru", "tr"]
-      }
+      },
+      "image": "cue:houses"
     },
     {
       "index": 256,
@@ -4687,7 +4962,8 @@
         "unlisted": ["不能"],
         "indirect": ["tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:fish"
     },
     {
       "index": 257,
@@ -4704,7 +4980,8 @@
         "ru": "Я знаю название этого животного."
       },
       "freqRank": 1438,
-      "review": { "words": "我 知道 这 种 动物 的 名字", "unlisted": ["这种"], "indirect": ["tr"] }
+      "review": { "words": "我 知道 这 种 动物 的 名字", "unlisted": ["这种"], "indirect": ["tr"] },
+      "image": "cue:paw-prints"
     },
     {
       "index": 258,
@@ -4724,7 +5001,8 @@
         "words": "看 厨房 里 有 一 只 猫",
         "unlisted": ["一只"],
         "indirect": ["de", "ru"]
-      }
+      },
+      "image": "cue:cat"
     },
     {
       "index": 259,
@@ -4745,7 +5023,8 @@
         "words": "我 的 叔叔 有 三 个 孩子",
         "unlisted": ["三个"],
         "indirect": ["pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:family"
     },
     {
       "index": 260,
@@ -4768,7 +5047,8 @@
         "unlisted": ["一把"],
         "indirect": ["ar", "es", "pt-BR", "tr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:chair"
     },
     {
       "index": 261,
@@ -4790,7 +5070,8 @@
         "words": "不 要 谢谢 我 吃 饱 了",
         "unlisted": ["不要", "吃饱"],
         "indirect": ["ar", "fr", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 262,
@@ -4806,7 +5087,8 @@
         "ru": "Сколько времени нужно, чтобы дойти до вокзала пешком?"
       },
       "freqRank": 7270,
-      "review": { "words": "走 着 去 火车站 要 多 久", "unlisted": ["多久"], "indirect": ["tr"] }
+      "review": { "words": "走 着 去 火车站 要 多 久", "unlisted": ["多久"], "indirect": ["tr"] },
+      "image": "cue:station"
     },
     {
       "index": 263,
@@ -4828,7 +5110,8 @@
         "unlisted": ["喝水"],
         "indirect": ["pt-BR", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:potable-water"
     },
     {
       "index": 264,
@@ -4849,7 +5132,8 @@
         "unlisted": ["没有"],
         "indirect": ["pt-BR", "tr"],
         "edited": ["reading"]
-      }
+      },
+      "image": "cue:person-shrugging"
     },
     {
       "index": 265,
@@ -4888,7 +5172,8 @@
         "ru": "Она хочет знать, кто прислал цветы."
       },
       "freqRank": 435,
-      "review": { "words": "她 想 知道 是 谁 送 的 花", "indirect": ["pt-BR", "ru", "tr"] }
+      "review": { "words": "她 想 知道 是 谁 送 的 花", "indirect": ["pt-BR", "ru", "tr"] },
+      "image": "cue:bouquet"
     },
     {
       "index": 267,
@@ -4910,7 +5195,8 @@
         "words": "你 是 从 哪 个 国家 来 的",
         "unlisted": ["是从", "哪个"],
         "indirect": ["ar", "pt-BR", "tr"]
-      }
+      },
+      "image": "cue:globe-showing-europe-africa"
     },
     {
       "index": 268,
@@ -4930,7 +5216,8 @@
         "words": "您 想 知道 为什么 我 要 离开 吗",
         "indirect": ["tr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:door"
     },
     {
       "index": 269,
@@ -4951,7 +5238,8 @@
         "unlisted": ["这个"],
         "indirect": ["ru", "tr"],
         "edited": ["en", "tr"]
-      }
+      },
+      "image": "cue:school"
     },
     {
       "index": 270,
@@ -4972,7 +5260,8 @@
         "words": "我 结婚 了 而且 有 两 个 孩子",
         "unlisted": ["两个"],
         "indirect": ["pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:family"
     },
     {
       "index": 271,
@@ -4992,7 +5281,8 @@
         "unlisted": ["班里"],
         "indirect": ["tr"],
         "edited": ["reading", "en", "tr"]
-      }
+      },
+      "image": "cue:books"
     },
     {
       "index": 272,
@@ -5012,7 +5302,8 @@
         "words": "我 发现 读 这 本 书 很 难",
         "unlisted": ["本书"],
         "indirect": ["pt-BR", "tr"]
-      }
+      },
+      "image": "cue:open-book"
     },
     {
       "index": 273,
@@ -5054,7 +5345,8 @@
         "words": "我 下 个 月 要 搬 家 了",
         "unlisted": ["下个月", "搬家"],
         "indirect": ["pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:package"
     },
     {
       "index": 275,
@@ -5075,7 +5367,8 @@
         "words": "在 这 个 房间 里 我 很 舒服",
         "unlisted": ["这个"],
         "indirect": ["pt-BR", "ru", "tr"]
-      }
+      },
+      "image": "cue:relieved-face"
     },
     {
       "index": 276,
@@ -5098,7 +5391,8 @@
         "unlisted": ["树上", "有些", "不是"],
         "indirect": ["ar", "pt-BR", "ru", "tr"],
         "edited": ["ru", "ar"]
-      }
+      },
+      "image": "cue:red-apple"
     },
     {
       "index": 277,
@@ -5118,7 +5412,8 @@
         "words": "我 想 买 一 辆 新 的 自行车",
         "unlisted": ["一辆"],
         "indirect": ["ru", "tr"]
-      }
+      },
+      "image": "cue:bicycle"
     },
     {
       "index": 278,
@@ -5138,7 +5433,8 @@
         "words": "你 的 椅子 和 我 的 很 像",
         "indirect": ["ru"],
         "edited": ["tr", "de", "fr"]
-      }
+      },
+      "image": "cue:chair"
     },
     {
       "index": 279,
@@ -5160,7 +5456,8 @@
         "unlisted": ["想要"],
         "indirect": ["es", "pt-BR", "ru"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:snowflake"
     },
     {
       "index": 280,
@@ -5182,7 +5479,8 @@
         "unlisted": ["一个"],
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["tr"]
-      }
+      },
+      "image": "cue:camera"
     }
   ]
 }
