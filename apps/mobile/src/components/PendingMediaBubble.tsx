@@ -21,7 +21,16 @@ import { makeStyles, useTheme } from '../lib/theme'
  * text queue above it. Before this, a failed attachment raised an alert and
  * the picked file was thrown away.
  */
-export function PendingMediaBubble({ item, onRetry }: { item: PendingMedia; onRetry: () => void }) {
+export function PendingMediaBubble({
+  item,
+  onRetry,
+  onLongPress,
+}: {
+  item: PendingMedia
+  onRetry: () => void
+  /** Only once it has failed: one still uploading has nothing to offer yet. */
+  onLongPress: () => void
+}) {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -54,6 +63,8 @@ export function PendingMediaBubble({ item, onRetry }: { item: PendingMedia; onRe
           </View>
         </View>
       )}
+
+      {item.body ? <Text style={styles.caption}>{item.body}</Text> : null}
 
       <View style={styles.status}>
         {failed ? (
@@ -92,6 +103,7 @@ export function PendingMediaBubble({ item, onRetry }: { item: PendingMedia; onRe
       accessibilityRole="button"
       accessibilityLabel={t('chat.notSentRetry')}
       onPress={onRetry}
+      onLongPress={onLongPress}
       style={({ pressed }) => [styles.bubble, styles.failed, pressed && styles.pressed]}
     >
       {body}
@@ -129,6 +141,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // The same three pixels `AudioBubble` plays along; here it fills instead.
   track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
+  caption: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
   status: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   label: { ...font.caption, color: colors.textFaint, fontVariant: ['tabular-nums'] },
   failedLabel: { ...font.caption, color: colors.danger },

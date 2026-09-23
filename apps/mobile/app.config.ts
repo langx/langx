@@ -170,6 +170,14 @@ const config: ExpoConfig = {
   web: {
     bundler: 'metro',
     output: 'static',
+    /*
+     * The export turns this into `favicon.ico` and links it from every page;
+     * without it the tab showed the browser's blank globe. The rounded mark,
+     * because a tab draws the file as it is and applies no mask of its own.
+     * Home-screen shortcuts on iOS read `public/apple-touch-icon.png`
+     * instead — the square icon at 180², which iOS rounds itself.
+     */
+    favicon: './assets/brand/logo-rounded.png',
   },
 
   /**

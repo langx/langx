@@ -56,6 +56,17 @@ describe('updatePending', () => {
     const list = addPending([], item('a'), NOW)
     expect(updatePending(list, 'gone', advanceUpload(UPLOAD_START, 1, 2))).toEqual(list)
   })
+
+  /*
+   * The composer is empty by the time an upload fails, so the row is the only
+   * place the caption still exists — and what a retry sends it from.
+   */
+  it('keeps the caption on a row that failed', () => {
+    const list = addPending([], { ...item('a'), body: 'Look at this' }, NOW)
+    const [failed] = updatePending(list, 'a', uploadFailed(UPLOAD_START))
+    expect(failed?.progress.phase).toBe('failed')
+    expect(failed?.body).toBe('Look at this')
+  })
 })
 
 describe('removePending', () => {

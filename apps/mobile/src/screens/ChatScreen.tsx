@@ -88,7 +88,7 @@ import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { speechLanguageFor } from '../lib/speechLanguage'
 import { errorCodeOf } from '../lib/errors'
 import { listState } from '../lib/listState'
-import { messageActionsFor } from '../lib/messageActions'
+import { messageActionsFor, unsentActionsFor } from '../lib/messageActions'
 import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
 import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../lib/messageMenu'
@@ -951,7 +951,13 @@ export function ChatScreen({
     setPending((list) =>
       addPending(
         list,
-        { clientId, conversationId, ...first, ...(items.length > 1 ? { files: [...items] } : {}) },
+        {
+          clientId,
+          conversationId,
+          ...first,
+          ...(items.length > 1 ? { files: [...items] } : {}),
+          ...(body ? { body } : {}),
+        },
         new Date(),
       ),
     )
@@ -1117,6 +1123,34 @@ export function ChatScreen({
 
   async function retry(message: UnsentMessage): Promise<void> {
     await deliver(message.body, message.clientId, message.replyToMessageId)
+  }
+
+  /**
+   * The long-press on a row that never left. A tap retries; this is the way
+   * out for a send that keeps failing, which until now had none — the row sat
+   * in the thread, and the persisted queue brought it back every visit.
+   *
+   * Delete is local and final: there is nothing on the server to withdraw,
+   * so it neither asks the socket nor asks twice. Copy sits beside it so the
+   * words are not lost with the row.
+   */
+  async function openUnsentActions(row: {
+    body: string
+    preview: string
+    discard: () => void
+  }): Promise<void> {
+    const picked = await openMessageMenu({
+      preview: row.preview,
+      mine: true,
+      actions: unsentActionsFor({ hasBody: row.body.trim().length > 0, t }),
+    })
+    if (picked?.kind !== 'action') return
+    if (picked.id === 'copy') {
+      await Clipboard.setStringAsync(row.body)
+      showToast(t('chat.copied'))
+    } else if (picked.id === 'delete') {
+      row.discard()
+    }
   }
 
   /**
@@ -2011,8 +2045,16 @@ export function ChatScreen({
                           item={row}
                           onRetry={() => {
                             setPending((list) => removePending(list, row.clientId))
-                            void sendAttachments(row.files ?? [attachmentOf(row)], undefined)
+                            void sendAttachments(row.files ?? [attachmentOf(row)], row.body)
                           }}
+                          onLongPress={() =>
+                            void openUnsentActions({
+                              body: row.body ?? '',
+                              preview: row.body || t(messagePreviewKey(row.kind)),
+                              discard: () =>
+                                setPending((list) => removePending(list, row.clientId)),
+                            })
+                          }
                         />
                       ))}
                     </View>
@@ -2025,6 +2067,14 @@ export function ChatScreen({
                           accessibilityRole="button"
                           accessibilityLabel={t('chat.notSentRetry')}
                           onPress={() => void retry(message)}
+                          onLongPress={() =>
+                            void openUnsentActions({
+                              body: message.body,
+                              preview: message.body,
+                              discard: () =>
+                                setUnsent((list) => removeUnsent(list, message.clientId)),
+                            })
+                          }
                           style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
                         >
                           <Text style={styles.unsentBody}>{message.body}</Text>

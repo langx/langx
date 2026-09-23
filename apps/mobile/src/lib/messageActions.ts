@@ -315,6 +315,43 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
 }
 
 /**
+ * What a message that never reached the server offers.
+ *
+ * Its own list rather than a flag on `messageActionsFor`, because nearly every
+ * row there acts on a message the server holds — a reply quotes its id, a
+ * star and a pin are written against it, delete asks the server to withdraw
+ * it. None of that exists yet. What does exist is the copy on this device,
+ * and the two things worth doing with it: take the words out, or throw it
+ * away. Without the second a failed send could only be retried, and one that
+ * kept failing stayed in the thread for good.
+ */
+export function unsentActionsFor({
+  hasBody,
+  t,
+}: {
+  hasBody: boolean
+  t: TranslateFn
+}): MessageAction[] {
+  const actions: MessageAction[] = []
+  if (hasBody) {
+    actions.push({
+      id: 'copy',
+      label: t('messageActions.copy'),
+      icon: 'copy-outline',
+      page: 'primary',
+    })
+  }
+  actions.push({
+    id: 'delete',
+    label: t('messageActions.delete'),
+    icon: 'trash-outline',
+    page: 'primary',
+    destructive: true,
+  })
+  return actions
+}
+
+/**
  * The menu's two pages.
  *
  * A page rather than one long list because the anchored menu has to fit

@@ -1,7 +1,12 @@
 import { MESSAGE_TYPES, TTS_MAX_TEXT_LENGTH } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from '../i18n/runtime'
-import { messageActionsFor, paginateActions, type MessageActionContext } from './messageActions'
+import {
+  messageActionsFor,
+  paginateActions,
+  unsentActionsFor,
+  type MessageActionContext,
+} from './messageActions'
 
 const theirs: MessageActionContext = {
   mine: false,
@@ -296,5 +301,27 @@ describe('paginateActions', () => {
       actions: primaryOnly,
       hasMore: false,
     })
+  })
+})
+
+describe('unsentActionsFor', () => {
+  const t = createTranslate('en')
+
+  /*
+   * Everything else acts on a message the server holds, and this one never
+   * reached it. Delete is the row that matters: without it a send that keeps
+   * failing can only be retried, and stays in the thread for good.
+   */
+  it('offers copy and delete on a failed sentence', () => {
+    expect(unsentActionsFor({ hasBody: true, t }).map((a) => a.id)).toEqual(['copy', 'delete'])
+  })
+
+  it('offers only delete on a failed attachment with nothing to copy', () => {
+    expect(unsentActionsFor({ hasBody: false, t }).map((a) => a.id)).toEqual(['delete'])
+  })
+
+  it('fits on one page', () => {
+    const actions = unsentActionsFor({ hasBody: true, t })
+    expect(paginateActions(actions, 'primary')).toEqual({ actions, hasMore: false })
   })
 })
