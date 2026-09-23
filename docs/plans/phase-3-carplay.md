@@ -100,20 +100,29 @@ Swift GET would fix the staleness, and the credential for it already exists.
 - `pnpm -r typecheck`, the mobile tests including the four new cases over the
   directory builder, `pnpm lint`, `pnpm format`, `gen:strings --check`.
 
-**A full `xcodebuild` of the workspace was attempted on this Mac and did not
-complete.** It stops in two places, neither of which names anything in this
-change: the Pods' _Copy XCFrameworks_ step for the prebuilt React, and the
-watch complication — that second one because the command forced
-`-sdk iphonesimulator` on every target in the scheme, which is a mistake in
-the command rather than in the target. The app target never got far enough to
-compile the scene, so the sentence above is the honest one: the Swift
-type-checks against the SDK, and it has not been through an app build.
+**The whole app has now been built and launched — 23 September.** A Release
+`xcodebuild` of the workspace for an iOS 27 simulator succeeded (the first
+attempt's two failures were a `-sdk iphonesimulator` flag forced on every
+target and a `.xcworkspace` a `prebuild --no-install` had removed — neither in
+this change), and the app launches on an iPhone 18 Pro simulator running
+iOS 27 and draws its welcome screen. That is the check that matters most for
+review: the manifest now carries **two** scene roles, window and CarPlay, and
+the 21 September rejection was a manifest problem.
+
+Builds **172** and **173** of 2.6 carry all of this to App Store Connect; 173 is
+in review. Its signed IPA was opened before upload: CarPlay, Siri and the
+Keychain group in the app's entitlements, `LangXIntents.appex` inside with its
+own, both scene roles in `Info.plist`, eight `AppIntentVocabulary.plist`s.
 
 ## What was not checked, and what it would take
 
 - **A car, or the simulator's car.** Nothing here has been seen on a CarPlay
-  screen. The simulator can show one — _I/O → External Displays → CarPlay_ —
-  and that is one click on the Mac that is running it.
+  screen. **Xcode 27 has no Simulator.app** — the simulator UI is
+  `DeviceHub.app` — and the CarPlay display is not a port `simctl io` exposes:
+  it is opened from DeviceHub's own menu, which a script can only click with
+  the Accessibility permission, a system security setting nobody should grant
+  in passing. So the first CarPlay screen is Behic's, in a real car, on build
+  173 from TestFlight.
 - **Whether the message is audible.** A CarPlay scene can be active while the
   app itself is in the background, so activating an audio session there needs
   the `audio` background mode. It **is** added, by Behic's decision on
