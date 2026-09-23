@@ -1544,6 +1544,7 @@ export const de: Localized<EnMessages> = {
     legendMissed: 'Verpasst · zum Nachholen antippen',
   },
   settings: {
+    scanBody: 'Am Computer anmelden oder das Profil eines Freundes öffnen',
     subscriptionBody: 'Dein Plan, Verlängerung und Verwaltung',
     shareSection: 'Teilen und einladen',
     shareBody: 'Dein Profillink, dein QR-Code und die Einladung',
@@ -1993,7 +1994,7 @@ export const de: Localized<EnMessages> = {
     openSettings: 'Einstellungen öffnen',
     unknown: 'Das ist kein LangX-Code.',
     webOnly:
-      'Zum Scannen brauchst du die Kamera deines Telefons. Öffne LangX auf dem Telefon und tippe auf das Scan-Symbol in deinem Profil.',
+      'Zum Scannen brauchst du die Kamera deines Telefons. Öffne LangX auf dem Telefon und tippe in den Einstellungen auf „Code scannen“.',
     typeInstead: 'Code stattdessen eintippen',
   },
 
@@ -2004,7 +2005,7 @@ export const de: Localized<EnMessages> = {
     webOnly: 'Das ist für die Anmeldung am Computer. Du bist schon am Handy.',
     bodyScan:
       'Öffne auf einem Handy, auf dem du schon angemeldet bist, {path} und halte die Kamera hierher. Oder tipp den Code ein.',
-    scanPath: 'Ich → Code scannen',
+    scanPath: 'Ich → Einstellungen → Code scannen',
     orEnterCode: 'Oder gib diesen Code ein',
     expiresIn: 'Läuft in {time} ab',
     newCode: 'Neuen Code holen',

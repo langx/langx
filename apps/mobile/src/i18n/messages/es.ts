@@ -1511,6 +1511,7 @@ export const es: Localized<EnMessages> = {
     legendMissed: 'Perdido · toca para rellenarlo',
   },
   settings: {
+    scanBody: 'Inicia sesión en un ordenador o abre el perfil de un amigo',
     subscriptionBody: 'Tu plan, la renovación y cómo gestionarlo',
     shareSection: 'Compartir e invitar',
     shareBody: 'El enlace a tu perfil, tu código QR y la invitación',
@@ -1955,7 +1956,7 @@ export const es: Localized<EnMessages> = {
     openSettings: 'Abrir ajustes',
     unknown: 'Eso no es un código de LangX.',
     webOnly:
-      'Para escanear hace falta la cámara del teléfono. Abre LangX en el teléfono y toca el icono de escanear en tu perfil.',
+      'Para escanear hace falta la cámara del teléfono. Abre LangX en el teléfono y toca «Escanear un código» en Ajustes.',
     typeInstead: 'Escribir el código',
   },
 
@@ -1966,7 +1967,7 @@ export const es: Localized<EnMessages> = {
     webOnly: 'Esto es para iniciar sesión en un ordenador. Ya estás en el móvil.',
     bodyScan:
       'En un teléfono donde ya hayas iniciado sesión, abre {path} y apunta aquí. O escribe el código.',
-    scanPath: 'Yo → Escanear un código',
+    scanPath: 'Yo → Ajustes → Escanear un código',
     orEnterCode: 'O introduce este código',
     expiresIn: 'Caduca en {time}',
     newCode: 'Obtener un código nuevo',

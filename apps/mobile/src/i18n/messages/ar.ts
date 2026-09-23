@@ -1746,6 +1746,7 @@ export const ar: Localized<EnMessages> = {
     legendMissed: 'فائت · اضغط لتعويضه',
   },
   settings: {
+    scanBody: 'سجّل الدخول على حاسوب أو افتح ملف صديق',
     subscriptionBody: 'خطتك وتجديدها وإدارتها',
     shareSection: 'المشاركة والدعوة',
     shareBody: 'رابط ملفك الشخصي ورمز QR ودعوة الأصدقاء',
@@ -2280,7 +2281,7 @@ export const ar: Localized<EnMessages> = {
     allow: 'السماح للكاميرا',
     openSettings: 'فتح الإعدادات',
     unknown: 'هذا ليس رمز LangX.',
-    webOnly: 'يحتاج المسح إلى كاميرا هاتفك. افتح LangX على هاتفك وانقر على أيقونة المسح في ملفك.',
+    webOnly: 'يحتاج المسح إلى كاميرا هاتفك. افتح LangX على هاتفك وانقر على «مسح رمز» في الإعدادات.',
     typeInstead: 'كتابة الرمز بدلًا من ذلك',
   },
 
@@ -2291,7 +2292,7 @@ export const ar: Localized<EnMessages> = {
     webOnly: 'هذا لتسجيل الدخول على حاسوب. أنت بالفعل على هاتفك.',
     bodyScan:
       'على هاتف سجّلت الدخول فيه بالفعل، افتح {path} ووجّه الكاميرا إلى هنا. أو اكتب الرمز.',
-    scanPath: 'أنا ← مسح رمز',
+    scanPath: 'أنا ← الإعدادات ← مسح رمز',
     orEnterCode: 'أو أدخل هذا الرمز',
     expiresIn: 'تنتهي الصلاحية خلال {time}',
     newCode: 'احصل على رمز جديد',

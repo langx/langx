@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import * as Updates from 'expo-updates'
 import { useState } from 'react'
-import { Pressable, Text, TextInput, View } from 'react-native'
+import { Platform, Pressable, Text, TextInput, View } from 'react-native'
 import { Button } from '../../../src/components/ui/Button'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -82,6 +82,20 @@ export default function SettingsScreen() {
         </View>
       ) : (
         <View style={styles.list}>
+          {/*
+           * The scanner, which used to be a glyph beside the gear on the Me
+           * tab. An action rather than a category, so it is drawn here and not
+           * in `SETTINGS_SECTIONS`, whose rows each open a page of settings.
+           * Native only — the web build shows the sign-in QR, it does not read
+           * one.
+           */}
+          {Platform.OS !== 'web' ? (
+            <ListRow
+              title={t('me.scan')}
+              subtitle={t('settings.scanBody')}
+              onPress={() => router.push('/(app)/scan')}
+            />
+          ) : null}
           {SETTINGS_SECTIONS.map((section) => (
             <ListRow
               key={section.id}

@@ -1524,6 +1524,7 @@ export const fr: Localized<EnMessages> = {
     legendMissed: 'Manqué · touche pour le rattraper',
   },
   settings: {
+    scanBody: 'Se connecter sur un ordinateur ou ouvrir le profil d’un ami',
     subscriptionBody: 'Ton forfait, son renouvellement et sa gestion',
     shareSection: 'Partager et inviter',
     shareBody: 'Le lien de ton profil, ton QR code et l’invitation',
@@ -1972,7 +1973,7 @@ export const fr: Localized<EnMessages> = {
     openSettings: 'Ouvrir les réglages',
     unknown: 'Ce n’est pas un code LangX.',
     webOnly:
-      'Scanner demande la caméra de ton téléphone. Ouvre LangX sur le téléphone et touche l’icône de scan sur ton profil.',
+      'Scanner demande la caméra de ton téléphone. Ouvre LangX sur le téléphone et touche « Scanner un code » dans Réglages.',
     typeInstead: 'Saisir le code à la place',
   },
 
@@ -1982,7 +1983,7 @@ export const fr: Localized<EnMessages> = {
     failed: 'Échec du démarrage. Réessaie.',
     webOnly: 'C’est pour se connecter sur un ordinateur. Tu es déjà sur ton téléphone.',
     bodyScan: 'Sur un téléphone où tu es déjà connecté, ouvre {path} et vise ici. Ou tape le code.',
-    scanPath: 'Moi → Scanner un code',
+    scanPath: 'Moi → Réglages → Scanner un code',
     orEnterCode: 'Ou saisis ce code',
     expiresIn: 'Expire dans {time}',
     newCode: 'Obtenir un nouveau code',
