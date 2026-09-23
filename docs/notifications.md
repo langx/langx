@@ -86,21 +86,23 @@ carrying every kind cannot honestly offer to stop one of them.
 | **Welcome to LangX**               | onboarding completes                              | email                         | `createProfile` refuses a second profile        |
 | **Confirm your email** (reminder)  | unverified 24 h after sign-up, never after a week | email                         | ledger `verifyReminder:<id>:once`               |
 | **Finish your profile** (reminder) | signed up, no profile, 24 h–7 days old            | email                         | ledger `onboardingReminder:<id>:once`           |
-| Bounty paid                        | a report is confirmed                             | email + push                  | the ledger's unique `{userId, kind, refId}`     |
+| Bounty paid                        | a report is confirmed                             | @langx message + push + email | the ledger's unique `{userId, kind, refId}`     |
 | **The v1 lifetime gift**           | a restore grants a lifetime tier                  | @langx message + push + email | ledger `lifetimeGift:<id>:once`                 |
 | **Welcome back from v1**           | first session on a `precreatedFromV1` row         | @langx message                | `sender_client_id_unique` on `welcomeback:<id>` |
 | Report received / feedback         | somebody reports or writes in                     | email to support              | —                                               |
 
-The lifetime gift is the only transactional message that arrives as a
-**message in the app** as well as in the two usual places, and the push is the
-only one in this table that opens a conversation rather than a screen. Both
-follow from what it is: news with no action attached, which a screen cannot
-hold onto and a thread can. It quotes what they finished v1 with, what
-converted at `legacyTokenDivisor`, and the balance as it stands when the
-letter is written — three numbers from three sources, which is why
-`lifetimeGiftNotice.ts` reads them itself rather than being handed them.
+The lifetime gift and the bounty receipt are the two transactional messages
+that also arrive as a **message in the app**: news with no action attached,
+which a screen cannot hold onto and a thread can. The receipt says in the
+thread exactly what its mail says, and its push still opens the wallet, where
+the number is. The gift's push is the only one in this table that opens a
+conversation rather than a screen, because there the letter is the news: it
+quotes what they finished v1 with, what converted at `legacyTokenDivisor`, and
+the balance as it stands when the letter is written — three numbers from three
+sources, which is why `lifetimeGiftNotice.ts` reads them itself rather than
+being handed them.
 
-The welcome-back is the second message in the app here, and the only line in
+The welcome-back is the third message in the app here, and the only line in
 this table with **no push at all**. Two reasons, and either alone would be
 enough. It is sent from `session.create.after`, which runs on every sign-in and
 not only the first — `deliverOfficialMessage` answers a repeated `clientId`
