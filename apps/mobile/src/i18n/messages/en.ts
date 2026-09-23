@@ -1688,6 +1688,7 @@ export const en = {
     legendMissed: 'Missed · tap to fill in',
   },
   settings: {
+    scanBody: 'Sign in on a computer, or open a friend’s profile',
     subscriptionBody: 'Your plan, renewal and how to manage it',
     shareSection: 'Share & invite',
     shareBody: 'Your profile link, QR code and referral invite',
@@ -2147,7 +2148,7 @@ export const en = {
     openSettings: 'Open Settings',
     unknown: 'That is not a LangX code.',
     webOnly:
-      'Scanning needs your phone’s camera. Open LangX on your phone and tap the scan icon on your profile.',
+      'Scanning needs your phone’s camera. Open LangX on your phone and tap Scan a code in Settings.',
     typeInstead: 'Type the code instead',
   },
 
@@ -2158,7 +2159,7 @@ export const en = {
     webOnly: 'This is for signing in on a computer. You are already on your phone.',
     bodyScan:
       'On a phone where you are already signed in, open {path} and point it here. Or type the code.',
-    scanPath: 'Me → Scan a code',
+    scanPath: 'Me → Settings → Scan a code',
     orEnterCode: 'Or enter this code',
     expiresIn: 'Expires in {time}',
     newCode: 'Get a new code',

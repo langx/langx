@@ -1513,6 +1513,7 @@ export const tr: Localized<EnMessages> = {
     legendMissed: 'Kaçırıldı · doldurmak için dokun',
   },
   settings: {
+    scanBody: 'Bilgisayarda giriş yap ya da bir arkadaşının profilini aç',
     subscriptionBody: 'Planın, yenileme ve yönetimi',
     shareSection: 'Paylaş ve davet et',
     shareBody: 'Profil bağlantın, QR kodun ve davet bağlantın',
@@ -1957,7 +1958,7 @@ export const tr: Localized<EnMessages> = {
     openSettings: 'Ayarları aç',
     unknown: 'Bu bir LangX kodu değil.',
     webOnly:
-      'Taramak için telefonunun kamerası gerekir. Telefonunda LangX’i aç ve profilindeki tarama simgesine dokun.',
+      'Taramak için telefonunun kamerası gerekir. Telefonunda LangX’i aç ve Ayarlar’daki Kod tara’ya dokun.',
     typeInstead: 'Kodu elle gir',
   },
 
@@ -1968,7 +1969,7 @@ export const tr: Localized<EnMessages> = {
     webOnly: 'Bu, bilgisayarda giriş yapmak içindir. Zaten telefonundasın.',
     bodyScan:
       'Zaten giriş yaptığın bir telefonda {path} bölümünü aç ve kamerayı buraya tut. Ya da kodu yaz.',
-    scanPath: 'Ben → Kod tara',
+    scanPath: 'Ben → Ayarlar → Kod tara',
     orEnterCode: 'Ya da bu kodu gir',
     expiresIn: 'Süresi {time} içinde doluyor',
     newCode: 'Yeni kod al',

@@ -11,7 +11,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { placeLabel } from '../../../src/lib/placeLabel'
-import { Platform, Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import {
   useBadges,
   useEchoSummary,
@@ -189,27 +189,12 @@ export default function MeScreen() {
           ) : null}
         </Pressable>
         {/*
-          The scanner, beside the gear: a sign-in QR on a laptop screen used
-          to need Settings → Account → Sign in on another device → type the
-          code. Native only — the web build shows that QR, it does not read
-          one.
-        */}
-        {Platform.OS !== 'web' ? (
-          <Pressable
-            onPress={() => router.push('/(app)/scan')}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={t('me.scan')}
-            style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-          >
-            <Feather name="maximize" size={22} color={colors.textMuted} />
-          </Pressable>
-        ) : null}
-        {/*
           Settings used to be a button below the token store, at the bottom of a
           screen that scrolls for a while — reachable, but only by someone who
           already knew it was there. It is the only way into that screen, so it
-          gets the corner instead.
+          gets the corner instead — as a ≡, the glyph Instagram and most apps
+          put in a profile's corner for exactly this. The scanner that sat
+          beside it is now the first row inside Settings.
         */}
         <Pressable
           onPress={() => router.push('/(app)/settings')}
@@ -218,7 +203,7 @@ export default function MeScreen() {
           accessibilityLabel={t('me.settings')}
           style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
         >
-          <Feather name="settings" size={22} color={colors.textMuted} />
+          <Feather name="menu" size={22} color={colors.text} />
         </Pressable>
       </View>
 

@@ -1507,6 +1507,7 @@ export const ptBR: Localized<EnMessages> = {
     legendMissed: 'Perdido · toque para preencher',
   },
   settings: {
+    scanBody: 'Entre em um computador ou abra o perfil de um amigo',
     subscriptionBody: 'Seu plano, a renovação e como gerenciá-lo',
     shareSection: 'Compartilhar e convidar',
     shareBody: 'O link do seu perfil, o QR code e o convite',
@@ -1953,7 +1954,7 @@ export const ptBR: Localized<EnMessages> = {
     openSettings: 'Abrir ajustes',
     unknown: 'Isso não é um código do LangX.',
     webOnly:
-      'Para escanear é preciso a câmera do celular. Abra o LangX no celular e toque no ícone de escanear no seu perfil.',
+      'Para escanear é preciso a câmera do celular. Abra o LangX no celular e toque em “Escanear um código” nas Configurações.',
     typeInstead: 'Digitar o código',
   },
 
@@ -1964,7 +1965,7 @@ export const ptBR: Localized<EnMessages> = {
     webOnly: 'Isto é para entrar em um computador. Você já está no celular.',
     bodyScan:
       'Em um celular onde você já está conectado, abra {path} e aponte para aqui. Ou digite o código.',
-    scanPath: 'Eu → Escanear um código',
+    scanPath: 'Eu → Configurações → Escanear um código',
     orEnterCode: 'Ou digite este código',
     expiresIn: 'Expira em {time}',
     newCode: 'Gerar um novo código',
