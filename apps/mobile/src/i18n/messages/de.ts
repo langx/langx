@@ -2132,10 +2132,6 @@ export const de: Localized<EnMessages> = {
     summary: 'Diese Woche: {messages} und {corrections}.',
   },
 
-  carplay: {
-    readFailed: 'Vorlesen nicht möglich',
-  },
-
   watch: {
     complication: 'Zifferblatt',
     showsUnread: 'Ungelesen',

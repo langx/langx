@@ -2091,10 +2091,6 @@ export const ptBR: Localized<EnMessages> = {
     summary: 'Esta semana: {messages} e {corrections}.',
   },
 
-  carplay: {
-    readFailed: 'Não foi possível ler em voz alta',
-  },
-
   watch: {
     complication: 'Mostrador',
     showsUnread: 'Não lidas',

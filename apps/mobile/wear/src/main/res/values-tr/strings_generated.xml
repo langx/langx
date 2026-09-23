@@ -3,8 +3,6 @@
 <resources>
   <string name="tabs_chats">Sohbetler</string>
   <string name="chats_emptyTitle">Henüz sohbet yok</string>
-  <string name="carplay_readFailed">Sesli okunamadı</string>
-  <string name="common_ok">Tamam</string>
   <string name="watch_unread">Okunmamış</string>
   <string name="watch_nothingUnread">Okunmamış yok</string>
   <string name="watch_openOnPhone">LangX’i telefonunda aç</string>

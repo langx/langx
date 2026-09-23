@@ -130,14 +130,11 @@ must not be allowed to put that permission back into the Android manifest.
 Whatever plays audio in the car is iOS-only native code, not a change to the
 shared audio module.
 
-**And that is exactly how the car got its voice.** On 22 September the CarPlay
-plugin added `audio` to `UIBackgroundModes` — iOS only, in the plugin rather
-than in `app.config.ts`, so it leaves with the car if the car ever leaves.
-Without it a CarPlay scene cannot activate an audio session while the app is
-backgrounded, which is the ordinary case, and the message is read to nobody.
-The cost is on this side of the platform line and is real: any sound the app
-is playing now keeps playing when somebody leaves the app. `expo-audio`'s
-Android flag is untouched.
+**The car nearly changed that, for a day.** On 22 September the CarPlay plugin
+added `audio` to `UIBackgroundModes` so the car could speak messages itself;
+on 23 September the car stopped speaking anything — Siri reads them — and the
+mode went with it. So no sound in the app outlives leaving it, on either
+platform, which is where this paragraph started.
 
 ## The rule all three obey
 
@@ -645,13 +642,13 @@ The REST send twin, `previewFor` and the read-aloud decision were all built
 for the watch and the car together; none of them cares which language the car
 UI is written in.
 
-**Reading aloud costs nothing.** The message is read by the on-device
-`AVSpeechSynthesizer` in the language `detectSpeechLanguage` already picks,
-not by our voice service. Three reasons, in order: it is instant and works
-with no signal, which is what a car needs; it spends no `chatVoices` quota,
-so a free account can drive; and it touches no plan limit, so nothing has to
-change on the website or in the GitBook docs. Our own voices stay where they
-are good — Echo, and reading a phrase on purpose.
+**Reading aloud costs nothing, and is Siri's.** It was planned as the
+on-device `AVSpeechSynthesizer`; the first car it reached kept it silent, and
+the rows became `CPMessageListItem`s, which hand the conversation to Siri —
+see `phase-3-carplay.md`. What survives of the argument is the part that
+mattered: no `chatVoices` quota is spent, so a free account can drive, and no
+plan limit is touched. Our own voices stay where they are good — Echo, and
+reading a phrase on purpose.
 
 **Replying goes through Siri, and that is Apple's rule, not a choice.** A
 CarPlay communication app supports SiriKit's messaging intents; dictation is

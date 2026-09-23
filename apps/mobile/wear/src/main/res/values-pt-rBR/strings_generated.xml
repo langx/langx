@@ -3,8 +3,6 @@
 <resources>
   <string name="tabs_chats">Conversas</string>
   <string name="chats_emptyTitle">Ainda não há conversas</string>
-  <string name="carplay_readFailed">Não foi possível ler em voz alta</string>
-  <string name="common_ok">OK</string>
   <string name="watch_unread">Não lidas</string>
   <string name="watch_nothingUnread">Nada não lido</string>
   <string name="watch_openOnPhone">Abra o LangX no seu telefone</string>

@@ -1,3 +1,4 @@
+import Intents
 import UserNotifications
 import WidgetKit
 
@@ -35,7 +36,77 @@ class NotificationService: UNNotificationServiceExtension {
       updateUnread(to: badge)
     }
 
-    contentHandler(content ?? request.content)
+    guard let content else {
+      contentHandler(request.content)
+      return
+    }
+    communicate(request, content, done: contentHandler)
+  }
+
+  /**
+   A message push, turned into a message.
+
+   iOS treats a notification as an ordinary alert unless it is told who sent
+   it and in which conversation, and only a *communication* notification is
+   one Siri will announce — which is how a message that arrives mid-drive gets
+   read aloud in the car, by Siri, rather than by anything of ours. The telling
+   is an `INSendMessageIntent` for the incoming message, donated, with the
+   notification rebuilt from it: the sender's name becomes the title the way
+   Messages draws it, and the conversation identifier is the one the car's
+   list and the Intents extension already use, so "reply" after the
+   announcement lands in the same thread.
+
+   Everything it needs is already in the push: the title is the sender's
+   display name, the body is the message, and `data` carries
+   `conversationId` and `senderId` (`apps/api/src/ws/fanOut.ts`). Expo puts
+   `data` under the `body` key of the APNs payload, which is why it is read
+   from there first.
+
+   Any other kind of push, or one missing a field, is delivered as it came.
+   So is one iOS refuses to rebuild — the app then lacks the Communication
+   Notifications capability, and a plain notification is still a notification.
+  */
+  private func communicate(
+    _ request: UNNotificationRequest,
+    _ content: UNMutableNotificationContent,
+    done: @escaping (UNNotificationContent) -> Void
+  ) {
+    let payload = request.content.userInfo
+    let data = (payload["body"] as? [String: Any]) ?? (payload as? [String: Any]) ?? [:]
+    guard data["kind"] as? String == "message",
+      let conversationId = data["conversationId"] as? String,
+      let senderId = data["senderId"] as? String,
+      !content.title.isEmpty
+    else {
+      done(content)
+      return
+    }
+
+    let sender = INPerson(
+      personHandle: INPersonHandle(value: senderId, type: .unknown),
+      nameComponents: nil,
+      displayName: content.title,
+      image: nil,
+      contactIdentifier: nil,
+      // The conversation, as `targets/intents/MessagingHandler.swift` reads a
+      // person's custom identifier — so a reply resolves without a name.
+      customIdentifier: conversationId)
+
+    let intent = INSendMessageIntent(
+      recipients: nil,
+      outgoingMessageType: .outgoingMessageText,
+      content: content.body,
+      speakableGroupName: nil,
+      conversationIdentifier: conversationId,
+      serviceName: nil,
+      sender: sender,
+      attachments: nil)
+
+    let interaction = INInteraction(intent: intent, response: nil)
+    interaction.direction = .incoming
+    interaction.donate { _ in
+      done((try? content.updating(from: intent)) ?? content)
+    }
   }
 
   /*
