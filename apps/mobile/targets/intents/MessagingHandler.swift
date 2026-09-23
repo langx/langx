@@ -31,12 +31,27 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
     for intent: INSendMessageIntent,
     with completion: @escaping ([INSendMessageRecipientResolutionResult]) -> Void
   ) {
+    let conversations = ConversationDirectory.load()
+
+    /*
+     A reply to a conversation the car handed Siri — a `CPMessageListItem`
+     tapped, read, then answered — arrives carrying that conversation's
+     identifier. The thread is already known, so nobody has to be named: the
+     recipients are not required, and asking for them would make Siri ask the
+     driver "to whom?" about the person it just finished reading.
+    */
+    if let identifier = intent.conversationIdentifier,
+      conversations.contains(where: { $0.id == identifier })
+    {
+      completion([INSendMessageRecipientResolutionResult.notRequired()])
+      return
+    }
+
     guard let recipients = intent.recipients, !recipients.isEmpty else {
       completion([INSendMessageRecipientResolutionResult.needsValue()])
       return
     }
 
-    let conversations = ConversationDirectory.load()
     completion(
       recipients.map { recipient in
         let matches = MessagingHandler.matches(for: recipient, in: conversations)
@@ -117,16 +132,32 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
     intent: INSearchForMessagesIntent,
     completion: @escaping (INSearchForMessagesIntentResponse) -> Void
   ) {
+    /*
+     Asked about particular conversations — which is what a tap on a car row
+     is — the answer is those conversations, read or not: the driver chose
+     one, and "no new messages" about the thread they are looking at would be
+     a strange thing to hear. Asked in general, "read my messages", the answer
+     is what is waiting.
+    */
+    let requested = Set(intent.conversationIdentifiers ?? [])
     let messages = ConversationDirectory.load()
-      .filter { $0.unread > 0 }
+      .filter { requested.isEmpty ? $0.unread > 0 : requested.contains($0.id) }
       .compactMap { conversation -> INMessage? in
         guard let preview = conversation.preview else { return nil }
+        /*
+         With its conversation's identifier, so that Siri's "Reply?" after
+         reading it comes back as an `INSendMessageIntent` for this thread.
+        */
         return INMessage(
           identifier: MessagingHandler.messageIdentifier(for: conversation.id),
+          conversationIdentifier: conversation.id,
           content: preview,
           dateSent: conversation.at,
           sender: MessagingHandler.person(for: conversation),
-          recipients: nil)
+          recipients: nil,
+          groupName: nil,
+          messageType: .text,
+          serviceName: nil)
       }
 
     let response = INSearchForMessagesIntentResponse(code: .success, userActivity: nil)
@@ -211,6 +242,12 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
   }
 
   private static func conversationId(for intent: INSendMessageIntent) -> String? {
+    // The car's own conversation, when the reply started from one.
+    if let identifier = intent.conversationIdentifier,
+      ConversationDirectory.load().contains(where: { $0.id == identifier })
+    {
+      return identifier
+    }
     guard let recipient = intent.recipients?.first else { return nil }
     if let identifier = recipient.customIdentifier { return identifier }
     return matches(for: recipient, in: ConversationDirectory.load()).first?.id

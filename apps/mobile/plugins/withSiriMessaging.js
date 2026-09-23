@@ -42,6 +42,14 @@ const INTENTS = ['INSendMessageIntent', 'INSearchForMessagesIntent', 'INSetMessa
 const withSiriMessaging = (config) => {
   config = withEntitlementsPlist(config, (modConfig) => {
     modConfig.modResults['com.apple.developer.siri'] = true
+    /*
+     * Communication Notifications, so the notification service extension may
+     * rebuild a message push from an `INSendMessageIntent` — the only kind of
+     * notification Siri announces, which is how a message arriving mid-drive
+     * is read aloud in the car. Without it `updating(from:)` throws and the
+     * push arrives as a plain alert; nothing breaks, nothing is announced.
+     */
+    modConfig.modResults['com.apple.developer.usernotifications.communication'] = true
 
     const groups = new Set(modConfig.modResults['keychain-access-groups'] ?? [])
     groups.add(KEYCHAIN_GROUP)

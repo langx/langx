@@ -496,7 +496,7 @@ account and the APNs key for push, and `GOOGLE_SERVICES_JSON` /
 
 ## The next iOS build needs portal work before it will sign
 
-**Three things changed under the app's identity on 22 September 2026**, and
+**Four things changed under the app's identity on 22–23 September 2026**, and
 each of them fails at the _signing_ step with a message about an entitlement
 rather than about the feature that added it.
 
@@ -506,7 +506,10 @@ rather than about the feature that added it.
    minted before that date lacks it.
 2. **Siri.** `com.apple.developer.siri` is new, and the capability has to be
    switched on for the App ID as well.
-3. **A second App ID.** The Intents extension is its own target and its own
+3. **Communication Notifications.** `com.apple.developer.usernotifications.communication`
+   is new on 23 September — it is what lets a message push be announced by
+   Siri in the car — and it too is a capability switched on for the App ID.
+4. **A second App ID.** The Intents extension is its own target and its own
    bundle — `tech.newchapter.languageXchange.intent` — and it needs the App
    Group on it, which `eas-cli` cannot patch. That is the manual portal pass
    recorded in [`plans/phase-1-mac-handoff.md`](plans/phase-1-mac-handoff.md),
@@ -517,11 +520,9 @@ So the first build of 2.7, local or cloud, needs the portal visited and its
 iOS credentials regenerated. See
 [`plans/phase-3-carplay.md`](plans/phase-3-carplay.md).
 
-**One behaviour changed with it.** `UIBackgroundModes` now contains `audio`,
-which is what lets the car read a message aloud while the app is in the
-background — and also means any sound the app is playing keeps playing when
-somebody leaves the app. Worth a look during the release pass on Echo and on
-the chat screen's read-aloud. Android is untouched.
+`UIBackgroundModes` held `audio` for builds 172–173 only, for a car that
+spoke messages itself. From 174 Siri reads them and the key is gone again, as
+it was in every build before.
 
 ## A new Xcode major is a new review risk
 

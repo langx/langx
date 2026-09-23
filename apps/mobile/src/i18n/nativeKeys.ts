@@ -35,13 +35,6 @@ export const NATIVE_KEYS = [
   'tabs.chats',
   'chats.emptyTitle',
   /*
-   * The car. Its title is the chat tab's, like the watch's; its one sentence
-   * of its own is the alert for a message that could not be read aloud, and
-   * the alert's button is the app's own OK.
-   */
-  'carplay.readFailed',
-  'common.ok',
-  /*
    * These two are the Wear tile's, and only the tile's. It answers "how many
    * are waiting", which stayed the right question for a glance when the app's
    * own screen stopped asking it.

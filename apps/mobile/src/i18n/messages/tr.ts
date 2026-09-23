@@ -2092,10 +2092,6 @@ export const tr: Localized<EnMessages> = {
     summary: 'Bu hafta: {messages} ve {corrections}.',
   },
 
-  carplay: {
-    readFailed: 'Sesli okunamadı',
-  },
-
   watch: {
     complication: 'Saat kadranı',
     showsUnread: 'Okunmamış',

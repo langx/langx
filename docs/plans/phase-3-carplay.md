@@ -9,7 +9,8 @@ The phase's shape is in
 → _The chat list, on every surface that can hold one_. Short version: CarPlay
 apps draw Apple's templates and nothing of their own, the category is
 Communication, and the car shows the same conversations the phone does with
-the message **spoken** rather than written.
+the message **read by Siri** rather than written — never drawn, because Apple
+does not allow message text on the CarPlay screen.
 
 ## Why it is Swift
 
@@ -38,7 +39,6 @@ no second definition of anything.
 | Piece                           | Where                                         |
 | ------------------------------- | --------------------------------------------- |
 | The scene, the list, the states | `carplay/CarPlayScene.swift`                  |
-| Reading a message out           | `CarPlaySpeaker`, same file                   |
 | The blob every surface reads    | `targets/_shared/ConversationDirectory.swift` |
 | The four fields the car needs   | `packages/shared/src/companion.ts`            |
 | Entitlement, manifest, sources  | `plugins/withCarPlay.js`                      |
@@ -91,7 +91,7 @@ Swift GET would fix the staleness, and the credential for it already exists.
   `CPTemplateApplicationSceneSessionRoleApplication` role beside the window
   role in `Info.plist`, `com.apple.developer.carplay-communication`,
   `com.apple.developer.siri` and the Keychain group in the entitlements,
-  `audio` in `UIBackgroundModes`, `CarPlayScene.swift` in the app target's
+  `CarPlayScene.swift` in the app target's
   sources, and a `LangXIntents` target at deployment target 16.4 carrying the
   App Group, the Keychain group and the three `IntentsSupported` entries.
 - **The generator refuses a sentence written in the car**, now that it scans
@@ -122,19 +122,29 @@ list with real conversations, most recent first, each with a relative time
 the manifest role and the entitlement all working end to end, on the first
 try.
 
-**Two things were wrong, and both are fixed for the next build:**
+**Two things were wrong, and the fix for the first one changed the design:**
 
-- **"None of them can be tapped."** The tap almost certainly arrived — the
-  speech did not become sound, and silence was the only failure the code had.
-  From the driver's seat that is indistinguishable from a dead list. The
-  session now uses `.voicePrompt` with `.duckOthers` and
-  `.interruptSpokenAudioAndMixWithOthers`, which is what Apple's forums point
-  to for a silent `AVSpeechSynthesizer` in CarPlay; the row's playing
-  indicator goes up the moment the tap arrives; and if the session cannot be
-  activated, or the synthesizer has not started within three seconds, the car
-  shows an alert — `carplay.readFailed`, in eight languages. The next test
-  therefore separates "no response" from "response, no sound", which this one
-  could not.
+- **"None of them can be tapped" — "I can't get into the chat for it to read"
+  — and then what Behic actually wanted:** no automatic reading, a dictated
+  new message when he wants one, and a new message read aloud when it
+  arrives. The first build spoke the message itself with
+  `AVSpeechSynthesizer`, which stayed silent in the car, and silence was its
+  only failure path, so the list looked dead. A screen to "enter" the chat
+  would have needed the message drawn on it — and **Apple does not permit
+  message text on the CarPlay screen**.
+
+  So the rows are now `CPMessageListItem`s, Apple's own row for messaging
+  apps, and every one of those wishes is Siri's: tapping an unread
+  conversation has Siri read it (through `INSearchForMessagesIntent`, filtered
+  to that conversation's identifier) and offer a dictated reply
+  (`INSendMessageIntent`, carrying the same identifier, so no name has to be
+  resolved); tapping a read one goes straight to a reply; the bar's
+  `CPMessageComposeBarButton` starts a new message; and a message arriving
+  mid-drive is a **communication notification** — rebuilt in the notification
+  service extension from an `INSendMessageIntent` — which is the kind Siri
+  announces. The app itself no longer plays anything in the car, so the
+  `audio` background mode added the day before is gone again with it.
+
 - **The title.** "LangX" drawn as a large heading beside the app's own icon in
   the rail — the brand twice, and nothing saying what the screen is. It is
   now `tabs.chats`, the title the watch's list uses.
@@ -152,26 +162,26 @@ if the next test ends there it is the one problem here with no known fix.
   the Accessibility permission, a system security setting nobody should grant
   in passing. So the first CarPlay screen is Behic's, in a real car, on build
   173 from TestFlight.
-- **Whether the message is audible.** A CarPlay scene can be active while the
-  app itself is in the background, so activating an audio session there needs
-  the `audio` background mode. It **is** added, by Behic's decision on
-  22 September, and it is not free: with it, any sound the app is playing
-  keeps playing when somebody leaves the app — Echo and the chat screen's
-  read-aloud are the two that can be. Android is untouched; `expo-audio` keeps
-  `enableBackgroundPlayback: false`, which is what keeps
-  `FOREGROUND_SERVICE_MEDIA_PLAYBACK` out of the Android manifest.
 - **Siri has never been asked anything.** The extension compiles and the app
-  declares the three intents; whether Siri routes a spoken reply to it, and
-  whether the resolver's name matching is any good out loud, is unseen.
+  declares the three intents; whether Siri routes a tapped row's read and
+  reply to it, and whether the resolver's name matching is any good out loud,
+  is unseen.
+- **Announcements.** A communication notification is only announced in the
+  car if Announce Notifications is on for LangX (Settings → Notifications →
+  Announce Notifications → CarPlay), and only if iOS accepts the rebuilt
+  notification — which it does only with the Communication Notifications
+  capability on the App ID.
 - **The live refresh.** The notification path is in-process and ordinary, and
   it has not been watched happening.
-- **Signing.** Three things have to be true in the developer portal before
+- **Signing.** Four things have to be true in the developer portal before
   the next build signs, and none of them can be done from here:
   1. The CarPlay entitlement, granted for the App ID on 21 September — a
      profile minted before that date does not carry it.
   2. **Siri**, which is a capability on the App ID and is new as of this
      change.
-  3. A **new App ID for the Intents extension**,
+  3. **Communication Notifications**, on the same App ID — new with the
+     announcement change.
+  4. A **new App ID for the Intents extension**,
      `tech.newchapter.languageXchange.intent`, with the App Group on it —
      `eas-cli` cannot patch App Groups, which is the manual pass recorded in
      `phase-1-mac-handoff.md`. The Keychain group needs no portal work; it is

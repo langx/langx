@@ -16,7 +16,12 @@ module.exports = (config) => ({
     'com.apple.security.application-groups':
       config.ios.entitlements['com.apple.security.application-groups'],
   },
-  frameworks: ['UserNotifications'],
+  /*
+   * Intents, for the communication notification: a message push is rebuilt
+   * from an `INSendMessageIntent` so Siri can announce it — in the car above
+   * all. See `NotificationService.communicate`.
+   */
+  frameworks: ['UserNotifications', 'Intents'],
   /*
    * 16.4, the app's own floor. Without this the plugin's default for a
    * notification-service target applied, which was 18.0 — so a phone on iOS 16
