@@ -1,5 +1,27 @@
 # iPhone, Apple Watch and CarPlay — plan
 
+## Status on 23 September 2026
+
+**All ten phases are written or decided, and CarPlay has been in a car.** Phase
+3 joined the built ones on 22 September; on 23 September build 173 ran in
+Behic's car and drew the real chat list, most recent first. What the drive
+taught rewrote the car's design the same day — see
+[`phase-3-carplay.md`](phase-3-carplay.md): the rows are now Apple's
+`CPMessageListItem`, so **Siri** reads a tapped conversation and takes a
+dictated reply, a compose button starts a new message by voice, and message
+pushes keep the list fresh on a drive where the app is never opened. No
+message text is drawn; Apple does not permit it.
+
+What remains is not code. **Behic:** a sign-in to switch on Communication
+Notifications (so Siri announces a new message in the car; the line is
+written and commented out), the Wear OS upload and Android Auto opt-in in
+Play Console. **Devices:** Siri's read-and-reply in a car, the watches and
+the Lock Screen clearing at sign-out, a real Android Auto head unit, a Duo.
+**Decisions:** phase 7's second push path and phase 8's calling. The watch's
+recent-conversations list (#1541) and the car's Siri flow are the two
+changes no screen has shown yet: both need a signed-in phone, and signing in
+is not something done on Behic's behalf.
+
 ## Status on 21 September 2026
 
 **Six of the ten phases are built.** Phases 1, 2, 4, 5 and 6 — the widgets,
@@ -811,13 +833,13 @@ and 6 that could be written has been written. What is left in them is not
 work, it is four kinds of waiting, and it is worth separating them because
 they unblock in different ways:
 
-| Waiting on          | What                                                                                                    |
-| ------------------- | ------------------------------------------------------------------------------------------------------- |
-| **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto                   |
-| **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                                    |
-| **Behic**           | the send intent's credential, Play Console's Wear OS and Android Auto                                   |
-| **A screen**        | the CarPlay list and a spoken reply, on the simulator's car display or a real head unit                 |
-| **The portal**      | Siri on the App ID, the extension's own App ID with the App Group, and a profile that carries all three |
+| Waiting on          | What                                                                                                                  |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto                                 |
+| **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                                                  |
+| **Behic**           | the send intent's credential, Play Console's Wear OS and Android Auto                                                 |
+| **A car**           | Siri reading a tapped conversation and taking a dictated reply — the list itself was seen on 23 September             |
+| **A sign-in**       | Communication Notifications on the App ID, so Siri announces new messages in the car — the rest was done 22 September |
 
 ## What used to be out of this plan
 
