@@ -235,12 +235,13 @@ export default function AdminHomeScreen() {
                 onPress={() => router.push('/(app)/admin/members?tier=pro_plus')}
               />
               <StatTile value={count(money?.tiers.free)} label={ADMIN.home.free} />
+              <StatTile value={count(money?.tiers.total)} label={ADMIN.home.totalMembers} />
             </View>
             {money ? <PaidShare tiers={money.tiers} /> : null}
 
             <Chart
               title={ADMIN.home.charts.tokensDaily}
-              caption={ADMIN.home.charts.lastWeek}
+              caption={ADMIN.home.charts.lastDays(money?.tokensDaily.length || 30)}
               color={colors.primary}
               points={(money?.tokensDaily ?? []).map(dayPoint)}
             />

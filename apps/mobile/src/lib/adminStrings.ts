@@ -64,6 +64,7 @@ export const ADMIN = {
     pro: 'Pro',
     proPlus: 'Pro+',
     free: 'Free',
+    totalMembers: 'Total',
     paidShare: (paid: number, total: number) =>
       `${paid} of ${total} members are paying · ${adminPercent(paid, total)}`,
     poolYesterday: 'Yesterday’s pool (UTC)',

@@ -255,10 +255,10 @@ describe('the operator panel', () => {
       expect(stats.audience.profiles).toBeGreaterThan(0)
       expect(stats.audience.seenLastWeek).toBeGreaterThan(0)
 
-      // Seven days of strip, oldest first, zeros included rather than absent —
-      // a missing day in a chart reads as missing data, not as a quiet one.
+      // A full strip, oldest first, zeros included rather than absent — a
+      // missing day in a chart reads as missing data, not as a quiet one.
       expect(stats.audience.activeDaily).toHaveLength(7)
-      expect(stats.money.tokensDaily).toHaveLength(7)
+      expect(stats.money.tokensDaily).toHaveLength(30)
       expect(stats.audience.activeDaily.at(-1)!.day > stats.audience.activeDaily[0]!.day).toBe(true)
 
       // Nothing has been reported, appealed, sent, suspended or paid here.
@@ -299,7 +299,8 @@ describe('the operator panel', () => {
       expect(stats.audience.daily.at(-1)?.day).toBe('2026-09-21')
       expect(stats.money.tokensDaily.at(-1)?.day).toBe('2026-09-21')
       // A full window either way, and in order.
-      expect(stats.money.tokensDaily).toHaveLength(7)
+      expect(stats.money.tokensDaily).toHaveLength(30)
+      expect(stats.money.tokensDaily.at(0)?.day).toBe('2026-08-23')
       expect(stats.audience.daily.at(0)?.day).toBe('2026-08-23')
 
       /*

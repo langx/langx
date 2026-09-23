@@ -73,7 +73,10 @@ import type { Profile } from '../profiles/profiles'
  * per-day passes again in the operator's zone.
  */
 
-/** How many days the strips across the dashboard cover. */
+/**
+ * How many days `activeDaily` covers, and how far back the pool is looked for.
+ * The other strips run over the public module's `WINDOW_DAYS`.
+ */
 export const STATS_DAYS = 7
 
 /**
@@ -164,7 +167,9 @@ export function forgetAdminStats(): void {
 
 async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<AdminStats> {
   const today = localDayKey(now, timeZone)
-  const days = Array.from({ length: STATS_DAYS }, (_, i) => shiftDayKey(today, -i)).reverse()
+  // The token strip runs over the same month as the three charts above it
+  // rather than over the week: a week of it was too short to show a trend.
+  const days = Array.from({ length: WINDOW_DAYS }, (_, i) => shiftDayKey(today, -i)).reverse()
   const weekAgo = new Date(now.getTime() - STATS_DAYS * 24 * 60 * 60 * 1000)
 
   /*
