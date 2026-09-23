@@ -11,6 +11,7 @@ import { Avatar } from '../components/ui/Avatar'
 import { placeLabel } from '../lib/placeLabel'
 import { Button } from '../components/ui/Button'
 import { Callout } from '../components/ui/Callout'
+import { GenderMark } from '../components/GenderMark'
 import { LanguageColumns } from '../components/LanguageColumns'
 import { OfficialMark } from '../components/OfficialMark'
 import { PhotoGallery } from '../components/PhotoGallery'
@@ -257,6 +258,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
             ) : (
               <Text style={styles.age}>{user.age}</Text>
             )}
+            <GenderMark gender={user.gender} />
           </View>
           <Text style={styles.handle} numberOfLines={1}>
             {handleLine}
