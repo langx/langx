@@ -64,6 +64,8 @@ export function PendingMediaBubble({
         </View>
       )}
 
+      {item.body ? <Text style={styles.caption}>{item.body}</Text> : null}
+
       <View style={styles.status}>
         {failed ? (
           <>
@@ -139,6 +141,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // The same three pixels `AudioBubble` plays along; here it fills instead.
   track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
+  caption: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
   status: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   label: { ...font.caption, color: colors.textFaint, fontVariant: ['tabular-nums'] },
   failedLabel: { ...font.caption, color: colors.danger },

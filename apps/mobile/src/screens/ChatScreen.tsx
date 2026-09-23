@@ -951,7 +951,13 @@ export function ChatScreen({
     setPending((list) =>
       addPending(
         list,
-        { clientId, conversationId, ...first, ...(items.length > 1 ? { files: [...items] } : {}) },
+        {
+          clientId,
+          conversationId,
+          ...first,
+          ...(items.length > 1 ? { files: [...items] } : {}),
+          ...(body ? { body } : {}),
+        },
         new Date(),
       ),
     )
@@ -2039,12 +2045,12 @@ export function ChatScreen({
                           item={row}
                           onRetry={() => {
                             setPending((list) => removePending(list, row.clientId))
-                            void sendAttachments(row.files ?? [attachmentOf(row)], undefined)
+                            void sendAttachments(row.files ?? [attachmentOf(row)], row.body)
                           }}
                           onLongPress={() =>
                             void openUnsentActions({
-                              body: '',
-                              preview: t(messagePreviewKey(row.kind)),
+                              body: row.body ?? '',
+                              preview: row.body || t(messagePreviewKey(row.kind)),
                               discard: () =>
                                 setPending((list) => removePending(list, row.clientId)),
                             })

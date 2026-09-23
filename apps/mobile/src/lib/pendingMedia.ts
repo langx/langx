@@ -45,6 +45,13 @@ export interface PendingMedia {
     height?: number
     durationSeconds?: number
   }[]
+  /**
+   * The caption typed with it. The composer is cleared the moment the send
+   * starts, so once an upload fails this is the only copy of the sentence —
+   * without it the bubble showed the picture alone and a retry sent it
+   * without the words.
+   */
+  body?: string
   progress: UploadProgress
   startedAt: string
 }
