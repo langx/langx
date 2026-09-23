@@ -2,6 +2,7 @@ import { PUSH_ACTION_REPLY, PUSH_CATEGORY_MESSAGE } from '@langx/shared'
 import { AppState, Platform } from 'react-native'
 import { currentTranslate } from '../i18n/runtime'
 import { presentationFor } from './foregroundPush'
+import { belongsTo, type TrayScope } from './trayScope'
 
 /**
  * Two things that have to be set before the first notification arrives, and
@@ -99,5 +100,28 @@ export async function configureNotifications(): Promise<void> {
     }
   } catch {
     // A device that cannot be configured for notifications still runs the app.
+  }
+}
+
+/**
+ * Takes what was just read out of the OS shade. See `trayScope.ts` for what
+ * counts.
+ *
+ * Only notifications this device is still showing are touched, so it is safe
+ * to call on every read, and never throws: a stale row in the shade is not
+ * worth failing a read receipt over.
+ */
+export async function clearFromTray(scope: TrayScope): Promise<void> {
+  if (Platform.OS === 'web') return
+  try {
+    const Notifications = await import('expo-notifications')
+    const presented = await Notifications.getPresentedNotificationsAsync()
+    await Promise.all(
+      presented
+        .filter((n) => belongsTo(n.request.content.data, scope))
+        .map((n) => Notifications.dismissNotificationAsync(n.request.identifier)),
+    )
+  } catch {
+    // See above.
   }
 }
