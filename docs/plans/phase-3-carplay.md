@@ -27,7 +27,7 @@ different currency:
 | --------------------------- | ---------------------------------------------------- |
 | the socket                  | nothing — it draws the blob the app already writes   |
 | the session cookie          | nothing — it makes no request                        |
-| an API client               | nothing, yet; see _What is not built_                |
+| an API client               | nothing — pushes keep the list fresh; see below      |
 | eight catalogues            | `targets/_shared/Localizable.xcstrings`, compiled in |
 
 The scene is **a fourth reader of `companionDirectory`**, the App Group blob
@@ -67,17 +67,28 @@ process, so the write that feeds the widgets arrives here as
 `UserDefaults.didChangeNotification` and the rows redraw. That only happens
 while the app is actually running — see the limit below.
 
-## What it cannot do, by construction
+## What it cannot do, by construction — and how pushes make up for it
 
-**No JavaScript runs when only the car is connected.** A `CPTemplateApplication
-Scene` is not a window scene, and `ExpoAppSceneDelegate` starts React Native
-for window scenes. So on a drive where nobody opens the app there is no
-socket, no request and no fresh data: the list is as old as the last time the
-phone was looked at. This is the bargain every surface in this plan makes —
-the widgets make it too — and it is why the rows carry their own words.
+**No JavaScript runs when only the car is connected.** A
+`CPTemplateApplicationScene` is not a window scene, and `ExpoAppSceneDelegate`
+starts React Native for window scenes. So on a drive where nobody opens the
+app there is no socket and no request.
 
-It is also the strongest argument for the one thing left unbuilt below: a
-Swift GET would fix the staleness, and the credential for it already exists.
+**The pushes fill the gap, since 23 September.** A message push already
+carries who sent it, which conversation, and the one line, and the
+notification service extension sees every one. It now writes them into the
+directory — the conversation to the top, its preview and time the new
+message's, its unread count up by one, its "3 new" phrase dropped because
+Swift cannot write the next one — and posts a Darwin notification the CarPlay
+scene listens for. So the list moves during the drive, and what Siri reads
+when a row is tapped is the message it just announced rather than the one
+before. When Siri marks a thread read, the Intents extension clears its
+unread count the same way; otherwise the dot would make the next tap read it
+again instead of offering a reply. The app's next write replaces all of it.
+
+No request is made for any of this, so no second credential is used and
+nothing new is exposed: the push was already delivered to this phone, for
+this account.
 
 ## What was checked
 
