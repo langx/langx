@@ -32,10 +32,12 @@ function TabIcon({
    */
   tour?: TourTargetId
 }) {
-  const icon = <Feather name={name} size={22} color={color} />
+  // 26 and no more: the bar lays each icon out in a 31 by 28 slot, and a
+  // glyph taller than that spills onto the word under it.
+  const icon = <Feather name={name} size={26} color={color} />
   /*
    * Padded, and a rounded square rather than a circle: a hole that hugs a
-   * 22-point glyph reads as a speck, not as "this tab", and a circle around a
+   * 26-point glyph reads as a speck, not as "this tab", and a circle around a
    * square-ish target reads as a different kind of thing from the hard-edged
    * holes every other step cuts. The padding is on the measurement, not on the
    * view — see `TourTarget` — so the bar itself is untouched.
@@ -73,7 +75,7 @@ const TAB_LABEL = { fontSize: 11, fontWeight: '600' } as const
  */
 const ECHO_SIZE = 46
 const ECHO_LIFT = 20
-const ECHO_GLYPH = 24
+const ECHO_GLYPH = 26
 const ECHO_ICON_STYLE = {
   width: ECHO_SIZE,
   height: ECHO_SIZE,

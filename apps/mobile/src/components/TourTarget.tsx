@@ -18,7 +18,7 @@ interface TourTargetProps {
   /**
    * Grows the measured rectangle without touching the layout.
    *
-   * A tab-bar icon is 22 points of glyph with its word underneath; a hole that
+   * A tab-bar icon is 26 points of glyph with its word underneath; a hole that
    * hugs the glyph reads as a speck rather than as "this tab". Padding here
    * rather than on the wrapper because the wrapper is a real view in a real
    * row — making it bigger would move the tab bar.

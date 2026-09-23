@@ -85,7 +85,7 @@ export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
         style={({ pressed }) => [styles.toggle, pressed && styles.pressed]}
         hitSlop={8}
       >
-        <Feather name="search" size={22} color={colors.text} />
+        <Feather name="search" size={26} color={colors.text} />
       </Pressable>
     )
   }
@@ -180,7 +180,7 @@ export function PeopleSearchResults({ from }: { from: SearchHost }) {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  toggle: { alignItems: 'center', height: 40, justifyContent: 'center', width: 40 },
+  toggle: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 },
   pressed: { opacity: 0.7 },
   /*
    * `flex: 1` so the open field takes the row it was dropped into. Without it

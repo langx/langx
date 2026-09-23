@@ -162,51 +162,6 @@ export default function MeScreen() {
 
   return (
     <Screen scroll tabbed {...pull}>
-      {/*
-        The screen's controls, in a row of their own above the hero: three
-        glyphs beside a 96px avatar left the name about a hundred pixels on a
-        phone, and the meta line under it wrapped inside itself.
-
-        The bell used to be in the Feed header, which made the notification
-        centre a thing about the feed — it is not; a like, a follow and a
-        correction on your sentence are all about you, and this is the tab
-        that is. It is still the only way in: a bell is somewhere you go when
-        a number appears, not a place you live, so it gets no tab.
-      */}
-      <View style={styles.topRow}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('inbox.bell')}
-          hitSlop={8}
-          onPress={() => router.push('/(app)/notifications')}
-          style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-        >
-          <Feather name="bell" size={22} color={colors.text} />
-          {news ? (
-            <View style={styles.bellBadge}>
-              <Text style={styles.bellCount}>{news}</Text>
-            </View>
-          ) : null}
-        </Pressable>
-        {/*
-          Settings used to be a button below the token store, at the bottom of a
-          screen that scrolls for a while — reachable, but only by someone who
-          already knew it was there. It is the only way into that screen, so it
-          gets the corner instead — as a ≡, the glyph Instagram and most apps
-          put in a profile's corner for exactly this. The scanner that sat
-          beside it is now the first row inside Settings.
-        */}
-        <Pressable
-          onPress={() => router.push('/(app)/settings')}
-          hitSlop={8}
-          accessibilityRole="button"
-          accessibilityLabel={t('me.settings')}
-          style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-        >
-          <Feather name="menu" size={22} color={colors.text} />
-        </Pressable>
-      </View>
-
       <View style={styles.hero}>
         {/*
           A photo opens full screen, as on the public profile; a generated face
@@ -244,6 +199,52 @@ export default function MeScreen() {
           />
         ) : null}
         <View style={styles.heroText}>
+          {/*
+            The screen's controls, at the top of the text column beside the
+            avatar. They had a row of their own above the hero, which spent a
+            whole line on two glyphs; beside the name they cost it about a
+            hundred pixels and the meta line wrapped inside itself. Above the
+            name, in the name's column, they cost neither.
+
+            The bell used to be in the Feed header, which made the notification
+            centre a thing about the feed — it is not; a like, a follow and a
+            correction on your sentence are all about you, and this is the tab
+            that is. It is still the only way in: a bell is somewhere you go when
+            a number appears, not a place you live, so it gets no tab.
+          */}
+          <View style={styles.topRow}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('inbox.bell')}
+              hitSlop={8}
+              onPress={() => router.push('/(app)/notifications')}
+              style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
+            >
+              <Feather name="bell" size={26} color={colors.text} />
+              {news ? (
+                <View style={styles.bellBadge}>
+                  <Text style={styles.bellCount}>{news}</Text>
+                </View>
+              ) : null}
+            </Pressable>
+            {/*
+              Settings used to be a button below the token store, at the bottom of a
+              screen that scrolls for a while — reachable, but only by someone who
+              already knew it was there. It is the only way into that screen, so it
+              gets the corner instead — as a ≡, the glyph Instagram and most apps
+              put in a profile's corner for exactly this. The scanner that sat
+              beside it is now the first row inside Settings.
+            */}
+            <Pressable
+              onPress={() => router.push('/(app)/settings')}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel={t('me.settings')}
+              style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
+            >
+              <Feather name="menu" size={26} color={colors.text} />
+            </Pressable>
+          </View>
           <View style={styles.nameRow}>
             <Text style={styles.name} numberOfLines={1}>
               {profile.displayName}
@@ -515,9 +516,9 @@ export default function MeScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  // `ScreenHeader`'s row, without a title: the glyphs sit hard right on it.
-  topRow: { flexDirection: 'row', justifyContent: 'flex-end', paddingTop: spacing.xs },
-  iconButton: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
+  // Hard right in the hero's text column, over the name.
+  topRow: { flexDirection: 'row', justifyContent: 'flex-end' },
+  iconButton: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 },
   // On the bell's shoulder, whatever the touch target is padded out to.
   bellBadge: {
     alignItems: 'center',
@@ -526,8 +527,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     minWidth: 16,
     paddingHorizontal: 4,
     position: 'absolute',
-    right: 0,
-    top: 2,
+    right: 4,
+    top: 4,
   },
   bellCount: { color: colors.textInverse, fontSize: 10, fontWeight: '700' },
   pressed: { opacity: 0.6 },

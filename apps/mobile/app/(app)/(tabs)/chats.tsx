@@ -182,7 +182,7 @@ export default function ChatsScreen() {
             onPress={() => router.push('/(app)/starred')}
             style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
           >
-            <Feather name="star" size={22} color={colors.text} />
+            <Feather name="star" size={26} color={colors.text} />
           </Pressable>
         </View>
 
@@ -443,7 +443,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // same way.
   titleRow: { alignItems: 'center', flexDirection: 'row', gap: 14, minHeight: 48 },
   title: { ...font.title, color: colors.text, flex: 1, fontSize: 34 },
-  iconButton: { alignItems: 'center', height: 40, justifyContent: 'center', width: 40 },
+  iconButton: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 },
   filters: { marginTop: 18 },
   list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },

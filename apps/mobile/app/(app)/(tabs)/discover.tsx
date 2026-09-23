@@ -395,7 +395,7 @@ export default function DiscoverScreen() {
               style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
               hitSlop={8}
             >
-              <Feather name="sliders" size={22} color={colors.text} />
+              <Feather name="sliders" size={26} color={colors.text} />
               {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
             </Pressable>
           )}
@@ -664,7 +664,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
      a plain View would otherwise stretch the highlight across the header. */
   pairTarget: { alignSelf: 'flex-start' },
   pair: { color: colors.accent, fontSize: 14, fontWeight: '700' },
-  filterButton: { alignItems: 'center', flexDirection: 'row', gap: 6, height: 40 },
+  filterButton: { alignItems: 'center', flexDirection: 'row', gap: 6, height: 44 },
   filterCount: {
     backgroundColor: colors.accent,
     borderRadius: radius.pill,
