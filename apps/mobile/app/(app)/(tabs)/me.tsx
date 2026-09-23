@@ -32,6 +32,7 @@ import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
+import { GenderMark } from '../../../src/components/GenderMark'
 import { Button } from '../../../src/components/ui/Button'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { ListRow } from '../../../src/components/ui/ListRow'
@@ -249,6 +250,7 @@ export default function MeScreen() {
             <Text style={styles.name} numberOfLines={1}>
               {profile.displayName}
             </Text>
+            <GenderMark gender={profile.gender} />
             <CosmeticTitle cosmetic={wornTitle} />
           </View>
           <Text style={styles.meta} numberOfLines={1}>
