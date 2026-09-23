@@ -10,6 +10,7 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import { ensureOfficialAccounts } from '../modules/official/accounts'
 import type { StorageProvider, UploadUrl } from '../storage/StorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { LoggingPushSender } from '../modules/push/devices'
@@ -48,6 +49,8 @@ describe('feedback', () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
     handle = await connectToDatabase(replSet.getUri(), 'langx_feedback_test')
     await ensureIndexes(handle.db)
+    // The receipt for a paid report lands in the @langx thread, so the account has to exist.
+    await ensureOfficialAccounts(handle.db, 'http://localhost:4000')
 
     const env = loadEnv({
       NODE_ENV: 'test',
@@ -302,10 +305,10 @@ describe('feedback', () => {
 
     /**
      * The award used to be silent: a ledger row, and nothing to tell the person
-     * who wrote the report. Both channels go out, and neither asks a
+     * who wrote the report. All three channels go out, and none asks a
      * preference — this is a receipt, not a nudge.
      */
-    it('tells the finder, by push and by email, when the reward lands', async () => {
+    it('tells the finder, by push, by email and in the @langx thread, when the reward lands', async () => {
       await handle.db.collection(COLLECTIONS.devices).insertOne({
         userId,
         pushToken: 'ExponentPushToken[test]',
@@ -331,6 +334,13 @@ describe('feedback', () => {
       expect(mail?.to).toBe('finder@example.com')
       expect(mail?.subject).toContain('900')
       expect(mail?.text).toContain('/wallet')
+
+      // The durable one: in the @langx thread, in the finder's own language
+      // (Turkish, above), and keyed by the report so it can only be there once.
+      const message = await handle.db
+        .collection<{ body: string; clientId?: string }>(COLLECTIONS.messages)
+        .findOne({ clientId: { $regex: '^bounty:' } }, { sort: { createdAt: -1 } })
+      expect(message?.body).toContain('900 jeton')
     })
 
     it('says nothing a second time, because nothing was paid a second time', async () => {

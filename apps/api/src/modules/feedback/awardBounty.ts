@@ -46,7 +46,7 @@ export async function payBounty(
     await notifyBountyPaid(
       app.mongo.db,
       { push: app.push, email: app.email },
-      { userId: input.userId, amount: result.amount },
+      { userId: input.userId, amount: result.amount, refId: input.refId },
       (err, message) => app.log.warn({ err, userId: input.userId }, message),
     )
   }

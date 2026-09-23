@@ -3870,7 +3870,7 @@ The link drops its `body` parameter past 6000 characters, since GitHub answers
 there. The title and label still land, and the text is in the mail the link
 arrived in.
 
-## A paid report says so, on both channels, whatever the settings say
+## A paid report says so, on every channel, whatever the settings say
 
 `awardTokens` notified nobody. Confirming a bounty wrote a ledger row, and the
 person who had written up the bug found out by opening their wallet and
@@ -3888,6 +3888,14 @@ way the streak reminder's is: a phone that is off should not cost somebody the
 record of the payment. The trigger is `result.awarded`, so the ledger's unique
 index on `{userId, kind, refId}` is what makes it exactly once — a second press
 of the same link pays nothing and says nothing.
+
+The @langx thread is the third channel, added later and for the reason the
+lifetime gift has one: a push is gone once it is swiped and a mail is in
+whichever inbox they gave us, while the thread is in the app the report was
+written from and is still there next week. It says what the mail says, word
+for word, so the two never read as two senders, and it is keyed by the
+report's id under `sender_client_id_unique`, the lock every message from that
+account carries. The push keeps opening the wallet, where the number is.
 
 ## A campaign is queued, and the API drips it out
 
