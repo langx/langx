@@ -1980,393 +1980,398 @@ export function ChatScreen({
           </Pressable>
         ) : null}
 
-        {/* The jump button floats over the thread, so it lives in the thread's
+        <View style={styles.thread}>
+          {/* The jump button floats over the thread, so it lives in the thread's
           own box rather than the screen's — that keeps it above the composer
           whatever height the composer has grown to. */}
-        <View style={styles.listWrap}>
-          {state === 'failed' && rows.length === 0 ? (
-            /*
-             * A thread that did not load drew as an empty one — no messages,
-             * composer ready, exactly what a conversation nobody has written
-             * in looks like. The two must not share a picture: one invites you
-             * to say hello, the other loses what was already said.
-             *
-             * `rows.length` as well as the state, because a thread that failed
-             * to load can still have something to show: a message typed into a
-             * tunnel is an unsent row, and an error panel over it would take
-             * away the one copy of that sentence there is.
-             *
-             * The same `flex: 1` the skeleton needs, and for the same reason.
-             * The composer stays live: sending does not depend on the history
-             * having arrived, and taking it away would strand somebody who
-             * only wanted to reply.
-             */
-            <View style={[styles.list, styles.skeletonFill]}>
-              <LoadFailed onRetry={() => void thread.refetch()} />
-            </View>
-          ) : state === 'skeleton' ? (
-            // `flex: 1` because the FlatList it stands in for takes the whole
-            // height; without it the composer rides up under the placeholders and
-            // then drops when the real thread arrives.
-            <View style={[styles.list, styles.skeletonFill]}>
-              {SKELETON_BUBBLES.map((key, index) => (
-                <MessageBubbleSkeleton key={key} index={index} />
-              ))}
-            </View>
-          ) : (
-            <FlatList
-              ref={listRef}
-              data={rows}
-              keyExtractor={(row) => row.key}
-              contentContainerStyle={styles.list}
-              /**
-               * The newest message sits at offset 0, and the list grows upward.
+          <View style={styles.listWrap}>
+            {state === 'failed' && rows.length === 0 ? (
+              /*
+               * A thread that did not load drew as an empty one — no messages,
+               * composer ready, exactly what a conversation nobody has written
+               * in looks like. The two must not share a picture: one invites you
+               * to say hello, the other loses what was already said.
                *
-               * This one prop replaces all the scroll anchoring this screen used
-               * to do by hand. Staying pinned to the newest message becomes the
-               * resting state rather than a `scrollToEnd` chased one frame behind
-               * layout, and a page of history is appended at the *far* end, off
-               * screen, so it can no longer shove what the reader is looking at.
-               * The `atBottom` ref, the `requestAnimationFrame` and the
-               * top-offset threshold all existed to approximate those two
-               * properties, and none of them could do it while the reader was
-               * scrolling.
+               * `rows.length` as well as the state, because a thread that failed
+               * to load can still have something to show: a message typed into a
+               * tunnel is an unsent row, and an error panel over it would take
+               * away the one copy of that sentence there is.
+               *
+               * The same `flex: 1` the skeleton needs, and for the same reason.
+               * The composer stays live: sending does not depend on the history
+               * having arrived, and taking it away would strand somebody who
+               * only wanted to reply.
                */
-              inverted
-              /**
-               * "End" is the end of the data, and inverted that is the oldest
-               * message — so the same prop that means "load more" everywhere else
-               * in the app means "load older" here. It also sidesteps
-               * `onStartReached`, which react-native-web's FlatList does not have.
-               */
-              onEndReached={() => {
-                if (thread.hasNextPage && !thread.isFetchingNextPage) {
-                  void thread.fetchNextPage()
-                }
-              }}
-              onEndReachedThreshold={0.4}
-              /**
-               * Header, not footer: inverted, the header is what sits at the
-               * bottom — under the newest message and directly above the
-               * composer, which is where something that failed to send belongs.
-               */
-              ListHeaderComponent={
-                <>
-                  {pending.length > 0 ? (
-                    <View style={styles.unsentBlock}>
-                      {pending.map((row) => (
-                        <PendingMediaBubble
-                          key={row.clientId}
-                          item={row}
-                          onRetry={() => {
-                            setPending((list) => removePending(list, row.clientId))
-                            void sendAttachments(row.files ?? [attachmentOf(row)], row.body)
-                          }}
-                          onLongPress={() =>
-                            void openUnsentActions({
-                              body: row.body ?? '',
-                              preview: row.body || t(messagePreviewKey(row.kind)),
-                              discard: () =>
-                                setPending((list) => removePending(list, row.clientId)),
-                            })
-                          }
-                        />
-                      ))}
-                    </View>
-                  ) : null}
-                  {unsent.length > 0 ? (
-                    <View style={styles.unsentBlock}>
-                      {unsent.map((message) => (
-                        <Pressable
-                          key={message.clientId}
-                          accessibilityRole="button"
-                          accessibilityLabel={t('chat.notSentRetry')}
-                          onPress={() => void retry(message)}
-                          onLongPress={() =>
-                            void openUnsentActions({
-                              body: message.body,
-                              preview: message.body,
-                              discard: () =>
-                                setUnsent((list) => removeUnsent(list, message.clientId)),
-                            })
-                          }
-                          style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
-                        >
-                          <Text style={styles.unsentBody}>{message.body}</Text>
-                          <Text style={styles.unsentNote}>
-                            <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
-                          </Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  ) : null}
-                  {/*
+              <View style={[styles.list, styles.skeletonFill]}>
+                <LoadFailed onRetry={() => void thread.refetch()} />
+              </View>
+            ) : state === 'skeleton' ? (
+              // `flex: 1` because the FlatList it stands in for takes the whole
+              // height; without it the composer rides up under the placeholders and
+              // then drops when the real thread arrives.
+              <View style={[styles.list, styles.skeletonFill]}>
+                {SKELETON_BUBBLES.map((key, index) => (
+                  <MessageBubbleSkeleton key={key} index={index} />
+                ))}
+              </View>
+            ) : (
+              <FlatList
+                ref={listRef}
+                data={rows}
+                keyExtractor={(row) => row.key}
+                contentContainerStyle={styles.list}
+                /**
+                 * The newest message sits at offset 0, and the list grows upward.
+                 *
+                 * This one prop replaces all the scroll anchoring this screen used
+                 * to do by hand. Staying pinned to the newest message becomes the
+                 * resting state rather than a `scrollToEnd` chased one frame behind
+                 * layout, and a page of history is appended at the *far* end, off
+                 * screen, so it can no longer shove what the reader is looking at.
+                 * The `atBottom` ref, the `requestAnimationFrame` and the
+                 * top-offset threshold all existed to approximate those two
+                 * properties, and none of them could do it while the reader was
+                 * scrolling.
+                 */
+                inverted
+                /**
+                 * "End" is the end of the data, and inverted that is the oldest
+                 * message — so the same prop that means "load more" everywhere else
+                 * in the app means "load older" here. It also sidesteps
+                 * `onStartReached`, which react-native-web's FlatList does not have.
+                 */
+                onEndReached={() => {
+                  if (thread.hasNextPage && !thread.isFetchingNextPage) {
+                    void thread.fetchNextPage()
+                  }
+                }}
+                onEndReachedThreshold={0.4}
+                /**
+                 * Header, not footer: inverted, the header is what sits at the
+                 * bottom — under the newest message and directly above the
+                 * composer, which is where something that failed to send belongs.
+                 */
+                ListHeaderComponent={
+                  <>
+                    {pending.length > 0 ? (
+                      <View style={styles.unsentBlock}>
+                        {pending.map((row) => (
+                          <PendingMediaBubble
+                            key={row.clientId}
+                            item={row}
+                            onRetry={() => {
+                              setPending((list) => removePending(list, row.clientId))
+                              void sendAttachments(row.files ?? [attachmentOf(row)], row.body)
+                            }}
+                            onLongPress={() =>
+                              void openUnsentActions({
+                                body: row.body ?? '',
+                                preview: row.body || t(messagePreviewKey(row.kind)),
+                                discard: () =>
+                                  setPending((list) => removePending(list, row.clientId)),
+                              })
+                            }
+                          />
+                        ))}
+                      </View>
+                    ) : null}
+                    {unsent.length > 0 ? (
+                      <View style={styles.unsentBlock}>
+                        {unsent.map((message) => (
+                          <Pressable
+                            key={message.clientId}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('chat.notSentRetry')}
+                            onPress={() => void retry(message)}
+                            onLongPress={() =>
+                              void openUnsentActions({
+                                body: message.body,
+                                preview: message.body,
+                                discard: () =>
+                                  setUnsent((list) => removeUnsent(list, message.clientId)),
+                              })
+                            }
+                            style={({ pressed }) => [
+                              styles.unsent,
+                              pressed && styles.unsentPressed,
+                            ]}
+                          >
+                            <Text style={styles.unsentBody}>{message.body}</Text>
+                            <Text style={styles.unsentNote}>
+                              <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
+                            </Text>
+                          </Pressable>
+                        ))}
+                      </View>
+                    ) : null}
+                    {/*
                     Last, so it sits nearest the composer: inverted, this header
                     is the bottom of the thread, and the other person typing is
                     the newest thing in it.
                   */}
-                  {partnerTyping ? <TypingIndicator /> : null}
-                </>
-              }
-              /**
-               * Footer, not header: inverted, the footer is what sits on top —
-               * the spinner for older pages and, on a thread too short to have
-               * any, the opening tip.
-               */
-              ListFooterComponent={
-                <>
-                  {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
-                  {items.length < SHORT_THREAD_MESSAGES ? (
-                    <ComposerHint slot="chat" style={styles.threadTip} />
-                  ) : null}
-                </>
-              }
-              /**
-               * Mandatory, not defensive: bubbles are variable height and there
-               * is no `getItemLayout`, so `scrollToIndex` throws outright on a
-               * row the list has not measured. Nudging to an estimate and asking
-               * again is the documented recovery.
-               */
-              onScrollToIndexFailed={(info) => {
-                listRef.current?.scrollToOffset({
-                  offset: info.averageItemLength * info.index,
-                  animated: false,
-                })
-                setTimeout(
-                  () =>
-                    listRef.current?.scrollToIndex({
-                      index: info.index,
-                      viewPosition: 0.5,
-                      animated: false,
-                    }),
-                  120,
-                )
-              }}
-              onScroll={({ nativeEvent }) => {
-                // Nothing to measure against the content height any more: the
-                // bottom of an inverted list is offset 0.
-                if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
-                  if (awayFrom !== null) setAwayFrom(null)
-                } else if (awayFrom === null) {
-                  setAwayFrom(items[0] ? String(items[0]._id) : null)
+                    {partnerTyping ? <TypingIndicator /> : null}
+                  </>
                 }
-              }}
-              scrollEventThrottle={16}
-              renderItem={({ item: row }) =>
-                row.kind === 'day' ? (
-                  <View style={styles.dayRow}>
-                    <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
-                  </View>
-                ) : (
-                  // A stand-in has no server id yet, so a menu or a reply on it
-                  // would have nothing to act on until the server's copy
-                  // arrives.
-                  <MessageBubble
-                    message={row.message}
-                    mine={isMine(row.message)}
-                    endsGroup={row.endsGroup}
-                    partnerName={partner?.displayName ?? t('chat.them')}
-                    translation={translations[row.message._id]}
-                    translating={translating === row.message._id}
-                    speaking={speaking === row.message._id}
-                    hasReading={speech[row.message._id] !== undefined}
-                    onReplayReading={onReplayReading}
-                    highlighted={highlighted === row.message._id}
-                    askAnswered={answeredAsks.has(row.message._id)}
-                    onAnswerAsk={answerAsk}
-                    onRespondMeeting={(message, status) => void respondMeeting(message, status)}
-                    onAnswerQuiz={(message, index) => void answerQuiz(message, index)}
-                    onAddToCalendar={(message) => void addToCalendar(message)}
-                    meetingWhen={meetingWhenFor(row.message)}
-                    meetingLength={meetingLengthFor(row.message)}
-                    meetingTheirWhen={meetingTheirWhenFor(row.message)}
-                    pending={isOutgoingId(row.message._id)}
-                    onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
-                    onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
-                    onReply={isOutgoingId(row.message._id) ? ignore : onReply}
-                    canReply={!channel}
-                    onReact={isOutgoingId(row.message._id) ? ignore : onReact}
-                    /*
-                     * The same pair the menu's emoji strip is hidden for, and
-                     * for the same reason: the server refuses a reaction to a
-                     * withdrawn message and to an official channel, so offering
-                     * the gesture there would end in an alert.
-                     */
-                    canReact={!channel && !row.message.deleted}
-                    onJumpTo={onJumpTo}
-                    onOpenMedia={onOpenMedia}
-                  />
-                )
-              }
-            />
-          )}
+                /**
+                 * Footer, not header: inverted, the footer is what sits on top —
+                 * the spinner for older pages and, on a thread too short to have
+                 * any, the opening tip.
+                 */
+                ListFooterComponent={
+                  <>
+                    {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
+                    {items.length < SHORT_THREAD_MESSAGES ? (
+                      <ComposerHint slot="chat" style={styles.threadTip} />
+                    ) : null}
+                  </>
+                }
+                /**
+                 * Mandatory, not defensive: bubbles are variable height and there
+                 * is no `getItemLayout`, so `scrollToIndex` throws outright on a
+                 * row the list has not measured. Nudging to an estimate and asking
+                 * again is the documented recovery.
+                 */
+                onScrollToIndexFailed={(info) => {
+                  listRef.current?.scrollToOffset({
+                    offset: info.averageItemLength * info.index,
+                    animated: false,
+                  })
+                  setTimeout(
+                    () =>
+                      listRef.current?.scrollToIndex({
+                        index: info.index,
+                        viewPosition: 0.5,
+                        animated: false,
+                      }),
+                    120,
+                  )
+                }}
+                onScroll={({ nativeEvent }) => {
+                  // Nothing to measure against the content height any more: the
+                  // bottom of an inverted list is offset 0.
+                  if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
+                    if (awayFrom !== null) setAwayFrom(null)
+                  } else if (awayFrom === null) {
+                    setAwayFrom(items[0] ? String(items[0]._id) : null)
+                  }
+                }}
+                scrollEventThrottle={16}
+                renderItem={({ item: row }) =>
+                  row.kind === 'day' ? (
+                    <View style={styles.dayRow}>
+                      <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
+                    </View>
+                  ) : (
+                    // A stand-in has no server id yet, so a menu or a reply on it
+                    // would have nothing to act on until the server's copy
+                    // arrives.
+                    <MessageBubble
+                      message={row.message}
+                      mine={isMine(row.message)}
+                      endsGroup={row.endsGroup}
+                      partnerName={partner?.displayName ?? t('chat.them')}
+                      translation={translations[row.message._id]}
+                      translating={translating === row.message._id}
+                      speaking={speaking === row.message._id}
+                      hasReading={speech[row.message._id] !== undefined}
+                      onReplayReading={onReplayReading}
+                      highlighted={highlighted === row.message._id}
+                      askAnswered={answeredAsks.has(row.message._id)}
+                      onAnswerAsk={answerAsk}
+                      onRespondMeeting={(message, status) => void respondMeeting(message, status)}
+                      onAnswerQuiz={(message, index) => void answerQuiz(message, index)}
+                      onAddToCalendar={(message) => void addToCalendar(message)}
+                      meetingWhen={meetingWhenFor(row.message)}
+                      meetingLength={meetingLengthFor(row.message)}
+                      meetingTheirWhen={meetingTheirWhenFor(row.message)}
+                      pending={isOutgoingId(row.message._id)}
+                      onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+                      onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
+                      onReply={isOutgoingId(row.message._id) ? ignore : onReply}
+                      canReply={!channel}
+                      onReact={isOutgoingId(row.message._id) ? ignore : onReact}
+                      /*
+                       * The same pair the menu's emoji strip is hidden for, and
+                       * for the same reason: the server refuses a reaction to a
+                       * withdrawn message and to an official channel, so offering
+                       * the gesture there would end in an alert.
+                       */
+                      canReact={!channel && !row.message.deleted}
+                      onJumpTo={onJumpTo}
+                      onOpenMedia={onOpenMedia}
+                    />
+                  )
+                }
+              />
+            )}
 
-          {/*
+            {/*
           A window is a detour, and the way back has to be obvious — otherwise
           the only exit is sending a message or leaving the screen.
         */}
-          {jumpAnchor !== null ? (
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => setJumpAnchor(null)}
-              style={styles.backToLatest}
-            >
-              <Feather name="arrow-down-circle" size={15} color={colors.textInverse} />
-              <Text style={styles.backToLatestText}>{t('chat.backToLatest')}</Text>
-            </Pressable>
-          ) : null}
+            {jumpAnchor !== null ? (
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => setJumpAnchor(null)}
+                style={styles.backToLatest}
+              >
+                <Feather name="arrow-down-circle" size={15} color={colors.textInverse} />
+                <Text style={styles.backToLatestText}>{t('chat.backToLatest')}</Text>
+              </Pressable>
+            ) : null}
 
-          {awayFrom !== null && jumpAnchor === null ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={
-                missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')
-              }
-              onPress={() => {
-                listRef.current?.scrollToOffset({ offset: 0, animated: true })
-                setAwayFrom(null)
-              }}
-              style={styles.jump}
-            >
-              <Feather name="arrow-down" size={18} color={colors.textInverse} />
-              {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
-            </Pressable>
-          ) : null}
-        </View>
+            {awayFrom !== null && jumpAnchor === null ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={
+                  missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')
+                }
+                onPress={() => {
+                  listRef.current?.scrollToOffset({ offset: 0, animated: true })
+                  setAwayFrom(null)
+                }}
+                style={styles.jump}
+              >
+                <Feather name="arrow-down" size={18} color={colors.textInverse} />
+                {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
+              </Pressable>
+            ) : null}
+          </View>
 
-        {/*
+          {/*
           The block under the hairline is `ChatComposer`, shared with the
           screen that starts a conversation. What needs a conversation — the
           attach control, the recorder, the microphone — is passed in from
           here, and the mode banner and picked attachments ride above the row.
         */}
-        {/*
+          {/*
           A channel has no composer. `@langx` welcomes and announces, and the
           API refuses a message to it — so a box to type in would be offering
           something that answers 403. The line in its place says what the
           thread is, rather than leaving the screen ending in nothing.
         */}
-        {channel ? (
-          <View style={styles.channelNote}>
-            <Text style={styles.channelNoteText}>{t('chat.channelOnly')}</Text>
-          </View>
-        ) : (
-          <ChatComposer
-            value={draft}
-            onChangeText={onChangeDraft}
-            placeholder={
-              correcting
-                ? t('chat.writeCorrection')
-                : // `state`, not `items.length`: a thread that failed to load
-                  // also has no rows, and inviting somebody to say hello to a
-                  // person they have been talking to for months is the same
-                  // wrong answer the list above used to give.
-                  state === 'empty' && partner
-                  ? t('chat.sayHello', { name: partner.displayName })
-                  : t('chat.writeMessage')
-            }
-            onSend={() => void send()}
-            hasAttachment={pendingMedia.length > 0}
-            busy={sendingMedia}
-            above={
-              <>
-                {/*
+          {channel ? (
+            <View style={styles.channelNote}>
+              <Text style={styles.channelNoteText}>{t('chat.channelOnly')}</Text>
+            </View>
+          ) : (
+            <ChatComposer
+              value={draft}
+              onChangeText={onChangeDraft}
+              placeholder={
+                correcting
+                  ? t('chat.writeCorrection')
+                  : // `state`, not `items.length`: a thread that failed to load
+                    // also has no rows, and inviting somebody to say hello to a
+                    // person they have been talking to for months is the same
+                    // wrong answer the list above used to give.
+                    state === 'empty' && partner
+                    ? t('chat.sayHello', { name: partner.displayName })
+                    : t('chat.writeMessage')
+              }
+              onSend={() => void send()}
+              hasAttachment={pendingMedia.length > 0}
+              busy={sendingMedia}
+              above={
+                <>
+                  {/*
                 One shape for all three modes — reply, edit, correct. The label
                 says which; the line under it is the message it is about, cut
                 to one line because the field below already holds the text
                 being written.
               */}
-                {mode ? (
-                  <View style={styles.modeBanner}>
-                    <View style={styles.modeText}>
-                      <Text style={styles.modeLabel} numberOfLines={1}>
-                        {mode.label}
-                      </Text>
-                      <Text style={styles.modePreview} numberOfLines={1}>
-                        {mode.preview}
-                      </Text>
+                  {mode ? (
+                    <View style={styles.modeBanner}>
+                      <View style={styles.modeText}>
+                        <Text style={styles.modeLabel} numberOfLines={1}>
+                          {mode.label}
+                        </Text>
+                        <Text style={styles.modePreview} numberOfLines={1}>
+                          {mode.preview}
+                        </Text>
+                      </View>
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel={t('common.cancel')}
+                        hitSlop={8}
+                        onPress={mode.clear}
+                      >
+                        <Feather name="x" size={18} color={colors.textMuted} />
+                      </Pressable>
                     </View>
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={t('common.cancel')}
-                      hitSlop={8}
-                      onPress={mode.clear}
-                    >
-                      <Feather name="x" size={18} color={colors.textMuted} />
-                    </Pressable>
-                  </View>
-                ) : null}
-                {/* Above the row rather than inside it: the row holds the send
+                  ) : null}
+                  {/* Above the row rather than inside it: the row holds the send
                 button, and anything that grows in there competes for width with
                 the only control that sends the message. */}
-                <AttachmentPreviewRow
-                  pending={pendingMedia}
-                  onRemove={(index) =>
-                    setPendingMedia((items) => items.filter((_, at) => at !== index))
-                  }
-                />
-              </>
-            }
-            leading={
-              recorder.isRecording ? (
-                <View style={styles.recording}>
-                  <Text style={styles.recordingDot}>●</Text>
-                  <Text style={styles.recordingTime}>
-                    {Math.floor(recorder.seconds / 60)}:
-                    {String(recorder.seconds % 60).padStart(2, '0')}
-                  </Text>
-                  <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
-                    <Text style={styles.recordingCancel}>{t('common.cancel')}</Text>
-                  </Pressable>
-                </View>
-              ) : (
-                /*
+                  <AttachmentPreviewRow
+                    pending={pendingMedia}
+                    onRemove={(index) =>
+                      setPendingMedia((items) => items.filter((_, at) => at !== index))
+                    }
+                  />
+                </>
+              }
+              leading={
+                recorder.isRecording ? (
+                  <View style={styles.recording}>
+                    <Text style={styles.recordingDot}>●</Text>
+                    <Text style={styles.recordingTime}>
+                      {Math.floor(recorder.seconds / 60)}:
+                      {String(recorder.seconds % 60).padStart(2, '0')}
+                    </Text>
+                    <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
+                      <Text style={styles.recordingCancel}>{t('common.cancel')}</Text>
+                    </Pressable>
+                  </View>
+                ) : (
+                  /*
                 Neither greyed nor disabled by the media lock any more: it
                 opens a menu, and the lock belongs to the rows inside that
                 carry bytes — which is where the sheet draws it, with the
                 number of messages still to come.
               */
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('composer.attachMenu')}
+                    onPress={() => void openAttachMenu()}
+                    disabled={
+                      sendingMedia ||
+                      pendingMedia.length >= MAX_ATTACHMENTS ||
+                      // A voice draft is waiting for the send button, and a note
+                      // travels alone. Send it or throw it away first.
+                      pendingMedia.some((item) => item.kind === 'audio')
+                    }
+                    hitSlop={8}
+                    style={styles.attach}
+                  >
+                    <Feather name="plus" size={22} color={colors.textMuted} />
+                  </Pressable>
+                )
+              }
+              idleAction={
+                /* A microphone when there is nothing to send, which is the gesture
+              people already expect from a chat app. */
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={t('composer.attachMenu')}
-                  onPress={() => void openAttachMenu()}
-                  disabled={
-                    sendingMedia ||
-                    pendingMedia.length >= MAX_ATTACHMENTS ||
-                    // A voice draft is waiting for the send button, and a note
-                    // travels alone. Send it or throw it away first.
-                    pendingMedia.some((item) => item.kind === 'audio')
-                  }
-                  hitSlop={8}
-                  style={styles.attach}
+                  accessibilityLabel={t('chat.voiceMessage')}
+                  onPress={() => void toggleRecording()}
+                  disabled={sendingMedia}
+                  style={[
+                    styles.mic,
+                    recorder.isRecording && styles.recordButtonActive,
+                    sendingMedia && styles.micDisabled,
+                  ]}
                 >
-                  <Feather name="plus" size={22} color={colors.textMuted} />
+                  <Feather
+                    name={recorder.isRecording ? 'square' : 'mic'}
+                    size={20}
+                    color={recorder.isRecording ? colors.textInverse : colors.text}
+                  />
                 </Pressable>
-              )
-            }
-            idleAction={
-              /* A microphone when there is nothing to send, which is the gesture
-              people already expect from a chat app. */
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('chat.voiceMessage')}
-                onPress={() => void toggleRecording()}
-                disabled={sendingMedia}
-                style={[
-                  styles.mic,
-                  recorder.isRecording && styles.recordButtonActive,
-                  sendingMedia && styles.micDisabled,
-                ]}
-              >
-                <Feather
-                  name={recorder.isRecording ? 'square' : 'mic'}
-                  size={20}
-                  color={recorder.isRecording ? colors.textInverse : colors.text}
-                />
-              </Pressable>
-            }
-          />
-        )}
+              }
+            />
+          )}
+        </View>
         <PhotoViewer
           photos={viewing?.items ?? []}
           index={viewing?.index ?? null}
@@ -2378,8 +2383,13 @@ export function ChatScreen({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
-  screen: { paddingHorizontal: 0 },
+const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow, layout }) => ({
+  /**
+   * Not the column `fluid` keeps on the web. The header and the pin banner
+   * span the whole pane, so their hairlines meet its edges; the thread under
+   * them is the part that takes a cap, and it takes its own — see `thread`.
+   */
+  screen: { maxWidth: '100%', paddingHorizontal: 0 },
   avoid: { flex: 1 },
   channelNote: { paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
   channelNoteText: { ...font.caption, color: colors.textFaint, textAlign: 'center' },
@@ -2438,6 +2448,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   unsentPressed: { opacity: 0.6 },
   unsentBody: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
   unsentNote: { ...font.caption, color: colors.danger, fontSize: 12 },
+  /**
+   * The thread and its composer, centred in a column of their own —
+   * `layout.threadMaxWidth` says why it is wider than every other screen's.
+   * The composer is in it too, so the field stays as wide as the bubbles
+   * above it rather than running on under a header that already spans the
+   * pane.
+   */
+  thread: { alignSelf: 'center', flex: 1, maxWidth: layout.threadMaxWidth, width: '100%' },
   listWrap: { flex: 1 },
   /**
    * Inverted, so the two vertical paddings swap: the prototype's 16 at the top
