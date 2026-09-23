@@ -43,23 +43,17 @@ const withSiriMessaging = (config) => {
   config = withEntitlementsPlist(config, (modConfig) => {
     modConfig.modResults['com.apple.developer.siri'] = true
     /*
-     * Communication Notifications — **not yet**, and deliberately commented
-     * rather than deleted. It is what lets the notification service extension
-     * rebuild a message push from an `INSendMessageIntent`, the only kind of
+     * Communication Notifications, so the notification service extension may
+     * rebuild a message push from an `INSendMessageIntent` — the only kind of
      * notification Siri announces, which is how a message arriving mid-drive
-     * is read aloud in the car. But an entitlement the App ID does not carry
-     * fails the build at signing, and on 23 September the capability could
-     * not be switched on: the developer portal and EAS's Apple session had
-     * both expired, and signing in is Behic's. Build 174 therefore ships
-     * without it, and the extension's code already copes — `updating(from:)`
-     * throws, the push arrives as a plain alert, nothing breaks, nothing is
-     * announced.
+     * is read aloud in the car. Without it `updating(from:)` throws and the
+     * push arrives as a plain alert; nothing breaks, nothing is announced.
      *
-     * To turn it on: tick Communication Notifications on the App ID (or let
-     * an interactive `eas credentials:configure-build -p ios -e production`
-     * sync it), then uncomment this line. See `docs/release-runbook.md`.
+     * Build 175 shipped without it, because both Apple sessions had expired
+     * on 23 September; the capability was switched on for the App ID later
+     * that night and this line came back for 176.
      */
-    // modConfig.modResults['com.apple.developer.usernotifications.communication'] = true
+    modConfig.modResults['com.apple.developer.usernotifications.communication'] = true
 
     const groups = new Set(modConfig.modResults['keychain-access-groups'] ?? [])
     groups.add(KEYCHAIN_GROUP)
