@@ -82,6 +82,14 @@ class NotificationService: UNNotificationServiceExtension {
       return
     }
 
+    /*
+     The car's list, and what Siri reads from it, learn about the message from
+     the same push that announces it — otherwise tapping the row Siri just
+     announced would read the one before. See `ConversationDirectory`.
+    */
+    ConversationDirectory.recordIncoming(
+      conversationId: conversationId, name: content.title, preview: content.body)
+
     let sender = INPerson(
       personHandle: INPersonHandle(value: senderId, type: .unknown),
       nameComponents: nil,

@@ -192,6 +192,9 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
     for conversationId in conversations {
       group.enter()
       IntentSession.markRead(conversationId: conversationId) { ok in
+        // Read on the server, so read in the car too — or its unread dot would
+        // make the next tap read it aloud again instead of offering a reply.
+        if ok { ConversationDirectory.recordRead(conversationIds: [conversationId]) }
         lock.lock()
         failed = failed || !ok
         lock.unlock()

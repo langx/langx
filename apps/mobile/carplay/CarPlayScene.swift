@@ -97,6 +97,25 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
       self?.reload()
     }
 
+    /*
+     And the writes that are not the app's: a message push landing in the
+     notification service extension, or Siri marking a thread read in the
+     Intents extension. Both are other processes, which is what a Darwin
+     notification is for — they are how the list moves during a drive on
+     which nobody opens the app.
+    */
+    CFNotificationCenterAddObserver(
+      CFNotificationCenterGetDarwinNotifyCenter(),
+      Unmanaged.passUnretained(self).toOpaque(),
+      { _, observer, _, _, _ in
+        guard let observer else { return }
+        let scene = Unmanaged<CarPlaySceneDelegate>.fromOpaque(observer).takeUnretainedValue()
+        DispatchQueue.main.async { scene.reload() }
+      },
+      ConversationDirectory.changedNotification as CFString,
+      nil,
+      .deliverImmediately)
+
     interfaceController.setRootTemplate(list, animated: false, completion: nil)
   }
 
@@ -107,6 +126,11 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
     self.interfaceController = nil
     if let writes { NotificationCenter.default.removeObserver(writes) }
     writes = nil
+    CFNotificationCenterRemoveObserver(
+      CFNotificationCenterGetDarwinNotifyCenter(),
+      Unmanaged.passUnretained(self).toOpaque(),
+      CFNotificationName(ConversationDirectory.changedNotification as CFString),
+      nil)
   }
 
   /**
@@ -117,7 +141,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
    empty list, which would say there is nobody to talk to. **An empty list**
    means the account has no conversations. **Rows** is the ordinary case.
   */
-  private func reload() {
+  fileprivate func reload() {
     let blob = ConversationDirectory.blob()
     guard !everDrawn || blob != drawn else { return }
     drawn = blob
