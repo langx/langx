@@ -88,7 +88,7 @@ import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { speechLanguageFor } from '../lib/speechLanguage'
 import { errorCodeOf } from '../lib/errors'
 import { listState } from '../lib/listState'
-import { messageActionsFor } from '../lib/messageActions'
+import { messageActionsFor, unsentActionsFor } from '../lib/messageActions'
 import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
 import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../lib/messageMenu'
@@ -1120,6 +1120,34 @@ export function ChatScreen({
   }
 
   /**
+   * The long-press on a row that never left. A tap retries; this is the way
+   * out for a send that keeps failing, which until now had none — the row sat
+   * in the thread, and the persisted queue brought it back every visit.
+   *
+   * Delete is local and final: there is nothing on the server to withdraw,
+   * so it neither asks the socket nor asks twice. Copy sits beside it so the
+   * words are not lost with the row.
+   */
+  async function openUnsentActions(row: {
+    body: string
+    preview: string
+    discard: () => void
+  }): Promise<void> {
+    const picked = await openMessageMenu({
+      preview: row.preview,
+      mine: true,
+      actions: unsentActionsFor({ hasBody: row.body.trim().length > 0, t }),
+    })
+    if (picked?.kind !== 'action') return
+    if (picked.id === 'copy') {
+      await Clipboard.setStringAsync(row.body)
+      showToast(t('chat.copied'))
+    } else if (picked.id === 'delete') {
+      row.discard()
+    }
+  }
+
+  /**
    * Sends, adding the reader's language when the composer is in that mode.
    *
    * The translation is fetched before the send rather than by the server
@@ -2013,6 +2041,14 @@ export function ChatScreen({
                             setPending((list) => removePending(list, row.clientId))
                             void sendAttachments(row.files ?? [attachmentOf(row)], undefined)
                           }}
+                          onLongPress={() =>
+                            void openUnsentActions({
+                              body: '',
+                              preview: t(messagePreviewKey(row.kind)),
+                              discard: () =>
+                                setPending((list) => removePending(list, row.clientId)),
+                            })
+                          }
                         />
                       ))}
                     </View>
@@ -2025,6 +2061,14 @@ export function ChatScreen({
                           accessibilityRole="button"
                           accessibilityLabel={t('chat.notSentRetry')}
                           onPress={() => void retry(message)}
+                          onLongPress={() =>
+                            void openUnsentActions({
+                              body: message.body,
+                              preview: message.body,
+                              discard: () =>
+                                setUnsent((list) => removeUnsent(list, message.clientId)),
+                            })
+                          }
                           style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
                         >
                           <Text style={styles.unsentBody}>{message.body}</Text>

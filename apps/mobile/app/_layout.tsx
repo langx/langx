@@ -13,9 +13,10 @@ import { ObserveRoot } from 'expo-observe'
 import * as SplashScreen from 'expo-splash-screen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
+import Head from 'expo-router/head'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useRef, useState } from 'react'
-import { Text } from 'react-native'
+import { Platform, Text } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { isRequestTimeout } from '../src/api/apiFetch'
@@ -114,6 +115,21 @@ function RootLayout() {
      * the whole app renders as nothing.
      */
     <GestureHandlerRootView style={{ flex: 1 }}>
+      {/*
+       * The browser tab's name. expo-router turns React Navigation's own
+       * document title off, so without this the static export ships an empty
+       * `<title>` and the tab shows the bare URL. Web only: on iOS a `<title>`
+       * in `Head` publishes an NSUserActivity for Handoff and Spotlight, which
+       * is a different feature from a label on a tab. The favicon comes from
+       * `web.favicon` in app.config.ts; the touch icon is what iOS uses for a
+       * home-screen shortcut and in Safari's own tab and favourites grids.
+       */}
+      {Platform.OS === 'web' ? (
+        <Head>
+          <title>LangX</title>
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        </Head>
+      ) : null}
       <SafeAreaProvider>
         <I18nProvider>
           <ThemeProvider>

@@ -21,7 +21,16 @@ import { makeStyles, useTheme } from '../lib/theme'
  * text queue above it. Before this, a failed attachment raised an alert and
  * the picked file was thrown away.
  */
-export function PendingMediaBubble({ item, onRetry }: { item: PendingMedia; onRetry: () => void }) {
+export function PendingMediaBubble({
+  item,
+  onRetry,
+  onLongPress,
+}: {
+  item: PendingMedia
+  onRetry: () => void
+  /** Only once it has failed: one still uploading has nothing to offer yet. */
+  onLongPress: () => void
+}) {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -92,6 +101,7 @@ export function PendingMediaBubble({ item, onRetry }: { item: PendingMedia; onRe
       accessibilityRole="button"
       accessibilityLabel={t('chat.notSentRetry')}
       onPress={onRetry}
+      onLongPress={onLongPress}
       style={({ pressed }) => [styles.bubble, styles.failed, pressed && styles.pressed]}
     >
       {body}
