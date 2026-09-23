@@ -506,9 +506,12 @@ rather than about the feature that added it.
    minted before that date lacks it.
 2. **Siri.** `com.apple.developer.siri` is new, and the capability has to be
    switched on for the App ID as well.
-3. **Communication Notifications.** `com.apple.developer.usernotifications.communication`
-   is new on 23 September — it is what lets a message push be announced by
-   Siri in the car — and it too is a capability switched on for the App ID.
+3. **Communication Notifications — pending.** It is what lets a message push
+   be announced by Siri in the car. On 23 September the capability could not
+   be switched on (both Apple sessions had expired), so the entitlement is
+   commented out in `plugins/withSiriMessaging.js` and build 174 shipped
+   without it. Turning it on is: tick it on the App ID, uncomment the line,
+   and let the next build's credentials step regenerate the profile.
 4. **A second App ID.** The Intents extension is its own target and its own
    bundle — `tech.newchapter.languageXchange.intent` — and it needs the App
    Group on it, which `eas-cli` cannot patch. That is the manual portal pass
