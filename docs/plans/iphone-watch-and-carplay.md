@@ -14,7 +14,8 @@ message text is drawn; Apple does not permit it.
 
 What remains is not code. **Behic:** a sign-in to switch on Communication
 Notifications was switched on the same night and ships in build 176; what is
-left for him is the Wear OS upload and Android Auto opt-in in Play Console. **Devices:** Siri's read-and-reply in a car, the watches and
+the Wear OS app went to Play review on 23 September too, and Android Auto was
+already active there. **Devices:** Siri's read-and-reply in a car, the watches and
 the Lock Screen clearing at sign-out, a real Android Auto head unit, a Duo.
 **Decisions:** none open — phases 7 and 8 were decided on 23 September, both
 the way this plan recommended (see each phase). The watch's
@@ -840,7 +841,7 @@ they unblock in different ways:
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | **A paired device** | the Lock Screen clearing, the two watches clearing, a real head unit for Android Auto                                 |
 | **A Mac and a Duo** | phase 6's last two surfaces, and the fold pass in 1b                                                                  |
-| **Behic**           | the send intent's credential, Play Console's Wear OS and Android Auto                                                 |
+| **Behic**           | nothing — the Wear OS app is in Play review and Android Auto is active (23 September)                                 |
 | **A car**           | Siri reading a tapped conversation and taking a dictated reply — the list itself was seen on 23 September             |
 | **A sign-in**       | Communication Notifications on the App ID, so Siri announces new messages in the car — the rest was done 22 September |
 

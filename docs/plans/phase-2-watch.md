@@ -431,9 +431,39 @@ missing; `assembleDebug` needs none of them and is untouched.
 
 Verified 20 September 2026 against a throwaway key: the APK builds, signs, and
 reports `tech.newchapter.languageXchange`, the version code that was passed and
-`uses-feature android.hardware.type.watch`. **What is still unverified is Play
-itself** — no watch artefact has been uploaded, so which version code it
-accepts beside the phone's is known only from its documentation.
+`uses-feature android.hardware.type.watch`.
+
+### On Play, 23 September 2026
+
+**Play wants the bundle, not the APK.** The checklist says "app bundle or APK",
+and the Wear OS track refuses the APK anyway: _Upload a valid app bundle_. So
+the command is `bundleRelease`, not `assembleRelease`:
+
+    cd android && ./gradlew :wear:bundleRelease \
+      -PwearVersionCode=<n> -PwearVersionName=2.6
+    # wear/build/outputs/bundle/release/wear-release.aab
+
+The bundle is also a third of the APK's size — 8 MB against 23 — because Play
+cuts it per device instead of shipping every ABI.
+
+**Version codes live in their own range: 1 000 000 + the phone's.** The first
+was **1000165**, built beside phone 165. The phone's count can never reach it,
+and the next Wear build is simply the next phone number plus the million.
+
+**The keystore comes from EAS, and its key password is the store password.**
+`eas credentials -p android` → production → Keystore → _Download existing
+keystore_; EAS then prints _Key password: null_, which means there is no
+separate one. The alias is `key0`. Behic downloads it and types the password;
+the downloaded `.jks` goes to the Trash afterwards (`*.jks` is gitignored
+regardless). The signed bundle's certificate is the phone's own —
+SHA-256 `17:D3:A5:F3:…:9D:A0` on both.
+
+**What happened to it.** 1000165 went to the **Wear OS internal testing**
+track (testers: the _Early Adopters_ list), then to **Wear OS production**
+with a one-line note in all thirteen Play languages, and the Wear OS opt-in —
+the review-policy step — was accepted. The three went to review together with
+the phone's 2.6, which **restarted the phone's review**: Play warns that it
+will, and Behic chose to send them together rather than wait.
 
 ## Two traps worth knowing before repeating this
 
