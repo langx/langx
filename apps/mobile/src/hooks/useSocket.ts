@@ -23,6 +23,7 @@ import {
   applyPinned,
   type MessagePageDto,
 } from '../lib/messageCache'
+import { clearFromTray } from '../lib/notifications'
 import { closeSocket, getSocket, restartSocket } from '../lib/socket'
 
 /**
@@ -280,15 +281,23 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
        * it means their unread total has dropped, and that number is the
        * server's to give.
        */
-      socket.on('conversation:read', ({ conversationId }: { conversationId: string }) => {
-        void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
-        void queryClient.invalidateQueries({ queryKey: ['conversations'] })
-        // This now also reaches the reader's own other devices, where it
-        // means "your unread total just dropped" rather than "they saw it".
-        // The badge cannot be recomputed from here, so it goes back to the
-        // server — the same reason this event is invalidated, not patched.
-        invalidateUnread(queryClient)
-      })
+      socket.on(
+        'conversation:read',
+        ({ conversationId, readBy }: { conversationId: string; readBy: string }) => {
+          void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
+          void queryClient.invalidateQueries({ queryKey: ['conversations'] })
+          // This now also reaches the reader's own other devices, where it
+          // means "your unread total just dropped" rather than "they saw it".
+          // The badge cannot be recomputed from here, so it goes back to the
+          // server — the same reason this event is invalidated, not patched.
+          invalidateUnread(queryClient)
+          // Read on another device of mine: this one's shade is stale too. Read
+          // by the other participant, it says nothing about what I have seen.
+          if (readBy === queryClient.getQueryData<{ _id: string }>(keys.me)?._id) {
+            void clearFromTray({ conversationId })
+          }
+        },
+      )
 
       /**
        * Somebody followed you, corrected your post, or liked it.

@@ -97,6 +97,7 @@ import {
 } from '@tanstack/react-query'
 import type { InfiniteData } from '@tanstack/react-query'
 import { markPagesRead } from '../lib/notificationInbox'
+import { clearFromTray } from '../lib/notifications'
 import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
@@ -385,6 +386,9 @@ export async function markConversationRead(
   queryClient: QueryClient,
 ): Promise<void> {
   if (!conversationId) return
+  // Before the request, and whether or not it lands: the thread is on screen,
+  // so its pushes in the shade are stale either way.
+  void clearFromTray({ conversationId })
   try {
     await api.post(`/conversations/${conversationId}/read`)
     await queryClient.invalidateQueries({ queryKey: ['conversations'] })
@@ -1328,6 +1332,9 @@ export function useMarkNotificationsRead() {
       client.setQueryData<number>(keys.notificationsUnread, (total) =>
         id === undefined ? 0 : Math.max(0, (total ?? 0) - 1),
       )
+      // The shade goes with the bell. A single row is left alone: a push
+      // carries no notification id to match it by.
+      if (id === undefined) void clearFromTray('inbox')
       return { previous }
     },
     onError: (error, _input, context) => {

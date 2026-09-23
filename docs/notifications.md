@@ -533,6 +533,22 @@ appears at noon the next day.
 | `echo`                       | `/echo`                                   |
 | `promotion`                  | `/discover`                               |
 
+## What a read clears from the shade
+
+`apps/mobile/src/lib/trayScope.ts`. The OS keeps a drawn notification until it
+is swiped away, so without this a message answered at night was still on the
+lock screen in the morning.
+
+- **Opening a thread** clears that thread's `message` pushes. So does a read on
+  another of the same person's devices, through `conversation:read`, while this
+  one holds a socket. A `meetingReminder` stays: it is about a time.
+- **"Mark all read"** clears `social`, `badgeEarned`, `profileVisits` and
+  `wallet`. Tapping a single row clears nothing, because a push carries no
+  notification id to match the row by.
+
+Only a device with the app running can clear its own shade. There is no silent
+push to reach one that is closed.
+
 ## Not built
 
 Written down so the next person does not have to re-derive them.
