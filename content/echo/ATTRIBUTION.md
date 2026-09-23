@@ -270,7 +270,7 @@ sources for them and they are kept apart on purpose — see `LICENSE`.
 
 **Nothing in them is borrowed.** All 372 cue pictures are drawn for this app,
 from the shapes in `tools/echo-content/images/drawings.mjs`, and every one of
-the 4,894 cards that carries a cue points at one of them. The first 348 were
+the 6,480 cards that carries a cue points at one of them. The first 348 were
 drawn for the English packs and were not added to for the five new languages —
 the same set served all six, which is the point of keeping the slug rather
 than the phrase as what a card stores. The 24 added after them are what those
@@ -355,11 +355,18 @@ is made for Turkish: direct links alone would have left a Turkish reader on
 the English back for four cards in five. The reading below checked the Turkish
 against the Chinese, not against the English it came through.
 
-**No cue pictures and no synthesised readings.** The 372 concepts were drawn
-for the other six languages' sentences and nobody has chosen cues for these;
-a card without a picture is fine. No voice reads Chinese here —
-`packages/shared/src/speech.ts` says why — which is the reason `reading`
-exists.
+**Cue pictures from the same 372, and no synthesised readings.** No new
+concept was drawn: `tools/echo-content/images/cues.zh.json` points 1,586 of
+the 1,639 sentences at a picture the other six languages already use, chosen
+on 23 September by six Claude subagents, one per pack, and then thinned by
+hand — ten choices that needed decoding were taken out ("mine" and "not mine"
+as a raised hand or a crossed arm, 💯 over _a century is a hundred years_, a
+shirt over a hat). The 53 without one are abstractions (_selfish_,
+_optimist_, _monopoly_) and things the palette has no honest drawing of: a
+basketball, a watermelon, a shoe, tofu, a tiger, a tent, a cave, a prison.
+Those are the list to draw from when the palette next grows. No voice reads
+Chinese here — `packages/shared/src/speech.ts` says why — which is the reason
+`reading` exists.
 
 ### What the review of the Mandarin six was, exactly
 
