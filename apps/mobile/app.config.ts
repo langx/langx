@@ -171,13 +171,14 @@ const config: ExpoConfig = {
     bundler: 'metro',
     output: 'static',
     /*
-     * The export turns this into `favicon.ico` and links it from every page;
-     * without it the tab showed the browser's blank globe. The rounded mark,
-     * because a tab draws the file as it is and applies no mask of its own.
-     * Home-screen shortcuts on iOS read `public/apple-touch-icon.png`
-     * instead — the square icon at 180², which iOS rounds itself.
+     * No `favicon` here, on purpose. Expo builds the ICO from it itself, and
+     * the file it wrote declared a transparency mask in every frame and then
+     * left the mask out: Chrome shrugs, Firefox calls the image corrupt and
+     * draws no icon at all. `public/favicon.ico` is built by hand instead —
+     * PNG frames, which have no mask to get wrong — and a `favicon.ico` in
+     * `public/` is exactly what makes the export skip generating its own.
+     * The page links the PNG; see the root layout.
      */
-    favicon: './assets/brand/logo-rounded.png',
   },
 
   /**
