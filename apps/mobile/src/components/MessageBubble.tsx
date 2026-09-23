@@ -21,6 +21,7 @@ import Reanimated, {
 import type { MessageDto } from '../api/queries'
 import {
   attachmentsOf,
+  findLinks,
   type Media,
   type MeetingStatus,
   type MessageAsk,
@@ -36,6 +37,8 @@ import {
   swipeTranslation,
 } from '../lib/swipeToReply'
 import { makeStyles, useTheme } from '../lib/theme'
+import { LinkedText } from './LinkedText'
+import { LinkPreviewCard } from './LinkPreviewCard'
 import { MediaGallery } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
 import { Image } from 'expo-image'
@@ -649,7 +652,9 @@ export const MessageBubble = memo(function MessageBubble({
             />
           ) : null}
           {message.body ? (
-            <Text style={[styles.bubbleText, styles.caption]}>{message.body}</Text>
+            <LinkedText style={[styles.bubbleText, styles.caption]} onLongPress={press}>
+              {message.body}
+            </LinkedText>
           ) : null}
         </View>
         {badge}
@@ -722,11 +727,20 @@ export const MessageBubble = memo(function MessageBubble({
     )
   }
 
+  /*
+   * A card for the first address only, as every messenger does: a sentence
+   * with three links in it is a list, and three cards would bury it.
+   */
+  const firstLink = findLinks(message.body)[0]?.href
+
   return shell(
     <Pressable onPress={tap} onLongPress={press} style={column}>
       {quote}
       <View ref={box} style={bubble}>
-        <Text style={styles.bubbleText}>{message.body}</Text>
+        <LinkedText style={styles.bubbleText} onLongPress={press}>
+          {message.body}
+        </LinkedText>
+        {firstLink ? <LinkPreviewCard url={firstLink} onLongPress={press} /> : null}
       </View>
       {/*
         The request the sender attached, under their sentence rather than
