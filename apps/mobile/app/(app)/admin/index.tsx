@@ -138,9 +138,9 @@ export default function AdminHomeScreen() {
             <Text style={styles.muted}>{ADMIN.home.daysIn(stats.data?.timeZone ?? '')}</Text>
             <View style={styles.tiles}>
               <StatTile value={count(audience?.joinedToday)} label={ADMIN.home.joinedToday} />
-              <StatTile value={count(audience?.joinedLastWeek)} label={ADMIN.home.joinedWeek} />
+              <StatTile value={count(audience?.joinedLastMonth)} label={ADMIN.home.joinedMonth} />
               <StatTile value={count(audience?.activeToday)} label={ADMIN.home.activeToday} />
-              <StatTile value={count(audience?.seenLastWeek)} label={ADMIN.home.seenWeek} />
+              <StatTile value={count(audience?.seenLastMonth)} label={ADMIN.home.seenMonth} />
             </View>
 
             {/*
