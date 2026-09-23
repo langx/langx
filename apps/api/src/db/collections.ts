@@ -66,6 +66,12 @@ export const COLLECTIONS = {
   profileViews: 'profileViews',
   translationCache: 'translationCache',
   /**
+   * What a linked page said about itself, keyed by the address as sent. A
+   * cache, not a record: every row expires, a failed read included, so a page
+   * that was down is tried again tomorrow rather than never.
+   */
+  linkPreviews: 'linkPreviews',
+  /**
    * The community feed. Separate from `messages` rather than a conversation
    * with no second participant: a post has no pair, no read state and no
    * delivery, and every index on `messages` is built around `conversationId`.

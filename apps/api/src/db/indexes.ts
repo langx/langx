@@ -526,6 +526,13 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 },
   ],
 
+  [COLLECTIONS.linkPreviews]: [
+    // The lookup, and what makes two readers opening the same link at once
+    // write one row rather than two.
+    { key: { url: 1 }, name: 'url_unique', unique: true },
+    { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 },
+  ],
+
   [COLLECTIONS.referrals]: [
     /*
      * The invite screen's list: one person's invitees, newest first. The `_id`

@@ -44,6 +44,8 @@ import { qrRoutes } from './routes/qr'
 import { publicRoutes } from './routes/public'
 import { shareCardRoutes } from './routes/shareCards'
 import { translationRoutes } from './routes/translate'
+import { linkPreviewRoutes } from './routes/linkPreview'
+import { safeGet, type SafeGet } from './modules/linkPreview/safeFetch'
 import { leaderboardRoutes } from './routes/leaderboard'
 import { referralRoutes } from './routes/referrals'
 import { xpRoutes } from './routes/tokens'
@@ -92,6 +94,12 @@ declare module 'fastify' {
      * `email` so a test can hand it a provider that answers without a network.
      */
     assistant: AssistantProvider | null
+    /**
+     * How a link preview reaches the page it describes. Decorated so a test
+     * can answer with a page of its own — the real one refuses every address
+     * a test server could listen on, which is the point of it.
+     */
+    linkFetch: SafeGet
     appVersion: string
     /**
      * The pinned server type, not socket.io's default. Its generics default
@@ -133,6 +141,8 @@ export interface BuildAppOptions {
    * unless it says otherwise.
    */
   assistant?: AssistantProvider | null
+  /** Defaults to `safeGet`, the only thing production ever uses. */
+  linkFetch?: SafeGet
   version?: string
 }
 
@@ -157,6 +167,7 @@ export async function buildApp({
   push = new LoggingPushSender(),
   email = new ConsoleEmailSender(console),
   assistant = null,
+  linkFetch = safeGet,
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   /*
@@ -218,6 +229,7 @@ export async function buildApp({
   app.decorate('push', push)
   app.decorate('email', email)
   app.decorate('assistant', assistant)
+  app.decorate('linkFetch', linkFetch)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })
@@ -352,6 +364,7 @@ export async function buildApp({
   await app.register(messageRoutes)
   await app.register(notificationRoutes)
   await app.register(translationRoutes)
+  await app.register(linkPreviewRoutes)
   await app.register(billingRoutes)
   await app.register(resendWebhookRoutes)
   await app.register(instagramWebhookRoutes)
