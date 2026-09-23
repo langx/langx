@@ -18,7 +18,13 @@ import {
   type MessageTranslation,
 } from '@langx/shared'
 import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
-import { type NativeStackNavigationProp, router, useFocusEffect, useNavigation } from 'expo-router'
+import {
+  type NativeStackNavigationProp,
+  router,
+  useFocusEffect,
+  useIsFocused,
+  useNavigation,
+} from 'expo-router'
 import { useAudioPlayer } from 'expo-audio'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -126,6 +132,7 @@ import { makeStyles, useTheme } from '../lib/theme'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { OfficialMark } from '../components/OfficialMark'
+import { WebTitle } from '../components/WebTitle'
 
 export interface ChatScreenProps {
   conversationId: string
@@ -491,6 +498,13 @@ export function ChatScreen({
   // branch — a `?` avatar and the word "Chat", which reads as a real header
   // with the wrong content. An error leaves `isPending` false, so the generic
   // title still stands for a thread whose partner really cannot be resolved.
+  /*
+   * The browser tab carries the partner's name while this thread is the one
+   * in front. Gated on focus because the screen outlives it — it stays
+   * mounted under whatever is pushed over it, and inside a tab that is not
+   * showing — and a mounted title is a title, seen or not.
+   */
+  const focused = useIsFocused()
   const partnerLoading =
     useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending' ||
     (!partnerId && (messages.isPending || conversation.isPending))
@@ -1867,6 +1881,7 @@ export function ChatScreen({
      * owes the inset itself.
      */
     <Screen fluid tabbed={embedded} style={styles.screen}>
+      {focused && partner ? <WebTitle page={partner.displayName} /> : null}
       {/*
         The whole screen pads for the keyboard, by the keyboard's own reported
         height — see `useKeyboardInset` for why `KeyboardAvoidingView` did not

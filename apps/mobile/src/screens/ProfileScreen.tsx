@@ -1,12 +1,13 @@
 import Feather from '@expo/vector-icons/Feather'
 import { wornCosmetic } from '@langx/shared'
-import { router } from 'expo-router'
+import { router, useIsFocused } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { authClient } from '../lib/auth-client'
 import { requireAccount } from '../lib/requireAccount'
 import { useBlockUser, useMe, useProfile, usePublicSummary, useSetFollow } from '../api/queries'
 import { ActivityMap } from '../components/ActivityMap'
+import { WebTitle } from '../components/WebTitle'
 import { Avatar } from '../components/ui/Avatar'
 import { placeLabel } from '../lib/placeLabel'
 import { Button } from '../components/ui/Button'
@@ -52,6 +53,8 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
+  // For the browser tab's title — see the same gate in `ChatScreen`.
+  const focused = useIsFocused()
 
   const profile = useProfile(handle ?? '')
   const me = useMe()
@@ -173,6 +176,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
 
   return (
     <Screen scroll {...pull}>
+      {focused ? <WebTitle page={user.displayName} /> : null}
       {/*
         No title on somebody else's profile: the name below is the title. Your
         own preview is the exception — the name below it is yours, so it says
