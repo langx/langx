@@ -64,6 +64,7 @@ export const ADMIN = {
     pro: 'Pro',
     proPlus: 'Pro+',
     free: 'Free',
+    totalMembers: 'Total',
     paidShare: (paid: number, total: number) =>
       `${paid} of ${total} members are paying · ${adminPercent(paid, total)}`,
     poolYesterday: 'Yesterday’s pool (UTC)',
@@ -108,7 +109,6 @@ export const ADMIN = {
       correctionsDaily: 'Corrections each day',
       tokensDaily: 'Tokens awarded each day',
       lastDays: (days: number) => `last ${days} days`,
-      lastWeek: 'last 7 days',
     },
 
     streaks: {
