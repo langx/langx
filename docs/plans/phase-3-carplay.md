@@ -190,8 +190,9 @@ if the next test ends there it is the one problem here with no known fix.
      profile minted before that date does not carry it.
   2. **Siri**, which is a capability on the App ID and is new as of this
      change.
-  3. **Communication Notifications**, on the same App ID — new with the
-     announcement change.
+  3. **Communication Notifications**, on the same App ID — **pending**: both
+     Apple sessions had expired on 23 September, so build 174 ships with the
+     entitlement commented out and announcements off until it is ticked.
   4. A **new App ID for the Intents extension**,
      `tech.newchapter.languageXchange.intent`, with the App Group on it —
      `eas-cli` cannot patch App Groups, which is the manual pass recorded in
