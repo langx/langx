@@ -3093,6 +3093,16 @@ export function useEchoQueue(lang?: string) {
     // The deck a session is about to draw from must be what the server has
     // now, not what it had when the tab was last opened.
     staleTime: 0,
+    /*
+     * And `staleTime` alone does not get there. A cached queue is handed back
+     * on mount while the refetch runs, and `session.tsx` freezes the first
+     * deck it sees — so it froze the cached one. Invalidating does not clear
+     * it either: with no session open nothing observes the queue, and it is
+     * only marked stale. A card read aloud since the last session came up
+     * silent, and a card just graded could come up again. The session is the
+     * only reader, so dropping the queue when it closes costs nothing.
+     */
+    gcTime: 0,
   })
 }
 
