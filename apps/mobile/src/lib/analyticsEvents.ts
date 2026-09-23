@@ -432,6 +432,32 @@ export type AnalyticsEvent =
       name: 'echo_ask_opened'
       properties: { kind: PostKind }
     }
+  | {
+      /**
+       * A Live Activity was put on the Lock Screen for an agreed call.
+       *
+       * Once per call per launch, not per render: the hook that starts it runs
+       * again whenever the upcoming list refreshes. With `companion_opened`
+       * this is phase 7's measure — how many cards there are, and how many are
+       * tapped — before a second push path is paid for to keep them live from
+       * the server. `minutes_ahead` is how early the card appeared, rounded,
+       * because a card started five minutes before a call is a different
+       * thing to look at from one started the evening before.
+       */
+      name: 'live_activity_started'
+      properties: { minutes_ahead: number }
+    }
+  | {
+      /**
+       * The app was opened from a companion surface — the Live Activity, or a
+       * Home Screen widget — read from the link it opened with. See
+       * `src/lib/companionOpen.ts`.
+       */
+      name: 'companion_opened'
+      properties:
+        | { source: 'live_activity'; target: 'chat' }
+        | { source: 'widget'; target: 'me' | 'chats' | 'echo' }
+    }
 
 export type AnalyticsEventName = AnalyticsEvent['name']
 

@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useUpcomingMeetings } from '../api/queries'
 import { useProfileCache } from './useProfileCache'
+import { track } from '../lib/analytics'
 import {
   endAllExchangeActivities,
   endExchangeActivity,
@@ -28,6 +29,9 @@ import {
  * `endsAt` has already passed by the time the meeting leaves the list, and the
  * system has stopped showing it.
  */
+/** Calls whose card has been counted in this process. */
+const counted = new Set<string>()
+
 export function useExchangeActivity({ enabled }: { enabled: boolean }): void {
   /*
    * Asked once, because this one cannot change: false on Android, on web, and
@@ -87,6 +91,20 @@ export function useExchangeActivity({ enabled }: { enabled: boolean }): void {
       startsAt,
       endsAt,
     })
+    /*
+     Counted once per call per launch — this effect runs again whenever the
+     upcoming list or the name cache refreshes, and phase 7 wants cards, not
+     renders. See `live_activity_started` in `analyticsEvents.ts`.
+    */
+    if (!counted.has(next.conversationId)) {
+      counted.add(next.conversationId)
+      track({
+        name: 'live_activity_started',
+        properties: {
+          minutes_ahead: Math.max(0, Math.round((startsAt.getTime() - Date.now()) / 60_000)),
+        },
+      })
+    }
 
     return () => {
       // The call left the list, or another one is nearer. Either way this
