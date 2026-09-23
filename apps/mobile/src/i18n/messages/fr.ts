@@ -1418,6 +1418,7 @@ export const fr: Localized<EnMessages> = {
     overlapRefused: 'Une langue ne peut pas être à la fois maternelle et apprise.',
     moveUp: 'Monter {language}',
     moveDown: 'Descendre {language}',
+    reorder: 'Déplacer {language}',
     removeTitle: 'Retirer {language} ?',
     removeBody: 'Elle quitte ton profil immédiatement.',
     lastNative:

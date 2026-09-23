@@ -1409,6 +1409,7 @@ export const tr: Localized<EnMessages> = {
     overlapRefused: 'Bir dil hem ana dilin hem öğrendiğin dil olamaz.',
     moveUp: '{language} dilini yukarı taşı',
     moveDown: '{language} dilini aşağı taşı',
+    reorder: '{language} dilinin sırasını değiştir',
     removeTitle: '{language} kaldırılsın mı?',
     removeBody: 'Profilinden hemen çıkar.',
     lastNative: 'En az bir ana dilin olmalı. Kaldırmak yerine bunu değiştir.',

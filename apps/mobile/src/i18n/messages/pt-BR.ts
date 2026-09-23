@@ -1402,6 +1402,7 @@ export const ptBR: Localized<EnMessages> = {
     overlapRefused: 'Um idioma não pode ser nativo e um que você aprende ao mesmo tempo.',
     moveUp: 'Subir {language}',
     moveDown: 'Descer {language}',
+    reorder: 'Reordenar {language}',
     removeTitle: 'Remover {language}?',
     removeBody: 'Sai do seu perfil na hora.',
     lastNative: 'Você precisa de pelo menos um idioma nativo. Troque este em vez de removê-lo.',

@@ -1440,6 +1440,7 @@ export const de: Localized<EnMessages> = {
     overlapRefused: 'Eine Sprache kann nicht zugleich Muttersprache und Lernsprache sein.',
     moveUp: '{language} nach oben',
     moveDown: '{language} nach unten',
+    reorder: '{language} verschieben',
     removeTitle: '{language} entfernen?',
     removeBody: 'Sie verschwindet sofort aus deinem Profil.',
     lastNative: 'Du brauchst mindestens eine Muttersprache. Ändere diese, statt sie zu entfernen.',

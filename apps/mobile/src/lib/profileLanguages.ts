@@ -28,7 +28,8 @@ export type LanguageEdit =
   | { kind: 'addLearning'; code: string }
   | { kind: 'removeLearning'; code: string }
   | { kind: 'setLevel'; code: string; level: LanguageLevel }
-  | { kind: 'moveLearning'; code: string; direction: 'up' | 'down' }
+  /** `to` is the row it lands on, counted from 0 in priority order. */
+  | { kind: 'moveLearning'; code: string; to: number }
 
 /** Which list an edit is about, in the vocabulary `PLAN_LIMITS` uses. */
 export type LanguageListName = 'nativeLanguages' | 'learningLanguages'
@@ -115,9 +116,8 @@ export function refuseLanguageEdit(
     }
     case 'moveLearning': {
       const index = ordered(lists).findIndex((l) => l.code === edit.code)
-      if (index === -1) return { kind: 'noop' }
-      const target = edit.direction === 'up' ? index - 1 : index + 1
-      return target < 0 || target >= lists.learning.length ? { kind: 'noop' } : null
+      if (index === -1 || index === edit.to) return { kind: 'noop' }
+      return edit.to < 0 || edit.to >= lists.learning.length ? { kind: 'noop' } : null
     }
   }
 }
@@ -238,13 +238,12 @@ export function applyLanguageEdit(lists: LanguageLists, edit: LanguageEdit): Lan
       }
     case 'moveLearning': {
       const index = learning.findIndex((l) => l.code === edit.code)
-      const target = edit.direction === 'up' ? index - 1 : index + 1
-      if (index === -1 || target < 0 || target >= learning.length) {
+      if (index === -1 || edit.to < 0 || edit.to >= learning.length) {
         return { nativeLanguages: native, learning: renumbered(learning) }
       }
       const moved = [...learning]
       const [entry] = moved.splice(index, 1)
-      moved.splice(target, 0, entry as LanguageLists['learning'][number])
+      moved.splice(edit.to, 0, entry as LanguageLists['learning'][number])
       return { nativeLanguages: native, learning: renumbered(moved) }
     }
   }

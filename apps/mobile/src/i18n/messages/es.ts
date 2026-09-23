@@ -1408,6 +1408,7 @@ export const es: Localized<EnMessages> = {
     overlapRefused: 'Un idioma no puede ser a la vez nativo y uno que aprendes.',
     moveUp: 'Subir {language}',
     moveDown: 'Bajar {language}',
+    reorder: 'Reordenar {language}',
     removeTitle: '¿Quitar {language}?',
     removeBody: 'Sale de tu perfil de inmediato.',
     lastNative: 'Necesitas al menos un idioma nativo. Cámbialo en vez de quitarlo.',

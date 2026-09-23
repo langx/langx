@@ -1572,6 +1572,7 @@ export const ru: Localized<EnMessages> = {
     overlapRefused: 'Язык не может быть одновременно родным и изучаемым.',
     moveUp: 'Поднять {language}',
     moveDown: 'Опустить {language}',
+    reorder: 'Переместить {language}',
     removeTitle: 'Убрать {language}?',
     removeBody: 'Он сразу исчезнет из профиля.',
     lastNative: 'Нужен хотя бы один родной язык. Замени этот, а не убирай.',
