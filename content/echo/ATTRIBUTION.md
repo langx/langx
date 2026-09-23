@@ -6,8 +6,8 @@ thing, plus the reasoning about what was left out.
 
 ## In use
 
-**Eighteen packs, six languages, 4,910 items**, all `"reviewed": true`, so the
-seed script will write them:
+**Twenty-four packs, seven languages, 6,549 items**, all `"reviewed": true`, so
+the seed script will write them:
 
 | Language | absoluteBeginner | beginner | intermediate |
 | -------- | ---------------- | -------- | ------------ |
@@ -18,8 +18,16 @@ seed script will write them:
 | Russian  | 252              | 268      | 278          |
 | Italian  | 260              | 279      | 279          |
 
-The flag does not mean the same thing for English as for the other five. The
-two "what that review was" sections say what each one actually was.
+And Mandarin, which is named by HSK level rather than by ours — see
+`docs/echo.md`, _Chinese is named by HSK_:
+
+| Language | HSK 1 | HSK 2 | HSK 3 | HSK 4 | HSK 5 | HSK 6 |
+| -------- | ----- | ----- | ----- | ----- | ----- | ----- |
+| Mandarin | 281   | 283   | 281   | 285   | 259   | 250   |
+
+The flag does not mean the same thing for English, for the other five, and for
+Mandarin. The three "what that review was" sections say what each one actually
+was.
 
 ### What the English review was, exactly
 
@@ -314,6 +322,84 @@ draw, a condom, a thief, a genie, a doll, a carpet. A card without a picture
 is fine. A card with the wrong one teaches a wrong association and nobody will
 report it — which is why `Le citron est acide.` stopped borrowing the
 tangerine and got a lemon of its own.
+
+### Mandarin: where it came from
+
+| Source                                                                                                                                                                                     | Gives                                                            | Licence      | Use                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- | ------------ | ------------------------------------------------------ |
+| [HSK 2.0 word lists](https://github.com/clem109/hsk-vocabulary) (Clement Venard), via [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) (Yanis Zafirópulos) | 4,991 words with the HSK 2.0 level each is taught at, and pinyin | MIT, both    | Which sentence goes in which pack; neutral-tone pinyin |
+| [Tatoeba](https://tatoeba.org/), `cmn`                                                                                                                                                     | 89,065 Mandarin sentences and their human translations           | CC BY 2.0 FR | Every sentence, and every gloss                        |
+| [pypinyin](https://github.com/mozillazg/python-pinyin)                                                                                                                                     | Contextual pinyin for a whole sentence                           | MIT          | The draft of `reading`                                 |
+| [jieba](https://github.com/fxsjy/jieba)                                                                                                                                                    | Word segmentation with parts of speech                           | MIT          | A second opinion on where words end                    |
+
+Taken on 23 September 2026, `wordlists/exclusive/old/<n>.json` from the
+complete-hsk-vocabulary repository. The list is a syllabus — Hanban published
+it — and what the packs keep of it is a level per sentence, not the list; the
+MIT notices are the two repositories'. Only the word-to-level table and the
+pinyin were read: the meanings in the same files are CC-CEDICT, and no gloss
+comes from them.
+
+**Every item is a Tatoeba sentence**, simplified characters only (a sentence
+that Tatoeba holds a traditional transcription _of_ is written in simplified),
+three to eight HSK words long and at most sixteen characters. Its level is its
+hardest word. No phrasebook half: Wiktionary's Chinese phrasebook entries are
+not what an HSK learner is measured on.
+
+**The glosses are direct where they can be and indirect where they cannot.**
+Tatoeba links 78,191 Mandarin sentences to English but 1,254 to Turkish and
+152 to Arabic. Where a column has no direct translation, the pipeline takes the
+translation of the English gloss — a person's translation of a person's
+translation — and names that column in `review.indirect`. That is a departure
+from every other pack, where a column with no direct link stays empty, and it
+is made for Turkish: direct links alone would have left a Turkish reader on
+the English back for four cards in five. The reading below checked the Turkish
+against the Chinese, not against the English it came through.
+
+**No cue pictures and no synthesised readings.** The 372 concepts were drawn
+for the other six languages' sentences and nobody has chosen cues for these;
+a card without a picture is fine. No voice reads Chinese here —
+`packages/shared/src/speech.ts` says why — which is the reason `reading`
+exists.
+
+### What the review of the Mandarin six was, exactly
+
+**Read by six Claude subagents, one per pack, on 23 September — not by a
+native speaker, and not by a person.** The same is worth saying about this
+reading as about the others: believe no more than was done.
+
+Every one of the 1,800 drafted items was read, in four columns: the Chinese,
+the pinyin, English and Turkish. German, Spanish, French, Portuguese, Russian
+and Arabic were checked for _meaning_ only — does this translate the same
+sentence — and fixed where it did not; they were not read for style. The
+linter's mechanical classes (Russian dashes, Arabic spacing) were repaired
+without reading.
+
+**161 dropped**, of which the kinds were: near-duplicates (56), unnatural or
+non-standard Mandarin (35), slogans, positions and quotations — Sima Qian,
+King, Horace, a national anthem, the Beijing Olympics song (30), violence,
+insults and sexual content (17), Tatoeba nonsense (15), a harder word spelled
+out of easy characters (7) — 脸书, 玩笑, 正直, 把手, 要点 — and one whose
+glosses all answered a different sentence.
+
+**174 readings corrected**, counting `méiyǒu`, `yíxià` and `yìxiē`, which
+the reading left split for consistency and the generator now joins. The
+reading pass named the generator's recurring mistakes — 个人 read as _gèrén_ in 一个人, the measure word 只 as
+_zhǐ_, 教 as _jiào_, 过 and 着 with full tones, numbers and 没有 split
+apart — and `tools/echo-content/hsk/pick.py` was changed for each, so a second
+draft makes fewer of them. One of them was a levelling bug as well: 个人 is
+an HSK 5 word, and eight sentences about _one person_ had been filed at HSK 5.
+They were moved to the level they are.
+
+**753 glosses corrected or added**, each naming its column in
+`review.edited`. English lost its habit of a past tense the Chinese does not
+have. Turkish was where most of the work was, as expected of a column that is
+mostly indirect: _sen_ for 您 and _siz_ for 你, _kamera_ for a stills camera,
+_erkek kardeş_ for 哥哥, and 180 Turkish glosses written where there were
+none.
+
+**What is still owed**: a native speaker's pass over the pinyin, which is the
+column a learner copies without being able to check, and over Portuguese and
+Arabic, which are the thinnest (50–75% and 12–33% of items).
 
 ## Rejected
 

@@ -313,6 +313,7 @@ export const ptBR: Localized<EnMessages> = {
       other: '{count} cartões adicionados',
     },
     packProgress: '{done} de {total} começados',
+    packHsk: 'HSK {level}',
     producePrompt: 'Escreva em {language}',
     produceHint: 'Digite a expressão',
     check: 'Conferir',

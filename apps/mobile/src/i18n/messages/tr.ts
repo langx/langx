@@ -325,6 +325,7 @@ export const tr: Localized<EnMessages> = {
       other: '{count} kart eklendi',
     },
     packProgress: '{total} karttan {done} tanesi başladı',
+    packHsk: 'HSK {level}',
     producePrompt: '{language} olarak yaz',
     produceHint: 'İfadeyi yaz',
     check: 'Kontrol et',

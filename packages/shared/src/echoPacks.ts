@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { speechVoicesFor } from './speech'
-import { languageLevelSchema } from './level'
+import { CEFR_TO_LANGUAGE_LEVEL, languageLevelSchema, type LanguageLevel } from './level'
 import { localeSchema } from './locales'
 import { SRS_RULES } from './srs'
 
@@ -155,6 +155,15 @@ export const echoPackItemSchema = z.object({
   kind: z.enum(ECHO_PACK_ITEM_KINDS),
   /** The word itself, in the language being learned. Never translated copy. */
   text: z.string().trim().min(1),
+  /**
+   * How `text` is read, where its script does not say: pinyin, for Chinese.
+   *
+   * On the item rather than derived in the app, because deriving it is the
+   * hard part — 觉 is *jué* in 觉得 and *jiào* in 睡觉, and a table of
+   * characters gets that wrong — so it is decided once, by the pipeline, and
+   * read by a person before it ships. Absent for every alphabetic pack.
+   */
+  reading: z.string().trim().min(1).optional(),
   gloss: echoGlossSchema,
   /** One sentence using it. Written by us where we can; see the licence file. */
   example: z.string().trim().min(1).optional(),
@@ -221,25 +230,68 @@ export const echoPackItemSchema = z.object({
 export type EchoPackItem = z.infer<typeof echoPackItemSchema>
 
 /**
+ * The HSK 2.0 levels, and where each sits on our scale.
+ *
+ * Chinese is the one pack language with a published syllabus a learner already
+ * measures themselves by, so its packs are named by it — "HSK 3", not
+ * "Intermediate" — and there are six of them where every other language has
+ * three. The scale underneath does not change: `level` stays one of our four,
+ * so the list sorts and filters exactly as it does for French, and the HSK
+ * number is the label and the tiebreak inside a level.
+ *
+ * The mapping is Hanban's own: HSK 2.0 was published against CEFR A1–C2, one
+ * band per level, and CEFR already has a table onto our four. Going through it
+ * rather than writing six lines by hand is what keeps the two from disagreeing.
+ */
+export const HSK_LEVELS = [1, 2, 3, 4, 5, 6] as const
+export type HskLevel = (typeof HSK_LEVELS)[number]
+
+const HSK_CEFR: Record<HskLevel, string> = { 1: 'A1', 2: 'A2', 3: 'B1', 4: 'B2', 5: 'C1', 6: 'C2' }
+
+export function hskLanguageLevel(hsk: HskLevel): LanguageLevel {
+  return CEFR_TO_LANGUAGE_LEVEL[HSK_CEFR[hsk]]!
+}
+
+const hskLevelSchema = z.literal(HSK_LEVELS)
+
+/**
  * The file on disk, and what the seed script reads.
  *
  * `contentVersion` is what makes a re-seed safe to reason about: the seed is
  * idempotent by `{ packId, index }` whatever happens, and this says which
  * draft of the content those rows came from.
  */
-export const echoPackFileSchema = z.object({
-  /** `<lang>:<level>`, e.g. `fr:absoluteBeginner`. The pack's `_id`. */
-  id: z
-    .string()
-    .trim()
-    .regex(/^[a-z-]+:[a-zA-Z]+$/),
-  lang: z.string().trim().min(2),
-  level: languageLevelSchema,
-  contentVersion: z.number().int().positive(),
-  /** Every source this pack draws on, with its licence. See ATTRIBUTION.md. */
-  sources: z.array(z.object({ name: z.string(), licence: z.string(), url: z.url() })).min(1),
-  items: z.array(echoPackItemSchema).min(1),
-})
+export const echoPackFileSchema = z
+  .object({
+    /**
+     * `<lang>:<level>`, e.g. `fr:absoluteBeginner`, or `zh:hsk<n>` for a pack
+     * named by its HSK level. The pack's `_id`.
+     */
+    id: z
+      .string()
+      .trim()
+      .regex(/^[a-z-]+:[a-zA-Z0-9]+$/),
+    lang: z.string().trim().min(2),
+    level: languageLevelSchema,
+    /** The HSK 2.0 level this pack is, for a Chinese pack. See `HSK_LEVELS`. */
+    hsk: hskLevelSchema.optional(),
+    contentVersion: z.number().int().positive(),
+    /** Every source this pack draws on, with its licence. See ATTRIBUTION.md. */
+    sources: z.array(z.object({ name: z.string(), licence: z.string(), url: z.url() })).min(1),
+    items: z.array(echoPackItemSchema).min(1),
+  })
+  /*
+   * The id is written by hand and becomes every card's `sourceKey`, so it is
+   * checked against the fields it summarises: two HSK packs that both called
+   * themselves `zh:intermediate` would overwrite each other at the next seed.
+   */
+  .refine(
+    (file) =>
+      file.hsk === undefined
+        ? file.id === `${file.lang}:${file.level}`
+        : file.id === `${file.lang}:hsk${file.hsk}` && file.level === hskLanguageLevel(file.hsk),
+    { message: 'id must be <lang>:<level>, or <lang>:hsk<n> at the level HSK n maps to' },
+  )
 export type EchoPackFile = z.infer<typeof echoPackFileSchema>
 
 /** A pack as the tab lists it. */
@@ -247,6 +299,8 @@ export const echoPackSchema = z.object({
   _id: z.string(),
   lang: z.string(),
   level: languageLevelSchema,
+  /** Set on a Chinese pack, and then it is the pack's name. See `HSK_LEVELS`. */
+  hsk: hskLevelSchema.optional(),
   itemCount: z.number().int().nonnegative(),
   /** How many of its items this person already holds a card for. */
   startedCount: z.number().int().nonnegative(),
@@ -322,6 +376,8 @@ export type EchoPackPreviewQuery = z.infer<typeof echoPackPreviewQuerySchema>
 export const echoPackPreviewItemSchema = z.object({
   index: z.number().int().nonnegative(),
   text: z.string(),
+  /** Pinyin, on a Chinese pack. See `echoPackItemSchema.reading`. */
+  reading: z.string().optional(),
   /** Resolved for this reader, by the same chain a started card would use. */
   back: z.string(),
 })

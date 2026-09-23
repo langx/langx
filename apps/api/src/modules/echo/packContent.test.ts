@@ -116,9 +116,21 @@ describe('the packs in content/echo', () => {
     it(`${name} agrees with the path it is filed under`, () => {
       const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
       const [dir, file] = name.split('/')
-      expect(pack.id).toBe(`${pack.lang}:${pack.level}`)
+      // The id against the level is the schema's refinement; this is the path.
       expect(pack.lang).toBe(dir)
-      expect(file).toBe(`${pack.level}.json`)
+      expect(file).toBe(`${pack.id.split(':')[1]}.json`)
+    })
+
+    /*
+     * A Chinese card without its pinyin is a card most of the people it is for
+     * cannot read aloud — there is no synthesised reading for Chinese to fall
+     * back on — so a Chinese pack carries a reading on every item, and only a
+     * Chinese pack carries one at all.
+     */
+    it(`${name} reads every item if it is Chinese, and none if it is not`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      const wrong = pack.items.filter((item) => !!item.reading !== (pack.lang === 'zh'))
+      expect(wrong.map((item) => item.text)).toEqual([])
     })
 
     /*

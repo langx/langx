@@ -9,6 +9,7 @@ import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useT } from '../../../../src/i18n'
 import { useDisplayNames } from '../../../../src/i18n/displayNames'
+import { packLabel } from '../../../../src/i18n/labels'
 import { showAlert } from '../../../../src/lib/alert'
 import { track } from '../../../../src/lib/analytics'
 import { goBackTo } from '../../../../src/lib/navigation'
@@ -106,7 +107,7 @@ export default function EchoPackScreen() {
             <Text style={styles.tileUnit}>{t('echo.packTileSub', { total: pack.itemCount })}</Text>
           </View>
           <View style={styles.caption}>
-            <Text style={styles.level}>{t(`level.${pack.level}` as never)}</Text>
+            <Text style={styles.level}>{packLabel(t, pack)}</Text>
             <Text style={styles.blurb}>{t('echo.packBlurb')}</Text>
           </View>
         </View>
@@ -147,6 +148,7 @@ export default function EchoPackScreen() {
             {rows.map((row) => (
               <View key={row.index} style={styles.row}>
                 <Text style={styles.front}>{row.text}</Text>
+                {row.reading ? <Text style={styles.back}>{row.reading}</Text> : null}
                 <Text style={styles.back}>{row.back}</Text>
               </View>
             ))}

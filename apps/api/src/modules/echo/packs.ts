@@ -13,6 +13,7 @@ import {
   type EchoPackItemKind,
   type EchoVoice,
   type EchoSource,
+  type HskLevel,
   type StartPackInput,
   type StartPackResult,
 } from '@langx/shared'
@@ -34,6 +35,8 @@ export interface EchoPackDoc {
   _id: string
   lang: string
   level: string
+  /** Set on a Chinese pack, which is named by it. See `HSK_LEVELS`. */
+  hsk?: HskLevel
   itemCount: number
   contentVersion: number
   glossLocales: string[]
@@ -54,6 +57,7 @@ export interface EchoPackItemDoc {
   index: number
   kind: EchoPackItemKind
   text: string
+  reading?: string
   gloss: EchoGloss
   example?: string
   freqRank?: number
@@ -113,11 +117,13 @@ export async function listPacks(db: Db, userId: string): Promise<{ items: EchoPa
   if (packs.length === 0) return { items: [] }
 
   // Sorted here rather than in the query: `level` is a word, so Mongo would
-  // sort it alphabetically and put `fluent` ahead of `intermediate`.
+  // sort it alphabetically and put `fluent` ahead of `intermediate`. HSK 3 and
+  // 4 share a level, so the HSK number breaks the tie.
   packs.sort(
     (a, b) =>
       (priority.get(a.lang) ?? 0) - (priority.get(b.lang) ?? 0) ||
-      levelRank(a.level as EchoPack['level']) - levelRank(b.level as EchoPack['level']),
+      levelRank(a.level as EchoPack['level']) - levelRank(b.level as EchoPack['level']) ||
+      (a.hsk ?? 0) - (b.hsk ?? 0),
   )
 
   const started = await db
@@ -134,6 +140,7 @@ export async function listPacks(db: Db, userId: string): Promise<{ items: EchoPa
       _id: pack._id,
       lang: pack.lang,
       level: pack.level as EchoPack['level'],
+      ...(pack.hsk ? { hsk: pack.hsk } : {}),
       itemCount: pack.itemCount,
       startedCount: byPack.get(pack._id) ?? 0,
       glossLocales: pack.glossLocales as EchoPack['glossLocales'],
@@ -204,7 +211,13 @@ export async function previewPack(
     // An item whose gloss resolves to nothing is skipped rather than shown
     // blank — `startPack` skips it too, so the preview matches what arrives.
     const back = glossFor(item.gloss, nativeLocale, interfaceLocale)
-    if (back) items.push({ index: item.index, text: item.text, back })
+    if (back)
+      items.push({
+        index: item.index,
+        text: item.text,
+        ...(item.reading ? { reading: item.reading } : {}),
+        back,
+      })
   }
 
   return { items, total: pack.itemCount }
@@ -268,6 +281,7 @@ export async function startPack(
         userId,
         lang: pack.lang,
         front: item.text,
+        ...(item.reading ? { reading: item.reading } : {}),
         back,
         ...(item.example ? { example: item.example } : {}),
         /*

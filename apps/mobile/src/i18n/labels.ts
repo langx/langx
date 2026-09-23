@@ -3,6 +3,7 @@ import {
   lastSeen,
   INTEREST_SUGGESTIONS,
   type BadgeKind,
+  type EchoPack,
   type Gender,
   type LanguageLevel,
   type Locale,
@@ -40,6 +41,11 @@ export function genderShortLabel(t: TranslateFn, gender: Gender): string {
 
 export function levelLabel(t: TranslateFn, level: LanguageLevel): string {
   return t(`level.${level}` as MessageKey)
+}
+
+/** A pack's name: its level, or the HSK level a Chinese pack is named by. */
+export function packLabel(t: TranslateFn, pack: Pick<EchoPack, 'level' | 'hsk'>): string {
+  return pack.hsk ? t('echo.packHsk', { level: pack.hsk }) : levelLabel(t, pack.level)
 }
 
 /**

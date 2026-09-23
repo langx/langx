@@ -670,10 +670,12 @@ export async function updateCard(
   // `'' | 1 | true`, and a widened `string` is rejected by the driver's types.
   const rewritten =
     input.front !== card.front || (input.lang !== undefined && input.lang !== card.lang)
-  const unset: { image?: ''; audio?: ''; audios?: ''; voices?: '' } = {
+  const unset: { image?: ''; audio?: ''; audios?: ''; voices?: ''; reading?: '' } = {
     ...(input.image === null ? { image: '' as const } : {}),
     ...(touchesAudio && nextAudios.length === 0 ? { audio: '' as const, audios: '' as const } : {}),
     ...(rewritten && card.voices?.length ? { voices: '' as const } : {}),
+    // Pinyin is a reading of the old sentence for the same reason `voices` is.
+    ...(rewritten && card.reading ? { reading: '' as const } : {}),
   }
 
   const updated = await cards.findOneAndUpdate(

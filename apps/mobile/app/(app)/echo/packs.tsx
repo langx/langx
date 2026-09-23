@@ -11,7 +11,7 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useT } from '../../../src/i18n'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
-import { levelLabel } from '../../../src/i18n/labels'
+import { packLabel } from '../../../src/i18n/labels'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 
@@ -92,7 +92,7 @@ function PackRow({ pack }: { pack: EchoPack }) {
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
     >
       <View style={styles.rowText}>
-        <Text style={styles.rowTitle}>{levelLabel(t, pack.level)}</Text>
+        <Text style={styles.rowTitle}>{packLabel(t, pack)}</Text>
         <ProgressBar
           value={pack.itemCount === 0 ? 0 : done / pack.itemCount}
           height={6}
