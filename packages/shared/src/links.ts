@@ -120,24 +120,32 @@ const LINK_ENDINGS = new Set([
  * `)` is on the list but handled apart: Wikipedia's addresses carry balanced
  * parentheses, and a link wrapped in them — "(see https://…)" — does not.
  */
-const TRAILING = /[.,!?;:'"»”’…]+$/
+const TRAILING = new Set(['.', ',', '!', '?', ';', ':', "'", '"', '»', '”', '’', '…'])
 
-/** Peels punctuation and unbalanced closing brackets until neither applies. */
+/**
+ * Peels punctuation and unbalanced closing brackets until neither applies.
+ *
+ * Linear on purpose, all of it: an index walks back rather than slicing, the
+ * brackets are counted once, and there is no `/[…]+$/` — that pattern is
+ * quadratic on a run of punctuation that does not reach the end. The input is
+ * whatever somebody pasted into a chat, and every reader's phone runs this.
+ */
 function trimTail(raw: string): string {
-  for (;;) {
-    const stripped = raw.replace(TRAILING, '')
-    if (stripped !== raw) {
-      raw = stripped
-      continue
+  const opens = { ')': count(raw, '('), ']': count(raw, '[') }
+  const closes = { ')': count(raw, ')'), ']': count(raw, ']') }
+  let end = raw.length
+  while (end > 0) {
+    const last = raw[end - 1] ?? ''
+    if (TRAILING.has(last)) {
+      end--
+    } else if ((last === ')' || last === ']') && closes[last] > opens[last]) {
+      closes[last]--
+      end--
+    } else {
+      break
     }
-    const last = raw.at(-1)
-    const pair = last === ')' ? '(' : last === ']' ? '[' : null
-    if (last && pair && count(raw, last) > count(raw, pair)) {
-      raw = raw.slice(0, -1)
-      continue
-    }
-    return raw
   }
+  return raw.slice(0, end)
 }
 
 export function findLinks(text: string): FoundLink[] {
@@ -150,10 +158,16 @@ export function findLinks(text: string): FoundLink[] {
     if (!isHttpUrl(href)) continue
     found.push({ start: match.index, end: match.index + raw.length, href })
   }
+  // Both passes run left to right, so one cursor over the first pass's links
+  // is enough to skip what they already cover.
+  const taken = found.slice()
+  let cursor = 0
   for (const match of text.matchAll(BARE)) {
     const start = match.index
+    while (cursor < taken.length && (taken[cursor]?.end ?? 0) <= start) cursor++
     // Inside an address the first pass already took — `www.langx.io` is both.
-    if (found.some((link) => start < link.end && start >= link.start)) continue
+    const covering = taken[cursor]
+    if (covering && covering.start <= start) continue
     const ending = (match[2] ?? '').toLowerCase()
     const path = match[3] ? trimTail(match[3]) : ''
     if (!LINK_ENDINGS.has(ending) && (path.length < 2 || !/^[a-z]+$/.test(ending))) continue

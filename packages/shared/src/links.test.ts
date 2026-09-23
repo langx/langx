@@ -87,4 +87,11 @@ describe('findLinks', () => {
       { start: 17, end: 29, href: 'https://b.io' },
     ])
   })
+
+  it('stays fast on a long run of punctuation', () => {
+    const text = `https://a.io/${'!'.repeat(50_000)}x ${'!'.repeat(50_000)}`
+    const started = Date.now()
+    expect(findLinks(text)).toHaveLength(1)
+    expect(Date.now() - started).toBeLessThan(500)
+  })
 })

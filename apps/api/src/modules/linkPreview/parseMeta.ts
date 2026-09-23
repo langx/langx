@@ -6,6 +6,12 @@
  * way for twenty years, and a DOM library for four fields would be the largest
  * dependency on the API. A page too broken for this is a page whose card is
  * not drawn — which is the same outcome a parser would reach more slowly.
+ *
+ * Every pattern here is linear in the page, and that is the part to keep when
+ * editing: the page is a stranger's, up to a megabyte, and parsed on the
+ * API's one thread. `[^>]*` is not enough — on a page of `<meta <meta <meta`
+ * each start scans to the end, and a single 200 KB tag held the process for
+ * 48 seconds when measured. `[^<>]*` stops at the next tag instead.
  */
 export interface PageMeta {
   title: string | null
@@ -16,13 +22,17 @@ export interface PageMeta {
 }
 
 const LIMITS = { title: 200, description: 300, siteName: 80 }
+const MAX_TAG_LENGTH = 4096
 
 export function parseMeta(html: string, base: URL): PageMeta {
   const headEnd = html.search(/<\/head\s*>/i)
   const head = headEnd === -1 ? html : html.slice(0, headEnd)
 
   const tags = new Map<string, string>()
-  for (const [tag] of head.matchAll(/<meta\b[^>]*>/gi)) {
+  for (const [tag] of head.matchAll(/<meta\b[^<>]*>/gi)) {
+    // No real meta tag is this long, and the attribute scan below is only
+    // cheap on short input.
+    if (tag.length > MAX_TAG_LENGTH) continue
     const attrs = attributes(tag)
     const key = (attrs.get('property') ?? attrs.get('name') ?? attrs.get('itemprop'))?.toLowerCase()
     const content = attrs.get('content')
@@ -37,7 +47,7 @@ export function parseMeta(html: string, base: URL): PageMeta {
     return null
   }
 
-  const titleTag = /<title\b[^>]*>([\s\S]*?)<\/title\s*>/i.exec(head)?.[1] ?? null
+  const titleTag = titleOf(head)
   return {
     title: clean(pick('og:title', 'twitter:title') ?? titleTag, LIMITS.title),
     description: clean(
@@ -52,9 +62,30 @@ export function parseMeta(html: string, base: URL): PageMeta {
   }
 }
 
+/**
+ * The first `<title>`'s text, found with two forward searches rather than one
+ * lazy `([\s\S]*?)`, which rescans the rest of the page from every `<title`
+ * that has no closing tag.
+ */
+function titleOf(head: string): string | null {
+  const open = /<title\b[^<>]*>/i.exec(head)
+  if (!open) return null
+  const from = open.index + open[0].length
+  const close = /<\/title\s*>/gi
+  close.lastIndex = from
+  const end = close.exec(head)
+  return end ? head.slice(from, end.index) : null
+}
+
+/**
+ * Name, then an optional value. Every match consumes its whole name, so a
+ * long run of letters is read once rather than once per starting position.
+ */
 function attributes(tag: string): Map<string, string> {
   const out = new Map<string, string>()
-  for (const match of tag.matchAll(/([a-zA-Z_:.-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g)) {
+  for (const match of tag.matchAll(
+    /([^\s=<>"'/]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'<>]+)))?/g,
+  )) {
     const name = match[1]
     if (name) out.set(name.toLowerCase(), match[2] ?? match[3] ?? match[4] ?? '')
   }

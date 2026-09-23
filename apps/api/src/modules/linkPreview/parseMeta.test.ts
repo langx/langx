@@ -83,3 +83,20 @@ describe('decodeBody', () => {
     expect(decodeBody(Buffer.from('héllo'), 'text/html; charset=nonsense')).toBe('héllo')
   })
 })
+
+describe('parseMeta on a hostile page', () => {
+  /*
+   * Each of these took seconds to minutes with the first version's patterns.
+   * A megabyte of any of them has to stay a parse, not an outage.
+   */
+  it.each([
+    ['unclosed meta tags', '<meta '.repeat(170_000)],
+    ['unclosed title tags', '<title>'.repeat(140_000)],
+    ['one enormous meta tag', `<meta ${'a'.repeat(1_000_000)}>`],
+    ['an attribute that never closes', `<meta content="${'a='.repeat(500_000)}>`],
+  ])('stays fast on %s', (_label, html) => {
+    const started = Date.now()
+    parseMeta(html, BASE)
+    expect(Date.now() - started).toBeLessThan(1000)
+  })
+})
