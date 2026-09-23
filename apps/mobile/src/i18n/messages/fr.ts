@@ -62,6 +62,11 @@ export const fr: Localized<EnMessages> = {
     previous: 'Photo précédente',
     next: 'Photo suivante',
     counter: '{index} / {total}',
+    save: 'Enregistrer',
+    saved: 'Enregistré',
+    saveFailed: 'Impossible d’enregistrer',
+    saveDenied:
+      'LangX a besoin de l’autorisation d’ajouter des photos et des vidéos à ta photothèque. Tu peux l’accorder dans les Réglages.',
   },
   tips: {
     composerCorrect: 'Appui long pour corriger',
@@ -165,6 +170,7 @@ export const fr: Localized<EnMessages> = {
     correctedCannotEdit: 'Corrigé — non modifiable',
     share: 'Partager',
     savePhrase: 'Enregistrer comme expression',
+    saveMedia: 'Enregistrer sur l’appareil',
     echo: 'Ajouter à Echo',
     unecho: 'Retirer d’Echo',
   },

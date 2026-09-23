@@ -94,6 +94,11 @@ export const en = {
     previous: 'Previous photo',
     next: 'Next photo',
     counter: '{index} / {total}',
+    save: 'Save',
+    saved: 'Saved',
+    saveFailed: 'Couldn’t save it',
+    saveDenied:
+      'LangX needs permission to add photos and videos to your library. You can allow it in Settings.',
   },
   tips: {
     composerCorrect: 'Hold a message to correct it',
@@ -192,6 +197,7 @@ export const en = {
     correctedCannotEdit: 'Corrected — can’t be edited',
     share: 'Share',
     savePhrase: 'Save as a phrase',
+    saveMedia: 'Save to device',
     echo: 'Add to Echo',
     unecho: 'Remove from Echo',
   },

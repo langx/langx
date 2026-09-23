@@ -72,6 +72,11 @@ export const ru: Localized<EnMessages> = {
     previous: 'Предыдущее фото',
     next: 'Следующее фото',
     counter: '{index} / {total}',
+    save: 'Сохранить',
+    saved: 'Сохранено',
+    saveFailed: 'Не удалось сохранить',
+    saveDenied:
+      'LangX нужно разрешение на добавление фото и видео в галерею. Его можно дать в Настройках.',
   },
   tips: {
     composerCorrect: 'Удерживайте, чтобы исправить',
@@ -170,6 +175,7 @@ export const ru: Localized<EnMessages> = {
     correctedCannotEdit: 'Исправлено — изменить нельзя',
     share: 'Поделиться',
     savePhrase: 'Сохранить как выражение',
+    saveMedia: 'Сохранить на устройство',
     echo: 'Добавить в Эхо',
     unecho: 'Убрать из Эха',
   },

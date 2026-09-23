@@ -47,6 +47,15 @@ import { version } from '../../package.json' with { type: 'json' }
 // Existing EAS project, carried over from the abandoned rewrite.
 const EAS_PROJECT_ID = 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115'
 
+/**
+ * `NSPhotoLibraryUsageDescription`, written by both expo-image-picker and
+ * expo-media-library. Each plugin writes its own default when given nothing,
+ * and which of the two runs last is not something to depend on — so both are
+ * handed this one sentence.
+ */
+const PHOTOS_PERMISSION =
+  'LangX uses your photo library so you can share photos and videos in chat.'
+
 const config: ExpoConfig = {
   name: 'LangX',
   slug: 'langx',
@@ -153,9 +162,18 @@ const config: ExpoConfig = {
      * the manifest. Removing it is the fix Google's own message asks for; the
      * alternative is claiming a health feature the app does not have.
      */
+    /*
+     * `READ_MEDIA_VISUAL_USER_SELECTED` is expo-media-library's, declared in its
+     * own manifest for the "selected photos" access that reading the gallery
+     * needs on Android 14. This app only ever *adds* to the gallery — the
+     * viewer's save button — and on Android 11+ that needs no permission at
+     * all. It is the same policy as `READ_EXTERNAL_STORAGE` above: a photo
+     * permission the app never requests is still one Play asks about.
+     */
     blockedPermissions: [
       'android.permission.READ_EXTERNAL_STORAGE',
       'android.permission.ACTIVITY_RECOGNITION',
+      'android.permission.READ_MEDIA_VISUAL_USER_SELECTED',
     ],
     intentFilters: [
       {
@@ -505,8 +523,7 @@ const config: ExpoConfig = {
     [
       'expo-image-picker',
       {
-        photosPermission:
-          'LangX uses your photo library so you can share photos and videos in chat.',
+        photosPermission: PHOTOS_PERMISSION,
         /*
          * Worded, not defaulted. Without this key the plugin still writes
          * `NSCameraUsageDescription` — its own generic "Allow $(PRODUCT_NAME)
@@ -518,6 +535,28 @@ const config: ExpoConfig = {
          * explicitly `false`.
          */
         cameraPermission: 'LangX uses your camera so you can take a photo to send.',
+      },
+    ],
+    /*
+     * Saving a photo or video from the viewer to the phone's gallery, and
+     * nothing else: `saveMediaToDevice` asks for write-only access. On iOS
+     * that is the add-only prompt, worded by `savePhotosPermission`.
+     *
+     * `granularPermissions: []` keeps `READ_MEDIA_IMAGES`/`_VIDEO`/`_AUDIO`
+     * out of the Android manifest — the plugin adds all three by default, and
+     * they are exactly the broad gallery access Play's photo-and-video policy
+     * is about (see `blockedPermissions`). Inserting into MediaStore needs
+     * none of them on Android 11+, and below that `WRITE_EXTERNAL_STORAGE`
+     * is what it checks. The plugin also sets `requestLegacyExternalStorage`,
+     * which only changes anything on Android 10 and cannot be switched off.
+     */
+    [
+      'expo-media-library',
+      {
+        photosPermission: PHOTOS_PERMISSION,
+        savePhotosPermission: 'LangX saves the photos and videos you choose to your library.',
+        isAccessMediaLocationEnabled: false,
+        granularPermissions: [],
       },
     ],
     /*

@@ -77,6 +77,11 @@ export const tr: Localized<EnMessages> = {
     previous: 'Önceki fotoğraf',
     next: 'Sonraki fotoğraf',
     counter: '{index} / {total}',
+    save: 'Kaydet',
+    saved: 'Kaydedildi',
+    saveFailed: 'Kaydedilemedi',
+    saveDenied:
+      'Kaydetmek için LangX’in fotoğraf ve video ekleme iznine ihtiyacı var. Bu izni Ayarlar’dan verebilirsin.',
   },
   tips: {
     composerCorrect: 'Düzeltmek için mesaja basılı tut',
@@ -173,6 +178,7 @@ export const tr: Localized<EnMessages> = {
     correctedCannotEdit: 'Düzeltilmiş — değiştirilemez',
     share: 'Paylaş',
     savePhrase: 'İfade olarak kaydet',
+    saveMedia: 'Cihaza kaydet',
     echo: 'Echo’ya ekle',
     unecho: 'Echo’dan çıkar',
   },

@@ -62,6 +62,11 @@ export const ptBR: Localized<EnMessages> = {
     previous: 'Foto anterior',
     next: 'Próxima foto',
     counter: '{index} / {total}',
+    save: 'Salvar',
+    saved: 'Salvo',
+    saveFailed: 'Não foi possível salvar',
+    saveDenied:
+      'O LangX precisa de permissão para adicionar fotos e vídeos à sua galeria. Você pode permitir nas Configurações.',
   },
   tips: {
     composerCorrect: 'Segure para corrigir',
@@ -161,6 +166,7 @@ export const ptBR: Localized<EnMessages> = {
     correctedCannotEdit: 'Corrigida — não dá para editar',
     share: 'Compartilhar',
     savePhrase: 'Salvar como expressão',
+    saveMedia: 'Salvar no dispositivo',
     echo: 'Adicionar ao Echo',
     unecho: 'Remover do Echo',
   },

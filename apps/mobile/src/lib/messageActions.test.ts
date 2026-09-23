@@ -12,6 +12,7 @@ const theirs: MessageActionContext = {
   mine: false,
   type: 'text',
   hasBody: true,
+  hasMedia: false,
   bodyLength: 34,
   alreadyTranslated: false,
   canEdit: false,
@@ -230,6 +231,35 @@ describe('messageActionsFor', () => {
         'share',
         'report',
       ])
+    })
+  })
+
+  describe('save to device', () => {
+    it('is offered on a photo or video message, on the first page', () => {
+      for (const type of ['image', 'video'] as const) {
+        expect(find({ type, hasMedia: true, hasBody: false }, 'saveMedia')?.page).toBe('primary')
+      }
+    })
+
+    it('is offered on your own messages and in a channel too', () => {
+      expect(ids({ type: 'image', hasMedia: true, mine: true })).toContain('saveMedia')
+      expect(ids({ type: 'video', hasMedia: true, channel: true })).toContain('saveMedia')
+    })
+
+    it('comes before delete, so the destructive row stays last on the page', () => {
+      const rows = ids({ type: 'image', hasMedia: true, hasBody: false })
+      expect(rows.indexOf('saveMedia')).toBeLessThan(rows.indexOf('delete'))
+    })
+
+    /** A withdrawn photo keeps its type and loses its files. */
+    it('is not offered once the files are gone', () => {
+      expect(ids({ type: 'image', hasMedia: false })).not.toContain('saveMedia')
+    })
+
+    it('is not offered on anything that is not a photo or a video', () => {
+      for (const type of MESSAGE_TYPES.filter((type) => type !== 'image' && type !== 'video')) {
+        expect(ids({ type, hasMedia: true })).not.toContain('saveMedia')
+      }
     })
   })
 

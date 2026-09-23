@@ -3,14 +3,16 @@
  *
  * A sibling of `swipeAction` and `swipeToReply`, and here for the same reason:
  * the parts that are easy to get wrong — where the image is allowed to stop,
- * what a two-finger spread means in scale, where a double tap has to land the
- * content so it stays under the finger — are pure functions of numbers, and
+ * how far past that a finger may drag it, where a pinch has to leave the
+ * content so it stays under the fingers — are pure functions of numbers, and
  * `src/lib` is the only tree the test setup can reach.
  *
- * Hand-rolled rather than gesture-handler: `react-native-gesture-handler` is
- * not a dependency of this package at all, and `ui/Skeleton.tsx` records why
- * Reanimated's worklets bundle is not worth a nicer curve in the web build.
- * `RangeSlider` made the same call for the same reason.
+ * **Every function here carries `'worklet'`.** `PhotoViewer` calls them from
+ * gesture-handler callbacks, which the worklets Babel plugin compiles onto the
+ * UI thread; a plain function reached from there is a stub that throws, and
+ * the throw aborts the app rather than showing a red box. On Node the
+ * directive is an inert string, so the tests below cannot catch a missing one
+ * — see `docs/decisions.md` → *The row swipe runs on the UI thread*.
  */
 
 export const MIN_SCALE = 1
@@ -19,14 +21,26 @@ export const MAX_SCALE = 4
 export const DOUBLE_TAP_SCALE = 2
 /** Two taps further apart than this are two taps. */
 export const DOUBLE_TAP_MS = 280
-/** A tap that moved further than this was a drag. */
-export const TAP_SLOP_PX = 12
+/** How far a life-size drag travels before it is either a page turn or a dismissal. */
+export const AXIS_LOCK_PX = 6
 /** How far an unzoomed image is dragged before releasing it closes the viewer. */
 export const DISMISS_DRAG_PX = 120
 /** How far a sideways drag at life size has to go to turn the page. */
 export const PAGE_SWIPE_PX = 60
 /** Or how fast, in px/ms: a short flick pages too. */
 export const PAGE_SWIPE_VX = 0.4
+/**
+ * How much of a finger's travel still moves the picture once it is past where
+ * it may rest. Some rather than none: a hard stop at the edge reads as the
+ * gesture having stopped working, where give reads as an edge.
+ */
+export const OVERSCROLL_RESISTANCE = 0.3
+/**
+ * How far a pinch may overshoot the scale limits while the fingers are down.
+ * Past these the picture stops following; on release it springs back inside.
+ */
+export const MIN_OVERZOOM = MIN_SCALE / 2
+export const MAX_OVERZOOM = MAX_SCALE * 1.5
 
 export interface Size {
   width: number
@@ -38,25 +52,19 @@ export interface Point {
   y: number
 }
 
-export function distanceBetween(a: Point, b: Point): number {
-  return Math.hypot(a.x - b.x, a.y - b.y)
-}
-
-export function midpointOf(a: Point, b: Point): Point {
-  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
-}
-
 /**
  * `-0` is what `0 * (1 - 1)` and `Math.max(-0, x)` hand back, and it survives
  * every arithmetic path here. Harmless in a transform, but it is not equal to
  * `0` under `Object.is`, so it turns any comparison against a rest position
- * into a coin toss. Normalised once, at the two places offsets are produced.
+ * into a coin toss. Normalised wherever an offset is produced.
  */
 function zero(value: number): number {
+  'worklet'
   return value + 0
 }
 
 export function clampScale(scale: number): number {
+  'worklet'
   if (!Number.isFinite(scale)) return MIN_SCALE
   return Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale))
 }
@@ -69,6 +77,7 @@ export function clampScale(scale: number): number {
  * be dragged until half the screen is scrim.
  */
 export function fittedSize(natural: Size, frame: Size): Size {
+  'worklet'
   if (natural.width <= 0 || natural.height <= 0 || frame.width <= 0 || frame.height <= 0) {
     return { width: frame.width, height: frame.height }
   }
@@ -76,13 +85,22 @@ export function fittedSize(natural: Size, frame: Size): Size {
   return { width: natural.width * ratio, height: natural.height * ratio }
 }
 
+/** How far the picture may sit from centre, each way, at `scale`. */
+export function maxOffset(scale: number, frame: Size, content: Size): Point {
+  'worklet'
+  return {
+    x: Math.max(0, (content.width * scale - frame.width) / 2),
+    y: Math.max(0, (content.height * scale - frame.height) / 2),
+  }
+}
+
 /**
  * Holds the picture against the frame: it may be moved only as far as the part
  * of it that is off-screen, and not at all along an axis that still fits.
  */
 export function clampOffset(offset: Point, scale: number, frame: Size, content: Size): Point {
-  const maxX = Math.max(0, (content.width * scale - frame.width) / 2)
-  const maxY = Math.max(0, (content.height * scale - frame.height) / 2)
+  'worklet'
+  const { x: maxX, y: maxY } = maxOffset(scale, frame, content)
   return {
     x: zero(Math.min(maxX, Math.max(-maxX, offset.x))),
     y: zero(Math.min(maxY, Math.max(-maxY, offset.y))),
@@ -97,18 +115,86 @@ export function clampOffset(offset: Point, scale: number, frame: Size, content: 
  * of the screen, and the face somebody tapped walks off the edge.
  */
 export function offsetForFocus(focus: Point, scale: number): Point {
+  'worklet'
   return { x: zero(focus.x * (1 - scale)), y: zero(focus.y * (1 - scale)) }
 }
 
-/** Was that a tap, and was it the second one? */
-export function isDoubleTap(
-  previous: { at: number } | null,
-  now: number,
-  travelled: number,
-): boolean {
-  if (travelled > TAP_SLOP_PX) return false
-  if (!previous) return false
-  return now - previous.at <= DOUBLE_TAP_MS
+/**
+ * One frame of a pinch, applied to wherever the picture already is.
+ *
+ * Incremental on purpose. This used to compute the offset from scratch each
+ * frame as `focus * (1 - scale)` — right only for a pinch that starts at life
+ * size with the picture centred. A second pinch on a zoomed picture threw away
+ * where it had been panned to and jumped; two fingers moving together dragged
+ * it the wrong way; and a pinch on the black letterbox, where the focus is far
+ * from centre, spent every frame pinned to the clamp while the picture slid
+ * out from under the fingers. Here `change` is how much the spread grew since
+ * the last frame, and the point under `focus` is the one held still, whatever
+ * the picture was doing before.
+ *
+ * `focus` and `offset` are both measured from the frame's centre, which is
+ * where the scale transform is applied from.
+ */
+export function zoomAbout(
+  offset: Point,
+  scale: number,
+  focus: Point,
+  change: number,
+): { offset: Point; scale: number } {
+  'worklet'
+  if (!Number.isFinite(change) || change <= 0) return { offset, scale }
+  const next = Math.min(MAX_OVERZOOM, Math.max(MIN_OVERZOOM, scale * change))
+  const applied = next / scale
+  return {
+    scale: next,
+    offset: {
+      x: zero(focus.x - (focus.x - offset.x) * applied),
+      y: zero(focus.y - (focus.y - offset.y) * applied),
+    },
+  }
+}
+
+/**
+ * A pinch's per-frame `change`, damped once the scale is already past a
+ * limit and still heading away from it — the scale's version of `resist`.
+ */
+export function resistScaleChange(scale: number, change: number): number {
+  'worklet'
+  const outward = (scale < MIN_SCALE && change < 1) || (scale > MAX_SCALE && change > 1)
+  return outward ? 1 + (change - 1) * OVERSCROLL_RESISTANCE : change
+}
+
+/**
+ * A drag's per-frame `delta` for a value that should rest in `[-limit, limit]`:
+ * untouched inside, damped once past the edge and still heading outwards, so
+ * the picture gives at its edge instead of stopping dead.
+ */
+export function resist(value: number, delta: number, limit: number): number {
+  'worklet'
+  const outward = (value >= limit && delta > 0) || (value <= -limit && delta < 0)
+  return outward ? delta * OVERSCROLL_RESISTANCE : delta
+}
+
+/**
+ * Where a zoom comes to rest once the fingers lift: the scale back inside its
+ * limits, shrunk about the frame's centre so the part being looked at stays
+ * in view, and the picture pulled back against its edges. At life size that
+ * is always dead centre.
+ */
+export function settleZoom(
+  offset: Point,
+  scale: number,
+  frame: Size,
+  content: Size,
+): { offset: Point; scale: number } {
+  'worklet'
+  const next = clampScale(scale)
+  if (next === MIN_SCALE) return { scale: next, offset: { x: 0, y: 0 } }
+  const ratio = next / scale
+  return {
+    scale: next,
+    offset: clampOffset({ x: offset.x * ratio, y: offset.y * ratio }, next, frame, content),
+  }
 }
 
 /**
@@ -123,6 +209,7 @@ export function isDoubleTap(
  * that is the turn that must not blink.
  */
 export function albumSlots(index: number, total: number): { key: string; at: number | null }[] {
+  'worklet'
   if (total < 2) {
     return [
       { key: 'before', at: null },
@@ -148,6 +235,7 @@ export function albumSlots(index: number, total: number): { key: string; at: num
  * `-1` is the previous picture (finger moved right), `1` the next, `0` neither.
  */
 export function swipeStep(dx: number, dy: number, vx: number): -1 | 0 | 1 {
+  'worklet'
   if (Math.abs(dx) <= Math.abs(dy)) return 0
   if (Math.abs(dx) < PAGE_SWIPE_PX && Math.abs(vx) < PAGE_SWIPE_VX) return 0
   return dx < 0 ? 1 : -1

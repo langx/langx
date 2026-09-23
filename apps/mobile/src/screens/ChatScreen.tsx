@@ -117,6 +117,7 @@ import {
   uploadSent,
   type UploadProgress,
 } from '../lib/uploadProgress'
+import { saveMediaToDevice } from '../lib/saveMedia'
 import { shareLink } from '../lib/share'
 import { addMeetingToCalendar } from '../lib/addToCalendar'
 import { showToast } from '../lib/toast'
@@ -1443,6 +1444,7 @@ export function ChatScreen({
       mine: isMine(message),
       type: message.type,
       hasBody: message.body.trim().length > 0,
+      hasMedia: attachmentsOf(message).length > 0,
       alreadyTranslated,
       // Evaluated here rather than in the menu, so the row and the server
       // agree on one rule from `@langx/shared` instead of two copies of it.
@@ -1542,9 +1544,32 @@ export function ChatScreen({
       })
     } else if (picked.id === 'echo') {
       await (message.echoed ? removeEcho(message) : addEcho(message))
+    } else if (picked.id === 'saveMedia') {
+      await saveMessageMedia(message)
     } else if (picked.id === 'report') {
       reportMessage(message)
     }
+  }
+
+  /**
+   * Every file on the message into the phone's gallery, in the order the
+   * bubble shows them. Out here a toast is visible — unlike inside the
+   * viewer, whose `Modal` sits above `ToastHost` — so success gets one and a
+   * failure gets an alert, which is the split `toast.ts` asks for.
+   */
+  async function saveMessageMedia(message: MessageDto): Promise<void> {
+    try {
+      for (const item of attachmentsOf(message)) {
+        if ((await saveMediaToDevice(item)) === 'denied') {
+          await showAlert(t('photo.saveFailed'), t('photo.saveDenied'))
+          return
+        }
+      }
+    } catch {
+      await showAlert(t('photo.saveFailed'), t('common.retry'))
+      return
+    }
+    showToast(t('photo.saved'))
   }
 
   /**

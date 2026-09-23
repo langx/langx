@@ -5253,3 +5253,43 @@ name says who does not see it; the week's chart gets the same mark when "Show
 my week chart" is off. Tapping either opens the privacy settings. The rule is
 that the owner always sees their own data and is told which of it is theirs
 alone.
+
+## The media viewer zooms on the UI thread, and saving is write-only
+
+**The pinch was wrong arithmetic before it was slow.** `PhotoViewer` recomputed
+the offset on every frame as `focus * (1 - scale)` from the fingers' midpoint.
+That is right for exactly one case, a pinch that starts at life size with the
+picture centred. Anything else broke. A second pinch on a zoomed picture threw
+away where it had been panned to and jumped. Two fingers moving together
+dragged the picture the wrong way. A pinch on the black letterbox, where the
+midpoint is far from centre, spent every frame pinned against the clamp, so the
+picture slid out from under the fingers; that is what the complaint was about.
+Lifting one finger mid-pinch panned from the pre-pinch offset plus the whole
+gesture's travel, which threw the picture somewhere else entirely. `zoomAbout`
+now applies each frame's change of spread to wherever the picture already is,
+so nothing has a starting state to go stale. Past the edges the picture gives
+(`resist`, `resistScaleChange`) instead of stopping dead, and it springs back
+inside on release (`settleZoom`).
+
+**Then it moved to gesture-handler**, the same move as the row swipe above and
+for the same reason: `setValue` per frame across the bridge. Nothing new is
+paid for, because Reanimated and gesture-handler are already in the binary and
+the bundle. The rule from the 2.0.0 crash applies unchanged: every function in
+`lib/pinch.ts` carries `'worklet'`. The viewer's `Modal` gets its own
+`GestureHandlerRootView`, because a `Modal` is a separate native window and the
+root in `app/_layout.tsx` does not reach it.
+
+**Saving asks for write access and nothing else.** On iOS that is the add-only
+prompt (`NSPhotoLibraryAddUsageDescription`). On Android 11+, inserting into
+MediaStore needs no permission, and on 10 and below it needs
+`WRITE_EXTERNAL_STORAGE`, which the camera already brings. expo-media-library's
+plugin adds `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEO` and `READ_MEDIA_AUDIO` by
+default and its manifest declares `READ_MEDIA_VISUAL_USER_SELECTED`. The first
+three are turned off with `granularPermissions: []` and the fourth is in
+`blockedPermissions`. That is the broad gallery access Play has already refused
+this app over once, and a save button does not need it.
+
+**It needs a new binary.** expo-media-library is a native module and
+`runtimeVersion` is fingerprint-based, so installed apps are offered no update
+at all until a build carrying it ships. This is the same constraint
+`expo-video` had, and it belongs in the release note.
