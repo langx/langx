@@ -74,8 +74,8 @@ import type { Profile } from '../profiles/profiles'
  */
 
 /**
- * How many days `activeDaily` covers, and how far back the pool is looked for.
- * The other strips run over the public module's `WINDOW_DAYS`.
+ * The "this week" counts, and how far back the pool is looked for. The strips
+ * run over the public module's `WINDOW_DAYS`.
  */
 export const STATS_DAYS = 7
 
@@ -167,8 +167,8 @@ export function forgetAdminStats(): void {
 
 async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<AdminStats> {
   const today = localDayKey(now, timeZone)
-  // The token strip runs over the same month as the three charts above it
-  // rather than over the week: a week of it was too short to show a trend.
+  // The strips run over the same month as the three charts from the public
+  // module rather than over the week: a week was too short to show a trend.
   const days = Array.from({ length: WINDOW_DAYS }, (_, i) => shiftDayKey(today, -i)).reverse()
   const weekAgo = new Date(now.getTime() - STATS_DAYS * 24 * 60 * 60 * 1000)
 
@@ -178,7 +178,7 @@ async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<A
    * clock a query is on is visible where the query is written.
    */
   const utcToday = utcDayKey(now)
-  const utcDays = Array.from({ length: STATS_DAYS }, (_, i) => shiftDayKey(utcToday, -i)).reverse()
+  const utcDays = Array.from({ length: WINDOW_DAYS }, (_, i) => shiftDayKey(utcToday, -i)).reverse()
 
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const midnight = localDayStart(today, timeZone)

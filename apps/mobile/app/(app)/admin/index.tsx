@@ -151,7 +151,7 @@ export default function AdminHomeScreen() {
              */}
             <Chart
               title={ADMIN.home.charts.activeDaily}
-              caption={`${ADMIN.home.charts.lastWeek} · ${ADMIN.home.charts.activeDailyNote}`}
+              caption={`${ADMIN.home.charts.lastDays(audience?.activeDaily.length || 30)} · ${ADMIN.home.charts.activeDailyNote}`}
               points={(audience?.activeDaily ?? []).map(dayPoint)}
             />
             <Chart

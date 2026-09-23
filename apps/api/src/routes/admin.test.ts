@@ -257,7 +257,7 @@ describe('the operator panel', () => {
 
       // A full strip, oldest first, zeros included rather than absent — a
       // missing day in a chart reads as missing data, not as a quiet one.
-      expect(stats.audience.activeDaily).toHaveLength(7)
+      expect(stats.audience.activeDaily).toHaveLength(30)
       expect(stats.money.tokensDaily).toHaveLength(30)
       expect(stats.audience.activeDaily.at(-1)!.day > stats.audience.activeDaily[0]!.day).toBe(true)
 

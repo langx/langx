@@ -109,7 +109,6 @@ export const ADMIN = {
       correctionsDaily: 'Corrections each day',
       tokensDaily: 'Tokens awarded each day',
       lastDays: (days: number) => `last ${days} days`,
-      lastWeek: 'last 7 days',
     },
 
     streaks: {
