@@ -16,19 +16,17 @@ import {
 } from './speech'
 
 describe('the voice table', () => {
-  it('reads thirty languages, and not the ones it must not', () => {
-    expect(SPEECH_LANGUAGES).toHaveLength(30)
+  it('reads thirty-one languages, and not the ones it must not', () => {
+    expect(SPEECH_LANGUAGES).toHaveLength(31)
     // The catalogue has voices for all four. Every one of them is CC BY-NC,
     // which an app that sells subscriptions cannot use — so they stay silent
     // rather than being read by a model we are not allowed to ship.
     for (const unlicensed of ['tr', 'ar', 'ja', 'ko']) {
       expect(speechVoicesFor(unlicensed)).toEqual([])
     }
-    // And two this engine cannot use, which is a different reason — see the
+    // And one this engine cannot use, which is a different reason — see the
     // note on `SPEECH_VOICES`.
-    for (const unsupported of ['lt', 'zh']) {
-      expect(speechVoicesFor(unsupported)).toEqual([])
-    }
+    expect(speechVoicesFor('lt')).toEqual([])
   })
 
   it('leads every language with a voice, and keeps Kokoro first where it reads', () => {
@@ -173,14 +171,15 @@ describe('speechLanguageFromIso3', () => {
     for (const iso3 of ['tur', 'arb', 'jpn', 'kor', 'nonsense'])
       expect(speechLanguageFromIso3(iso3), iso3).toBeUndefined()
     /*
-     * Chinese and Lithuanian are detectable and unreadable, which is the pair
-     * of facts that has to hold together: they stay in `APP_TO_ISO3` so a
-     * Chinese message can win its own sentence, and they have no voice, so it
-     * loses the button rather than being read in the nearest one we ship.
+     * Lithuanian is detectable and unreadable, which is the pair of facts that
+     * has to hold together: it stays in `APP_TO_ISO3` so a Lithuanian message
+     * can win its own sentence, and it has no voice, so it loses the button
+     * rather than being read in the nearest one we ship. Chinese was the other
+     * half of this pair until Kokoro was given a phonemiser for it.
      */
-    expect(speechDetectCandidates(['zh'])).toContain('cmn')
-    expect(speechLanguageFromIso3('cmn')).toBeUndefined()
+    expect(speechDetectCandidates(['lt'])).toContain('lit')
     expect(speechLanguageFromIso3('lit')).toBeUndefined()
+    expect(speechLanguageFromIso3('cmn')).toBe('zh')
     expect(speechLanguageFromIso3('deu')).toBe('de')
   })
 })

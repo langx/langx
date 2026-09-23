@@ -18,7 +18,7 @@ docstring and `docs/decisions.md`: Apache-2.0 over the weights and the voice
 packs alike, where the obvious alternatives are all personal-use or
 non-commercial.
 
-**And Piper beside it, for the other thirty-one languages.** Kokoro reads six.
+**And Piper beside it, for the other thirty-one languages.** Kokoro reads seven.
 Piper's catalogue reaches far wider, at a quality below Kokoro's and far above
 nothing, with one small model per language instead of one large model for all
 of them — so they are loaded on demand and the least recently used is dropped,
@@ -75,9 +75,12 @@ from pathlib import Path
 # the definition — the API refuses before asking, this refuses in case it did
 # not. The right-hand side is what espeak-ng calls the language.
 #
-# Kokoro's six only. Piper's thirty-one are in `voices.json`, loaded below, for
-# the reason that file exists: they are data, they change by adding a line, and
-# the Dockerfile downloads exactly what the manifest names.
+# Kokoro's seven only. Piper's thirty-one are in `voices.json`, loaded below,
+# for the reason that file exists: they are data, they change by adding a line,
+# and the Dockerfile downloads exactly what the manifest names.
+#
+# Chinese is the exception to the right-hand side: `cmn` is what espeak-ng calls
+# Mandarin, and it is never asked. See `zh_phonemes`.
 LANGUAGES = {
     "en": ("en-us", {"af_heart", "am_michael"}),
     "es": ("es", {"ef_dora", "em_alex"}),
@@ -85,6 +88,7 @@ LANGUAGES = {
     "it": ("it", {"if_sara", "im_nicola"}),
     "pt": ("pt-br", {"pf_dora", "pm_alex"}),
     "hi": ("hi", {"hf_alpha", "hm_omega"}),
+    "zh": ("cmn", {"zf_xiaoyi", "zm_yunxi"}),
 }
 
 # The card's front is capped at 200 characters (`ECHO_FRONT_MAX_LENGTH`); a
@@ -106,7 +110,7 @@ PIPER_CACHE_SIZE = int(os.environ.get("TTS_PIPER_CACHE", "3"))
 def load_piper_manifest() -> dict:
     """LangX language code to the Piper voices that read it, from `voices.json`.
 
-    Missing or unreadable is not fatal: the service still reads Kokoro's six and
+    Missing or unreadable is not fatal: the service still reads Kokoro's seven and
     answers 400 for the rest, which is exactly what it did before Piper existed.
     A half-built image should degrade to the old service, not fail to boot.
     """
@@ -114,7 +118,7 @@ def load_piper_manifest() -> dict:
         with open(HERE / "voices.json", encoding="utf8") as handle:
             return json.load(handle)
     except (OSError, ValueError) as caught:
-        print(f"no piper manifest, reading six languages only: {caught}", flush=True)
+        print(f"no piper manifest, reading seven languages only: {caught}", flush=True)
         return {}
 
 
@@ -139,6 +143,38 @@ def load_kokoro():
     model = os.environ.get("TTS_MODEL", str(HERE / "kokoro-v1.0.onnx"))
     voices = os.environ.get("TTS_VOICES", str(HERE / "voices-v1.0.bin"))
     return Kokoro(model, voices, espeak_config=espeak)
+
+
+_zh_g2p = None
+
+
+def zh_phonemes(text: str) -> str:
+    """A Chinese sentence as the phonemes Kokoro's Chinese voices were trained on.
+
+    **Not through espeak-ng**, which is how every other Kokoro language is read
+    and why Chinese was silent until now. espeak's Mandarin comes out with its
+    tones stripped — `wˈo mˈən χˈən` for 我们很 — and a reading without tones
+    is a reading of a different sentence. Measured on thirty-six sentences from
+    the HSK packs, a speech recogniser got back 41% of the characters from
+    espeak's reading and 97% from this one.
+
+    misaki (Apache-2.0) is Kokoro's own front end: jieba to find the words and
+    pypinyin to read them, then pinyin to the phoneme set. It still guesses a
+    polyphone wrong now and then — 你得去 as *dé* for *děi* — which is why the
+    packs are read from their reviewed pinyin instead (see
+    `tools/echo-content/tts/generate.py`); a member's own card has no pinyin,
+    and this is the best reading there is for it.
+
+    Loaded on first use: jieba builds its dictionary in about a second, which a
+    service that never hears Chinese has no reason to pay.
+    """
+    global _zh_g2p
+    if _zh_g2p is None:
+        from misaki import zh
+
+        _zh_g2p = zh.ZHG2P()
+    phonemes, _ = _zh_g2p(text)
+    return phonemes
 
 
 _piper_voices: "OrderedDict[str, object]" = OrderedDict()
@@ -271,16 +307,21 @@ class Handler(BaseHTTPRequestHandler):
         if not text or len(text) > MAX_TEXT:
             return self._json(400, {"error": "text is empty or too long"})
 
-        # Kokoro first: it reads the six it was trained for better than Piper
-        # does, and those six are the keys already in the cache upstream.
+        # Kokoro first: it reads the seven it was trained for better than Piper
+        # does, and those seven are the keys already in the cache upstream.
         if lang in LANGUAGES:
             espeak_lang, voices = LANGUAGES[lang]
             if voice not in voices:
                 return self._json(400, {"error": f"voice {voice!r} does not read {lang!r}"})
             with self.lock:
-                samples, rate = self.kokoro.create(
-                    text, voice=voice, speed=1.0, lang=espeak_lang
-                )
+                if lang == "zh":
+                    samples, rate = self.kokoro.create(
+                        zh_phonemes(text), voice=voice, speed=1.0, is_phonemes=True
+                    )
+                else:
+                    samples, rate = self.kokoro.create(
+                        text, voice=voice, speed=1.0, lang=espeak_lang
+                    )
                 wav = kokoro_wav(samples, rate)
             return self._send(200, to_aac(wav), "audio/mp4")
 

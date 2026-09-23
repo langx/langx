@@ -3,7 +3,7 @@
   "lang": "zh",
   "level": "absoluteBeginner",
   "hsk": 1,
-  "contentVersion": 2,
+  "contentVersion": 3,
   "reviewed": true,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -31,7 +31,11 @@
       },
       "freqRank": 19,
       "review": { "words": "你 是 人", "indirect": ["es", "pt-BR", "ru", "tr"] },
-      "image": "cue:person"
+      "image": "cue:person",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/0-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/0-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 1,
@@ -49,7 +53,11 @@
       },
       "freqRank": 19,
       "review": { "words": "我们 是 人", "indirect": ["pt-BR", "ru", "tr"] },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/1-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/1-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 2,
@@ -68,7 +76,11 @@
       },
       "freqRank": 31,
       "review": { "words": "他 来 了", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/2-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/2-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 3,
@@ -84,7 +96,11 @@
       },
       "freqRank": 31,
       "review": { "words": "我们 来 了", "indirect": ["ru"], "edited": ["tr"] },
-      "image": "cue:footprints"
+      "image": "cue:footprints",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/3-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/3-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 4,
@@ -94,7 +110,11 @@
       "gloss": { "en": "I came.", "tr": "Geldim.", "fr": "J'arrive." },
       "freqRank": 31,
       "review": { "words": "我 来 了" },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/4-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/4-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 5,
@@ -111,7 +131,11 @@
       },
       "freqRank": 38,
       "review": { "words": "她 来 了", "indirect": ["ru", "tr"] },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/5-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/5-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 6,
@@ -134,7 +158,11 @@
         "indirect": ["ar", "es", "pt-BR", "ru"],
         "edited": ["tr", "ar"]
       },
-      "image": "cue:ok-hand"
+      "image": "cue:ok-hand",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/6-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/6-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 7,
@@ -149,7 +177,11 @@
       },
       "freqRank": 44,
       "review": { "words": "我们 想 他", "edited": ["en", "tr"] },
-      "image": "cue:pleading-face"
+      "image": "cue:pleading-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/7-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/7-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 8,
@@ -166,7 +198,11 @@
       },
       "freqRank": 52,
       "review": { "words": "她 看 我", "indirect": ["pt-BR", "ru", "tr"], "edited": ["en", "tr"] },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/8-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/8-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 9,
@@ -184,7 +220,11 @@
       },
       "freqRank": 55,
       "review": { "words": "这 是 什么", "indirect": ["pt-BR"] },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/9-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/9-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 10,
@@ -202,7 +242,11 @@
       },
       "freqRank": 55,
       "review": { "words": "那 是 什么", "indirect": ["ar", "ru", "tr"], "edited": ["en", "tr"] },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/10-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/10-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 11,
@@ -225,7 +269,11 @@
         "unlisted": ["那里"],
         "indirect": ["ar", "es", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/11-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/11-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 12,
@@ -247,7 +295,11 @@
         "indirect": ["es", "ru"],
         "edited": ["reading", "en", "tr"]
       },
-      "image": "cue:chart-increasing"
+      "image": "cue:chart-increasing",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/12-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/12-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 13,
@@ -271,7 +323,11 @@
         "indirect": ["ar", "fr", "pt-BR", "ru"],
         "edited": ["en", "tr"]
       },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/13-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/13-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 14,
@@ -289,7 +345,11 @@
       },
       "freqRank": 83,
       "review": { "words": "你 在 吗", "indirect": ["fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/14-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/14-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 15,
@@ -310,7 +370,11 @@
         "indirect": ["ru", "tr"],
         "edited": ["tr"]
       },
-      "image": "cue:check-mark-button"
+      "image": "cue:check-mark-button",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/15-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/15-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 16,
@@ -333,7 +397,11 @@
         "indirect": ["pt-BR", "tr"],
         "edited": ["en"]
       },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/16-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/16-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 17,
@@ -351,7 +419,11 @@
       },
       "freqRank": 83,
       "review": { "words": "是 你 吗", "indirect": ["pt-BR", "tr"], "edited": ["tr"] },
-      "image": "cue:index-pointing-at-the-viewer"
+      "image": "cue:index-pointing-at-the-viewer",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/17-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/17-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 18,
@@ -369,7 +441,11 @@
       },
       "freqRank": 83,
       "review": { "words": "有 人 吗", "unlisted": ["有人"], "indirect": ["pt-BR", "tr"] },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/18-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/18-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 19,
@@ -386,7 +462,11 @@
         "ar": "هذا كثير."
       },
       "freqRank": 87,
-      "review": { "words": "太 多 了", "indirect": ["ar", "fr", "ru", "tr"] }
+      "review": { "words": "太 多 了", "indirect": ["ar", "fr", "ru", "tr"] },
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/19-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/19-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 20,
@@ -402,7 +482,11 @@
       },
       "freqRank": 111,
       "review": { "words": "你 在 工作", "indirect": ["fr", "ru"] },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/20-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/20-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 21,
@@ -425,7 +509,11 @@
         "unlisted": ["太好了"],
         "indirect": ["ar", "es", "fr", "pt-BR", "tr"]
       },
-      "image": "cue:party-popper"
+      "image": "cue:party-popper",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/21-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/21-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 22,
@@ -441,7 +529,11 @@
       },
       "freqRank": 111,
       "review": { "words": "她 在 工作", "indirect": ["fr", "ru"] },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/22-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/22-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 23,
@@ -464,7 +556,11 @@
         "unlisted": ["在家"],
         "indirect": ["ar", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/23-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/23-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 24,
@@ -480,7 +576,11 @@
       },
       "freqRank": 128,
       "review": { "words": "怎么 会 呢", "indirect": ["pt-BR", "tr"] },
-      "image": "cue:astonished-face"
+      "image": "cue:astonished-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/24-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/24-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 25,
@@ -498,7 +598,11 @@
       },
       "freqRank": 124,
       "review": { "words": "我 想 家", "indirect": ["fr", "pt-BR", "tr"], "edited": ["tr"] },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/25-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/25-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 26,
@@ -517,7 +621,11 @@
       },
       "freqRank": 139,
       "review": { "words": "你 喜欢 什么" },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/26-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/26-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 27,
@@ -535,7 +643,11 @@
       },
       "freqRank": 130,
       "review": { "words": "我 爱 你", "unlisted": ["我爱你"] },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/27-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/27-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 28,
@@ -554,7 +666,11 @@
       },
       "freqRank": 142,
       "review": { "words": "他 是 谁", "indirect": ["ar", "fr", "pt-BR", "tr"] },
-      "image": "cue:man"
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/28-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/28-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 29,
@@ -573,7 +689,11 @@
       },
       "freqRank": 130,
       "review": { "words": "我 爱 她", "indirect": ["ar", "ru", "tr"] },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/29-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/29-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 30,
@@ -583,7 +703,11 @@
       "gloss": { "en": "He hasn't eaten.", "tr": "Yemedi.", "de": "Er hat nichts gegessen." },
       "freqRank": 142,
       "review": { "words": "他 没 吃" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/30-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/30-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 31,
@@ -601,7 +725,11 @@
       },
       "freqRank": 139,
       "review": { "words": "我 不 喜欢", "indirect": ["fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:thumbs-down"
+      "image": "cue:thumbs-down",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/31-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/31-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 32,
@@ -620,7 +748,11 @@
       },
       "freqRank": 142,
       "review": { "words": "你 是 谁", "indirect": ["ar", "pt-BR", "ru"] },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/32-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/32-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 33,
@@ -638,7 +770,11 @@
       },
       "freqRank": 139,
       "review": { "words": "我 喜欢 他", "indirect": ["pt-BR"] },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/33-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/33-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 34,
@@ -655,7 +791,11 @@
       },
       "freqRank": 142,
       "review": { "words": "你 爱 谁", "indirect": ["es", "ru"] },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/34-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/34-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 35,
@@ -674,7 +814,11 @@
       },
       "freqRank": 139,
       "review": { "words": "我 喜欢 你", "indirect": ["ar", "pt-BR", "ru", "tr"] },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/35-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/35-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 36,
@@ -693,7 +837,11 @@
       },
       "freqRank": 142,
       "review": { "words": "吃 了 没", "indirect": ["ar", "es", "pt-BR", "tr"] },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/36-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/36-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 37,
@@ -711,7 +859,11 @@
       },
       "freqRank": 142,
       "review": { "words": "她 是 谁", "indirect": ["fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/37-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/37-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 38,
@@ -729,7 +881,11 @@
       },
       "freqRank": 142,
       "review": { "words": "我们 是 谁", "indirect": ["pt-BR"] },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/38-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/38-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 39,
@@ -752,7 +908,11 @@
         "unlisted": ["几点"],
         "indirect": ["ar", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:one-o-clock"
+      "image": "cue:one-o-clock",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/39-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/39-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 40,
@@ -774,7 +934,11 @@
         "unlisted": ["这个"],
         "indirect": ["fr", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/40-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/40-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 41,
@@ -791,7 +955,11 @@
       },
       "freqRank": 190,
       "review": { "words": "我 在 听", "indirect": ["fr", "ru", "tr"] },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/41-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/41-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 42,
@@ -807,7 +975,11 @@
       },
       "freqRank": 190,
       "review": { "words": "谁 在 听", "indirect": ["ru"], "edited": ["tr"] },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/42-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/42-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 43,
@@ -824,7 +996,11 @@
       },
       "freqRank": 240,
       "review": { "words": "我 买 了", "indirect": ["ru", "tr"], "edited": ["en", "tr", "ru"] },
-      "image": "cue:shopping-cart"
+      "image": "cue:shopping-cart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/43-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/43-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 44,
@@ -842,7 +1018,11 @@
       },
       "freqRank": 428,
       "review": { "words": "想 喝 什么", "indirect": ["es", "pt-BR", "ru", "tr"] },
-      "image": "cue:cup-with-straw"
+      "image": "cue:cup-with-straw",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/44-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/44-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 45,
@@ -858,7 +1038,11 @@
       },
       "freqRank": 430,
       "review": { "words": "你 在 学校", "indirect": ["ru", "tr"], "edited": ["tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/45-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/45-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 46,
@@ -877,7 +1061,11 @@
       },
       "freqRank": 430,
       "review": { "words": "我 去 学校", "indirect": ["ar", "fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/46-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/46-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 47,
@@ -899,7 +1087,11 @@
         "indirect": ["fr", "pt-BR", "ru", "tr"],
         "edited": ["tr"]
       },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/47-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/47-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 48,
@@ -918,7 +1110,11 @@
       },
       "freqRank": 463,
       "review": { "words": "我 认识 他", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] },
-      "image": "cue:man"
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/48-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/48-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 49,
@@ -936,7 +1132,11 @@
       },
       "freqRank": 520,
       "review": { "words": "很 好 谢谢", "indirect": ["ru", "tr"] },
-      "image": "cue:folded-hands"
+      "image": "cue:folded-hands",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/49-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/49-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 50,
@@ -959,7 +1159,11 @@
         "indirect": ["ar", "es", "pt-BR", "ru", "tr"],
         "edited": ["tr"]
       },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/50-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/50-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 51,
@@ -983,7 +1187,11 @@
         "indirect": ["ar", "fr", "pt-BR", "ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:heavy-dollar-sign"
+      "image": "cue:heavy-dollar-sign",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/51-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/51-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 52,
@@ -999,7 +1207,11 @@
       },
       "freqRank": 527,
       "review": { "words": "你 妈妈 呢", "indirect": ["ru", "tr"] },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/52-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/52-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 53,
@@ -1017,7 +1229,11 @@
       },
       "freqRank": 538,
       "review": { "words": "少 了 什么", "indirect": ["es", "pt-BR", "tr"] },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/53-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/53-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 54,
@@ -1035,7 +1251,11 @@
       },
       "freqRank": 608,
       "review": { "words": "他 在 医院", "indirect": ["es", "pt-BR", "ru"], "edited": ["tr"] },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/54-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/54-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 55,
@@ -1053,7 +1273,11 @@
       },
       "freqRank": 608,
       "review": { "words": "这 是 医院", "indirect": ["fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/55-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/55-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 56,
@@ -1069,7 +1293,11 @@
       },
       "freqRank": 651,
       "review": { "words": "你 是 学生", "indirect": ["ru", "tr"] },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/56-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/56-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 57,
@@ -1091,7 +1319,11 @@
         "unlisted": ["看电视"],
         "indirect": ["fr", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/57-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/57-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 58,
@@ -1110,7 +1342,11 @@
       },
       "freqRank": 827,
       "review": { "words": "他 是 医生", "indirect": ["ar", "pt-BR", "tr"] },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/58-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/58-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 59,
@@ -1128,7 +1364,11 @@
       },
       "freqRank": 799,
       "review": { "words": "我 是 老师", "indirect": ["es", "tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/59-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/59-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 60,
@@ -1146,7 +1386,11 @@
       },
       "freqRank": 827,
       "review": { "words": "她 是 医生", "indirect": ["pt-BR", "tr"] },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/60-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/60-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 61,
@@ -1164,7 +1408,11 @@
       },
       "freqRank": 880,
       "review": { "words": "他 说话 了", "indirect": ["es", "pt-BR", "ru", "tr"] },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/61-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/61-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 62,
@@ -1181,7 +1429,11 @@
       },
       "freqRank": 908,
       "review": { "words": "爸爸 在 工作", "indirect": ["es", "ru", "tr"] },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/62-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/62-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 63,
@@ -1200,7 +1452,11 @@
       },
       "freqRank": 920,
       "review": { "words": "他 很 高兴", "indirect": ["ar", "pt-BR", "ru", "tr"] },
-      "image": "cue:grinning-face"
+      "image": "cue:grinning-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/63-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/63-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 64,
@@ -1216,7 +1472,11 @@
       },
       "freqRank": 920,
       "review": { "words": "怎么 不 高兴", "indirect": ["ru", "tr"] },
-      "image": "cue:pensive-face"
+      "image": "cue:pensive-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/64-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/64-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 65,
@@ -1239,7 +1499,11 @@
         "indirect": ["ar", "fr", "pt-BR", "ru"],
         "edited": ["tr"]
       },
-      "image": "cue:grinning-face"
+      "image": "cue:grinning-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/65-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/65-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 66,
@@ -1257,7 +1521,11 @@
       },
       "freqRank": 938,
       "review": { "words": "今天 很 热", "indirect": ["ru", "tr"] },
-      "image": "cue:thermometer"
+      "image": "cue:thermometer",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/66-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/66-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 67,
@@ -1275,7 +1543,11 @@
       },
       "freqRank": 944,
       "review": { "words": "他 喜欢 睡觉", "indirect": ["pt-BR", "ru", "tr"] },
-      "image": "cue:sleeping-face"
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/67-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/67-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 68,
@@ -1285,7 +1557,11 @@
       "gloss": { "en": "Are you sleeping?", "de": "Schläfst du?", "pt-BR": "Você está dormindo?" },
       "freqRank": 944,
       "review": { "words": "你 睡觉 吗" },
-      "image": "cue:sleeping-face"
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/68-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/68-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 69,
@@ -1301,7 +1577,11 @@
       },
       "freqRank": 944,
       "review": { "words": "她 在 睡觉", "indirect": ["fr", "ru"] },
-      "image": "cue:sleeping-face"
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/69-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/69-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 70,
@@ -1319,7 +1599,11 @@
       },
       "freqRank": 944,
       "review": { "words": "我 在 睡觉", "indirect": ["es", "fr", "pt-BR", "ru"] },
-      "image": "cue:sleeping-face"
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/70-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/70-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 71,
@@ -1338,7 +1622,11 @@
       },
       "freqRank": 1027,
       "review": { "words": "今天 很 冷", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] },
-      "image": "cue:cold-face"
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/71-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/71-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 72,
@@ -1357,7 +1645,11 @@
       },
       "freqRank": 944,
       "review": { "words": "我 想 睡觉", "indirect": ["ar", "pt-BR", "tr"] },
-      "image": "cue:sleeping-face"
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/72-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/72-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 73,
@@ -1372,7 +1664,11 @@
       },
       "freqRank": 1367,
       "review": { "words": "你 今天 怎么样", "indirect": ["tr"] },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/73-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/73-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 74,
@@ -1389,7 +1685,11 @@
       },
       "freqRank": 1013,
       "review": { "words": "我 想 读", "indirect": ["es", "tr"] },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/74-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/74-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 75,
@@ -1407,7 +1707,11 @@
       },
       "freqRank": 1828,
       "review": { "words": "我们 是 同学", "indirect": ["es", "pt-BR", "tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/75-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/75-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 76,
@@ -1425,7 +1729,11 @@
       },
       "freqRank": 1150,
       "review": { "words": "我 喜欢 猫", "indirect": ["pt-BR", "ru"] },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/76-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/76-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 77,
@@ -1441,7 +1749,11 @@
       },
       "freqRank": 1910,
       "review": { "words": "请 喝 茶", "unlisted": ["喝茶"], "indirect": ["tr"] },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/77-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/77-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 78,
@@ -1458,7 +1770,11 @@
       },
       "freqRank": 1218,
       "review": { "words": "我 在 打电话", "indirect": ["es", "ru", "tr"], "edited": ["reading"] },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/78-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/78-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 79,
@@ -1476,7 +1792,11 @@
       },
       "freqRank": 1956,
       "review": { "words": "今天 星期 几", "indirect": ["es", "fr", "pt-BR", "tr"] },
-      "image": "cue:tear-off-calendar"
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/79-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/79-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 80,
@@ -1494,7 +1814,11 @@
       },
       "freqRank": 1910,
       "review": { "words": "我 喜欢 茶", "indirect": ["ru"] },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/80-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/80-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 81,
@@ -1516,7 +1840,11 @@
         "indirect": ["fr", "pt-BR", "tr"],
         "edited": ["en", "tr"]
       },
-      "image": "cue:cloud-with-rain"
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/81-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/81-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 82,
@@ -1534,7 +1862,11 @@
       },
       "freqRank": 3479,
       "review": { "words": "我 去 商店", "indirect": ["pt-BR", "ru", "tr"] },
-      "image": "cue:shopping-cart"
+      "image": "cue:shopping-cart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/82-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/82-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 83,
@@ -1552,7 +1884,11 @@
       },
       "freqRank": 5648,
       "review": { "words": "在 下雨 吗", "indirect": ["es", "pt-BR", "tr"] },
-      "image": "cue:cloud-with-rain"
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/83-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/83-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 84,
@@ -1570,7 +1906,11 @@
       },
       "freqRank": 5648,
       "review": { "words": "昨天 下雨 了", "indirect": ["pt-BR", "tr"] },
-      "image": "cue:cloud-with-rain"
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/84-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/84-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 85,
@@ -1588,7 +1928,11 @@
       },
       "freqRank": 13422,
       "review": { "words": "他 学习 汉语", "indirect": ["pt-BR", "tr"], "edited": ["tr"] },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/85-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/85-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 86,
@@ -1605,7 +1949,11 @@
       },
       "freqRank": 13422,
       "review": { "words": "我 学习 汉语", "indirect": ["es"] },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/86-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/86-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 87,
@@ -1626,7 +1974,11 @@
         "words": "不 是 我 的",
         "unlisted": ["不是"],
         "indirect": ["fr", "pt-BR", "ru", "tr"]
-      }
+      },
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/87-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/87-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 88,
@@ -1635,7 +1987,11 @@
       "reading": "Nǐ bù lái le.",
       "gloss": { "en": "You are not coming.", "tr": "Gelmiyorsun.", "de": "Du kommst nicht." },
       "freqRank": 31,
-      "review": { "words": "你 不 来 了" }
+      "review": { "words": "你 不 来 了" },
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/88-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/88-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 89,
@@ -1653,7 +2009,11 @@
       },
       "freqRank": 31,
       "review": { "words": "有 人 来 了", "unlisted": ["有人"], "indirect": ["pt-BR", "ru", "tr"] },
-      "image": "cue:footprints"
+      "image": "cue:footprints",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/89-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/89-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 90,
@@ -1672,7 +2032,11 @@
       },
       "freqRank": 44,
       "review": { "words": "你 想 我 了", "indirect": ["ar", "pt-BR", "ru", "tr"] },
-      "image": "cue:pleading-face"
+      "image": "cue:pleading-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/90-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/90-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 91,
@@ -1690,7 +2054,11 @@
       },
       "freqRank": 44,
       "review": { "words": "我 很 想 你", "edited": ["tr"] },
-      "image": "cue:pleading-face"
+      "image": "cue:pleading-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/91-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/91-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 92,
@@ -1707,7 +2075,11 @@
         "ru": "Это принадлежит мне."
       },
       "freqRank": 48,
-      "review": { "words": "那 是 我 的", "indirect": ["fr", "pt-BR", "ru", "tr"] }
+      "review": { "words": "那 是 我 的", "indirect": ["fr", "pt-BR", "ru", "tr"] },
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/92-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/92-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 93,
@@ -1725,7 +2097,11 @@
       },
       "freqRank": 52,
       "review": { "words": "我 想 看 你", "indirect": ["pt-BR", "ru", "tr"] },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/93-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/93-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 94,
@@ -1743,7 +2119,11 @@
       },
       "freqRank": 55,
       "review": { "words": "你 做 了 什么", "indirect": ["ar", "fr", "pt-BR"], "edited": ["en"] },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/94-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/94-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 95,
@@ -1765,7 +2145,11 @@
         "indirect": ["ru"],
         "edited": ["reading", "en", "tr"]
       },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/95-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/95-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 96,
@@ -1782,7 +2166,11 @@
       },
       "freqRank": 77,
       "review": { "words": "现在 他 做 什么", "indirect": ["de", "ru"] },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/96-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/96-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 97,
@@ -1801,7 +2189,11 @@
       },
       "freqRank": 80,
       "review": { "words": "他 多 大 了", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/97-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/97-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 98,
@@ -1820,7 +2212,11 @@
       },
       "freqRank": 83,
       "review": { "words": "你 会 来 吗", "indirect": ["ar", "es", "fr", "ru", "tr"] },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/98-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/98-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 99,
@@ -1838,7 +2234,11 @@
       },
       "freqRank": 83,
       "review": { "words": "在 这 里 吗", "unlisted": ["这里"], "indirect": ["fr", "pt-BR", "tr"] },
-      "image": "cue:round-pushpin"
+      "image": "cue:round-pushpin",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/99-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/99-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 100,
@@ -1855,7 +2255,11 @@
       },
       "freqRank": 83,
       "review": { "words": "你 想 我 吗", "indirect": ["tr"] },
-      "image": "cue:pleading-face"
+      "image": "cue:pleading-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/100-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/100-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 101,
@@ -1872,7 +2276,11 @@
       },
       "freqRank": 124,
       "review": { "words": "他 不 在 家", "unlisted": ["在家"], "indirect": ["fr", "ru"] },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/101-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/101-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 102,
@@ -1890,7 +2298,11 @@
       },
       "freqRank": 107,
       "review": { "words": "你 什么 时候 来", "indirect": ["es", "pt-BR", "ru", "tr"] },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/102-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/102-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 103,
@@ -1913,7 +2325,11 @@
         "unlisted": ["我家", "很大"],
         "indirect": ["ar", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/103-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/103-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 104,
@@ -1936,7 +2352,11 @@
         "unlisted": ["他家"],
         "indirect": ["ar", "es", "fr", "pt-BR", "tr"]
       },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/104-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/104-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 105,
@@ -1954,7 +2374,11 @@
       },
       "freqRank": 130,
       "review": { "words": "我 不 爱 你", "indirect": ["ar", "pt-BR"] },
-      "image": "cue:broken-heart"
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/105-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/105-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 106,
@@ -1971,7 +2395,11 @@
       },
       "freqRank": 130,
       "review": { "words": "这 不 是 爱", "unlisted": ["不是"], "indirect": ["pt-BR", "tr"] },
-      "image": "cue:broken-heart"
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/106-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/106-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 107,
@@ -1987,7 +2415,11 @@
       },
       "freqRank": 130,
       "review": { "words": "我 爱 我 家", "unlisted": ["我家"], "indirect": ["ru"] },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/107-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/107-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 108,
@@ -2005,7 +2437,11 @@
       },
       "freqRank": 139,
       "review": { "words": "他 不 喜欢 我们", "indirect": ["pt-BR", "ru"] },
-      "image": "cue:thumbs-down"
+      "image": "cue:thumbs-down",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/108-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/108-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 109,
@@ -2023,7 +2459,11 @@
       },
       "freqRank": 139,
       "review": { "words": "我 不 喜欢 你", "indirect": ["es", "fr", "pt-BR", "tr"] },
-      "image": "cue:thumbs-down"
+      "image": "cue:thumbs-down",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/109-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/109-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 110,
@@ -2041,7 +2481,11 @@
       },
       "freqRank": 139,
       "review": { "words": "我们 都 喜欢 她", "indirect": ["de", "tr"] },
-      "image": "cue:sparkling-heart"
+      "image": "cue:sparkling-heart",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/110-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/110-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 111,
@@ -2059,7 +2503,11 @@
       },
       "freqRank": 142,
       "review": { "words": "你 吃 了 什么", "indirect": ["es", "pt-BR", "ru", "tr"] },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/111-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/111-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 112,
@@ -2080,7 +2528,11 @@
         "indirect": ["es", "fr"],
         "edited": ["reading"]
       },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/112-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/112-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 113,
@@ -2098,7 +2550,11 @@
       },
       "freqRank": 142,
       "review": { "words": "你 喜欢 吃 什么", "indirect": ["ar", "ru"], "edited": ["tr"] },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/113-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/113-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 114,
@@ -2116,7 +2572,11 @@
       },
       "freqRank": 142,
       "review": { "words": "我 不 想 吃", "unlisted": ["不想"], "indirect": ["fr", "ru", "tr"] },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/114-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/114-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 115,
@@ -2135,7 +2595,11 @@
       },
       "freqRank": 142,
       "review": { "words": "你 想 吃 什么", "indirect": ["ar"] },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/115-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/115-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 116,
@@ -2153,7 +2617,11 @@
       },
       "freqRank": 142,
       "review": { "words": "我 吃 多 了", "indirect": ["es", "pt-BR", "tr"] },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/116-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/116-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 117,
@@ -2172,7 +2640,11 @@
       },
       "freqRank": 142,
       "review": { "words": "你 想 吃 吗", "indirect": ["ar", "fr", "pt-BR", "tr"] },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/117-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/117-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 118,
@@ -2190,7 +2662,11 @@
       },
       "freqRank": 142,
       "review": { "words": "我 在 吃 什么", "indirect": ["es", "fr", "pt-BR", "ru"] },
-      "image": "cue:fork-and-knife"
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/118-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/118-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 119,
@@ -2211,7 +2687,11 @@
         "indirect": ["es", "fr"],
         "edited": ["reading", "es"]
       },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/119-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/119-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 120,
@@ -2230,7 +2710,11 @@
       },
       "freqRank": 142,
       "review": { "words": "这 是 谁 的", "indirect": ["ar", "pt-BR", "ru", "tr"] },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/120-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/120-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 121,
@@ -2249,7 +2733,11 @@
       },
       "freqRank": 142,
       "review": { "words": "那 人 是 谁", "indirect": ["ar", "pt-BR", "tr"] },
-      "image": "cue:person"
+      "image": "cue:person",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/121-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/121-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 122,
@@ -2273,7 +2761,11 @@
         "indirect": ["ar", "de", "fr", "pt-BR", "tr"],
         "edited": ["en", "tr", "ar"]
       },
-      "image": "cue:label"
+      "image": "cue:label",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/122-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/122-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 123,
@@ -2296,7 +2788,11 @@
         "indirect": ["es", "pt-BR", "ru", "tr"],
         "edited": ["reading", "en", "tr"]
       },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/123-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/123-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 124,
@@ -2320,7 +2816,11 @@
         "indirect": ["ar", "pt-BR", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/124-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/124-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 125,
@@ -2338,7 +2838,11 @@
       },
       "freqRank": 218,
       "review": { "words": "这 不 是 钱", "unlisted": ["不是"], "indirect": ["pt-BR", "ru"] },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/125-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/125-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 126,
@@ -2356,7 +2860,11 @@
       },
       "freqRank": 225,
       "review": { "words": "我 回 来 了", "unlisted": ["回来"], "indirect": ["pt-BR", "tr"] },
-      "image": "cue:back-arrow"
+      "image": "cue:back-arrow",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/126-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/126-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 127,
@@ -2371,7 +2879,11 @@
       },
       "freqRank": 266,
       "review": { "words": "他 三 岁 了", "unlisted": ["三岁"], "edited": ["tr"] },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/127-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/127-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 128,
@@ -2390,7 +2902,11 @@
       },
       "freqRank": 266,
       "review": { "words": "你 几 岁 了", "unlisted": ["几岁"], "indirect": ["ar", "pt-BR", "tr"] },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/128-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/128-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 129,
@@ -2413,7 +2929,11 @@
         "indirect": ["es", "fr", "pt-BR", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:person-standing"
+      "image": "cue:person-standing",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/129-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/129-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 130,
@@ -2431,7 +2951,11 @@
       },
       "freqRank": 280,
       "review": { "words": "你 有 朋友 吗", "indirect": ["pt-BR", "ru"], "edited": ["tr"] },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/130-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/130-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 131,
@@ -2448,7 +2972,11 @@
       },
       "freqRank": 428,
       "review": { "words": "我 不 喝 水", "unlisted": ["喝水"], "indirect": ["ru", "tr"] },
-      "image": "cue:potable-water"
+      "image": "cue:potable-water",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/131-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/131-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 132,
@@ -2466,7 +2994,11 @@
       },
       "freqRank": 428,
       "review": { "words": "你 喝 了 什么", "indirect": ["fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:cup-with-straw"
+      "image": "cue:cup-with-straw",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/132-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/132-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 133,
@@ -2483,7 +3015,11 @@
       },
       "freqRank": 428,
       "review": { "words": "谁 喝 了 水", "indirect": ["fr", "ru"], "edited": ["tr"] },
-      "image": "cue:potable-water"
+      "image": "cue:potable-water",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/133-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/133-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 134,
@@ -2504,7 +3040,11 @@
         "indirect": ["ru"],
         "edited": ["en", "tr"]
       },
-      "image": "cue:potable-water"
+      "image": "cue:potable-water",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/134-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/134-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 135,
@@ -2523,7 +3063,11 @@
       },
       "freqRank": 430,
       "review": { "words": "我 不 喜欢 学校", "indirect": ["ar", "pt-BR", "ru", "tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/135-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/135-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 136,
@@ -2541,7 +3085,11 @@
       },
       "freqRank": 430,
       "review": { "words": "你 怎么 去 学校", "indirect": ["de", "pt-BR", "ru", "tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/136-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/136-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 137,
@@ -2564,7 +3112,11 @@
         "indirect": ["es", "pt-BR", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:chair"
+      "image": "cue:chair",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/137-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/137-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 138,
@@ -2583,7 +3135,11 @@
       },
       "freqRank": 463,
       "review": { "words": "你 认识 他 吗", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] },
-      "image": "cue:man"
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/138-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/138-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 139,
@@ -2599,7 +3155,11 @@
       },
       "freqRank": 463,
       "review": { "words": "她 认识 你 吗", "edited": ["tr"] },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/139-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/139-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 140,
@@ -2618,7 +3178,11 @@
       },
       "freqRank": 463,
       "review": { "words": "你 认识 她 吗", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/140-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/140-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 141,
@@ -2637,7 +3201,11 @@
       },
       "freqRank": 463,
       "review": { "words": "我们 不 认识 他", "indirect": ["ar", "pt-BR", "tr"] },
-      "image": "cue:man"
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/141-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/141-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 142,
@@ -2656,7 +3224,11 @@
       },
       "freqRank": 463,
       "review": { "words": "你 认识 我 吗", "indirect": ["ar", "fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:face-with-raised-eyebrow"
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/142-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/142-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 143,
@@ -2675,7 +3247,11 @@
       },
       "freqRank": 463,
       "review": { "words": "我 认识 你 吗", "indirect": ["ar", "fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:face-with-raised-eyebrow"
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/143-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/143-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 144,
@@ -2693,7 +3269,11 @@
       },
       "freqRank": 469,
       "review": { "words": "他 明天 会 来", "indirect": ["fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:tear-off-calendar"
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/144-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/144-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 145,
@@ -2709,7 +3289,11 @@
       },
       "freqRank": 469,
       "review": { "words": "明天 他 工作 吗", "indirect": ["tr"] },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/145-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/145-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 146,
@@ -2730,7 +3314,11 @@
         "indirect": ["es", "ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/146-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/146-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 147,
@@ -2752,7 +3340,11 @@
         "indirect": ["de", "fr", "pt-BR"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:heavy-dollar-sign"
+      "image": "cue:heavy-dollar-sign",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/147-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/147-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 148,
@@ -2775,7 +3367,11 @@
         "indirect": ["ar", "es", "fr", "pt-BR", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:money-bag"
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/148-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/148-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 149,
@@ -2797,7 +3393,11 @@
         "unlisted": ["很少"],
         "indirect": ["es", "fr", "pt-BR", "tr"]
       },
-      "image": "cue:person-standing"
+      "image": "cue:person-standing",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/149-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/149-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 150,
@@ -2816,7 +3416,11 @@
       },
       "freqRank": 527,
       "review": { "words": "你 是 我 妈妈", "indirect": ["ar", "fr", "tr"], "edited": ["ru"] },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/150-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/150-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 151,
@@ -2831,7 +3435,11 @@
       },
       "freqRank": 546,
       "review": { "words": "我 喜欢 看 电影", "indirect": ["tr"], "edited": ["en", "tr"] },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/151-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/151-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 152,
@@ -2849,7 +3457,11 @@
       },
       "freqRank": 560,
       "review": { "words": "他 在 看 书", "unlisted": ["看书"], "indirect": ["pt-BR", "ru", "tr"] },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/152-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/152-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 153,
@@ -2867,7 +3479,11 @@
       },
       "freqRank": 557,
       "review": { "words": "我 昨天 没 工作", "indirect": ["de", "es", "pt-BR", "tr"] },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/153-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/153-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 154,
@@ -2889,7 +3505,11 @@
         "unlisted": ["本书"],
         "indirect": ["es", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/154-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/154-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 155,
@@ -2906,7 +3526,11 @@
       },
       "freqRank": 560,
       "review": { "words": "我 没 有 书", "unlisted": ["没有"], "edited": ["reading"] },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/155-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/155-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 156,
@@ -2923,7 +3547,11 @@
       },
       "freqRank": 620,
       "review": { "words": "好 大 的 狗", "indirect": ["es", "ru", "tr"] },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/156-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/156-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 157,
@@ -2946,7 +3574,11 @@
         "indirect": ["es", "pt-BR", "ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/157-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/157-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 158,
@@ -2963,7 +3595,11 @@
       },
       "freqRank": 651,
       "review": { "words": "他 不 是 学生", "unlisted": ["不是"], "indirect": ["tr"] },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/158-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/158-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 159,
@@ -2982,7 +3618,11 @@
       },
       "freqRank": 651,
       "review": { "words": "你 是 学生 吗", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/159-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/159-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 160,
@@ -2999,7 +3639,11 @@
       },
       "freqRank": 665,
       "review": { "words": "我 认识 你 儿子", "indirect": ["ru", "tr"] },
-      "image": "cue:boy"
+      "image": "cue:boy",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/160-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/160-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 161,
@@ -3016,7 +3660,11 @@
       },
       "freqRank": 779,
       "review": { "words": "你 有 电视 吗", "indirect": ["tr"], "edited": ["tr"] },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/161-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/161-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 162,
@@ -3035,7 +3683,11 @@
       },
       "freqRank": 729,
       "review": { "words": "我 是 中国 人", "indirect": ["ar", "pt-BR"], "edited": ["ru"] },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/162-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/162-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 163,
@@ -3054,7 +3706,11 @@
       },
       "freqRank": 799,
       "review": { "words": "谁 是 你 老师", "indirect": ["ar", "ru", "tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/163-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/163-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 164,
@@ -3076,7 +3732,11 @@
         "unlisted": ["看电视"],
         "indirect": ["es", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/164-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/164-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 165,
@@ -3091,7 +3751,11 @@
       },
       "freqRank": 827,
       "review": { "words": "他 是 医生 吗", "edited": ["tr"] },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/165-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/165-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 166,
@@ -3109,7 +3773,11 @@
       },
       "freqRank": 827,
       "review": { "words": "你 是 医生 吗", "indirect": ["es", "fr", "pt-BR", "ru"] },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/166-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/166-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 167,
@@ -3127,7 +3795,11 @@
       },
       "freqRank": 829,
       "review": { "words": "他 叫 什么 名字" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/167-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/167-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 168,
@@ -3145,7 +3817,11 @@
       },
       "freqRank": 829,
       "review": { "words": "你 叫 什么 名字" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/168-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/168-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 169,
@@ -3166,7 +3842,11 @@
         "indirect": ["fr", "tr"],
         "edited": ["tr"]
       },
-      "image": "cue:family-man-boy"
+      "image": "cue:family-man-boy",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/169-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/169-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 170,
@@ -3181,7 +3861,11 @@
       },
       "freqRank": 920,
       "review": { "words": "很 高兴 认识 你", "edited": ["en", "tr"] },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/170-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/170-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 171,
@@ -3200,7 +3884,11 @@
       },
       "freqRank": 920,
       "review": { "words": "我 昨天 很 高兴", "indirect": ["ar", "pt-BR", "ru", "tr"] },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/171-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/171-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 172,
@@ -3217,7 +3905,11 @@
       },
       "freqRank": 938,
       "review": { "words": "你 不 热 吗", "indirect": ["es", "fr", "tr"], "edited": ["tr"] },
-      "image": "cue:hot-face"
+      "image": "cue:hot-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/172-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/172-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 173,
@@ -3240,7 +3932,11 @@
         "indirect": ["ru"],
         "edited": ["tr"]
       },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/173-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/173-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 174,
@@ -3262,7 +3958,11 @@
         "indirect": ["es", "pt-BR", "ru", "tr"],
         "edited": ["en", "tr"]
       },
-      "image": "cue:sleeping-face"
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/174-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/174-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 175,
@@ -3280,7 +3980,11 @@
       },
       "freqRank": 1027,
       "review": { "words": "今天 没 昨天 冷", "indirect": ["pt-BR", "ru"] },
-      "image": "cue:thermometer"
+      "image": "cue:thermometer",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/175-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/175-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 176,
@@ -3297,7 +4001,11 @@
       },
       "freqRank": 1027,
       "review": { "words": "这 是 冷 的", "indirect": ["es", "fr", "ru"] },
-      "image": "cue:snowflake"
+      "image": "cue:snowflake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/176-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/176-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 177,
@@ -3319,7 +4027,11 @@
         "indirect": ["es", "pt-BR", "ru", "tr"],
         "edited": ["tr"]
       },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/177-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/177-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 178,
@@ -3337,7 +4049,11 @@
       },
       "freqRank": 1027,
       "review": { "words": "这 里 很 冷", "unlisted": ["这里"], "indirect": ["es", "pt-BR", "tr"] },
-      "image": "cue:cold-face"
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/178-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/178-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 179,
@@ -3360,7 +4076,11 @@
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/179-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/179-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 180,
@@ -3378,7 +4098,11 @@
       },
       "freqRank": 1150,
       "review": { "words": "猫 在 哪 里", "unlisted": ["哪里"], "indirect": ["pt-BR"] },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/180-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/180-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 181,
@@ -3400,7 +4124,11 @@
         "indirect": ["fr", "pt-BR", "ru", "tr"],
         "edited": ["en", "tr"]
       },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/181-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/181-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 182,
@@ -3410,7 +4138,11 @@
       "gloss": { "en": "It's past eight.", "tr": "Saat sekizi geçti.", "de": "Es ist acht durch." },
       "freqRank": 1362,
       "review": { "words": "八 点 多 了", "unlisted": ["八点"] },
-      "image": "cue:alarm-clock"
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/182-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/182-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 183,
@@ -3433,7 +4165,11 @@
         "indirect": ["ru"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/183-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/183-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 184,
@@ -3457,7 +4193,11 @@
         "indirect": ["ar", "pt-BR", "tr"],
         "edited": ["reading", "en", "tr"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/184-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/184-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 185,
@@ -3479,7 +4219,11 @@
         "indirect": ["ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/185-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/185-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 186,
@@ -3503,7 +4247,11 @@
         "indirect": ["ar", "fr", "pt-BR", "tr"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/186-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/186-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 187,
@@ -3527,7 +4275,11 @@
         "indirect": ["ar", "pt-BR"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/187-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/187-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 188,
@@ -3551,7 +4303,11 @@
         "indirect": ["ar", "ru", "tr"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/188-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/188-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 189,
@@ -3570,7 +4326,11 @@
       },
       "freqRank": 2562,
       "review": { "words": "你 喜欢 苹果 吗", "indirect": ["ar", "es", "pt-BR", "tr"] },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/189-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/189-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 190,
@@ -3594,7 +4354,11 @@
         "indirect": ["ar", "fr", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/190-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/190-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 191,
@@ -3616,7 +4380,11 @@
         "indirect": ["de", "pt-BR", "ru", "tr"],
         "edited": ["tr"]
       },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/191-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/191-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 192,
@@ -3640,7 +4408,11 @@
         "indirect": ["ar", "pt-BR", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/192-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/192-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 193,
@@ -3662,7 +4434,11 @@
         "indirect": ["de", "es", "pt-BR", "tr"],
         "edited": ["en", "tr"]
       },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/193-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/193-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 194,
@@ -3686,7 +4462,11 @@
         "indirect": ["ar", "fr", "pt-BR", "ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/194-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/194-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 195,
@@ -3704,7 +4484,11 @@
       },
       "freqRank": 3541,
       "review": { "words": "没关系 我 来 做", "indirect": ["ar", "es", "ru", "tr"] },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/195-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/195-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 196,
@@ -3723,7 +4507,11 @@
       },
       "freqRank": 3639,
       "review": { "words": "书 在 桌子 上", "indirect": ["ar", "fr", "pt-BR", "ru", "tr"] },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/196-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/196-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 197,
@@ -3741,7 +4529,11 @@
       },
       "freqRank": 4799,
       "review": { "words": "北京 昨天 天气 怎么样", "indirect": ["ru"], "edited": ["tr"] },
-      "image": "cue:sun-behind-rain-cloud"
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/197-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/197-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 198,
@@ -3759,7 +4551,11 @@
       },
       "freqRank": 5648,
       "review": { "words": "你 喜欢 下雨 吗", "indirect": ["ru", "tr"] },
-      "image": "cue:cloud-with-rain"
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/198-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/198-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 199,
@@ -3778,7 +4574,11 @@
       },
       "freqRank": 5648,
       "review": { "words": "明天 会 下雨 吗", "indirect": ["ar", "pt-BR", "tr"] },
-      "image": "cue:sun-behind-rain-cloud"
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/199-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/199-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 200,
@@ -3796,7 +4596,11 @@
       },
       "freqRank": 10194,
       "review": { "words": "我 在 吃 米饭", "indirect": ["pt-BR", "tr"], "edited": ["tr"] },
-      "image": "cue:cooked-rice"
+      "image": "cue:cooked-rice",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/200-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/200-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 201,
@@ -3813,7 +4617,11 @@
       },
       "freqRank": 77,
       "review": { "words": "你 现在 在 做 什么", "edited": ["en", "tr"] },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/201-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/201-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 202,
@@ -3831,7 +4639,11 @@
       },
       "freqRank": 96,
       "review": { "words": "我 很 好 你 呢", "indirect": ["ar", "pt-BR", "tr"] },
-      "image": "cue:ok-hand"
+      "image": "cue:ok-hand",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/202-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/202-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 203,
@@ -3853,7 +4665,11 @@
         "unlisted": ["这个"],
         "indirect": ["pt-BR", "ru", "tr"]
       },
-      "image": "cue:fork-and-knife"
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/203-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/203-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 204,
@@ -3871,7 +4687,11 @@
       },
       "freqRank": 124,
       "review": { "words": "我 有 一 个 家", "unlisted": ["一个"], "indirect": ["ar", "fr"] },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/204-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/204-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 205,
@@ -3894,7 +4714,11 @@
         "indirect": ["de", "ru", "tr"],
         "edited": ["tr"]
       },
-      "image": "cue:money-bag"
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/205-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/205-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 206,
@@ -3912,7 +4736,11 @@
       },
       "freqRank": 130,
       "review": { "words": "我 爱 上 了 你", "indirect": ["pt-BR", "ru", "tr"] },
-      "image": "cue:heart-with-arrow"
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/206-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/206-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 207,
@@ -3934,7 +4762,11 @@
         "unlisted": ["回来"],
         "indirect": ["de", "pt-BR", "tr"]
       },
-      "image": "cue:back-arrow"
+      "image": "cue:back-arrow",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/207-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/207-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 208,
@@ -3956,7 +4788,11 @@
         "unlisted": ["这个"],
         "indirect": ["pt-BR", "ru", "tr"]
       },
-      "image": "cue:thumbs-down"
+      "image": "cue:thumbs-down",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/208-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/208-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 209,
@@ -3979,7 +4815,11 @@
         "unlisted": ["有人"],
         "indirect": ["ar", "fr", "ru", "tr"]
       },
-      "image": "cue:fork-and-knife"
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/209-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/209-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 210,
@@ -4000,7 +4840,11 @@
         "indirect": ["tr"],
         "edited": ["reading"]
       },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/210-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/210-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 211,
@@ -4018,7 +4862,11 @@
       },
       "freqRank": 280,
       "review": { "words": "他 是 你 的 朋友", "indirect": ["ar", "ru", "tr"] },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/211-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/211-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 212,
@@ -4034,7 +4882,11 @@
       },
       "freqRank": 218,
       "review": { "words": "我 现在 没 有 钱", "unlisted": ["没有"], "edited": ["reading", "tr"] },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/212-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/212-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 213,
@@ -4052,7 +4904,11 @@
       },
       "freqRank": 280,
       "review": { "words": "他 是 我 的 朋友", "indirect": ["tr"] },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/213-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/213-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 214,
@@ -4071,7 +4927,11 @@
       },
       "freqRank": 280,
       "review": { "words": "你 是 我 的 朋友", "indirect": ["ar", "de", "pt-BR"] },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/214-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/214-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 215,
@@ -4089,7 +4949,11 @@
       },
       "freqRank": 280,
       "review": { "words": "她 是 你 的 朋友", "indirect": ["pt-BR", "ru"], "edited": ["tr"] },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/215-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/215-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 216,
@@ -4108,7 +4972,11 @@
       },
       "freqRank": 280,
       "review": { "words": "我 有 很 多 朋友", "unlisted": ["很多"], "indirect": ["ar", "tr"] },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/216-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/216-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 217,
@@ -4127,7 +4995,11 @@
       },
       "freqRank": 430,
       "review": { "words": "那 是 我们 的 学校", "indirect": ["ar", "tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/217-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/217-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 218,
@@ -4145,7 +5017,11 @@
       },
       "freqRank": 463,
       "review": { "words": "他 认识 很 多 人", "unlisted": ["很多"], "indirect": ["tr"] },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/218-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/218-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 219,
@@ -4167,7 +5043,11 @@
         "indirect": ["de"],
         "edited": ["tr"]
       },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/219-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/219-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 220,
@@ -4185,7 +5065,11 @@
       },
       "freqRank": 469,
       "review": { "words": "他 明天 会 在 家", "unlisted": ["在家"], "indirect": ["ar", "tr"] },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/220-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/220-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 221,
@@ -4208,7 +5092,11 @@
         "indirect": ["pt-BR", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/221-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/221-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 222,
@@ -4226,7 +5114,11 @@
       },
       "freqRank": 527,
       "review": { "words": "这 是 我 的 妈妈" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/222-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/222-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 223,
@@ -4243,7 +5135,11 @@
       },
       "freqRank": 547,
       "review": { "words": "你 住 在 哪 里", "unlisted": ["哪里"] },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/223-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/223-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 224,
@@ -4262,7 +5158,11 @@
       },
       "freqRank": 557,
       "review": { "words": "我 昨天 去 了 学校", "indirect": ["ar", "pt-BR", "ru", "tr"] },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/224-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/224-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 225,
@@ -4285,7 +5185,11 @@
         "unlisted": ["哪里"],
         "indirect": ["ar", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/225-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/225-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 226,
@@ -4308,7 +5212,11 @@
         "unlisted": ["看书"],
         "indirect": ["ar", "fr", "pt-BR", "ru"]
       },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/226-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/226-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 227,
@@ -4331,7 +5239,11 @@
         "unlisted": ["本书"],
         "indirect": ["ar", "de", "pt-BR", "ru"]
       },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/227-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/227-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 228,
@@ -4350,7 +5262,11 @@
       },
       "freqRank": 560,
       "review": { "words": "我 有 一 本 书", "unlisted": ["本书"], "indirect": ["ar", "pt-BR"] },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/228-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/228-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 229,
@@ -4368,7 +5284,11 @@
       },
       "freqRank": 560,
       "review": { "words": "这 是 我 的 书", "indirect": ["pt-BR", "ru"] },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/229-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/229-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 230,
@@ -4392,7 +5312,11 @@
         "indirect": ["ar", "pt-BR", "ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/230-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/230-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 231,
@@ -4410,7 +5334,11 @@
       },
       "freqRank": 560,
       "review": { "words": "这 是 谁 的 书", "indirect": ["fr", "pt-BR", "tr"] },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/231-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/231-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 232,
@@ -4428,7 +5356,11 @@
       },
       "freqRank": 664,
       "review": { "words": "一 二 三 四 五", "edited": ["tr"] },
-      "image": "cue:input-numbers"
+      "image": "cue:input-numbers",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/232-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/232-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 233,
@@ -4446,7 +5378,11 @@
       },
       "freqRank": 620,
       "review": { "words": "这 是 我 的 狗", "indirect": ["fr", "ru", "tr"] },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/233-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/233-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 234,
@@ -4463,7 +5399,11 @@
       },
       "freqRank": 729,
       "review": { "words": "我 不 是 中国 人", "unlisted": ["不是"] },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/234-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/234-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 235,
@@ -4485,7 +5425,11 @@
         "unlisted": ["是不是"],
         "indirect": ["fr", "pt-BR", "tr"]
       },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/235-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/235-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 236,
@@ -4508,7 +5452,11 @@
         "unlisted": ["不是"],
         "indirect": ["ar", "pt-BR", "ru", "tr"]
       },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/236-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/236-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 237,
@@ -4526,7 +5474,11 @@
       },
       "freqRank": 865,
       "review": { "words": "你 十 岁 了 吗", "unlisted": ["十岁"], "indirect": ["pt-BR", "tr"] },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/237-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/237-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 238,
@@ -4550,7 +5502,11 @@
         "indirect": ["ar", "es", "pt-BR", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/238-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/238-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 239,
@@ -4573,7 +5529,11 @@
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/239-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/239-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 240,
@@ -4591,7 +5551,11 @@
       },
       "freqRank": 879,
       "review": { "words": "他 有 三 个 女儿", "unlisted": ["三个"], "indirect": ["pt-BR", "tr"] },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/240-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/240-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 241,
@@ -4613,7 +5577,11 @@
         "unlisted": ["一个"],
         "indirect": ["pt-BR", "ru", "tr"]
       },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/241-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/241-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 242,
@@ -4632,7 +5600,11 @@
       },
       "freqRank": 1150,
       "review": { "words": "那 是 我 的 猫", "indirect": ["fr", "pt-BR"] },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/242-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/242-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 243,
@@ -4650,7 +5622,11 @@
       },
       "freqRank": 879,
       "review": { "words": "我 爱 我 的 女儿" },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/243-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/243-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 244,
@@ -4668,7 +5644,11 @@
       },
       "freqRank": 1448,
       "review": { "words": "你 喜欢 中国 菜 吗", "indirect": ["pt-BR", "ru", "tr"] },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/244-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/244-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 245,
@@ -4691,7 +5671,11 @@
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:laptop"
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/245-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/245-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 246,
@@ -4708,7 +5692,11 @@
       },
       "freqRank": 1675,
       "review": { "words": "明天 天气 会 好 吗", "indirect": ["de", "tr"] },
-      "image": "cue:sun"
+      "image": "cue:sun",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/246-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/246-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 247,
@@ -4726,7 +5714,11 @@
       },
       "freqRank": 1675,
       "review": { "words": "昨天 的 天气 很 热", "indirect": ["fr", "pt-BR", "tr"] },
-      "image": "cue:hot-face"
+      "image": "cue:hot-face",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/247-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/247-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 248,
@@ -4745,7 +5737,11 @@
       },
       "freqRank": 2562,
       "review": { "words": "我 在 吃 个 苹果", "indirect": ["ar", "de", "ru", "tr"] },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/248-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/248-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 249,
@@ -4763,7 +5759,11 @@
       },
       "freqRank": 3639,
       "review": { "words": "桌子 上 有 本 书", "unlisted": ["本书"], "indirect": ["ru", "tr"] },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/249-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/249-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 250,
@@ -4785,7 +5785,11 @@
         "indirect": ["pt-BR", "tr"],
         "edited": ["en", "tr"]
       },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/250-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/250-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 251,
@@ -4803,7 +5807,11 @@
       },
       "freqRank": 6162,
       "review": { "words": "这 是 谁 的 杯子", "indirect": ["fr", "pt-BR", "tr"] },
-      "image": "cue:tumbler-glass"
+      "image": "cue:tumbler-glass",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/251-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/251-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 252,
@@ -4821,7 +5829,11 @@
       },
       "freqRank": 4472,
       "review": { "words": "猫 在 椅子 上 睡觉", "indirect": ["es", "pt-BR", "ru"] },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/252-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/252-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 253,
@@ -4838,7 +5850,11 @@
       },
       "freqRank": 10194,
       "review": { "words": "昨天 我 吃 了 米饭", "indirect": ["ru"], "edited": ["tr"] },
-      "image": "cue:cooked-rice"
+      "image": "cue:cooked-rice",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/253-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/253-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 254,
@@ -4854,7 +5870,11 @@
         "ru": "Да, это моё."
       },
       "freqRank": 11,
-      "review": { "words": "是 的 这 是 我 的", "indirect": ["ru"], "edited": ["en", "tr"] }
+      "review": { "words": "是 的 这 是 我 的", "indirect": ["ru"], "edited": ["en", "tr"] },
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/254-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/254-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 255,
@@ -4870,7 +5890,11 @@
       },
       "freqRank": 83,
       "review": { "words": "我 不 是 来 了 吗", "unlisted": ["不是"], "indirect": ["tr"] },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/255-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/255-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 256,
@@ -4893,7 +5917,11 @@
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:coin"
+      "image": "cue:coin",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/256-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/256-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 257,
@@ -4916,7 +5944,11 @@
         "unlisted": ["这里"],
         "indirect": ["ar", "fr", "tr"]
       },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/257-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/257-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 258,
@@ -4934,7 +5966,11 @@
       },
       "freqRank": 280,
       "review": { "words": "他 住 在 这 里 吗", "unlisted": ["这里"], "indirect": ["tr"] },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/258-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/258-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 259,
@@ -4951,7 +5987,11 @@
       },
       "freqRank": 428,
       "review": { "words": "我 什么 都 不 想 喝", "unlisted": ["不想"], "indirect": ["ru", "tr"] },
-      "image": "cue:cup-with-straw"
+      "image": "cue:cup-with-straw",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/259-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/259-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 260,
@@ -4970,7 +6010,11 @@
       },
       "freqRank": 280,
       "review": { "words": "他 是 一 个 朋友 吗", "unlisted": ["一个"], "indirect": ["ar", "tr"] },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/260-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/260-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 261,
@@ -4992,7 +6036,11 @@
         "unlisted": ["不是"],
         "indirect": ["pt-BR", "ru", "tr"]
       },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/261-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/261-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 262,
@@ -5009,7 +6057,11 @@
       },
       "freqRank": 547,
       "review": { "words": "你 现在 在 哪 里 呢", "unlisted": ["哪里"], "indirect": ["ru", "tr"] },
-      "image": "cue:round-pushpin"
+      "image": "cue:round-pushpin",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/262-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/262-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 263,
@@ -5031,7 +6083,11 @@
         "unlisted": ["很多"],
         "indirect": ["de", "ru", "tr"]
       },
-      "image": "cue:beer-mug"
+      "image": "cue:beer-mug",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/263-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/263-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 264,
@@ -5054,7 +6110,11 @@
         "indirect": ["ar", "pt-BR", "tr"],
         "edited": ["ru"]
       },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/264-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/264-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 265,
@@ -5075,7 +6135,11 @@
         "indirect": ["tr"],
         "edited": ["reading"]
       },
-      "image": "cue:face-with-head-bandage"
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/265-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/265-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 266,
@@ -5097,7 +6161,11 @@
         "unlisted": ["三个"],
         "indirect": ["pt-BR", "tr"]
       },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/266-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/266-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 267,
@@ -5119,7 +6187,11 @@
         "unlisted": ["六点", "回来"],
         "indirect": ["pt-BR", "ru", "tr"]
       },
-      "image": "cue:back-arrow"
+      "image": "cue:back-arrow",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/267-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/267-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 268,
@@ -5140,7 +6212,11 @@
         "indirect": ["ru"],
         "edited": ["en", "tr", "de", "ru"]
       },
-      "image": "cue:t-shirt"
+      "image": "cue:t-shirt",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/268-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/268-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 269,
@@ -5162,7 +6238,11 @@
         "unlisted": ["哪个"],
         "indirect": ["es", "pt-BR", "tr"]
       },
-      "image": "cue:tumbler-glass"
+      "image": "cue:tumbler-glass",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/269-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/269-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 270,
@@ -5179,7 +6259,11 @@
       },
       "freqRank": 13422,
       "review": { "words": "我 的 汉语 不 太 好", "unlisted": ["不太好"], "indirect": ["tr"] },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/270-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/270-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 271,
@@ -5195,7 +6279,11 @@
         "ru": "Это моё, а не его."
       },
       "freqRank": 10,
-      "review": { "words": "是 我 的 不 是 他 的", "unlisted": ["不是"], "indirect": ["ru"] }
+      "review": { "words": "是 我 的 不 是 他 的", "unlisted": ["不是"], "indirect": ["ru"] },
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/271-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/271-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 272,
@@ -5217,7 +6305,11 @@
         "indirect": ["ru", "tr"],
         "edited": ["reading"]
       },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/272-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/272-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 273,
@@ -5239,7 +6331,11 @@
         "unlisted": ["本书", "不是"],
         "indirect": ["de", "fr", "pt-BR"]
       },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/273-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/273-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 274,
@@ -5262,7 +6358,11 @@
         "indirect": ["pt-BR", "ru", "tr"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/274-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/274-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 275,
@@ -5285,7 +6385,11 @@
         "indirect": ["de", "pt-BR", "tr"],
         "edited": ["tr"]
       },
-      "image": "cue:package"
+      "image": "cue:package",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/275-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/275-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 276,
@@ -5308,7 +6412,11 @@
         "indirect": ["pt-BR"],
         "edited": ["tr"]
       },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/276-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/276-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 277,
@@ -5330,7 +6438,11 @@
         "indirect": ["ru", "tr"],
         "edited": ["ru"]
       },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/277-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/277-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 278,
@@ -5352,7 +6464,11 @@
         "unlisted": ["不是"],
         "indirect": ["de", "ru", "tr"]
       },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/278-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/278-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 279,
@@ -5375,7 +6491,11 @@
         "indirect": ["pt-BR", "ru"],
         "edited": ["reading", "tr"]
       },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/279-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/279-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     },
     {
       "index": 280,
@@ -5392,7 +6512,11 @@
       },
       "freqRank": 6162,
       "review": { "words": "爸爸 我 的 杯子 在 哪 里", "unlisted": ["哪里"], "edited": ["tr"] },
-      "image": "cue:tumbler-glass"
+      "image": "cue:tumbler-glass",
+      "voices": [
+        { "key": "echo/packs/zh_hsk1/280-zf_xiaoyi.m4a", "voice": "zf_xiaoyi" },
+        { "key": "echo/packs/zh_hsk1/280-zm_yunxi.m4a", "voice": "zm_yunxi" }
+      ]
     }
   ]
 }

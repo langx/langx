@@ -4997,6 +4997,12 @@ test, not by reading anything. Chinese needs `piper-tts[zh]`, which pulls
 a reading: a large dependency and a network call on a machine that sleeps, for
 one language. Both are revisitable in a way a non-commercial licence is not.
 
+_Chinese was revisited, and not through Piper._ Kokoro already had Chinese
+voices; what was wrong was espeak-ng, whose Mandarin has no tones. misaki,
+Kokoro's own front end (Apache-2.0, over jieba and pypinyin, both MIT), is a
+few megabytes and no network call, and the difference measured is 41% of
+characters recognised against 97%. Lithuanian is the one still missing here.
+
 Both stay in `APP_TO_ISO3` all the same, and that is the point of keeping that
 table wider than the one we can read: a Chinese message wins its own sentence
 and then loses the button, rather than being read aloud in whichever voice we
