@@ -118,13 +118,19 @@ function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       {/*
        * The touch icon is what iOS uses for a home-screen shortcut and in
-       * Safari's own tab and favourites grids; the favicon comes from
-       * `web.favicon` in app.config.ts. The title is `WebTitle`, further in,
+       * Safari's own tab and favourites grids. The PNG favicon sits beside the
+       * `favicon.ico` that `web.favicon` in app.config.ts generates: a desktop
+       * tab is 32px on a retina screen, where the ICO's 16px frame is soft,
+       * and it is a new URL — browsers that asked for `/favicon.ico` while
+       * there was none keep that miss in their own favicon cache, so a fixed
+       * file at the old address could stay invisible to them for days.
+       * The title is `WebTitle`, further in,
        * because it needs the query client for the unread count. Web only, like
        * that one: `Head` on iOS is Handoff, not a document head.
        */}
       {Platform.OS === 'web' ? (
         <Head>
+          <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         </Head>
       ) : null}
