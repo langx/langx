@@ -364,9 +364,19 @@ function DraggableRow({
   return (
     <Animated.View
       onLayout={(event) => {
-        const next = [...drag.heights.value]
-        next[index] = event.nativeEvent.layout.height
-        drag.heights.value = next
+        const height = event.nativeEvent.layout.height
+        /*
+         * `modify`, on the UI thread, and not a copy made here. A write to
+         * `.value` from JS lands on the UI thread later, so every row laid
+         * out in the same pass read the same empty array and the last write
+         * won: one height out of three. Heights of 0 meant the neighbours
+         * never made room and the dropped row flew back to where it started.
+         */
+        drag.heights.modify((heights) => {
+          'worklet'
+          heights[index] = height
+          return heights
+        })
       }}
       style={[styles.draggable, moving]}
     >
