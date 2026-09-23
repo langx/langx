@@ -169,6 +169,7 @@ export const de: Localized<EnMessages> = {
     correctedCannotEdit: 'Korrigiert — nicht mehr änderbar',
     share: 'Teilen',
     savePhrase: 'Als Wendung speichern',
+    saveMedia: 'Auf dem Gerät speichern',
     echo: 'Zu Echo hinzufügen',
     unecho: 'Aus Echo entfernen',
   },

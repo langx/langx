@@ -14,6 +14,7 @@ export const MESSAGE_ACTION_IDS = [
   'pin',
   'phrase',
   'share',
+  'saveMedia',
   'report',
 ] as const
 export type MessageActionId = (typeof MESSAGE_ACTION_IDS)[number]
@@ -57,6 +58,11 @@ export interface MessageActionContext {
   type: MessageType
   /** A voice note without a caption has nothing to copy, quote or translate. */
   hasBody: boolean
+  /**
+   * A photo or video message that still carries its files. A withdrawn one
+   * keeps its type but loses the files, and there is nothing left to save.
+   */
+  hasMedia: boolean
   alreadyTranslated: boolean
   /** `canEditMessage` from shared, evaluated by the caller against the clock. */
   canEdit: boolean
@@ -211,6 +217,20 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
       // Solid once it is kept, outline while it is on offer — the same "on"
       // state `star` uses two rows below.
       icon: context.echoed ? 'repeat' : 'repeat-outline',
+      page: 'primary',
+    })
+  }
+
+  /**
+   * The files, into the phone's own gallery — every one of them, for an
+   * album. Your own messages too and in a channel too: like copy, it acts on
+   * the reader's copy and sends nothing anywhere.
+   */
+  if (context.hasMedia && (context.type === 'image' || context.type === 'video')) {
+    actions.push({
+      id: 'saveMedia',
+      label: t('messageActions.saveMedia'),
+      icon: 'download-outline',
       page: 'primary',
     })
   }

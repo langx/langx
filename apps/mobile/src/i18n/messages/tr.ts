@@ -178,6 +178,7 @@ export const tr: Localized<EnMessages> = {
     correctedCannotEdit: 'Düzeltilmiş — değiştirilemez',
     share: 'Paylaş',
     savePhrase: 'İfade olarak kaydet',
+    saveMedia: 'Cihaza kaydet',
     echo: 'Echo’ya ekle',
     unecho: 'Echo’dan çıkar',
   },

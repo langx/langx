@@ -166,6 +166,7 @@ export const ptBR: Localized<EnMessages> = {
     correctedCannotEdit: 'Corrigida — não dá para editar',
     share: 'Compartilhar',
     savePhrase: 'Salvar como expressão',
+    saveMedia: 'Salvar no dispositivo',
     echo: 'Adicionar ao Echo',
     unecho: 'Remover do Echo',
   },

@@ -197,6 +197,7 @@ export const en = {
     correctedCannotEdit: 'Corrected — can’t be edited',
     share: 'Share',
     savePhrase: 'Save as a phrase',
+    saveMedia: 'Save to device',
     echo: 'Add to Echo',
     unecho: 'Remove from Echo',
   },

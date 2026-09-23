@@ -169,6 +169,7 @@ export const es: Localized<EnMessages> = {
     correctedCannotEdit: 'Corregido: no se puede editar',
     share: 'Compartir',
     savePhrase: 'Guardar como expresión',
+    saveMedia: 'Guardar en el dispositivo',
     echo: 'Añadir a Echo',
     unecho: 'Quitar de Echo',
   },

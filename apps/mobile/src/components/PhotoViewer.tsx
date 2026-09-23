@@ -23,7 +23,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useT } from '../i18n'
-import { showAlert } from '../lib/alert'
+import { chooseAlert, showAlert } from '../lib/alert'
 import {
   AXIS_LOCK_PX,
   DISMISS_DRAG_PX,
@@ -42,6 +42,7 @@ import {
   swipeStep,
   zoomAbout,
 } from '../lib/pinch'
+import { messagePreviewKey } from '../lib/messagePreview'
 import { saveMediaToDevice } from '../lib/saveMedia'
 import { makeStyles, spacing, useTheme } from '../lib/theme'
 
@@ -414,8 +415,29 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     if (success && scale.value <= MIN_SCALE) runOnJS(onClose)()
   })
 
+  /*
+   * Holding a finger on the picture offers to save it, the gesture every
+   * gallery app has taught people. In the race with everything else: a finger
+   * that moves is a pan or a pinch and cancels it, and one that is held is no
+   * longer a tap, so it never closes the viewer on the way.
+   *
+   * On the web the sheet waits for the finger to lift. Opened while it is
+   * still down, the browser's click for that same touch lands on whatever
+   * the sheet has just put under it — the Save row — and saves without being
+   * asked. Native platforms keep a touch with the view it began on, so there
+   * the sheet can appear while the finger is held, as it does elsewhere.
+   */
+  const longPress = Gesture.LongPress()
+    .onStart(() => {
+      if (!SHEET_ON_RELEASE && !pinching.value) runOnJS(offerSave)()
+    })
+    .onEnd((_event, success) => {
+      if (SHEET_ON_RELEASE && success && !pinching.value) runOnJS(offerSave)()
+    })
+
   const gesture = Gesture.Race(
     Gesture.Simultaneous(pinch, pan),
+    longPress,
     Gesture.Exclusive(doubleTap, singleTap),
   )
 
@@ -433,6 +455,18 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   if (!photo) return null
   const slots = albumSlots(index, photos.length)
   const savePhase = saving?.url === photo.url ? saving.phase : null
+
+  /** The long-press sheet: one row, which does what the disc does. */
+  async function offerSave(): Promise<void> {
+    const { index: open, photos: album } = latest.current
+    const media = album[open ?? -1]
+    if (!media) return
+    const kind = isVideoContentType(media.contentType ?? '') ? 'video' : 'image'
+    const choice = await chooseAlert(t(messagePreviewKey(kind)), undefined, [
+      { label: t('photo.save'), value: 'save', icon: 'download' },
+    ])
+    if (choice === 'save') await save(media)
+  }
 
   async function save(media: { url: string; contentType?: string }): Promise<void> {
     if (savedTimer.current) clearTimeout(savedTimer.current)
@@ -644,6 +678,9 @@ const PAN_IDLE: PanMode = 0
 const PAN_ZOOM: PanMode = 1
 const PAN_PAGE: PanMode = 2
 const PAN_DISMISS: PanMode = 3
+
+/** See `longPress`. */
+const SHEET_ON_RELEASE = Platform.OS === 'web'
 
 /** `bounciness: 0`'s successor, as `SwipeableRow` has it: a settle that overshoots shows scrim. */
 const SPRING = { damping: 20, stiffness: 220, overshootClamping: true }

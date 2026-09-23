@@ -168,6 +168,7 @@ export const ar: Localized<EnMessages> = {
     correctedCannotEdit: 'مُصحَّحة — لا يمكن تعديلها',
     share: 'مشاركة',
     savePhrase: 'حفظ كعبارة',
+    saveMedia: 'حفظ على الجهاز',
     echo: 'أضف إلى صدى',
     unecho: 'أزل من صدى',
   },

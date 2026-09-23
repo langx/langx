@@ -175,6 +175,7 @@ export const ru: Localized<EnMessages> = {
     correctedCannotEdit: 'Исправлено — изменить нельзя',
     share: 'Поделиться',
     savePhrase: 'Сохранить как выражение',
+    saveMedia: 'Сохранить на устройство',
     echo: 'Добавить в Эхо',
     unecho: 'Убрать из Эха',
   },
