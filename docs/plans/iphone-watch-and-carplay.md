@@ -13,11 +13,11 @@ pushes keep the list fresh on a drive where the app is never opened. No
 message text is drawn; Apple does not permit it.
 
 What remains is not code. **Behic:** a sign-in to switch on Communication
-Notifications (so Siri announces a new message in the car; the line is
-written and commented out), the Wear OS upload and Android Auto opt-in in
-Play Console. **Devices:** Siri's read-and-reply in a car, the watches and
+Notifications was switched on the same night and ships in build 176; what is
+left for him is the Wear OS upload and Android Auto opt-in in Play Console. **Devices:** Siri's read-and-reply in a car, the watches and
 the Lock Screen clearing at sign-out, a real Android Auto head unit, a Duo.
-**Decisions:** phase 7's second push path and phase 8's calling. The watch's
+**Decisions:** none open — phases 7 and 8 were decided on 23 September, both
+the way this plan recommended (see each phase). The watch's
 recent-conversations list (#1541) and the car's Siri flow are the two
 changes no screen has shown yet: both need a signed-in phone, and signing in
 is not something done on Behic's behalf.
@@ -814,10 +814,13 @@ is not, which is why its paperwork starts on day one.
    and the Duo's four poses
    → verify: everything in `phase-6-two-pane.md`
 
-7. Server-driven Live Activities: first a decision about a second push path,
-   then the path. The phone-driven activity from phase 1 ships before this.
+7. Server-driven Live Activities — **decided 23 September: measure first.**
+   No second push path yet; `live_activity_started` and `companion_opened`
+   count the cards and the taps, and the number that would reopen it is in
+   the phase.
 
-8. CallKit: a new product, listed so it is not invisible
+8. CallKit — **decided 23 September: not built.** Parked with its reason and
+   what would reopen it, the way phase 9's two are.
 
 9. The two that undo something: an independent watch app, and Echo as a
    CarPlay audio app. Neither starts without a decision that says so.
@@ -1015,6 +1018,30 @@ The phone-driven activity from Phase 1 should ship first regardless. It is the
 one that needs no new infrastructure, and it will show whether anybody looks at
 the Dynamic Island before a second push system is paid for.
 
+**Decided on 23 September: measure first, and this is the decision, not a
+deferral.** Behic asked for the recommended path, and it is the one the
+paragraph above already argues: the phone-driven activity ships, and whether
+anybody looks at it is found out before a second delivery system is paid for.
+
+The measuring is built rather than promised. Two events, both in
+`docs/analytics.md`:
+
+- `live_activity_started` — a card was put on the Lock Screen for an agreed
+  call, once per call per launch, with how many minutes ahead it appeared.
+- `companion_opened` — the app was opened from the Live Activity (or, for the
+  same price, a Home Screen widget). It is read from the link the app opened
+  with: `langx:///chats/<id>` is produced by the Live Activity and nothing
+  else, `langx:///me|chats|echo` by the widgets and nothing else
+  (`src/lib/companionOpen.ts`, tested). Both are JavaScript, so they reach
+  installed builds over the air.
+
+**What would reopen it:** a month in which at least fifty cards were started
+and at least one in five was tapped. Below that, keeping a card live from the
+server — which is all a push path would add; the countdown already runs by
+itself — is a second system for a surface people glance past. The numbers are
+proposals rather than laws; the point is that the question now has a number to
+be asked of.
+
 ### Phase 8 — CallKit: voice or video
 
 Excluded as "a different feature with a different entitlement conversation",
@@ -1025,6 +1052,20 @@ its own abuse surface, its own store-review questions, and, for the car, its
 own CarPlay category conversation.
 
 It is listed here so it stops being invisible, not because it is next.
+
+**Decided on 23 September: not built, and this is the decision, not a
+deferral.** It is the recommendation this section always made — calling is a
+new product, not a surface for an existing one. It would need a media path of
+its own (a media server or a third-party SDK), an abuse story for live voice
+between strangers that text moderation does not cover, its own App Review and
+Play questions, and for the car a second CarPlay conversation with Apple. None
+of that is a phase of this plan.
+
+**What would reopen it:** evidence that agreed calls are a habit rather than
+an event — the `meetings` collection already says how many are accepted each
+week, so no new measuring is needed to ask. When a meaningful share of active
+pairs book one most weeks, the people using LangX are leaving it to talk, and
+that is the moment calling earns a plan of its own.
 
 ### Phase 9 — the two contradictions
 

@@ -32,6 +32,7 @@ import { TourHost } from '../src/components/TourHost'
 import { authClient } from '../src/lib/auth-client'
 import { useGuestSessionReset } from '../src/hooks/useGuestSessionReset'
 import { usePendingInvite } from '../src/hooks/usePendingInvite'
+import { useCompanionOpenTracking } from '../src/hooks/useCompanionOpenTracking'
 import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { forgetAnalyticsIdentity, identifyForAnalytics, startAnalytics } from '../src/lib/analytics'
@@ -167,6 +168,7 @@ function RootShell() {
   // somebody with no account. It only writes a flag; see the hook for why that
   // is what makes mounting it this high safe.
   usePendingInvite()
+  useCompanionOpenTracking()
 
   /*
    * Reads the stored opt-out and, unless it says no, starts the SDK. Nothing
