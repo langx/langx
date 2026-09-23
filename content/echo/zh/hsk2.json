@@ -1,0 +1,5203 @@
+{
+  "id": "zh:hsk2",
+  "lang": "zh",
+  "level": "beginner",
+  "hsk": 2,
+  "contentVersion": 1,
+  "reviewed": true,
+  "sources": [
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "HSK 2.0 word lists (clem109/hsk-vocabulary, via drkameleon/complete-hsk-vocabulary)",
+      "licence": "MIT",
+      "url": "https://github.com/drkameleon/complete-hsk-vocabulary"
+    },
+    { "name": "pypinyin", "licence": "MIT", "url": "https://github.com/mozillazg/python-pinyin" }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "我不要。",
+      "reading": "Wǒ bú yào.",
+      "gloss": {
+        "en": "I don't want to.",
+        "de": "Ich will nicht.",
+        "es": "No quiero.",
+        "fr": "Je ne veux pas.",
+        "ru": "Я не хочу."
+      },
+      "freqRank": 19,
+      "review": { "words": "我 不 要", "unlisted": ["不要"], "indirect": ["es", "fr"] }
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "你也是。",
+      "reading": "Nǐ yě shì.",
+      "gloss": {
+        "en": "You too.",
+        "tr": "Sen de.",
+        "de": "Du auch.",
+        "es": "Vos también.",
+        "pt-BR": "Você também.",
+        "ru": "Взаимно.",
+        "ar": "و أنت أيضا"
+      },
+      "freqRank": 23,
+      "review": { "words": "你 也 是" }
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "我也不。",
+      "reading": "Wǒ yě bù.",
+      "gloss": {
+        "en": "Me neither.",
+        "tr": "Ben de.",
+        "de": "Ich auch nicht.",
+        "es": "Ni yo tampoco.",
+        "fr": "Moi non plus.",
+        "pt-BR": "Nem eu.",
+        "ru": "Я тоже нет."
+      },
+      "freqRank": 23,
+      "review": { "words": "我 也 不", "indirect": ["pt-BR", "ru", "tr"], "edited": ["ru"] }
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "给，给你！",
+      "reading": "Gěi, gěi nǐ!",
+      "gloss": {
+        "en": "Here, this is for you!",
+        "tr": "İşte, bu sizin için!",
+        "fr": "Tiens, prends-le !",
+        "ru": "Возьми!"
+      },
+      "freqRank": 46,
+      "review": { "words": "给 给 你", "indirect": ["tr"] }
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "我也是。",
+      "reading": "Wǒ yě shì.",
+      "gloss": {
+        "en": "So do I.",
+        "tr": "Ben de.",
+        "de": "Ich auch.",
+        "es": "Yo también.",
+        "fr": "Moi aussi.",
+        "pt-BR": "Eu também.",
+        "ru": "Я тоже."
+      },
+      "freqRank": 23,
+      "review": { "words": "我 也 是", "indirect": ["fr", "ru"] }
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "看到了。",
+      "reading": "Kàndào le.",
+      "gloss": {
+        "en": "I saw it.",
+        "tr": "Onu gördüm.",
+        "de": "Ich sah es.",
+        "es": "Lo vi.",
+        "fr": "J'ai vu.",
+        "pt-BR": "Eu o vi.",
+        "ru": "Я видел это."
+      },
+      "freqRank": 52,
+      "review": { "words": "看 到 了", "unlisted": ["看到"], "indirect": ["es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "我到了。",
+      "reading": "Wǒ dào le.",
+      "gloss": {
+        "en": "I've arrived.",
+        "tr": "Geldim.",
+        "de": "Ich bin da.",
+        "es": "Ya llegué.",
+        "fr": "Je suis arrivé.",
+        "ru": "Я пришёл.",
+        "ar": "أتيت."
+      },
+      "freqRank": 29,
+      "review": {
+        "words": "我 到 了",
+        "indirect": ["ar", "fr", "ru", "tr"],
+        "edited": ["en", "fr"]
+      }
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "还有什么？",
+      "reading": "Hái yǒu shénme?",
+      "gloss": {
+        "en": "What else?",
+        "tr": "Başka ne?",
+        "de": "Was noch?",
+        "es": "¿Qué más?",
+        "fr": "Quoi d’autre ?",
+        "pt-BR": "O que mais?",
+        "ru": "Что ещё?"
+      },
+      "freqRank": 55,
+      "review": {
+        "words": "还 有 什么",
+        "unlisted": ["还有"],
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["ru"]
+      }
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "做得好！",
+      "reading": "Zuò de hǎo!",
+      "gloss": {
+        "en": "Well done!",
+        "tr": "Aferin!",
+        "de": "Gut gemacht!",
+        "es": "¡Bien hecho!",
+        "fr": "Bien joué !",
+        "pt-BR": "Parabéns!",
+        "ru": "Молодец!",
+        "ar": "جيد"
+      },
+      "freqRank": 58,
+      "review": {
+        "words": "做 得 好",
+        "unlisted": ["做得好"],
+        "indirect": ["ar", "fr", "pt-BR", "ru", "tr"],
+        "edited": ["fr"]
+      }
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "还没有。",
+      "reading": "Hái méiyǒu.",
+      "gloss": {
+        "en": "Not yet.",
+        "tr": "Henüz değil.",
+        "de": "Noch nicht.",
+        "es": "Todavía no.",
+        "fr": "Pas encore.",
+        "pt-BR": "Ainda não.",
+        "ru": "Ещё нет."
+      },
+      "freqRank": 63,
+      "review": {
+        "words": "还 没 有",
+        "unlisted": ["没有"],
+        "indirect": ["es", "fr", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "你真好。",
+      "reading": "Nǐ zhēn hǎo.",
+      "gloss": {
+        "en": "You're too kind.",
+        "tr": "Çok naziksin.",
+        "de": "Du bist sehr nett.",
+        "es": "Eres muy amable.",
+        "ru": "Вы слишком добры."
+      },
+      "freqRank": 76,
+      "review": { "words": "你 真 好", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "现在就做！",
+      "reading": "Xiànzài jiù zuò!",
+      "gloss": {
+        "en": "Do it now!",
+        "tr": "Hemen şimdi yap!",
+        "de": "Tu es, aber jetzt gleich!",
+        "fr": "Fais-le mais maintenant !"
+      },
+      "freqRank": 77,
+      "review": { "words": "现在 就 做", "edited": ["tr"] }
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "再一次。",
+      "reading": "Zài yí cì.",
+      "gloss": {
+        "en": "Once again.",
+        "tr": "Bir kez daha.",
+        "de": "Noch einmal.",
+        "es": "Una vez más.",
+        "fr": "Encore une fois.",
+        "pt-BR": "Outra vez.",
+        "ru": "Ещё раз.",
+        "ar": "مرة أخرى."
+      },
+      "freqRank": 99,
+      "review": {
+        "words": "再 一 次",
+        "unlisted": ["一次"],
+        "indirect": ["ar", "fr", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "他不知道。",
+      "reading": "Tā bù zhīdào.",
+      "gloss": {
+        "en": "He didn't know that.",
+        "tr": "Onu bilmiyordu.",
+        "de": "Das wusste er nicht.",
+        "es": "Él no lo sabe.",
+        "fr": "Il ne le savait pas.",
+        "pt-BR": "Ele não o sabia.",
+        "ru": "Он этого не знал.",
+        "ar": "إنه لم يعلم بذلك."
+      },
+      "freqRank": 105,
+      "review": { "words": "他 不 知道", "indirect": ["ar", "pt-BR", "ru", "tr"], "edited": ["ar"] }
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "你知道什么？",
+      "reading": "Nǐ zhīdào shénme?",
+      "gloss": {
+        "en": "What do you know?",
+        "tr": "Ne biliyorsun?",
+        "de": "Was weißt du?",
+        "es": "¿Qué sabes?",
+        "fr": "Que sais-tu ?",
+        "pt-BR": "O que você sabe?",
+        "ru": "Что ты знаешь?"
+      },
+      "freqRank": 105,
+      "review": { "words": "你 知道 什么", "indirect": ["es", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "他知道的。",
+      "reading": "Tā zhīdào de.",
+      "gloss": {
+        "en": "He knows that.",
+        "tr": "O onu bilir.",
+        "de": "Er weiß das.",
+        "es": "Él sabe eso.",
+        "fr": "Il le sait.",
+        "ru": "Он это знает.",
+        "ar": "هو يعلم ذلك."
+      },
+      "freqRank": 105,
+      "review": { "words": "他 知道 的", "indirect": ["ar", "es", "fr", "tr"] }
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "你知道吗？",
+      "reading": "Nǐ zhīdào ma?",
+      "gloss": {
+        "en": "Do you know?",
+        "tr": "Biliyor musun?",
+        "de": "Weißt du das?",
+        "es": "¿Lo sabes?",
+        "fr": "Est-ce que tu sais ?",
+        "pt-BR": "Você sabe?",
+        "ar": "هل أنت تعلم؟"
+      },
+      "freqRank": 105,
+      "review": { "words": "你 知道 吗", "indirect": ["ar", "es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "我不知道。",
+      "reading": "Wǒ bù zhīdào.",
+      "gloss": {
+        "en": "I have no idea.",
+        "tr": "Bilmiyorum.",
+        "de": "Ich weiß nicht.",
+        "es": "No sé.",
+        "fr": "Je ne sais pas.",
+        "pt-BR": "Não sei.",
+        "ru": "Я не знаю.",
+        "ar": "لا أعرف‏.‏‏"
+      },
+      "freqRank": 105,
+      "review": { "words": "我 不 知道", "indirect": ["ar"] }
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "他走了。",
+      "reading": "Tā zǒu le.",
+      "gloss": {
+        "en": "He left.",
+        "tr": "O gitti.",
+        "de": "Er ist weggegangen.",
+        "es": "Se fue.",
+        "fr": "Il est parti.",
+        "pt-BR": "Ele partiu.",
+        "ru": "Он ушёл."
+      },
+      "freqRank": 109,
+      "review": { "words": "他 走 了", "indirect": ["pt-BR", "ru", "tr"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "我想知道。",
+      "reading": "Wǒ xiǎng zhīdào.",
+      "gloss": {
+        "en": "I want to know.",
+        "tr": "Öğrenmek istiyorum.",
+        "de": "Ich möchte es wissen.",
+        "es": "Quiero saberlo.",
+        "pt-BR": "Quero saber.",
+        "ru": "Я хочу знать.",
+        "ar": "أود أن أعرف."
+      },
+      "freqRank": 105,
+      "review": { "words": "我 想 知道", "indirect": ["ar", "de", "pt-BR", "tr"] }
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "它是什么？",
+      "reading": "Tā shì shénme?",
+      "gloss": {
+        "en": "What is it?",
+        "tr": "O nedir?",
+        "de": "Was ist das?",
+        "es": "¿Qué es?",
+        "fr": "Qu'est-ce que c'est ?",
+        "pt-BR": "O que é isto?",
+        "ru": "Что это?"
+      },
+      "freqRank": 114,
+      "review": { "words": "它 是 什么", "indirect": ["fr", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "我走了。",
+      "reading": "Wǒ zǒu le.",
+      "gloss": {
+        "en": "I'm outta here.",
+        "tr": "Bana müsaade.",
+        "de": "Ich gehe.",
+        "fr": "Je me tire.",
+        "ru": "Я пошёл."
+      },
+      "freqRank": 109,
+      "review": { "words": "我 走 了", "indirect": ["tr"] }
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "我们没时间。",
+      "reading": "Wǒmen méi shíjiān.",
+      "gloss": {
+        "en": "We have no time.",
+        "tr": "Hiç zamanımız yok.",
+        "de": "Wir haben keine Zeit.",
+        "es": "No tenemos tiempo.",
+        "fr": "Nous n'avons pas le temps.",
+        "pt-BR": "Não temos tempo.",
+        "ru": "У нас нет времени."
+      },
+      "freqRank": 127,
+      "review": { "words": "我们 没 时间", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "我有时间。",
+      "reading": "Wǒ yǒu shíjiān.",
+      "gloss": {
+        "en": "I have time.",
+        "tr": "Zamanım var.",
+        "de": "Ich habe Zeit.",
+        "es": "Tengo tiempo.",
+        "fr": "J'ai du temps.",
+        "pt-BR": "Eu tenho tempo.",
+        "ru": "У меня есть время."
+      },
+      "freqRank": 127,
+      "review": { "words": "我 有 时间", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "有可能吗？",
+      "reading": "Yǒu kěnéng ma?",
+      "gloss": {
+        "en": "Is that possible?",
+        "tr": "O mümkün mü?",
+        "de": "Ist das möglich?",
+        "es": "¿Es posible?",
+        "fr": "Est-ce possible ?",
+        "ru": "Это возможно?"
+      },
+      "freqRank": 127,
+      "review": { "words": "有 可能 吗", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "我没时间。",
+      "reading": "Wǒ méi shíjiān.",
+      "gloss": {
+        "en": "I have no time.",
+        "tr": "Zamanım yok.",
+        "de": "Ich habe keine Zeit.",
+        "es": "No tengo tiempo.",
+        "fr": "Je n'ai pas le temps.",
+        "pt-BR": "Não tenho tempo.",
+        "ru": "У меня нет времени."
+      },
+      "freqRank": 127,
+      "review": { "words": "我 没 时间", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "这不可能！",
+      "reading": "Zhè bù kěnéng!",
+      "gloss": {
+        "en": "It can't be!",
+        "tr": "Olamaz!",
+        "de": "Das ist nicht möglich!",
+        "es": "¡No puede ser!",
+        "fr": "C'est pas possible !",
+        "pt-BR": "Não pode ser!",
+        "ru": "Не может быть!",
+        "ar": "لا يمكن أن يحصل ذلك!"
+      },
+      "freqRank": 127,
+      "review": { "words": "这 不 可能", "indirect": ["ar", "pt-BR", "tr"] }
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "什么时候开始？",
+      "reading": "Shénme shíhou kāishǐ?",
+      "gloss": {
+        "en": "When does it start?",
+        "tr": "Ne zaman başlıyor?",
+        "de": "Wann fängt es an?",
+        "es": "¿Cuándo empieza?",
+        "fr": "À quelle heure ça commence ?",
+        "pt-BR": "A que horas começa?",
+        "ru": "Когда это начинается?",
+        "ar": "متى ستبدأ؟"
+      },
+      "freqRank": 132,
+      "review": {
+        "words": "什么 时候 开始",
+        "indirect": ["ar", "fr", "pt-BR", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "快来吧！",
+      "reading": "Kuài lái ba!",
+      "gloss": {
+        "en": "Come quick!",
+        "tr": "Çabuk gelin.",
+        "de": "Komm schnell!",
+        "es": "¡Ven rápido!",
+        "fr": "Viens vite !",
+        "pt-BR": "Venha rápido!",
+        "ru": "Приходите быстро!",
+        "ar": "تعال بسرعة."
+      },
+      "freqRank": 153,
+      "review": { "words": "快 来 吧", "indirect": ["ar", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "请来吧。",
+      "reading": "Qǐng lái ba.",
+      "gloss": {
+        "en": "Please come.",
+        "tr": "Lütfen gel.",
+        "de": "Komm bitte.",
+        "es": "Ven, por favor.",
+        "fr": "Viens, s'il te plait.",
+        "pt-BR": "Venha, por favor.",
+        "ru": "Приходи, пожалуйста.",
+        "ar": "من فضلك تعال."
+      },
+      "freqRank": 216,
+      "review": {
+        "words": "请 来 吧",
+        "unlisted": ["请来"],
+        "indirect": ["ar", "es", "fr", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "他要钱。",
+      "reading": "Tā yào qián.",
+      "gloss": {
+        "en": "He wants money.",
+        "tr": "O para istiyor.",
+        "de": "Er will Geld.",
+        "es": "Quiere dinero.",
+        "fr": "Il veut l'argent.",
+        "pt-BR": "Ele quer o dinheiro.",
+        "ru": "Он хочет деньги."
+      },
+      "freqRank": 218,
+      "review": {
+        "words": "他 要 钱",
+        "unlisted": ["要钱"],
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["reading", "en"]
+      }
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "请走开！",
+      "reading": "Qǐng zǒukāi!",
+      "gloss": {
+        "en": "Please go away!",
+        "tr": "Lütfen git!",
+        "de": "Bitte Platz machen!",
+        "es": "¡Por favor, vete!",
+        "fr": "Partez, s'il vous plaît !",
+        "pt-BR": "Por favor, vá embora!",
+        "ru": "Пожалуйста, уходи!"
+      },
+      "freqRank": 216,
+      "review": {
+        "words": "请 走 开",
+        "unlisted": ["走开"],
+        "indirect": ["es", "fr", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "问得好。",
+      "reading": "Wèn de hǎo.",
+      "gloss": {
+        "en": "Good question!",
+        "tr": "Güzel soru!",
+        "de": "Gute Frage.",
+        "es": "Buena pregunta.",
+        "fr": "Bonne question.",
+        "pt-BR": "Boa pergunta.",
+        "ru": "Хороший вопрос.",
+        "ar": "سؤال جيد."
+      },
+      "freqRank": 246,
+      "review": { "words": "问 得 好", "indirect": ["ar", "es", "pt-BR", "ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "她很高。",
+      "reading": "Tā hěn gāo.",
+      "gloss": {
+        "en": "She is tall.",
+        "tr": "O uzun boylu.",
+        "de": "Sie ist groß.",
+        "es": "Es alta.",
+        "fr": "Elle est grande.",
+        "ru": "Она высокая."
+      },
+      "freqRank": 290,
+      "review": { "words": "她 很 高", "indirect": ["ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "请进来！",
+      "reading": "Qǐng jìnlái!",
+      "gloss": {
+        "en": "Please come in!",
+        "tr": "Lütfen içeri girin!",
+        "de": "Bitte tretet ein!",
+        "fr": "Entrez je vous prie !",
+        "ru": "Входите, пожалуйста!",
+        "ar": "من فضلك، ادخل!"
+      },
+      "freqRank": 338,
+      "review": {
+        "words": "请 进 来",
+        "unlisted": ["请进来"],
+        "indirect": ["ar", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "进来吧。",
+      "reading": "Jìnlái ba.",
+      "gloss": {
+        "en": "Come in.",
+        "tr": "Gelin.",
+        "de": "Komm herein.",
+        "es": "¡Entra!",
+        "fr": "Entrez !",
+        "pt-BR": "Entre.",
+        "ru": "Войдите!",
+        "ar": "تفضل بالدخول."
+      },
+      "freqRank": 338,
+      "review": {
+        "words": "进 来 吧",
+        "unlisted": ["进来"],
+        "indirect": ["ar", "es", "fr", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "您好吗？",
+      "reading": "Nín hǎo ma?",
+      "gloss": {
+        "en": "How are you doing?",
+        "tr": "Nasılsınız?",
+        "de": "Wie geht es Ihnen?",
+        "es": "¿Qué tal te va?",
+        "fr": "Comment vas-tu ?",
+        "pt-BR": "Como vai?",
+        "ru": "Как поживаете?",
+        "ar": "كيف حالك؟"
+      },
+      "freqRank": 357,
+      "review": {
+        "words": "您 好 吗",
+        "unlisted": ["您好"],
+        "indirect": ["ar", "es", "fr", "pt-BR", "ru"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "我爱您。",
+      "reading": "Wǒ ài nín.",
+      "gloss": {
+        "en": "I love you.",
+        "tr": "Seni seviyorum.",
+        "de": "Ich liebe Sie.",
+        "es": "Te quiero.",
+        "fr": "Je vous aime.",
+        "pt-BR": "Te amo.",
+        "ru": "Я люблю Вас.",
+        "ar": "أنا أحبك."
+      },
+      "freqRank": 357,
+      "review": { "words": "我 爱 您", "indirect": ["ar", "es", "tr"] }
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "您有什么？",
+      "reading": "Nín yǒu shénme?",
+      "gloss": {
+        "en": "What do you have?",
+        "tr": "Neleriniz var?",
+        "de": "Was haben Sie?",
+        "es": "¿Qué tienes?",
+        "fr": "Qu'est-ce que vous avez ?",
+        "pt-BR": "O que você tem?",
+        "ru": "Что у Вас есть?"
+      },
+      "freqRank": 357,
+      "review": { "words": "您 有 什么", "indirect": ["es", "pt-BR", "ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "他笑了。",
+      "reading": "Tā xiào le.",
+      "gloss": {
+        "en": "He laughed.",
+        "tr": "O güldü.",
+        "de": "Er lachte.",
+        "es": "Él se rio.",
+        "fr": "Il rigolait.",
+        "pt-BR": "Ele estava rindo.",
+        "ru": "Он засмеялся.",
+        "ar": "ضحك."
+      },
+      "freqRank": 382,
+      "review": { "words": "他 笑 了", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "大家笑了。",
+      "reading": "Dàjiā xiào le.",
+      "gloss": {
+        "en": "Everybody laughed.",
+        "tr": "Herkes güldü.",
+        "de": "Alle lachten.",
+        "es": "Todos se rieron.",
+        "fr": "Tout le monde riait.",
+        "pt-BR": "Todos riram.",
+        "ru": "Все посмеялись.",
+        "ar": "ضحك الجميع."
+      },
+      "freqRank": 382,
+      "review": { "words": "大家 笑 了", "indirect": ["ar", "ru"] }
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "我笑了。",
+      "reading": "Wǒ xiào le.",
+      "gloss": {
+        "en": "I laughed.",
+        "tr": "Güldüm.",
+        "de": "Ich lachte.",
+        "es": "Me reí.",
+        "fr": "J'ai ri.",
+        "pt-BR": "Eu ri.",
+        "ru": "Я смеялся.",
+        "ar": "ضحكت."
+      },
+      "freqRank": 382,
+      "review": { "words": "我 笑 了", "indirect": ["ar", "ru", "tr"] }
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "我们是男人。",
+      "reading": "Wǒmen shì nánrén.",
+      "gloss": {
+        "en": "We are men.",
+        "tr": "Biz erkeğiz.",
+        "de": "Wir sind Männer.",
+        "es": "Somos hombres.",
+        "fr": "Nous sommes des hommes.",
+        "pt-BR": "Somos homens.",
+        "ru": "Мы мужчины.",
+        "ar": "نحن رجال."
+      },
+      "freqRank": 415,
+      "review": { "words": "我们 是 男人", "indirect": ["ar", "es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "我是女人。",
+      "reading": "Wǒ shì nǚrén.",
+      "gloss": {
+        "en": "I am a woman.",
+        "tr": "Ben bir kadınım.",
+        "de": "Ich bin eine Frau.",
+        "es": "Soy una mujer.",
+        "fr": "Je suis une femme.",
+        "pt-BR": "Sou uma mulher.",
+        "ru": "Я женщина.",
+        "ar": "أنا امرأة."
+      },
+      "freqRank": 383,
+      "review": { "words": "我 是 女人", "indirect": ["ar"] }
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "请开门。",
+      "reading": "Qǐng kāimén.",
+      "gloss": {
+        "en": "Open the door, please.",
+        "tr": "Kapıyı aç, lütfen.",
+        "de": "Bitte, mach die Tür auf!",
+        "es": "Abre la puerta, por favor.",
+        "fr": "Veuillez ouvrir la porte.",
+        "ru": "Пожалуйста, откройте дверь."
+      },
+      "freqRank": 422,
+      "review": { "words": "请 开 门", "unlisted": ["开门"], "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "可能明天吧。",
+      "reading": "Kěnéng míngtiān ba.",
+      "gloss": {
+        "en": "Maybe tomorrow.",
+        "tr": "Belki yarın.",
+        "de": "Vielleicht morgen.",
+        "fr": "Peut-être demain.",
+        "ru": "Возможно, завтра."
+      },
+      "freqRank": 469,
+      "review": { "words": "可能 明天 吧", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "晚上吃什么？",
+      "reading": "Wǎnshang chī shénme?",
+      "gloss": {
+        "en": "What do we eat tonight?",
+        "tr": "Bu gece ne yeriz?",
+        "de": "Was essen wir heute Abend?",
+        "es": "¿Qué comemos esta noche?",
+        "fr": "On mange quoi ce soir ?",
+        "pt-BR": "O que vamos comer hoje à noite?",
+        "ru": "Что сегодня на ужин?",
+        "ar": "ماذا نأكل الليلة؟"
+      },
+      "freqRank": 502,
+      "review": { "words": "晚上 吃 什么", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "我很快乐。",
+      "reading": "Wǒ hěn kuàilè.",
+      "gloss": {
+        "en": "I'm very happy.",
+        "tr": "Ben çok mutluyum.",
+        "de": "Ich bin sehr glücklich.",
+        "es": "Soy muy feliz.",
+        "fr": "Je suis très heureux.",
+        "pt-BR": "Estou muito feliz.",
+        "ru": "Я очень счастлив.",
+        "ar": "أنا سعيد للغاية."
+      },
+      "freqRank": 637,
+      "review": { "words": "我 很 快乐", "indirect": ["ar", "fr", "pt-BR", "ru"] }
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "新年快乐！",
+      "reading": "Xīnnián kuàilè!",
+      "gloss": {
+        "en": "Happy New Year!",
+        "tr": "Mutlu yıllar!",
+        "de": "Frohes neues Jahr!",
+        "es": "¡Feliz Año Nuevo!",
+        "fr": "Bonne année !",
+        "pt-BR": "Feliz ano novo!",
+        "ru": "С Новым годом!",
+        "ar": "كل سنة و أنت بخير."
+      },
+      "freqRank": 637,
+      "review": {
+        "words": "新 年 快乐",
+        "unlisted": ["新年快乐"],
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "你不懂。",
+      "reading": "Nǐ bù dǒng.",
+      "gloss": {
+        "en": "You don't understand.",
+        "tr": "Anlamıyorsun.",
+        "de": "Du verstehst nicht.",
+        "fr": "Tu ne comprends pas."
+      },
+      "freqRank": 669,
+      "review": { "words": "你 不 懂", "edited": ["tr"] }
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "我不懂。",
+      "reading": "Wǒ bù dǒng.",
+      "gloss": {
+        "en": "I don't get it.",
+        "tr": "Anlamadım.",
+        "de": "Ich verstehe nicht.",
+        "es": "No entiendo.",
+        "fr": "Je ne comprends pas.",
+        "ru": "Я не понимаю."
+      },
+      "freqRank": 669,
+      "review": { "words": "我 不 懂" }
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "您学习吗？",
+      "reading": "Nín xuéxí ma?",
+      "gloss": {
+        "en": "Are you studying?",
+        "tr": "Ders çalışıyor musunuz?",
+        "de": "Lernen Sie gerade?",
+        "es": "¿Estudia?",
+        "fr": "Étudiez-vous ?",
+        "pt-BR": "Você está estudando?",
+        "ru": "Учишься?",
+        "ar": "هل تدرس؟"
+      },
+      "freqRank": 789,
+      "review": { "words": "您 学习 吗", "indirect": ["ar", "pt-BR", "ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "他可能忙。",
+      "reading": "Tā kěnéng máng.",
+      "gloss": {
+        "en": "Maybe he's busy.",
+        "tr": "O belki meşguldür.",
+        "de": "Vielleicht ist er beschäftigt.",
+        "fr": "Il est peut-être occupé.",
+        "pt-BR": "Talvez ele esteja ocupado.",
+        "ru": "Может быть, он занят."
+      },
+      "freqRank": 859,
+      "review": { "words": "他 可能 忙", "indirect": ["fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "你忙吗？",
+      "reading": "Nǐ máng ma?",
+      "gloss": {
+        "en": "Are you busy?",
+        "tr": "Meşgul müsün?",
+        "de": "Bist du beschäftigt?",
+        "es": "¿Estás ocupado?",
+        "ru": "Ты занята?"
+      },
+      "freqRank": 859,
+      "review": { "words": "你 忙 吗", "edited": ["tr"] }
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "她很忙。",
+      "reading": "Tā hěn máng.",
+      "gloss": {
+        "en": "She is very busy.",
+        "tr": "O çok meşgul.",
+        "de": "Sie ist sehr beschäftigt.",
+        "es": "Está muy ocupada.",
+        "fr": "Elle est très occupée.",
+        "pt-BR": "Ela está muito ocupada.",
+        "ru": "Она очень занята."
+      },
+      "freqRank": 859,
+      "review": { "words": "她 很 忙", "indirect": ["es", "fr", "pt-BR", "ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "我很忙。",
+      "reading": "Wǒ hěn máng.",
+      "gloss": {
+        "en": "I'm busy.",
+        "tr": "Meşgulüm.",
+        "de": "Ich bin beschäftigt.",
+        "es": "Estoy ocupado.",
+        "fr": "Je suis très occupé.",
+        "pt-BR": "Estou ocupado.",
+        "ru": "Я занят.",
+        "ar": "أنا مشغول."
+      },
+      "freqRank": 859,
+      "review": { "words": "我 很 忙", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "她非常漂亮。",
+      "reading": "Tā fēicháng piàoliang.",
+      "gloss": {
+        "en": "She's very beautiful.",
+        "tr": "O çok güzel.",
+        "es": "Ella es muy bonita.",
+        "fr": "Elle est très belle.",
+        "ru": "Она очень красивая."
+      },
+      "freqRank": 915,
+      "review": { "words": "她 非常 漂亮", "edited": ["tr"] }
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "我觉得冷。",
+      "reading": "Wǒ juéde lěng.",
+      "gloss": {
+        "en": "I feel cold.",
+        "tr": "Üşüyorum.",
+        "de": "Ich friere.",
+        "es": "Tengo frío.",
+        "fr": "J'ai froid.",
+        "pt-BR": "Estou com frio.",
+        "ru": "Мне холодно.",
+        "ar": "أشعر بالبرد."
+      },
+      "freqRank": 1027,
+      "review": { "words": "我 觉得 冷", "indirect": ["ar", "es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "大家早上好。",
+      "reading": "Dàjiā zǎoshang hǎo.",
+      "gloss": {
+        "en": "Good morning, everybody.",
+        "tr": "Herkese günaydın.",
+        "de": "Guten Morgen zusammen.",
+        "es": "Buenos días a todos.",
+        "fr": "Bonjour tout le monde.",
+        "pt-BR": "Bom dia a todos.",
+        "ru": "Доброе утро всем.",
+        "ar": "صَبَاح الْخَيْر جَمِيْعاً."
+      },
+      "freqRank": 1092,
+      "review": {
+        "words": "大家 早上 好",
+        "unlisted": ["早上好"],
+        "indirect": ["de", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "我喜欢鱼。",
+      "reading": "Wǒ xǐhuan yú.",
+      "gloss": {
+        "en": "I like fish.",
+        "tr": "Balık severim.",
+        "de": "Ich mag Fisch gern.",
+        "es": "Me gusta el pescado.",
+        "fr": "J'aime le poisson.",
+        "pt-BR": "Gosto de peixes.",
+        "ru": "Я люблю рыбу."
+      },
+      "freqRank": 1189,
+      "review": { "words": "我 喜欢 鱼", "indirect": ["es", "fr", "pt-BR", "ru"] }
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "他正在打电话。",
+      "reading": "Tā zhèngzài dǎ diànhuà.",
+      "gloss": {
+        "en": "He's talking on the telephone.",
+        "tr": "Telefonda konuşuyor.",
+        "de": "Er telefoniert.",
+        "es": "Él está hablando por teléfono.",
+        "fr": "Il est en train de parler au téléphone.",
+        "pt-BR": "Ele está ao telefone.",
+        "ru": "Он сейчас звонит по телефону.",
+        "ar": "إنه يتحدث على الهاتف."
+      },
+      "freqRank": 1218,
+      "review": {
+        "words": "他 正在 打电话",
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "我好累。",
+      "reading": "Wǒ hǎo lèi.",
+      "gloss": {
+        "en": "I'm so tired.",
+        "tr": "Çok yorgunum.",
+        "de": "Ich bin sehr müde.",
+        "es": "Estoy muy cansado.",
+        "fr": "Je suis si fatigué.",
+        "pt-BR": "Estou bem cansado.",
+        "ru": "Я так устала!"
+      },
+      "freqRank": 1197,
+      "review": { "words": "我 好 累", "indirect": ["fr", "pt-BR"], "edited": ["tr"] }
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "我们可以休息。",
+      "reading": "Wǒmen kěyǐ xiūxi.",
+      "gloss": {
+        "en": "We can rest.",
+        "tr": "Dinlenebiliriz.",
+        "de": "Wir können uns ausruhen.",
+        "es": "Podemos descansar.",
+        "ru": "Мы можем отдохнуть."
+      },
+      "freqRank": 1225,
+      "review": { "words": "我们 可以 休息", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "我很累。",
+      "reading": "Wǒ hěn lèi.",
+      "gloss": {
+        "en": "I'm tired.",
+        "tr": "Yorgunum.",
+        "de": "Ich bin müde.",
+        "es": "Estoy muy cansado.",
+        "fr": "Je suis fatigué !",
+        "pt-BR": "Eu estou cansado.",
+        "ru": "Я очень устал."
+      },
+      "freqRank": 1197,
+      "review": { "words": "我 很 累", "edited": ["tr"] }
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "你觉得怎么样？",
+      "reading": "Nǐ juéde zěnmeyàng?",
+      "gloss": {
+        "en": "What do you think of it?",
+        "tr": "Sence nasıl?",
+        "de": "Was hältst du davon?",
+        "es": "¿Qué piensas de ello?",
+        "fr": "Qu'en penses-tu ?",
+        "ru": "Что вы об этом думаете?"
+      },
+      "freqRank": 1367,
+      "review": { "words": "你 觉得 怎么样", "indirect": ["es", "ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "我累了。",
+      "reading": "Wǒ lèi le.",
+      "gloss": {
+        "en": "I'm tired.",
+        "tr": "Ben yorgunum.",
+        "de": "Ich bin müde.",
+        "es": "Estoy cansado.",
+        "fr": "Je suis fatigué !",
+        "pt-BR": "Eu estou cansado.",
+        "ru": "Я устал.",
+        "ar": "أنا متعب."
+      },
+      "freqRank": 1197,
+      "review": { "words": "我 累 了", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "咖啡不好。",
+      "reading": "Kāfēi bù hǎo.",
+      "gloss": {
+        "en": "The coffee is bad.",
+        "tr": "Kahve iyi değil.",
+        "de": "Der Kaffee ist schlecht.",
+        "es": "El café no es bueno.",
+        "fr": "Le café est mauvais.",
+        "ru": "Кофе плохой."
+      },
+      "freqRank": 1698,
+      "review": {
+        "words": "咖啡 不 好",
+        "unlisted": ["不好"],
+        "indirect": ["ru"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "我在休息。",
+      "reading": "Wǒ zài xiūxi.",
+      "gloss": {
+        "en": "I'm resting.",
+        "tr": "Ben dinleniyorum.",
+        "de": "Ich ruhe mich aus.",
+        "es": "Estoy descansando.",
+        "pt-BR": "Estou descansando.",
+        "ru": "Я отдыхаю."
+      },
+      "freqRank": 1225,
+      "review": { "words": "我 在 休息", "indirect": ["pt-BR", "ru", "tr"], "edited": ["ru"] }
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "咖啡好了。",
+      "reading": "Kāfēi hǎo le.",
+      "gloss": {
+        "en": "Coffee is ready.",
+        "tr": "Kahve hazır.",
+        "de": "Der Kaffee ist fertig.",
+        "es": "El café está listo.",
+        "fr": "Le café est prêt.",
+        "pt-BR": "O café está pronto."
+      },
+      "freqRank": 1698,
+      "review": { "words": "咖啡 好 了", "indirect": ["es", "pt-BR"], "edited": ["tr"] }
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "慢慢吃。",
+      "reading": "Mànmàn chī.",
+      "gloss": {
+        "en": "Eat slowly.",
+        "tr": "Yavaş ye.",
+        "de": "Iss langsam!",
+        "es": "Come despacio.",
+        "fr": "Mange lentement.",
+        "pt-BR": "Coma devagar.",
+        "ru": "Ешь не спеша."
+      },
+      "freqRank": 1770,
+      "review": {
+        "words": "慢 慢 吃",
+        "unlisted": ["慢慢"],
+        "indirect": ["es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "坐我旁边。",
+      "reading": "Zuò wǒ pángbiān.",
+      "gloss": {
+        "en": "Sit beside me.",
+        "tr": "Yanımda otur.",
+        "de": "Setze dich neben mich.",
+        "es": "Siéntate junto a mí.",
+        "fr": "Asseyez-vous à côté de moi !",
+        "pt-BR": "Sente-se ao meu lado.",
+        "ru": "Сядь рядом со мной."
+      },
+      "freqRank": 1815,
+      "review": { "words": "坐 我 旁边", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "慢慢来。",
+      "reading": "Mànmàn lái.",
+      "gloss": {
+        "en": "Take your time.",
+        "tr": "Acele etmeyin.",
+        "de": "Lass dir Zeit.",
+        "es": "Tómate tu tiempo.",
+        "fr": "Prenez votre temps.",
+        "pt-BR": "Não tenha pressa.",
+        "ru": "Не торопись.",
+        "ar": "خذ وقتك."
+      },
+      "freqRank": 1770,
+      "review": {
+        "words": "慢 慢 来",
+        "unlisted": ["慢慢来"],
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "今天下雪。",
+      "reading": "Jīntiān xiàxuě.",
+      "gloss": {
+        "en": "It's snowing today.",
+        "tr": "Bugün kar yağıyor.",
+        "de": "Heute schneit es.",
+        "es": "Está nevando hoy.",
+        "fr": "Aujourd'hui, il neige.",
+        "pt-BR": "Está nevando hoje.",
+        "ru": "Сегодня идёт снег."
+      },
+      "freqRank": 1971,
+      "review": {
+        "words": "今天 下 雪",
+        "unlisted": ["下雪"],
+        "indirect": ["fr", "ru", "tr"],
+        "edited": ["en", "tr", "ru"]
+      }
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "我们喜欢雪。",
+      "reading": "Wǒmen xǐhuan xuě.",
+      "gloss": {
+        "en": "We like snow.",
+        "tr": "Kar severiz.",
+        "de": "Wir mögen Schnee.",
+        "es": "Nos gusta la nieve.",
+        "fr": "Nous aimons la neige.",
+        "ru": "Мы любим снег.",
+        "ar": "نحب الثلج."
+      },
+      "freqRank": 1971,
+      "review": { "words": "我们 喜欢 雪", "indirect": ["ar", "es", "ru", "tr"] }
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "出租车到了。",
+      "reading": "Chūzūchē dào le.",
+      "gloss": {
+        "en": "The taxi has arrived.",
+        "tr": "Taksi geldi.",
+        "de": "Das Taxi ist da.",
+        "es": "El taxi ha llegado.",
+        "fr": "Le taxi est arrivé.",
+        "pt-BR": "O táxi chegou.",
+        "ru": "Такси приехало."
+      },
+      "freqRank": 2677,
+      "review": { "words": "出租车 到 了", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "我喜欢唱歌。",
+      "reading": "Wǒ xǐhuan chànggē.",
+      "gloss": {
+        "en": "I like to sing.",
+        "tr": "Ben şarkı söylemeyi seviyorum.",
+        "de": "Ich singe gerne.",
+        "es": "Me gusta cantar.",
+        "fr": "J’aime chanter.",
+        "pt-BR": "Eu adoro cantar.",
+        "ru": "Я люблю петь."
+      },
+      "freqRank": 2876,
+      "review": { "words": "我 喜欢 唱歌", "indirect": ["fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "他会游泳。",
+      "reading": "Tā huì yóuyǒng.",
+      "gloss": {
+        "en": "He knows how to swim.",
+        "tr": "O yüzmeyi bilir.",
+        "de": "Er kann schwimmen.",
+        "es": "Él sabe nadar.",
+        "fr": "Il sait nager.",
+        "pt-BR": "Ele sabe nadar.",
+        "ru": "Он умеет плавать."
+      },
+      "freqRank": 3695,
+      "review": { "words": "他 会 游泳", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "我想跳舞。",
+      "reading": "Wǒ xiǎng tiàowǔ.",
+      "gloss": {
+        "en": "I want to dance.",
+        "tr": "Ben dans etmek istiyorum.",
+        "de": "Ich will tanzen.",
+        "es": "Quiero bailar.",
+        "fr": "Je veux danser.",
+        "pt-BR": "Quero dançar.",
+        "ru": "Я хочу танцевать."
+      },
+      "freqRank": 3920,
+      "review": { "words": "我 想 跳舞", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "他喜欢游泳。",
+      "reading": "Tā xǐhuan yóuyǒng.",
+      "gloss": {
+        "en": "He is fond of swimming.",
+        "tr": "O yüzmeyi seviyor.",
+        "de": "Er schwimmt gerne.",
+        "es": "A él le gusta nadar.",
+        "fr": "Il aime la natation.",
+        "pt-BR": "Ele gosta de nadar.",
+        "ru": "Он любит плавать."
+      },
+      "freqRank": 3695,
+      "review": { "words": "他 喜欢 游泳", "indirect": ["tr"] }
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "我没生病。",
+      "reading": "Wǒ méi shēngbìng.",
+      "gloss": {
+        "en": "I'm not sick.",
+        "tr": "Hasta değilim.",
+        "de": "Ich bin nicht krank.",
+        "es": "No estoy enferma.",
+        "fr": "Je ne suis pas malade.",
+        "pt-BR": "Eu não estou doente.",
+        "ru": "Я не болен."
+      },
+      "freqRank": 4336,
+      "review": { "words": "我 没 生病", "indirect": ["es", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "他生病了。",
+      "reading": "Tā shēngbìng le.",
+      "gloss": {
+        "en": "He is ill.",
+        "tr": "O hasta.",
+        "de": "Er ist krank.",
+        "es": "Él está enfermo.",
+        "fr": "Il est malade.",
+        "pt-BR": "Ele está doente.",
+        "ru": "Он болен.",
+        "ar": "إنه مريض."
+      },
+      "freqRank": 4336,
+      "review": { "words": "他 生病 了", "indirect": ["ar", "pt-BR"], "edited": ["tr"] }
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "我生病了。",
+      "reading": "Wǒ shēngbìng le.",
+      "gloss": {
+        "en": "I am sick.",
+        "tr": "Ben hastayım.",
+        "de": "Ich bin krank.",
+        "es": "Estoy enfermo.",
+        "fr": "Je suis malade.",
+        "pt-BR": "Estou doente.",
+        "ru": "Я болен.",
+        "ar": "أنا مريض."
+      },
+      "freqRank": 4336,
+      "review": { "words": "我 生病 了", "indirect": ["ar", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "人就是人。",
+      "reading": "Rén jiù shì rén.",
+      "gloss": {
+        "en": "People are people.",
+        "tr": "İnsanlar insandır.",
+        "de": "Menschen sind Menschen.",
+        "es": "La gente es gente.",
+        "fr": "Les gens sont les gens.",
+        "pt-BR": "Pessoas são pessoas.",
+        "ru": "Люди есть люди.",
+        "ar": "الناس هم الناس."
+      },
+      "freqRank": 19,
+      "review": { "words": "人 就 是 人", "unlisted": ["就是"] }
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "我是服务员。",
+      "reading": "Wǒ shì fúwùyuán.",
+      "gloss": {
+        "en": "I'm a waiter.",
+        "tr": "Ben bir garsonum.",
+        "de": "Ich bin Kellner.",
+        "es": "Soy camarero.",
+        "ru": "Я официант."
+      },
+      "freqRank": 5531,
+      "review": { "words": "我 是 服务员", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "让我去做。",
+      "reading": "Ràng wǒ qù zuò.",
+      "gloss": {
+        "en": "Let me do that.",
+        "tr": "Onu yapmama izin ver.",
+        "de": "Lasst das mich machen.",
+        "es": "Déjame que lo haga.",
+        "fr": "Laissez-moi faire ça.",
+        "ru": "Дайте я это сделаю."
+      },
+      "freqRank": 54,
+      "review": { "words": "让 我 去 做", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "我不打篮球。",
+      "reading": "Wǒ bù dǎ lánqiú.",
+      "gloss": {
+        "en": "I don't play basketball.",
+        "tr": "Ben basketbol oynamıyorum.",
+        "ru": "Я не играю в баскетбол."
+      },
+      "freqRank": 1000000,
+      "review": { "words": "我 不 打篮球", "edited": ["reading"] }
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "让我看看。",
+      "reading": "Ràng wǒ kànkan.",
+      "gloss": {
+        "en": "Let me have a look.",
+        "tr": "Bir bakayım.",
+        "de": "Zeig's mir!",
+        "es": "Muéstramelo.",
+        "fr": "Laisse-moi voir ça.",
+        "pt-BR": "Mostre-me.",
+        "ru": "Покажи мне!"
+      },
+      "freqRank": 54,
+      "review": {
+        "words": "让 我 看 看",
+        "unlisted": ["看看"],
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["reading", "en", "tr"]
+      }
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "我也不要。",
+      "reading": "Wǒ yě bú yào.",
+      "gloss": {
+        "en": "I don't want it either.",
+        "tr": "Ben de istemiyorum.",
+        "de": "Ich will auch nicht.",
+        "es": "Ni yo tampoco.",
+        "fr": "Moi non plus."
+      },
+      "freqRank": 23,
+      "review": {
+        "words": "我 也 不 要",
+        "unlisted": ["不要"],
+        "indirect": ["fr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "你想要什么？",
+      "reading": "Nǐ xiǎngyào shénme?",
+      "gloss": {
+        "en": "What do you want?",
+        "tr": "Ne istiyorsun?",
+        "de": "Was willst du?",
+        "es": "¿Qué quieres?",
+        "fr": "Que veux-tu ?",
+        "pt-BR": "O que você quer?",
+        "ru": "Что ты хочешь?",
+        "ar": "ما الذي تريده؟"
+      },
+      "freqRank": 55,
+      "review": {
+        "words": "你 想 要 什么",
+        "unlisted": ["想要"],
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "我也去了。",
+      "reading": "Wǒ yě qù le.",
+      "gloss": {
+        "en": "I also went there.",
+        "tr": "Ben de gittim.",
+        "de": "Ich ging auch.",
+        "es": "También fui.",
+        "fr": "J'y suis également allé.",
+        "pt-BR": "Eu também fui.",
+        "ru": "Я также отправился туда.",
+        "ar": "ذهبت أيضاً."
+      },
+      "freqRank": 38,
+      "review": { "words": "我 也 去 了", "indirect": ["ru"] }
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "你可以去了。",
+      "reading": "Nǐ kěyǐ qù le.",
+      "gloss": {
+        "en": "You may go.",
+        "tr": "Gidebilirsin.",
+        "de": "Sie dürfen gehen.",
+        "es": "Puedes irte.",
+        "fr": "Tu peux y aller.",
+        "pt-BR": "Você pode ir.",
+        "ru": "Ты можешь идти.",
+        "ar": "يمكنك الذهاب."
+      },
+      "freqRank": 58,
+      "review": { "words": "你 可以 去 了", "indirect": ["ar", "de", "es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "我想要你。",
+      "reading": "Wǒ xiǎngyào nǐ.",
+      "gloss": {
+        "en": "I want you.",
+        "tr": "Seni istiyorum.",
+        "de": "Ich will dich.",
+        "es": "Yo te deseo.",
+        "fr": "Je te veux.",
+        "pt-BR": "Eu te quero.",
+        "ru": "Я хочу тебя.",
+        "ar": "أريدك."
+      },
+      "freqRank": 44,
+      "review": {
+        "words": "我 想 要 你",
+        "unlisted": ["想要"],
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "她知道你吗？",
+      "reading": "Tā zhīdào nǐ ma?",
+      "gloss": {
+        "en": "Does she know you?",
+        "tr": "O seni tanıyor mu?",
+        "de": "Kennt sie dich?",
+        "es": "¿Ella te conoce?",
+        "fr": "Te connaît-elle ?",
+        "pt-BR": "Ela o conhece?",
+        "ru": "Она тебя знает?",
+        "ar": "هل تعرفك؟"
+      },
+      "freqRank": 105,
+      "review": {
+        "words": "她 知道 你 吗",
+        "indirect": ["ar", "fr", "pt-BR", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "我想要去。",
+      "reading": "Wǒ xiǎngyào qù.",
+      "gloss": {
+        "en": "I'd like to go.",
+        "tr": "Ben gitmek istiyorum.",
+        "de": "Ich würde gerne gehen.",
+        "es": "Me gustaría ir.",
+        "fr": "Je voudrais y aller.",
+        "pt-BR": "Gostaria de ir.",
+        "ru": "Я бы хотел пойти.",
+        "ar": "أود الذهاب."
+      },
+      "freqRank": 44,
+      "review": {
+        "words": "我 想 要 去",
+        "unlisted": ["想要"],
+        "indirect": ["ar", "es", "fr", "pt-BR", "ru"]
+      }
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "是的，我知道。",
+      "reading": "Shì de, wǒ zhīdào.",
+      "gloss": {
+        "en": "Yes, I know.",
+        "tr": "Evet, biliyorum.",
+        "de": "Ja, ich weiß.",
+        "es": "Sí, lo sé.",
+        "fr": "Oui, je sais.",
+        "ru": "Да, я знаю.",
+        "ar": "نعم أنا أعلم"
+      },
+      "freqRank": 105,
+      "review": { "words": "是 的 我 知道", "indirect": ["ar", "tr"] }
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "我也不知道。",
+      "reading": "Wǒ yě bù zhīdào.",
+      "gloss": {
+        "en": "I don't know either.",
+        "tr": "Ben de bilmiyorum.",
+        "de": "Ich weiß es auch nicht.",
+        "es": "Yo tampoco sé.",
+        "pt-BR": "Eu também não sei.",
+        "ru": "Я тоже не знаю."
+      },
+      "freqRank": 105,
+      "review": { "words": "我 也 不 知道", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "知道了没有？",
+      "reading": "Zhīdào le méiyǒu?",
+      "gloss": {
+        "en": "Got it?",
+        "tr": "Anladın mı?",
+        "de": "Kapiert?",
+        "es": "¿Lo pillas?",
+        "fr": "Pigé ?",
+        "pt-BR": "Entendeu?",
+        "ru": "Понятно?",
+        "ar": "هل فهمت؟"
+      },
+      "freqRank": 105,
+      "review": {
+        "words": "知道 了 没 有",
+        "unlisted": ["没有"],
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "我什么都知道。",
+      "reading": "Wǒ shénme dōu zhīdào.",
+      "gloss": {
+        "en": "I know everything.",
+        "tr": "Her şeyi biliyorum.",
+        "de": "Ich weiß alles.",
+        "es": "Lo sé todo.",
+        "fr": "Je sais tout.",
+        "ru": "Я всё знаю."
+      },
+      "freqRank": 105,
+      "review": { "words": "我 什么 都 知道" }
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "你得走了。",
+      "reading": "Nǐ děi zǒu le.",
+      "gloss": {
+        "en": "You have to leave.",
+        "tr": "Gitmen lazım.",
+        "de": "Du musst gehen.",
+        "fr": "Tu dois partir."
+      },
+      "freqRank": 109,
+      "review": { "words": "你 得 走 了", "edited": ["tr"] }
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "我都知道了。",
+      "reading": "Wǒ dōu zhīdào le.",
+      "gloss": {
+        "en": "I already know all of it.",
+        "tr": "Hepsini zaten biliyorum.",
+        "de": "Ich weiß alles.",
+        "es": "Lo sé todo.",
+        "fr": "Je sais tout.",
+        "pt-BR": "Eu sei de tudo.",
+        "ru": "Я всё знаю.",
+        "ar": "أعرف كل شيء."
+      },
+      "freqRank": 105,
+      "review": {
+        "words": "我 都 知道 了",
+        "indirect": ["ar", "de", "pt-BR", "ru", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "有人走了。",
+      "reading": "Yǒurén zǒu le.",
+      "gloss": {
+        "en": "Someone left.",
+        "tr": "Biri gitti.",
+        "de": "Jemand ist gegangen.",
+        "es": "Alguien se fue.",
+        "fr": "Quelqu'un est parti.",
+        "ru": "Кто-то ушёл."
+      },
+      "freqRank": 109,
+      "review": {
+        "words": "有 人 走 了",
+        "unlisted": ["有人"],
+        "indirect": ["es", "ru"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "我得走了。",
+      "reading": "Wǒ děi zǒu le.",
+      "gloss": {
+        "en": "I have to go now.",
+        "tr": "Şimdi gitmek zorundayım.",
+        "de": "Ich muss jetzt gehen.",
+        "es": "Ya me tengo que ir.",
+        "fr": "Je dois y aller maintenant.",
+        "pt-BR": "Tenho que ir agora.",
+        "ru": "Мне пора идти.",
+        "ar": "علي الذهاب الآن."
+      },
+      "freqRank": 109,
+      "review": { "words": "我 得 走 了", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "有什么问题吗？",
+      "reading": "Yǒu shénme wèntí ma?",
+      "gloss": {
+        "en": "Are there any questions?",
+        "tr": "Soru var mı?",
+        "de": "Gibt es Fragen?",
+        "es": "¿Hay alguna pregunta?",
+        "fr": "Y a-t-il des questions ?",
+        "pt-BR": "Tem alguma pergunta?",
+        "ru": "Вопросы есть?"
+      },
+      "freqRank": 109,
+      "review": { "words": "有 什么 问题 吗", "indirect": ["fr", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "我要走了。",
+      "reading": "Wǒ yào zǒu le.",
+      "gloss": {
+        "en": "I'm leaving now.",
+        "tr": "Artık gidiyorum.",
+        "de": "Ich gehe.",
+        "es": "Voy a ir.",
+        "fr": "Je vais y aller.",
+        "pt-BR": "Eu vou.",
+        "ru": "Я пойду.",
+        "ar": "أنا ذاهب."
+      },
+      "freqRank": 109,
+      "review": {
+        "words": "我 要 走 了",
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "他为她工作。",
+      "reading": "Tā wèi tā gōngzuò.",
+      "gloss": {
+        "en": "He works for her.",
+        "fr": "Il travaille pour elle.",
+        "ru": "Он работает на неё."
+      },
+      "freqRank": 111,
+      "review": { "words": "他 为 她 工作", "edited": ["ru"] }
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "它太大了。",
+      "reading": "Tā tài dà le.",
+      "gloss": {
+        "en": "It's too big.",
+        "tr": "O çok büyük.",
+        "de": "Das ist zu groß.",
+        "es": "Es demasiado grande.",
+        "fr": "C'est trop grand.",
+        "pt-BR": "É muito grande.",
+        "ru": "Он слишком большой.",
+        "ar": "إنه كبير جدًا."
+      },
+      "freqRank": 114,
+      "review": {
+        "words": "它 太 大 了",
+        "indirect": ["ar", "fr", "pt-BR", "ru", "tr"],
+        "edited": ["ar"]
+      }
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "但是，我不要。",
+      "reading": "Dànshì, wǒ bú yào.",
+      "gloss": {
+        "en": "But I don't want to.",
+        "tr": "Fakat ben istemiyorum.",
+        "de": "Aber ich will nicht!",
+        "es": "Pero no quiero.",
+        "fr": "Mais je ne veux pas.",
+        "pt-BR": "Mas eu não quero.",
+        "ru": "Но я не хочу.",
+        "ar": "لكن لا أريد"
+      },
+      "freqRank": 115,
+      "review": {
+        "words": "但是 我 不 要",
+        "unlisted": ["不要"],
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "我时间不多。",
+      "reading": "Wǒ shíjiān bù duō.",
+      "gloss": {
+        "en": "I don't have much time.",
+        "tr": "Çok zamanım yok.",
+        "de": "Ich habe nicht viel Zeit.",
+        "es": "No tengo mucho tiempo.",
+        "fr": "Je n'ai pas beaucoup de temps.",
+        "ru": "У меня не так много времени."
+      },
+      "freqRank": 127,
+      "review": { "words": "我 时间 不 多", "indirect": ["de", "ru", "tr"] }
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "谁想要它？",
+      "reading": "Shéi xiǎngyào tā?",
+      "gloss": {
+        "en": "Who wants it?",
+        "tr": "Bunu kim istiyor?",
+        "de": "Wer will es?",
+        "es": "¿Quién lo quiere?",
+        "fr": "Qui veut ça ?",
+        "ru": "Кто хочет?"
+      },
+      "freqRank": 142,
+      "review": { "words": "谁 想 要 它", "unlisted": ["想要"], "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "我就喜欢它。",
+      "reading": "Wǒ jiù xǐhuan tā.",
+      "gloss": {
+        "en": "I just like it.",
+        "tr": "Sadece hoşuma gidiyor.",
+        "de": "Ich mag das halt.",
+        "es": "Simplemente me gusta.",
+        "ru": "Мне это просто нравится."
+      },
+      "freqRank": 139,
+      "review": { "words": "我 就 喜欢 它", "indirect": ["ru", "tr"], "edited": ["en", "tr", "ru"] }
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "快到家了。",
+      "reading": "Kuài dào jiā le.",
+      "gloss": {
+        "en": "We're almost home.",
+        "tr": "Neredeyse evdeyiz.",
+        "de": "Wir sind fast zu Hause.",
+        "fr": "On est presque à la maison.",
+        "pt-BR": "Estamos quase em casa.",
+        "ru": "Мы почти дома."
+      },
+      "freqRank": 153,
+      "review": { "words": "快 到 家 了", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "我还没吃。",
+      "reading": "Wǒ hái méi chī.",
+      "gloss": {
+        "en": "I haven't eaten yet.",
+        "tr": "Henüz yemek yemedim.",
+        "de": "Ich habe noch nicht gegessen.",
+        "es": "Todavía no he comido.",
+        "fr": "Je n'ai pas encore mangé.",
+        "pt-BR": "Ainda não comi.",
+        "ru": "Я ещё не ел."
+      },
+      "freqRank": 142,
+      "review": { "words": "我 还 没 吃", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "她比他大。",
+      "reading": "Tā bǐ tā dà.",
+      "gloss": {
+        "en": "She's older than him.",
+        "tr": "O, ondan büyük.",
+        "de": "Sie ist älter als er.",
+        "es": "Ella es mayor que él.",
+        "fr": "Elle est plus âgée que lui.",
+        "pt-BR": "Ela é mais velha que ele.",
+        "ru": "Она старше него."
+      },
+      "freqRank": 155,
+      "review": { "words": "她 比 他 大", "indirect": ["fr", "pt-BR", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "我在找你。",
+      "reading": "Wǒ zài zhǎo nǐ.",
+      "gloss": {
+        "en": "I'm looking for you.",
+        "tr": "Seni arıyorum.",
+        "de": "Ich suche dich.",
+        "es": "Te estoy buscando.",
+        "fr": "Je suis en train de te chercher.",
+        "pt-BR": "Estou te procurando.",
+        "ru": "Я ищу тебя."
+      },
+      "freqRank": 152,
+      "review": {
+        "words": "我 在 找 你",
+        "indirect": ["fr", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "他没有孩子。",
+      "reading": "Tā méiyǒu háizi.",
+      "gloss": {
+        "en": "He has no children.",
+        "tr": "Onun çocuğu yok.",
+        "de": "Er hat keine Kinder.",
+        "es": "Él no tiene hijos.",
+        "fr": "Il n'a pas d'enfants.",
+        "pt-BR": "Ele não tem filhos.",
+        "ru": "У него нет детей."
+      },
+      "freqRank": 207,
+      "review": {
+        "words": "他 没 有 孩子",
+        "unlisted": ["没有"],
+        "indirect": ["es", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "我在找工作。",
+      "reading": "Wǒ zài zhǎo gōngzuò.",
+      "gloss": {
+        "en": "I'm looking for a job.",
+        "tr": "Bir iş arıyorum.",
+        "de": "Ich suche Arbeit.",
+        "es": "Estoy buscando trabajo.",
+        "fr": "Je cherche du travail.",
+        "pt-BR": "Procuro um emprego.",
+        "ru": "Я ищу работу."
+      },
+      "freqRank": 152,
+      "review": { "words": "我 在 找 工作", "indirect": ["de", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "别吃太多。",
+      "reading": "Bié chī tài duō.",
+      "gloss": {
+        "en": "Don't eat too much.",
+        "tr": "Çok fazla yemek yemeyin.",
+        "de": "Iss nicht zu viel.",
+        "es": "No comas demasiado.",
+        "fr": "Ne mange pas trop.",
+        "pt-BR": "Não coma demasiado.",
+        "ru": "Не ешь слишком много."
+      },
+      "freqRank": 214,
+      "review": { "words": "别 吃 太 多", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "我比他好。",
+      "reading": "Wǒ bǐ tā hǎo.",
+      "gloss": {
+        "en": "I'm better than him.",
+        "tr": "Ben ondan daha iyiyim.",
+        "de": "Ich bin besser als er.",
+        "es": "Estoy mejor que él.",
+        "fr": "Je suis meilleur que lui.",
+        "pt-BR": "Estou melhor que ele.",
+        "ru": "Я лучше, чем он."
+      },
+      "freqRank": 155,
+      "review": { "words": "我 比 他 好", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "别来这里！",
+      "reading": "Bié lái zhèlǐ!",
+      "gloss": {
+        "en": "Don't come here!",
+        "tr": "Buraya gelme!",
+        "de": "Komm nicht her!",
+        "es": "¡No vengas aquí!"
+      },
+      "freqRank": 214,
+      "review": { "words": "别 来 这 里", "unlisted": ["这里"], "edited": ["tr"] }
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "我觉得是你。",
+      "reading": "Wǒ juéde shì nǐ.",
+      "gloss": {
+        "en": "I think that it's you.",
+        "tr": "Bence sensin.",
+        "de": "Ich glaube, das bist du.",
+        "es": "Creo que eres tú.",
+        "fr": "Je pense que c'est toi.",
+        "ru": "Думаю, что ты."
+      },
+      "freqRank": 161,
+      "review": { "words": "我 觉得 是 你", "edited": ["tr"] }
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "今天是几号？",
+      "reading": "Jīntiān shì jǐ hào?",
+      "gloss": {
+        "en": "What's the date today?",
+        "tr": "Bugünün tarihi nedir?",
+        "de": "Welches Datum haben wir heute?",
+        "es": "¿A qué estamos hoy?",
+        "fr": "Quelle est la date aujourd'hui ?",
+        "pt-BR": "Qual é a data de hoje?",
+        "ru": "Какая сегодня дата?"
+      },
+      "freqRank": 278,
+      "review": {
+        "words": "今天 是 几 号",
+        "unlisted": ["几号"],
+        "indirect": ["es", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "我非常想你。",
+      "reading": "Wǒ fēicháng xiǎng nǐ.",
+      "gloss": {
+        "en": "I miss you badly.",
+        "tr": "Seni çok özlüyorum.",
+        "de": "Ich vermisse dich sehr.",
+        "es": "Te echo mucho de menos.",
+        "fr": "Tu me manques beaucoup.",
+        "pt-BR": "Eu sinto muito a sua falta.",
+        "ru": "Мне тебя очень не хватает.",
+        "ar": "أشتاق إليك كثيراً."
+      },
+      "freqRank": 194,
+      "review": { "words": "我 非常 想 你", "indirect": ["ar", "pt-BR", "tr"] }
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "他比我高。",
+      "reading": "Tā bǐ wǒ gāo.",
+      "gloss": {
+        "en": "He is taller than I.",
+        "tr": "O benden uzun.",
+        "de": "Er ist größer als ich.",
+        "es": "Él es más alto que yo.",
+        "fr": "Il est plus grand que moi.",
+        "ru": "Он выше меня."
+      },
+      "freqRank": 290,
+      "review": { "words": "他 比 我 高", "indirect": ["ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "我没有孩子。",
+      "reading": "Wǒ méiyǒu háizi.",
+      "gloss": {
+        "en": "I don't have any children.",
+        "tr": "Hiç çocuğum yok.",
+        "de": "Ich habe keine Kinder.",
+        "es": "No tengo hijos.",
+        "fr": "Je n'ai pas d'enfant.",
+        "pt-BR": "Eu não tenho filhos.",
+        "ru": "У меня нет детей."
+      },
+      "freqRank": 207,
+      "review": {
+        "words": "我 没 有 孩子",
+        "unlisted": ["没有"],
+        "indirect": ["de", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "他非常高大。",
+      "reading": "Tā fēicháng gāodà.",
+      "gloss": {
+        "en": "He is very tall.",
+        "tr": "O, çok uzun boyludur.",
+        "de": "Er ist sehr groß.",
+        "es": "Él es muy alto.",
+        "fr": "Il est très grand.",
+        "pt-BR": "Ele é muito alto.",
+        "ru": "Он очень высокий."
+      },
+      "freqRank": 290,
+      "review": { "words": "他 非常 高 大", "unlisted": ["高大"], "indirect": ["tr"] }
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "你有多高？",
+      "reading": "Nǐ yǒu duō gāo?",
+      "gloss": {
+        "en": "How tall are you?",
+        "tr": "Senin boyun kaç?",
+        "de": "Wie groß bist du?",
+        "es": "¿Cuánto mides?",
+        "fr": "Combien mesures-tu ?",
+        "pt-BR": "Qual a sua altura?",
+        "ru": "Какой у тебя рост?",
+        "ar": "كم طولك؟"
+      },
+      "freqRank": 290,
+      "review": { "words": "你 有 多 高", "indirect": ["ar", "fr", "ru"] }
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "我比他高。",
+      "reading": "Wǒ bǐ tā gāo.",
+      "gloss": {
+        "en": "I am taller than he.",
+        "tr": "Ben ondan daha uzunum.",
+        "de": "Ich bin größer als er.",
+        "es": "Soy más alto que él.",
+        "fr": "Je suis plus grand que lui.",
+        "ru": "Я выше его."
+      },
+      "freqRank": 290,
+      "review": { "words": "我 比 他 高", "indirect": ["fr", "tr"] }
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "让我进去。",
+      "reading": "Ràng wǒ jìnqù.",
+      "gloss": {
+        "en": "Let me in.",
+        "tr": "İçeri girmeme izin ver.",
+        "de": "Lass mich herein.",
+        "es": "Déjame entrar.",
+        "fr": "Laissez-moi rentrer.",
+        "pt-BR": "Deixe-me entrar.",
+        "ru": "Впустите меня."
+      },
+      "freqRank": 338,
+      "review": { "words": "让 我 进 去", "unlisted": ["进去"], "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "我是个男人。",
+      "reading": "Wǒ shì gè nánrén.",
+      "gloss": {
+        "en": "I am a man.",
+        "tr": "Ben bir erkeğim.",
+        "de": "Ich bin ein Mann.",
+        "es": "Soy un hombre.",
+        "fr": "Je suis un homme.",
+        "pt-BR": "Eu sou homem.",
+        "ru": "Я мужчина.",
+        "ar": "أنا رجل."
+      },
+      "freqRank": 415,
+      "review": { "words": "我 是 个 男人", "indirect": ["ar", "pt-BR", "ru"] }
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "你要多少钱？",
+      "reading": "Nǐ yào duōshǎo qián?",
+      "gloss": {
+        "en": "How much money do you want?",
+        "tr": "Ne kadar para istiyorsun?",
+        "de": "Wie viel Geld möchtest du?",
+        "es": "¿Cuánto dinero quieres?",
+        "fr": "Combien d'argent veux-tu ?",
+        "pt-BR": "Quanto dinheiro vocês querem?",
+        "ru": "Сколько денег вы хотите?",
+        "ar": "كم من المال تريد؟"
+      },
+      "freqRank": 526,
+      "review": { "words": "你 要 多少 钱", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "我正在吃东西。",
+      "reading": "Wǒ zhèngzài chī dōngxi.",
+      "gloss": {
+        "en": "I'm eating.",
+        "tr": "Şimdi yemek yiyorum.",
+        "de": "Ich esse gerade.",
+        "es": "Estoy comiendo.",
+        "fr": "Je mange.",
+        "pt-BR": "Estou comendo.",
+        "ru": "Я ем."
+      },
+      "freqRank": 420,
+      "review": { "words": "我 正在 吃 东西", "indirect": ["fr", "pt-BR", "ru"] }
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "这要多少钱？",
+      "reading": "Zhè yào duōshǎo qián?",
+      "gloss": {
+        "en": "How much does this cost?",
+        "tr": "Bu ne kadar?",
+        "de": "Wie viel wird das kosten?",
+        "es": "¿Cuánto costará esto?",
+        "fr": "Combien cela coûtera-t-il ?",
+        "ru": "Сколько это будет стоить?"
+      },
+      "freqRank": 526,
+      "review": { "words": "这 要 多少 钱", "indirect": ["ru", "tr"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "我错了吗？",
+      "reading": "Wǒ cuò le ma?",
+      "gloss": {
+        "en": "Was I wrong?",
+        "tr": "Ben hatalı mıydım?",
+        "de": "Habe ich mich geirrt?",
+        "es": "¿Estaba equivocado?",
+        "fr": "Est-ce que j'avais tort ?",
+        "pt-BR": "Eu estava errado?",
+        "ru": "Я ошибался?"
+      },
+      "freqRank": 531,
+      "review": { "words": "我 错 了 吗", "indirect": ["pt-BR", "ru", "tr"], "edited": ["de"] }
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "门在哪里？",
+      "reading": "Mén zài nǎlǐ?",
+      "gloss": {
+        "en": "Where is the door?",
+        "tr": "Kapı nerede?",
+        "de": "Wo ist das Tor?",
+        "es": "¿Dónde está la puerta?",
+        "ru": "Где дверь?"
+      },
+      "freqRank": 547,
+      "review": {
+        "words": "门 在 哪 里",
+        "unlisted": ["哪里"],
+        "indirect": ["tr"],
+        "edited": ["en"]
+      }
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "您看电视吗？",
+      "reading": "Nín kàn diànshì ma?",
+      "gloss": {
+        "en": "Do you watch television?",
+        "tr": "Televizyon izler misiniz?",
+        "de": "Sehen Sie fern?",
+        "es": "¿Mira la televisión?",
+        "fr": "Regardez-vous la télévision ?",
+        "ru": "Вы смотрите телевизор?",
+        "ar": "أتشاهد التلفاز؟"
+      },
+      "freqRank": 779,
+      "review": { "words": "您 看 电视 吗", "unlisted": ["看电视"], "indirect": ["ar", "tr"] }
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "你今天忙吗？",
+      "reading": "Nǐ jīntiān máng ma?",
+      "gloss": {
+        "en": "Are you busy today?",
+        "tr": "Bugün meşgul müsün?",
+        "de": "Bist du heute beschäftigt?",
+        "es": "¿Estás ocupado hoy?",
+        "fr": "Es-tu occupé aujourd'hui ?",
+        "pt-BR": "Você está ocupado hoje?",
+        "ru": "Ты сегодня занят?"
+      },
+      "freqRank": 859,
+      "review": { "words": "你 今天 忙 吗", "indirect": ["pt-BR", "ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "您叫什么名字？",
+      "reading": "Nín jiào shénme míngzi?",
+      "gloss": {
+        "en": "What is your name?",
+        "tr": "Adınız ne?",
+        "de": "Wie ist Ihr Name?",
+        "es": "¿Cuál es su nombre?",
+        "fr": "Comment vous appelez-vous ?",
+        "pt-BR": "Como te chamas?",
+        "ru": "Как тебя зовут?"
+      },
+      "freqRank": 829,
+      "review": { "words": "您 叫 什么 名字", "indirect": ["ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "你忙不忙？",
+      "reading": "Nǐ máng bù máng?",
+      "gloss": {
+        "en": "Are you busy?",
+        "tr": "Meşgul müsün?",
+        "de": "Bist du beschäftigt?",
+        "es": "¿Estás ocupado?",
+        "fr": "Es-tu occupé ?",
+        "pt-BR": "Estás ocupado?",
+        "ru": "Ты занят?"
+      },
+      "freqRank": 859,
+      "review": { "words": "你 忙 不 忙", "indirect": ["fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "我昨天很忙。",
+      "reading": "Wǒ zuótiān hěn máng.",
+      "gloss": {
+        "en": "I was busy yesterday.",
+        "tr": "Dün meşguldüm.",
+        "de": "Ich war gestern beschäftigt.",
+        "es": "Ayer estuve ocupado.",
+        "fr": "J'étais occupé hier.",
+        "pt-BR": "Estava ocupado ontem.",
+        "ru": "Вчера я был занят.",
+        "ar": "كنت مشغولاً البارحة."
+      },
+      "freqRank": 859,
+      "review": { "words": "我 昨天 很 忙", "indirect": ["ar", "pt-BR", "ru"] }
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "他说话很快。",
+      "reading": "Tā shuōhuà hěn kuài.",
+      "gloss": {
+        "en": "He speaks fast.",
+        "tr": "O hızlı konuşur.",
+        "de": "Er spricht schnell.",
+        "es": "Él habla rápido.",
+        "fr": "Il parle vite.",
+        "pt-BR": "Ele está falando rápido."
+      },
+      "freqRank": 880,
+      "review": {
+        "words": "他 说话 很 快",
+        "unlisted": ["很快"],
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "你爸爸很高。",
+      "reading": "Nǐ bàba hěn gāo.",
+      "gloss": {
+        "en": "Your father is tall.",
+        "tr": "Baban uzun boylu.",
+        "de": "Dein Vater ist groß.",
+        "es": "Tu padre es alto.",
+        "fr": "Ton père est grand.",
+        "pt-BR": "Seu pai é alto.",
+        "ru": "Твой отец высокий."
+      },
+      "freqRank": 908,
+      "review": { "words": "你 爸爸 很 高", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "我爸爸很忙。",
+      "reading": "Wǒ bàba hěn máng.",
+      "gloss": {
+        "en": "My father is busy.",
+        "tr": "Babam meşgul.",
+        "de": "Mein Vater ist beschäftigt.",
+        "es": "Mi padre está ocupado.",
+        "fr": "Mon père est occupé.",
+        "pt-BR": "Meu pai está ocupado.",
+        "ru": "Мой отец занят."
+      },
+      "freqRank": 908,
+      "review": { "words": "我 爸爸 很 忙", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "电脑是新的。",
+      "reading": "Diànnǎo shì xīn de.",
+      "gloss": {
+        "en": "The computer is new.",
+        "tr": "Bilgisayar yeni.",
+        "de": "Der Computer ist neu.",
+        "es": "El ordenador es nuevo.",
+        "fr": "L'ordinateur est neuf.",
+        "pt-BR": "O computador é novo.",
+        "ru": "Компьютер новый.",
+        "ar": "الحاسوب جديد."
+      },
+      "freqRank": 946,
+      "review": { "words": "电脑 是 新 的", "indirect": ["ar", "tr"] }
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "我觉得很热。",
+      "reading": "Wǒ juéde hěn rè.",
+      "gloss": {
+        "en": "I am hot.",
+        "tr": "Çok sıcakladım.",
+        "de": "Mir ist heiß.",
+        "es": "Tengo calor.",
+        "fr": "J'ai chaud.",
+        "pt-BR": "Tenho calor.",
+        "ru": "Мне жарко."
+      },
+      "freqRank": 938,
+      "review": { "words": "我 觉得 很 热", "indirect": ["es", "pt-BR"], "edited": ["tr"] }
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "这是什么意思？",
+      "reading": "Zhè shì shénme yìsi?",
+      "gloss": {
+        "en": "What does this mean?",
+        "tr": "Bu ne anlama geliyor?",
+        "de": "Was bedeutet das?",
+        "es": "¿Qué quiere decir esto?",
+        "fr": "Qu'est-ce que cela signifie ?",
+        "ru": "Что это значит?",
+        "ar": "ماذا يعني هذا؟"
+      },
+      "freqRank": 988,
+      "review": { "words": "这 是 什么 意思", "indirect": ["ar", "tr"], "edited": ["en", "ar"] }
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "今天早上很冷。",
+      "reading": "Jīntiān zǎoshang hěn lěng.",
+      "gloss": {
+        "en": "It was very cold this morning.",
+        "tr": "Bu sabah hava çok soğuktu.",
+        "de": "Es war sehr kalt heute Morgen.",
+        "es": "Esta mañana hacía frío.",
+        "fr": "Il faisait très froid ce matin.",
+        "ru": "Было очень холодно утром."
+      },
+      "freqRank": 1092,
+      "review": { "words": "今天 早上 很 冷" }
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "您回答了什么？",
+      "reading": "Nín huídá le shénme?",
+      "gloss": {
+        "en": "What did you answer?",
+        "tr": "Ne cevap verdiniz?",
+        "de": "Was haben Sie geantwortet?",
+        "es": "¿Usted qué respondió?",
+        "fr": "Qu'avez-vous répondu ?",
+        "pt-BR": "O que você respondeu?",
+        "ru": "Что Вы ответили?",
+        "ar": "بماذا أجبت؟"
+      },
+      "freqRank": 1100,
+      "review": {
+        "words": "您 回答 了 什么",
+        "indirect": ["ar", "pt-BR", "ru", "tr"],
+        "edited": ["tr", "ru"]
+      }
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "猫看着鱼。",
+      "reading": "Māo kàn zhe yú.",
+      "gloss": {
+        "en": "The cat is watching the fish.",
+        "tr": "Kedi balığı izliyor.",
+        "de": "Die Katze sieht sich die Fische an.",
+        "es": "El gato está observando al pez.",
+        "fr": "Le chat regarde le poisson.",
+        "pt-BR": "O gato está mirando o peixe.",
+        "ru": "Кошка наблюдает за рыбой."
+      },
+      "freqRank": 1189,
+      "review": { "words": "猫 看 着 鱼", "unlisted": ["看着"], "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "他很累了。",
+      "reading": "Tā hěn lèi le.",
+      "gloss": {
+        "en": "He's very tired.",
+        "tr": "O çok yorgun.",
+        "de": "Er war sehr müde.",
+        "es": "Él estaba muy cansado.",
+        "fr": "Il était très fatigué.",
+        "pt-BR": "Ele estava muito cansado.",
+        "ru": "Он был очень усталым."
+      },
+      "freqRank": 1197,
+      "review": { "words": "他 很 累 了", "indirect": ["pt-BR", "ru"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "明天打电话给我。",
+      "reading": "Míngtiān dǎ diànhuà gěi wǒ.",
+      "gloss": {
+        "en": "Give me a ring tomorrow.",
+        "tr": "Yarın bana telefon et.",
+        "de": "Rufen Sie mich morgen an!",
+        "es": "Llámame mañana.",
+        "fr": "Téléphone-moi demain.",
+        "ru": "Позвони завтра."
+      },
+      "freqRank": 1218,
+      "review": { "words": "明天 打电话 给 我", "indirect": ["fr", "tr"], "edited": ["reading"] }
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "现在休息一下。",
+      "reading": "Xiànzài xiūxi yíxià.",
+      "gloss": {
+        "en": "Let's take a break now.",
+        "tr": "Şimdi bir mola verelim.",
+        "de": "Mach mal eine Pause.",
+        "es": "Vamos a descansar ahora un rato.",
+        "fr": "Faisons une pause maintenant.",
+        "ru": "Давайте-ка сейчас отдохнём немного."
+      },
+      "freqRank": 1225,
+      "review": {
+        "words": "现在 休息 一 下",
+        "unlisted": ["一下"],
+        "indirect": ["tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "明天是我生日。",
+      "reading": "Míngtiān shì wǒ shēngrì.",
+      "gloss": {
+        "en": "Tomorrow is my birthday.",
+        "tr": "Yarın benim doğum günüm.",
+        "de": "Morgen habe ich Geburtstag.",
+        "es": "Mañana es mi cumpleaños.",
+        "fr": "Demain, c'est mon anniversaire.",
+        "pt-BR": "Amanhã é meu aniversário.",
+        "ru": "Завтра — мой день рождения."
+      },
+      "freqRank": 1506,
+      "review": { "words": "明天 是 我 生日", "indirect": ["fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "我有个哥哥。",
+      "reading": "Wǒ yǒu gè gēge.",
+      "gloss": {
+        "en": "I have an older brother.",
+        "tr": "Bir abim var.",
+        "de": "Ich habe einen älteren Bruder.",
+        "es": "Tengo un hermano mayor.",
+        "fr": "J'ai un frère.",
+        "pt-BR": "Eu tenho um irmão.",
+        "ru": "У меня есть брат."
+      },
+      "freqRank": 1655,
+      "review": { "words": "我 有 个 哥哥", "indirect": ["de", "tr"] }
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "咖啡是冷的。",
+      "reading": "Kāfēi shì lěng de.",
+      "gloss": {
+        "en": "The coffee is cold.",
+        "tr": "Kahve soğuk.",
+        "de": "Der Kaffee ist kalt.",
+        "es": "El café está frío.",
+        "fr": "Le café est froid.",
+        "ru": "Кофе холодный."
+      },
+      "freqRank": 1698,
+      "review": { "words": "咖啡 是 冷 的", "indirect": ["de"] }
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "开始下雪了。",
+      "reading": "Kāishǐ xiàxuě le.",
+      "gloss": {
+        "en": "It began to snow.",
+        "tr": "Kar yağışı başladı.",
+        "de": "Es begann zu schneien.",
+        "es": "Empezó a nevar.",
+        "fr": "Il a commencé à neiger.",
+        "pt-BR": "Começou a nevar.",
+        "ru": "Пошёл снег."
+      },
+      "freqRank": 1971,
+      "review": {
+        "words": "开始 下 雪 了",
+        "unlisted": ["下雪"],
+        "indirect": ["de", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "明天要下雪。",
+      "reading": "Míngtiān yào xiàxuě.",
+      "gloss": {
+        "en": "It'll snow tomorrow.",
+        "tr": "Yarın kar yağacak.",
+        "de": "Morgen wird es schneien.",
+        "es": "Mañana va a nevar.",
+        "fr": "Il neigera demain.",
+        "pt-BR": "Amanhã vai nevar.",
+        "ru": "Завтра будет идти снег."
+      },
+      "freqRank": 1971,
+      "review": {
+        "words": "明天 要 下 雪",
+        "unlisted": ["下雪"],
+        "indirect": ["fr", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "我现在在机场。",
+      "reading": "Wǒ xiànzài zài jīchǎng.",
+      "gloss": {
+        "en": "I'm at the airport now.",
+        "tr": "Şimdi havaalanındayım.",
+        "de": "Ich bin jetzt am Flughafen.",
+        "es": "Estoy ahora en el aeropuerto.",
+        "fr": "Je suis maintenant à l'aéroport.",
+        "pt-BR": "Agora eu estou no aeroporto.",
+        "ru": "Я сейчас в аэропорту.",
+        "ar": "أنا في المطار الآن."
+      },
+      "freqRank": 2308,
+      "review": { "words": "我 现在 在 机场", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "你几点起床？",
+      "reading": "Nǐ jǐ diǎn qǐchuáng?",
+      "gloss": {
+        "en": "What time do you get up?",
+        "tr": "Saat kaçta kalkarsın?",
+        "de": "Um wie viel Uhr stehst du auf?",
+        "es": "¿A qué hora te levantas?",
+        "fr": "À quelle heure te lèves-tu ?",
+        "pt-BR": "Que hora você se levanta?",
+        "ru": "Во сколько ты встаёшь?",
+        "ar": "متى تستيقظ؟"
+      },
+      "freqRank": 2645,
+      "review": {
+        "words": "你 几 点 起床",
+        "unlisted": ["几点"],
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "她七点起床。",
+      "reading": "Tā qī diǎn qǐchuáng.",
+      "gloss": {
+        "en": "She gets up at seven.",
+        "tr": "O, saat yedide kalkar.",
+        "de": "Sie steht um sieben Uhr auf.",
+        "es": "Se levanta a las siete.",
+        "fr": "Elle se lève à sept heures.",
+        "pt-BR": "Ela se levanta às sete.",
+        "ru": "Она встаёт в семь."
+      },
+      "freqRank": 2645,
+      "review": {
+        "words": "她 七 点 起床",
+        "unlisted": ["七点"],
+        "indirect": ["pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "你喜欢唱歌吗？",
+      "reading": "Nǐ xǐhuan chànggē ma?",
+      "gloss": {
+        "en": "Do you like singing?",
+        "tr": "Şarkı söylemeyi sever misin?",
+        "de": "Singst du gerne?",
+        "es": "¿Te gusta cantar?",
+        "fr": "Aimes-tu chanter ?",
+        "pt-BR": "Você gosta de cantar?",
+        "ru": "Тебе нравится петь?",
+        "ar": "هَل تُحِب الْغِنَاء؟"
+      },
+      "freqRank": 2876,
+      "review": { "words": "你 喜欢 唱歌 吗", "indirect": ["de", "tr"] }
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "她开始唱歌了。",
+      "reading": "Tā kāishǐ chànggē le.",
+      "gloss": {
+        "en": "She began to sing.",
+        "tr": "O şarkı söylemeye başladı.",
+        "de": "Sie begann zu singen.",
+        "es": "Ella empezó a cantar.",
+        "fr": "Elle commença à chanter.",
+        "pt-BR": "Ela começou a cantar.",
+        "ru": "Она стала петь."
+      },
+      "freqRank": 2876,
+      "review": { "words": "她 开始 唱歌 了", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "我不喜欢鸡蛋。",
+      "reading": "Wǒ bù xǐhuan jīdàn.",
+      "gloss": {
+        "en": "I don't like eggs.",
+        "tr": "Yumurta sevmem.",
+        "de": "Ich mag keine Eier.",
+        "es": "No me gustan los huevos.",
+        "ru": "Я не люблю яйца."
+      },
+      "freqRank": 3501,
+      "review": { "words": "我 不 喜欢 鸡蛋", "indirect": ["tr"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "他也学习汉语。",
+      "reading": "Tā yě xuéxí Hànyǔ.",
+      "gloss": {
+        "en": "He studies Chinese as well.",
+        "tr": "O da Çince öğreniyor.",
+        "de": "Er studiert auch Chinesisch.",
+        "es": "Él también estudia chino.",
+        "fr": "Il étudie aussi le chinois.",
+        "pt-BR": "Ele também estuda chinês.",
+        "ru": "Он также изучает китайский."
+      },
+      "freqRank": 13422,
+      "review": { "words": "他 也 学习 汉语" }
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "我不会游泳。",
+      "reading": "Wǒ bú huì yóuyǒng.",
+      "gloss": {
+        "en": "I can't swim.",
+        "tr": "Ben yüzemem.",
+        "de": "Ich kann nicht schwimmen.",
+        "es": "No sé nadar.",
+        "fr": "Je ne sais pas nager.",
+        "pt-BR": "Eu não sei nadar.",
+        "ru": "Я не умею плавать."
+      },
+      "freqRank": 3695,
+      "review": { "words": "我 不 会 游泳", "unlisted": ["不会"], "indirect": ["de", "ru", "tr"] }
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "这不是真的。",
+      "reading": "Zhè bú shì zhēn de.",
+      "gloss": {
+        "en": "This is not true.",
+        "tr": "Bu doğru değil.",
+        "de": "Das stimmt nicht.",
+        "es": "Esto no es verdad.",
+        "fr": "C'est pas vrai.",
+        "pt-BR": "Isso não é verdade.",
+        "ru": "Это неправда.",
+        "ar": "هذا غير صحيح."
+      },
+      "freqRank": 76,
+      "review": {
+        "words": "这 不 是 真 的",
+        "unlisted": ["不是", "真的"],
+        "indirect": ["ar", "es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "我也在这里。",
+      "reading": "Wǒ yě zài zhèlǐ.",
+      "gloss": {
+        "en": "I am also here.",
+        "tr": "Ben de buradayım.",
+        "de": "Ich bin auch hier.",
+        "es": "Yo también estoy aquí.",
+        "fr": "Je suis ici aussi.",
+        "pt-BR": "Eu também estou aqui."
+      },
+      "freqRank": 75,
+      "review": { "words": "我 也 在 这 里", "unlisted": ["这里"], "indirect": ["tr"] }
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "他现在出去了。",
+      "reading": "Tā xiànzài chūqù le.",
+      "gloss": {
+        "en": "He is out now.",
+        "tr": "O şimdi dışarıda.",
+        "de": "Er ist jetzt gegangen.",
+        "es": "Ha salido ahora.",
+        "fr": "Il est actuellement sorti.",
+        "ru": "Он вышел."
+      },
+      "freqRank": 85,
+      "review": {
+        "words": "他 现在 出 去 了",
+        "unlisted": ["出去"],
+        "indirect": ["ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "她什么都不知道。",
+      "reading": "Tā shénme dōu bù zhīdào.",
+      "gloss": {
+        "en": "She knows nothing.",
+        "tr": "Hiçbir şey bilmiyor.",
+        "de": "Sie weiß nichts.",
+        "es": "Ella no sabe nada.",
+        "fr": "Elle ne sait rien.",
+        "ru": "Она ничего не знает."
+      },
+      "freqRank": 105,
+      "review": { "words": "她 什么 都 不 知道", "indirect": ["tr"] }
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "我真的不知道。",
+      "reading": "Wǒ zhēn de bù zhīdào.",
+      "gloss": {
+        "en": "I really don't know.",
+        "tr": "Gerçekten bilmiyorum.",
+        "de": "Ich weiß es wirklich nicht.",
+        "es": "De verdad no lo sé.",
+        "fr": "Je ne sais vraiment pas.",
+        "pt-BR": "Eu realmente não sei.",
+        "ru": "Я правда не знаю."
+      },
+      "freqRank": 105,
+      "review": {
+        "words": "我 真 的 不 知道",
+        "unlisted": ["真的"],
+        "indirect": ["pt-BR"],
+        "edited": ["en", "fr", "pt-BR", "ru"]
+      }
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "他已经走了吗？",
+      "reading": "Tā yǐjīng zǒu le ma?",
+      "gloss": {
+        "en": "Has he gone already?",
+        "tr": "Çoktan gitti mi?",
+        "de": "Ist er schon weggegangen?",
+        "es": "¿Ya se ha ido?",
+        "fr": "Est-il déjà parti ?",
+        "pt-BR": "Ele já foi embora?",
+        "ru": "Он уже ушёл?"
+      },
+      "freqRank": 109,
+      "review": { "words": "他 已经 走 了 吗", "indirect": ["es", "pt-BR"], "edited": ["tr"] }
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "有一个小问题。",
+      "reading": "Yǒu yí gè xiǎo wèntí.",
+      "gloss": {
+        "en": "There's one small problem.",
+        "tr": "Küçük bir sorun var.",
+        "de": "Es gibt da ein kleines Problem.",
+        "es": "Hay un pequeño problema.",
+        "fr": "Il y a un petit problème.",
+        "ru": "Есть небольшая проблема."
+      },
+      "freqRank": 109,
+      "review": { "words": "有 一 个 小 问题", "unlisted": ["一个"], "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "这是我的问题。",
+      "reading": "Zhè shì wǒ de wèntí.",
+      "gloss": {
+        "en": "That's my problem.",
+        "tr": "Bu benim sorunum.",
+        "de": "Das ist meine Frage.",
+        "es": "Ésta es mi pregunta.",
+        "fr": "C'est ma question.",
+        "ru": "Это мой вопрос."
+      },
+      "freqRank": 109,
+      "review": { "words": "这 是 我 的 问题", "indirect": ["tr"] }
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "你怎么会不知道？",
+      "reading": "Nǐ zěnme huì bù zhīdào?",
+      "gloss": {
+        "en": "How come you don't know this?",
+        "tr": "Nasıl olur da bunu bilmezsin?",
+        "de": "Wie kommt es, dass du das nicht weißt?",
+        "es": "¿Cómo es que no lo sabes?",
+        "fr": "Comment se fait-il que tu ne le saches pas ?"
+      },
+      "freqRank": 128,
+      "review": { "words": "你 怎么 会 不 知道", "indirect": ["tr"] }
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "这是不可能的。",
+      "reading": "Zhè shì bù kěnéng de.",
+      "gloss": {
+        "en": "This is impossible.",
+        "tr": "Bu mümkün değil.",
+        "de": "Das ist unmöglich.",
+        "es": "Es imposible.",
+        "fr": "C'est impossible.",
+        "pt-BR": "É impossível.",
+        "ru": "Это невозможно."
+      },
+      "freqRank": 127,
+      "review": { "words": "这 是 不 可能 的", "indirect": ["fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "他是新来的。",
+      "reading": "Tā shì xīn lái de.",
+      "gloss": {
+        "en": "He's a newcomer.",
+        "tr": "O yeni gelen biri.",
+        "de": "Er ist neu hier.",
+        "fr": "C'est un nouveau venu.",
+        "ru": "Он новенький."
+      },
+      "freqRank": 150,
+      "review": { "words": "他 是 新 来 的", "indirect": ["tr"] }
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "我们都非常喜欢你。",
+      "reading": "Wǒmen dōu fēicháng xǐhuan nǐ.",
+      "gloss": {
+        "en": "All of us like you very much.",
+        "tr": "Hepimiz seni çok seviyoruz.",
+        "de": "Wir alle mögen dich sehr.",
+        "fr": "Nous t'aimons tous très fort.",
+        "ru": "Всем нам ты весьма нравишься."
+      },
+      "freqRank": 194,
+      "review": { "words": "我们 都 非常 喜欢 你", "indirect": ["tr"] }
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "他开始找工作了。",
+      "reading": "Tā kāishǐ zhǎo gōngzuò le.",
+      "gloss": {
+        "en": "He began to look for a job.",
+        "tr": "O bir iş aramaya başladı.",
+        "de": "Er hat begonnen, eine Arbeit zu suchen.",
+        "es": "Empezó a buscar trabajo.",
+        "fr": "Il commença à chercher un travail.",
+        "ru": "Он начал искать работу."
+      },
+      "freqRank": 152,
+      "review": { "words": "他 开始 找 工作 了", "indirect": ["tr"] }
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "我们都非常想你。",
+      "reading": "Wǒmen dōu fēicháng xiǎng nǐ.",
+      "gloss": {
+        "en": "We all miss you very much.",
+        "tr": "Hepimiz seni çok özlüyoruz.",
+        "de": "Wir vermissen dich alle sehr.",
+        "es": "Todos le echamos mucho de menos.",
+        "fr": "Tu nous manques beaucoup à tous.",
+        "pt-BR": "Todos nós sentimos muito a sua falta.",
+        "ru": "Мы все очень по тебе скучаем."
+      },
+      "freqRank": 194,
+      "review": { "words": "我们 都 非常 想 你", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "我有两个孩子。",
+      "reading": "Wǒ yǒu liǎng gè háizi.",
+      "gloss": {
+        "en": "I have two children.",
+        "tr": "İki çocuğum var.",
+        "de": "Ich habe zwei Kinder.",
+        "es": "Tengo dos hijos.",
+        "fr": "J'ai deux enfants.",
+        "pt-BR": "Eu tenho dois filhos.",
+        "ru": "У меня двое детей."
+      },
+      "freqRank": 207,
+      "review": { "words": "我 有 两 个 孩子", "unlisted": ["两个"], "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "这是我们的孩子。",
+      "reading": "Zhè shì wǒmen de háizi.",
+      "gloss": {
+        "en": "These are our kids.",
+        "tr": "Bunlar bizim çocuklarımız.",
+        "de": "Das sind unsere Kinder.",
+        "es": "Son nuestros hijos.",
+        "fr": "Ce sont nos enfants.",
+        "pt-BR": "Estes são os nossos filhos.",
+        "ru": "Это наши дети."
+      },
+      "freqRank": 207,
+      "review": { "words": "这 是 我们 的 孩子", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "请来我家吧。",
+      "reading": "Qǐng lái wǒ jiā ba.",
+      "gloss": {
+        "en": "Please come to my house.",
+        "tr": "Lütfen evime gel.",
+        "de": "Bitte komme in mein Heim.",
+        "es": "Ven a mi casa, por favor.",
+        "fr": "Venez chez moi, je vous prie.",
+        "pt-BR": "Por favor, venha à minha casa.",
+        "ru": "Приходите ко мне домой, пожалуйста."
+      },
+      "freqRank": 216,
+      "review": {
+        "words": "请 来 我 家 吧",
+        "unlisted": ["请来", "我家"],
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "她问这怎么可能。",
+      "reading": "Tā wèn zhè zěnme kěnéng.",
+      "gloss": {
+        "en": "She's asking how that's possible.",
+        "tr": "O, onun nasıl mümkün olduğunu soruyor.",
+        "de": "Sie fragt, wie das möglich ist.",
+        "es": "Ella pregunta cómo es posible eso.",
+        "fr": "Elle demande comment c’est possible.",
+        "pt-BR": "Ela está perguntando como isso é possível.",
+        "ru": "Она спрашивает, как это возможно.",
+        "ar": "إنها تسأل كيف هذا ممكن."
+      },
+      "freqRank": 246,
+      "review": { "words": "她 问 这 怎么 可能", "indirect": ["ar", "es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "他都告诉我了。",
+      "reading": "Tā dōu gàosu wǒ le.",
+      "gloss": {
+        "en": "He told me everything.",
+        "tr": "O bana her şeyi anlattı.",
+        "de": "Er hat mir alles erzählt.",
+        "es": "Él me lo contó todo.",
+        "fr": "Il m'a tout dit.",
+        "ru": "Он всё мне рассказал.",
+        "ar": "قال لي كل شيء."
+      },
+      "freqRank": 252,
+      "review": {
+        "words": "他 都 告诉 我 了",
+        "indirect": ["ar", "de", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "您今天做了什么？",
+      "reading": "Nín jīntiān zuò le shénme?",
+      "gloss": {
+        "en": "What have you done today?",
+        "tr": "Bugün ne yaptınız?",
+        "de": "Was haben Sie heute gemacht?",
+        "es": "¿Qué ha hecho hoy?",
+        "fr": "Qu'avez-vous fait aujourd'hui ?",
+        "ru": "Что вы сегодня делали?"
+      },
+      "freqRank": 357,
+      "review": { "words": "您 今天 做 了 什么", "edited": ["tr"] }
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "我也不想玩。",
+      "reading": "Wǒ yě bù xiǎng wán.",
+      "gloss": {
+        "en": "I don't feel like playing either.",
+        "tr": "Benim de canım oynamak istemiyor.",
+        "de": "Ich habe auch keine Lust zu spielen.",
+        "fr": "Je n'ai pas envie de jouer non plus.",
+        "pt-BR": "Eu também não estou com vontade de jogar.",
+        "ru": "Мне тоже не хочется играть."
+      },
+      "freqRank": 415,
+      "review": { "words": "我 也 不 想 玩", "unlisted": ["不想"], "indirect": ["fr", "tr"] }
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "您想告诉我什么？",
+      "reading": "Nín xiǎng gàosu wǒ shénme?",
+      "gloss": {
+        "en": "What do you want to tell me?",
+        "tr": "Bana ne söylemek istiyorsunuz?",
+        "de": "Was wollen Sie mir sagen?",
+        "es": "¿Qué quiere contarme?",
+        "fr": "Qu'est-ce que vous voulez me dire ?"
+      },
+      "freqRank": 357,
+      "review": { "words": "您 想 告诉 我 什么", "edited": ["reading", "en", "tr"] }
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "那个男人是谁？",
+      "reading": "Nàge nánrén shì shéi?",
+      "gloss": {
+        "en": "Who is that man?",
+        "tr": "O adam kim?",
+        "de": "Wer ist dieser Mann?",
+        "es": "¿Quién es ese hombre?",
+        "fr": "Qui est cet homme ?",
+        "pt-BR": "Quem é esse homem?",
+        "ru": "Кто этот человек?",
+        "ar": "من ذاك الرجل؟"
+      },
+      "freqRank": 415,
+      "review": {
+        "words": "那 个 男人 是 谁",
+        "unlisted": ["那个"],
+        "indirect": ["ar", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "你明天出去吗？",
+      "reading": "Nǐ míngtiān chūqù ma?",
+      "gloss": {
+        "en": "Will you go out tomorrow?",
+        "tr": "Yarın dışarı çıkacak mısın?",
+        "de": "Gehst du morgen aus?",
+        "es": "¿Vas a salir mañana?",
+        "fr": "Est-ce que tu sortiras demain ?",
+        "ru": "Пойдёшь завтра куда-нибудь?"
+      },
+      "freqRank": 469,
+      "review": { "words": "你 明天 出 去 吗", "unlisted": ["出去"], "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "我有四个孩子。",
+      "reading": "Wǒ yǒu sì gè háizi.",
+      "gloss": {
+        "en": "I have four children.",
+        "tr": "Benim dört çocuğum var.",
+        "de": "Ich habe vier Kinder.",
+        "fr": "J'ai quatre enfants.",
+        "ru": "У меня четверо детей."
+      },
+      "freqRank": 481,
+      "review": { "words": "我 有 四 个 孩子", "unlisted": ["四个"], "indirect": ["tr"] }
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "这是我的错。",
+      "reading": "Zhè shì wǒ de cuò.",
+      "gloss": {
+        "en": "It's my fault.",
+        "tr": "Bu benim hatam.",
+        "de": "Ich bin schuld daran.",
+        "es": "Es mi error.",
+        "fr": "C'est ma faute.",
+        "ru": "Я в этом виноват."
+      },
+      "freqRank": 531,
+      "review": {
+        "words": "这 是 我 的 错",
+        "indirect": ["ru", "tr"],
+        "edited": ["en", "tr", "fr"]
+      }
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "我知道我错了。",
+      "reading": "Wǒ zhīdào wǒ cuò le.",
+      "gloss": {
+        "en": "I know I'm wrong.",
+        "tr": "Hatalı olduğumu biliyorum.",
+        "de": "Ich weiß, dass ich falsch liege.",
+        "es": "Sé que estoy equivocado.",
+        "fr": "Je sais que j'ai tort.",
+        "pt-BR": "Eu sei que estou errado.",
+        "ru": "Я осознаю, что ошибся.",
+        "ar": "أعلم بأني مخطئ."
+      },
+      "freqRank": 531,
+      "review": { "words": "我 知道 我 错 了", "indirect": ["ar", "de", "tr"] }
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "都是你的错。",
+      "reading": "Dōu shì nǐ de cuò.",
+      "gloss": {
+        "en": "It's all your fault.",
+        "tr": "Hepsi senin hatan.",
+        "de": "Das ist alles deine Schuld!",
+        "es": "Todo es culpa tuya.",
+        "fr": "C'est entièrement de ta faute.",
+        "pt-BR": "O erro foi todo seu.",
+        "ru": "Это всё твоя вина."
+      },
+      "freqRank": 531,
+      "review": { "words": "都 是 你 的 错", "indirect": ["fr", "ru", "tr"] }
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "她很少出去。",
+      "reading": "Tā hěn shǎo chūqù.",
+      "gloss": {
+        "en": "She seldom goes out.",
+        "tr": "O nadiren dışarı gider.",
+        "de": "Sie geht selten aus.",
+        "es": "Ella rara vez sale a la calle.",
+        "fr": "Elle sort rarement dehors.",
+        "pt-BR": "Ela raramente sai.",
+        "ru": "Она редко выходит из дома."
+      },
+      "freqRank": 538,
+      "review": {
+        "words": "她 很 少 出 去",
+        "unlisted": ["很少", "出去"],
+        "indirect": ["pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "您住在哪里？",
+      "reading": "Nín zhù zài nǎlǐ?",
+      "gloss": {
+        "en": "Where do you live?",
+        "tr": "Nerede yaşıyorsunuz?",
+        "de": "Wo wohnen Sie?",
+        "es": "¿Usted dónde vive?",
+        "fr": "Où habitez-vous ?",
+        "pt-BR": "Onde você mora?",
+        "ru": "Где ты живёшь?",
+        "ar": "أين تسكن؟"
+      },
+      "freqRank": 547,
+      "review": {
+        "words": "您 住 在 哪 里",
+        "unlisted": ["哪里"],
+        "indirect": ["ar", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "我不懂这些。",
+      "reading": "Wǒ bù dǒng zhèxiē.",
+      "gloss": {
+        "en": "I don't understand these.",
+        "tr": "Bunları anlamıyorum.",
+        "es": "No los comprendo.",
+        "fr": "Je ne les comprends pas.",
+        "ru": "Я их не понимаю."
+      },
+      "freqRank": 669,
+      "review": { "words": "我 不 懂 这 些", "unlisted": ["这些"], "edited": ["tr"] }
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "我们谁也没看见。",
+      "reading": "Wǒmen shéi yě méi kànjiàn.",
+      "gloss": {
+        "en": "We have seen no one.",
+        "tr": "Biz hiç kimseyi görmedik.",
+        "de": "Wir haben niemanden gesehen.",
+        "es": "No hemos visto a nadie.",
+        "fr": "Nous n'avons vu personne.",
+        "ru": "Мы никого не видели."
+      },
+      "freqRank": 870,
+      "review": { "words": "我们 谁 也 没 看见", "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "我想我懂了。",
+      "reading": "Wǒ xiǎng wǒ dǒng le.",
+      "gloss": {
+        "en": "I think I understand.",
+        "tr": "Sanırım anlıyorum.",
+        "de": "Ich glaube, dass ich verstehe.",
+        "es": "Creo que lo entiendo.",
+        "fr": "Je pense avoir compris.",
+        "pt-BR": "Eu acho que entendi.",
+        "ru": "Кажется, я понял.",
+        "ar": "أظنني أنني فهمت"
+      },
+      "freqRank": 669,
+      "review": { "words": "我 想 我 懂 了", "indirect": ["ar", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "他有两个女儿。",
+      "reading": "Tā yǒu liǎng gè nǚ'ér.",
+      "gloss": {
+        "en": "He has two daughters.",
+        "tr": "Onun iki kız çocuğu var.",
+        "de": "Er hat zwei Töchter.",
+        "es": "Él tiene dos hijas.",
+        "fr": "Il a deux filles.",
+        "pt-BR": "Ele tem duas filhas.",
+        "ru": "У него две дочери."
+      },
+      "freqRank": 879,
+      "review": { "words": "他 有 两 个 女儿", "unlisted": ["两个"], "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "我明天会很忙。",
+      "reading": "Wǒ míngtiān huì hěn máng.",
+      "gloss": {
+        "en": "I'll be busy tomorrow.",
+        "tr": "Ben yarın meşgul olacağım.",
+        "de": "Ich bin morgen beschäftigt.",
+        "es": "Mañana estaré ocupado.",
+        "fr": "Je serai occupé, demain.",
+        "pt-BR": "Estarei ocupado amanhã.",
+        "ru": "Завтра я буду занят."
+      },
+      "freqRank": 859,
+      "review": { "words": "我 明天 会 很 忙", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "看书很有意思。",
+      "reading": "Kànshū hěn yǒu yìsi.",
+      "gloss": {
+        "en": "Reading a book is interesting.",
+        "tr": "Kitap okumak ilginçtir.",
+        "de": "Bücher lesen ist interessant.",
+        "es": "Leer un libro es interesante.",
+        "fr": "Lire un livre est intéressant.",
+        "pt-BR": "Ler um livro é interessante.",
+        "ru": "Читать книги интересно."
+      },
+      "freqRank": 988,
+      "review": { "words": "看 书 很 有 意思", "unlisted": ["看书", "有意思"], "indirect": ["tr"] }
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "我希望会看见她。",
+      "reading": "Wǒ xīwàng huì kànjiàn tā.",
+      "gloss": {
+        "en": "I hope that I'll see her.",
+        "tr": "Onu göreceğimi umuyorum.",
+        "es": "Espero verla.",
+        "fr": "J'espère que je la verrai.",
+        "pt-BR": "Espero vê-la.",
+        "ru": "Надеюсь, что я её увижу."
+      },
+      "freqRank": 870,
+      "review": { "words": "我 希望 会 看见 她", "indirect": ["pt-BR"] }
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "请回答我的问题。",
+      "reading": "Qǐng huídá wǒ de wèntí.",
+      "gloss": {
+        "en": "Please answer my question.",
+        "tr": "Lütfen sorumu cevapla.",
+        "de": "Bitte antworten Sie mir.",
+        "es": "Por favor, responde a mi pregunta.",
+        "fr": "Merci de répondre à ma question.",
+        "ru": "Пожалуйста, ответьте на мой вопрос."
+      },
+      "freqRank": 1100,
+      "review": { "words": "请 回答 我 的 问题", "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "我想吃点鱼。",
+      "reading": "Wǒ xiǎng chī diǎn yú.",
+      "gloss": {
+        "en": "I would like some fish.",
+        "tr": "Biraz balık yemek istiyorum.",
+        "de": "Ich hätte gerne Fisch.",
+        "es": "Quiero comer algo de pescado.",
+        "fr": "J'aimerais du poisson.",
+        "pt-BR": "Eu gostaria de peixe.",
+        "ru": "Я бы поел рыбы."
+      },
+      "freqRank": 1189,
+      "review": { "words": "我 想 吃 点 鱼", "indirect": ["pt-BR", "ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "房间里有人吗？",
+      "reading": "Fángjiān lǐ yǒurén ma?",
+      "gloss": {
+        "en": "Is there anyone in the room?",
+        "tr": "Odada kimse var mı?",
+        "de": "Ist jemand im Zimmer?",
+        "es": "¿Hay alguien en la habitación?",
+        "fr": "Y avait-il quelqu'un dans la pièce ?",
+        "pt-BR": "Havia alguém no quarto?",
+        "ru": "В комнате кто-то был?"
+      },
+      "freqRank": 1357,
+      "review": {
+        "words": "房间 里 有 人 吗",
+        "unlisted": ["有人"],
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "我喜欢你的房间。",
+      "reading": "Wǒ xǐhuan nǐ de fángjiān.",
+      "gloss": {
+        "en": "I like your room.",
+        "tr": "Odanı beğendim.",
+        "de": "Dein Zimmer gefällt mir.",
+        "es": "Me gusta tu habitación.",
+        "fr": "J'aime ta chambre.",
+        "ru": "Мне нравится твоя комната."
+      },
+      "freqRank": 1357,
+      "review": { "words": "我 喜欢 你 的 房间", "indirect": ["fr", "tr"], "edited": ["tr", "ru"] }
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "今天是我的生日。",
+      "reading": "Jīntiān shì wǒ de shēngrì.",
+      "gloss": {
+        "en": "Today is my birthday.",
+        "tr": "Bugün doğum günüm.",
+        "de": "Heute ist mein Geburtstag.",
+        "es": "Hoy es mi cumpleaños.",
+        "fr": "Aujourd'hui, c'est mon anniversaire.",
+        "pt-BR": "Hoje é meu aniversário.",
+        "ru": "Сегодня мой день рождения."
+      },
+      "freqRank": 1506,
+      "review": { "words": "今天 是 我 的 生日", "indirect": ["tr"] }
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "我丈夫也是老师。",
+      "reading": "Wǒ zhàngfu yě shì lǎoshī.",
+      "gloss": {
+        "en": "My husband is a teacher, too.",
+        "tr": "Kocam da öğretmen.",
+        "de": "Mein Ehemann ist auch Lehrer.",
+        "pt-BR": "Meu esposo também é professor.",
+        "ru": "Мой муж тоже учитель."
+      },
+      "freqRank": 1376,
+      "review": { "words": "我 丈夫 也 是 老师", "edited": ["tr"] }
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "昨天是我的生日。",
+      "reading": "Zuótiān shì wǒ de shēngrì.",
+      "gloss": {
+        "en": "Yesterday was my birthday.",
+        "tr": "Dün benim doğum günümdü.",
+        "de": "Gestern war mein Geburtstag.",
+        "es": "Ayer fue mi cumpleaños.",
+        "fr": "Hier, c'était mon anniversaire.",
+        "pt-BR": "Ontem foi meu aniversário.",
+        "ru": "Вчера был мой день рождения.",
+        "ar": "البارحة كان عيد ميلادي."
+      },
+      "freqRank": 1506,
+      "review": { "words": "昨天 是 我 的 生日", "indirect": ["ar", "tr"] }
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "我明天不想上班。",
+      "reading": "Wǒ míngtiān bù xiǎng shàngbān.",
+      "gloss": {
+        "en": "I don't want to work tomorrow.",
+        "tr": "Yarın çalışmak istemiyorum.",
+        "de": "Ich will morgen nicht arbeiten.",
+        "es": "No quiero trabajar mañana.",
+        "fr": "Je ne veux pas travailler demain.",
+        "pt-BR": "Não quero trabalhar amanhã.",
+        "ru": "Я не хочу завтра работать."
+      },
+      "freqRank": 1495,
+      "review": { "words": "我 明天 不 想 上班", "unlisted": ["不想"], "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "他有三个姐姐。",
+      "reading": "Tā yǒu sān gè jiějie.",
+      "gloss": {
+        "en": "He has three elder sisters.",
+        "tr": "Onun üç ablası var.",
+        "de": "Er hat drei große Schwestern.",
+        "es": "Tiene tres hermanas mayores.",
+        "fr": "Il a trois grandes sœurs.",
+        "ru": "У него есть три старшие сестры."
+      },
+      "freqRank": 1513,
+      "review": { "words": "他 有 三 个 姐姐", "unlisted": ["三个"], "edited": ["tr"] }
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "您几点下课？",
+      "reading": "Nín jǐ diǎn xiàkè?",
+      "gloss": {
+        "en": "At what time does your class end?",
+        "tr": "Saat kaçta dersiniz biter?",
+        "es": "¿A qué hora sale de clase?",
+        "fr": "À quelle heure finit votre cours ?",
+        "pt-BR": "A que horas termina a sua aula?",
+        "ru": "Во сколько у вас заканчиваются занятия?",
+        "ar": "في أي وقت ينتهي صفك؟"
+      },
+      "freqRank": 1517,
+      "review": {
+        "words": "您 几 点 下 课",
+        "unlisted": ["几点", "下课"],
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "她坐在我旁边。",
+      "reading": "Tā zuò zài wǒ pángbiān.",
+      "gloss": {
+        "en": "She sat next to me.",
+        "tr": "O, yanıma oturdu.",
+        "de": "Sie saß neben mir.",
+        "es": "Ella se sentó a mi lado.",
+        "fr": "Elle s'est assise à côté de moi.",
+        "pt-BR": "Ela sentou-se perto de mim.",
+        "ru": "Она села возле меня.",
+        "ar": "جلست بجانبي."
+      },
+      "freqRank": 1815,
+      "review": {
+        "words": "她 坐 在 我 旁边",
+        "unlisted": ["坐在"],
+        "indirect": ["ar", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "我坐在他旁边。",
+      "reading": "Wǒ zuò zài tā pángbiān.",
+      "gloss": {
+        "en": "I sat by his side.",
+        "tr": "Ben onun yanında oturdum.",
+        "de": "Ich setzte mich neben ihn.",
+        "es": "Me senté a su lado.",
+        "fr": "Je me suis assis à côté de lui.",
+        "ru": "Я сидел рядом с ним."
+      },
+      "freqRank": 1815,
+      "review": {
+        "words": "我 坐 在 他 旁边",
+        "unlisted": ["坐在"],
+        "indirect": ["tr"],
+        "edited": ["ru"]
+      }
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "茶比牛奶贵吗？",
+      "reading": "Chá bǐ niúnǎi guì ma?",
+      "gloss": {
+        "en": "Is tea more expensive than milk?",
+        "tr": "Çay sütten pahalı mı?",
+        "de": "Ist Tee teurer als Milch?",
+        "es": "¿Es el té más caro que la leche?",
+        "pt-BR": "O chá é mais custoso que o leite?"
+      },
+      "freqRank": 2986,
+      "review": { "words": "茶 比 牛奶 贵 吗", "edited": ["tr"] }
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "我不太看报纸。",
+      "reading": "Wǒ bú tài kàn bàozhǐ.",
+      "gloss": {
+        "en": "I don't read newspapers much.",
+        "tr": "Çok gazete okumam.",
+        "de": "Ich lese nicht viel Zeitung.",
+        "es": "No leo mucho los periódicos.",
+        "fr": "Je ne lis pas trop les journaux.",
+        "ru": "Я не шибко читаю газеты."
+      },
+      "freqRank": 2232,
+      "review": { "words": "我 不 太 看 报纸", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "这是我的自行车。",
+      "reading": "Zhè shì wǒ de zìxíngchē.",
+      "gloss": {
+        "en": "This is my bicycle.",
+        "tr": "Bu benim bisikletim.",
+        "de": "Das ist mein Fahrrad.",
+        "es": "Es mi bicicleta.",
+        "fr": "C'est ma bicyclette.",
+        "pt-BR": "Esta é a minha bicicleta.",
+        "ru": "Это мой велосипед."
+      },
+      "freqRank": 3400,
+      "review": { "words": "这 是 我 的 自行车", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "他游泳比我好。",
+      "reading": "Tā yóuyǒng bǐ wǒ hǎo.",
+      "gloss": {
+        "en": "He is a better swimmer than I.",
+        "tr": "O benden daha iyi yüzer.",
+        "de": "Er schwimmt besser als ich.",
+        "es": "Él es mejor nadador que yo.",
+        "fr": "Il est meilleur nageur que moi.",
+        "pt-BR": "Ele é melhor nadador que eu.",
+        "ru": "Он лучше меня плавает."
+      },
+      "freqRank": 3695,
+      "review": { "words": "他 游泳 比 我 好", "indirect": ["es", "pt-BR"], "edited": ["tr"] }
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "我是为你来的。",
+      "reading": "Wǒ shì wèi nǐ lái de.",
+      "gloss": {
+        "en": "It's you I've come for.",
+        "tr": "Senin için geldim.",
+        "de": "Ich bin wegen dir gekommen.",
+        "fr": "Je suis venu pour toi.",
+        "pt-BR": "Foi por você que eu vim.",
+        "ru": "Я пришёл за тобой."
+      },
+      "freqRank": 58,
+      "review": { "words": "我 是 为 你 来 的", "indirect": ["pt-BR", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "你有时间再做吧。",
+      "reading": "Nǐ yǒu shíjiān zài zuò ba.",
+      "gloss": {
+        "en": "Do it when you have time.",
+        "tr": "Zamanın olunca yap.",
+        "de": "Mach es, wenn du Zeit hast.",
+        "es": "Hazlo cuando tengas tiempo.",
+        "fr": "Fais-le quand tu auras du temps.",
+        "pt-BR": "Faça-o quando tiver tempo.",
+        "ru": "Сделай это, когда будет время."
+      },
+      "freqRank": 127,
+      "review": {
+        "words": "你 有 时间 再 做 吧",
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "我不想再做了。",
+      "reading": "Wǒ bù xiǎng zài zuò le.",
+      "gloss": {
+        "en": "I don't want to do it again.",
+        "tr": "Bunu bir daha yapmak istemiyorum.",
+        "de": "Ich möchte das nicht nochmal machen.",
+        "es": "No quiero volver a hacerlo.",
+        "fr": "Je ne veux pas le refaire.",
+        "pt-BR": "Não quero fazer isso de novo.",
+        "ru": "Не хочу делать это снова."
+      },
+      "freqRank": 91,
+      "review": {
+        "words": "我 不 想 再 做 了",
+        "unlisted": ["不想"],
+        "indirect": ["pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "这不可能是真的。",
+      "reading": "Zhè bù kěnéng shì zhēn de.",
+      "gloss": {
+        "en": "This can't be true.",
+        "tr": "Bu doğru olamaz.",
+        "de": "Das kann nicht wahr sein.",
+        "es": "Tal cosa no puede ser cierta.",
+        "fr": "Ça ne peut pas être vrai.",
+        "pt-BR": "Isso não pode ser verdade.",
+        "ru": "Это не может быть правдой."
+      },
+      "freqRank": 127,
+      "review": {
+        "words": "这 不 可能 是 真 的",
+        "unlisted": ["真的"],
+        "indirect": ["pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "我想它太大了。",
+      "reading": "Wǒ xiǎng tā tài dà le.",
+      "gloss": {
+        "en": "I think that it's too big.",
+        "tr": "Bence çok büyük.",
+        "de": "Ich finde, es ist zu groß.",
+        "es": "Pienso que es demasiado grande.",
+        "fr": "Je pense que c'est trop gros.",
+        "ru": "Я думаю, это слишком велико."
+      },
+      "freqRank": 114,
+      "review": { "words": "我 想 它 太 大 了", "indirect": ["ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "她一到，我们就开始。",
+      "reading": "Tā yí dào, wǒmen jiù kāishǐ.",
+      "gloss": {
+        "en": "As soon as she comes, we will begin.",
+        "tr": "O gelir gelmez, başlayacağız.",
+        "de": "Sobald sie ankommt, fangen wir an.",
+        "es": "Empezaremos en cuanto llegue.",
+        "fr": "Dès qu'elle arrivera, nous commencerons.",
+        "pt-BR": "Assim que ela chegar, nós começaremos.",
+        "ru": "Сразу как только она придёт, мы начнём."
+      },
+      "freqRank": 132,
+      "review": { "words": "她 一 到 我们 就 开始", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "我不再爱你了。",
+      "reading": "Wǒ bú zài ài nǐ le.",
+      "gloss": {
+        "en": "I don't love you anymore.",
+        "tr": "Artık seni sevmiyorum.",
+        "de": "Ich liebe dich nicht mehr.",
+        "es": "Ya no te quiero.",
+        "fr": "Je ne t'aime plus.",
+        "ru": "Я тебя больше не люблю."
+      },
+      "freqRank": 130,
+      "review": { "words": "我 不 再 爱 你 了", "unlisted": ["不再"], "indirect": ["tr"] }
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "你是新来的吗？",
+      "reading": "Nǐ shì xīn lái de ma?",
+      "gloss": {
+        "en": "Are you new?",
+        "tr": "Yeni misin?",
+        "de": "Bist du neu?",
+        "es": "¿Eres nuevo?",
+        "fr": "Tu es nouveau ?",
+        "pt-BR": "Você é novo?",
+        "ru": "Ты новенький?"
+      },
+      "freqRank": 150,
+      "review": { "words": "你 是 新 来 的 吗", "indirect": ["de", "pt-BR", "tr"] }
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "我不知道他是谁。",
+      "reading": "Wǒ bù zhīdào tā shì shéi.",
+      "gloss": {
+        "en": "I don't know who he is.",
+        "tr": "Onun kim olduğunu bilmiyorum.",
+        "de": "Ich weiß nicht, wer er ist.",
+        "es": "No sé quién es.",
+        "fr": "Je ne sais pas qui il est.",
+        "pt-BR": "Não sei quem é.",
+        "ru": "Я не знаю, кто он."
+      },
+      "freqRank": 142,
+      "review": { "words": "我 不 知道 他 是 谁", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "他很快就好了。",
+      "reading": "Tā hěn kuài jiù hǎo le.",
+      "gloss": {
+        "en": "He'll be done soon.",
+        "de": "Er ist bald fertig.",
+        "fr": "Il va bientôt finir.",
+        "ru": "Он скоро закончит."
+      },
+      "freqRank": 153,
+      "review": { "words": "他 很 快 就 好 了", "unlisted": ["很快"] }
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "我想知道谁来了。",
+      "reading": "Wǒ xiǎng zhīdào shéi lái le.",
+      "gloss": {
+        "en": "I wonder who has come.",
+        "tr": "Kimin geldiğini merak ediyorum.",
+        "de": "Ich frage mich, wer da gekommen ist.",
+        "es": "Me pregunto quien llegó.",
+        "fr": "Je me demande qui est venu.",
+        "ru": "Мне хотелось бы знать, кто пришёл."
+      },
+      "freqRank": 142,
+      "review": { "words": "我 想 知道 谁 来 了", "indirect": ["es"] }
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "他想和我们一起来。",
+      "reading": "Tā xiǎng hé wǒmen yìqǐ lái.",
+      "gloss": {
+        "en": "He wants to come with us.",
+        "tr": "O bizimle gelmek istiyor.",
+        "de": "Er möchte mit uns kommen.",
+        "es": "Él quiere venir con nosotros.",
+        "fr": "Il avait envie de venir avec nous.",
+        "pt-BR": "Ele quer vir conosco.",
+        "ru": "Он хочет пойти с нами."
+      },
+      "freqRank": 172,
+      "review": { "words": "他 想 和 我们 一起 来", "indirect": ["de", "ru", "tr"] }
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "我非常喜欢我的工作。",
+      "reading": "Wǒ fēicháng xǐhuan wǒ de gōngzuò.",
+      "gloss": {
+        "en": "I like my job very much.",
+        "tr": "İşimi çok seviyorum.",
+        "de": "Ich mag meine Arbeit sehr gerne.",
+        "es": "Me gusta mucho mi trabajo.",
+        "fr": "J'aime beaucoup mon travail.",
+        "pt-BR": "Gosto muito do meu trabalho.",
+        "ru": "Я очень люблю свою работу."
+      },
+      "freqRank": 194,
+      "review": { "words": "我 非常 喜欢 我 的 工作", "indirect": ["de", "tr"] }
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "他问我买了什么。",
+      "reading": "Tā wèn wǒ mǎi le shénme.",
+      "gloss": {
+        "en": "He asked me what I had bought.",
+        "tr": "O, bana ne aldığımı sordu.",
+        "de": "Er fragte mich, was ich gekauft habe.",
+        "es": "Me preguntó qué había comprado.",
+        "fr": "Il m'a demandé ce que j'avais acheté.",
+        "ru": "Он спросил у меня, что я купила."
+      },
+      "freqRank": 246,
+      "review": { "words": "他 问 我 买 了 什么", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "今天是几月几号？",
+      "reading": "Jīntiān shì jǐ yuè jǐ hào?",
+      "gloss": {
+        "en": "What is the date today?",
+        "de": "Welches Datum haben wir heute?",
+        "es": "¿Cuál es la fecha de hoy?",
+        "fr": "Quelle est la date d'aujourd'hui ?",
+        "ru": "Какое сегодня число?",
+        "ar": "ما تاريخ اليوم؟"
+      },
+      "freqRank": 278,
+      "review": {
+        "words": "今天 是 几 月 几 号",
+        "unlisted": ["几月", "几号"],
+        "indirect": ["ar", "ru"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "他比她大三岁。",
+      "reading": "Tā bǐ tā dà sān suì.",
+      "gloss": {
+        "en": "He is three years older than her.",
+        "tr": "O, ondan üç yaş büyük.",
+        "de": "Er ist 3 Jahre älter als sie.",
+        "es": "Él es tres años mayor que ella.",
+        "fr": "Il a 3 ans de plus qu'elle.",
+        "ru": "Он старше её на три года.",
+        "ar": "هو أكبر منها سنا بثلاث سنوات."
+      },
+      "freqRank": 266,
+      "review": {
+        "words": "他 比 她 大 三 岁",
+        "unlisted": ["三岁"],
+        "indirect": ["ar"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "我比你高一点。",
+      "reading": "Wǒ bǐ nǐ gāo yìdiǎn.",
+      "gloss": {
+        "en": "I'm a little taller than you.",
+        "tr": "Ben senden biraz daha uzunum.",
+        "de": "Ich bin ein bisschen größer als du.",
+        "es": "Soy un poco más alto que tú.",
+        "fr": "Je suis un peu plus grand que toi.",
+        "pt-BR": "Sou um pouco mais alta que você.",
+        "ru": "Я немного выше тебя.",
+        "ar": "أنا أكبر منك قامة بقليل."
+      },
+      "freqRank": 290,
+      "review": {
+        "words": "我 比 你 高 一 点",
+        "unlisted": ["一点"],
+        "indirect": ["ar", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "您不知道我是谁。",
+      "reading": "Nín bù zhīdào wǒ shì shéi.",
+      "gloss": {
+        "en": "You don't know who I am.",
+        "tr": "Kim olduğumu bilmiyorsunuz.",
+        "de": "Ihr wisst nicht, wer ich bin.",
+        "es": "No sabe quién soy.",
+        "fr": "Vous ne savez pas qui je suis.",
+        "pt-BR": "Você não sabe quem eu sou.",
+        "ru": "Вы меня не знаете.",
+        "ar": "إنك لا تعرف من أكون."
+      },
+      "freqRank": 357,
+      "review": { "words": "您 不 知道 我 是 谁", "indirect": ["ar", "de", "pt-BR"] }
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "我认识她两年了。",
+      "reading": "Wǒ rènshi tā liǎng nián le.",
+      "gloss": {
+        "en": "I have known her for two years.",
+        "tr": "Onu iki yıldır tanıyorum.",
+        "de": "Ich kenne sie seit zwei Jahren.",
+        "es": "Hace dos años que le conozco.",
+        "fr": "Je la connais depuis deux ans.",
+        "ru": "Я знаю её два года."
+      },
+      "freqRank": 463,
+      "review": {
+        "words": "我 认识 她 两 年 了",
+        "unlisted": ["两年"],
+        "indirect": ["fr", "tr"],
+        "edited": ["tr", "ru"]
+      }
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "这不是我的错！",
+      "reading": "Zhè bú shì wǒ de cuò!",
+      "gloss": {
+        "en": "It's not my fault!",
+        "tr": "Bu benim hatam değil!",
+        "de": "Es ist nicht meine Schuld!",
+        "es": "¡No es culpa mía!",
+        "fr": "Ce n'est pas ma faute !",
+        "pt-BR": "Não é minha culpa!",
+        "ru": "Это не моя вина!",
+        "ar": "انها ليست غلطتي!"
+      },
+      "freqRank": 531,
+      "review": {
+        "words": "这 不 是 我 的 错",
+        "unlisted": ["不是"],
+        "indirect": ["ar", "ru", "tr"]
+      }
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "你知道问题在哪里。",
+      "reading": "Nǐ zhīdào wèntí zài nǎlǐ.",
+      "gloss": {
+        "en": "You know where the problem lies.",
+        "tr": "Sorunun nerede olduğunu biliyorsun.",
+        "de": "Du weißt, wo das Problem liegt.",
+        "es": "Sabes dónde está el problema.",
+        "fr": "Tu sais où se trouve le problème.",
+        "pt-BR": "Você sabe onde está o problema.",
+        "ru": "Ты знаешь, в чём проблема."
+      },
+      "freqRank": 547,
+      "review": {
+        "words": "你 知道 问题 在 哪 里",
+        "unlisted": ["哪里"],
+        "indirect": ["ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "我知道她在哪里。",
+      "reading": "Wǒ zhīdào tā zài nǎlǐ.",
+      "gloss": {
+        "en": "I know where she is.",
+        "tr": "Onun nerede olduğunu biliyorum.",
+        "de": "Ich weiß, wo sie ist.",
+        "es": "Yo sé dónde está ella.",
+        "fr": "Je sais où elle est.",
+        "pt-BR": "Eu sei onde ela está.",
+        "ru": "Я знаю, где она."
+      },
+      "freqRank": 547,
+      "review": { "words": "我 知道 她 在 哪 里", "unlisted": ["哪里"], "indirect": ["tr"] }
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "她比我小五岁。",
+      "reading": "Tā bǐ wǒ xiǎo wǔ suì.",
+      "gloss": {
+        "en": "She is five years younger than me.",
+        "tr": "O benden beş yaş küçük.",
+        "de": "Sie ist fünf Jahre jünger als ich.",
+        "es": "Ella tiene cinco años menos que yo.",
+        "fr": "Elle a cinq ans de moins que moi.",
+        "ru": "Она на пять лет младше меня."
+      },
+      "freqRank": 563,
+      "review": {
+        "words": "她 比 我 小 五 岁",
+        "unlisted": ["五岁"],
+        "indirect": ["ru", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "他从中国回来了。",
+      "reading": "Tā cóng Zhōngguó huílái le.",
+      "gloss": {
+        "en": "He came back from China.",
+        "de": "Er ist aus China zurückgekommen.",
+        "es": "Él volvió de China.",
+        "fr": "Il est revenu de Chine.",
+        "pt-BR": "Ele voltou da China.",
+        "ru": "Он вернулся из Китая."
+      },
+      "freqRank": 729,
+      "review": {
+        "words": "他 从 中国 回 来 了",
+        "unlisted": ["回来"],
+        "indirect": ["es", "pt-BR"]
+      }
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "我是从中国来的。",
+      "reading": "Wǒ shì cóng Zhōngguó lái de.",
+      "gloss": {
+        "en": "I come from China.",
+        "tr": "Çin'den geldim.",
+        "de": "Ich komme aus China.",
+        "es": "Vengo de China.",
+        "fr": "Je viens de Chine.",
+        "pt-BR": "Eu vim da China.",
+        "ru": "Я из Китая."
+      },
+      "freqRank": 729,
+      "review": {
+        "words": "我 是 从 中国 来 的",
+        "unlisted": ["是从"],
+        "indirect": ["es", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "你看上去非常累。",
+      "reading": "Nǐ kànshàngqu fēicháng lèi.",
+      "gloss": {
+        "en": "You look very tired.",
+        "tr": "Çok yorgun görünüyorsun.",
+        "de": "Du siehst sehr müde aus.",
+        "es": "Pareces muy cansado.",
+        "fr": "Tu as l'air très fatigué.",
+        "pt-BR": "Você parece estar muito cansado.",
+        "ru": "Ты выглядишь очень усталой.",
+        "ar": "تبدو متعباً للغاية."
+      },
+      "freqRank": 1197,
+      "review": {
+        "words": "你 看 上 去 非常 累",
+        "unlisted": ["看上去"],
+        "indirect": ["ar", "pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "我知道他叫什么名字。",
+      "reading": "Wǒ zhīdào tā jiào shénme míngzi.",
+      "gloss": {
+        "en": "I know what his name is.",
+        "tr": "Onun adının ne olduğunu biliyorum.",
+        "de": "Ich kenne seinen Namen.",
+        "es": "Sé cómo se llama.",
+        "fr": "Je sais quel est son nom.",
+        "pt-BR": "Eu sei qual é o nome dele.",
+        "ru": "Я знаю, как его зовут."
+      },
+      "freqRank": 829,
+      "review": { "words": "我 知道 他 叫 什么 名字", "indirect": ["de", "ru", "tr"] }
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "那个是我哥哥的。",
+      "reading": "Nàge shì wǒ gēge de.",
+      "gloss": {
+        "en": "That belongs to my brother.",
+        "tr": "O, abime ait.",
+        "de": "Das ist von meinem Bruder.",
+        "es": "Eso es de mi hermano.",
+        "fr": "Cela appartient à mon frère.",
+        "pt-BR": "Isso pertence ao meu irmão.",
+        "ru": "Это принадлежит моему брату."
+      },
+      "freqRank": 1655,
+      "review": {
+        "words": "那 个 是 我 哥哥 的",
+        "unlisted": ["那个"],
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "我的房间号是多少？",
+      "reading": "Wǒ de fángjiān hào shì duōshǎo?",
+      "gloss": {
+        "en": "What is my room number?",
+        "tr": "Oda numaram kaç?",
+        "de": "Wie lautet meine Zimmernummer?",
+        "es": "¿Cuál es mi número de habitación?",
+        "fr": "Quel est le numéro de ma chambre ?",
+        "pt-BR": "Qual é o número do meu quarto?",
+        "ru": "Какой номер моей комнаты?"
+      },
+      "freqRank": 1357,
+      "review": { "words": "我 的 房间 号 是 多少", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "去年下了很多雪。",
+      "reading": "Qùnián xià le hěn duō xuě.",
+      "gloss": {
+        "en": "We had a lot of snow last year.",
+        "tr": "Geçen yıl çok kar aldık.",
+        "de": "Wir hatten viel Schnee letztes Jahr.",
+        "es": "El año pasado nevó mucho.",
+        "fr": "Il a beaucoup neigé l'année dernière.",
+        "pt-BR": "Nevou muito no ano passado.",
+        "ru": "В прошлом году у нас было много снега."
+      },
+      "freqRank": 1971,
+      "review": {
+        "words": "去年 下 了 很 多 雪",
+        "unlisted": ["很多"],
+        "indirect": ["ru", "tr"],
+        "edited": ["pt-BR"]
+      }
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "我的生日在星期日。",
+      "reading": "Wǒ de shēngrì zài xīngqīrì.",
+      "gloss": {
+        "en": "My birthday falls on Sunday.",
+        "tr": "Doğum günüm pazara rastlıyor.",
+        "de": "Mein Geburtstag fällt auf einen Sonntag.",
+        "es": "Mi cumpleaños cae en un domingo.",
+        "fr": "Mon anniversaire tombe un dimanche.",
+        "ru": "Мой день рождения приходится на воскресенье."
+      },
+      "freqRank": 1956,
+      "review": {
+        "words": "我 的 生日 在 星期 日",
+        "unlisted": ["星期日"],
+        "indirect": ["ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "他比他的弟弟高。",
+      "reading": "Tā bǐ tā de dìdi gāo.",
+      "gloss": {
+        "en": "He is taller than his brother.",
+        "tr": "O, erkek kardeşinden daha uzundur.",
+        "de": "Er ist größer als sein Bruder.",
+        "es": "Él es más alto que su hermano.",
+        "fr": "Il est plus grand que son frère.",
+        "ru": "Он выше своего брата."
+      },
+      "freqRank": 2424,
+      "review": { "words": "他 比 他 的 弟弟 高", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "我妹妹唱歌很好听。",
+      "reading": "Wǒ mèimei chànggē hěn hǎotīng.",
+      "gloss": {
+        "en": "My younger sister sings beautifully.",
+        "tr": "Kız kardeşim çok güzel şarkı söylüyor.",
+        "de": "Meine Schwester singt sehr schön.",
+        "es": "Mi hermana pequeña canta muy bien.",
+        "fr": "Ma sœur chante très bien.",
+        "pt-BR": "Minha irmã canta muito bem.",
+        "ru": "Моя сестра очень хорошо поёт."
+      },
+      "freqRank": 2876,
+      "review": {
+        "words": "我 妹妹 唱歌 很 好 听",
+        "unlisted": ["好听"],
+        "indirect": ["tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 250,
+      "kind": "phrase",
+      "text": "这是你的自行车吗？",
+      "reading": "Zhè shì nǐ de zìxíngchē ma?",
+      "gloss": {
+        "en": "Is this your bicycle?",
+        "tr": "Bu senin bisikletin mi?",
+        "de": "Ist dies dein Fahrrad?",
+        "es": "¿Esta es tu bicicleta?",
+        "fr": "Est-ce votre vélo ?",
+        "pt-BR": "Essa é a sua bicicleta?",
+        "ru": "Это твой велосипед?",
+        "ar": "أهذه دراجتك؟"
+      },
+      "freqRank": 3400,
+      "review": { "words": "这 是 你 的 自行车 吗", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 251,
+      "kind": "phrase",
+      "text": "请问鸡蛋在哪里？",
+      "reading": "Qǐngwèn jīdàn zài nǎlǐ?",
+      "gloss": {
+        "en": "Where are the eggs, please?",
+        "tr": "Yumurtalar nerede, lütfen?",
+        "de": "Wo sind bitte die Eier?",
+        "es": "Por favor, ¿dónde están los huevos?",
+        "fr": "S'il vous plaît, où sont les œufs ?",
+        "pt-BR": "Onde estão os ovos, por favor?",
+        "ru": "Простите, где яйца?",
+        "ar": "لو سمحت، أين البيض؟"
+      },
+      "freqRank": 3501,
+      "review": {
+        "words": "请 问 鸡蛋 在 哪 里",
+        "unlisted": ["请问", "哪里"],
+        "indirect": ["ar", "pt-BR", "ru", "tr"],
+        "edited": ["ar"]
+      }
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "他喜欢唱歌，也喜欢跳舞。",
+      "reading": "Tā xǐhuan chànggē, yě xǐhuan tiàowǔ.",
+      "gloss": {
+        "en": "He likes singing and dancing.",
+        "tr": "Şarkı söylemeyi ve dans etmeyi sever.",
+        "de": "Er singt und tanzt gerne.",
+        "es": "A él le gusta cantar y bailar.",
+        "fr": "Il aime chanter et danser.",
+        "pt-BR": "Ele gosta de cantar e dançar.",
+        "ru": "Он любит петь и танцевать."
+      },
+      "freqRank": 3920,
+      "review": { "words": "他 喜欢 唱歌 也 喜欢 跳舞", "indirect": ["de", "ru", "tr"] }
+    },
+    {
+      "index": 253,
+      "kind": "phrase",
+      "text": "火车站离这里不远。",
+      "reading": "Huǒchēzhàn lí zhèlǐ bù yuǎn.",
+      "gloss": {
+        "en": "The station is not far from here.",
+        "tr": "İstasyon buradan uzak değildir.",
+        "de": "Der Bahnhof ist nicht weit von hier.",
+        "es": "La estación no está lejos de aquí.",
+        "fr": "La gare n'est pas loin d'ici.",
+        "pt-BR": "A estação não fica longe daqui.",
+        "ru": "Вокзал отсюда недалеко.",
+        "ar": "لا تبعد المحطة كثيراً عن هنا."
+      },
+      "freqRank": 7270,
+      "review": {
+        "words": "火车站 离 这 里 不 远",
+        "unlisted": ["这里", "不远"],
+        "indirect": ["ar", "es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
+      "text": "他告诉我她生病了。",
+      "reading": "Tā gàosu wǒ tā shēngbìng le.",
+      "gloss": {
+        "en": "He told me that she was sick.",
+        "tr": "O bana hasta olduğunu söyledi.",
+        "de": "Er erzählte mir, dass sie krank war.",
+        "es": "Él me dijo que ella estaba enferma.",
+        "fr": "Il m'a dit qu'elle était malade.",
+        "pt-BR": "Ele me disse que ela estava doente.",
+        "ru": "Он сказал мне, что она больна."
+      },
+      "freqRank": 4336,
+      "review": {
+        "words": "他 告诉 我 她 生病 了",
+        "indirect": ["es", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 255,
+      "kind": "phrase",
+      "text": "不会再有下次了。",
+      "reading": "Bú huì zài yǒu xiàcì le.",
+      "gloss": {
+        "en": "There won't be a next time.",
+        "tr": "Bir daha olmayacak.",
+        "de": "Ich werde es nie wieder machen.",
+        "fr": "Pas une seconde fois.",
+        "pt-BR": "Eu não vou fazer isso outra vez.",
+        "ru": "Я не буду делать это снова."
+      },
+      "freqRank": 99,
+      "review": {
+        "words": "不 会 再 有 下 次 了",
+        "unlisted": ["不会", "再有", "下次"],
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["reading", "en", "tr"]
+      }
+    },
+    {
+      "index": 256,
+      "kind": "phrase",
+      "text": "我的朋友还没回来。",
+      "reading": "Wǒ de péngyou hái méi huílái.",
+      "gloss": {
+        "en": "My friend hasn't come back yet.",
+        "de": "Mein Freund ist noch nicht wieder da.",
+        "es": "Mi amigo todavía no ha vuelto.",
+        "fr": "Mon ami n’est pas encore revenu.",
+        "ru": "Моя подруга ещё не вернулась."
+      },
+      "freqRank": 280,
+      "review": { "words": "我 的 朋友 还 没 回 来", "unlisted": ["回来"], "indirect": ["ru"] }
+    },
+    {
+      "index": 257,
+      "kind": "phrase",
+      "text": "您能开一下门吗？",
+      "reading": "Nín néng kāi yíxià mén ma?",
+      "gloss": {
+        "en": "Could you open the door, please?",
+        "de": "Könnten Sie die Tür öffnen?",
+        "fr": "Peux-tu ouvrir la porte s'il te plait ?",
+        "ru": "Не могли бы вы открыть дверь, пожалуйста?"
+      },
+      "freqRank": 422,
+      "review": { "words": "您 能 开 一 下 门 吗", "unlisted": ["一下"], "edited": ["reading"] }
+    },
+    {
+      "index": 258,
+      "kind": "phrase",
+      "text": "很少有人知道怎么做。",
+      "reading": "Hěn shǎo yǒurén zhīdào zěnme zuò.",
+      "gloss": {
+        "en": "Few people know how to do it.",
+        "tr": "Az sayıda kişi onu nasıl yapacağını biliyor.",
+        "de": "Wenige Leute wissen, wie man das macht.",
+        "es": "Poca gente sabe hacerlo.",
+        "fr": "Peu de gens savent comment on fait.",
+        "ru": "Немногие люди знают, как это делать."
+      },
+      "freqRank": 538,
+      "review": {
+        "words": "很 少 有 人 知道 怎么 做",
+        "unlisted": ["很少", "有人"],
+        "indirect": ["ru", "tr"]
+      }
+    },
+    {
+      "index": 259,
+      "kind": "phrase",
+      "text": "没人知道她在哪里。",
+      "reading": "Méi rén zhīdào tā zài nǎlǐ.",
+      "gloss": {
+        "en": "Nobody knows where she is.",
+        "tr": "Kimse onun nerede olduğunu bilmiyor.",
+        "de": "Niemand wusste, wo sie war.",
+        "es": "Nadie sabía dónde estaba.",
+        "fr": "Personne ne savait où elle était.",
+        "pt-BR": "Ninguém pôde dizer onde ela estava.",
+        "ru": "Никто не мог сказать, где она."
+      },
+      "freqRank": 547,
+      "review": {
+        "words": "没 人 知道 她 在 哪 里",
+        "unlisted": ["哪里"],
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 260,
+      "kind": "phrase",
+      "text": "我给了你一本书。",
+      "reading": "Wǒ gěi le nǐ yì běn shū.",
+      "gloss": {
+        "en": "I gave you a book.",
+        "tr": "Sana bir kitap verdim.",
+        "de": "Ich gab dir ein Buch.",
+        "es": "Te di un libro.",
+        "fr": "Je t'ai donné un livre.",
+        "ru": "Я дал тебе книгу."
+      },
+      "freqRank": 560,
+      "review": { "words": "我 给 了 你 一 本 书", "unlisted": ["本书"] }
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "她是个非常好的老师。",
+      "reading": "Tā shì gè fēicháng hǎo de lǎoshī.",
+      "gloss": {
+        "en": "She is a very good teacher.",
+        "tr": "O çok iyi bir öğretmendir.",
+        "de": "Sie ist eine sehr gute Lehrerin.",
+        "es": "Ella es una muy buena maestra.",
+        "fr": "Elle est un très bon professeur.",
+        "pt-BR": "Ela é uma professora muito boa.",
+        "ru": "Она очень хороший учитель."
+      },
+      "freqRank": 799,
+      "review": { "words": "她 是 个 非常 好 的 老师", "indirect": ["es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 262,
+      "kind": "phrase",
+      "text": "我能问一些问题吗？",
+      "reading": "Wǒ néng wèn yìxiē wèntí ma?",
+      "gloss": {
+        "en": "May I ask a few questions?",
+        "tr": "Birkaç soru sorabilir miyim?",
+        "de": "Kann ich ein paar Fragen stellen?",
+        "es": "¿Puedo hacer un par de preguntas?",
+        "fr": "Puis-je poser des questions ?",
+        "ru": "Могу я задать несколько вопросов?"
+      },
+      "freqRank": 611,
+      "review": {
+        "words": "我 能 问 一 些 问题 吗",
+        "unlisted": ["一些"],
+        "indirect": ["tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 263,
+      "kind": "phrase",
+      "text": "大家都想坐在她旁边。",
+      "reading": "Dàjiā dōu xiǎng zuò zài tā pángbiān.",
+      "gloss": {
+        "en": "Everybody wants to sit beside her.",
+        "tr": "Herkes onun yanına oturmak istiyor.",
+        "de": "Alle wollen neben ihr sitzen.",
+        "es": "Todos quieren sentarse a su lado.",
+        "fr": "Tout le monde veut s'asseoir à côté d'elle.",
+        "ru": "Все хотят сидеть возле неё.",
+        "ar": "الكل يريد أن يجلس بجانبها."
+      },
+      "freqRank": 1815,
+      "review": {
+        "words": "大家 都 想 坐 在 她 旁边",
+        "unlisted": ["坐在"],
+        "indirect": ["ar", "es", "tr"]
+      }
+    },
+    {
+      "index": 264,
+      "kind": "phrase",
+      "text": "我很想知道她的名字。",
+      "reading": "Wǒ hěn xiǎng zhīdào tā de míngzi.",
+      "gloss": {
+        "en": "I really want to know her name.",
+        "tr": "Onun adını gerçekten bilmek istiyorum.",
+        "de": "Ich wüsste wirklich gerne ihren Namen.",
+        "es": "En verdad quiero saber su nombre.",
+        "fr": "Je veux vraiment connaître son nom.",
+        "ru": "Я действительно хочу знать её имя."
+      },
+      "freqRank": 829,
+      "review": { "words": "我 很 想 知道 她 的 名字", "indirect": ["tr"] }
+    },
+    {
+      "index": 265,
+      "kind": "phrase",
+      "text": "您想再来点茶吗？",
+      "reading": "Nín xiǎng zài lái diǎn chá ma?",
+      "gloss": {
+        "en": "Would you like some more tea?",
+        "tr": "Biraz daha çay ister misiniz?",
+        "de": "Wollen Sie noch ein bisschen Tee?",
+        "es": "¿Quiere más té?",
+        "fr": "Voulez-vous un peu plus de thé ?",
+        "pt-BR": "Gostaria de mais um pouco de chá?",
+        "ru": "Вы бы хотели ещё немного чая?"
+      },
+      "freqRank": 1910,
+      "review": {
+        "words": "您 想 再 来 点 茶 吗",
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 266,
+      "kind": "phrase",
+      "text": "我家旁边有几家商店。",
+      "reading": "Wǒ jiā pángbiān yǒu jǐ jiā shāngdiàn.",
+      "gloss": {
+        "en": "There are a few shops next to my house.",
+        "tr": "Evimin yanında birkaç dükkân var.",
+        "de": "Neben meinem Zuhause sind ein paar Geschäfte.",
+        "es": "Hay algunas tiendas al lado de mi casa.",
+        "fr": "À côté de chez moi il y a quelques magasins.",
+        "ru": "Рядом с моим домом есть несколько магазинов.",
+        "ar": "توجد بعض المحلات قرب منزلي."
+      },
+      "freqRank": 3479,
+      "review": {
+        "words": "我 家 旁边 有 几 家 商店",
+        "unlisted": ["我家", "几家"],
+        "indirect": ["ar", "es", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 267,
+      "kind": "phrase",
+      "text": "您不能在这里游泳。",
+      "reading": "Nín bù néng zài zhèlǐ yóuyǒng.",
+      "gloss": {
+        "en": "You cannot swim here.",
+        "tr": "Burada yüzemezsiniz.",
+        "de": "Sie können hier nicht schwimmen.",
+        "es": "No puede nadar aquí.",
+        "fr": "Vous ne pouvez pas nager ici.",
+        "pt-BR": "Você não pode nadar aqui.",
+        "ru": "Вы не можете плавать здесь.",
+        "ar": "لا تستطيع السباحة هنا."
+      },
+      "freqRank": 3695,
+      "review": {
+        "words": "您 不 能 在 这 里 游泳",
+        "unlisted": ["不能", "这里"],
+        "indirect": ["ar", "de", "pt-BR", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 268,
+      "kind": "phrase",
+      "text": "我没听到您的姓。",
+      "reading": "Wǒ méi tīngdào nín de xìng.",
+      "gloss": {
+        "en": "I didn't catch your last name.",
+        "tr": "Soyadınızı duyamadım.",
+        "de": "Ich habe Ihren Nachnamen nicht mitbekommen.",
+        "es": "No entendí tu apellido.",
+        "fr": "Je n'ai pas saisi votre nom de famille.",
+        "ru": "Я не расслышал вашу фамилию."
+      },
+      "freqRank": 3576,
+      "review": {
+        "words": "我 没 听 到 您 的 姓",
+        "unlisted": ["听到"],
+        "indirect": ["es", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 269,
+      "kind": "phrase",
+      "text": "你想走的时候就走吧。",
+      "reading": "Nǐ xiǎng zǒu de shíhou jiù zǒu ba.",
+      "gloss": {
+        "en": "Go when you want.",
+        "tr": "İstediğin zaman git.",
+        "de": "Geh, wann du willst.",
+        "es": "Vete cuando quieras.",
+        "fr": "Pars quand tu veux.",
+        "ru": "Уезжай когда хочешь."
+      },
+      "freqRank": 109,
+      "review": { "words": "你 想 走 的 时候 就 走 吧", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "我去不了，也不想去。",
+      "reading": "Wǒ qù bù liǎo, yě bù xiǎng qù.",
+      "gloss": {
+        "en": "I cannot go, nor do I want to.",
+        "de": "Weder kann ich, noch will ich gehen.",
+        "es": "No puedo ir, y tampoco quiero.",
+        "fr": "Je ne peux pas y aller, ni ne le veux.",
+        "pt-BR": "Eu não posso ir, nem quero.",
+        "ru": "Я не смогу поехать, да и не хочу."
+      },
+      "freqRank": 44,
+      "review": {
+        "words": "我 去 不 了 也 不 想 去",
+        "unlisted": ["不了", "不想"],
+        "indirect": ["pt-BR"]
+      }
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "这可能是真的，可能不是。",
+      "reading": "Zhè kěnéng shì zhēn de, kěnéng bú shì.",
+      "gloss": {
+        "en": "It may or may not be true.",
+        "tr": "Doğru olabilir ya da olmayabilir.",
+        "de": "Es mag stimmen oder auch nicht.",
+        "es": "Esto tal vez es real, tal vez no.",
+        "fr": "Cela peut être ou ne pas être vrai.",
+        "pt-BR": "Isso pode ou não ser verdade.",
+        "ru": "Это может быть или может не быть правдой.",
+        "ar": "قد يكون أو لا يكون صحيحًا."
+      },
+      "freqRank": 127,
+      "review": {
+        "words": "这 可能 是 真 的 可能 不 是",
+        "unlisted": ["真的", "不是"],
+        "indirect": ["ar", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "我不知道，我也不想知道。",
+      "reading": "Wǒ bù zhīdào, wǒ yě bù xiǎng zhīdào.",
+      "gloss": {
+        "en": "I don't know and I don't want to know.",
+        "tr": "Bilmiyorum ve bilmek de istemiyorum.",
+        "de": "Ich weiß es nicht und will es auch nicht wissen.",
+        "es": "No sé ni quiero saberlo.",
+        "fr": "Je ne le sais pas et je ne veux pas le savoir non plus.",
+        "pt-BR": "Eu não sei e também não quero saber.",
+        "ru": "Не знаю и знать не хочу."
+      },
+      "freqRank": 105,
+      "review": {
+        "words": "我 不 知道 我 也 不 想 知道",
+        "unlisted": ["不想"],
+        "indirect": ["ru", "tr"]
+      }
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "他很快就会回来的。",
+      "reading": "Tā hěn kuài jiù huì huílái de.",
+      "gloss": {
+        "en": "He will be back soon.",
+        "tr": "Yakında geri dönecek.",
+        "de": "Er wird bald zurück sein.",
+        "es": "Él volverá en seguida.",
+        "fr": "Il reviendra rapidement.",
+        "pt-BR": "Ele voltará em seguida.",
+        "ru": "Он скоро вернётся."
+      },
+      "freqRank": 225,
+      "review": {
+        "words": "他 很 快 就 会 回 来 的",
+        "unlisted": ["很快", "回来"],
+        "indirect": ["ru", "tr"]
+      }
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "我能找到的都在那。",
+      "reading": "Wǒ néng zhǎodào de dōu zài nà.",
+      "gloss": {
+        "en": "That's all I could find.",
+        "tr": "Bulabildiğim bu kadar.",
+        "de": "Das ist alles, was ich finden konnte.",
+        "es": "Eso es todo lo que pude encontrar.",
+        "fr": "C'est tout ce que j'ai pu trouver.",
+        "ru": "Это всё, что я смог найти."
+      },
+      "freqRank": 152,
+      "review": {
+        "words": "我 能 找 到 的 都 在 那",
+        "unlisted": ["找到"],
+        "indirect": ["tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "你能告诉我这是什么吗？",
+      "reading": "Nǐ néng gàosu wǒ zhè shì shénme ma?",
+      "gloss": {
+        "en": "Can you tell me what this is?",
+        "tr": "Bunun ne olduğunu bana söyler misin?",
+        "de": "Kannst du mir sagen, was das ist?",
+        "es": "¿Puedes decirme qué es esto?",
+        "fr": "Peux-tu me dire ce que c'est ?",
+        "pt-BR": "Você pode me dizer o que é isto?",
+        "ru": "Ты можешь сказать мне, что это такое?",
+        "ar": "هل بإمكانك أن تقول لي ما هذا؟"
+      },
+      "freqRank": 252,
+      "review": {
+        "words": "你 能 告诉 我 这 是 什么 吗",
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "有一个男人和一个女人。",
+      "reading": "Yǒu yí gè nánrén hé yí gè nǚrén.",
+      "gloss": {
+        "en": "There is a man and a woman.",
+        "tr": "Bir erkek ve bir kadın var.",
+        "de": "Da sind ein Mann und eine Frau.",
+        "es": "Hay un hombre y una mujer.",
+        "pt-BR": "Existem um homem e uma mulher.",
+        "ru": "Есть мужчина и женщина."
+      },
+      "freqRank": 415,
+      "review": {
+        "words": "有 一 个 男人 和 一 个 女人",
+        "unlisted": ["一个", "一个"],
+        "indirect": ["pt-BR", "ru"]
+      }
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "我不认识她，也不想认识。",
+      "reading": "Wǒ bú rènshi tā, yě bù xiǎng rènshi.",
+      "gloss": {
+        "en": "I don't know her, nor do I want to.",
+        "tr": "Onu tanımıyorum, tanımak da istemiyorum.",
+        "de": "Ich kenne sie nicht, noch möchte ich sie kennenlernen.",
+        "es": "No la conozco, ni quiero conocerla.",
+        "fr": "Je ne la connais pas ni ne veux faire sa connaissance.",
+        "pt-BR": "Eu não a conheço e nem quero.",
+        "ru": "Я её не знаю и знать не хочу."
+      },
+      "freqRank": 463,
+      "review": {
+        "words": "我 不 认识 她 也 不 想 认识",
+        "unlisted": ["不想"],
+        "indirect": ["pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "你的生日是几月几号？",
+      "reading": "Nǐ de shēngrì shì jǐ yuè jǐ hào?",
+      "gloss": {
+        "en": "When is your birthday?",
+        "tr": "Doğum günün ne zaman?",
+        "de": "Wann hast du Geburtstag?",
+        "es": "¿Cuándo es tu cumpleaños?",
+        "fr": "Quand ton anniversaire a-t-il lieu ?",
+        "pt-BR": "Quando é o seu aniversário?",
+        "ru": "Когда у Вас день рождения?",
+        "ar": "متى عيد ميلادك؟"
+      },
+      "freqRank": 1506,
+      "review": {
+        "words": "你 的 生日 是 几 月 几 号",
+        "unlisted": ["几月", "几号"],
+        "indirect": ["ar", "pt-BR", "ru"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "我和我的丈夫都是老师。",
+      "reading": "Wǒ hé wǒ de zhàngfu dōu shì lǎoshī.",
+      "gloss": {
+        "en": "My husband and I are both teachers.",
+        "tr": "Kocam ve ben her ikimiz de öğretmeniz.",
+        "es": "Mi marido y yo somos profesores.",
+        "fr": "Mon mari et moi sommes tous les deux enseignants.",
+        "ru": "Мы с мужем оба учителя."
+      },
+      "freqRank": 1376,
+      "review": { "words": "我 和 我 的 丈夫 都 是 老师", "indirect": ["tr"] }
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "他是我哥哥，不是我爸爸。",
+      "reading": "Tā shì wǒ gēge, bú shì wǒ bàba.",
+      "gloss": {
+        "en": "He is my brother, not my father.",
+        "tr": "O benim abim, babam değil.",
+        "de": "Er ist mein Bruder, nicht mein Vater.",
+        "es": "Él es mi hermano, no mi padre.",
+        "fr": "C'est mon frère, pas mon père.",
+        "ru": "Он мне брат, а не отец."
+      },
+      "freqRank": 1655,
+      "review": {
+        "words": "他 是 我 哥哥 不 是 我 爸爸",
+        "unlisted": ["不是"],
+        "indirect": ["ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "我在报纸上看到了它。",
+      "reading": "Wǒ zài bàozhǐ shàng kàndào le tā.",
+      "gloss": {
+        "en": "I saw it in the newspaper.",
+        "tr": "Onu gazetede gördüm.",
+        "de": "Ich habe es in der Zeitung gelesen.",
+        "es": "Lo he leído en el periódico.",
+        "fr": "Je l'ai lu dans le journal.",
+        "pt-BR": "Eu vi isso num jornal."
+      },
+      "freqRank": 2232,
+      "review": {
+        "words": "我 在 报纸 上 看 到 了 它",
+        "unlisted": ["看到"],
+        "indirect": ["pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "他的哥哥比我大两岁。",
+      "reading": "Tā de gēge bǐ wǒ dà liǎng suì.",
+      "gloss": {
+        "en": "His older brother is two years older than I.",
+        "tr": "Onun abisi benden iki yaş büyük.",
+        "de": "Sein älterer Bruder ist zwei Jahre älter als ich.",
+        "es": "Su hermano mayor tiene dos años más que yo.",
+        "fr": "Son frère aîné a deux ans de plus que moi.",
+        "ru": "Его старший брат на два года старше меня."
+      },
+      "freqRank": 1655,
+      "review": {
+        "words": "他 的 哥哥 比 我 大 两 岁",
+        "unlisted": ["两岁"],
+        "indirect": ["ru"],
+        "edited": ["tr"]
+      }
+    }
+  ]
+}

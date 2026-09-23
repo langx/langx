@@ -1,0 +1,4450 @@
+{
+  "id": "zh:hsk6",
+  "lang": "zh",
+  "level": "fluent",
+  "hsk": 6,
+  "contentVersion": 1,
+  "reviewed": true,
+  "sources": [
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "HSK 2.0 word lists (clem109/hsk-vocabulary, via drkameleon/complete-hsk-vocabulary)",
+      "licence": "MIT",
+      "url": "https://github.com/drkameleon/complete-hsk-vocabulary"
+    },
+    { "name": "pypinyin", "licence": "MIT", "url": "https://github.com/mozillazg/python-pinyin" }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "我来啦。",
+      "reading": "Wǒ lái la.",
+      "gloss": {
+        "en": "I'm coming.",
+        "tr": "Geliyorum.",
+        "de": "Ich komme.",
+        "es": "Ya voy.",
+        "fr": "J'arrive.",
+        "pt-BR": "Estou vindo.",
+        "ru": "Иду.",
+        "ar": "سآتي."
+      },
+      "freqRank": 246,
+      "review": { "words": "我 来 啦", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "这是啥？",
+      "reading": "Zhè shì shá?",
+      "gloss": {
+        "en": "What's this?",
+        "tr": "Bu nedir?",
+        "de": "Was ist das?",
+        "es": "¿Qué es eso?",
+        "fr": "Qu'est-ce que c'est ?",
+        "pt-BR": "O que é isto?",
+        "ru": "Что это?",
+        "ar": "ما هذا؟"
+      },
+      "freqRank": 990,
+      "review": { "words": "这 是 啥", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "我知道啦。",
+      "reading": "Wǒ zhīdào la.",
+      "gloss": {
+        "en": "I know!",
+        "tr": "Biliyorum!",
+        "de": "Ich weiß.",
+        "es": "Yo lo sé.",
+        "fr": "Je sais !",
+        "ru": "Да знаю я!"
+      },
+      "freqRank": 246,
+      "review": { "words": "我 知道 啦", "indirect": ["fr", "ru", "tr"] }
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "哇，好冷！",
+      "reading": "Wā, hǎo lěng!",
+      "gloss": {
+        "en": "Wow, so cold!",
+        "tr": "Vay, çok soğuk!",
+        "de": "Huch, ist das kalt!",
+        "fr": "Waouh, comme il fait froid !",
+        "ru": "Ух, как холодно!"
+      },
+      "freqRank": 1027,
+      "review": { "words": "哇 好 冷", "edited": ["reading", "tr"] }
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "我们要投票。",
+      "reading": "Wǒmen yào tóupiào.",
+      "gloss": {
+        "en": "We want to vote.",
+        "tr": "Biz oy vermek istiyoruz.",
+        "de": "Wir wollen abstimmen.",
+        "es": "Queremos votar.",
+        "fr": "Nous voulons voter.",
+        "pt-BR": "Queremos votar.",
+        "ru": "Мы хотим голосовать."
+      },
+      "freqRank": 1089,
+      "review": { "words": "我们 要 投票", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "麻烦你啦。",
+      "reading": "Máfan nǐ la.",
+      "gloss": {
+        "en": "Sorry to trouble you.",
+        "tr": "Sizi rahatsız ettiğim için üzgünüm.",
+        "de": "Entschuldige die Störung.",
+        "fr": "Désolé de te déranger."
+      },
+      "freqRank": 1492,
+      "review": { "words": "麻烦 你 啦", "indirect": ["tr"] }
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "他害怕死亡。",
+      "reading": "Tā hàipà sǐwáng.",
+      "gloss": {
+        "en": "He is afraid of death.",
+        "tr": "O ölümden korkuyor.",
+        "de": "Er hat Furcht vor dem Tod.",
+        "es": "Él le teme a la muerte.",
+        "fr": "Il a peur de la mort.",
+        "pt-BR": "Ele está com medo da morte.",
+        "ru": "Он боится умереть."
+      },
+      "freqRank": 1536,
+      "review": { "words": "他 害怕 死亡", "indirect": ["es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "我知道真相。",
+      "reading": "Wǒ zhīdào zhēnxiàng.",
+      "gloss": {
+        "en": "I know the truth.",
+        "tr": "Gerçeği biliyorum.",
+        "de": "Ich kenne die Wahrheit.",
+        "es": "Sé la verdad.",
+        "fr": "Je connais la vérité.",
+        "pt-BR": "Eu conheço a verdade.",
+        "ru": "Я знаю правду.",
+        "ar": "أعرف الحقيقة."
+      },
+      "freqRank": 2208,
+      "review": { "words": "我 知道 真相", "indirect": ["ar", "pt-BR", "ru"] }
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "这毫无意义。",
+      "reading": "Zhè háowú yìyì.",
+      "gloss": {
+        "en": "This is completely meaningless.",
+        "tr": "Bu tamamen anlamsız.",
+        "de": "Das ist völlig nichtssagend.",
+        "fr": "Ça ne signifie vraiment rien.",
+        "ru": "Это бессмысленно."
+      },
+      "freqRank": 2244,
+      "review": {
+        "words": "这 毫无 意义",
+        "unlisted": ["毫无意义"],
+        "indirect": ["fr", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "斗争结束了。",
+      "reading": "Dòuzhēng jiéshù le.",
+      "gloss": {
+        "en": "The fight is over.",
+        "tr": "Mücadele sona erdi.",
+        "de": "Der Kampf ist vorbei.",
+        "fr": "Le combat est terminé.",
+        "pt-BR": "A luta acabou.",
+        "ru": "Бой окончен."
+      },
+      "freqRank": 2672,
+      "review": { "words": "斗争 结束 了", "indirect": ["pt-BR", "ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "婴儿在睡觉。",
+      "reading": "Yīng'ér zài shuìjiào.",
+      "gloss": {
+        "en": "The baby is sleeping.",
+        "tr": "Bebek uyuyor.",
+        "de": "Das Baby schläft gerade.",
+        "es": "El bebé está durmiendo.",
+        "fr": "Le bébé dort.",
+        "pt-BR": "O bebé está a dormir.",
+        "ru": "Ребёнок спит."
+      },
+      "freqRank": 3041,
+      "review": { "words": "婴儿 在 睡觉", "indirect": ["de", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "他充满活力。",
+      "reading": "Tā chōngmǎn huólì.",
+      "gloss": {
+        "en": "He is full of energy.",
+        "tr": "O enerji dolu.",
+        "de": "Er ist voller Energie.",
+        "es": "Él está lleno de energía.",
+        "fr": "Il est plein d'énergie.",
+        "pt-BR": "Ele está cheio de energia.",
+        "ru": "Он полон сил."
+      },
+      "freqRank": 3168,
+      "review": {
+        "words": "他 充满 活力",
+        "unlisted": ["充满活力"],
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "我怀孕了。",
+      "reading": "Wǒ huáiyùn le.",
+      "gloss": {
+        "en": "I'm pregnant.",
+        "tr": "Ben hamileyim.",
+        "de": "Ich bin schwanger.",
+        "es": "Estoy embarazada.",
+        "fr": "Je suis enceinte.",
+        "pt-BR": "Eu estou grávida.",
+        "ru": "Я беременная.",
+        "ar": "أنا حامل."
+      },
+      "freqRank": 3299,
+      "review": { "words": "我 怀孕 了", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "他很敏感。",
+      "reading": "Tā hěn mǐngǎn.",
+      "gloss": {
+        "en": "He is very sensitive.",
+        "tr": "O çok duyarlıdır.",
+        "de": "Er ist sehr empfindlich.",
+        "es": "Él es muy sensible.",
+        "fr": "Il est susceptible.",
+        "pt-BR": "Ele é muito sensível.",
+        "ru": "Он очень чувствительный."
+      },
+      "freqRank": 3233,
+      "review": { "words": "他 很 敏感", "indirect": ["es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "我渴望冒险。",
+      "reading": "Wǒ kěwàng màoxiǎn.",
+      "gloss": {
+        "en": "I long for adventure.",
+        "tr": "Maceraya can atıyorum.",
+        "de": "Ich habe Lust auf Abenteuer.",
+        "fr": "J'ai très envie d'aventures.",
+        "ru": "Я жажду приключений."
+      },
+      "freqRank": 3841,
+      "review": { "words": "我 渴望 冒险", "edited": ["en", "tr"] }
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "新娘来了！",
+      "reading": "Xīnniáng lái le!",
+      "gloss": {
+        "en": "Here comes the bride!",
+        "tr": "İşte gelin geliyor!",
+        "de": "Hier kommt die Braut!",
+        "es": "¡Aquí llega la novia!",
+        "fr": "Voilà la mariée !",
+        "pt-BR": "Aí vem a noiva!",
+        "ru": "А вот и невеста!"
+      },
+      "freqRank": 4498,
+      "review": { "words": "新娘 来 了", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "我嫉妒她。",
+      "reading": "Wǒ jídù tā.",
+      "gloss": {
+        "en": "I envy her.",
+        "tr": "Onu kıskanıyorum.",
+        "de": "Ich beneide sie.",
+        "es": "La envidio.",
+        "fr": "Je l'envie.",
+        "pt-BR": "Eu a invejo.",
+        "ru": "Я ей завидую.",
+        "ar": "أنا أحسدها."
+      },
+      "freqRank": 4056,
+      "review": { "words": "我 嫉妒 她", "indirect": ["ar", "fr", "pt-BR", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "请关闭引擎。",
+      "reading": "Qǐng guānbì yǐnqíng.",
+      "gloss": {
+        "en": "Please turn off your engine.",
+        "tr": "Lütfen motorunuzu kapatın.",
+        "de": "Bitte stellen Sie den Motor ab.",
+        "fr": "Coupe ton moteur, s'il te plait.",
+        "ru": "Заглуши мотор, пожалуйста."
+      },
+      "freqRank": 4502,
+      "review": { "words": "请 关闭 引擎", "indirect": ["fr", "tr"] }
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "他没反抗。",
+      "reading": "Tā méi fǎnkàng.",
+      "gloss": {
+        "en": "He did not resist.",
+        "tr": "O karşı koymadı.",
+        "de": "Er leistete keinen Widerstand.",
+        "fr": "Il n'a pas résisté.",
+        "pt-BR": "Ele não resistiu.",
+        "ru": "Он не сопротивлялся."
+      },
+      "freqRank": 5287,
+      "review": { "words": "他 没 反抗", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "明天举行典礼。",
+      "reading": "Míngtiān jǔxíng diǎnlǐ.",
+      "gloss": {
+        "en": "The ceremony will take place tomorrow.",
+        "tr": "Tören yarın yapılacak.",
+        "de": "Die Zeremonie wird morgen stattfinden.",
+        "es": "La ceremonia tendrá lugar mañana.",
+        "fr": "La cérémonie aura lieu demain.",
+        "ru": "Церемония состоится завтра."
+      },
+      "freqRank": 5455,
+      "review": { "words": "明天 举行 典礼", "indirect": ["es", "ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "期限近了。",
+      "reading": "Qīxiàn jìn le.",
+      "gloss": {
+        "en": "The deadline is approaching.",
+        "tr": "Son tarih yaklaşıyor.",
+        "de": "Der Termin rückt näher.",
+        "fr": "La date limite se rapproche.",
+        "ru": "Крайний срок приближается."
+      },
+      "freqRank": 5679,
+      "review": { "words": "期限 近 了", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "她说话幼稚。",
+      "reading": "Tā shuōhuà yòuzhì.",
+      "gloss": {
+        "en": "She talks childishly.",
+        "tr": "Çocukça konuşuyor.",
+        "de": "Sie sprach kindisch.",
+        "es": "Ella habla de manera infantil.",
+        "fr": "Elle parla puérilement.",
+        "ru": "Она рассуждает с детской наивностью."
+      },
+      "freqRank": 6903,
+      "review": { "words": "她 说话 幼稚", "indirect": ["tr"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "语言很奇妙。",
+      "reading": "Yǔyán hěn qímiào.",
+      "gloss": {
+        "en": "Language is wonderful.",
+        "de": "Sprachen sind wunderbar.",
+        "ru": "Языки — это удивительно."
+      },
+      "freqRank": 7455,
+      "review": { "words": "语言 很 奇妙", "edited": ["ru"] }
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "我信赖他。",
+      "reading": "Wǒ xìnlài tā.",
+      "gloss": {
+        "en": "I trust him.",
+        "tr": "Ona güveniyorum.",
+        "de": "Ich vertraue ihm.",
+        "es": "Yo confío en él.",
+        "fr": "Je m'en remettais à lui.",
+        "ru": "Я ему доверяю."
+      },
+      "freqRank": 8119,
+      "review": { "words": "我 信赖 他", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "你在撒谎。",
+      "reading": "Nǐ zài sāhuǎng.",
+      "gloss": {
+        "en": "You are lying.",
+        "tr": "Yalan söylüyorsun.",
+        "de": "Du lügst.",
+        "es": "Estás mintiendo.",
+        "fr": "Tu mens.",
+        "pt-BR": "Você está mentindo.",
+        "ru": "Ты врешь."
+      },
+      "freqRank": 8163,
+      "review": { "words": "你 在 撒谎", "indirect": ["es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "她很固执。",
+      "reading": "Tā hěn gùzhí.",
+      "gloss": {
+        "en": "She's very obstinate.",
+        "tr": "Çok inatçı.",
+        "de": "Sie ist stur.",
+        "fr": "Elle est entêtée.",
+        "ru": "Она очень упрямая."
+      },
+      "freqRank": 8209,
+      "review": { "words": "她 很 固执", "indirect": ["ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "多丢人啊！",
+      "reading": "Duō diūrén a!",
+      "gloss": {
+        "en": "How shameful!",
+        "tr": "Ne ayıp!",
+        "de": "Was für eine Schande!",
+        "fr": "Quelle honte !",
+        "ru": "Какой стыд!",
+        "ar": "يا للعار!"
+      },
+      "freqRank": 8878,
+      "review": { "words": "多 丢人 啊", "indirect": ["ar"], "edited": ["tr"] }
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "台风走了。",
+      "reading": "Táifēng zǒu le.",
+      "gloss": {
+        "en": "The typhoon is gone.",
+        "tr": "Tayfun geçti.",
+        "de": "Der Taifun ist vorbei.",
+        "fr": "Le typhon est parti.",
+        "pt-BR": "O tufão se foi."
+      },
+      "freqRank": 8942,
+      "review": { "words": "台风 走 了", "indirect": ["pt-BR"], "edited": ["tr"] }
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "谁喜欢昆虫？",
+      "reading": "Shéi xǐhuan kūnchóng?",
+      "gloss": {
+        "en": "Who likes insects?",
+        "tr": "Böcekleri kim seviyor?",
+        "de": "Wer mag Insekten?",
+        "es": "¿A quién le gustan los insectos?",
+        "fr": "Qui aime les insectes ?",
+        "ru": "Кому нравятся насекомые?"
+      },
+      "freqRank": 11860,
+      "review": { "words": "谁 喜欢 昆虫", "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "他喜欢吹牛。",
+      "reading": "Tā xǐhuan chuīniú.",
+      "gloss": {
+        "en": "He likes to brag.",
+        "tr": "Övünmeyi sever.",
+        "pt-BR": "Ele gosta de tirar onda.",
+        "ru": "Он любит хвастаться."
+      },
+      "freqRank": 13710,
+      "review": { "words": "他 喜欢 吹牛", "edited": ["en", "tr"] }
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "我尊敬长辈。",
+      "reading": "Wǒ zūnjìng zhǎngbèi.",
+      "gloss": {
+        "en": "I respect my elders.",
+        "de": "Ich achte ältere Leute.",
+        "es": "Yo respeto a los mayores.",
+        "fr": "Je respecte les personnes âgées.",
+        "pt-BR": "Eu respeito os mais velhos.",
+        "ru": "Я уважаю старших."
+      },
+      "freqRank": 14245,
+      "review": { "words": "我 尊敬 长辈", "indirect": ["es", "pt-BR"], "edited": ["en"] }
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "那算数吗？",
+      "reading": "Nà suànshù ma?",
+      "gloss": {
+        "en": "Does that count?",
+        "tr": "Bu sayılır mı?",
+        "de": "Zählt das?",
+        "es": "¿Eso vale?",
+        "fr": "Est-ce que ça compte ?",
+        "ru": "Это считается?"
+      },
+      "freqRank": 15281,
+      "review": { "words": "那 算数 吗", "indirect": ["es", "ru", "tr"], "edited": ["tr", "ru"] }
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "天空很晴朗。",
+      "reading": "Tiānkōng hěn qínglǎng.",
+      "gloss": {
+        "en": "The skies are clear.",
+        "tr": "Gökyüzü açıktır.",
+        "de": "Der Himmel ist klar.",
+        "es": "El cielo está despejado.",
+        "pt-BR": "O tempo está aberto.",
+        "ru": "Небо ясное.",
+        "ar": "السماء صافية."
+      },
+      "freqRank": 15483,
+      "review": { "words": "天空 很 晴朗", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "他喜欢打猎。",
+      "reading": "Tā xǐhuan dǎliè.",
+      "gloss": {
+        "en": "He likes to hunt.",
+        "tr": "Avlanmayı seviyor.",
+        "de": "Er jagt gerne.",
+        "es": "Le gusta cazar.",
+        "fr": "Il aime chasser.",
+        "ru": "Он любит охотиться.",
+        "ar": "هو يحب الصيد."
+      },
+      "freqRank": 16343,
+      "review": { "words": "他 喜欢 打猎", "indirect": ["ar", "es", "ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "我没出息。",
+      "reading": "Wǒ méi chūxi.",
+      "gloss": {
+        "en": "I have no future.",
+        "tr": "Benim bir geleceğim yok.",
+        "de": "Ich habe keine Zukunft.",
+        "es": "No tengo futuro.",
+        "fr": "Je n'ai pas d'avenir.",
+        "pt-BR": "Não tenho futuro.",
+        "ru": "У меня нет будущего."
+      },
+      "freqRank": 21358,
+      "review": {
+        "words": "我 没 出息",
+        "unlisted": ["没出息"],
+        "indirect": ["es", "fr", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "哦，这是什么？",
+      "reading": "Ó, zhè shì shénme?",
+      "gloss": {
+        "en": "Oh, what is this?",
+        "tr": "Oh, bu nedir?",
+        "de": "Oh, was ist das?",
+        "es": "¡Oh! ¿Qué es esto?",
+        "fr": "Oh, qu'est-ce que c'est que ça ?",
+        "pt-BR": "Oh, o que é isto?",
+        "ru": "О, это что такое?"
+      },
+      "freqRank": 186,
+      "review": { "words": "哦 这 是 什么", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "你做到啦！",
+      "reading": "Nǐ zuòdào la!",
+      "gloss": {
+        "en": "You made it!",
+        "tr": "Başardın!",
+        "de": "Du hast es geschafft!",
+        "es": "¡Lo has hecho!",
+        "fr": "Tu l'as fait !",
+        "ru": "У тебя получилось!"
+      },
+      "freqRank": 246,
+      "review": {
+        "words": "你 做 到 啦",
+        "unlisted": ["做到"],
+        "indirect": ["ru"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "数到三十。",
+      "reading": "Shǔ dào sān shí.",
+      "gloss": {
+        "en": "Count to thirty.",
+        "tr": "Otuza kadar say.",
+        "de": "Zählt bis dreißig.",
+        "es": "Cuente hasta treinta.",
+        "fr": "Compte jusque trente.",
+        "pt-BR": "Conte até trinta.",
+        "ru": "Посчитай до тридцати."
+      },
+      "freqRank": 865,
+      "review": {
+        "words": "数 到 三 十",
+        "unlisted": ["三十"],
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "她在吃啥？",
+      "reading": "Tā zài chī shá?",
+      "gloss": {
+        "en": "What is she eating?",
+        "tr": "Ne yiyor?",
+        "de": "Was isst sie?",
+        "fr": "Qu'est-ce qu'elle mange ?",
+        "ru": "Что она ест?"
+      },
+      "freqRank": 990,
+      "review": { "words": "她 在 吃 啥", "indirect": ["ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "他遇到了事故。",
+      "reading": "Tā yùdào le shìgù.",
+      "gloss": {
+        "en": "He had an accident.",
+        "tr": "O bir kaza geçirdi.",
+        "de": "Er hatte einen Unfall.",
+        "es": "Él tuvo un accidente.",
+        "fr": "Il eut un accident.",
+        "pt-BR": "Ele sofreu um acidente.",
+        "ru": "Он попал в аварию."
+      },
+      "freqRank": 1493,
+      "review": { "words": "他 遇到 了 事故", "indirect": ["de", "es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "我好胖哦。",
+      "reading": "Wǒ hǎo pàng o.",
+      "gloss": {
+        "en": "I'm so fat.",
+        "tr": "Çok şişmanım.",
+        "de": "Ich bin so dick.",
+        "es": "Estoy tan gordo.",
+        "fr": "Je suis si gros.",
+        "pt-BR": "Estou tão gorda.",
+        "ru": "Я такой жирный.",
+        "ar": "أنا بدين جداً."
+      },
+      "freqRank": 2396,
+      "review": { "words": "我 好 胖 哦", "indirect": ["ar", "pt-BR", "tr"], "edited": ["reading"] }
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "他性感得很。",
+      "reading": "Tā xìnggǎn de hěn.",
+      "gloss": {
+        "en": "He's very sexy.",
+        "tr": "O çok seksi.",
+        "de": "Er ist sehr sexy.",
+        "es": "Es muy sexy.",
+        "fr": "Il est très sexy.",
+        "pt-BR": "Ele é muito sexy.",
+        "ru": "Он очень сексуален."
+      },
+      "freqRank": 2157,
+      "review": { "words": "他 性感 得 很", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "我是世界公民。",
+      "reading": "Wǒ shì shìjiè gōngmín.",
+      "gloss": {
+        "en": "I'm a citizen of the world.",
+        "tr": "Ben bir dünya vatandaşıyım.",
+        "de": "Ich bin ein Weltbürger.",
+        "es": "Yo soy ciudadano del mundo.",
+        "fr": "Je suis un citoyen du monde.",
+        "pt-BR": "Sou um cidadão do mundo.",
+        "ru": "Я — гражданин мира."
+      },
+      "freqRank": 2877,
+      "review": {
+        "words": "我 是 世界 公民",
+        "indirect": ["fr", "pt-BR", "ru", "tr"],
+        "edited": ["ru"]
+      }
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "价格根据需求变化。",
+      "reading": "Jiàgé gēnjù xūqiú biànhuà.",
+      "gloss": {
+        "en": "The price varies with demand.",
+        "tr": "Talebe göre fiyat değişir.",
+        "de": "Der Preis schwankt je nach Nachfrage.",
+        "es": "El precio varía en función de la demanda.",
+        "fr": "Le prix varie avec la demande.",
+        "ru": "Цена меняется в зависимости от спроса."
+      },
+      "freqRank": 3122,
+      "review": { "words": "价格 根据 需求 变化", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "我觉得很孤独。",
+      "reading": "Wǒ juéde hěn gūdú.",
+      "gloss": {
+        "en": "I feel lonely.",
+        "tr": "Kendimi yalnız hissediyorum.",
+        "de": "Ich fühlte mich allein.",
+        "es": "Me siento solo.",
+        "fr": "Je me sens seul.",
+        "pt-BR": "Me senti sozinho.",
+        "ru": "Мне было одиноко."
+      },
+      "freqRank": 2987,
+      "review": {
+        "words": "我 觉得 很 孤独",
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "他怎么敢抱怨？",
+      "reading": "Tā zěnme gǎn bàoyuàn?",
+      "gloss": {
+        "en": "How dare he complain?",
+        "tr": "Ne cüretle şikayet ediyor?",
+        "es": "¿Cómo se atreve a quejarse?",
+        "fr": "Comment ose-t-il se plaindre ?",
+        "pt-BR": "Como ele ousa reclamar?",
+        "ru": "Как он посмел жаловаться?"
+      },
+      "freqRank": 3331,
+      "review": { "words": "他 怎么 敢 抱怨", "indirect": ["es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "我怀孕了吗？",
+      "reading": "Wǒ huáiyùn le ma?",
+      "gloss": {
+        "en": "Am I pregnant?",
+        "tr": "Ben hamile miyim?",
+        "de": "Bin ich schwanger?",
+        "es": "¿Estoy embarazada?",
+        "fr": "Suis-je enceinte ?",
+        "pt-BR": "Eu estou grávida?",
+        "ru": "Я беременна?",
+        "ar": "هل أنا حامل؟"
+      },
+      "freqRank": 3299,
+      "review": { "words": "我 怀孕 了 吗", "indirect": ["ar", "es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "沉默就意味着同意。",
+      "reading": "Chénmò jiù yìwèizhe tóngyì.",
+      "gloss": {
+        "en": "Silence gives consent.",
+        "tr": "Sessizlik, onay anlamına gelir.",
+        "de": "Schweigen bedeutet Zustimmung.",
+        "es": "Quien calla otorga.",
+        "fr": "Qui ne dit mot consent.",
+        "pt-BR": "Quem cala, consente.",
+        "ru": "Молчание — знак согласия.",
+        "ar": "السكوت علامة عن الرضا."
+      },
+      "freqRank": 3369,
+      "review": {
+        "words": "沉默 就 意味着 同意",
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "我被抢劫了。",
+      "reading": "Wǒ bèi qiǎngjié le.",
+      "gloss": {
+        "en": "I've been robbed.",
+        "tr": "Ben soyuldum.",
+        "es": "He sido robado.",
+        "fr": "On m'a volé.",
+        "ru": "Меня ограбили."
+      },
+      "freqRank": 3341,
+      "review": { "words": "我 被 抢劫 了", "indirect": ["es", "fr"] }
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "健康比财富重要。",
+      "reading": "Jiànkāng bǐ cáifù zhòngyào.",
+      "gloss": {
+        "en": "Health is more important than wealth.",
+        "tr": "Sağlık, zenginlikten daha önemlidir.",
+        "de": "Gesundheit geht vor Reichtum.",
+        "es": "La salud está por encima de la riqueza.",
+        "fr": "La santé prime sur la richesse.",
+        "ru": "Здоровье важнее богатства."
+      },
+      "freqRank": 3442,
+      "review": { "words": "健康 比 财富 重要", "indirect": ["es", "tr"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "只是感冒而已。",
+      "reading": "Zhǐ shì gǎnmào éryǐ.",
+      "gloss": {
+        "en": "It's just a cold.",
+        "tr": "Bu sadece bir soğuk algınlığı.",
+        "de": "Es ist bloß eine Erkältung.",
+        "es": "Solamente es un catarro.",
+        "fr": "C'est juste un rhume.",
+        "pt-BR": "É só um resfriado.",
+        "ru": "Это всего лишь простуда."
+      },
+      "freqRank": 3621,
+      "review": {
+        "words": "只 是 感冒 而已",
+        "unlisted": ["只是"],
+        "indirect": ["es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "农民总是抱怨天气。",
+      "reading": "Nóngmín zǒngshì bàoyuàn tiānqì.",
+      "gloss": {
+        "en": "Farmers always complain about the weather.",
+        "tr": "Çiftçiler sürekli havadan şikayet eder.",
+        "de": "Bauern klagen immer über das Wetter.",
+        "es": "Los granjeros se la pasan quejando del clima.",
+        "fr": "Les paysans se plaignent toujours du temps.",
+        "pt-BR": "Os fazendeiros sempre se queixam do tempo.",
+        "ru": "Фермеры всегда жалуются на погоду."
+      },
+      "freqRank": 3710,
+      "review": { "words": "农民 总是 抱怨 天气", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "他欺骗了她。",
+      "reading": "Tā qīpiàn le tā.",
+      "gloss": {
+        "en": "He deceived her.",
+        "tr": "Onu kandırdı.",
+        "de": "Er hat sie betrogen.",
+        "fr": "Il la dupa.",
+        "ru": "Он надул её."
+      },
+      "freqRank": 4109,
+      "review": { "words": "他 欺骗 了 她", "indirect": ["ru", "tr"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "让我们保持联络。",
+      "reading": "Ràng wǒmen bǎochí liánluò.",
+      "gloss": {
+        "en": "Let's keep in touch.",
+        "tr": "İletişimde kalalım.",
+        "de": "Lasst uns in Verbindung bleiben!",
+        "es": "Sigamos en contacto.",
+        "fr": "On garde contact.",
+        "pt-BR": "Vamos manter contato.",
+        "ru": "Давай поддерживать связь."
+      },
+      "freqRank": 4467,
+      "review": {
+        "words": "让 我们 保持 联络",
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "他是个天才。",
+      "reading": "Tā shì gè tiāncái.",
+      "gloss": {
+        "en": "He is a genius.",
+        "tr": "O bir dahi.",
+        "de": "Er ist ein Genie.",
+        "es": "Él es un genio.",
+        "fr": "C'est un génie.",
+        "pt-BR": "Ele é um gênio.",
+        "ru": "Он гений.",
+        "ar": "إنه عبقري."
+      },
+      "freqRank": 4429,
+      "review": {
+        "words": "他 是 个 天才",
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "我必须弥补损失。",
+      "reading": "Wǒ bìxū míbǔ sǔnshī.",
+      "gloss": {
+        "en": "I must make up for the loss.",
+        "tr": "Kaybı telafi etmeliyim.",
+        "de": "Ich muss den Verlust wiedergutmachen.",
+        "es": "Debo compensar la pérdida.",
+        "fr": "Il faut que je compense cette perte.",
+        "pt-BR": "Eu tenho que compensar a perda.",
+        "ru": "Я должен компенсировать убытки."
+      },
+      "freqRank": 4555,
+      "review": { "words": "我 必须 弥补 损失", "indirect": ["es", "pt-BR", "ru"] }
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "他依旧充满活力。",
+      "reading": "Tā yījiù chōngmǎn huólì.",
+      "gloss": {
+        "en": "He is still full of energy.",
+        "tr": "Hâlâ enerji dolu.",
+        "de": "Er ist noch quicklebendig.",
+        "es": "Todavía está lleno de energía.",
+        "fr": "Il est encore fringant.",
+        "ru": "Он ещё бодрячком."
+      },
+      "freqRank": 4631,
+      "review": {
+        "words": "他 依旧 充满 活力",
+        "unlisted": ["充满活力"],
+        "indirect": ["es", "ru", "tr"],
+        "edited": ["en", "tr", "es"]
+      }
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "我依旧相信爱情。",
+      "reading": "Wǒ yījiù xiāngxìn àiqíng.",
+      "gloss": {
+        "en": "I still believe in love.",
+        "tr": "Ben hâlâ aşka inanıyorum.",
+        "de": "Ich glaube noch an die Liebe.",
+        "es": "Todavía creo en el amor.",
+        "fr": "Je crois encore en l'amour.",
+        "ru": "Я по-прежнему верю в любовь."
+      },
+      "freqRank": 4631,
+      "review": { "words": "我 依旧 相信 爱情", "indirect": ["de", "es", "tr"] }
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "军队强迫他辞职。",
+      "reading": "Jūnduì qiǎngpò tā cízhí.",
+      "gloss": {
+        "en": "The army forced him to resign.",
+        "tr": "Ordu onu istifa etmeye zorladı.",
+        "de": "Die Armee zwang ihn zum Rücktritt.",
+        "fr": "L'armée l'a forcé à démissionner.",
+        "ru": "Армия вынудила его подать в отставку."
+      },
+      "freqRank": 4640,
+      "review": { "words": "军队 强迫 他 辞职", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "电梯好像故障了。",
+      "reading": "Diàntī hǎoxiàng gùzhàng le.",
+      "gloss": {
+        "en": "The elevator seems to be out of order.",
+        "tr": "Asansör bozuk gibi görünüyor.",
+        "de": "Der Aufzug scheint außer Betrieb zu sein.",
+        "es": "El ascensor parece estar fuera de servicio.",
+        "fr": "L'ascenseur semble être en panne.",
+        "ru": "Кажется, лифт неисправен."
+      },
+      "freqRank": 4690,
+      "review": { "words": "电梯 好像 故障 了", "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "数千人失业。",
+      "reading": "Shùqiān rén shīyè.",
+      "gloss": {
+        "en": "Thousands of people lost their jobs.",
+        "tr": "Binlerce insan işlerini kaybetti.",
+        "de": "Tausende verloren ihre Arbeit.",
+        "es": "Miles de personas perdieron su trabajo.",
+        "ru": "Тысячи людей потеряли свою работу."
+      },
+      "freqRank": 4758,
+      "review": { "words": "数 千 人 失业", "unlisted": ["数千"], "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "你怎么定义“幸福”？",
+      "reading": "Nǐ zěnme dìngyì \"xìngfú\"?",
+      "gloss": {
+        "en": "How would you define \"happiness\"?",
+        "tr": "\"Mutluluğu\" nasıl tanımlarsın?",
+        "de": "Wie würdest du „Glück“ definieren?",
+        "es": "¿Cómo definirías \"felicidad\"?",
+        "fr": "Comment définirais-tu le \"bonheur\" ?",
+        "ru": "Как бы ты сформулировал, что такое \"счастье\"?"
+      },
+      "freqRank": 4821,
+      "review": { "words": "你 怎么 定义 幸福", "indirect": ["es", "tr"], "edited": ["reading"] }
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "哦，我很抱歉。",
+      "reading": "Ó, wǒ hěn bàoqiàn.",
+      "gloss": {
+        "en": "Oh, I'm really sorry.",
+        "tr": "Ah, gerçekten üzgünüm.",
+        "de": "Oh, tut mir leid.",
+        "fr": "Oh, je suis désolée.",
+        "ru": "О, мне очень жаль."
+      },
+      "freqRank": 4909,
+      "review": { "words": "哦 我 很 抱歉", "indirect": ["tr"] }
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "你想暗示什么？",
+      "reading": "Nǐ xiǎng ànshì shénme?",
+      "gloss": {
+        "en": "What are you trying to imply?",
+        "tr": "Ne ima etmeye çalışıyorsun?",
+        "de": "Worauf willst du hinaus?",
+        "es": "¿A dónde quieres llegar?",
+        "fr": "Qu'est-ce que tu sous-entends ?",
+        "pt-BR": "O que você está insinuando?",
+        "ru": "Ты хочешь на что-то намекнуть?"
+      },
+      "freqRank": 4917,
+      "review": {
+        "words": "你 想 暗示 什么",
+        "indirect": ["es", "pt-BR", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "她不擅长说话。",
+      "reading": "Tā bú shàncháng shuōhuà.",
+      "gloss": {
+        "en": "She is not very good with words.",
+        "de": "Sie ist nicht sehr wortgewandt.",
+        "fr": "Elle n'est pas très à l'aise avec les mots."
+      },
+      "freqRank": 4999,
+      "review": { "words": "她 不 擅长 说话" }
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "助手拿了钱。",
+      "reading": "Zhùshǒu ná le qián.",
+      "gloss": {
+        "en": "The assistant took the money.",
+        "tr": "Asistan parayı aldı.",
+        "de": "Die Assistentin nahm das Geld.",
+        "es": "El asistente tomó el dinero.",
+        "pt-BR": "O ajudante pegou o dinheiro.",
+        "ru": "Помощник взял деньги."
+      },
+      "freqRank": 5431,
+      "review": { "words": "助手 拿 了 钱", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "不要放松警惕。",
+      "reading": "Bú yào fàngsōng jǐngtì.",
+      "gloss": {
+        "en": "Don't let your guard down.",
+        "tr": "Tedbiri elden bırakma.",
+        "de": "Bleib wachsam!",
+        "es": "No bajes la guardia.",
+        "fr": "Ne baisse pas la garde.",
+        "ru": "Не теряй бдительности."
+      },
+      "freqRank": 5785,
+      "review": { "words": "不 要 放松 警惕", "unlisted": ["不要"], "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "几乎都可以回收。",
+      "reading": "Jīhū dōu kěyǐ huíshōu.",
+      "gloss": {
+        "en": "Just about everything can be recycled.",
+        "de": "Es kann praktisch alles wiederverwertet werden.",
+        "pt-BR": "Tudo praticamente pode ser reciclado.",
+        "ru": "Почти всё может быть переработано."
+      },
+      "freqRank": 5818,
+      "review": { "words": "几乎 都 可以 回收", "indirect": ["pt-BR"] }
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "我喉咙很干。",
+      "reading": "Wǒ hóulóng hěn gān.",
+      "gloss": {
+        "en": "My throat feels dry.",
+        "tr": "Benim boğazım kuru.",
+        "de": "Ich habe eine trockene Kehle.",
+        "es": "Tengo la garganta seca.",
+        "fr": "J'ai la gorge sèche.",
+        "pt-BR": "Estou com a garganta seca.",
+        "ru": "У меня пересохло в горле."
+      },
+      "freqRank": 5935,
+      "review": {
+        "words": "我 喉咙 很 干",
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "谢谢你的答复。",
+      "reading": "Xièxie nǐ de dáfù.",
+      "gloss": {
+        "en": "Thanks for your reply.",
+        "tr": "Cevabınız için teşekkürler.",
+        "de": "Danke für deine Antwort.",
+        "es": "Gracias por tu respuesta.",
+        "fr": "Merci pour ta réponse.",
+        "ru": "Спасибо за твой ответ."
+      },
+      "freqRank": 6463,
+      "review": { "words": "谢谢 你 的 答复", "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "他是非不分。",
+      "reading": "Tā shìfēi bù fēn.",
+      "gloss": {
+        "en": "He has no sense of right and wrong.",
+        "tr": "Doğruyu yanlıştan ayıramıyor.",
+        "de": "Er hat kein Gefühl für richtig und falsch.",
+        "fr": "Il n'a aucun sens du bien et du mal.",
+        "ru": "Он не делает никакого различия между правдой и неправдой."
+      },
+      "freqRank": 6491,
+      "review": {
+        "words": "他 是非 不 分",
+        "unlisted": ["是非不分"],
+        "indirect": ["tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "她侮辱了他。",
+      "reading": "Tā wǔrǔ le tā.",
+      "gloss": {
+        "en": "She insulted him.",
+        "tr": "O ona hakaret etti.",
+        "de": "Sie hat ihn beleidigt.",
+        "es": "Ella lo insultó.",
+        "fr": "Elle l'a insulté.",
+        "pt-BR": "Ela o insultou.",
+        "ru": "Она оскорбила его."
+      },
+      "freqRank": 6712,
+      "review": { "words": "她 侮辱 了 他", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "他出卖了我。",
+      "reading": "Tā chūmài le wǒ.",
+      "gloss": {
+        "en": "He betrayed me.",
+        "tr": "Beni sattı.",
+        "de": "Er hat mich verraten.",
+        "fr": "Il m'a trahi.",
+        "ru": "Он предал меня."
+      },
+      "freqRank": 6550,
+      "review": { "words": "他 出卖 了 我", "edited": ["en", "tr"] }
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "爱情是盲目的。",
+      "reading": "Àiqíng shì mángmù de.",
+      "gloss": {
+        "en": "Love is blind.",
+        "tr": "Aşk kördür.",
+        "de": "Liebe ist blind.",
+        "es": "El amor es ciego.",
+        "fr": "L'amour est aveugle.",
+        "pt-BR": "O amor é cego.",
+        "ru": "Любовь слепа.",
+        "ar": "الحب أعمى."
+      },
+      "freqRank": 6842,
+      "review": { "words": "爱情 是 盲目 的", "indirect": ["ar", "es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "别误解我了。",
+      "reading": "Bié wùjiě wǒ le.",
+      "gloss": {
+        "en": "Don't get me wrong.",
+        "tr": "Beni yanlış anlama.",
+        "de": "Versteh mich nicht falsch!",
+        "es": "No me malentiendas.",
+        "fr": "Ne me mécomprends pas.",
+        "pt-BR": "Não me leve a mal.",
+        "ru": "Не пойми меня неправильно.",
+        "ar": ".لا تفهموني خطأ"
+      },
+      "freqRank": 6851,
+      "review": {
+        "words": "别 误解 我 了",
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "祝你胃口好！",
+      "reading": "Zhù nǐ wèikǒu hǎo!",
+      "gloss": {
+        "en": "Enjoy your meal!",
+        "tr": "Afiyet olsun!",
+        "de": "Guten Appetit!",
+        "es": "¡Buen provecho!",
+        "fr": "Bon appétit !",
+        "pt-BR": "Bom apetite!",
+        "ru": "Приятного аппетита!",
+        "ar": "بالصحة و العافية!"
+      },
+      "freqRank": 7324,
+      "review": { "words": "祝 你 胃口 好", "indirect": ["ar", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "他反对种族歧视。",
+      "reading": "Tā fǎnduì zhǒngzú qíshì.",
+      "gloss": {
+        "en": "He is against racial discrimination.",
+        "tr": "Irk ayrımcılığına karşı.",
+        "de": "Er ist gegen Rassendiskriminierung.",
+        "es": "Está en contra de la discriminación racial.",
+        "fr": "Il est contre la discrimination raciale.",
+        "pt-BR": "Ele é contra a discriminação racial.",
+        "ru": "Он выступает против расизма."
+      },
+      "freqRank": 7348,
+      "review": {
+        "words": "他 反对 种族 歧视",
+        "unlisted": ["种族歧视"],
+        "indirect": ["es", "pt-BR", "tr"],
+        "edited": ["en", "tr", "de", "es", "fr", "pt-BR"]
+      }
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "人生真是奇妙！",
+      "reading": "Rénshēng zhēn shì qímiào!",
+      "gloss": {
+        "en": "Life is truly wonderful!",
+        "tr": "Hayat gerçekten harika!",
+        "de": "Wie seltsam ist doch das Leben!",
+        "es": "¡Qué extraña es la vida!",
+        "fr": "Comme la vie est étrange !",
+        "ru": "Жизнь прекрасна!",
+        "ar": "ما أغرب الحياة!"
+      },
+      "freqRank": 7455,
+      "review": {
+        "words": "人生 真 是 奇妙",
+        "unlisted": ["真是"],
+        "indirect": ["ar", "es", "fr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "旗帜是国家象征。",
+      "reading": "Qízhì shì guójiā xiàngzhēng.",
+      "gloss": {
+        "en": "A flag is a national symbol.",
+        "tr": "Bayrak ulusal bir semboldür.",
+        "de": "Flaggen sind Staatssymbole.",
+        "fr": "Un drapeau est un symbole national.",
+        "pt-BR": "Bandeiras são símbolos nacionais.",
+        "ru": "Флаг — национальный символ."
+      },
+      "freqRank": 7492,
+      "review": { "words": "旗帜 是 国家 象征", "indirect": ["fr"], "edited": ["tr"] }
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "我们搭了帐篷。",
+      "reading": "Wǒmen dā le zhàngpeng.",
+      "gloss": {
+        "en": "We pitched a tent.",
+        "tr": "Çadır kurduk.",
+        "de": "Wir haben das Zelt aufgebaut.",
+        "ru": "Мы поставили палатку."
+      },
+      "freqRank": 7940,
+      "review": { "words": "我们 搭 了 帐篷", "edited": ["en", "tr"] }
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "你不要命啦！",
+      "reading": "Nǐ bú yàomìng la!",
+      "gloss": {
+        "en": "Do you have a death wish?!",
+        "tr": "Canından mı bıktın?!",
+        "de": "Du bist doch lebensmüde!",
+        "es": "¿Estás loco?",
+        "fr": "Es-tu fou ?",
+        "pt-BR": "Estás louco?",
+        "ru": "Тебе жить надоело?!"
+      },
+      "freqRank": 7960,
+      "review": {
+        "words": "你 不 要命 啦",
+        "unlisted": ["不要命"],
+        "indirect": ["es", "fr", "pt-BR", "tr"],
+        "edited": ["en", "tr", "ru"]
+      }
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "他对我撒谎。",
+      "reading": "Tā duì wǒ sāhuǎng.",
+      "gloss": {
+        "en": "He lied to me.",
+        "tr": "O, bana yalan söyledi.",
+        "de": "Er hat mich angelogen.",
+        "es": "Él me mintió.",
+        "fr": "Il m'a menti.",
+        "pt-BR": "Ele mentiu para mim.",
+        "ru": "Он лгал мне."
+      },
+      "freqRank": 8163,
+      "review": { "words": "他 对 我 撒谎", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "我渴得要命。",
+      "reading": "Wǒ kě de yàomìng.",
+      "gloss": {
+        "en": "I'm dying of thirst.",
+        "tr": "Ben susuzluktan ölüyorum.",
+        "de": "Ich habe einen Riesendurst.",
+        "es": "Me estoy muriendo de sed.",
+        "fr": "Je meurs de soif.",
+        "pt-BR": "Estou morrendo de sede.",
+        "ru": "Я умираю от жажды."
+      },
+      "freqRank": 9442,
+      "review": {
+        "words": "我 渴 得 要命",
+        "unlisted": ["渴得"],
+        "indirect": ["es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "他明显撒谎了。",
+      "reading": "Tā míngxiǎn sāhuǎng le.",
+      "gloss": {
+        "en": "He clearly lied.",
+        "tr": "O açıkça yalan söyledi.",
+        "de": "Er hat offenbar gelogen.",
+        "es": "Claramente él mintió.",
+        "fr": "Il est clair qu'il a menti.",
+        "pt-BR": "É claro que ele mentiu.",
+        "ru": "Он явно врал."
+      },
+      "freqRank": 8163,
+      "review": { "words": "他 明显 撒谎 了", "indirect": ["pt-BR", "tr"] }
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "电视代替了收音机。",
+      "reading": "Diànshì dàitì le shōuyīnjī.",
+      "gloss": {
+        "en": "Radio's been replaced by the TV.",
+        "tr": "Radyonun yerini televizyon aldı.",
+        "de": "Das Fernsehen hat das Radio ersetzt.",
+        "fr": "La télévision a remplacé la radio.",
+        "pt-BR": "O rádio foi substituído pela televisão.",
+        "ru": "Телевидение заменило радио."
+      },
+      "freqRank": 9558,
+      "review": { "words": "电视 代替 了 收音机", "indirect": ["pt-BR", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "大自然很慷慨。",
+      "reading": "Dàzìrán hěn kāngkǎi.",
+      "gloss": {
+        "en": "Mother Nature is generous.",
+        "tr": "Tabiat ana cömerttir.",
+        "de": "Mutter Natur ist großzügig.",
+        "fr": "Mère Nature est généreuse.",
+        "pt-BR": "A Mãe Natureza é generosa.",
+        "ru": "Природа-мать великодушна."
+      },
+      "freqRank": 9697,
+      "review": {
+        "words": "大 自然 很 慷慨",
+        "unlisted": ["大自然"],
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "他曾经反对垄断。",
+      "reading": "Tā céngjīng fǎnduì lǒngduàn.",
+      "gloss": {
+        "en": "He was opposed to monopolies.",
+        "tr": "O, tekellere karşıydı.",
+        "de": "Er war gegen Monopole.",
+        "fr": "Il était opposé aux monopoles.",
+        "ru": "Он выступал против монополий."
+      },
+      "freqRank": 11039,
+      "review": { "words": "他 曾经 反对 垄断", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "她小心翼翼地走。",
+      "reading": "Tā xiǎoxīnyìyì de zǒu.",
+      "gloss": {
+        "en": "She walked very carefully.",
+        "tr": "O çok dikkatli bir şekilde yürüdü.",
+        "de": "Sie ging sehr vorsichtig.",
+        "es": "Caminó con mucho cuidado.",
+        "fr": "Elle marcha très prudemment.",
+        "pt-BR": "Ela andou com muito cuidado.",
+        "ru": "Она осторожно шла."
+      },
+      "freqRank": 11125,
+      "review": { "words": "她 小心翼翼 地 走", "indirect": ["es", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "他向权力屈服。",
+      "reading": "Tā xiàng quánlì qūfú.",
+      "gloss": {
+        "en": "He succumbed to authority.",
+        "tr": "Otoriteye boyun eğdi.",
+        "de": "Er unterwirft sich der Autorität.",
+        "fr": "Il s'est plié à l'autorité."
+      },
+      "freqRank": 11097,
+      "review": { "words": "他 向 权力 屈服", "indirect": ["tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "我为你着迷。",
+      "reading": "Wǒ wèi nǐ zháomí.",
+      "gloss": {
+        "en": "I'm crazy about you.",
+        "tr": "Sana deli oluyorum.",
+        "de": "Ich bin verrückt nach dir.",
+        "es": "Bebo los vientos por ti.",
+        "fr": "Je suis fou de toi.",
+        "pt-BR": "Estou louco por você!",
+        "ru": "Я без ума от тебя.",
+        "ar": "أحبك بجنون."
+      },
+      "freqRank": 12593,
+      "review": {
+        "words": "我 为 你 着迷",
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "他发誓要戒烟。",
+      "reading": "Tā fāshì yào jièyān.",
+      "gloss": {
+        "en": "He vowed to give up smoking.",
+        "tr": "Sigarayı bırakacağına yemin etti.",
+        "de": "Er gelobte, mit dem Rauchen aufzuhören.",
+        "es": "Él juró que dejaría de fumar.",
+        "fr": "Il a exprimé sa volonté d'arrêter la cigarette.",
+        "ru": "Он дал честное слово бросить курить."
+      },
+      "freqRank": 12322,
+      "review": { "words": "他 发誓 要 戒烟", "indirect": ["es", "ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "她忙着编织。",
+      "reading": "Tā máng zhe biānzhī.",
+      "gloss": {
+        "en": "She was busy with her knitting.",
+        "tr": "O, örgüsüyle meşguldü.",
+        "de": "Sie war mit Stricken beschäftigt.",
+        "fr": "Elle était occupée à tricoter.",
+        "pt-BR": "Ela estava ocupada com seu tricô.",
+        "ru": "Она была занята вязанием."
+      },
+      "freqRank": 13145,
+      "review": { "words": "她 忙 着 编织", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "他触犯了法律。",
+      "reading": "Tā chùfàn le fǎlǜ.",
+      "gloss": {
+        "en": "He broke the law.",
+        "tr": "O yasayı ihlal etti.",
+        "de": "Er verstieß gegen das Gesetz.",
+        "es": "Infringió la ley.",
+        "fr": "Il a violé la loi.",
+        "pt-BR": "Ele infringiu a lei.",
+        "ru": "Он нарушил закон."
+      },
+      "freqRank": 13633,
+      "review": { "words": "他 触犯 了 法律", "indirect": ["es", "pt-BR"] }
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "你触犯了规则。",
+      "reading": "Nǐ chùfàn le guīzé.",
+      "gloss": {
+        "en": "You broke the rules.",
+        "tr": "Kurallara karşı geldin.",
+        "de": "Du hast die Regeln gebrochen.",
+        "es": "Rompiste las reglas.",
+        "fr": "Tu as enfreint les règles.",
+        "pt-BR": "Você quebrou as regras.",
+        "ru": "Ты нарушил правила.",
+        "ar": "أنتَ كسرتَ القواعد."
+      },
+      "freqRank": 13633,
+      "review": { "words": "你 触犯 了 规则", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "他昨天逝世了。",
+      "reading": "Tā zuótiān shìshì le.",
+      "gloss": {
+        "en": "He died yesterday.",
+        "tr": "O, dün öldü.",
+        "de": "Er ist gestern verstorben.",
+        "es": "Él murió ayer.",
+        "fr": "Il est décédé hier.",
+        "pt-BR": "Ele morreu ontem.",
+        "ru": "Он вчера умер.",
+        "ar": "مات البارحة."
+      },
+      "freqRank": 14081,
+      "review": { "words": "他 昨天 逝世 了", "indirect": ["ar", "es", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "狗的嗅觉灵敏。",
+      "reading": "Gǒu de xiùjué língmǐn.",
+      "gloss": {
+        "en": "Dogs have a keen sense of smell.",
+        "de": "Hunde haben einen scharfen Geruchssinn.",
+        "es": "Los perros tienen un agudo sentido del olfato.",
+        "fr": "Les chiens ont un odorat très fin.",
+        "pt-BR": "Os cães têm um olfato apurado.",
+        "ru": "У собак острое обоняние."
+      },
+      "freqRank": 15998,
+      "review": { "words": "狗 的 嗅觉 灵敏", "indirect": ["es", "pt-BR", "ru"], "edited": ["fr"] }
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "您下午做啥呢？",
+      "reading": "Nín xiàwǔ zuò shá ne?",
+      "gloss": {
+        "en": "What are you doing this afternoon?",
+        "tr": "Öğleden sonra ne yapıyorsunuz?",
+        "de": "Was machen Sie am Nachmittag?",
+        "es": "¿Qué hace usted esta tarde?"
+      },
+      "freqRank": 990,
+      "review": { "words": "您 下午 做 啥 呢", "edited": ["en", "tr"] }
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "这很可能意味着战争。",
+      "reading": "Zhè hěn kěnéng yìwèizhe zhànzhēng.",
+      "gloss": {
+        "en": "This probably means war.",
+        "tr": "Bu muhtemelen savaş demek.",
+        "de": "Das bedeutet wahrscheinlich Krieg.",
+        "fr": "Cela signifie probablement la guerre.",
+        "pt-BR": "Isto provavelmente significa guerra.",
+        "ru": "Это, вероятно, означает войну."
+      },
+      "freqRank": 1594,
+      "review": { "words": "这 很 可能 意味着 战争", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "故事与历史真相接近。",
+      "reading": "Gùshì yǔ lìshǐ zhēnxiàng jiējìn.",
+      "gloss": {
+        "en": "The story is close to the historical truth.",
+        "tr": "Hikâye, tarihî gerçeğe yakın.",
+        "de": "Die Geschichte kommt der historischen Wahrheit nahe.",
+        "fr": "L'histoire s'approche de la vérité historique."
+      },
+      "freqRank": 2208,
+      "review": { "words": "故事 与 历史 真相 接近", "indirect": ["tr"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "没有人知道真相。",
+      "reading": "Méiyǒu rén zhīdào zhēnxiàng.",
+      "gloss": {
+        "en": "Nobody knows the truth.",
+        "tr": "Kimse gerçeği bilmiyor.",
+        "de": "Keiner kennt die Wahrheit.",
+        "es": "Nadie sabe la verdad.",
+        "fr": "Personne ne connaît la vérité.",
+        "pt-BR": "Ninguém sabe a verdade.",
+        "ru": "Никто не знает правды."
+      },
+      "freqRank": 2208,
+      "review": {
+        "words": "没 有 人 知道 真相",
+        "unlisted": ["没有"],
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "评论要与主题相关。",
+      "reading": "Pínglùn yào yǔ zhǔtí xiāngguān.",
+      "gloss": {
+        "en": "Comments must be relevant to the topic.",
+        "tr": "Yorumlar konuyla alakalı olmalıdır.",
+        "de": "Kommentare müssen mit dem Thema zu tun haben.",
+        "fr": "Les commentaires doivent être pertinents par rapport au sujet.",
+        "ru": "Комментарии должны быть связаны с темой."
+      },
+      "freqRank": 2351,
+      "review": { "words": "评论 要 与 主题 相关", "indirect": ["fr", "tr"] }
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "他是中国的公民。",
+      "reading": "Tā shì Zhōngguó de gōngmín.",
+      "gloss": {
+        "en": "He's a citizen of China.",
+        "tr": "O bir Çin vatandaşıdır.",
+        "de": "Er ist ein Bürger Chinas.",
+        "es": "Él es un ciudadano de China.",
+        "fr": "C'est un citoyen chinois.",
+        "ru": "Он гражданин Китая."
+      },
+      "freqRank": 2877,
+      "review": { "words": "他 是 中国 的 公民", "indirect": ["fr", "tr"] }
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "看见我，她很尴尬。",
+      "reading": "Kànjiàn wǒ, tā hěn gāngà.",
+      "gloss": {
+        "en": "Seeing me, she was embarrassed.",
+        "de": "Als sie mich sah, war sie peinlich berührt.",
+        "es": "Se cortó al verme.",
+        "fr": "En me voyant, elle était gênée."
+      },
+      "freqRank": 3013,
+      "review": { "words": "看见 我 她 很 尴尬", "indirect": ["es"] }
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "你去过监狱吗？",
+      "reading": "Nǐ qù guò jiānyù ma?",
+      "gloss": {
+        "en": "Have you ever been in jail?",
+        "tr": "Hiç hapishanede bulundun mu?",
+        "de": "Warst du schon mal im Gefängnis?",
+        "ru": "Ты был в тюрьме?"
+      },
+      "freqRank": 3445,
+      "review": { "words": "你 去 过 监狱 吗", "unlisted": ["去过"], "indirect": ["tr"] }
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "她总是尝试新事物。",
+      "reading": "Tā zǒngshì chángshì xīn shìwù.",
+      "gloss": {
+        "en": "She is always trying new things.",
+        "tr": "Her zaman yeni şeyler deniyor.",
+        "de": "Sie probiert immer neue Dinge aus.",
+        "es": "Siempre prueba cosas nuevas.",
+        "fr": "Elle essaye toujours quelque chose de nouveau.",
+        "ru": "Она постоянно пробует новое."
+      },
+      "freqRank": 3523,
+      "review": { "words": "她 总是 尝试 新 事物", "indirect": ["ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "公正的代价很高。",
+      "reading": "Gōngzhèng de dàijià hěn gāo.",
+      "gloss": {
+        "en": "Justice is expensive.",
+        "de": "Gerechtigkeit ist teuer.",
+        "es": "La justicia es cara.",
+        "fr": "La justice coûte cher.",
+        "pt-BR": "A justiça é cara.",
+        "ru": "Правосудие стоит дорого."
+      },
+      "freqRank": 3881,
+      "review": { "words": "公正 的 代价 很 高", "indirect": ["es", "pt-BR", "ru"] }
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "生活的乐趣是什么？",
+      "reading": "Shēnghuó de lèqù shì shénme?",
+      "gloss": {
+        "en": "What is the joy of life?",
+        "de": "Was ist Lebensfreude?",
+        "fr": "Qu'est-ce que la joie de vivre ?"
+      },
+      "freqRank": 4402,
+      "review": { "words": "生活 的 乐趣 是 什么" }
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "她儿子是个天才。",
+      "reading": "Tā érzi shì gè tiāncái.",
+      "gloss": {
+        "en": "Her son is a genius.",
+        "tr": "Oğlu bir dahi.",
+        "de": "Ihr Sohn ist ein Genie.",
+        "es": "Su hijo es un genio.",
+        "fr": "Son fils est un génie.",
+        "pt-BR": "Seu filho é um gênio.",
+        "ru": "Ее сын — гений."
+      },
+      "freqRank": 4429,
+      "review": {
+        "words": "她 儿子 是 个 天才",
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["tr", "ru"]
+      }
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "很多人依旧失踪。",
+      "reading": "Hěn duō rén yījiù shīzōng.",
+      "gloss": {
+        "en": "Many people are still missing.",
+        "tr": "Birçok kişi hâlâ kayıp.",
+        "de": "Viele Menschen werden nach wie vor vermisst.",
+        "fr": "Beaucoup de gens manquent encore à l'appel."
+      },
+      "freqRank": 4631,
+      "review": { "words": "很 多 人 依旧 失踪", "unlisted": ["很多"], "indirect": ["fr"] }
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "他强迫她坐下。",
+      "reading": "Tā qiǎngpò tā zuòxià.",
+      "gloss": {
+        "en": "He forced her to sit down.",
+        "tr": "Onu oturmaya zorladı.",
+        "de": "Er nötigte sie, sich zu setzen.",
+        "fr": "Il la contraignit à s'asseoir.",
+        "ru": "Он заставил ее сесть."
+      },
+      "freqRank": 4640,
+      "review": {
+        "words": "他 强迫 她 坐 下",
+        "unlisted": ["坐下"],
+        "indirect": ["ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "您为什么指责我儿子？",
+      "reading": "Nín wèishénme zhǐzé wǒ érzi?",
+      "gloss": {
+        "en": "Why do you accuse my son?",
+        "tr": "Oğlumu neden suçluyorsunuz?",
+        "de": "Warum beschuldigen Sie meinen Sohn?",
+        "es": "¿Por qué acusa a mi hijo?",
+        "fr": "Pourquoi accusez-vous mon fils ?",
+        "ru": "Почему вы обвиняете моего сына?"
+      },
+      "freqRank": 4694,
+      "review": {
+        "words": "您 为什么 指责 我 儿子",
+        "indirect": ["es", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "这只是个假设。",
+      "reading": "Zhè zhǐ shì gè jiǎshè.",
+      "gloss": {
+        "en": "This is just a hypothesis.",
+        "tr": "Bu sadece bir varsayım.",
+        "de": "Das ist nur eine Hypothese.",
+        "es": "Esto es solo una hipótesis.",
+        "fr": "Ce n'est qu'une hypothèse.",
+        "ru": "Это всего лишь гипотеза."
+      },
+      "freqRank": 4725,
+      "review": { "words": "这 只 是 个 假设", "unlisted": ["只是"], "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "没人能逃避死亡。",
+      "reading": "Méi rén néng táobì sǐwáng.",
+      "gloss": {
+        "en": "Nobody can avoid death.",
+        "tr": "Kimse ölümden kaçamaz.",
+        "de": "Niemand kann dem Tod entgehen.",
+        "fr": "Personne ne peut éviter la mort.",
+        "ru": "Никто не избежит смерти."
+      },
+      "freqRank": 4735,
+      "review": { "words": "没 人 能 逃避 死亡", "indirect": ["ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "我现在居住在北京。",
+      "reading": "Wǒ xiànzài jūzhù zài Běijīng.",
+      "gloss": {
+        "en": "I live in Beijing now.",
+        "tr": "Şimdi Pekin'de yaşıyorum.",
+        "de": "Ich wohne jetzt in Peking.",
+        "es": "Actualmente vivo en Beijing.",
+        "fr": "Maintenant je vis à Pékin.",
+        "pt-BR": "Agora estou morando em Pequim."
+      },
+      "freqRank": 4799,
+      "review": {
+        "words": "我 现在 居住 在 北京",
+        "indirect": ["de", "fr", "pt-BR"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "你的提议值得考虑。",
+      "reading": "Nǐ de tíyì zhíde kǎolǜ.",
+      "gloss": {
+        "en": "Your proposal is worth considering.",
+        "tr": "Teklifin düşünmeye değer.",
+        "de": "Dein Vorschlag ist der Überlegung wert.",
+        "es": "Tu propuesta merece consideración.",
+        "fr": "Votre proposition mérite qu'on la considère.",
+        "ru": "Твоё предложение заслуживает рассмотрения."
+      },
+      "freqRank": 4891,
+      "review": { "words": "你 的 提议 值得 考虑", "indirect": ["es", "tr"], "edited": ["en"] }
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "我不太擅长运动。",
+      "reading": "Wǒ bú tài shàncháng yùndòng.",
+      "gloss": {
+        "en": "I'm not very athletic.",
+        "tr": "Çok atletik değilim.",
+        "de": "Ich bin nicht sonderlich sportlich.",
+        "fr": "Je ne suis pas habile en sport.",
+        "ru": "Я не очень спортивный."
+      },
+      "freqRank": 4999,
+      "review": { "words": "我 不 太 擅长 运动", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "眼睛是心灵的镜子。",
+      "reading": "Yǎnjing shì xīnlíng de jìngzi.",
+      "gloss": {
+        "en": "The eye is the mirror of the soul.",
+        "tr": "Gözler ruhun aynasıdır.",
+        "de": "Das Auge ist der Spiegel der Seele.",
+        "es": "Los ojos son el espejo del alma.",
+        "fr": "Les yeux sont le miroir de l'âme.",
+        "pt-BR": "O olho é o espelho da alma.",
+        "ru": "Глаза — это зеркало души."
+      },
+      "freqRank": 5015,
+      "review": {
+        "words": "眼睛 是 心灵 的 镜子",
+        "indirect": ["es", "pt-BR", "ru"],
+        "edited": ["tr", "ru"]
+      }
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "我不想参加典礼。",
+      "reading": "Wǒ bù xiǎng cānjiā diǎnlǐ.",
+      "gloss": {
+        "en": "I don't want to participate in the ceremony.",
+        "tr": "Törene katılmak istemiyorum.",
+        "de": "Ich möchte an der Zeremonie nicht teilnehmen.",
+        "es": "No quiero participar en la ceremonia.",
+        "fr": "Je ne veux pas participer à la cérémonie.",
+        "pt-BR": "Não quero participar da cerimônia.",
+        "ru": "Я не хочу участвовать в церемонии."
+      },
+      "freqRank": 5455,
+      "review": {
+        "words": "我 不 想 参加 典礼",
+        "unlisted": ["不想"],
+        "indirect": ["de", "es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "一切规则都有例外。",
+      "reading": "Yíqiè guīzé dōu yǒu lìwài.",
+      "gloss": {
+        "en": "Every rule has exceptions.",
+        "tr": "Her kuralın istisnaları vardır.",
+        "de": "Alle Regeln haben Ausnahmen.",
+        "es": "Cada regla tiene sus excepciones.",
+        "fr": "Toutes les règles ont des exceptions.",
+        "ru": "У всех правил есть исключения."
+      },
+      "freqRank": 5594,
+      "review": { "words": "一切 规则 都 有 例外", "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "我的血压很低。",
+      "reading": "Wǒ de xuèyā hěn dī.",
+      "gloss": {
+        "en": "I have low blood pressure.",
+        "tr": "Kan basıncım düşük.",
+        "de": "Mein Blutdruck ist niedrig.",
+        "es": "Tengo la presión baja.",
+        "fr": "Ma pression sanguine est faible.",
+        "ru": "У меня низкое давление."
+      },
+      "freqRank": 5637,
+      "review": { "words": "我 的 血压 很 低", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "这辆自行车需要修理。",
+      "reading": "Zhè liàng zìxíngchē xūyào xiūlǐ.",
+      "gloss": {
+        "en": "This bicycle needs repairing.",
+        "de": "Dieses Fahrrad muss repariert werden.",
+        "es": "Esta bicicleta necesita un arreglo.",
+        "fr": "Cette bicyclette a besoin d'être réparée.",
+        "ru": "Этот велосипед требует починки."
+      },
+      "freqRank": 5879,
+      "review": { "words": "这 辆 自行车 需要 修理", "unlisted": ["这辆"] }
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "恐怕你误解我了。",
+      "reading": "Kǒngpà nǐ wùjiě wǒ le.",
+      "gloss": {
+        "en": "I'm afraid you misunderstood me.",
+        "tr": "Korkarım beni yanlış anladın.",
+        "de": "Ich befürchte, du hast mich missverstanden.",
+        "es": "Me temo que me has malentendido.",
+        "fr": "Je crains que tu m'aies mal compris.",
+        "pt-BR": "Acho que você me entendeu mal.",
+        "ru": "Боюсь, ты меня не так понял."
+      },
+      "freqRank": 6851,
+      "review": {
+        "words": "恐怕 你 误解 我 了",
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "她有预言的能力。",
+      "reading": "Tā yǒu yùyán de nénglì.",
+      "gloss": {
+        "en": "She has a gift for prophecy.",
+        "tr": "O, kehanet yeteneğine sahiptir.",
+        "de": "Sie ist prophetisch begabt.",
+        "fr": "Elle a un don de prophétie."
+      },
+      "freqRank": 7075,
+      "review": { "words": "她 有 预言 的 能力", "indirect": ["tr"] }
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "那是座老城堡。",
+      "reading": "Nà shì zuò lǎo chéngbǎo.",
+      "gloss": {
+        "en": "That is an old castle.",
+        "tr": "O eski bir kale.",
+        "de": "Das ist eine alte Burg.",
+        "fr": "C'est un vieux château.",
+        "ru": "Это старый замок."
+      },
+      "freqRank": 7132,
+      "review": { "words": "那 是 座 老 城堡", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "我的视力很好。",
+      "reading": "Wǒ de shìlì hěn hǎo.",
+      "gloss": {
+        "en": "I have good eyesight.",
+        "tr": "Gözlerim çok iyi görür.",
+        "de": "Ich kann gut sehen.",
+        "es": "Tengo buena vista.",
+        "fr": "J'ai une bonne vue.",
+        "ru": "У меня хорошее зрение."
+      },
+      "freqRank": 7305,
+      "review": { "words": "我 的 视力 很 好", "indirect": ["fr", "ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "这药没有副作用。",
+      "reading": "Zhè yào méiyǒu fùzuòyòng.",
+      "gloss": {
+        "en": "This medicine has no side effects.",
+        "tr": "Bu ilacın hiçbir yan etkisi yoktur.",
+        "de": "Diese Medizin hat keine Nebenwirkungen.",
+        "es": "Este remedio no tiene efectos secundarios.",
+        "fr": "Ce médicament n'a pas d'effets secondaires.",
+        "pt-BR": "Este remédio não tem efeitos colaterais.",
+        "ru": "У этого лекарства нет побочных эффектов."
+      },
+      "freqRank": 7428,
+      "review": {
+        "words": "这 药 没 有 副作用",
+        "unlisted": ["没有"],
+        "indirect": ["es", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "罢工影响了国家经济。",
+      "reading": "Bàgōng yǐngxiǎng le guójiā jīngjì.",
+      "gloss": {
+        "en": "The strike affected the nation's economy.",
+        "tr": "Grev ülkenin ekonomisini etkiledi.",
+        "de": "Der Streik beeinträchtigte die nationale Wirtschaft.",
+        "es": "La huelga afectó a la economía nacional.",
+        "fr": "La grève a nui à l'économie nationale.",
+        "ru": "Забастовка нанесла вред национальной экономике.",
+        "ar": "أثًّر الإضراب على اقتصاد البلاد."
+      },
+      "freqRank": 8001,
+      "review": { "words": "罢工 影响 了 国家 经济", "indirect": ["ar", "ru", "tr"] }
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "把问题澄清一下。",
+      "reading": "Bǎ wèntí chéngqīng yíxià.",
+      "gloss": {
+        "en": "Let's clear up this problem.",
+        "tr": "Bu meseleyi açıklığa kavuşturalım.",
+        "de": "Klären wir dieses Problem!",
+        "es": "Solucionemos este problema.",
+        "fr": "Clarifions un peu ce problème."
+      },
+      "freqRank": 8124,
+      "review": {
+        "words": "把 问题 澄清 一 下",
+        "unlisted": ["一下"],
+        "indirect": ["es", "tr"],
+        "edited": ["reading", "tr"]
+      }
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "我大致上同意她。",
+      "reading": "Wǒ dàzhì shàng tóngyì tā.",
+      "gloss": {
+        "en": "I broadly agree with her.",
+        "tr": "Ona büyük ölçüde katılıyorum.",
+        "de": "Im Großen und Ganzen stimme ich ihr zu.",
+        "fr": "En général je suis d'accord avec elle.",
+        "ru": "По большей части я с ней согласен."
+      },
+      "freqRank": 8369,
+      "review": { "words": "我 大致 上 同意 她", "indirect": ["ru", "tr"], "edited": ["en", "tr"] }
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "起初我不相信他。",
+      "reading": "Qǐchū wǒ bù xiāngxìn tā.",
+      "gloss": {
+        "en": "I didn't believe him at first.",
+        "tr": "Başta ona inanmadım.",
+        "de": "Anfangs glaubte ich ihm nicht.",
+        "es": "Al principio no le creí.",
+        "fr": "Je ne le croyais pas au début.",
+        "pt-BR": "A princípio, não acreditei nele.",
+        "ru": "Сначала я ему не верил."
+      },
+      "freqRank": 8773,
+      "review": { "words": "起初 我 不 相信 他", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "什么动物是棕色的？",
+      "reading": "Shénme dòngwù shì zōngsè de?",
+      "gloss": {
+        "en": "What animal is brown?",
+        "tr": "Hangi hayvan kahverengidir?",
+        "de": "Welches Tier ist braun?",
+        "pt-BR": "Que animal é marrom?"
+      },
+      "freqRank": 9535,
+      "review": { "words": "什么 动物 是 棕色 的", "indirect": ["tr"] }
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "他知道如何做收音机。",
+      "reading": "Tā zhīdào rúhé zuò shōuyīnjī.",
+      "gloss": {
+        "en": "He knows how to make a radio.",
+        "tr": "Radyo yapmayı biliyor.",
+        "de": "Er weiß, wie man ein Radio baut.",
+        "es": "Él sabe cómo hacer un radio.",
+        "fr": "Il sait comment faire une radio.",
+        "pt-BR": "Ele sabe como fabricar um rádio.",
+        "ru": "Он знает, как собрать радиоприёмник."
+      },
+      "freqRank": 9558,
+      "review": {
+        "words": "他 知道 如何 做 收音机",
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "这种尝试很荒谬。",
+      "reading": "Zhè zhǒng chángshì hěn huāngmiù.",
+      "gloss": {
+        "en": "This kind of attempt is absurd.",
+        "tr": "Bu tür bir girişim saçma.",
+        "de": "Es ist Unsinn, das zu probieren.",
+        "fr": "C'est absurde de tenter ça.",
+        "ru": "Это вздор, пробовать это."
+      },
+      "freqRank": 10598,
+      "review": {
+        "words": "这 种 尝试 很 荒谬",
+        "unlisted": ["这种"],
+        "indirect": ["ru", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "我的祖父非常健康。",
+      "reading": "Wǒ de zǔfù fēicháng jiànkāng.",
+      "gloss": {
+        "en": "My grandfather is very healthy.",
+        "tr": "Dedem çok sağlıklı.",
+        "de": "Mein Großvater ist sehr gesund.",
+        "es": "Mi abuelo está muy sano.",
+        "pt-BR": "Meu avô está muito são.",
+        "ru": "У моего деда очень хорошее здоровье."
+      },
+      "freqRank": 11332,
+      "review": { "words": "我 的 祖父 非常 健康", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "你害怕被解雇吗？",
+      "reading": "Nǐ hàipà bèi jiěgù ma?",
+      "gloss": {
+        "en": "Are you afraid of being fired?",
+        "tr": "Kovulmaktan korkuyor musun?",
+        "de": "Hast du Angst, entlassen zu werden?",
+        "pt-BR": "Está com medo de ser demitido?",
+        "ru": "Ты боишься, что тебя уволят?"
+      },
+      "freqRank": 11919,
+      "review": { "words": "你 害怕 被 解雇 吗", "indirect": ["pt-BR"], "edited": ["tr"] }
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "许多小公司倒闭了。",
+      "reading": "Xǔduō xiǎo gōngsī dǎobì le.",
+      "gloss": {
+        "en": "Many small companies went bankrupt.",
+        "tr": "Birçok küçük şirket iflas etti.",
+        "de": "Viele kleine Unternehmen sind in Konkurs gegangen.",
+        "es": "Muchas pequeñas empresas entraron en bancarrota.",
+        "fr": "De nombreuses petites entreprises ont fait faillite.",
+        "pt-BR": "Muitas pequenas empresas foram à falência.",
+        "ru": "Множество маленьких компаний обанкротились."
+      },
+      "freqRank": 11967,
+      "review": { "words": "许多 小 公司 倒闭 了", "indirect": ["es", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "这地方有多少洞穴？",
+      "reading": "Zhè dìfang yǒu duōshǎo dòngxué?",
+      "gloss": {
+        "en": "How many caves are there in this area?",
+        "de": "Wie viele Höhlen gibt es hier?",
+        "fr": "Combien de grottes y a-t-il dans cette région ?",
+        "pt-BR": "Quantas cavernas há nesta área?",
+        "ru": "Сколько в этих местах пещер?"
+      },
+      "freqRank": 12289,
+      "review": {
+        "words": "这 地方 有 多少 洞穴",
+        "indirect": ["pt-BR", "ru"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "父亲示意我离开房间。",
+      "reading": "Fùqīn shìyì wǒ líkāi fángjiān.",
+      "gloss": {
+        "en": "Father gestured to me to leave the room.",
+        "tr": "Babam odadan çıkmamı işaret etti.",
+        "de": "Vater signalisierte mir mit der Hand, das Zimmer zu verlassen.",
+        "es": "Mi padre me hizo un gesto que abandonara el cuarto.",
+        "fr": "Père me fit signe de quitter la pièce.",
+        "pt-BR": "Meu pai fez um sinal para que eu deixasse o quarto."
+      },
+      "freqRank": 13303,
+      "review": { "words": "父亲 示意 我 离开 房间", "indirect": ["de", "es"], "edited": ["tr"] }
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "这把刀很锋利。",
+      "reading": "Zhè bǎ dāo hěn fēnglì.",
+      "gloss": {
+        "en": "This knife is very sharp.",
+        "tr": "Bu bıçak çok keskin.",
+        "de": "Dieses Messer ist sehr scharf.",
+        "es": "Este cuchillo está muy afilado.",
+        "fr": "Ce couteau est très aiguisé.",
+        "pt-BR": "Esta faca está bem afiada.",
+        "ru": "Этот нож очень острый.",
+        "ar": "هذه السكين حادة للغاية."
+      },
+      "freqRank": 13125,
+      "review": { "words": "这 把 刀 很 锋利", "indirect": ["ar", "es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "我承认我大意了。",
+      "reading": "Wǒ chéngrèn wǒ dàyì le.",
+      "gloss": {
+        "en": "I admit that I was careless.",
+        "tr": "Dikkatsiz davrandığımı kabul ediyorum.",
+        "de": "Ich gebe zu, ich war unvorsichtig.",
+        "es": "Admito haber sido negligente.",
+        "fr": "J'admets avoir été négligent.",
+        "pt-BR": "Eu admito que fui descuidado.",
+        "ru": "Признаю, что был невнимателен.",
+        "ar": "أعترف بأنني كنت مهملاً."
+      },
+      "freqRank": 13433,
+      "review": {
+        "words": "我 承认 我 大意 了",
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "你的记性很好。",
+      "reading": "Nǐ de jìxing hěn hǎo.",
+      "gloss": {
+        "en": "You have a good memory.",
+        "tr": "Hafızan çok iyi.",
+        "de": "Du hast ein gutes Gedächtnis.",
+        "es": "Tienes buena memoria.",
+        "fr": "Tu as une bonne mémoire.",
+        "pt-BR": "Você tem boa memória.",
+        "ru": "У тебя хорошая память.",
+        "ar": "عندك ذاكرة حادة."
+      },
+      "freqRank": 14607,
+      "review": {
+        "words": "你 的 记性 很 好",
+        "indirect": ["ar", "fr", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "我时而乐观，时而悲观。",
+      "reading": "Wǒ shí'ér lèguān, shí'ér bēiguān.",
+      "gloss": {
+        "en": "I am by turns an optimist and a pessimist.",
+        "tr": "Bazen iyimserim, bazen kötümser.",
+        "de": "Ich bin abwechselnd Optimist und Pessimist.",
+        "fr": "Je suis tantôt optimiste, tantôt pessimiste."
+      },
+      "freqRank": 15579,
+      "review": { "words": "我 时而 乐观 时而 悲观", "edited": ["tr"] }
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "愚昧始终是危险的。",
+      "reading": "Yúmèi shǐzhōng shì wēixiǎn de.",
+      "gloss": {
+        "en": "Ignorance is always dangerous.",
+        "tr": "Cehalet her zaman tehlikelidir.",
+        "de": "Unwissenheit ist immer gefährlich.",
+        "es": "La ignorancia siempre es peligrosa.",
+        "fr": "L'ignorance est toujours dangereuse.",
+        "pt-BR": "A ignorância é sempre perigosa.",
+        "ru": "Невежество всегда опасно."
+      },
+      "freqRank": 18748,
+      "review": { "words": "愚昧 始终 是 危险 的", "indirect": ["ru"], "edited": ["tr"] }
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "我斩钉截铁地拒绝了。",
+      "reading": "Wǒ zhǎndīngjiétiě de jùjué le.",
+      "gloss": {
+        "en": "I flatly refused.",
+        "tr": "Kesinlikle reddettim.",
+        "fr": "J'ai refusé catégoriquement.",
+        "ru": "Я категорически отказался."
+      },
+      "freqRank": 35900,
+      "review": { "words": "我 斩钉截铁 地 拒绝 了", "edited": ["tr"] }
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "你把我当什么啦？",
+      "reading": "Nǐ bǎ wǒ dāng shénme la?",
+      "gloss": {
+        "en": "Who do you think I am?",
+        "tr": "Kim olduğumu sanıyorsun?",
+        "de": "Für wen hältst du mich?",
+        "es": "¿Quién te crees que soy?",
+        "fr": "Qui crois-tu que je suis ?",
+        "pt-BR": "Quem você acha que sou?",
+        "ru": "За кого ты меня принимаешь?"
+      },
+      "freqRank": 246,
+      "review": { "words": "你 把 我 当 什么 啦", "indirect": ["de", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "来嘛！给我个机会。",
+      "reading": "Lái ma! Gěi wǒ gè jīhuì.",
+      "gloss": {
+        "en": "Come on! Give me a chance.",
+        "tr": "Haydi! Bana bir şans ver.",
+        "de": "Na los doch! Gib mir eine Chance!",
+        "es": "¡Vamos! Dame una oportunidad.",
+        "fr": "Allez ! Donne-moi une chance.",
+        "ru": "Ну, давай! Дай мне шанс."
+      },
+      "freqRank": 614,
+      "review": { "words": "来 嘛 给 我 个 机会", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "我啥都不想要。",
+      "reading": "Wǒ shá dōu bù xiǎngyào.",
+      "gloss": {
+        "en": "I don't want anything.",
+        "tr": "Hiçbir şey istemiyorum.",
+        "de": "Ich will nichts.",
+        "es": "No quiero nada.",
+        "fr": "Je ne veux rien.",
+        "ru": "Я ничего не хочу."
+      },
+      "freqRank": 990,
+      "review": {
+        "words": "我 啥 都 不 想 要",
+        "unlisted": ["想要"],
+        "indirect": ["ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "只是一场梦而已。",
+      "reading": "Zhǐ shì yì cháng mèng éryǐ.",
+      "gloss": {
+        "en": "It's just a dream.",
+        "tr": "O sadece bir rüya.",
+        "de": "Es ist nur ein Traum.",
+        "es": "Sólo es un sueño.",
+        "fr": "Ce n'est qu'un rêve.",
+        "pt-BR": "É só um sonho.",
+        "ru": "Это всего лишь сон."
+      },
+      "freqRank": 1377,
+      "review": {
+        "words": "只 是 一 场 梦 而已",
+        "unlisted": ["只是", "一场"],
+        "indirect": ["es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "这是战斗发生的地方。",
+      "reading": "Zhè shì zhàndòu fāshēng de dìfang.",
+      "gloss": {
+        "en": "This is the place where the battle took place.",
+        "tr": "Burası savaşın yapıldığı yer.",
+        "de": "Das ist der Ort, wo die Schlacht stattgefunden hat.",
+        "es": "Éste es el lugar donde tuvo lugar la batalla.",
+        "fr": "C'est le lieu où la bataille a eu lieu.",
+        "pt-BR": "Este é o lugar onde a batalha ocorreu.",
+        "ru": "Это место, где произошло сражение.",
+        "ar": "هذا مكان المعركة."
+      },
+      "freqRank": 1822,
+      "review": {
+        "words": "这 是 战斗 发生 的 地方",
+        "indirect": ["ar", "es", "pt-BR", "tr"],
+        "edited": ["reading", "tr"]
+      }
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "我从没去过欧洲。",
+      "reading": "Wǒ cóng méi qù guò Ōuzhōu.",
+      "gloss": {
+        "en": "I've never been to Europe.",
+        "tr": "Avrupa'da hiç bulunmadım.",
+        "de": "Ich war noch nie in Europa.",
+        "es": "Nunca he estado en Europa.",
+        "fr": "Je ne suis jamais allé en Europe.",
+        "pt-BR": "Nunca estive na Europa.",
+        "ru": "Я никогда не был в Европе."
+      },
+      "freqRank": 1929,
+      "review": {
+        "words": "我 从 没 去 过 欧洲",
+        "unlisted": ["从没", "去过"],
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "我们什么都不能承诺。",
+      "reading": "Wǒmen shénme dōu bù néng chéngnuò.",
+      "gloss": {
+        "en": "We can't promise anything.",
+        "tr": "Hiçbir şeye söz veremeyiz.",
+        "de": "Wir können nichts versprechen.",
+        "es": "No podemos prometer nada.",
+        "fr": "Nous ne pouvons rien promettre.",
+        "pt-BR": "Não podemos prometer nada.",
+        "ru": "Мы ничего не можем обещать."
+      },
+      "freqRank": 1985,
+      "review": {
+        "words": "我们 什么 都 不 能 承诺",
+        "unlisted": ["不能"],
+        "indirect": ["pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "城市中央有一座公园。",
+      "reading": "Chéngshì zhōngyāng yǒu yí zuò gōngyuán.",
+      "gloss": {
+        "en": "There is a park in the middle of the city.",
+        "tr": "Şehrin ortasında bir park var.",
+        "de": "Im Stadtzentrum gibt es einen Park.",
+        "es": "Hay un parque en el centro de la ciudad.",
+        "fr": "Il y a un parc au milieu de la ville.",
+        "pt-BR": "Há um parque no meio da cidade."
+      },
+      "freqRank": 2134,
+      "review": {
+        "words": "城市 中央 有 一 座 公园",
+        "unlisted": ["一座"],
+        "indirect": ["es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "你的项目进展得怎么样？",
+      "reading": "Nǐ de xiàngmù jìnzhǎn de zěnmeyàng?",
+      "gloss": {
+        "en": "How's your project coming along?",
+        "tr": "Projen nasıl ilerliyor?",
+        "de": "Wie läuft dein Projekt?",
+        "es": "¿Cómo va tu proyecto?",
+        "fr": "Comment progresse ton projet ?",
+        "pt-BR": "Como vai o seu projeto?"
+      },
+      "freqRank": 2151,
+      "review": { "words": "你 的 项目 进展 得 怎么样", "indirect": ["es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "她不在，我很孤独。",
+      "reading": "Tā bú zài, wǒ hěn gūdú.",
+      "gloss": {
+        "en": "I was lonely without her.",
+        "tr": "Onsuz yalnızdım.",
+        "de": "Ich war einsam ohne sie.",
+        "es": "Me sentía solo sin ella.",
+        "fr": "J'étais seul sans elle.",
+        "ru": "Мне было без неё одиноко."
+      },
+      "freqRank": 2987,
+      "review": { "words": "她 不 在 我 很 孤独", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "欧洲的人口比亚洲少。",
+      "reading": "Ōuzhōu de rénkǒu bǐ Yàzhōu shǎo.",
+      "gloss": {
+        "en": "Europe has a smaller population than Asia.",
+        "tr": "Avrupa'nın nüfusu Asya'nınkinden azdır.",
+        "es": "La población de Europa es menor que la de Asia.",
+        "fr": "L'Europe comporte une population plus faible que l'Asie."
+      },
+      "freqRank": 3164,
+      "review": {
+        "words": "欧洲 的 人口 比 亚洲 少",
+        "indirect": ["tr"],
+        "edited": ["reading", "tr"]
+      }
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "你怀孕几个月了？",
+      "reading": "Nǐ huáiyùn jǐ gè yuè le?",
+      "gloss": {
+        "en": "How many months have you been pregnant?",
+        "de": "Im wievielten Monat bist du?",
+        "es": "¿Cuántos meses llevas embarazada?",
+        "ru": "На каком Вы месяце?"
+      },
+      "freqRank": 3299,
+      "review": { "words": "你 怀孕 几 个 月 了", "unlisted": ["几个"], "indirect": ["ru"] }
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "我怀孕四个月了。",
+      "reading": "Wǒ huáiyùn sì gè yuè le.",
+      "gloss": {
+        "en": "I am four months pregnant.",
+        "tr": "Dört aylık hamileyim.",
+        "de": "Ich bin im vierten Monat schwanger.",
+        "es": "Estoy embarazada de cuatro meses.",
+        "fr": "Je suis enceinte de quatre mois.",
+        "pt-BR": "Estou grávida de quatro meses.",
+        "ru": "Я на пятом месяце беременности.",
+        "ar": "أنا حامل في الشهر الرابع."
+      },
+      "freqRank": 3299,
+      "review": {
+        "words": "我 怀孕 四 个 月 了",
+        "unlisted": ["四个"],
+        "indirect": ["ar", "es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "那栋建筑是什么呢？",
+      "reading": "Nà dòng jiànzhù shì shénme ne?",
+      "gloss": {
+        "en": "What's that building?",
+        "tr": "O bina ne?",
+        "de": "Was ist das für ein Gebäude?",
+        "es": "¿Qué es aquel edificio?",
+        "fr": "Quel est ce bâtiment ?",
+        "pt-BR": "O que é aquele prédio?",
+        "ru": "Что это за здание?",
+        "ar": "ما هذا المبنى؟"
+      },
+      "freqRank": 3370,
+      "review": {
+        "words": "那 栋 建筑 是 什么 呢",
+        "unlisted": ["那栋"],
+        "indirect": ["ar", "es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "这水被石油污染了。",
+      "reading": "Zhè shuǐ bèi shíyóu wūrǎn le.",
+      "gloss": {
+        "en": "This water was polluted by oil.",
+        "tr": "Bu su petrolle kirlenmiş.",
+        "de": "Dieses Wasser ist mit Öl verunreinigt.",
+        "fr": "Cette eau est souillée par du pétrole."
+      },
+      "freqRank": 3379,
+      "review": { "words": "这 水 被 石油 污染 了", "edited": ["tr"] }
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "你必须把桌子清理干净。",
+      "reading": "Nǐ bìxū bǎ zhuōzi qīnglǐ gānjìng.",
+      "gloss": {
+        "en": "You must clean the table.",
+        "tr": "Masayı temizlemelisin.",
+        "de": "Du musst den Tisch abräumen.",
+        "es": "Debes limpiar la mesa.",
+        "fr": "Tu dois débarrasser la table.",
+        "ru": "Ты должен вытереть со стола."
+      },
+      "freqRank": 3639,
+      "review": {
+        "words": "你 必须 把 桌子 清理 干净",
+        "indirect": ["es", "fr", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "他有极大的潜力。",
+      "reading": "Tā yǒu jídà de qiánlì.",
+      "gloss": {
+        "en": "He has enormous potential.",
+        "tr": "Onun büyük bir potansiyeli var.",
+        "de": "Er hat enormes Potential.",
+        "fr": "Il a énormément de potentiel.",
+        "ru": "У него огромные способности."
+      },
+      "freqRank": 3759,
+      "review": { "words": "他 有 极 大 的 潜力", "unlisted": ["极大"], "indirect": ["tr"] }
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "她只是嫉妒你年轻。",
+      "reading": "Tā zhǐ shì jídù nǐ niánqīng.",
+      "gloss": {
+        "en": "She's just jealous of your youth.",
+        "tr": "O sadece senin gençliğini kıskanıyor.",
+        "es": "Ella sólo está celosa de tu juventud.",
+        "fr": "Elle est seulement jalouse de ta jeunesse.",
+        "pt-BR": "Ela só está com inveja da sua juventude.",
+        "ru": "Она просто завидует вашей молодости."
+      },
+      "freqRank": 4056,
+      "review": {
+        "words": "她 只 是 嫉妒 你 年轻",
+        "unlisted": ["只是"],
+        "indirect": ["pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "他没有进步的迹象。",
+      "reading": "Tā méiyǒu jìnbù de jìxiàng.",
+      "gloss": {
+        "en": "He shows no sign of progress.",
+        "tr": "Hiçbir ilerleme belirtisi göstermiyor.",
+        "de": "Er zeigte kein Anzeichen von Fortschritt.",
+        "fr": "Il ne montre pas de signe de progrès.",
+        "pt-BR": "Ele não dá sinais de progresso."
+      },
+      "freqRank": 4065,
+      "review": {
+        "words": "他 没 有 进步 的 迹象",
+        "unlisted": ["没有"],
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["reading", "en", "tr"]
+      }
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "冰箱里只有牛奶哦。",
+      "reading": "Bīngxiāng lǐ zhǐ yǒu niúnǎi o.",
+      "gloss": {
+        "en": "There's nothing in the refrigerator except milk.",
+        "de": "Im Kühlschrank steht nur Milch.",
+        "fr": "À part du lait, il n'y a rien dans le frigo.",
+        "ru": "В холодильнике только молоко."
+      },
+      "freqRank": 4168,
+      "review": {
+        "words": "冰箱 里 只 有 牛奶 哦",
+        "unlisted": ["只有"],
+        "indirect": ["fr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "她抛弃了她的孩子。",
+      "reading": "Tā pāoqì le tā de háizi.",
+      "gloss": {
+        "en": "She abandoned her children.",
+        "tr": "O çocuklarını terk etti.",
+        "de": "Sie hat ihre Kinder verlassen.",
+        "es": "Ella abandonó a los hijos.",
+        "fr": "Elle a abandonné ses enfants.",
+        "pt-BR": "Ela abandonou seus filhos.",
+        "ru": "Она бросила своих детей."
+      },
+      "freqRank": 4229,
+      "review": { "words": "她 抛弃 了 她 的 孩子", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "我不认为她很在意。",
+      "reading": "Wǒ bú rènwéi tā hěn zàiyì.",
+      "gloss": {
+        "en": "I don't think she cares very much.",
+        "tr": "Onun çok umurunda olduğunu sanmıyorum.",
+        "de": "Ich glaube nicht, dass sie das besonders kümmert.",
+        "pt-BR": "Eu não acho que ela se importe muito."
+      },
+      "freqRank": 4370,
+      "review": { "words": "我 不 认为 她 很 在意", "indirect": ["tr"] }
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "每位选手都尽力了。",
+      "reading": "Měi wèi xuǎnshǒu dōu jìnlì le.",
+      "gloss": {
+        "en": "Every player did his best.",
+        "de": "Jeder Spieler gab sein Bestes.",
+        "fr": "Chaque joueur fit de son mieux.",
+        "pt-BR": "Cada jogador deu o melhor de si.",
+        "ru": "Каждый игрок старался изо всех сил."
+      },
+      "freqRank": 4488,
+      "review": {
+        "words": "每 位 选手 都 尽力 了",
+        "unlisted": ["每位"],
+        "indirect": ["de", "pt-BR"]
+      }
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "我没办法联络到他。",
+      "reading": "Wǒ méi bànfǎ liánluò dào tā.",
+      "gloss": {
+        "en": "I cannot get in touch with him.",
+        "tr": "Ona ulaşamıyorum.",
+        "de": "Ich kann ihn nicht erreichen.",
+        "fr": "Je ne peux pas le joindre."
+      },
+      "freqRank": 4467,
+      "review": { "words": "我 没 办法 联络 到 他", "indirect": ["tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "他的秘书好像了解真相。",
+      "reading": "Tā de mìshū hǎoxiàng liǎojiě zhēnxiàng.",
+      "gloss": {
+        "en": "His secretary seems to know the truth.",
+        "tr": "Onun sekreteri gerçeği biliyor gibi görünüyor.",
+        "de": "Seine Sekretärin scheint die Wahrheit zu kennen.",
+        "fr": "Sa secrétaire semble savoir la vérité.",
+        "ru": "Кажется, его секретарь знает правду."
+      },
+      "freqRank": 4599,
+      "review": { "words": "他 的 秘书 好像 了解 真相", "indirect": ["de", "tr"] }
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "我房间是个猪窝。",
+      "reading": "Wǒ fángjiān shì gè zhūwō.",
+      "gloss": {
+        "en": "My room is a pigsty.",
+        "tr": "Odam ahır gibi.",
+        "de": "Mein Zimmer ist ein Schweinestall.",
+        "es": "Mi cuarto es un cuchitril.",
+        "fr": "Ma chambre est une porcherie.",
+        "ru": "Моя комната — свинарник."
+      },
+      "freqRank": 4511,
+      "review": { "words": "我 房间 是 个 猪 窝", "indirect": ["tr"], "edited": ["reading", "ru"] }
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "可能你工作得太拼命？",
+      "reading": "Kěnéng nǐ gōngzuò de tài pīnmìng?",
+      "gloss": {
+        "en": "Maybe you are working too hard.",
+        "tr": "Belki de fazla çalışıyorsundur?",
+        "de": "Vielleicht arbeitest du zu hart?",
+        "fr": "Peut-être travailles-tu trop dur ?",
+        "ru": "Наверное, ты слишком много работаешь."
+      },
+      "freqRank": 4700,
+      "review": { "words": "可能 你 工作 得 太 拼命", "indirect": ["ru", "tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "我宁愿呆在这里。",
+      "reading": "Wǒ nìngyuàn dāi zài zhèlǐ.",
+      "gloss": {
+        "en": "I'd rather stay here.",
+        "tr": "Ben burada kalmayı tercih ederim.",
+        "de": "Ich würde lieber hier bleiben.",
+        "es": "Prefiero quedarme aquí.",
+        "fr": "Je préférerais rester ici.",
+        "pt-BR": "Prefiro ficar aqui.",
+        "ru": "Я лучше здесь останусь."
+      },
+      "freqRank": 4690,
+      "review": {
+        "words": "我 宁愿 呆 在 这 里",
+        "unlisted": ["这里"],
+        "indirect": ["es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "不要太过于依赖别人。",
+      "reading": "Bú yào tài guòyú yīlài biéren.",
+      "gloss": {
+        "en": "Don't depend too much on others.",
+        "tr": "Başkalarına çok fazla güvenme.",
+        "de": "Verlass dich nicht zu sehr auf andere Leute.",
+        "es": "No dependas demasiado de los demás.",
+        "fr": "Ne te repose pas trop sur les autres.",
+        "ru": "Не надо слишком зависеть от других."
+      },
+      "freqRank": 4839,
+      "review": {
+        "words": "不 要 太 过于 依赖 别人",
+        "unlisted": ["不要"],
+        "indirect": ["es", "ru", "tr"]
+      }
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "平等是由宪法保障的。",
+      "reading": "Píngděng shì yóu xiànfǎ bǎozhàng de.",
+      "gloss": {
+        "en": "Equality is guaranteed by the Constitution.",
+        "tr": "Eşitlik anayasa tarafından garantiye alınmıştır.",
+        "de": "Die Gleichheit ist durch die Verfassung garantiert.",
+        "es": "La igualdad es garantizada por la constitución.",
+        "fr": "L'égalité est garantie par la Constitution.",
+        "ru": "Равенство гарантируется конституцией."
+      },
+      "freqRank": 5123,
+      "review": { "words": "平等 是 由 宪法 保障 的", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "我没力气继续尝试了。",
+      "reading": "Wǒ méi lìqi jìxù chángshì le.",
+      "gloss": {
+        "en": "I don't have the strength to keep trying.",
+        "tr": "Denemeye devam edecek gücüm yok.",
+        "de": "Ich habe nicht die Kraft, es weiter zu versuchen.",
+        "es": "No tengo la fuerza de seguir intentándolo.",
+        "fr": "Je n'ai pas la force de continuer à essayer.",
+        "pt-BR": "Eu não tenho forças para continuar tentando.",
+        "ru": "У меня нет сил, чтобы продолжать попытки."
+      },
+      "freqRank": 5156,
+      "review": { "words": "我 没 力气 继续 尝试 了", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "她拒绝了我的资助。",
+      "reading": "Tā jùjué le wǒ de zīzhù.",
+      "gloss": {
+        "en": "She turned down my financial support.",
+        "de": "Sie lehnte meine finanzielle Unterstützung ab.",
+        "es": "Ella rechazó el subsidio que ofrecí.",
+        "fr": "Elle refusa mon offre.",
+        "pt-BR": "Ela recusou o subsídio que eu ofereci."
+      },
+      "freqRank": 5290,
+      "review": { "words": "她 拒绝 了 我 的 资助", "indirect": ["es", "pt-BR"], "edited": ["en"] }
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "外交谈判帮助结束了冲突。",
+      "reading": "Wàijiāo tánpàn bāngzhù jiéshù le chōngtū.",
+      "gloss": {
+        "en": "Diplomatic dialogue helped put an end to the conflict.",
+        "tr": "Diplomatik diyalog çatışmayı bitirmeye yardımcı oldu.",
+        "de": "Diplomatischer Austausch half, den Konflikt zu beenden.",
+        "es": "La discusión diplomática ayudó a ponerle fin al conflicto.",
+        "fr": "Le dialogue diplomatique aida à mettre fin au conflit.",
+        "pt-BR": "A conversa diplomática ajudou a pôr fim ao conflito.",
+        "ru": "Дипломатический диалог помог положить конец конфликту."
+      },
+      "freqRank": 5317,
+      "review": { "words": "外交 谈判 帮助 结束 了 冲突", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "您做了个坏榜样。",
+      "reading": "Nín zuò le gè huài bǎngyàng.",
+      "gloss": {
+        "en": "You've set a bad example.",
+        "tr": "Kötü bir örnek oldunuz.",
+        "de": "Sie haben ein schlechtes Beispiel abgegeben.",
+        "es": "Has puesto un mal ejemplo.",
+        "fr": "Vous avez montré le mauvais exemple.",
+        "pt-BR": "Você deu um mau exemplo.",
+        "ru": "Вы подаёте плохой пример."
+      },
+      "freqRank": 6902,
+      "review": {
+        "words": "您 做 了 个 坏 榜样",
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "这牛奶有特殊的气味。",
+      "reading": "Zhè niúnǎi yǒu tèshū de qìwèi.",
+      "gloss": {
+        "en": "This milk has a peculiar smell.",
+        "tr": "Bu sütün kendine özgü bir kokusu vardır.",
+        "de": "Diese Milch hat einen eigentümlichen Geruch.",
+        "es": "Esta leche tiene un olor extraño.",
+        "fr": "Ce lait a une odeur particulière.",
+        "pt-BR": "Este leite está com um cheiro estranho."
+      },
+      "freqRank": 6948,
+      "review": { "words": "这 牛奶 有 特殊 的 气味", "indirect": ["es", "pt-BR", "tr"] }
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "我必须更新我的护照。",
+      "reading": "Wǒ bìxū gēngxīn wǒ de hùzhào.",
+      "gloss": {
+        "en": "I must renew my passport.",
+        "tr": "Pasaportumu yenilemeliyim.",
+        "de": "Ich muss meinen Pass erneuern lassen.",
+        "es": "Tengo que renovar mi pasaporte.",
+        "fr": "Je dois faire renouveler mon passeport.",
+        "pt-BR": "Eu devo renovar meu passaporte.",
+        "ru": "Я должен заменить паспорт."
+      },
+      "freqRank": 7152,
+      "review": { "words": "我 必须 更新 我 的 护照", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "事故耽误了我们半小时。",
+      "reading": "Shìgù dānwu le wǒmen bàn xiǎoshí.",
+      "gloss": {
+        "en": "An accident delayed us for half an hour.",
+        "tr": "Bir kaza bizi yarım saat geciktirdi.",
+        "de": "Der Unfall hielt uns eine halbe Stunde auf.",
+        "es": "Un accidente nos retrasó media hora.",
+        "fr": "Un accident nous a retardés d'une demie heure.",
+        "ru": "Происшествие задержало нас на полчаса."
+      },
+      "freqRank": 7445,
+      "review": {
+        "words": "事故 耽误 了 我们 半 小时",
+        "unlisted": ["半小时"],
+        "indirect": ["es"],
+        "edited": ["es", "tr"]
+      }
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "她利用了我的无知。",
+      "reading": "Tā lìyòng le wǒ de wúzhī.",
+      "gloss": {
+        "en": "She took advantage of my ignorance.",
+        "tr": "Cehaletimden yararlandı.",
+        "de": "Sie hat meine Unwissenheit ausgenutzt.",
+        "es": "Ella se aprovechó de mi ignorancia.",
+        "fr": "Elle tira avantage de mon ignorance.",
+        "ru": "Она воспользовалась моим незнанием."
+      },
+      "freqRank": 7484,
+      "review": {
+        "words": "她 利用 了 我 的 无知",
+        "indirect": ["es", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "昨天我收到了薪水。",
+      "reading": "Zuótiān wǒ shōudào le xīnshuǐ.",
+      "gloss": {
+        "en": "I received my salary yesterday.",
+        "tr": "Dün maaşımı aldım.",
+        "de": "Ich habe gestern mein Gehalt bekommen.",
+        "fr": "J'ai reçu mon salaire hier."
+      },
+      "freqRank": 7554,
+      "review": { "words": "昨天 我 收 到 了 薪水", "unlisted": ["收到"], "edited": ["tr"] }
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "世界上许多人很饥饿。",
+      "reading": "Shìjiè shàng xǔduō rén hěn jī'è.",
+      "gloss": {
+        "en": "A lot of people are starving in the world.",
+        "tr": "Dünyada birçok insan aç.",
+        "de": "Viele Menschen auf der Welt hungern.",
+        "es": "En el mundo muchas personas tienen hambre.",
+        "fr": "De nombreuses personnes dans le monde ont faim."
+      },
+      "freqRank": 9185,
+      "review": { "words": "世界 上 许多 人 很 饥饿", "indirect": ["tr"], "edited": ["tr"] }
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "这些废墟年代久远。",
+      "reading": "Zhèxiē fèixū niándài jiǔyuǎn.",
+      "gloss": {
+        "en": "These ruins are ancient.",
+        "tr": "Bu harabeler çok eski.",
+        "de": "Diese Ruinen sind uralt.",
+        "fr": "Ces ruines sont anciennes.",
+        "ru": "Эти руины древние."
+      },
+      "freqRank": 10824,
+      "review": {
+        "words": "这 些 废墟 年代 久 远",
+        "unlisted": ["这些", "年代久远"],
+        "indirect": ["ru", "tr"],
+        "edited": ["reading", "tr"]
+      }
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "氢是最轻的元素。",
+      "reading": "Qīng shì zuì qīng de yuánsù.",
+      "gloss": {
+        "en": "Hydrogen is the lightest element.",
+        "tr": "Hidrojen en hafif elementtir.",
+        "de": "Wasserstoff ist das leichteste Element.",
+        "es": "El hidrógeno es el elemento más liviano.",
+        "fr": "L'hydrogène est l'élément le plus léger.",
+        "pt-BR": "O hidrogênio é o elemento mais leve.",
+        "ru": "Водород — самый лёгкий элемент."
+      },
+      "freqRank": 11059,
+      "review": { "words": "氢 是 最 轻 的 元素", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "这个苹果开始腐烂了。",
+      "reading": "Zhège píngguǒ kāishǐ fǔlàn le.",
+      "gloss": {
+        "en": "This apple is starting to rot.",
+        "tr": "Bu elma çürümeye başladı.",
+        "de": "Dieser Apfel fängt an zu faulen.",
+        "ru": "Это яблоко начало гнить."
+      },
+      "freqRank": 11803,
+      "review": { "words": "这 个 苹果 开始 腐烂 了", "unlisted": ["这个"], "edited": ["tr"] }
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "您最好请教一下医生。",
+      "reading": "Nín zuìhǎo qǐngjiào yíxià yīshēng.",
+      "gloss": {
+        "en": "You'd better consult the doctor.",
+        "tr": "Doktora danışsanız iyi olur.",
+        "de": "Sie sollten besser einen Arzt zu Rate ziehen.",
+        "es": "Deberías consultar al médico.",
+        "fr": "Vous feriez mieux de consulter le médecin.",
+        "ru": "Лучше проконсультируйтесь у врача.",
+        "ar": "الأفضل أن تستشير الطبيب."
+      },
+      "freqRank": 11806,
+      "review": {
+        "words": "您 最好 请教 一 下 医生",
+        "unlisted": ["一下"],
+        "indirect": ["ar", "es", "ru", "tr"],
+        "edited": ["reading", "tr"]
+      }
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "公司由于缺乏资本倒闭了。",
+      "reading": "Gōngsī yóuyú quēfá zīběn dǎobì le.",
+      "gloss": {
+        "en": "The firm went under due to lack of capital.",
+        "tr": "Şirket sermaye yetersizliği yüzünden battı.",
+        "de": "Die Firma ging wegen Geldmangel pleite.",
+        "fr": "La société a coulé à cause d'un manque de capitaux.",
+        "ru": "Компания обанкротилась из-за нехватки капитала."
+      },
+      "freqRank": 11967,
+      "review": { "words": "公司 由于 缺乏 资本 倒闭 了", "indirect": ["de"], "edited": ["tr"] }
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "他的容貌改变了许多。",
+      "reading": "Tā de róngmào gǎibiàn le xǔduō.",
+      "gloss": {
+        "en": "He's changed a lot in his looks.",
+        "tr": "Görünüşü çok değişti.",
+        "de": "Sein Aussehen hat sich sehr verändert.",
+        "es": "Su apariencia ha cambiado mucho.",
+        "fr": "Son apparence a beaucoup changé.",
+        "ru": "Его внешность сильно изменилась."
+      },
+      "freqRank": 14234,
+      "review": {
+        "words": "他 的 容貌 改变 了 许多",
+        "indirect": ["es", "ru", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "我不喜欢油腻的饮食。",
+      "reading": "Wǒ bù xǐhuan yóunì de yǐnshí.",
+      "gloss": {
+        "en": "I don't like greasy food.",
+        "tr": "Yağlı gıdaları sevmiyorum.",
+        "fr": "Je n'aime pas la nourriture grasse."
+      },
+      "freqRank": 18917,
+      "review": { "words": "我 不 喜欢 油腻 的 饮食", "edited": ["en"] }
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "总而言之，生命是很短的。",
+      "reading": "Zǒng'éryánzhī, shēngmìng shì hěn duǎn de.",
+      "gloss": {
+        "en": "In a word, life is short.",
+        "tr": "Kısacası, yaşam kısadır.",
+        "de": "Mit einem Wort, das Leben ist kurz.",
+        "es": "En una palabra, la vida es corta.",
+        "fr": "En un mot, la vie est courte.",
+        "ru": "Одним словом, жизнь коротка."
+      },
+      "freqRank": 19808,
+      "review": { "words": "总而言之 生命 是 很 短 的", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "我很钦佩他的才干。",
+      "reading": "Wǒ hěn qīnpèi tā de cáigàn.",
+      "gloss": {
+        "en": "I feel admiration for his talent.",
+        "tr": "Onun yeteneğine hayranım.",
+        "de": "Ich bewundere sein Talent.",
+        "es": "Siento admiración por su talento.",
+        "ru": "Я восхищаюсь его талантом."
+      },
+      "freqRank": 19342,
+      "review": {
+        "words": "我 很 钦佩 他 的 才干",
+        "indirect": ["es", "tr"],
+        "edited": ["tr", "ru"]
+      }
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "他解释事故是怎么发生的。",
+      "reading": "Tā jiěshì shìgù shì zěnme fāshēng de.",
+      "gloss": {
+        "en": "He explained how the accident came about.",
+        "tr": "Kazanın nasıl olduğunu açıkladı.",
+        "de": "Er hat erklärt, wie es zu dem Unfall gekommen ist.",
+        "fr": "Il a expliqué comment l'accident s'est produit.",
+        "ru": "Он объяснил, как произошел этот несчастный случай."
+      },
+      "freqRank": 1493,
+      "review": { "words": "他 解释 事故 是 怎么 发生 的", "edited": ["tr"] }
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "我们在调查事故发生的原因。",
+      "reading": "Wǒmen zài diàochá shìgù fāshēng de yuányīn.",
+      "gloss": {
+        "en": "We are looking into the cause of the accident.",
+        "tr": "Kazanın nedenini araştırıyoruz.",
+        "de": "Wir untersuchen die Unfallursache.",
+        "fr": "Nous enquêtons sur les causes de l'accident."
+      },
+      "freqRank": 1493,
+      "review": { "words": "我们 在 调查 事故 发生 的 原因", "indirect": ["tr"] }
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "第一次攻击错过了目标。",
+      "reading": "Dìyī cì gōngjī cuò guò le mùbiāo.",
+      "gloss": {
+        "en": "The first attack missed the target.",
+        "tr": "İlk saldırı hedefi ıskaladı.",
+        "de": "Der erste Angriff verfehlte das Ziel.",
+        "es": "El primer ataque no dio al blanco.",
+        "fr": "La première attaque a manqué la cible.",
+        "ru": "Первая атака прошла мимо цели."
+      },
+      "freqRank": 1579,
+      "review": {
+        "words": "第一 次 攻击 错 过 了 目标",
+        "unlisted": ["第一次", "错过"],
+        "indirect": ["es", "ru", "tr"]
+      }
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "这片区域很少下雪。",
+      "reading": "Zhè piàn qūyù hěn shǎo xiàxuě.",
+      "gloss": {
+        "en": "It rarely snows in this area.",
+        "tr": "Bu alanda nadiren kar yağar.",
+        "de": "Hier schneit es selten.",
+        "es": "Rara vez nieva por esta área.",
+        "pt-BR": "Raramente neva nesta área.",
+        "ru": "В этой местности редко бывает снег."
+      },
+      "freqRank": 1971,
+      "review": {
+        "words": "这 片 区域 很 少 下 雪",
+        "unlisted": ["很少", "下雪"],
+        "indirect": ["es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "没有爱情的生活毫无意义。",
+      "reading": "Méiyǒu àiqíng de shēnghuó háowú yìyì.",
+      "gloss": {
+        "en": "A life without love is completely meaningless.",
+        "tr": "Sevgisiz hayat tamamen anlamsızdır.",
+        "de": "Ein Leben ohne Liebe hat überhaupt keinen Sinn.",
+        "es": "Una vida sin amor no tiene ningún sentido.",
+        "fr": "Une vie sans amour n'a absolument aucun sens.",
+        "pt-BR": "Uma vida sem amor não tem sentido.",
+        "ru": "Жизнь без любви не имеет вообще никакого смысла."
+      },
+      "freqRank": 2244,
+      "review": {
+        "words": "没 有 爱情 的 生活 毫无 意义",
+        "unlisted": ["没有", "毫无意义"],
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["reading", "en"]
+      }
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "我所有的尝试都失败了。",
+      "reading": "Wǒ suǒyǒu de chángshì dōu shībài le.",
+      "gloss": {
+        "en": "All of my attempts have failed.",
+        "tr": "Bütün denemelerim başarısız oldu.",
+        "es": "Todos mis intentos fracasaron.",
+        "fr": "Toutes mes tentatives ont échoué.",
+        "pt-BR": "Todas as minhas tentativas falharam.",
+        "ru": "Все мои попытки не удались."
+      },
+      "freqRank": 2262,
+      "review": { "words": "我 所有 的 尝试 都 失败 了", "indirect": ["pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "其实我还是觉得好浪漫哦。",
+      "reading": "Qíshí wǒ háishi juéde hǎo làngmàn o.",
+      "gloss": {
+        "en": "Actually, I still think it's really romantic.",
+        "tr": "Aslında hâlâ çok romantik buluyorum.",
+        "de": "Eigentlich finde ich es immer noch sehr romantisch.",
+        "ru": "На самом деле мне всё ещё кажется, что это очень романтично."
+      },
+      "freqRank": 2439,
+      "review": { "words": "其实 我 还是 觉得 好 浪漫 哦", "edited": ["reading", "en", "tr", "ru"] }
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "这就是发现尸体的房间。",
+      "reading": "Zhè jiù shì fāxiàn shītǐ de fángjiān.",
+      "gloss": {
+        "en": "This is the room where the body was found.",
+        "tr": "Bu, cesedin bulunduğu oda.",
+        "de": "Das ist das Zimmer, wo die Leiche gefunden wurde.",
+        "es": "Este es el cuarto donde se encontró el cadáver.",
+        "pt-BR": "Este é o quarto onde o corpo foi encontrado.",
+        "ru": "Это комната, в которой было обнаружено тело."
+      },
+      "freqRank": 2483,
+      "review": {
+        "words": "这 就 是 发现 尸体 的 房间",
+        "unlisted": ["就是"],
+        "indirect": ["es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "你仔细看看，太新鲜啦！",
+      "reading": "Nǐ zǐxì kànkan, tài xīnxiān la!",
+      "gloss": {
+        "en": "Take a good look, it's really fresh!",
+        "fr": "Regardez bien, c'est vraiment frais !",
+        "ru": "Посмотрите внимательно, очень свежий!"
+      },
+      "freqRank": 2651,
+      "review": { "words": "你 仔细 看 看 太 新鲜 啦", "unlisted": ["看看"], "edited": ["reading"] }
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "我们看着这孩子玩耍。",
+      "reading": "Wǒmen kàn zhe zhè háizi wánshuǎ.",
+      "gloss": {
+        "en": "We were watching the child at play.",
+        "tr": "Çocuğu oynarken izliyorduk.",
+        "de": "Wir sahen dem Kind beim Spielen zu.",
+        "fr": "Nous regardions cet enfant jouer.",
+        "ru": "Мы наблюдали, как ребёнок играет."
+      },
+      "freqRank": 3070,
+      "review": {
+        "words": "我们 看 着 这 孩子 玩 耍",
+        "unlisted": ["看着", "玩耍"],
+        "indirect": ["tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "她对那个消息非常惊讶。",
+      "reading": "Tā duì nàge xiāoxi fēicháng jīngyà.",
+      "gloss": {
+        "en": "She was very surprised at the news.",
+        "tr": "Habere çok şaşırdı.",
+        "de": "Sie war über diese Neuigkeiten sehr überrascht.",
+        "es": "A ella le sorprendió mucho la noticia.",
+        "fr": "Elle a été très surprise de la nouvelle.",
+        "pt-BR": "Ela ficou muito surpresa com a notícia."
+      },
+      "freqRank": 3229,
+      "review": {
+        "words": "她 对 那 个 消息 非常 惊讶",
+        "unlisted": ["那个"],
+        "indirect": ["de", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "我在这栋楼里工作。",
+      "reading": "Wǒ zài zhè dòng lóu lǐ gōngzuò.",
+      "gloss": {
+        "en": "I work in this building.",
+        "tr": "Ben bu binada çalışıyorum.",
+        "de": "Ich arbeite in diesem Gebäude.",
+        "es": "Trabajo en este edificio.",
+        "fr": "Je travaille dans ce bâtiment.",
+        "pt-BR": "Eu trabalho neste edifício.",
+        "ru": "Я работаю в этом здании."
+      },
+      "freqRank": 3370,
+      "review": {
+        "words": "我 在 这 栋 楼 里 工作",
+        "unlisted": ["这栋"],
+        "indirect": ["es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "现在是买它的最好时机。",
+      "reading": "Xiànzài shì mǎi tā de zuìhǎo shíjī.",
+      "gloss": {
+        "en": "Now is the best time to buy it.",
+        "tr": "Onu almanın en iyi zamanı şimdi.",
+        "de": "Jetzt ist ein guter Zeitpunkt, das zu kaufen.",
+        "fr": "C'est le moment idéal pour en acheter."
+      },
+      "freqRank": 3402,
+      "review": {
+        "words": "现在 是 买 它 的 最好 时机",
+        "indirect": ["tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "不要对批评太敏感了。",
+      "reading": "Bú yào duì pīpíng tài mǐngǎn le.",
+      "gloss": {
+        "en": "Don't be too sensitive to criticism.",
+        "tr": "Eleştiriye karşı fazla hassas olma.",
+        "de": "Sei nicht zu empfindlich gegenüber Kritik!",
+        "es": "No seas demasiado sensible a las críticas.",
+        "fr": "Ne sois pas trop sensible aux critiques.",
+        "pt-BR": "Não seja tão sensível a críticas.",
+        "ru": "Не будь слишком восприимчивым к критике."
+      },
+      "freqRank": 3504,
+      "review": {
+        "words": "不 要 对 批评 太 敏感 了",
+        "unlisted": ["不要"],
+        "indirect": ["es", "pt-BR", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "他经济上依靠他的太太。",
+      "reading": "Tā jīngjì shàng yīkào tā de tàitai.",
+      "gloss": {
+        "en": "He relies on his wife financially.",
+        "tr": "Maddi olarak karısına bağımlı.",
+        "de": "Er ist finanziell von seiner Frau abhängig.",
+        "fr": "Il est financièrement dépendant de sa femme.",
+        "pt-BR": "Ele depende financeiramente de sua mulher."
+      },
+      "freqRank": 3823,
+      "review": {
+        "words": "他 经济 上 依靠 他 的 太太",
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "不要嫉妒其他人的成功。",
+      "reading": "Bú yào jídù qítā rén de chénggōng.",
+      "gloss": {
+        "en": "You must not be jealous of others' success.",
+        "tr": "Başkalarının başarılarını kıskanmamalısın.",
+        "de": "Sei nicht neidisch auf den Erfolg anderer Leute.",
+        "es": "No deberías estar celoso del éxito de otros.",
+        "fr": "Ne sois pas jaloux du succès des autres gens.",
+        "ru": "Не нужно завидовать чужим успехам."
+      },
+      "freqRank": 4056,
+      "review": {
+        "words": "不 要 嫉妒 其他 人 的 成功",
+        "unlisted": ["不要", "其他人"],
+        "indirect": ["es", "ru", "tr"]
+      }
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "他的脸上呈现了愤怒。",
+      "reading": "Tā de liǎnshàng chéngxiàn le fènnù.",
+      "gloss": {
+        "en": "Anger showed on his face.",
+        "tr": "Yüzünde öfke belirdi.",
+        "fr": "La colère se traduisait sur son visage.",
+        "ru": "Ярость проявилась на его лице."
+      },
+      "freqRank": 3891,
+      "review": { "words": "他 的 脸 上 呈现 了 愤怒", "unlisted": ["脸上"], "edited": ["tr"] }
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "我寄给她一个娃娃。",
+      "reading": "Wǒ jìgěi tā yí gè wáwa.",
+      "gloss": {
+        "en": "I sent her a doll.",
+        "tr": "Ona bir oyuncak bebek gönderdim.",
+        "de": "Ich sandte ihr eine Puppe.",
+        "es": "Le envié una muñeca.",
+        "fr": "Je lui ai envoyé une poupée.",
+        "pt-BR": "Eu mandei uma boneca para ela.",
+        "ru": "Я послал ей куклу."
+      },
+      "freqRank": 4084,
+      "review": {
+        "words": "我 寄 给 她 一 个 娃娃",
+        "unlisted": ["寄给", "一个"],
+        "indirect": ["es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "他继承了他父亲的事业。",
+      "reading": "Tā jìchéng le tā fùqīn de shìyè.",
+      "gloss": {
+        "en": "He took over his father's business.",
+        "tr": "O babasının işini devraldı.",
+        "es": "Quedó a cargo del negocio de su padre.",
+        "fr": "Il a repris l'affaire de son père.",
+        "ru": "Он унаследовал дело своего отца."
+      },
+      "freqRank": 4528,
+      "review": { "words": "他 继承 了 他 父亲 的 事业", "indirect": ["es", "tr"] }
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "让我们假设她在这里。",
+      "reading": "Ràng wǒmen jiǎshè tā zài zhèlǐ.",
+      "gloss": {
+        "en": "Let us suppose she is here.",
+        "tr": "Diyelim ki burada.",
+        "de": "Nehmen wir an, sie ist hier.",
+        "es": "Supongamos que ella está aquí."
+      },
+      "freqRank": 4725,
+      "review": { "words": "让 我们 假设 她 在 这 里", "unlisted": ["这里"], "indirect": ["tr"] }
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "他继承了他父亲的财产。",
+      "reading": "Tā jìchéng le tā fùqīn de cáichǎn.",
+      "gloss": {
+        "en": "He inherited his father's property.",
+        "tr": "Babasının mülkünü miras aldı.",
+        "de": "Er erbte den Besitz seines Vaters.",
+        "fr": "Il a hérité de la propriété de son père."
+      },
+      "freqRank": 4528,
+      "review": { "words": "他 继承 了 他 父亲 的 财产", "edited": ["en", "tr"] }
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "她拒绝了每一项提议。",
+      "reading": "Tā jùjué le měi yí xiàng tíyì.",
+      "gloss": {
+        "en": "She turned down every proposal.",
+        "tr": "O, her teklifi geri çevirdi.",
+        "de": "Sie hat alle Vorschläge abgewiesen.",
+        "fr": "Elle a rejeté chaque proposition.",
+        "ru": "Она отклонила все предложения."
+      },
+      "freqRank": 4891,
+      "review": {
+        "words": "她 拒绝 了 每 一 项 提议",
+        "unlisted": ["每一项"],
+        "indirect": ["ru", "tr"]
+      }
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "我们很高兴接受你的提议。",
+      "reading": "Wǒmen hěn gāoxìng jiēshòu nǐ de tíyì.",
+      "gloss": {
+        "en": "We gladly accept your offer.",
+        "tr": "Teklifinizi memnuniyetle kabul ediyoruz.",
+        "de": "Wir nehmen dein Angebot gerne an.",
+        "es": "Aceptamos con gusto su propuesta.",
+        "fr": "Nous acceptons ton offre avec plaisir.",
+        "pt-BR": "Nós aceitamos sua oferta com prazer.",
+        "ru": "Мы с радостью принимаем ваше предложение."
+      },
+      "freqRank": 4891,
+      "review": { "words": "我们 很 高兴 接受 你 的 提议", "indirect": ["es", "fr", "pt-BR", "tr"] }
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "你是不是想暗示什么？",
+      "reading": "Nǐ shì bú shì xiǎng ànshì shénme?",
+      "gloss": {
+        "en": "Are you implying something?",
+        "tr": "Sen bir şey mi ima ediyorsun?",
+        "de": "Willst du auf etwas hinaus?",
+        "fr": "Est-ce que tu sous-entends quelque chose ?",
+        "pt-BR": "Você está insinuando alguma coisa?",
+        "ru": "Ты на что-то намекаешь?"
+      },
+      "freqRank": 4917,
+      "review": {
+        "words": "你 是 不 是 想 暗示 什么",
+        "unlisted": ["是不是"],
+        "indirect": ["pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "这个传统在中国诞生了。",
+      "reading": "Zhège chuántǒng zài Zhōngguó dànshēng le.",
+      "gloss": {
+        "en": "This tradition originates from China.",
+        "tr": "Bu gelenek Çin'den kaynaklanır.",
+        "es": "Esa tradición nació en China.",
+        "fr": "Cette tradition naquit en Chine."
+      },
+      "freqRank": 4971,
+      "review": { "words": "这 个 传统 在 中国 诞生 了", "unlisted": ["这个"], "indirect": ["tr"] }
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "没有什么和时间一样珍贵。",
+      "reading": "Méiyǒu shénme hé shíjiān yíyàng zhēnguì.",
+      "gloss": {
+        "en": "Nothing is so precious as time.",
+        "tr": "Hiçbir şey zaman kadar değerli değildir.",
+        "de": "Nichts ist so kostbar wie die Zeit.",
+        "es": "Nada es más precioso que el tiempo.",
+        "fr": "Rien n'est aussi précieux que le temps.",
+        "pt-BR": "Não existe nada mais valioso que o tempo."
+      },
+      "freqRank": 5205,
+      "review": {
+        "words": "没 有 什么 和 时间 一样 珍贵",
+        "unlisted": ["没有"],
+        "indirect": ["es", "pt-BR", "tr"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "它的滋味真的很好。",
+      "reading": "Tā de zīwèi zhēn de hěn hǎo.",
+      "gloss": {
+        "en": "It tastes really good.",
+        "tr": "Tadı gerçekten çok güzel.",
+        "de": "Es schmeckt wirklich gut.",
+        "es": "Esto sabe muy bien.",
+        "fr": "C'est très bon.",
+        "ru": "Действительно очень вкусно.",
+        "ar": "إنها لذيذة."
+      },
+      "freqRank": 5466,
+      "review": {
+        "words": "它 的 滋味 真 的 很 好",
+        "unlisted": ["真的"],
+        "indirect": ["ar", "es", "fr", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "她的眼神里充满了悲哀。",
+      "reading": "Tā de yǎnshén lǐ chōngmǎn le bēi'āi.",
+      "gloss": {
+        "en": "Her eyes were full of sadness.",
+        "tr": "Gözleri hüzün doluydu.",
+        "de": "Ihre Augen waren voller Traurigkeit.",
+        "es": "Sus ojos estaban llenos de tristeza.",
+        "fr": "Ses yeux étaient remplis de tristesse.",
+        "ru": "Её глаза были полны грусти."
+      },
+      "freqRank": 6059,
+      "review": {
+        "words": "她 的 眼神 里 充满 了 悲哀",
+        "indirect": ["es", "ru"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "他不会违背他的原则。",
+      "reading": "Tā bú huì wéibèi tā de yuánzé.",
+      "gloss": {
+        "en": "He won't go against his principles.",
+        "tr": "İlkelerine aykırı davranmaz.",
+        "de": "Er wird nicht gegen seine Prinzipien verstoßen.",
+        "fr": "Il ne s'écarta pas de ses principes.",
+        "ru": "Он не станет нарушать свои принципы."
+      },
+      "freqRank": 6358,
+      "review": {
+        "words": "他 不 会 违背 他 的 原则",
+        "unlisted": ["不会"],
+        "indirect": ["tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "我们消耗了所有的自然资源。",
+      "reading": "Wǒmen xiāohào le suǒyǒu de zìrán zīyuán.",
+      "gloss": {
+        "en": "We have consumed all the natural resources.",
+        "tr": "Bütün doğal kaynakları tükettik.",
+        "de": "Wir haben alle Bodenschätze verbraucht.",
+        "es": "Hemos consumido todos los recursos naturales.",
+        "fr": "Nous avons consommé toutes les ressources naturelles.",
+        "pt-BR": "Consumimos todos os recursos naturais."
+      },
+      "freqRank": 6744,
+      "review": {
+        "words": "我们 消耗 了 所有 的 自然 资源",
+        "unlisted": ["自然资源"],
+        "indirect": ["pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "这是很有前景的行业。",
+      "reading": "Zhè shì hěn yǒu qiánjǐng de hángyè.",
+      "gloss": {
+        "en": "This is a very promising industry.",
+        "tr": "Bu, çok umut vadeden bir sektör.",
+        "de": "Das ist eine vielversprechende Branche.",
+        "fr": "C'est un secteur porteur."
+      },
+      "freqRank": 6776,
+      "review": { "words": "这 是 很 有 前景 的 行业", "edited": ["tr"] }
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "我这个月要减少开支。",
+      "reading": "Wǒ zhège yuè yào jiǎnshǎo kāizhī.",
+      "gloss": {
+        "en": "I have to reduce my expenses this month.",
+        "tr": "Bu ay giderlerimi azaltmam gerekiyor.",
+        "de": "Ich muss meine Ausgaben diesen Monat drosseln.",
+        "fr": "Je dois réduire mes dépenses ce mois-ci.",
+        "ru": "В этом месяце мне надо сократить расходы."
+      },
+      "freqRank": 7694,
+      "review": {
+        "words": "我 这 个 月 要 减少 开支",
+        "unlisted": ["这个"],
+        "indirect": ["ru", "tr"]
+      }
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "他迫不及待地想要知道结果。",
+      "reading": "Tā pòbùjídài de xiǎngyào zhīdào jiéguǒ.",
+      "gloss": {
+        "en": "He is anxious to know the result.",
+        "tr": "Sonucu öğrenmek için sabırsızlanıyor.",
+        "de": "Er brennt darauf, das Ergebnis zu erfahren.",
+        "es": "Está ansioso por conocer el resultado.",
+        "fr": "Il est impatient de connaître le résultat.",
+        "ru": "Ему не терпится узнать результат."
+      },
+      "freqRank": 8697,
+      "review": {
+        "words": "他 迫不及待 地 想 要 知道 结果",
+        "unlisted": ["想要"],
+        "indirect": ["es"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "水果一般不久就会腐烂。",
+      "reading": "Shuǐguǒ yìbān bù jiǔ jiù huì fǔlàn.",
+      "gloss": {
+        "en": "Fruits tend to rot quickly.",
+        "tr": "Meyveler genellikle çabuk çürür.",
+        "de": "Obst fault meist schnell.",
+        "es": "Las frutas tienden a descomponerse rápidamente.",
+        "fr": "Les fruits tendent à rapidement se décomposer.",
+        "pt-BR": "As frutas tendem a se estragar logo.",
+        "ru": "Фрукты обычно быстро гниют."
+      },
+      "freqRank": 11803,
+      "review": {
+        "words": "水果 一般 不 久 就 会 腐烂",
+        "unlisted": ["不久"],
+        "indirect": ["pt-BR"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "公司很快就要倒闭了。",
+      "reading": "Gōngsī hěn kuài jiù yào dǎobì le.",
+      "gloss": {
+        "en": "The company will soon go bankrupt.",
+        "tr": "Şirket yakında iflas edecek.",
+        "de": "Das Unternehmen wird bald zahlungsunfähig sein.",
+        "fr": "L'entreprise va bientôt faire faillite.",
+        "ru": "Компания скоро обанкротится."
+      },
+      "freqRank": 11967,
+      "review": {
+        "words": "公司 很 快 就 要 倒闭 了",
+        "unlisted": ["很快", "就要"],
+        "indirect": ["tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "我新家的客厅很宽敞。",
+      "reading": "Wǒ xīn jiā de kètīng hěn kuānchang.",
+      "gloss": {
+        "en": "The living room in my new house is very large.",
+        "tr": "Yeni evimdeki oturma odası çok büyük.",
+        "de": "Das Wohnzimmer in meinem neuen Haus ist sehr geräumig.",
+        "es": "La sala de mi casa nueva es muy amplia.",
+        "fr": "Le salon de ma nouvelle maison est spacieux.",
+        "ru": "Гостиная в моем новом доме очень просторная."
+      },
+      "freqRank": 12046,
+      "review": { "words": "我 新 家 的 客厅 很 宽敞", "indirect": ["tr"] }
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "多亏你我胃口都没了。",
+      "reading": "Duōkuī nǐ wǒ wèikǒu dōu méi le.",
+      "gloss": {
+        "en": "Thanks to you I've lost my appetite.",
+        "tr": "Sayende iştahımı kaybettim.",
+        "de": "Dank dir habe ich meinen Appetit verloren.",
+        "es": "Gracias a ti he perdido mi apetito.",
+        "fr": "Grâce à toi j'ai perdu mon appétit.",
+        "pt-BR": "Graças a você eu perdi meu apetite.",
+        "ru": "По твоей вине я потерял аппетит."
+      },
+      "freqRank": 12071,
+      "review": { "words": "多亏 你 我 胃口 都 没 了", "indirect": ["es", "pt-BR", "ru", "tr"] }
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "我收到了一张请帖。",
+      "reading": "Wǒ shōudào le yì zhāng qǐngtiě.",
+      "gloss": {
+        "en": "I received an invitation.",
+        "tr": "Bir davetiye aldım.",
+        "de": "Ich habe eine Einladung bekommen.",
+        "es": "Recibí una invitación.",
+        "fr": "J'ai reçu une invitation.",
+        "pt-BR": "Recebi um convite.",
+        "ru": "Я получил пригласительный билет."
+      },
+      "freqRank": 30508,
+      "review": {
+        "words": "我 收 到 了 一 张 请帖",
+        "unlisted": ["收到", "一张"],
+        "indirect": ["es", "pt-BR", "tr"]
+      }
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "这里就是事故发生的地方。",
+      "reading": "Zhèlǐ jiù shì shìgù fāshēng de dìfang.",
+      "gloss": {
+        "en": "This is where the accident happened.",
+        "tr": "Kazanın olduğu yer burası.",
+        "de": "Dies ist die Stelle, wo der Unfall war.",
+        "es": "Aquí fue donde ocurrió el accidente.",
+        "fr": "C'est là que l'accident arriva.",
+        "pt-BR": "Foi aqui que o acidente aconteceu.",
+        "ru": "Вот здесь произошла авария.",
+        "ar": "هنا موقع الحادث."
+      },
+      "freqRank": 1493,
+      "review": {
+        "words": "这 里 就 是 事故 发生 的 地方",
+        "unlisted": ["这里", "就是"],
+        "indirect": ["ar", "fr", "pt-BR", "ru", "tr"],
+        "edited": ["reading", "tr"]
+      }
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "我想要你把真相告诉我。",
+      "reading": "Wǒ xiǎngyào nǐ bǎ zhēnxiàng gàosù wǒ.",
+      "gloss": {
+        "en": "I want you to tell me the truth.",
+        "tr": "Bana gerçeği söylemeni istiyorum.",
+        "de": "Ich hätte gerne, dass du mir die Wahrheit erzählst.",
+        "es": "Quiero que me digas la verdad.",
+        "fr": "Je voudrais que tu me dises la vérité.",
+        "pt-BR": "Quero que você me conte a verdade.",
+        "ru": "Я хочу, чтобы ты сказал мне правду.",
+        "ar": "أريدك أن تخبرني الحقيقة."
+      },
+      "freqRank": 2208,
+      "review": {
+        "words": "我 想 要 你 把 真相 告诉 我",
+        "unlisted": ["想要"],
+        "indirect": ["ar", "fr", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "这一消息证实了我的怀疑。",
+      "reading": "Zhè yì xiāoxi zhèngshí le wǒ de huáiyí.",
+      "gloss": {
+        "en": "The news confirmed my suspicions.",
+        "tr": "Haber şüphelerimi doğruladı.",
+        "de": "Die Nachricht bestätigte meine Zweifel.",
+        "es": "Las noticias han confirmado mis sospechas.",
+        "fr": "Les nouvelles ont confirmé mes soupçons.",
+        "ru": "Новости подтвердили мои подозрения."
+      },
+      "freqRank": 2449,
+      "review": { "words": "这 一 消息 证实 了 我 的 怀疑", "indirect": ["es", "ru", "tr"] }
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "他一直抱怨他的房间很小。",
+      "reading": "Tā yìzhí bàoyuàn tā de fángjiān hěn xiǎo.",
+      "gloss": {
+        "en": "He is always complaining of his room being small.",
+        "tr": "Her zaman odasının küçük olmasından yakınır.",
+        "de": "Er beschwert sich immer, dass sein Zimmer klein ist.",
+        "es": "Siempre se está quejando de que su habitación es pequeña.",
+        "fr": "Il est toujours en train de se plaindre que sa chambre est petite.",
+        "ru": "Он всё время жалуется, что его комната маленькая."
+      },
+      "freqRank": 3331,
+      "review": {
+        "words": "他 一直 抱怨 他 的 房间 很 小",
+        "unlisted": ["很小"],
+        "indirect": ["es", "ru", "tr"]
+      }
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "你的新电脑运行得好吗？",
+      "reading": "Nǐ de xīn diànnǎo yùnxíng de hǎo ma?",
+      "gloss": {
+        "en": "Does your new computer run well?",
+        "tr": "Yeni bilgisayarın iyi çalışıyor mu?",
+        "de": "Funktioniert dein neuer Computer gut?",
+        "fr": "Ton nouvel ordinateur marche bien ?",
+        "ru": "Твой новый компьютер хорошо работает?"
+      },
+      "freqRank": 3506,
+      "review": { "words": "你 的 新 电脑 运行 得 好 吗", "indirect": ["ru", "tr"] }
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "那个责任对他是个负担。",
+      "reading": "Nàge zérèn duì tā shì gè fùdān.",
+      "gloss": {
+        "en": "That responsibility is a burden to him.",
+        "tr": "Bu sorumluluk onun için bir yük.",
+        "de": "Diese Verantwortung ist eine Last für ihn.",
+        "es": "Esa responsabilidad es una carga para él.",
+        "fr": "Cette responsabilité est un fardeau pour lui.",
+        "ru": "Эта ответственность для него обуза."
+      },
+      "freqRank": 3554,
+      "review": {
+        "words": "那 个 责任 对 他 是 个 负担",
+        "unlisted": ["那个"],
+        "indirect": ["es", "ru"],
+        "edited": ["ru", "tr"]
+      }
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "你怎么在太空里找到食物？",
+      "reading": "Nǐ zěnme zài tàikōng lǐ zhǎodào shíwù?",
+      "gloss": {
+        "en": "How do you find food in outer space?",
+        "tr": "Uzayda nasıl yiyecek bulursun?",
+        "de": "Wie findest du Nahrung im Weltraum?",
+        "es": "¿Cómo encuentras comida en el espacio?",
+        "fr": "Comment trouves-tu de la nourriture dans l'espace ?",
+        "pt-BR": "Como você encontra comida no espaço?",
+        "ru": "Как ты найдешь еду в космосе?"
+      },
+      "freqRank": 3689,
+      "review": {
+        "words": "你 怎么 在 太空 里 找 到 食物",
+        "unlisted": ["找到"],
+        "indirect": ["es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "她似乎比以往任何时候都漂亮。",
+      "reading": "Tā sìhū bǐ yǐwǎng rènhé shíhou dōu piàoliang.",
+      "gloss": {
+        "en": "She looked more beautiful than ever.",
+        "tr": "Her zamankinden daha güzel görünüyordu.",
+        "de": "Sie sah schöner aus als je zuvor.",
+        "es": "Ella parecía más bonita que nunca.",
+        "fr": "Elle semblait plus belle que jamais.",
+        "pt-BR": "Ela parecia mais linda do que nunca.",
+        "ru": "Она выглядела красивее, чем когда-либо."
+      },
+      "freqRank": 4084,
+      "review": {
+        "words": "她 似乎 比 以往 任何 时候 都 漂亮",
+        "indirect": ["es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "我没有强烈的欲望去学习。",
+      "reading": "Wǒ méiyǒu qiángliè de yùwàng qù xuéxí.",
+      "gloss": {
+        "en": "I don't have a strong desire to study.",
+        "tr": "Ders çalışmaya pek hevesim yok.",
+        "de": "Ich habe keine Lust zu studieren.",
+        "es": "No tengo ganas de estudiar.",
+        "fr": "Je n'ai pas envie d'étudier.",
+        "pt-BR": "Eu não estou a fim de estudar.",
+        "ru": "Мне неохота заниматься."
+      },
+      "freqRank": 4261,
+      "review": {
+        "words": "我 没 有 强烈 的 欲望 去 学习",
+        "unlisted": ["没有"],
+        "indirect": ["de", "pt-BR", "ru", "tr"],
+        "edited": ["reading", "en", "tr"]
+      }
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "你认为他适合这个职位吗？",
+      "reading": "Nǐ rènwéi tā shìhé zhège zhíwèi ma?",
+      "gloss": {
+        "en": "Do you think he is suitable for the position?",
+        "tr": "Sence bu pozisyona uygun mu?",
+        "de": "Denkst du, dass er für die Stelle geeignet ist?",
+        "fr": "Penses-tu qu'il est bien pour la place ?",
+        "pt-BR": "Você acha que ele é adequado para o cargo?"
+      },
+      "freqRank": 4431,
+      "review": {
+        "words": "你 认为 他 适合 这 个 职位 吗",
+        "unlisted": ["这个"],
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "什么是您最大的灵感来源？",
+      "reading": "Shénme shì nín zuìdà de línggǎn láiyuán?",
+      "gloss": {
+        "en": "What is your greatest source of inspiration?",
+        "tr": "En büyük ilham kaynağınız nedir?",
+        "de": "Was ist Ihre größte Inspirationsquelle?",
+        "es": "¿Cuál es tu mayor fuente de inspiración?",
+        "fr": "Quelle est votre plus grande source d'inspiration ?",
+        "pt-BR": "Qual é a sua maior fonte de inspiração?",
+        "ru": "В чём ваш главный источник вдохновения?"
+      },
+      "freqRank": 4591,
+      "review": {
+        "words": "什么 是 您 最 大 的 灵感 来源",
+        "unlisted": ["最大"],
+        "indirect": ["es", "pt-BR", "ru", "tr"]
+      }
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "这是一个十分愚蠢的决定。",
+      "reading": "Zhè shì yí gè shífēn yúchǔn de juédìng.",
+      "gloss": {
+        "en": "This is a very stupid decision.",
+        "tr": "Bu çok aptalca bir karar.",
+        "de": "Das war eine sehr törichte Entscheidung.",
+        "es": "Es una decisión completamente estúpida.",
+        "fr": "C'était une décision très stupide.",
+        "ru": "Это было крайне глупое решение."
+      },
+      "freqRank": 5764,
+      "review": {
+        "words": "这 是 一 个 十分 愚蠢 的 决定",
+        "unlisted": ["一个"],
+        "indirect": ["fr", "ru", "tr"],
+        "edited": ["en", "tr"]
+      }
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "很快，城市就被士兵占领了。",
+      "reading": "Hěn kuài, chéngshì jiù bèi shìbīng zhànlǐng le.",
+      "gloss": {
+        "en": "The city was soon occupied by the soldiers.",
+        "tr": "Çok geçmeden kent askerler tarafından işgal edildi.",
+        "de": "Die Stadt wurde bald von Soldaten besetzt.",
+        "fr": "Bientôt, la cité fut occupée par les soldats.",
+        "ru": "Город был вскоре захвачен солдатами."
+      },
+      "freqRank": 6042,
+      "review": {
+        "words": "很 快 城市 就 被 士兵 占领 了",
+        "unlisted": ["很快"],
+        "indirect": ["ru", "tr"]
+      }
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "我每年拜访我父亲两次。",
+      "reading": "Wǒ měinián bàifǎng wǒ fùqīn liǎng cì.",
+      "gloss": {
+        "en": "I visit my father twice a year.",
+        "tr": "Babamı yılda iki kez ziyaret ederim.",
+        "de": "Ich besuche meinen Vater zweimal im Jahr.",
+        "fr": "Je rends visite à mon père deux fois par an.",
+        "ru": "Я навещаю отца дважды в год."
+      },
+      "freqRank": 6619,
+      "review": {
+        "words": "我 每 年 拜访 我 父亲 两 次",
+        "unlisted": ["每年", "两次"],
+        "indirect": ["ru"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "拜托您，请给我一张签证。",
+      "reading": "Bàituō nín, qǐng gěi wǒ yì zhāng qiānzhèng.",
+      "gloss": {
+        "en": "I beg you, give me a visa.",
+        "tr": "Lütfen bana vize verin.",
+        "de": "Ich bitte Sie, geben Sie mir ein Visum!",
+        "es": "Se lo suplico, deme por favor un visado.",
+        "fr": "Je vous en prie, donnez-moi un visa.",
+        "ru": "Прошу вас, пожалуйста, дайте мне визу."
+      },
+      "freqRank": 8073,
+      "review": {
+        "words": "拜托 您 请 给 我 一 张 签证",
+        "unlisted": ["一张"],
+        "indirect": ["es", "tr"]
+      }
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "这种款式的帽子现在很流行。",
+      "reading": "Zhè zhǒng kuǎnshì de màozi xiànzài hěn liúxíng.",
+      "gloss": {
+        "en": "This style of hat is now in fashion.",
+        "tr": "Bu tarz şapka şu anda çok moda.",
+        "de": "Diese Hutart ist gerade in Mode.",
+        "es": "Este estilo de sombrero está ahora de moda.",
+        "fr": "Ce style de chapeau est à la mode en ce moment.",
+        "ru": "Такой фасон шляп сейчас в моде."
+      },
+      "freqRank": 8984,
+      "review": {
+        "words": "这 种 款式 的 帽子 现在 很 流行",
+        "unlisted": ["这种"],
+        "indirect": ["es", "ru"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "他简单地阐述了他的理由。",
+      "reading": "Tā jiǎndān de chǎnshù le tā de lǐyóu.",
+      "gloss": {
+        "en": "He gave his reasons in brief.",
+        "tr": "Gerekçelerini kısaca açıkladı.",
+        "de": "Er legte kurz seine Gründe dar.",
+        "es": "Él dio sus razones de forma resumida.",
+        "fr": "Il donna brièvement ses raisons.",
+        "ru": "Он кратко изложил свои доводы."
+      },
+      "freqRank": 11936,
+      "review": {
+        "words": "他 简单 地 阐述 了 他 的 理由",
+        "indirect": ["es", "tr"],
+        "edited": ["tr"]
+      }
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "没有人向他恭敬地鞠躬。",
+      "reading": "Méiyǒu rén xiàng tā gōngjìng de jūgōng.",
+      "gloss": {
+        "en": "No one respectfully bowed towards him.",
+        "de": "Niemand verneigte sich vor ihm.",
+        "fr": "Personne ne s'inclinait devant lui.",
+        "ru": "Никто ему не поклонился."
+      },
+      "freqRank": 21818,
+      "review": {
+        "words": "没 有 人 向 他 恭敬 地 鞠躬",
+        "unlisted": ["没有", "恭敬地"],
+        "edited": ["reading"]
+      }
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "数百个人在这家工厂上班。",
+      "reading": "Shùbǎi gè rén zài zhè jiā gōngchǎng shàngbān.",
+      "gloss": {
+        "en": "Hundreds of people work in this factory.",
+        "tr": "Bu fabrikada yüzlerce kişi çalışır.",
+        "de": "Hunderte von Leuten arbeiten in dieser Fabrik.",
+        "es": "Cientos de personas trabajan en esta fábrica.",
+        "fr": "Des centaines de personnes travaillent dans cette usine.",
+        "pt-BR": "Centenas de pessoas trabalham nessa fábrica.",
+        "ru": "Сотни людей работают на этой фабрике."
+      },
+      "freqRank": 2656,
+      "review": {
+        "words": "数 百 个 人 在 这 家 工厂 上班",
+        "unlisted": ["数百个", "这家"],
+        "indirect": ["es", "pt-BR", "ru", "tr"],
+        "edited": ["reading"]
+      }
+    }
+  ]
+}
