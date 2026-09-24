@@ -101,6 +101,19 @@ class UnreadTileService : TileService() {
         LayoutElementBuilders.Column.Builder()
             .setWidth(expand())
             .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
+            /*
+             Inset from the sides, because a tile is a circle on nearly every
+             watch: the two-line caption — "Open LangX on your phone" in
+             German runs long — otherwise reaches the curve.
+            */
+            .setModifiers(
+                ModifiersBuilders.Modifiers.Builder()
+                    .setPadding(
+                        ModifiersBuilders.Padding.Builder()
+                            .setStart(androidx.wear.protolayout.DimensionBuilders.dp(24f))
+                            .setEnd(androidx.wear.protolayout.DimensionBuilders.dp(24f))
+                            .build())
+                    .build())
 
     if (headline.isNotEmpty()) {
       column.addContent(
