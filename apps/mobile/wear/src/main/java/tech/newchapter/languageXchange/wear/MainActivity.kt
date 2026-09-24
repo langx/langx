@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,18 +26,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.LocalTextStyle
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TimeText
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
+import androidx.wear.compose.material.scrollAway
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
@@ -137,18 +148,17 @@ private fun ChatList(link: PhoneLink, navigation: NavHostController) {
     payload == null -> Placeholder(R.string.watch_openOnPhone)
     payload.conversations.isEmpty() -> Placeholder(R.string.chats_emptyTitle)
     else ->
-        ScalingLazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        ScrollingList {
           item {
+            // Centred, as every list header on a round screen is: flush left,
+            // the first word sits where the circle is already curving away.
             Text(
                 text = stringResource(R.string.tabs_chats),
                 color = Palette.primary,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
-                textAlign = TextAlign.Start,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
             )
           }
           items(payload.conversations) { conversation ->
@@ -209,6 +219,64 @@ private fun ConversationRow(conversation: WearConversation, onClick: () -> Unit)
 }
 
 /**
+ * A list drawn for the screen it is on — which, on nearly every Wear OS
+ * watch, is a circle.
+ *
+ * Both screens that scroll go through here, so neither can forget any of it.
+ * The first version was drawn to the Apple Watch mockup, a rounded rectangle,
+ * and on a round face it spilled: rows ran into the curve at the top and the
+ * bottom and the headers sat where the circle was already bending away. So:
+ *
+ * - **The scroll indicator.** Play's Wear review refused 1000165 on 24
+ *   September for its absence — "does not display the scroll bar when the
+ *   user interacts with a scrollable view". On a screen with no edges the arc
+ *   at the side is the only sign a list goes on past the bezel.
+ *   `PositionIndicator` draws it curved and fades it once the list stops.
+ * - **The time, curved along the top**, and moved out of the way as the list
+ *   scrolls — the one thing every Wear screen shows.
+ * - **A vignette** at the top and the bottom, so a row leaving the screen
+ *   fades into the bezel instead of being cut by it.
+ * - **Side margins that follow the shape.** A round face loses its width
+ *   fastest near the top and the bottom, so it gets a proportional inset;
+ *   a square one keeps the column's own.
+ */
+@Composable
+private fun ScrollingList(
+    // `ScalingLazyColumn`'s own defaults, so a screen that passes nothing
+    // lays out exactly as it did before it came through here.
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
+    verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(4.dp, Alignment.Top),
+    content: ScalingLazyListScope.() -> Unit,
+) {
+  val state = rememberScalingLazyListState()
+  Scaffold(
+      timeText = { TimeText(modifier = Modifier.scrollAway(state)) },
+      vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
+      positionIndicator = { PositionIndicator(scalingLazyListState = state) },
+  ) {
+    ScalingLazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        contentPadding = PaddingValues(horizontal = sideMargin(), vertical = 24.dp),
+        horizontalAlignment = horizontalAlignment,
+        verticalArrangement = verticalArrangement,
+        content = content,
+    )
+  }
+}
+
+/**
+ * How far in from the sides content starts: 8% of the width on a round
+ * face — about 15 dp on a small watch, 18 on a large one — against the
+ * column's own 10 dp on a square one.
+ */
+@Composable
+private fun sideMargin(): Dp {
+  val screen = LocalConfiguration.current
+  return if (screen.isScreenRound) (screen.screenWidthDp * 0.08f).dp else 10.dp
+}
+
+/**
  * Both empty states, drawn the same way.
  *
  * The words come from `strings_generated.xml`, which the string generator
@@ -217,14 +285,21 @@ private fun ConversationRow(conversation: WearConversation, onClick: () -> Unit)
  */
 @Composable
 private fun Placeholder(resource: Int) {
-  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    Text(
-        text = stringResource(resource),
-        color = Palette.textMuted,
-        fontSize = 13.sp,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(horizontal = 16.dp),
-    )
+  Scaffold(timeText = { TimeText() }) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+      /*
+       Twice the list's margin: a sentence centred on a round face is widest
+       at its middle line, and the lines above and below it are where the
+       circle has already narrowed.
+      */
+      Text(
+          text = stringResource(resource),
+          color = Palette.textMuted,
+          fontSize = 13.sp,
+          textAlign = TextAlign.Center,
+          modifier = Modifier.padding(horizontal = sideMargin() * 2),
+      )
+    }
   }
 }
 
@@ -248,12 +323,13 @@ private fun ThreadScreen(
     return
   }
 
-  ScalingLazyColumn(
-      modifier = Modifier.fillMaxSize(),
-      verticalArrangement = Arrangement.spacedBy(6.dp),
-  ) {
+  ScrollingList(verticalArrangement = Arrangement.spacedBy(6.dp)) {
     item {
-      Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+      Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.Center,
+          modifier = Modifier.fillMaxWidth(),
+      ) {
         AvatarDisc(conversation.name, size = 22)
         Spacer(Modifier.size(6.dp))
         Text(
@@ -263,6 +339,8 @@ private fun ThreadScreen(
             color = Palette.text,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            // Shrinks rather than pushing the disc off a narrow row.
+            modifier = Modifier.weight(1f, fill = false),
         )
       }
     }
