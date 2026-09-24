@@ -710,10 +710,14 @@ words had existed.
 The second omission was the saving. A year costs meaningfully less than twelve
 months bought one at a time, and the paywall says by how much:
 
-|                | Monthly ×12 | Yearly | Saving |
-| -------------- | ----------- | ------ | ------ |
-| Fluent (USD)   | $83.88      | $59.90 | 29%    |
-| Polyglot (USD) | $155.88     | $95.90 | 38%    |
+|                | Monthly ×12 | Yearly  | Saving |
+| -------------- | ----------- | ------- | ------ |
+| Fluent (USD)   | $119.88     | $83.99  | 30%    |
+| Polyglot (USD) | $203.88     | $131.99 | 35%    |
+
+Those are the prices from 25 September 2026 (App Store) and 24 September 2026
+(Google Play); see _The prices of 24 September 2026_ below for every
+storefront.
 
 - [x] **The trial leads.** `app/(app)/paywall.tsx` draws it below the price and
       above the button, because someone weighing a year of anything wants to
@@ -735,7 +739,7 @@ months bought one at a time, and the paywall says by how much:
 - [x] Both strings go through `src/i18n/messages/en.ts`, `freeTrial` as a
       plural, translated into all eight locales
 - [x] The terms are stated in full beside the offer: `paywall.trialTerms`
-      reads "7 days free, then $59.90 a year", built from the store's own
+      reads "7 days free, then $83.99 a year", built from the store's own
       price string and a per-period phrase, in all eight catalogues. Guideline
       3.1.2 wants the trial's own terms beside the offer, not only in the
       footer's renewal sentence
@@ -748,35 +752,67 @@ months bought one at a time, and the paywall says by how much:
 
 ### The yearly price is chosen backwards from the monthly one
 
-The paywall leads a yearly plan with what it costs a month, so that division is
-the number people read. At $49.99 a year the store printed **$4.16**, which
-looks like a remainder rather than a price, and the fix is not in the app — it
-never divides, it prints `pricePerMonthString` — but in what the yearly price
-is. Pick the monthly figure first, then work back:
+The paywall leads a yearly plan with what it costs a month, so that figure is
+the number people read, and it has to end in `.99` like every other price on
+the screen. Pick the monthly figure first, then work back:
 
-    $4.99 a month  →  $4.99 × 12 = $59.88  →  round up to $59.90
+    $6.99 a month  →  $6.99 × 12 = $83.88  →  the .99 above it, $83.99
 
-`$59.88` is not for sale. Apple's price points end in `.99`, `.00`, `.90` and
-`.95`, and the `.90` at the same dollar is the one that survives the division:
-`59.90 ÷ 12 = 4.99167`, which formats as **$4.99** whether the store rounds or
-truncates. `$59.99`would print`$5.00` and throw the whole point away.
+A year is `12 × month + 0.11`, which ends in `.99` as well, so the trial line
+("7 days free, then **$83.99** a year") carries a clean number too. The
+division only survives if it is **truncated**: `83.99 ÷ 12 = 6.99917`, and the
+stores' own per-month strings round that to `$7.00`. So the app does the
+division itself — `perMonthPriceString`in`src/lib/perMonthPrice.ts`, which
+copies the yearly string's format and falls back to the store's text when it
+cannot read it. Rounding cannot be priced around: above about 100 units Apple
+sells only `.99`endings, and no`.99`yearly rounds to a`.99` month.
 
-Two things follow, and both are deliberate:
+Until 24 September 2026 the rule was the rounding one (`$59.90 → $4.99`), with
+the app printing the store's `pricePerMonthString`. It could not reach `.99`
+above $100, which is where Polyglot's yearly price now sits.
 
-- The trial line quotes the yearly total, so it reads "7 days free, then
-  **$59.90** a year" under a **$4.99** headline. The clean number is on the
-  figure people compare.
-- Fluent's saving fell from 40% to 29% when the yearly price rose from $49.99
-  to $59.90. Nothing was edited to say so — `yearlySavingPercent` recomputed it.
+### The prices of 24 September 2026
 
-**Per country.** Each storefront needs its own yearly price point, worked back
-from that storefront's own monthly price the same way; no single conversion
-lands on a round monthly figure in every currency. Monthly prices follow the
-stores' automatic conversion — the hand-tuned TRY prices were removed on
-7 September 2026 — so the yearly price is the only one edited per territory.
-Where a currency has no price point inside the window that formats to the
-target (`[target × 12 − 0.06, target × 12 + 0.06)`), take the nearest and accept
-that storefront's rounding; the app reports whatever the store holds either way.
+US: Fluent **$9.99** a month or **$83.99** a year ($6.99, 30% off); Polyglot
+**$16.99** or **$131.99** ($10.99, 35% off). Every other storefront follows from
+four rules, applied by script rather than by hand:
+
+- **The monthly price moves by the US ratio** (×9.99/6.99, ×16.99/12.99) from
+  what that storefront charged before, so a deliberately lower price stays
+  lower: Türkiye is ₺214,99 / ₺329,99, not the converted dollar figure.
+- **It lands on the storefront's own price ending** — `.99` where the currency
+  has one, otherwise its own convention (CHF 9, ¥1,570, R$70,90).
+- **The yearly price divides into a clean month**: `.99` where the ladder
+  allows it (152 of 175 App Store territories), otherwise a round local figure.
+- **The saving stays near the US one**: within 6 points of 30% (Fluent) and
+  35% (Polyglot), and a year always costs less than twelve months.
+
+Before this, Türkiye's yearly prices cost _more_ than twelve monthly ones
+(₺2.999,99 against ₺149,99 a month): the 7 September recalculation reset the
+TRY yearlies to the converted dollar price and left the hand-lowered monthlies
+alone. `yearlySavingPercent` hid the saving line, correctly, and the paywall
+showed ₺250,00 a month on the yearly plan under ₺149,99 on the monthly one.
+
+Per store:
+
+- **App Store** — all 175 territories × 4 products, scheduled from
+  25 September 2026 through the App Store Connect API (a price change on an
+  approved subscription needs a start date, and the earliest is tomorrow).
+  Existing subscribers keep their price where it went up.
+- **Google Play** — all 173 regions × 4 base plans, live on 24 September 2026
+  through the Play Developer API (service account `langx-play-pricing`,
+  permission _Manage store presence_), regions version `2025/03`. Where the
+  App Store sells the same currency, Play's gross price is the App Store's.
+  Play's field is **net of tax with two decimals**, so 19 VAT regions land one
+  minor unit off (Germany €10.98, UK £9.98); the net is chosen so the miss is
+  always below the target. Regions the console lists without a VAT rate keep
+  their own previous level, moved by the same ratio. Existing subscribers keep
+  their legacy price.
+- **Web (RevenueCat Billing)** — USD only, and web prices cannot be edited, so
+  there are four new products: `langx_fluent_monthly_v2` ($9.99),
+  `langx_fluent_yearly_v3` ($83.99), `langx_polyglot_monthly_v2` ($16.99),
+  `langx_polyglot_yearly_v3` ($131.99), with the same trial, entitlements and
+  change paths as the ones they replace.
 
 `src/lib/planSaving.test.ts` asserts the division for the US prices, so a
 dashboard edit that breaks the rule fails a test rather than shipping.
