@@ -291,15 +291,6 @@ export const frameColors = {
 
 export const layout = {
   maxWidth: 720,
-  /**
-   * The thread's own column, wider than `maxWidth`. At 720 a laptop window
-   * drew a conversation as a phone-width strip between two bands of bare
-   * ground, and "the chat space should be wider" is what a reader on a
-   * desktop said about it. 1000 fills the thread pane of a 1366 or
-   * 1440 window; past that the column is centred, and a bubble — 78% of it —
-   * still stays under 800px on any monitor.
-   */
-  threadMaxWidth: 1000,
   avatar: 48,
   avatarLarge: 96,
 } as const

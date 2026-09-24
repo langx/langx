@@ -1,8 +1,8 @@
 import type Feather from '@expo/vector-icons/Feather'
 import type { ReactNode } from 'react'
-import { View } from 'react-native'
+import { View, useWindowDimensions } from 'react-native'
 import { EmptyState } from './ui/EmptyState'
-import { PANE_WIDTH } from '../hooks/useTwoPane'
+import { listPaneWidth } from '../hooks/useTwoPane'
 import { makeStyles } from '../lib/theme'
 
 interface TwoPaneProps {
@@ -20,8 +20,8 @@ interface TwoPaneProps {
  * Three tabs draw this — the chat list with a thread, Discover with a profile,
  * the feed with a post — and they drew it three times before this existed.
  * The arrangement is the same every time and so are the mistakes available in
- * it, which is the argument for one copy: the fixed width belongs to the list
- * and not to the detail, and the ground has to be painted here because
+ * it, which is the argument for one copy: the width is set on the list and
+ * the detail takes what is left, and the ground has to be painted here because
  * neither half paints it (`Screen` paints its own, and the panel's is the
  * detail screen's).
  *
@@ -31,10 +31,11 @@ interface TwoPaneProps {
  */
 export function TwoPane({ list, detail, empty }: TwoPaneProps) {
   const styles = useStyles()
+  const { width } = useWindowDimensions()
 
   return (
     <View style={styles.panes}>
-      <View style={styles.listPane}>{list}</View>
+      <View style={{ width: listPaneWidth(width) }}>{list}</View>
       <View style={styles.detailPane}>
         {detail ?? (
           <View style={styles.pick}>
@@ -48,7 +49,6 @@ export function TwoPane({ list, detail, empty }: TwoPaneProps) {
 
 const useStyles = makeStyles(({ colors }) => ({
   panes: { backgroundColor: colors.bg, flex: 1, flexDirection: 'row' },
-  listPane: { width: PANE_WIDTH },
   detailPane: { borderLeftColor: colors.border, borderLeftWidth: 1, flex: 1 },
   /** The empty card, centred in the half that is waiting. */
   pick: { alignItems: 'center', flex: 1, justifyContent: 'center' },

@@ -355,7 +355,11 @@ export const MessageBubble = memo(function MessageBubble({
       </Reanimated.View>
       <GestureDetector gesture={pan}>
         <Animated.View style={styles.slider}>
-          <Reanimated.View style={sliderStyle}>{children}</Reanimated.View>
+          <Reanimated.View
+            style={[styles.lane, mine ? styles.laneMine : styles.laneTheirs, sliderStyle]}
+          >
+            {children}
+          </Reanimated.View>
         </Animated.View>
       </GestureDetector>
     </View>
@@ -904,6 +908,16 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
    * prototype's cap; the gap is what used to be the meta's own top margin.
    */
   column: { gap: 6, maxWidth: '78%' },
+  /**
+   * The side of the thread a message lives in, never wider than 820 — so the
+   * 78% above is also never more than 640. On a phone the lane is the whole
+   * row and changes nothing; on a desktop pane the thread spans 1000px and
+   * more, and 78% of that is a line too long to read and a reply too far
+   * from the message it answers.
+   */
+  lane: { maxWidth: 820, width: '100%' },
+  laneMine: { alignSelf: 'flex-end' },
+  laneTheirs: { alignSelf: 'flex-start' },
   columnMine: { alignItems: 'flex-end', alignSelf: 'flex-end' },
   columnTheirs: { alignItems: 'flex-start', alignSelf: 'flex-start' },
   bubble: {

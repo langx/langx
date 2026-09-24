@@ -2408,7 +2408,7 @@ export function ChatScreen({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow, layout }) => ({
+const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   /**
    * Not the column `fluid` keeps on the web. The header and the pin banner
    * span the whole pane, so their hairlines meet its edges; the thread under
@@ -2474,13 +2474,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow, layou
   unsentBody: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
   unsentNote: { ...font.caption, color: colors.danger, fontSize: 12 },
   /**
-   * The thread and its composer, centred in a column of their own —
-   * `layout.threadMaxWidth` says why it is wider than every other screen's.
-   * The composer is in it too, so the field stays as wide as the bubbles
-   * above it rather than running on under a header that already spans the
-   * pane.
+   * The thread and its composer span the pane, edge to edge like the header.
+   * They used to sit in a centred 1000px column, which on a desktop window
+   * drew the conversation as a strip between two bands of bare ground and put
+   * the composer's hairline short of the header's. What keeps a line
+   * readable on a wide pane is the bubble's own cap — `lane` in
+   * `MessageBubble` — not a narrower thread.
    */
-  thread: { alignSelf: 'center', flex: 1, maxWidth: layout.threadMaxWidth, width: '100%' },
+  thread: { flex: 1 },
   listWrap: { flex: 1 },
   /**
    * Inverted, so the two vertical paddings swap: the prototype's 16 at the top
