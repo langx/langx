@@ -28,6 +28,11 @@ export const de: Localized<ServerMessages> = {
       other: '{count} Token für deinen Hinweis 🎉',
     },
     bountyBody: 'Wir haben gelesen, was du geschickt hast – es hat sich gelohnt.',
+    reportRewardTitle: {
+      one: '{count} Token, weil du LangX sicher hältst 🛡️',
+      other: '{count} Token, weil du LangX sicher hältst 🛡️',
+    },
+    reportRewardBody: 'Wir haben uns deine Meldung angesehen. Danke.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Füge ein Foto hinzu',
@@ -547,6 +552,11 @@ export const de: Localized<ServerMessages> = {
       'Es hat sich viel getan. Korrekturen sind inzwischen eine eigene Sache, für das Helfen bekommst du Tokens, und Entdecken sucht jemanden, der deine Sprache lernt und die spricht, die du willst. Dieselbe Idee, diesmal mit Platz, sie richtig umzusetzen — schau dich in Ruhe um.',
     welcomeBackClosing:
       'Hier landen die Neuigkeiten zu LangX, es lohnt sich also, ab und zu reinzuschauen. Wenn etwas fehlt oder kaputt ist: Einstellungen → Info → Feedback kommt direkt bei uns an. Schön, dich wieder hier zu haben. 💛',
+    reportReward: {
+      one: 'Danke für deine Meldung. Wir haben sie uns angesehen und dir {count} Token gutgeschrieben, weil du hilfst, LangX zu einem guten Ort zum Lernen zu machen. Die gemeldete Person erfährt nie, wer sie gemeldet hat.',
+      other:
+        'Danke für deine Meldung. Wir haben sie uns angesehen und dir {count} Token gutgeschrieben, weil du hilfst, LangX zu einem guten Ort zum Lernen zu machen. Die gemeldete Person erfährt nie, wer sie gemeldet hat.',
+    },
     assistantOffline:
       'Ich kann gerade nicht auf Nachrichten antworten. Wenn es Zeit hat, versuch es später noch einmal — wenn nicht, schreib an {email}, dort liest ein Mensch mit.',
     assistantLimit:

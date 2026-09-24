@@ -1068,6 +1068,7 @@ export const ar: Localized<EnMessages> = {
   },
   chat: {
     channelOnly: 'ينشر هذا الحساب الأخبار والإعلانات. لا يمكنك الرد هنا.',
+    suspendedOnly: 'هذا الحساب معلّق. لا يمكنك إرسال رسائل إليه.',
     sendingAttachment: 'جارٍ الإرسال…',
     title: 'محادثة',
     typing: 'يكتب…',
@@ -2099,6 +2100,7 @@ export const ar: Localized<EnMessages> = {
     referralWelcome: 'مكافأة ترحيب بالدعوة',
     gift: 'هدية كل ساعة',
     bounty: 'مكافأة اكتشاف خلل',
+    reportReward: 'مكافأة بلاغ',
     echo: 'جلسة صدى',
   },
 

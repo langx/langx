@@ -666,6 +666,70 @@ describe('the operator panel', () => {
         adminId: admin.userId,
       })
     })
+
+    it('thanks the reporter once, however many times it is pressed', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+      const reporter = await newUser()
+      await post(reporter, '/reports', { userId: target.userId, reason: 'harassment' })
+      const queue = (await get(admin, '/admin/reports?status=open')).json<{
+        items: { id: string; reported: { userId: string } }[]
+      }>()
+      const id = queue.items.find((item) => item.reported.userId === target.userId)!.id
+
+      // Decided first, as the panel does it: the thanks is not part of the
+      // decision, and a report that has been decided can still be thanked.
+      await post(admin, `/admin/reports/${id}/decision`, { action: 'permanent' })
+
+      // The bounty's bounds.
+      expect(
+        (await post(admin, `/admin/reports/${id}/reward`, { amount: BOUNTY_MIN - 1 })).statusCode,
+      ).toBe(400)
+
+      const paid = await post(admin, `/admin/reports/${id}/reward`, { amount: BOUNTY_MIN })
+      expect(paid.json()).toEqual({ awarded: true, amount: BOUNTY_MIN })
+      const again = await post(admin, `/admin/reports/${id}/reward`, { amount: BOUNTY_MIN })
+      expect(again.json<{ awarded: boolean }>().awarded).toBe(false)
+
+      const ledger = await handle.db
+        .collection(COLLECTIONS.tokenLedger)
+        .find({ userId: reporter.userId, kind: 'reportReward' })
+        .toArray()
+      expect(ledger).toHaveLength(1)
+      expect(ledger[0]).toMatchObject({ amount: BOUNTY_MIN, refId: id })
+
+      // The panel says it is done without asking the ledger.
+      const detail = (await get(admin, `/admin/reports/${id}`)).json<{
+        reward: { amount: number } | null
+      }>()
+      expect(detail.reward?.amount).toBe(BOUNTY_MIN)
+
+      // One thank-you from @langx, in the reporter's native language — every
+      // account in this suite speaks Turkish — and naming the amount.
+      const thanks = await handle.db
+        .collection<Message>(COLLECTIONS.messages)
+        .find({ clientId: `reportReward:${id}` })
+        .toArray()
+      expect(thanks).toHaveLength(1)
+      expect(thanks[0]?.body).toContain(`${BOUNTY_MIN} jeton`)
+
+      const audit = (await get(admin, `/admin/users/${reporter.userId}`)).json<{
+        user: { actions: { action: string; adminId: string }[] }
+      }>()
+      expect(audit.user.actions[0]).toMatchObject({
+        action: 'report.reward',
+        adminId: admin.userId,
+      })
+
+      expect(
+        (
+          await post(admin, `/admin/reports/${new ObjectId().toHexString()}/reward`, {
+            amount: BOUNTY_MIN,
+          })
+        ).statusCode,
+      ).toBe(404)
+    })
   })
 
   describe('appeals', () => {
@@ -875,6 +939,36 @@ describe('the operator panel', () => {
   })
 
   describe('speaking as @langx', () => {
+    /*
+     * A suspended account takes no messages from people — `recordMessage`
+     * refuses them — but a note from us is not what suspension protects
+     * anybody from, and it is how somebody can be told something before a
+     * lift.
+     */
+    it('still reaches somebody who is suspended', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const recipient = await newUser()
+      await profiles().updateOne(
+        { _id: recipient.userId },
+        {
+          $set: {
+            suspension: {
+              at: new Date(),
+              until: new Date(SUSPENSION_FOREVER),
+              permanent: true,
+              reason: 'spam',
+            },
+          },
+        },
+      )
+
+      const sent = await post(admin, `/admin/users/${recipient.userId}/message`, {
+        body: 'About your suspension: replies go to hi@langx.io.',
+      })
+      expect(sent.statusCode).toBe(201)
+    })
+
     it('delivers one message, which the person cannot reply to', async () => {
       const admin = await newUser()
       await makeAdmin(admin)

@@ -957,6 +957,7 @@ export const tr: Localized<EnMessages> = {
   },
   chat: {
     channelOnly: 'Bu hesap haber ve duyuru paylaşır. Buraya yanıt yazamazsın.',
+    suspendedOnly: 'Bu hesap askıya alındı. Mesaj gönderemezsin.',
     sendingAttachment: 'Gönderiliyor…',
     title: 'Sohbet',
     typing: 'yazıyor…',
@@ -1819,6 +1820,7 @@ export const tr: Localized<EnMessages> = {
     referralWelcome: 'Davetle gelme bonusu',
     gift: 'Saatlik hediye',
     bounty: 'Hata ödülü',
+    reportReward: 'Bildirim ödülü',
     echo: 'Echo oturumu',
   },
 

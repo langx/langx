@@ -952,6 +952,7 @@ export const ptBR: Localized<EnMessages> = {
   },
   chat: {
     channelOnly: 'Esta conta publica novidades e avisos. Não dá para responder aqui.',
+    suspendedOnly: 'Esta conta está suspensa. Não dá para enviar mensagens para ela.',
     sendingAttachment: 'Enviando…',
     title: 'Conversa',
     typing: 'digitando…',
@@ -1815,6 +1816,7 @@ export const ptBR: Localized<EnMessages> = {
     referralWelcome: 'Bônus de boas-vindas por convite',
     gift: 'Presente de cada hora',
     bounty: 'Recompensa por erro',
+    reportReward: 'Recompensa por denúncia',
     echo: 'Sessão do Echo',
   },
 

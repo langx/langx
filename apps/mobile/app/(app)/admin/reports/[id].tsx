@@ -1,3 +1,4 @@
+import { BOUNTY_MAX, BOUNTY_MIN } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
@@ -5,6 +6,7 @@ import {
   useAdminAppeals,
   useAdminDecision,
   useAdminReport,
+  useAdminRewardReporter,
   type AdminAppealDto,
 } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
@@ -49,6 +51,9 @@ export default function AdminCaseScreen() {
 
   const decide = useAdminDecision()
   const [days, setDays] = useState('7')
+  const reward = useAdminRewardReporter()
+  const [amount, setAmount] = useState(String(BOUNTY_MIN))
+  const tokens = Math.min(BOUNTY_MAX, Math.max(BOUNTY_MIN, Number.parseInt(amount, 10) || 0))
 
   async function run(
     action: string,
@@ -74,11 +79,32 @@ export default function AdminCaseScreen() {
     }
   }
 
+  async function onReward(who: string) {
+    // The amount is in the dialog as well as on the button, as the bounty's
+    // is: a confirmation that only says "pay?" hides the number that is wrong.
+    const ok = await confirmAlert({
+      title: ADMIN.reports.confirmReward(tokens, who),
+      confirmLabel: ADMIN.reports.reward(tokens),
+      destructive: true,
+    })
+    if (!ok) return
+    try {
+      const result = await reward.mutateAsync({ id, amount: tokens })
+      showToast(
+        result.awarded ? ADMIN.reports.rewarded(result.amount) : ADMIN.reports.alreadyRewarded,
+      )
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
   const numberOfDays = Math.max(1, Number.parseInt(days, 10) || 1)
   const subject = isAppeal
     ? (appeal?.handle ?? userId)
     : (report.data?.reported.handle ?? report.data?.reported.userId ?? '')
   const shown = isAppeal ? `@${subject}` : subject ? `@${subject}` : ''
+  const reporter = report.data?.reporter
+  const reporterShown = reporter?.handle ? `@${reporter.handle}` : (reporter?.userId ?? '')
 
   return (
     <AdminGate>
@@ -194,6 +220,34 @@ export default function AdminCaseScreen() {
               </>
             ) : null}
 
+            {/* Whoever filed it, and the thanks they can be given. Above the
+                account's buttons rather than among them: it is not part of the
+                decision, and deciding sends this screen back to the list. */}
+            <Text style={styles.heading}>{ADMIN.reports.reporter}</Text>
+            <Text style={styles.muted}>{reporterShown}</Text>
+            {report.data.reward ? (
+              <Text style={styles.rewarded}>
+                {ADMIN.reports.rewarded(report.data.reward.amount)}
+              </Text>
+            ) : (
+              <>
+                <FormField
+                  label={ADMIN.reports.rewardAmount}
+                  value={amount}
+                  onChangeText={setAmount}
+                  keyboardType="number-pad"
+                />
+                <View style={styles.actions}>
+                  <Button
+                    label={ADMIN.reports.reward(tokens)}
+                    variant="secondary"
+                    loading={reward.isPending}
+                    onPress={() => void onReward(reporterShown)}
+                  />
+                </View>
+              </>
+            )}
+
             {/* The account, and the heading is what keeps it from reading as
                 more of the post's buttons. */}
             <Text style={styles.heading}>{ADMIN.reports.account}</Text>
@@ -250,5 +304,6 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'uppercase',
   },
   quote: { fontSize: 15, color: theme.colors.text, lineHeight: 22 },
+  rewarded: { fontSize: 15, fontWeight: '700', color: theme.colors.text },
   actions: { gap: 12, marginTop: 16 },
 }))

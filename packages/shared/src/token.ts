@@ -98,6 +98,17 @@ export const TOKEN_KINDS = [
    */
   'bounty',
   /**
+   * Paid to somebody whose report about another member was looked into, from
+   * the operator panel — the moderation twin of `bounty`.
+   *
+   * The same bargain: the amount is a person's judgement within
+   * `BOUNTY_MIN`–`BOUNTY_MAX`, and `refId` is the report's id, so the unique
+   * index pays one report once however often the button is pressed. Its own
+   * kind rather than `bounty` because the wallet names it, and a report about
+   * a person is not a bug. A grant for the reason `bounty` is one.
+   */
+  'reportReward',
+  /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
    * for audit but deliberately do **not** touch `tokenAggregates`: the
    * leaderboard ranks token *earned*, so buying a frame must never drop someone
@@ -138,6 +149,7 @@ export const TOKEN_GRANT_KINDS = [
   'referralWelcome',
   'gift',
   'bounty',
+  'reportReward',
 ] as const satisfies readonly TokenKind[]
 
 export function isGrantKind(kind: TokenKind): boolean {

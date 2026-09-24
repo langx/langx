@@ -28,6 +28,11 @@ export const es: Localized<ServerMessages> = {
       other: '{count} fichas por tu aviso 🎉',
     },
     bountyBody: 'Leímos lo que nos enviaste y valió la pena.',
+    reportRewardTitle: {
+      one: '{count} ficha por ayudar a que LangX sea seguro 🛡️',
+      other: '{count} fichas por ayudar a que LangX sea seguro 🛡️',
+    },
+    reportRewardBody: 'Revisamos lo que denunciaste. Gracias.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Añade una foto',
@@ -549,6 +554,11 @@ export const es: Localized<ServerMessages> = {
       'Han cambiado muchas cosas. Las correcciones ahora son algo propio, ganas tokens por ayudar a la gente, y Descubrir busca a alguien que aprenda tu idioma y hable el que tú quieres. La misma idea, pero esta vez con sitio para hacerla bien: date una vuelta.',
     welcomeBackClosing:
       'Aquí es donde llegan las novedades de LangX, así que merece la pena echarle un ojo. Si falta algo o algo está roto, Ajustes → Información → Comentarios llega directo a nosotros. Nos alegra tenerte de vuelta. 💛',
+    reportReward: {
+      one: 'Gracias por tu denuncia. La revisamos y añadimos {count} ficha a tu cartera por ayudar a que LangX siga siendo un buen lugar para aprender. La persona a la que denunciaste nunca sabrá quién lo hizo.',
+      other:
+        'Gracias por tu denuncia. La revisamos y añadimos {count} fichas a tu cartera por ayudar a que LangX siga siendo un buen lugar para aprender. La persona a la que denunciaste nunca sabrá quién lo hizo.',
+    },
     assistantOffline:
       'Ahora mismo no puedo responder mensajes. Si puede esperar, inténtalo más tarde; si no, escribe a {email} y lo leerá una persona.',
     assistantLimit:

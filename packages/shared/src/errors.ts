@@ -69,6 +69,16 @@ export const ERROR_CODES = {
 
   // chat / social graph
   BLOCKED: 'BLOCKED',
+  /**
+   * A message to an account that is suspended.
+   *
+   * Its own code rather than `ACCOUNT_SUSPENDED`, which is about the *reader*
+   * and which the client turns into the whole suspended screen — reusing it
+   * here would lock out the person who tried to write. Not `FORBIDDEN` either:
+   * the client's answer is specific (say the account is suspended, and put the
+   * composer away), and it can only give it if this is its own code.
+   */
+  RECIPIENT_SUSPENDED: 'RECIPIENT_SUSPENDED',
   /** A conversation between these two already exists — see `conversations.pairKey`. */
   CONVERSATION_EXISTS: 'CONVERSATION_EXISTS',
   /**
@@ -191,6 +201,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   HANDLE_RESERVED: 409,
   HANDLE_CHANGE_TOO_SOON: 409,
   BLOCKED: 403,
+  RECIPIENT_SUSPENDED: 403,
   CONVERSATION_EXISTS: 409,
   GENDER_CHANGE_TOO_SOON: 409,
   LOCATION_REQUIRED: 409,

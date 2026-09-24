@@ -46,6 +46,7 @@ import { payBounty } from '../modules/feedback/awardBounty'
 import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
+import { rewardReporter } from '../modules/moderation/reward'
 import { deliverOfficialMessage } from '../modules/official/deliver'
 import { getProfile, type Profile } from '../modules/profiles/profiles'
 import { fanOutMessage } from '../ws/fanOut'
@@ -257,6 +258,41 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         payload: { ...request.body },
       })
       return reply.send(result.outcome)
+    },
+  )
+
+  /**
+   * Thanking whoever filed a report, in tokens.
+   *
+   * Beside the decision rather than part of it: any report can be thanked,
+   * whatever was decided, and deciding again must not pay again. The bounty's
+   * bounds and the bounty's once-only rule — see `rewardReporter`.
+   */
+  app.post(
+    '/admin/reports/:id/reward',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: bountyAwardSchema },
+      config: { rateLimit: limit(30, '1 hour') },
+    },
+    async (request, reply) => {
+      const result = await rewardReporter(app, {
+        reportId: request.params.id,
+        amount: request.body.amount,
+        byAdminId: request.userId,
+      })
+      if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+
+      if (result.awarded) {
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action: 'report.reward',
+          subjectUserId: result.reporterId,
+          refId: request.params.id,
+          payload: { amount: result.amount },
+        })
+      }
+      return reply.send({ awarded: result.awarded, amount: result.amount })
     },
   )
 

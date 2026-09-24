@@ -958,6 +958,7 @@ export const es: Localized<EnMessages> = {
   },
   chat: {
     channelOnly: 'Esta cuenta publica novedades y anuncios. No puedes responder aquí.',
+    suspendedOnly: 'Esta cuenta está suspendida. No puedes enviarle mensajes.',
     sendingAttachment: 'Enviando…',
     title: 'Chat',
     typing: 'escribiendo…',
@@ -1818,6 +1819,7 @@ export const es: Localized<EnMessages> = {
     referralWelcome: 'Bono de bienvenida por invitación',
     gift: 'Regalo de cada hora',
     bounty: 'Recompensa por error',
+    reportReward: 'Recompensa por denuncia',
     echo: 'Sesión de Echo',
   },
 

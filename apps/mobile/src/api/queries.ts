@@ -2676,6 +2676,8 @@ export interface AdminReportDto {
   post?: { id: string; body: string; language: string; hiddenAt: string | null } | null
   suspension?: { until: string; permanent: boolean; reason: string } | null
   otherOpenReports?: number
+  /** What the reporter was thanked with. Only on the detail read, like the three above. */
+  reward?: { amount: number; at: string } | null
 }
 
 export interface AdminAppealDto {
@@ -2898,6 +2900,24 @@ export function useAdminDecision() {
           : `/admin/appeals/${input.id}/decision`,
         { action: input.action, ...(input.days === undefined ? {} : { days: input.days }) },
       ),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+/**
+ * Thanking whoever filed a report, in tokens. Once per report, whatever the
+ * button says — the ledger decides, and `awarded: false` is the answer to a
+ * second press.
+ */
+export function useAdminRewardReporter() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; amount: number }) =>
+      api.post<{ awarded: boolean; amount: number }>(`/admin/reports/${input.id}/reward`, {
+        amount: input.amount,
+      }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },

@@ -87,6 +87,7 @@ carrying every kind cannot honestly offer to stop one of them.
 | **Confirm your email** (reminder)  | unverified 24 h after sign-up, never after a week | email                         | ledger `verifyReminder:<id>:once`               |
 | **Finish your profile** (reminder) | signed up, no profile, 24 h–7 days old            | email                         | ledger `onboardingReminder:<id>:once`           |
 | Bounty paid                        | a report is confirmed                             | @langx message + push + email | the ledger's unique `{userId, kind, refId}`     |
+| **Thanks for a report**            | an operator rewards whoever reported somebody     | @langx message + push         | the ledger's unique `{userId, kind, refId}`     |
 | **The v1 lifetime gift**           | a restore grants a lifetime tier                  | @langx message + push + email | ledger `lifetimeGift:<id>:once`                 |
 | **Welcome back from v1**           | first session on a `precreatedFromV1` row         | @langx message                | `sender_client_id_unique` on `welcomeback:<id>` |
 | Report received / feedback         | somebody reports or writes in                     | email to support              | —                                               |
@@ -144,6 +145,15 @@ It is the only mail here that is not translated. `localeFor` answers English for
 everybody in this cohort — it returns `null` when there is no profile yet, and
 having no profile is what defines them — so eight locales would be sixteen
 translations nothing could select.
+
+**Thanks for a report** is the bounty receipt for a report about a person
+rather than a bug — `moderation/reward.ts`, pressed from the report's screen in
+the panel — and it has no email. Nobody files a report expecting tokens, so it
+is a thank-you rather than a payment somebody is waiting to hear about, and the
+thread is the durable record either way. Its push carries `bountyPaid`, which
+every installed app already opens on the wallet. Neither says what was decided:
+that belongs to the person the report was about, as the reporter's name is
+kept from them.
 
 ### Security — the same class, and never gated
 

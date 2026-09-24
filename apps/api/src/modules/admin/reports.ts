@@ -45,6 +45,8 @@ export interface AdminReportDetail extends AdminReportRow {
   suspension: Profile['suspension'] | null
   /** Other reports against the same account still waiting, this one excluded. */
   otherOpenReports: number
+  /** What the reporter was thanked with, or `null` while they have not been. */
+  reward: { amount: number; at: string } | null
 }
 
 export interface AdminAppealRow {
@@ -167,6 +169,9 @@ export async function getReport(
       : null,
     suspension: reported?.suspension ?? null,
     otherOpenReports,
+    reward: report.reward
+      ? { amount: report.reward.amount, at: report.reward.at.toISOString() }
+      : null,
   }
 }
 

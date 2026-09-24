@@ -2809,6 +2809,47 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(response.statusCode).toBe(404)
     })
 
+    /*
+     * The check lives in `recordMessage`, which every message type and both
+     * transports go through — so this one REST send stands for the socket's
+     * too. What it must not do is lock the thread: the history stays readable.
+     */
+    it('refuses a message to a suspended account, and leaves the history readable', async () => {
+      const { a, b, conversationId } = await pair('rest-send-suspended')
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: b.userId },
+        {
+          $set: {
+            suspension: {
+              at: new Date(),
+              until: new Date(Date.now() + 24 * 60 * 60 * 1000),
+              permanent: false,
+              reason: 'spam',
+            },
+          },
+        },
+      )
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body: 'are you there?' },
+      })
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'RECIPIENT_SUSPENDED' })
+
+      const history = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+      })
+      expect(history.statusCode).toBe(200)
+      expect(history.json<{ items: { body: string }[] }>().items.map((m) => m.body)).toEqual([
+        'hey',
+      ])
+    })
+
     it('refuses an empty body, as the schema does on the socket', async () => {
       const { a, conversationId } = await pair('rest-send-empty')
 

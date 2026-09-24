@@ -1,9 +1,10 @@
 import Feather from '@expo/vector-icons/Feather'
+import { useQueryClient } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Animated, Pressable, Text, View } from 'react-native'
 import { api, ApiRequestError } from '../../../src/api/client'
-import { useStartConversation, type MessageDto } from '../../../src/api/queries'
+import { keys, useStartConversation, type MessageDto } from '../../../src/api/queries'
 import type { PublicProfileDto } from '../../../src/api/types'
 import { ChatComposer } from '../../../src/components/ChatComposer'
 import { ComposerHint } from '../../../src/components/ComposerHint'
@@ -50,11 +51,19 @@ export default function NewChatScreen() {
   const { data: session } = authClient.useSession()
   const keyboardInset = useKeyboardInset()
   const startConversation = useStartConversation()
+  const queryClient = useQueryClient()
   // The cache the profile that pushed here has already filled, so the header
   // is drawn at once; the skeleton is for a deep link that arrives cold.
   const partner = useProfileCache(partnerId ? [partnerId] : [])[partnerId]
   const partnerLoading =
     useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending'
+  /*
+   * Nobody can write to a suspended account, the first message included, so
+   * the composer gives way to the line the thread draws for one. The profile
+   * no longer offers this screen for them; a profile cached from before the
+   * suspension, or a link, still can.
+   */
+  const suspended = partner?.accountStatus === 'suspended'
   const [draft, setDraft] = useState('')
   /**
    * The sentence, drawn as its own bubble the moment Send is pressed, exactly
@@ -172,6 +181,13 @@ export default function NewChatScreen() {
           await handOverToExisting(body)
           return
         }
+        // Suspended since the profile behind this screen was read. Reading it
+        // again swaps the composer for the line that says so.
+        if (caught.code === 'RECIPIENT_SUSPENDED') {
+          showToast(t('chat.suspendedOnly'))
+          void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
+          return
+        }
         showToast(caught.message)
         return
       }
@@ -279,16 +295,22 @@ export default function NewChatScreen() {
           ) : null}
         </View>
 
-        <ChatComposer
-          value={draft}
-          onChangeText={setDraft}
-          placeholder={
-            partner ? t('chat.sayHello', { name: partner.displayName }) : t('chat.writeMessage')
-          }
-          onSend={() => void send()}
-          busy={startConversation.isPending}
-          autoFocus
-        />
+        {suspended ? (
+          <View style={styles.suspendedNote}>
+            <Text style={styles.suspendedNoteText}>{t('chat.suspendedOnly')}</Text>
+          </View>
+        ) : (
+          <ChatComposer
+            value={draft}
+            onChangeText={setDraft}
+            placeholder={
+              partner ? t('chat.sayHello', { name: partner.displayName }) : t('chat.writeMessage')
+            }
+            onSend={() => void send()}
+            busy={startConversation.isPending}
+            autoFocus
+          />
+        )}
       </Animated.View>
     </Screen>
   )
@@ -331,6 +353,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   thread: { flex: 1, paddingHorizontal: spacing.lg, paddingTop: spacing.lg },
   // Pushed to the bottom of the column — see the note at the call site.
   sending: { marginTop: 'auto' },
+  // The thread's `channelNote`, so the two lines read as one rule.
+  suspendedNote: { paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
+  suspendedNoteText: { ...font.caption, color: colors.textFaint, textAlign: 'center' },
   threadTip: {
     ...font.caption,
     alignSelf: 'center',
