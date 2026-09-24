@@ -3792,6 +3792,9 @@ one idempotent request the next time the tab is hidden and shown.
 
 ## The yearly price is chosen backwards from the monthly one
 
+_Superseded on 24 September 2026 — the app now does the division itself, and
+truncates; see "A yearly price is a `.99` month times twelve, plus 0.11"._
+
 The paywall leads a yearly plan with what it costs a month, and the app never
 computes that number — it prints the store's own `pricePerMonthString`, because
 a price shown to a customer has to be the store's, formatted and converted by
@@ -5299,3 +5302,37 @@ this app over once, and a save button does not need it.
 `runtimeVersion` is fingerprint-based, so installed apps are offered no update
 at all until a build carrying it ships. This is the same constraint
 `expo-video` had, and it belongs in the release note.
+
+## A yearly price is a `.99` month times twelve, plus 0.11
+
+On 24 September 2026 the prices went up — Fluent $9.99 a month or $83.99 a
+year, Polyglot $16.99 or $131.99 — and every figure on the paywall has to end in
+`.99`, the per-month headline of a yearly plan included. The old rule could not
+deliver that. It picked a yearly price whose division the _store_ would round
+to a `.99` month (`$59.90 → $4.99`), which needs a `.90` price point, and Apple
+sells none above about $100: `$131.99 ÷ 12`rounds to`$11.00`, and so does
+every other `.99` yearly above that line.
+
+So the app truncates instead. `12 × month + 0.11` always ends in `.99` and
+always truncates back to the month — `83.99 ÷ 12 = 6.99917 → $6.99` — so the
+yearly total and the headline are both clean. `perMonthPriceString` does it in
+the yearly string's own format rather than through `Intl`, because the store
+formats in the storefront's locale and not the device's, and a per-month figure
+in a different style from the price under it reads as a different currency. The
+understatement is under a cent a month, and the charge is stated beside it in
+the store's own words.
+
+The same day showed why a storefront cannot be priced in isolation: in Türkiye
+the yearly plans cost two thirds _more_ than twelve months. The 7 September
+recalculation had reset every yearly price from the dollar, TRY included, and
+left the hand-lowered lira monthlies where they were. So every storefront now
+moves together: the monthly price by the US ratio from what that storefront
+charged, which keeps a deliberately lower price lower; the yearly price chosen
+from it by the rule above; and a script that refuses a yearly price at or
+above twelve months, or a Polyglot price at or below Fluent's, before it writes
+anything. The per-store results are in `release-runbook.md`, _The prices of
+24 September 2026_.
+
+The paywall also stopped hiding the saving in the segment label. The yearly
+price now carries the monthly price struck through and "Save N%" beneath it,
+still computed from the two store prices and never written down.
