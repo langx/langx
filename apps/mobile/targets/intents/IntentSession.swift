@@ -13,7 +13,7 @@ import Security
  deliberately the same and deliberately separate, and the three constants it
  shares with the writer are named in both files.
 
- Everything it can do is one POST to a route the socket also reaches, so every
+ Everything it can do is one request to a route the app itself uses, so every
  guard — membership, quota, token accounting — is on the server side of it,
  shared. Nothing here re-checks anything and nothing here may start.
  */
@@ -77,6 +77,59 @@ enum IntentSession {
   static func markRead(conversationId: String, done: @escaping (Bool) -> Void) {
     post(path: "/conversations/\(conversationId)/read", payload: [:], done: done)
   }
+
+  /// One message as `GET /conversations/<id>/messages` hands it out — the
+  /// four fields reading one aloud needs, and nothing the decoder could trip on.
+  struct RemoteMessage: Decodable {
+    let _id: String
+    let body: String
+    let createdAt: String
+    let deleted: Bool?
+    let hidden: Bool?
+  }
+
+  private struct MessagePage: Decodable {
+    let items: [RemoteMessage]
+  }
+
+  /**
+   The newest `limit` messages of a thread, oldest first, as the route returns
+   them — or nil, which the caller treats as "say what the phone last wrote".
+
+   A shorter timeout than a send's. A send that is slow is still worth
+   waiting for; a read that is slow is Siri saying nothing in a moving car,
+   and the one line already on the phone is a better answer than that.
+  */
+  static func recentMessages(
+    conversationId: String, limit: Int, done: @escaping ([RemoteMessage]?) -> Void
+  ) {
+    guard let credentials = credentials(),
+      let url = URL(
+        string: "\(credentials.baseUrl)/conversations/\(conversationId)/messages?limit=\(limit)")
+    else {
+      done(nil)
+      return
+    }
+
+    var request = URLRequest(url: url)
+    request.setValue(credentials.cookie, forHTTPHeaderField: "Cookie")
+    request.timeoutInterval = readTimeout
+
+    let configuration = URLSessionConfiguration.ephemeral
+    configuration.timeoutIntervalForRequest = readTimeout
+
+    URLSession(configuration: configuration).dataTask(with: request) { data, response, _ in
+      guard let data, (response as? HTTPURLResponse)?.statusCode == 200,
+        let page = try? JSONDecoder().decode(MessagePage.self, from: data)
+      else {
+        done(nil)
+        return
+      }
+      done(page.items)
+    }.resume()
+  }
+
+  private static let readTimeout: TimeInterval = 5
 
   private static func post(
     path: String, payload: [String: String], done: @escaping (Bool) -> Void

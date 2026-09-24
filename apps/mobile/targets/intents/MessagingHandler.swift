@@ -131,10 +131,22 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
   /**
    What arrived, for Siri to read out.
 
-   Only conversations with something unread, and only the one line each that
-   the phone last wrote — this blob is the chat list, not a history. It is the
-   same line the car draws and the watch shows, chosen by `previewFor` on the
-   server, so a photo is "📷 Photo" here as well.
+   **Everything that is waiting, up to five per conversation, fetched when
+   asked.** The directory holds one line per conversation — it is the chat
+   list, not a history — so reading from it alone meant three messages sent
+   while somebody drove were heard as the last one. After the 23 September
+   drive the ask was exactly that: tapping a person should say what they
+   said, all of it. So an unread conversation asks the server for its newest
+   messages, as many as are waiting and no more than `maxRead`, and hands
+   Siri the ones that have words; a photo or a voice note has nothing to read
+   aloud and is skipped rather than announced as a blank.
+
+   **The directory's line is the fallback, not a second opinion.** No signal,
+   a slow answer, a thread with nothing but pictures in its unread stretch —
+   each ends in what the phone last wrote, which is what this said before and
+   is never nothing. A conversation with nothing unread is only ever that
+   line: its newest message may be the driver's own, and Siri would read it
+   out as the other person's.
   */
   func handle(
     intent: INSearchForMessagesIntent,
@@ -148,30 +160,85 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
      is what is waiting.
     */
     let requested = Set(intent.conversationIdentifiers ?? [])
-    let messages = ConversationDirectory.load()
+    let conversations = ConversationDirectory.load()
       .filter { requested.isEmpty ? $0.unread > 0 : requested.contains($0.id) }
-      .compactMap { conversation -> INMessage? in
-        guard let preview = conversation.preview else { return nil }
-        /*
-         With its conversation's identifier, so that Siri's "Reply?" after
-         reading it comes back as an `INSendMessageIntent` for this thread.
-        */
-        return INMessage(
-          identifier: MessagingHandler.messageIdentifier(for: conversation.id),
-          conversationIdentifier: conversation.id,
-          content: preview,
-          dateSent: conversation.at,
-          sender: MessagingHandler.person(for: conversation),
-          recipients: nil,
-          groupName: nil,
-          messageType: .text,
-          serviceName: nil)
+
+    let group = DispatchGroup()
+    let lock = NSLock()
+    var fetched: [String: [IntentSession.RemoteMessage]] = [:]
+
+    for conversation in conversations where conversation.unread > 0 {
+      group.enter()
+      IntentSession.recentMessages(
+        conversationId: conversation.id, limit: min(conversation.unread, MessagingHandler.maxRead)
+      ) { messages in
+        let readable = (messages ?? []).filter {
+          $0.deleted != true && $0.hidden != true
+            && !$0.body.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        }
+        lock.lock()
+        if !readable.isEmpty { fetched[conversation.id] = readable }
+        lock.unlock()
+        group.leave()
+      }
+    }
+
+    group.notify(queue: .main) {
+      let messages = conversations.flatMap { conversation -> [INMessage] in
+        if let remote = fetched[conversation.id] {
+          return remote.map { MessagingHandler.message($0, in: conversation) }
+        }
+        guard let preview = conversation.preview else { return [] }
+        return [
+          MessagingHandler.message(
+            identifier: MessagingHandler.messageIdentifier(for: conversation.id, message: "last"),
+            content: preview, sent: conversation.at, in: conversation)
+        ]
       }
 
-    let response = INSearchForMessagesIntentResponse(code: .success, userActivity: nil)
-    response.messages = messages
-    completion(response)
+      let response = INSearchForMessagesIntentResponse(code: .success, userActivity: nil)
+      response.messages = messages
+      completion(response)
+    }
   }
+
+  /// Enough to catch up on a short burst, few enough to still be listening to
+  /// at a red light — and a longer backlog is what the phone is for.
+  private static let maxRead = 5
+
+  private static func message(
+    _ remote: IntentSession.RemoteMessage, in conversation: DirectoryConversation
+  ) -> INMessage {
+    message(
+      identifier: messageIdentifier(for: conversation.id, message: remote._id),
+      content: remote.body, sent: instants.date(from: remote.createdAt), in: conversation)
+  }
+
+  /*
+   With its conversation's identifier, so that Siri's "Reply?" after reading
+   it comes back as an `INSendMessageIntent` for this thread.
+  */
+  private static func message(
+    identifier: String, content: String, sent: Date?, in conversation: DirectoryConversation
+  ) -> INMessage {
+    INMessage(
+      identifier: identifier,
+      conversationIdentifier: conversation.id,
+      content: content,
+      dateSent: sent,
+      sender: person(for: conversation),
+      recipients: nil,
+      groupName: nil,
+      messageType: .text,
+      serviceName: nil)
+  }
+
+  /// `createdAt` as the API writes it — `toISOString()`, milliseconds and all.
+  private static let instants: ISO8601DateFormatter = {
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return formatter
+  }()
 
   /**
    "Mark them as read", which is the only attribute worth answering.
@@ -264,9 +331,10 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
     return matches(for: recipient, in: ConversationDirectory.load()).first?.id
   }
 
-  /// The one message a conversation has here, named so it can be found again.
-  private static func messageIdentifier(for conversationId: String) -> String {
-    "\(conversationId):last"
+  /// A message handed to Siri, named so its conversation can be found again
+  /// when Siri marks it read: the thread before the colon, the message after.
+  private static func messageIdentifier(for conversationId: String, message: String) -> String {
+    "\(conversationId):\(message)"
   }
 
   private static func conversationId(fromMessage identifier: String) -> String? {
