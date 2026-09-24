@@ -102,6 +102,7 @@ import { goBackTo, openProfile } from '../lib/navigation'
 import { openPaywall } from '../lib/paywall'
 import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
+import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
   addPending,
   expirePending,
@@ -2080,53 +2081,62 @@ export function ChatScreen({
                   <>
                     {pending.length > 0 ? (
                       <View style={styles.unsentBlock}>
-                        {pending.map((row) => (
-                          <PendingMediaBubble
-                            key={row.clientId}
-                            item={row}
-                            onRetry={() => {
-                              setPending((list) => removePending(list, row.clientId))
-                              void sendAttachments(row.files ?? [attachmentOf(row)], row.body)
-                            }}
-                            onLongPress={() =>
-                              void openUnsentActions({
-                                body: row.body ?? '',
-                                preview: row.body || t(messagePreviewKey(row.kind)),
-                                discard: () =>
-                                  setPending((list) => removePending(list, row.clientId)),
-                              })
-                            }
-                          />
-                        ))}
+                        {pending.map((row) => {
+                          const discard = () =>
+                            setPending((list) => removePending(list, row.clientId))
+                          return (
+                            <PendingMediaBubble
+                              key={row.clientId}
+                              item={row}
+                              onRetry={() => {
+                                setPending((list) => removePending(list, row.clientId))
+                                void sendAttachments(row.files ?? [attachmentOf(row)], row.body)
+                              }}
+                              onDiscard={discard}
+                              onLongPress={() =>
+                                void openUnsentActions({
+                                  body: row.body ?? '',
+                                  preview: row.body || t(messagePreviewKey(row.kind)),
+                                  discard,
+                                })
+                              }
+                            />
+                          )
+                        })}
                       </View>
                     ) : null}
                     {unsent.length > 0 ? (
                       <View style={styles.unsentBlock}>
-                        {unsent.map((message) => (
-                          <Pressable
-                            key={message.clientId}
-                            accessibilityRole="button"
-                            accessibilityLabel={t('chat.notSentRetry')}
-                            onPress={() => void retry(message)}
-                            onLongPress={() =>
-                              void openUnsentActions({
-                                body: message.body,
-                                preview: message.body,
-                                discard: () =>
-                                  setUnsent((list) => removeUnsent(list, message.clientId)),
-                              })
-                            }
-                            style={({ pressed }) => [
-                              styles.unsent,
-                              pressed && styles.unsentPressed,
-                            ]}
-                          >
-                            <Text style={styles.unsentBody}>{message.body}</Text>
-                            <Text style={styles.unsentNote}>
-                              <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
-                            </Text>
-                          </Pressable>
-                        ))}
+                        {unsent.map((message) => {
+                          const discard = () =>
+                            setUnsent((list) => removeUnsent(list, message.clientId))
+                          return (
+                            <View key={message.clientId} style={styles.unsentRow}>
+                              <DiscardUnsentButton onPress={discard} />
+                              <Pressable
+                                accessibilityRole="button"
+                                accessibilityLabel={t('chat.notSentRetry')}
+                                onPress={() => void retry(message)}
+                                onLongPress={() =>
+                                  void openUnsentActions({
+                                    body: message.body,
+                                    preview: message.body,
+                                    discard,
+                                  })
+                                }
+                                style={({ pressed }) => [
+                                  styles.unsent,
+                                  pressed && styles.unsentPressed,
+                                ]}
+                              >
+                                <Text style={styles.unsentBody}>{message.body}</Text>
+                                <Text style={styles.unsentNote}>
+                                  <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
+                                </Text>
+                              </Pressable>
+                            </View>
+                          )
+                        })}
                       </View>
                     ) : null}
                     {/*
@@ -2460,11 +2470,19 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
    * "this is your message and it did not go", which a toast cannot say because
    * a toast does not sit next to the sentence.
    */
+  /** The bin on the left, the bubble on your own side, as before. */
+  unsentRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'flex-end',
+  },
   unsent: {
     alignSelf: 'flex-end',
     borderColor: colors.danger,
     borderRadius: 20,
     borderWidth: 1,
+    flexShrink: 1,
     gap: 2,
     maxWidth: '82%',
     paddingHorizontal: 16,

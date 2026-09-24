@@ -3,6 +3,7 @@ import { Image } from 'expo-image'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { useT } from '../i18n'
 import type { PendingMedia } from '../lib/pendingMedia'
+import { DiscardUnsentButton } from './DiscardUnsentButton'
 import { percentOf } from '../lib/uploadProgress'
 import { makeStyles, useTheme } from '../lib/theme'
 
@@ -24,10 +25,13 @@ import { makeStyles, useTheme } from '../lib/theme'
 export function PendingMediaBubble({
   item,
   onRetry,
+  onDiscard,
   onLongPress,
 }: {
   item: PendingMedia
   onRetry: () => void
+  /** The bin beside a failed one; the same thing the long-press menu's Delete does. */
+  onDiscard: () => void
   /** Only once it has failed: one still uploading has nothing to offer yet. */
   onLongPress: () => void
 }) {
@@ -99,15 +103,18 @@ export function PendingMediaBubble({
 
   if (!failed) return <View style={[styles.bubble, styles.pending]}>{body}</View>
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={t('chat.notSentRetry')}
-      onPress={onRetry}
-      onLongPress={onLongPress}
-      style={({ pressed }) => [styles.bubble, styles.failed, pressed && styles.pressed]}
-    >
-      {body}
-    </Pressable>
+    <View style={styles.failedRow}>
+      <DiscardUnsentButton onPress={onDiscard} />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('chat.notSentRetry')}
+        onPress={onRetry}
+        onLongPress={onLongPress}
+        style={({ pressed }) => [styles.bubble, styles.failed, pressed && styles.pressed]}
+      >
+        {body}
+      </Pressable>
+    </View>
   )
 }
 
@@ -123,7 +130,13 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // Your own side, drained: the message does not exist yet, so it does not get
   // the accent fill a sent one has.
   pending: { borderColor: colors.border },
-  failed: { borderColor: colors.danger },
+  failed: { borderColor: colors.danger, flexShrink: 1 },
+  failedRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'flex-end',
+  },
   pressed: { opacity: 0.7 },
   image: { backgroundColor: colors.fill, borderRadius: radius.md, width: 220 },
   imageUnmeasured: { height: 220 },
