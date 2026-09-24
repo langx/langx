@@ -149,7 +149,7 @@ try.
   conversation has Siri read it (through `INSearchForMessagesIntent`, filtered
   to that conversation's identifier) and offer a dictated reply
   (`INSendMessageIntent`, carrying the same identifier, so no name has to be
-  resolved); tapping a read one goes straight to a reply; the bar's
+  spoken — the extension fills the recipient in from it); tapping a read one goes straight to a reply; the bar's
   `CPMessageComposeBarButton` starts a new message; and a message arriving
   mid-drive is a **communication notification** — rebuilt in the notification
   service extension from an `INSendMessageIntent` — which is the kind Siri
@@ -200,6 +200,16 @@ if the next test ends there it is the one problem here with no known fix.
 
   All three fail at _signing_, with a message about an entitlement rather than
   about any file in this change. The runbook says so too.
+
+**The second drive, on build 176, found the confirmation blind.** After
+dictating a reply, Siri's "send it?" showed neither the recipient nor the
+words — a message confirmed without seeing it. A reply from a car row reaches
+the extension with a conversation identifier and **no recipients**, and the
+handler answered that with `notRequired()`: no "to whom?", but also nobody on
+the confirmation. Apple's own answer to the same question is that the
+extension should fill the recipients in from the identifier, so it now
+resolves them to the conversation's person, and Siri has the sheet it draws
+for any message — to whom, and what it says. Not yet seen in a car.
 
 ## Answering, which is Siri's
 
