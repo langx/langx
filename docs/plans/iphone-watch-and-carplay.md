@@ -12,11 +12,16 @@ dictated reply, a compose button starts a new message by voice, and message
 pushes keep the list fresh on a drive where the app is never opened. No
 message text is drawn; Apple does not permit it.
 
-What remains is not code. **Behic:** a sign-in to switch on Communication
-Notifications was switched on the same night and ships in build 176; what is
-the Wear OS app went to Play review on 23 September too, and Android Auto was
-already active there. **Devices:** Siri's read-and-reply in a car, the watches and
-the Lock Screen clearing at sign-out, a real Android Auto head unit, a Duo.
+A second drive the same evening, on build 176, found Siri's send confirmation
+blind — no name, no dictated words — and a tap reading only the last line of a
+conversation. Both were fixed that night (#1588, #1592) and ship in **2.6 build
+177 / Android 166**, in review since 23 September 21:28 ET; the Wear OS app
+(1000165) and its opt-in are in the same Play review, and Android Auto was
+already active there.
+
+What remains is not code. **Devices:** Siri's read-and-reply in a car on 177,
+the watches and the Lock Screen clearing at sign-out, a real Android Auto head
+unit, a Duo.
 **Decisions:** none open — phases 7 and 8 were decided on 23 September, both
 the way this plan recommended (see each phase). The watch's
 recent-conversations list (#1541) and the car's Siri flow are the two
@@ -489,15 +494,15 @@ conversations too leaves their number unchanged.
 ### CarPlay — the same list, without the words in it
 
 The rows are the phone's: the person, the unread count, when. **The last
-message is not on them.** Apple removed the CarPlay message popup in iOS 18
-deliberately and reads messages aloud instead, so a row carrying the body
-would be swimming against the platform; `CPListItem`'s second line is spent
-on "5 new · 7h" and the message itself is spoken when the row is tapped.
+message is not on them.** `CPMessageListItem`'s second line is spent on
+"5 new" and the message itself is read by Siri when the row is tapped.
 
-This is a warning rather than a rule: the evidence is Apple's own behaviour
-on the user's side, not a line of the CarPlay HIG anybody here has read. It
-is worth confirming before the template is written, and it is cheap to
-confirm.
+This was first written as a warning, inferred from Apple taking the CarPlay
+message popup out in iOS 18. It is a rule: Apple's CarPlay guidelines for
+messaging apps say message content may not be displayed on the car screen.
+Behic asked for the last message under the name after the 23 September drive,
+and that is why it was not done — Siri reading every waiting message (#1592)
+is what went in instead.
 
 The queue — no list, the oldest unread with _reply_ and _next_ — was the
 alternative, and it is the safer shape by the measure a car cares about. It
@@ -651,13 +656,14 @@ definition of the shape — so the car is a fourth reader of the App Intents'
 new dependency.
 
 What is on the screen: the chat list, a row per person with what is waiting
-and when, and the message **spoken** on a tap rather than drawn. Answering
+and when, and the message **read by Siri** on a tap rather than drawn — the
+first build spoke it itself, which the first car proved wrong. Answering
 followed the same day — an Intents extension for SiriKit's three messaging
 intents — and cost less than this plan had costed it; the section below is
 corrected where it said otherwise. The claim-by-claim record, including
 everything that has not been checked and the one click that would check the
-first of it, is in [`phase-3-carplay.md`](phase-3-carplay.md). **Nothing here
-has been seen on a car screen, and Siri has never been asked anything.**
+first of it, is in [`phase-3-carplay.md`](phase-3-carplay.md), which also
+records both drives on 23 September.
 
 **What is _not_ blocked by this.** The CarPlay Communication entitlement
 arrived on 21 September, so the paperwork half is done and nothing expires.
