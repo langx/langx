@@ -82,8 +82,8 @@ export function fakeOffers(): PurchaseOffer[] {
     id,
     tier: PACKAGES[id].tier,
     priceString: `TEST $${TEST_AMOUNTS[id].toFixed(2)}`,
-    // The harness stands in for the store, so the division the app itself
-    // never does is done here — labelled TEST like everything else it says.
+    // The harness stands in for the store's own rounded per-month text, the
+    // paywall's fallback — labelled TEST like everything else it says.
     ...(PACKAGES[id].period === 'yearly'
       ? { perMonthPriceString: `TEST $${(TEST_AMOUNTS[id] / 12).toFixed(2)}` }
       : {}),

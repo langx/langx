@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { perMonthPriceString } from './perMonthPrice'
 import { yearlySavingPercent } from './planSaving'
 
 const monthly = (price: number) => ({ period: 'monthly' as const, price })
@@ -6,8 +7,8 @@ const yearly = (price: number) => ({ period: 'yearly' as const, price })
 
 /** The two prices on sale in the storefront the others are converted from. */
 const US_PRICES = [
-  { name: 'Fluent', yearly: 59.9, monthly: 6.99, perMonth: '4.99', saving: 29 },
-  { name: 'Polyglot', yearly: 95.9, monthly: 12.99, perMonth: '7.99', saving: 38 },
+  { name: 'Fluent', yearly: 83.99, monthly: 9.99, perMonth: '6.99', saving: 30 },
+  { name: 'Polyglot', yearly: 131.99, monthly: 16.99, perMonth: '10.99', saving: 35 },
 ] as const
 
 describe('yearlySavingPercent', () => {
@@ -56,22 +57,21 @@ describe('yearlySavingPercent', () => {
 })
 
 /**
- * The paywall leads a yearly plan with the store's own per-month string, so the
- * yearly price is chosen backwards from what that division should read. `$4.99`
- * a month wants `$59.88` a year, which is not a price point Apple sells — the
- * endings are `.99`, `.00`, `.90` and `.95` — so the `.90` at the same dollar
- * is taken instead, and it stays inside the window that still formats as
- * `$4.99`. Picking `$59.99` instead would print `$5.00` and throw the whole
- * point away, which is a mistake easy to make from a dashboard months from now.
+ * The paywall leads a yearly plan with what it costs a month, so the yearly
+ * price is chosen backwards from what that figure should read: a `.99` month
+ * times twelve, plus 0.11 — `$6.99` wants `$83.88`, and the `.99` above it is
+ * `$83.99`. The stores round that division up to `$7.00`, so the paywall
+ * truncates instead (`perMonthPrice.ts`), and above about $100 there is no
+ * yearly price the stores' rounding would turn into a `.99` at all.
  *
- * The assertion is on the price rather than on any code: nothing in the bundle
- * does this division, and this is the only place the intent is written down.
+ * The assertion is on the price: this is where the intent is written down, so
+ * a dashboard edit that breaks it fails here rather than on the paywall.
  */
 describe('the yearly prices divide into a clean monthly', () => {
   it.each(US_PRICES.map((p) => [p.name, p.yearly, p.perMonth] as const))(
     '%s: %d a year reads as %s a month',
     (_name, year, perMonth) => {
-      expect((year / 12).toFixed(2)).toBe(perMonth)
+      expect(perMonthPriceString(`$${year.toFixed(2)}`, year)).toBe(`$${perMonth}`)
     },
   )
 })

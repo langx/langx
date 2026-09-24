@@ -31,6 +31,7 @@ import { track } from '../../src/lib/analytics'
 import { PAYWALL_SOURCES, type PaywallSource } from '../../src/lib/analyticsEvents'
 import { goBackTo } from '../../src/lib/navigation'
 import { isFakePurchasesEnabled } from '../../src/lib/fakePurchases'
+import { perMonthPriceString } from '../../src/lib/perMonthPrice'
 import { yearlySavingPercent } from '../../src/lib/planSaving'
 import {
   getOffers,
@@ -262,9 +263,6 @@ export default function PaywallScreen() {
   }>()
   const feature = parseFeature(featureParam)
   const source = parseSource(sourceParam)
-  // Which tier the context line points at, read off `PLAN_LIMITS` rather than
-  // assumed: move a capability between tiers and the sentence follows it.
-  const highlightTier = feature ? tierUnlocking(feature) : null
   const quota = useQuota()
   const refresh = useRefreshEntitlement()
   const tier = useEffectiveTier()
@@ -272,6 +270,16 @@ export default function PaywallScreen() {
   // The store beside the tier: the same tier is a swap, a second purchase or
   // a dead end depending on who sold it, and `planChangeFor` decides which.
   const held: HeldPlan = { tier, store: tier === 'free' ? null : me.data?.entitlement?.store }
+  // Which tier the context line points at, read off `PLAN_LIMITS` rather than
+  // assumed: move a capability between tiers and the sentence follows it.
+  // Nothing when the plan held already has it — a Polyglot member sent here
+  // from the Boosted strip was told "Boosted profile is part of Fluent" and
+  // opened on a Fluent column they could not buy.
+  const unlockingTier = feature ? tierUnlocking(feature) : null
+  const highlightTier =
+    unlockingTier && planChangeFor(held, unlockingTier, PLATFORM) !== 'covered'
+      ? unlockingTier
+      : null
   const remaining = quota.data?.initiations.remaining
 
   // `null` while the store is still being asked. Distinguishing that from "the
@@ -444,6 +452,12 @@ export default function PaywallScreen() {
   const yearly = tierOffers.find((candidate) => candidate.period === 'yearly')
   const monthly = tierOffers.find((candidate) => candidate.period === 'monthly')
   const saving = yearly ? yearlySavingPercent(yearly, monthly) : null
+  // A yearly plan's headline: truncated so the `.99` the price was chosen for
+  // survives, with the store's rounded text only as a fallback.
+  const perMonth =
+    offer?.period === 'yearly'
+      ? (perMonthPriceString(offer.priceString, offer.price) ?? offer.perMonthPriceString)
+      : undefined
 
   /*
    * Was `currentTier === tier`, which disabled the plan held and nothing
@@ -469,18 +483,17 @@ export default function PaywallScreen() {
    * terms beside the offer; a second subscription nobody meant to start is
    * the failure the other sentences prevent.
    */
+  // A covered tier says so on its button instead, so it has no line here.
   const changeNotice =
-    change === 'covered' && held.tier !== plan
-      ? t('paywall.includedIn', { plan: heldName })
-      : change === 'upgrade' && !viaPortal
-        ? t('paywall.upgradeNotice', { plan: heldName })
-        : viaPortal
-          ? t('paywall.upgradeWeb', { plan: heldName })
-          : change === 'elsewhere' && boughtOn
-            ? t('paywall.upgradeElsewhere', { plan: heldName, store: t(STORE_NAME[boughtOn]) })
-            : change === 'buy' && held.store === 'promotional'
-              ? t('paywall.lifetimeKept', { plan: heldName, plus: TIER_NAMES[plan] })
-              : null
+    change === 'upgrade' && !viaPortal
+      ? t('paywall.upgradeNotice', { plan: heldName })
+      : viaPortal
+        ? t('paywall.upgradeWeb', { plan: heldName })
+        : change === 'elsewhere' && boughtOn
+          ? t('paywall.upgradeElsewhere', { plan: heldName, store: t(STORE_NAME[boughtOn]) })
+          : change === 'buy' && held.store === 'promotional'
+            ? t('paywall.lifetimeKept', { plan: heldName, plus: TIER_NAMES[plan] })
+            : null
 
   const hasTopLines =
     (feature !== null && highlightTier !== null) || remaining === 0 || tier !== 'free'
@@ -597,15 +610,15 @@ export default function PaywallScreen() {
           <View style={styles.priceBlock}>
             {/*
               A yearly plan leads with what it costs a month, as the design
-              does — the store's own per-month string, never a division done
-              here — and says how it is billed. Without one from the store the
-              row falls back to the charge and its period. The trial terms
-              below always quote the charge itself.
+              does — see `perMonthPriceString` for why it is truncated — and
+              says how it is billed. Without one the row falls back to the
+              charge and its period. The trial terms below always quote the
+              charge itself.
             */}
             <View style={styles.priceRow}>
-              {offer.period === 'yearly' && offer.perMonthPriceString ? (
+              {perMonth ? (
                 <>
-                  <Text style={styles.price}>{offer.perMonthPriceString}</Text>
+                  <Text style={styles.price}>{perMonth}</Text>
                   <Text style={styles.per}>{t('paywall.perMonthBilledYearly')}</Text>
                 </>
               ) : (
@@ -616,12 +629,34 @@ export default function PaywallScreen() {
               )}
             </View>
             {/*
+              What the year saves, beside the month it is measured against.
+              The segment label already carried the percentage, and nobody read
+              it there: the monthly price struck through under the yearly one
+              is what makes the discount a number someone can check.
+            */}
+            {offer.period === 'yearly' && saving !== null && monthly ? (
+              <View
+                accessible
+                accessibilityLabel={t('paywall.savingA11y', {
+                  percent: saving,
+                  price: monthly.priceString,
+                })}
+                style={styles.savingRow}
+              >
+                <Text style={styles.wasPrice}>{monthly.priceString}</Text>
+                <Text style={[styles.savingTag, { color: tint }]}>
+                  {t('paywall.savePercent', { percent: saving })}
+                </Text>
+              </View>
+            ) : null}
+            {/*
               The whole sequence — how long the trial runs and what it renews
               at — beside the price, not only in the footer's small print. App
               Review guideline 3.1.2 asks for the trial's own terms next to the
-              trial. Not written unless the store actually returned one.
+              trial. Not written unless the store actually returned one, nor
+              over a plan the reader already has and cannot start a trial of.
             */}
-            {offer.freeTrialDays !== null ? (
+            {offer.freeTrialDays !== null && !isCurrent ? (
               <Text style={styles.trial}>
                 {t('paywall.trialTerms', {
                   count: offer.freeTrialDays,
@@ -678,14 +713,16 @@ export default function PaywallScreen() {
         <Button
           label={
             // The tier held, said plainly, where the disabled button used to
-            // read "Start Fluent" at a Fluent subscriber. Only for the tier
-            // *held*: a lower one is covered too, and `paywall.includedIn`
-            // above the button is what explains that one.
+            // read "Start Fluent" at a Fluent subscriber. A lower tier is
+            // covered too, and its button says by what — "Start Fluent",
+            // greyed out, read to a Polyglot member as an offer that was broken.
             change === 'covered' && held.tier === plan
               ? t('paywall.currentPlan')
-              : viaPortal
-                ? t('paywall.changePlan')
-                : t('paywall.start', { plan: TIER_NAMES[plan] })
+              : change === 'covered'
+                ? t('paywall.includedIn', { plan: heldName })
+                : viaPortal
+                  ? t('paywall.changePlan')
+                  : t('paywall.start', { plan: TIER_NAMES[plan] })
           }
           loading={offers === null || busyOfferId !== null}
           disabled={isCurrent || offer === undefined}
@@ -768,6 +805,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   priceRow: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm },
   price: { ...font.heading, color: colors.text, fontSize: 44 },
   per: { color: colors.textMuted, fontSize: 15 },
+  savingRow: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm },
+  wasPrice: { color: colors.textMuted, fontSize: 15, textDecorationLine: 'line-through' },
+  savingTag: { fontSize: 15, fontWeight: '700' },
   trial: { color: colors.accent, fontSize: 13, fontWeight: '700' },
   changeNotice: { color: colors.textMuted, fontSize: 13, lineHeight: 20 },
   unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22, paddingTop: 6 },

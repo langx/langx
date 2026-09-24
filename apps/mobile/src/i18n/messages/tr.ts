@@ -2048,7 +2048,7 @@ export const tr: Localized<EnMessages> = {
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
     lifetimeNotice: '{plan} ömür boyu senin. Yenilenen ya da ödenen bir şey yok.',
     lifetimeKept: 'Ömür boyu {plan} sende kalır. {plus} bir gün biterse ona geri dönersin.',
-    includedIn: '{plan} planına dahil.',
+    includedIn: '{plan} planına dahil',
     upgradeNotice:
       '{plan} planından geçiş: mağaza mevcut dönemin kalanı için yalnızca aradaki farkı alır ve {plan} sona erer.',
     upgradeWeb:
@@ -2083,6 +2083,8 @@ export const tr: Localized<EnMessages> = {
     headlineBody:
       'Düzeltmeler ve yanıtlar her planda sınırsız kalır. Ödeme yapmak diğer sınırları kaldırır.',
     yearlySaving: 'Yıllık · %{percent} indirim',
+    savePercent: '%{percent} indirim',
+    savingA11y: 'Aylık planda ayda {price}. Yıllık ödemede %{percent} indirim.',
     billingPeriod: 'Ödeme dönemi',
     start: '{plan} ile başla',
     continueFree: 'Ücretsiz devam et',
