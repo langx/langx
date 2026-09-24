@@ -211,6 +211,11 @@ extension should fill the recipients in from the identifier, so it now
 resolves them to the conversation's person, and Siri has the sheet it draws
 for any message — to whom, and what it says. Not yet seen in a car.
 
+**And a tap now reads everything that is waiting**, up to five messages per
+conversation, fetched from the server by the Intents extension with the
+session it already holds — the directory alone only ever had the last line.
+No signal falls back to that line. Not yet heard in a car.
+
 ## Answering, which is Siri's
 
 A CarPlay communication app never draws a keyboard — Apple does not allow one
@@ -224,7 +229,7 @@ for:
 | Intent                        | What it does                                                       |
 | ----------------------------- | ------------------------------------------------------------------ |
 | `INSendMessageIntent`         | resolves the spoken name against the directory and posts the reply |
-| `INSearchForMessagesIntent`   | hands Siri the unread previews to read out                         |
+| `INSearchForMessagesIntent`   | hands Siri what is waiting — up to five messages, else the preview |
 | `INSetMessageAttributeIntent` | marks those conversations read                                     |
 
 **Nothing is guessed.** One name match sends, several ask Siri to
