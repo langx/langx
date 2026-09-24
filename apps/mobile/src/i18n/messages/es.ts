@@ -2050,7 +2050,7 @@ export const es: Localized<EnMessages> = {
     lifetimeNotice: 'Tienes {plan} de por vida. Nada se renueva ni se cobra.',
     lifetimeKept:
       '{plan} de por vida sigue siendo tuyo. Si {plus} termina algún día, vuelves a él.',
-    includedIn: 'Incluido en {plan}.',
+    includedIn: 'Incluido en {plan}',
     upgradeNotice:
       'Al pasar de {plan}: la tienda cobra solo la diferencia por lo que queda del periodo actual, y {plan} termina.',
     upgradeWeb:
@@ -2085,6 +2085,8 @@ export const es: Localized<EnMessages> = {
     headlineBody:
       'Las correcciones y las respuestas siguen siendo ilimitadas en todos los planes. Pagar elimina los demás límites.',
     yearlySaving: 'Anual · ahorra un {percent}%',
+    savePercent: 'Ahorra un {percent}%',
+    savingA11y: '{price} al mes con el plan mensual. El anual ahorra un {percent}%.',
     billingPeriod: 'Periodo de facturación',
     start: 'Empieza con {plan}',
     continueFree: 'Seguir gratis',

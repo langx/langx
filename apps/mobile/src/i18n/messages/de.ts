@@ -2088,7 +2088,7 @@ export const de: Localized<EnMessages> = {
     lifetimeNotice: 'Du hast {plan} auf Lebenszeit. Nichts verlängert sich, nichts wird berechnet.',
     lifetimeKept:
       '{plan} auf Lebenszeit bleibt dir. Sollte {plus} je enden, fällst du darauf zurück.',
-    includedIn: 'In {plan} enthalten.',
+    includedIn: 'In {plan} enthalten',
     upgradeNotice:
       'Wechsel von {plan}: Der Store berechnet für den Rest des laufenden Zeitraums nur die Differenz, und {plan} endet.',
     upgradeWeb:
@@ -2123,6 +2123,8 @@ export const de: Localized<EnMessages> = {
     headlineBody:
       'Korrekturen und Antworten bleiben in jedem Plan unbegrenzt. Mit einem Abo fallen die anderen Grenzen weg.',
     yearlySaving: 'Jährlich · {percent}% sparen',
+    savePercent: '{percent}% sparen',
+    savingA11y: '{price} pro Monat im Monatsabo. Mit dem Jahresabo sparst du {percent}%.',
     billingPeriod: 'Abrechnungszeitraum',
     start: 'Mit {plan} starten',
     continueFree: 'Kostenlos weitermachen',

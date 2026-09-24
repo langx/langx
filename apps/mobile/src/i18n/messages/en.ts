@@ -2242,7 +2242,7 @@ export const en = {
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
     lifetimeNotice: 'You have {plan} for life. Nothing renews and nothing is charged.',
     lifetimeKept: '{plan} for life stays yours. If {plus} ever ends, you go back to it.',
-    includedIn: 'Included in {plan}.',
+    includedIn: 'Included in {plan}',
     upgradeNotice:
       'Upgrading from {plan}: the store charges only the difference for the rest of your current period, and {plan} ends.',
     upgradeWeb:
@@ -2277,6 +2277,8 @@ export const en = {
     headlineBody:
       'Corrections and replies stay unlimited on every plan. Paying removes the other limits.',
     yearlySaving: 'Yearly · save {percent}%',
+    savePercent: 'Save {percent}%',
+    savingA11y: '{price} a month on the monthly plan. Yearly saves {percent}%.',
     billingPeriod: 'Billing period',
     start: 'Start {plan}',
     continueFree: 'Continue free',

@@ -2066,7 +2066,7 @@ export const fr: Localized<EnMessages> = {
     manageNotice: 'Tu es sur {plan}. Gère-le ou annule-le depuis ton compte du store.',
     lifetimeNotice: 'Tu as {plan} à vie. Rien ne se renouvelle, rien n’est facturé.',
     lifetimeKept: '{plan} à vie reste à toi. Si {plus} prend fin un jour, tu y reviens.',
-    includedIn: 'Inclus dans {plan}.',
+    includedIn: 'Inclus dans {plan}',
     upgradeNotice:
       'Passage depuis {plan} : le store ne facture que la différence pour le reste de la période en cours, et {plan} prend fin.',
     upgradeWeb:
@@ -2101,6 +2101,8 @@ export const fr: Localized<EnMessages> = {
     headlineBody:
       'Les corrections et les réponses restent illimitées avec chaque formule. Payer supprime les autres limites.',
     yearlySaving: 'Annuel · {percent}% d’économie',
+    savePercent: '{percent}% d’économie',
+    savingA11y: '{price} par mois avec l’abonnement mensuel. L’annuel fait économiser {percent}%.',
     billingPeriod: 'Période de facturation',
     start: 'Commencer avec {plan}',
     continueFree: 'Continuer gratuitement',

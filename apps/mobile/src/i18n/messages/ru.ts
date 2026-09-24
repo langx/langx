@@ -2283,7 +2283,7 @@ export const ru: Localized<EnMessages> = {
     lifetimeNotice: 'У тебя {plan} навсегда. Ничего не продлевается и не списывается.',
     lifetimeKept:
       '{plan} навсегда остаётся с тобой. Если {plus} когда-нибудь закончится, ты вернёшься к нему.',
-    includedIn: 'Входит в {plan}.',
+    includedIn: 'Входит в {plan}',
     upgradeNotice:
       'Переход с {plan}: магазин спишет только разницу за остаток текущего периода, и {plan} завершится.',
     upgradeWeb:
@@ -2320,6 +2320,8 @@ export const ru: Localized<EnMessages> = {
     headlineBody:
       'Исправления и ответы остаются безлимитными на любом плане. Оплата снимает остальные ограничения.',
     yearlySaving: 'Ежегодно · экономия {percent}%',
+    savePercent: 'Экономия {percent}%',
+    savingA11y: '{price} в месяц на месячном плане. Годовой план экономит {percent}%.',
     billingPeriod: 'Период оплаты',
     start: 'Начать с {plan}',
     continueFree: 'Продолжить бесплатно',

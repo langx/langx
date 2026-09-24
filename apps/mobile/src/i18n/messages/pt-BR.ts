@@ -2047,7 +2047,7 @@ export const ptBR: Localized<EnMessages> = {
     manageNotice: 'Você está no {plan}. Gerencie ou cancele na sua conta da loja.',
     lifetimeNotice: 'Você tem {plan} para sempre. Nada renova e nada é cobrado.',
     lifetimeKept: '{plan} para sempre continua seu. Se {plus} acabar um dia, você volta para ele.',
-    includedIn: 'Incluído no {plan}.',
+    includedIn: 'Incluído no {plan}',
     upgradeNotice:
       'Mudando do {plan}: a loja cobra só a diferença pelo resto do período atual, e o {plan} termina.',
     upgradeWeb:
@@ -2082,6 +2082,8 @@ export const ptBR: Localized<EnMessages> = {
     headlineBody:
       'Correções e respostas continuam ilimitadas em todos os planos. Pagar remove os outros limites.',
     yearlySaving: 'Anual · economize {percent}%',
+    savePercent: 'Economize {percent}%',
+    savingA11y: '{price} por mês no plano mensal. O anual economiza {percent}%.',
     billingPeriod: 'Período de cobrança',
     start: 'Começar com {plan}',
     continueFree: 'Continuar de graça',

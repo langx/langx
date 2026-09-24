@@ -105,9 +105,10 @@ export interface PurchaseOffer {
   priceString: string
   /**
    * The same price as the store states it per month — "€4.99" on a yearly
-   * plan billed at €59.88. The store's own text again, not a division done
-   * here, for the same compliance reason; absent when the store does not
-   * provide one (a monthly plan, a lifetime purchase, an older SDK).
+   * plan billed at €59.88; absent when the store does not provide one (a
+   * monthly plan, a lifetime purchase, an older SDK). The paywall prefers
+   * `perMonthPriceString` from `perMonthPrice.ts`, which truncates where this
+   * rounds, and falls back to this text only when that cannot read the price.
    */
   perMonthPriceString?: string
   period: BillingPeriod
