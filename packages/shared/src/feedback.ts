@@ -30,12 +30,16 @@ export const feedbackKindSchema = z.enum(FEEDBACK_KINDS)
 /**
  * What a confirmed bug or an accepted request can pay.
  *
- * A floor because a report worth answering is worth more than a day's
- * messaging, and a ceiling because the award page is reached with a link from
- * an inbox: a mistyped amount there is a payout nothing else in the system
- * would stop. Neither number is shown in the app.
+ * A floor so that a report worth answering is never paid a token or two —
+ * the receipt says the number out loud, in three places — and a ceiling
+ * because the award page is reached with a link from an inbox: a mistyped
+ * amount there is a payout nothing else in the system would stop. Neither
+ * number is shown in the app.
+ *
+ * 500 until 23 Sept 2026. A report can be real and small at the same time,
+ * and the floor was turning every small one into a 500.
  */
-export const BOUNTY_MIN = 500
+export const BOUNTY_MIN = 100
 export const BOUNTY_MAX = 5000
 
 /** What the award page posts back: how much, for the report the link names. */
