@@ -543,8 +543,11 @@ lock screen in the morning.
   another of the same person's devices, through `conversation:read`, while this
   one holds a socket. A `meetingReminder` stays: it is about a time.
 - **"Mark all read"** clears `social`, `badgeEarned`, `profileVisits` and
-  `wallet`. Tapping a single row clears nothing, because a push carries no
-  notification id to match the row by.
+  `wallet`.
+- **Tapping a row** clears the pushes behind it, read or not. A push carries no
+  notification id, so the match is on its `data`: a follow by the follower's
+  `handle`, a reply or like row by `postId` (every push about that post), and
+  the repeating kinds by kind.
 
 Only a device with the app running can clear its own shade. There is no silent
 push to reach one that is closed.
