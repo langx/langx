@@ -875,6 +875,36 @@ describe('the operator panel', () => {
   })
 
   describe('speaking as @langx', () => {
+    /*
+     * A suspended account takes no messages from people — `recordMessage`
+     * refuses them — but a note from us is not what suspension protects
+     * anybody from, and it is how somebody can be told something before a
+     * lift.
+     */
+    it('still reaches somebody who is suspended', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const recipient = await newUser()
+      await profiles().updateOne(
+        { _id: recipient.userId },
+        {
+          $set: {
+            suspension: {
+              at: new Date(),
+              until: new Date(SUSPENSION_FOREVER),
+              permanent: true,
+              reason: 'spam',
+            },
+          },
+        },
+      )
+
+      const sent = await post(admin, `/admin/users/${recipient.userId}/message`, {
+        body: 'About your suspension: replies go to hi@langx.io.',
+      })
+      expect(sent.statusCode).toBe(201)
+    })
+
     it('delivers one message, which the person cannot reply to', async () => {
       const admin = await newUser()
       await makeAdmin(admin)

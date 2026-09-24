@@ -1099,6 +1099,8 @@ export const en = {
   chat: {
     /** Shown where the composer would be, on an account that takes no messages. */
     channelOnly: 'This account posts news and announcements. You can’t reply to it.',
+    /** In place of the composer, when the other person's account is suspended. */
+    suspendedOnly: 'This account is suspended. You can’t send it messages.',
     sendingAttachment: 'Sending…',
     title: 'Chat',
     typing: 'typing…',

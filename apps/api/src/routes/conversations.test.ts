@@ -1,4 +1,4 @@
-import { PLAN_LIMITS } from '@langx/shared'
+import { PLAN_LIMITS, SUSPENSION_FOREVER } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -182,6 +182,41 @@ describe('Faz 4 — starting a conversation', () => {
     const second = await startConversation(viewer, blocksMe.userId)
     expect(second.statusCode).toBe(403)
     expect(second.json()).toMatchObject({ code: 'BLOCKED' })
+  })
+
+  it('refuses a first message to a suspended account, and spends no slot on it', async () => {
+    const viewer = await newUser('convo-to-suspended@example.com')
+    const suspended = await newUser('convo-suspended@example.com')
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: suspended.userId },
+      {
+        $set: {
+          suspension: {
+            at: new Date(),
+            until: new Date(SUSPENSION_FOREVER),
+            permanent: true,
+            reason: 'harassment',
+          },
+        },
+      },
+    )
+
+    const response = await startConversation(viewer, suspended.userId)
+    expect(response.statusCode).toBe(403)
+    expect(response.json()).toMatchObject({ code: 'RECIPIENT_SUSPENDED' })
+
+    const quota = await app.inject({
+      method: 'GET',
+      url: '/me/quota',
+      headers: { cookie: viewer.cookie },
+    })
+    expect(quota.json()).toMatchObject({
+      initiations: { remaining: PLAN_LIMITS.free.initiationsPer24h },
+    })
+    const threads = await handle.db
+      .collection(COLLECTIONS.conversations)
+      .countDocuments({ participants: suspended.userId })
+    expect(threads).toBe(0)
   })
 
   it('creates a conversation with the right shape', async () => {

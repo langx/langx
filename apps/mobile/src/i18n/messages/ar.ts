@@ -1068,6 +1068,7 @@ export const ar: Localized<EnMessages> = {
   },
   chat: {
     channelOnly: 'ينشر هذا الحساب الأخبار والإعلانات. لا يمكنك الرد هنا.',
+    suspendedOnly: 'هذا الحساب معلّق. لا يمكنك إرسال رسائل إليه.',
     sendingAttachment: 'جارٍ الإرسال…',
     title: 'محادثة',
     typing: 'يكتب…',

@@ -468,17 +468,26 @@ export function ChatScreen({
   /**
    * A channel — `@langx` — rather than somebody to talk to.
    *
-   * One fact, read in four places below: there is no composer, no reaction
-   * strip, no swipe to reply, and the menu drops every row that would send
-   * something. They used to be offered and then quietly do nothing, because
-   * the mode banner they fill lives inside the composer that is not drawn and
-   * the API answers 403 to anything addressed here.
+   * One fact, read in four places below through `readOnly`: there is no
+   * composer, no reaction strip, no swipe to reply, and the menu drops every
+   * row that would send something. They used to be offered and then quietly
+   * do nothing, because the mode banner they fill lives inside the composer
+   * that is not drawn and the API answers 403 to anything addressed here.
    *
    * False while the profile loads, which is the same window in which the
    * composer is drawn for a channel — one wrong frame, and the alternative is
    * a thread that starts out looking read-only for everybody.
    */
   const channel = partner?.official === true && partner.acceptsMessages === false
+  /**
+   * A suspended account takes no messages either — the API refuses them with
+   * `RECIPIENT_SUSPENDED` — so its thread reads the way a channel's does:
+   * everything that would send is gone, and a line under the history says
+   * why. The history itself stays; it is what somebody opening this came for.
+   */
+  const suspended = partner?.accountStatus === 'suspended'
+  /** Nothing sent from here would arrive. The one fact the four places below read. */
+  const readOnly = channel || suspended
   /**
    * Which language to send a translation in: the reader's, not the writer's.
    *
@@ -1033,6 +1042,7 @@ export function ChatScreen({
       // ApiRequestError, so the `instanceof` this used to do never matched
       // and the quota message had never once been shown.
       const code = errorCodeOf(error)
+      recheckPartner(error)
       if (code === 'QUOTA_EXCEEDED') {
         setPending((list) => removePending(list, clientId))
         await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
@@ -1062,6 +1072,18 @@ export function ChatScreen({
       void showAlert(t('chat.couldNotSend'), reason)
     } finally {
       setSendingMedia(false)
+    }
+  }
+
+  /**
+   * A send refused because the other account was suspended after this screen
+   * last read their profile — it is cached for minutes. Reading it again is
+   * what swaps the composer for the line that says so; what was typed stays
+   * behind as an unsent row, where it can still be copied.
+   */
+  function recheckPartner(error: unknown): void {
+    if (errorCodeOf(error) === 'RECIPIENT_SUSPENDED') {
+      void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
     }
   }
 
@@ -1123,6 +1145,7 @@ export function ChatScreen({
           failedAt: new Date().toISOString(),
         }),
       )
+      recheckPartner(error)
       // Swallowed for the reader, counted for us: an unsent row is quiet by
       // design and a rising number of them is not something to find out from
       // a support message.
@@ -1451,7 +1474,9 @@ export function ChatScreen({
       // agree on one rule from `@langx/shared` instead of two copies of it.
       canEdit: canEditMessage(message, me.data?._id ?? '', new Date()),
       corrected: message.corrected === true,
-      channel,
+      // The menu's rule is "drop every row that sends", which is exactly what
+      // a suspended account needs too.
+      channel: readOnly,
       starred: message.starred === true,
       pinned: pinned?.messageId === message._id,
       // Strict, like `corrected` above: an unknown shape reads as "not kept"
@@ -1477,7 +1502,7 @@ export function ChatScreen({
       // A withdrawn message cannot carry a reaction, so it gets no strip. Nor
       // does anything in a channel: a reaction is addressed to whoever wrote
       // the message, and `@langx` is a process that will never read one.
-      ...(message.deleted || channel
+      ...(message.deleted || readOnly
         ? {}
         : { reactions: MESSAGE_REACTIONS, myReaction: message.myReaction }),
     })
@@ -2223,7 +2248,7 @@ export function ChatScreen({
                       onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
                       onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
                       onReply={isOutgoingId(row.message._id) ? ignore : onReply}
-                      canReply={!channel}
+                      canReply={!readOnly}
                       onReact={isOutgoingId(row.message._id) ? ignore : onReact}
                       /*
                        * The same pair the menu's emoji strip is hidden for, and
@@ -2231,7 +2256,7 @@ export function ChatScreen({
                        * withdrawn message and to an official channel, so offering
                        * the gesture there would end in an alert.
                        */
-                      canReact={!channel && !row.message.deleted}
+                      canReact={!readOnly && !row.message.deleted}
                       onJumpTo={onJumpTo}
                       onOpenMedia={onOpenMedia}
                     />
@@ -2283,11 +2308,14 @@ export function ChatScreen({
           A channel has no composer. `@langx` welcomes and announces, and the
           API refuses a message to it — so a box to type in would be offering
           something that answers 403. The line in its place says what the
-          thread is, rather than leaving the screen ending in nothing.
+          thread is, rather than leaving the screen ending in nothing. A
+          suspended account gets the same, with its own line.
         */}
-          {channel ? (
+          {readOnly ? (
             <View style={styles.channelNote}>
-              <Text style={styles.channelNoteText}>{t('chat.channelOnly')}</Text>
+              <Text style={styles.channelNoteText}>
+                {t(suspended ? 'chat.suspendedOnly' : 'chat.channelOnly')}
+              </Text>
             </View>
           ) : (
             <ChatComposer

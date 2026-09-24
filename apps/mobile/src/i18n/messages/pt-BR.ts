@@ -952,6 +952,7 @@ export const ptBR: Localized<EnMessages> = {
   },
   chat: {
     channelOnly: 'Esta conta publica novidades e avisos. Não dá para responder aqui.',
+    suspendedOnly: 'Esta conta está suspensa. Não dá para enviar mensagens para ela.',
     sendingAttachment: 'Enviando…',
     title: 'Conversa',
     typing: 'digitando…',

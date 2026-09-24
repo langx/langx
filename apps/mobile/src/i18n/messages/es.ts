@@ -958,6 +958,7 @@ export const es: Localized<EnMessages> = {
   },
   chat: {
     channelOnly: 'Esta cuenta publica novedades y anuncios. No puedes responder aquí.',
+    suspendedOnly: 'Esta cuenta está suspendida. No puedes enviarle mensajes.',
     sendingAttachment: 'Enviando…',
     title: 'Chat',
     typing: 'escribiendo…',

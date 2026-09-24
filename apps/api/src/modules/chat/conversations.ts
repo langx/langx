@@ -13,6 +13,7 @@ import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
+import { isSuspended } from '../moderation/suspension'
 import { acceptsMessages } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 
@@ -296,6 +297,16 @@ export async function startConversation(
     ],
   })
   if (blocked) throw new ApiError(ERROR_CODES.BLOCKED, 'Cannot message a blocked user')
+
+  /*
+   * After the block, so a blocked viewer learns nothing about a suspension
+   * their 404 on the profile already keeps from them. Before the quota, so a
+   * refused first message costs no slot. `recordMessage` refuses every later
+   * send the same way.
+   */
+  if (isSuspended(recipient)) {
+    throw new ApiError(ERROR_CODES.RECIPIENT_SUSPENDED, 'This account is suspended')
+  }
 
   const pairKey = pairKeyFor(viewerId, input.toUserId)
   const conversations = db.collection<Conversation>(COLLECTIONS.conversations)

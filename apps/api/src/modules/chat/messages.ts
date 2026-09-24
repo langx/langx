@@ -25,7 +25,8 @@ import { ApiError } from '../../lib/ApiError'
 import { assertAttachmentsAllowed } from '../media/assertMedia'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { blockedUserIds } from '../moderation/blocks'
-import { acceptsMessages, unwritableOfficialIds } from '../official/accounts'
+import { isSuspended } from '../moderation/suspension'
+import { acceptsMessages, isOfficialId, unwritableOfficialIds } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess, assertMediaUnlocked } from './access'
 import { readEchoedMessageIds } from '../echo/echoed'
@@ -170,6 +171,31 @@ export async function recordMessage(
    */
   if (recipientId !== undefined && !acceptsMessages(recipientId)) {
     throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account does not take messages')
+  }
+
+  /*
+   * Nor does a suspended account. It cannot sign in to read what arrives, and
+   * the person writing is owed that answer rather than a thread that looks
+   * alive and never replies. Here rather than in `assertConversationAccess`,
+   * which reads as well as writes: the history stays readable, only the next
+   * message is refused. The suspended side needs no check of its own —
+   * `requireAuth` and the socket handshake already refuse everything it asks.
+   *
+   * One keyed read per send, projected to the one field. `acceptsMessages`
+   * above is a map lookup; this cannot be, because a suspension is decided
+   * while the recipient's thread is open.
+   *
+   * Our own accounts are exempt. A receipt or a note from @langx is not what
+   * a suspension protects anybody from, and the panel's one message to a
+   * person is how somebody we suspended can be told something before a lift.
+   */
+  if (recipientId !== undefined && !isOfficialId(message.senderId)) {
+    const recipient = await db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: recipientId }, { projection: { suspension: 1 } })
+    if (isSuspended(recipient)) {
+      throw new ApiError(ERROR_CODES.RECIPIENT_SUSPENDED, 'This account is suspended')
+    }
   }
 
   await db.collection<Message>(COLLECTIONS.messages).insertOne(message)
