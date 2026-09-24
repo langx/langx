@@ -36,14 +36,22 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
     /*
      A reply to a conversation the car handed Siri — a `CPMessageListItem`
      tapped, read, then answered — arrives carrying that conversation's
-     identifier. The thread is already known, so nobody has to be named: the
-     recipients are not required, and asking for them would make Siri ask the
-     driver "to whom?" about the person it just finished reading.
+     identifier and no recipients at all. Siri leaves filling them in to us.
+
+     It is resolved to the person, not waved through as `notRequired`, which
+     is what this did at first. That kept Siri from asking "to whom?", but it
+     also left the confirmation with nobody to address: the first drive with
+     it, on 23 September, got a bare "send it?" with neither the name nor the
+     dictated words on it — a message confirmed blind. With a recipient Siri
+     has the sheet it draws for every message: to whom, and what it says.
     */
     if let identifier = intent.conversationIdentifier,
-      conversations.contains(where: { $0.id == identifier })
+      let conversation = conversations.first(where: { $0.id == identifier })
     {
-      completion([INSendMessageRecipientResolutionResult.notRequired()])
+      completion([
+        INSendMessageRecipientResolutionResult.success(
+          with: MessagingHandler.person(for: conversation))
+      ])
       return
     }
 
