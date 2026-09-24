@@ -50,4 +50,47 @@ describe('which shade notifications a read clears', () => {
       expect(belongsTo(data, 'inbox')).toBe(false)
     }
   })
+
+  describe('one row tapped in the centre', () => {
+    const actor = { _id: 'u2', handle: 'sofia', displayName: 'Sofia' }
+
+    it('clears the follow push from that follower, and no other', () => {
+      const row = { kind: 'follow' as const, actor }
+      expect(belongsTo({ kind: 'social', handle: 'sofia' }, { row })).toBe(true)
+      expect(belongsTo({ kind: 'social', handle: 'marco' }, { row })).toBe(false)
+      expect(belongsTo({ kind: 'social', postId: 'p1' }, { row })).toBe(false)
+    })
+
+    it('clears every push about the post a reply or a like row is about', () => {
+      for (const kind of [
+        'postComment',
+        'postCorrection',
+        'pronunciationAnswer',
+        'like',
+      ] as const) {
+        const row = { kind, postId: 'p1', actor }
+        expect(belongsTo({ kind: 'social', postId: 'p1' }, { row }), kind).toBe(true)
+        expect(belongsTo({ kind: 'social', postId: 'p2' }, { row }), kind).toBe(false)
+        expect(belongsTo({ kind: 'social', handle: 'sofia' }, { row }), kind).toBe(false)
+      }
+    })
+
+    /** A row whose post is gone matches nothing, rather than every post push without one. */
+    it('clears nothing for a post row with no post', () => {
+      expect(belongsTo({ kind: 'social' }, { row: { kind: 'like' } })).toBe(false)
+    })
+
+    it('clears the whole pile on the kinds that repeat', () => {
+      expect(belongsTo({ kind: 'badgeEarned' }, { row: { kind: 'badgeEarned' } })).toBe(true)
+      expect(belongsTo({ kind: 'profileVisits' }, { row: { kind: 'profileVisits' } })).toBe(true)
+      expect(belongsTo({ kind: 'wallet' }, { row: { kind: 'walletPool' } })).toBe(true)
+      expect(belongsTo({ kind: 'wallet' }, { row: { kind: 'badgeEarned' } })).toBe(false)
+    })
+
+    it('never clears a message', () => {
+      expect(
+        belongsTo({ kind: 'message', conversationId: 'c1' }, { row: { kind: 'profileVisits' } }),
+      ).toBe(false)
+    })
+  })
 })

@@ -1332,8 +1332,8 @@ export function useMarkNotificationsRead() {
       client.setQueryData<number>(keys.notificationsUnread, (total) =>
         id === undefined ? 0 : Math.max(0, (total ?? 0) - 1),
       )
-      // The shade goes with the bell. A single row is left alone: a push
-      // carries no notification id to match it by.
+      // The shade goes with the bell. A single row clears its own pushes from
+      // the screen that has the row — this has only its id.
       if (id === undefined) void clearFromTray('inbox')
       return { previous }
     },

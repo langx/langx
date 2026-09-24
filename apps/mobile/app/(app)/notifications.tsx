@@ -14,6 +14,7 @@ import { dedupeById } from '../../src/lib/dedupeById'
 import { relativeTime } from '../../src/lib/format'
 import { goBackTo, openNotification } from '../../src/lib/navigation'
 import { notificationCopy, notificationHref } from '../../src/lib/notificationInbox'
+import { clearFromTray } from '../../src/lib/notifications'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 
 const HERE = '/(app)/notifications'
@@ -132,6 +133,8 @@ export default function NotificationsScreen() {
                   // bell drops by one. The server reads the whole pile behind
                   // this row, which is what the row was already speaking for.
                   if (!item.read) markRead.mutate(item._id)
+                  // Read or not, whatever announced it is stale in the shade.
+                  void clearFromTray({ row: item })
                   openNotification(href)
                 }}
                 style={({ pressed }) => [
