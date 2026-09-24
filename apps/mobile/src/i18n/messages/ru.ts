@@ -2017,6 +2017,7 @@ export const ru: Localized<EnMessages> = {
     referralWelcome: 'Приветственный бонус по приглашению',
     gift: 'Подарок каждый час',
     bounty: 'Награда за ошибку',
+    reportReward: 'Награда за жалобу',
     echo: 'Занятие в Эхе',
   },
 

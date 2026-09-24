@@ -32,6 +32,11 @@ export const en = {
       other: '{count} tokens for your report 🎉',
     },
     bountyBody: 'We read what you sent, and it was worth it.',
+    reportRewardTitle: {
+      one: '{count} token for keeping LangX safe 🛡️',
+      other: '{count} tokens for keeping LangX safe 🛡️',
+    },
+    reportRewardBody: 'We looked into what you reported. Thank you.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Add a photo',
@@ -629,6 +634,17 @@ export const en = {
     /** The sign-off, last and after a blank line, as `welcomeClosing` is. */
     welcomeBackClosing:
       'This is where news about LangX lands, so it’s worth keeping an eye on. If something’s missing or broken, Settings → About → Feedback comes straight to us. Good to have you back. 💛',
+    /**
+     * Thanking somebody for a report we acted on, sent from the panel beside
+     * the tokens. It says the report was looked into and never what was
+     * decided: the outcome belongs to the person it is about, and the reporter
+     * is kept out of it in the other direction too.
+     */
+    reportReward: {
+      one: 'Thank you for your report. We looked into it and added {count} token to your wallet for helping keep LangX a good place to learn. The person you reported is never told who sent it.',
+      other:
+        'Thank you for your report. We looked into it and added {count} tokens to your wallet for helping keep LangX a good place to learn. The person you reported is never told who sent it.',
+    },
     assistantOffline:
       'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
     /**

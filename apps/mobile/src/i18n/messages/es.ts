@@ -1819,6 +1819,7 @@ export const es: Localized<EnMessages> = {
     referralWelcome: 'Bono de bienvenida por invitación',
     gift: 'Regalo de cada hora',
     bounty: 'Recompensa por error',
+    reportReward: 'Recompensa por denuncia',
     echo: 'Sesión de Echo',
   },
 

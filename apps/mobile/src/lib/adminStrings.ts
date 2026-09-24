@@ -163,6 +163,13 @@ export const ADMIN = {
     permanentAgain: 'This one does not expire. Type the handle to confirm.',
     confirmDismiss: 'Dismiss this report? Nothing changes on the account.',
     done: 'Decided.',
+    reporter: 'Who reported it',
+    rewardAmount: 'Tokens',
+    reward: (amount: number) => `Thank them with ${amount} tokens`,
+    confirmReward: (amount: number, who: string) =>
+      `Give ${who} ${amount} tokens? They get a push and a message from @langx. This cannot be undone.`,
+    rewarded: (amount: number) => `Thanked with ${amount} tokens.`,
+    alreadyRewarded: 'This report has already been rewarded.',
   },
 
   appeals: {

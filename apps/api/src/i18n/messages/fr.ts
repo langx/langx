@@ -28,6 +28,11 @@ export const fr: Localized<ServerMessages> = {
       other: '{count} jetons pour ton signalement 🎉',
     },
     bountyBody: 'On a lu ce que tu nous as envoyé, et ça valait le coup.',
+    reportRewardTitle: {
+      one: '{count} jeton pour avoir aidé à protéger LangX 🛡️',
+      other: '{count} jetons pour avoir aidé à protéger LangX 🛡️',
+    },
+    reportRewardBody: 'Nous avons examiné ton signalement. Merci.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Ajoutez une photo',
@@ -554,6 +559,11 @@ export const fr: Localized<ServerMessages> = {
       'Beaucoup de choses ont bougé. Les corrections sont devenues une chose à part entière, tu gagnes des jetons en aidant les autres, et Découvrir cherche quelqu’un qui apprend ta langue et parle celle que tu vises. La même idée, avec cette fois la place de bien la faire — fais un tour.',
     welcomeBackClosing:
       'C’est ici qu’arrivent les nouvelles de LangX, ça vaut le coup d’y jeter un œil. S’il manque quelque chose ou si quelque chose casse, Réglages → À propos → Commentaires arrive directement chez nous. Content de te retrouver. 💛',
+    reportReward: {
+      one: 'Merci pour ton signalement. Nous l’avons examiné et ajouté {count} jeton à ton portefeuille, pour avoir aidé à faire de LangX un bon endroit pour apprendre. La personne signalée ne saura jamais qui l’a signalée.',
+      other:
+        'Merci pour ton signalement. Nous l’avons examiné et ajouté {count} jetons à ton portefeuille, pour avoir aidé à faire de LangX un bon endroit pour apprendre. La personne signalée ne saura jamais qui l’a signalée.',
+    },
     assistantOffline:
       'Je ne peux pas répondre aux messages pour le moment. Si ça peut attendre, réessaie plus tard ; sinon, écris à {email} et une personne te lira.',
     assistantLimit:

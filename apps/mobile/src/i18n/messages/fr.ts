@@ -1834,6 +1834,7 @@ export const fr: Localized<EnMessages> = {
     referralWelcome: 'Bonus de bienvenue sur invitation',
     gift: 'Cadeau de l’heure',
     bounty: 'Prime de bug',
+    reportReward: 'Prime de signalement',
     echo: 'Séance Echo',
   },
 

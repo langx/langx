@@ -2000,6 +2000,7 @@ export const en = {
     referralWelcome: 'Invite welcome bonus',
     gift: 'Hourly gift',
     bounty: 'Bug bounty',
+    reportReward: 'Report reward',
     echo: 'Echo session',
   },
 

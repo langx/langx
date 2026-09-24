@@ -119,6 +119,7 @@ export type AdminLatestVersionInput = z.infer<typeof adminLatestVersionSchema>
  */
 export const ADMIN_ACTIONS = [
   'report.decide',
+  'report.reward',
   'appeal.decide',
   'user.suspend',
   'user.lift',

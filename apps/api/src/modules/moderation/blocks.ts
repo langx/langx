@@ -30,6 +30,12 @@ export interface Report {
   postId?: ObjectId
   status: 'open' | 'reviewing' | 'actioned' | 'dismissed'
   createdAt: Date
+  /**
+   * The tokens the reporter was thanked with, from the panel. Written only by
+   * the award that happened — see `rewardReporter` — so it is the panel's
+   * "already paid" without a ledger read.
+   */
+  reward?: { amount: number; at: Date; by: string }
 }
 
 function isDuplicateKeyError(error: unknown, indexName: string): boolean {

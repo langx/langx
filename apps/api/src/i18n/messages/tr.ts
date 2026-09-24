@@ -22,6 +22,11 @@ export const tr: Localized<ServerMessages> = {
       other: 'Bildirimin için {count} jeton 🎉',
     },
     bountyBody: 'Yazdıklarını okuduk, değdi.',
+    reportRewardTitle: {
+      one: "LangX'i güvende tuttuğun için {count} jeton 🛡️",
+      other: "LangX'i güvende tuttuğun için {count} jeton 🛡️",
+    },
+    reportRewardBody: 'Bildirdiğin şeyi inceledik. Teşekkürler.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Bir fotoğraf ekle',
@@ -530,6 +535,11 @@ export const tr: Localized<ServerMessages> = {
       'Çok şey değişti. Düzeltmeler artık başlı başına bir iş, insanlara yardım ettikçe jeton kazanıyorsun ve Keşfet senin dilini öğrenen, senin öğrendiğin dili konuşan birini arıyor. Aynı fikir, ama bu sefer düzgün yapacak yer var — bir dolan bakalım.',
     welcomeBackClosing:
       'LangX’le ilgili haberler buraya düşüyor, ara ara bakmakta fayda var. Eksik ya da bozuk bir şey görürsen Ayarlar → Hakkında → Geri bildirim doğrudan bize geliyor. Yeniden aramızda olman güzel. 💛',
+    reportReward: {
+      one: "Bildirimin için teşekkürler. İnceledik ve LangX'i öğrenmek için iyi bir yer olarak tutmaya yardım ettiğin için cüzdanına {count} jeton ekledik. Bildirdiğin kişiye, onu kimin bildirdiği asla söylenmez.",
+      other:
+        "Bildirimin için teşekkürler. İnceledik ve LangX'i öğrenmek için iyi bir yer olarak tutmaya yardım ettiğin için cüzdanına {count} jeton ekledik. Bildirdiğin kişiye, onu kimin bildirdiği asla söylenmez.",
+    },
     assistantOffline:
       'Şu anda mesajlara yanıt veremiyorum. Acelesi yoksa sonra tekrar dene; varsa {email} adresine yaz, bir insan okuyacak.',
     assistantLimit:

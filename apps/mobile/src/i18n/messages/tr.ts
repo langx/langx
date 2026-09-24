@@ -1820,6 +1820,7 @@ export const tr: Localized<EnMessages> = {
     referralWelcome: 'Davetle gelme bonusu',
     gift: 'Saatlik hediye',
     bounty: 'Hata ödülü',
+    reportReward: 'Bildirim ödülü',
     echo: 'Echo oturumu',
   },
 

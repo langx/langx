@@ -1816,6 +1816,7 @@ export const ptBR: Localized<EnMessages> = {
     referralWelcome: 'Bônus de boas-vindas por convite',
     gift: 'Presente de cada hora',
     bounty: 'Recompensa por erro',
+    reportReward: 'Recompensa por denúncia',
     echo: 'Sessão do Echo',
   },
 
