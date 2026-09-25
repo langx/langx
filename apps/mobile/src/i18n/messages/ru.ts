@@ -500,6 +500,7 @@ export const ru: Localized<EnMessages> = {
     googleSignInFailed: 'Не удалось войти через Google',
     appleSignInFailed: 'Не удалось войти через Apple',
     facebookSignInFailed: 'Не удалось войти через Facebook',
+    discordSignInFailed: 'Не удалось войти через Discord',
     resetFailed: 'Не удалось сбросить пароль',
     invalidCredentials:
       'Это не совпадает ни с одним аккаунтом. Войдите по e-mail или имени пользователя — или пришлите себе ссылку для входа; она сработает и если у вас был аккаунт в прежнем приложении. Google и Apple тоже подходят.',
@@ -662,6 +663,7 @@ export const ru: Localized<EnMessages> = {
     continueWithGoogle: 'Продолжить с Google',
     continueWithApple: 'Продолжить с Apple',
     continueWithFacebook: 'Продолжить с Facebook',
+    continueWithDiscord: 'Продолжить с Discord',
     emailOrHandle: 'Почта или имя пользователя',
     or: 'или',
     noAccount: 'Нет аккаунта? ',

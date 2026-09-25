@@ -445,6 +445,7 @@ export const de: Localized<EnMessages> = {
     googleSignInFailed: 'Google-Anmeldung fehlgeschlagen',
     appleSignInFailed: 'Apple-Anmeldung fehlgeschlagen',
     facebookSignInFailed: 'Facebook-Anmeldung fehlgeschlagen',
+    discordSignInFailed: 'Discord-Anmeldung fehlgeschlagen',
     resetFailed: 'Passwort konnte nicht zurückgesetzt werden',
     invalidCredentials:
       'Das passt zu keinem Konto. Melde dich mit E-Mail oder Benutzernamen an — oder lass dir einen Anmeldelink schicken; der funktioniert auch, wenn du in der alten App ein Konto hattest. Google und Apple gehen ebenfalls.',
@@ -610,6 +611,7 @@ export const de: Localized<EnMessages> = {
     continueWithGoogle: 'Mit Google fortfahren',
     continueWithApple: 'Mit Apple fortfahren',
     continueWithFacebook: 'Mit Facebook fortfahren',
+    continueWithDiscord: 'Mit Discord fortfahren',
     emailOrHandle: 'E-Mail oder Benutzername',
     or: 'oder',
     noAccount: 'Noch kein Konto? ',

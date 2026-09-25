@@ -444,6 +444,7 @@ export const es: Localized<EnMessages> = {
     googleSignInFailed: 'No se pudo iniciar sesión con Google',
     appleSignInFailed: 'No se pudo iniciar sesión con Apple',
     facebookSignInFailed: 'No se pudo iniciar sesión con Facebook',
+    discordSignInFailed: 'No se pudo iniciar sesión con Discord',
     resetFailed: 'No se pudo restablecer la contraseña',
     invalidCredentials:
       'Eso no coincide con ninguna cuenta. Entra con tu correo o tu nombre de usuario, o envíate un enlace de acceso, que también funciona si tenías cuenta en la app anterior. Google y Apple también sirven.',
@@ -608,6 +609,7 @@ export const es: Localized<EnMessages> = {
     continueWithGoogle: 'Continuar con Google',
     continueWithApple: 'Continuar con Apple',
     continueWithFacebook: 'Continuar con Facebook',
+    continueWithDiscord: 'Continuar con Discord',
     emailOrHandle: 'Correo o nombre de usuario',
     or: 'o',
     noAccount: '¿No tienes cuenta? ',

@@ -3,7 +3,7 @@ import { Image } from 'expo-image'
 import googleG from '../../assets/brand/google-g.svg'
 import { useTheme } from '../lib/theme'
 
-export type MarkProvider = 'google' | 'apple' | 'facebook'
+export type MarkProvider = 'google' | 'apple' | 'facebook' | 'discord'
 
 /**
  * A sign-in provider's own mark, 20px, in one place.
@@ -20,7 +20,7 @@ export type MarkProvider = 'google' | 'apple' | 'facebook'
  *
  * The marks are the providers' brand colours and stay fixed in both schemes —
  * only Apple's glyph follows `colors.text`, because Apple's guidance is that
- * the logo takes the label's colour. Facebook's is its own blue circled "f".
+ * the logo takes the label's colour. Facebook's is its own blue circled "f", Discord's its blurple.
  */
 export function ProviderMark({ provider }: { provider: MarkProvider }) {
   const { colors } = useTheme()
@@ -29,6 +29,9 @@ export function ProviderMark({ provider }: { provider: MarkProvider }) {
   }
   if (provider === 'facebook') {
     return <Ionicons name="logo-facebook" size={20} color="#0866FF" />
+  }
+  if (provider === 'discord') {
+    return <Ionicons name="logo-discord" size={20} color="#5865F2" />
   }
   return (
     <Image

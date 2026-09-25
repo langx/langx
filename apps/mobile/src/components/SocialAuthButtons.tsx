@@ -40,7 +40,7 @@ export interface SocialAuthButtonsProps {
    * Sign-up passes the counter; sign-in passes nothing, because signing in is
    * not a sign-up and must not arrive in the funnel as one.
    */
-  onStart?: (method: 'google' | 'apple' | 'facebook') => void
+  onStart?: (method: 'google' | 'apple' | 'facebook' | 'discord') => void
 }
 
 export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButtonsProps = {}) {
@@ -106,6 +106,15 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
       setSocialError(t(authErrorKey(facebookError) ?? 'errors.facebookSignInFailed'))
   }
 
+  async function onDiscord() {
+    setSocialError(undefined)
+    onStart?.('discord')
+    const { error: discordError } = await withSignInProgress(() =>
+      authClient.signIn.social({ provider: 'discord', ...socialRedirects() }),
+    )
+    if (discordError) setSocialError(t(authErrorKey(discordError) ?? 'errors.discordSignInFailed'))
+  }
+
   async function onApple() {
     setSocialError(undefined)
     onStart?.('apple')
@@ -142,7 +151,9 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
     }
   }
 
-  if (!providers?.google && !providers?.apple && !providers?.facebook) return null
+  if (!providers?.google && !providers?.apple && !providers?.facebook && !providers?.discord) {
+    return null
+  }
 
   const rule = (
     <View style={styles.divider}>
@@ -185,6 +196,14 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
           onPress={() => void onFacebook()}
           variant="neutral"
           icon={<ProviderMark provider="facebook" />}
+        />
+      ) : null}
+      {providers.discord ? (
+        <Button
+          label={t('auth.continueWithDiscord')}
+          onPress={() => void onDiscord()}
+          variant="neutral"
+          icon={<ProviderMark provider="discord" />}
         />
       ) : null}
       {divider === 'below' ? rule : null}

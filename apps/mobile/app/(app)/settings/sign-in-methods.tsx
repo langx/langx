@@ -27,6 +27,7 @@ const PROVIDER_NAMES: Record<LinkedProvider, string> = {
   google: 'Google',
   apple: 'Apple',
   facebook: 'Facebook',
+  discord: 'Discord',
 }
 
 /**

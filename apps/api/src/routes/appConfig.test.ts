@@ -99,6 +99,7 @@ describe('app config, maintenance and the version gate', () => {
         google: false,
         apple: false,
         facebook: false,
+        discord: false,
       })
     })
 
@@ -144,6 +145,7 @@ describe('app config, maintenance and the version gate', () => {
           google: true,
           apple: false,
           facebook: false,
+          discord: false,
         })
       } finally {
         await configured.close()

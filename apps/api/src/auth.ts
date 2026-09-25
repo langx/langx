@@ -122,6 +122,13 @@ export async function createAuth({
     }
   }
 
+  if (env.DISCORD_CLIENT_ID && env.DISCORD_CLIENT_SECRET) {
+    socialProviders.discord = {
+      clientId: env.DISCORD_CLIENT_ID,
+      clientSecret: env.DISCORD_CLIENT_SECRET,
+    }
+  }
+
   if (env.APPLE_CLIENT_ID && env.APPLE_TEAM_ID && env.APPLE_KEY_ID && env.APPLE_PRIVATE_KEY) {
     const appleClientSecret = await generateAppleClientSecret({
       teamId: env.APPLE_TEAM_ID,
@@ -564,6 +571,11 @@ export async function createAuth({
      * untrusted provider with an unverified address can neither link nor sign
      * in to an existing account. Facebook only returns a confirmed primary
      * address, which is what makes trusting it the same bet as the other two.
+     *
+     * Discord is deliberately *not* listed. It hands over its own `verified`
+     * flag, and it does let an account keep an address it never confirmed —
+     * so a verified Discord address links like any other, and an unverified
+     * one cannot attach itself to somebody's existing account.
      *
      * `allowUnlinkingAll` stays off: the last way into an account cannot be
      * removed, which is the rule that made offering Disconnect safe at all.

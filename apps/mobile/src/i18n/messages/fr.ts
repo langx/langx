@@ -445,6 +445,7 @@ export const fr: Localized<EnMessages> = {
     googleSignInFailed: 'Connexion Google impossible',
     appleSignInFailed: 'Connexion Apple impossible',
     facebookSignInFailed: 'Connexion Facebook impossible',
+    discordSignInFailed: 'Connexion Discord impossible',
     resetFailed: 'Réinitialisation impossible',
     invalidCredentials:
       'Cela ne correspond à aucun compte. Connecte-toi avec ton e-mail ou ton nom d’utilisateur — ou envoie-toi un lien de connexion, qui marche aussi si tu avais un compte dans l’ancienne app. Google et Apple fonctionnent aussi.',
@@ -610,6 +611,7 @@ export const fr: Localized<EnMessages> = {
     continueWithGoogle: 'Continuer avec Google',
     continueWithApple: 'Continuer avec Apple',
     continueWithFacebook: 'Continuer avec Facebook',
+    continueWithDiscord: 'Continuer avec Discord',
     emailOrHandle: 'E-mail ou nom d’utilisateur',
     or: 'ou',
     noAccount: 'Pas encore de compte ? ',

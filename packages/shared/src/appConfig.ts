@@ -94,6 +94,7 @@ export const authProvidersSchema = z.object({
   google: z.boolean(),
   apple: z.boolean(),
   facebook: z.boolean(),
+  discord: z.boolean(),
 })
 export type AuthProviders = z.infer<typeof authProvidersSchema>
 
