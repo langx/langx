@@ -3,15 +3,16 @@ import { useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { AppState, Platform } from 'react-native'
-import { api } from '../api/client'
+import { api, ApiRequestError } from '../api/client'
 import { markConversationRead } from '../api/queries'
 import { track } from '../lib/analytics'
 import { getActiveConversation } from '../lib/activeConversation'
 import { presentationFor } from '../lib/foregroundPush'
 import { previewOf, showMessageBanner } from '../lib/inAppNotifications'
-import { invalidateMissedEvents } from '../lib/missedEvents'
-import { configureNotifications } from '../lib/notifications'
+import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
+import { configureNotifications, sweepTray } from '../lib/notifications'
 import { notificationRoute } from '../lib/notificationRoute'
+import type { questionsFor, TrayFacts } from '../lib/trayScope'
 
 /**
  * What the payload called itself, for the analytics event only.
@@ -59,12 +60,48 @@ async function sendQuickReply(
       body,
       clientId: `notif-${conversationId}-${Date.now()}`,
     })
+    // Answering is reading, as it is in the thread. Without this the server
+    // still counted the message unread, so the icon kept its number and the
+    // thread's other pushes stayed in the shade over a conversation already
+    // answered.
+    await markConversationRead(conversationId, queryClient)
     // The thread now has a message the caches have never seen, and the app
     // may be opened straight into it.
     await invalidateMissedEvents(queryClient)
   } catch {
     // See above.
   }
+}
+
+/**
+ * What `sweepTray` asks, answered by the server rather than the caches: the
+ * point is what happened where this device was not looking, and the caches
+ * are what it last saw.
+ *
+ * One request per thread in the shade, which is a handful. A thread that
+ * cannot be asked about is left where it is; one this reader can no longer
+ * open (404) is finished with, since tapping its push leads nowhere.
+ */
+async function askServer({ threads, inbox }: ReturnType<typeof questionsFor>): Promise<TrayFacts> {
+  const read = await Promise.all(
+    threads.map(async (id) => {
+      try {
+        const { unread } = await api.get<{ unread: number }>(`/conversations/${id}`)
+        return unread === 0 ? id : null
+      } catch (error) {
+        return error instanceof ApiRequestError && error.status === 404 ? id : null
+      }
+    }),
+  )
+  let inboxRead = false
+  if (inbox) {
+    try {
+      inboxRead = (await api.get<{ total: number }>('/me/notifications/unread')).total === 0
+    } catch {
+      // Not knowing is not the same as read.
+    }
+  }
+  return { readThreads: new Set(read.filter((id) => id !== null)), inboxRead }
 }
 
 /**
@@ -91,8 +128,18 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
     let subscription: { remove: () => void } | undefined
     let received: { remove: () => void } | undefined
 
+    // The shade catches up whenever the app does: see `useSocket`'s resync,
+    // which answers the same "what happened while I was away" for the caches.
+    let lastAppState = AppState.currentState
+    const appState = AppState.addEventListener('change', (next) => {
+      if (resumedFromBackground(lastAppState, next)) void sweepTray(askServer)
+      lastAppState = next
+    })
+
     void (async () => {
       await configureNotifications()
+      // A cold start is a return too, and the usual one.
+      void sweepTray(askServer)
       try {
         const Notifications = await import('expo-notifications')
         if (cancelled) return
@@ -189,6 +236,7 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
 
     return () => {
       cancelled = true
+      appState.remove()
       subscription?.remove()
       received?.remove()
     }

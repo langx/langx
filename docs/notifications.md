@@ -552,6 +552,10 @@ lock screen in the morning.
 - **Opening a thread** clears that thread's `message` pushes. So does a read on
   another of the same person's devices, through `conversation:read`, while this
   one holds a socket. A `meetingReminder` stays: it is about a time.
+- **Answering from the notification** marks the thread read, so it clears the
+  same way and the icon's count drops with it.
+- **Opening the wallet** clears `wallet` and `bountyPaid`: the gift, the pool
+  and a bounty's tokens are all drawn there.
 - **"Mark all read"** clears `social`, `badgeEarned`, `profileVisits` and
   `wallet`.
 - **Tapping a row** clears the pushes behind it, read or not. A push carries no
@@ -560,7 +564,25 @@ lock screen in the morning.
   the repeating kinds by kind.
 
 Only a device with the app running can clear its own shade. There is no silent
-push to reach one that is closed.
+push to reach one that is closed. So the rules above miss everything dealt with
+while this device was not looking: read on another device while this one was
+asleep, or announced by a push that landed after the read.
+
+**When the app opens**, from cold or from the background, it asks the server
+and clears what the answers say is finished:
+
+- `message` pushes of a thread with nothing unread, or one this reader can no
+  longer open;
+- `social`, `badgeEarned` and `profileVisits` once the centre has nothing
+  unread;
+- `security` a day after it arrived (`SECURITY_PUSH_TRAY_MS`). It has no row
+  to read, and without a limit a sign-in from last month stayed on the lock
+  screen. The day is counted at the next open, not to the minute.
+
+Everything else stays until it is tapped or swiped: the streak, Echo and meeting
+reminders are about a time or a habit, `billing` is money, and `wallet` is left
+to the wallet because the gift-ready push has no row a clear centre could vouch
+for.
 
 ## Not built
 

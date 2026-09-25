@@ -1,5 +1,6 @@
+import { SECURITY_PUSH_TRAY_MS } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { belongsTo } from './trayScope'
+import { belongsTo, deliveredAtMs, questionsFor, staleOnOpen, type TrayFacts } from './trayScope'
 
 describe('which shade notifications a read clears', () => {
   it('clears the message pushes of the thread that was read', () => {
@@ -40,6 +41,15 @@ describe('which shade notifications a read clears', () => {
       'meetingReminder',
     ]) {
       expect(belongsTo({ kind, conversationId: 'c1' }, 'inbox'), kind).toBe(false)
+    }
+  })
+
+  it('clears what the wallet shows when the wallet is opened', () => {
+    for (const kind of ['wallet', 'bountyPaid']) {
+      expect(belongsTo({ kind }, 'wallet'), kind).toBe(true)
+    }
+    for (const kind of ['message', 'social', 'security', 'badgeEarned']) {
+      expect(belongsTo({ kind, conversationId: 'c1' }, 'wallet'), kind).toBe(false)
     }
   })
 
@@ -92,5 +102,78 @@ describe('which shade notifications a read clears', () => {
         belongsTo({ kind: 'message', conversationId: 'c1' }, { row: { kind: 'profileVisits' } }),
       ).toBe(false)
     })
+  })
+})
+
+describe('what the app clears from the shade when it opens', () => {
+  const now = Date.UTC(2026, 8, 25, 8, 0)
+  const nothingRead: TrayFacts = { readThreads: new Set(), inboxRead: false }
+
+  it('asks only about what the shade holds', () => {
+    expect(
+      questionsFor([
+        { kind: 'message', conversationId: 'c1' },
+        { kind: 'message', conversationId: 'c1' },
+        { kind: 'message', conversationId: 'c2' },
+        { kind: 'meetingReminder', conversationId: 'c3' },
+        { kind: 'security' },
+      ]),
+    ).toEqual({ threads: ['c1', 'c2'], inbox: false })
+    expect(questionsFor([{ kind: 'social', postId: 'p1' }])).toEqual({ threads: [], inbox: true })
+    expect(questionsFor([null, 'message', {}])).toEqual({ threads: [], inbox: false })
+  })
+
+  /** Read on a laptop, answered from the notification, or read before this existed. */
+  it('clears the message pushes of threads the server says are read', () => {
+    const facts: TrayFacts = { readThreads: new Set(['c1']), inboxRead: false }
+    expect(staleOnOpen({ kind: 'message', conversationId: 'c1' }, now, facts, now)).toBe(true)
+    expect(staleOnOpen({ kind: 'message', conversationId: 'c2' }, now, facts, now)).toBe(false)
+    expect(staleOnOpen({ kind: 'meetingReminder', conversationId: 'c1' }, now, facts, now)).toBe(
+      false,
+    )
+  })
+
+  it('clears a sign-in alert a day after it arrived, and not before', () => {
+    const security = { kind: 'security' }
+    expect(staleOnOpen(security, now - SECURITY_PUSH_TRAY_MS + 1, nothingRead, now)).toBe(false)
+    expect(staleOnOpen(security, now - SECURITY_PUSH_TRAY_MS, nothingRead, now)).toBe(true)
+  })
+
+  it("clears the centre's kinds only once nothing there is unread", () => {
+    const read: TrayFacts = { readThreads: new Set(), inboxRead: true }
+    for (const kind of ['social', 'badgeEarned', 'profileVisits']) {
+      expect(staleOnOpen({ kind }, now, read, now), kind).toBe(true)
+      expect(staleOnOpen({ kind }, now, nothingRead, now), kind).toBe(false)
+    }
+  })
+
+  /** The gift-ready push has no row, so a clear centre says nothing about it. */
+  it('leaves the wallet, the reminders and billing to their own screens', () => {
+    const read: TrayFacts = { readThreads: new Set(['c1']), inboxRead: true }
+    const old = now - 30 * SECURITY_PUSH_TRAY_MS
+    for (const kind of [
+      'wallet',
+      'bountyPaid',
+      'billing',
+      'streakReminder',
+      'echo',
+      'meetingReminder',
+      'promotion',
+    ]) {
+      expect(staleOnOpen({ kind, conversationId: 'c1' }, old, read, now), kind).toBe(false)
+    }
+  })
+
+  it('leaves anything it does not recognise', () => {
+    const read: TrayFacts = { readThreads: new Set(['c1']), inboxRead: true }
+    for (const data of [null, undefined, 'message', {}, { conversationId: 'c1' }]) {
+      expect(staleOnOpen(data, 0, read, now)).toBe(false)
+    }
+  })
+
+  /** iOS hands over seconds and Android milliseconds, under the same name. */
+  it('reads a delivery time in seconds or in milliseconds', () => {
+    expect(deliveredAtMs(now / 1000)).toBe(now)
+    expect(deliveredAtMs(now)).toBe(now)
   })
 })

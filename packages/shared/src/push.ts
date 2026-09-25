@@ -105,6 +105,17 @@ export const PUSH_CATEGORY_MESSAGE = 'message'
 export const PUSH_ACTION_REPLY = 'reply'
 
 /**
+ * How long a `security` push stays in the OS shade.
+ *
+ * It has no row in the app to read and nothing that marks it dealt with, so
+ * without a limit a sign-in from last month was still on the lock screen.
+ * A day is long enough to be seen by anyone who opens their phone. The app
+ * enforces it when it next opens: a phone cannot remove a notification by
+ * itself while the app is not running.
+ */
+export const SECURITY_PUSH_TRAY_MS = 24 * 60 * 60 * 1000
+
+/**
  * Local hour (in the user's own timezone) at which the streak reminder is
  * worth sending: late enough that most people have had their chance to act,
  * early enough that they still can.
