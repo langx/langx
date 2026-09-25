@@ -1368,6 +1368,72 @@ export const fr: Localized<EnMessages> = {
     nextBadge: 'Prochain : {label}',
     hiddenFromOthers: 'Masqué aux autres',
   },
+  howItWorks: {
+    title: 'Comment fonctionne LangX',
+    featuresSection: 'Fonctions d’apprentissage',
+    gotIt: 'Compris',
+    whatTitle: 'Qu’est-ce que LangX',
+    whatBody:
+      'Un endroit pour pratiquer une langue avec ceux qui la parlent. Chaque personne avec qui tu es mis en relation est native d’une langue que tu apprends et apprend une langue que tu parles : tu enseignes la tienne, elle la sienne, et vous progressez tous les deux.',
+    whatBody2:
+      'Ici, personne n’est un professeur payé. Tout le monde apprend quelque chose, et chacun est l’expert de sa propre langue.',
+    helpTitle: 'Comment aider ton partenaire à apprendre',
+    helpBody:
+      'Un bon partenaire n’est pas un partenaire parfait — juste quelqu’un qui donne envie de continuer.',
+    helpTakeTurns: 'Chacun son tour : un moment dans sa langue, un moment dans la tienne.',
+    helpCorrect: 'Corrige une ou deux choses à la fois, pas toutes les fautes d’un message.',
+    helpSimple: 'Écris simplement, et ralentis quand on te le demande.',
+    helpQuestions:
+      'Pose des questions. Une réponse est plus facile à écrire qu’un premier message.',
+    helpPatient: 'Sois patient. Toi aussi, tu apprends.',
+    rulesTitle: 'Comportements inacceptables',
+    rulesLead:
+      'LangX sert à pratiquer une langue. N’importe lequel de ces comportements peut entraîner la suspension ou la suppression définitive d’un compte.',
+    rulesHarassment: 'Le harcèlement, ou insister quand quelqu’un a cessé de répondre',
+    rulesHate: 'Les discours de haine et les insultes',
+    rulesSexual:
+      'Les contenus sexuels et les avances non désirées — LangX n’est pas une appli de rencontre',
+    rulesMinors: 'Tout ce qui sexualise un mineur',
+    rulesImpersonation: 'Se faire passer pour quelqu’un d’autre, ou mentir sur son âge',
+    rulesPrivate: 'Publier les informations privées de quelqu’un',
+    rulesSpam: 'Le spam, les arnaques, la publicité et les demandes d’argent',
+    rulesTopics:
+      'La politique et la religion ne sont pas interdites — une langue ne sert pas à grand-chose si l’on ne peut parler que de la météo. L’hostilité envers une personne, si.',
+    rulesBlock:
+      'Bloquer agit immédiatement, et l’autre personne n’en est pas informée. Signaler nous transmet le problème.',
+    rulesAccept: 'J’ai compris',
+    rulesRead: 'Lire les règles complètes',
+    holdTitle: 'Appuie longuement sur un message',
+    holdBody:
+      'Appuie longuement sur n’importe quel message pour voir ce que tu peux en faire. Répondre, corriger, traduire, copier ou le garder dans Echo — ce qui est proposé dépend du message et de qui l’a envoyé.',
+    correctTitle: 'Corrige, et fais-toi corriger',
+    correctBody:
+      'Appuie longuement sur le message de ton partenaire et choisis Corriger. Répare ce qui ne va pas et envoie : il voit exactement ce qui a changé. Les corrections sont illimitées sur tous les forfaits.',
+    translateTitle: 'Traduire un message',
+    translateBody:
+      'Appuie longuement sur un message et choisis Traduire. La traduction apparaît dessous, dans ta langue, sans quitter la discussion. Si tu en parles plusieurs, choisis laquelle dans les Réglages.',
+    voiceTitle: 'Messages vocaux',
+    voiceBody:
+      'Touche le micro pour enregistrer. Réécoute avant d’envoyer — entendre un mot, c’est la moitié du chemin.',
+    echoTitle: 'Garde-le dans Echo',
+    echoBody:
+      'Appuie longuement sur un message et choisis Ajouter à Echo. La phrase revient dans l’onglet Echo juste avant que tu l’oublies, jusqu’à ce que tu la connaisses.',
+    feedTitle: 'Demande au Fil',
+    feedBody:
+      'Publie une phrase pour la faire corriger, ou demande comment se dit un mot et quelqu’un l’enregistrera. Puis fais de même pour quelqu’un d’autre.',
+    streakTitle: 'Séries et jetons',
+    streakBody:
+      'Un message par jour garde ta série en vie. Parler et enseigner rapportent des jetons, à dépenser en gel de série ou en nouveau style pour ton profil.',
+    discoverTitle: 'Trouver un partenaire',
+    discoverBody:
+      'Tout le monde dans Découvrir parle une langue que tu apprends et apprend une langue que tu parles. Pour toi suit tes langues, Actifs montre qui vient de passer, et À proximité utilise ta position une fois que tu la partages. Ouvre un profil et dis bonjour — c’est ainsi que commence presque chaque échange ici.',
+    plusTitle: 'Le bouton +',
+    plusBody:
+      'Touche + à côté de la zone de message. En plus des photos et des vocaux, tu peux demander une correction, demander comment se dit quelque chose et recevoir un vocal en retour, enregistrer une expression avec son sens, proposer un créneau pour parler ou poser une question à une seule bonne réponse.',
+    sendTranslationTitle: 'Écrire dans sa langue',
+    sendTranslationBody:
+      'Touche + et choisis d’envoyer aussi dans la langue de ton partenaire. Écris dans la tienne et les deux partent : il te lit sans deviner. C’est inclus dans {plan}.',
+  },
 
   editProfile: {
     countryUnknown: 'Non défini',

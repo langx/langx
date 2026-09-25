@@ -1534,6 +1534,75 @@ export const en = {
     hiddenFromOthers: 'Hidden from others',
   },
 
+  /**
+   * "How LangX works", behind the link at the foot of the Me tab. Each topic
+   * describes what the app does today, and the rules are
+   * `docs/community-guidelines.md`'s list — change one, change the other.
+   */
+  howItWorks: {
+    title: 'How LangX works',
+    featuresSection: 'Learning features',
+    gotIt: 'Got it',
+    whatTitle: 'What is LangX',
+    whatBody:
+      'A place to practise a language with the people who speak it. Everyone you are matched with is native in a language you are learning and is learning one you speak — you teach yours, they teach theirs, and both of you get better.',
+    whatBody2:
+      'Nobody here is a paid teacher. Everybody is learning something, and everybody is the expert in their own language.',
+    helpTitle: 'How to help your partner learn',
+    helpBody: 'A good partner is not a perfect one — just someone who makes it easy to keep going.',
+    helpTakeTurns: 'Take turns: some of the time in their language, some in yours.',
+    helpCorrect: 'Correct one or two things at a time, not every mistake in a message.',
+    helpSimple: 'Write simply, and slow down when they ask you to.',
+    helpQuestions: 'Ask questions. A reply is easier to write than a first message.',
+    helpPatient: 'Be patient. You are learning too.',
+    rulesTitle: 'Unacceptable behaviour',
+    rulesLead:
+      'LangX is for practising a language. Any of these can get an account suspended or removed for good.',
+    rulesHarassment: 'Harassment, or keeping on after someone has stopped replying',
+    rulesHate: 'Hate speech and slurs',
+    rulesSexual: 'Sexual content and unwanted advances — LangX is not a dating app',
+    rulesMinors: 'Anything that sexualises a minor',
+    rulesImpersonation: 'Pretending to be someone else, or lying about your age',
+    rulesPrivate: 'Posting someone else’s private information',
+    rulesSpam: 'Spam, scams, advertising, and asking for money',
+    rulesTopics:
+      'Politics and religion are not off limits — a language is not much use if you can only talk about the weather. Hostility towards a person is.',
+    rulesBlock:
+      'Blocking works at once, and the other person is not told. Reporting sends it to us.',
+    rulesAccept: 'I understand',
+    rulesRead: 'Read the full guidelines',
+    holdTitle: 'Hold a message',
+    holdBody:
+      'Press and hold any message to see what you can do with it. Reply, correct, translate, copy, or keep it in Echo — what is offered depends on the message and who sent it.',
+    correctTitle: 'Correct and be corrected',
+    correctBody:
+      'Hold your partner’s message and choose Correct. Fix what is wrong and send it: they see exactly what changed. Corrections are unlimited on every plan.',
+    translateTitle: 'Translate a message',
+    translateBody:
+      'Hold a message and choose Translate. The translation appears under it, in your own language, without leaving the chat. If you speak more than one, pick which in Settings.',
+    voiceTitle: 'Voice notes',
+    voiceBody:
+      'Tap the microphone to record. Play it back before you send it — hearing a word is half of learning it.',
+    echoTitle: 'Keep it in Echo',
+    echoBody:
+      'Hold a message and choose Add to Echo. The sentence comes back in the Echo tab just before you would forget it, until you know it.',
+    feedTitle: 'Ask the Feed',
+    feedBody:
+      'Post a sentence to have it corrected, or ask how a word is said and someone will record it. Then do the same for somebody else.',
+    streakTitle: 'Streaks and tokens',
+    streakBody:
+      'One message a day keeps your streak alive. Talking and teaching earn tokens, which you can spend on a streak freeze or a new look for your profile.',
+    discoverTitle: 'Find a partner',
+    discoverBody:
+      'Everyone in Discover speaks a language you are learning and is learning one you speak. For you is matched to your languages, Active is who has just been around, and Nearby uses your location once you share it. Open a profile and say hello — that is how almost every exchange here begins.',
+    plusTitle: 'The + button',
+    plusBody:
+      'Tap + beside the message box. As well as photos and voice notes, you can ask to be corrected, ask how something is said and get a voice note back, save a phrase with what it means, propose a time to talk, or send a quiz with one right answer.',
+    sendTranslationTitle: 'Write in their language',
+    sendTranslationBody:
+      'Tap + and choose to also send in your partner’s language. Write in yours and both go, so they read you without guessing. This one comes with {plan}.',
+  },
+
   editProfile: {
     countryUnknown: 'Not set',
     countryHint: 'From your connection',

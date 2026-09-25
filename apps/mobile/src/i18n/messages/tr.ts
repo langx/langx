@@ -1362,6 +1362,68 @@ export const tr: Localized<EnMessages> = {
     nextBadge: 'Sıradaki: {label}',
     hiddenFromOthers: 'Başkalarından gizli',
   },
+  howItWorks: {
+    title: 'LangX nasıl çalışır',
+    featuresSection: 'Öğrenme özellikleri',
+    gotIt: 'Tamam',
+    whatTitle: 'LangX nedir',
+    whatBody:
+      'Bir dili, onu konuşan insanlarla pratik ettiğin bir yer. Eşleştiğin herkesin ana dili senin öğrendiğin bir dil ve o da senin konuştuğun bir dili öğreniyor — sen kendi dilini öğretirsin, o kendininkini, ikiniz de ilerlersiniz.',
+    whatBody2:
+      'Burada kimse ücretli öğretmen değil. Herkes bir şey öğreniyor ve herkes kendi dilinin uzmanı.',
+    helpTitle: 'Partnerinin öğrenmesine nasıl yardım edersin',
+    helpBody: 'İyi bir partner kusursuz olan değil, devam etmeyi kolaylaştıran kişidir.',
+    helpTakeTurns: 'Sırayla konuşun: biraz onun dilinde, biraz seninkinde.',
+    helpCorrect: 'Bir mesajdaki her hatayı değil, bir seferde bir iki şeyi düzelt.',
+    helpSimple: 'Sade yaz, senden isterse yavaşla.',
+    helpQuestions: 'Soru sor. Yanıt yazmak, ilk mesajı yazmaktan kolaydır.',
+    helpPatient: 'Sabırlı ol. Sen de öğreniyorsun.',
+    rulesTitle: 'Kabul edilemez davranışlar',
+    rulesLead:
+      'LangX dil pratiği içindir. Bunlardan herhangi biri bir hesabın askıya alınmasına ya da kalıcı olarak kaldırılmasına yol açabilir.',
+    rulesHarassment: 'Taciz ya da biri yanıt vermeyi bıraktıktan sonra ısrar etmek',
+    rulesHate: 'Nefret söylemi ve hakaret',
+    rulesSexual: 'Cinsel içerik ve istenmeyen yakınlaşma — LangX bir flört uygulaması değil',
+    rulesMinors: 'Reşit olmayan birini cinselleştiren her şey',
+    rulesImpersonation: 'Başkası gibi davranmak ya da yaşın hakkında yalan söylemek',
+    rulesPrivate: 'Başkasının özel bilgilerini paylaşmak',
+    rulesSpam: 'Spam, dolandırıcılık, reklam ve para istemek',
+    rulesTopics:
+      'Siyaset ve din yasak değil — yalnızca hava durumundan konuşabildiğin bir dil pek işe yaramaz. Yasak olan, bir kişiye düşmanlık.',
+    rulesBlock: 'Engellemek hemen işler ve karşı tarafa söylenmez. Şikâyet ise bize ulaşır.',
+    rulesAccept: 'Anladım',
+    rulesRead: 'Kuralların tamamını oku',
+    holdTitle: 'Bir mesaja basılı tut',
+    holdBody:
+      'Neler yapabileceğini görmek için herhangi bir mesaja basılı tut. Yanıtla, düzelt, çevir, kopyala ya da Echo’da sakla — neler sunulduğu mesaja ve kimin gönderdiğine bağlı.',
+    correctTitle: 'Düzelt, düzeltil',
+    correctBody:
+      'Partnerinin mesajına basılı tutup Düzelt’i seç. Yanlışı düzeltip gönder: tam olarak neyin değiştiğini görür. Düzeltmeler her planda sınırsız.',
+    translateTitle: 'Bir mesajı çevir',
+    translateBody:
+      'Bir mesaja basılı tutup Çevir’i seç. Çeviri, sohbetten çıkmadan, kendi dilinde mesajın altında belirir. Birden fazla dil konuşuyorsan hangisinde olacağını Ayarlar’dan seç.',
+    voiceTitle: 'Sesli notlar',
+    voiceBody:
+      'Kaydetmek için mikrofona dokun. Göndermeden önce dinle — bir kelimeyi duymak öğrenmenin yarısı.',
+    echoTitle: 'Echo’da sakla',
+    echoBody:
+      'Bir mesaja basılı tutup Echo’ya ekle’yi seç. Cümle, tam unutmak üzereyken Echo sekmesinde geri gelir; ta ki onu öğrenene dek.',
+    feedTitle: 'Akış’a sor',
+    feedBody:
+      'Düzeltilmesi için bir cümle paylaş ya da bir kelimenin nasıl söylendiğini sor, biri senin için kaydetsin. Sonra aynısını bir başkası için yap.',
+    streakTitle: 'Seriler ve jetonlar',
+    streakBody:
+      'Günde bir mesaj serini ayakta tutar. Konuşmak ve öğretmek jeton kazandırır; bunları seri dondurmaya ya da profilin için yeni bir görünüme harcayabilirsin.',
+    discoverTitle: 'Partner bul',
+    discoverBody:
+      'Keşfet’teki herkes senin öğrendiğin bir dili konuşuyor ve senin konuştuğun bir dili öğreniyor. Sana özel dillerine göre eşleşir, Aktif az önce buralarda olanları gösterir, Yakında ise konumunu paylaştığında çalışır. Bir profil aç ve merhaba de — buradaki neredeyse her değişim böyle başlar.',
+    plusTitle: '+ düğmesi',
+    plusBody:
+      'Mesaj kutusunun yanındaki +’ya dokun. Fotoğraf ve sesli notun yanı sıra düzeltilmeyi isteyebilir, bir şeyin nasıl söylendiğini sorup sesli not olarak yanıt alabilir, bir ifadeyi anlamıyla birlikte kaydedebilir, konuşmak için bir saat önerebilir ya da tek doğru cevaplı bir soru gönderebilirsin.',
+    sendTranslationTitle: 'Onun dilinde yaz',
+    sendTranslationBody:
+      '+’ya dokun ve partnerinin dilinde de göndermeyi seç. Kendi dilinde yaz, ikisi birlikte gitsin; seni tahmin etmeden okur. Bu özellik {plan} ile gelir.',
+  },
 
   editProfile: {
     countryUnknown: 'Belirsiz',

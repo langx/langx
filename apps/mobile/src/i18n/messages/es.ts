@@ -1361,6 +1361,69 @@ export const es: Localized<EnMessages> = {
     nextBadge: 'Siguiente: {label}',
     hiddenFromOthers: 'Oculto para los demás',
   },
+  howItWorks: {
+    title: 'Cómo funciona LangX',
+    featuresSection: 'Funciones para aprender',
+    gotIt: 'Entendido',
+    whatTitle: 'Qué es LangX',
+    whatBody:
+      'Un lugar para practicar un idioma con quienes lo hablan. Todas las personas con las que te emparejas son nativas en un idioma que aprendes y aprenden uno que tú hablas: tú enseñas el tuyo, ellas el suyo, y ambos mejoráis.',
+    whatBody2:
+      'Aquí nadie es profesor de pago. Todo el mundo está aprendiendo algo, y todo el mundo es experto en su propio idioma.',
+    helpTitle: 'Cómo ayudar a tu compañero a aprender',
+    helpBody: 'Un buen compañero no es uno perfecto, sino alguien que hace fácil seguir adelante.',
+    helpTakeTurns: 'Turnaos: un rato en su idioma y otro en el tuyo.',
+    helpCorrect: 'Corrige una o dos cosas cada vez, no todos los errores de un mensaje.',
+    helpSimple: 'Escribe de forma sencilla y ve más despacio cuando te lo pida.',
+    helpQuestions: 'Haz preguntas. Una respuesta es más fácil de escribir que un primer mensaje.',
+    helpPatient: 'Ten paciencia. Tú también estás aprendiendo.',
+    rulesTitle: 'Comportamientos inaceptables',
+    rulesLead:
+      'LangX es para practicar un idioma. Cualquiera de estas cosas puede hacer que una cuenta se suspenda o se elimine para siempre.',
+    rulesHarassment: 'Acoso, o insistir cuando alguien ya ha dejado de responder',
+    rulesHate: 'Discurso de odio e insultos',
+    rulesSexual: 'Contenido sexual e insinuaciones no deseadas: LangX no es una app de citas',
+    rulesMinors: 'Cualquier cosa que sexualice a un menor',
+    rulesImpersonation: 'Hacerse pasar por otra persona o mentir sobre tu edad',
+    rulesPrivate: 'Publicar información privada de otra persona',
+    rulesSpam: 'Spam, estafas, publicidad y pedir dinero',
+    rulesTopics:
+      'La política y la religión no están prohibidas: un idioma sirve de poco si solo puedes hablar del tiempo. La hostilidad hacia una persona, sí.',
+    rulesBlock:
+      'Bloquear funciona al instante y la otra persona no se entera. Denunciar nos lo envía a nosotros.',
+    rulesAccept: 'Lo entiendo',
+    rulesRead: 'Leer las normas completas',
+    holdTitle: 'Mantén pulsado un mensaje',
+    holdBody:
+      'Mantén pulsado cualquier mensaje para ver qué puedes hacer con él. Responder, corregir, traducir, copiar o guardarlo en Echo: lo que se ofrece depende del mensaje y de quién lo envió.',
+    correctTitle: 'Corrige y deja que te corrijan',
+    correctBody:
+      'Mantén pulsado el mensaje de tu compañero y elige Corregir. Arregla lo que está mal y envíalo: verá exactamente qué ha cambiado. Las correcciones son ilimitadas en todos los planes.',
+    translateTitle: 'Traducir un mensaje',
+    translateBody:
+      'Mantén pulsado un mensaje y elige Traducir. La traducción aparece debajo, en tu idioma, sin salir del chat. Si hablas más de uno, elige cuál en Ajustes.',
+    voiceTitle: 'Audios',
+    voiceBody:
+      'Toca el micrófono para grabar. Escúchalo antes de enviarlo: oír una palabra es la mitad de aprenderla.',
+    echoTitle: 'Guárdalo en Echo',
+    echoBody:
+      'Mantén pulsado un mensaje y elige Añadir a Echo. La frase vuelve en la pestaña Echo justo antes de que la olvides, hasta que te la sepas.',
+    feedTitle: 'Pregunta en el Muro',
+    feedBody:
+      'Publica una frase para que te la corrijan, o pregunta cómo se dice una palabra y alguien la grabará. Luego haz lo mismo por otra persona.',
+    streakTitle: 'Rachas y fichas',
+    streakBody:
+      'Un mensaje al día mantiene viva tu racha. Hablar y enseñar dan fichas, que puedes gastar en congelar la racha o en un nuevo detalle para tu perfil.',
+    discoverTitle: 'Encuentra un compañero',
+    discoverBody:
+      'Todas las personas en Descubrir hablan un idioma que aprendes y aprenden uno que tú hablas. Para ti se ajusta a tus idiomas, Activos muestra quién acaba de pasar por aquí y Cerca usa tu ubicación cuando la compartes. Abre un perfil y saluda: así empieza casi cada intercambio aquí.',
+    plusTitle: 'El botón +',
+    plusBody:
+      'Toca + junto al cuadro de mensaje. Además de fotos y audios, puedes pedir que te corrijan, preguntar cómo se dice algo y recibir un audio, guardar una expresión con su significado, proponer una hora para hablar o hacer una pregunta con una sola respuesta correcta.',
+    sendTranslationTitle: 'Escribe en su idioma',
+    sendTranslationBody:
+      'Toca + y elige enviar también en el idioma de tu compañero. Escribe en el tuyo y se envían los dos, así te lee sin adivinar. Viene con {plan}.',
+  },
 
   editProfile: {
     countryUnknown: 'Sin definir',

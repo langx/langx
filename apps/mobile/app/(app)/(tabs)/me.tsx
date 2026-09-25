@@ -514,6 +514,20 @@ export default function MeScreen() {
         onPress={() => router.push('/(app)/edit-profile')}
         style={styles.edit}
       />
+
+      {/*
+        The very last thing on the tab, and quiet on purpose: a guide is
+        somewhere you go once, or when something has stopped making sense,
+        not a row competing with the ones above it.
+      */}
+      <Pressable
+        accessibilityRole="link"
+        onPress={() => router.push('/(app)/how-it-works')}
+        hitSlop={8}
+        style={({ pressed }) => [styles.howItWorks, pressed && styles.pressed]}
+      >
+        <Text style={styles.howItWorksLabel}>{t('howItWorks.title')}</Text>
+      </Pressable>
     </Screen>
   )
 }
@@ -591,5 +605,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   proTitle: { color: colors.pro, fontSize: 16, fontWeight: '700' },
   proBody: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
   quota: { color: colors.text, fontSize: 13, marginTop: 10 },
-  edit: { marginVertical: spacing.xxl },
+  // The link under it takes the bottom margin, so the button keeps only its top.
+  edit: { marginTop: spacing.xxl },
+  howItWorks: { alignSelf: 'center', marginBottom: spacing.xxl, marginTop: spacing.xl },
+  howItWorksLabel: { color: colors.textMuted, fontSize: 14, textDecorationLine: 'underline' },
 }))

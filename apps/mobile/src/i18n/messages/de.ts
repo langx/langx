@@ -1389,6 +1389,71 @@ export const de: Localized<EnMessages> = {
     nextBadge: 'Als Nächstes: {label}',
     hiddenFromOthers: 'Für andere verborgen',
   },
+  howItWorks: {
+    title: 'So funktioniert LangX',
+    featuresSection: 'Lernfunktionen',
+    gotIt: 'Verstanden',
+    whatTitle: 'Was ist LangX',
+    whatBody:
+      'Ein Ort, an dem du eine Sprache mit den Menschen übst, die sie sprechen. Alle, mit denen du ein Match hast, sind Muttersprachler in einer Sprache, die du lernst, und lernen eine, die du sprichst — du bringst ihnen deine bei, sie dir ihre, und ihr werdet beide besser.',
+    whatBody2:
+      'Hier ist niemand bezahlter Lehrer. Alle lernen etwas, und alle sind Experten für ihre eigene Sprache.',
+    helpTitle: 'So hilfst du deinem Partner beim Lernen',
+    helpBody:
+      'Ein guter Partner ist kein perfekter — nur jemand, der es leicht macht, dranzubleiben.',
+    helpTakeTurns: 'Wechselt euch ab: mal in seiner Sprache, mal in deiner.',
+    helpCorrect: 'Korrigiere ein, zwei Dinge auf einmal, nicht jeden Fehler in einer Nachricht.',
+    helpSimple: 'Schreib einfach, und werde langsamer, wenn er darum bittet.',
+    helpQuestions: 'Stell Fragen. Eine Antwort ist leichter zu schreiben als eine erste Nachricht.',
+    helpPatient: 'Sei geduldig. Du lernst ja auch.',
+    rulesTitle: 'Inakzeptables Verhalten',
+    rulesLead:
+      'LangX ist zum Üben einer Sprache da. Jedes davon kann dazu führen, dass ein Konto gesperrt oder endgültig entfernt wird.',
+    rulesHarassment: 'Belästigung, oder weiterschreiben, nachdem jemand nicht mehr antwortet',
+    rulesHate: 'Hassrede und Beleidigungen',
+    rulesSexual:
+      'Sexuelle Inhalte und unerwünschte Annäherungsversuche — LangX ist keine Dating-App',
+    rulesMinors: 'Alles, was Minderjährige sexualisiert',
+    rulesImpersonation: 'Sich als jemand anderes ausgeben oder beim Alter lügen',
+    rulesPrivate: 'Private Informationen über andere veröffentlichen',
+    rulesSpam: 'Spam, Betrug, Werbung und Bitten um Geld',
+    rulesTopics:
+      'Politik und Religion sind nicht tabu — eine Sprache nützt wenig, wenn man nur übers Wetter reden kann. Feindseligkeit gegen eine Person schon.',
+    rulesBlock:
+      'Blockieren wirkt sofort, und die andere Person erfährt es nicht. Eine Meldung geht an uns.',
+    rulesAccept: 'Ich habe verstanden',
+    rulesRead: 'Die vollständigen Richtlinien lesen',
+    holdTitle: 'Nachricht gedrückt halten',
+    holdBody:
+      'Halte eine Nachricht gedrückt, um zu sehen, was du damit machen kannst. Antworten, korrigieren, übersetzen, kopieren oder in Echo behalten — was angeboten wird, hängt von der Nachricht ab und davon, wer sie geschickt hat.',
+    correctTitle: 'Korrigiere und lass dich korrigieren',
+    correctBody:
+      'Halte die Nachricht deines Partners gedrückt und wähle Korrigieren. Verbessere, was falsch ist, und schick es ab: Er sieht genau, was sich geändert hat. Korrekturen sind in jedem Tarif unbegrenzt.',
+    translateTitle: 'Eine Nachricht übersetzen',
+    translateBody:
+      'Halte eine Nachricht gedrückt und wähle Übersetzen. Die Übersetzung erscheint darunter, in deiner eigenen Sprache, ohne dass du den Chat verlässt. Sprichst du mehrere, wähle in den Einstellungen, welche.',
+    voiceTitle: 'Sprachnachrichten',
+    voiceBody:
+      'Tippe aufs Mikrofon, um aufzunehmen. Hör sie dir vor dem Senden an — ein Wort zu hören ist die halbe Miete.',
+    echoTitle: 'In Echo behalten',
+    echoBody:
+      'Halte eine Nachricht gedrückt und wähle Zu Echo hinzufügen. Der Satz kommt im Echo-Tab zurück, kurz bevor du ihn vergessen würdest — bis du ihn kannst.',
+    feedTitle: 'Frag den Feed',
+    feedBody:
+      'Teile einen Satz, um ihn korrigieren zu lassen, oder frag, wie ein Wort ausgesprochen wird, und jemand nimmt es auf. Dann mach dasselbe für jemand anderen.',
+    streakTitle: 'Serien und Token',
+    streakBody:
+      'Eine Nachricht am Tag hält deine Serie am Leben. Reden und Unterrichten bringen Token, die du für einen Serienschutz oder einen neuen Look für dein Profil ausgeben kannst.',
+    discoverTitle: 'Einen Partner finden',
+    discoverBody:
+      'Alle unter Entdecken sprechen eine Sprache, die du lernst, und lernen eine, die du sprichst. Für dich passt zu deinen Sprachen, Aktiv zeigt, wer gerade da war, und In der Nähe nutzt deinen Standort, sobald du ihn teilst. Öffne ein Profil und sag Hallo — so beginnt hier fast jeder Austausch.',
+    plusTitle: 'Der +-Knopf',
+    plusBody:
+      'Tippe auf + neben dem Eingabefeld. Außer Fotos und Sprachnachrichten kannst du um Korrektur bitten, fragen, wie etwas ausgesprochen wird, und eine Sprachnachricht zurückbekommen, eine Wendung mit ihrer Bedeutung speichern, eine Zeit zum Reden vorschlagen oder eine Quizfrage mit einer richtigen Antwort stellen.',
+    sendTranslationTitle: 'In seiner Sprache schreiben',
+    sendTranslationBody:
+      'Tippe auf + und wähle, auch in der Sprache deines Partners zu senden. Schreib in deiner, und beides geht raus — so versteht er dich, ohne zu raten. Das gibt es mit {plan}.',
+  },
 
   editProfile: {
     countryUnknown: 'Nicht gesetzt',
