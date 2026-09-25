@@ -1,9 +1,11 @@
-import { PUSH_ACTION_REPLY, PUSH_CATEGORY_MESSAGE } from '@langx/shared'
+import { PUSH_ACTION_REPLY, PUSH_CATEGORY_MESSAGE, type TraySync } from '@langx/shared'
 import { AppState, Platform } from 'react-native'
 import { currentTranslate } from '../i18n/runtime'
 import { presentationFor } from './foregroundPush'
+import { syncIconBadge } from './iconBadge'
 import {
   belongsTo,
+  clearedBySync,
   deliveredAtMs,
   questionsFor,
   finishedWith,
@@ -43,14 +45,17 @@ export async function configureNotifications(): Promise<void> {
      */
     Notifications.setNotificationHandler({
       handleNotification: (notification) => {
-        const suppress =
-          presentationFor(notification.request.content.data, AppState.currentState === 'active') ===
-          'suppress'
+        const presentation = presentationFor(
+          notification.request.content.data,
+          AppState.currentState === 'active',
+        )
+        const show = presentation === 'os'
         return Promise.resolve({
-          shouldShowBanner: !suppress,
-          shouldShowList: !suppress,
-          shouldPlaySound: !suppress,
-          shouldSetBadge: true,
+          shouldShowBanner: show,
+          shouldShowList: show,
+          shouldPlaySound: show,
+          // A silent push sets the count itself, in `applyTraySync`.
+          shouldSetBadge: presentation !== 'silent',
         })
       },
     })
@@ -105,10 +110,21 @@ export async function configureNotifications(): Promise<void> {
         showBadge: true,
       })
     }
+
+    /**
+     * The silent push's background half, defined in `traySyncTask.ts`.
+     * Registered on every start rather than once: it is cheap, and a
+     * registration lost to a reinstall or an OS update is back on the next
+     * launch. Last, so a device that refuses it still has everything above.
+     */
+    await Notifications.registerTaskAsync(TRAY_SYNC_TASK)
   } catch {
     // A device that cannot be configured for notifications still runs the app.
   }
 }
+
+/** The background task the silent push runs. See `traySyncTask.ts`. */
+export const TRAY_SYNC_TASK = 'langx-tray-sync'
 
 /**
  * Takes what was just read out of the OS shade. See `trayScope.ts` for what
@@ -159,4 +175,29 @@ export async function sweepTray(
   } catch {
     // See above.
   }
+}
+
+/**
+ * What a silent push says, done: the notifications it calls finished leave
+ * the shade, and the icon takes the unread total it carries.
+ *
+ * Nothing here needs the network or the session, on purpose. It runs in the
+ * background, often on a locked phone, where neither can be counted on. See
+ * `TraySync`. Never throws, for the reason `clearFromTray` gives.
+ */
+export async function applyTraySync(sync: TraySync): Promise<void> {
+  if (Platform.OS === 'web') return
+  try {
+    const Notifications = await import('expo-notifications')
+    const presented = await Notifications.getPresentedNotificationsAsync()
+    const now = Date.now()
+    await Promise.all(
+      presented
+        .filter((n) => clearedBySync(n.request.content.data, deliveredAtMs(n.date), sync, now))
+        .map((n) => Notifications.dismissNotificationAsync(n.request.identifier)),
+    )
+  } catch {
+    // See above.
+  }
+  await syncIconBadge(sync.unread)
 }

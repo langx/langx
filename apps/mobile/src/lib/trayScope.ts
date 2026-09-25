@@ -1,4 +1,9 @@
-import { SECURITY_PUSH_TRAY_MS, type InAppNotification } from '@langx/shared'
+import {
+  SECURITY_PUSH_TRAY_MS,
+  traySyncSchema,
+  type InAppNotification,
+  type TraySync,
+} from '@langx/shared'
 
 /**
  * Which notifications in the OS shade a read has made stale.
@@ -145,4 +150,57 @@ export function finishedWith(
  */
 export function deliveredAtMs(date: number): number {
   return date < 1e11 ? date * 1000 : date
+}
+
+/**
+ * The silent push's payload, out of what the background task is handed.
+ *
+ * Both platforms carry the push's `data` as a JSON string under `dataString`,
+ * which is `expo-notifications` making them agree. Anything that is not a
+ * well-formed `traySync` is `null`: on Android the task runs for every push
+ * that arrives in the background, not only this one.
+ */
+export function traySyncFrom(payload: unknown): TraySync | null {
+  const dataString = (payload as { data?: { dataString?: unknown } } | null)?.data?.dataString
+  if (typeof dataString !== 'string') return null
+  try {
+    const parsed = traySyncSchema.safeParse(JSON.parse(dataString))
+    return parsed.success ? parsed.data : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * The centre's kinds a silent push settles. Only on "nothing unread at all",
+ * because the push cannot carry the rows, and without `wallet`, whose
+ * gift-ready push has no row for a clear centre to vouch for.
+ */
+const SYNC_CENTRE_KINDS: readonly string[] = ['social', 'badgeEarned', 'profileVisits']
+
+/**
+ * Whether a silent push says a notification in the shade is finished with.
+ *
+ * Nothing that arrived after the server looked is touched, however the rest
+ * reads: see `TraySync`. A message goes when its thread is not in the unread
+ * list, and never when there is no list. A sign-in alert goes by the same age
+ * rule as when the app opens.
+ */
+export function clearedBySync(
+  data: unknown,
+  deliveredAt: number,
+  sync: TraySync,
+  now: number,
+): boolean {
+  if (deliveredAt >= sync.at) return false
+  const { kind, conversationId } = fieldsOf(data)
+  if (kind === 'message') {
+    return (
+      sync.unreadThreads !== undefined &&
+      typeof conversationId === 'string' &&
+      !sync.unreadThreads.includes(conversationId)
+    )
+  }
+  if (kind === 'security') return now - deliveredAt >= SECURITY_PUSH_TRAY_MS
+  return sync.inboxClear && typeof kind === 'string' && SYNC_CENTRE_KINDS.includes(kind)
 }

@@ -10,6 +10,7 @@ import {
   type PushKind,
   type PushPlatform,
   type RegisterDeviceInput,
+  type TraySync,
 } from '@langx/shared'
 import { type ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -182,8 +183,16 @@ export interface PushResult {
   invalidTokens: string[]
 }
 
+/** A push that is never drawn, only delivered — see `TraySync`. */
+export interface SilentPushMessage {
+  to: string[]
+  data: TraySync
+}
+
 export interface PushSender {
   send: (message: PushMessage) => Promise<PushResult>
+  /** Optional, so a sender that cannot wake an app in the background need not pretend to. */
+  sendSilent?: (message: SilentPushMessage) => Promise<PushResult>
 }
 
 /**
@@ -193,9 +202,15 @@ export interface PushSender {
  */
 export class LoggingPushSender implements PushSender {
   readonly sent: PushMessage[] = []
+  readonly silent: SilentPushMessage[] = []
 
   send(message: PushMessage): Promise<PushResult> {
     this.sent.push(message)
+    return Promise.resolve({ invalidTokens: [] })
+  }
+
+  sendSilent(message: SilentPushMessage): Promise<PushResult> {
+    this.silent.push(message)
     return Promise.resolve({ invalidTokens: [] })
   }
 }
@@ -231,14 +246,63 @@ export class ExpoPushSender implements PushSender {
     this.#logger = logger
   }
 
-  async send(message: PushMessage): Promise<PushResult> {
+  send(message: PushMessage): Promise<PushResult> {
+    return this.#deliver(
+      message.to,
+      (token) => ({
+        to: token,
+        title: message.title,
+        body: message.body,
+        data: message.data,
+        sound: 'default',
+        /**
+         * iOS only, and the one thing that lets the widgets stay right for
+         * somebody who never opens the app. It sets `aps.mutable-content`,
+         * without which iOS delivers the push straight to the Home Screen
+         * and never wakes `LangXNotificationService` — the extension that
+         * writes the new unread total into the App Group the widgets read.
+         * It defaults to false, so the extension existed and never ran.
+         * Constant rather than per-message: the extension decides what to
+         * do from the payload it is handed, and a push with no badge
+         * leaves the count alone.
+         */
+        mutableContent: true,
+        ...(message.badge !== undefined ? { badge: message.badge } : {}),
+        ...(message.categoryId !== undefined ? { categoryId: message.categoryId } : {}),
+      }),
+      message.data.kind,
+    )
+  }
+
+  /**
+   * A push with nothing to draw: no title, no body, no sound, no badge.
+   *
+   * `_contentAvailable` is what makes iOS wake the app in the background for
+   * it, and `normal` priority is required with it — APNs refuses a background
+   * push sent at the priority that interrupts. Android gets a data-only
+   * message, which `expo-notifications` hands to the background task without
+   * showing anything.
+   */
+  sendSilent(message: SilentPushMessage): Promise<PushResult> {
+    return this.#deliver(
+      message.to,
+      (token) => ({ to: token, data: message.data, _contentAvailable: true, priority: 'normal' }),
+      message.data.kind,
+    )
+  }
+
+  async #deliver(
+    tokens: readonly string[],
+    build: (token: string) => Record<string, unknown>,
+    kind: string,
+  ): Promise<PushResult> {
     const invalidTokens: string[] = []
 
     // Chunked because Expo rejects a request carrying more than 100 messages —
     // one popular account's devices will not reach that, but the streak
     // reminder fanning out over a whole timezone can.
-    for (let index = 0; index < message.to.length; index += EXPO_BATCH_SIZE) {
-      const batch = message.to.slice(index, index + EXPO_BATCH_SIZE)
+    for (let index = 0; index < tokens.length; index += EXPO_BATCH_SIZE) {
+      const batch = tokens.slice(index, index + EXPO_BATCH_SIZE)
       const response = await fetch(this.#endpoint, {
         method: 'POST',
         headers: {
@@ -246,29 +310,7 @@ export class ExpoPushSender implements PushSender {
           accept: 'application/json',
           ...(this.#accessToken ? { authorization: `Bearer ${this.#accessToken}` } : {}),
         },
-        body: JSON.stringify(
-          batch.map((token) => ({
-            to: token,
-            title: message.title,
-            body: message.body,
-            data: message.data,
-            sound: 'default',
-            /**
-             * iOS only, and the one thing that lets the widgets stay right for
-             * somebody who never opens the app. It sets `aps.mutable-content`,
-             * without which iOS delivers the push straight to the Home Screen
-             * and never wakes `LangXNotificationService` — the extension that
-             * writes the new unread total into the App Group the widgets read.
-             * It defaults to false, so the extension existed and never ran.
-             * Constant rather than per-message: the extension decides what to
-             * do from the payload it is handed, and a push with no badge
-             * leaves the count alone.
-             */
-            mutableContent: true,
-            ...(message.badge !== undefined ? { badge: message.badge } : {}),
-            ...(message.categoryId !== undefined ? { categoryId: message.categoryId } : {}),
-          })),
-        ),
+        body: JSON.stringify(batch.map(build)),
       })
 
       /**
@@ -298,7 +340,7 @@ export class ExpoPushSender implements PushSender {
         this.#logger?.warn(
           {
             status: response.status,
-            kind: message.data.kind,
+            kind,
             tokens: batch.length,
             body: (await response.text().catch(() => '')).slice(0, 500),
           },
@@ -332,7 +374,7 @@ export class ExpoPushSender implements PushSender {
       })
       if (errors.size > 0) {
         this.#logger?.warn(
-          { errors: Object.fromEntries(errors), kind: message.data.kind, tokens: batch.length },
+          { errors: Object.fromEntries(errors), kind, tokens: batch.length },
           'expo push rejected some of the batch',
         )
       }
@@ -355,6 +397,22 @@ export async function sendPush(
   message: PushMessage,
 ): Promise<PushResult> {
   const result = await sender.send(message)
+  if (result.invalidTokens.length > 0) {
+    await db
+      .collection<Device>(COLLECTIONS.devices)
+      .deleteMany({ pushToken: { $in: result.invalidTokens } })
+  }
+  return result
+}
+
+/** `sendPush`'s twin for the push that is never drawn, pruning the same way. */
+export async function sendSilentPush(
+  db: Db,
+  sender: PushSender,
+  message: SilentPushMessage,
+): Promise<PushResult> {
+  if (!sender.sendSilent) return { invalidTokens: [] }
+  const result = await sender.sendSilent(message)
   if (result.invalidTokens.length > 0) {
     await db
       .collection<Device>(COLLECTIONS.devices)

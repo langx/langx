@@ -367,7 +367,7 @@ const config: ExpoConfig = {
       },
     ],
     /*
-     * Three that carry a config plugin but take no configuration: they only
+     * Four that carry a config plugin but take no configuration: they only
      * need naming so `prebuild` runs them. Listed because `expo-doctor`
      * reports their absence, and because `runtimeVersion` is a fingerprint —
      * a plugin that should be in the native build and is not makes every
@@ -377,6 +377,14 @@ const config: ExpoConfig = {
     'expo-font',
     'expo-image',
     'expo-secure-store',
+    'expo-task-manager',
+    /*
+     * The `remote-notification` background mode, without which iOS never
+     * wakes the app for the silent push that clears notifications read on
+     * another device (`src/lib/traySyncTask.ts`). It was applied without
+     * options before this, so this adds the mode and changes nothing else.
+     */
+    ['expo-notifications', { enableBackgroundRemoteNotifications: true }],
     /*
      * The static splash the OS draws before any JS exists. Its whole job is to
      * be indistinguishable from `AppSplash`'s first frame — same ground, same

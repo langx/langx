@@ -1,14 +1,18 @@
 import 'expo-router/entry'
 import { Platform } from 'react-native'
+// At module scope, so the task exists before a background launch asks for it.
+import './src/lib/traySyncTask'
 
 /**
  * The app's entry point, which used to be `expo-router/entry` itself.
  *
- * It is a file of our own now for one reason: Android's widgets are drawn by a
- * headless JS task, and the task has to be registered before Android can ask
- * for one — which is earlier than any screen or layout runs. `package.json`
- * points `main` here, and this file's first line is still the router's entry,
- * so nothing about how the app starts has changed.
+ * It is a file of our own now because two things have to exist earlier than
+ * any screen or layout runs: Android's widgets are drawn by a headless JS
+ * task, and the silent push is applied by a background one
+ * (`src/lib/traySyncTask.ts`). The OS can ask for either before the app has
+ * drawn anything. `package.json` points `main` here, and this file's first
+ * line is still the router's entry, so nothing about how the app starts has
+ * changed.
  *
  * Guarded and imported lazily, both deliberately.
  * `registerWidgetTaskHandler` reaches for `AppRegistry.registerHeadlessTask`,
