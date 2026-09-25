@@ -52,8 +52,13 @@ catalog:
   'socket.io-client': ^4.8.3
   '@socket.io/mongo-adapter': ^0.4.0
 
-  # mobile client
+  # mobile client. The three TanStack lines move together: the two persist
+  # packages are released for every react-query version and peer-depend on
+  # exactly that one, so they are pinned to it rather than given a caret.
   '@tanstack/react-query': ^5.102.8
+  '@tanstack/react-query-persist-client': 5.102.8
+  '@tanstack/query-async-storage-persister': 5.102.8
+  'idb-keyval': ^6.3.0
 
   # observability
   '@sentry/node': ^10.73.0
