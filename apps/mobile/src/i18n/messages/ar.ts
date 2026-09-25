@@ -513,6 +513,7 @@ export const ar: Localized<EnMessages> = {
     signUpFailed: 'تعذّر إنشاء الحساب',
     googleSignInFailed: 'تعذّر تسجيل الدخول بحساب Google',
     appleSignInFailed: 'تعذّر تسجيل الدخول بحساب Apple',
+    facebookSignInFailed: 'تعذّر تسجيل الدخول بحساب Facebook',
     resetFailed: 'تعذّرت إعادة تعيين كلمة المرور',
     invalidCredentials:
       'هذا لا يطابق أي حساب. سجّل الدخول ببريدك أو اسم المستخدم — أو أرسل لنفسك رابط دخول، ويعمل أيضًا إن كان لديك حساب في التطبيق السابق. يعمل Google وApple كذلك.',
@@ -672,6 +673,7 @@ export const ar: Localized<EnMessages> = {
     signUp: 'إنشاء حساب',
     continueWithGoogle: 'المتابعة باستخدام Google',
     continueWithApple: 'المتابعة باستخدام Apple',
+    continueWithFacebook: 'المتابعة باستخدام Facebook',
     emailOrHandle: 'البريد أو اسم المستخدم',
     or: 'أو',
     noAccount: 'ليس لديك حساب؟ ',

@@ -75,7 +75,7 @@ function linkRedirects() {
 }
 
 /**
- * Connects Google or Apple to the signed-in account.
+ * Connects Google, Apple or Facebook to the signed-in account.
  *
  * The same two roads sign-in takes: Apple on a device goes through the native
  * sheet and hands Better Auth the identity token, so nothing leaves the app;

@@ -93,6 +93,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
 export const authProvidersSchema = z.object({
   google: z.boolean(),
   apple: z.boolean(),
+  facebook: z.boolean(),
 })
 export type AuthProviders = z.infer<typeof authProvidersSchema>
 

@@ -98,6 +98,7 @@ describe('app config, maintenance and the version gate', () => {
       expect(response.json<{ authProviders: AuthProviders }>().authProviders).toEqual({
         google: false,
         apple: false,
+        facebook: false,
       })
     })
 
@@ -142,6 +143,7 @@ describe('app config, maintenance and the version gate', () => {
         expect(response.json<{ authProviders: AuthProviders }>().authProviders).toEqual({
           google: true,
           apple: false,
+          facebook: false,
         })
       } finally {
         await configured.close()

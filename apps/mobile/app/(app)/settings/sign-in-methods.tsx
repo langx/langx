@@ -22,8 +22,12 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
 
-/** Providers keep their own names — neither Google's nor Apple's is translated. */
-const PROVIDER_NAMES: Record<LinkedProvider, string> = { google: 'Google', apple: 'Apple' }
+/** Providers keep their own names — none of them is translated. */
+const PROVIDER_NAMES: Record<LinkedProvider, string> = {
+  google: 'Google',
+  apple: 'Apple',
+  facebook: 'Facebook',
+}
 
 /**
  * What this account can be signed in with, and the one thing that can be

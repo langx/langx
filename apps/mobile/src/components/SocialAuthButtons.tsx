@@ -40,7 +40,7 @@ export interface SocialAuthButtonsProps {
    * Sign-up passes the counter; sign-in passes nothing, because signing in is
    * not a sign-up and must not arrive in the funnel as one.
    */
-  onStart?: (method: 'google' | 'apple') => void
+  onStart?: (method: 'google' | 'apple' | 'facebook') => void
 }
 
 export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButtonsProps = {}) {
@@ -94,6 +94,18 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
     if (googleError) setSocialError(t(authErrorKey(googleError) ?? 'errors.googleSignInFailed'))
   }
 
+  // The same browser round trip as Google: no Facebook SDK in the app, so
+  // nothing here needs a native build to reach a device.
+  async function onFacebook() {
+    setSocialError(undefined)
+    onStart?.('facebook')
+    const { error: facebookError } = await withSignInProgress(() =>
+      authClient.signIn.social({ provider: 'facebook', ...socialRedirects() }),
+    )
+    if (facebookError)
+      setSocialError(t(authErrorKey(facebookError) ?? 'errors.facebookSignInFailed'))
+  }
+
   async function onApple() {
     setSocialError(undefined)
     onStart?.('apple')
@@ -130,7 +142,7 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
     }
   }
 
-  if (!providers?.google && !providers?.apple) return null
+  if (!providers?.google && !providers?.apple && !providers?.facebook) return null
 
   const rule = (
     <View style={styles.divider}>
@@ -165,6 +177,14 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
           onPress={() => void onApple()}
           variant="neutral"
           icon={<ProviderMark provider="apple" />}
+        />
+      ) : null}
+      {providers.facebook ? (
+        <Button
+          label={t('auth.continueWithFacebook')}
+          onPress={() => void onFacebook()}
+          variant="neutral"
+          icon={<ProviderMark provider="facebook" />}
         />
       ) : null}
       {divider === 'below' ? rule : null}

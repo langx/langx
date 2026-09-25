@@ -452,6 +452,7 @@ export const tr: Localized<EnMessages> = {
     signUpFailed: 'Kayıt olunamadı',
     googleSignInFailed: 'Google ile giriş yapılamadı',
     appleSignInFailed: 'Apple ile giriş yapılamadı',
+    facebookSignInFailed: 'Facebook ile giriş yapılamadı',
     resetFailed: 'Parola sıfırlanamadı',
     invalidCredentials:
       'Bu bir hesapla eşleşmiyor. E-posta ya da kullanıcı adınla gir — ya da kendine bir giriş bağlantısı e-postala; önceki uygulamada hesabın varsa o da çalışır. Google ve Apple da olur.',
@@ -614,6 +615,7 @@ export const tr: Localized<EnMessages> = {
     signUp: 'Kayıt ol',
     continueWithGoogle: 'Google ile devam et',
     continueWithApple: 'Apple ile devam et',
+    continueWithFacebook: 'Facebook ile devam et',
     emailOrHandle: 'E-posta veya kullanıcı adı',
     or: 'ya da',
     noAccount: 'Hesabın yok mu? ',

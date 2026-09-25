@@ -149,6 +149,9 @@ const envSchema = z.object({
   // fully working email/password flow.
   GOOGLE_CLIENT_ID: emptyToUndefined(z.string().optional()),
   GOOGLE_CLIENT_SECRET: emptyToUndefined(z.string().optional()),
+  // Meta for Developers → the app's ID and App Secret (App settings → Basic).
+  FACEBOOK_CLIENT_ID: emptyToUndefined(z.string().optional()),
+  FACEBOOK_CLIENT_SECRET: emptyToUndefined(z.string().optional()),
 
   // Apple's "client secret" is a short-lived JWT we generate ourselves (see
   // auth/appleClientSecret.ts) from a Sign in with Apple key — not a value

@@ -544,6 +544,7 @@ export const en = {
     signUpFailed: 'Sign up failed',
     googleSignInFailed: 'Google sign-in failed',
     appleSignInFailed: 'Apple sign-in failed',
+    facebookSignInFailed: 'Facebook sign-in failed',
     resetFailed: 'Could not reset password',
     invalidCredentials:
       'That does not match an account. Sign in with your email or username — or email yourself a sign-in link, which also works if you had an account in the previous app. Google and Apple work too.',
@@ -725,6 +726,7 @@ export const en = {
     signUp: 'Sign up',
     continueWithGoogle: 'Continue with Google',
     continueWithApple: 'Continue with Apple',
+    continueWithFacebook: 'Continue with Facebook',
     emailOrHandle: 'Email or username',
     or: 'or',
     noAccount: 'Don’t have an account? ',
