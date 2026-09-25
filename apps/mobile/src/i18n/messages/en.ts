@@ -1202,6 +1202,7 @@ export const en = {
     mediaQuota: 'You’ve reached today’s limit for photos, videos and voice messages.',
     attachmentFailed: 'That attachment could not be sent. Try again.',
     photosTitle: 'Photos',
+    dropToAttach: 'Drop to attach',
     photosPermission: 'LangX needs permission to open your photo library.',
     microphoneTitle: 'Microphone',
     translationUnavailable: 'Translation unavailable',

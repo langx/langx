@@ -1154,6 +1154,7 @@ export const ru: Localized<EnMessages> = {
     mediaQuota: 'Вы достигли сегодняшнего лимита на фото, видео и голосовые сообщения.',
     attachmentFailed: 'Это вложение не отправилось. Попробуй ещё раз.',
     photosTitle: 'Фото',
+    dropToAttach: 'Отпустите, чтобы прикрепить',
     photosPermission: 'LangX нужен доступ, чтобы открыть галерею.',
     microphoneTitle: 'Микрофон',
     translationUnavailable: 'Перевод недоступен',

@@ -1061,6 +1061,7 @@ export const es: Localized<EnMessages> = {
     mediaQuota: 'Has alcanzado el límite de hoy para fotos, vídeos y mensajes de voz.',
     attachmentFailed: 'Ese adjunto no se pudo enviar. Inténtalo de nuevo.',
     photosTitle: 'Fotos',
+    dropToAttach: 'Suelta para adjuntar',
     photosPermission: 'LangX necesita permiso para abrir tu galería.',
     microphoneTitle: 'Micrófono',
     translationUnavailable: 'Traducción no disponible',

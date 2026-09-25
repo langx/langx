@@ -1174,6 +1174,7 @@ export const ar: Localized<EnMessages> = {
     mediaQuota: 'لقد بلغت حد اليوم للصور ومقاطع الفيديو والرسائل الصوتية.',
     attachmentFailed: 'تعذّر إرسال هذا المرفق. حاول مرة أخرى.',
     photosTitle: 'الصور',
+    dropToAttach: 'أفلت للإرفاق',
     photosPermission: 'يحتاج LangX إلى إذن لفتح مكتبة صورك.',
     microphoneTitle: 'الميكروفون',
     translationUnavailable: 'الترجمة غير متاحة',

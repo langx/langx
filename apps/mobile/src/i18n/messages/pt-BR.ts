@@ -1055,6 +1055,7 @@ export const ptBR: Localized<EnMessages> = {
     mediaQuota: 'Você atingiu o limite de hoje para fotos, vídeos e mensagens de voz.',
     attachmentFailed: 'Esse anexo não pôde ser enviado. Tente de novo.',
     photosTitle: 'Fotos',
+    dropToAttach: 'Solte para anexar',
     photosPermission: 'O LangX precisa de permissão para abrir sua galeria.',
     microphoneTitle: 'Microfone',
     translationUnavailable: 'Tradução indisponível',

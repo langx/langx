@@ -1087,6 +1087,7 @@ export const de: Localized<EnMessages> = {
     mediaQuota: 'Du hast das heutige Limit für Fotos, Videos und Sprachnachrichten erreicht.',
     attachmentFailed: 'Dieser Anhang konnte nicht gesendet werden. Versuch es noch einmal.',
     photosTitle: 'Fotos',
+    dropToAttach: 'Zum Anhängen loslassen',
     photosPermission: 'LangX braucht die Erlaubnis, deine Fotomediathek zu öffnen.',
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Übersetzung nicht verfügbar',
