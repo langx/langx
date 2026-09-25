@@ -41,6 +41,7 @@ const PAGE_TITLES: Readonly<Record<string, MessageKey>> = {
   '/edit-profile': 'editProfile.title',
   '/filters': 'filters.title',
   '/gift': 'gift.title',
+  '/how-it-works': 'howItWorks.title',
   '/invite': 'invite.title',
   '/kitchen': 'kitchen.title',
   '/languages': 'languages.title',
