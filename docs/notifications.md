@@ -568,21 +568,24 @@ push to reach one that is closed. So the rules above miss everything dealt with
 while this device was not looking: read on another device while this one was
 asleep, or announced by a push that landed after the read.
 
-**When the app opens**, from cold or from the background, it asks the server
-and clears what the answers say is finished:
+**A sweep** covers that. It asks the server and clears what the answers say is
+finished. It runs when the app opens, from cold or from the background, and on
+every device holding a socket when another device reads something in the centre
+(`notification:read`, which says only that something was read, not what):
 
 - `message` pushes of a thread with nothing unread, or one this reader can no
   longer open;
-- `social`, `badgeEarned` and `profileVisits` once the centre has nothing
-  unread;
-- `security` a day after it arrived (`SECURITY_PUSH_TRAY_MS`). It has no row
-  to read, and without a limit a sign-in from last month stayed on the lock
-  screen. The day is counted at the next open, not to the minute.
+- `social`, `badgeEarned`, `profileVisits` and `wallet` pushes once every row
+  they belong to in the centre is read, by the same match a tapped row uses. A
+  push whose rows are not in the newest page stays: not found is not read;
+- `security` a day after it arrived (`SECURITY_PUSH_TRAY_MS`). It has no row in
+  the centre, so nothing can mark it read, and without a limit a sign-in from
+  last month stayed on the lock screen. The day is counted at the next open,
+  not to the minute.
 
 Everything else stays until it is tapped or swiped: the streak, Echo and meeting
-reminders are about a time or a habit, `billing` is money, and `wallet` is left
-to the wallet because the gift-ready push has no row a clear centre could vouch
-for.
+reminders are about a time or a habit, `billing` is money, and `bountyPaid` goes
+when the wallet is opened.
 
 ## Not built
 

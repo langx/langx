@@ -1,6 +1,6 @@
 import { SECURITY_PUSH_TRAY_MS } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { belongsTo, deliveredAtMs, questionsFor, staleOnOpen, type TrayFacts } from './trayScope'
+import { belongsTo, deliveredAtMs, questionsFor, finishedWith, type TrayFacts } from './trayScope'
 
 describe('which shade notifications a read clears', () => {
   it('clears the message pushes of the thread that was read', () => {
@@ -105,9 +105,10 @@ describe('which shade notifications a read clears', () => {
   })
 })
 
-describe('what the app clears from the shade when it opens', () => {
+describe('what a sweep clears: on opening, or after a read on another device', () => {
   const now = Date.UTC(2026, 8, 25, 8, 0)
-  const nothingRead: TrayFacts = { readThreads: new Set(), inboxRead: false }
+  const nothingKnown: TrayFacts = { readThreads: new Set(), rows: [] }
+  const actor = { _id: 'u2', handle: 'sofia', displayName: 'Sofia' }
 
   it('asks only about what the shade holds', () => {
     expect(
@@ -119,40 +120,85 @@ describe('what the app clears from the shade when it opens', () => {
         { kind: 'security' },
       ]),
     ).toEqual({ threads: ['c1', 'c2'], inbox: false })
-    expect(questionsFor([{ kind: 'social', postId: 'p1' }])).toEqual({ threads: [], inbox: true })
+    for (const kind of ['social', 'badgeEarned', 'profileVisits', 'wallet']) {
+      expect(questionsFor([{ kind }]), kind).toEqual({ threads: [], inbox: true })
+    }
     expect(questionsFor([null, 'message', {}])).toEqual({ threads: [], inbox: false })
   })
 
   /** Read on a laptop, answered from the notification, or read before this existed. */
   it('clears the message pushes of threads the server says are read', () => {
-    const facts: TrayFacts = { readThreads: new Set(['c1']), inboxRead: false }
-    expect(staleOnOpen({ kind: 'message', conversationId: 'c1' }, now, facts, now)).toBe(true)
-    expect(staleOnOpen({ kind: 'message', conversationId: 'c2' }, now, facts, now)).toBe(false)
-    expect(staleOnOpen({ kind: 'meetingReminder', conversationId: 'c1' }, now, facts, now)).toBe(
+    const facts: TrayFacts = { readThreads: new Set(['c1']), rows: [] }
+    expect(finishedWith({ kind: 'message', conversationId: 'c1' }, now, facts, now)).toBe(true)
+    expect(finishedWith({ kind: 'message', conversationId: 'c2' }, now, facts, now)).toBe(false)
+    expect(finishedWith({ kind: 'meetingReminder', conversationId: 'c1' }, now, facts, now)).toBe(
       false,
     )
   })
 
+  /** It has no row in the centre, so nothing can mark it read. */
   it('clears a sign-in alert a day after it arrived, and not before', () => {
     const security = { kind: 'security' }
-    expect(staleOnOpen(security, now - SECURITY_PUSH_TRAY_MS + 1, nothingRead, now)).toBe(false)
-    expect(staleOnOpen(security, now - SECURITY_PUSH_TRAY_MS, nothingRead, now)).toBe(true)
+    expect(finishedWith(security, now - SECURITY_PUSH_TRAY_MS + 1, nothingKnown, now)).toBe(false)
+    expect(finishedWith(security, now - SECURITY_PUSH_TRAY_MS, nothingKnown, now)).toBe(true)
   })
 
-  it("clears the centre's kinds only once nothing there is unread", () => {
-    const read: TrayFacts = { readThreads: new Set(), inboxRead: true }
-    for (const kind of ['social', 'badgeEarned', 'profileVisits']) {
-      expect(staleOnOpen({ kind }, now, read, now), kind).toBe(true)
-      expect(staleOnOpen({ kind }, now, nothingRead, now), kind).toBe(false)
+  it('clears a push once the row it announced is read, and only that one', () => {
+    const facts: TrayFacts = {
+      readThreads: new Set(),
+      rows: [
+        { kind: 'like', postId: 'p1', actor, read: true },
+        { kind: 'like', postId: 'p2', actor, read: false },
+        { kind: 'follow', actor, read: true },
+      ],
+    }
+    expect(finishedWith({ kind: 'social', postId: 'p1' }, now, facts, now)).toBe(true)
+    expect(finishedWith({ kind: 'social', postId: 'p2' }, now, facts, now)).toBe(false)
+    expect(finishedWith({ kind: 'social', handle: 'sofia' }, now, facts, now)).toBe(true)
+    expect(finishedWith({ kind: 'social', handle: 'marco' }, now, facts, now)).toBe(false)
+  })
+
+  /** A like row read, and a comment on the same post not yet: the push is about both. */
+  it('keeps a push while any row it belongs to is unread', () => {
+    const facts: TrayFacts = {
+      readThreads: new Set(),
+      rows: [
+        { kind: 'like', postId: 'p1', actor, read: true },
+        { kind: 'postComment', postId: 'p1', actor, read: false },
+      ],
+    }
+    expect(finishedWith({ kind: 'social', postId: 'p1' }, now, facts, now)).toBe(false)
+  })
+
+  it('settles the repeating kinds by their rows, as a tap does', () => {
+    const read: TrayFacts = {
+      readThreads: new Set(),
+      rows: [
+        { kind: 'badgeEarned', read: true },
+        { kind: 'profileVisits', read: true },
+        { kind: 'walletPool', read: true },
+      ],
+    }
+    for (const kind of ['badgeEarned', 'profileVisits', 'wallet']) {
+      expect(finishedWith({ kind }, now, read, now), kind).toBe(true)
+      expect(finishedWith({ kind }, now, nothingKnown, now), kind).toBe(false)
     }
   })
 
-  /** The gift-ready push has no row, so a clear centre says nothing about it. */
-  it('leaves the wallet, the reminders and billing to their own screens', () => {
-    const read: TrayFacts = { readThreads: new Set(['c1']), inboxRead: true }
+  /** Not found is not read: the centre could not be asked, or the row is further back. */
+  it('keeps a push whose rows are not in view', () => {
+    for (const data of [{ kind: 'social', postId: 'p1' }, { kind: 'badgeEarned' }]) {
+      expect(finishedWith(data, now, nothingKnown, now)).toBe(false)
+    }
+  })
+
+  it('leaves the reminders, billing and bounties to their own screens', () => {
+    const facts: TrayFacts = {
+      readThreads: new Set(['c1']),
+      rows: [{ kind: 'walletPool', read: true }],
+    }
     const old = now - 30 * SECURITY_PUSH_TRAY_MS
     for (const kind of [
-      'wallet',
       'bountyPaid',
       'billing',
       'streakReminder',
@@ -160,14 +206,17 @@ describe('what the app clears from the shade when it opens', () => {
       'meetingReminder',
       'promotion',
     ]) {
-      expect(staleOnOpen({ kind, conversationId: 'c1' }, old, read, now), kind).toBe(false)
+      expect(finishedWith({ kind, conversationId: 'c1' }, old, facts, now), kind).toBe(false)
     }
   })
 
   it('leaves anything it does not recognise', () => {
-    const read: TrayFacts = { readThreads: new Set(['c1']), inboxRead: true }
+    const facts: TrayFacts = {
+      readThreads: new Set(['c1']),
+      rows: [{ kind: 'badgeEarned', read: true }],
+    }
     for (const data of [null, undefined, 'message', {}, { conversationId: 'c1' }]) {
-      expect(staleOnOpen(data, 0, read, now)).toBe(false)
+      expect(finishedWith(data, 0, facts, now)).toBe(false)
     }
   })
 

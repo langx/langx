@@ -6,7 +6,7 @@ import {
   belongsTo,
   deliveredAtMs,
   questionsFor,
-  staleOnOpen,
+  finishedWith,
   type TrayFacts,
   type TrayScope,
 } from './trayScope'
@@ -153,7 +153,7 @@ export async function sweepTray(
     const now = Date.now()
     await Promise.all(
       presented
-        .filter((n) => staleOnOpen(n.request.content.data, deliveredAtMs(n.date), facts, now))
+        .filter((n) => finishedWith(n.request.content.data, deliveredAtMs(n.date), facts, now))
         .map((n) => Notifications.dismissNotificationAsync(n.request.identifier)),
     )
   } catch {

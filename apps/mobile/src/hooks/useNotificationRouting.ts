@@ -3,8 +3,8 @@ import { useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { AppState, Platform } from 'react-native'
-import { api, ApiRequestError } from '../api/client'
-import { markConversationRead } from '../api/queries'
+import { api } from '../api/client'
+import { markConversationRead, trayFacts } from '../api/queries'
 import { track } from '../lib/analytics'
 import { getActiveConversation } from '../lib/activeConversation'
 import { presentationFor } from '../lib/foregroundPush'
@@ -12,7 +12,6 @@ import { previewOf, showMessageBanner } from '../lib/inAppNotifications'
 import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
 import { configureNotifications, sweepTray } from '../lib/notifications'
 import { notificationRoute } from '../lib/notificationRoute'
-import type { questionsFor, TrayFacts } from '../lib/trayScope'
 
 /**
  * What the payload called itself, for the analytics event only.
@@ -74,37 +73,6 @@ async function sendQuickReply(
 }
 
 /**
- * What `sweepTray` asks, answered by the server rather than the caches: the
- * point is what happened where this device was not looking, and the caches
- * are what it last saw.
- *
- * One request per thread in the shade, which is a handful. A thread that
- * cannot be asked about is left where it is; one this reader can no longer
- * open (404) is finished with, since tapping its push leads nowhere.
- */
-async function askServer({ threads, inbox }: ReturnType<typeof questionsFor>): Promise<TrayFacts> {
-  const read = await Promise.all(
-    threads.map(async (id) => {
-      try {
-        const { unread } = await api.get<{ unread: number }>(`/conversations/${id}`)
-        return unread === 0 ? id : null
-      } catch (error) {
-        return error instanceof ApiRequestError && error.status === 404 ? id : null
-      }
-    }),
-  )
-  let inboxRead = false
-  if (inbox) {
-    try {
-      inboxRead = (await api.get<{ total: number }>('/me/notifications/unread')).total === 0
-    } catch {
-      // Not knowing is not the same as read.
-    }
-  }
-  return { readThreads: new Set(read.filter((id) => id !== null)), inboxRead }
-}
-
-/**
  * Makes a tapped notification open the thing it is about.
  *
  * Until this existed the payload was sent and never read: tapping "Deniz sent
@@ -132,14 +100,14 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
     // which answers the same "what happened while I was away" for the caches.
     let lastAppState = AppState.currentState
     const appState = AppState.addEventListener('change', (next) => {
-      if (resumedFromBackground(lastAppState, next)) void sweepTray(askServer)
+      if (resumedFromBackground(lastAppState, next)) void sweepTray(trayFacts)
       lastAppState = next
     })
 
     void (async () => {
       await configureNotifications()
       // A cold start is a return too, and the usual one.
-      void sweepTray(askServer)
+      void sweepTray(trayFacts)
       try {
         const Notifications = await import('expo-notifications')
         if (cancelled) return

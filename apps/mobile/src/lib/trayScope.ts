@@ -77,24 +77,16 @@ export function belongsTo(data: unknown, scope: TrayScope): boolean {
  * The scopes above clear the shade at the moment something is read, on this
  * device. Anything dealt with while this app had no way to clear it — on
  * another device while this one was asleep, or by a push that landed after
- * the read — never reached it. So each time the app comes to the front it
- * asks, and removes what the answers say is finished.
+ * the read — never reached it. So each time the app comes to the front, and
+ * each time another device says it read something, it asks, and removes what
+ * the answers say is finished.
  */
 export interface TrayFacts {
   /** Threads with nothing unread for this reader, or no longer there. */
   readThreads: ReadonlySet<string>
-  /** Nothing unread in the notification centre. */
-  inboxRead: boolean
+  /** The newest rows of the notification centre, read or not. */
+  rows: readonly Pick<InAppNotification, 'kind' | 'postId' | 'actor' | 'read'>[]
 }
-
-/**
- * The kinds settled against the centre's unread count.
- *
- * Not `wallet`: the gift-ready push has no row, and a centre with nothing
- * unread says nothing about whether the gift was opened. The wallet screen
- * clears those instead.
- */
-const CENTRE_KINDS: readonly string[] = ['social', 'badgeEarned', 'profileVisits']
 
 function fieldsOf(data: unknown): { kind?: unknown; conversationId?: unknown } {
   return typeof data === 'object' && data !== null ? data : {}
@@ -110,7 +102,7 @@ export function questionsFor(data: readonly unknown[]): { threads: string[]; inb
   for (const item of data) {
     const { kind, conversationId } = fieldsOf(item)
     if (kind === 'message' && typeof conversationId === 'string') threads.add(conversationId)
-    if (typeof kind === 'string' && CENTRE_KINDS.includes(kind)) inbox = true
+    if (typeof kind === 'string' && INBOX_KINDS.includes(kind)) inbox = true
   }
   return { threads: [...threads], inbox }
 }
@@ -118,11 +110,16 @@ export function questionsFor(data: readonly unknown[]): { threads: string[]; inb
 /**
  * Whether a notification still in the shade is finished with.
  *
- * Everything not named here stays: a reminder is about a time or a habit,
- * not about something the server can call read, and clearing a notification
- * nobody has dealt with is the worse mistake.
+ * A push with rows in the centre goes once every one of them is read, by the
+ * same match a tapped row clears with, so "read" means the same thing on the
+ * device that read it and on every other one. A push whose rows are not in
+ * view stays: not found is not read.
+ *
+ * Everything else stays: a reminder is about a time or a habit, not about
+ * something the server can call read, and clearing a notification nobody has
+ * dealt with is the worse mistake.
  */
-export function staleOnOpen(
+export function finishedWith(
   data: unknown,
   deliveredAt: number,
   facts: TrayFacts,
@@ -133,7 +130,8 @@ export function staleOnOpen(
     return typeof conversationId === 'string' && facts.readThreads.has(conversationId)
   }
   if (kind === 'security') return now - deliveredAt >= SECURITY_PUSH_TRAY_MS
-  return typeof kind === 'string' && CENTRE_KINDS.includes(kind) && facts.inboxRead
+  const rows = facts.rows.filter((row) => belongsTo(data, { row }))
+  return rows.length > 0 && rows.every((row) => row.read)
 }
 
 /**
