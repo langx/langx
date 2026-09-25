@@ -42,6 +42,8 @@ export const appConfigRoutes: FastifyPluginAsyncZod = async (app) => {
       authProviders: {
         google: Boolean(registered.google),
         apple: Boolean(registered.apple),
+        facebook: Boolean(registered.facebook),
+        discord: Boolean(registered.discord),
       },
       voiceService: !(app.tts instanceof NotConfiguredTtsProvider),
     }

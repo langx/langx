@@ -79,6 +79,68 @@ describe('Faz 1 — OAuth providers activate only when fully configured', () => 
     expect(auth.options.socialProviders?.google).toBeUndefined()
   })
 
+  it('wires Facebook once both client vars are set, and trusts it for linking', async () => {
+    const env = loadEnv({
+      MONGODB_URI: mongod.getUri(),
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      FACEBOOK_CLIENT_ID: 'test-facebook-app-id',
+      FACEBOOK_CLIENT_SECRET: 'test-facebook-app-secret',
+    })
+    const auth = await createAuth({
+      env,
+      db: handle.db,
+      client: handle.client,
+      emailSender: noopEmailSender,
+    })
+
+    expect(auth.options.socialProviders?.facebook).toMatchObject({
+      clientId: 'test-facebook-app-id',
+      clientSecret: 'test-facebook-app-secret',
+    })
+    // Better Auth reports Facebook's address as unverified, so without this
+    // "Connect Facebook" in Settings fails every time. See auth.ts.
+    expect(auth.options.account?.accountLinking?.trustedProviders).toContain('facebook')
+  })
+
+  it('does not wire Facebook when only one of the two vars is set', async () => {
+    const env = loadEnv({
+      MONGODB_URI: mongod.getUri(),
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      FACEBOOK_CLIENT_ID: 'test-facebook-app-id',
+    })
+    const auth = await createAuth({
+      env,
+      db: handle.db,
+      client: handle.client,
+      emailSender: noopEmailSender,
+    })
+
+    expect(auth.options.socialProviders?.facebook).toBeUndefined()
+  })
+
+  it('wires Discord once both client vars are set, without trusting it', async () => {
+    const env = loadEnv({
+      MONGODB_URI: mongod.getUri(),
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      DISCORD_CLIENT_ID: 'test-discord-client-id',
+      DISCORD_CLIENT_SECRET: 'test-discord-client-secret',
+    })
+    const auth = await createAuth({
+      env,
+      db: handle.db,
+      client: handle.client,
+      emailSender: noopEmailSender,
+    })
+
+    expect(auth.options.socialProviders?.discord).toMatchObject({
+      clientId: 'test-discord-client-id',
+      clientSecret: 'test-discord-client-secret',
+    })
+    // Discord reports its own `verified` flag; an unverified address must not
+    // be able to attach itself to an existing account. See auth.ts.
+    expect(auth.options.account?.accountLinking?.trustedProviders).not.toContain('discord')
+  })
+
   it('wires Apple with a real, verifiable ES256 client-secret JWT', async () => {
     const { publicKey, privateKey } = await generateKeyPair('ES256', { extractable: true })
     const pem = await exportPKCS8(privateKey)

@@ -94,13 +94,13 @@ export type DataExport = z.infer<typeof dataExportSchema>
 /**
  * The third-party providers an account can be linked to.
  *
- * Deliberately not every provider Better Auth knows — only the two this app
+ * Deliberately not every provider Better Auth knows — only the ones this app
  * offers, so a provider row the screen has no name or icon for cannot appear.
  * Better Auth's own name for an email-and-password account is `credential`,
  * which is not a third party and so is reported as `hasPassword` instead of
  * appearing here.
  */
-export const LINKED_PROVIDERS = ['google', 'apple'] as const
+export const LINKED_PROVIDERS = ['google', 'apple', 'facebook', 'discord'] as const
 export type LinkedProvider = (typeof LINKED_PROVIDERS)[number]
 
 export const linkedAccountSchema = z.object({

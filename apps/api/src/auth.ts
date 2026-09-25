@@ -115,6 +115,20 @@ export async function createAuth({
     }
   }
 
+  if (env.FACEBOOK_CLIENT_ID && env.FACEBOOK_CLIENT_SECRET) {
+    socialProviders.facebook = {
+      clientId: env.FACEBOOK_CLIENT_ID,
+      clientSecret: env.FACEBOOK_CLIENT_SECRET,
+    }
+  }
+
+  if (env.DISCORD_CLIENT_ID && env.DISCORD_CLIENT_SECRET) {
+    socialProviders.discord = {
+      clientId: env.DISCORD_CLIENT_ID,
+      clientSecret: env.DISCORD_CLIENT_SECRET,
+    }
+  }
+
   if (env.APPLE_CLIENT_ID && env.APPLE_TEAM_ID && env.APPLE_KEY_ID && env.APPLE_PRIVATE_KEY) {
     const appleClientSecret = await generateAppleClientSecret({
       teamId: env.APPLE_TEAM_ID,
@@ -544,12 +558,24 @@ export async function createAuth({
     socialProviders,
 
     /**
-     * Connecting and disconnecting Google and Apple from Settings → Sign-in
-     * methods. Both providers are trusted — they verify the address they hand
-     * over — and a different address is allowed on an *explicit* link, because
-     * Apple's private relay is a different address by design and "connect
-     * Apple" would otherwise fail for exactly the people it is for. Implicit
-     * linking at sign-in keeps Better Auth's own same-address rule.
+     * Connecting and disconnecting Google, Apple and Facebook from Settings →
+     * Sign-in methods. All three are trusted — they verify the address they
+     * hand over — and a different address is allowed on an *explicit* link,
+     * because Apple's private relay is a different address by design and
+     * "connect Apple" would otherwise fail for exactly the people it is for.
+     * Implicit linking at sign-in keeps Better Auth's own same-address rule,
+     * and it also needs our own copy of that address to be verified.
+     *
+     * Facebook has to be listed to work at all: Better Auth reports its
+     * address as unverified (the Graph API has no such flag), and an
+     * untrusted provider with an unverified address can neither link nor sign
+     * in to an existing account. Facebook only returns a confirmed primary
+     * address, which is what makes trusting it the same bet as the other two.
+     *
+     * Discord is deliberately *not* listed. It hands over its own `verified`
+     * flag, and it does let an account keep an address it never confirmed —
+     * so a verified Discord address links like any other, and an unverified
+     * one cannot attach itself to somebody's existing account.
      *
      * `allowUnlinkingAll` stays off: the last way into an account cannot be
      * removed, which is the rule that made offering Disconnect safe at all.
@@ -557,7 +583,7 @@ export async function createAuth({
     account: {
       accountLinking: {
         enabled: true,
-        trustedProviders: ['google', 'apple'],
+        trustedProviders: ['google', 'apple', 'facebook'],
         allowDifferentEmails: true,
         allowUnlinkingAll: false,
       },

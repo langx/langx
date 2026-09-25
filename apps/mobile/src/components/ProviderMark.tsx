@@ -3,7 +3,7 @@ import { Image } from 'expo-image'
 import googleG from '../../assets/brand/google-g.svg'
 import { useTheme } from '../lib/theme'
 
-export type MarkProvider = 'google' | 'apple'
+export type MarkProvider = 'google' | 'apple' | 'facebook' | 'discord'
 
 /**
  * A sign-in provider's own mark, 20px, in one place.
@@ -18,14 +18,20 @@ export type MarkProvider = 'google' | 'apple'
  * The file has no filters or gradients on purpose. Android decodes SVG through
  * `androidsvg`, which supports neither.
  *
- * Both marks are the providers' brand colours and stay fixed in both schemes —
+ * The marks are the providers' brand colours and stay fixed in both schemes —
  * only Apple's glyph follows `colors.text`, because Apple's guidance is that
- * the logo takes the label's colour.
+ * the logo takes the label's colour. Facebook's is its own blue circled "f", Discord's its blurple.
  */
 export function ProviderMark({ provider }: { provider: MarkProvider }) {
   const { colors } = useTheme()
   if (provider === 'apple') {
     return <Ionicons name="logo-apple" size={20} color={colors.text} />
+  }
+  if (provider === 'facebook') {
+    return <Ionicons name="logo-facebook" size={20} color="#0866FF" />
+  }
+  if (provider === 'discord') {
+    return <Ionicons name="logo-discord" size={20} color="#5865F2" />
   }
   return (
     <Image

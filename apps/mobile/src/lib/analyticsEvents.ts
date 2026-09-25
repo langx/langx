@@ -17,7 +17,7 @@ import type { TourTargetId } from './tour'
 import type { PurchaseOutcome } from './purchases'
 
 /** How an account was created. The mailed link is what makes `email` two steps. */
-export type SignUpMethod = 'email' | 'google' | 'apple'
+export type SignUpMethod = 'email' | 'google' | 'apple' | 'facebook' | 'discord'
 
 /** What a guest was trying to do when the account gate stopped them. */
 export type GuestGateAction = 'message' | 'like' | 'follow' | 'post' | 'echo' | 'other'
