@@ -1444,6 +1444,15 @@ export const de: Localized<EnMessages> = {
     streakTitle: 'Serien und Token',
     streakBody:
       'Eine Nachricht am Tag hält deine Serie am Leben. Reden und Unterrichten bringen Token, die du für einen Serienschutz oder einen neuen Look für dein Profil ausgeben kannst.',
+    discoverTitle: 'Einen Partner finden',
+    discoverBody:
+      'Alle unter Entdecken sprechen eine Sprache, die du lernst, und lernen eine, die du sprichst. Für dich passt zu deinen Sprachen, Aktiv zeigt, wer gerade da war, und In der Nähe nutzt deinen Standort, sobald du ihn teilst. Öffne ein Profil und sag Hallo — so beginnt hier fast jeder Austausch.',
+    plusTitle: 'Der +-Knopf',
+    plusBody:
+      'Tippe auf + neben dem Eingabefeld. Außer Fotos und Sprachnachrichten kannst du um Korrektur bitten, fragen, wie etwas ausgesprochen wird, und eine Sprachnachricht zurückbekommen, eine Wendung mit ihrer Bedeutung speichern, eine Zeit zum Reden vorschlagen oder eine Quizfrage mit einer richtigen Antwort stellen.',
+    sendTranslationTitle: 'In seiner Sprache schreiben',
+    sendTranslationBody:
+      'Tippe auf + und wähle, auch in der Sprache deines Partners zu senden. Schreib in deiner, und beides geht raus — so versteht er dich, ohne zu raten. Das gibt es mit {plan}.',
   },
 
   editProfile: {

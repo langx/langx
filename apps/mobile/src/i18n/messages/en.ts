@@ -1592,6 +1592,15 @@ export const en = {
     streakTitle: 'Streaks and tokens',
     streakBody:
       'One message a day keeps your streak alive. Talking and teaching earn tokens, which you can spend on a streak freeze or a new look for your profile.',
+    discoverTitle: 'Find a partner',
+    discoverBody:
+      'Everyone in Discover speaks a language you are learning and is learning one you speak. For you is matched to your languages, Active is who has just been around, and Nearby uses your location once you share it. Open a profile and say hello — that is how almost every exchange here begins.',
+    plusTitle: 'The + button',
+    plusBody:
+      'Tap + beside the message box. As well as photos and voice notes, you can ask to be corrected, ask how something is said and get a voice note back, save a phrase with what it means, propose a time to talk, or send a quiz with one right answer.',
+    sendTranslationTitle: 'Write in their language',
+    sendTranslationBody:
+      'Tap + and choose to also send in your partner’s language. Write in yours and both go, so they read you without guessing. This one comes with {plan}.',
   },
 
   editProfile: {

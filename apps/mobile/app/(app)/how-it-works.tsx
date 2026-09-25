@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Ionicons } from '@expo/vector-icons'
+import { TIER_NAMES, tierUnlocking } from '@langx/shared'
 import { useState, type ComponentProps } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { Button } from '../../src/components/ui/Button'
@@ -24,7 +25,7 @@ interface Topic {
   /** Paragraphs under the list. */
   after?: readonly MessageKey[]
   /** A picture made of the app's own UI rather than a drawing of it. */
-  demo?: 'menu' | 'correction'
+  demo?: 'menu' | 'plus' | 'correction'
 }
 
 const ABOUT: readonly Topic[] = [
@@ -79,6 +80,12 @@ const ABOUT: readonly Topic[] = [
 
 const FEATURES: readonly Topic[] = [
   {
+    id: 'discover',
+    icon: 'search',
+    title: 'howItWorks.discoverTitle',
+    body: ['howItWorks.discoverBody'],
+  },
+  {
     id: 'hold',
     icon: 'message-circle',
     title: 'howItWorks.holdTitle',
@@ -98,6 +105,19 @@ const FEATURES: readonly Topic[] = [
     title: 'howItWorks.translateTitle',
     body: ['howItWorks.translateBody'],
   },
+  {
+    id: 'sendTranslation',
+    icon: 'send',
+    title: 'howItWorks.sendTranslationTitle',
+    body: ['howItWorks.sendTranslationBody'],
+  },
+  {
+    id: 'plus',
+    icon: 'plus-circle',
+    title: 'howItWorks.plusTitle',
+    body: ['howItWorks.plusBody'],
+    demo: 'plus',
+  },
   { id: 'voice', icon: 'mic', title: 'howItWorks.voiceTitle', body: ['howItWorks.voiceBody'] },
   { id: 'echo', icon: 'repeat', title: 'howItWorks.echoTitle', body: ['howItWorks.echoBody'] },
   { id: 'feed', icon: 'users', title: 'howItWorks.feedTitle', body: ['howItWorks.feedBody'] },
@@ -106,6 +126,26 @@ const FEATURES: readonly Topic[] = [
 
 // Found rather than copied, the way Our Kitchen finds its contributors page.
 const GUIDELINES_URL = LEGAL_LINKS.find((link) => link.labelKey === 'legal.community')?.url
+
+/*
+ * Handed to every paragraph; only "Write in their language" has a `{plan}`.
+ * Read from the plan table, like the Me tab's viewer row, so a feature that
+ * moves between plans cannot leave this page naming the old one.
+ */
+const PARAMS = { plan: TIER_NAMES[tierUnlocking('sendTranslation') ?? 'pro_plus'] }
+
+/**
+ * The learning rows of the composer's + menu, in its order. Photos, voice and
+ * stickers are left out as the parts nobody needs explained; the one that
+ * needs a plan has its own topic.
+ */
+const PLUS_ROWS = [
+  { icon: 'edit-3', label: 'chat.askCorrection' },
+  { icon: 'volume-2', label: 'chat.askPronunciation' },
+  { icon: 'bookmark', label: 'chat.sendPhrase' },
+  { icon: 'calendar', label: 'chat.sendMeeting' },
+  { icon: 'help-circle', label: 'chat.sendQuiz' },
+] as const satisfies readonly { icon: Topic['icon']; label: MessageKey }[]
 
 /**
  * How LangX works — the link at the foot of the Me tab.
@@ -117,7 +157,8 @@ const GUIDELINES_URL = LEGAL_LINKS.find((link) => link.labelKey === 'legal.commu
  * this is where they can be found again.
  *
  * Every topic describes something the app does today, and none of them sells
- * a plan — an explanation that ends in an upsell stops being read.
+ * a plan — an explanation that ends in an upsell stops being read. The one
+ * paid feature says which plan has it and stops there.
  */
 export default function HowItWorksScreen() {
   useScreenInteractive()
@@ -213,10 +254,11 @@ function TopicSheet({
             <ScrollView contentContainerStyle={styles.content}>
               <Text style={styles.title}>{t(topic.title)}</Text>
               {topic.demo === 'menu' ? <MenuDemo /> : null}
+              {topic.demo === 'plus' ? <PlusDemo /> : null}
               {topic.demo === 'correction' ? <CorrectionDemo /> : null}
               {topic.body.map((key) => (
                 <Text key={key} style={[styles.body, rules && styles.lead]}>
-                  {t(key)}
+                  {t(key, PARAMS)}
                 </Text>
               ))}
               {topic.points?.keys.map((key) => (
@@ -300,6 +342,28 @@ function MenuDemo() {
           >
             <Ionicons name={action.icon as never} size={18} color={colors.textMuted} />
             <Text style={styles.menuLabel}>{action.label}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  )
+}
+
+/** The + menu's learning rows, drawn the way `MenuDemo` draws the long press. */
+function PlusDemo() {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  return (
+    <View style={styles.demo} accessible={false} importantForAccessibility="no-hide-descendants">
+      <View style={styles.menu}>
+        {PLUS_ROWS.map((row, index) => (
+          <View
+            key={row.label}
+            style={[styles.menuRow, index < PLUS_ROWS.length - 1 && styles.divided]}
+          >
+            <Feather name={row.icon} size={18} color={colors.textMuted} />
+            <Text style={styles.menuLabel}>{t(row.label)}</Text>
           </View>
         ))}
       </View>

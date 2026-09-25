@@ -1409,6 +1409,15 @@ export const ptBR: Localized<EnMessages> = {
     streakTitle: 'Sequências e fichas',
     streakBody:
       'Uma mensagem por dia mantém sua sequência viva. Conversar e ensinar rendem fichas, que você pode gastar em um congelamento de sequência ou num visual novo para o perfil.',
+    discoverTitle: 'Encontre um parceiro',
+    discoverBody:
+      'Todo mundo em Descobrir fala um idioma que você aprende e aprende um que você fala. Para você combina com seus idiomas, Ativos mostra quem passou por aqui há pouco e Por perto usa sua localização quando você a compartilha. Abra um perfil e diga oi — é assim que quase toda troca aqui começa.',
+    plusTitle: 'O botão +',
+    plusBody:
+      'Toque no + ao lado da caixa de mensagem. Além de fotos e áudios, você pode pedir que te corrijam, perguntar como se fala algo e receber um áudio de volta, salvar uma expressão com o significado, propor um horário para conversar ou fazer uma pergunta com uma única resposta certa.',
+    sendTranslationTitle: 'Escreva no idioma da pessoa',
+    sendTranslationBody:
+      'Toque no + e escolha enviar também no idioma do seu parceiro. Escreva no seu e os dois vão juntos, então a pessoa te lê sem adivinhar. Vem com o {plan}.',
   },
 
   editProfile: {

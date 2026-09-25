@@ -1414,6 +1414,15 @@ export const tr: Localized<EnMessages> = {
     streakTitle: 'Seriler ve jetonlar',
     streakBody:
       'Günde bir mesaj serini ayakta tutar. Konuşmak ve öğretmek jeton kazandırır; bunları seri dondurmaya ya da profilin için yeni bir görünüme harcayabilirsin.',
+    discoverTitle: 'Partner bul',
+    discoverBody:
+      'Keşfet’teki herkes senin öğrendiğin bir dili konuşuyor ve senin konuştuğun bir dili öğreniyor. Sana özel dillerine göre eşleşir, Aktif az önce buralarda olanları gösterir, Yakında ise konumunu paylaştığında çalışır. Bir profil aç ve merhaba de — buradaki neredeyse her değişim böyle başlar.',
+    plusTitle: '+ düğmesi',
+    plusBody:
+      'Mesaj kutusunun yanındaki +’ya dokun. Fotoğraf ve sesli notun yanı sıra düzeltilmeyi isteyebilir, bir şeyin nasıl söylendiğini sorup sesli not olarak yanıt alabilir, bir ifadeyi anlamıyla birlikte kaydedebilir, konuşmak için bir saat önerebilir ya da tek doğru cevaplı bir soru gönderebilirsin.',
+    sendTranslationTitle: 'Onun dilinde yaz',
+    sendTranslationBody:
+      '+’ya dokun ve partnerinin dilinde de göndermeyi seç. Kendi dilinde yaz, ikisi birlikte gitsin; seni tahmin etmeden okur. Bu özellik {plan} ile gelir.',
   },
 
   editProfile: {

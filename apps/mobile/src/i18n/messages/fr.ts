@@ -1424,6 +1424,15 @@ export const fr: Localized<EnMessages> = {
     streakTitle: 'Séries et jetons',
     streakBody:
       'Un message par jour garde ta série en vie. Parler et enseigner rapportent des jetons, à dépenser en gel de série ou en nouveau style pour ton profil.',
+    discoverTitle: 'Trouver un partenaire',
+    discoverBody:
+      'Tout le monde dans Découvrir parle une langue que tu apprends et apprend une langue que tu parles. Pour toi suit tes langues, Actifs montre qui vient de passer, et À proximité utilise ta position une fois que tu la partages. Ouvre un profil et dis bonjour — c’est ainsi que commence presque chaque échange ici.',
+    plusTitle: 'Le bouton +',
+    plusBody:
+      'Touche + à côté de la zone de message. En plus des photos et des vocaux, tu peux demander une correction, demander comment se dit quelque chose et recevoir un vocal en retour, enregistrer une expression avec son sens, proposer un créneau pour parler ou poser une question à une seule bonne réponse.',
+    sendTranslationTitle: 'Écrire dans sa langue',
+    sendTranslationBody:
+      'Touche + et choisis d’envoyer aussi dans la langue de ton partenaire. Écris dans la tienne et les deux partent : il te lit sans deviner. C’est inclus dans {plan}.',
   },
 
   editProfile: {

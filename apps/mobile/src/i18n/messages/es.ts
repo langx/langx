@@ -1414,6 +1414,15 @@ export const es: Localized<EnMessages> = {
     streakTitle: 'Rachas y fichas',
     streakBody:
       'Un mensaje al día mantiene viva tu racha. Hablar y enseñar dan fichas, que puedes gastar en congelar la racha o en un nuevo detalle para tu perfil.',
+    discoverTitle: 'Encuentra un compañero',
+    discoverBody:
+      'Todas las personas en Descubrir hablan un idioma que aprendes y aprenden uno que tú hablas. Para ti se ajusta a tus idiomas, Activos muestra quién acaba de pasar por aquí y Cerca usa tu ubicación cuando la compartes. Abre un perfil y saluda: así empieza casi cada intercambio aquí.',
+    plusTitle: 'El botón +',
+    plusBody:
+      'Toca + junto al cuadro de mensaje. Además de fotos y audios, puedes pedir que te corrijan, preguntar cómo se dice algo y recibir un audio, guardar una expresión con su significado, proponer una hora para hablar o hacer una pregunta con una sola respuesta correcta.',
+    sendTranslationTitle: 'Escribe en su idioma',
+    sendTranslationBody:
+      'Toca + y elige enviar también en el idioma de tu compañero. Escribe en el tuyo y se envían los dos, así te lee sin adivinar. Viene con {plan}.',
   },
 
   editProfile: {
