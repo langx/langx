@@ -103,6 +103,8 @@ import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../li
 import { goBackTo, openProfile } from '../lib/navigation'
 import { openPaywall } from '../lib/paywall'
 import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
+import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
+import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
@@ -135,6 +137,7 @@ import { planJump } from '../lib/messageJump'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useReduceMotion } from '../hooks/useReduceMotion'
+import { useWebFileDrop } from '../hooks/useWebFileDrop'
 import { OfficialMark } from '../components/OfficialMark'
 import { WebTitle } from '../components/WebTitle'
 
@@ -856,15 +859,20 @@ export function ChatScreen({
     await pickMedia(choice)
   }
 
-  async function pickMedia(source: PickSource): Promise<void> {
+  /** How many more files fit — or `null`, after saying that none do. */
+  function attachmentRoom(): number | null {
     const remaining = MAX_ATTACHMENTS - pendingMedia.length
-    if (remaining <= 0) {
-      void showAlert(
-        t('chat.couldNotSend'),
-        t('errors.tooManyAttachments', { count: MAX_ATTACHMENTS }),
-      )
-      return
-    }
+    if (remaining > 0) return remaining
+    void showAlert(
+      t('chat.couldNotSend'),
+      t('errors.tooManyAttachments', { count: MAX_ATTACHMENTS }),
+    )
+    return null
+  }
+
+  async function pickMedia(source: PickSource): Promise<void> {
+    const remaining = attachmentRoom()
+    if (remaining === null) return
     const picked = await pickMediaAssets({ remaining, source })
     if (picked.status === 'denied') {
       // Which permission was refused, not "photos" for both: being told to
@@ -877,8 +885,19 @@ export function ChatScreen({
       return
     }
     if (picked.status === 'cancelled') return
-    // Said once, for the first file that was dropped: naming each of six would
-    // be a stack of alerts nobody dismisses.
+    attachPicked(picked, remaining)
+  }
+
+  /**
+   * What the picker or a drop found, into the composer.
+   *
+   * Said once, for the first file that was left out: naming each of six would
+   * be a stack of alerts nobody dismisses.
+   */
+  function attachPicked(
+    picked: { media: PickedMedia[]; refused?: PickRefusal },
+    remaining: number,
+  ): void {
     if (picked.refused) {
       void showAlert(
         t('chat.couldNotSend'),
@@ -894,6 +913,31 @@ export function ChatScreen({
     if (picked.media.length === 0) return
     setPendingMedia((items) => [...items, ...picked.media.slice(0, remaining)])
   }
+
+  /**
+   * Files dragged onto the page, on the web.
+   *
+   * The same gates as the attach sheet's library row, in the same order: a
+   * drop is a pick without the dialog, and must not be a way past the media
+   * lock or the ceiling.
+   */
+  async function dropFiles(files: File[]): Promise<void> {
+    if (mediaLockedFor > 0) {
+      await showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
+      return
+    }
+    const remaining = attachmentRoom()
+    if (remaining === null) return
+    const assets = await readDroppedFiles(files)
+    // Seconds: read off an HTML5 `<video>`, as the web picker reads them.
+    attachPicked(
+      validatePickedAssets(assets, { durationUnit: 'seconds', room: remaining }),
+      remaining,
+    )
+  }
+  // Off where the composer is: a channel or a suspended thread has nothing
+  // to drop into, and the overlay would promise otherwise.
+  const dropping = useWebFileDrop((files) => void dropFiles(files), !readOnly)
 
   /*
    * The ceiling stops the recording, rather than letting it run past what the
@@ -2462,6 +2506,14 @@ export function ChatScreen({
           onIndexChange={(index) => setViewing((open) => (open ? { ...open, index } : open))}
         />
       </Animated.View>
+      {dropping ? (
+        <View pointerEvents="none" style={styles.dropZone}>
+          <View style={styles.dropCard}>
+            <Feather name="upload" size={28} color={colors.accent} />
+            <Text style={styles.dropText}>{t('chat.dropToAttach')}</Text>
+          </View>
+        </View>
+      ) : null}
     </Screen>
   )
 }
@@ -2474,6 +2526,30 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
    */
   screen: { maxWidth: '100%', paddingHorizontal: 0 },
   avoid: { flex: 1 },
+  /** The web's drop target is the whole thread, said once in the middle of it. */
+  dropZone: {
+    alignItems: 'center',
+    backgroundColor: colors.scrim,
+    bottom: 0,
+    end: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    start: 0,
+    top: 0,
+    zIndex: 10,
+  },
+  dropCard: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.accent,
+    borderRadius: radius.xl,
+    borderStyle: 'dashed',
+    borderWidth: 2,
+    gap: spacing.md,
+    paddingHorizontal: spacing.xxl,
+    paddingVertical: spacing.xl,
+  },
+  dropText: { ...font.heading, color: colors.text },
   channelNote: { paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
   channelNoteText: { ...font.caption, color: colors.textFaint, textAlign: 'center' },
   header: {

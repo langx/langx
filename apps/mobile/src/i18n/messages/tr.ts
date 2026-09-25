@@ -1058,6 +1058,7 @@ export const tr: Localized<EnMessages> = {
     mediaQuota: 'Bugünkü fotoğraf, video ve sesli mesaj sınırına ulaştın.',
     attachmentFailed: 'Bu ek gönderilemedi. Tekrar dene.',
     photosTitle: 'Fotoğraflar',
+    dropToAttach: 'Eklemek için bırak',
     photosPermission: 'LangX’in fotoğraf kitaplığını açmak için izne ihtiyacı var.',
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Çeviri kullanılamıyor',

@@ -1065,6 +1065,7 @@ export const fr: Localized<EnMessages> = {
     mediaQuota: 'Vous avez atteint la limite du jour pour les photos, vidéos et messages vocaux.',
     attachmentFailed: 'Cette pièce jointe n’a pas pu être envoyée. Réessaie.',
     photosTitle: 'Photos',
+    dropToAttach: 'Déposez pour joindre',
     photosPermission: 'LangX a besoin d’une autorisation pour ouvrir ta photothèque.',
     microphoneTitle: 'Micro',
     translationUnavailable: 'Traduction indisponible',
