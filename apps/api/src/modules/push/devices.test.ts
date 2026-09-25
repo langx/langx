@@ -195,6 +195,30 @@ describe('ExpoPushSender', () => {
     expect((authorized.headers as Record<string, string>).authorization).toBe('Bearer secret')
   })
 
+  /**
+   * The silent push has to reach the app without drawing anything: no title,
+   * body or sound, `_contentAvailable` for iOS, and `normal` priority, which
+   * APNs requires of a background push.
+   */
+  it('sends a silent push with nothing to draw', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(ticketsFor(['ok']))
+    vi.stubGlobal('fetch', fetchMock)
+    const data = {
+      kind: 'traySync' as const,
+      at: 1,
+      unread: 0,
+      unreadThreads: [],
+      inboxClear: true,
+    }
+
+    await new ExpoPushSender().sendSilent({ to: ['t'], data })
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(JSON.parse(init.body as string)).toEqual([
+      { to: 't', data, _contentAvailable: true, priority: 'normal' },
+    ])
+  })
+
   it('does not read a body Expo did not accept', async () => {
     // A 4xx has no ticket array; parsing it as one would throw inside the
     // notification path and take down the message that triggered it.

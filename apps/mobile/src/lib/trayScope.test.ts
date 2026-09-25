@@ -1,6 +1,14 @@
-import { SECURITY_PUSH_TRAY_MS } from '@langx/shared'
+import { SECURITY_PUSH_TRAY_MS, type TraySync } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { belongsTo, deliveredAtMs, questionsFor, finishedWith, type TrayFacts } from './trayScope'
+import {
+  belongsTo,
+  clearedBySync,
+  deliveredAtMs,
+  finishedWith,
+  questionsFor,
+  traySyncFrom,
+  type TrayFacts,
+} from './trayScope'
 
 describe('which shade notifications a read clears', () => {
   it('clears the message pushes of the thread that was read', () => {
@@ -224,5 +232,88 @@ describe('what a sweep clears: on opening, or after a read on another device', (
   it('reads a delivery time in seconds or in milliseconds', () => {
     expect(deliveredAtMs(now / 1000)).toBe(now)
     expect(deliveredAtMs(now)).toBe(now)
+  })
+})
+
+describe('what a silent push clears while the app is closed', () => {
+  const at = Date.UTC(2026, 8, 25, 12, 0)
+  const before = at - 60_000
+  const sync: TraySync = {
+    kind: 'traySync',
+    at,
+    unread: 1,
+    unreadThreads: ['c2'],
+    inboxClear: true,
+  }
+
+  it('clears the pushes of threads no longer unread, and keeps the rest', () => {
+    expect(clearedBySync({ kind: 'message', conversationId: 'c1' }, before, sync, at)).toBe(true)
+    expect(clearedBySync({ kind: 'message', conversationId: 'c2' }, before, sync, at)).toBe(false)
+  })
+
+  /** A background push can be held back for minutes; a message meanwhile is news it predates. */
+  it('never touches what arrived after the server looked', () => {
+    for (const data of [
+      { kind: 'message', conversationId: 'c1' },
+      { kind: 'social', postId: 'p1' },
+      { kind: 'security' },
+    ]) {
+      expect(clearedBySync(data, at, sync, at + SECURITY_PUSH_TRAY_MS)).toBe(false)
+    }
+  })
+
+  /** Too many unread threads to list: the push says nothing about any of them. */
+  it('leaves every message when there is no list', () => {
+    const unlisted: TraySync = { kind: 'traySync', at, unread: 50, inboxClear: true }
+    expect(clearedBySync({ kind: 'message', conversationId: 'c1' }, before, unlisted, at)).toBe(
+      false,
+    )
+  })
+
+  it("clears the centre's kinds only when nothing there is unread", () => {
+    for (const kind of ['social', 'badgeEarned', 'profileVisits']) {
+      expect(clearedBySync({ kind }, before, sync, at), kind).toBe(true)
+      expect(clearedBySync({ kind }, before, { ...sync, inboxClear: false }, at), kind).toBe(false)
+    }
+  })
+
+  /** The gift-ready push has no row, so a clear centre says nothing about it. */
+  it('leaves the wallet, the reminders and billing', () => {
+    for (const kind of ['wallet', 'bountyPaid', 'billing', 'streakReminder', 'echo', 'promotion']) {
+      expect(clearedBySync({ kind }, before, sync, at), kind).toBe(false)
+    }
+    expect(clearedBySync({ kind: 'meetingReminder', conversationId: 'c1' }, before, sync, at)).toBe(
+      false,
+    )
+  })
+
+  it('clears a sign-in alert by the same day rule as opening the app', () => {
+    const arrived = at - 2 * 60_000
+    expect(
+      clearedBySync({ kind: 'security' }, arrived, sync, arrived + SECURITY_PUSH_TRAY_MS),
+    ).toBe(true)
+    expect(clearedBySync({ kind: 'security' }, arrived, sync, at)).toBe(false)
+  })
+
+  describe('reading the payload the background task is handed', () => {
+    it('reads a sync out of `dataString`, as both platforms deliver it', () => {
+      const payload = { notification: null, data: { dataString: JSON.stringify(sync) } }
+      expect(traySyncFrom(payload)).toEqual(sync)
+    })
+
+    /** Android runs the task for every push that arrives in the background. */
+    it('ignores every other push, and anything malformed', () => {
+      for (const payload of [
+        { data: { dataString: JSON.stringify({ kind: 'message', conversationId: 'c1' }) } },
+        { data: { dataString: JSON.stringify({ kind: 'traySync' }) } },
+        { data: { dataString: '{not json' } },
+        { data: {} },
+        { actionIdentifier: 'reply', notification: {} },
+        null,
+        undefined,
+      ]) {
+        expect(traySyncFrom(payload)).toBeNull()
+      }
+    })
   })
 })

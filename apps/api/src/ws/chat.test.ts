@@ -1,4 +1,4 @@
-import { MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES } from '@langx/shared'
+import { MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES, TRAY_SYNC_MAX_THREADS } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -925,6 +925,119 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       expect(push.sent).toEqual([])
     })
   })
+  /**
+   * A read on one device has to reach the lock screens of the others, and a
+   * phone in a pocket has no socket to hear `conversation:read` on. What it
+   * gets instead is a silent push saying what is still unread.
+   */
+  describe('a read tells the phones without a socket, silently', () => {
+    async function readerWithTwoPhones(prefix: string) {
+      const reader = await newUser(`${prefix}-${Math.random().toString(36).slice(2)}@example.com`)
+      const reading = `token-reading-${reader.userId}`
+      const pocket = `token-pocket-${reader.userId}`
+      await handle.db.collection(COLLECTIONS.devices).insertMany(
+        [
+          { deviceId: 'phone-reading', pushToken: reading },
+          { deviceId: 'phone-pocket', pushToken: pocket },
+        ].map((device) => ({
+          ...device,
+          userId: reader.userId,
+          platform: 'ios',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })),
+      )
+      return { reader, reading, pocket }
+    }
+
+    function readOverSocket(socket: ClientSocket, conversationId: string): Promise<void> {
+      return new Promise((resolve) => {
+        socket.emit('conversation:read', { conversationId }, () => resolve())
+      })
+    }
+
+    /** `sendTraySync` is not awaited by the read, so give it a moment. */
+    const settle = () => new Promise((resolve) => setTimeout(resolve, 300))
+
+    it('sends the pocket phone what is still unread, and skips the one reading', async () => {
+      const sender = await newUser(`sync-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const { reader, pocket } = await readerWithTwoPhones('sync-reader')
+      const conversation = await startConversation(sender, reader.userId, 'read me')
+      const push = app.push as LoggingPushSender
+      push.silent.length = 0
+
+      const socket = await connectSocket(reader.cookie, 'phone-reading')
+      await readOverSocket(socket, conversation._id)
+      await settle()
+
+      expect(push.silent.map((message) => message.to)).toEqual([[pocket]])
+      const data = push.silent[0]?.data
+      expect(data?.kind).toBe('traySync')
+      expect(data?.unreadThreads).toBeDefined()
+      expect(data?.unreadThreads).not.toContain(conversation._id)
+    })
+
+    it('sends every phone the sync when the read came over REST with no socket open', async () => {
+      const sender = await newUser(`sync-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const { reader, reading, pocket } = await readerWithTwoPhones('sync-rest')
+      const conversation = await startConversation(sender, reader.userId, 'read me too')
+      const push = app.push as LoggingPushSender
+      push.silent.length = 0
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversation._id}/read`,
+        headers: { cookie: reader.cookie },
+      })
+      expect(response.statusCode).toBe(200)
+      await settle()
+
+      expect(push.silent.flatMap((message) => message.to).sort()).toEqual([reading, pocket].sort())
+    })
+
+    /** Most opens are of a thread already read, and none of them is news. */
+    it('sends nothing when the thread was already read', async () => {
+      const sender = await newUser(`sync-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const { reader } = await readerWithTwoPhones('sync-again')
+      const conversation = await startConversation(sender, reader.userId, 'once')
+      const socket = await connectSocket(reader.cookie, 'phone-reading')
+      await readOverSocket(socket, conversation._id)
+      await settle()
+      const push = app.push as LoggingPushSender
+      push.silent.length = 0
+
+      await readOverSocket(socket, conversation._id)
+      await settle()
+
+      expect(push.silent).toEqual([])
+    })
+
+    it('lists the unread threads, and none at all past the limit', async () => {
+      const { traySyncFor } = await import('./traySync')
+      const { reader } = await readerWithTwoPhones('sync-limit')
+      const insert = (count: number) =>
+        handle.db.collection(COLLECTIONS.conversations).insertMany(
+          Array.from({ length: count }, () => ({
+            _id: new ObjectId(),
+            // Unique per pair, and every one of these is its own pair.
+            pairKey: new ObjectId().toHexString(),
+            participants: [reader.userId, 'someone-else'],
+            unread: { [reader.userId]: 1 },
+          })),
+        )
+
+      const before = (await traySyncFor(handle.db, reader.userId)).unreadThreads ?? []
+      const first = await insert(1)
+      const one = await traySyncFor(handle.db, reader.userId)
+      expect(one.unreadThreads).toEqual(
+        expect.arrayContaining([...before, first.insertedIds[0]?.toHexString()]),
+      )
+
+      await insert(TRAY_SYNC_MAX_THREADS)
+      expect((await traySyncFor(handle.db, reader.userId)).unreadThreads).toBeUndefined()
+    })
+  })
+
   /**
    * The feed pins this rule for its own attachments — "every file is checked
    * *before* anything is consumed, so a rejected second take does not burn a

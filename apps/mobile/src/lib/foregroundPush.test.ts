@@ -20,6 +20,13 @@ describe('what to do with a push that arrives while the app is open', () => {
     }
   })
 
+  /** It has nothing to show, and "show it" would put an empty row in the shade. */
+  it('never draws the silent sync, in front or behind', () => {
+    for (const appActive of [true, false]) {
+      expect(presentationFor({ kind: 'traySync', at: 1 }, appActive)).toBe('silent')
+    }
+  })
+
   /** An unrecognised payload must still be shown, not swallowed. */
   it('shows anything it does not recognise', () => {
     expect(presentationFor({ kind: 'somethingNew' }, true)).toBe('os')

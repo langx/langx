@@ -563,13 +563,41 @@ lock screen in the morning.
   `handle`, a reply or like row by `postId` (every push about that post), and
   the repeating kinds by kind.
 
-Only a device with the app running can clear its own shade. There is no silent
-push to reach one that is closed. So the rules above miss everything dealt with
-while this device was not looking: read on another device while this one was
-asleep, or announced by a push that landed after the read.
+Only a device with the app running can clear its own shade. So the rules above
+miss everything dealt with while this device was not looking: read on another
+device while this one was asleep, or announced by a push that landed after the
+read. Two things cover that: a silent push, which reaches a phone whose app is
+closed, and a sweep when the app opens, which catches whatever the silent push
+did not.
 
-**A sweep** covers that. It asks the server and clears what the answers say is
-finished. It runs when the app opens, from cold or from the background, and on
+**The silent push** (`traySync`, `apps/api/src/ws/traySync.ts`) goes out after
+every read that changed something, a thread that had unread messages or a row
+in the centre, to the reader's devices that hold no socket. It draws nothing.
+It wakes the app in the background (`src/lib/traySyncTask.ts`), which clears
+what it says is finished and sets the icon's count:
+
+- `message` pushes of threads not in its list of unread threads. Past
+  `TRAY_SYNC_MAX_THREADS` it carries no list and leaves every message;
+- `social`, `badgeEarned` and `profileVisits` when the centre has nothing
+  unread;
+- `security` by the same day rule as the sweep below.
+
+It states the whole unread picture rather than naming what was just read,
+because iOS delivers only the newest of a burst of background pushes and a push
+that named one thread would lose the rest. It carries facts rather than asking
+the phone to fetch them, because a locked iPhone cannot read the session cookie
+out of the Keychain. Nothing that arrived after its `at` is touched, because a
+background push can be held back for minutes and a message that arrived
+meanwhile is newer than what it says.
+
+It is best effort by the platforms' own rules. iOS allows a few background
+pushes an hour and none at all to an app the person swiped away; Android may
+hold one back while the phone sleeps. On Android the background task also runs
+for every other push that arrives while the app is closed, and ignores it. It
+needs a store build: the background mode and `expo-task-manager` are native.
+
+**The sweep** catches the rest. It asks the server and clears what the answers
+say is finished. It runs when the app opens, from cold or from the background, and on
 every device holding a socket when another device reads something in the centre
 (`notification:read`, which says only that something was read, not what):
 

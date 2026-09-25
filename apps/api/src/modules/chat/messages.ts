@@ -1210,12 +1210,34 @@ export async function countUnread(db: Db, userId: string): Promise<number> {
   return rows[0]?.total ?? 0
 }
 
+/**
+ * The threads this reader still has something unread in, by id, for the
+ * silent push that keeps their other phones' shades in step (`ws/traySync.ts`).
+ *
+ * Wider than `countUnread` on purpose: an archived or blocked thread with
+ * unread messages keeps its pushes on the lock screen, which is the safe side
+ * to be wrong on. A thread missing from this list has its pushes cleared.
+ */
+export async function unreadThreadIds(db: Db, userId: string, limit: number): Promise<string[]> {
+  const rows = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .find({ participants: userId, [`unread.${userId}`]: { $gt: 0 } }, { projection: { _id: 1 } })
+    .limit(limit)
+    .toArray()
+  return rows.map((row) => row._id.toHexString())
+}
+
+/**
+ * `wasUnread` says whether this read changed anything. Opening a thread that
+ * was already read is most opens, and none of them is news to another device.
+ */
 export async function markConversationRead(
   db: Db,
   userId: string,
   conversationId: string,
-): Promise<Conversation> {
+): Promise<{ conversation: Conversation; wasUnread: boolean }> {
   const conversation = await assertConversationAccess(db, conversationId, userId)
+  const wasUnread = (conversation.unread?.[userId] ?? 0) > 0
 
   const updated = await db
     .collection<Conversation>(COLLECTIONS.conversations)
@@ -1237,7 +1259,7 @@ export async function markConversationRead(
       { $set: { readAt: new Date() } },
     )
 
-  return updated ?? conversation
+  return { conversation: updated ?? conversation, wasUnread }
 }
 
 export interface ConversationPage {

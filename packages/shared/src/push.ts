@@ -116,6 +116,48 @@ export const PUSH_ACTION_REPLY = 'reply'
 export const SECURITY_PUSH_TRAY_MS = 24 * 60 * 60 * 1000
 
 /**
+ * The silent push that tells a phone what has been read elsewhere, so it can
+ * take those notifications out of its shade while the app is not running.
+ *
+ * Not one of `PUSH_KINDS`: those are notifications a person sees and taps,
+ * each with somewhere to go. This one is never drawn.
+ *
+ * It carries the whole state rather than the one read that caused it, for two
+ * reasons. iOS throttles background pushes and delivers only the newest of a
+ * burst, so a push that said "thread X was read" would lose every read before
+ * it; one that says "these are the threads still unread" is right whichever
+ * one arrives. And it carries the facts rather than asking the phone to fetch
+ * them, because a locked iPhone cannot read the session cookie out of the
+ * Keychain, so a background request would go out signed out.
+ *
+ * `at` is when the server looked. A notification that arrived after it is
+ * newer than the state and is never touched: a background push can be held
+ * back for minutes, and a message that came in meanwhile must not be cleared
+ * by news that predates it.
+ */
+export const TRAY_SYNC_KIND = 'traySync'
+
+/**
+ * How many unread threads a sync lists before it lists none. An APNs payload
+ * is at most 4 KB, and an id is about 27 bytes of it. Past this the phone is
+ * told nothing about threads, which leaves every message where it is.
+ */
+export const TRAY_SYNC_MAX_THREADS = 40
+
+export const traySyncSchema = z.object({
+  kind: z.literal(TRAY_SYNC_KIND),
+  /** Milliseconds since the epoch, on the server's clock. */
+  at: z.number(),
+  /** The unread total, for the icon. */
+  unread: z.number().int().nonnegative(),
+  /** Every thread with something unread, or absent when there are too many. */
+  unreadThreads: z.array(z.string()).max(TRAY_SYNC_MAX_THREADS).optional(),
+  /** Nothing unread in the notification centre. */
+  inboxClear: z.boolean(),
+})
+export type TraySync = z.infer<typeof traySyncSchema>
+
+/**
  * Local hour (in the user's own timezone) at which the streak reminder is
  * worth sending: late enough that most people have had their chance to act,
  * early enough that they still can.

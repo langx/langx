@@ -12,6 +12,7 @@ import {
   listNotifications,
   markNotificationsRead,
 } from '../modules/notifications/inbox'
+import { sendTraySync } from '../ws/traySync'
 import { userRoom } from '../ws/types'
 
 /**
@@ -79,6 +80,8 @@ export const notificationRoutes: FastifyPluginAsyncZod = async (app) => {
        * sender and audience are the same person.
        */
       app.io.to(userRoom(request.userId)).emit('notification:read', {})
+      // And the phones with no socket to hear that on. See `ws/traySync.ts`.
+      if (result.read > 0) void sendTraySync(app, request.userId)
       return reply.send(result)
     },
   )

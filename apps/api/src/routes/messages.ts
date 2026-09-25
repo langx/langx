@@ -33,6 +33,7 @@ import {
 } from '../modules/chat/mutations'
 import { speakMessage } from '../modules/chat/speak'
 import { fanOutMessage } from '../ws/fanOut'
+import { sendTraySync } from '../ws/traySync'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -351,7 +352,7 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
   // UI updates the same way regardless of which transport the reader used.
   app.post('/conversations/:id/read', { preHandler: requireMember }, async (request, reply) => {
     const { id } = request.params as { id: string }
-    const conversation = await markConversationRead(app.mongo.db, request.userId, id)
+    const { conversation, wasUnread } = await markConversationRead(app.mongo.db, request.userId, id)
     const readAt = new Date().toISOString()
     const otherId = conversation.participants.find((p) => p !== request.userId)
     if (otherId) {
@@ -370,6 +371,8 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
       readBy: request.userId,
       readAt,
     })
+    // And the phones with no socket to hear that on. See `ws/traySync.ts`.
+    if (wasUnread) void sendTraySync(app, request.userId)
     return reply.send(conversation)
   })
 }
