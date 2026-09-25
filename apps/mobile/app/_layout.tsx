@@ -42,6 +42,8 @@ import { markInstalled } from '../src/lib/installedAt'
 import { ensurePlaybackAudioMode } from '../src/lib/audioSession'
 import { configureObserve } from '../src/lib/observe'
 import { configureQueryNetwork } from '../src/lib/queryNetwork'
+import { PERSIST_MAX_AGE_MS } from '../src/lib/queryPersistence'
+import { keepUnwatchedThreadsShort } from '../src/lib/queryLifetimes'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { clearCompanionDirectory, clearCompanionSnapshot } from '../modules/companion-snapshot'
@@ -84,10 +86,21 @@ configureObserve()
 configureQueryNetwork()
 
 function createQueryClient(): QueryClient {
-  return new QueryClient({
+  const client = new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 30_000,
+        /*
+         * A week, to match the persisted cache's `maxAge`: the persister only
+         * writes what the client is still holding, and restores into queries
+         * that are collected on this timer. At the default five minutes a
+         * thread left for that long was collected — hence the skeleton on
+         * reopening it — and a restored copy would have gone the same way
+         * before anyone came back for it. `usePersistedQueries` has the rest,
+         * and `keepUnwatchedThreadsShort` below pays for what a week of every
+         * loaded page would otherwise cost.
+         */
+        gcTime: PERSIST_MAX_AGE_MS,
         retry: (failureCount, error) => {
           // Retrying a 4xx just repeats the same refusal. Only transient
           // failures — network, 5xx — are worth a second attempt.
@@ -105,6 +118,8 @@ function createQueryClient(): QueryClient {
       },
     },
   })
+  keepUnwatchedThreadsShort(client)
+  return client
 }
 
 function RootLayout() {
