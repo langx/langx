@@ -173,7 +173,10 @@ A public repo puts four items on the plan:
 
 - Expo, `expo-router` (file-based; real URLs on the web, so `/user/[handle]` is
   shareable).
-- **TanStack Query** for server state.
+- **TanStack Query** for server state, persisted to the device per account —
+  a file in the cache directory on a phone, IndexedDB on the web — so a cold
+  start restores the last state of every screen and refetches behind it. See
+  `docs/decisions.md` → _The query cache survives a launch_.
 - `react-hook-form` + zod; schemas come from `packages/shared`.
 - `react-native-purchases` (RevenueCat, same SDK on iOS/Android/web),
   `expo-image`, `expo-secure-store`, `expo-notifications`.
