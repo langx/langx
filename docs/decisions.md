@@ -5336,3 +5336,121 @@ anything. The per-store results are in `release-runbook.md`, _The prices of
 The paywall also stopped hiding the saving in the segment label. The yearly
 price now carries the monthly price struck through and "Save N%" beneath it,
 still computed from the two store prices and never written down.
+
+## Client — the query cache survives a launch
+
+Every screen reads through TanStack Query, and the cache lived in memory
+alone. A cold start therefore drew every list as skeletons and followed each
+chat row with a profile request of its own; a thread left for five minutes was
+garbage-collected and drew six skeleton bubbles when reopened. Half of "every
+time I open it, it loads from scratch" was that second case, and did not even
+need the app to be closed.
+
+The cache is now written to the device and restored at launch —
+`src/lib/queryPersistence.ts` (the rules, tested), `src/lib/queryStorage.ts`
+(the writing), `src/hooks/usePersistedQueries.ts` (the wiring) and
+`src/lib/queryLifetimes.ts` (what a longer life costs). TanStack's persister
+for the writes, over `expo-file-system` on a phone and IndexedDB on the web.
+The choices that look arbitrary:
+
+**No new native module.** `expo-file-system` has been in the binary since the
+meeting file, so this ships over the air — the same reasoning as Echo's offline
+snapshot, at a larger scale. SQLite would be a store round and a migration
+story bought for a cache; AsyncStorage a third storage dependency next to
+SecureStore and the file system. The file is in the cache directory, which iOS
+may empty and never backs up — right for a copy of what the server holds. On
+the web `localStorage`'s five megabytes is too small for a chat history, so it
+is IndexedDB through `idb-keyval`, in a database of its own.
+
+**One key per account, restored at the root.** The key carries the user id,
+so the next account on a shared device restores a file that does not exist
+rather than one that has to be refused after reading — the moment between
+restoring and knowing who is signed in is exactly when a screen could paint
+somebody else's rows. At the root rather than in `(app)/_layout` because the
+first screen that wants the cache is `app/index.tsx`, the gate that reads
+`me`. On a phone `@better-auth/expo` restores the session from secure storage
+without a request, so a cold start in a tunnel now knows the account, restores
+its cache and passes the gate into the chat list instead of stopping at the
+splash. The web has no such session cache and still waits for `/get-session`.
+Guests are excluded: their accounts are thrown away at registration or swept.
+
+**Restored by hand.** `PersistQueryClientProvider` restores when it mounts,
+and at the root the account is not known at mount. `persistQueryClient` can be
+told to stop subscribing but not to stop a restore already reading, so a
+sign-out landing during the read would clear the cache and then have the
+previous account's rows hydrated back into it. The hook checks a cancelled
+flag and calls `hydrate` in one synchronous step instead. `hydrate` writes
+stored data only over a query with nothing newer, so it fills a request still
+in flight and never overwrites an answer.
+
+**The account-switch effect deletes the file, and the hook is declared after
+it.** React runs every cleanup of a commit before any effect body, then the
+bodies in declaration order: the old subscription ends, the cache is cleared
+and the file deleted, then the new account's restore begins. The persister's
+throttle is trailing, so the last change before a sign-out would be written
+seconds after the deletion and put the file back; the cleanup closes the
+storage to writes first, which is what `guardWrites` is for.
+
+**Everything restored is stale, and says so.** Each state is written with
+`isInvalidated: true`, which makes the first screen to read it refetch it
+whatever its `staleTime`. Without that, a launch within thirty seconds of the
+last write would trust the disk — and a push tapped from a cold start would
+open a thread without the message the push was about, the bug
+`missedEvents.ts` exists for, back by another door.
+
+**A failed refetch is still written.** TanStack's default keeps successes
+only, and a list whose background refetch timed out is an `error` that still
+holds every row — one captive portal would have deleted the chat list from
+disk at the moment it was needed. Anything with data is written, as the
+success it was before the refetch failed.
+
+**The buster is a hand-bumped constant, not the update id.** Every merge to
+`main` publishes an OTA and a web deploy, several times a day; a cache keyed to
+either would rarely live long enough to be worth writing. `QUERY_CACHE_VERSION`
+is bumped when a persisted DTO changes shape in a way a screen cannot survive
+for one round trip. Forgetting is bounded by the rule above: a restored shape
+is refetched on first read, so an old one is on screen for one round trip at
+most — the window every screen already tolerates while a JS update runs ahead
+of the API deploy behind it.
+
+**A deny-list plus one rule, rather than a whitelist.** Everything with data
+is written except `app-config`, `admin`, `echo`, `suspension`, the handle and
+city searches and link previews — and anything whose own `gcTime` is shorter
+than the cache's `maxAge`. `app-config` is the one that would hurt: a stored
+"update required" would lock out the binary that answered it, and a stored
+maintenance window would hold a phone in a tunnel on the maintenance screen.
+The `gcTime` rule is what keeps the list short: a query given a deliberately
+short life (the jump window's sixty seconds, the Echo queue's zero) would be
+collected before the stored copy could be read, so it excludes itself. It also
+decided the default `gcTime`: a week, matching `maxAge`, as the persister's
+documentation requires.
+
+**A week of `gcTime` costs something, and threads pay it back.** At five
+minutes a thread you had scrolled through was collected soon after you left,
+and reopening fetched one page. At a week every page stays, and reopening a
+stale thread refetches all of them in sequence. `keepUnwatchedThreadsShort`
+cuts a live thread to its newest page when the last screen showing it goes,
+and again if a late refetch fills it back up. Nothing visible is lost — a
+thread opens at its newest message — and it bounds the one cache that grows by
+scrolling. The chat list's tabs are left alone: they are one hook whose key
+changes with the segment, and cutting the tab just left would scroll it back
+to the top.
+
+**First page only, newest first, capped, budgeted.** The same reasoning on
+disk: a restored infinite query is refetched, and one page is one request.
+Then a ceiling per prefix (forty threads, two hundred profiles, ten discovery
+filters, fifty of anything else) and two megabytes over the whole, because
+the whole thing is serialised on every write, at most every five seconds. The
+string is assembled from the per-query strings the budget already produced
+rather than stringified a second time.
+
+**Profile rows keep their five minutes.** Everything restored is refetched on
+first read, so a longer `staleTime` would not save a cold start a single
+request — and the online dot on each chat row comes from that query, so it
+would only have made the dot staler. The rows are drawn from the cache at once
+and refreshed behind it. Folding the partner into the list response, which
+would retire those requests, is a server change of its own.
+
+Mutations are never written: unsent messages are `unsentStore.ts`'s to keep,
+in a shape the chat screen can retry, and a restored mutation has no function
+to run.
