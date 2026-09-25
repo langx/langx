@@ -44,6 +44,7 @@ import { configureObserve } from '../src/lib/observe'
 import { configureQueryNetwork } from '../src/lib/queryNetwork'
 import { PERSIST_MAX_AGE_MS } from '../src/lib/queryPersistence'
 import { keepUnwatchedThreadsShort } from '../src/lib/queryLifetimes'
+import { forgetPersistedQueries, usePersistedQueries } from '../src/hooks/usePersistedQueries'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { clearCompanionDirectory, clearCompanionSnapshot } from '../modules/companion-snapshot'
@@ -304,8 +305,13 @@ function RootShell() {
   const seenUserId = useRef<string | null | undefined>(undefined)
   useEffect(() => {
     const current = userId ?? null
-    if (isAccountSwitch(seenUserId.current, current)) {
+    const previous = seenUserId.current
+    if (isAccountSwitch(previous, current)) {
       queryClient.clear()
+      // And its copy on disk, or the next launch would restore what `clear()`
+      // just emptied. `previous` is a real id here: `isAccountSwitch` is false
+      // for anything else.
+      if (previous) void forgetPersistedQueries(previous)
       clearCompanionSnapshot()
       clearCompanionDirectory()
       clearWatch()
@@ -313,6 +319,13 @@ function RootShell() {
     }
     seenUserId.current = current
   }, [userId, queryClient])
+
+  /*
+   * After the effect above, and it matters: see the hook for the order React
+   * runs these in. Never for a guest — a guest's account is thrown away at
+   * registration or swept, and a cache written for it would outlive it.
+   */
+  usePersistedQueries(queryClient, isGuest ? undefined : userId)
 
   // useSession() sets isPending on every refetch, not just the first load —
   // sign-up, sign-in and sign-out all trigger one. Gating the whole <Stack>
