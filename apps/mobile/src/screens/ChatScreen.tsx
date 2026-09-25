@@ -16,6 +16,7 @@ import {
   messageTranslationSchema,
   type MessageAsk,
   type MessageTranslation,
+  TYPING_IDLE_MS,
 } from '@langx/shared'
 import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import {
@@ -73,6 +74,7 @@ import { useReviewPrompt } from '../hooks/useReviewPrompt'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { chooseAlert, confirmAlert, showAlert } from '../lib/alert'
 import { emitWithAck, getSocket } from '../lib/socket'
+import { typingIndicator } from '../lib/typingIndicator'
 import {
   addUnsent,
   newClientId,
@@ -540,18 +542,36 @@ export function ChatScreen({
   )
 
   useEffect(() => {
-    let cancelled = false
-    void (async () => {
-      const socket = await getSocket()
-      if (cancelled) return
-      const onTyping = (event: { conversationId: string; isTyping: boolean }) => {
-        if (event.conversationId === conversationId) setPartnerTyping(event.isTyping)
+    const indicator = typingIndicator(setPartnerTyping)
+    let typist: string | undefined
+    const onTyping = (event: { conversationId: string; userId: string; isTyping: boolean }) => {
+      if (event.conversationId !== conversationId) return
+      typist = event.userId
+      indicator.set(event.isTyping)
+    }
+    // Their message landing is the end of their typing, whether the stop
+    // signal got here first, arrives after it, or never comes.
+    const onMessage = (message: MessageDto) => {
+      if (message.conversationId === conversationId && message.senderId === typist) {
+        indicator.set(false)
       }
-      socket.on('typing', onTyping)
-      return () => socket.off('typing', onTyping)
-    })()
+    }
+    let socket: Awaited<ReturnType<typeof getSocket>> | undefined
+    let cancelled = false
+    void getSocket().then((opened) => {
+      if (cancelled) return
+      socket = opened
+      opened.on('typing', onTyping)
+      opened.on('message:new', onMessage)
+    })
     return () => {
       cancelled = true
+      indicator.dispose()
+      // Here, where React calls it. It used to be returned from the async
+      // setup, where nothing did, and every thread opened left its listener
+      // on the socket for the rest of the session.
+      socket?.off('typing', onTyping)
+      socket?.off('message:new', onMessage)
     }
   }, [conversationId])
 
@@ -568,7 +588,7 @@ export function ChatScreen({
     if (typingTimer.current) clearTimeout(typingTimer.current)
     // Stop advertising "typing" if they pause — otherwise the indicator sticks
     // on the other side until the message is finally sent.
-    typingTimer.current = setTimeout(() => notifyTyping(false), 3000)
+    typingTimer.current = setTimeout(() => notifyTyping(false), TYPING_IDLE_MS)
   }
 
   /** A single-file row, back in the shape a send takes, for a retry. */

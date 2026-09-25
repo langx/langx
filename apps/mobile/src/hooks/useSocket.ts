@@ -10,6 +10,7 @@ import {
   invalidateUnread,
   keys,
   markConversationRead,
+  trayFacts,
 } from '../api/queries'
 import { getActiveConversation } from '../lib/activeConversation'
 import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
@@ -23,7 +24,7 @@ import {
   applyPinned,
   type MessagePageDto,
 } from '../lib/messageCache'
-import { clearFromTray } from '../lib/notifications'
+import { clearFromTray, sweepTray } from '../lib/notifications'
 import { closeSocket, getSocket, restartSocket } from '../lib/socket'
 
 /**
@@ -321,6 +322,10 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       /** The same account on another device has cleared the bell. */
       socket.on('notification:read', () => {
         invalidateNotifications(queryClient)
+        // And its pushes, which this device is still showing. The event says
+        // only that something was read, not what, so the server is asked —
+        // the same question the app asks when it opens.
+        void sweepTray(trayFacts)
       })
     })()
 

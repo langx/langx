@@ -1,6 +1,7 @@
 import { COSMETICS } from '@langx/shared'
 import { Pressable, Text, View } from 'react-native'
-import { router, type Href } from 'expo-router'
+import { router, useFocusEffect, type Href } from 'expo-router'
+import { useCallback } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { queryFailed } from '../../../src/lib/listState'
@@ -12,6 +13,7 @@ import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { goBackTo } from '../../../src/lib/navigation'
+import { clearFromTray } from '../../../src/lib/notifications'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
@@ -68,6 +70,16 @@ export default function WalletScreen() {
 
   const me = useMe()
   const wallet = useWallet()
+  /*
+   * The wallet is where the gift, the pool and a bounty's tokens are read, the
+   * way a thread is where its messages are. On focus rather than mount, so a
+   * push that lands while a page is open over this one goes when it comes back.
+   */
+  useFocusEffect(
+    useCallback(() => {
+      void clearFromTray('wallet')
+    }, []),
+  )
   // Above the early return, where hooks have to be; both behind one pull.
   const pull = usePullToRefresh(() => Promise.all([me.refetch(), wallet.refetch()]))
 

@@ -39,6 +39,7 @@ import {
   type SubmitEchoReviewsResult,
   type UpdateEchoCardInput,
   type NotificationsPage,
+  NOTIFICATIONS_PAGE_SIZE_MAX,
   type ShareCardResult,
   type AdminLatestVersionInput,
   type AppConfig,
@@ -98,6 +99,7 @@ import {
 import type { InfiniteData } from '@tanstack/react-query'
 import { markPagesRead } from '../lib/notificationInbox'
 import { clearFromTray } from '../lib/notifications'
+import type { questionsFor, TrayFacts } from '../lib/trayScope'
 import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
@@ -379,6 +381,44 @@ export function invalidateOwnPublicViews(queryClient: QueryClient, profile: MePr
   ]) {
     void queryClient.invalidateQueries({ queryKey: key })
   }
+}
+
+/**
+ * What `sweepTray` asks, answered by the server rather than the caches: the
+ * point is what happened where this device was not looking, and the caches
+ * are what it last saw.
+ *
+ * One request per thread in the shade, which is a handful. A thread that
+ * cannot be asked about is left where it is; one this reader can no longer
+ * open (404) is finished with, since tapping its push leads nowhere. The
+ * centre's rows are one page at its largest size: a push in the shade is
+ * recent, and rows are already piled, so its rows are near the top.
+ */
+export async function trayFacts({
+  threads,
+  inbox,
+}: ReturnType<typeof questionsFor>): Promise<TrayFacts> {
+  const read = await Promise.all(
+    threads.map(async (id) => {
+      try {
+        const { unread } = await api.get<{ unread: number }>(`/conversations/${id}`)
+        return unread === 0 ? id : null
+      } catch (error) {
+        return error instanceof ApiRequestError && error.status === 404 ? id : null
+      }
+    }),
+  )
+  let rows: TrayFacts['rows'] = []
+  if (inbox) {
+    try {
+      rows = (
+        await api.get<NotificationsPage>(`/me/notifications?limit=${NOTIFICATIONS_PAGE_SIZE_MAX}`)
+      ).items
+    } catch {
+      // No rows is no answer, and a push with no answer stays.
+    }
+  }
+  return { readThreads: new Set(read.filter((id) => id !== null)), rows }
 }
 
 export async function markConversationRead(

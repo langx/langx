@@ -373,6 +373,26 @@ export type SendCorrectionInput = z.infer<typeof sendCorrectionSchema>
 export const SOCKET_ACK_TIMEOUT_MS = 12_000
 
 /**
+ * How long after the last keystroke the composer tells the other side it has
+ * stopped typing.
+ */
+export const TYPING_IDLE_MS = 3_000
+
+/**
+ * How long "typing…" stays up on the other side without being refreshed.
+ *
+ * The stop signal above is not enough by itself. A phone locked mid-sentence
+ * runs no JS, so its idle timer never fires; a reader whose app was in the
+ * background missed the stop while it had no socket; and the last keystroke
+ * and the send leave milliseconds apart, so the server can deliver them in
+ * the wrong order. Any of those left "typing…" up until the other person
+ * typed again, which could be never. Every keystroke refreshes it, so this
+ * only has to be longer than `TYPING_IDLE_MS` for somebody still typing to
+ * never flicker.
+ */
+export const TYPING_TTL_MS = 6_000
+
+/**
  * The reaction strip.
  *
  * Eight, which is what fills the pill edge to edge on a 390pt screen — the

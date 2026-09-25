@@ -2,7 +2,14 @@ import { PUSH_ACTION_REPLY, PUSH_CATEGORY_MESSAGE } from '@langx/shared'
 import { AppState, Platform } from 'react-native'
 import { currentTranslate } from '../i18n/runtime'
 import { presentationFor } from './foregroundPush'
-import { belongsTo, type TrayScope } from './trayScope'
+import {
+  belongsTo,
+  deliveredAtMs,
+  questionsFor,
+  finishedWith,
+  type TrayFacts,
+  type TrayScope,
+} from './trayScope'
 
 /**
  * Two things that have to be set before the first notification arrives, and
@@ -119,6 +126,34 @@ export async function clearFromTray(scope: TrayScope): Promise<void> {
     await Promise.all(
       presented
         .filter((n) => belongsTo(n.request.content.data, scope))
+        .map((n) => Notifications.dismissNotificationAsync(n.request.identifier)),
+    )
+  } catch {
+    // See above.
+  }
+}
+
+/**
+ * Takes out of the shade whatever has been dealt with since it was drawn,
+ * however that happened. See `TrayFacts` for why `clearFromTray` alone is not
+ * enough.
+ *
+ * `ask` fetches the answers and lives with the caller, which has the API
+ * client. Never throws, for the reason `clearFromTray` gives.
+ */
+export async function sweepTray(
+  ask: (questions: ReturnType<typeof questionsFor>) => Promise<TrayFacts>,
+): Promise<void> {
+  if (Platform.OS === 'web') return
+  try {
+    const Notifications = await import('expo-notifications')
+    const presented = await Notifications.getPresentedNotificationsAsync()
+    if (presented.length === 0) return
+    const facts = await ask(questionsFor(presented.map((n) => n.request.content.data)))
+    const now = Date.now()
+    await Promise.all(
+      presented
+        .filter((n) => finishedWith(n.request.content.data, deliveredAtMs(n.date), facts, now))
         .map((n) => Notifications.dismissNotificationAsync(n.request.identifier)),
     )
   } catch {

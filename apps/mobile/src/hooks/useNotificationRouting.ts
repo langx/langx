@@ -4,13 +4,13 @@ import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { AppState, Platform } from 'react-native'
 import { api } from '../api/client'
-import { markConversationRead } from '../api/queries'
+import { markConversationRead, trayFacts } from '../api/queries'
 import { track } from '../lib/analytics'
 import { getActiveConversation } from '../lib/activeConversation'
 import { presentationFor } from '../lib/foregroundPush'
 import { previewOf, showMessageBanner } from '../lib/inAppNotifications'
-import { invalidateMissedEvents } from '../lib/missedEvents'
-import { configureNotifications } from '../lib/notifications'
+import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
+import { configureNotifications, sweepTray } from '../lib/notifications'
 import { notificationRoute } from '../lib/notificationRoute'
 
 /**
@@ -59,6 +59,11 @@ async function sendQuickReply(
       body,
       clientId: `notif-${conversationId}-${Date.now()}`,
     })
+    // Answering is reading, as it is in the thread. Without this the server
+    // still counted the message unread, so the icon kept its number and the
+    // thread's other pushes stayed in the shade over a conversation already
+    // answered.
+    await markConversationRead(conversationId, queryClient)
     // The thread now has a message the caches have never seen, and the app
     // may be opened straight into it.
     await invalidateMissedEvents(queryClient)
@@ -91,8 +96,18 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
     let subscription: { remove: () => void } | undefined
     let received: { remove: () => void } | undefined
 
+    // The shade catches up whenever the app does: see `useSocket`'s resync,
+    // which answers the same "what happened while I was away" for the caches.
+    let lastAppState = AppState.currentState
+    const appState = AppState.addEventListener('change', (next) => {
+      if (resumedFromBackground(lastAppState, next)) void sweepTray(trayFacts)
+      lastAppState = next
+    })
+
     void (async () => {
       await configureNotifications()
+      // A cold start is a return too, and the usual one.
+      void sweepTray(trayFacts)
       try {
         const Notifications = await import('expo-notifications')
         if (cancelled) return
@@ -189,6 +204,7 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
 
     return () => {
       cancelled = true
+      appState.remove()
       subscription?.remove()
       received?.remove()
     }
