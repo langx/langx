@@ -1,4 +1,4 @@
-import { WEB_HOST } from '@langx/shared'
+import { ERROR_STATUS, WEB_HOST } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -9,7 +9,8 @@ import { loadEnv } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
-import { CapturingEmailSender, setCookieValue } from './testSupport/authFlow'
+import { COLLECTIONS } from './db/collections'
+import { CapturingEmailSender, setCookieValue, signUpAndSignIn } from './testSupport/authFlow'
 
 describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', () => {
   // Real signup/verify/reset writes span multiple Better Auth collections in
@@ -213,5 +214,63 @@ describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', (
       payload: { email, password: originalPassword },
     })
     expect(signInOldPassword.statusCode).toBeGreaterThanOrEqual(400)
+  })
+
+  /*
+   * `session.cookieCache` in `auth.ts`: a request carrying the signed copy of
+   * its session is let through without the database being asked, which is
+   * the saving — and which is also why a revoked session outlives its row by
+   * up to the cache's lifetime. Both halves are asserted, because the second
+   * is a decision rather than an accident. Suspension is the part that must
+   * not wait five minutes, and it does not: `requireAuth` reads the profile
+   * on every request regardless.
+   */
+  it('trusts the cached session for a while, but never past a suspension', async () => {
+    const email = 'cookie-cache@example.com'
+    const password = 'correct horse battery staple'
+    const { userId } = await signUpAndSignIn(app, emailSender, { email, password, name: 'Cache' })
+
+    const signIn = await app.inject({
+      method: 'POST',
+      url: '/api/auth/sign-in/email',
+      payload: { email, password },
+    })
+    const raw = signIn.headers['set-cookie']
+    const cookies = (Array.isArray(raw) ? raw : [raw]).filter(
+      (c): c is string => typeof c === 'string',
+    )
+    expect(cookies.some((c) => c.includes('session_data'))).toBe(true)
+    const full = cookies.map((c) => c.split(';')[0]).join('; ')
+    const tokenOnly = setCookieValue(signIn)
+
+    await handle.db.collection('session').deleteMany({})
+
+    // The row is gone: the token alone is refused, the cached copy is not.
+    const withToken = await app.inject({
+      method: 'GET',
+      url: '/me/unread',
+      headers: { cookie: tokenOnly },
+    })
+    expect(withToken.statusCode).toBe(401)
+    const withCache = await app.inject({
+      method: 'GET',
+      url: '/me/unread',
+      headers: { cookie: full },
+    })
+    expect(withCache.statusCode, withCache.body).not.toBe(401)
+
+    await handle.db
+      .collection<{ _id: string }>(COLLECTIONS.profiles)
+      .updateOne(
+        { _id: userId },
+        { $set: { suspension: { until: new Date(Date.now() + 86_400_000), permanent: false } } },
+        { upsert: true },
+      )
+    const suspended = await app.inject({
+      method: 'GET',
+      url: '/me/unread',
+      headers: { cookie: full },
+    })
+    expect(suspended.statusCode).toBe(ERROR_STATUS.ACCOUNT_SUSPENDED)
   })
 })

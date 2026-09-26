@@ -744,6 +744,22 @@ export interface ConversationDto {
   /** How many more messages before an attachment is allowed, or 0. */
   mediaLockedFor: number
   updatedAt: string
+  /**
+   * The other person, as much as a row draws. Sent by the chat list only, and
+   * absent from an API that predates it — read it through
+   * `useConversationPartners`, which falls back to the profile cache.
+   */
+  partner?: ConversationPartnerDto
+}
+
+export interface ConversationPartnerDto {
+  _id: string
+  handle: string
+  displayName: string
+  avatarUrl?: string
+  isOnline: boolean
+  official?: true
+  accountStatus: 'active' | 'suspended' | 'deleted'
 }
 
 export function useConversations(filter: ConversationFilter = 'all') {

@@ -595,6 +595,56 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.items[0]?.participants).toContain(newer.userId) // most recent activity first
   })
 
+  /*
+   * The list names its own partners, so no client has to ask `/profiles/:id`
+   * once per row. Checked for the three things a row shows about a person
+   * that privacy or moderation can change: the online dot, the name, and
+   * whether the account is still there.
+   */
+  it('names each partner in the list, with the same rules a profile follows', async () => {
+    const viewer = await newUser('partner-viewer@example.com')
+    const shy = await newUser('partner-shy@example.com', { displayName: 'Shy One' })
+    const gone = await newUser('partner-gone@example.com', { displayName: 'Gone One' })
+    await startConversation(viewer, shy.userId, 'hello shy')
+    await startConversation(viewer, gone.userId, 'hello gone')
+    const profiles = handle.db.collection<{ _id: string }>(COLLECTIONS.profiles)
+    // Active a moment ago, but asked not to be shown as online.
+    await profiles.updateOne(
+      { _id: shy.userId },
+      { $set: { 'privacy.hideOnlineStatus': true, 'stats.lastActiveAt': new Date() } },
+    )
+    await profiles.updateOne({ _id: gone.userId }, { $set: { deletedAt: new Date() } })
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/conversations',
+      headers: { cookie: viewer.cookie },
+    })
+    expect(response.statusCode, response.body).toBe(200)
+    const items = response.json<{
+      items: {
+        participants: string[]
+        partner?: { _id: string; displayName: string; isOnline: boolean; accountStatus: string }
+      }[]
+    }>().items
+    const partnerOf = (id: string) => items.find((c) => c.participants.includes(id))?.partner
+
+    expect(partnerOf(shy.userId)).toMatchObject({
+      _id: shy.userId,
+      displayName: 'Shy One',
+      isOnline: false,
+      accountStatus: 'active',
+    })
+    expect(partnerOf(gone.userId)).toMatchObject({
+      displayName: 'Gone One',
+      accountStatus: 'deleted',
+    })
+    // Nothing a row does not draw: the list is not a second profile endpoint.
+    expect(Object.keys(partnerOf(shy.userId) ?? {}).sort()).toEqual(
+      ['_id', 'accountStatus', 'displayName', 'handle', 'isOnline'].sort(),
+    )
+  })
+
   describe('the calls you have agreed to', () => {
     async function upcoming(viewer: SignedUpUser) {
       const response = await app.inject({

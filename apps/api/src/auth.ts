@@ -311,6 +311,14 @@ export async function createAuth({
     ],
 
     database: mongodbAdapter(db, { client }),
+    /*
+     * One read for a session instead of two. Without joins Better Auth finds
+     * the session and then the user as two separate `aggregate`s, and that
+     * pair runs before every authenticated request and every socket
+     * handshake. On a shared Atlas tier, whose price and ceiling are both
+     * operations per second, it was a third of the load an app open made.
+     */
+    advanced: { database: { joins: true } },
 
     emailAndPassword: {
       enabled: true,
@@ -429,6 +437,23 @@ export async function createAuth({
        * which this app never calls.
        */
       freshAge: 0,
+      /*
+       * The session, signed into a cookie, trusted for five minutes before
+       * the database is asked again. Every authenticated request used to
+       * read `session` and `user` first; the app sends every Better Auth
+       * cookie with every request (`apiFetch.ts`, `socket.ts`), so with this
+       * most of them read neither.
+       *
+       * What it costs is how fast a revocation lands elsewhere: a session
+       * deleted from another device, or by the purge, keeps working on the
+       * device holding it for up to five minutes. Suspension is not affected
+       * — `requireAuth` still reads the profile on every request, and that
+       * read is the one that refuses a suspended account. `emailVerified`
+       * cannot go stale in the direction that matters: an unverified account
+       * has no session until the link is opened, and opening it writes a
+       * fresh cookie.
+       */
+      cookieCache: { enabled: true, maxAge: 5 * 60 },
     },
 
     hooks: {
