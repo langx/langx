@@ -22,12 +22,12 @@ import {
   useRemovePhoto,
   useSetGender,
   useUpdateProfile,
-  useUploadAvatar,
   type MeProfile,
 } from '../../src/api/queries'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { queryFailed } from '../../src/lib/listState'
 import { ApiRequestError } from '../../src/api/client'
+import { useChangeAvatar } from '../../src/hooks/useChangeAvatar'
 import { useProfilePhotoUploads } from '../../src/hooks/useProfilePhotoUploads'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
@@ -41,7 +41,7 @@ import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo, openLanguages } from '../../src/lib/navigation'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { PendingPhotoTile } from '../../src/components/PendingPhotoTile'
-import { pickImageAsset, pickMediaAssets } from '../../src/lib/pickMediaAsset'
+import { pickMediaAssets } from '../../src/lib/pickMediaAsset'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import {
@@ -113,7 +113,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
 
   const update = useUpdateProfile()
   const setGender = useSetGender()
-  const uploadAvatar = useUploadAvatar()
+  const avatar = useChangeAvatar()
   const removePhoto = useRemovePhoto()
   const uploads = useProfilePhotoUploads(onUploadError)
 
@@ -163,26 +163,6 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       )
     }
     uploads.add(picked.media)
-  }
-
-  async function pick(then: (uri: string, contentType: string) => void): Promise<void> {
-    const picked = await pickImageAsset({ allowsEditing: true })
-    if (picked.status === 'denied') {
-      // Which permission was refused, not "photos" for both: being told to
-      // allow the photo library after declining the camera is advice that
-      // does not work.
-      void showAlert(
-        picked.source === 'camera' ? t('media.cameraTitle') : t('chat.photosTitle'),
-        picked.source === 'camera' ? t('media.cameraPermission') : t('chat.photosPermission'),
-      )
-      return
-    }
-    if (picked.status === 'unsupported') {
-      void showAlert(t('errors.uploadFailed'), t('errors.attachmentUnsupported'))
-      return
-    }
-    if (picked.status === 'cancelled') return
-    then(picked.image.uri, picked.image.contentType)
   }
 
   function onUploadError(caught: unknown): void {
@@ -282,24 +262,14 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
             {/* v3's second action is plain accent text, not a boxed button. */}
             <Pressable
               accessibilityRole="button"
-              accessibilityState={{ disabled: uploadAvatar.isPending }}
-              disabled={uploadAvatar.isPending}
+              accessibilityState={{ disabled: avatar.isPending }}
+              disabled={avatar.isPending}
               hitSlop={8}
-              onPress={() =>
-                void pick((uri, contentType) =>
-                  uploadAvatar.mutate(
-                    { uri, contentType },
-                    {
-                      onError: onUploadError,
-                      onSuccess: () => showToast(t('editProfile.photoUpdated')),
-                    },
-                  ),
-                )
-              }
+              onPress={() => void avatar.change()}
               style={({ pressed }) => [styles.changePhoto, pressed && styles.pressed]}
             >
               <Text style={styles.changePhotoLabel}>
-                {uploadAvatar.isPending ? t('onboarding.uploading') : t('onboarding.changePhoto')}
+                {avatar.isPending ? t('onboarding.uploading') : t('onboarding.changePhoto')}
               </Text>
             </Pressable>
             <Text style={styles.hint}>{t('editProfile.longPressToRemove')}</Text>
