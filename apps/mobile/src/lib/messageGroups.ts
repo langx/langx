@@ -3,8 +3,9 @@ import type { MessageDto } from '../api/queries'
 import type { TranslateFn } from '../i18n/runtime'
 
 /**
- * One rendered row of a thread: a message, or the date heading that sits above
- * the oldest message of a day.
+ * One rendered row of a thread: a message, the date heading that sits above
+ * the oldest message of a day, or the "New messages" line above the first one
+ * the reader had not seen.
  */
 export type MessageRow =
   | {
@@ -20,6 +21,20 @@ export type MessageRow =
       endsGroup: boolean
     }
   | { kind: 'day'; key: string; day: string }
+  | { kind: 'unread'; key: string }
+
+/**
+ * Where the thread stood when the reader opened it: how many of the other
+ * person's messages were unread, counted up to the newest message at that
+ * moment. Both halves come from the read itself — see `markConversationRead`.
+ */
+export interface UnreadMark {
+  count: number
+  /** The newest message's `createdAt` when the count was taken. */
+  until: string
+  /** The reader. Their own messages are never unread. */
+  viewerId: string
+}
 
 /**
  * Rows for an `inverted` list, newest first.
@@ -27,10 +42,13 @@ export type MessageRow =
  * The heading is emitted *after* the oldest message of its day rather than
  * before the newest: in this order "after" is what the reader sees above it
  * once the list is flipped. Getting it backwards labels every day with the
- * date of the one before.
+ * date of the one before. The unread line follows the same rule, and goes
+ * between its message and that message's heading: the date, then the line,
+ * then what is new.
  */
-export function messageRows(items: MessageDto[]): MessageRow[] {
+export function messageRows(items: MessageDto[], unread?: UnreadMark): MessageRow[] {
   const rows: MessageRow[] = []
+  const firstUnread = unread ? firstUnreadId(items, unread) : null
 
   items.forEach((message, index) => {
     const newer = items[index - 1]
@@ -41,8 +59,14 @@ export function messageRows(items: MessageDto[]): MessageRow[] {
       kind: 'message',
       key: String(message._id),
       message,
-      endsGroup: endsGroup(message, newer, day),
+      // The line breaks a run the way a heading does: the bubble under it
+      // would otherwise be the tailless middle of a turn with nothing below.
+      endsGroup:
+        endsGroup(message, newer, day) ||
+        (newer !== undefined && String(newer._id) === firstUnread),
     })
+
+    if (String(message._id) === firstUnread) rows.push({ kind: 'unread', key: 'unread' })
 
     if (!older || dayKeyOf(older.createdAt) !== day) {
       rows.push({ kind: 'day', key: `day:${day}`, day })
@@ -50,6 +74,42 @@ export function messageRows(items: MessageDto[]): MessageRow[] {
   })
 
   return rows
+}
+
+/**
+ * The oldest of the `count` newest messages from the other person, or null
+ * when there is no honest place for the line.
+ *
+ * Counted from `until` backwards rather than from the newest item, so the line
+ * stays put for the whole visit: a message arriving while the thread is open is
+ * read as it lands, and counting from the top would walk the line down one row
+ * for each. A reply is newer than `until` too, so answering leaves the line
+ * where it was — it marks where the unread run began when the reader arrived,
+ * and replying does not change that.
+ */
+function firstUnreadId(items: MessageDto[], { count, until, viewerId }: UnreadMark): string | null {
+  const cutoff = Date.parse(until)
+  if (count <= 0 || Number.isNaN(cutoff)) return null
+  /*
+   * Nothing as new as the count is a thread from before the read: a cold start
+   * from a push restores the cache as it was last seen, and counting in that
+   * would put the line above messages read days ago for a round trip.
+   */
+  if (!items.some((message) => Date.parse(message.createdAt) >= cutoff)) return null
+
+  let seen = 0
+  for (const message of items) {
+    if (Date.parse(message.createdAt) > cutoff) continue
+    if (message.senderId === viewerId) continue
+    // Withdrawn while unread, which took it off the count (`applyDeleteSideEffects`),
+    // but the tombstone stays in the thread.
+    if (message.deleted) continue
+    seen += 1
+    if (seen === count) return String(message._id)
+  }
+  // Further back than what is loaded. It appears in its place once the reader
+  // scrolls far enough for that page to arrive.
+  return null
 }
 
 export interface DayLabelOptions {

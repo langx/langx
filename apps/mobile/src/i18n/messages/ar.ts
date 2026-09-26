@@ -1197,6 +1197,7 @@ export const ar: Localized<EnMessages> = {
       other: 'الانتقال إلى {count} رسالة جديدة',
     },
     jumpToNewest: 'الانتقال إلى أحدث رسالة',
+    newMessages: 'رسائل جديدة',
     replyingToYourself: 'ترد على نفسك',
     replyingTo: 'رد على {name}',
     deleted: 'حُذفت هذه الرسالة',

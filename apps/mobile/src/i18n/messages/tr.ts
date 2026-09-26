@@ -1078,6 +1078,7 @@ export const tr: Localized<EnMessages> = {
       other: '{count} yeni mesaja atla',
     },
     jumpToNewest: 'En yeni mesaja atla',
+    newMessages: 'Yeni mesajlar',
     replyingToYourself: 'Kendine yanıt veriyorsun',
     replyingTo: '{name} adlı kişiye yanıt',
     deleted: 'Bu mesaj silindi',

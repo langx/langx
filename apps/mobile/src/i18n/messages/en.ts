@@ -1223,6 +1223,8 @@ export const en = {
       other: 'Jump to {count} new messages',
     },
     jumpToNewest: 'Jump to the newest message',
+    /** Above the first message that was unread when the thread was opened. */
+    newMessages: 'New messages',
     replyingToYourself: 'Replying to yourself',
     replyingTo: 'Replying to {name}',
     deleted: 'This message was deleted',

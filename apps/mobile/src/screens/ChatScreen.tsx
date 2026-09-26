@@ -34,6 +34,7 @@ import {
   FlatList,
   Platform,
   Pressable,
+  StyleSheet,
   Text,
   View,
 } from 'react-native'
@@ -52,6 +53,7 @@ import {
   useMessageWindow,
   useTranslate,
   useSpeakMessage,
+  type ClearedUnread,
   type MessageDto,
 } from '../api/queries'
 import * as Clipboard from 'expo-clipboard'
@@ -291,6 +293,17 @@ export function ChatScreen({
    * visibility and, via its position in `items`, as the count on it.
    */
   const [awayFrom, setAwayFrom] = useState<string | null>(null)
+  /**
+   * What was unread when this visit began, for the "New messages" line. Set
+   * by the read on focus and dropped on blur, so the line lasts exactly as
+   * long as the visit: this screen stays mounted after the reader leaves, and
+   * a line kept past that would greet them on their next visit above messages
+   * they had already read. Keyed by thread because the same mounted screen is
+   * handed a different `conversationId` when another chat is opened.
+   */
+  const [unreadAtOpen, setUnreadAtOpen] = useState<
+    (ClearedUnread & { conversationId: string }) | null
+  >(null)
   const [replyingTo, setReplyingTo] = useState<MessageDto | null>(null)
   /**
    * The pronunciation ask the recorder was opened to answer.
@@ -394,7 +407,14 @@ export function ChatScreen({
     }))
     return [...standIns, ...items]
   }, [items, outgoing, viewerId, conversationId])
-  const rows = useMemo(() => messageRows(threadItems), [threadItems])
+  const unreadMark = useMemo(
+    () =>
+      unreadAtOpen?.conversationId === conversationId && viewerId
+        ? { count: unreadAtOpen.count, until: unreadAtOpen.until, viewerId }
+        : undefined,
+    [unreadAtOpen, conversationId, viewerId],
+  )
+  const rows = useMemo(() => messageRows(threadItems, unreadMark), [threadItems, unreadMark])
 
   /**
    * A send whose ack was lost still left an unsent row, and the message may
@@ -538,9 +558,24 @@ export function ChatScreen({
   useFocusEffect(
     useCallback(() => {
       if (!conversationId) return
+      let left = false
       setActiveConversation(conversationId)
-      void markConversationRead(conversationId, queryClient)
-      return () => setActiveConversation(null)
+      /*
+       * The count for the "New messages" line comes back from this read rather
+       * than from the chat list's cache: the list is last session's on a cold
+       * start from a push, and a push is how most threads with something
+       * unread get opened. Only this call's answer is kept — the reads
+       * `useSocket` posts for messages landing while the thread is open are
+       * not news, and must not draw a line of their own.
+       */
+      void markConversationRead(conversationId, queryClient).then((cleared) => {
+        if (!left && cleared) setUnreadAtOpen({ ...cleared, conversationId })
+      })
+      return () => {
+        left = true
+        setActiveConversation(null)
+        setUnreadAtOpen(null)
+      }
     }, [conversationId, queryClient]),
   )
 
@@ -2285,6 +2320,12 @@ export function ChatScreen({
                     <View style={styles.dayRow}>
                       <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
                     </View>
+                  ) : row.kind === 'unread' ? (
+                    <View style={styles.unreadRow}>
+                      <View style={styles.unreadLine} />
+                      <Text style={styles.unreadLabel}>{t('chat.newMessages')}</Text>
+                      <View style={styles.unreadLine} />
+                    </View>
                   ) : (
                     // A stand-in has no server id yet, so a menu or a reply on it
                     // would have nothing to act on until the server's copy
@@ -2641,6 +2682,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   dayRow: { alignItems: 'center', paddingBottom: 10, paddingTop: spacing.xs },
   // Bare faint text, no pill: on a white ground the whitespace is the divider.
   dayLabel: { ...font.caption, color: colors.textFaint, fontWeight: '600' },
+  /**
+   * Ruled, where the day heading is not, so the two never read as the same
+   * thing when they stack; the label a shade darker than the date for the same
+   * reason. Still grey: it marks a place in the thread and asks for nothing.
+   */
+  unreadRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
+  unreadLine: { backgroundColor: colors.border, flex: 1, height: StyleSheet.hairlineWidth },
+  unreadLabel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
   /**
    * The opening tip, centred in the thread: a tinted line rather than a card,
    * because it is the thread speaking and not a control to be sent away.

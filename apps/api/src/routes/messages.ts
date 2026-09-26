@@ -352,7 +352,11 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
   // UI updates the same way regardless of which transport the reader used.
   app.post('/conversations/:id/read', { preHandler: requireMember }, async (request, reply) => {
     const { id } = request.params as { id: string }
-    const { conversation, wasUnread } = await markConversationRead(app.mongo.db, request.userId, id)
+    const { conversation, wasUnread, unreadBefore } = await markConversationRead(
+      app.mongo.db,
+      request.userId,
+      id,
+    )
     const readAt = new Date().toISOString()
     const otherId = conversation.participants.find((p) => p !== request.userId)
     if (otherId) {
@@ -373,6 +377,12 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
     })
     // And the phones with no socket to hear that on. See `ws/traySync.ts`.
     if (wasUnread) void sendTraySync(app, request.userId)
-    return reply.send(conversation)
+    /*
+     * The count this read cleared, for the thread's "New messages" line. Only
+     * the read can say it: by the time anything else is asked the answer is
+     * zero, and the chat list's cached copy is last session's on a cold start
+     * from a push — the usual way into a thread with something unread.
+     */
+    return reply.send({ ...conversation, unreadBefore })
   })
 }
