@@ -86,8 +86,12 @@ async function resolveReplyTo(
   db: Db,
   conversation: Conversation,
   replyToMessageId: string | undefined,
+  quote?: string,
 ): Promise<Message['replyTo'] | undefined> {
-  if (!replyToMessageId) return undefined
+  if (!replyToMessageId) {
+    if (quote) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A quote needs a reply target')
+    return undefined
+  }
 
   let targetId: ObjectId
   try {
@@ -103,13 +107,21 @@ async function resolveReplyTo(
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Reply target not found in this conversation')
   }
 
+  // Refused rather than dropped: the preview is what the other person reads
+  // as "you said this", and a reply quoting words the message does not
+  // contain would put them in its author's mouth. A withdrawn message has an
+  // empty body, so nothing can be quoted from it either.
+  if (quote !== undefined && !target.body.includes(quote)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'The quote is not part of that message')
+  }
+
   return {
     messageId: target._id,
     senderId: target.senderId,
-    preview: (target.body || previewFor(target.type, attachmentsOf(target).length)).slice(
-      0,
-      REPLY_PREVIEW_MAX_LENGTH,
-    ),
+    preview: (
+      quote ??
+      (target.body || previewFor(target.type, attachmentsOf(target).length))
+    ).slice(0, REPLY_PREVIEW_MAX_LENGTH),
   }
 }
 
@@ -309,7 +321,7 @@ export async function sendTextMessage(
     }
   }
 
-  const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
+  const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId, input.quote)
 
   /**
    * A send whose ack was lost looks exactly like one that never arrived, so the
@@ -752,6 +764,12 @@ export async function sendCorrection(
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Target message not found in this conversation')
   }
 
+  // The same rule as a reply's quote: `original` is shown as what the other
+  // person wrote, so it has to be something they did write.
+  if (input.original !== undefined && !target.body.includes(input.original)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'The original is not part of that message')
+  }
+
   const message: Message = {
     _id: new ObjectId(),
     conversationId: conversation._id,
@@ -760,7 +778,7 @@ export async function sendCorrection(
     body: input.corrected,
     correction: {
       targetMessageId: targetId,
-      original: target.body,
+      original: input.original ?? target.body,
       corrected: input.corrected,
       ...(input.note !== undefined ? { note: input.note } : {}),
     },

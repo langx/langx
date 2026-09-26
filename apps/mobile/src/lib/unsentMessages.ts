@@ -26,6 +26,8 @@ export interface UnsentMessage {
   clientId: string
   body: string
   replyToMessageId?: string
+  /** The sentence of that message the reply is to, when it is not all of it. */
+  quote?: string
   /** For ordering, and so a retry can report how long it has been waiting. */
   failedAt: string
 }

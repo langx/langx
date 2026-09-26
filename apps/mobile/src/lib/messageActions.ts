@@ -3,10 +3,12 @@ import type { TranslateFn } from '../i18n/runtime'
 
 export const MESSAGE_ACTION_IDS = [
   'reply',
+  'replyPart',
   'copy',
   'translate',
   'speak',
   'correct',
+  'correctPart',
   'echo',
   'delete',
   'edit',
@@ -53,6 +55,12 @@ export interface MessageActionContext {
   canSpeak?: boolean
   /** Characters the service would be asked to read. The cap is its own. */
   bodyLength: number
+  /**
+   * How many sentences `splitSentences` finds in the body. Choosing a part
+   * of a one-sentence message is choosing all of it, which the plain rows
+   * already do.
+   */
+  sentenceCount: number
   /** Whether the signed-in user sent it. */
   mine: boolean
   type: MessageType
@@ -249,6 +257,29 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
     page: 'primary',
     destructive: true,
   })
+
+  /*
+   * One sentence of a longer message, picked from a sheet — a bubble has no
+   * text selection, and one would fight the long-press that opens this menu.
+   * The same gates as the whole-message rows they sit behind, on the second
+   * page because the first is already as long as the space beside a bubble.
+   */
+  if (context.sentenceCount >= 2 && !context.channel) {
+    actions.push({
+      id: 'replyPart',
+      label: t('messageActions.replyPart'),
+      icon: 'chatbox-ellipses-outline',
+      page: 'more',
+    })
+    if (!context.mine && context.type === 'text') {
+      actions.push({
+        id: 'correctPart',
+        label: t('messageActions.correctPart'),
+        icon: 'reader-outline',
+        page: 'more',
+      })
+    }
+  }
 
   if (context.canEdit) {
     actions.push({

@@ -178,6 +178,8 @@ export const ru: Localized<EnMessages> = {
     saveMedia: 'Сохранить на устройство',
     echo: 'Добавить в Эхо',
     unecho: 'Убрать из Эха',
+    replyPart: 'Ответить на часть',
+    correctPart: 'Исправить часть',
   },
 
   echo: {
@@ -1066,6 +1068,8 @@ export const ru: Localized<EnMessages> = {
     notSentRetry: 'Не отправлено — нажми, чтобы повторить',
     editing: 'Редактирование',
     correcting: 'Исправление',
+    partsReplyTitle: 'На какую часть ты отвечаешь?',
+    partsCorrectTitle: 'Какое предложение ты исправляешь?',
     askingCorrection: 'Просишь исправить',
     askingCorrectionHint: 'Напиши по-своему — у собеседника появится кнопка «Исправить».',
     askingPronunciation: 'Спрашиваешь произношение',

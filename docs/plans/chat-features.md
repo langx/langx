@@ -57,7 +57,7 @@ each PR marks its own item.
 
 ### PR 1 — `@handle` links, in-app langx.io links, and this document
 
-Status: in review
+Status: done (#1609)
 
 - `docs/plans/chat-features.md`: this plan, in English.
 - `packages/shared/src/mentions.ts` (+ test): `findMentions(text)` returns
@@ -100,7 +100,7 @@ As built, four things differ from the list above:
 
 ### PR 2 — A "new messages" divider
 
-Status: planned
+Status: done (#1610)
 
 - `lib/messageGroups.ts`: `MessageRow` gains `{ kind: 'unread' }`, and
   `messageRows(items, unreadCount)` puts the divider above the oldest unread
@@ -112,7 +112,7 @@ Status: planned
 
 ### PR 3 — A speed picker for voice notes
 
-Status: planned
+Status: done (#1607)
 
 - `lib/playbackRate.ts`: `PLAYBACK_RATES = [0.5, 1, 1.5]` and `nextRate()`
   (+ test).
@@ -122,7 +122,7 @@ Status: planned
 
 ### PR 4 — The other person's local time
 
-Status: planned
+Status: done (#1608)
 
 - `PresenceLine.tsx`, which the chat header uses: when `partner.timezone` is
   present and differs from the reader's own, append "· 23:14". Reuses
@@ -135,7 +135,7 @@ Status: planned
 
 ### PR 5 — Reply to, or correct, part of a message
 
-Status: planned
+Status: in review
 
 A bubble has no text selection, and one would fight the long-press menu, so:
 
@@ -251,7 +251,7 @@ Status: planned
 
 ### PR 12 — Muting a conversation
 
-Status: planned
+Status: done (#1611)
 
 - `mutedBy` joins `setConversationFlag`'s flags; `conversationView` gains
   `muted`.

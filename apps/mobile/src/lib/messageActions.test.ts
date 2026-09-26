@@ -14,6 +14,7 @@ const theirs: MessageActionContext = {
   hasBody: true,
   hasMedia: false,
   bodyLength: 34,
+  sentenceCount: 1,
   alreadyTranslated: false,
   canEdit: false,
   corrected: false,
@@ -299,6 +300,30 @@ describe('Add to Echo', () => {
 
   it('sits on the first page, where one tap reaches it', () => {
     expect(find({}, 'echo')?.page).toBe('primary')
+  })
+})
+
+describe('part of a message', () => {
+  const long: Partial<MessageActionContext> = { sentenceCount: 3 }
+
+  it('is offered only once there is more than one sentence to choose from', () => {
+    expect(ids()).not.toContain('replyPart')
+    expect(ids()).not.toContain('correctPart')
+    expect(ids(long)).toContain('replyPart')
+    expect(ids(long)).toContain('correctPart')
+  })
+
+  it('follows the whole-message rows: no correcting your own, nothing in a channel', () => {
+    expect(ids({ ...long, mine: true })).toContain('replyPart')
+    expect(ids({ ...long, mine: true })).not.toContain('correctPart')
+    expect(ids({ ...long, type: 'image' })).not.toContain('correctPart')
+    expect(ids({ ...long, channel: true })).not.toContain('replyPart')
+    expect(ids({ ...long, channel: true })).not.toContain('correctPart')
+  })
+
+  it('waits behind More, leaving the first page as it was', () => {
+    expect(find(long, 'replyPart')?.page).toBe('more')
+    expect(find(long, 'correctPart')?.page).toBe('more')
   })
 })
 
