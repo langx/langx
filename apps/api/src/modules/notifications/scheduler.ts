@@ -41,6 +41,13 @@ export function startNotificationScheduler(
   logger: SchedulerLogger,
   options: {
     intervalMs?: number
+    /**
+     * How long to wait before the first tick. `index.ts` passes a random
+     * minute so that the two production machines, which boot together on
+     * every deploy, do not tick in the same second for the rest of their
+     * lives. Left out — as a test would — the first tick is immediate.
+     */
+    startDelayMs?: number
     storagePublicBaseUrl?: string
     /**
      * Asks Better Auth to mail a fresh verification link. Left out — as the
@@ -57,20 +64,30 @@ export function startNotificationScheduler(
     if (running) return
     running = true
     const now = new Date()
+    /*
+     * One pass after another, not all at once. Each pass is a scan of the
+     * profiles plus a query per candidate, and fourteen of them started in
+     * the same millisecond were the largest burst the database saw all hour
+     * — on a shared Atlas tier, which throttles by operations per second,
+     * that burst stalled the app requests that happened to land beside it.
+     * Nothing here needs the parallelism: the tick is thirty minutes long and
+     * the passes take seconds between them.
+     */
     try {
-      await Promise.allSettled([
-        run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
-        run('echo reminder', () => runEchoReminderPass(db, senders.push, now)),
-        run('badge round-up', () => runBadgeRoundUpPass(db, senders.push, now, logger)),
+      for (const pass of [
+        () => run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
+        () => run('echo reminder', () => runEchoReminderPass(db, senders.push, now)),
+        () => run('badge round-up', () => runBadgeRoundUpPass(db, senders.push, now, logger)),
         ...(options.resendVerification
           ? [
-              run('verify reminder', () =>
-                runVerifyReminderPass(
-                  db,
-                  options.resendVerification as (email: string) => Promise<void>,
-                  now,
+              () =>
+                run('verify reminder', () =>
+                  runVerifyReminderPass(
+                    db,
+                    options.resendVerification as (email: string) => Promise<void>,
+                    now,
+                  ),
                 ),
-              ),
             ]
           : []),
         /*
@@ -80,44 +97,51 @@ export function startNotificationScheduler(
          * an absence has no trigger, so the clock is the only thing that can
          * notice it.
          */
-        run('onboarding reminder', () => runOnboardingReminderPass(db, senders.email, now)),
+        () => run('onboarding reminder', () => runOnboardingReminderPass(db, senders.email, now)),
         /*
          * The one transactional letter on this timer that is *late* rather
          * than clock-triggered: it is deliberately delayed, so that a renewal
          * arriving behind its own expiry has time to make it unnecessary.
          */
-        run('billing plan ended', () =>
-          runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
-        ),
-        run('pool payout', () => runPoolPayoutPass(db, senders.push, now)),
-        run('gift ready', () => runGiftReadyPass(db, senders.push, now)),
-        run('likes round-up', () => runLikesRoundUpPass(db, senders.push, now)),
+        () =>
+          run('billing plan ended', () =>
+            runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
+          ),
+        () => run('pool payout', () => runPoolPayoutPass(db, senders.push, now)),
+        () => run('gift ready', () => runGiftReadyPass(db, senders.push, now)),
+        () => run('likes round-up', () => runLikesRoundUpPass(db, senders.push, now)),
         /*
          * The one notification email, and everything after it in this list is
          * marketing that must not take its slot. The digest runs at 19:00 and
          * both of those at 20:00, so the ordering is settled by the clock
-         * rather than by the position here — this array is concurrent, and a
-         * guarantee that rested on it would be a guarantee resting on nothing.
+         * rather than by the position here. The list does run in order now,
+         * but a guarantee that rested on that would last until the day
+         * somebody reordered it.
          */
-        run('daily digest', () =>
-          runDailyDigestPass(db, senders.email, now, options.storagePublicBaseUrl, logger),
-        ),
-        run('newsletter', () => runNewsletterPass(db, senders.email, now)),
-        run('promotions', () => runPromotionsPass(db, senders, now)),
-        run('campaign queue', () =>
-          runCampaignQueuePass(db, senders.email, now, {
-            tickMinutes: intervalMs / 60_000,
-            logger,
-          }),
-        ),
+        () =>
+          run('daily digest', () =>
+            runDailyDigestPass(db, senders.email, now, options.storagePublicBaseUrl, logger),
+          ),
+        () => run('newsletter', () => runNewsletterPass(db, senders.email, now)),
+        () => run('promotions', () => runPromotionsPass(db, senders, now)),
+        () =>
+          run('campaign queue', () =>
+            runCampaignQueuePass(db, senders.email, now, {
+              tickMinutes: intervalMs / 60_000,
+              logger,
+            }),
+          ),
         /*
          * The in-app half of the same idea, and a pass like the others. It
          * needs no `tickMinutes`: an announcement has no day budget to spread,
          * only a ceiling per tick — see `BROADCAST_PER_TICK` for why this is
          * not a warm-up ramp.
          */
-        run('broadcast queue', () => runBroadcastQueuePass(db, senders.push, now, { logger })),
-      ])
+        () =>
+          run('broadcast queue', () => runBroadcastQueuePass(db, senders.push, now, { logger })),
+      ]) {
+        await pass()
+      }
     } finally {
       running = false
     }
@@ -149,12 +173,20 @@ export function startNotificationScheduler(
     }
   }
 
-  void tick()
-  const timer = setInterval(() => void tick(), intervalMs)
-  timer.unref?.()
+  let timer: ReturnType<typeof setInterval> | undefined
+  const begin = (): void => {
+    void tick()
+    timer = setInterval(() => void tick(), intervalMs)
+    timer.unref?.()
+  }
+  const delay = options.startDelayMs ?? 0
+  const pending = delay > 0 ? setTimeout(begin, delay) : undefined
+  pending?.unref?.()
+  if (!pending) begin()
   return {
     stop: () => {
-      clearInterval(timer)
+      if (pending) clearTimeout(pending)
+      if (timer) clearInterval(timer)
     },
   }
 }

@@ -122,6 +122,9 @@ async function main(): Promise<void> {
      */
     startPresenceSampler(db, app.log),
     startNotificationScheduler(db, { push, email: notificationEmail }, app.log, {
+      // Up to a minute, so the two machines of a deploy do not tick together.
+      // Every pass is keyed to a local hour, so a minute is never a missed one.
+      startDelayMs: Math.floor(Math.random() * 60_000),
       ...(env.STORAGE_PUBLIC_BASE_URL ? { storagePublicBaseUrl: env.STORAGE_PUBLIC_BASE_URL } : {}),
       // Better Auth mints the link and sends it through the same hook the
       // first one used; `verifyReminder.ts` only decides who and when.
