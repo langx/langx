@@ -63,6 +63,41 @@ describe('splitSentences', () => {
   })
 })
 
+/*
+ * The server runs these on text anybody can send, so a hostile message must
+ * cost time in proportion to its length. The limit is generous because a CI
+ * machine is busy: a linear pass over 50,000 characters takes a few
+ * milliseconds, and the regular expression this replaced took ten seconds.
+ */
+describe('on a long hostile message', () => {
+  const HOSTILE = [
+    '!'.repeat(50_000),
+    '.'.repeat(50_000),
+    '!?.…'.repeat(12_500),
+    `${'!'.repeat(50_000)}x`,
+    '! '.repeat(25_000),
+    `a${'!)'.repeat(25_000)}b`,
+    `${"a'".repeat(25_000)}`,
+  ]
+
+  it('splits in linear time', () => {
+    for (const text of HOSTILE) {
+      const started = Date.now()
+      splitSentences(text)
+      splitWords(text)
+      expect(Date.now() - started, text.slice(0, 8)).toBeLessThan(250)
+    }
+  })
+
+  it('still reads a run of punctuation as one piece', () => {
+    expect(splitSentences('!'.repeat(50_000))).toEqual(['!'.repeat(50_000)])
+    expect(splitSentences(`Hi${'!'.repeat(1000)} there`)).toEqual([
+      `Hi${'!'.repeat(1000)}`,
+      'there',
+    ])
+  })
+})
+
 describe('splitWords', () => {
   it('finds words and keeps apostrophes inside them', () => {
     expect(splitWords("I don't know, l'eau is 2 cold!")).toEqual([

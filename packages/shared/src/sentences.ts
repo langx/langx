@@ -3,7 +3,7 @@
  *
  * A bubble has no text selection — it would fight the long-press menu — so
  * replying to or correcting part of a message means choosing one of these
- * pieces from a sheet instead. Regular expressions rather than
+ * pieces from a sheet instead. Rules written out here rather than
  * `Intl.Segmenter`, which Hermes does not ship.
  *
  * Every piece is a substring of the text it came from, exactly as written.
@@ -21,30 +21,79 @@
  * and brackets go with the sentence they close. A line break ends one too:
  * somebody who wrote two lines meant two things.
  */
-const SENTENCE_END = /[。！？]+[”’"'」』）)\]]*|[.?!…]+[”’"'」』）)\]]*(?=\s|$)|\n+/gu
+const CJK_STOPS = new Set(['。', '！', '？'])
+const LATIN_STOPS = new Set(['.', '?', '!', '…'])
+const CLOSERS = new Set(['”', '’', '"', "'", '」', '』', '）', ')', ']'])
 
 /** A piece worth offering has at least one letter or digit in it. */
-const HAS_WORD = /[\p{L}\p{N}]/u
+const WORD_CHAR = /[\p{L}\p{N}]/u
+const SPACE = /\s/u
 
+/*
+ * One pass over the text, by hand, and not the regular expression this used
+ * to be. `[.?!…]+[closers]*(?=\s|$)` backtracks through the whole run at
+ * every position a match can start from, so a message of 2,000 `!` without a
+ * space after them took quadratic time — and the server runs this shape of
+ * check on text anybody can send. Every character here is looked at once.
+ */
 export function splitSentences(text: string): string[] {
   const ranges: [number, number][] = []
+  const n = text.length
   let start = 0
-  for (const match of text.matchAll(SENTENCE_END)) {
-    const end = match.index + match[0].length
+  // Whether [start, i) has a letter or digit in it, kept as the scan goes
+  // rather than re-read from `start` at every boundary, which was the second
+  // quadratic path: a long run of wordless pieces grows that slice each time.
+  let hasWord = false
+
+  const cut = (end: number): void => {
     // A run of punctuation or emoji on its own ("?!", "😂.") is not a
     // sentence anybody would pick. Leaving `start` where it was carries it
     // into the next one instead of offering it as a chip.
-    if (!HAS_WORD.test(text.slice(start, end))) continue
+    if (!hasWord) return
     ranges.push([start, end])
     start = end
+    hasWord = false
   }
-  const rest = text.slice(start)
-  if (rest.trim()) {
+  const skip = (from: number, set: Set<string>): number => {
+    let at = from
+    while (at < n && set.has(text[at]!)) at++
+    return at
+  }
+
+  let i = 0
+  while (i < n) {
+    const char = text[i]!
+    if (char === '\n') {
+      while (i < n && text[i] === '\n') i++
+      cut(i)
+    } else if (CJK_STOPS.has(char)) {
+      i = skip(skip(i, CJK_STOPS), CLOSERS)
+      cut(i)
+    } else if (LATIN_STOPS.has(char)) {
+      const run = skip(i, LATIN_STOPS)
+      const end = skip(run, CLOSERS)
+      if (end === n || SPACE.test(text[end]!)) {
+        i = end
+        cut(i)
+      } else {
+        // `3.14`, `langx.io`, `a!)x`: not an end. Anything after the run is
+        // looked at normally, since a closer can precede a real stop.
+        i = run
+      }
+    } else {
+      // By code point, so a letter outside the BMP is still a letter.
+      const point = String.fromCodePoint(text.codePointAt(i)!)
+      if (!hasWord && WORD_CHAR.test(point)) hasWord = true
+      i += point.length
+    }
+  }
+
+  if (text.slice(start).trim()) {
     const last = ranges.at(-1)
     // Trailing punctuation joins the sentence before it; anything with words
     // in it, or a message with no words at all, stands on its own.
-    if (last && !HAS_WORD.test(rest)) last[1] = text.length
-    else ranges.push([start, text.length])
+    if (last && !hasWord) last[1] = n
+    else ranges.push([start, n])
   }
   return ranges.map(([from, to]) => text.slice(from, to).trim()).filter(Boolean)
 }
