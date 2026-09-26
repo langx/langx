@@ -831,7 +831,9 @@ only thing this server converts: a voice note recorded in a browser is
 WebM/Opus, which no iPhone can decode at any level, so `normalizeAttachments`
 fetches it, runs ffmpeg over it and stores AAC in MP4 instead — before the
 insert, so the row is right the first time anything reads it. Everything else
-comes back as it went in, and a host without ffmpeg stores the original. Size is capped when the upload
+comes back as it went in, and a host without ffmpeg stores the original. The
+same fetch reads every voice note's `waveform` — the bars its bubble draws —
+onto the attachment; it describes the file and never changes it. Size is capped when the upload
 URL is _signed_ rather than after the bytes have been paid for, and
 `PLAN_LIMITS.mediaPer24h` caps the count on the free tier — a ceiling on abuse
 rather than a paywall, since v1 offered both free. Corrections stay uncapped

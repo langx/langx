@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { MAX_AUDIO_BYTES, type Media } from '@langx/shared'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
+import { ffmpegWaveform } from './waveform'
 
 /**
  * Making a browser's voice note playable on a phone.
@@ -99,6 +100,8 @@ export interface TranscodeDeps {
   keyOf(url: string): string | null
   /** Returns `null` when the conversion could not be made, for any reason. */
   transcode(input: Uint8Array): Promise<Uint8Array | null>
+  /** The note's bars — see `waveform.ts`. `null` for any failure; never rejects. */
+  waveform(input: Uint8Array): Promise<number[] | null>
   warn(error: unknown, message: string): void
 }
 
@@ -184,19 +187,39 @@ function described(media: Media, bytes: Uint8Array): Media {
   return { ...media, contentType, sizeBytes: bytes.byteLength }
 }
 
-async function normalizeOne(deps: TranscodeDeps, media: Media): Promise<Media> {
+/**
+ * The attachment without a waveform it arrived with.
+ *
+ * The schema lets a body carry one because it is the same shape a message is
+ * read back in; only the server's own reading of the bytes is ever stored.
+ */
+function withoutWaveform(media: Media): Media {
+  if (media.waveform === undefined) return media
+  const { waveform: _sent, ...rest } = media
+  return rest
+}
+
+function withWaveform(media: Media, waveform: number[] | null): Media {
+  return waveform ? { ...media, waveform } : media
+}
+
+async function normalizeOne(deps: TranscodeDeps, input: Media): Promise<Media> {
+  const media = withoutWaveform(input)
   if (!worthSniffing(media.contentType)) return media
   const key = deps.keyOf(media.url)
   if (!key) return media
 
   try {
     const bytes = await deps.get(key)
+    // Read from the bytes as uploaded, beside the conversion rather than after
+    // it: ffmpeg decodes Opus as readily as AAC, and it is the same sound.
+    const waveform = deps.waveform(bytes)
     // The label may say anything; this is what the phone will actually be
     // handed. An honest `audio/mp4` and a mislabelled one both end here.
-    if (!isUndecodableOnIos(bytes)) return described(media, bytes)
+    if (!isUndecodableOnIos(bytes)) return withWaveform(described(media, bytes), await waveform)
 
     const converted = await deps.transcode(bytes)
-    if (!converted) return media
+    if (!converted) return withWaveform(media, await waveform)
 
     const target = transcodedKey(key)
     const url = await deps.put(target, converted, TRANSCODE_TO)
@@ -218,7 +241,10 @@ async function normalizeOne(deps: TranscodeDeps, media: Media): Promise<Media> {
       }
     }
 
-    return { ...media, url, contentType: TRANSCODE_TO, sizeBytes: converted.byteLength }
+    return withWaveform(
+      { ...media, url, contentType: TRANSCODE_TO, sizeBytes: converted.byteLength },
+      await waveform,
+    )
   } catch (error) {
     deps.warn(error, 'could not transcode a voice note; storing the original')
     return media
@@ -226,25 +252,29 @@ async function normalizeOne(deps: TranscodeDeps, media: Media): Promise<Media> {
 }
 
 /**
- * The normaliser this app runs with, or the identity function.
+ * The normaliser this app runs with, or one that changes nothing it can hear.
  *
- * Identity when storage cannot be read and written server-side, which is the
+ * The latter when storage cannot be read and written server-side, which is the
  * unconfigured case a self-hoster boots into. ffmpeg's own absence is not
  * checked here — it shows up as a failed conversion on the first note, once,
- * and the note is stored as recorded.
+ * and the note is stored as recorded, without a waveform.
  */
 export function createAttachmentNormalizer(
   storage: StorageProvider,
   ffmpegPath: string,
   warn: (error: unknown, message: string) => void,
 ): AttachmentNormalizer {
-  if (!supportsPut(storage)) return (attachments) => Promise.resolve([...attachments])
+  // Still drops a sent waveform: storing nothing is the unconfigured case,
+  // storing the client's is not.
+  if (!supportsPut(storage))
+    return (attachments) => Promise.resolve(attachments.map(withoutWaveform))
   const deps: TranscodeDeps = {
     get: (key) => storage.getObject(key),
     put: (key, body, contentType) => storage.putObject(key, body, contentType),
     del: (key) => storage.deleteObject(key),
     keyOf: (url) => storage.keyFromPublicUrl(url),
     transcode: ffmpegTranscoder(ffmpegPath, warn),
+    waveform: ffmpegWaveform(ffmpegPath, warn),
     warn,
   }
   return (attachments) => normalizeAttachments(deps, attachments)

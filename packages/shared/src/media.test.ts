@@ -3,9 +3,13 @@ import { sendMediaMessageSchema } from './chat'
 import { createPostSchema } from './feed'
 import {
   MAX_ATTACHMENTS,
+  WAVEFORM_BARS,
+  WAVEFORM_PEAK,
   attachmentKindsValid,
   attachmentsOf,
   mediaKindOfContentType,
+  mediaSchema,
+  waveformSchema,
   type Media,
 } from './media'
 
@@ -121,5 +125,23 @@ describe('createPostSchema', () => {
       attachments: [image, video],
     })
     expect(parsed.attachments).toHaveLength(2)
+  })
+})
+
+describe('waveformSchema', () => {
+  it('takes the stored shape', () => {
+    const waveform = Array.from({ length: WAVEFORM_BARS }, (_, i) => i % (WAVEFORM_PEAK + 1))
+    expect(mediaSchema.parse({ ...voice, waveform }).waveform).toEqual(waveform)
+  })
+
+  // A body can carry one; bounding it keeps an arbitrary array from reaching
+  // the handler that is going to throw it away.
+  it('refuses a longer array, an out-of-range value and a fraction', () => {
+    const tooLong = Array.from({ length: WAVEFORM_BARS + 1 }, () => 1)
+    expect(() => waveformSchema.parse(tooLong)).toThrow()
+    expect(() => waveformSchema.parse([WAVEFORM_PEAK + 1])).toThrow()
+    expect(() => waveformSchema.parse([-1])).toThrow()
+    expect(() => waveformSchema.parse([0.5])).toThrow()
+    expect(() => waveformSchema.parse([])).toThrow()
   })
 })

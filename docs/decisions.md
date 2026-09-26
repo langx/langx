@@ -3487,6 +3487,43 @@ keep a list with the first file repeated in `media`, while a pronunciation
 answer keeps `media` and `slowMedia` as separate fields — which is also the
 page most likely to have been recorded in a browser in the first place.
 
+## A voice note's waveform is read by the server
+
+The bubble draws a note as bars of its own loudness, the way Instagram does,
+and those bars are computed once, by the API, and stored on the attachment.
+
+**The server, because it already holds the bytes.** `normalizeAttachments`
+fetches every voice note to sniff it — the section above — whichever device
+recorded it and whichever of chat, a post, a correction or a pronunciation
+answer it was sent with. So the waveform is one more ffmpeg run over bytes that
+are already in memory: decode to 8kHz mono, take the loudest sample in each of
+`WAVEFORM_BARS` slices, scale to the note's own peak. It runs beside the
+transcode, not after it, so it adds nothing to the time a browser note already
+spends inside the send's ack.
+
+The recorder's metering was the alternative, and it loses on every count. It
+samples only as often as a status update arrives, so its resolution is
+whatever the platform's timer happened to be; every build already installed
+would send nothing; and an array a client sends is an array a client can
+invent. The schema lets a body carry a `waveform`, because it is the same
+shape a message is read back in — but the normaliser drops whatever arrived
+before it reads its own, so a stored waveform is only ever the server's.
+
+**On the attachment, not in a collection of its own.** It describes one file
+and lives exactly as long as that file does: deleting a message, a post or an
+account removes it with nothing to clean up, and every read path —
+`messageView`, the feed DTOs, the media gallery — passes it through without
+knowing it is there. Forty-eight integers out of a hundred is a few hundred
+bytes on a row, and the bubble resamples them to however many bars fit its
+width, so the stored resolution is a ceiling rather than the look.
+
+**Notes without one draw even bars.** Everything sent before this, a host with
+no ffmpeg, and an Echo card's own recording — which does not pass through the
+normaliser — have no waveform, and the bubble draws a flat row that still
+fills as it plays and still seeks. There is no backfill: the bars are a nicety
+on a note that already plays, and walking four collections to fetch every old
+file is not worth what it would show.
+
 ## The row swipe runs on the UI thread, and Reanimated is the price
 
 Three comments in this repo argued against exactly this change —

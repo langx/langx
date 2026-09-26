@@ -22,7 +22,8 @@ means notifications are logged instead of sent, no `ANTHROPIC_API_KEY` means the
 announcements, it just answers a direct message with a line saying it cannot —
 no ffmpeg on the host means
 a voice note recorded in a browser is stored as recorded — WebM, which iPhones
-cannot play, and which the app then says it cannot play — and no `TTS_URL`
+cannot play, and which the app then says it cannot play — and every voice note
+is drawn as even bars instead of its waveform, and no `TTS_URL`
 means "Read it aloud" on a member's own Echo card fails with a clear error
 while a pack's readings, made offline, still play. That is deliberate — a self-hoster should be able to
 get a working instance before deciding which paid services they want.
