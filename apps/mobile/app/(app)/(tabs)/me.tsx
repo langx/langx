@@ -46,6 +46,7 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { badgeLabel, interestLabel, useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { compactCount } from '../../../src/lib/format'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
+import { useChangeAvatar } from '../../../src/hooks/useChangeAvatar'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
@@ -65,6 +66,7 @@ export default function MeScreen() {
   const { colors } = useTheme()
   // Above the early return, where hooks have to be.
   const [avatarOpen, setAvatarOpen] = useState(false)
+  const avatar = useChangeAvatar()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
@@ -166,24 +168,24 @@ export default function MeScreen() {
       <View style={styles.hero}>
         {/*
           A photo opens full screen, as on the public profile; a generated face
-          or initials is a stand-in and stays a plain avatar — no button, and a
-          screen reader is not told there is one.
+          or initials is a stand-in, and a tap on it still does nothing. A long
+          press changes either — this is the one avatar that is yours — with
+          the same flow as Edit Profile's "Change photo". The gesture is not
+          announced, so a screen reader gets it as a named action instead.
         */}
-        {profile.avatarUrl ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('photo.open')}
-            onPress={() => setAvatarOpen(true)}
-          >
-            <Avatar
-              url={profile.avatarUrl}
-              name={profile.displayName}
-              seed={profile._id}
-              size={96}
-              frame={wornFrame?.tone}
-            />
-          </Pressable>
-        ) : (
+        <Pressable
+          accessibilityRole={profile.avatarUrl ? 'button' : 'image'}
+          accessibilityLabel={profile.avatarUrl ? t('photo.open') : profile.displayName}
+          accessibilityActions={[{ name: 'longpress', label: t('onboarding.changePhoto') }]}
+          onAccessibilityAction={(event) => {
+            if (event.nativeEvent.actionName === 'longpress') void avatar.change()
+          }}
+          onPress={profile.avatarUrl ? () => setAvatarOpen(true) : null}
+          onLongPress={() => void avatar.change()}
+          // Nothing else on this screen says a photo is going up; the toast
+          // only arrives once it is there.
+          style={avatar.isPending && styles.pressed}
+        >
           <Avatar
             url={profile.avatarUrl}
             name={profile.displayName}
@@ -191,7 +193,7 @@ export default function MeScreen() {
             size={96}
             frame={wornFrame?.tone}
           />
-        )}
+        </Pressable>
         {profile.avatarUrl ? (
           <PhotoViewer
             photos={[{ url: profile.avatarUrl }]}
