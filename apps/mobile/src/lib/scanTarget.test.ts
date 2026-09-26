@@ -28,6 +28,7 @@ describe('scanTarget', () => {
 
   it('is not fooled by a route that looks like a handle, or by another host', () => {
     expect(scanTarget('https://app.langx.io/magic-link?token=x')).toBeNull()
+    expect(scanTarget('https://app.langx.io/discover')).toBeNull()
     expect(scanTarget('https://evil.example/deniz?invite=1')).toBeNull()
   })
 

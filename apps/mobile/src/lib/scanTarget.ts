@@ -1,4 +1,5 @@
-import { APP_SCHEMES, HANDLE_PATTERN, inviteHandleFromUrl, WEB_HOST } from '@langx/shared'
+import { APP_SCHEMES, inviteHandleFromUrl } from '@langx/shared'
+import { internalTarget, WEB_ORIGINS } from './internalLink'
 
 /**
  * What a scanned code turned out to be. Only the two kinds the app itself
@@ -6,8 +7,6 @@ import { APP_SCHEMES, HANDLE_PATTERN, inviteHandleFromUrl, WEB_HOST } from '@lan
  * invite QR. Anything else is `null`, and the scanner keeps looking.
  */
 export type ScanTarget = { kind: 'device'; code: string } | { kind: 'profile'; handle: string }
-
-const WEB_ORIGINS = [`https://${WEB_HOST}/`, `http://${WEB_HOST}/`]
 
 /**
  * Reads a scanned string without `new URL`: React Native's `URL` is partial,
@@ -37,16 +36,11 @@ export function scanTarget(raw: string): ScanTarget | null {
   const invited = ours ? inviteHandleFromUrl(text) : null
   if (invited) return { kind: 'profile', handle: invited }
 
-  for (const origin of WEB_ORIGINS) {
-    if (text.toLowerCase().startsWith(origin)) {
-      const rest = text.slice(origin.length)
-      const handle = rest.split(/[?#/]/)[0]?.toLowerCase() ?? ''
-      if (HANDLE_PATTERN.test(handle)) return { kind: 'profile', handle }
-      return null
-    }
-  }
-
-  return null
+  // The same reading a link in a chat gets, so `/discover` on a sticker is a
+  // screen rather than a person called that. A post link is not a code the
+  // app draws, so it stays unrecognised like any other.
+  const target = internalTarget(text)
+  return target?.kind === 'profile' ? target : null
 }
 
 function param(query: string, name: string): string | null {
