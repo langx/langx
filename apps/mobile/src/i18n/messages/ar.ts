@@ -173,6 +173,7 @@ export const ar: Localized<EnMessages> = {
     unecho: 'أزل من صدى',
     replyPart: 'الرد على جزء',
     correctPart: 'تصحيح جزء',
+    words: 'الكلمات',
   },
 
   echo: {
@@ -1088,6 +1089,7 @@ export const ar: Localized<EnMessages> = {
     correcting: 'تصحيح',
     partsReplyTitle: 'على أي جزء تردّ؟',
     partsCorrectTitle: 'أي جملة تصحّح؟',
+    wordsTitle: 'اضغط على كلمة',
     askingCorrection: 'تطلب التصحيح',
     askingCorrectionHint: 'اكتبها بطريقتك؛ سيظهر لديه زر «صحّح».',
     askingPronunciation: 'تسأل عن النطق',
@@ -1191,6 +1193,8 @@ export const ar: Localized<EnMessages> = {
     translationUnavailable: 'الترجمة غير متاحة',
     translationQuota: 'لقد استخدمت ترجمات اليوم المجانية. الخطة المدفوعة تزيل الحد.',
     translationFailed: 'تعذّرت ترجمة هذه الرسالة الآن.',
+    wordTranslationFailed: 'تعذّرت ترجمة هذه الكلمة الآن.',
+    wordSeePlans: 'شاهد الخطط',
     sayHello: 'ألقِ التحية على {name}…',
     pinnedMessage: 'رسالة مثبّتة',
     goToPinned: 'الذهاب إلى الرسالة المثبّتة',

@@ -171,6 +171,7 @@ export const ptBR: Localized<EnMessages> = {
     unecho: 'Remover do Echo',
     replyPart: 'Responder a uma parte',
     correctPart: 'Corrigir uma parte',
+    words: 'Palavras',
   },
 
   echo: {
@@ -972,6 +973,7 @@ export const ptBR: Localized<EnMessages> = {
     correcting: 'Corrigindo',
     partsReplyTitle: 'Qual parte você está respondendo?',
     partsCorrectTitle: 'Qual frase você está corrigindo?',
+    wordsTitle: 'Toque em uma palavra',
     askingCorrection: 'Pedindo correção',
     askingCorrectionHint: 'Escreva do seu jeito; a outra pessoa verá um botão Corrigir.',
     askingPronunciation: 'Perguntando como se fala',
@@ -1072,6 +1074,8 @@ export const ptBR: Localized<EnMessages> = {
     translationUnavailable: 'Tradução indisponível',
     translationQuota: 'Você usou as traduções gratuitas de hoje. Um plano pago remove o limite.',
     translationFailed: 'Não deu para traduzir essa mensagem agora.',
+    wordTranslationFailed: 'Não deu para traduzir essa palavra agora.',
+    wordSeePlans: 'Ver os planos',
     sayHello: 'Dê um oi para {name}…',
     pinnedMessage: 'Mensagem fixada',
     goToPinned: 'Ir para a mensagem fixada',

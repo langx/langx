@@ -175,6 +175,7 @@ export const fr: Localized<EnMessages> = {
     unecho: 'Retirer d’Echo',
     replyPart: 'Répondre à une partie',
     correctPart: 'Corriger une partie',
+    words: 'Mots',
   },
 
   echo: {
@@ -982,6 +983,7 @@ export const fr: Localized<EnMessages> = {
     correcting: 'Correction',
     partsReplyTitle: 'À quelle partie réponds-tu ?',
     partsCorrectTitle: 'Quelle phrase corriges-tu ?',
+    wordsTitle: 'Touche un mot',
     askingCorrection: 'Demande une correction',
     askingCorrectionHint: 'Écris-le à ta façon ; l’autre aura un bouton Corriger.',
     askingPronunciation: 'Demande la prononciation',
@@ -1083,6 +1085,8 @@ export const fr: Localized<EnMessages> = {
     translationQuota:
       'Tu as utilisé les traductions gratuites du jour. Une formule payante lève la limite.',
     translationFailed: 'Impossible de traduire ce message pour le moment.',
+    wordTranslationFailed: 'Impossible de traduire ce mot pour le moment.',
+    wordSeePlans: 'Voir les formules',
     sayHello: 'Dis bonjour à {name}…',
     pinnedMessage: 'Message épinglé',
     goToPinned: 'Aller au message épinglé',
