@@ -1,5 +1,6 @@
 import { MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES } from '@langx/shared'
 import type { Conversation } from './conversations'
+import type { ConversationPartner } from '../profiles/profiles'
 
 /**
  * What one participant is allowed to see of a conversation.
@@ -33,6 +34,13 @@ export interface ConversationView {
    */
   mediaLockedFor: number
   updatedAt: Date
+  /**
+   * Who is on the other side, for the chat list only — see
+   * `toConversationPartner`. Absent everywhere else a conversation is sent,
+   * and absent for a partner with no profile, so a client must still be able
+   * to draw a row without it.
+   */
+  partner?: ConversationPartner
 }
 
 /**

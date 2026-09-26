@@ -4,7 +4,7 @@ import { useConversations, useMe } from '../api/queries'
 import { authClient } from '../lib/auth-client'
 import { API_URL } from '../lib/apiUrl'
 import { buildWatchPayload } from '../lib/watchPayload'
-import { useProfileCache } from './useProfileCache'
+import { useConversationPartners } from './useConversationPartners'
 import {
   clearWatch,
   sendWatchPayload,
@@ -26,8 +26,8 @@ import {
  * people who happen to open the chats tab.
  *
  * It asks for nothing new. The conversation list is already loaded for the
- * tab badge and the chat screen, and the partner names come from the same
- * five-minute profile cache the list itself uses — so on a phone with no
+ * tab badge and the chat screen, and the partner names come with that list
+ * (`useConversationPartners`) — so on a phone with no
  * watch this hook costs one boolean, and on a phone with one it costs a walk
  * over a list that was already in memory.
  *
@@ -81,7 +81,7 @@ export function useWatchLink({ enabled }: { enabled: boolean }): void {
         .filter((id): id is string => typeof id === 'string'),
     [recentThreads, me.data?._id],
   )
-  const partners = useProfileCache(partnerIds)
+  const partners = useConversationPartners(recentThreads, me.data?._id)
 
   const names = useMemo(() => {
     const map: Record<string, string | undefined> = {}

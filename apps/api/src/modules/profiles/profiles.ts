@@ -1576,6 +1576,78 @@ export function toPublicProfile(
 }
 
 /**
+ * The person on the other side of a conversation, as much of them as a row in
+ * the chat list draws: a face, a name, the official mark, the online dot.
+ *
+ * It exists so the list can carry its own names. Every client that showed the
+ * list — the chats tab, the iOS directory, the watch — used to ask
+ * `/profiles/:id` once per row, which is thirteen reads a head and records a
+ * profile view on every partner each time; twenty threads made an app open
+ * several hundred operations. The rules are `toPublicProfile`'s, applied to
+ * fewer fields: the dot obeys `hideOnlineStatus`, and a deleted or suspended
+ * account says so instead of vanishing.
+ */
+export interface ConversationPartner {
+  _id: string
+  handle: string
+  displayName: string
+  avatarUrl?: string
+  isOnline: boolean
+  official?: true
+  accountStatus: 'active' | 'suspended' | 'deleted'
+}
+
+export function toConversationPartner(
+  profile: Profile,
+  now: Date = new Date(),
+): ConversationPartner {
+  const lastActiveAt = profile.stats?.lastActiveAt ?? profile.createdAt
+  const partner: ConversationPartner = {
+    _id: profile._id,
+    handle: profile.handle,
+    displayName: profile.displayName ?? profile.handle,
+    isOnline: hidesOnlineStatus(profile) ? false : isOnlineAt(lastActiveAt, now),
+    accountStatus: profile.deletedAt
+      ? 'deleted'
+      : isSuspended(profile, now)
+        ? 'suspended'
+        : 'active',
+  }
+  if (profile.avatarUrl !== undefined) partner.avatarUrl = profile.avatarUrl
+  if (profile.official) partner.official = true
+  return partner
+}
+
+/** One read for every partner on a page of the chat list. */
+export async function conversationPartners(
+  db: Db,
+  userIds: string[],
+  now: Date = new Date(),
+): Promise<Map<string, ConversationPartner>> {
+  if (userIds.length === 0) return new Map()
+  const profiles = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .find(
+      { _id: { $in: [...new Set(userIds)] } },
+      {
+        projection: {
+          handle: 1,
+          displayName: 1,
+          avatarUrl: 1,
+          official: 1,
+          privacy: 1,
+          createdAt: 1,
+          'stats.lastActiveAt': 1,
+          deletedAt: 1,
+          suspension: 1,
+        },
+      },
+    )
+    .toArray()
+  return new Map(profiles.map((profile) => [profile._id, toConversationPartner(profile, now)]))
+}
+
+/**
  * Looks up by `@handle` or by user id — the two things a deep link can carry.
  *
  * `previousHandle` is in the `$or` because an account that took a new name

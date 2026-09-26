@@ -19,7 +19,7 @@ import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
-import { useProfileCache } from '../../../src/hooks/useProfileCache'
+import { useConversationPartners } from '../../../src/hooks/useConversationPartners'
 import { usePushPermissionPrompt } from '../../../src/hooks/usePushRegistration'
 import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
 import { showToast } from '../../../src/lib/toast'
@@ -154,11 +154,8 @@ export default function ChatsScreen() {
   const rest = dedupeById(conversations.data?.pages.flatMap((page) => page.items) ?? [])
   const items = [...pinned, ...rest]
 
-  // One batched lookup for every counterpart, instead of a query per row.
-  const partnerIds = items
-    .map((c) => c.participants.find((p) => p !== me.data?._id))
-    .filter((id): id is string => Boolean(id))
-  const partners = useProfileCache(partnerIds)
+  // The list names its own partners; see `useConversationPartners`.
+  const partners = useConversationPartners(items, me.data?._id)
   const state = listState({
     isPending: conversations.isPending,
     isError: conversations.isError,
@@ -351,8 +348,9 @@ export default function ChatsScreen() {
                             {partner.official ? <OfficialMark size={14} /> : null}
                           </View>
                         ) : (
-                          // The row is real, its partner is not resolved yet: the
-                          // names come from a separate batched query. This used to
+                          // The row is real, its partner is not resolved yet: a
+                          // list from an older API carries no names, and the
+                          // fallback lookup is still on its way. This used to
                           // read "Loading…", which looked like somebody's name.
                           <View style={styles.grow}>
                             <Skeleton width={132} height={17} />

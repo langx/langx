@@ -33,7 +33,7 @@ import { readEchoedMessageIds } from '../echo/echoed'
 import { mirrorPhraseToEcho } from '../echo/phraseMirror'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
-import type { Profile } from '../profiles/profiles'
+import { conversationPartners, type Profile } from '../profiles/profiles'
 import { effectiveTier } from '../profiles/entitlement'
 import { mediaLockedFor, toConversationView, type ConversationView } from './conversationView'
 
@@ -1358,9 +1358,18 @@ export async function listConversations(
   const nextCursor =
     hasMore && last ? encodeDateIdCursor(last.lastMessage.createdAt, last._id) : null
 
+  const partners = await conversationPartners(
+    db,
+    [...pinned, ...rows].flatMap((c) => c.participants.filter((id) => id !== userId)),
+  )
+  const view = (c: Conversation): ConversationView => {
+    const partner = partners.get(c.participants.find((id) => id !== userId) ?? '')
+    return partner ? { ...toConversationView(c, userId), partner } : toConversationView(c, userId)
+  }
+
   return {
-    items: rows.map((c) => toConversationView(c, userId)),
-    pinned: pinned.map((c) => toConversationView(c, userId)),
+    items: rows.map(view),
+    pinned: pinned.map(view),
     nextCursor,
   }
 }

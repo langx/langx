@@ -2,7 +2,7 @@ import { Platform } from 'react-native'
 import { useEffect, useMemo } from 'react'
 import { useConversations, useMe } from '../api/queries'
 import { buildCompanionDirectory } from '../lib/companionDirectory'
-import { useProfileCache } from './useProfileCache'
+import { useConversationPartners } from './useConversationPartners'
 import { useT } from '../i18n'
 import { writeCompanionDirectory } from '../../modules/companion-snapshot'
 
@@ -12,9 +12,9 @@ import { writeCompanionDirectory } from '../../modules/companion-snapshot'
  * Mounted once in the signed-in layout beside `useCompanionSnapshot` and
  * `useWatchLink`, and it asks for nothing any of them has not already asked
  * for: the conversation list is loaded for the tab badge and the chat list,
- * and the names come from the same five-minute profile cache those screens
- * fill. On a phone that never opens Shortcuts this costs one `useMemo` over a
- * list that was already in memory.
+ * and the names come with the list itself (`useConversationPartners`). On a
+ * phone that never opens Shortcuts this costs one `useMemo` over a list that
+ * was already in memory.
  *
  * **iOS only, and it exits before the queries.** Nothing on Android reads a
  * directory — the Wear app has its own payload and the widgets draw numbers —
@@ -52,7 +52,7 @@ export function useCompanionDirectory({ enabled }: { enabled: boolean }): void {
         .filter((id): id is string => typeof id === 'string'),
     [items, meId],
   )
-  const partners = useProfileCache(partnerIds)
+  const partners = useConversationPartners(items, meId)
 
   const names = useMemo(() => {
     const map: Record<string, string | undefined> = {}
