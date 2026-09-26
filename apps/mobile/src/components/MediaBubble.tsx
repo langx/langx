@@ -4,8 +4,16 @@ import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView, type VideoPlayer } from 'expo-video'
 import { useEffect, useState } from 'react'
 import { Platform, Pressable, Text, View } from 'react-native'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
 import { audioProgress } from '../lib/audioProgress'
+import {
+  WAVEFORM_BAR_WIDTH,
+  playedBarCount,
+  seekFraction,
+  waveformBarCount,
+  waveformBars,
+} from '../lib/waveform'
 import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useLocale, useT } from '../i18n'
@@ -132,23 +140,24 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
         </Text>
       ) : (
         <>
-          <View style={styles.track}>
-            {/*
-              An unknown total draws a full-width faint bar rather than a 0%
-              one: v1's notes report no duration at all, and a bar frozen at
-              zero while the audio plays reads as a broken player.
-            */}
-            <View
-              style={[
-                styles.trackFill,
-                {
-                  backgroundColor: tint,
-                  opacity: fraction === null ? 0.35 : 1,
-                  width: `${(fraction ?? 1) * 100}%`,
-                },
-              ]}
-            />
-          </View>
+          {/*
+            An unknown total — v1's notes report no duration at all — shows no
+            playhead and takes no seek: there is no position to show and no
+            second to seek to. The label beside it still counts the elapsed
+            time up, and that is what says the note is playing.
+          */}
+          <Waveform
+            waveform={media.waveform}
+            fraction={fraction}
+            color={tint}
+            onSeek={
+              total > 0 && !loading
+                ? (to) => {
+                    void player.seekTo(to * total)
+                  }
+                : undefined
+            }
+          />
 
           <Text style={[styles.duration, { color: colors.textFaint }]}>
             {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
@@ -195,6 +204,105 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
         </Pressable>
       )}
     </View>
+  )
+}
+
+/** Points. Tall enough to show a shape, short enough to keep the bubble one line. */
+const WAVEFORM_HEIGHT = 24
+/** Below this a drag is still a tap; the bubble's swipe-to-reply waits for 10. */
+const SCRUB_LOCK_PX = 4
+
+/**
+ * A voice note drawn as its own loudness, bar by bar — played bars in the
+ * bubble's tint, the rest faint — that seeks where it is touched.
+ *
+ * Plain `View`s rather than an SVG: a few dozen rectangles are what flexbox
+ * already draws, and it saves a native module that nothing else here needs.
+ *
+ * **The touch is gesture-handler's, and its callbacks run on the JS thread**
+ * (`runOnJS(true)`). Its `x` is relative to this view on all three platforms,
+ * which RN's `locationX` is not — that one is relative to whichever child was
+ * hit, and on the web a click carries no `locationX` at all. And it composes
+ * with the chat bubble's swipe-to-reply: this pan claims the touch after 4px
+ * sideways, before the bubble's 10, so a drag on the bars scrubs and a drag
+ * anywhere else on the bubble still replies. `runOnJS` because `seekTo` and
+ * the scrub state are both JS; a worklet reaching them is the crash
+ * `SwipeableRow` records.
+ *
+ * **It claims no responder**, deliberately. The bars are most of a voice
+ * note's bubble, and the bubble's long press is the message menu — reply,
+ * star, delete — which a claim here would take away from nearly all of it. A
+ * tap still reaches the bubble too, so two quick taps to seek also count as
+ * its double-tap heart; that is the cheaper of the two to live with. A hold
+ * outlasts the tap's own limit and seeks nothing, and on a phone a drag, once
+ * it is one, cancels the bubble's press.
+ *
+ * Hidden from screen readers. The bars carry no words, and a note is played
+ * and slowed with the two labelled buttons beside them.
+ */
+function Waveform({
+  waveform,
+  fraction,
+  color,
+  onSeek,
+}: {
+  waveform: readonly number[] | undefined
+  fraction: number | null
+  color: string
+  /** Absent when there is nowhere to seek to — see `AudioBubble`. */
+  onSeek: ((fraction: number) => void) | undefined
+}) {
+  const styles = useStyles()
+  const [width, setWidth] = useState(0)
+  /** Where a drag is, drawn instead of the player's position until release. */
+  const [scrub, setScrub] = useState<number | null>(null)
+
+  const count = waveformBarCount(width)
+  const bars = waveformBars(waveform, count)
+  const played = playedBarCount(scrub ?? fraction, count)
+  const at = (x: number): number => seekFraction(x, width)
+
+  const tap = Gesture.Tap()
+    .enabled(onSeek !== undefined)
+    .runOnJS(true)
+    .onEnd((event, success) => {
+      if (success) onSeek?.(at(event.x))
+    })
+  const pan = Gesture.Pan()
+    .enabled(onSeek !== undefined)
+    .runOnJS(true)
+    .activeOffsetX([-SCRUB_LOCK_PX, SCRUB_LOCK_PX])
+    // Down the list is a scroll, and failing is what lets it through.
+    .failOffsetY([-SCRUB_LOCK_PX * 3, SCRUB_LOCK_PX * 3])
+    .onStart((event) => setScrub(at(event.x)))
+    .onUpdate((event) => setScrub(at(event.x)))
+    .onEnd((event) => onSeek?.(at(event.x)))
+    .onFinalize(() => setScrub(null))
+
+  return (
+    <GestureDetector gesture={Gesture.Race(pan, tap)}>
+      <View
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
+        style={styles.waveform}
+      >
+        {bars.map((height, index) => (
+          <View
+            // Positional by nature: bar 3 is the fourth slice of the note.
+            key={index}
+            style={[
+              styles.bar,
+              {
+                backgroundColor: color,
+                height: Math.max(WAVEFORM_BAR_WIDTH, height * WAVEFORM_HEIGHT),
+                opacity: index < played ? 1 : 0.3,
+              },
+            ]}
+          />
+        ))}
+      </View>
+    </GestureDetector>
   )
 }
 
@@ -266,8 +374,17 @@ const GALLERY_GAP = 2
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   playIcon: { fontSize: 16 },
-  track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
-  trackFill: { borderRadius: 2, height: 3 },
+  // `space-between` hands the few pixels left after the last whole bar out
+  // between the gaps, so the bars span the row and a touch at either end is
+  // the start or the end of the note.
+  waveform: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    height: WAVEFORM_HEIGHT,
+    justifyContent: 'space-between',
+  },
+  bar: { borderRadius: WAVEFORM_BAR_WIDTH / 2, width: WAVEFORM_BAR_WIDTH },
   duration: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'] },
   // Takes the track's place rather than sitting under it: the row is one line
   // tall in a bubble, and a note that cannot play has no progress to show.

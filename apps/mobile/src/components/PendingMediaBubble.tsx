@@ -15,8 +15,8 @@ import { makeStyles, useTheme } from '../lib/theme'
  * picture is the local file the picker returned, so it appears the instant it
  * is chosen rather than after a round trip.
  *
- * A voice note has nothing to show, so it gets the same three-pixel track
- * `AudioBubble` uses for playback, filling instead of playing.
+ * A voice note has nothing to show, so it gets a three-pixel track that fills
+ * as it uploads — its waveform is read by the server, after the upload.
  *
  * When it fails it keeps its place and becomes a button, following the unsent
  * text queue above it. Before this, a failed attachment raised an alert and
@@ -151,7 +151,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     top: 0,
   },
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
-  // The same three pixels `AudioBubble` plays along; here it fills instead.
+  // A plain track rather than `AudioBubble`'s waveform: the server has not
+  // read the note yet, and what fills here is the upload, not the playhead.
   track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
   caption: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
