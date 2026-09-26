@@ -9,6 +9,7 @@ export const MESSAGE_ACTION_IDS = [
   'speak',
   'correct',
   'correctPart',
+  'words',
   'echo',
   'delete',
   'edit',
@@ -61,6 +62,8 @@ export interface MessageActionContext {
    * already do.
    */
   sentenceCount: number
+  /** How many words `lookupWords` offers from the body. */
+  wordCount: number
   /** Whether the signed-in user sent it. */
   mine: boolean
   type: MessageType
@@ -279,6 +282,29 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
         page: 'more',
       })
     }
+  }
+
+  /*
+   * A word at a time: its translation, and a card for it. Translate's gates —
+   * the other person's message, a reader with a language to translate into —
+   * since looking up a word you wrote yourself is the same round trip. Text
+   * only, and not held back by a translation already on screen: knowing what
+   * the sentence means is exactly when a word in it is worth keeping. A
+   * channel is fine, like Translate: nothing is sent.
+   */
+  if (
+    !context.mine &&
+    context.type === 'text' &&
+    context.hasBody &&
+    context.wordCount >= 1 &&
+    context.canTranslate !== false
+  ) {
+    actions.push({
+      id: 'words',
+      label: t('messageActions.words'),
+      icon: 'text-outline',
+      page: 'more',
+    })
   }
 
   if (context.canEdit) {

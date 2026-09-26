@@ -183,6 +183,7 @@ export const tr: Localized<EnMessages> = {
     unecho: 'Echo’dan çıkar',
     replyPart: 'Bir kısmını yanıtla',
     correctPart: 'Bir kısmını düzelt',
+    words: 'Kelimeler',
   },
 
   echo: {
@@ -977,6 +978,7 @@ export const tr: Localized<EnMessages> = {
     correcting: 'Düzeltiliyor',
     partsReplyTitle: 'Hangi kısmı yanıtlıyorsun?',
     partsCorrectTitle: 'Hangi cümleyi düzeltiyorsun?',
+    wordsTitle: 'Bir kelimeye dokun',
     askingCorrection: 'Düzeltilmek istiyorsun',
     askingCorrectionHint: 'Kendi cümleni yaz; karşı tarafta Düzelt düğmesi çıkar.',
     askingPronunciation: 'Nasıl söylendiğini soruyorsun',
@@ -1076,6 +1078,8 @@ export const tr: Localized<EnMessages> = {
     translationQuota:
       'Bugünkü ücretsiz çevirilerini kullandın. Ücretli bir plan bu sınırı kaldırır.',
     translationFailed: 'Bu mesaj şu anda çevrilemedi.',
+    wordTranslationFailed: 'Bu kelime şu anda çevrilemedi.',
+    wordSeePlans: 'Planlara bak',
     sayHello: '{name} adlı kişiye merhaba de…',
     pinnedMessage: 'Sabitlenmiş mesaj',
     goToPinned: 'Sabitlenmiş mesaja git',

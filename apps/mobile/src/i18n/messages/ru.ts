@@ -180,6 +180,7 @@ export const ru: Localized<EnMessages> = {
     unecho: 'Убрать из Эха',
     replyPart: 'Ответить на часть',
     correctPart: 'Исправить часть',
+    words: 'Слова',
   },
 
   echo: {
@@ -1070,6 +1071,7 @@ export const ru: Localized<EnMessages> = {
     correcting: 'Исправление',
     partsReplyTitle: 'На какую часть ты отвечаешь?',
     partsCorrectTitle: 'Какое предложение ты исправляешь?',
+    wordsTitle: 'Нажми на слово',
     askingCorrection: 'Просишь исправить',
     askingCorrectionHint: 'Напиши по-своему — у собеседника появится кнопка «Исправить».',
     askingPronunciation: 'Спрашиваешь произношение',
@@ -1171,6 +1173,8 @@ export const ru: Localized<EnMessages> = {
     translationUnavailable: 'Перевод недоступен',
     translationQuota: 'Бесплатные переводы на сегодня закончились. Платный тариф снимает лимит.',
     translationFailed: 'Сейчас не удалось перевести это сообщение.',
+    wordTranslationFailed: 'Сейчас не удалось перевести это слово.',
+    wordSeePlans: 'Посмотреть тарифы',
     sayHello: 'Поздоровайся с {name}…',
     pinnedMessage: 'Закреплённое сообщение',
     goToPinned: 'К закреплённому сообщению',

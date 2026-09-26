@@ -13,6 +13,7 @@ import { messageActionsFor } from '../../src/lib/messageActions'
 import { goBackTo } from '../../src/lib/navigation'
 import { openExternal } from '../../src/lib/openExternal'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { lookupWords } from '../../src/lib/wordLookup'
 
 interface Topic {
   id: string
@@ -322,6 +323,7 @@ function MenuDemo() {
     hasMedia: false,
     bodyLength: sentence.length,
     sentenceCount: splitSentences(sentence).length,
+    wordCount: lookupWords(sentence).length,
     alreadyTranslated: false,
     canEdit: false,
     corrected: false,

@@ -202,6 +202,7 @@ export const en = {
     unecho: 'Remove from Echo',
     replyPart: 'Reply to part',
     correctPart: 'Correct part',
+    words: 'Words',
   },
 
   /**
@@ -1123,6 +1124,7 @@ export const en = {
     correcting: 'Correcting',
     partsReplyTitle: 'Which part are you replying to?',
     partsCorrectTitle: 'Which sentence are you correcting?',
+    wordsTitle: 'Tap a word',
     askingCorrection: 'Asking to be corrected',
     askingCorrectionHint: 'Write it your way; they get a Correct button.',
     askingPronunciation: 'Asking how it sounds',
@@ -1222,6 +1224,8 @@ export const en = {
     translationUnavailable: 'Translation unavailable',
     translationQuota: 'You’ve used today’s free translations. A paid plan removes the limit.',
     translationFailed: 'Could not translate that message right now.',
+    wordTranslationFailed: 'Could not translate that word right now.',
+    wordSeePlans: 'See the plans',
     sayHello: 'Say hello to {name}…',
     pinnedMessage: 'Pinned message',
     goToPinned: 'Go to the pinned message',

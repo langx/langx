@@ -68,6 +68,7 @@ import { ComposerHint } from '../components/ComposerHint'
 import { LoadFailed } from '../components/LoadFailed'
 import { MessageBubble } from '../components/MessageBubble'
 import { MessagePartsSheet } from '../components/MessagePartsSheet'
+import { WordLookup } from '../components/WordLookup'
 import { PhotoViewer } from '../components/PhotoViewer'
 import { AttachmentPreviewRow, type PendingAttachment } from '../components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../components/skeletons/MessageBubbleSkeleton'
@@ -107,6 +108,7 @@ import { messagePreviewKey } from '../lib/messagePreview'
 import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../lib/messageMenu'
 import { goBackTo, openProfile } from '../lib/navigation'
 import { openPaywall } from '../lib/paywall'
+import { lookupWords, wordCardLang } from '../lib/wordLookup'
 import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
@@ -336,6 +338,11 @@ export function ChatScreen({
   const [choosingPart, setChoosingPart] = useState<{
     message: MessageDto
     mode: 'reply' | 'correct'
+  } | null>(null)
+  /** The message whose words are on offer, and the one being looked up. */
+  const [lookingUp, setLookingUp] = useState<{
+    message: MessageDto
+    word: string | null
   } | null>(null)
   const [editing, setEditing] = useState<MessageDto | null>(null)
   /**
@@ -1637,6 +1644,7 @@ export function ChatScreen({
         }) !== undefined,
       bodyLength: message.body.trim().length,
       sentenceCount: splitSentences(message.body).length,
+      wordCount: lookupWords(message.body).length,
       mine: isMine(message),
       type: message.type,
       hasBody: message.body.trim().length > 0,
@@ -1690,6 +1698,8 @@ export function ChatScreen({
       setReplyingTo(message)
     } else if (picked.id === 'replyPart' || picked.id === 'correctPart') {
       setChoosingPart({ message, mode: picked.id === 'replyPart' ? 'reply' : 'correct' })
+    } else if (picked.id === 'words') {
+      setLookingUp({ message, word: null })
     } else if (picked.id === 'copy') {
       await Clipboard.setStringAsync(message.body)
       showToast(t('chat.copied'))
@@ -2641,6 +2651,34 @@ export function ChatScreen({
           parts={choosingPart ? splitSentences(choosingPart.message.body) : null}
           onPick={pickPart}
           onClose={() => setChoosingPart(null)}
+        />
+        <MessagePartsSheet
+          title={t('chat.wordsTitle')}
+          layout="words"
+          parts={lookingUp ? lookupWords(lookingUp.message.body) : null}
+          selected={lookingUp?.word ?? null}
+          onPick={(word) => setLookingUp((open) => (open ? { ...open, word } : open))}
+          onClose={() => setLookingUp(null)}
+          detail={
+            lookingUp?.word && translateTarget ? (
+              <WordLookup
+                key={`${lookingUp.message._id}:${lookingUp.word}`}
+                word={lookingUp.word}
+                messageId={lookingUp.message._id}
+                targetLang={translateTarget}
+                cardLang={wordCardLang({
+                  partnerNativeLanguages: partner?.nativeLanguages,
+                  sourceLang: lookingUp.message.translation?.sourceLang,
+                  myLearning: me.data?.learning,
+                })}
+                onSeePlans={() => {
+                  setLookingUp(null)
+                  // Bare, as Translate's own quota refusal is: see `translate`.
+                  openPaywall(undefined, `/(app)/chat/${conversationId}`)
+                }}
+              />
+            ) : null
+          }
         />
       </Animated.View>
       {dropping ? (

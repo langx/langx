@@ -157,7 +157,7 @@ A bubble has no text selection, and one would fight the long-press menu, so:
 
 ### PR 6 — Tap a word: its translation, and Echo
 
-Status: planned
+Status: in review
 
 - The menu gains "Words", which opens `MessagePartsSheet` in word mode
   (`splitWords` from PR 5).

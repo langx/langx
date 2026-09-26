@@ -15,6 +15,7 @@ const theirs: MessageActionContext = {
   hasMedia: false,
   bodyLength: 34,
   sentenceCount: 1,
+  wordCount: 6,
   alreadyTranslated: false,
   canEdit: false,
   corrected: false,
@@ -43,6 +44,7 @@ describe('messageActionsFor', () => {
       'copy',
       'echo',
       'delete',
+      'words',
       'star',
       'pin',
       'phrase',
@@ -219,7 +221,7 @@ describe('messageActionsFor', () => {
      * and a channel is still where an announcement nobody should have sent
      * would appear — so it is the one row on this page that stays.
      */
-    it('still reports, reads, translates, copies, keeps and hides', () => {
+    it('still reports, reads, translates, looks up, copies, keeps and hides', () => {
       const rows = ids({ ...speakable, ...channel })
       expect(rows).toEqual([
         'translate',
@@ -227,6 +229,7 @@ describe('messageActionsFor', () => {
         'copy',
         'echo',
         'delete',
+        'words',
         'star',
         'pin',
         'share',
@@ -327,6 +330,34 @@ describe('part of a message', () => {
   })
 })
 
+describe('words', () => {
+  it('is offered on the other person’s text with a word in it', () => {
+    expect(ids()).toContain('words')
+    expect(ids({ wordCount: 0 })).not.toContain('words')
+  })
+
+  it('follows Translate: not your own, not without a language to translate into', () => {
+    expect(ids({ mine: true })).not.toContain('words')
+    expect(ids({ canTranslate: false })).not.toContain('words')
+  })
+
+  it('stays once the message is translated, and in a channel, where nothing is sent', () => {
+    expect(ids({ alreadyTranslated: true })).toContain('words')
+    expect(ids({ channel: true })).toContain('words')
+  })
+
+  it('is for text only', () => {
+    for (const type of ['correction', 'image', 'audio', 'phrase'] as const) {
+      expect(ids({ type }), type).not.toContain('words')
+    }
+    expect(ids({ hasBody: false })).not.toContain('words')
+  })
+
+  it('waits behind More', () => {
+    expect(find({}, 'words')?.page).toBe('more')
+  })
+})
+
 describe('paginateActions', () => {
   const all = messageActionsFor(theirs)
 
@@ -345,7 +376,7 @@ describe('paginateActions', () => {
 
   it('puts the rest behind More', () => {
     const { actions, hasMore } = paginateActions(all, 'more')
-    expect(actions.map((a) => a.id)).toEqual(['star', 'pin', 'phrase', 'share', 'report'])
+    expect(actions.map((a) => a.id)).toEqual(['words', 'star', 'pin', 'phrase', 'share', 'report'])
     expect(hasMore).toBe(false)
   })
 
