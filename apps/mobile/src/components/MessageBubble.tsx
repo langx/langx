@@ -28,6 +28,7 @@ import {
   type MessageType,
 } from '@langx/shared'
 import { isBigEmoji } from '../lib/singleEmoji'
+import { internalTarget } from '../lib/internalLink'
 import { diffCorrection } from '../lib/correctionDiff'
 import type { AnchorRect } from '../lib/messageMenu'
 import {
@@ -40,6 +41,7 @@ import {
 import { makeStyles, useTheme } from '../lib/theme'
 import { LinkedText } from './LinkedText'
 import { LinkPreviewCard } from './LinkPreviewCard'
+import { ProfileLinkCard } from './ProfileLinkCard'
 import { MediaGallery } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
 import { Image } from 'expo-image'
@@ -653,6 +655,8 @@ export const MessageBubble = memo(function MessageBubble({
 
   const tail = endsGroup ? (mine ? styles.tailMine : styles.tailTheirs) : null
   const bubble = [styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]
+  /** Where a profile or a post opened from this bubble's text comes back to. */
+  const from = `/(app)/chat/${message.conversationId}`
 
   if (message.type === 'image' || message.type === 'audio' || message.type === 'video') {
     const attachments = attachmentsOf(message)
@@ -688,7 +692,7 @@ export const MessageBubble = memo(function MessageBubble({
             />
           ) : null}
           {message.body ? (
-            <LinkedText style={[styles.bubbleText, styles.caption]} onLongPress={press}>
+            <LinkedText style={[styles.bubbleText, styles.caption]} from={from} onLongPress={press}>
               {message.body}
             </LinkedText>
           ) : null}
@@ -766,17 +770,27 @@ export const MessageBubble = memo(function MessageBubble({
   /*
    * A card for the first address only, as every messenger does: a sentence
    * with three links in it is a list, and three cards would bury it.
+   *
+   * A profile or post link of our own gets no page preview: the web build
+   * ships the same empty shell for every route, so its card would say "LangX"
+   * whoever or whatever the link is. A profile gets the person instead; a
+   * post gets nothing, and the link itself opens it.
    */
   const firstLink = findLinks(message.body)[0]?.href
+  const internal = firstLink ? internalTarget(firstLink) : null
 
   return shell(
     <Pressable onPress={tap} onLongPress={press} style={column}>
       {quote}
       <View ref={box} style={bubble}>
-        <LinkedText style={styles.bubbleText} onLongPress={press}>
+        <LinkedText style={styles.bubbleText} from={from} onLongPress={press}>
           {message.body}
         </LinkedText>
-        {firstLink ? <LinkPreviewCard url={firstLink} onLongPress={press} /> : null}
+        {internal?.kind === 'profile' ? (
+          <ProfileLinkCard handle={internal.handle} from={from} onLongPress={press} />
+        ) : firstLink && !internal ? (
+          <LinkPreviewCard url={firstLink} onLongPress={press} />
+        ) : null}
       </View>
       {/*
         The request the sender attached, under their sentence rather than

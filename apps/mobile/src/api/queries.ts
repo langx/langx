@@ -1,6 +1,7 @@
 import {
   type FeedbackInput,
   type LinkPreviewResponse,
+  type SharedProfile,
   type ConversationFilter,
   type EquippableKind,
   type Equipped,
@@ -201,6 +202,8 @@ export const keys = {
   starred: ['starred'] as const,
   /** Its own prefix: nothing patches it, and it is about a page, not a conversation. */
   linkPreview: (url: string) => ['linkPreview', url] as const,
+  /** `GET /public/profiles/:handle`, the key `app/[username].tsx` also writes out by hand. */
+  sharedProfile: (handle: string) => ['sharedProfile', handle] as const,
   corrections: ['corrections'] as const,
   activity: (from: string, to: string) => ['activity', from, to] as const,
   tokens: ['tokens'] as const,
@@ -325,6 +328,24 @@ export function useLinkPreview(url: string) {
     staleTime: Infinity,
     gcTime: 60 * 60 * 1000,
     retry: false,
+  })
+}
+
+/**
+ * Who a profile link in a chat points at, for the card drawn under it.
+ *
+ * The public read, not `useProfile`, and on purpose: `GET /profiles/:handle`
+ * records a visit, and a card that scrolls past is not somebody opening a
+ * profile. Every reader of the thread would otherwise show up in the linked
+ * person's viewers, every day the thread is open — the same false visit
+ * `useConversationPartners` stopped the chat list from making. The public
+ * profile also carries everything the card draws and nothing it does not.
+ */
+export function useSharedProfile(handle: string) {
+  return useQuery({
+    queryKey: keys.sharedProfile(handle),
+    queryFn: () => api.get<SharedProfile>(`/public/profiles/${encodeURIComponent(handle)}`),
+    staleTime: 5 * 60_000,
   })
 }
 
