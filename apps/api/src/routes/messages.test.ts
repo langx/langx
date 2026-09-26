@@ -8,6 +8,7 @@ import {
   PLAN_LIMITS,
   sendMediaMessageSchema,
   UPCOMING_MEETING_LOOKAHEAD_HOURS,
+  WAVEFORM_BARS,
 } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
@@ -1885,6 +1886,7 @@ describe('Faz 5 — conversation/message history REST', () => {
        * stores the converted attachment rather than the picked one, in both
        * the list and the field repeated beside it.
        */
+      const waveform = Array.from({ length: WAVEFORM_BARS }, (_, i) => i * 2)
       const webm = {
         url: `${BUCKET}/messages/${conversationId}/a.webm`,
         contentType: 'audio/webm',
@@ -1903,12 +1905,17 @@ describe('Faz 5 — conversation/message history REST', () => {
               url: `${BUCKET}/messages/${conversationId}/a.m4a`,
               contentType: 'audio/mp4',
               sizeBytes: 9_000,
+              waveform,
             },
           ]),
       )
 
       expect(result.message.attachments?.[0]?.contentType).toBe('audio/mp4')
       expect(result.message.media?.url).toBe(`${BUCKET}/messages/${conversationId}/a.m4a`)
+      // The bars ride on the attachment, so the bubble draws them from the
+      // same row it plays — in the list and in the field repeated beside it.
+      expect(result.message.attachments?.[0]?.waveform).toHaveLength(WAVEFORM_BARS)
+      expect(result.message.media?.waveform).toEqual(waveform)
       // Still a voice note: the kind came from the bytes before the swap, and
       // AAC and Opus are both audio.
       expect(result.message.type).toBe('audio')

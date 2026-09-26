@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { Media } from '@langx/shared'
+import { WAVEFORM_BARS, type Media } from '@langx/shared'
 import {
   isUndecodableOnIos,
   normalizeAttachments,
@@ -34,6 +34,9 @@ function deps(overrides: Partial<TranscodeDeps> = {}) {
     put: vi.fn((key: string) => Promise.resolve(`${BUCKET}/${key}`)),
     del: vi.fn(() => Promise.resolve()),
     transcode: vi.fn(() => Promise.resolve(new Uint8Array([9, 9]))),
+    // `null` by default, so every case above the waveform's own reads the
+    // rows exactly as it did before there was one.
+    waveform: vi.fn((): Promise<number[] | null> => Promise.resolve(null)),
     warn: vi.fn(),
   }
   const all: TranscodeDeps = {
@@ -189,5 +192,87 @@ describe('normalizeAttachments', () => {
 
     expect(converted.map((m) => m.contentType)).toEqual(['audio/mp4', 'audio/mp4'])
     expect(converted[1]?.url).toBe(`${BUCKET}/posts/u1/slow.m4a`)
+  })
+})
+
+describe('normalizeAttachments, the waveform', () => {
+  const bars = Array.from({ length: WAVEFORM_BARS }, (_, i) => i)
+
+  it('gives a phone note its waveform, read from the bytes in the bucket', async () => {
+    const { deps: d, waveform } = deps({
+      get: vi.fn(() => Promise.resolve(AAC_BYTES)),
+      waveform: vi.fn(() => Promise.resolve(bars)),
+    })
+    const [note] = await normalizeAttachments(d, [
+      { url: `${BUCKET}/messages/c1/a.m4a`, contentType: 'audio/mp4', sizeBytes: 8 },
+    ])
+
+    expect(note?.waveform).toEqual(bars)
+    expect(waveform).toHaveBeenCalledWith(AAC_BYTES)
+  })
+
+  it('gives a converted browser note one too, read from what was uploaded', async () => {
+    const { deps: d, waveform } = deps({ waveform: vi.fn(() => Promise.resolve(bars)) })
+    const [note] = await normalizeAttachments(d, [webmNote()])
+
+    expect(note?.contentType).toBe('audio/mp4')
+    expect(note?.waveform).toHaveLength(WAVEFORM_BARS)
+    expect(waveform).toHaveBeenCalledWith(WEBM_BYTES)
+  })
+
+  // Even when the conversion fails, the sound was still readable.
+  it('keeps the waveform on an original that could not be converted', async () => {
+    const { deps: d } = deps({
+      transcode: vi.fn(() => Promise.resolve(null)),
+      waveform: vi.fn(() => Promise.resolve(bars)),
+    })
+    const [note] = await normalizeAttachments(d, [webmNote()])
+
+    expect(note?.contentType).toBe('audio/webm')
+    expect(note?.waveform).toEqual(bars)
+  })
+
+  /*
+   * The schema lets a body carry one, because it is the shape a message is
+   * read back in. What a client sent is never what is stored: the server's own
+   * reading replaces it, and where there is no reading there is no waveform.
+   */
+  it('never stores a waveform a client sent', async () => {
+    const forged = Array.from({ length: WAVEFORM_BARS }, () => 100)
+    const { deps: d } = deps({ get: vi.fn(() => Promise.resolve(AAC_BYTES)) })
+    const [note, photo] = await normalizeAttachments(d, [
+      {
+        url: `${BUCKET}/messages/c1/a.m4a`,
+        contentType: 'audio/mp4',
+        sizeBytes: 8,
+        waveform: forged,
+      },
+      {
+        url: `${BUCKET}/messages/c1/a.jpg`,
+        contentType: 'image/jpeg',
+        sizeBytes: 2000,
+        waveform: forged,
+      },
+    ])
+
+    expect(note).not.toHaveProperty('waveform')
+    expect(photo).not.toHaveProperty('waveform')
+  })
+
+  it('replaces a sent waveform with the one it read', async () => {
+    const { deps: d } = deps({
+      get: vi.fn(() => Promise.resolve(AAC_BYTES)),
+      waveform: vi.fn(() => Promise.resolve(bars)),
+    })
+    const [note] = await normalizeAttachments(d, [
+      {
+        url: `${BUCKET}/messages/c1/a.m4a`,
+        contentType: 'audio/mp4',
+        sizeBytes: 8,
+        waveform: [100, 100],
+      },
+    ])
+
+    expect(note?.waveform).toEqual(bars)
   })
 })

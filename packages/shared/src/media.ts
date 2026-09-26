@@ -92,6 +92,32 @@ export const MEDIA_LIMITS = {
   video: { maxBytes: MAX_VIDEO_BYTES, maxSeconds: MAX_VIDEO_SECONDS },
 } as const satisfies Record<MediaKind, { maxBytes: number; maxSeconds?: number }>
 
+/**
+ * How many bars a voice note's waveform is stored as, and the value of the
+ * loudest one.
+ *
+ * Forty-eight integers is a few hundred bytes on a row, and more than any
+ * bubble draws: the client resamples to however many bars fit its width, so
+ * this is the resolution ceiling, not the look. Integers out of a hundred
+ * rather than fractions because a bar a couple of dozen pixels tall cannot
+ * show a finer step, and an integer is half the bytes of a double in BSON.
+ */
+export const WAVEFORM_BARS = 48
+export const WAVEFORM_PEAK = 100
+
+/**
+ * Loudness per slice of a voice note, left to right, scaled so the loudest
+ * slice is `WAVEFORM_PEAK`.
+ *
+ * Bounded here only so a request body cannot carry an arbitrary array as far
+ * as the handler: the server never stores one a client sent — see
+ * `normalizeAttachments` — and computes its own from the bytes.
+ */
+export const waveformSchema = z
+  .array(z.number().int().min(0).max(WAVEFORM_PEAK))
+  .min(1)
+  .max(WAVEFORM_BARS)
+
 export const mediaSchema = z.object({
   url: z.url(),
   contentType: z.string().trim().min(1),
@@ -116,6 +142,8 @@ export const mediaSchema = z.object({
   /** Images and video — lets the client reserve the right space before the bytes land. */
   width: z.number().int().positive().optional(),
   height: z.number().int().positive().optional(),
+  /** Audio only, and only once the server has read the file. Absent on older notes. */
+  waveform: waveformSchema.optional(),
 })
 export type Media = z.infer<typeof mediaSchema>
 
