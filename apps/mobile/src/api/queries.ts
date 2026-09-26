@@ -421,21 +421,42 @@ export async function trayFacts({
   return { readThreads: new Set(read.filter((id) => id !== null)), rows }
 }
 
+/**
+ * What a read cleared: how many of the other person's messages were unread,
+ * and the newest message's time when they were counted. The thread's "New
+ * messages" line is drawn from it; see `messageRows`.
+ */
+export interface ClearedUnread {
+  count: number
+  until: string
+}
+
+/**
+ * Resolves to what the read cleared, or null when it cleared nothing — or
+ * failed, or reached an API from before the count was sent. Each of those
+ * draws no line, which is the right way for it to fail.
+ */
 export async function markConversationRead(
   conversationId: string,
   queryClient: QueryClient,
-): Promise<void> {
-  if (!conversationId) return
+): Promise<ClearedUnread | null> {
+  if (!conversationId) return null
   // Before the request, and whether or not it lands: the thread is on screen,
   // so its pushes in the shade are stale either way.
   void clearFromTray({ conversationId })
   try {
-    await api.post(`/conversations/${conversationId}/read`)
+    const read = await api.post<{
+      unreadBefore?: number
+      lastMessage?: { createdAt: string }
+    }>(`/conversations/${conversationId}/read`)
     await queryClient.invalidateQueries({ queryKey: ['conversations'] })
     invalidateUnread(queryClient)
+    const count = read.unreadBefore ?? 0
+    return count > 0 && read.lastMessage ? { count, until: read.lastMessage.createdAt } : null
   } catch {
     // Best-effort: failing to clear an unread badge must never surface as an
     // error over a conversation the user is reading perfectly happily.
+    return null
   }
 }
 

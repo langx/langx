@@ -1175,6 +1175,7 @@ export const ru: Localized<EnMessages> = {
       other: 'Перейти к {count} новым сообщениям',
     },
     jumpToNewest: 'Перейти к самому новому сообщению',
+    newMessages: 'Новые сообщения',
     replyingToYourself: 'Отвечаешь сам себе',
     replyingTo: 'Ответ {name}',
     deleted: 'Это сообщение удалено',

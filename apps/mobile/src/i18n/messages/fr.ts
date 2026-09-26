@@ -1085,6 +1085,7 @@ export const fr: Localized<EnMessages> = {
       other: 'Aller aux {count} nouveaux messages',
     },
     jumpToNewest: 'Aller au message le plus récent',
+    newMessages: 'Nouveaux messages',
     replyingToYourself: 'Tu te réponds à toi-même',
     replyingTo: 'Réponse à {name}',
     deleted: 'Ce message a été supprimé',

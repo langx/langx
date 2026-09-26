@@ -1074,6 +1074,7 @@ export const ptBR: Localized<EnMessages> = {
       other: 'Ir para {count} mensagens novas',
     },
     jumpToNewest: 'Ir para a mensagem mais recente',
+    newMessages: 'Novas mensagens',
     replyingToYourself: 'Respondendo a você mesmo',
     replyingTo: 'Respondendo a {name}',
     deleted: 'Esta mensagem foi apagada',
