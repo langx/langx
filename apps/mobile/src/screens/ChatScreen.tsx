@@ -11,7 +11,9 @@ import {
   MESSAGE_REACTIONS,
   PHRASE_EXAMPLE_MAX_LENGTH,
   PLAN_LIMITS,
+  REPLY_PREVIEW_MAX_LENGTH,
   hasFeature,
+  splitSentences,
   webUrl,
   messageTranslationSchema,
   type MessageAsk,
@@ -65,6 +67,7 @@ import { ChatComposer } from '../components/ChatComposer'
 import { ComposerHint } from '../components/ComposerHint'
 import { LoadFailed } from '../components/LoadFailed'
 import { MessageBubble } from '../components/MessageBubble'
+import { MessagePartsSheet } from '../components/MessagePartsSheet'
 import { PhotoViewer } from '../components/PhotoViewer'
 import { AttachmentPreviewRow, type PendingAttachment } from '../components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../components/skeletons/MessageBubbleSkeleton'
@@ -314,6 +317,26 @@ export function ChatScreen({
    * reset `replyingTo` has to remember this one exists.
    */
   const [answeringAskId, setAnsweringAskId] = useState<string | null>(null)
+  /**
+   * The one sentence a reply or a correction is about, when it is not the
+   * whole message — picked in `MessagePartsSheet`.
+   *
+   * Trusted only while the reply or the correction still points at the
+   * message it came from, like `answeringAskId` above, and dropped once
+   * neither is open, so a later reply to the same message does not inherit
+   * it from one that was cancelled.
+   */
+  const [part, setPart] = useState<{ messageId: string; text: string } | null>(null)
+  useEffect(() => {
+    if (!replyingTo && !correcting) setPart(null)
+  }, [replyingTo, correcting])
+  const replyQuote = replyingTo && part?.messageId === replyingTo._id ? part.text : undefined
+  const correctingPart = correcting && part?.messageId === correcting._id ? part.text : undefined
+  /** The message whose sentences are on offer, and what choosing one does. */
+  const [choosingPart, setChoosingPart] = useState<{
+    message: MessageDto
+    mode: 'reply' | 'correct'
+  } | null>(null)
   const [editing, setEditing] = useState<MessageDto | null>(null)
   /**
    * The message a jump is centred on, or null while the live thread is showing.
@@ -796,6 +819,7 @@ export function ChatScreen({
       setAsking(null)
       setReplyingTo(null)
       setAnsweringAskId(null)
+      setPart(null)
       setCorrecting(message)
       setDraft(message.body)
       return
@@ -810,6 +834,27 @@ export function ChatScreen({
     setReplyingTo(message)
     setAnsweringAskId(message._id)
     void toggleRecording()
+  }
+
+  /**
+   * A sentence chosen in the parts sheet: the whole-message reply or
+   * correction, narrowed to it.
+   */
+  function pickPart(text: string): void {
+    const choice = choosingPart
+    setChoosingPart(null)
+    if (!choice) return
+    const { message, mode } = choice
+    if (mode === 'reply') {
+      // Cut to what a reply preview holds. The start of a piece of the
+      // message is still in the message, so the server still finds it.
+      setPart({ messageId: message._id, text: text.slice(0, REPLY_PREVIEW_MAX_LENGTH).trim() })
+      setReplyingTo(message)
+      return
+    }
+    setPart({ messageId: message._id, text })
+    setCorrecting(message)
+    setDraft(text)
   }
 
   async function openAttachMenu(): Promise<void> {
@@ -1199,6 +1244,7 @@ export function ChatScreen({
     replyToMessageId?: string,
     ask?: MessageAsk,
     translation?: MessageTranslation,
+    quote?: string,
   ): Promise<void> {
     try {
       /*
@@ -1217,6 +1263,7 @@ export function ChatScreen({
         body,
         clientId,
         ...(replyToMessageId ? { replyToMessageId } : {}),
+        ...(replyToMessageId && quote ? { quote } : {}),
         ...(ask ? { ask } : {}),
         ...(translation ? { translation } : {}),
       })
@@ -1241,6 +1288,7 @@ export function ChatScreen({
           clientId,
           body,
           ...(replyToMessageId ? { replyToMessageId } : {}),
+          ...(replyToMessageId && quote ? { quote } : {}),
           failedAt: new Date().toISOString(),
         }),
       )
@@ -1260,7 +1308,14 @@ export function ChatScreen({
   }
 
   async function retry(message: UnsentMessage): Promise<void> {
-    await deliver(message.body, message.clientId, message.replyToMessageId)
+    await deliver(
+      message.body,
+      message.clientId,
+      message.replyToMessageId,
+      undefined,
+      undefined,
+      message.quote,
+    )
   }
 
   /**
@@ -1309,9 +1364,10 @@ export function ChatScreen({
     clientId: string,
     replyToMessageId?: string,
     ask?: MessageAsk,
+    quote?: string,
   ): Promise<void> {
     if (!sendTranslated || !translateInto) {
-      await deliver(body, clientId, replyToMessageId, ask)
+      await deliver(body, clientId, replyToMessageId, ask, undefined, quote)
       return
     }
     let translation: MessageTranslation | undefined
@@ -1330,7 +1386,7 @@ export function ChatScreen({
       void caught
       void showAlert(t('chat.couldNotSend'), t('chat.sendTranslatedFailed'))
     }
-    await deliver(body, clientId, replyToMessageId, ask, translation)
+    await deliver(body, clientId, replyToMessageId, ask, translation, quote)
   }
 
   async function send(): Promise<void> {
@@ -1365,10 +1421,12 @@ export function ChatScreen({
     }
     if (correcting) {
       const target = correcting
+      const original = correctingPart
       setCorrecting(null)
-      void commitCorrection(target, body)
+      void commitCorrection(target, body, original)
     } else {
       const reply = replyingTo
+      const quote = replyQuote
       const ask = asking
       setReplyingTo(null)
       setAsking(null)
@@ -1379,13 +1437,19 @@ export function ChatScreen({
           body,
           sentAt: new Date().toISOString(),
           ...(reply
-            ? { replyTo: { messageId: reply._id, senderId: reply.senderId, preview: reply.body } }
+            ? {
+                replyTo: {
+                  messageId: reply._id,
+                  senderId: reply.senderId,
+                  preview: quote ?? reply.body,
+                },
+              }
             : {}),
           ...(ask ? { ask } : {}),
         }),
       )
       // `deliver` never rejects — a failure becomes an unsent row.
-      void deliverTranslated(body, clientId, reply?._id, ask ?? undefined)
+      void deliverTranslated(body, clientId, reply?._id, ask ?? undefined, quote)
     }
     // Sending is a statement about the live conversation, so it ends a
     // detour into the history rather than posting into the middle of it.
@@ -1416,18 +1480,26 @@ export function ChatScreen({
   }
 
   /** The same rule for a correction: the card appears when the server echoes it. */
-  async function commitCorrection(target: MessageDto, corrected: string): Promise<void> {
+  async function commitCorrection(
+    target: MessageDto,
+    corrected: string,
+    original?: string,
+  ): Promise<void> {
     try {
       const socket = await getSocket()
       await emitWithAck(socket, 'message:correct', {
         conversationId,
         targetMessageId: target._id,
         corrected,
+        ...(original ? { original } : {}),
       })
       track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
       review.request({ kind: 'correction' })
     } catch {
       setCorrecting(target)
+      // Put back with it, or the retry would correct the whole message
+      // against what was written for one sentence of it.
+      if (original) setPart({ messageId: target._id, text: original })
       setDraft(corrected)
       void showAlert(t('chat.actionFailed'), t('common.retry'))
     }
@@ -1564,6 +1636,7 @@ export function ChatScreen({
           contextLangs: conversationLangs,
         }) !== undefined,
       bodyLength: message.body.trim().length,
+      sentenceCount: splitSentences(message.body).length,
       mine: isMine(message),
       type: message.type,
       hasBody: message.body.trim().length > 0,
@@ -1613,7 +1686,10 @@ export function ChatScreen({
     }
 
     if (picked.id === 'reply') {
+      setPart(null)
       setReplyingTo(message)
+    } else if (picked.id === 'replyPart' || picked.id === 'correctPart') {
+      setChoosingPart({ message, mode: picked.id === 'replyPart' ? 'reply' : 'correct' })
     } else if (picked.id === 'copy') {
       await Clipboard.setStringAsync(message.body)
       showToast(t('chat.copied'))
@@ -1624,6 +1700,7 @@ export function ChatScreen({
     } else if (picked.id === 'speak') {
       await speak(message)
     } else if (picked.id === 'correct') {
+      setPart(null)
       setCorrecting(message)
       setDraft(message.body)
     } else if (picked.id === 'delete') {
@@ -1825,7 +1902,10 @@ export function ChatScreen({
     [flash],
   )
 
-  const onReply = useCallback((message: MessageDto) => setReplyingTo(message), [])
+  const onReply = useCallback((message: MessageDto) => {
+    setPart(null)
+    setReplyingTo(message)
+  }, [])
   /**
    * Stable, for the same reason `onLongPress` below is.
    *
@@ -1997,7 +2077,7 @@ export function ChatScreen({
     : correcting
       ? {
           label: t('chat.correcting'),
-          preview: correcting.body,
+          preview: correctingPart ?? correcting.body,
           clear: () => {
             setCorrecting(null)
             setDraft('')
@@ -2024,7 +2104,7 @@ export function ChatScreen({
                 label: isMine(replyingTo)
                   ? t('chat.replyingToYourself')
                   : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-                preview: replyingTo.body || t(messagePreviewKey(replyingTo.type)),
+                preview: replyQuote ?? (replyingTo.body || t(messagePreviewKey(replyingTo.type))),
                 clear: () => setReplyingTo(null),
               }
             : null
@@ -2551,6 +2631,16 @@ export function ChatScreen({
           index={viewing?.index ?? null}
           onClose={() => setViewing(null)}
           onIndexChange={(index) => setViewing((open) => (open ? { ...open, index } : open))}
+        />
+        <MessagePartsSheet
+          title={
+            choosingPart?.mode === 'correct'
+              ? t('chat.partsCorrectTitle')
+              : t('chat.partsReplyTitle')
+          }
+          parts={choosingPart ? splitSentences(choosingPart.message.body) : null}
+          onPick={pickPart}
+          onClose={() => setChoosingPart(null)}
         />
       </Animated.View>
       {dropping ? (

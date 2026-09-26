@@ -169,6 +169,8 @@ export const ptBR: Localized<EnMessages> = {
     saveMedia: 'Salvar no dispositivo',
     echo: 'Adicionar ao Echo',
     unecho: 'Remover do Echo',
+    replyPart: 'Responder a uma parte',
+    correctPart: 'Corrigir uma parte',
   },
 
   echo: {
@@ -968,6 +970,8 @@ export const ptBR: Localized<EnMessages> = {
     notSentRetry: 'Não enviado — toque para tentar de novo',
     editing: 'Editando',
     correcting: 'Corrigindo',
+    partsReplyTitle: 'Qual parte você está respondendo?',
+    partsCorrectTitle: 'Qual frase você está corrigindo?',
     askingCorrection: 'Pedindo correção',
     askingCorrectionHint: 'Escreva do seu jeito; a outra pessoa verá um botão Corrigir.',
     askingPronunciation: 'Perguntando como se fala',

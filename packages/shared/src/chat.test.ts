@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { DELIVERY_STATES, canDeleteForEveryone, canEditMessage, deliveryStateOf } from './chat'
+import {
+  DELIVERY_STATES,
+  REPLY_PREVIEW_MAX_LENGTH,
+  canDeleteForEveryone,
+  canEditMessage,
+  deliveryStateOf,
+  sendTextMessageSchema,
+} from './chat'
 
 describe('deliveryStateOf', () => {
   it('is sent when the server has it and nothing more is known', () => {
@@ -88,5 +95,21 @@ describe('canEditMessage', () => {
     const old = { ...mine, createdAt: '2026-08-26T11:00:00.000Z' }
     expect(canEditMessage(old, 'me', now)).toBe(false)
     expect(canEditMessage({ ...mine, deletedAt: now }, 'me', now)).toBe(false)
+  })
+})
+
+describe('sendTextMessageSchema quote', () => {
+  const base = { conversationId: 'c1', body: 'What did you buy?', replyToMessageId: 'm1' }
+
+  it('trims the quote, since the server looks for it in the message as written', () => {
+    expect(sendTextMessageSchema.parse({ ...base, quote: '  We bought apples. ' }).quote).toBe(
+      'We bought apples.',
+    )
+  })
+
+  it('refuses an empty quote and one longer than a reply preview', () => {
+    expect(sendTextMessageSchema.safeParse({ ...base, quote: '   ' }).success).toBe(false)
+    const long = 'a'.repeat(REPLY_PREVIEW_MAX_LENGTH + 1)
+    expect(sendTextMessageSchema.safeParse({ ...base, quote: long }).success).toBe(false)
   })
 })

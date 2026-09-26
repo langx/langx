@@ -171,6 +171,8 @@ export const ar: Localized<EnMessages> = {
     saveMedia: 'حفظ على الجهاز',
     echo: 'أضف إلى صدى',
     unecho: 'أزل من صدى',
+    replyPart: 'الرد على جزء',
+    correctPart: 'تصحيح جزء',
   },
 
   echo: {
@@ -1084,6 +1086,8 @@ export const ar: Localized<EnMessages> = {
     notSentRetry: 'لم يُرسل — اضغط للمحاولة مرة أخرى',
     editing: 'تعديل',
     correcting: 'تصحيح',
+    partsReplyTitle: 'على أي جزء تردّ؟',
+    partsCorrectTitle: 'أي جملة تصحّح؟',
     askingCorrection: 'تطلب التصحيح',
     askingCorrectionHint: 'اكتبها بطريقتك؛ سيظهر لديه زر «صحّح».',
     askingPronunciation: 'تسأل عن النطق',

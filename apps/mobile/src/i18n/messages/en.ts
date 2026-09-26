@@ -200,6 +200,8 @@ export const en = {
     saveMedia: 'Save to device',
     echo: 'Add to Echo',
     unecho: 'Remove from Echo',
+    replyPart: 'Reply to part',
+    correctPart: 'Correct part',
   },
 
   /**
@@ -1119,6 +1121,8 @@ export const en = {
     notSentRetry: 'Not sent — tap to try again',
     editing: 'Editing',
     correcting: 'Correcting',
+    partsReplyTitle: 'Which part are you replying to?',
+    partsCorrectTitle: 'Which sentence are you correcting?',
     askingCorrection: 'Asking to be corrected',
     askingCorrectionHint: 'Write it your way; they get a Correct button.',
     askingPronunciation: 'Asking how it sounds',

@@ -172,6 +172,8 @@ export const es: Localized<EnMessages> = {
     saveMedia: 'Guardar en el dispositivo',
     echo: 'Añadir a Echo',
     unecho: 'Quitar de Echo',
+    replyPart: 'Responder a una parte',
+    correctPart: 'Corregir una parte',
   },
 
   echo: {
@@ -974,6 +976,8 @@ export const es: Localized<EnMessages> = {
     notSentRetry: 'No enviado: toca para reintentar',
     editing: 'Editando',
     correcting: 'Corrigiendo',
+    partsReplyTitle: '¿A qué parte respondes?',
+    partsCorrectTitle: '¿Qué frase corriges?',
     askingCorrection: 'Pides que te corrijan',
     askingCorrectionHint: 'Escríbelo a tu manera; verán un botón Corregir.',
     askingPronunciation: 'Preguntas cómo suena',

@@ -181,6 +181,8 @@ export const tr: Localized<EnMessages> = {
     saveMedia: 'Cihaza kaydet',
     echo: 'Echo’ya ekle',
     unecho: 'Echo’dan çıkar',
+    replyPart: 'Bir kısmını yanıtla',
+    correctPart: 'Bir kısmını düzelt',
   },
 
   echo: {
@@ -973,6 +975,8 @@ export const tr: Localized<EnMessages> = {
     notSentRetry: 'Gönderilmedi — tekrar denemek için dokun',
     editing: 'Düzenleniyor',
     correcting: 'Düzeltiliyor',
+    partsReplyTitle: 'Hangi kısmı yanıtlıyorsun?',
+    partsCorrectTitle: 'Hangi cümleyi düzeltiyorsun?',
     askingCorrection: 'Düzeltilmek istiyorsun',
     askingCorrectionHint: 'Kendi cümleni yaz; karşı tarafta Düzelt düğmesi çıkar.',
     askingPronunciation: 'Nasıl söylendiğini soruyorsun',

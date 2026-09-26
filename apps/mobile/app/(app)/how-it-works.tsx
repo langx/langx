@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Ionicons } from '@expo/vector-icons'
-import { TIER_NAMES, tierUnlocking } from '@langx/shared'
+import { TIER_NAMES, splitSentences, tierUnlocking } from '@langx/shared'
 import { useState, type ComponentProps } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { Button } from '../../src/components/ui/Button'
@@ -321,6 +321,7 @@ function MenuDemo() {
     hasBody: true,
     hasMedia: false,
     bodyLength: sentence.length,
+    sentenceCount: splitSentences(sentence).length,
     alreadyTranslated: false,
     canEdit: false,
     corrected: false,

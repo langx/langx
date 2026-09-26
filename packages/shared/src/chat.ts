@@ -176,6 +176,13 @@ export const sendTextMessageSchema = z.object({
   conversationId: z.string().trim().min(1),
   body: messageBodySchema,
   replyToMessageId: z.string().trim().min(1).optional(),
+  /**
+   * The part of the replied-to message this answers, when it is not all of
+   * it. Becomes `replyTo.preview` in place of the start of the body. The
+   * server refuses one the message does not contain, so a reply can never be
+   * made to look like it quotes words nobody wrote.
+   */
+  quote: z.string().trim().min(1).max(REPLY_PREVIEW_MAX_LENGTH).optional(),
   clientId: clientMessageIdSchema.optional(),
   ask: z.enum(MESSAGE_ASKS).optional(),
   translation: messageTranslationSchema.optional(),
@@ -354,6 +361,17 @@ export const sendCorrectionSchema = z.object({
   targetMessageId: z.string().trim().min(1),
   corrected: messageBodySchema,
   note: z.string().trim().max(CORRECTION_NOTE_MAX_LENGTH).optional(),
+  /**
+   * The sentence being corrected, when it is one sentence of a longer
+   * message. Stored as `correction.original`, which is otherwise the whole
+   * body — and the card diffs the correction against it, so a one-sentence
+   * fix measured against a paragraph would mark everything else as removed.
+   *
+   * Bounded like a body rather than like a quote: `original` has always held
+   * a whole message, and a long sentence is still one sentence. The server
+   * refuses one the target does not contain.
+   */
+  original: messageBodySchema.optional(),
 })
 export type SendCorrectionInput = z.infer<typeof sendCorrectionSchema>
 

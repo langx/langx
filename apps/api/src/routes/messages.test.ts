@@ -1410,6 +1410,120 @@ describe('Faz 5 — conversation/message history REST', () => {
     })
   })
 
+  /**
+   * Replying to, or correcting, one sentence of a longer message. What the
+   * client names is shown to the other person as their own words, so the
+   * server holds it against the message rather than taking it on trust.
+   */
+  describe('quoting or correcting part of a message', () => {
+    const BODY = 'I goed to the market. It was very crowded. We buyed apples.'
+
+    async function thread(prefix: string) {
+      const learner = await newUser(`${prefix}-learner@example.com`)
+      const teacher = await newUser(`${prefix}-teacher@example.com`)
+      const conversation = await startConversation(learner, teacher.userId, 'hello')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const target = await sendTextMessage(handle.db, learner.userId, {
+        conversationId: conversation._id,
+        body: BODY,
+      })
+      return {
+        learner,
+        teacher,
+        conversationId: conversation._id,
+        targetId: target.message._id.toHexString(),
+      }
+    }
+
+    it('quotes the chosen sentence instead of the start of the message', async () => {
+      const { teacher, conversationId, targetId } = await thread('quote-part')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const reply = await sendTextMessage(handle.db, teacher.userId, {
+        conversationId,
+        body: 'What did you buy?',
+        replyToMessageId: targetId,
+        quote: 'We buyed apples.',
+      })
+      expect(reply.message.replyTo?.preview).toBe('We buyed apples.')
+    })
+
+    it('refuses a quote the message does not contain, and one with nothing to quote', async () => {
+      const { teacher, conversationId, targetId } = await thread('quote-forged')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      await expect(
+        sendTextMessage(handle.db, teacher.userId, {
+          conversationId,
+          body: 'Really?',
+          replyToMessageId: targetId,
+          quote: 'I hate apples.',
+        }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+      await expect(
+        sendTextMessage(handle.db, teacher.userId, {
+          conversationId,
+          body: 'Really?',
+          quote: 'We buyed apples.',
+        }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+
+    it('quotes the whole message, as before, when no part is named', async () => {
+      const { teacher, conversationId, targetId } = await thread('quote-whole')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const reply = await sendTextMessage(handle.db, teacher.userId, {
+        conversationId,
+        body: 'Nice',
+        replyToMessageId: targetId,
+      })
+      expect(reply.message.replyTo?.preview).toBe(BODY)
+    })
+
+    it('corrects one sentence, and keeps only that sentence as the original', async () => {
+      const { teacher, conversationId, targetId } = await thread('correct-part')
+      const { sendCorrection } = await import('../modules/chat/messages')
+      const result = await sendCorrection(handle.db, teacher.userId, {
+        conversationId,
+        targetMessageId: targetId,
+        corrected: 'I went to the market.',
+        original: 'I goed to the market.',
+      })
+      expect(result.message.correction).toMatchObject({
+        original: 'I goed to the market.',
+        corrected: 'I went to the market.',
+      })
+    })
+
+    it('refuses an original the message does not contain, and leaves it editable', async () => {
+      const { teacher, conversationId, targetId } = await thread('correct-forged')
+      const { sendCorrection } = await import('../modules/chat/messages')
+      await expect(
+        sendCorrection(handle.db, teacher.userId, {
+          conversationId,
+          targetMessageId: targetId,
+          corrected: 'I went home.',
+          original: 'I goed home.',
+        }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+      // Refused before anything was written: a failed correction must not
+      // lock the sentence against its author's edits.
+      const target = await handle.db
+        .collection(COLLECTIONS.messages)
+        .findOne({ _id: new ObjectId(targetId) })
+      expect(target?.correctedAt).toBeUndefined()
+    })
+
+    it('keeps the whole message as the original, as before, when no part is named', async () => {
+      const { teacher, conversationId, targetId } = await thread('correct-whole')
+      const { sendCorrection } = await import('../modules/chat/messages')
+      const result = await sendCorrection(handle.db, teacher.userId, {
+        conversationId,
+        targetMessageId: targetId,
+        corrected: 'I went to the market. It was very crowded. We bought apples.',
+      })
+      expect(result.message.correction?.original).toBe(BODY)
+    })
+  })
+
   describe('image, video and voice messages', () => {
     const BUCKET = 'https://cdn.example.com'
     // `messages/<conversationId>/` is the key `/messages/upload-url` really
