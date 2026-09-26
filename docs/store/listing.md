@@ -334,8 +334,14 @@ included. Both are written out below, per language.
 
 ## What's new (release notes)
 
-These are **2.6's** notes. The release is the watch: an Apple Watch app and a
-Wear OS app, which are one feature built twice rather than two features.
+These are **2.7's** notes. 2.6 put LangX in the car and on the wrist but its
+notes only ever described the watch, so 2.7 is where the car is announced: on
+iOS as CarPlay, where a tap has Siri read out every message waiting and take a
+reply, and on Play as Android Auto. The rest is 2.7's own: the app opens on the
+chats and profiles it saw last instead of an empty screen (#1603), a
+notification read on another device leaves this one even while the app is
+closed (#1598, #1602), "typing…" stops when the other person does, and the Me
+tab ends in a short guide to how LangX works (#1600).
 
 A version update needs release notes in **every** localization, not just the
 primary one — App Store Connect will not let the version be submitted with one
@@ -345,28 +351,15 @@ The last line is not optional in any language. Every v1 user has to sign up
 again — the old password hashes could not be migrated — and without that
 sentence the first thing a returning user meets is a login that rejects them.
 
-**The first line differs by store.** iOS says _Apple Watch_, Play says
-_Wear OS_. Everything after it is identical. Nothing else in these notes is
-platform-specific, because nothing else in 2.6 is.
+**The first line differs by store.** iOS says _CarPlay_ and _Siri_, Play says
+_Android Auto_. Everything after it is identical.
 
-Two claims were deliberately not made. The watch is **dependent on the phone**
-— it holds no session and makes no call of its own — so nothing here says it
-works without one; what it survives is the phone's app being _closed_, which is
-a different sentence and the one that was actually tested. And the cue pictures
-above the cards are not mentioned at all: the five new packs carry them now, but
-a picture above a sentence is not why anyone installs a language app, and every
-line here has to earn its place against Play's 500 characters.
-
-**The read-aloud line names all five, and that changed late.** It said Spanish,
-French and Italian while the German and Russian packs were still silent —
-Kokoro does not read those two and Piper, which does, had not been run for
-them. It has been since, so all five carry readings and the line no longer has
-an exception to make. German and Russian carry one voice each where the other
-three carry two, which is a distinction these notes have no room for and no
-reason to draw.
-
-"Polyglot" is a plan name and stays in English everywhere, the way "LangX Pro"
-does in the description.
+**Not claimed, deliberately.** Sign-in with Facebook and Discord is in the code
+(#1599) but the production API has no credentials for either, so the buttons do
+not show and the notes do not mention them. Dropping a photo onto a thread
+(#1601) is a web feature and is not in a store's notes. The server work that
+makes the app faster (#1604) is felt rather than announced — the cache line
+already says the part a person notices.
 
 ### Promotional text (iOS only, 170 characters)
 
@@ -390,212 +383,159 @@ the current one. Play has no equivalent field.
 
 **English**
 
-> This one is for your wrist.
->
-> LangX on Apple Watch: your unread conversations, the conversation itself, and a reply by dictation, scribble or keyboard - even when the app on your phone is closed.
-> The widgets are redrawn, and your activity map is one of them now.
-> Echo has a leaderboard: this week, this month, this year.
-> Echo packs in five more languages - Spanish, German, French, Russian and Italian.
-> All five can be read aloud.
-> Every badge has a picture of its own.
-> Nearby asks for a finer fix, so the distance it shows is closer to the truth.
+> In the car, LangX works with CarPlay: tap a chat and Siri reads out every message waiting, then takes your reply.
+> The app opens on your chats and profiles from last time, before the network has answered.
+> A notification you already read on another device disappears from this one too - even when the app is closed.
+> "Typing…" stops when they stop.
+> The Me tab ends with a short guide to how LangX works.
 >
 > Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
 
 **Türkçe**
 
-> Bu sürüm bileğin için.
->
-> Apple Watch'ta LangX: okunmamış sohbetlerin, sohbetin kendisi ve dikteyle, karalamayla ya da klavyeyle cevap - telefonundaki uygulama kapalıyken bile.
-> Widget'lar yeniden çizildi; etkinlik haritan da artık onlardan biri.
-> Echo'ya liderlik tablosu geldi: bu hafta, bu ay, bu yıl.
-> Beş dilde daha Echo paketi - İspanyolca, Almanca, Fransızca, Rusça ve İtalyanca.
-> Beşi de sesli okunabiliyor.
-> Her rozetin artık kendi resmi var.
-> Yakındakiler daha hassas bir konum istiyor, böylece gösterdiği mesafe gerçeğe daha yakın.
+> Arabada LangX artık CarPlay'de: bir sohbete dokun, Siri bekleyen tüm mesajları okusun, sonra cevabını alsın.
+> Uygulama, ağ cevap vermeden önce son gördüğün sohbetler ve profillerle açılıyor.
+> Başka bir cihazda okuduğun bildirim bu cihazdan da kalkıyor - uygulama kapalıyken bile.
+> "Yazıyor…" karşı taraf durunca duruyor.
+> Ben sekmesinin sonunda LangX'in nasıl çalıştığını anlatan kısa bir rehber var.
 >
 > Eski uygulamadan mı dönüyorsun? Daha önce kullandığın e-postayla kaydol - kullanıcı adın seni bekliyor.
 
 **Español**
 
-> Esta versión es para tu muñeca.
->
-> LangX en el Apple Watch: tus conversaciones sin leer, la conversación misma y una respuesta por dictado, escritura o teclado - incluso con la app del teléfono cerrada.
-> Los widgets se rediseñaron, y tu mapa de actividad ya es uno de ellos.
-> Echo tiene una clasificación: esta semana, este mes, este año.
-> Packs de Echo en cinco idiomas más - español, alemán, francés, ruso e italiano.
-> Los cinco se pueden escuchar en voz alta.
-> Cada insignia tiene una imagen propia.
-> Cerca de ti pide una ubicación más precisa, así la distancia que muestra se acerca más a la real.
+> En el coche, LangX funciona con CarPlay: toca un chat y Siri lee en voz alta todos los mensajes pendientes y luego toma tu respuesta.
+> La app se abre con tus chats y perfiles de la última vez, antes de que responda la red.
+> Una notificación que ya leíste en otro dispositivo también desaparece de este - incluso con la app cerrada.
+> "Escribiendo…" se detiene cuando la otra persona se detiene.
+> La pestaña Yo termina con una breve guía sobre cómo funciona LangX.
 >
 > ¿Vuelves de la app anterior? Regístrate con el correo que usabas antes - tu nombre de usuario te está esperando.
 
 **Русский**
 
-> Это обновление - для запястья.
->
-> LangX на Apple Watch: непрочитанные разговоры, сам разговор и ответ диктовкой, росчерком или клавиатурой - даже когда приложение на телефоне закрыто.
-> Виджеты перерисованы, и карта активности теперь один из них.
-> В Echo появилась таблица лидеров: эта неделя, этот месяц, этот год.
-> Наборы Echo ещё на пяти языках - испанском, немецком, французском, русском и итальянском.
-> Все пять можно слушать вслух.
-> У каждого значка теперь своя картинка.
-> «Рядом» запрашивает более точное место, поэтому расстояние ближе к настоящему.
+> В машине LangX работает с CarPlay: нажми на чат, и Siri прочитает все ожидающие сообщения, а потом запишет твой ответ.
+> Приложение открывается с чатами и профилями, которые ты видел в прошлый раз, ещё до ответа сети.
+> Уведомление, прочитанное на другом устройстве, исчезает и с этого - даже когда приложение закрыто.
+> «Печатает…» пропадает, когда собеседник перестаёт печатать.
+> Вкладка «Я» заканчивается коротким рассказом о том, как устроен LangX.
 >
 > Возвращаешься из старого приложения? Зарегистрируйся с той же почтой - твоё имя пользователя ждёт тебя.
 
 **العربية**
 
-> هذا الإصدار لمعصمك.
+> في السيارة، يعمل LangX مع CarPlay: اضغط على محادثة وستقرأ Siri كل الرسائل المنتظرة ثم تأخذ ردّك.
+> يفتح التطبيق على محادثاتك والملفات الشخصية التي رأيتها آخر مرة، قبل أن تستجيب الشبكة.
+> الإشعار الذي قرأته على جهاز آخر يختفي من هذا الجهاز أيضًا - حتى والتطبيق مغلق.
+> تتوقف "يكتب…" عندما يتوقف الطرف الآخر.
+> ينتهي تبويب "أنا" بدليل قصير عن طريقة عمل LangX.
 >
-> LangX على Apple Watch: محادثاتك غير المقروءة، والمحادثة نفسها، والردّ بالإملاء أو الخطّ أو لوحة المفاتيح - حتى والتطبيق مغلق على هاتفك.
-> أُعيد رسم الأدوات، وخريطة نشاطك صارت واحدة منها.
-> في Echo لوحة متصدرين: هذا الأسبوع، هذا الشهر، هذه السنة.
-> حزم Echo بخمس لغات إضافية - الإسبانية والألمانية والفرنسية والروسية والإيطالية.
-> الحزم الخمس كلّها يمكن الاستماع إليها.
-> لكل شارة صورتها الخاصة الآن.
-> «القريبون» يطلب تحديدًا أدقّ للموقع، فتقترب المسافة المعروضة من الحقيقة.
->
-> عائد من التطبيق القديم؟ سجّل بالبريد الإلكتروني الذي كنت تستخدمه - اسم المستخدم بانتظارك.
+> عائد من التطبيق القديم؟ سجّل بالبريد الإلكتروني الذي استخدمته من قبل - اسم المستخدم الخاص بك في انتظارك.
 
 **Français**
 
-> Cette version est pour votre poignet.
+> En voiture, LangX fonctionne avec CarPlay : touchez une conversation et Siri lit tous les messages en attente, puis prend votre réponse.
+> L'app s'ouvre sur vos conversations et profils de la dernière fois, avant même la réponse du réseau.
+> Une notification déjà lue sur un autre appareil disparaît aussi de celui-ci - même app fermée.
+> « Écrit… » s'arrête quand l'autre personne s'arrête.
+> L'onglet Moi se termine par un court guide sur le fonctionnement de LangX.
 >
-> LangX sur Apple Watch : vos conversations non lues, la conversation elle-même et une réponse par dictée, écriture ou clavier - même quand l'app est fermée sur le téléphone.
-> Les widgets ont été redessinés, et votre carte d'activité en fait partie.
-> Echo a un classement : cette semaine, ce mois, cette année.
-> Des packs Echo dans cinq langues de plus - espagnol, allemand, français, russe et italien.
-> Les cinq peuvent être lus à voix haute.
-> Chaque badge a son propre dessin.
-> À proximité demande une position plus fine, pour que la distance affichée soit plus juste.
->
-> Vous revenez de l'ancienne app ? Inscrivez-vous avec l'adresse e-mail que vous utilisiez avant - votre nom d'utilisateur vous attend.
+> Vous revenez de l'ancienne app ? Inscrivez-vous avec l'e-mail utilisé auparavant - votre nom d'utilisateur vous attend.
 
 **Deutsch**
 
-> Diese Version ist fürs Handgelenk.
+> Im Auto funktioniert LangX mit CarPlay: Tippe auf einen Chat, und Siri liest alle wartenden Nachrichten vor und nimmt deine Antwort auf.
+> Die App öffnet mit deinen Chats und Profilen vom letzten Mal, noch bevor das Netz antwortet.
+> Eine auf einem anderen Gerät gelesene Benachrichtigung verschwindet auch hier - selbst bei geschlossener App.
+> „Schreibt…“ hört auf, wenn die andere Person aufhört.
+> Der Tab „Ich“ endet mit einer kurzen Anleitung, wie LangX funktioniert.
 >
-> LangX auf der Apple Watch: deine ungelesenen Unterhaltungen, die Unterhaltung selbst und eine Antwort per Diktat, Schrift oder Tastatur - auch wenn die App auf dem Telefon geschlossen ist.
-> Die Widgets wurden neu gezeichnet, und deine Aktivitätskarte ist jetzt eines davon.
-> Echo hat eine Bestenliste: diese Woche, diesen Monat, dieses Jahr.
-> Echo-Pakete in fünf weiteren Sprachen - Spanisch, Deutsch, Französisch, Russisch und Italienisch.
-> Alle fünf lassen sich vorlesen.
-> Jedes Abzeichen hat jetzt ein eigenes Bild.
-> In der Nähe fragt nach einer genaueren Position, damit die angezeigte Entfernung näher an der Wahrheit liegt.
->
-> Kommst du aus der alten App zurück? Melde dich mit der E-Mail-Adresse an, die du vorher benutzt hast - dein Benutzername wartet auf dich.
+> Kommst du von der alten App? Registriere dich mit der E-Mail, die du vorher genutzt hast - dein Benutzername wartet auf dich.
 
 **Português do Brasil**
 
-> Esta versão é para o seu pulso.
->
-> LangX no Apple Watch: suas conversas não lidas, a conversa em si e uma resposta por ditado, escrita ou teclado - mesmo com o app fechado no telefone.
-> Os widgets foram redesenhados, e seu mapa de atividade agora é um deles.
-> O Echo tem um ranking: esta semana, este mês, este ano.
-> Pacotes do Echo em mais cinco idiomas - espanhol, alemão, francês, russo e italiano.
-> Todos os cinco podem ser ouvidos em voz alta.
-> Cada medalha tem uma imagem própria.
-> O Por perto pede uma localização mais precisa, para a distância mostrada ficar mais perto da real.
+> No carro, o LangX funciona com o CarPlay: toque em uma conversa e a Siri lê todas as mensagens que estão esperando, depois anota sua resposta.
+> O app abre com suas conversas e perfis da última vez, antes de a rede responder.
+> Uma notificação que você já leu em outro aparelho some deste também - mesmo com o app fechado.
+> "Digitando…" para quando a outra pessoa para.
+> A aba Eu termina com um guia curto sobre como o LangX funciona.
 >
 > Voltando do app antigo? Cadastre-se com o e-mail que você usava antes - seu nome de usuário está esperando por você.
 
 ### Play release notes (500 characters)
 
-Play's "What's new" field caps at **500 characters per language**; the App Store
-allows 4000. Every note above is between 574 and 798, so Play needs its own
-shorter set rather than a truncation — Play truncates silently and would cut a
-different sentence in each language, including the last one, which is the one
-that must survive.
-
-What was dropped to fit: the widget line, the read-aloud line and the Nearby
-line, in that order. The watch, the leaderboard, the five languages and the
-returning-user line are in every one.
+Play's "What's new" field caps at **500 characters per language**, and Play
+truncates silently. What was dropped to fit: the guide line. The car, the
+cache, the notification and "typing" lines and the returning-user line are in
+every one.
 
 **English**
 
-> This one is for your wrist.
->
-> LangX on Wear OS: your unread conversations, the conversation itself, and a reply from the watch - even when the app on your phone is closed.
-> Echo has a leaderboard: this week, this month, this year.
-> Echo packs in five more languages.
-> Every badge has a picture of its own.
+> In the car, LangX works with Android Auto: it reads each new message out, and you answer by voice.
+> The app opens on your chats and profiles from last time, before the network has answered.
+> A notification you already read on another device disappears from this one too - even when the app is closed.
+> "Typing…" stops when they stop.
 >
 > Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
 
 **Türkçe**
 
-> Bu sürüm bileğin için.
->
-> Wear OS'ta LangX: okunmamış sohbetlerin, sohbetin kendisi ve saatinden cevap - telefonundaki uygulama kapalıyken bile.
-> Echo'ya liderlik tablosu geldi: bu hafta, bu ay, bu yıl.
-> Beş dilde daha Echo paketi.
-> Her rozetin artık kendi resmi var.
+> Arabada LangX artık Android Auto'da: her yeni mesajı sesli okuyor, sen de sesinle cevap veriyorsun.
+> Uygulama, ağ cevap vermeden önce son gördüğün sohbetler ve profillerle açılıyor.
+> Başka bir cihazda okuduğun bildirim bu cihazdan da kalkıyor - uygulama kapalıyken bile.
+> "Yazıyor…" karşı taraf durunca duruyor.
 >
 > Eski uygulamadan mı dönüyorsun? Daha önce kullandığın e-postayla kaydol - kullanıcı adın seni bekliyor.
 
 **Español**
 
-> Esta versión es para tu muñeca.
->
-> LangX en Wear OS: tus conversaciones sin leer, la conversación misma y una respuesta desde el reloj - incluso con la app del teléfono cerrada.
-> Echo tiene una clasificación: esta semana, este mes, este año.
-> Packs de Echo en cinco idiomas más.
-> Cada insignia tiene una imagen propia.
+> En el coche, LangX funciona con Android Auto: lee en voz alta cada mensaje nuevo y respondes con la voz.
+> La app se abre con tus chats y perfiles de la última vez, antes de que responda la red.
+> Una notificación que ya leíste en otro dispositivo también desaparece de este - incluso con la app cerrada.
+> "Escribiendo…" se detiene cuando la otra persona se detiene.
 >
 > ¿Vuelves de la app anterior? Regístrate con el correo que usabas antes - tu nombre de usuario te está esperando.
 
 **Русский**
 
-> Это обновление - для запястья.
->
-> LangX на Wear OS: непрочитанные разговоры, сам разговор и ответ с часов - даже когда приложение на телефоне закрыто.
-> В Echo появилась таблица лидеров: неделя, месяц, год.
-> Наборы Echo ещё на пяти языках.
-> У каждого значка теперь своя картинка.
+> В машине LangX работает с Android Auto: читает каждое новое сообщение вслух, а ты отвечаешь голосом.
+> Приложение открывается с чатами и профилями, которые ты видел в прошлый раз, ещё до ответа сети.
+> Уведомление, прочитанное на другом устройстве, исчезает и с этого - даже когда приложение закрыто.
+> «Печатает…» пропадает, когда собеседник перестаёт печатать.
 >
 > Возвращаешься из старого приложения? Зарегистрируйся с той же почтой - твоё имя пользователя ждёт тебя.
 
 **العربية**
 
-> هذا الإصدار لمعصمك.
+> في السيارة، يعمل LangX مع Android Auto: يقرأ كل رسالة جديدة بصوت عالٍ وتردّ بصوتك.
+> يفتح التطبيق على محادثاتك والملفات الشخصية التي رأيتها آخر مرة، قبل أن تستجيب الشبكة.
+> الإشعار الذي قرأته على جهاز آخر يختفي من هذا الجهاز أيضًا - حتى والتطبيق مغلق.
+> تتوقف "يكتب…" عندما يتوقف الطرف الآخر.
 >
-> LangX على Wear OS: محادثاتك غير المقروءة، والمحادثة نفسها، والردّ من الساعة - حتى والتطبيق مغلق على هاتفك.
-> في Echo لوحة متصدرين: هذا الأسبوع، هذا الشهر، هذه السنة.
-> حزم Echo بخمس لغات إضافية.
-> لكل شارة صورتها الخاصة الآن.
->
-> عائد من التطبيق القديم؟ سجّل بالبريد الإلكتروني الذي كنت تستخدمه - اسم المستخدم بانتظارك.
+> عائد من التطبيق القديم؟ سجّل بالبريد الإلكتروني الذي استخدمته من قبل - اسم المستخدم الخاص بك في انتظارك.
 
 **Français**
 
-> Cette version est pour votre poignet.
+> En voiture, LangX fonctionne avec Android Auto : il lit chaque nouveau message à voix haute et vous répondez à la voix.
+> L'app s'ouvre sur vos conversations et profils de la dernière fois, avant même la réponse du réseau.
+> Une notification déjà lue sur un autre appareil disparaît aussi de celui-ci - même app fermée.
+> « Écrit… » s'arrête quand l'autre personne s'arrête.
 >
-> LangX sur Wear OS : vos conversations non lues, la conversation elle-même et une réponse depuis la montre - même quand l'app est fermée sur le téléphone.
-> Echo a un classement : cette semaine, ce mois, cette année.
-> Des packs Echo dans cinq langues de plus.
-> Chaque badge a son propre dessin.
->
-> Vous revenez de l'ancienne app ? Inscrivez-vous avec l'e-mail que vous utilisiez avant - votre nom d'utilisateur vous attend.
+> Vous revenez de l'ancienne app ? Inscrivez-vous avec l'e-mail utilisé auparavant - votre nom d'utilisateur vous attend.
 
 **Deutsch**
 
-> Diese Version ist fürs Handgelenk.
+> Im Auto funktioniert LangX mit Android Auto: Es liest jede neue Nachricht vor, und du antwortest per Sprache.
+> Die App öffnet mit deinen Chats und Profilen vom letzten Mal, noch bevor das Netz antwortet.
+> Eine auf einem anderen Gerät gelesene Benachrichtigung verschwindet auch hier - selbst bei geschlossener App.
+> „Schreibt…“ hört auf, wenn die andere Person aufhört.
 >
-> LangX auf Wear OS: deine ungelesenen Unterhaltungen, die Unterhaltung selbst und eine Antwort von der Uhr - auch wenn die App auf dem Telefon geschlossen ist.
-> Echo hat eine Bestenliste: Woche, Monat, Jahr.
-> Echo-Pakete in fünf weiteren Sprachen.
-> Jedes Abzeichen hat ein eigenes Bild.
->
-> Kommst du aus der alten App zurück? Melde dich mit der E-Mail an, die du vorher benutzt hast - dein Benutzername wartet auf dich.
+> Kommst du von der alten App? Registriere dich mit der E-Mail, die du vorher genutzt hast - dein Benutzername wartet auf dich.
 
 **Português do Brasil**
 
-> Esta versão é para o seu pulso.
->
-> LangX no Wear OS: suas conversas não lidas, a conversa em si e uma resposta pelo relógio - mesmo com o app fechado no telefone.
-> O Echo tem um ranking: esta semana, este mês, este ano.
-> Pacotes do Echo em mais cinco idiomas.
-> Cada medalha tem uma imagem própria.
+> No carro, o LangX funciona com o Android Auto: lê cada mensagem nova em voz alta e você responde por voz.
+> O app abre com suas conversas e perfis da última vez, antes de a rede responder.
+> Uma notificação que você já leu em outro aparelho some deste também - mesmo com o app fechado.
+> "Digitando…" para quando a outra pessoa para.
 >
 > Voltando do app antigo? Cadastre-se com o e-mail que você usava antes - seu nome de usuário está esperando por você.
