@@ -16,7 +16,11 @@ import { getActiveConversation } from '../lib/activeConversation'
 import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
 import { track } from '../lib/analytics'
 import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
-import { applyIncomingMessage, type ConversationPageDto } from '../lib/conversationCache'
+import {
+  applyIncomingMessage,
+  cachedConversation,
+  type ConversationPageDto,
+} from '../lib/conversationCache'
 import {
   appendIncomingMessage,
   applyDeliveredAt,
@@ -190,12 +194,24 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
          * all, this is the only notice there is.
          */
         const prefs = queryClient.getQueryData<MeProfile>(keys.me)?.settings.notifications
+        /*
+         * Read off the caches rather than asked for. A muted thread nobody has
+         * loaded is not in them, so it gets one banner — and the invalidation
+         * above fetches it back with its flag, so the next message does not.
+         * The server's own push needs no such guess: it reads the document.
+         */
+        const muted =
+          cachedConversation(
+            queryClient.getQueriesData({ queryKey: ['conversations'] }),
+            conversationId,
+          )?.muted === true
         const decision = shouldShowIncomingBanner({
           message,
           meId,
           activeConversationId: getActiveConversation(),
           appActive: AppState.currentState === 'active',
           messagesPushAllowed: notificationsAllowed(prefs, 'messages', 'push'),
+          conversationMuted: muted,
         })
         if (decision === 'markRead') void markConversationRead(conversationId, queryClient)
         else if (decision === 'banner') {

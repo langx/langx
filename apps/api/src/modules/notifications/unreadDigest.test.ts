@@ -249,6 +249,17 @@ describe('the unread-message digest', () => {
     expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
   })
 
+  /** Muted is "do not tell me", and a letter is telling. */
+  it('ignores a thread the reader muted', async () => {
+    const reader = await newProfile()
+    const id = await thread(reader, await newProfile())
+    await handle.db
+      .collection(COLLECTIONS.conversations)
+      .updateOne({ _id: id }, { $set: { [`mutedBy.${reader}`]: true } })
+
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
+  })
+
   it('ignores a thread whose last word was the reader’s own', async () => {
     const reader = await newProfile()
     const writer = await newProfile()

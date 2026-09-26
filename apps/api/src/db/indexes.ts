@@ -246,10 +246,11 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { pairKey: 1 }, name: 'pair_key_unique', unique: true },
     { key: { participants: 1, 'lastMessage.createdAt': -1 }, name: 'participants_recent' },
     /*
-     * There is deliberately **no** index for `pinnedBy` / `archivedBy`, and it
-     * is worth saying why rather than leaving it looking forgotten.
+     * There is deliberately **no** index for `pinnedBy` / `archivedBy` /
+     * `mutedBy`, and it is worth saying why rather than leaving it looking
+     * forgotten.
      *
-     * Both are maps keyed by user id, so the path a query filters on is
+     * All three are maps keyed by user id, so the path a query filters on is
      * `archivedBy.<viewerId>` — a *dynamic* path, which no fixed index key can
      * name. A wildcard index could, but it cannot be compounded with
      * `participants`, which is the selective half.

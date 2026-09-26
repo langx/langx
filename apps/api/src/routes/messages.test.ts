@@ -880,6 +880,7 @@ describe('Faz 5 — conversation/message history REST', () => {
           unread: number
           pinned: boolean
           archived: boolean
+          muted: boolean
           unreplied: boolean
         }[]
         pinned: { _id: string }[]
@@ -1061,6 +1062,40 @@ describe('Faz 5 — conversation/message history REST', () => {
 
       const response = await setFlags(outsider, convo._id, { pinned: true })
       expect(response.statusCode).not.toBe(200)
+    })
+
+    /**
+     * A mute is the reader's own and nobody else's business: the other side
+     * cannot see it, and somebody outside the thread cannot set it. The
+     * thread stays where it was and keeps counting — muting is not reading.
+     */
+    it('mutes for one participant only, and not for somebody outside it', async () => {
+      const viewer = await newUser('mute-viewer@example.com')
+      const partner = await newUser('mute-partner@example.com')
+      const outsider = await newUser('mute-outsider@example.com')
+      const convo = await startConversation(partner, viewer.userId, 'noisy')
+
+      const muted = await setFlags(viewer, convo._id, { muted: true })
+      expect(muted.statusCode, muted.body).toBe(200)
+      expect(muted.json<{ muted: boolean }>().muted).toBe(true)
+
+      const mine = (await list(viewer)).items.find((c) => c._id === convo._id)
+      expect(mine).toMatchObject({ muted: true, unread: 1, archived: false })
+      const theirs = (await list(partner)).items.find((c) => c._id === convo._id)
+      expect(theirs).toMatchObject({ muted: false })
+      expect(Object.keys(theirs ?? {})).not.toContain('mutedBy')
+
+      expect((await setFlags(outsider, convo._id, { muted: true })).statusCode).toBe(404)
+      const stored = await handle.db
+        .collection(COLLECTIONS.conversations)
+        .findOne({ _id: new ObjectId(convo._id) })
+      expect(Object.keys((stored?.mutedBy as Record<string, true> | undefined) ?? {})).toEqual([
+        viewer.userId,
+      ])
+
+      // Unmuting unsets the key, so it reads the same as never muted.
+      await setFlags(viewer, convo._id, { muted: false })
+      expect((await list(viewer)).items.find((c) => c._id === convo._id)?.muted).toBe(false)
     })
   })
 

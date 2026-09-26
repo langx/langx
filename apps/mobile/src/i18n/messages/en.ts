@@ -1074,6 +1074,10 @@ export const en = {
     unpin: 'Unpin',
     archive: 'Archive',
     unarchive: 'Unarchive',
+    mute: 'Mute',
+    unmute: 'Unmute',
+    /** Read aloud for the bell-off mark on a muted row. */
+    muted: 'Muted',
     unrepliedEmptyTitle: 'Nothing waiting on you',
     unrepliedEmptyBody: 'Every chat has had your reply.',
     archivedEmptyTitle: 'No archived chats',

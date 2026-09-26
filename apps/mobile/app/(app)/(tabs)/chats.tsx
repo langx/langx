@@ -131,12 +131,14 @@ export default function ChatsScreen() {
     void chooseAlert(title, undefined, [
       { label: item.pinned ? t('chats.unpin') : t('chats.pin'), value: 'pin' },
       { label: item.archived ? t('chats.unarchive') : t('chats.archive'), value: 'archive' },
+      { label: item.muted ? t('chats.unmute') : t('chats.mute'), value: 'mute' },
       { label: t('chats.delete'), value: 'delete', destructive: true },
     ]).then((choice) => {
       if (choice === 'pin') flags.mutate({ conversationId: item._id, pinned: !item.pinned })
       if (choice === 'archive') {
         flags.mutate({ conversationId: item._id, archived: !item.archived })
       }
+      if (choice === 'mute') flags.mutate({ conversationId: item._id, muted: !item.muted })
       if (choice === 'delete') void confirmDelete(item._id)
     })
   }
@@ -270,6 +272,16 @@ export default function ChatsScreen() {
                 flags.mutate({ conversationId: item._id, pinned: !item.pinned })
               },
             }
+            const mute = {
+              id: 'mute',
+              icon: item.muted ? ('bell' as const) : ('bell-off' as const),
+              label: item.muted ? t('chats.unmute') : t('chats.mute'),
+              colour: colors.textMuted,
+              onAction: () => {
+                setOpenRow(null)
+                flags.mutate({ conversationId: item._id, muted: !item.muted })
+              },
+            }
             const archive = {
               id: 'archive',
               icon: item.archived ? ('inbox' as const) : ('archive' as const),
@@ -296,7 +308,7 @@ export default function ChatsScreen() {
               <SwipeableRow
                 // Delete is last, so it is the furthest thing from a thumb that
                 // opened the drawer meaning to archive.
-                right={[pin]}
+                right={[pin, mute]}
                 left={[archive, remove]}
                 open={openRow === item._id}
                 onOpenChange={(open) => setOpenRow(open ? item._id : null)}
@@ -358,6 +370,17 @@ export default function ChatsScreen() {
                         )}
                         {item.pinned ? (
                           <Feather name="bookmark" size={14} color={colors.textFaint} />
+                        ) : null}
+                        {/* The unread badge still counts a muted thread, so
+                            this is the only thing on the row that says why it
+                            never buzzed. */}
+                        {item.muted ? (
+                          <Feather
+                            name="bell-off"
+                            size={14}
+                            color={colors.textFaint}
+                            accessibilityLabel={t('chats.muted')}
+                          />
                         ) : null}
                         <Text style={styles.time}>
                           {relativeTimeCompact(item.lastMessage.createdAt, { t, locale })}

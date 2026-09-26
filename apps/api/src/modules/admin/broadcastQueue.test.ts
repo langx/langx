@@ -16,8 +16,9 @@ import {
 } from './broadcast'
 import { runBroadcastQueuePass, sendBroadcastTest } from './broadcastQueue'
 import { ensureOfficialAccounts } from '../official/accounts'
+import { deliverOfficialMessage } from '../official/deliver'
 import type { Profile } from '../profiles/profiles'
-import type { PushSender } from '../push/devices'
+import { LoggingPushSender, type PushSender } from '../push/devices'
 
 /** Nothing is registered for push in here, so this is never asked to send. */
 const push: PushSender = {
@@ -87,6 +88,7 @@ describe('the in-app broadcast queue', () => {
       db.collection(COLLECTIONS.jobRuns).deleteMany({}),
       db.collection(COLLECTIONS.messages).deleteMany({}),
       db.collection(COLLECTIONS.conversations).deleteMany({}),
+      db.collection(COLLECTIONS.devices).deleteMany({}),
       db.collection<Profile>(COLLECTIONS.profiles).deleteMany({ official: { $exists: false } }),
     ])
   })
@@ -403,5 +405,43 @@ describe('the in-app broadcast queue', () => {
       .findOne({})
     expect(message?.type).toBe('image')
     expect(message?.media?.url).toBe('https://media.langx.io/broadcasts/preview.png')
+  })
+
+  /**
+   * Muting @langx withholds the knock and not the message: the thread is
+   * where a broadcast lives, and somebody who muted it still finds it there.
+   */
+  it('writes to a reader who muted @langx, and does not push them', async () => {
+    await Promise.all([member('anna'), member('bruno')])
+    await db.collection(COLLECTIONS.devices).insertMany(
+      ['anna', 'bruno'].map((userId) => ({
+        userId,
+        deviceId: `phone-${userId}`,
+        pushToken: `token-${userId}`,
+        platform: 'ios',
+        createdAt: NOON,
+        updatedAt: NOON,
+      })),
+    )
+    await deliverOfficialMessage(db, { fromHandle: 'langx', toUserId: 'anna', body: 'Welcome' })
+    await db
+      .collection(COLLECTIONS.conversations)
+      .updateOne({ participants: 'anna' }, { $set: { 'mutedBy.anna': true } })
+    await createBroadcast(db, {
+      id: 'muted',
+      bodies: { en: 'Something new' },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+    await arm(db, 'muted')
+
+    const pushes = new LoggingPushSender()
+    expect(await runBroadcastQueuePass(db, pushes, NOON)).toEqual({ sent: 2 })
+    expect(pushes.sent.flatMap((message) => message.to)).toEqual(['token-bruno'])
+    expect(
+      await db
+        .collection(COLLECTIONS.messages)
+        .countDocuments({ clientId: 'broadcast:muted:anna' }),
+    ).toBe(1)
   })
 })

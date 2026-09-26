@@ -38,9 +38,10 @@ import { sendTraySync } from '../ws/traySync'
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
   /*
-   * One route for both flags rather than four verbs. Pin and archive are the
-   * same operation — a per-user boolean on a thread — and splitting them into
-   * `POST`/`DELETE` pairs would be four handlers doing one thing.
+   * One route for every flag rather than a verb pair each. Pin, archive and
+   * mute are the same operation — a per-user boolean on a thread — and
+   * splitting them into `POST`/`DELETE` pairs would be six handlers doing one
+   * thing.
    */
   app.patch(
     '/conversations/:id/flags',
@@ -52,7 +53,7 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
       },
     },
     async (request, reply) => {
-      const { pinned, archived } = request.body
+      const { pinned, archived, muted } = request.body
       let view = null
       if (pinned !== undefined) {
         view = await setConversationFlag(
@@ -70,6 +71,15 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
           request.userId,
           'archivedBy',
           archived,
+        )
+      }
+      if (muted !== undefined) {
+        view = await setConversationFlag(
+          app.mongo.db,
+          request.params.id,
+          request.userId,
+          'mutedBy',
+          muted,
         )
       }
       if (!view) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Nothing to change')

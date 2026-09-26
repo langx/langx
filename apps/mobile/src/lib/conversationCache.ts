@@ -61,6 +61,31 @@ export function applyIncomingMessage(
 }
 
 /**
+ * One thread as the caches last saw it, from whichever entry under the
+ * `['conversations']` prefix holds it — a tab's paged list, or the single row
+ * `keys.conversation(id)` keeps for the chat header. Takes what
+ * `getQueriesData` returns, so this file stays free of a query client.
+ *
+ * `undefined` when no entry holds it. A thread that has scrolled off every
+ * loaded page is one the client knows nothing about, and the caller has to
+ * decide what not knowing means.
+ */
+export function cachedConversation(
+  entries: readonly (readonly [unknown, unknown])[],
+  conversationId: string,
+): ConversationDto | undefined {
+  for (const [, data] of entries) {
+    if (isPagedList(data)) {
+      const found = findConversation(data, conversationId)
+      if (found) return found.conversation
+    } else if ((data as ConversationDto | undefined)?._id === conversationId) {
+      return data as ConversationDto
+    }
+  }
+  return undefined
+}
+
+/**
  * Whether this cache entry is the paged list, and not something else living
  * under the same key prefix.
  *

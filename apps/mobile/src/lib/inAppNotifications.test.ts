@@ -18,6 +18,7 @@ function incoming(overrides: Record<string, unknown> = {}) {
     activeConversationId: null,
     appActive: true,
     messagesPushAllowed: true,
+    conversationMuted: false,
   }
 }
 
@@ -82,6 +83,22 @@ describe('shouldShowIncomingBanner', () => {
         ...incoming(),
         activeConversationId: 'c1',
         messagesPushAllowed: false,
+      }),
+    ).toBe('markRead')
+  })
+
+  /** A mute is the same switch, turned off for one thread. */
+  it('says nothing about a thread the reader muted', () => {
+    expect(shouldShowIncomingBanner({ ...incoming(), conversationMuted: true })).toBe('ignore')
+  })
+
+  /** Looking at a muted thread is still reading it. */
+  it('still marks a muted thread read while it is open', () => {
+    expect(
+      shouldShowIncomingBanner({
+        ...incoming(),
+        activeConversationId: 'c1',
+        conversationMuted: true,
       }),
     ).toBe('markRead')
   })

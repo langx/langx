@@ -12,6 +12,7 @@ import { userRoom, type AppServer } from './types'
 interface FannedConversation {
   _id: ObjectId
   participants: readonly string[]
+  mutedBy?: Record<string, true>
 }
 
 /**
@@ -129,6 +130,18 @@ async function deliver(
       }
     }
     if (!pushWhenAway) return
+
+    /*
+     * The recipient muted this thread. After the delivery stamp, not before:
+     * muting silences the knock, and the ticks are the sender's to see.
+     *
+     * Read off the document the send path hands in, which is the one
+     * `recordMessage` wrote back — so a mute set a moment ago is already in
+     * it, and there is no second read to go stale in between. The one path
+     * that skips `recordMessage` is a thread's first message, which nobody
+     * can have muted yet.
+     */
+    if (conversation.mutedBy?.[recipientId]) return
 
     /*
      * A socket that cannot name its device keeps the old behaviour for the

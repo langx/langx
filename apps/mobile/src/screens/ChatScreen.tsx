@@ -1890,6 +1890,7 @@ export function ChatScreen({
   async function openThreadMenu(): Promise<void> {
     if (!partner) return
     const pinned = conversation.data?.pinned ?? false
+    const muted = conversation.data?.muted ?? false
     const choice = await chooseAlert(partner.displayName, undefined, [
       { label: t('chat.viewProfile'), value: 'profile' },
       { label: t('chats.starredMessages'), value: 'starred' },
@@ -1902,6 +1903,9 @@ export function ChatScreen({
       { label: t('chat.media'), value: 'media' },
       // The same toggle the list offers, where the design puts it as well.
       { label: pinned ? t('chats.unpin') : t('chats.pin'), value: 'pin' },
+      // Here as well as on the list, because the thread that is too loud is
+      // usually the one somebody is looking at when they decide so.
+      { label: muted ? t('chats.unmute') : t('chats.mute'), value: 'mute' },
       { label: t('common.block'), value: 'block', destructive: true },
     ])
     if (choice === 'profile') {
@@ -1914,6 +1918,8 @@ export function ChatScreen({
       router.push({ pathname: '/(app)/chat-media', params: { id: conversationId } })
     } else if (choice === 'pin') {
       flags.mutate({ conversationId, pinned: !pinned })
+    } else if (choice === 'mute') {
+      flags.mutate({ conversationId, muted: !muted })
     } else if (choice === 'block') {
       // The same question the profile asks, so the two places agree.
       const yes = await confirmAlert({
