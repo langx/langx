@@ -8,9 +8,9 @@ import { isImageContentType, isVideoContentType, type Media } from '@langx/share
 import { audioProgress } from '../lib/audioProgress'
 import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { makeStyles, useTheme } from '../lib/theme'
-import { useT } from '../i18n'
+import { useLocale, useT } from '../i18n'
 import { Skeleton } from './ui/Skeleton'
-import { SLOW_PLAYBACK_RATE, NORMAL_PLAYBACK_RATE } from '../lib/playbackRate'
+import { NORMAL_PLAYBACK_RATE, nextPlaybackRate, type PlaybackRate } from '../lib/playbackRate'
 
 export function formatSeconds(total: number): string {
   const minutes = Math.floor(total / 60)
@@ -36,12 +36,14 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const { locale } = useLocale()
 
   const player = useAudioPlayer(media.url)
   const status = useAudioPlayerStatus(player)
 
   /*
-   * Half speed, for the sentence you cannot quite catch.
+   * Half speed, for the sentence you cannot quite catch — and, one tap
+   * further, one and a half, for the note you follow but want through sooner.
    *
    * A second, slower recording was the other way to do this, and it costs a
    * schema field, a second upload, a second `assertMediaAllowed` and a ruling
@@ -53,9 +55,14 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
    *
    * Local state rather than a preference: this is per sentence, not per
    * person. The one you need slowed is the one you did not follow, and the
-   * next one is usually fine.
+   * next one is usually fine. It lasts as long as the bubble, and so does the
+   * player's own rate: `expo-audio` keeps it across a pause and across the
+   * seek-and-play that replays a finished note, on all three platforms, so
+   * nothing here has to set it again.
    */
-  const [slow, setSlow] = useState(false)
+  const [rate, setRate] = useState<PlaybackRate>(NORMAL_PLAYBACK_RATE)
+  // "0,5" in German, "0.5" in English: the decimal comma is the reader's.
+  const rateLabel = rate.toLocaleString(locale)
   /** A `play()` that threw; the status alone cannot report one. */
   const [failed, setFailed] = useState(false)
 
@@ -150,19 +157,18 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
       )}
 
       {/*
-        Marked only when it is on. An always-visible "1x" beside every voice
-        note in a thread is a control nobody asked for; the off state is the
-        absence of one.
+        Coloured only when it is not 1×. A bright "1×" beside every voice note
+        in a thread is a control nobody asked for, so normal speed stays faint
+        and a changed one is what stands out.
       */}
       {broken ? null : (
         <Pressable
           accessibilityRole="button"
-          accessibilityState={{ selected: slow }}
-          accessibilityLabel={t(slow ? 'chat.playAtNormalSpeed' : 'chat.playSlowly')}
+          accessibilityLabel={t('chat.playbackSpeed', { rate: rateLabel })}
           hitSlop={8}
           onPress={() => {
-            const next = !slow
-            setSlow(next)
+            const next = nextPlaybackRate(rate)
+            setRate(next)
             /*
              * `'high'` is not decoration, and it does something different on
              * each platform. iOS reads it as the pitch algorithm and already
@@ -175,11 +181,16 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
              * Applied to the live player rather than saved for the next play, so
              * a tap part-way through a word slows that word.
              */
-            player.setPlaybackRate(next ? SLOW_PLAYBACK_RATE : NORMAL_PLAYBACK_RATE, 'high')
+            player.setPlaybackRate(next, 'high')
           }}
         >
-          <Text style={[styles.rate, { color: slow ? tint : colors.textFaint }]}>
-            {slow ? t('chat.speedSlow') : t('chat.speedNormal')}
+          <Text
+            style={[
+              styles.rate,
+              { color: rate === NORMAL_PLAYBACK_RATE ? colors.textFaint : tint },
+            ]}
+          >
+            {t('chat.playbackRate', { rate: rateLabel })}
           </Text>
         </Pressable>
       )}

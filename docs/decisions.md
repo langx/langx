@@ -1373,6 +1373,18 @@ The toggle is local state, not a preference. This is per sentence, not per
 person: the note you need slowed is the one you did not follow, and the next
 one is usually fine.
 
+**1.5× joined later, and half speed is still the first tap.** Half of every
+exchange is somebody listening to their own language spoken by a learner —
+slowly, with pauses — and for them the useful direction is faster. So the
+toggle became a cycle over `PLAYBACK_RATES` (`0.5, 1, 1.5`) rather than a
+second button, and it steps _down_: from normal one tap is still half speed,
+the next is 1.5×, the third is back to normal. Stepping up would have put the
+learner's control behind the native speaker's, and taught everybody who
+already used it that a tap now speeds the sentence they could not catch. 0.5
+stays at 0.5 for the reason it was chosen — a quarter loses the sentence,
+two-thirds is not different enough to be worth a tap — and pitch correction
+covers the fast stop the same way it covers the slow one.
+
 ## No photo until they have written to you five times. From anybody.
 
 The failure this exists to prevent has one shape: the first thing a stranger
