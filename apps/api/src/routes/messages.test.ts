@@ -1200,6 +1200,37 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.unread[b.userId]).toBe(0)
   })
 
+  it('reading says how many it cleared, counted up to the newest message', async () => {
+    const a = await newUser('read-count-a@example.com')
+    const b = await newUser('read-count-b@example.com')
+    const conversation = await startConversation(a, b.userId, 'one')
+    const sent = await app.inject({
+      method: 'POST',
+      url: `/conversations/${conversation._id}/messages`,
+      headers: { cookie: a.cookie },
+      payload: { body: 'two' },
+    })
+    expect(sent.statusCode, sent.body).toBe(200)
+
+    const read = async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversation._id}/read`,
+        headers: { cookie: b.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      return response.json<{ unreadBefore: number; lastMessage: { createdAt: string } }>()
+    }
+
+    // The thread's "New messages" line is drawn from this pair: the count, and
+    // the newest message it was counted up to.
+    const first = await read()
+    expect(first.unreadBefore).toBe(2)
+    expect(first.lastMessage.createdAt).toBe(sent.json<{ createdAt: string }>().createdAt)
+    // Only the read that cleared them can say so. A second one has nothing to report.
+    expect((await read()).unreadBefore).toBe(0)
+  })
+
   it('reading tells the sender and the reader own other devices', async () => {
     const a = await newUser('read-fanout-a@example.com')
     const b = await newUser('read-fanout-b@example.com')

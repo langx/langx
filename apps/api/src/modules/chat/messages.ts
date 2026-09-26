@@ -1230,14 +1230,17 @@ export async function unreadThreadIds(db: Db, userId: string, limit: number): Pr
 /**
  * `wasUnread` says whether this read changed anything. Opening a thread that
  * was already read is most opens, and none of them is news to another device.
+ * `unreadBefore` is how many it cleared, which the thread draws its "New
+ * messages" line from.
  */
 export async function markConversationRead(
   db: Db,
   userId: string,
   conversationId: string,
-): Promise<{ conversation: Conversation; wasUnread: boolean }> {
+): Promise<{ conversation: Conversation; wasUnread: boolean; unreadBefore: number }> {
   const conversation = await assertConversationAccess(db, conversationId, userId)
-  const wasUnread = (conversation.unread?.[userId] ?? 0) > 0
+  const unreadBefore = conversation.unread?.[userId] ?? 0
+  const wasUnread = unreadBefore > 0
 
   const updated = await db
     .collection<Conversation>(COLLECTIONS.conversations)
@@ -1259,7 +1262,7 @@ export async function markConversationRead(
       { $set: { readAt: new Date() } },
     )
 
-  return { conversation: updated ?? conversation, wasUnread }
+  return { conversation: updated ?? conversation, wasUnread, unreadBefore }
 }
 
 export interface ConversationPage {
