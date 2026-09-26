@@ -265,9 +265,23 @@ describe('guests', () => {
     ).toBe(0)
     expect(await authRowsFor(userId)).toBe(0)
 
-    // The cookie in hand is worth nothing now, which is the half a plain
-    // sign-out would have got right and a profile-only delete would not.
-    const after = await app.inject({ method: 'GET', url: '/profiles/me', headers: { cookie } })
+    // The session token in hand is worth nothing now, which is the half a
+    // plain sign-out would have got right and a profile-only delete would not.
+    //
+    // The token, not the whole cookie header: Better Auth's cookie cache
+    // (`session.cookieCache` in `auth.ts`) also hands out a signed copy of the
+    // session, which is trusted without a database read until it expires. So
+    // the copy is dropped here, and what is asserted is the thing the delete
+    // actually removed — the row behind the token.
+    const tokenOnly = cookie
+      .split('; ')
+      .filter((part) => !part.includes('session_data'))
+      .join('; ')
+    const after = await app.inject({
+      method: 'GET',
+      url: '/profiles/me',
+      headers: { cookie: tokenOnly },
+    })
     expect(after.statusCode).toBe(401)
   })
 
