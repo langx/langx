@@ -963,6 +963,8 @@ export const fr: Localized<EnMessages> = {
     lastSeenDays: { one: 'Vu il y a {count} jour', other: 'Vu il y a {count} jours' },
     lastSeenMonths: { one: 'Vu il y a {count} mois', other: 'Vu il y a {count} mois' },
     lastSeenYears: { one: 'Vu il y a {count} an', other: 'Vu il y a {count} ans' },
+    theirTime: '{time} chez elleux',
+    withTheirTimeAccessibility: '{presence}. Chez elleux, il est {time}.',
   },
   chat: {
     channelOnly: 'Ce compte publie des nouveautés et des annonces. Tu ne peux pas y répondre.',

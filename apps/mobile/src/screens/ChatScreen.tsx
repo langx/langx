@@ -2053,7 +2053,7 @@ export function ChatScreen({
               {partnerLoading ? null : partnerTyping ? (
                 <Text style={styles.typing}>{t('chat.typing')}</Text>
               ) : (
-                <PresenceLine lastActiveAt={partner?.lastActiveAt} />
+                <PresenceLine lastActiveAt={partner?.lastActiveAt} timezone={partner?.timezone} />
               )}
             </View>
           </Pressable>

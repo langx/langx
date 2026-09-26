@@ -235,7 +235,7 @@ export default function NewChatScreen() {
                   <Text style={styles.headerName} numberOfLines={1}>
                     {partner?.displayName ?? t('chat.title')}
                   </Text>
-                  <PresenceLine lastActiveAt={partner?.lastActiveAt} />
+                  <PresenceLine lastActiveAt={partner?.lastActiveAt} timezone={partner?.timezone} />
                 </>
               )}
             </View>
