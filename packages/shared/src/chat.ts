@@ -701,11 +701,12 @@ export type ListConversationsQuery = z.infer<typeof listConversationsQuerySchema
  * and answering 200 to it would hide a client bug rather than surface one.
  */
 export const conversationFlagsSchema = z
-  .object({ pinned: z.boolean(), archived: z.boolean() })
+  .object({ pinned: z.boolean(), archived: z.boolean(), muted: z.boolean() })
   .partial()
-  .refine((body) => body.pinned !== undefined || body.archived !== undefined, {
-    message: 'Name pinned, archived, or both',
-  })
+  .refine(
+    (body) => body.pinned !== undefined || body.archived !== undefined || body.muted !== undefined,
+    { message: 'Name pinned, archived or muted' },
+  )
 export type ConversationFlagsInput = z.infer<typeof conversationFlagsSchema>
 
 export const mediaUploadUrlSchema = z.object({

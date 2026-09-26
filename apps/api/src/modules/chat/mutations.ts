@@ -436,7 +436,7 @@ export async function listStarredMessages(
 }
 
 /**
- * Pin or archive a thread, for one participant only.
+ * Pin, archive or mute a thread, for one participant only.
  *
  * Written as a dotted path into a map keyed by user id — the same shape
  * `unread` uses, and for the same reason: `participants` is already a multikey
@@ -517,7 +517,7 @@ export async function setConversationFlag(
   db: Db,
   conversationId: string,
   userId: string,
-  flag: 'pinnedBy' | 'archivedBy',
+  flag: 'pinnedBy' | 'archivedBy' | 'mutedBy',
   on: boolean,
 ): Promise<ConversationView> {
   const conversations = db.collection<Conversation>(COLLECTIONS.conversations)

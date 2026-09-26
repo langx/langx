@@ -59,6 +59,9 @@ export async function unreadDigestSection(
     [`unread.${profile._id}`]: { $gt: 0 },
     [`archivedBy.${profile._id}`]: { $exists: false },
     [`deletedBy.${profile._id}`]: { $exists: false },
+    // Muted is "do not tell me", and a letter is telling. Unmuting unsets the
+    // key, so `$exists` reads a thread muted and unmuted again as never muted.
+    [`mutedBy.${profile._id}`]: { $exists: false },
   }
 
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)

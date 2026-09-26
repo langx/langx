@@ -37,6 +37,17 @@ export interface Conversation {
   pinnedBy?: Record<string, true>
   archivedBy?: Record<string, true>
   /**
+   * "Stop telling me about this one." Silences the push, the evening digest's
+   * unread section and the in-app banner for this reader, and nothing else:
+   * the thread keeps its place in the list and `unread` keeps counting, so
+   * the badge still says what is waiting. Muting is not reading.
+   *
+   * A map for the same reason as the two above, and with no expiry — a timed
+   * mute would need a date here and a reader that compares it, and nobody has
+   * asked for one yet.
+   */
+  mutedBy?: Record<string, true>
+  /**
    * "I deleted this chat." A map for the same reason the two above are, and
    * per-user because a thread is half of somebody else's: their copy, and
    * every message in it, is untouched.

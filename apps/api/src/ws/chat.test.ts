@@ -925,6 +925,100 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       expect(push.sent).toEqual([])
     })
   })
+
+  /**
+   * A mute is the reader's "do not knock", and nothing more: the message still
+   * arrives and still counts as unread. Sent over the REST twin, which awaits
+   * the fan-out, so what was pushed is settled by the time it answers — the
+   * opening message's push is not, which is why the checks below go by body.
+   */
+  describe('a muted thread', () => {
+    async function oneDevice(userId: string): Promise<string> {
+      const token = `token-muted-${userId}`
+      await handle.db.collection(COLLECTIONS.devices).insertOne({
+        userId,
+        deviceId: 'phone-muted',
+        pushToken: token,
+        platform: 'ios',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      return token
+    }
+
+    function setMuted(viewer: SignedUpUser, conversationId: string, muted: boolean) {
+      return app.inject({
+        method: 'PATCH',
+        url: `/conversations/${conversationId}/flags`,
+        headers: { cookie: viewer.cookie },
+        payload: { muted },
+      })
+    }
+
+    async function send(from: SignedUpUser, conversationId: string, body: string): Promise<void> {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: from.cookie },
+        payload: { body },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+    }
+
+    function pushedWith(body: string): string[] {
+      return (app.push as LoggingPushSender).sent
+        .filter((message) => message.body === body)
+        .flatMap((message) => message.to)
+    }
+
+    it('pushes nothing to the reader who muted it, and still counts it unread', async () => {
+      const sender = await newUser(`mute-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const reader = await newUser(`mute-reader-${Math.random().toString(36).slice(2)}@example.com`)
+      await oneDevice(reader.userId)
+      const convo = await startConversation(sender, reader.userId, 'hello')
+      expect((await setMuted(reader, convo._id, true)).statusCode).toBe(200)
+
+      await send(sender, convo._id, 'muted, still here')
+
+      expect(pushedWith('muted, still here')).toEqual([])
+      const row = await app.inject({
+        method: 'GET',
+        url: `/conversations/${convo._id}`,
+        headers: { cookie: reader.cookie },
+      })
+      expect(row.json<{ unread: number; muted: boolean }>()).toMatchObject({
+        unread: 2,
+        muted: true,
+      })
+    })
+
+    it('pushes again once it is unmuted', async () => {
+      const sender = await newUser(`mute-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const reader = await newUser(`mute-reader-${Math.random().toString(36).slice(2)}@example.com`)
+      const token = await oneDevice(reader.userId)
+      const convo = await startConversation(sender, reader.userId, 'hello')
+      await setMuted(reader, convo._id, true)
+      await setMuted(reader, convo._id, false)
+
+      await send(sender, convo._id, 'unmuted, hello again')
+
+      expect(pushedWith('unmuted, hello again')).toEqual([token])
+    })
+
+    /** One side muting must not silence the other. */
+    it('still pushes the other participant, who did not mute it', async () => {
+      const sender = await newUser(`mute-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const reader = await newUser(`mute-reader-${Math.random().toString(36).slice(2)}@example.com`)
+      const senderToken = await oneDevice(sender.userId)
+      const convo = await startConversation(sender, reader.userId, 'hello')
+      await setMuted(reader, convo._id, true)
+
+      await send(reader, convo._id, 'a reply from the quiet side')
+
+      expect(pushedWith('a reply from the quiet side')).toEqual([senderToken])
+    })
+  })
+
   /**
    * A read on one device has to reach the lock screens of the others, and a
    * phone in a pocket has no socket to hear `conversation:read` on. What it

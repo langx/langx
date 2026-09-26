@@ -415,6 +415,20 @@ Four mechanisms, and each is in the database rather than in a caller's care.
   centre. It stops a mail from being _sent_, never a paragraph from being
   written: a section it silences still rides along in a letter going out for
   something else. See _Reading counts_.
+- **A muted thread.** `mutedBy.<userId>` on the conversation, set from the
+  chat list or the thread's own menu, and kept until it is unset — there is no
+  timed mute. For that reader and that thread it silences the message push
+  (an operator's note to one person included — it goes through the same
+  fan-out), the digest's unread section, the in-app banner, and the push of a
+  broadcast when the thread is @langx's. Nothing else changes: the message is
+  delivered and ticked, the thread keeps its place, and its unread count, the
+  Chats badge and the icon's number all go on counting it — muting is not
+  reading.
+  The transactional pushes that also write into the @langx thread (the bounty,
+  the thanks for a report, the lifetime gift) do not ask, for the reason
+  nothing in that class asks a switch. The banner reads the flag from the
+  app's caches, so a muted thread that no loaded page holds can still draw one
+  banner; the refetch that message causes brings the flag back for the next.
 
 ---
 

@@ -24,6 +24,8 @@ export interface ConversationView {
   unread: number
   pinned: boolean
   archived: boolean
+  /** No push, digest or banner for this thread; `unread` still counts. */
+  muted: boolean
   /** They spoke last, so the next move is the viewer's. */
   unreplied: boolean
   bothSpoke: boolean
@@ -70,6 +72,7 @@ export function toConversationView(conversation: Conversation, viewerId: string)
     unread: conversation.unread?.[viewerId] ?? 0,
     pinned: conversation.pinnedBy?.[viewerId] === true,
     archived: conversation.archivedBy?.[viewerId] === true,
+    muted: conversation.mutedBy?.[viewerId] === true,
     /*
      * Read off `lastMessage.senderId`, not off the unread count. Opening a
      * thread clears the unread without answering it, so the two disagree

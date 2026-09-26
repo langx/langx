@@ -138,6 +138,14 @@ async function deliver(
   if (!delivered) return false
 
   /*
+   * Somebody who muted @langx still gets the message — the thread is where a
+   * broadcast lives — and only the knock is withheld, which is the line the
+   * chat fan-out draws. `sendBroadcastTest` below does not ask: the operator
+   * pressed a button to see the push.
+   */
+  if (delivered.conversation.mutedBy?.[userId]) return true
+
+  /*
    * The knock, not the message. Deliberately not `fanOutMessage`: that calls
    * `respondAsOfficial` — which would hand @langx its own announcement to
    * reply to — and does a cross-instance `fetchSockets` per recipient, five

@@ -780,6 +780,8 @@ export interface ConversationDto {
   unread: number
   pinned: boolean
   archived: boolean
+  /** No push, digest or banner for this thread; `unread` still counts. */
+  muted: boolean
   /** They spoke last, so the next move is mine. */
   unreplied: boolean
   bothSpoke: boolean
@@ -1202,7 +1204,7 @@ export function useHandleSearch(term: string) {
 }
 
 /**
- * Pin or archive a thread.
+ * Pin, archive or mute a thread.
  *
  * Invalidates the whole `['conversations']` prefix rather than patching: the
  * flags move a thread *between* tabs, so the caches that have to change are
@@ -1264,6 +1266,7 @@ export function useConversationFlags() {
       conversationId: string
       pinned?: boolean
       archived?: boolean
+      muted?: boolean
     }) => api.patch<ConversationDto>(`/conversations/${conversationId}/flags`, flags),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['conversations'] })

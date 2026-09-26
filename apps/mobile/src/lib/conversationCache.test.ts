@@ -1,7 +1,11 @@
 import type { InfiniteData } from '@tanstack/react-query'
 import { describe, expect, it } from 'vitest'
 import type { ConversationDto } from '../api/queries'
-import { applyIncomingMessage, type ConversationPageDto } from './conversationCache'
+import {
+  applyIncomingMessage,
+  cachedConversation,
+  type ConversationPageDto,
+} from './conversationCache'
 
 const ME = 'me'
 const THEM = 'them'
@@ -16,6 +20,7 @@ function conversation(id: string, unreadForMe = 0): ConversationDto {
     unread: unreadForMe,
     pinned: false,
     archived: false,
+    muted: false,
     unreplied: true,
     bothSpoke: true,
     mediaLockedFor: 0,
@@ -183,5 +188,41 @@ describe('cache entries that are not the paged list', () => {
         forUserId: ME,
       }),
     ).toBeUndefined()
+  })
+})
+
+/**
+ * The banner asks this whether a thread is muted, and it has to answer from
+ * whichever cache holds the row — the tabs' paged lists or the chat header's
+ * single entry — since both live under the same prefix.
+ */
+describe('cachedConversation', () => {
+  const muted = { ...conversation('c2'), muted: true }
+
+  it('finds a thread on a later page of a tab', () => {
+    const entries = [[['conversations', 'all'], pages([[conversation('c1')], [muted]])]] as const
+    expect(cachedConversation(entries, 'c2')?.muted).toBe(true)
+  })
+
+  it('finds a pinned thread', () => {
+    const entries = [[['conversations', 'all'], pages([[conversation('c1')]], [muted])]] as const
+    expect(cachedConversation(entries, 'c2')?.muted).toBe(true)
+  })
+
+  it('finds the single row the chat header keeps', () => {
+    const entries = [
+      [['conversations', 'all'], pages([[conversation('c1')]])],
+      [['conversations', 'one', 'c2'], muted],
+    ] as const
+    expect(cachedConversation(entries, 'c2')?.muted).toBe(true)
+  })
+
+  /** Not knowing is not the same as not muted, and the caller is told so. */
+  it('answers undefined for a thread no cache holds', () => {
+    const entries = [
+      [['conversations', 'all'], pages([[conversation('c1')]])],
+      [['conversations', 'unreplied'], undefined],
+    ] as const
+    expect(cachedConversation(entries, 'c2')).toBeUndefined()
   })
 })

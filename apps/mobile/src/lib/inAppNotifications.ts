@@ -81,6 +81,8 @@ interface IncomingDecision {
   appActive: boolean
   /** `notificationsAllowed(prefs, 'messages', 'push')` — see below. */
   messagesPushAllowed: boolean
+  /** The reader muted this thread — the same silence, for one conversation. */
+  conversationMuted: boolean
 }
 
 /**
@@ -102,6 +104,10 @@ interface IncomingDecision {
  * The chat list and its unread counts still update, because that is data
  * arriving rather than a notification being sent — and on the web, where no
  * push exists, this is the only thing that switch does.
+ *
+ * A muted thread is that switch turned off for one conversation, so it is
+ * read at the same point: after `markRead`, because reading the thread you are
+ * looking at is not a notification either.
  */
 export function shouldShowIncomingBanner({
   message,
@@ -109,6 +115,7 @@ export function shouldShowIncomingBanner({
   activeConversationId,
   appActive,
   messagesPushAllowed,
+  conversationMuted,
 }: IncomingDecision): 'banner' | 'markRead' | 'ignore' {
   // No `meId` means the cache has not answered yet, or this is a guest. Either
   // way there is nobody to decide "not mine" against.
@@ -121,6 +128,6 @@ export function shouldShowIncomingBanner({
   // would otherwise stay unread until the user left and came back.
   if (activeConversationId === message.conversationId && appActive) return 'markRead'
 
-  if (!messagesPushAllowed) return 'ignore'
+  if (!messagesPushAllowed || conversationMuted) return 'ignore'
   return 'banner'
 }
