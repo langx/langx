@@ -1051,6 +1051,8 @@ export const ru: Localized<EnMessages> = {
       many: 'Был(а) в сети {count} лет назад',
       other: 'Был(а) в сети {count} года назад',
     },
+    theirTime: '{time} у них',
+    withTheirTimeAccessibility: '{presence}. У них сейчас {time}.',
   },
   chat: {
     channelOnly: 'Этот аккаунт публикует новости и объявления. Ответить сюда нельзя.',

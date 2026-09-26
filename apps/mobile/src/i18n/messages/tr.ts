@@ -958,6 +958,8 @@ export const tr: Localized<EnMessages> = {
     lastSeenDays: { one: '{count} gün önce görüldü', other: '{count} gün önce görüldü' },
     lastSeenMonths: { one: '{count} ay önce görüldü', other: '{count} ay önce görüldü' },
     lastSeenYears: { one: '{count} yıl önce görüldü', other: '{count} yıl önce görüldü' },
+    theirTime: '{time} onun saatiyle',
+    withTheirTimeAccessibility: '{presence}. Onun saatiyle şu an {time}.',
   },
   chat: {
     channelOnly: 'Bu hesap haber ve duyuru paylaşır. Buraya yanıt yazamazsın.',

@@ -953,6 +953,8 @@ export const ptBR: Localized<EnMessages> = {
     lastSeenDays: { one: 'Visto há {count} dia', other: 'Visto há {count} dias' },
     lastSeenMonths: { one: 'Visto há {count} mês', other: 'Visto há {count} meses' },
     lastSeenYears: { one: 'Visto há {count} ano', other: 'Visto há {count} anos' },
+    theirTime: '{time} lá',
+    withTheirTimeAccessibility: '{presence}. Horário local da pessoa: {time}.',
   },
   chat: {
     channelOnly: 'Esta conta publica novidades e avisos. Não dá para responder aqui.',
