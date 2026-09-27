@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
-import { TOKEN_RULES } from '@langx/shared'
+import { TOKEN_RULES, applyEmoticon, emoticonAt } from '@langx/shared'
 import * as Device from 'expo-device'
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import {
   Platform,
   Pressable,
@@ -74,16 +74,62 @@ export function ChatComposer({
   const { colors } = useTheme()
   const t = useT()
   const [focused, setFocused] = useState(false)
+  const input = useRef<TextInput>(null)
+  /**
+   * The caret, from `onSelectionChange`. Null until the field reports one, and
+   * then the end of the text is the best guess. Clamped because the caller can
+   * replace the text (a send clears it) before the field reports the move.
+   */
+  const [selection, setSelection] = useState<{ start: number; end: number } | null>(null)
   const canSend = value.trim().length > 0 || hasAttachment
+  const cursor = Math.min(selection?.end ?? value.length, value.length)
+  /*
+   * Suggested, never swapped in as you type: a learner quoting `:P` from a
+   * textbook, or somebody who meant `xD` as written, would otherwise have to
+   * fight the box to keep their own text. Typing on past the shortcut, or a
+   * space, makes the chip go away and leaves the text exactly as it was.
+   */
+  const emoticon = selection && selection.start !== selection.end ? null : emoticonAt(value, cursor)
+
+  const pickEmoji = (emoji: string) => {
+    if (!emoticon) return
+    const next = applyEmoticon(value, emoticon, emoji)
+    setSelection({ start: next.cursor, end: next.cursor })
+    onChangeText(next.text)
+    // A tap on the web moves focus to the chip; give it back so the next
+    // letter lands in the message.
+    input.current?.focus()
+  }
 
   return (
     <View style={styles.composer}>
       {above}
+      {/* Straight above the field it edits, and only while there is a
+        shortcut under the caret — so it never sits beside the reply banner or
+        the attachments for longer than one word. */}
+      {emoticon ? (
+        <View style={styles.emojiRow}>
+          {emoticon.suggestions.map((item) => (
+            <Pressable
+              key={item.name ?? item.emoji}
+              accessibilityRole="button"
+              accessibilityLabel={t('composer.emojiSuggestion', { emoji: item.emoji })}
+              onPress={() => pickEmoji(item.emoji)}
+              style={({ pressed }) => [styles.emojiChip, pressed && styles.emojiChipPressed]}
+            >
+              <Text style={styles.emoji}>{item.emoji}</Text>
+              {item.name ? <Text style={styles.emojiName}>:{item.name}:</Text> : null}
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
       <View style={styles.row}>
         {leading}
         <TextInput
+          ref={input}
           value={value}
           onChangeText={onChangeText}
+          onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
           placeholder={placeholder}
           placeholderTextColor={colors.textFaint}
           style={[styles.input, focused && styles.inputFocused]}
@@ -176,6 +222,19 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingTop: 10,
   },
   row: { alignItems: 'flex-end', flexDirection: 'row', gap: spacing.sm },
+  emojiRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  emojiChip: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  emojiChipPressed: { opacity: 0.6 },
+  emoji: { fontSize: 22, lineHeight: 28 },
+  emojiName: { ...font.caption, color: colors.textMuted },
   hint: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   hintLeft: { ...font.caption, color: colors.textFaint },
   // The green pair marks earning, same as "Earned" rows elsewhere.

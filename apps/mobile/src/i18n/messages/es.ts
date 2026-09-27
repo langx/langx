@@ -46,6 +46,7 @@ export const es: Localized<EnMessages> = {
     percentPending: '…',
     attachMedia: 'Adjuntar fotos o vídeos',
     attachMenu: 'Adjuntar',
+    emojiSuggestion: 'Reemplazar por {emoji}',
     attachLibrary: 'Foto o vídeo',
     attachCamera: 'Hacer una foto',
     attachVoice: 'Nota de voz',
