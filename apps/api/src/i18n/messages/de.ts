@@ -79,7 +79,7 @@ export const de: Localized<ServerMessages> = {
 
       likesTitle: { one: 'Dein Beitrag hat 1 Like', other: 'Dein Beitrag hat {count} Likes' },
 
-      likesBody: 'Jemandem gefällt, was du geschrieben hast.',
+      likesBody: 'Jemandem gefällt dein Beitrag.',
     },
 
     /** Tokens arriving. */
@@ -261,8 +261,8 @@ export const de: Localized<ServerMessages> = {
     feedDigestPreheader: 'Man hat auf deine Beiträge geantwortet',
 
     feedDigestBody: {
-      one: 'Jemand hat heute auf einen deiner Sätze geantwortet.',
-      other: '{count} Leute haben heute auf deine Sätze geantwortet.',
+      one: 'Jemand hat heute auf einen deiner Beiträge geantwortet.',
+      other: '{count} Leute haben heute auf deine Beiträge geantwortet.',
     },
 
     feedDigestCorrections: { one: '1 Korrektur', other: '{count} Korrekturen' },
@@ -400,7 +400,8 @@ export const de: Localized<ServerMessages> = {
 
     welcomeStep1: 'Finde jemanden, der deine Lernsprache spricht, und sag Hallo.',
 
-    welcomeStep2: 'Poste einen Satz im Feed und lass ihn korrigieren.',
+    welcomeStep2:
+      'Teile etwas aus deinem Tag im Feed — und bitte um eine Korrektur, wenn du magst.',
 
     welcomeStep3: 'Komm morgen wieder — zwei Tage hintereinander starten eine Serie.',
 
