@@ -225,7 +225,7 @@ Status: planned
 
 ### PR 9 — "Send later" and "Send in their morning"
 
-Status: planned
+Status: in review
 
 - A new `scheduledMessages` collection (`collections.ts`) with its repository
   in `modules/chat/scheduled.ts`. Indexes `{ status, sendAt }` and

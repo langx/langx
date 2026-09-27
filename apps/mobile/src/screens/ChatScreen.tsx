@@ -21,6 +21,9 @@ import {
   type MessageAsk,
   type MessageTranslation,
   TYPING_IDLE_MS,
+  ERROR_CODES,
+  MAX_SCHEDULED_PER_CONVERSATION,
+  THEIR_MORNING_HOUR,
 } from '@langx/shared'
 import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import {
@@ -117,6 +120,8 @@ import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
+import { ScheduledMessageRows, useScheduleMessage } from '../components/ScheduledMessages'
+import { ScheduleTimeSheet } from '../components/ScheduleTimeSheet'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
   addPending,
@@ -277,6 +282,9 @@ export function ChatScreen({
    * off the moment there is nothing to translate into.
    */
   const [sendTranslated, setSendTranslated] = useState(false)
+  /** "Pick a time" is open, from a long press on send. */
+  const [pickingSendTime, setPickingSendTime] = useState(false)
+  const scheduleMessage = useScheduleMessage(conversationId)
   const [partnerTyping, setPartnerTyping] = useState(false)
   // Keyed by message id: a translation replaces nothing, it sits under the
   // original so the learner can compare the two.
@@ -1481,6 +1489,70 @@ export function ChatScreen({
   }
 
   /**
+   * "Send later" is plain text only, so it is offered only while the composer
+   * holds nothing else: a reply, an ask, a translation or an attachment would
+   * each be dropped from a message sent tomorrow without saying so, and an
+   * edit or a correction is not a new message at all.
+   */
+  const canSchedule =
+    draft.trim().length > 0 &&
+    pendingMedia.length === 0 &&
+    !editing &&
+    !correcting &&
+    !replyingTo &&
+    !asking &&
+    !sendTranslated
+
+  async function openScheduleMenu(): Promise<void> {
+    // Nine on the clock, in this reader's way of writing it. UTC on both
+    // sides, so the device's own zone cannot shift the hour being named.
+    const morning = new Intl.DateTimeFormat(locale, {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: 'UTC',
+    }).format(Date.UTC(2000, 0, 1, THEIR_MORNING_HOUR))
+    const choice = await chooseAlert(t('chat.scheduleTitle'), undefined, [
+      // Only when their public profile carries a zone. The server works the
+      // time out from the same field, and a hidden one is hidden from both.
+      ...(partner?.timezone
+        ? [
+            {
+              label: t('chat.scheduleTheirMorning', { time: morning }),
+              value: 'morning' as const,
+              icon: 'sunrise',
+            },
+          ]
+        : []),
+      { label: t('chat.schedulePick'), value: 'pick' as const, icon: 'clock' },
+    ])
+    if (choice === 'morning') void scheduleDraft({ mode: 'theirMorning' })
+    if (choice === 'pick') setPickingSendTime(true)
+  }
+
+  /** The draft leaves the composer only once the server has it. */
+  async function scheduleDraft(when: { sendAt: string } | { mode: 'theirMorning' }): Promise<void> {
+    const body = draft.trim()
+    if (!body) return
+    try {
+      await scheduleMessage.mutateAsync({
+        body,
+        clientId: newClientId(Date.now(), Math.random()),
+        ...when,
+      })
+      setPickingSendTime(false)
+      setDraft('')
+      notifyTyping(false)
+    } catch (caught) {
+      void showAlert(
+        t('chat.couldNotSend'),
+        errorCodeOf(caught) === ERROR_CODES.QUOTA_EXCEEDED
+          ? t('chat.scheduleTooMany', { count: MAX_SCHEDULED_PER_CONVERSATION })
+          : t('chat.scheduleFailed'),
+      )
+    }
+  }
+
+  /**
    * An edit changes a row that exists, so it has nothing to draw ahead of the
    * ack; it waits quietly, and a refusal puts the text back where it was typed
    * so nothing is lost.
@@ -2431,6 +2503,8 @@ export function ChatScreen({
                         })}
                       </View>
                     ) : null}
+                    {/* Your own words still to come, under everything already sent. */}
+                    <ScheduledMessageRows conversationId={conversationId} />
                     {/*
                     Last, so it sits nearest the composer: inverted, this header
                     is the bottom of the thread, and the other person typing is
@@ -2608,6 +2682,7 @@ export function ChatScreen({
                     : t('chat.writeMessage')
               }
               onSend={() => void send()}
+              {...(canSchedule ? { onSendLongPress: () => void openScheduleMenu() } : {})}
               hasAttachment={pendingMedia.length > 0}
               busy={sendingMedia}
               above={
@@ -2710,6 +2785,12 @@ export function ChatScreen({
             />
           )}
         </View>
+        <ScheduleTimeSheet
+          visible={pickingSendTime}
+          busy={scheduleMessage.isPending}
+          onClose={() => setPickingSendTime(false)}
+          onConfirm={(at) => void scheduleDraft({ sendAt: at.toISOString() })}
+        />
         {searching ? (
           <ChatSearch
             conversationId={conversationId}
