@@ -1,4 +1,4 @@
-import { MAX_ATTACHMENTS, MAX_VIDEO_SECONDS, TOKEN_RULES } from '@langx/shared'
+import { FEED_POSTS_PER_24H, MAX_ATTACHMENTS, MAX_VIDEO_SECONDS, TOKEN_RULES } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -990,6 +990,164 @@ describe('community feed', () => {
       }
     })
 
+    function postAsks(user: SignedUpUser, payload: Record<string, unknown>) {
+      return app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: user.cookie },
+        payload: { language: 'en', ...payload },
+      })
+    }
+
+    const photo = (owner: SignedUpUser, name = 'moment') => ({
+      url: `https://cdn.example.com/posts/${owner.userId}/${name}.jpg`,
+      contentType: 'image/jpeg',
+      sizeBytes: 1024,
+      width: 800,
+      height: 600,
+    })
+
+    const sectionIds = async (user: SignedUpUser, kind: string) =>
+      (await feed(user, `kind=${kind}`))
+        .json<{ items: { _id: string }[] }>()
+        .items.map((i) => i._id)
+
+    it('posts a moment, and keeps it out of both of an old build’s sections', async () => {
+      const author = await newUser('moment-author@example.com')
+      const reader = await newUser('moment-reader@example.com')
+      const created = await postAsks(author, { body: 'Lunch by the river.', asks: [] })
+      expect(created.statusCode, created.body).toBe(201)
+      const moment = created.json<{ _id: string; asks: string[]; kind: string }>()
+      expect(moment.asks).toEqual([])
+      // The two values an installed build's enum has; never `'moment'`.
+      expect(moment.kind).toBe('correction')
+
+      const stored = await handle.db
+        .collection<{ kind?: string }>(COLLECTIONS.posts)
+        .findOne({ _id: new ObjectId(moment._id) })
+      expect(stored?.kind).toBe('moment')
+      expect(await sectionIds(reader, 'correction')).not.toContain(moment._id)
+      expect(await sectionIds(reader, 'pronunciation')).not.toContain(moment._id)
+    })
+
+    it('files a post asking for both under corrections only, and takes both helps', async () => {
+      const author = await newUser('both-api-author@example.com')
+      const helper = await newUser('both-api-helper@example.com')
+      const created = await postAsks(author, {
+        body: 'I has a squirrel.',
+        asks: ['pronunciation', 'correction'],
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      const both = created.json<{ _id: string; asks: string[]; kind: string }>()
+      // Stored sorted, whatever order they were sent in.
+      expect(both.asks).toEqual(['correction', 'pronunciation'])
+      expect(both.kind).toBe('correction')
+      expect(await sectionIds(helper, 'correction')).toContain(both._id)
+      expect(await sectionIds(helper, 'pronunciation')).not.toContain(both._id)
+
+      expect((await correct(helper, both._id, 'I have a squirrel.')).statusCode).toBe(201)
+      expect((await answer(helper, both._id)).statusCode).toBe(201)
+    })
+
+    it('lets asks win over kind', async () => {
+      const author = await newUser('asks-win-author@example.com')
+      const created = await postAsks(author, {
+        body: 'Squirrel.',
+        kind: 'pronunciation',
+        asks: ['correction'],
+      })
+      expect(created.json<{ asks: string[]; kind: string }>()).toMatchObject({
+        asks: ['correction'],
+        kind: 'correction',
+      })
+    })
+
+    it('refuses the same ask twice, and more asks than exist', async () => {
+      const author = await newUser('asks-dup-author@example.com')
+      expect(
+        (await postAsks(author, { body: 'Hi.', asks: ['correction', 'correction'] })).statusCode,
+      ).toBe(400)
+    })
+
+    it('posts a photo with no words when it asks for nothing', async () => {
+      const author = await newUser('photo-moment-author@example.com')
+      const created = await postAsks(author, { body: '', asks: [], attachments: [photo(author)] })
+      expect(created.statusCode, created.body).toBe(201)
+      expect(created.json<{ body: string }>().body).toBe('')
+    })
+
+    it('says which rule refused a post, and keeps the old code for each', async () => {
+      const author = await newUser('post-rules-author@example.com')
+      const refusal = async (payload: Record<string, unknown>) => {
+        const response = await postAsks(author, payload)
+        expect(response.statusCode, response.body).toBe(400)
+        const body = response.json<{ code: string; reason?: string }>()
+        expect(body.code).toBe('VALIDATION_FAILED')
+        return body.reason
+      }
+      const voice = {
+        url: `https://cdn.example.com/posts/${author.userId}/voice.m4a`,
+        contentType: 'audio/m4a',
+        sizeBytes: 4096,
+        durationSeconds: 3,
+      }
+
+      // A voice note alone is not a moment: nothing on the card to look at.
+      expect(await refusal({ body: '', asks: [], attachments: [voice] })).toBe(
+        'moment_needs_content',
+      )
+      expect(await refusal({ body: '   ', asks: [] })).toBe('moment_needs_content')
+      // Any ask needs words, a photo or not.
+      expect(await refusal({ body: '', asks: ['correction'], attachments: [photo(author)] })).toBe(
+        'ask_needs_words',
+      )
+      // An installed build's empty body: still refused, with the code it knows.
+      expect(await refusal({ body: '' })).toBe('ask_needs_words')
+      // The author is `tr` native, `en` learning (see `onboardingBody`).
+      expect(await refusal({ body: 'Merhaba.', language: 'tr', asks: ['correction'] })).toBe(
+        'ask_needs_learning_language',
+      )
+      expect(await refusal({ body: 'Bonjour.', language: 'fr', asks: [] })).toBe(
+        'language_not_yours',
+      )
+    })
+
+    it('posts a moment in a language the author speaks natively', async () => {
+      const author = await newUser('native-moment-author@example.com')
+      const created = await postAsks(author, {
+        body: 'Bugün hava çok güzel.',
+        language: 'tr',
+        asks: [],
+      })
+      expect(created.statusCode, created.body).toBe(201)
+    })
+
+    it('stops at the daily post cap, and says when the next slot frees', async () => {
+      const author = await newUser('post-cap-author@example.com')
+      const now = Date.now()
+      // The earlier posts written straight in: twenty requests would only
+      // test the same insert twenty times.
+      await handle.db.collection(COLLECTIONS.posts).insertMany(
+        Array.from({ length: FEED_POSTS_PER_24H }, (_, i) => ({
+          _id: new ObjectId(),
+          authorId: author.userId,
+          body: `Post ${i}.`,
+          language: 'en',
+          asks: [],
+          kind: 'moment',
+          correctionCount: 0,
+          answerCount: 0,
+          createdAt: new Date(now - (FEED_POSTS_PER_24H - i) * 60_000),
+        })),
+      )
+
+      const refused = await postAsks(author, { body: 'One too many.', asks: [] })
+      const body = refused.json<{ code: string; limit?: string; retryAt?: string }>()
+      expect(body.code).toBe('QUOTA_EXCEEDED')
+      expect(body.limit).toBe('postsPer24h')
+      expect(new Date(body.retryAt ?? 0).getTime()).toBeGreaterThan(now)
+    })
+
     it('takes both kinds of help on a post asking for both, and pays for each', async () => {
       const author = await newUser('asks-both-author@example.com')
       const helper = await newUser('asks-both-helper@example.com')
@@ -1873,13 +2031,15 @@ describe('community feed', () => {
       expect(seen.post.correctedByViewer).toBe(true)
     })
 
-    it('refuses `asks` loudly rather than filing it as a correction request', async () => {
+    // `asks` itself is accepted since moments shipped; an ask this API does not
+    // know is still refused by the schema rather than stripped.
+    it('refuses an ask it does not know rather than filing it as a correction', async () => {
       const author = await newUser('asks-refused@example.com')
       const response = await app.inject({
         method: 'POST',
         url: '/posts',
         headers: { cookie: author.cookie },
-        payload: { body: 'A photo of my lunch.', language: 'en', asks: [] },
+        payload: { body: 'A photo of my lunch.', language: 'en', asks: ['compliment'] },
       })
       expect(response.statusCode).toBe(400)
       const body = response.json<{ code: string; details?: unknown }>()

@@ -101,6 +101,12 @@ export async function answerPronunciation(
       reason: 'not_asked',
     })
   }
+  // Defence in depth, as in `correctPost`: an ask always has words.
+  if (!post.body.trim()) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That post has no words to say', {
+      reason: 'not_asked',
+    })
+  }
   // Recording your own word is not teaching, and it would pay for it.
   if (post.authorId === userId) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot answer your own request')

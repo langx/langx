@@ -1,9 +1,14 @@
 import {
   ERROR_CODES,
+  FEED_POSTS_PER_24H,
+  POST_ASKS,
   TOKEN_RULES,
   asksOf,
   attachmentsOf,
+  isImageContentType,
+  isVideoContentType,
   legacySectionOf,
+  type Media,
   type PostAsk,
   type CreatePostCorrectionInput,
   type CreatePostInput,
@@ -330,13 +335,16 @@ export async function createPost(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
-  // You post in a language you are learning. Posting in your native one is not
-  // a request for a correction, it is just talking — and the feed has one job.
-  if (!profile.learning.some((entry) => entry.code === input.language)) {
-    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Post in a language you are learning')
-  }
-
+  // `asks` wins over `kind`; without it the request is an installed build's,
+  // which always names exactly one section. Sorted and deduplicated, so two
+  // posts asking for the same thing store the same array.
+  const asks: PostAsk[] = input.asks
+    ? POST_ASKS.filter((ask) => input.asks?.includes(ask))
+    : [input.kind]
   const picked = input.attachments ?? []
+  assertPostShape(profile, input, asks, picked)
+  await assertPostAllowance(db, userId)
+
   if (picked.length > 0) {
     await assertAttachable(db, userId, profile, picked, storagePublicBaseUrl, `posts/${userId}/`)
   }
@@ -344,13 +352,11 @@ export async function createPost(
   // the whole of it. A voice note recorded in a browser becomes AAC here.
   const attachments = normalizeAttachments ? await normalizeAttachments(picked) : picked
 
-  // Every caller still names one section, so the asks are that one. The
-  // schema refuses `asks` itself until this API can store a post that asks
-  // for nothing.
-  const asks: PostAsk[] = [input.kind]
   const doc: Post = {
     _id: new ObjectId(),
     authorId: userId,
+    // Trimmed by the schema, so a post with no words stores `''` — never an
+    // absent field, which every reader would have to learn about.
     body: input.body,
     language: input.language,
     asks,
@@ -383,6 +389,106 @@ export async function createPost(
   })
 }
 
+/**
+ * The rules about what a post may be, which depend on the combination of what
+ * it asks for, what it says and what it carries — so they are refusals here,
+ * each with a `reason` a client can word, rather than a schema failure that
+ * could only say "invalid".
+ *
+ * All `VALIDATION_FAILED`, the code an installed build already handles for a
+ * refused post, so an old client sees exactly the failure it saw before.
+ */
+function assertPostShape(
+  profile: Profile,
+  input: CreatePostInput,
+  asks: readonly PostAsk[],
+  picked: readonly Media[],
+): void {
+  const hasWords = input.body.length > 0
+  if (asks.length > 0) {
+    /*
+     * Any ask needs words: a correction is an edit of them and a recording is
+     * them said aloud. This is also the refusal an installed build gets for an
+     * empty body, which its own composer never sends.
+     */
+    if (!hasWords) {
+      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Asking for help needs a sentence', {
+        reason: 'ask_needs_words',
+      })
+    }
+    // Help is asked for in a language you are learning. In your native one
+    // there is nothing to correct and nobody better placed to say it.
+    if (!profile.learning.some((entry) => entry.code === input.language)) {
+      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Post in a language you are learning', {
+        reason: 'ask_needs_learning_language',
+      })
+    }
+    return
+  }
+
+  /*
+   * A moment may be words, a photo, a video or any mix — but not nothing, and
+   * not a voice note alone: with no words and no picture there is nothing on
+   * the card to look at, and a recording is the one attachment the feed only
+   * ever shows beside a sentence.
+   */
+  if (
+    !hasWords &&
+    !picked.some(
+      (item) => isImageContentType(item.contentType) || isVideoContentType(item.contentType),
+    )
+  ) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Add some words, a photo or a video', {
+      reason: 'moment_needs_content',
+    })
+  }
+  // A moment may also be in a language you speak: that is natives posting
+  // their day for the people learning it, which is half of what a moment is.
+  const yours = [...profile.learning, ...profile.nativeLanguages].some(
+    (entry) => entry.code === input.language,
+  )
+  if (!yours) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Post in a language you speak or learn', {
+      reason: 'language_not_yours',
+    })
+  }
+}
+
+/**
+ * `FEED_POSTS_PER_24H`, on the `author` index this collection has always
+ * carried. Checked before the media quota so a refused post does not spend a
+ * unit it never used.
+ *
+ * Count-then-insert, so two posts racing at the edge can both land. That is a
+ * post over a limit that exists against floods, not a double payment, and the
+ * index-enforced alternative would be a counter to keep in step.
+ */
+async function assertPostAllowance(db: Db, userId: string, now = new Date()): Promise<void> {
+  const since = new Date(now.getTime() - DAY_MS)
+  const posts = db.collection<Post>(COLLECTIONS.posts)
+  const recent = await posts.countDocuments(
+    { authorId: userId, createdAt: { $gte: since } },
+    { limit: FEED_POSTS_PER_24H + 1 },
+  )
+  if (recent < FEED_POSTS_PER_24H) return
+
+  // Only on the refusal: when the oldest post in the window leaves it, a slot
+  // frees up — which is the answer `retryAt` gives everywhere else.
+  const oldest = await posts
+    .find({ authorId: userId, createdAt: { $gte: since } })
+    .sort({ createdAt: 1 })
+    .limit(1)
+    .project<{ createdAt: Date }>({ createdAt: 1 })
+    .next()
+  throw new ApiError(ERROR_CODES.QUOTA_EXCEEDED, 'Daily post limit reached', {
+    limit: 'postsPer24h',
+    max: FEED_POSTS_PER_24H,
+    ...(oldest ? { retryAt: new Date(oldest.createdAt.getTime() + DAY_MS).toISOString() } : {}),
+  })
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
 export async function correctPost(
   db: Db,
   userId: string,
@@ -404,6 +510,13 @@ export async function correctPost(
   // uncapped, so a post that never asked must not be a way to earn it.
   if (!asksOf(post).includes('correction')) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That post is not asking for a correction', {
+      reason: 'not_asked',
+    })
+  }
+  // Defence in depth: an ask always has words, so this cannot be reached by a
+  // post the API wrote. A correction of nothing would still pay.
+  if (!post.body.trim()) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That post has no words to correct', {
       reason: 'not_asked',
     })
   }

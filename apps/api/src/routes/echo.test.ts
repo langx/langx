@@ -1793,6 +1793,22 @@ describe('echo', () => {
       expect(old.askedCorrectionPostId).toBeUndefined()
     })
 
+    // A photo posted without words has no sentence to keep: a 400 that says
+    // so, not a card with an empty front and not a 500.
+    it('refuses to keep a post with no words', async () => {
+      const [asker, friend] = await newPair('capture-wordless')
+      const postId = await storedPost(friend, {
+        body: '',
+        asks: [],
+        kind: 'moment',
+        answerCount: 0,
+        attachments: [
+          { url: 'https://cdn.example.com/posts/u/1.jpg', contentType: 'image/jpeg', sizeBytes: 1 },
+        ],
+      })
+      expect((await capture(asker, { kind: 'post', postId })).statusCode).toBe(400)
+    })
+
     it('refuses to link a post that asks for nothing', async () => {
       const [asker, friend] = await newPair('ask-moment')
       const cardId = await makeCard(asker, friend, 'squirrel')
