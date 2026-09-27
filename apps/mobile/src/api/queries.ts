@@ -67,7 +67,8 @@ import type {
   GiftClaim,
   BadgeSummary,
   ReferralStatus,
-  CreatePostCommentInput,
+  CommentRepliesPage,
+  CreateCommentRequest,
   CreatePostCorrectionInput,
   CreatePostInput,
   CreatePronunciationAnswerInput,
@@ -80,13 +81,13 @@ import type {
   LikeTarget,
   LikeTargetType,
   PeoplePage,
-  PostComment,
-  PostCommentsPage,
   PostCorrection,
   PostCorrectionsPage,
-  PostKind,
   PronunciationAnswer,
   PronunciationAnswersPage,
+  ThreadedComment,
+  ThreadedCommentsPage,
+  TimelinePage,
   TokenHistory,
   TokenSummary,
 } from './types'
@@ -116,12 +117,23 @@ import {
   applyAnswer,
   applyCommentCount,
   applyCorrection,
+  applyEchoed,
+  applyEchoedToThread,
   applyLike,
   applyLikeToAnswers,
   applyLikeToThread,
+  applyReplyRemoved,
   prependPost,
   removePost,
 } from '../lib/feedCache'
+import {
+  appendReply,
+  appendToReplies,
+  removeFromReplies,
+  removeFromThread,
+} from '../lib/commentThread'
+import { FOLLOW_INVALIDATES, TIMELINE_KEY, timelinePath } from '../lib/feedQueryKeys'
+import { isStaleCursor } from '../lib/postRefusal'
 import type { MessagePageDto } from '../lib/messageCache'
 
 /**
@@ -213,11 +225,11 @@ export const keys = {
   badges: ['badges'] as const,
   referrals: ['referrals'] as const,
   /**
-   * The section is in the key, not just the filter. Everything that patches the
-   * feed matches on the `['feed']` prefix, so a third segment costs those call
-   * sites nothing while keeping the two sections' pages apart.
+   * The one timeline — see `TIMELINE_KEY`. The old per-section keys
+   * (`['feed', 'correction' | 'pronunciation']`) are no longer read; a cache
+   * restored from a build that wrote them ages out, and nothing collides.
    */
-  feed: (kind: string) => ['feed', kind] as const,
+  timeline: TIMELINE_KEY,
   /*
    * Under `feed` on purpose: writing or deleting a post already
    * invalidates the whole `['feed']` prefix, so this list stays honest
@@ -226,6 +238,13 @@ export const keys = {
   myPosts: () => ['feed', 'mine'] as const,
   postCorrections: (id: string) => ['postCorrections', id] as const,
   postComments: (id: string) => ['postComments', id] as const,
+  /*
+   * Its own top-level prefix, not a child of `postComments(id)`: the thread's
+   * patchers walk that key's pages as roots, and a page of one root's replies
+   * handed to them would be read as roots.
+   */
+  commentReplies: (postId: string, commentId: string) =>
+    ['commentReplies', postId, commentId] as const,
   postAnswers: (id: string) => ['postAnswers', id] as const,
   likers: (targetType: string, targetId: string) => ['likers', targetType, targetId] as const,
   follows: (userId: string, which: string) => ['follows', userId, which] as const,
@@ -1279,17 +1298,34 @@ export function useConversationFlags() {
   })
 }
 
-export function useFeed(kind: PostKind) {
+/**
+ * The feed: one timeline, ranked for the person reading it.
+ *
+ * No `keepPreviousData` any more — it was there so switching section did not
+ * blank the list, and there are no sections to switch.
+ *
+ * A cursor the server no longer accepts (`stale_cursor`: minted under other
+ * ranking constants, typically by a page restored from the persisted cache
+ * across an update) resets the timeline to page one instead of surfacing as
+ * an error. Deferred a tick so the reset lands after this fetch has settled
+ * rather than racing it.
+ */
+export function useFeed() {
+  const client = useQueryClient()
   return useInfiniteQuery({
-    queryKey: keys.feed(kind),
-    queryFn: ({ pageParam }) =>
-      api.get<FeedPage>(
-        `/feed?kind=${kind}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
-      ),
+    queryKey: keys.timeline,
+    queryFn: async ({ pageParam }) => {
+      try {
+        return await api.get<TimelinePage>(timelinePath(pageParam))
+      } catch (error) {
+        if (pageParam && isStaleCursor(error)) {
+          setTimeout(() => void client.resetQueries({ queryKey: keys.timeline }), 0)
+        }
+        throw error
+      }
+    },
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
-    // Same reason as `useDiscovery`: switching tab must not blank the list.
-    placeholderData: keepPreviousData,
   })
 }
 
@@ -1511,10 +1547,13 @@ export function useSetFollow(handleOrId: string) {
       const previous = client.getQueryData<PublicProfileDto>(keys.profile(handleOrId))
       if (previous)
         client.setQueryData<PublicProfileDto>(keys.profile(handleOrId), { ...previous, follow })
-      // Following somebody moves their posts to the front of the feed, and
-      // the follower list has gained or lost exactly one row.
-      void client.invalidateQueries({ queryKey: ['feed'] })
-      void client.invalidateQueries({ queryKey: ['follows'] })
+      /*
+       * The follower list has gained or lost exactly one row. The timeline is
+       * left alone — see `FOLLOW_INVALIDATES`: the person's posts gain their
+       * weight at the next pull-to-refresh rather than re-sorting every
+       * loaded page under the reader's finger now.
+       */
+      for (const queryKey of FOLLOW_INVALIDATES) void client.invalidateQueries({ queryKey })
     },
   })
 }
@@ -1548,16 +1587,14 @@ export function useCreatePost() {
   return useMutation({
     mutationFn: (input: CreatePostInput) => api.post<FeedPost>('/posts', input),
     /*
-     * A patch, not an invalidation — see `prependPost`. The refetch applied
-     * the server's order, which puts your own post behind everyone you
-     * follow, so the sentence you had just written landed far below the fold.
-     *
-     * `POST /posts` answers with the whole card, so nothing is missing.
-     * `myPosts` is a child of the `['feed']` prefix but not of the section
-     * key, so it is patched by name.
+     * A patch, not an invalidation — see `prependPost`. `POST /posts` answers
+     * with the whole card, so nothing is missing. The timeline and "My posts"
+     * are patched by name: both sit under `['feed']`, and a prefix write
+     * would also reach an old section key restored from the cache, where a
+     * moment has no business appearing.
      */
     onSuccess: (post) => {
-      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: keys.feed(post.kind) }, (data) =>
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: keys.timeline }, (data) =>
         prependPost(data, post),
       )
       client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: keys.myPosts() }, (data) =>
@@ -1578,9 +1615,9 @@ export function useCorrectPost() {
        * re-sorts the post you just answered behind every unanswered one, so
        * the card disappeared instead of flipping to "You corrected this".
        *
-       * `setQueriesData` on the `['feed']` prefix rather than the one filter in
-       * view: both tabs are cached, and patching one while leaving the other
-       * stale is how a feed starts disagreeing with itself.
+       * `setQueriesData` on the `['feed']` prefix rather than the timeline
+       * alone: "My posts" is cached under it too, and patching one while
+       * leaving the other stale is how a feed starts disagreeing with itself.
        */
       client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
         applyCorrection(data, postId, correction),
@@ -1595,12 +1632,36 @@ export function useCorrectPost() {
   })
 }
 
+/**
+ * A post's comments, as roots with their first replies.
+ *
+ * `threaded=1` is ignored by an API from before replies — its query schema
+ * strips unknown keys — which then answers with today's flat list: every row a
+ * root and no replies, which the thread draws correctly as it is.
+ */
 export function usePostComments(postId: string) {
   return useInfiniteQuery({
     queryKey: keys.postComments(postId),
     queryFn: ({ pageParam }) =>
-      api.get<PostCommentsPage>(
-        `/posts/${postId}/comments${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      api.get<ThreadedCommentsPage>(
+        `/posts/${postId}/comments?threaded=1${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
+}
+
+/**
+ * Every reply under one root, behind "View N more replies". Only fetched once
+ * the reader asks — the preview in the thread's own page covers most roots.
+ */
+export function useCommentReplies(postId: string, commentId: string, enabled: boolean) {
+  return useInfiniteQuery({
+    enabled,
+    queryKey: keys.commentReplies(postId, commentId),
+    queryFn: ({ pageParam }) =>
+      api.get<CommentRepliesPage>(
+        `/posts/${postId}/comments/${commentId}/replies${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
@@ -1626,33 +1687,73 @@ export function usePostAnswers(postId: string, enabled = true) {
   })
 }
 
+/**
+ * A comment, or a reply to one.
+ *
+ * `rootId` is the root the reply sits under, known to the screen because it is
+ * what the reader tapped Reply beneath. A reply is patched into the loaded
+ * thread; a new root still refetches the list, because it is short, ascending,
+ * and appending to a keyset page by hand is how a duplicate row appears.
+ *
+ * The feed's count is patched either way: the post DTO counts replies too.
+ */
 export function useAddComment() {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: ({ postId, ...input }: CreatePostCommentInput & { postId: string }) =>
-      api.post<PostComment>(`/posts/${postId}/comments`, input),
-    onSuccess: (_comment, { postId }) => {
-      // The count is patched because a refetch of the feed would re-sort it;
-      // the list itself is refetched because it is short, ascending, and
-      // appending to a keyset page by hand is how a duplicate row appears.
+    mutationFn: ({ postId, body, parentId }: CreateCommentRequest & AddCommentTarget) =>
+      api.post<ThreadedComment>(`/posts/${postId}/comments`, {
+        body,
+        ...(parentId ? { parentId } : {}),
+      }),
+    onSuccess: (comment, { postId, rootId }) => {
       client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
         applyCommentCount(data, postId, 1),
       )
-      void client.invalidateQueries({ queryKey: keys.postComments(postId) })
+      if (!rootId) {
+        void client.invalidateQueries({ queryKey: keys.postComments(postId) })
+        return
+      }
+      const reply: ThreadedComment = { ...comment, parentId: rootId }
+      client.setQueryData<InfiniteData<ThreadedCommentsPage>>(keys.postComments(postId), (data) =>
+        appendReply(data, rootId, reply),
+      )
+      client.setQueryData<InfiniteData<CommentRepliesPage>>(
+        keys.commentReplies(postId, rootId),
+        (data) => appendToReplies(data, reply),
+      )
     },
   })
 }
 
+interface AddCommentTarget {
+  postId: string
+  /** The root a reply lands under. Absent for a new root comment. */
+  rootId?: string
+}
+
+/**
+ * Takes a comment off, the way the server does — see `removeFromThread`: a
+ * root with replies stays as "Comment removed", and a reply takes its root
+ * with it when that root was already one. Patched, not refetched.
+ */
 export function useDeleteComment() {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: ({ postId, commentId }: { postId: string; commentId: string }) =>
+    mutationFn: ({ postId, commentId }: { postId: string; commentId: string; rootId?: string }) =>
       api.delete<void>(`/posts/${postId}/comments/${commentId}`),
-    onSuccess: (_result, { postId }) => {
+    onSuccess: (_result, { postId, commentId, rootId }) => {
       client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
         applyCommentCount(data, postId, -1),
       )
-      void client.invalidateQueries({ queryKey: keys.postComments(postId) })
+      client.setQueryData<InfiniteData<ThreadedCommentsPage>>(keys.postComments(postId), (data) =>
+        removeFromThread(data, commentId, rootId),
+      )
+      if (rootId) {
+        client.setQueryData<InfiniteData<CommentRepliesPage>>(
+          keys.commentReplies(postId, rootId),
+          (data) => removeFromReplies(data, commentId),
+        )
+      }
     },
   })
 }
@@ -1682,8 +1783,12 @@ export function useDeleteAnswer() {
   return useMutation({
     mutationFn: ({ postId, answerId }: { postId: string; answerId: string }) =>
       api.delete<void>(`/posts/${postId}/answers/${answerId}`),
-    onSuccess: (_result, { postId }) => {
-      void client.invalidateQueries({ queryKey: ['feed'] })
+    onSuccess: (_result, { postId, answerId }) => {
+      // Patched, not a `['feed']` invalidation: that re-read every loaded
+      // timeline page to learn that one count went down by one.
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+        applyReplyRemoved(data, postId, 'answer', answerId),
+      )
       void client.invalidateQueries({ queryKey: keys.postAnswers(postId) })
     },
   })
@@ -1694,8 +1799,10 @@ export function useDeleteCorrection() {
   return useMutation({
     mutationFn: ({ postId, correctionId }: { postId: string; correctionId: string }) =>
       api.delete<void>(`/posts/${postId}/corrections/${correctionId}`),
-    onSuccess: (_result, { postId }) => {
-      void client.invalidateQueries({ queryKey: ['feed'] })
+    onSuccess: (_result, { postId, correctionId }) => {
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+        applyReplyRemoved(data, postId, 'correction', correctionId),
+      )
       void client.invalidateQueries({ queryKey: keys.postCorrections(postId) })
       void client.invalidateQueries({ queryKey: ['profileCorrections'] })
     },
@@ -1715,6 +1822,7 @@ export function useDeletePost() {
       )
       client.removeQueries({ queryKey: keys.postCorrections(postId) })
       client.removeQueries({ queryKey: keys.postComments(postId) })
+      client.removeQueries({ queryKey: ['commentReplies', postId] })
       client.removeQueries({ queryKey: keys.postAnswers(postId) })
     },
   })
@@ -1926,6 +2034,8 @@ export function useReportUser() {
       conversationId?: string
       messageId?: string
       postId?: string
+      // TEMP(feed-api): `reportSchema.commentId` lands with the comment-replies API part.
+      commentId?: string
     }) => api.post('/reports', input),
   })
 }
@@ -3278,12 +3388,27 @@ export function useCaptureEcho() {
       if (input.source.kind === 'chat') {
         void client.invalidateQueries({ queryKey: keys.messages(input.source.conversationId) })
       } else if (input.source.kind === 'post') {
-        void client.invalidateQueries({ queryKey: ['feed'] })
+        // Patched: the mark is one boolean the client already knows, and a
+        // `['feed']` invalidation re-read every loaded timeline page for it.
+        patchEchoed(client, input.source.postId, true)
       }
       // A hand-written card marks nothing: there is no message and no post to
       // draw it on, so the `echo` prefix above is the whole of the news.
     },
   })
+}
+
+/** The Echo mark on one post, everywhere a loaded page shows it. */
+function patchEchoed(client: QueryClient, postId: string, echoed: boolean): void {
+  client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+    applyEchoed(data, postId, echoed),
+  )
+  client.setQueryData<InfiniteData<PostCorrectionsPage>>(keys.postCorrections(postId), (data) =>
+    applyEchoedToThread(data, postId, echoed),
+  )
+  client.setQueryData<InfiniteData<PronunciationAnswersPage>>(keys.postAnswers(postId), (data) =>
+    applyEchoedToThread(data, postId, echoed),
+  )
 }
 
 /**
@@ -3300,6 +3425,10 @@ export function useRemoveEcho() {
       void client.invalidateQueries({ queryKey: keys.echo })
       if (input.conversationId) {
         void client.invalidateQueries({ queryKey: keys.messages(input.conversationId) })
+      }
+      // Removed by its `post:` key: the card and the post screen both draw the mark.
+      if (input.idOrSourceKey.startsWith('post:')) {
+        patchEchoed(client, input.idOrSourceKey.slice('post:'.length), false)
       }
     },
   })

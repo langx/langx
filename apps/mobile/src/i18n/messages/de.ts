@@ -358,6 +358,7 @@ export const de: Localized<EnMessages> = {
     aboutProof:
       'Verteiltes Lernen und Selbstabfragen: die zwei bestbelegten Befunde der Gedächtnisforschung, seit den 1880ern.',
     aboutClose: 'Verstanden',
+    audioFull: 'Diese Karte hat schon so viele Aufnahmen, wie sie behalten kann.',
   },
 
   messageMeta: {
@@ -1208,6 +1209,7 @@ export const de: Localized<EnMessages> = {
     messageSent: 'Gemeldet. Danke — wir sehen uns jede an.',
     profileSent: 'Meldung gesendet. Wir schauen uns das an.',
     failed: 'Melden fehlgeschlagen',
+    commentQuestion: 'Warum meldest du diesen Kommentar?',
   },
 
   inbox: {
@@ -1251,6 +1253,7 @@ export const de: Localized<EnMessages> = {
       one: '+{count} weitere',
       other: '+{count} weitere',
     },
+    commentReply: '{name} hat auf deinen Kommentar geantwortet',
   },
   feed: {
     pickTitle: 'Kein Beitrag geöffnet',
@@ -1342,6 +1345,32 @@ export const de: Localized<EnMessages> = {
       'Jemand mit Muttersprache korrigiert es – meist innerhalb einer Stunde. Korrekturen sind in jedem Tarif unbegrenzt.',
     voiceNote: 'Sprachnotiz',
     top: 'Top',
+    newPost: '+ Posten',
+    emptyTitle: 'Hier ist noch nichts',
+    emptyBody: 'Teile etwas aus deinem Tag oder bitte um Hilfe mit einem Satz.',
+    badgeCorrection: 'Korrektur gewünscht',
+    badgePronunciation: 'Aussprache gewünscht',
+    openPost: 'Öffnet den Beitrag',
+    viewPost: 'Beitrag ansehen',
+    notAsking: 'Dieser Beitrag bittet nicht darum.',
+    needsText: 'Wer um Hilfe bittet, braucht den Satz, um den es geht.',
+    askNeedsLearning: 'Um Hilfe bitten geht in einer Sprache, die du lernst — wähle oben eine aus.',
+    needsSomething: 'Schreib etwas oder füge ein Foto oder Video hinzu.',
+    languageNotYours: 'Du kannst in einer Sprache posten, die du sprichst oder lernst.',
+    postLimit: 'Du hast heute schon viel gepostet. Versuch es morgen wieder.',
+    postFailed: 'Das ließ sich nicht posten — versuch es gleich noch einmal.',
+    correctionsTitle: 'Korrekturen',
+    recordingsTitle: 'Aufnahmen',
+    reply: 'Antworten',
+    replyingTo: 'Antwort an {name}',
+    cancelReply: 'Antwort abbrechen',
+    commentRemoved: 'Kommentar entfernt',
+    reportComment: 'Kommentar melden',
+    commentOptions: 'Optionen für den Kommentar',
+    viewReplies: {
+      one: '{count} weitere Antwort ansehen',
+      other: '{count} weitere Antworten ansehen',
+    },
   },
 
   profile: {
@@ -2056,6 +2085,7 @@ export const de: Localized<EnMessages> = {
     },
     badge: 'Abzeichen {label} teilen',
     badgeMessage: 'Ich habe auf LangX das Abzeichen „{label}“ verdient. Üb mit mir: {url}',
+    postMessageNoText: 'Ein Moment auf {language} bei LangX: {url}',
   },
 
   linkDevice: {

@@ -31,6 +31,17 @@ describe('notificationHref', () => {
     }
   })
 
+  it('lands a comment reply on the post, at the thread it is in', () => {
+    expect(
+      notificationHref(row({ kind: 'commentReply', postId: 'p1', commentId: 'c9' }), HERE),
+    ).toBe(`/(app)/post/p1?comment=c9&from=${encodeURIComponent(HERE)}`)
+    // A row from before the server named the comment still opens the post.
+    expect(notificationHref(row({ kind: 'commentReply', postId: 'p1' }), HERE)).toBe(
+      `/(app)/post/p1${FROM}`,
+    )
+    expect(notificationHref(row({ kind: 'commentReply' }), HERE)).toBeNull()
+  })
+
   it('lands the kinds nobody did on the screen that shows the thing', () => {
     expect(notificationHref(row({ kind: 'badgeEarned' }), HERE)).toBe('/(app)/badges')
     expect(notificationHref(row({ kind: 'walletPool' }), HERE)).toBe('/(app)/wallet/pool')
@@ -72,6 +83,13 @@ describe('notificationCopy', () => {
    * zero should never arrive — but if one did, "and 0 others" is the sentence
    * it would produce, and English has no plural category that avoids it.
    */
+  it('words a reply as one person, whatever the count', () => {
+    expect(notificationCopy(row({ kind: 'commentReply', actor: SOFIA, count: 3 }))).toEqual({
+      key: 'inbox.commentReply',
+      params: { name: 'Sofia' },
+    })
+  })
+
   it('treats a zero count as nobody else', () => {
     expect(notificationCopy(row({ kind: 'like', actor: SOFIA, count: 0 })).key).toBe('inbox.like')
   })

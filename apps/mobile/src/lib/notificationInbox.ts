@@ -1,5 +1,6 @@
-import type { InAppNotificationKind, MessageParams } from '@langx/shared'
+import type { MessageParams } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
+import type { InboxKind } from '../api/types'
 import type { MessageKey } from '../i18n/runtime'
 import { profileHref } from './profileHref'
 
@@ -15,10 +16,12 @@ import { profileHref } from './profileHref'
 /** Only the fields these mappers read, so a test can build one in three lines. */
 export interface InboxItem {
   _id: string
-  kind: InAppNotificationKind
+  kind: InboxKind
   read?: boolean
   actor?: { handle: string; displayName: string } | undefined
   postId?: string | undefined
+  /** A reply: the comment it is, so the tap can bring its thread into view. */
+  commentId?: string | undefined
   /** Likes: how many *other* people. Visits: how many looked. Pool: tokens. */
   count?: number | undefined
   /** How many older rows of a repeating kind this one speaks for. */
@@ -63,6 +66,13 @@ export function notificationCopy(item: InboxItem): { key: MessageKey; params: Me
       return item.count && item.count > 0
         ? { key: `inbox.${item.kind}Others`, params: { name, count: item.count } }
         : { key: `inbox.${item.kind}`, params: { name } }
+    /*
+     * One line whatever the count. A reply is to *your comment*, and a
+     * collapsed "and 3 others replied" would need the server to group per
+     * comment, which it does not promise — so a count here would be a guess.
+     */
+    case 'commentReply':
+      return { key: 'inbox.commentReply', params: { name } }
     case 'badgeEarned':
       return { key: 'inbox.badgeEarned', params: {} }
     case 'walletPool':
@@ -94,6 +104,12 @@ export function notificationHref(item: InboxItem, from: string): string | null {
       // Always the *post*, even for a like on a correction — that is the
       // screen the correction is shown on. The server resolves the parent.
       return item.postId ? `/(app)/post/${item.postId}?from=${encodeURIComponent(from)}` : null
+    // The post, scrolled to the thread the reply is in, when the row names it.
+    case 'commentReply':
+      if (!item.postId) return null
+      return item.commentId
+        ? `/(app)/post/${item.postId}?comment=${encodeURIComponent(item.commentId)}&from=${encodeURIComponent(from)}`
+        : `/(app)/post/${item.postId}?from=${encodeURIComponent(from)}`
     case 'badgeEarned':
       return '/(app)/badges'
     case 'walletPool':

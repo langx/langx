@@ -2,6 +2,7 @@ import { apiFetch } from './apiFetch'
 import { ERROR_CODES, type ApiErrorBody } from '@langx/shared'
 import { router } from 'expo-router'
 import { currentLocale } from '../i18n/runtime'
+import type { ApiErrorBodyReason } from './types'
 
 export class ApiRequestError extends Error {
   readonly code: string
@@ -26,6 +27,13 @@ export class ApiRequestError extends Error {
    */
   readonly until?: string | null
   readonly permanent?: boolean
+  /**
+   * Why a refusal that shares its `code` with others was made — which rule a
+   * post broke, or that a timeline cursor belongs to an older ranking. Its own
+   * field rather than `details`, which already carries zod's issue list on
+   * every schema failure. Old APIs never send it, so every reader falls back.
+   */
+  readonly reason?: string
 
   constructor(
     status: number,
@@ -38,6 +46,7 @@ export class ApiRequestError extends Error {
       max?: number
       until?: string | null
       permanent?: boolean
+      reason?: string
     },
   ) {
     // English on purpose: this is what lands in a log or a crash report, and
@@ -53,6 +62,7 @@ export class ApiRequestError extends Error {
     if (body.max !== undefined) this.max = body.max
     if (body.until !== undefined) this.until = body.until
     if (body.permanent !== undefined) this.permanent = body.permanent
+    if (typeof body.reason === 'string') this.reason = body.reason
   }
 }
 
@@ -87,7 +97,8 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
      * `max` were quietly lost — the constructor was ready for all of them and
      * never saw any. `ApiErrorBody` is the server's own type for this.
      */
-    const error = new ApiRequestError(response.status, body as ApiErrorBody)
+    // TEMP(feed-api): `& ApiErrorBodyReason` goes once `ApiErrorBody` carries `reason`.
+    const error = new ApiRequestError(response.status, body as ApiErrorBody & ApiErrorBodyReason)
     /*
      * The third net under `requireAccount`.
      *

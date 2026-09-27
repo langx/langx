@@ -385,6 +385,7 @@ export const ar: Localized<EnMessages> = {
     aboutProof:
       'التكرار المتباعد والاختبار الذاتي: أكثر نتيجتين مُثبتتين عن الذاكرة منذ ثمانينيات القرن التاسع عشر.',
     aboutClose: 'فهمت',
+    audioFull: 'تحتوي هذه البطاقة على أقصى عدد من التسجيلات يمكنها الاحتفاظ به.',
   },
 
   messageMeta: {
@@ -1312,6 +1313,7 @@ export const ar: Localized<EnMessages> = {
     messageSent: 'تم الإبلاغ. شكرًا — نطّلع على كل بلاغ.',
     profileSent: 'تم إرسال البلاغ. سننظر في الأمر.',
     failed: 'تعذّر الإبلاغ',
+    commentQuestion: 'لماذا تبلّغ عن هذا التعليق؟',
   },
 
   inbox: {
@@ -1383,6 +1385,7 @@ export const ar: Localized<EnMessages> = {
       many: '+{count} أخرى',
       other: '+{count} أخرى',
     },
+    commentReply: 'ردّ {name} على تعليقك',
   },
   feed: {
     pickTitle: 'لا منشور مفتوح',
@@ -1501,6 +1504,36 @@ export const ar: Localized<EnMessages> = {
     composeHint: 'سيصححها متحدث أصلي — عادةً خلال ساعة. التصحيحات بلا حدود في كل الخطط.',
     voiceNote: 'مقطع صوتي',
     top: 'الأبرز',
+    newPost: '+ انشر',
+    emptyTitle: 'لا شيء هنا بعد',
+    emptyBody: 'شارك شيئًا من يومك، أو اطلب مساعدة في جملة.',
+    badgeCorrection: 'يطلب تصحيحًا',
+    badgePronunciation: 'يطلب النطق',
+    openPost: 'يفتح المنشور',
+    viewPost: 'عرض المنشور',
+    notAsking: 'هذا المنشور لا يطلب ذلك.',
+    needsText: 'لطلب المساعدة، اكتب الجملة التي تسأل عنها.',
+    askNeedsLearning: 'طلب المساعدة يكون بلغة تتعلّمها — اختر واحدة في الأعلى.',
+    needsSomething: 'اكتب شيئًا، أو أضف صورة أو فيديو.',
+    languageNotYours: 'يمكنك النشر بلغة تتحدّثها أو تتعلّمها.',
+    postLimit: 'نشرت كثيرًا اليوم. حاول مجددًا غدًا.',
+    postFailed: 'تعذّر النشر — حاول مجددًا بعد قليل.',
+    correctionsTitle: 'التصحيحات',
+    recordingsTitle: 'التسجيلات',
+    reply: 'ردّ',
+    replyingTo: 'ردًّا على {name}',
+    cancelReply: 'إلغاء الرد',
+    commentRemoved: 'أُزيل التعليق',
+    reportComment: 'الإبلاغ عن التعليق',
+    commentOptions: 'خيارات التعليق',
+    viewReplies: {
+      zero: 'لا ردود أخرى',
+      one: 'عرض ردّ آخر',
+      two: 'عرض ردّين آخرين',
+      few: 'عرض {count} ردود أخرى',
+      many: 'عرض {count} ردًّا آخر',
+      other: 'عرض {count} ردّ آخر',
+    },
   },
 
   profile: {
@@ -2339,6 +2372,7 @@ export const ar: Localized<EnMessages> = {
     },
     badge: 'مشاركة شارة {label}',
     badgeMessage: 'حصلت على شارة «{label}» في LangX. تدرّب معي: {url}',
+    postMessageNoText: 'لحظة بلغة {language} على LangX: {url}',
   },
 
   linkDevice: {

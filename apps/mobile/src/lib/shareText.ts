@@ -77,8 +77,14 @@ export function postShareText(
   { id, body, languageName }: { id: string; body: string; languageName: string },
 ): ShareContent {
   const url = postUrl(id)
+  const excerpt = postExcerpt(body)
+  // A photo or video posted without a caption has no words to quote, and an
+  // empty pair of quotation marks above a link reads as a broken share.
+  if (!excerpt) {
+    return { message: t('share.postMessageNoText', { language: languageName, url }), url }
+  }
   return {
-    message: t('share.postMessage', { excerpt: postExcerpt(body), language: languageName, url }),
+    message: t('share.postMessage', { excerpt, language: languageName, url }),
     url,
   }
 }

@@ -448,6 +448,7 @@ export const en = {
     aboutProof:
       'Spacing and self-testing: the two best-proven findings in memory research, since the 1880s.',
     aboutClose: 'Got it',
+    audioFull: 'This card already holds as many recordings as it can keep.',
   },
 
   messageMeta: {
@@ -1333,6 +1334,7 @@ export const en = {
     messageSent: 'Reported. Thank you — we look at every one.',
     profileSent: 'Report sent. We will look into it.',
     failed: 'Could not report',
+    commentQuestion: 'Why are you reporting this comment?',
   },
 
   /**
@@ -1389,6 +1391,7 @@ export const en = {
       one: '+{count} more',
       other: '+{count} more',
     },
+    commentReply: '{name} replied to your comment',
   },
   feed: {
     pickTitle: 'No post open',
@@ -1480,6 +1483,29 @@ export const en = {
       'Somebody native will fix it — usually within the hour. Corrections are unlimited on every plan.',
     voiceNote: 'Voice note',
     top: 'Top',
+    newPost: '+ Post',
+    emptyTitle: 'Nothing here yet',
+    emptyBody: 'Share something from your day, or ask for help with a sentence.',
+    badgeCorrection: 'Correction needed',
+    badgePronunciation: 'Pronunciation needed',
+    openPost: 'Opens the post',
+    viewPost: 'View post',
+    notAsking: 'This post isn’t asking for that.',
+    needsText: 'Asking for help needs the sentence you are asking about.',
+    askNeedsLearning: 'Asking for help works in a language you’re learning — pick one above.',
+    needsSomething: 'Write something, or add a photo or a video.',
+    languageNotYours: 'You can post in a language you speak or are learning.',
+    postLimit: 'You have posted a lot today. Try again tomorrow.',
+    postFailed: 'Couldn’t post that — try again shortly.',
+    correctionsTitle: 'Corrections',
+    recordingsTitle: 'Recordings',
+    reply: 'Reply',
+    replyingTo: 'Replying to {name}',
+    cancelReply: 'Cancel reply',
+    commentRemoved: 'Comment removed',
+    reportComment: 'Report comment',
+    commentOptions: 'Comment options',
+    viewReplies: { one: 'View {count} more reply', other: 'View {count} more replies' },
   },
 
   profile: {
@@ -2220,6 +2246,7 @@ export const en = {
     },
     badge: 'Share the {label} badge',
     badgeMessage: 'I earned the “{label}” badge on LangX. Practise with me: {url}',
+    postMessageNoText: 'A {language} moment on LangX: {url}',
   },
 
   linkDevice: {

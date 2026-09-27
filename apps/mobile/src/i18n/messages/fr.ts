@@ -358,6 +358,7 @@ export const fr: Localized<EnMessages> = {
     aboutProof:
       'Espacement et autotest : les deux résultats les mieux établis sur la mémoire, depuis 1880.',
     aboutClose: 'J’ai compris',
+    audioFull: 'Cette carte contient déjà autant d’enregistrements qu’elle peut en garder.',
   },
 
   messageMeta: {
@@ -1186,6 +1187,7 @@ export const fr: Localized<EnMessages> = {
     messageSent: 'Signalé. Merci — nous les examinons tous.',
     profileSent: 'Signalement envoyé. Nous allons regarder.',
     failed: 'Signalement impossible',
+    commentQuestion: 'Pourquoi signalez-vous ce commentaire ?',
   },
 
   inbox: {
@@ -1229,6 +1231,7 @@ export const fr: Localized<EnMessages> = {
       one: '+{count} de plus',
       other: '+{count} de plus',
     },
+    commentReply: '{name} a répondu à votre commentaire',
   },
   feed: {
     pickTitle: 'Aucun post ouvert',
@@ -1321,6 +1324,30 @@ export const fr: Localized<EnMessages> = {
       'Quelqu’un de natif la corrigera, en général dans l’heure. Les corrections sont illimitées sur tous les forfaits.',
     voiceNote: 'Note vocale',
     top: 'Top',
+    newPost: '+ Publier',
+    emptyTitle: 'Rien ici pour l’instant',
+    emptyBody: 'Partagez un moment de votre journée, ou demandez de l’aide sur une phrase.',
+    badgeCorrection: 'Correction demandée',
+    badgePronunciation: 'Prononciation demandée',
+    openPost: 'Ouvre la publication',
+    viewPost: 'Voir la publication',
+    notAsking: 'Cette publication ne demande pas cela.',
+    needsText: 'Pour demander de l’aide, écrivez la phrase concernée.',
+    askNeedsLearning:
+      'Demander de l’aide se fait dans une langue que vous apprenez — choisissez-en une ci-dessus.',
+    needsSomething: 'Écrivez quelque chose, ou ajoutez une photo ou une vidéo.',
+    languageNotYours: 'Vous pouvez publier dans une langue que vous parlez ou apprenez.',
+    postLimit: 'Vous avez beaucoup publié aujourd’hui. Réessayez demain.',
+    postFailed: 'Impossible de publier — réessayez dans un instant.',
+    correctionsTitle: 'Corrections',
+    recordingsTitle: 'Enregistrements',
+    reply: 'Répondre',
+    replyingTo: 'En réponse à {name}',
+    cancelReply: 'Annuler la réponse',
+    commentRemoved: 'Commentaire supprimé',
+    reportComment: 'Signaler le commentaire',
+    commentOptions: 'Options du commentaire',
+    viewReplies: { one: 'Voir {count} autre réponse', other: 'Voir {count} autres réponses' },
   },
 
   profile: {
@@ -2036,6 +2063,7 @@ export const fr: Localized<EnMessages> = {
     },
     badge: 'Partager le badge {label}',
     badgeMessage: 'J’ai obtenu le badge « {label} » sur LangX. Pratique avec moi : {url}',
+    postMessageNoText: 'Un moment en {language} sur LangX : {url}',
   },
 
   linkDevice: {

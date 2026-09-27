@@ -17,11 +17,13 @@ import type { Href } from 'expo-router'
  */
 export function notificationRoute(data: unknown): Href | null {
   if (typeof data !== 'object' || data === null) return null
-  const { kind, conversationId, postId, handle } = data as {
+  const { kind, conversationId, postId, handle, commentId } = data as {
     kind?: unknown
     conversationId?: unknown
     postId?: unknown
     handle?: unknown
+    /** A comment reply: which comment, so the post opens at its thread. */
+    commentId?: unknown
   }
   if (typeof kind !== 'string' || !(PUSH_KINDS as readonly string[]).includes(kind)) return null
 
@@ -62,7 +64,11 @@ export function notificationRoute(data: unknown): Href | null {
       // A correction or an answer lands on the post it is about; a follow on
       // the person who did it. Neither id is guaranteed — a batch of likes
       // carries a post, a follow carries a handle.
-      if (typeof postId === 'string' && postId.length > 0) return `/post/${postId}`
+      if (typeof postId === 'string' && postId.length > 0) {
+        return typeof commentId === 'string' && commentId.length > 0
+          ? `/post/${postId}?comment=${encodeURIComponent(commentId)}`
+          : `/post/${postId}`
+      }
       if (typeof handle === 'string' && handle.length > 0) return `/${handle}`
       // Neither survived, so the push cannot name what it is about — but the
       // notification centre can, because the row it came from is the first

@@ -366,6 +366,7 @@ export const tr: Localized<EnMessages> = {
     aboutProof:
       'Aralıklı tekrar ve kendini test etme: 1880’lerden beri en sağlam iki hafıza bulgusu.',
     aboutClose: 'Anladım',
+    audioFull: 'Bu kart tutabileceği kadar kayıt tutuyor.',
   },
 
   messageMeta: {
@@ -1182,6 +1183,7 @@ export const tr: Localized<EnMessages> = {
     messageSent: 'Bildirildi. Teşekkürler — hepsine bakıyoruz.',
     profileSent: 'Bildirim gönderildi. İnceleyeceğiz.',
     failed: 'Bildirilemedi',
+    commentQuestion: 'Bu yorumu neden bildiriyorsun?',
   },
 
   inbox: {
@@ -1225,6 +1227,7 @@ export const tr: Localized<EnMessages> = {
       one: '+{count} daha',
       other: '+{count} daha',
     },
+    commentReply: '{name} yorumuna yanıt verdi',
   },
   feed: {
     pickTitle: 'Açık gönderi yok',
@@ -1316,6 +1319,29 @@ export const tr: Localized<EnMessages> = {
       'Anadili olan biri düzeltir — genellikle bir saat içinde. Düzeltmeler her planda sınırsız.',
     voiceNote: 'Ses kaydı',
     top: 'Öne çıkan',
+    newPost: '+ Paylaş',
+    emptyTitle: 'Burada henüz bir şey yok',
+    emptyBody: 'Gününden bir şey paylaş ya da bir cümle için yardım iste.',
+    badgeCorrection: 'Düzeltme isteniyor',
+    badgePronunciation: 'Telaffuz isteniyor',
+    openPost: 'Gönderiyi açar',
+    viewPost: 'Gönderiyi gör',
+    notAsking: 'Bu gönderi bunu istemiyor.',
+    needsText: 'Yardım istemek için sorduğun cümleyi yazmalısın.',
+    askNeedsLearning: 'Yardım istemek öğrendiğin bir dilde olur — yukarıdan birini seç.',
+    needsSomething: 'Bir şey yaz ya da fotoğraf veya video ekle.',
+    languageNotYours: 'Konuştuğun ya da öğrendiğin bir dilde paylaşabilirsin.',
+    postLimit: 'Bugün çok paylaştın. Yarın tekrar dene.',
+    postFailed: 'Paylaşılamadı — birazdan tekrar dene.',
+    correctionsTitle: 'Düzeltmeler',
+    recordingsTitle: 'Kayıtlar',
+    reply: 'Yanıtla',
+    replyingTo: 'Yanıtlanan: {name}',
+    cancelReply: 'Yanıtı iptal et',
+    commentRemoved: 'Yorum kaldırıldı',
+    reportComment: 'Yorumu bildir',
+    commentOptions: 'Yorum seçenekleri',
+    viewReplies: { one: '{count} yanıt daha gör', other: '{count} yanıt daha gör' },
   },
 
   profile: {
@@ -2017,6 +2043,7 @@ export const tr: Localized<EnMessages> = {
     },
     badge: '{label} rozetini paylaş',
     badgeMessage: 'LangX’te “{label}” rozetini kazandım. Benimle pratik yap: {url}',
+    postMessageNoText: 'LangX’te bir {language} anı: {url}',
   },
 
   linkDevice: {

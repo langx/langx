@@ -7,6 +7,7 @@ import { Platform, Pressable, Text, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
 import { audioProgress } from '../lib/audioProgress'
+import { feedMediaHeight } from '../lib/feedMedia'
 import {
   WAVEFORM_BAR_WIDTH,
   playedBarCount,
@@ -320,7 +321,16 @@ function Waveform({
  * read out of the file header, so this is the path a good number of imported
  * photos take.
  */
-export function ImageBubble({ media, onPress }: { media: Media; onPress?: () => void }) {
+export function ImageBubble({
+  media,
+  onPress,
+  fillWidth,
+}: {
+  media: Media
+  onPress?: () => void
+  /** The feed card's column width: drawn full width, capped — see `feedMediaHeight`. */
+  fillWidth?: number
+}) {
   const styles = useStyles()
   const t = useT()
 
@@ -330,6 +340,10 @@ export function ImageBubble({ media, onPress }: { media: Media; onPress?: () => 
   const ratio = width && height ? width / height : measured
   if (!url) return null
 
+  const box = fillWidth
+    ? [styles.image, { height: feedMediaHeight(fillWidth, ratio), width: fillWidth }]
+    : [styles.image, ratio ? { aspectRatio: ratio } : styles.imageUnmeasured]
+
   /*
    * The box is sized here and the picture fills it, so the slot a message
    * reserves is the same before and after the bytes arrive. Until then a
@@ -337,12 +351,17 @@ export function ImageBubble({ media, onPress }: { media: Media; onPress?: () => 
    * every other placeholder in the app, which now does.
    */
   const picture = (
-    <View style={[styles.image, ratio ? { aspectRatio: ratio } : styles.imageUnmeasured]}>
+    <View style={box}>
       {loaded ? null : <Skeleton radius={0} style={styles.placeholder} />}
       <Image
         source={{ uri: url }}
         style={styles.imageFill}
-        contentFit="cover"
+        /*
+         * `contain` at full width: the frame is the picture's own shape until
+         * the height cap bites, and then letterboxing shows what a crop would
+         * have cut off.
+         */
+        contentFit={fillWidth ? 'contain' : 'cover'}
         transition={150}
         onLoad={({ source }) => {
           setLoaded(true)
@@ -421,6 +440,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     width: GALLERY_WIDTH,
   },
   tile: { backgroundColor: colors.fill, borderRadius: radius.sm, overflow: 'hidden' },
+  fillColumn: { alignSelf: 'stretch' },
+  fillPending: { height: 220 },
   tileFill: { height: '100%', width: '100%' },
   tilePlay: {
     alignItems: 'center',
@@ -478,12 +499,15 @@ export function VideoBubble({
   mode = 'controls',
   playing = false,
   onPress,
+  fillWidth,
 }: {
   media: Media
   mode?: 'controls' | 'preview'
   /** `'preview'` only: whether this one is on screen right now. */
   playing?: boolean
   onPress?: () => void
+  /** As on `ImageBubble`: the feed card's width, drawn full and capped. */
+  fillWidth?: number
 }) {
   const styles = useStyles()
   const t = useT()
@@ -530,7 +554,14 @@ export function VideoBubble({
   )
 
   return (
-    <View style={[styles.video, { aspectRatio: ratio }]}>
+    <View
+      style={[
+        styles.video,
+        fillWidth
+          ? { height: feedMediaHeight(fillWidth, ratio), width: fillWidth }
+          : { aspectRatio: ratio },
+      ]}
+    >
       {ready ? null : <Skeleton radius={0} style={styles.placeholder} />}
       {preview && onPress ? (
         // Only in preview mode. With native controls on, a `Pressable` around
@@ -619,6 +650,7 @@ export function MediaGallery({
   onOpen,
   videoMode = 'controls',
   videoPlaying = false,
+  fill = false,
 }: {
   items: readonly Media[]
   mine?: boolean
@@ -626,6 +658,73 @@ export function MediaGallery({
   /** The feed asks for `'preview'`; chat keeps the thread's controls. */
   videoMode?: 'controls' | 'preview'
   videoPlaying?: boolean
+  /**
+   * Span the column instead of sitting at a bubble's width. The feed card
+   * asks for it — a photo moment is the card, not an attachment to it — and
+   * chat never does, so a bubble keeps its size.
+   */
+  fill?: boolean
+}) {
+  const styles = useStyles()
+  /*
+   * Measured rather than `width: '100%'` plus an aspect ratio: the height has
+   * a cap, and Yoga resolves a capped aspect ratio by narrowing the box, which
+   * would leave a tall photo floating in the middle of the column.
+   */
+  const [columnWidth, setColumnWidth] = useState(0)
+
+  const first = items[0]
+  if (!first) return null
+
+  if (fill) {
+    return (
+      <View
+        style={styles.fillColumn}
+        onLayout={(event) => setColumnWidth(Math.round(event.nativeEvent.layout.width))}
+      >
+        {columnWidth > 0 ? (
+          <GalleryBody
+            items={items}
+            {...(onOpen ? { onOpen } : {})}
+            videoMode={videoMode}
+            videoPlaying={videoPlaying}
+            width={columnWidth}
+          />
+        ) : (
+          // The slot a card holds until it knows its width: one layout pass,
+          // and without it the list would jump by a picture's height.
+          <View style={styles.fillPending} />
+        )}
+      </View>
+    )
+  }
+
+  return (
+    <GalleryBody
+      items={items}
+      {...(mine !== undefined ? { mine } : {})}
+      {...(onOpen ? { onOpen } : {})}
+      videoMode={videoMode}
+      videoPlaying={videoPlaying}
+    />
+  )
+}
+
+/** The gallery itself, at a bubble's width or — with `width` — at the column's. */
+function GalleryBody({
+  items,
+  mine,
+  onOpen,
+  videoMode,
+  videoPlaying,
+  width,
+}: {
+  items: readonly Media[]
+  mine?: boolean
+  onOpen?: (index: number) => void
+  videoMode: 'controls' | 'preview'
+  videoPlaying: boolean
+  width?: number
 }) {
   const styles = useStyles()
   const t = useT()
@@ -647,11 +746,18 @@ export function MediaGallery({
           mode={videoMode}
           playing={videoPlaying}
           {...(onOpen ? { onPress: () => onOpen(0) } : {})}
+          {...(width ? { fillWidth: width } : {})}
         />
       )
     }
     if (isImageContentType(first.contentType)) {
-      return <ImageBubble media={first} {...(onOpen ? { onPress: () => onOpen(0) } : {})} />
+      return (
+        <ImageBubble
+          media={first}
+          {...(onOpen ? { onPress: () => onOpen(0) } : {})}
+          {...(width ? { fillWidth: width } : {})}
+        />
+      )
     }
     return <AudioBubble media={first} {...(mine !== undefined ? { mine } : {})} />
   }
@@ -659,10 +765,11 @@ export function MediaGallery({
   // Two columns up to four, three beyond it, so a tile never falls below a
   // third of the bubble's width.
   const columns = items.length <= 4 ? 2 : 3
-  const size = (GALLERY_WIDTH - GALLERY_GAP * (columns - 1)) / columns
+  const span = width ?? GALLERY_WIDTH
+  const size = Math.floor((span - GALLERY_GAP * (columns - 1)) / columns)
 
   return (
-    <View style={styles.gallery}>
+    <View style={[styles.gallery, { width: span }]}>
       {items.map((item, index) => {
         const video = isVideoContentType(item.contentType)
         return (

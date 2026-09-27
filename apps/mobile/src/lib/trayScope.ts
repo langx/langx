@@ -4,6 +4,7 @@ import {
   type InAppNotification,
   type TraySync,
 } from '@langx/shared'
+import type { InboxKind } from '../api/types'
 
 /**
  * Which notifications in the OS shade a read has made stale.
@@ -31,7 +32,8 @@ export type TrayScope =
   | { conversationId: string }
   | 'inbox'
   | 'wallet'
-  | { row: Pick<InAppNotification, 'kind' | 'postId' | 'actor'> }
+  // TEMP(feed-api): `kind` widened by `InboxKind` until the reply kind is shared.
+  | { row: Pick<InAppNotification, 'postId' | 'actor'> & { kind: InboxKind } }
 
 const INBOX_KINDS: readonly string[] = ['social', 'badgeEarned', 'profileVisits', 'wallet']
 const WALLET_KINDS: readonly string[] = ['wallet', 'bountyPaid']
@@ -65,6 +67,7 @@ export function belongsTo(data: unknown, scope: TrayScope): boolean {
     case 'postCorrection':
     case 'pronunciationAnswer':
     case 'like':
+    case 'commentReply':
       return kind === 'social' && row.postId !== undefined && postId === row.postId
     // These repeat, one row for the lot, and the tap reads the lot.
     case 'badgeEarned':

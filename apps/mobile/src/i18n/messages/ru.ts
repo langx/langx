@@ -383,6 +383,7 @@ export const ru: Localized<EnMessages> = {
     aboutProof:
       'Интервальное повторение и самопроверка: два самых надёжных вывода о памяти с 1880-х.',
     aboutClose: 'Понятно',
+    audioFull: 'На этой карточке уже столько записей, сколько она может хранить.',
   },
 
   messageMeta: {
@@ -1285,6 +1286,7 @@ export const ru: Localized<EnMessages> = {
     messageSent: 'Жалоба отправлена. Спасибо — мы читаем каждую.',
     profileSent: 'Жалоба отправлена. Мы разберёмся.',
     failed: 'Не удалось отправить жалобу',
+    commentQuestion: 'Почему вы жалуетесь на этот комментарий?',
   },
 
   inbox: {
@@ -1342,6 +1344,7 @@ export const ru: Localized<EnMessages> = {
       many: '+{count} ещё',
       other: '+{count} ещё',
     },
+    commentReply: '{name} ответил на ваш комментарий',
   },
   feed: {
     pickTitle: 'Запись не выбрана',
@@ -1452,6 +1455,34 @@ export const ru: Localized<EnMessages> = {
       'Носитель языка исправит — обычно в течение часа. Исправления без ограничений на любом тарифе.',
     voiceNote: 'Голосовая заметка',
     top: 'Топ',
+    newPost: '+ Пост',
+    emptyTitle: 'Здесь пока пусто',
+    emptyBody: 'Поделитесь чем-нибудь из своего дня или попросите помочь с предложением.',
+    badgeCorrection: 'Нужно исправление',
+    badgePronunciation: 'Нужно произношение',
+    openPost: 'Открывает пост',
+    viewPost: 'Открыть пост',
+    notAsking: 'Этот пост об этом не просит.',
+    needsText: 'Чтобы попросить помощи, напишите предложение, о котором спрашиваете.',
+    askNeedsLearning: 'Просить помощи можно на языке, который вы учите, — выберите его выше.',
+    needsSomething: 'Напишите что-нибудь или добавьте фото или видео.',
+    languageNotYours: 'Публиковать можно на языке, на котором вы говорите или который учите.',
+    postLimit: 'Сегодня вы уже много опубликовали. Попробуйте завтра.',
+    postFailed: 'Не удалось опубликовать — попробуйте чуть позже.',
+    correctionsTitle: 'Исправления',
+    recordingsTitle: 'Записи',
+    reply: 'Ответить',
+    replyingTo: 'Ответ для {name}',
+    cancelReply: 'Отменить ответ',
+    commentRemoved: 'Комментарий удалён',
+    reportComment: 'Пожаловаться на комментарий',
+    commentOptions: 'Действия с комментарием',
+    viewReplies: {
+      one: 'Показать ещё {count} ответ',
+      few: 'Показать ещё {count} ответа',
+      many: 'Показать ещё {count} ответов',
+      other: 'Показать ещё {count} ответа',
+    },
   },
 
   profile: {
@@ -2246,6 +2277,7 @@ export const ru: Localized<EnMessages> = {
     },
     badge: 'Поделиться значком {label}',
     badgeMessage: 'У меня значок «{label}» в LangX. Занимайтесь со мной: {url}',
+    postMessageNoText: 'Момент на языке {language} в LangX: {url}',
   },
 
   linkDevice: {
