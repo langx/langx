@@ -111,6 +111,7 @@ import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { speechLanguageFor } from '../lib/speechLanguage'
 import { errorCodeOf } from '../lib/errors'
 import { listState } from '../lib/listState'
+import { startersDue } from '../lib/conversationStarters'
 import { messageActionsFor, unsentActionsFor } from '../lib/messageActions'
 import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
@@ -122,7 +123,11 @@ import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
-import { ScheduledMessageRows, useScheduleMessage } from '../components/ScheduledMessages'
+import {
+  ScheduledMessageRows,
+  useScheduleMessage,
+  useScheduledMessages,
+} from '../components/ScheduledMessages'
 import { ScheduleTimeSheet } from '../components/ScheduleTimeSheet'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
@@ -2303,6 +2308,29 @@ export function ChatScreen({
               }
             : null
 
+  /*
+   * Conversation starters, when the thread has nothing to answer: no message
+   * yet, or a newest one that has gone stale. `threadItems`, not `items`, so a
+   * sentence just sent — still a stand-in — puts them away at once; an unsent
+   * row, a scheduled message, a picked attachment or a recording does the
+   * same, since the person has plainly started. Not in a window
+   * opened on an old message (the newest is not loaded there), not in a mode
+   * (a reply or an edit is already a sentence with a purpose), and not while
+   * the thread is loading or failed, when "empty" is not known yet.
+   */
+  // The same query the pending rows draw from, so this costs no request.
+  const scheduledCount = useScheduledMessages(conversationId).data?.length ?? 0
+  const offerTopics =
+    !readOnly &&
+    !mode &&
+    jumpAnchor === null &&
+    unsent.length === 0 &&
+    scheduledCount === 0 &&
+    pendingMedia.length === 0 &&
+    !recorder.isRecording &&
+    (state === 'empty' || state === 'content') &&
+    startersDue(threadItems[0]?.createdAt, Date.now())
+
   return (
     /*
      * `tabbed` only in a panel: there the tab bar is below this, already
@@ -2561,7 +2589,9 @@ export function ChatScreen({
                 ListFooterComponent={
                   <>
                     {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
-                    {items.length < SHORT_THREAD_MESSAGES ? (
+                    {/* One opener at a time: the starters above the composer
+                    are the same invitation, and a better one when offered. */}
+                    {items.length < SHORT_THREAD_MESSAGES && !offerTopics ? (
                       <ComposerHint slot="chat" style={styles.threadTip} />
                     ) : null}
                   </>
@@ -2722,6 +2752,7 @@ export function ChatScreen({
                     : t('chat.writeMessage')
               }
               onSend={() => void send()}
+              topicSeed={offerTopics ? conversationId : undefined}
               {...(canSchedule ? { onSendLongPress: () => void openScheduleMenu() } : {})}
               hasAttachment={pendingMedia.length > 0}
               busy={sendingMedia}

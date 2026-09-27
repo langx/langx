@@ -312,7 +312,7 @@ Status: in review
 
 ### PR 15 — Conversation starters
 
-Status: planned
+Status: in review
 
 - `packages/shared`: a list of topic ids; their wording lives in i18n
   (`chat.topics.*`).
@@ -323,7 +323,11 @@ Status: planned
 
 ### PR 16 — GIFs, through Giphy
 
-Status: planned
+Status: dropped
+
+Giphy's API terms forbid proxying requests and caching media URLs
+(<https://developers.giphy.com/docs/api/>), so the server-side design below is
+not allowed; revisit with another provider later.
 
 - `GIPHY_API_KEY` is optional (`env.ts`, `.env.example`); without it there is
   no button.
