@@ -52,6 +52,7 @@ import {
   type AuthoredCorrectionsPage,
   type ProfileBadge,
   type PublicBadges,
+  type ReportInput,
   type UpcomingMeeting,
   CONVERSATION_SEARCH_MIN_LENGTH,
 } from '@langx/shared'
@@ -2035,16 +2036,7 @@ export function useBlockUser() {
 
 export function useReportUser() {
   return useMutation({
-    mutationFn: (input: {
-      userId: string
-      reason: string
-      details?: string
-      conversationId?: string
-      messageId?: string
-      postId?: string
-      // TEMP(feed-api): `reportSchema.commentId` arrives with #1623 (comment replies).
-      commentId?: string
-    }) => api.post('/reports', input),
+    mutationFn: (input: ReportInput) => api.post('/reports', input),
   })
 }
 

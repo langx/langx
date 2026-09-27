@@ -10,6 +10,7 @@
  */
 export type {
   BadgeSummary,
+  CreatePostCommentInput,
   CreatePostCorrectionInput,
   CreatePostInput,
   CreatePronunciationAnswerInput,
@@ -22,6 +23,9 @@ export type {
   LikeTarget,
   LikeTargetType,
   PeoplePage,
+  PostComment,
+  PostCommentReply,
+  PostCommentsPage,
   PostCorrection,
   PostCorrectionsPage,
   ReferralInvitee,
@@ -50,14 +54,7 @@ export type {
 
 // Re-exported above for consumers; imported here because a `export ... from`
 // does not bind the name locally and the DTOs below need to use it.
-import type {
-  CreatePostInput,
-  Equipped,
-  FollowState,
-  LanguageLevel,
-  PlanTier,
-  PostComment as SharedPostComment,
-} from '@langx/shared'
+import type { CreatePostInput, Equipped, FollowState, LanguageLevel, PlanTier } from '@langx/shared'
 
 export interface PublicProfileDto {
   /** Set when the viewer already has a thread with this person. */
@@ -192,61 +189,3 @@ export type PostRefusalReason =
   | 'moment_needs_content'
   | 'language_not_yours'
   | 'stale_cursor'
-
-/*
- * ---------------------------------------------------------------------------
- * TEMP(feed-api): replace with @langx/shared once #1623 (comment replies)
- * merges.
- *
- * Copied from `claude/feed-4b-comment-replies`: `postCommentReplySchema`,
- * `postCommentSchema`, `postCommentsPageSchema` and `createPostCommentSchema`,
- * under the names that PR exports. Reconciling is deleting this block and
- * adding `PostComment`, `PostCommentReply`, `PostCommentsPage` and
- * `CreatePostCommentInput` back to the re-export list at the top.
- * ---------------------------------------------------------------------------
- */
-
-/** `feedAuthorSchema`, which `@langx/shared` exports only as a schema. */
-type FeedAuthor = SharedPostComment['author']
-
-/**
- * TEMP(feed-api): `PostCommentReply` — a comment as a reply is drawn, with no
- * thread under it. Every field after `createdAt` is absent unless it says
- * something, so the flat read of an API without replies fits it unchanged.
- */
-export interface PostCommentReply {
-  _id: string
-  author: FeedAuthor
-  /** `''` on a removed comment, which says so in `deleted`. */
-  body: string
-  createdAt: string
-  /** The thread's first comment, on a reply. */
-  parentId?: string
-  /** Who a reply to a reply answers. Absent on a reply to the thread's root. */
-  replyTo?: FeedAuthor
-  /** A removed root kept because replies to it survive: "Comment removed". */
-  deleted?: true
-}
-
-/** TEMP(feed-api): `PostComment` — a root, with its thread on threaded reads. */
-export interface PostComment extends PostCommentReply {
-  /** Threaded reads only: how many replies the thread holds. */
-  replyCount?: number
-  /** Threaded reads only: the first `COMMENT_REPLY_PREVIEW`, oldest first. */
-  replies?: PostCommentReply[]
-}
-
-/**
- * TEMP(feed-api): `PostCommentsPage` — the comments list, threaded or flat,
- * and one thread's replies (`GET /posts/:id/comments/:commentId/replies`).
- */
-export interface PostCommentsPage {
-  items: PostComment[]
-  nextCursor: string | null
-}
-
-/** TEMP(feed-api): `CreatePostCommentInput` — `parentId` may be any comment in the thread. */
-export interface CreatePostCommentInput {
-  body: string
-  parentId?: string
-}
