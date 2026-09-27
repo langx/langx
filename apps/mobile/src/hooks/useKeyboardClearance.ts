@@ -117,12 +117,20 @@ export function useKeyboardClearance(scrollTo: (offset: number, animated: boolea
     const inner = content.current
     const view = scroller.current
     if (!keyboard || !box || !inner || !view) return
-    box.measureInWindow((_x, y, _width, height) => {
-      const covered = y + height + spacing.md - keyboard.screenY
-      if (covered <= 0) return
-      inner.measureInWindow((_ix, contentY) =>
-        view.measureInWindow((_vx, viewY) => scroll.current(viewY - contentY + covered, false)),
-      )
+    /*
+     * Cleared against whichever comes first, the keyboard or the scroll
+     * view's own bottom edge. They are the same line until something is
+     * pinned between them — the post screen's recorder sits under its list —
+     * and then a box lifted only above the keyboard lands behind the recorder,
+     * focused and out of reach.
+     */
+    view.measureInWindow((_vx, viewY, _vw, viewHeight) => {
+      const bottom = Math.min(keyboard.screenY, viewY + viewHeight)
+      box.measureInWindow((_x, y, _width, height) => {
+        const covered = y + height + spacing.md - bottom
+        if (covered <= 0) return
+        inner.measureInWindow((_ix, contentY) => scroll.current(viewY - contentY + covered, false))
+      })
     })
   }, [])
 

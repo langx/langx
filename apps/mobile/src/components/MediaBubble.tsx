@@ -577,6 +577,13 @@ export function VideoBubble({
       style={styles.videoFill}
       contentFit="contain"
       nativeControls={!preview}
+      /*
+       * Off for the silent preview. With it on, iOS draws its Live Text
+       * button over any paused frame — so a feed clip scrolled out of play
+       * sprouted a system control on a surface that has none and whose tap
+       * belongs to the viewer. The thread's player keeps it.
+       */
+      allowsVideoFrameAnalysis={!preview}
       fullscreenOptions={{ enable: !preview }}
       /*
        * In preview mode the tap belongs to the `Pressable` wrapped around
@@ -646,6 +653,9 @@ export function VideoTile({ url }: { url: string }) {
         style={styles.tileFill}
         contentFit="cover"
         nativeControls={false}
+        // A tile is a paused first frame, which is exactly what Live Text
+        // would put its button on; see `VideoBubble`.
+        allowsVideoFrameAnalysis={false}
       />
     </>
   )
