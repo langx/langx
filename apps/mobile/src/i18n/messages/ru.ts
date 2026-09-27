@@ -1132,6 +1132,22 @@ export const ru: Localized<EnMessages> = {
     meetingLength: 'Сколько',
     meetingPast: 'Выбери время, которое ещё не прошло.',
     meetingFailed: 'Не удалось обновить эту встречу.',
+    scheduleTitle: 'Отправить позже',
+    scheduleTheirMorning: 'Утром у собеседника ({time} по его времени)',
+    schedulePick: 'Выбрать время',
+    scheduleConfirm: 'Запланировать',
+    scheduleFailed: 'Не удалось запланировать сообщение.',
+    scheduleTooMany: {
+      one: 'В одном чате может ждать не больше {count} сообщения.',
+      few: 'В одном чате может ждать не больше {count} сообщений.',
+      many: 'В одном чате может ждать не больше {count} сообщений.',
+      other: 'В одном чате может ждать не больше {count} сообщения.',
+    },
+    scheduledFor: 'Отправится {time}',
+    scheduledSending: 'Отправляется…',
+    scheduledNotSent: 'Не удалось отправить',
+    scheduledDismiss: 'Убрать',
+    scheduledCancel: 'Отменить запланированное сообщение',
     translating: 'Переводим…',
     writeMessage: 'Напиши сообщение…',
     writeCorrection: 'Напиши исправление…',
@@ -1255,6 +1271,13 @@ export const ru: Localized<EnMessages> = {
     emptyVisual: 'Здесь соберутся фото и видео, которыми вы обменяетесь.',
     emptyAudio: 'Здесь соберутся голосовые из этого чата.',
     tabPicker: 'Фото и видео или голосовые',
+  },
+
+  chatSearch: {
+    open: 'Поиск',
+    placeholder: 'Поиск в этом чате',
+    hint: 'Найдите сообщение по любому слову из него.',
+    none: 'Нет сообщений с «{term}».',
   },
 
   messageMenu: {

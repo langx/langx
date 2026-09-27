@@ -1065,6 +1065,20 @@ export const de: Localized<EnMessages> = {
     meetingLength: 'Wie lange',
     meetingPast: 'Wähle eine Zeit, die noch nicht vorbei ist.',
     meetingFailed: 'Der Termin konnte nicht aktualisiert werden.',
+    scheduleTitle: 'Später senden',
+    scheduleTheirMorning: 'Bei ihnen am Morgen ({time} Ortszeit dort)',
+    schedulePick: 'Zeit wählen',
+    scheduleConfirm: 'Planen',
+    scheduleFailed: 'Die Nachricht konnte nicht geplant werden.',
+    scheduleTooMany: {
+      one: 'In einem Chat kann nur {count} Nachricht gleichzeitig warten.',
+      other: 'In einem Chat können bis zu {count} Nachrichten gleichzeitig warten.',
+    },
+    scheduledFor: 'Wird {time} gesendet',
+    scheduledSending: 'Wird gesendet…',
+    scheduledNotSent: 'Konnte nicht gesendet werden',
+    scheduledDismiss: 'Entfernen',
+    scheduledCancel: 'Geplante Nachricht abbrechen',
     translating: 'Wird übersetzt…',
     writeMessage: 'Schreib eine Nachricht…',
     writeCorrection: 'Schreib die Korrektur…',
@@ -1187,6 +1201,13 @@ export const de: Localized<EnMessages> = {
     emptyVisual: 'Fotos und Videos, die ihr euch schickt, sammeln sich hier.',
     emptyAudio: 'Sprachnachrichten aus diesem Chat sammeln sich hier.',
     tabPicker: 'Fotos und Video oder Sprachnachrichten',
+  },
+
+  chatSearch: {
+    open: 'Suchen',
+    placeholder: 'In diesem Chat suchen',
+    hint: 'Finde eine Nachricht über ein beliebiges Wort darin.',
+    none: 'Keine Nachrichten mit „{term}“.',
   },
 
   messageMenu: {

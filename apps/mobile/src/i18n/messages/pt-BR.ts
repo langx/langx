@@ -1034,6 +1034,20 @@ export const ptBR: Localized<EnMessages> = {
     meetingLength: 'Duração',
     meetingPast: 'Escolha um horário que ainda não passou.',
     meetingFailed: 'Não foi possível atualizar esse encontro.',
+    scheduleTitle: 'Enviar mais tarde',
+    scheduleTheirMorning: 'Na manhã da pessoa ({time} no horário dela)',
+    schedulePick: 'Escolher um horário',
+    scheduleConfirm: 'Agendar',
+    scheduleFailed: 'Não foi possível agendar essa mensagem.',
+    scheduleTooMany: {
+      one: 'Até {count} mensagem pode esperar por conversa.',
+      other: 'Até {count} mensagens podem esperar por conversa.',
+    },
+    scheduledFor: 'Envia {time}',
+    scheduledSending: 'Enviando…',
+    scheduledNotSent: 'Não foi possível enviar',
+    scheduledDismiss: 'Descartar',
+    scheduledCancel: 'Cancelar a mensagem agendada',
     translating: 'Traduzindo…',
     writeMessage: 'Escreva uma mensagem…',
     writeCorrection: 'Escreva a correção…',
@@ -1154,6 +1168,13 @@ export const ptBR: Localized<EnMessages> = {
     emptyVisual: 'As fotos e os vídeos que vocês enviarem ficam aqui.',
     emptyAudio: 'As mensagens de voz desta conversa ficam aqui.',
     tabPicker: 'Fotos e vídeo, ou mensagens de voz',
+  },
+
+  chatSearch: {
+    open: 'Buscar',
+    placeholder: 'Buscar nesta conversa',
+    hint: 'Encontre uma mensagem por qualquer palavra dela.',
+    none: 'Nenhuma mensagem com “{term}”.',
   },
 
   messageMenu: {

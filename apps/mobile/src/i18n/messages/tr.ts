@@ -1039,6 +1039,20 @@ export const tr: Localized<EnMessages> = {
     meetingLength: 'Ne kadar',
     meetingPast: 'Geçmemiş bir saat seç.',
     meetingFailed: 'Bu randevu güncellenemedi.',
+    scheduleTitle: 'Sonra gönder',
+    scheduleTheirMorning: 'Onun sabahında (onun saatiyle {time})',
+    schedulePick: 'Saat seç',
+    scheduleConfirm: 'Zamanla',
+    scheduleFailed: 'Bu mesaj zamanlanamadı.',
+    scheduleTooMany: {
+      one: 'Bir sohbette aynı anda en fazla {count} mesaj bekleyebilir.',
+      other: 'Bir sohbette aynı anda en fazla {count} mesaj bekleyebilir.',
+    },
+    scheduledFor: '{time} gönderilecek',
+    scheduledSending: 'Gönderiliyor…',
+    scheduledNotSent: 'Gönderilemedi',
+    scheduledDismiss: 'Kaldır',
+    scheduledCancel: 'Zamanlanmış mesajı iptal et',
     translating: 'Çevriliyor…',
     writeMessage: 'Bir mesaj yaz…',
     writeCorrection: 'Düzeltmeyi yaz…',
@@ -1158,6 +1172,13 @@ export const tr: Localized<EnMessages> = {
     emptyVisual: 'Birbirinize gönderdiğiniz fotoğraf ve videolar burada birikir.',
     emptyAudio: 'Bu sohbetteki sesli notlar burada birikir.',
     tabPicker: 'Fotoğraf ve video ya da sesli notlar',
+  },
+
+  chatSearch: {
+    open: 'Ara',
+    placeholder: 'Bu sohbette ara',
+    hint: 'Bir mesajı içindeki herhangi bir kelimeyle bul.',
+    none: '“{term}” geçen mesaj yok.',
   },
 
   messageMenu: {

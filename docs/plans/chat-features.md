@@ -225,7 +225,7 @@ Status: planned
 
 ### PR 9 — "Send later" and "Send in their morning"
 
-Status: planned
+Status: in review
 
 - A new `scheduledMessages` collection (`collections.ts`) with its repository
   in `modules/chat/scheduled.ts`. Indexes `{ status, sendAt }` and
@@ -284,7 +284,7 @@ Status: done (#1611)
 
 ### PR 13 — Search within a conversation
 
-Status: planned
+Status: in review
 
 - `GET /conversations/:id/search?q=`: a repository function with a
   participant check and an escaped, case-insensitive regex, scanning one

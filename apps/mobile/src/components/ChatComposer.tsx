@@ -32,6 +32,11 @@ interface ChatComposerProps {
   placeholder: string
   onSend: () => void
   /**
+   * A long press on the send button — "Send later" in a thread. Absent where
+   * there is nothing to schedule into, like the screen that starts one.
+   */
+  onSendLongPress?: () => void
+  /**
    * Something other than the text is ready to go — a picked photo — so the
    * send button stays up with an empty field.
    */
@@ -72,6 +77,7 @@ export function ChatComposer({
   onChangeText,
   placeholder,
   onSend,
+  onSendLongPress,
   hasAttachment = false,
   busy = false,
   autoFocus = false,
@@ -245,6 +251,7 @@ export function ChatComposer({
               accessibilityRole="button"
               accessibilityLabel={t('common.send')}
               onPress={onSend}
+              {...(onSendLongPress ? { onLongPress: onSendLongPress } : {})}
               disabled={busy}
               style={({ pressed }) => [styles.send, pressed && !busy && styles.sendPressed]}
             >

@@ -1185,6 +1185,21 @@ export const en = {
     meetingLength: 'How long',
     meetingPast: 'Pick a time that has not passed.',
     meetingFailed: 'Could not update that meeting.',
+    /** Long press on the send button: when the message should go instead of now. */
+    scheduleTitle: 'Send later',
+    scheduleTheirMorning: 'In their morning ({time} their time)',
+    schedulePick: 'Pick a time',
+    scheduleConfirm: 'Schedule',
+    scheduleFailed: 'Could not schedule that message.',
+    scheduleTooMany: {
+      one: 'Only {count} message can wait in a conversation at a time.',
+      other: 'Up to {count} messages can wait in a conversation at a time.',
+    },
+    scheduledFor: 'Sends {time}',
+    scheduledSending: 'Sending…',
+    scheduledNotSent: 'Could not be sent',
+    scheduledDismiss: 'Dismiss',
+    scheduledCancel: 'Cancel this scheduled message',
     translating: 'Translating…',
     writeMessage: 'Write a message…',
     writeCorrection: 'Write the correction…',
@@ -1307,6 +1322,13 @@ export const en = {
     emptyVisual: 'Photos and video you send each other will collect here.',
     emptyAudio: 'Voice notes from this chat will collect here.',
     tabPicker: 'Photos and video, or voice notes',
+  },
+
+  chatSearch: {
+    open: 'Search',
+    placeholder: 'Search this chat',
+    hint: 'Find a message by any word in it.',
+    none: 'No messages with “{term}”.',
   },
 
   messageMenu: {

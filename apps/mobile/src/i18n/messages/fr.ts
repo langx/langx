@@ -1044,6 +1044,20 @@ export const fr: Localized<EnMessages> = {
     meetingLength: 'Combien de temps',
     meetingPast: 'Choisis un créneau qui n’est pas passé.',
     meetingFailed: 'Impossible de mettre ce créneau à jour.',
+    scheduleTitle: 'Envoyer plus tard',
+    scheduleTheirMorning: 'Pendant sa matinée ({time}, son heure)',
+    schedulePick: 'Choisir une heure',
+    scheduleConfirm: 'Programmer',
+    scheduleFailed: 'Impossible de programmer ce message.',
+    scheduleTooMany: {
+      one: 'Jusqu’à {count} message peut attendre par conversation.',
+      other: 'Jusqu’à {count} messages peuvent attendre par conversation.',
+    },
+    scheduledFor: 'Envoi {time}',
+    scheduledSending: 'Envoi…',
+    scheduledNotSent: 'Envoi impossible',
+    scheduledDismiss: 'Ignorer',
+    scheduledCancel: 'Annuler le message programmé',
     translating: 'Traduction…',
     writeMessage: 'Écris un message…',
     writeCorrection: 'Écris la correction…',
@@ -1165,6 +1179,13 @@ export const fr: Localized<EnMessages> = {
     emptyVisual: 'Les photos et vidéos que vous vous envoyez s’accumuleront ici.',
     emptyAudio: 'Les messages vocaux de cette conversation s’accumuleront ici.',
     tabPicker: 'Photos et vidéo, ou messages vocaux',
+  },
+
+  chatSearch: {
+    open: 'Rechercher',
+    placeholder: 'Rechercher dans cette discussion',
+    hint: 'Retrouvez un message grâce à n’importe quel mot qu’il contient.',
+    none: 'Aucun message avec « {term} ».',
   },
 
   messageMenu: {
