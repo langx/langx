@@ -433,6 +433,9 @@ export async function purgeExpiredAccounts(
        * not per person, so the other side's cards in the same deck stay.
        */
       db.collection(COLLECTIONS.phraseCards).deleteMany({ authorId: userId }),
+      // Words written and never sent. Nobody else has seen them, so nothing is
+      // owed to anybody by keeping them.
+      db.collection(COLLECTIONS.scheduledMessages).deleteMany({ senderId: userId }),
       /*
        * Echo is entirely private — a card is a note somebody wrote to
        * themselves and nobody else can see one — so both collections go
