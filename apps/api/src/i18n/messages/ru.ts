@@ -93,6 +93,10 @@ export const ru: Localized<ServerMessages> = {
 
       commentBody: 'Нажмите, чтобы прочитать.',
 
+      commentReplyTitle: '{name} ответил на ваш комментарий',
+
+      commentReplyBody: 'Нажмите, чтобы прочитать ответ.',
+
       likesTitle: { one: 'Ваш пост получил 1 лайк', other: 'Ваш пост получил {count} лайков' },
 
       likesBody: 'Кому-то понравилось написанное вами.',

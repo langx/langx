@@ -77,6 +77,10 @@ export const de: Localized<ServerMessages> = {
 
       commentBody: 'Tippe, um ihn zu lesen.',
 
+      commentReplyTitle: '{name} hat auf deinen Kommentar geantwortet',
+
+      commentReplyBody: 'Tippe, um die Antwort zu lesen.',
+
       likesTitle: { one: 'Dein Beitrag hat 1 Like', other: 'Dein Beitrag hat {count} Likes' },
 
       likesBody: 'Jemandem gefällt, was du geschrieben hast.',

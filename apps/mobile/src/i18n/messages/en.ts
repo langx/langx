@@ -1369,6 +1369,11 @@ export const en = {
       one: '{name} and {count} other recorded your sentence',
       other: '{name} and {count} others recorded your sentence',
     },
+    commentReply: '{name} replied to your comment',
+    commentReplyOthers: {
+      one: '{name} and {count} other replied to your comment',
+      other: '{name} and {count} others replied to your comment',
+    },
     badgeEarned: 'You earned a new badge',
     walletPool: {
       one: "Yesterday's pool paid you {count} token",

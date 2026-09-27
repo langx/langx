@@ -84,12 +84,29 @@ export function answerDto(
   }
 }
 
-export function commentDto(doc: PostCommentDoc, authors: AuthorMap): PostComment {
+/**
+ * A comment, with every reply field present only when it says something — so
+ * a comment nobody answered is byte-for-byte what it was before replies.
+ *
+ * `removed` is the caller's call rather than read off the row: a moderator's
+ * hide and an author's tombstone both draw as "Comment removed" under a
+ * thread that survives them, and the words go in both cases.
+ */
+export function commentDto(
+  doc: PostCommentDoc,
+  authors: AuthorMap,
+  removed = Boolean(doc.deletedAt),
+): PostComment {
   return {
     _id: doc._id.toHexString(),
     author: authorDto(authors.get(doc.authorId), doc.authorId),
-    body: doc.body,
+    body: removed ? '' : (doc.body ?? ''),
     createdAt: doc.createdAt.toISOString(),
+    ...(doc.parentId ? { parentId: doc.parentId.toHexString() } : {}),
+    ...(doc.replyToAuthorId
+      ? { replyTo: authorDto(authors.get(doc.replyToAuthorId), doc.replyToAuthorId) }
+      : {}),
+    ...(removed ? { deleted: true as const } : {}),
   }
 }
 

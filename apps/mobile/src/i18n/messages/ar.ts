@@ -1358,6 +1358,15 @@ export const ar: Localized<EnMessages> = {
       many: 'سجّل {name} و{count} شخصًا آخر جملتك',
       other: 'سجّل {name} و{count} شخص آخر جملتك',
     },
+    commentReply: 'ردّ {name} على تعليقك',
+    commentReplyOthers: {
+      zero: 'ردّ {name} على تعليقك',
+      one: 'ردّ {name} وشخص آخر على تعليقك',
+      two: 'ردّ {name} وشخصان آخران على تعليقك',
+      few: 'ردّ {name} و{count} أشخاص آخرين على تعليقك',
+      many: 'ردّ {name} و{count} شخصًا آخر على تعليقك',
+      other: 'ردّ {name} و{count} شخص آخر على تعليقك',
+    },
     badgeEarned: 'حصلت على شارة جديدة',
     walletPool: {
       zero: 'لم يدفع لك تجمّع الأمس أي رمز',

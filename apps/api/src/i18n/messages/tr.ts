@@ -71,6 +71,10 @@ export const tr: Localized<ServerMessages> = {
 
       commentBody: 'Okumak için dokun.',
 
+      commentReplyTitle: '{name} yorumuna yanıt verdi',
+
+      commentReplyBody: 'Yanıtı okumak için dokun.',
+
       likesTitle: { one: 'Gönderin 1 beğeni aldı', other: 'Gönderin {count} beğeni aldı' },
 
       likesBody: 'Yazdığın şeyi beğendiler.',

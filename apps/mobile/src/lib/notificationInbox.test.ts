@@ -24,7 +24,13 @@ describe('notificationHref', () => {
   })
 
   it('lands every kind of feed reaction on the post it is about', () => {
-    for (const kind of ['postComment', 'postCorrection', 'pronunciationAnswer', 'like'] as const) {
+    for (const kind of [
+      'postComment',
+      'postCorrection',
+      'pronunciationAnswer',
+      'like',
+      'commentReply',
+    ] as const) {
       expect(notificationHref(row({ kind, postId: 'p1', actor: SOFIA }), HERE)).toBe(
         `/(app)/post/p1${FROM}`,
       )
@@ -56,7 +62,13 @@ describe('notificationHref', () => {
 
 describe('notificationCopy', () => {
   it('words one person and a collapsed pile differently', () => {
-    for (const kind of ['like', 'postComment', 'postCorrection', 'pronunciationAnswer'] as const) {
+    for (const kind of [
+      'like',
+      'postComment',
+      'postCorrection',
+      'pronunciationAnswer',
+      'commentReply',
+    ] as const) {
       expect(notificationCopy(row({ kind, actor: SOFIA })).key, kind).toBe(`inbox.${kind}`)
 
       const many = notificationCopy(row({ kind, actor: SOFIA, count: 3 }))

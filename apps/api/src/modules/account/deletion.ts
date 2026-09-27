@@ -21,6 +21,7 @@ interface AttachmentRow {
 }
 import { supportsPrefixDelete, supportsPut } from '../../storage/StorageProvider'
 import type { Conversation, Message } from '../chat/conversations'
+import { purgeCommentsBy } from '../feed/comments'
 import type { LegacyMessage } from '../handles/legacyConversations'
 import type { LegacyProfile } from '../handles/legacyProfiles'
 import type { Profile } from '../profiles/profiles'
@@ -393,13 +394,15 @@ export async function purgeExpiredAccounts(
       db.collection(COLLECTIONS.notifications).deleteMany({
         $or: [{ userId }, { actorId: userId }],
       }),
-      // Comments go with the account. They are chatter — nobody's thread
-      // depends on one, nothing was paid for it, and unlike a post or a
-      // correction there is no learner whose page it would leave a hole in.
-      // Recorded answers deliberately stay, for the reason posts and
-      // corrections do: deleting one would rewrite somebody else's answered
-      // request.
-      db.collection(COLLECTIONS.postComments).deleteMany({ authorId: userId }),
+      // Comments go with the account. They are chatter — nothing was paid
+      // for one, and unlike a post or a correction there is no learner whose
+      // page it would leave a hole in. The one exception is a thread's first
+      // comment that other people replied to, which stays as "Comment
+      // removed" so their replies still answer something — see
+      // `purgeCommentsBy`. Recorded answers deliberately stay, for the reason
+      // posts and corrections do: deleting one would rewrite somebody else's
+      // answered request.
+      purgeCommentsBy(db, userId),
       // Both directions. Leaving the incoming edges would keep a deleted
       // account sitting in other people's follower lists, drawn as a name
       // whose profile no longer exists.

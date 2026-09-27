@@ -3,6 +3,7 @@ import {
   createPostCorrectionSchema,
   createPostSchema,
   createPronunciationAnswerSchema,
+  listCommentRepliesQuerySchema,
   listFeedQuerySchema,
   listMyPostsQuerySchema,
   listPostCommentsQuerySchema,
@@ -16,7 +17,13 @@ import { z } from 'zod'
 import { COLLECTIONS } from '../db/collections'
 import { requireAuth } from '../middleware/requireAuth'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
-import { addComment, deleteComment, listPostComments } from '../modules/feed/comments'
+import {
+  addComment,
+  deleteComment,
+  listCommentReplies,
+  listPostComments,
+  type CommentThreadNews,
+} from '../modules/feed/comments'
 import type { Post } from '../modules/feed/documents'
 import { recordNotification } from '../modules/notifications/inbox'
 import { notifyPostReply, type FeedReply } from '../modules/notifications/social'
@@ -37,6 +44,24 @@ import {
 
 const postParamsSchema = z.object({ id: z.string() })
 const childParamsSchema = z.object({ postId: z.string(), id: z.string() })
+const threadParamsSchema = z.object({ id: z.string(), commentId: z.string() })
+
+/**
+ * Whether a reply to a comment writes an inbox row of its own kind.
+ *
+ * **Off, because of the 2.7 store build.** Its notification centre renders each
+ * row through a `switch` with no `default` and then reads `copy.key` off the
+ * answer, so a kind it has never heard of throws inside the list's render and
+ * the whole screen fails — not a blank row, a broken page, for everybody with
+ * one such row in their first thirty. Push is safe on that build (its data
+ * says `social` and carries a `postId`, which it already opens), so replies are
+ * push-only until the builds that cannot draw the row are gone. The post's
+ * author keeps today's `postComment` row either way.
+ *
+ * Turning this on is the whole change: the kind is already in
+ * `IN_APP_NOTIFICATION_KINDS`, the grouping and the client's copy exist.
+ */
+export const COMMENT_REPLY_INBOX_ROWS = false
 
 /**
  * Tells a post's author that somebody answered them.
@@ -58,6 +83,7 @@ const INBOX_KIND = {
   correction: 'postCorrection',
   comment: 'postComment',
   answer: 'pronunciationAnswer',
+  commentReply: 'commentReply',
 } as const
 
 function tellTheAuthor(
@@ -101,6 +127,85 @@ function tellTheAuthor(
     )
   })().catch((error: unknown) => {
     app.log.error({ err: error, postId }, 'feed reply push failed')
+  })
+}
+
+/**
+ * Tells the people in a comment thread that somebody answered in it.
+ *
+ * Who hears: the thread's first commenter, and — on a reply to a reply — the
+ * person answered. Each gets the reply push, throttled per thread. The post's
+ * author hears as they always have, a `postComment` row and push, unless they
+ * are one of those two, in which case the reply push is theirs and the
+ * comment push is not sent: **nobody is told twice about one comment.**
+ *
+ * The same never-throws contract as `tellTheAuthor`.
+ */
+function tellTheThread(
+  app: FastifyInstance,
+  postId: string,
+  responderId: string,
+  replyId: string,
+  thread: CommentThreadNews,
+): void {
+  void (async () => {
+    const post = await app.mongo.db
+      .collection<Post>(COLLECTIONS.posts)
+      .findOne({ _id: new ObjectId(postId) }, { projection: { authorId: 1 } })
+    if (!post) return
+    const db = app.mongo.db
+    const live = { io: app.io, logger: app.log }
+    const senders = { push: app.push, logger: app.log }
+
+    const told = [
+      ...new Set([thread.rootAuthorId, thread.replyToAuthorId].filter((id) => id !== null)),
+    ].filter((id) => id !== responderId)
+
+    for (const userId of told) {
+      const isPostAuthor = userId === post.authorId
+      if (COMMENT_REPLY_INBOX_ROWS || isPostAuthor) {
+        await recordNotification(
+          db,
+          {
+            userId,
+            kind: COMMENT_REPLY_INBOX_ROWS ? INBOX_KIND.commentReply : INBOX_KIND.comment,
+            refId: replyId,
+            actorId: responderId,
+            postId: post._id,
+          },
+          live,
+        )
+      }
+      await notifyPostReply(db, senders, {
+        postId: post._id,
+        authorId: userId,
+        responderId,
+        kind: 'commentReply',
+        threadId: thread.rootId,
+      })
+    }
+
+    if (!told.includes(post.authorId)) {
+      await recordNotification(
+        db,
+        {
+          userId: post.authorId,
+          kind: INBOX_KIND.comment,
+          refId: replyId,
+          actorId: responderId,
+          postId: post._id,
+        },
+        live,
+      )
+      await notifyPostReply(db, senders, {
+        postId: post._id,
+        authorId: post.authorId,
+        responderId,
+        kind: 'comment',
+      })
+    }
+  })().catch((error: unknown) => {
+    app.log.error({ err: error, postId }, 'comment reply push failed')
   })
 }
 
@@ -218,14 +323,35 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: { params: postParamsSchema, body: createPostCommentSchema },
     },
     async (request, reply) => {
-      const comment = await addComment(
+      const { comment, thread } = await addComment(
         app.mongo.db,
         request.userId,
         request.params.id,
         request.body,
       )
-      tellTheAuthor(app, request.params.id, request.userId, 'comment', comment._id)
+      if (thread) tellTheThread(app, request.params.id, request.userId, comment._id, thread)
+      else tellTheAuthor(app, request.params.id, request.userId, 'comment', comment._id)
       return reply.code(201).send(comment)
+    },
+  )
+
+  /** One thread's replies, oldest first — what "View N more replies" opens. */
+  app.get(
+    '/posts/:id/comments/:commentId/replies',
+    {
+      preHandler: requireAuth,
+      schema: { params: threadParamsSchema, querystring: listCommentRepliesQuerySchema },
+    },
+    async (request, reply) => {
+      return reply.send(
+        await listCommentReplies(
+          app.mongo.db,
+          request.userId,
+          request.params.id,
+          request.params.commentId,
+          request.query,
+        ),
+      )
     },
   )
 

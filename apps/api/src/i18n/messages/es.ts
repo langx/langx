@@ -77,6 +77,10 @@ export const es: Localized<ServerMessages> = {
 
       commentBody: 'Toca para leerlo.',
 
+      commentReplyTitle: '{name} respondió a tu comentario',
+
+      commentReplyBody: 'Toca para leer la respuesta.',
+
       likesTitle: {
         one: 'Tu publicación tiene 1 me gusta',
         other: 'Tu publicación tiene {count} me gusta',
