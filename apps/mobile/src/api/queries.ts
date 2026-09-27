@@ -67,8 +67,7 @@ import type {
   GiftClaim,
   BadgeSummary,
   ReferralStatus,
-  CommentRepliesPage,
-  CreateCommentRequest,
+  CreatePostCommentInput,
   CreatePostCorrectionInput,
   CreatePostInput,
   CreatePronunciationAnswerInput,
@@ -85,8 +84,9 @@ import type {
   PostCorrectionsPage,
   PronunciationAnswer,
   PronunciationAnswersPage,
-  ThreadedComment,
-  ThreadedCommentsPage,
+  PostComment,
+  PostCommentReply,
+  PostCommentsPage,
   TimelinePage,
   TokenHistory,
   TokenSummary,
@@ -1643,7 +1643,7 @@ export function usePostComments(postId: string) {
   return useInfiniteQuery({
     queryKey: keys.postComments(postId),
     queryFn: ({ pageParam }) =>
-      api.get<ThreadedCommentsPage>(
+      api.get<PostCommentsPage>(
         `/posts/${postId}/comments?threaded=1${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
@@ -1660,7 +1660,7 @@ export function useCommentReplies(postId: string, commentId: string, enabled: bo
     enabled,
     queryKey: keys.commentReplies(postId, commentId),
     queryFn: ({ pageParam }) =>
-      api.get<CommentRepliesPage>(
+      api.get<PostCommentsPage>(
         `/posts/${postId}/comments/${commentId}/replies${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
@@ -1700,8 +1700,8 @@ export function usePostAnswers(postId: string, enabled = true) {
 export function useAddComment() {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: ({ postId, body, parentId }: CreateCommentRequest & AddCommentTarget) =>
-      api.post<ThreadedComment>(`/posts/${postId}/comments`, {
+    mutationFn: ({ postId, body, parentId }: CreatePostCommentInput & AddCommentTarget) =>
+      api.post<PostComment>(`/posts/${postId}/comments`, {
         body,
         ...(parentId ? { parentId } : {}),
       }),
@@ -1713,11 +1713,11 @@ export function useAddComment() {
         void client.invalidateQueries({ queryKey: keys.postComments(postId) })
         return
       }
-      const reply: ThreadedComment = { ...comment, parentId: rootId }
-      client.setQueryData<InfiniteData<ThreadedCommentsPage>>(keys.postComments(postId), (data) =>
+      const reply: PostCommentReply = { ...comment, parentId: rootId }
+      client.setQueryData<InfiniteData<PostCommentsPage>>(keys.postComments(postId), (data) =>
         appendReply(data, rootId, reply),
       )
-      client.setQueryData<InfiniteData<CommentRepliesPage>>(
+      client.setQueryData<InfiniteData<PostCommentsPage>>(
         keys.commentReplies(postId, rootId),
         (data) => appendToReplies(data, reply),
       )
@@ -1745,11 +1745,11 @@ export function useDeleteComment() {
       client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
         applyCommentCount(data, postId, -1),
       )
-      client.setQueryData<InfiniteData<ThreadedCommentsPage>>(keys.postComments(postId), (data) =>
+      client.setQueryData<InfiniteData<PostCommentsPage>>(keys.postComments(postId), (data) =>
         removeFromThread(data, commentId, rootId),
       )
       if (rootId) {
-        client.setQueryData<InfiniteData<CommentRepliesPage>>(
+        client.setQueryData<InfiniteData<PostCommentsPage>>(
           keys.commentReplies(postId, rootId),
           (data) => removeFromReplies(data, commentId),
         )

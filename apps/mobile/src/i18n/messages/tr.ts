@@ -1227,7 +1227,6 @@ export const tr: Localized<EnMessages> = {
       one: '+{count} daha',
       other: '+{count} daha',
     },
-    commentReply: '{name} yorumuna yanıt verdi',
   },
   feed: {
     pickTitle: 'Açık gönderi yok',

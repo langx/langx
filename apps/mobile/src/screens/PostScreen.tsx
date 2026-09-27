@@ -39,7 +39,13 @@ import {
   usePostCorrections,
   useRemoveEcho,
 } from '../api/queries'
-import type { Media, PostCorrection, PronunciationAnswer, ThreadedComment } from '../api/types'
+import type {
+  Media,
+  PostComment,
+  PostCommentReply,
+  PostCorrection,
+  PronunciationAnswer,
+} from '../api/types'
 import type { MessageKey } from '../i18n'
 import { AudioBubble, MediaGallery } from '../components/MediaBubble'
 import { CommentThread } from '../components/CommentThread'
@@ -307,7 +313,7 @@ export function PostScreen({
   const answers = pronouncing
     ? dedupeById(answerQuery.data?.pages.flatMap((page) => page.items) ?? [])
     : []
-  const comments: ThreadedComment[] = dedupeById(
+  const comments: PostComment[] = dedupeById(
     commentQuery.data?.pages.flatMap((page) => page.items) ?? [],
   )
 
@@ -561,7 +567,7 @@ export function PostScreen({
    * when the box is empty, so a half-written comment is never thrown away.
    * The list then runs to its end, where the composer is.
    */
-  function startReply(target: ThreadedComment): void {
+  function startReply(target: PostCommentReply): void {
     const { rootId, prefill } = replyDraftFor(target)
     setReplyTarget({
       commentId: target._id,
@@ -573,7 +579,7 @@ export function PostScreen({
   }
 
   /** Report somebody else's comment, delete your own — the row's one sheet. */
-  async function commentMore(comment: ThreadedComment, rootId?: string): Promise<void> {
+  async function commentMore(comment: PostCommentReply, rootId?: string): Promise<void> {
     if (!post) return
     const own = comment.author._id === me.data?._id
     const choice = await chooseAlert(t('feed.comment'), undefined, [

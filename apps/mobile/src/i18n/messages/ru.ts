@@ -1344,7 +1344,6 @@ export const ru: Localized<EnMessages> = {
       many: '+{count} ещё',
       other: '+{count} ещё',
     },
-    commentReply: '{name} ответил на ваш комментарий',
   },
   feed: {
     pickTitle: 'Запись не выбрана',

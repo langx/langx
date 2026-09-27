@@ -10,7 +10,6 @@
  */
 export type {
   BadgeSummary,
-  CreatePostCommentInput,
   CreatePostCorrectionInput,
   CreatePostInput,
   CreatePronunciationAnswerInput,
@@ -23,8 +22,6 @@ export type {
   LikeTarget,
   LikeTargetType,
   PeoplePage,
-  PostComment,
-  PostCommentsPage,
   PostCorrection,
   PostCorrectionsPage,
   ReferralInvitee,
@@ -56,7 +53,6 @@ import type {
   Equipped,
   FeedPage as SharedFeedPage,
   FollowState,
-  InAppNotificationKind,
   LanguageLevel,
   Media as SharedMedia,
   PlanTier,
@@ -182,17 +178,20 @@ export interface HandleSearchPage {
  * TEMP(feed-api): replace with @langx/shared once the API stack merges.
  *
  * The wire shapes of the feed timeline, optional asks and comment replies
- * (feed plan §2.1, §2.3, §2.7, §3.3). The API parts that declare them in
- * `packages/shared` are being built on their own branches; until they merge
- * these are the client's only copy, named after the plan so reconciling is
- * swapping each for its shared twin rather than a redesign. Every consumer
- * imports them from here, so this block is the whole of that diff — along
- * with `POST_ASKS`/`PostAsk`/`asksOf` in `src/lib/postAsks.ts`.
+ * (feed plan §2.1, §2.3, §2.7, §3.3) that `main`'s `@langx/shared` does not
+ * have yet. Each carries the name its shared twin has (or will have), so
+ * reconciling is deleting the declaration here and adding the name back to
+ * the re-export list at the top — with `POST_ASKS`/`PostAsk`/`asksOf` in
+ * `src/lib/postAsks.ts` the whole of that diff.
+ *
+ * The comment shapes below are copied from `claude/feed-4b-comment-replies`
+ * (PR #1623): `postCommentReplySchema`, `postCommentSchema`,
+ * `postCommentsPageSchema` and `createPostCommentSchema`.
  * ---------------------------------------------------------------------------
  */
 
 /** `feedAuthorSchema`, which `@langx/shared` exports only as a schema. */
-export type FeedAuthorDto = SharedPostComment['author']
+type FeedAuthor = SharedPostComment['author']
 
 /** TEMP(feed-api): `POST /posts` with asks — `createPostSchema` after the "asks input" part. */
 export interface CreatePostRequest {
@@ -207,8 +206,9 @@ export interface CreatePostRequest {
 export type TimelinePage = SharedFeedPage
 
 /**
- * TEMP(feed-api): the `reason` a refusal carries beside its `code` (plan §2.3,
- * §3.3). Old APIs never send it, so every reader treats it as optional.
+ * TEMP(feed-api): the `reason` values a refusal carries beside its `code`
+ * (plan §2.3, §3.3). `ApiErrorBody.reason` itself is a plain string; this is
+ * the set the client words. Old APIs never send one.
  */
 export type PostRefusalReason =
   | 'not_asked'
@@ -218,51 +218,44 @@ export type PostRefusalReason =
   | 'language_not_yours'
   | 'stale_cursor'
 
-/** TEMP(feed-api): the planned `reason` on `ApiErrorBody`. */
-export interface ApiErrorBodyReason {
-  reason?: string
-}
-
 /**
- * TEMP(feed-api): a comment as the threaded read returns it (plan §2.7).
- *
- * Every added field is optional because the flat read — and an API from
- * before replies — sends none of them.
+ * TEMP(feed-api): `PostCommentReply` — a comment as a reply is drawn, with no
+ * thread under it. Every field after `createdAt` is absent unless it says
+ * something, so the flat read of an API without replies fits it unchanged.
  */
-export interface ThreadedComment extends SharedPostComment {
-  /** The root this reply sits under. Absent on a root. */
+export interface PostCommentReply {
+  _id: string
+  author: FeedAuthor
+  /** `''` on a removed comment, which says so in `deleted`. */
+  body: string
+  createdAt: string
+  /** The thread's first comment, on a reply. */
   parentId?: string
-  /** Who a reply answers, when it answers a reply rather than the root. */
-  replyTo?: FeedAuthorDto
-  /** Roots in a threaded read: how many live replies it has. */
-  replyCount?: number
-  /** Roots in a threaded read: the first `COMMENT_REPLY_PREVIEW`, oldest first. */
-  replies?: ThreadedComment[]
-  /** A removed root kept so its replies survive. Its body is not sent. */
+  /** Who a reply to a reply answers. Absent on a reply to the thread's root. */
+  replyTo?: FeedAuthor
+  /** A removed root kept because replies to it survive: "Comment removed". */
   deleted?: true
 }
 
-/** TEMP(feed-api): `GET /posts/:id/comments?threaded=1`. */
-export interface ThreadedCommentsPage {
-  items: ThreadedComment[]
-  nextCursor: string | null
-}
-
-/** TEMP(feed-api): `GET /posts/:id/comments/:commentId/replies`, oldest first. */
-export interface CommentRepliesPage {
-  items: ThreadedComment[]
-  nextCursor: string | null
-}
-
-/** TEMP(feed-api): `createPostCommentSchema` with `parentId` — any comment id; the server finds the root. */
-export interface CreateCommentRequest {
-  body: string
-  parentId?: string
+/** TEMP(feed-api): `PostComment` — a root, with its thread on threaded reads. */
+export interface PostComment extends PostCommentReply {
+  /** Threaded reads only: how many replies the thread holds. */
+  replyCount?: number
+  /** Threaded reads only: the first `COMMENT_REPLY_PREVIEW`, oldest first. */
+  replies?: PostCommentReply[]
 }
 
 /**
- * TEMP(feed-api): the inbox kinds, with the reply kind Part 4b may add. If 4b
- * ships replies as push-only, this collapses back to the shared type and the
- * `commentReply` cases become dead code to delete.
+ * TEMP(feed-api): `PostCommentsPage` — the comments list, threaded or flat,
+ * and one thread's replies (`GET /posts/:id/comments/:commentId/replies`).
  */
-export type InboxKind = InAppNotificationKind | 'commentReply'
+export interface PostCommentsPage {
+  items: PostComment[]
+  nextCursor: string | null
+}
+
+/** TEMP(feed-api): `CreatePostCommentInput` — `parentId` may be any comment in the thread. */
+export interface CreatePostCommentInput {
+  body: string
+  parentId?: string
+}

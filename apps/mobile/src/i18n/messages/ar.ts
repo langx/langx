@@ -1385,7 +1385,6 @@ export const ar: Localized<EnMessages> = {
       many: '+{count} أخرى',
       other: '+{count} أخرى',
     },
-    commentReply: 'ردّ {name} على تعليقك',
   },
   feed: {
     pickTitle: 'لا منشور مفتوح',

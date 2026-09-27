@@ -1,6 +1,6 @@
 import type { InfiniteData } from '@tanstack/react-query'
 import { describe, expect, it } from 'vitest'
-import type { CommentRepliesPage, ThreadedComment, ThreadedCommentsPage } from '../api/types'
+import type { PostComment, PostCommentsPage } from '../api/types'
 import {
   appendReply,
   appendToReplies,
@@ -14,11 +14,7 @@ import {
 const SOFIA = { _id: 'u1', handle: 'sofia', displayName: 'Sofia' }
 const DENIZ = { _id: 'u2', handle: 'deniz', displayName: 'Deniz' }
 
-function comment(
-  id: string,
-  minute: number,
-  overrides: Partial<ThreadedComment> = {},
-): ThreadedComment {
+function comment(id: string, minute: number, overrides: Partial<PostComment> = {}): PostComment {
   return {
     _id: id,
     author: SOFIA,
@@ -28,14 +24,14 @@ function comment(
   }
 }
 
-function roots(...items: ThreadedComment[]): InfiniteData<ThreadedCommentsPage> {
+function roots(...items: PostComment[]): InfiniteData<PostCommentsPage> {
   return { pages: [{ items, nextCursor: null }], pageParams: [''] }
 }
 
 function replies(
-  items: ThreadedComment[],
+  items: PostComment[],
   nextCursor: string | null = null,
-): InfiniteData<CommentRepliesPage> {
+): InfiniteData<PostCommentsPage> {
   return { pages: [{ items, nextCursor }], pageParams: [''] }
 }
 

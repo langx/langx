@@ -1391,7 +1391,6 @@ export const en = {
       one: '+{count} more',
       other: '+{count} more',
     },
-    commentReply: '{name} replied to your comment',
   },
   feed: {
     pickTitle: 'No post open',

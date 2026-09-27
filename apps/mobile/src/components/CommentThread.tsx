@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, Pressable, Text, View, type LayoutChangeEvent } from 'react-native'
 import { useCommentReplies } from '../api/queries'
-import type { ThreadedComment } from '../api/types'
+import type { PostComment, PostCommentReply } from '../api/types'
 import { useLocale, useT } from '../i18n'
 import { hiddenReplyCount, repliesToShow } from '../lib/commentThread'
 import { relativeTime } from '../lib/format'
@@ -33,15 +33,15 @@ export function CommentThread({
   highlightId,
   onLayout,
 }: {
-  root: ThreadedComment
+  root: PostComment
   postId: string
   /** The route a profile opened from here goes back to. */
   here: string
   expanded: boolean
   onExpand: () => void
-  onReply: (target: ThreadedComment) => void
+  onReply: (target: PostCommentReply) => void
   /** `rootId` is set when the comment is a reply. */
-  onMore: (comment: ThreadedComment, rootId?: string) => void
+  onMore: (comment: PostCommentReply, rootId?: string) => void
   /** The comment a notification pointed at, drawn tinted. */
   highlightId?: string | undefined
   onLayout?: (event: LayoutChangeEvent) => void
@@ -112,7 +112,7 @@ function CommentRow({
   onReply,
   onMore,
 }: {
-  comment: ThreadedComment
+  comment: PostCommentReply
   here: string
   reply?: boolean
   highlighted: boolean

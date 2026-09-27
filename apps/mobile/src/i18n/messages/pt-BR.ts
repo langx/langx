@@ -1219,7 +1219,6 @@ export const ptBR: Localized<EnMessages> = {
       one: '+{count} mais',
       other: '+{count} mais',
     },
-    commentReply: '{name} respondeu ao seu comentário',
   },
   feed: {
     pickTitle: 'Nenhum post aberto',

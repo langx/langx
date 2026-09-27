@@ -74,7 +74,10 @@ export default function ReportScreen() {
         ...(trimmed ? { details: trimmed } : {}),
         ...(conversationId ? { conversationId } : {}),
         ...(messageId ? { messageId } : {}),
-        ...(postId ? { postId } : {}),
+        // A comment report names the comment alone: the server finds its post,
+        // and a `postId` beside it would offer a moderator "Hide this post" on
+        // somebody who was never reported for one.
+        ...(postId && !commentId ? { postId } : {}),
         ...(commentId ? { commentId } : {}),
       },
       {

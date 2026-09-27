@@ -1,5 +1,5 @@
 import type { InfiniteData } from '@tanstack/react-query'
-import type { CommentRepliesPage, ThreadedComment, ThreadedCommentsPage } from '../api/types'
+import type { PostComment, PostCommentReply, PostCommentsPage } from '../api/types'
 
 /**
  * A post's comments as roots with one level of replies, and the patches that
@@ -12,24 +12,24 @@ import type { CommentRepliesPage, ThreadedComment, ThreadedCommentsPage } from '
  *
  * Pure, and free of `react-native`, so vitest can hold every branch.
  */
-type Roots = InfiniteData<ThreadedCommentsPage> | undefined
-type Replies = InfiniteData<CommentRepliesPage> | undefined
+type Roots = InfiniteData<PostCommentsPage> | undefined
+type Replies = InfiniteData<PostCommentsPage> | undefined
 
 /** How many live replies a root has, whichever of the two fields the server filled. */
-export function replyCountOf(root: ThreadedComment): number {
+export function replyCountOf(root: PostComment): number {
   return root.replyCount ?? root.replies?.length ?? 0
 }
 
 function patchRoot(
   data: Roots,
   rootId: string,
-  patch: (root: ThreadedComment) => ThreadedComment | null,
+  patch: (root: PostComment) => PostComment | null,
 ): Roots {
   if (!data) return data
   let changed = false
   const pages = data.pages.map((page) => {
     if (!page.items.some((item) => item._id === rootId)) return page
-    const items: ThreadedComment[] = []
+    const items: PostComment[] = []
     for (const item of page.items) {
       if (item._id !== rootId) {
         items.push(item)
@@ -53,7 +53,7 @@ function patchRoot(
  * right because it counts what is missing, not what is shown. Expanding merges
  * the full list back into order — see `repliesToShow`.
  */
-export function appendReply(data: Roots, rootId: string, reply: ThreadedComment): Roots {
+export function appendReply(data: Roots, rootId: string, reply: PostCommentReply): Roots {
   return patchRoot(data, rootId, (root) => {
     const replies = root.replies ?? []
     if (replies.some((existing) => existing._id === reply._id)) return root
@@ -67,7 +67,7 @@ export function appendReply(data: Roots, rootId: string, reply: ThreadedComment)
  * come, so it arrives on the last page by itself; appending it now would draw
  * it and then draw it again.
  */
-export function appendToReplies(data: Replies, reply: ThreadedComment): Replies {
+export function appendToReplies(data: Replies, reply: PostCommentReply): Replies {
   if (!data) return data
   const last = data.pages[data.pages.length - 1]
   if (!last || last.nextCursor !== null) return data
@@ -116,7 +116,7 @@ export function removeFromReplies(data: Replies, commentId: string): Replies {
   return found ? { ...data, pages } : data
 }
 
-function byTime(a: ThreadedComment, b: ThreadedComment): number {
+function byTime(a: PostCommentReply, b: PostCommentReply): number {
   if (a.createdAt !== b.createdAt) return a.createdAt < b.createdAt ? -1 : 1
   return a._id < b._id ? -1 : a._id > b._id ? 1 : 0
 }
@@ -127,13 +127,13 @@ function byTime(a: ThreadedComment, b: ThreadedComment): number {
  * between the two, oldest first.
  */
 export function repliesToShow(
-  root: ThreadedComment,
-  expanded: readonly ThreadedComment[] | undefined,
-): ThreadedComment[] {
+  root: PostComment,
+  expanded: readonly PostCommentReply[] | undefined,
+): PostCommentReply[] {
   const preview = root.replies ?? []
   if (!expanded) return preview
   const seen = new Set<string>()
-  const merged: ThreadedComment[] = []
+  const merged: PostCommentReply[] = []
   for (const reply of [...expanded, ...preview]) {
     if (seen.has(reply._id)) continue
     seen.add(reply._id)
@@ -143,7 +143,7 @@ export function repliesToShow(
 }
 
 /** How many replies "View N more replies" promises. Never negative. */
-export function hiddenReplyCount(root: ThreadedComment, shown: number): number {
+export function hiddenReplyCount(root: PostComment, shown: number): number {
   return Math.max(0, replyCountOf(root) - shown)
 }
 
@@ -154,7 +154,7 @@ export function hiddenReplyCount(root: ThreadedComment, shown: number): number {
  * reply to a reply joins the same root (there is only one level), so the
  * `@handle` is the only thing left to say which of the replies it answers.
  */
-export function replyDraftFor(target: ThreadedComment): {
+export function replyDraftFor(target: PostCommentReply): {
   rootId: string
   prefill: string
 } {

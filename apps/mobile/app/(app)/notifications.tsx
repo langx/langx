@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
+import type { InAppNotificationKind } from '@langx/shared'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useMarkNotificationsRead, useNotifications } from '../../src/api/queries'
-import type { InboxKind } from '../../src/api/types'
 import { PersonRowSkeleton } from '../../src/components/skeletons/PersonRowSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
@@ -28,10 +28,9 @@ const HERE = '/(app)/notifications'
  * mappers because `Feather.glyphMap` pulls in `@expo/vector-icons`, which the
  * unit tests cannot load.
  */
-const KIND_ICONS: Record<InboxKind, keyof typeof Feather.glyphMap> = {
+const KIND_ICONS: Record<InAppNotificationKind, keyof typeof Feather.glyphMap> = {
   follow: 'user-plus',
   postComment: 'message-circle',
-  commentReply: 'corner-down-right',
   postCorrection: 'edit-3',
   pronunciationAnswer: 'mic',
   like: 'heart',

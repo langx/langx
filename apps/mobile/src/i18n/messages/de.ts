@@ -1253,7 +1253,6 @@ export const de: Localized<EnMessages> = {
       one: '+{count} weitere',
       other: '+{count} weitere',
     },
-    commentReply: '{name} hat auf deinen Kommentar geantwortet',
   },
   feed: {
     pickTitle: 'Kein Beitrag geöffnet',

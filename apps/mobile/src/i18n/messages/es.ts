@@ -1227,7 +1227,6 @@ export const es: Localized<EnMessages> = {
       one: '+{count} más',
       other: '+{count} más',
     },
-    commentReply: '{name} respondió a tu comentario',
   },
   feed: {
     pickTitle: 'Ninguna publicación abierta',
