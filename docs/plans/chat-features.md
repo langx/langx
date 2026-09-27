@@ -312,7 +312,7 @@ Status: planned
 
 ### PR 15 — Conversation starters
 
-Status: planned
+Status: in review
 
 - `packages/shared`: a list of topic ids; their wording lives in i18n
   (`chat.topics.*`).
