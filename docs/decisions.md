@@ -2124,6 +2124,11 @@ happens.
 
 ## A post still needs words
 
+> **Bounded, 27 September 2026 — see _Asks are optional, and only asked-for
+> help can be given_ below.** Words are still required with any ask and with a
+> lone voice note. A moment that asks for nothing may be a photo or a video
+> alone.
+
 `body` stays required, so there is no photo-only or voice-only ask. This is the
 one place where "attachments everywhere" and "the feed corrects sentences" pull
 against each other, and the sentence wins: with no text there is nothing for
@@ -2143,7 +2148,8 @@ guard on posting itself.
 
 The key is `posts/{userId}/…` rather than keyed by post, because the post does
 not exist when the URL is signed — unlike a conversation. That also keeps the
-deletion purge able to find a person's uploads by prefix.
+deletion purge able to find a person's uploads by prefix. _(Written as intent;
+the purge only began sweeping `posts/{userId}/` on 27 September 2026.)_
 
 ## The plans are Fluent and Polyglot, and three things moved
 
@@ -2289,6 +2295,12 @@ queue.
 
 ## The feed's kind is absent on every post that already exists
 
+> **Amended 27 September 2026 — see _Asks are optional, and only asked-for help
+> can be given_ below.** What a post asks for is now `asks`; `kind` keeps its
+> meaning for installed builds and gains a stored `'moment'`. `answerCount` is
+> written on every new post, and nothing ever reads it without `?? 0`. Still no
+> backfill.
+
 `posts.kind` arrived with the pronunciation section, and every row already on
 disk is a correction post with no such field. There is no migration
 infrastructure in this repo and none was added for one boolean's worth of
@@ -2360,7 +2372,8 @@ delete, which is more machinery than one stranded object is worth.
 
 The account purge is a different question and keeps its own answer: posts and
 corrections survive it as "Deleted account", because that is somebody else's
-learning. **Recorded answers do not** — an answer is its bytes and nothing else,
+learning. _(Amended 27 September 2026: a moment with no words is deleted whole
+at purge — see below.)_ **Recorded answers do not** — an answer is its bytes and nothing else,
 so stripping the media that the purge must delete would leave an empty row
 pretending to be an answer. They are deleted outright and `answerCount` comes
 down with them.
@@ -5580,6 +5593,84 @@ no row. **Thai** is left out for a different reason: no spaces between words
 and tones that depend on the syllable, so doing it properly needs the
 dictionary-backed segmenter this design exists to avoid. `romanizationFor`
 answers `null` for all of them, and the row is not drawn.
+
+## Asks are optional, and only asked-for help can be given
+
+_27 September 2026._ A post used to be a request: a sentence to correct or a
+word to say, filed under one of two tabs by `kind`. It is now whatever somebody
+posts — words, a photo, a video — and **asking is a flag on it**: `asks` holds
+`'correction'`, `'pronunciation'`, both, or nothing. A post that asks for
+nothing is a **moment**.
+
+**Only an asked-for help can be given.** `correctPost` refuses a post whose
+asks do not include a correction, `answerPronunciation` one without a
+recording, both with `VALIDATION_FAILED` and `reason: 'not_asked'`. Three
+reasons. The ask is the author's consent to having their words rewritten, and
+unasked corrections are the complaint most often made about the apps this one
+is compared with. The correction award is uncapped, so a cheap moment that
+could be corrected would be a farm. And the thing a card offers should be the
+thing its author asked for. A moment gets likes and comments, which pay
+nothing. A post asking for both can pay a helper twice — once per ask, keyed
+as before on `postcorr:` and `pron:`, so each still pays once.
+
+**Existing posts are not migrated.** `asksOf` reads `asks` when the row has it
+and derives it from `kind` otherwise: absent or `'correction'` asked for a
+correction, `'pronunciation'` for a recording, `'moment'` for nothing. The
+pattern `attachmentsOf` set — read the new field or derive it from the old —
+reused rather than a backfill that could half-finish.
+
+**`kind` stays, as the legacy projection.** Installed builds read two sections
+by it and post with it. A new post stores `kind = legacySectionOf(asks)`:
+`'correction'` for any correction ask (both included — that queue reaches the
+most readers), `'pronunciation'` for a recording ask alone, and `'moment'` for
+none — a value neither old filter (`$in: ['correction', null]`,
+`'pronunciation'`) matches, so moments never appear in an old build's tabs and
+are never correctable there against their caption. Leaving `kind` absent on a
+moment was rejected: absent means correction. Responses carry a two-value
+`kind` from `legacyKindOf`, so an old enum never meets `'moment'`. Invariant:
+on a row with `asks`, `kind === legacySectionOf(asks)`; anything that ever
+edits asks writes both in one update. `answerCount` is written as `0` on every
+new post.
+
+**Words are required with any ask.** A correction is an edit of them and a
+recording is them said aloud (`reason: 'ask_needs_words'`). A moment may have
+none when it carries a photo or a video; a voice note alone still needs words
+(`moment_needs_content`), for the old entry's reason — there is nothing on the
+card to read. `body` is then stored as `''`, never absent. `postBodySchema`
+is not loosened, because a correction's `corrected` shares it; captions have
+`postCaptionSchema`, and the rules live in `createPost` as refusals that carry
+a `reason`.
+
+**A moment may be in a language you speak.** Asks stay learning-only
+(`ask_needs_learning_language`), the rule that was implicit until now. A moment
+may also be in one of the author's native languages (`language_not_yours`
+otherwise) — natives posting their day for the people learning it is half of
+what a moment is. The composer never relabels a post's language to make an ask
+fit; it disables the asks instead.
+
+**A daily post cap, because text is free.** `FEED_POSTS_PER_24H = 20`, config in
+`packages/shared` rather than a plan limit — it is abuse control, not a tier.
+A sentence costs nothing, and the timeline ranks a window of recent posts, so a
+flood is the one way to push everybody else out of it. Counted on the `author`
+index, before the media quota so a refused post spends no unit; over it is
+`QUOTA_EXCEEDED` with `limit: 'postsPer24h'` and `retryAt`.
+
+**The purge deletes a moment with no words.** Once its files are gone there is
+nothing left of it, so it goes whole through `deletePostCascade` — the same
+cascade as `deletePost` — taking its comments and likes. Posts with words still
+survive as "Deleted account". The purge also unsets `attachments` beside
+`media`, and sweeps `posts/{userId}/`.
+
+**Refusals carry a `reason`.** A new top-level field on the error body, not
+inside `details`, which the global handler already fills with zod's issues.
+Every refusal keeps the code it had, so an installed build shows what it
+showed before.
+
+**Deploy order.** From the hardening PR on, every API refused an `asks` field
+outright rather than letting zod strip it, so a rollback, a blue-green overlap
+or a stale machine turns a moment into a loud failure, never into a correction
+request its author did not make. APIs deploy before the client that sends
+`asks`; if one is ever reverted under a live client, revert the client first.
 
 ## Voice notes are written out on a machine of ours
 

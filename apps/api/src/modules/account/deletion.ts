@@ -1,6 +1,7 @@
 import {
   ACCOUNT_DELETION_GRACE_DAYS,
   ERROR_CODES,
+  asksOf,
   attachmentsOf,
   type AccountDeletionStatus,
   type DataExport,
@@ -24,6 +25,8 @@ import type { Conversation, Message } from '../chat/conversations'
 import type { LegacyMessage } from '../handles/legacyConversations'
 import type { LegacyProfile } from '../handles/legacyProfiles'
 import type { Profile } from '../profiles/profiles'
+import type { Post } from '../feed/documents'
+import { deletePostCascade } from '../feed/feed'
 
 const GRACE_MS = ACCOUNT_DELETION_GRACE_DAYS * 24 * 60 * 60 * 1000
 
@@ -328,6 +331,26 @@ export async function purgeExpiredAccounts(
           // purged.
         }
       }
+    }
+
+    /**
+     * A post with no words that asks for nothing is its photos and nothing
+     * else — the recorded answer's case one level up. Once the files above are
+     * gone, what would survive is an empty card from "Deleted account", so it
+     * goes whole through the same cascade `deletePost` uses: the comments and
+     * likes on it with it. A post with words survives, as every post does; a
+     * moment has no corrections or recordings to rewrite anybody's history.
+     *
+     * `kind: 'moment'` narrows the read, and `asksOf` decides — the invariant
+     * says they agree, and the purge is the wrong place to trust that blind.
+     */
+    const moments = await db
+      .collection<Post>(COLLECTIONS.posts)
+      .find({ authorId: userId, kind: 'moment' })
+      .toArray()
+    for (const post of moments) {
+      if (post.body.trim() !== '' || asksOf(post).length > 0) continue
+      await deletePostCascade(db, post, options.storage)
     }
 
     /**
