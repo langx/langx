@@ -81,6 +81,10 @@ export const en = {
 
       commentBody: 'Tap to read it.',
 
+      commentReplyTitle: '{name} replied to your comment',
+
+      commentReplyBody: 'Tap to read the reply.',
+
       likesTitle: { one: 'Your post got 1 like', other: 'Your post got {count} likes' },
 
       likesBody: 'Somebody liked your post.',

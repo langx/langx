@@ -8,6 +8,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ObjectId } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { suspendedEmail, suspensionUpdatedEmail } from '../../email/templates'
+import { setCommentHidden } from '../feed/comments'
 import { setPostHidden } from '../feed/feed'
 import { emailFor } from '../profiles/emailFor'
 import { localeFor } from '../profiles/localeFor'
@@ -38,6 +39,7 @@ import {
 
 export type ReviewOutcome =
   | { action: 'hide_post' | 'unhide_post'; hidden: boolean; changed: boolean }
+  | { action: 'hide_comment' | 'unhide_comment'; hidden: boolean; changed: boolean }
   | { action: 'dismiss' }
   | { action: 'keep' }
   | { action: 'suspend' | 'permanent'; until: Date; permanent: boolean; reason: string }
@@ -48,7 +50,13 @@ export type ReviewOutcome =
  * Why a decision could not be made. Each maps to a different sentence and a
  * different status code, so the callers word them rather than this.
  */
-export type ReviewRefusal = 'action_not_allowed' | 'account_gone' | 'not_a_post' | 'post_gone'
+export type ReviewRefusal =
+  | 'action_not_allowed'
+  | 'account_gone'
+  | 'not_a_post'
+  | 'post_gone'
+  | 'not_a_comment'
+  | 'comment_gone'
 
 export type ReviewDecisionResult =
   | { ok: false; refusal: ReviewRefusal }
@@ -117,6 +125,26 @@ export async function applyReviewDecision(
      * second is a correction of the first, and a report that bounced back to
      * `open` would arrive in the next list as work nobody owes.
      */
+    if (hidden && reportId) await actionReport(app.mongo.db, reportId)
+    return {
+      ok: true,
+      handle,
+      outcome: { action, hidden, changed: Boolean(before.hiddenAt) !== hidden },
+    }
+  }
+
+  // The same pair one level down, for a report that named a comment.
+  if (action === 'hide_comment' || action === 'unhide_comment') {
+    const report = reportId
+      ? await app.mongo.db
+          .collection(COLLECTIONS.reports)
+          .findOne<{ commentId?: ObjectId }>({ _id: reportId })
+      : null
+    if (!report?.commentId) return { ok: false, refusal: 'not_a_comment' }
+
+    const hidden = action === 'hide_comment'
+    const before = await setCommentHidden(app.mongo.db, report.commentId, hidden)
+    if (!before) return { ok: false, refusal: 'comment_gone' }
     if (hidden && reportId) await actionReport(app.mongo.db, reportId)
     return {
       ok: true,

@@ -65,6 +65,7 @@ export function belongsTo(data: unknown, scope: TrayScope): boolean {
     case 'postCorrection':
     case 'pronunciationAnswer':
     case 'like':
+    case 'commentReply':
       return kind === 'social' && row.postId !== undefined && postId === row.postId
     // These repeat, one row for the lot, and the tap reads the lot.
     case 'badgeEarned':

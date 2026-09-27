@@ -5832,3 +5832,58 @@ the message already there, and records it without announcing it again.
 Text only, in an existing conversation: the first message of a thread spends
 the initiation quota and an attachment spends storage, and neither should be
 charged at a time the sender is not there to see it.
+
+## Comments get one level of replies
+
+_27 September 2026._
+
+A comment can now be answered, and the answer can be answered, but the thread
+never gets deeper than one level. A reply to a reply is filed under the same
+first comment (`parentId` is always the **root**), carries `replyToAuthorId`,
+and the client starts it with `@name`. That is what Instagram and HelloTalk do,
+and for the same two reasons: a tree three levels deep does not read on a
+phone, and one level is one indexed range per thread
+(`post_parent_created_id`, a new name beside `post_created_id` rather than a
+re-key of it). The server resolves any comment id to its root, so a client
+never has to.
+
+_Comments pay nothing, cannot be liked and are never a sort key._ Everything in
+_Comments pay nothing, and cannot be liked_ stands, replies included. A reply
+is a comment: no award, no streak, no like target, no unique index, and it
+counts in `commentCount`, which nothing sorts by.
+
+_Installed builds keep their flat list._ `GET /posts/:id/comments` without
+`threaded` answers exactly what it always did — every comment oldest first,
+replies included and merely unindented — and a comment nobody answered
+serialises to the same four fields. `?threaded=1` is the new shape: roots with
+`replyCount` and the first `COMMENT_REPLY_PREVIEW` replies, the rest behind
+`GET /posts/:id/comments/:commentId/replies`.
+
+_A deleted root with replies becomes a tombstone._ Its words are unset and the
+row stays, so the replies keep something to answer; the threaded read draws it
+as "Comment removed", the flat list leaves it out (on an old build a deleted
+comment has only ever vanished), and it is swept with its last reply. The
+account purge follows the same rule: comments still go with the account,
+except a root other people answered, which is tombstoned and renders as
+"Deleted account".
+
+_A comment can be reported and hidden._ `reportSchema.commentId` must name the
+reported person's own comment, and the report stores no `postId` beside it —
+otherwise the review page would offer "Hide this post" against somebody who was
+never reported. `hide_comment` / `unhide_comment` sit beside the post pair, are
+just as reversible, and a hidden root with replies draws as removed like a
+tombstone.
+
+_Replies are push-only for now, and that was measured, not assumed._ The inbox
+kind `commentReply` exists, but the 2.7 store build renders the notification
+centre through a `switch` with no `default` and reads `copy.key` off the
+answer; a kind it does not know throws inside the list's render, and there is
+no error boundary to catch it. One such row in somebody's first page would take
+the screen — and with it the app — down. The push is safe on that build: its
+data says `social` with a `postId`, which it already opens. So
+`COMMENT_REPLY_INBOX_ROWS` in `routes/feed.ts` stays `false` until the builds
+that cannot draw the row are gone, and the post's author keeps the
+`postComment` row they always got. Nobody is told twice about one comment: a
+post author who is also in the thread gets the reply push instead of the
+comment push, never both. `postComment` was not reused for the others because
+it says "commented on your post", which is false for them.

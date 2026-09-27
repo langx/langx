@@ -60,6 +60,7 @@ export function notificationCopy(item: InboxItem): { key: MessageKey; params: Me
     case 'postCorrection':
     case 'pronunciationAnswer':
     case 'like':
+    case 'commentReply':
       return item.count && item.count > 0
         ? { key: `inbox.${item.kind}Others`, params: { name, count: item.count } }
         : { key: `inbox.${item.kind}`, params: { name } }
@@ -91,6 +92,7 @@ export function notificationHref(item: InboxItem, from: string): string | null {
     case 'postCorrection':
     case 'pronunciationAnswer':
     case 'like':
+    case 'commentReply':
       // Always the *post*, even for a like on a correction — that is the
       // screen the correction is shown on. The server resolves the parent.
       return item.postId ? `/(app)/post/${item.postId}?from=${encodeURIComponent(from)}` : null

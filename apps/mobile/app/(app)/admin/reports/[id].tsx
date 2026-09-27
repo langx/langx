@@ -240,6 +240,49 @@ export default function AdminCaseScreen() {
               </>
             ) : null}
 
+            {/* A comment report never names a post as well (the server keeps
+                them apart), so this sits where the post would have. The post
+                it was said under is context, with no button of its own. */}
+            {report.data.comment ? (
+              <>
+                <Text style={styles.heading}>
+                  {report.data.comment.isReply ? ADMIN.reports.commentReply : ADMIN.reports.comment}
+                </Text>
+                {report.data.comment.postBody !== null ? (
+                  <Text style={styles.muted} numberOfLines={2}>
+                    {ADMIN.reports.commentUnder(report.data.comment.postBody)}
+                  </Text>
+                ) : null}
+                <Card>
+                  <Text style={styles.quote}>
+                    {report.data.comment.body ?? ADMIN.reports.commentRemoved}
+                  </Text>
+                </Card>
+                {report.data.comment.hiddenAt ? (
+                  <Callout tone="warning">
+                    <Text style={styles.calloutBody}>{ADMIN.reports.commentHidden}</Text>
+                  </Callout>
+                ) : null}
+                <View style={styles.actions}>
+                  <Button
+                    label={
+                      report.data.comment.hiddenAt
+                        ? ADMIN.reports.unhide
+                        : ADMIN.reports.hideComment
+                    }
+                    variant="secondary"
+                    onPress={() =>
+                      run(report.data?.comment?.hiddenAt ? 'unhide_comment' : 'hide_comment', {
+                        confirm: report.data?.comment?.hiddenAt
+                          ? ADMIN.reports.unhide
+                          : ADMIN.reports.hideComment,
+                      })
+                    }
+                  />
+                </View>
+              </>
+            ) : null}
+
             {/* Whoever filed it, and the thanks they can be given. Above the
                 account's buttons rather than among them: it is not part of the
                 decision, and deciding sends this screen back to the list. */}

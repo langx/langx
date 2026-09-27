@@ -37,7 +37,7 @@ async function pushSocial(
   senders: SocialNotifier,
   userId: string,
   build: (t: ReturnType<typeof translator>) => { title: string; body: string },
-  data: { postId?: string; handle?: string },
+  data: { postId?: string; handle?: string; commentId?: string },
 ): Promise<void> {
   try {
     const profile = await db
@@ -86,26 +86,45 @@ export async function notifyFollowed(
 
 /**
  * "Somebody corrected your sentence" — a correction, a recorded answer or a
- * comment, all three on a post its author is not looking at.
+ * comment, all three on a post its author is not looking at; or a reply to a
+ * comment, told to whoever wrote the comment.
  *
  * Throttled to one push per post per hour, in the ledger. Three people
  * correcting the same sentence within a minute of each other is the good
  * case, not the rare one, and three buzzes about it is how the switch gets
  * turned off. The first is the one that matters; the rest are waiting in the
  * app.
+ *
+ * A reply is throttled per **thread** instead — one push per comment per hour
+ * — because the person told may be in several threads under one post, and a
+ * conversation in one is not news about the other. Its data carries the
+ * thread's `commentId` beside the `postId`: every build opens the post from
+ * the second, and a build that knows threads can scroll to the first.
  */
-export type FeedReply = 'correction' | 'answer' | 'comment'
+export type FeedReply = 'correction' | 'answer' | 'comment' | 'commentReply'
 
 export async function notifyPostReply(
   db: Db,
   senders: SocialNotifier,
-  input: { postId: ObjectId; authorId: string; responderId: string; kind: FeedReply },
+  input: {
+    postId: ObjectId
+    /** Who is told: the post's author, or for `commentReply` the comment's. */
+    authorId: string
+    responderId: string
+    kind: FeedReply
+    /** The thread's first comment. Required by `commentReply`, unread by the rest. */
+    threadId?: ObjectId
+  },
   now: Date = new Date(),
 ): Promise<void> {
   if (input.authorId === input.responderId) return
   const hour = now.toISOString().slice(0, 13)
   const postId = input.postId.toHexString()
-  if (!(await claimOnce(db, 'social.postReply', input.authorId, `${postId}:${hour}`))) return
+  const threadId = input.kind === 'commentReply' ? input.threadId?.toHexString() : undefined
+  const claimed = threadId
+    ? await claimOnce(db, 'social.commentReply', input.authorId, `${threadId}:${hour}`)
+    : await claimOnce(db, 'social.postReply', input.authorId, `${postId}:${hour}`)
+  if (!claimed) return
 
   const responder = await db
     .collection<Profile>(COLLECTIONS.profiles)
@@ -120,7 +139,7 @@ export async function notifyPostReply(
       title: t(`push.social.${input.kind}Title` as never, { name }),
       body: t(`push.social.${input.kind}Body` as never),
     }),
-    { postId },
+    { postId, ...(threadId ? { commentId: threadId } : {}) },
   )
 }
 

@@ -226,6 +226,7 @@ every one claims a row in `notificationLedger` before it sends.
 | Meeting reminder                                 | `meetings`      | an hour before | message id                                        |
 | **Somebody followed you**                        | `social`        | on the follow  | one per follower, **ever**                        |
 | **A correction, answer or comment on your post** | `social`        | on the reply   | one per post per **hour**                         |
+| **A reply to your comment**                      | `social`        | on the reply   | one per **thread** per hour                       |
 | **Your posts' likes**                            | `social`        | daily batch    | UTC day, and not if the bell's rows are read      |
 | **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local    | pool day, and not if the bell's row is read       |
 | **Your hourly gift is ready**                    | `wallet`        | waking hours   | UTC day, and only if they have taken one before   |
@@ -306,6 +307,12 @@ badge push was for the people who had already come back.
 
 - **One push per post per hour.** Three people correcting the same sentence
   within a minute is the good case, not the rare one.
+- **One reply push per thread per hour.** A reply tells the thread's first
+  commenter and, on a reply to a reply, the person answered. The post's author
+  hears as before — unless they are one of those two, in which case the reply
+  push replaces the comment push rather than joining it. Its data carries the
+  thread's `commentId` beside `postId`; every build opens the post from the
+  second.
 - **Likes are a daily batch, never an event.** A like is the cheapest thing
   anybody can do here.
 - **One follow notice per follower, ever.** Unfollowing and following again
@@ -451,10 +458,19 @@ happened, read by a bell in the Me header and a screen behind it.
 | -------------------------------------------------------- | ---------------------------------- | ----------------------------------- |
 | `follow`                                                 | `routes/follows.ts`                | the follower's id                   |
 | `postComment` / `postCorrection` / `pronunciationAnswer` | `routes/feed.ts` → `tellTheAuthor` | the reply's own id                  |
+| `commentReply` — **not written yet**, see below          | `routes/feed.ts` → `tellTheThread` | the reply's own id                  |
 | `like`                                                   | `routes/likes.ts`                  | `<targetType>:<targetId>:<actorId>` |
 | `badgeEarned`                                            | `notifications/badges.ts`          | the badge id                        |
 | `walletPool`                                             | `tokens/pool.ts`, at the payout    | the pool day                        |
 | `profileVisits`                                          | `notifications/profileVisits.ts`   | the local day                       |
+
+`commentReply` is in `IN_APP_NOTIFICATION_KINDS` and the client can draw it,
+but `COMMENT_REPLY_INBOX_ROWS` keeps the server from writing it: the 2.7 store
+build renders this list through a `switch` with no `default`, and an unknown
+kind throws inside the render instead of drawing a blank row. Until the builds
+that cannot draw it are gone, a reply to your comment is a push only — and the
+post's author, when the reply lands on their post, still gets the `postComment`
+row they always did.
 
 ### The five rules it runs on
 

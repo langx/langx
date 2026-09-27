@@ -11,7 +11,7 @@ import {
   type Media,
   type ReviewAction,
 } from '@langx/shared'
-import { ObjectId } from 'mongodb'
+import { ObjectId, type Db } from 'mongodb'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { appealEmail, reportEmail } from '../email/templates'
 import {
@@ -23,6 +23,7 @@ import {
 import { COLLECTIONS } from '../db/collections'
 import { publicApiUrl } from '../env'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
+import type { PostCommentDoc } from '../modules/feed/documents'
 import type { Post } from '../modules/feed/feed'
 import { blockUser, listBlocked, reportUser, unblockUser } from '../modules/moderation/blocks'
 import {
@@ -107,6 +108,58 @@ function postSection(token: string, post: Post | null): string {
 }
 
 /**
+ * A reported comment, read unfiltered, with the opening of the post it sits
+ * under — the comment is what is judged, the post is only where it was said.
+ *
+ * Its own read rather than a field on the report: a comment report stores no
+ * `postId` (see `Report.commentId`), so the post is found through the comment.
+ * `null` when the report named no comment or the comment has since gone.
+ */
+async function readReportedComment(
+  db: Db,
+  commentId: ObjectId | undefined,
+): Promise<{ comment: PostCommentDoc; postBody: string | null } | null> {
+  if (!commentId) return null
+  const comment = await db
+    .collection<PostCommentDoc>(COLLECTIONS.postComments)
+    .findOne({ _id: commentId })
+  if (!comment) return null
+  const post = await db
+    .collection<Post>(COLLECTIONS.posts)
+    .findOne({ _id: comment.postId }, { projection: { body: 1 } })
+  return { comment, postBody: post?.body ?? null }
+}
+
+/**
+ * The reported comment, shown before the decisions about its author — the
+ * same bargain `postSection` makes, one level down. The post is quoted small
+ * and above it, for context and nothing else: it was not reported, so there
+ * is no button for it.
+ *
+ * A tombstone (its author deleted the words, replies kept it) says so rather
+ * than quoting nothing.
+ */
+function commentSection(
+  token: string,
+  reported: { comment: PostCommentDoc; postBody: string | null } | null,
+): string {
+  if (!reported) return ''
+  const { comment, postBody } = reported
+  const words = comment.deletedAt
+    ? '<p style="color:#888;">Its author has since removed the words; the replies to it remain.</p>'
+    : `<blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 12px;padding:0 0 0 12px;color:#333;">${escapeHtml(comment.body ?? '')}</blockquote>`
+  return `<p style="margin:24px 0 8px;"><strong>The comment</strong>${comment.parentId ? ' <span style="color:#888;">a reply in a thread</span>' : ''}</p>
+          ${postBody !== null ? `<p style="color:#888;margin:0 0 8px;">Under the post: ${escapeHtml(postBody.slice(0, 140))}</p>` : ''}
+          ${words}
+          ${
+            comment.hiddenAt
+              ? `<p style="background:#fff3cd;padding:12px;border-radius:8px;">Hidden since <strong>${escapeHtml(comment.hiddenAt.toISOString())}</strong>. Nobody can see it, its author included.</p>
+                 ${actionForm(token, 'unhide_comment', 'Show it again')}`
+              : actionForm(token, 'hide_comment', 'Hide this comment')
+          }`
+}
+
+/**
  * What the post carried, shown rather than counted.
  *
  * A photo is most of what a photo post says, and a report about one cannot be
@@ -134,6 +187,8 @@ const REFUSALS: Record<ReviewRefusal, [number, string]> = {
   account_gone: [404, 'That account no longer exists.'],
   not_a_post: [400, 'That report is not about a post.'],
   post_gone: [404, 'That post no longer exists.'],
+  not_a_comment: [400, 'That report is not about a comment.'],
+  comment_gone: [404, 'That comment no longer exists.'],
 }
 
 /** What was decided, in the one sentence this page answers with. */
@@ -143,6 +198,10 @@ function decided(outcome: ReviewOutcome, name: string): string {
       return `<p>Hidden. Nobody can see it, ${name} included${outcome.changed ? '' : ' — it already was'}.</p>`
     case 'unhide_post':
       return `<p>Back in the feed${outcome.changed ? '' : ' — it was never hidden'}.</p>`
+    case 'hide_comment':
+      return `<p>Hidden. Nobody can see the comment, ${name} included${outcome.changed ? '' : ' — it already was'}.</p>`
+    case 'unhide_comment':
+      return `<p>The comment is back${outcome.changed ? '' : ' — it was never hidden'}.</p>`
     case 'dismiss':
       return `<p>Dismissed. Nothing changes on ${name}.</p>`
     case 'keep':
@@ -247,10 +306,20 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
               )
           : null,
       ])
+      const reportedComment = await readReportedComment(app.mongo.db, result.report.commentId)
       try {
         await app.email.send({
           to: app.env.SUPPORT_EMAIL,
           ...reportEmail({
+            comment: reportedComment
+              ? {
+                  postId: reportedComment.comment.postId.toHexString(),
+                  body: reportedComment.comment.deletedAt
+                    ? null
+                    : (reportedComment.comment.body ?? null),
+                  postBody: reportedComment.postBody,
+                }
+              : null,
             reportId: result.report._id.toHexString(),
             reason: request.body.reason,
             details: result.report.details ?? null,
@@ -353,11 +422,14 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const reportId = toObjectId(claim.reportId)
       const report = reportId
-        ? await app.mongo.db
-            .collection('reports')
-            .findOne<{ reason: string; details?: string; postId?: ObjectId }>({
-              _id: reportId,
-            })
+        ? await app.mongo.db.collection('reports').findOne<{
+            reason: string
+            details?: string
+            postId?: ObjectId
+            commentId?: ObjectId
+          }>({
+            _id: reportId,
+          })
         : null
 
       /*
@@ -368,6 +440,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
       const post = report?.postId
         ? await app.mongo.db.collection<Post>(COLLECTIONS.posts).findOne({ _id: report.postId })
         : null
+      const reportedComment = await readReportedComment(app.mongo.db, report?.commentId)
 
       return html(
         reply,
@@ -378,12 +451,15 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
           }.</p>
          ${report?.details ? `<blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 20px;padding:0 0 0 12px;color:#333;">${escapeHtml(report.details)}</blockquote>` : '<p style="color:#888;">No details were given.</p>'}
          ${postSection(token, post)}
+         ${commentSection(token, reportedComment)}
          ${
            /* Two groups of buttons now, and "hide this sentence" and "suspend
               this person forever" are not things to mistake for each other. A
               heading is what keeps the second from reading as more of the
               first — but only when there is a first. */
-           post ? '<p style="margin:24px 0 8px;"><strong>The account</strong></p>' : ''
+           post || reportedComment
+             ? '<p style="margin:24px 0 8px;"><strong>The account</strong></p>'
+             : ''
          }
          ${inForce}
          ${daysForm(token, 'suspend', 'Suspend for N days', 7)}

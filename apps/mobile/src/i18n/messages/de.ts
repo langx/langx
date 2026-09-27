@@ -1335,6 +1335,11 @@ export const de: Localized<EnMessages> = {
       one: '{name} und {count} weitere Person haben deinen Satz aufgenommen',
       other: '{name} und {count} weitere Personen haben deinen Satz aufgenommen',
     },
+    commentReply: '{name} hat auf deinen Kommentar geantwortet',
+    commentReplyOthers: {
+      one: '{name} und {count} weitere Person haben auf deinen Kommentar geantwortet',
+      other: '{name} und {count} weitere Personen haben auf deinen Kommentar geantwortet',
+    },
     badgeEarned: 'Du hast ein neues Abzeichen erhalten',
     walletPool: {
       one: 'Der gestrige Pool hat dir {count} Token ausgezahlt',

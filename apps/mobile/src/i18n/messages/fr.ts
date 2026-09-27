@@ -1314,6 +1314,11 @@ export const fr: Localized<EnMessages> = {
       one: '{name} et {count} autre personne ont enregistré votre phrase',
       other: '{name} et {count} autres personnes ont enregistré votre phrase',
     },
+    commentReply: '{name} a répondu à votre commentaire',
+    commentReplyOthers: {
+      one: '{name} et {count} autre personne ont répondu à votre commentaire',
+      other: '{name} et {count} autres personnes ont répondu à votre commentaire',
+    },
     badgeEarned: 'Vous avez obtenu un nouveau badge',
     walletPool: {
       one: 'La cagnotte d’hier vous a versé {count} jeton',

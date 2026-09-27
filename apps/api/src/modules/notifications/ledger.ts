@@ -24,6 +24,7 @@ export type NotificationJob =
   /** The feed's own pushes: one per follower ever, one per post per hour. */
   | 'social.follow'
   | 'social.postReply'
+  | 'social.commentReply'
   | 'social.likes'
   /** Tokens arriving: the pool once a day, the gift once a day. */
   | 'wallet.pool'
