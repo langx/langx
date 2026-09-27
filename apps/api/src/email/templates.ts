@@ -1,10 +1,13 @@
 import {
+  isImageContentType,
+  isVideoContentType,
   postUrl,
   profileUrl,
   REPORTS_TO_FREEZE_XP,
   webUrl,
   type FeedbackKind,
   type Locale,
+  type Media,
   type ReportReason,
 } from '@langx/shared'
 import { translator } from '../i18n'
@@ -685,6 +688,18 @@ export function feedDigestSection(
     0,
   )
   const subject = t('email.feedDigestSubject', { count: total })
+  /*
+   * A photo or a video posted without words is named by a label instead of
+   * its opening words. Unquoted, because it is our description of the post
+   * rather than something its author wrote — an empty pair of quotation marks
+   * was the alternative.
+   */
+  const label = (item: FeedDigestItem): string | null =>
+    item.excerptKind === 'video'
+      ? t('email.feedDigestVideo')
+      : item.excerptKind === 'photo'
+        ? t('email.feedDigestPhoto')
+        : null
   const rows = items
     .map((item) => {
       const parts = [
@@ -692,7 +707,7 @@ export function feedDigestSection(
         item.answers > 0 ? t('email.feedDigestAnswers', { count: item.answers }) : '',
         item.comments > 0 ? t('email.feedDigestComments', { count: item.comments }) : '',
       ].filter(Boolean)
-      return `<p style="margin:16px 0 0;"><a href="${postUrl(item.postId)}" style="color:#17191c; text-decoration:none;"><strong>&ldquo;${escapeHtml(item.excerpt)}&rdquo;</strong></a><br /><span style="color:#62676d;">${formatList(locale, parts)}</span></p>`
+      return `<p style="margin:16px 0 0;"><a href="${postUrl(item.postId)}" style="color:#17191c; text-decoration:none;"><strong>${escapeHtml(label(item) ?? '') || `&ldquo;${escapeHtml(item.excerpt)}&rdquo;`}</strong></a><br /><span style="color:#62676d;">${formatList(locale, parts)}</span></p>`
     })
     .join('\n       ')
   const more = morePosts > 0 ? t('email.feedDigestMore', { count: morePosts }) : ''
@@ -706,7 +721,7 @@ export function feedDigestSection(
     text: [
       t('email.feedDigestBody', { count: total }),
       '',
-      ...items.map((item) => `"${item.excerpt}" — ${postUrl(item.postId)}`),
+      ...items.map((item) => `${label(item) ?? `"${item.excerpt}"`} — ${postUrl(item.postId)}`),
       ...(more ? ['', more] : []),
     ],
     cta: { url: webUrl('/me'), label: t('email.feedDigestButton') },
@@ -1264,6 +1279,16 @@ function partyText(role: string, party: ReportedParty): string[] {
   ]
 }
 
+/** "Photo 1", "Video 2" — what a reported file is, before anyone opens it. */
+function fileLabel(item: Media, index: number): string {
+  const kind = isImageContentType(item.contentType)
+    ? 'Photo'
+    : isVideoContentType(item.contentType)
+      ? 'Video'
+      : 'Audio'
+  return `${kind} ${index + 1}`
+}
+
 /**
  * A report about somebody, on its way to `SUPPORT_EMAIL`.
  *
@@ -1300,6 +1325,13 @@ export function reportEmail(input: {
    * sentence alone.
    */
   postBody: string | null
+  /**
+   * The reported post's files, as links and never as images. This mail
+   * arrives unasked in a mailbox whose client loads pictures on its own, and
+   * a reported photo is exactly the one that should not open by itself. The
+   * review page draws them, once somebody has chosen to look.
+   */
+  postAttachments?: readonly Media[]
   /** The signed link that decides this report — see `reviewToken.ts`. */
   reviewUrl: string
 }): Email {
@@ -1337,9 +1369,25 @@ export function reportEmail(input: {
     ? `<p style="white-space: pre-wrap;">${escapeHtml(input.details)}</p>`
     : '<p style="color: #888;">No details were given.</p>'
 
-  const quoted = input.postBody
-    ? `<p style="margin:16px 0 8px;"><strong>The post</strong></p><blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 16px;padding:0 0 0 12px;color:#333;">${escapeHtml(input.postBody)}</blockquote>`
+  // `null` is a report with no post; `''` is a post with no words, which is a
+  // photo or a video posted on its own and still has something to show.
+  const postFiles = input.postAttachments ?? []
+  const fileLinks = postFiles.length
+    ? `<ul>${postFiles
+        .map(
+          (item, index) =>
+            `<li><a href="${encodeURI(item.url)}">${escapeHtml(fileLabel(item, index))}</a></li>`,
+        )
+        .join('')}</ul>`
     : ''
+  const quoted =
+    input.postBody === null
+      ? ''
+      : `<p style="margin:16px 0 8px;"><strong>The post</strong></p>${
+          input.postBody.trim()
+            ? `<blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 16px;padding:0 0 0 12px;color:#333;">${escapeHtml(input.postBody)}</blockquote>`
+            : '<p style="color: #888;">(no caption)</p>'
+        }${fileLinks}`
 
   return {
     subject,
@@ -1373,7 +1421,14 @@ export function reportEmail(input: {
       '',
       input.details ?? 'No details were given.',
       '',
-      ...(input.postBody ? ['The post:', input.postBody, ''] : []),
+      ...(input.postBody === null
+        ? []
+        : [
+            'The post:',
+            input.postBody.trim() || '(no caption)',
+            ...postFiles.map((item, index) => `${fileLabel(item, index)}: ${item.url}`),
+            '',
+          ]),
       ...partyText('Reported', input.reported),
       ...partyText('Reporter', input.reporter),
       '',

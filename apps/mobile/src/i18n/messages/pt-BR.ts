@@ -51,6 +51,7 @@ export const ptBR: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Reproduzir vídeo',
+    unavailable: 'Não está mais disponível',
     sourceTitle: 'Adicionar uma foto',
     sourceCamera: 'Tirar uma foto',
     sourceLibrary: 'Escolher da galeria',
@@ -174,6 +175,7 @@ export const ptBR: Localized<EnMessages> = {
     correctPart: 'Corrigir uma parte',
     words: 'Palavras',
     romanize: 'Ver em letras latinas',
+    forward: 'Encaminhar',
   },
 
   echo: {
@@ -356,6 +358,16 @@ export const ptBR: Localized<EnMessages> = {
     aboutClose: 'Entendi',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Encaminhar para…',
+    sendProfileTitle: 'Enviar perfil para…',
+    searchPlaceholder: 'Buscar nas suas conversas',
+    empty: 'Ainda não há conversas para enviar.',
+    noMatches: 'Nenhuma conversa encontrada.',
+    forwarded: 'Encaminhada',
+    sent: 'Enviado',
+  },
+
   messageMeta: {
     sent: 'Enviada',
     delivered: 'Entregue',
@@ -372,6 +384,7 @@ export const ptBR: Localized<EnMessages> = {
     meeting: 'Reunião',
     quiz: 'Quiz',
     correction: 'Correção',
+    forwarded: 'Encaminhada',
   },
 
   interests: {
@@ -2057,6 +2070,7 @@ export const ptBR: Localized<EnMessages> = {
     copied: 'Link copiado',
     copiedText: 'Texto copiado',
     profile: 'Compartilhar perfil',
+    sendInChat: 'Enviar em uma conversa',
     profileMessage: 'Conheça {name} no LangX: {url}',
     postMessage: '“{excerpt}” — prática de {language} no LangX: {url}',
     streak: 'Compartilhar minha sequência',

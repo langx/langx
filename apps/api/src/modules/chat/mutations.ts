@@ -254,6 +254,10 @@ async function applyDeleteSideEffects(
  */
 async function deleteAttachment(message: Message, storage?: StorageProvider): Promise<void> {
   if (!storage || !supportsPut(storage)) return
+  // A forward's files are the original's, shared rather than copied, and the
+  // original is still in somebody's thread. Withdrawing the copy is not the
+  // copy's author's call to make about them.
+  if (message.forwarded) return
   // Every file, not just the first: a gallery leaves as many objects behind as
   // it put there, and `attachmentsOf` is what makes one deleted photo and six
   // the same code path.

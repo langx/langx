@@ -15,11 +15,13 @@ export class ApiError extends Error {
   readonly retryAt?: string
   readonly limit?: string
   readonly max?: number
+  /** See `ApiErrorBody.reason`. */
+  readonly reason?: string
 
   constructor(
     code: ErrorCode,
     message?: string,
-    extra?: { feature?: string; retryAt?: string; limit?: string; max?: number },
+    extra?: { feature?: string; retryAt?: string; limit?: string; max?: number; reason?: string },
   ) {
     super(message ?? code)
     this.name = 'ApiError'
@@ -29,6 +31,7 @@ export class ApiError extends Error {
     if (extra?.retryAt !== undefined) this.retryAt = extra.retryAt
     if (extra?.limit !== undefined) this.limit = extra.limit
     if (extra?.max !== undefined) this.max = extra.max
+    if (extra?.reason !== undefined) this.reason = extra.reason
   }
 
   toBody(): ApiErrorBody {
@@ -37,6 +40,7 @@ export class ApiError extends Error {
     if (this.retryAt !== undefined) body.retryAt = this.retryAt
     if (this.limit !== undefined) body.limit = this.limit
     if (this.max !== undefined) body.max = this.max
+    if (this.reason !== undefined) body.reason = this.reason
     return body
   }
 }

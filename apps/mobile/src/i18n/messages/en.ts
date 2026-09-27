@@ -83,6 +83,7 @@ export const en = {
 
   media: {
     playVideo: 'Play video',
+    unavailable: 'No longer available',
     sourceTitle: 'Add a photo',
     sourceCamera: 'Take a photo',
     sourceLibrary: 'Choose from library',
@@ -205,6 +206,7 @@ export const en = {
     correctPart: 'Correct part',
     words: 'Words',
     romanize: 'Show in Latin letters',
+    forward: 'Forward',
   },
 
   /**
@@ -450,6 +452,16 @@ export const en = {
     aboutClose: 'Got it',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Forward to…',
+    sendProfileTitle: 'Send profile to…',
+    searchPlaceholder: 'Search your chats',
+    empty: 'No chats to send to yet.',
+    noMatches: 'No chats match that.',
+    forwarded: 'Forwarded',
+    sent: 'Sent',
+  },
+
   messageMeta: {
     sent: 'Sent',
     delivered: 'Delivered',
@@ -466,6 +478,7 @@ export const en = {
     meeting: 'Meeting',
     quiz: 'Quiz',
     correction: 'Correction',
+    forwarded: 'Forwarded',
   },
 
   /**
@@ -2265,6 +2278,7 @@ export const en = {
     copied: 'Link copied',
     copiedText: 'Text copied',
     profile: 'Share profile',
+    sendInChat: 'Send in a chat',
     profileMessage: 'Meet {name} on LangX: {url}',
     postMessage: '“{excerpt}” — {language} practice on LangX: {url}',
     streak: 'Share my streak',

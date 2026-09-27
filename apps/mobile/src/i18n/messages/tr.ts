@@ -66,6 +66,7 @@ export const tr: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Videoyu oynat',
+    unavailable: 'Artık mevcut değil',
     sourceTitle: 'Fotoğraf ekle',
     sourceCamera: 'Fotoğraf çek',
     sourceLibrary: 'Galeriden seç',
@@ -186,6 +187,7 @@ export const tr: Localized<EnMessages> = {
     correctPart: 'Bir kısmını düzelt',
     words: 'Kelimeler',
     romanize: 'Latin harfleriyle göster',
+    forward: 'Yönlendir',
   },
 
   echo: {
@@ -368,6 +370,16 @@ export const tr: Localized<EnMessages> = {
     aboutClose: 'Anladım',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Yönlendir…',
+    sendProfileTitle: 'Profili gönder…',
+    searchPlaceholder: 'Sohbetlerinde ara',
+    empty: 'Henüz gönderebileceğin bir sohbet yok.',
+    noMatches: 'Eşleşen sohbet yok.',
+    forwarded: 'Yönlendirildi',
+    sent: 'Gönderildi',
+  },
+
   messageMeta: {
     sent: 'Gönderildi',
     delivered: 'İletildi',
@@ -384,6 +396,7 @@ export const tr: Localized<EnMessages> = {
     meeting: 'Toplantı',
     quiz: 'Soru',
     correction: 'Düzeltme',
+    forwarded: 'Yönlendirildi',
   },
 
   interests: {
@@ -2059,6 +2072,7 @@ export const tr: Localized<EnMessages> = {
     copied: 'Link kopyalandı',
     copiedText: 'Metin kopyalandı',
     profile: 'Profili paylaş',
+    sendInChat: 'Bir sohbette gönder',
     profileMessage: 'LangX’te {name} ile tanış: {url}',
     postMessage: '“{excerpt}” — LangX’te {language} pratiği: {url}',
     streak: 'Serimi paylaş',

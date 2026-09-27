@@ -1564,6 +1564,57 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         expect(mail.text).toContain('a sentence somebody objected to')
       })
 
+      /*
+       * A photo posted without words. No writer produces one yet, so the row
+       * goes in directly — the renderings have to be right before the first
+       * real one exists, not after.
+       */
+      it('shows a photo post’s pictures on the page, and only links them in the mail', async () => {
+        const author = await newUser()
+        const reporter = await newUser()
+        const _id = new ObjectId()
+        const photo = `https://cdn.example.com/posts/${author.userId}/1.jpg`
+        const clip = `https://cdn.example.com/posts/${author.userId}/2.mp4`
+        await handle.db.collection(COLLECTIONS.posts).insertOne({
+          _id,
+          authorId: author.userId,
+          body: '',
+          language: 'en',
+          correctionCount: 0,
+          attachments: [
+            { url: photo, contentType: 'image/jpeg', sizeBytes: 1024 },
+            { url: clip, contentType: 'video/mp4', sizeBytes: 4096, durationSeconds: 5 },
+          ],
+          media: { url: photo, contentType: 'image/jpeg', sizeBytes: 1024 },
+          createdAt: new Date(),
+        })
+
+        emailSender.messages.length = 0
+        const filed = await post(reporter, '/reports', {
+          userId: author.userId,
+          reason: 'inappropriate_content',
+          postId: _id.toHexString(),
+        })
+        expect(filed.statusCode, filed.body).toBe(201)
+        const mail = reportMails().at(-1)
+        if (!mail) throw new Error('no report mail')
+
+        // Links, never a picture a mail client would load on its own.
+        expect(mail.html).toContain(photo)
+        expect(mail.html).toContain(clip)
+        expect(mail.html).not.toContain('<img')
+        expect(mail.html).toContain('(no caption)')
+        expect(mail.text).toContain(photo)
+        expect(mail.text).toContain('(no caption)')
+
+        const page = await app.inject({ method: 'GET', url: reviewPathFrom(mail.text) })
+        expect(page.statusCode).toBe(200)
+        expect(page.body).toContain('(no caption)')
+        expect(page.body).toContain(`<img src="${photo}"`)
+        expect(page.body).toContain(`href="${clip}"`)
+        expect(page.body).not.toMatch(/<blockquote[^>]*><\/blockquote>/)
+      })
+
       it('takes the post out of the feed, the thread and its author’s own list', async () => {
         const author = await newUser()
         const viewer = await newUser()

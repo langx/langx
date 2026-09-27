@@ -13,6 +13,8 @@ import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
+import { deleteCorrection, deletePost } from '../modules/feed/feed'
+import type { StorageProvider, UploadUrl } from '../storage/StorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 
 const PASSWORD = 'correct horse battery staple'
@@ -1609,6 +1611,194 @@ describe('community feed', () => {
     it('is absent rather than forbidden for a handle nobody answers to', async () => {
       const viewer = await newUser('written-missing-viewer@example.com')
       expect((await written(viewer, 'nobodyatall')).statusCode).toBe(404)
+    })
+  })
+
+  describe('hardening before moments', () => {
+    const BASE = 'https://cdn.example.com'
+    const picture = (owner: SignedUpUser, name: string) => ({
+      url: `${BASE}/posts/${owner.userId}/${name}.jpg`,
+      contentType: 'image/jpeg',
+      sizeBytes: 1024,
+      width: 800,
+      height: 600,
+    })
+
+    /** Records every key it is asked to delete; `supportsPut` needs `putObject`. */
+    function recordingStorage(): StorageProvider & { deleted: string[] } {
+      const deleted: string[] = []
+      return {
+        deleted,
+        getUploadUrl: (): Promise<UploadUrl> => Promise.reject(new Error('unused')),
+        putObject: (): Promise<string> => Promise.reject(new Error('unused')),
+        getObject: (): Promise<Uint8Array> => Promise.reject(new Error('unused')),
+        deleteObject: (key: string): Promise<void> => {
+          deleted.push(key)
+          return Promise.resolve()
+        },
+        keyFromPublicUrl: (url: string): string | null =>
+          url.startsWith(`${BASE}/`) ? url.slice(BASE.length + 1) : null,
+      } as StorageProvider & { deleted: string[] }
+    }
+
+    it('deletes every file of a gallery with its post, not only the first', async () => {
+      const author = await newUser('gallery-del-author@example.com')
+      const helper = await newUser('gallery-del-helper@example.com')
+      const created = await app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: author.cookie },
+        payload: {
+          body: 'Two pictures of my notes.',
+          language: 'en',
+          attachments: [picture(author, 'a'), picture(author, 'b')],
+        },
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      const postId = created.json<{ _id: string }>()._id
+      const corrected = await app.inject({
+        method: 'POST',
+        url: `/posts/${postId}/corrections`,
+        headers: { cookie: helper.cookie },
+        payload: {
+          corrected: 'Two pictures of my notes!',
+          attachments: [picture(helper, 'c'), picture(helper, 'd')],
+        },
+      })
+      expect(corrected.statusCode, corrected.body).toBe(201)
+
+      const storage = recordingStorage()
+      await deletePost(handle.db, author.userId, postId, storage)
+      expect(storage.deleted.sort()).toEqual(
+        [
+          `posts/${author.userId}/a.jpg`,
+          `posts/${author.userId}/b.jpg`,
+          `posts/${helper.userId}/c.jpg`,
+          `posts/${helper.userId}/d.jpg`,
+        ].sort(),
+      )
+    })
+
+    it('deletes every file of a correction with it', async () => {
+      const author = await newUser('gallery-corr-author@example.com')
+      const helper = await newUser('gallery-corr-helper@example.com')
+      const postId = (await post(author, 'I has two pen.')).json<{ _id: string }>()._id
+      const correction = await app.inject({
+        method: 'POST',
+        url: `/posts/${postId}/corrections`,
+        headers: { cookie: helper.cookie },
+        payload: {
+          corrected: 'I have two pens.',
+          attachments: [picture(helper, 'e'), picture(helper, 'f')],
+        },
+      })
+      const correctionId = correction.json<{ _id: string }>()._id
+
+      const storage = recordingStorage()
+      await deleteCorrection(handle.db, helper.userId, postId, correctionId, storage)
+      expect(storage.deleted.sort()).toEqual(
+        [`posts/${helper.userId}/e.jpg`, `posts/${helper.userId}/f.jpg`].sort(),
+      )
+    })
+
+    it('will not take a correction or a recording across a block', async () => {
+      const author = await newUser('block-write-author@example.com')
+      const helper = await newUser('block-write-helper@example.com')
+      const postId = (await post(author, 'I goes there.')).json<{ _id: string }>()._id
+      const askId = (await ask(author, 'squirrel')).json<{ _id: string }>()._id
+      // The author blocks the helper; blocks read both ways, so the helper is
+      // the one refused.
+      await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: author.cookie },
+        payload: { userId: helper.userId },
+      })
+
+      expect((await correct(helper, postId, 'I go there.')).statusCode).toBe(404)
+      expect((await answer(helper, askId)).statusCode).toBe(404)
+      expect(await ledgerRows(helper.userId, 'correction')).toBe(0)
+      expect(await ledgerRows(helper.userId, 'pronunciation')).toBe(0)
+    })
+
+    it('draws the recorded half of a post opened through its corrections', async () => {
+      const asker = await newUser('thread-answer-asker@example.com')
+      const helper = await newUser('thread-answer-helper@example.com')
+      const viewer = await newUser('thread-answer-viewer@example.com')
+      const askId = (await ask(asker, 'squirrel')).json<{ _id: string }>()._id
+      const answerId = (await answer(helper, askId)).json<{ _id: string }>()._id
+      const liked = await app.inject({
+        method: 'PUT',
+        url: '/likes',
+        headers: { cookie: viewer.cookie },
+        payload: { targetType: 'answer', targetId: answerId },
+      })
+      expect(liked.statusCode, liked.body).toBeLessThan(300)
+
+      type Thread = {
+        post: {
+          topAnswer: { _id: string; likedByViewer: boolean; likeCount: number } | null
+          answeredByViewer: boolean
+        }
+      }
+      const seen = (await corrections(viewer, askId)).json<Thread>()
+      expect(seen.post.topAnswer?._id).toBe(answerId)
+      expect(seen.post.topAnswer?.likedByViewer).toBe(true)
+      expect(seen.post.topAnswer?.likeCount).toBe(1)
+      expect(seen.post.answeredByViewer).toBe(false)
+      expect((await corrections(helper, askId)).json<Thread>().post.answeredByViewer).toBe(true)
+    })
+
+    it('draws the corrected half of a post opened through its recordings', async () => {
+      const author = await newUser('thread-corr-author@example.com')
+      const helper = await newUser('thread-corr-helper@example.com')
+      const postId = (await post(author, 'He go to school.')).json<{ _id: string }>()._id
+      await correct(helper, postId, 'He goes to school.')
+
+      const seen = (await answers(helper, postId)).json<{
+        post: { topCorrection: { corrected: string } | null; correctedByViewer: boolean }
+      }>()
+      expect(seen.post.topCorrection?.corrected).toBe('He goes to school.')
+      expect(seen.post.correctedByViewer).toBe(true)
+    })
+
+    it('refuses `asks` loudly rather than filing it as a correction request', async () => {
+      const author = await newUser('asks-refused@example.com')
+      const response = await app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: author.cookie },
+        payload: { body: 'A photo of my lunch.', language: 'en', asks: [] },
+      })
+      expect(response.statusCode).toBe(400)
+      const body = response.json<{ code: string; details?: unknown }>()
+      expect(body.code).toBe('VALIDATION_FAILED')
+      // A schema failure still carries zod's issues in `details`.
+      expect(Array.isArray(body.details)).toBe(true)
+      expect(
+        await handle.db.collection(COLLECTIONS.posts).countDocuments({ authorId: author.userId }),
+      ).toBe(0)
+    })
+
+    it('never sends a client a kind outside the two it knows', async () => {
+      const author = await newUser('kind-normalised@example.com')
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id: new ObjectId(),
+        authorId: author.userId,
+        body: 'written by a later build',
+        language: 'en',
+        kind: 'moment',
+        correctionCount: 0,
+        createdAt: new Date(),
+      })
+      const mine = await app.inject({
+        method: 'GET',
+        url: '/me/posts',
+        headers: { cookie: author.cookie },
+      })
+      expect(mine.json<{ items: { kind: string }[] }>().items.map((i) => i.kind)).toEqual([
+        'correction',
+      ])
     })
   })
 })

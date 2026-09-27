@@ -101,6 +101,16 @@ export const createPostSchema = z.preprocess(
      * posting exactly what it always posted.
      */
     kind: z.enum(POST_KINDS).default('correction'),
+    /**
+     * Reserved, and refused. A client that sends `asks` is asking for a post
+     * this API cannot store yet — possibly one that asks for nothing — and
+     * zod's default would strip the unknown key and file it as a correction
+     * request instead. Refusing loudly is the difference between a moment that
+     * fails to post and a moment that quietly becomes a request for help the
+     * author never made. It also covers a rollback or a blue-green overlap
+     * that puts an older machine behind a newer client.
+     */
+    asks: z.never().optional(),
   }),
 )
 export type CreatePostInput = z.infer<typeof createPostSchema>
