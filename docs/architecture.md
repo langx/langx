@@ -1082,7 +1082,7 @@ no pair, no read state and no delivery, and every index on `messages` is built
 around `conversationId`.
 
 ```
-posts                 { authorId, body, language, kind?, correctionCount, answerCount?, media?, createdAt }
+posts                 { authorId, body, language, asks?, kind?, correctionCount, answerCount?, attachments?, media?, hiddenAt?, createdAt }
 postCorrections       { postId, authorId, corrected, note?, media?, createdAt }
 pronunciationAnswers  { postId, authorId, media, slowMedia?, note?, createdAt }
 postComments          { postId, authorId, body, createdAt }
@@ -1090,13 +1090,27 @@ likes                 { targetType: 'post' | 'correction' | 'answer', targetId, 
 follows               { followerId, followeeId, createdAt }
 ```
 
-The feed has two sections, and `posts.kind` is which one a post is in:
-`'correction'` for a sentence to be rewritten, `'pronunciation'` for a word to
-be said out loud. It is **absent on every post written before the sections
-existed**, and those are all corrections — the correction section matches
+`posts.asks` is what a post asks for: a correction, a recording, both, or
+nothing — a **moment**, which may be words, a photo, a video or a mix, and gets
+likes and comments. Only an asked-for help can be given: a correction lands only
+on a post asking for one, a recording only on a post asking for one. Any ask
+needs words and a language the author is learning; a moment may be in a
+language they speak natively, and may have no words when it carries a photo or
+a video. `body` is `''` then, never absent. `asks` is written on every post
+since 27 September 2026 and absent on every older row, so everything reads it
+through `asksOf`.
+
+`posts.kind` is the legacy projection installed builds read their two sections
+by: `'correction'` (a correction ask, alone or with a recording), `'pronunciation'`
+(a recording ask alone) or `'moment'` (no ask), which matches neither old
+filter. It is **absent on every post written before the sections existed**, and
+those are all corrections — the correction section matches
 `{ $in: ['correction', null] }` rather than backfilling. `$ne` would read the
 same and cannot be bounded by an index, which would turn the main feed into a
 collection scan.
+
+One account may write `FEED_POSTS_PER_24H` posts a day, counted on the `author`
+index; over it is `QUOTA_EXCEEDED` with `limit: 'postsPer24h'`.
 
 `correctionCount` and `answerCount` are the two denormalized counts here, and
 both are denormalized because they are **sort keys**: each section orders by its
