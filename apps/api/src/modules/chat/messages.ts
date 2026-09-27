@@ -14,6 +14,8 @@ import {
   type SendPhraseInput,
   type SendQuizInput,
   type SendStickerInput,
+  type SendLocationInput,
+  storedLocationPoint,
   findCosmetic,
   hasFeature,
   stripFormatting,
@@ -75,6 +77,9 @@ export function previewFor(type: Message['type'], count = 1): string {
   if (type === 'meeting') return '📅 Meeting'
   if (type === 'quiz') return '❓ Quiz'
   if (type === 'sticker') return '🩷 Sticker'
+  // Never the place name: this line is the chat list row and the push body,
+  // and a lock screen is not where somebody's whereabouts should be read out.
+  if (type === 'location') return '📍 Location'
   return ''
 }
 
@@ -744,6 +749,56 @@ export async function sendSticker(
     body: '',
     sticker: { packId: input.packId, stickerId: input.stickerId },
     ...(input.clientId ? { clientId: input.clientId } : {}),
+    createdAt: new Date(),
+  }
+
+  const updatedConversation = await recordMessage(db, conversation, message)
+  return { message, conversation: updatedConversation }
+}
+
+/**
+ * A place, shared once.
+ *
+ * Behind the media gate although nothing is uploaded. What the gate protects
+ * against is something nobody consented to arriving from a stranger, and a
+ * point on a map — "I am here" — is that as surely as a photograph is. No
+ * media quota, though: there are no bytes to pay for.
+ *
+ * The rounding happens here and nowhere else. The client is told what
+ * approximate means and could round for itself, but a card that says "area"
+ * over a front door is the one failure this feature cannot have, so the
+ * server does not take its word for it.
+ */
+export async function sendLocation(
+  db: Db,
+  senderId: string,
+  input: SendLocationInput,
+): Promise<SendResult> {
+  const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+  await assertMediaUnlocked(db, conversation, senderId)
+
+  const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
+
+  if (input.clientId) {
+    const already = await db
+      .collection<Message>(COLLECTIONS.messages)
+      .findOne({ senderId, clientId: input.clientId })
+    if (already) return { message: already, conversation }
+  }
+
+  const message: Message = {
+    _id: new ObjectId(),
+    conversationId: conversation._id,
+    senderId,
+    type: 'location',
+    body: '',
+    location: {
+      ...storedLocationPoint(input, input.precision),
+      precision: input.precision,
+      ...(input.label ? { label: input.label } : {}),
+    },
+    ...(input.clientId ? { clientId: input.clientId } : {}),
+    ...(replyTo ? { replyTo } : {}),
     createdAt: new Date(),
   }
 

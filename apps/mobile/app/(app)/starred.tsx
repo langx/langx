@@ -17,6 +17,7 @@ import { meetingClock } from '../../src/lib/meetingClock'
 import { messagePreviewKey } from '../../src/lib/messagePreview'
 import { goBackTo } from '../../src/lib/navigation'
 import { stickerAsset } from '../../src/lib/stickerAssets'
+import { coordinatesText } from '../../src/lib/sharedLocation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -224,6 +225,18 @@ function Preview({
           {meetingClock(new Date(message.meeting.startsAt), zone, locale)}
         </Text>
         <Text style={styles.meaning}>{t(messagePreviewKey('meeting'))}</Text>
+      </View>
+    )
+  }
+
+  if (message.type === 'location' && message.location) {
+    const place = message.location
+    return (
+      <View style={styles.stack}>
+        <Text style={styles.body} numberOfLines={2}>
+          {place.label ?? coordinatesText(place, place.precision)}
+        </Text>
+        <Text style={styles.meaning}>{t(messagePreviewKey('location'))}</Text>
       </View>
     )
   }

@@ -11,6 +11,7 @@ import {
   sendPhraseSchema,
   sendQuizSchema,
   sendStickerSchema,
+  sendLocationSchema,
   forwardMessageSchema,
   sendMediaMessageSchema,
   sendTextMessageSchema,
@@ -46,6 +47,7 @@ import {
   sendPhrase,
   sendQuiz,
   sendSticker,
+  sendLocation,
   forwardMessage,
   sendMediaMessage,
   sendTextMessage,
@@ -486,6 +488,23 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then(({ message, conversation }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
           ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    /**
+     * The media gate is inside `sendLocation`, with the rest of its guards, so
+     * no transport can reach the insert without it. No media quota: nothing
+     * is uploaded. The ack is projected, for the reason `message:send` gives.
+     */
+    socket.on('message:location', (payload: unknown, ack: Ack) => {
+      if (!limited('message:send', ack)) return
+      sendLocationSchema
+        .parseAsync(payload)
+        .then((input) => sendLocation(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
+          ack?.({ ok: true, data: toMessageView(message, userId) })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })

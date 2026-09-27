@@ -28,6 +28,11 @@ describe('previewFor', () => {
     expect(previewFor('audio', 4)).toBe('🎤 Voice message')
   })
 
+  /** The push body is this line, so it names the kind and never the place. */
+  it('calls a location a location', () => {
+    expect(previewFor('location')).toBe('📍 Location')
+  })
+
   /** Text and corrections carry their own words; a preview would replace them. */
   it('leaves the ones that speak for themselves empty', () => {
     expect(previewFor('text')).toBe('')

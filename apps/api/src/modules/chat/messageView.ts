@@ -70,6 +70,8 @@ export interface MessageView {
     answer?: { index: number; at: string }
   }
   sticker?: { packId: string; stickerId: string }
+  /** Already rounded when approximate. See `Message.location`. */
+  location?: Message['location']
   /** Mutual by design: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which one is the viewer's own, so the strip can show it selected. */
@@ -160,6 +162,8 @@ export function toMessageView(
   if (!deleted && message.forwarded) view.forwarded = true
   if (!deleted && message.phrase) view.phrase = message.phrase
   if (!deleted && message.sticker) view.sticker = message.sticker
+  // A withdrawn location takes the place with it, like a withdrawn photo.
+  if (!deleted && message.location) view.location = message.location
   if (!deleted && message.quiz) {
     view.quiz = {
       question: message.quiz.question,

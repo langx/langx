@@ -30,6 +30,7 @@ export {
 } from './media'
 import { attachmentsSchema, mediaKindSchema } from './media'
 import { isTranslatableLanguage, languageCodeSchema } from './languages'
+import { coarsen, locationInputSchema } from './location'
 
 export const MAX_MESSAGE_LENGTH = 2000
 
@@ -104,6 +105,7 @@ export const MESSAGE_TYPES = [
   'meeting',
   'quiz',
   'sticker',
+  'location',
 ] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
 
@@ -349,6 +351,42 @@ export const sendStickerSchema = z.object({
   clientId: clientMessageIdSchema.optional(),
 })
 export type SendStickerInput = z.infer<typeof sendStickerSchema>
+
+/**
+ * A place, shared once. Not live: the point is where the sender was when they
+ * tapped send, and nothing follows them afterwards.
+ *
+ * `approximate` is rounded **by the server** onto the grid discovery stores
+ * (`coarsen`, about a kilometre), never trusted as rounded by the client — a
+ * build that forgot, or a client that lied, would otherwise put a front door
+ * into somebody's thread on a card that says "area". `exact` is stored as
+ * sent, because the sender chose it on a sheet that said what it means.
+ */
+export const SHARED_LOCATION_PRECISIONS = ['approximate', 'exact'] as const
+export type SharedLocationPrecision = (typeof SHARED_LOCATION_PRECISIONS)[number]
+
+/** The place name the device resolved — "Kadıköy, İstanbul" — not an address. */
+export const LOCATION_LABEL_MAX_LENGTH = 120
+
+export const sendLocationSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  // The bounds discovery already puts on the same two numbers.
+  lat: locationInputSchema.shape.lat,
+  lng: locationInputSchema.shape.lng,
+  precision: z.enum(SHARED_LOCATION_PRECISIONS),
+  label: z.string().trim().min(1).max(LOCATION_LABEL_MAX_LENGTH).optional(),
+  replyToMessageId: z.string().trim().min(1).optional(),
+  clientId: clientMessageIdSchema.optional(),
+})
+export type SendLocationInput = z.infer<typeof sendLocationSchema>
+
+/** The point as it is stored: on the grid when approximate, untouched when exact. */
+export function storedLocationPoint(
+  { lat, lng }: { lat: number; lng: number },
+  precision: SharedLocationPrecision,
+): { lat: number; lng: number } {
+  return precision === 'approximate' ? { lat: coarsen(lat), lng: coarsen(lng) } : { lat, lng }
+}
 
 export const CORRECTION_NOTE_MAX_LENGTH = 500
 

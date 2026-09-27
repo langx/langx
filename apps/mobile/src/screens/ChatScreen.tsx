@@ -119,6 +119,8 @@ import { goBackTo, openProfile } from '../lib/navigation'
 import { openPaywall } from '../lib/paywall'
 import { lookupWords, wordCardLang } from '../lib/wordLookup'
 import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
+import { captureLocation, geocodePlace, reportLocationFailure } from '../lib/location'
+import { placeLabel } from '../lib/sharedLocation'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
@@ -903,6 +905,9 @@ export function ChatScreen({
             { label: t('composer.attachCamera'), value: 'camera' as const, icon: 'camera', locked },
           ]),
       { label: t('composer.attachVoice'), value: 'voice' as const, icon: 'mic', locked },
+      // Locked with the files although it carries no bytes: "I am here" from
+      // a stranger is what the gate is for. See `sendLocation`.
+      { label: t('chat.sendLocation'), value: 'location' as const, icon: 'map-pin', locked },
       // Never locked: neither carries bytes, so neither is what the media gate
       // is protecting anyone from.
       { label: t('chat.askCorrection'), value: 'askCorrection' as const, icon: 'edit-3' },
@@ -965,11 +970,67 @@ export function ChatScreen({
       await showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
       return
     }
+    if (choice === 'location') {
+      await shareLocation()
+      return
+    }
     if (choice === 'voice') {
       await toggleRecording()
       return
     }
     await pickMedia(choice)
+  }
+
+  /**
+   * A place, once: a fix, its name, and the sender's choice of how much of it
+   * to give away.
+   *
+   * The name is resolved here, on the device, before the sheet — so the
+   * approximate row can say which area it means — and only the chosen one is
+   * sent. The sheet is the confirmation: nothing leaves the phone until a row
+   * is picked, and approximate is first because it is the one to pick without
+   * thinking. The server rounds it again regardless.
+   */
+  async function shareLocation(): Promise<void> {
+    const fix = await captureLocation({ precise: true })
+    if (!fix.ok) {
+      await reportLocationFailure(fix.reason, t, 'location.failedTitle')
+      return
+    }
+    const address = await geocodePlace(fix.lat, fix.lng)
+    const area = placeLabel(address, 'approximate')
+    const name = partner?.displayName ?? t('chat.them')
+    const precision = await chooseAlert(
+      t('chat.locationSheetTitle', { name }),
+      t('chat.locationSheetBody', { name }),
+      [
+        {
+          label: area
+            ? t('chat.locationApproximateAt', { place: area })
+            : t('chat.locationApproximate'),
+          value: 'approximate' as const,
+          icon: 'map',
+        },
+        { label: t('chat.locationExact'), value: 'exact' as const, icon: 'crosshair' },
+      ],
+    )
+    if (!precision) return
+    const label = precision === 'approximate' ? area : placeLabel(address, 'exact')
+    const reply = replyingTo
+    try {
+      const socket = await getSocket()
+      await emitWithAck(socket, 'message:location', {
+        conversationId,
+        lat: fix.lat,
+        lng: fix.lng,
+        precision,
+        ...(label ? { label } : {}),
+        ...(reply ? { replyToMessageId: reply._id } : {}),
+      })
+      if (reply) setReplyingTo(null)
+    } catch {
+      void showAlert(t('chat.couldNotSend'))
+    }
   }
 
   /** How many more files fit — or `null`, after saying that none do. */
