@@ -148,11 +148,42 @@ export const mediaSchema = z.object({
 export type Media = z.infer<typeof mediaSchema>
 
 /**
- * The chat spelling, kept so nothing has to be renamed at every call site to
- * find out that the shape is shared.
+ * What a voice note says, written out by the transcript service (`apps/stt`).
+ *
+ * `lang` is the language Whisper read it as. A Whisper code, not one of ours —
+ * the same two letters for nearly every language both know, but not checked
+ * against `languageCodeSchema`, because Whisper knows languages we do not list.
+ * `text` is empty when the note held no words Whisper could hear.
  */
-export const messageMediaSchema = mediaSchema
-export type MessageMedia = Media
+export const voiceTranscriptSchema = z.object({
+  text: z.string(),
+  lang: z.string(),
+})
+export type VoiceTranscript = z.infer<typeof voiceTranscriptSchema>
+
+/**
+ * The chat spelling, and the one place the chat shape is more than the shared
+ * one: a voice note in a thread can carry its transcript.
+ *
+ * On the read side only. A send is validated against `mediaSchema`, which does
+ * not know the field, so zod drops a transcript a client puts in a body — the
+ * only way one reaches a row is the transcript route, which asked the service.
+ * Kept on the attachment rather than beside the message because it is about
+ * that recording, and so both people read what the first one paid for.
+ */
+export const messageMediaSchema = mediaSchema.extend({
+  transcript: voiceTranscriptSchema.optional(),
+})
+export type MessageMedia = z.infer<typeof messageMediaSchema>
+
+/**
+ * What asking for a transcript comes back as. `cached` is the flag the app
+ * branches on to decide whether to refetch the quota — a hit spent nothing.
+ */
+export const messageTranscriptSchema = voiceTranscriptSchema.extend({
+  cached: z.boolean(),
+})
+export type MessageTranscript = z.infer<typeof messageTranscriptSchema>
 
 export function isImageContentType(value: string): boolean {
   return (IMAGE_CONTENT_TYPES as readonly string[]).includes(value)
@@ -187,10 +218,10 @@ export const attachmentsSchema = z.array(mediaSchema).min(1).max(MAX_ATTACHMENTS
  * know there are two, and reading through it means a v1-imported thread and a
  * message sent this morning look the same to everything downstream.
  */
-export function attachmentsOf(source: {
-  attachments?: readonly Media[] | null | undefined
-  media?: Media | null | undefined
-}): Media[] {
+export function attachmentsOf<T extends Media>(source: {
+  attachments?: readonly T[] | null | undefined
+  media?: T | null | undefined
+}): T[] {
   if (source.attachments?.length) return [...source.attachments]
   return source.media ? [source.media] : []
 }

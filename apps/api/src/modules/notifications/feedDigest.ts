@@ -1,4 +1,4 @@
-import { localDayKey, type Locale } from '@langx/shared'
+import { attachmentsOf, isVideoContentType, localDayKey, type Locale } from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { feedDigestSection as buildSection } from '../../email/templates'
@@ -16,6 +16,12 @@ export const FEED_DIGEST_MAX_POSTS = 3
 export interface FeedDigestItem {
   /** The sentence that was answered, trimmed for a subject line. */
   excerpt: string
+  /**
+   * What to name the post by when it has no words: a photo or a video posted
+   * on its own. Present only then, and the template draws a label rather than
+   * an empty pair of quotation marks.
+   */
+  excerptKind?: 'photo' | 'video'
   postId: string
   corrections: number
   answers: number
@@ -63,7 +69,7 @@ export async function collectFeedReplies(
     .find(
       // The keys came out of `ObjectId.toHexString`, so this cannot throw.
       { _id: { $in: [...byPost.keys()].map((id) => new ObjectId(id)) } },
-      { projection: { authorId: 1, body: 1 } },
+      { projection: { authorId: 1, body: 1, attachments: 1, media: 1 } },
     )
     .toArray()
 
@@ -71,14 +77,31 @@ export async function collectFeedReplies(
     const counts = byPost.get(post._id.toHexString())
     if (!counts) continue
     const items = perAuthor.get(post.authorId) ?? []
+    const excerpt = post.body.trim().slice(0, 90)
     items.push({
-      excerpt: post.body.trim().slice(0, 90),
+      excerpt,
+      ...(excerpt ? {} : { excerptKind: wordlessKind(post) }),
       postId: post._id.toHexString(),
       ...counts,
     })
     perAuthor.set(post.authorId, items)
   }
   return perAuthor
+}
+
+/**
+ * What a post with no words is, for the one line the mail gives it.
+ *
+ * A video when any attachment is one, because "your video" is the more
+ * specific name for a post that mixes the two. Otherwise a photo — including
+ * the case with no attachment at all, which no writer produces (a post
+ * without words must carry a picture or a clip) and which is named rather
+ * than left as an empty quote if a row ever says otherwise.
+ */
+function wordlessKind(post: Pick<Post, 'attachments' | 'media'>): 'photo' | 'video' {
+  return attachmentsOf(post).some((item) => isVideoContentType(item.contentType))
+    ? 'video'
+    : 'photo'
 }
 
 /** The three kinds the centre files a reply under, in the order it writes them. */

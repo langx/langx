@@ -120,33 +120,33 @@ This is communication work, and it is part of the delivery:
 
 ## Decisions
 
-| Topic               | Decision                                                                                                                                                                                                                                                                                                                                                                                                |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Topology            | One Fastify container (Better Auth + REST + Socket.io in one process) + Atlas                                                                                                                                                                                                                                                                                                                           |
-| Auth                | Better Auth + `@better-auth/expo` + `mongodbAdapter`                                                                                                                                                                                                                                                                                                                                                    |
-| Realtime            | Socket.io, same process; rooms shared between instances through `@socket.io/mongo-adapter`                                                                                                                                                                                                                                                                                                              |
-| Discovery UX        | One ranked list + filters (no swipe); two sort presets (For you / Active) — a light equivalent of v1's five tabs that works on the indexes already present. "New Users" and "Enthusiasts" deferred to P1 (they need a new `createdAt` index and the badge system respectively); Visitors is already a separate Pro feature via `profileViews`                                                           |
-| **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction'`) — never on a person, and it opens no channel |
-| Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                             |
-| Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                 |
-| Fluent bundle       | Unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                        |
-| Polyglot bundle     | Everything in Fluent · first in the boosted strip · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                |
-| Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                                                                                         |
-| **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                 |
-| Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                                                                                       |
-| Gamification        | **In the MVP**: streak + token + daily pool + 4 leaderboards. Non-transferable token                                                                                                                                                                                                                                                                                                                    |
-| **Token**           | **Kept, not retired** (reversed 2026-08-27) — the name stays and v1 balances migrate at 1:100. What does not come across: the wallet/checkout UI, the `/token` leaderboard, and the on-chain roadmap                                                                                                                                                                                                    |
-| **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Polyglot: unlimited within fair use                                                                                                                                                                                                                                                 |
-| **Profile photos**  | One avatar is not enough — v1 parity means a **multi-photo gallery** (avatar + extras, capped by `PLAN_LIMITS.maxPhotos`); an account with none gets a face generated by `GET /public/avatar/:id`                                                                                                                                                                                                       |
-| Token sinks         | **Only** streak freeze, filling in a missed day, and cosmetics (frame/title). Tokens can never buy a paid feature                                                                                                                                                                                                                                                                                       |
-| Streak condition    | Opening the app holds the day. A **meaningful action** (send a message, write a correction, or answer a pronunciation request) is what pays the milestone bonus for it                                                                                                                                                                                                                                  |
-| Username            | Old usernames are reserved; **claimed once, proven by a verified email match**                                                                                                                                                                                                                                                                                                                          |
-| Storage             | S3-compatible abstraction; **Backblaze B2** today (v1's account, new bucket), R2 reachable by config                                                                                                                                                                                                                                                                                                    |
-| Migration           | Profile data + avatars + username reservations out of Appwrite, idempotent ETL                                                                                                                                                                                                                                                                                                                          |
-| **Minimum age**     | **16+** (was 18+ until September 2026; the Terms moved with it); age gate at sign-up, verified via `birthDate`                                                                                                                                                                                                                                                                                          |
-| **Licence**         | **BSD 3-Clause, public repo** — same as v1                                                                                                                                                                                                                                                                                                                                                              |
-| **Codebase**        | Written from scratch in langx2; the abandoned Expo rewrite used only as a screen/route reference                                                                                                                                                                                                                                                                                                        |
-| Release model       | Brownfield update — same bundle ID and package name; full release to everyone on both stores                                                                                                                                                                                                                                                                                                            |
+| Topic               | Decision                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Topology            | One Fastify container (Better Auth + REST + Socket.io in one process) + Atlas                                                                                                                                                                                                                                                                                                                                       |
+| Auth                | Better Auth + `@better-auth/expo` + `mongodbAdapter`                                                                                                                                                                                                                                                                                                                                                                |
+| Realtime            | Socket.io, same process; rooms shared between instances through `@socket.io/mongo-adapter`                                                                                                                                                                                                                                                                                                                          |
+| Discovery UX        | One ranked list + filters (no swipe); two sort presets (For you / Active) — a light equivalent of v1's five tabs that works on the indexes already present. "New Users" and "Enthusiasts" deferred to P1 (they need a new `createdAt` index and the badge system respectively); Visitors is already a separate Pro feature via `profileViews`                                                                       |
+| **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction' \| 'answer'`) — never on a person, and it opens no channel |
+| Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                                         |
+| Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                             |
+| Fluent bundle       | Unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                                    |
+| Polyglot bundle     | Everything in Fluent · first in the boosted strip · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                            |
+| Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                                                                                                     |
+| **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                             |
+| Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                                                                                                   |
+| Gamification        | **In the MVP**: streak + token + daily pool + 4 leaderboards. Non-transferable token                                                                                                                                                                                                                                                                                                                                |
+| **Token**           | **Kept, not retired** (reversed 2026-08-27) — the name stays and v1 balances migrate at 1:100. What does not come across: the wallet/checkout UI, the `/token` leaderboard, and the on-chain roadmap                                                                                                                                                                                                                |
+| **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Polyglot: unlimited within fair use                                                                                                                                                                                                                                                             |
+| **Profile photos**  | One avatar is not enough — v1 parity means a **multi-photo gallery** (avatar + extras, capped by `PLAN_LIMITS.maxPhotos`); an account with none gets a face generated by `GET /public/avatar/:id`                                                                                                                                                                                                                   |
+| Token sinks         | **Only** streak freeze, filling in a missed day, and cosmetics (frame/title). Tokens can never buy a paid feature                                                                                                                                                                                                                                                                                                   |
+| Streak condition    | Opening the app holds the day. A **meaningful action** (send a message, write a correction, or answer a pronunciation request) is what pays the milestone bonus for it                                                                                                                                                                                                                                              |
+| Username            | Old usernames are reserved; **claimed once, proven by a verified email match**                                                                                                                                                                                                                                                                                                                                      |
+| Storage             | S3-compatible abstraction; **Backblaze B2** today (v1's account, new bucket), R2 reachable by config                                                                                                                                                                                                                                                                                                                |
+| Migration           | Profile data + avatars + username reservations out of Appwrite, idempotent ETL                                                                                                                                                                                                                                                                                                                                      |
+| **Minimum age**     | **16+** (was 18+ until September 2026; the Terms moved with it); age gate at sign-up, verified via `birthDate`                                                                                                                                                                                                                                                                                                      |
+| **Licence**         | **BSD 3-Clause, public repo** — same as v1                                                                                                                                                                                                                                                                                                                                                                          |
+| **Codebase**        | Written from scratch in langx2; the abandoned Expo rewrite used only as a screen/route reference                                                                                                                                                                                                                                                                                                                    |
+| Release model       | Brownfield update — same bundle ID and package name; full release to everyone on both stores                                                                                                                                                                                                                                                                                                                        |
 
 ## Open-source constraints
 
@@ -224,6 +224,16 @@ with `jose` rather than the `@google-cloud/translate` SDK — the key's
 _contents_ live in `GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON` rather than Google's
 usual file-path convention, because a platform secret store holds strings, not
 files.
+
+**Transcripts:** an `SttProvider` interface over `apps/stt`, our own Python
+process running faster-whisper's multilingual `small` model on the CPU — the
+voice service's pattern, on its own private, scale-to-zero Fly app. "Show text"
+under a chat voice note sends the note's bytes from our bucket, with the two
+people's languages as the likely candidates, and keeps the words on the
+attachment (`transcript`), so whoever asks first spends one unit of
+`PLAN_LIMITS.transcriptsPerDay` and everybody after reads it free. Without
+`STT_URL` the app is told `transcriptService: false` and draws no button. See
+`docs/decisions.md` → _Voice notes are written out on a machine of ours_.
 
 ## Auth, age gate and username claim
 
@@ -327,6 +337,7 @@ live in `TIER_NAMES` and the identifiers never move.
 | Sort by distance (Nearby)   | —                                            | —              | **Yes**        |
 | Boosted profile on Discover | —                                            | **Yes**        | **First**      |
 | Translation                 | **20** per rolling 24h                       | **300**        | **1000**       |
+| Voice notes shown as text   | **10** per rolling 24h                       | **50**         | **150**        |
 | Languages you are learning  | **1**                                        | **2**          | **5**          |
 | Languages you speak         | **1**                                        | **2**          | **5**          |
 | **Message correction**      | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
@@ -833,7 +844,9 @@ fetches it, runs ffmpeg over it and stores AAC in MP4 instead — before the
 insert, so the row is right the first time anything reads it. Everything else
 comes back as it went in, and a host without ffmpeg stores the original. The
 same fetch reads every voice note's `waveform` — the bars its bubble draws —
-onto the attachment; it describes the file and never changes it. Size is capped when the upload
+onto the attachment; it describes the file and never changes it. A voice
+note's `transcript` sits on the attachment the same way, written only by the
+transcript route and never accepted from a send. Size is capped when the upload
 URL is _signed_ rather than after the bytes have been paid for, and
 `PLAN_LIMITS.mediaPer24h` caps the count on the free tier — a ceiling on abuse
 rather than a paywall, since v1 offered both free. Corrections stay uncapped
@@ -1082,7 +1095,7 @@ no pair, no read state and no delivery, and every index on `messages` is built
 around `conversationId`.
 
 ```
-posts                 { authorId, body, language, kind?, correctionCount, answerCount?, media?, createdAt }
+posts                 { authorId, body, language, asks?, kind?, correctionCount, answerCount?, attachments?, media?, hiddenAt?, createdAt }
 postCorrections       { postId, authorId, corrected, note?, media?, createdAt }
 pronunciationAnswers  { postId, authorId, media, slowMedia?, note?, createdAt }
 postComments          { postId, authorId, body, createdAt }
@@ -1090,24 +1103,38 @@ likes                 { targetType: 'post' | 'correction' | 'answer', targetId, 
 follows               { followerId, followeeId, createdAt }
 ```
 
-The feed has two sections, and `posts.kind` is which one a post is in:
-`'correction'` for a sentence to be rewritten, `'pronunciation'` for a word to
-be said out loud. It is **absent on every post written before the sections
-existed**, and those are all corrections — the correction section matches
+`posts.asks` is what a post asks for: a correction, a recording, both, or
+nothing — a **moment**, which may be words, a photo, a video or a mix, and gets
+likes and comments. Only an asked-for help can be given: a correction lands only
+on a post asking for one, a recording only on a post asking for one. Any ask
+needs words and a language the author is learning; a moment may be in a
+language they speak natively, and may have no words when it carries a photo or
+a video. `body` is `''` then, never absent. `asks` is written on every post
+since 27 September 2026 and absent on every older row, so everything reads it
+through `asksOf`.
+
+`posts.kind` is the legacy projection installed builds read their two sections
+by: `'correction'` (a correction ask, alone or with a recording), `'pronunciation'`
+(a recording ask alone) or `'moment'` (no ask), which matches neither old
+filter. It is **absent on every post written before the sections existed**, and
+those are all corrections — the correction section matches
 `{ $in: ['correction', null] }` rather than backfilling. `$ne` would read the
 same and cannot be bounded by an index, which would turn the main feed into a
 collection scan.
 
+One account may write `FEED_POSTS_PER_24H` posts a day, counted on the `author`
+index; over it is `QUOTA_EXCEEDED` with `limit: 'postsPer24h'`.
+
 `correctionCount` and `answerCount` are the two denormalized counts here, and
 both are denormalized because they are **sort keys**: each section orders by its
 own count ascending, and an index cannot sort on a count it would have to join
-to find. Putting the unanswered ones first is what makes the queue drain.
+to find. Putting the unanswered ones first is what makes the queue drain. The
+timeline reads them too, to know which asks are still open.
 
 Comment, like and follower counts are **not** stored, for the mirror-image
 reason: nothing sorts by them, so they are the `tokenAggregates` case — one
 source of truth, no second counter to drift. Neither likes nor comments may
-become a sort key, or the feed stops being a correction queue and becomes a
-popularity contest.
+become a sort key or a ranking input, or the feed becomes a popularity contest.
 
 A comment is text only, unlimited per person, and pays nothing — the one thing
 in the feed that costs nothing to leave and earns nothing for leaving it, which
@@ -1132,11 +1159,27 @@ a page the same as one with two.
 a profile, since profiles are keyed by a string — the no-like/match/swipe rule
 expressed as a type. A like grants nothing, pays nothing and opens no channel.
 
-`follows` is one-directional and unconfirmed. The feed has no tabs: it puts
-posts by the union of the follow graph and the people you have talked to first,
-capped at `FEED_FOLLOWING_SOURCE_LIMIT`, then everybody else — uncorrected first
-within each half. Two queries stitched end to end, with the cursor recording
-which half it stopped in; see `decisions.md`.
+`follows` is one-directional and unconfirmed. The follow graph and the people
+you have talked to, capped at `FEED_FOLLOWING_SOURCE_LIMIT`, are a reader's
+**audience** (`readAudience`), which both reads below use.
+
+There are two reads of the feed:
+
+- **The timeline**, `GET /feed/timeline`, which current builds read: every post
+  in one list, ranked for the reader by `modules/feed/timelineRank.ts` — a base
+  weight, more for the audience, more for a language the reader is learning,
+  and more (decaying slower) for an unanswered ask in a language they speak
+  natively, with each extra post by the same author counting half. Never likes
+  or comments. The newest `FEED_TIMELINE_WINDOW` posts on `recent` are ranked
+  in memory and pinned by both ends in a versioned `tl…` cursor; below them the
+  list continues in recency. Your own post stays on top for its first hour.
+- **The sections**, `GET /feed?kind=correction|pronunciation`, kept unchanged
+  for installed builds: one queue per ask, fewest answers first, the audience's
+  posts ahead of everybody else's in the correction section. Two queries
+  stitched end to end, with the cursor recording which half it stopped in.
+  Moments are in neither, and a post asking for both is in the correction one.
+
+See `decisions.md` for both.
 
 ## Updates, maintenance and remote config
 

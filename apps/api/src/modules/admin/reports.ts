@@ -1,4 +1,11 @@
-import type { AdminReportListQuery, ReportStatus } from '@langx/shared'
+import {
+  asksOf,
+  attachmentsOf,
+  type AdminReportListQuery,
+  type Media,
+  type PostAsk,
+  type ReportStatus,
+} from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Report } from '../moderation/blocks'
@@ -40,7 +47,21 @@ export interface AdminReportDetail extends AdminReportRow {
    * The post, read unfiltered — this is the one reader that must still find a
    * post it has already hidden. Everything else treats hidden as missing.
    */
-  post: { id: string; body: string; language: string; hiddenAt: string | null } | null
+  post: {
+    id: string
+    /** `''` for a photo or a video posted without words; never absent. */
+    body: string
+    language: string
+    hiddenAt: string | null
+    /**
+     * Every file, so a report about a picture can be judged from the picture.
+     * Always a list — empty for a post that had none — so the panel needs no
+     * second question about which field an older row kept its file in.
+     */
+    attachments: Media[]
+    /** What it asked for; empty for a moment. */
+    asks: PostAsk[]
+  } | null
   /** What is in force on the reported account right now. */
   suspension: Profile['suspension'] | null
   /** Other reports against the same account still waiting, this one excluded. */
@@ -165,6 +186,8 @@ export async function getReport(
           body: post.body,
           language: post.language,
           hiddenAt: post.hiddenAt ? post.hiddenAt.toISOString() : null,
+          attachments: attachmentsOf(post),
+          asks: asksOf(post),
         }
       : null,
     suspension: reported?.suspension ?? null,

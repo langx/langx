@@ -12,36 +12,15 @@
  * and the tests all agree on one derivation.
  */
 
-// TEMP(feed-api): replace with @langx/shared once the API stack merges.
-// `POST_ASKS`, `PostAsk` and `asksOf` are specified in the feed plan §2.1 and
-// land in `packages/shared/src/feed.ts` with the "asks stored" API part; until
-// then this is their only copy, so reconciling is deleting these three and
-// re-exporting the shared ones from here.
-export const POST_ASKS = ['correction', 'pronunciation'] as const
-export type PostAsk = (typeof POST_ASKS)[number]
+import { POST_ASKS as SHARED_POST_ASKS, type PostAsk } from '@langx/shared'
 
-/**
- * The asks a post carries.
- *
- * - `asks` present → it, as sent (the server writes it sorted and deduplicated);
- * - otherwise `kind === 'pronunciation'` → a pronunciation ask;
- * - `kind === 'moment'` → none (the API never sends it, but a stored row can);
- * - otherwise — a missing `kind` included — a correction ask, because every
- *   post written before `kind` existed was one.
- *
- * Takes a loose shape rather than `FeedPost` so a cached page from before the
- * field, a DTO from `@langx/shared` and a test fixture all fit.
+/*
+ * The model itself lives in `@langx/shared` — `asksOf` is the same function
+ * the API reads its own rows through, so the client and the server cannot
+ * disagree about what a legacy post asks for. Re-exported here so every
+ * screen has one import for asks, the shared half and the client's own below.
  */
-// TEMP(feed-api): replace with @langx/shared once the API stack merges.
-export function asksOf(post: {
-  asks?: readonly PostAsk[] | undefined
-  kind?: string | undefined
-}): PostAsk[] {
-  if (post.asks) return [...post.asks]
-  if (post.kind === 'pronunciation') return ['pronunciation']
-  if (post.kind === 'moment') return []
-  return ['correction']
-}
+export { POST_ASKS, asksOf, type PostAsk } from '@langx/shared'
 
 /** One word for a set of asks: what analytics and the "posted" toast branch on. */
 export type AskSummary = 'none' | 'correction' | 'pronunciation' | 'both'
@@ -61,5 +40,5 @@ export function askSummary(asks: readonly PostAsk[]): AskSummary {
  * request, and so a hand-edited `?asks=` cannot smuggle in a third value.
  */
 export function normaliseAsks(asks: readonly string[]): PostAsk[] {
-  return POST_ASKS.filter((ask) => asks.includes(ask))
+  return SHARED_POST_ASKS.filter((ask) => asks.includes(ask))
 }

@@ -1,6 +1,7 @@
 import {
   ACCOUNT_DELETION_GRACE_DAYS,
   ERROR_CODES,
+  asksOf,
   attachmentsOf,
   type AccountDeletionStatus,
   type DataExport,
@@ -24,6 +25,8 @@ import type { Conversation, Message } from '../chat/conversations'
 import type { LegacyMessage } from '../handles/legacyConversations'
 import type { LegacyProfile } from '../handles/legacyProfiles'
 import type { Profile } from '../profiles/profiles'
+import type { Post } from '../feed/documents'
+import { deletePostCascade } from '../feed/feed'
 
 const GRACE_MS = ACCOUNT_DELETION_GRACE_DAYS * 24 * 60 * 60 * 1000
 
@@ -183,7 +186,13 @@ export async function purgeExpiredAccounts(
       const sentMedia = await db
         .collection<Message>(COLLECTIONS.messages)
         .find(
-          { senderId: userId, $or: [{ media: { $exists: true } }, { attachments: { $ne: [] } }] },
+          {
+            senderId: userId,
+            // A forward points at somebody else's upload; those bytes go when
+            // *their* account does, not when the forwarder's does.
+            forwarded: { $ne: true },
+            $or: [{ media: { $exists: true } }, { attachments: { $ne: [] } }],
+          },
           { projection: { media: 1, attachments: 1 } },
         )
         .toArray()
@@ -305,8 +314,15 @@ export async function purgeExpiredAccounts(
        * Only `echo/` — never the URLs on the cards themselves. A card's other
        * media is a copy of a message's, a post's or a pack's object, which
        * outlives the card and belongs to whatever still plays it.
+       *
+       * And `posts/`, which is where every feed upload is signed to: a post's
+       * photos, a correction's voice note, both takes of a recorded answer.
+       * The rows are swept by URL above, so this catches what no row names —
+       * an upload whose post was never sent, or one a failed write left
+       * behind. Everything under it is this person's, and every reference to
+       * it is unset or deleted below.
        */
-      for (const prefix of [`feedback/${userId}/`, `echo/${userId}/`]) {
+      for (const prefix of [`feedback/${userId}/`, `echo/${userId}/`, `posts/${userId}/`]) {
         try {
           objectsDeleted += await options.storage.deleteByPrefix(prefix)
         } catch {
@@ -315,6 +331,26 @@ export async function purgeExpiredAccounts(
           // purged.
         }
       }
+    }
+
+    /**
+     * A post with no words that asks for nothing is its photos and nothing
+     * else — the recorded answer's case one level up. Once the files above are
+     * gone, what would survive is an empty card from "Deleted account", so it
+     * goes whole through the same cascade `deletePost` uses: the comments and
+     * likes on it with it. A post with words survives, as every post does; a
+     * moment has no corrections or recordings to rewrite anybody's history.
+     *
+     * `kind: 'moment'` narrows the read, and `asksOf` decides — the invariant
+     * says they agree, and the purge is the wrong place to trust that blind.
+     */
+    const moments = await db
+      .collection<Post>(COLLECTIONS.posts)
+      .find({ authorId: userId, kind: 'moment' })
+      .toArray()
+    for (const post of moments) {
+      if (post.body.trim() !== '' || asksOf(post).length > 0) continue
+      await deletePostCascade(db, post, options.storage)
     }
 
     /**
@@ -331,10 +367,14 @@ export async function purgeExpiredAccounts(
      * queue forever.
      */
     await Promise.all([
-      db.collection(COLLECTIONS.posts).updateMany({ authorId: userId }, { $unset: { media: '' } }),
+      // Both fields: `media` is only the first of `attachments` repeated, and
+      // unsetting it alone left every gallery pointing at deleted files.
+      db
+        .collection(COLLECTIONS.posts)
+        .updateMany({ authorId: userId }, { $unset: { media: '', attachments: '' } }),
       db
         .collection(COLLECTIONS.postCorrections)
-        .updateMany({ authorId: userId }, { $unset: { media: '' } }),
+        .updateMany({ authorId: userId }, { $unset: { media: '', attachments: '' } }),
       db.collection(COLLECTIONS.pronunciationAnswers).deleteMany({ authorId: userId }),
       ...feedAnswerPostIds.map(([postId, count]) =>
         db
@@ -433,6 +473,9 @@ export async function purgeExpiredAccounts(
        * not per person, so the other side's cards in the same deck stay.
        */
       db.collection(COLLECTIONS.phraseCards).deleteMany({ authorId: userId }),
+      // Words written and never sent. Nobody else has seen them, so nothing is
+      // owed to anybody by keeping them.
+      db.collection(COLLECTIONS.scheduledMessages).deleteMany({ senderId: userId }),
       /*
        * Echo is entirely private — a card is a note somebody wrote to
        * themselves and nobody else can see one — so both collections go

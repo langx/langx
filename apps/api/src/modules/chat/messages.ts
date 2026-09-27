@@ -16,12 +16,16 @@ import {
   type SendStickerInput,
   findCosmetic,
   hasFeature,
+  stripFormatting,
   type SendTextMessageInput,
+  type ForwardMessageInput,
+  isForwardableType,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { ApiError } from '../../lib/ApiError'
+import { consumeQuota } from '../../lib/quota'
 import { assertAttachmentsAllowed } from '../media/assertMedia'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { blockedUserIds } from '../moderation/blocks'
@@ -33,7 +37,7 @@ import { readEchoedMessageIds } from '../echo/echoed'
 import { mirrorPhraseToEcho } from '../echo/phraseMirror'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
-import { conversationPartners, type Profile } from '../profiles/profiles'
+import { conversationPartners, getProfile, type Profile } from '../profiles/profiles'
 import { effectiveTier } from '../profiles/entitlement'
 import { mediaLockedFor, toConversationView, type ConversationView } from './conversationView'
 
@@ -118,9 +122,10 @@ async function resolveReplyTo(
   return {
     messageId: target._id,
     senderId: target.senderId,
-    preview: (
-      quote ??
-      (target.body || previewFor(target.type, attachmentsOf(target).length))
+    // Stripped before it is cut: a cut through a `||spoiler||` would leave its
+    // closing marker behind, and the words would show with nothing to hide them.
+    preview: stripFormatting(
+      quote ?? (target.body || previewFor(target.type, attachmentsOf(target).length)),
     ).slice(0, REPLY_PREVIEW_MAX_LENGTH),
   }
 }
@@ -298,6 +303,12 @@ export async function sendTextMessage(
   db: Db,
   senderId: string,
   input: SendTextMessageInput,
+  /**
+   * Set only by `forwardMessage`, never from a payload: the flag says the
+   * words came from a message the server checked, and a client that could
+   * name it could stamp it on anything.
+   */
+  options: { forwarded?: true } = {},
 ): Promise<SendResult> {
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
 
@@ -346,6 +357,7 @@ export async function sendTextMessage(
     ...(replyTo ? { replyTo } : {}),
     ...(input.ask ? { ask: input.ask } : {}),
     ...(input.translation ? { translation: input.translation } : {}),
+    ...(options.forwarded ? { forwarded: true as const } : {}),
     createdAt: new Date(),
   }
 
@@ -889,6 +901,101 @@ export async function sendMediaMessage(
       )
   }
 
+  const updatedConversation = await recordMessage(db, conversation, message)
+  return { message, conversation: updatedConversation }
+}
+
+/**
+ * A message from one of the sender's threads, sent again into another.
+ *
+ * It is an ordinary send to the target in every way that is checked: the
+ * target's access and block check, the channel and suspension refusals in
+ * `recordMessage`, and for files the media gate and the media quota — the gate
+ * counts what the sender received *in the target thread*, so a photo cannot
+ * reach a stranger by way of a thread where it was already unlocked. Text goes
+ * through `sendTextMessage` itself rather than a copy of it.
+ *
+ * The one thing it adds is the read of the original, which has to be one the
+ * forwarder can see: a participant of its thread, not blocked there, and not
+ * hidden from them or withdrawn. Every way of failing that is the same
+ * "not found", for the reason `assertConversationAccess` gives.
+ */
+export async function forwardMessage(
+  db: Db,
+  senderId: string,
+  input: ForwardMessageInput,
+): Promise<SendResult> {
+  if (!ObjectId.isValid(input.messageId)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed message id')
+  }
+  const source = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .findOne({ _id: new ObjectId(input.messageId) })
+  if (!source) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
+  const sourceConversation = await assertConversationAccess(
+    db,
+    source.conversationId.toHexString(),
+    senderId,
+  )
+  if (source.deletedAt || source.hiddenFor?.includes(senderId)) {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
+  }
+  if (!isForwardableType(source.type)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'This kind of message cannot be forwarded')
+  }
+  // The menu does not offer it in a channel, and this is the same rule where
+  // a client cannot skip it: an announcement is read where it was made.
+  if (sourceConversation.participants.some((id) => !acceptsMessages(id))) {
+    throw new ApiError(ERROR_CODES.FORBIDDEN, 'Messages from this account cannot be forwarded')
+  }
+
+  if (source.type === 'text') {
+    return sendTextMessage(
+      db,
+      senderId,
+      { conversationId: input.conversationId, body: source.body },
+      { forwarded: true },
+    )
+  }
+
+  const attachments = attachmentsOf(source)
+  const first = attachments[0]
+  if (!first) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
+
+  const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+  await assertMediaUnlocked(db, conversation, senderId)
+  /*
+   * No `assertAttachmentsAllowed`: it proves that a URL a *client* named is a
+   * file uploaded for this thread, and nothing here came from a client. These
+   * were checked when they were first sent, under the original thread's prefix
+   * — which is also why they could not pass that check here.
+   *
+   * The unit is spent after this function's own refusals, so a forward that
+   * was never going to land costs nothing — the order `message:media` keeps.
+   */
+  const profile = await getProfile(db, senderId)
+  if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
+  const quota = await consumeQuota(db, senderId, effectiveTier(profile), 'media')
+  if (!quota.consumed) {
+    throw new ApiError(
+      ERROR_CODES.QUOTA_EXCEEDED,
+      'Daily attachment limit reached',
+      quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
+    )
+  }
+
+  const message: Message = {
+    _id: new ObjectId(),
+    conversationId: conversation._id,
+    senderId,
+    type: source.type,
+    body: source.body,
+    attachments,
+    // Written twice for older builds, exactly as `sendMediaMessage` does.
+    media: first,
+    forwarded: true,
+    createdAt: new Date(),
+  }
   const updatedConversation = await recordMessage(db, conversation, message)
   return { message, conversation: updatedConversation }
 }

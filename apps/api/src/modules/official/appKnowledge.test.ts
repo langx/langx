@@ -35,6 +35,10 @@ const ROWS = [
   'Scan a code',
   'Preview my profile',
   'Day streak',
+  // The two ask chips on the compose screen, named when the prompt describes
+  // the Feed.
+  'Correction needed',
+  'Pronunciation needed',
 ]
 
 /** The app's own words about what a token is, which the prompt repeats verbatim. */
@@ -62,6 +66,11 @@ describe('what the assistant says is in the app', () => {
   it.each(ROWS)('still calls it “%s”, as the app does', (row) => {
     expect(prompt).toContain(row)
     expect(catalogue).toContain(`'${row}'`)
+  })
+
+  it('says every ask is optional, and that comments take replies', () => {
+    expect(prompt).toContain('both are optional')
+    expect(prompt).toContain('comments can be replied to')
   })
 
   it.each(SECTIONS)('still has a %s section in Settings', (section) => {

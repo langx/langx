@@ -1,4 +1,5 @@
 import { ACCOUNT_DELETION_GRACE_DAYS, handlesMatch } from '@langx/shared'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { COLLECTIONS } from '../../db/collections'
@@ -311,6 +312,123 @@ describe('deleting an account', () => {
       expect(storage.deleted).toContain('legacy/her-old-avatar.jpg')
       expect(storage.deleted).toContain('legacy/her-gallery.jpg')
       expect(storage.deleted).toContain('legacy/her-photo.jpg')
+    })
+
+    /*
+     * A gallery is `attachments`, and `media` is only its first item repeated,
+     * so unsetting `media` alone left every other file referenced after the
+     * purge had deleted it. The prefix sweep catches what no row names.
+     */
+    it('takes every file off a post, and sweeps the posts prefix', async () => {
+      const her = userId('e1')
+      await seed(her, { deletedAt: expired() })
+      const file = (name: string) => ({
+        url: `${BASE}/posts/${her}/${name}.jpg`,
+        contentType: 'image/jpeg',
+        sizeBytes: 1024,
+      })
+      const postId = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id: postId,
+        authorId: her,
+        body: 'a sentence with two photos',
+        language: 'en',
+        correctionCount: 0,
+        attachments: [file('one'), file('two')],
+        media: file('one'),
+        createdAt: new Date(),
+      })
+      const storage = fakeStorage() as ReturnType<typeof fakeStorage> & {
+        prefixes: string[]
+        deleteByPrefix: (prefix: string) => Promise<number>
+      }
+      storage.prefixes = []
+      storage.deleteByPrefix = (prefix: string) => {
+        storage.prefixes.push(prefix)
+        return Promise.resolve(0)
+      }
+
+      await purgeExpiredAccounts(handle.db, { storage })
+
+      expect(storage.deleted).toContain(`posts/${her}/one.jpg`)
+      expect(storage.deleted).toContain(`posts/${her}/two.jpg`)
+      expect(storage.prefixes).toContain(`posts/${her}/`)
+      // The words survive the account; the references to deleted files do not.
+      const kept = await handle.db.collection(COLLECTIONS.posts).findOne({ _id: postId })
+      expect(kept?.body).toBe('a sentence with two photos')
+      expect(kept?.attachments).toBeUndefined()
+      expect(kept?.media).toBeUndefined()
+    })
+
+    /*
+     * A photo posted with no words is nothing once its photo is gone, so it
+     * goes whole — with the comments and likes on it. Anything with words
+     * stays as "Deleted account", as every post always has.
+     */
+    it('deletes a moment with no words, and keeps every post that has some', async () => {
+      const her = userId('f1')
+      const commenter = userId('f2')
+      await seed(her, { deletedAt: expired() })
+      const photo = {
+        url: `${BASE}/posts/${her}/moment.jpg`,
+        contentType: 'image/jpeg',
+        sizeBytes: 1024,
+      }
+      const base = { authorId: her, language: 'en', correctionCount: 0, createdAt: new Date() }
+      const wordless = new ObjectId()
+      const captioned = new ObjectId()
+      const legacy = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertMany([
+        {
+          ...base,
+          _id: wordless,
+          body: '',
+          asks: [],
+          kind: 'moment',
+          answerCount: 0,
+          attachments: [photo],
+          media: photo,
+        },
+        {
+          ...base,
+          _id: captioned,
+          body: 'Lunch by the river.',
+          asks: [],
+          kind: 'moment',
+          answerCount: 0,
+          attachments: [photo],
+          media: photo,
+        },
+        // Every post from before `asks` and `kind`: a correction request.
+        { ...base, _id: legacy, body: 'I has a pen.' },
+      ])
+      await handle.db.collection(COLLECTIONS.postComments).insertOne({
+        _id: new ObjectId(),
+        postId: wordless,
+        authorId: commenter,
+        body: 'Lovely.',
+        createdAt: new Date(),
+      })
+      await handle.db.collection(COLLECTIONS.likes).insertOne({
+        _id: new ObjectId(),
+        userId: commenter,
+        targetType: 'post',
+        targetId: wordless,
+        createdAt: new Date(),
+      })
+
+      await purgeExpiredAccounts(handle.db, { storage: fakeStorage() })
+
+      const posts = handle.db.collection(COLLECTIONS.posts)
+      expect(await posts.countDocuments({ _id: wordless })).toBe(0)
+      expect(
+        await handle.db.collection(COLLECTIONS.postComments).countDocuments({ postId: wordless }),
+      ).toBe(0)
+      expect(
+        await handle.db.collection(COLLECTIONS.likes).countDocuments({ targetId: wordless }),
+      ).toBe(0)
+      expect((await posts.findOne({ _id: captioned }))?.body).toBe('Lunch by the river.')
+      expect((await posts.findOne({ _id: legacy }))?.body).toBe('I has a pen.')
     })
 
     it('purges an account that never came from v1 just the same', async () => {

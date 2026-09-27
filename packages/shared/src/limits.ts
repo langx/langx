@@ -111,6 +111,20 @@ export interface PlanLimits {
    */
   chatVoicesPerDay: Limit
   /**
+   * Voice notes a person may have written out as text per rolling 24 hours —
+   * one unit per note, and only for the first person to ask: the words are
+   * kept on the note, so the other person, and the same person again, read
+   * them for nothing.
+   *
+   * Finite on every tier, for `chatVoicesPerDay`'s reason: this is CPU on a
+   * machine of ours, not somebody else's bill, so the number is a ceiling on
+   * how long that machine stays awake. Lower than the readings beside it,
+   * because a note can be two minutes of speech where a reading is one
+   * sentence — a transcript costs the machine several times what a reading
+   * does. **Not a paywall**: a refusal is a plain alert, like the readings'.
+   */
+  transcriptsPerDay: Limit
+  /**
    * Gender, "only my gender" and city in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
    *
@@ -281,6 +295,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoReviewsPerDay: null,
     echoVoicesPerDay: 10,
     chatVoicesPerDay: 15,
+    transcriptsPerDay: 10,
     advancedFilters: false,
     boostedProfile: false,
     sendTranslation: false,
@@ -304,6 +319,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoReviewsPerDay: null,
     echoVoicesPerDay: 50,
     chatVoicesPerDay: 100,
+    transcriptsPerDay: 50,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: false,
@@ -333,6 +349,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoReviewsPerDay: null,
     echoVoicesPerDay: 100,
     chatVoicesPerDay: 250,
+    transcriptsPerDay: 150,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: true,
@@ -389,6 +406,7 @@ export const QUOTA_KINDS = [
   'echoNewCards',
   'echoVoices',
   'chatVoices',
+  'transcripts',
 ] as const
 export type QuotaKind = (typeof QUOTA_KINDS)[number]
 
@@ -401,6 +419,7 @@ const QUOTA_LIMIT_KEY = {
   echoNewCards: 'echoNewCardsPerDay',
   echoVoices: 'echoVoicesPerDay',
   chatVoices: 'chatVoicesPerDay',
+  transcripts: 'transcriptsPerDay',
 } as const satisfies Record<QuotaKind, keyof PlanLimits>
 
 export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {

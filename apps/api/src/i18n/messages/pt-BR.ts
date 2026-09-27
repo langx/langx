@@ -82,7 +82,7 @@ export const ptBR: Localized<ServerMessages> = {
         other: 'Sua publicação recebeu {count} curtidas',
       },
 
-      likesBody: 'Alguém curtiu o que você escreveu.',
+      likesBody: 'Alguém curtiu sua publicação.',
     },
 
     /** Tokens arriving. */
@@ -253,15 +253,15 @@ export const ptBR: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: '1 resposta ao que você escreveu hoje',
-      other: '{count} respostas ao que você escreveu hoje',
+      one: '1 resposta ao que você publicou hoje',
+      other: '{count} respostas ao que você publicou hoje',
     },
 
     feedDigestPreheader: 'Responderam ao que você publicou',
 
     feedDigestBody: {
-      one: 'Alguém respondeu a uma frase que você publicou hoje.',
-      other: '{count} pessoas responderam a frases que você publicou hoje.',
+      one: 'Alguém respondeu a algo que você publicou hoje.',
+      other: '{count} pessoas responderam ao que você publicou hoje.',
     },
 
     feedDigestCorrections: { one: '1 correção', other: '{count} correções' },
@@ -273,6 +273,10 @@ export const ptBR: Localized<ServerMessages> = {
     feedDigestMore: { one: 'E mais 1 publicação.', other: 'E mais {count} publicações.' },
 
     feedDigestButton: 'Ler as respostas',
+
+    feedDigestPhoto: 'Sua foto',
+
+    feedDigestVideo: 'Seu vídeo',
 
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Pessoas com quem você poderia praticar',
@@ -394,7 +398,7 @@ export const ptBR: Localized<ServerMessages> = {
 
     welcomeStep1: 'Encontre alguém que fale o que você está aprendendo e diga oi.',
 
-    welcomeStep2: 'Publique uma frase no Feed e deixe que corrijam.',
+    welcomeStep2: 'Compartilhe algo do seu dia no Feed — e peça uma correção, se quiser.',
 
     welcomeStep3: 'Volte amanhã — dois dias seguidos começam uma sequência.',
 

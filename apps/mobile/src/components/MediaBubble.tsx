@@ -137,7 +137,11 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
 
       {broken ? (
         <Text style={[styles.unavailable, { color: colors.textFaint }]} numberOfLines={2}>
-          {t('chat.voiceMessageUnavailable')}
+          {/* A load that failed is a file that is not there — most often a
+              forward whose original was withdrawn. "Will not play on this
+              device" is for the codec, and would send them looking at their
+              phone. */}
+          {t(state === 'error' ? 'media.unavailable' : 'chat.voiceMessageUnavailable')}
         </Text>
       ) : (
         <>
@@ -321,6 +325,27 @@ function Waveform({
  * read out of the file header, so this is the path a good number of imported
  * photos take.
  */
+/**
+ * What a picture or a video whose file will not load shows instead.
+ *
+ * Mostly a forward: it shares the original's file rather than a copy, so when
+ * the original is withdrawn or its author's account is deleted the file goes
+ * with it — on purpose, since the photo was theirs. Before this the box kept
+ * pulsing as if it were still loading, forever. Said plainly and in the same
+ * slot, so the thread keeps its shape and nobody retries a file that is gone.
+ */
+function MediaGone() {
+  const styles = useStyles()
+  const t = useT()
+  return (
+    <View style={[styles.placeholder, styles.gone]}>
+      <Text style={styles.goneText} numberOfLines={2}>
+        {t('media.unavailable')}
+      </Text>
+    </View>
+  )
+}
+
 export function ImageBubble({
   media,
   onPress,
@@ -337,6 +362,7 @@ export function ImageBubble({
   const { width, height, url } = media
   const [measured, setMeasured] = useState<number | null>(null)
   const [loaded, setLoaded] = useState(false)
+  const [gone, setGone] = useState(false)
   const ratio = width && height ? width / height : measured
   if (!url) return null
 
@@ -352,7 +378,7 @@ export function ImageBubble({
    */
   const picture = (
     <View style={box}>
-      {loaded ? null : <Skeleton radius={0} style={styles.placeholder} />}
+      {gone ? <MediaGone /> : loaded ? null : <Skeleton radius={0} style={styles.placeholder} />}
       <Image
         source={{ uri: url }}
         style={styles.imageFill}
@@ -363,6 +389,7 @@ export function ImageBubble({
          */
         contentFit={fillWidth ? 'contain' : 'cover'}
         transition={150}
+        onError={() => setGone(true)}
         onLoad={({ source }) => {
           setLoaded(true)
           if (ratio || !source.width || !source.height) return
@@ -419,6 +446,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     width: 220,
   },
   imageFill: { height: '100%', width: '100%' },
+  // Above the failed picture, which draws nothing but still occupies the box.
+  gone: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    justifyContent: 'center',
+    padding: spacing.sm,
+    zIndex: 1,
+  },
+  goneText: { ...font.caption, color: colors.textFaint, textAlign: 'center' },
   /** Holds a plausible slot until `onLoad` reports the real shape. */
   imageUnmeasured: { height: 220 },
   // `height: 'auto'` undoes the skeleton's own default height, so the four
@@ -466,9 +502,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
  * Whether a player has a first frame to draw. Until it does, the box it will
  * fill shows a skeleton rather than the fill colour, the same as a picture.
  */
-function useVideoReady(player: VideoPlayer): boolean {
+function useVideoStatus(player: VideoPlayer): { ready: boolean; gone: boolean } {
   const { status } = useEvent(player, 'statusChange', { status: player.status })
-  return status === 'readyToPlay'
+  return { ready: status === 'readyToPlay', gone: status === 'error' }
 }
 
 /**
@@ -516,7 +552,7 @@ export function VideoBubble({
     instance.loop = preview
     instance.muted = preview
   })
-  const ready = useVideoReady(player)
+  const { ready, gone } = useVideoStatus(player)
 
   /*
    * Driven from the outside rather than from a viewability check in here: one
@@ -562,7 +598,7 @@ export function VideoBubble({
           : { aspectRatio: ratio },
       ]}
     >
-      {ready ? null : <Skeleton radius={0} style={styles.placeholder} />}
+      {gone ? <MediaGone /> : ready ? null : <Skeleton radius={0} style={styles.placeholder} />}
       {preview && onPress ? (
         // Only in preview mode. With native controls on, a `Pressable` around
         // them competes with the scrub bar for the same touch.
@@ -600,11 +636,11 @@ export function VideoTile({ url }: { url: string }) {
   const player = useVideoPlayer(url, (instance) => {
     instance.muted = true
   })
-  const ready = useVideoReady(player)
+  const { ready, gone } = useVideoStatus(player)
 
   return (
     <>
-      {ready ? null : <Skeleton radius={0} style={styles.placeholder} />}
+      {gone ? <MediaGone /> : ready ? null : <Skeleton radius={0} style={styles.placeholder} />}
       <VideoView
         player={player}
         style={styles.tileFill}
@@ -619,15 +655,17 @@ export function VideoTile({ url }: { url: string }) {
 function ImageTile({ url }: { url: string }) {
   const styles = useStyles()
   const [loaded, setLoaded] = useState(false)
+  const [gone, setGone] = useState(false)
 
   return (
     <>
-      {loaded ? null : <Skeleton radius={0} style={styles.placeholder} />}
+      {gone ? <MediaGone /> : loaded ? null : <Skeleton radius={0} style={styles.placeholder} />}
       <Image
         source={{ uri: url }}
         style={styles.tileFill}
         contentFit="cover"
         onLoad={() => setLoaded(true)}
+        onError={() => setGone(true)}
       />
     </>
   )

@@ -79,6 +79,12 @@ export interface MessageBubbleProps {
    */
   hasReading: boolean
   onReplayReading: (message: MessageDto) => void
+  /** A voice note's words, once this reader asked to see them. Empty: none heard. */
+  transcript?: string | undefined
+  /** The words of this voice note are being written out; the machine may be cold. */
+  transcribing?: boolean
+  /** Absent where there is no transcript service, and then there is no control. */
+  onShowText?: (message: MessageDto) => void
   /** Briefly ringed after a jump, so the reader sees where they landed. */
   highlighted: boolean
   /** An optimistic stand-in for a send in flight; the meta says "Sending". */
@@ -186,6 +192,9 @@ export const MessageBubble = memo(function MessageBubble({
   speaking,
   hasReading,
   onReplayReading,
+  transcript,
+  transcribing = false,
+  onShowText,
   highlighted,
   pending = false,
   askAnswered = false,
@@ -403,6 +412,19 @@ export const MessageBubble = memo(function MessageBubble({
         {replyTo.preview || t('messageMeta.attachment')}
       </Text>
     </Pressable>
+  ) : null
+
+  /*
+   * Above the bubble, where the quote goes, and as quiet as it: it says where
+   * the words came from without competing with them. Nothing more than that
+   * — whose thread they were in is not this reader's to know. A tombstone
+   * never carries the flag, so this needs no `deleted` check.
+   */
+  const forwarded = message.forwarded ? (
+    <View style={styles.forwardedRow}>
+      <Feather name="corner-up-right" size={12} color={colors.textMuted} />
+      <Text style={styles.forwardedText}>{t('messageMeta.forwarded')}</Text>
+    </View>
   ) : null
 
   /**
@@ -686,6 +708,7 @@ export const MessageBubble = memo(function MessageBubble({
         }
         style={column}
       >
+        {forwarded}
         {quote}
         <View ref={box} style={bubble}>
           {attachments.length > 0 ? (
@@ -703,6 +726,39 @@ export const MessageBubble = memo(function MessageBubble({
             </LinkedText>
           ) : null}
         </View>
+        {/*
+          Under the bubble rather than inside `AudioBubble`, which the feed and
+          Echo draw too and where there is no thread to ask about. The same row
+          and colour as a translation: the machine's help, not the sender's
+          words — which is also why it waits to be asked for.
+        */}
+        {transcript !== undefined ? (
+          <View style={styles.translationRow}>
+            <Ionicons
+              name="document-text-outline"
+              size={14}
+              color={colors.accent}
+              style={styles.translationIcon}
+            />
+            <Text style={styles.translation} selectable>
+              {transcript || t('chat.transcriptEmpty')}
+            </Text>
+          </View>
+        ) : transcribing ? (
+          <Text style={styles.translateLink}>{t('chat.transcribing')}</Text>
+        ) : onShowText && message.type === 'audio' && attachments.length > 0 ? (
+          <View style={styles.echoRow}>
+            <Feather name="type" size={12} color={colors.accent} />
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('chat.showText')}
+              hitSlop={8}
+              onPress={() => onShowText(message)}
+            >
+              <Text style={styles.echoAction}>{t('chat.showText')}</Text>
+            </Pressable>
+          </View>
+        ) : null}
         {badge}
         {meta}
       </Pressable>,
@@ -759,6 +815,7 @@ export const MessageBubble = memo(function MessageBubble({
         onLongPress={press}
         style={column}
       >
+        {forwarded}
         {quote}
         <View ref={box}>
           <Animated.Text style={[styles.heroText, { transform: [{ scale: heroScale }] }]}>
@@ -787,6 +844,7 @@ export const MessageBubble = memo(function MessageBubble({
 
   return shell(
     <Pressable onPress={tap} onLongPress={press} style={column}>
+      {forwarded}
       {quote}
       <View ref={box} style={bubble}>
         <LinkedText style={styles.bubbleText} from={from} onLongPress={press}>
@@ -1002,6 +1060,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   highlighted: { borderColor: colors.accent, borderWidth: 2 },
   tombstone: { backgroundColor: colors.fill },
   edited: { ...font.caption, color: colors.textMuted, fontStyle: 'italic' },
+  forwardedRow: { alignItems: 'center', flexDirection: 'row', gap: 4 },
+  forwardedText: { ...font.caption, color: colors.textMuted, fontStyle: 'italic' },
   tombstoneRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   tombstoneText: { ...font.body, color: colors.textMuted, fontStyle: 'italic' },
   /**

@@ -85,7 +85,7 @@ export const fr: Localized<ServerMessages> = {
         other: 'Votre publication a {count} j’aime',
       },
 
-      likesBody: 'Quelqu’un a aimé ce que vous avez écrit.',
+      likesBody: 'Quelqu’un a aimé votre publication.',
     },
 
     /** Tokens arriving. */
@@ -261,15 +261,15 @@ export const fr: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: '1 réponse à ce que vous avez écrit aujourd’hui',
-      other: '{count} réponses à ce que vous avez écrit aujourd’hui',
+      one: '1 réponse à ce que vous avez publié aujourd’hui',
+      other: '{count} réponses à ce que vous avez publié aujourd’hui',
     },
 
     feedDigestPreheader: 'On a répondu à vos publications',
 
     feedDigestBody: {
-      one: 'Quelqu’un a répondu à une phrase que vous avez publiée aujourd’hui.',
-      other: '{count} personnes ont répondu à vos phrases publiées aujourd’hui.',
+      one: 'Quelqu’un a répondu à ce que vous avez publié aujourd’hui.',
+      other: '{count} personnes ont répondu à ce que vous avez publié aujourd’hui.',
     },
 
     feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
@@ -281,6 +281,10 @@ export const fr: Localized<ServerMessages> = {
     feedDigestMore: { one: 'Et 1 autre publication.', other: 'Et {count} autres publications.' },
 
     feedDigestButton: 'Lire les réponses',
+
+    feedDigestPhoto: 'Votre photo',
+
+    feedDigestVideo: 'Votre vidéo',
 
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Des personnes avec qui pratiquer',
@@ -403,7 +407,8 @@ export const fr: Localized<ServerMessages> = {
 
     welcomeStep1: 'Trouvez quelqu’un qui parle la langue que vous apprenez et dites bonjour.',
 
-    welcomeStep2: 'Publiez une phrase dans le Fil et laissez-la corriger.',
+    welcomeStep2:
+      'Partagez un moment de votre journée dans le Fil — et demandez une correction si vous le souhaitez.',
 
     welcomeStep3: 'Revenez demain — deux jours d’affilée lancent une série.',
 

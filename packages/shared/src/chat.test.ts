@@ -1,10 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import {
   DELIVERY_STATES,
+  DOUBLE_TAP_REACTION,
+  MAX_REACTION_BYTES,
+  MESSAGE_REACTIONS,
   REPLY_PREVIEW_MAX_LENGTH,
   canDeleteForEveryone,
   canEditMessage,
   deliveryStateOf,
+  isReactionEmoji,
+  reactToMessageSchema,
   sendTextMessageSchema,
 } from './chat'
 
@@ -111,5 +116,65 @@ describe('sendTextMessageSchema quote', () => {
     expect(sendTextMessageSchema.safeParse({ ...base, quote: '   ' }).success).toBe(false)
     const long = 'a'.repeat(REPLY_PREVIEW_MAX_LENGTH + 1)
     expect(sendTextMessageSchema.safeParse({ ...base, quote: long }).success).toBe(false)
+  })
+})
+
+describe('reactToMessageSchema', () => {
+  const base = { conversationId: 'c1', messageId: 'm1' }
+  const accepts = (emoji: string | null): boolean =>
+    reactToMessageSchema.safeParse({ ...base, emoji }).success
+
+  it('takes the strip, the double tap and a clear', () => {
+    for (const emoji of MESSAGE_REACTIONS) expect(accepts(emoji)).toBe(true)
+    expect(accepts(DOUBLE_TAP_REACTION)).toBe(true)
+    expect(accepts(null)).toBe(true)
+  })
+
+  /** The picker offers the whole keyboard, so every shape of emoji has to pass. */
+  it('takes any single emoji, however many code points it is', () => {
+    expect(accepts('🦄')).toBe(true)
+    expect(accepts('👨‍👩‍👧‍👦')).toBe(true)
+    expect(accepts('👍🏽')).toBe(true)
+    expect(accepts('👩🏻‍❤️‍💋‍👨🏼')).toBe(true)
+    expect(accepts('🇹🇷')).toBe(true)
+    expect(accepts('🏴󠁧󠁢󠁳󠁣󠁴󠁿')).toBe(true)
+    expect(accepts('7️⃣')).toBe(true)
+    expect(accepts('#️⃣')).toBe(true)
+  })
+
+  it('refuses text, two emoji and an empty string', () => {
+    expect(accepts('')).toBe(false)
+    expect(accepts('ok')).toBe(false)
+    expect(accepts('7')).toBe(false)
+    expect(accepts('👍👍')).toBe(false)
+    expect(accepts('👍 🔥')).toBe(false)
+    expect(accepts('👍!')).toBe(false)
+    // Whitespace would make a second key that looks like the first.
+    expect(accepts(' 👍')).toBe(false)
+    expect(accepts('👍\n')).toBe(false)
+  })
+
+  /** The key becomes a field name on the message; these two would rewrite it. */
+  it('refuses anything carrying a dot or a dollar', () => {
+    expect(accepts('.')).toBe(false)
+    expect(accepts('$')).toBe(false)
+    expect(accepts('👍.')).toBe(false)
+    expect(accepts('$👍')).toBe(false)
+    expect(accepts('$set')).toBe(false)
+    expect(accepts('a.b')).toBe(false)
+  })
+
+  it('refuses a lone joiner, modifier or unclosed tag run', () => {
+    expect(accepts('\u200d')).toBe(false)
+    expect(accepts('👍\u200d')).toBe(false)
+    expect(accepts('\u{1F3FD}')).toBe(false)
+    expect(accepts('🏴\u{E0067}\u{E0062}')).toBe(false)
+  })
+
+  it('refuses one emoji stretched past the byte cap', () => {
+    // A pictograph with selectors piled on is still one cluster to the parser.
+    const stretched = '👍' + '\u{FE0F}'.repeat(MAX_REACTION_BYTES)
+    expect(isReactionEmoji('👍\u{FE0F}')).toBe(true)
+    expect(accepts(stretched)).toBe(false)
   })
 })

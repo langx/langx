@@ -93,7 +93,7 @@ export const ar: Localized<ServerMessages> = {
 
       likesTitle: { one: 'حصل منشورك على إعجاب واحد', other: 'حصل منشورك على {count} إعجاباً' },
 
-      likesBody: 'أعجب أحدهم بما كتبت.',
+      likesBody: 'أعجب أحدهم بمنشورك.',
     },
 
     /** Tokens arriving. */
@@ -261,15 +261,15 @@ export const ar: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: 'رد واحد على ما كتبته اليوم',
-      other: '{count} ردود على ما كتبته اليوم',
+      one: 'رد واحد على ما نشرته اليوم',
+      other: '{count} ردود على ما نشرته اليوم',
     },
 
     feedDigestPreheader: 'ردّ الناس على ما نشرته',
 
     feedDigestBody: {
-      one: 'ردّ أحدهم اليوم على جملة نشرتها.',
-      other: 'ردّ {count} أشخاص اليوم على جمل نشرتها.',
+      one: 'ردّ أحدهم اليوم على شيء نشرته.',
+      other: 'ردّ {count} أشخاص اليوم على ما نشرته.',
     },
 
     feedDigestCorrections: { one: 'تصحيح واحد', other: '{count} تصحيحات' },
@@ -281,6 +281,10 @@ export const ar: Localized<ServerMessages> = {
     feedDigestMore: { one: 'ومنشور واحد آخر.', other: 'و{count} منشورات أخرى.' },
 
     feedDigestButton: 'اقرأ الردود',
+
+    feedDigestPhoto: 'الصورة التي نشرتها',
+
+    feedDigestVideo: 'الفيديو الذي نشرته',
 
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'أشخاص يمكنك التدرب معهم',
@@ -400,7 +404,7 @@ export const ar: Localized<ServerMessages> = {
 
     welcomeStep1: 'ابحث عن شخص يتحدث اللغة التي تتعلمها وألقِ التحية.',
 
-    welcomeStep2: 'انشر جملة في الموجز ودع الآخرين يصححونها.',
+    welcomeStep2: 'شارك شيئاً من يومك في الموجز — واطلب تصحيحاً إن أردت.',
 
     welcomeStep3: 'عُد غداً — يومان متتاليان يبدآن سلسلة.',
 

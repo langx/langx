@@ -73,7 +73,7 @@ export const tr: Localized<ServerMessages> = {
 
       likesTitle: { one: 'Gönderin 1 beğeni aldı', other: 'Gönderin {count} beğeni aldı' },
 
-      likesBody: 'Yazdığın şeyi beğendiler.',
+      likesBody: 'Gönderini beğendiler.',
     },
 
     /** Tokens arriving. */
@@ -239,15 +239,15 @@ export const tr: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: 'Bugün yazdığına 1 yanıt geldi',
-      other: 'Bugün yazdığına {count} yanıt geldi',
+      one: 'Bugün paylaştığına 1 yanıt geldi',
+      other: 'Bugün paylaştığına {count} yanıt geldi',
     },
 
-    feedDigestPreheader: 'Paylaştığın cümlelere cevap verdiler',
+    feedDigestPreheader: 'Paylaştıklarına cevap verdiler',
 
     feedDigestBody: {
-      one: 'Bugün paylaştığın bir cümleye cevap verildi.',
-      other: 'Bugün paylaştığın cümlelere {count} kişi cevap verdi.',
+      one: 'Bugün paylaştığın bir şeye cevap verildi.',
+      other: 'Bugün paylaştıklarına {count} kişi cevap verdi.',
     },
 
     feedDigestCorrections: { one: '1 düzeltme', other: '{count} düzeltme' },
@@ -259,6 +259,10 @@ export const tr: Localized<ServerMessages> = {
     feedDigestMore: { one: 'Ve 1 gönderi daha.', other: 'Ve {count} gönderi daha.' },
 
     feedDigestButton: 'Yanıtları oku',
+
+    feedDigestPhoto: 'Fotoğrafın',
+
+    feedDigestVideo: 'Videon',
 
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Pratik yapabileceğin kişiler',
@@ -379,7 +383,7 @@ export const tr: Localized<ServerMessages> = {
 
     welcomeStep1: 'Öğrendiğin dili konuşan birini bul ve selam ver.',
 
-    welcomeStep2: 'Akış’a bir cümle yaz, insanlar düzeltsin.',
+    welcomeStep2: 'Gününden bir şeyi Akış’ta paylaş — istersen düzeltme de iste.',
 
     welcomeStep3: 'Yarın da gel — üst üste iki gün seriyi başlatır.',
 

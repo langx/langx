@@ -118,6 +118,11 @@ export const appConfigResponseSchema = appConfigSchema.extend({
    * self-hosted instance without the voice service should not offer it.
    */
   voiceService: z.boolean(),
+  /**
+   * Whether this deployment can write a voice note out as text — whether the
+   * process was started with `STT_URL` — for `voiceService`'s reason.
+   */
+  transcriptService: z.boolean(),
 })
 export type AppConfigResponse = z.infer<typeof appConfigResponseSchema>
 

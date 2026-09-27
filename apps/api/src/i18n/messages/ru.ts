@@ -95,7 +95,7 @@ export const ru: Localized<ServerMessages> = {
 
       likesTitle: { one: 'Ваш пост получил 1 лайк', other: 'Ваш пост получил {count} лайков' },
 
-      likesBody: 'Кому-то понравилось написанное вами.',
+      likesBody: 'Кому-то понравился ваш пост.',
     },
 
     /** Tokens arriving. */
@@ -277,8 +277,8 @@ export const ru: Localized<ServerMessages> = {
     feedDigestPreheader: 'На ваши посты ответили',
 
     feedDigestBody: {
-      one: 'Сегодня кто-то ответил на вашу фразу.',
-      other: 'Сегодня на ваши фразы ответили {count} человек.',
+      one: 'Сегодня кто-то ответил на ваш пост.',
+      other: 'Сегодня на ваши посты ответили {count} человек.',
     },
 
     feedDigestCorrections: { one: '1 исправление', other: '{count} исправлений' },
@@ -290,6 +290,10 @@ export const ru: Localized<ServerMessages> = {
     feedDigestMore: { one: 'И ещё 1 пост.', other: 'И ещё {count} постов.' },
 
     feedDigestButton: 'Читать ответы',
+
+    feedDigestPhoto: 'Ваше фото',
+
+    feedDigestVideo: 'Ваше видео',
 
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Люди, с которыми можно попрактиковаться',
@@ -407,7 +411,8 @@ export const ru: Localized<ServerMessages> = {
 
     welcomeStep1: 'Найдите того, кто говорит на языке, который вы учите, и поздоровайтесь.',
 
-    welcomeStep2: 'Опубликуйте фразу в Ленте и дайте её исправить.',
+    welcomeStep2:
+      'Поделитесь чем-нибудь из своего дня в Ленте — и попросите исправление, если хотите.',
 
     welcomeStep3: 'Возвращайтесь завтра — два дня подряд начинают серию.',
 

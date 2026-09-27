@@ -44,21 +44,20 @@ export type {
   GiftClaim,
   TokenHistory,
   TokenHistoryDay,
+  TimelinePage,
   TokenSummary,
 } from '@langx/shared'
 
 // Re-exported above for consumers; imported here because a `export ... from`
 // does not bind the name locally and the DTOs below need to use it.
 import type {
+  CreatePostInput,
   Equipped,
-  FeedPage as SharedFeedPage,
   FollowState,
   LanguageLevel,
-  Media as SharedMedia,
   PlanTier,
   PostComment as SharedPostComment,
 } from '@langx/shared'
-import type { PostAsk } from '../lib/postAsks'
 
 export interface PublicProfileDto {
   /** Set when the viewer already has a thread with this person. */
@@ -173,42 +172,18 @@ export interface HandleSearchPage {
   items: HandleSearchResult[]
 }
 
-/*
- * ---------------------------------------------------------------------------
- * TEMP(feed-api): replace with @langx/shared once the API stack merges.
- *
- * The wire shapes of the feed timeline, optional asks and comment replies
- * (feed plan §2.1, §2.3, §2.7, §3.3) that `main`'s `@langx/shared` does not
- * have yet. Each carries the name its shared twin has (or will have), so
- * reconciling is deleting the declaration here and adding the name back to
- * the re-export list at the top — with `POST_ASKS`/`PostAsk`/`asksOf` in
- * `src/lib/postAsks.ts` the whole of that diff.
- *
- * The comment shapes below are copied from `claude/feed-4b-comment-replies`
- * (PR #1623): `postCommentReplySchema`, `postCommentSchema`,
- * `postCommentsPageSchema` and `createPostCommentSchema`.
- * ---------------------------------------------------------------------------
+/**
+ * `POST /posts` as the composer sends it. `CreatePostInput` is the schema's
+ * *output*, where `kind` has been defaulted and is always there; a client that
+ * sends `asks` sends no `kind`, because `asks` wins on the server anyway.
  */
-
-/** `feedAuthorSchema`, which `@langx/shared` exports only as a schema. */
-type FeedAuthor = SharedPostComment['author']
-
-/** TEMP(feed-api): `POST /posts` with asks — `createPostSchema` after the "asks input" part. */
-export interface CreatePostRequest {
-  /** May be `''` only on a moment carrying an image or a video. */
-  body: string
-  language: string
-  asks: PostAsk[]
-  attachments?: SharedMedia[]
-}
-
-/** TEMP(feed-api): `GET /feed/timeline` — one page, the same shape as a section's. */
-export type TimelinePage = SharedFeedPage
+export type CreatePostRequest = Omit<CreatePostInput, 'kind'>
 
 /**
- * TEMP(feed-api): the `reason` values a refusal carries beside its `code`
- * (plan §2.3, §3.3). `ApiErrorBody.reason` itself is a plain string; this is
- * the set the client words. Old APIs never send one.
+ * The `reason` values the feed's refusals carry beside their `code`
+ * (`ApiErrorBody.reason`, a plain string on the wire). `@langx/shared` does
+ * not name the set, so the client names the ones it words — an unknown one
+ * falls back to a generic sentence rather than failing to compile.
  */
 export type PostRefusalReason =
   | 'not_asked'
@@ -217,6 +192,22 @@ export type PostRefusalReason =
   | 'moment_needs_content'
   | 'language_not_yours'
   | 'stale_cursor'
+
+/*
+ * ---------------------------------------------------------------------------
+ * TEMP(feed-api): replace with @langx/shared once #1623 (comment replies)
+ * merges.
+ *
+ * Copied from `claude/feed-4b-comment-replies`: `postCommentReplySchema`,
+ * `postCommentSchema`, `postCommentsPageSchema` and `createPostCommentSchema`,
+ * under the names that PR exports. Reconciling is deleting this block and
+ * adding `PostComment`, `PostCommentReply`, `PostCommentsPage` and
+ * `CreatePostCommentInput` back to the re-export list at the top.
+ * ---------------------------------------------------------------------------
+ */
+
+/** `feedAuthorSchema`, which `@langx/shared` exports only as a schema. */
+type FeedAuthor = SharedPostComment['author']
 
 /**
  * TEMP(feed-api): `PostCommentReply` — a comment as a reply is drawn, with no

@@ -1,4 +1,4 @@
-import { TTS_MAX_TEXT_LENGTH, type MessageType } from '@langx/shared'
+import { TTS_MAX_TEXT_LENGTH, isForwardableType, type MessageType } from '@langx/shared'
 import type { TranslateFn } from '../i18n/runtime'
 
 export const MESSAGE_ACTION_IDS = [
@@ -17,6 +17,7 @@ export const MESSAGE_ACTION_IDS = [
   'star',
   'pin',
   'phrase',
+  'forward',
   'share',
   'saveMedia',
   'report',
@@ -384,6 +385,26 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
       id: 'phrase',
       label: t('messageActions.savePhrase'),
       icon: 'bookmark-outline',
+      page: 'more',
+    })
+  }
+
+  /*
+   * Into another of the reader's own threads. A sentence, or the files on a
+   * message — the kinds `isForwardableType` names, and the server's rule too.
+   * Each needs the part that travels still to be there: a withdrawn message
+   * keeps its type and loses its body and files, so this also removes the
+   * tombstone. Not from a channel, where the server refuses it.
+   */
+  if (
+    !context.channel &&
+    isForwardableType(context.type) &&
+    (context.type === 'text' ? context.hasBody : context.hasMedia)
+  ) {
+    actions.push({
+      id: 'forward',
+      label: t('messageActions.forward'),
+      icon: 'arrow-redo-outline',
       page: 'more',
     })
   }

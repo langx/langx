@@ -83,7 +83,7 @@ export const en = {
 
       likesTitle: { one: 'Your post got 1 like', other: 'Your post got {count} likes' },
 
-      likesBody: 'Somebody liked what you wrote.',
+      likesBody: 'Somebody liked your post.',
     },
 
     /** Tokens arriving. */
@@ -265,15 +265,15 @@ export const en = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: '1 reply to your writing today',
-      other: '{count} replies to your writing today',
+      one: '1 reply to what you posted today',
+      other: '{count} replies to what you posted today',
     },
 
     feedDigestPreheader: 'People answered what you posted',
 
     feedDigestBody: {
-      one: 'Somebody answered a sentence you posted today.',
-      other: '{count} people answered sentences you posted today.',
+      one: 'Somebody answered something you posted today.',
+      other: '{count} people answered what you posted today.',
     },
 
     feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
@@ -285,6 +285,14 @@ export const en = {
     feedDigestMore: { one: 'And 1 more post.', other: 'And {count} more posts.' },
 
     feedDigestButton: 'Read the replies',
+
+    /**
+     * In place of the opening words, for a photo or a video posted without
+     * any. A description of the post, so the mail draws it unquoted.
+     */
+    feedDigestPhoto: 'Your photo',
+
+    feedDigestVideo: 'Your video',
 
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'People you could practise with',
@@ -407,7 +415,8 @@ export const en = {
 
     welcomeStep1: 'Find someone who speaks what you are learning, and say hello.',
 
-    welcomeStep2: 'Post a sentence to the Feed and let people correct it.',
+    welcomeStep2:
+      'Share something from your day on the Feed — and ask for a correction if you like.',
 
     welcomeStep3: 'Come back tomorrow — two days in a row starts a streak.',
 
