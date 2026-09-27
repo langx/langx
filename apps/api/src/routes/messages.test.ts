@@ -1,4 +1,5 @@
 import {
+  CONVERSATION_SEARCH_PAGE_SIZE,
   MAX_ATTACHMENTS,
   MAX_PINNED_CONVERSATIONS,
   MAX_IMAGE_BYTES,
@@ -2421,6 +2422,166 @@ describe('Faz 5 — conversation/message history REST', () => {
           expect(shape).not.toContain('"stage":"SORT"')
         }
       })
+    })
+  })
+
+  describe('GET /conversations/:id/search', () => {
+    async function pair(prefix: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const conversationId = (await startConversation(a, b.userId, 'hey'))._id
+      return { a, b, conversationId }
+    }
+
+    async function say(from: { userId: string }, conversationId: string, body: string) {
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const { message } = await sendTextMessage(handle.db, from.userId, { conversationId, body })
+      return message._id.toHexString()
+    }
+
+    /** Annotated rather than inferred: `inject().json()` is `any`. */
+    interface SearchBody {
+      items: { _id: string; body: string }[]
+      nextCursor: string | null
+    }
+
+    async function search(
+      user: { cookie: string },
+      conversationId: string,
+      q: string,
+      cursor?: string,
+    ): Promise<{ statusCode: number; body: SearchBody }> {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/search?q=${encodeURIComponent(q)}${
+          cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''
+        }`,
+        headers: { cookie: user.cookie },
+      })
+      const body: SearchBody = response.json()
+      return { statusCode: response.statusCode, body }
+    }
+
+    it('finds a word in any case, newest first, and nothing else', async () => {
+      const { a, b, conversationId } = await pair('search-basic')
+      const older = await say(a, conversationId, 'Shall we meet in Berlin?')
+      await say(b, conversationId, 'Sounds good')
+      const newer = await say(b, conversationId, 'BERLIN it is')
+
+      const { statusCode, body } = await search(a, conversationId, 'berlin')
+      expect(statusCode).toBe(200)
+      expect(body.items.map((m) => m._id)).toEqual([newer, older])
+      expect(body.nextCursor).toBeNull()
+    })
+
+    it('tells a stranger nothing, with the same 404 as a missing thread', async () => {
+      const { a, conversationId } = await pair('search-stranger')
+      await say(a, conversationId, 'a secret plan')
+      const outsider = await newUser('search-outsider@example.com')
+
+      const { statusCode, body } = await search(outsider, conversationId, 'secret')
+      expect(statusCode).toBe(404)
+      expect(JSON.stringify(body)).not.toContain('secret plan')
+    })
+
+    it('leaves out a withdrawn message, and one the reader hid only for the reader', async () => {
+      const { a, b, conversationId } = await pair('search-hidden')
+      const withdrawn = await say(a, conversationId, 'coffee at nine')
+      const hidden = await say(a, conversationId, 'coffee at ten')
+      const kept = await say(a, conversationId, 'coffee at eleven')
+      const { deleteMessage } = await import('../modules/chat/mutations')
+      await deleteMessage(handle.db, a.userId, {
+        conversationId,
+        messageId: withdrawn,
+        scope: 'everyone',
+      })
+      await deleteMessage(handle.db, b.userId, { conversationId, messageId: hidden, scope: 'me' })
+
+      const forB = await search(b, conversationId, 'coffee')
+      expect(forB.body.items.map((m) => m._id)).toEqual([kept])
+
+      // "Delete for me" is one-sided, so the search has to be too.
+      const forA = await search(a, conversationId, 'coffee')
+      expect(forA.body.items.map((m) => m._id)).toEqual([kept, hidden])
+    })
+
+    /**
+     * The term is matched as the characters typed. Unescaped, `a.c` would
+     * also find "abc", and a nested quantifier would be a pattern the server
+     * spends its whole time budget on.
+     */
+    it('treats regex metacharacters as the characters themselves', async () => {
+      const { a, conversationId } = await pair('search-escape')
+      const literal = await say(a, conversationId, 'the file is a.c, not abc')
+      await say(a, conversationId, 'abc only')
+      const brackets = await say(a, conversationId, 'costs $5 (roughly) [maybe]')
+
+      const dot = await search(a, conversationId, 'a.c')
+      expect(dot.body.items.map((m) => m._id)).toEqual([literal])
+
+      const meta = await search(a, conversationId, '(roughly) [maybe]')
+      expect(meta.body.items.map((m) => m._id)).toEqual([brackets])
+
+      const evil = await search(a, conversationId, '(a+)+$')
+      expect(evil.statusCode).toBe(200)
+      expect(evil.body.items).toEqual([])
+    })
+
+    it('refuses a term too short to mean anything', async () => {
+      const { a, conversationId } = await pair('search-short')
+      const { statusCode } = await search(a, conversationId, ' x ')
+      expect(statusCode).toBe(400)
+    })
+
+    it('pages with a cursor without repeating or dropping a hit', async () => {
+      const { a, b, conversationId } = await pair('search-paging')
+      const wanted: string[] = []
+      for (let n = 0; n < CONVERSATION_SEARCH_PAGE_SIZE + 3; n++) {
+        wanted.push(await say(n % 2 ? a : b, conversationId, `needle ${n}`))
+        // Noise between the hits, so a page is not simply the last N rows.
+        await say(a, conversationId, 'hay')
+      }
+
+      const first = await search(a, conversationId, 'needle')
+      expect(first.body.items).toHaveLength(CONVERSATION_SEARCH_PAGE_SIZE)
+      expect(first.body.nextCursor).not.toBeNull()
+
+      const second = await search(a, conversationId, 'needle', first.body.nextCursor ?? '')
+      expect(second.body.nextCursor).toBeNull()
+
+      const seen = [...first.body.items, ...second.body.items].map((m) => m._id)
+      expect(seen).toEqual([...wanted].reverse())
+    })
+
+    it('answers a cursor it did not mint with a 400, not a 500', async () => {
+      const { a, conversationId } = await pair('search-bad-cursor')
+      const { statusCode } = await search(a, conversationId, 'hey', 'nonsense')
+      expect(statusCode).toBe(400)
+    })
+
+    /**
+     * Keeps the claim in `searchConversation` honest: the regex cannot use an
+     * index, but the scan it runs over must still be one thread's keys walked
+     * in order — never the collection, and never a sort in memory.
+     */
+    it('walks one thread through its index, without a blocking sort', async () => {
+      const { a, conversationId } = await pair('search-explain')
+      const plan = await handle.db
+        .collection(COLLECTIONS.messages)
+        .find({
+          conversationId: new ObjectId(conversationId),
+          deletedAt: { $exists: false },
+          hiddenFor: { $ne: a.userId },
+          body: { $regex: 'hey', $options: 'i' },
+        })
+        .sort({ createdAt: -1, _id: -1 })
+        .explain('queryPlanner')
+      // The winning plan only, for the reason the media test spells out.
+      const { queryPlanner } = plan as { queryPlanner: { winningPlan: unknown } }
+      const shape = JSON.stringify(queryPlanner.winningPlan)
+      expect(shape).toContain('conversation_created_id')
+      expect(shape).not.toContain('COLLSCAN')
+      expect(shape).not.toContain('"stage":"SORT"')
     })
   })
 

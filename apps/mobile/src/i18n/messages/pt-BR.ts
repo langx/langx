@@ -1109,6 +1109,7 @@ export const ptBR: Localized<EnMessages> = {
     replyingTo: 'Respondendo a {name}',
     deleted: 'Esta mensagem foi apagada',
     goToQuoted: 'Ir para a mensagem citada',
+    spoiler: 'Spoiler, toque para revelar',
     deleteTitle: 'Excluir mensagem',
     deleteBothSides: 'Isso não dá para desfazer.',
     deleteOwnSide: 'Ela continua no aparelho da outra pessoa.',
@@ -1132,6 +1133,13 @@ export const ptBR: Localized<EnMessages> = {
     emptyVisual: 'As fotos e os vídeos que vocês enviarem ficam aqui.',
     emptyAudio: 'As mensagens de voz desta conversa ficam aqui.',
     tabPicker: 'Fotos e vídeo, ou mensagens de voz',
+  },
+
+  chatSearch: {
+    open: 'Buscar',
+    placeholder: 'Buscar nesta conversa',
+    hint: 'Encontre uma mensagem por qualquer palavra dela.',
+    none: 'Nenhuma mensagem com “{term}”.',
   },
 
   messageMenu: {

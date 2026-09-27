@@ -3,7 +3,12 @@ import type { ObjectId } from 'mongodb'
 import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
 import { countUnread, markDelivered, previewFor } from '../modules/chat/messages'
-import { attachmentsOf, notificationsAllowed, PUSH_CATEGORY_MESSAGE } from '@langx/shared'
+import {
+  attachmentsOf,
+  notificationsAllowed,
+  PUSH_CATEGORY_MESSAGE,
+  stripFormatting,
+} from '@langx/shared'
 import { respondAsOfficial } from '../modules/official/assistant'
 import { devicesFor, devicesToPush, sendPush } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
@@ -180,7 +185,10 @@ async function deliver(
       // A caption-less attachment used to push an empty line: `previewFor` is
       // what the chat list has always shown for one, and the notification has
       // no more reason to be blank than the list does.
-      body: (message.body || previewFor(message.type, attachmentsOf(message).length)).slice(0, 120),
+      // Stripped before the cut, for the reason `resolveReplyTo` gives.
+      body: stripFormatting(
+        message.body || previewFor(message.type, attachmentsOf(message).length),
+      ).slice(0, 120),
       data: {
         kind: 'message',
         conversationId: message.conversationId.toHexString(),

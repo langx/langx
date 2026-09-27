@@ -1120,6 +1120,7 @@ export const fr: Localized<EnMessages> = {
     replyingTo: 'Réponse à {name}',
     deleted: 'Ce message a été supprimé',
     goToQuoted: 'Aller au message cité',
+    spoiler: 'Spoiler, touchez pour afficher',
     deleteTitle: 'Supprimer le message',
     deleteBothSides: 'C’est irréversible.',
     deleteOwnSide: 'Il reste sur son appareil.',
@@ -1143,6 +1144,13 @@ export const fr: Localized<EnMessages> = {
     emptyVisual: 'Les photos et vidéos que vous vous envoyez s’accumuleront ici.',
     emptyAudio: 'Les messages vocaux de cette conversation s’accumuleront ici.',
     tabPicker: 'Photos et vidéo, ou messages vocaux',
+  },
+
+  chatSearch: {
+    open: 'Rechercher',
+    placeholder: 'Rechercher dans cette discussion',
+    hint: 'Retrouvez un message grâce à n’importe quel mot qu’il contient.',
+    none: 'Aucun message avec « {term} ».',
   },
 
   messageMenu: {

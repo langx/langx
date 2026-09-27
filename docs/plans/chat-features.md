@@ -250,7 +250,7 @@ Status: in review
 
 ### PR 10 — Formatting and spoilers
 
-Status: planned
+Status: in review
 
 - `packages/shared/src/formatting.ts` (+ test): `*bold*`, `_italic_`,
   `~strikethrough~` and `||spoiler||` become a list of spans — word-boundary
@@ -284,7 +284,7 @@ Status: done (#1611)
 
 ### PR 13 — Search within a conversation
 
-Status: planned
+Status: in review
 
 - `GET /conversations/:id/search?q=`: a repository function with a
   participant check and an escaped, case-insensitive regex, scanning one

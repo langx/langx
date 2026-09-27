@@ -14,6 +14,7 @@ import {
   REPLY_PREVIEW_MAX_LENGTH,
   hasFeature,
   splitSentences,
+  stripFormatting,
   webUrl,
   messageTranslationSchema,
   romanizationFor,
@@ -75,6 +76,7 @@ import { MessageBubble } from '../components/MessageBubble'
 import { MessagePartsSheet } from '../components/MessagePartsSheet'
 import { WordLookup } from '../components/WordLookup'
 import { PhotoViewer } from '../components/PhotoViewer'
+import { ChatSearch } from '../components/ChatSearch'
 import { AttachmentPreviewRow, type PendingAttachment } from '../components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../components/ui/Avatar'
@@ -412,6 +414,7 @@ export function ChatScreen({
    * was tapped is the difference between paging and hunting.
    */
   const [viewing, setViewing] = useState<{ items: Media[]; index: number } | null>(null)
+  const [searching, setSearching] = useState(false)
   const [pending, setPending] = useState<PendingMedia[]>([])
 
   /*
@@ -1467,7 +1470,7 @@ export function ChatScreen({
                 replyTo: {
                   messageId: reply._id,
                   senderId: reply.senderId,
-                  preview: quote ?? reply.body,
+                  preview: stripFormatting(quote ?? reply.body),
                 },
               }
             : {}),
@@ -1612,7 +1615,12 @@ export function ChatScreen({
     if (!target || alreadyTranslated) return
     setTranslating(message._id)
     try {
-      const result = await translateApi.mutateAsync({ text: message.body, targetLang: target })
+      // Without the markers, which a translator mangles, and with a spoiler
+      // still covered: the translation is drawn in the open under the bubble.
+      const result = await translateApi.mutateAsync({
+        text: stripFormatting(message.body),
+        targetLang: target,
+      })
       setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
     } catch (error) {
       if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
@@ -1788,7 +1796,7 @@ export function ChatScreen({
     })
 
     const picked = await openMessageMenu({
-      preview: message.body || t(messagePreviewKey(message.type)),
+      preview: stripFormatting(message.body) || t(messagePreviewKey(message.type)),
       mine: isMine(message),
       // So the menu lifts the picture out of the thread rather than the word
       // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
@@ -2147,6 +2155,9 @@ export function ChatScreen({
     const muted = conversation.data?.muted ?? false
     const choice = await chooseAlert(partner.displayName, undefined, [
       { label: t('chat.viewProfile'), value: 'profile' },
+      // First of the "find something in here" rows, because it is the one
+      // that needs nothing to have been kept.
+      { label: t('chatSearch.open'), value: 'search' },
       { label: t('chats.starredMessages'), value: 'starred' },
       // Beside Starred, because the two answer the same question — where did
       // the thing I wanted to keep go — and differ only in how much shape it
@@ -2164,6 +2175,8 @@ export function ChatScreen({
     ])
     if (choice === 'profile') {
       openProfile(partner.handle, `/(app)/chat/${conversationId}`)
+    } else if (choice === 'search') {
+      setSearching(true)
     } else if (choice === 'starred') {
       router.push('/(app)/starred')
     } else if (choice === 'phrases') {
@@ -2216,7 +2229,7 @@ export function ChatScreen({
     : correcting
       ? {
           label: t('chat.correcting'),
-          preview: correctingPart ?? correcting.body,
+          preview: stripFormatting(correctingPart ?? correcting.body),
           clear: () => {
             setCorrecting(null)
             setDraft('')
@@ -2243,7 +2256,9 @@ export function ChatScreen({
                 label: isMine(replyingTo)
                   ? t('chat.replyingToYourself')
                   : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-                preview: replyQuote ?? (replyingTo.body || t(messagePreviewKey(replyingTo.type))),
+                preview:
+                  stripFormatting(replyQuote ?? replyingTo.body) ||
+                  t(messagePreviewKey(replyingTo.type)),
                 clear: () => setReplyingTo(null),
               }
             : null
@@ -2776,6 +2791,18 @@ export function ChatScreen({
           onClose={() => setPickingSendTime(false)}
           onConfirm={(at) => void scheduleDraft({ sendAt: at.toISOString() })}
         />
+        {searching ? (
+          <ChatSearch
+            conversationId={conversationId}
+            myId={me.data?._id}
+            partnerName={partner?.displayName ?? ''}
+            onClose={() => setSearching(false)}
+            onPick={(messageId) => {
+              setSearching(false)
+              onJumpTo(messageId)
+            }}
+          />
+        ) : null}
         <PhotoViewer
           photos={viewing?.items ?? []}
           index={viewing?.index ?? null}
