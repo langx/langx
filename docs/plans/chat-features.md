@@ -323,7 +323,11 @@ Status: in review
 
 ### PR 16 — GIFs, through Giphy
 
-Status: planned
+Status: dropped
+
+Giphy's API terms forbid proxying requests and caching media URLs
+(<https://developers.giphy.com/docs/api/>), so the server-side design below is
+not allowed; revisit with another provider later.
 
 - `GIPHY_API_KEY` is optional (`env.ts`, `.env.example`); without it there is
   no button.
