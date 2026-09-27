@@ -33,6 +33,13 @@ Routes:
     POST /synthesize            -> audio/mp4
          {"text": "...", "lang": "en", "voice": "af_heart"}
          X-TTS-Secret: <TTS_SECRET>, when the service was started with one
+    POST /romanize              -> application/json {"text": "..."}
+         {"text": "...", "lang": "zh"}      zh or ja only; same secret header
+
+`/romanize` is chat's "Show in Latin letters" for the two languages rules
+cannot read, because which reading a character takes depends on the word it
+sits in. It lives here because the Chinese segmenter and pinyin tables are
+already in this image for Kokoro; see `romanize_zh` and `romanize_ja`.
 
 `lang` is a LangX language code; which engine reads it, and the espeak-ng code
 Kokoro wants, are both decided here, so the API never learns what a phonemiser
@@ -63,6 +70,7 @@ import ctypes.util
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -95,6 +103,11 @@ LANGUAGES = {
 # little over, so a stray byte does not fail a legitimate sentence, and not a
 # lot over, so this cannot be made to read a novel.
 MAX_TEXT = 400
+
+# The longest message chat can send (`MAX_MESSAGE_LENGTH`), equal by hand to
+# `ROMANIZE_MAX_TEXT_LENGTH` and checked by a test that reads this file. A
+# reading is milliseconds of dictionary lookups, so the cap is the message's.
+MAX_ROMANIZE_TEXT = 2000
 
 HERE = Path(__file__).resolve().parent
 
@@ -175,6 +188,102 @@ def zh_phonemes(text: str) -> str:
         _zh_g2p = zh.ZHG2P()
     phonemes, _ = _zh_g2p(text)
     return phonemes
+
+
+# Chinese punctuation in its ASCII form, so the pinyin line reads as a line
+# of Latin text rather than of Latin words between full-width marks.
+# The marks that end a clause carry the space the full-width form had room for.
+ZH_PUNCTUATION = str.maketrans({
+    "，": ", ", "。": ". ", "！": "! ", "？": "? ", "：": ": ", "；": "; ", "、": ", ",
+    "“": '"', "”": '"', "‘": "'", "’": "'", "（": "(", "）": ")", "《": '"', "》": '"',
+})
+
+# A pinyin syllable that starts with a vowel takes an apostrophe inside a word,
+# so 西安 is `xī'ān` and not the one syllable `xiān`.
+ZH_VOWEL_START = set("aāáǎàoōóǒòeēéěè")
+
+
+def _is_han(char: str) -> bool:
+    code = ord(char)
+    return 0x3400 <= code <= 0x9FFF or 0xF900 <= code <= 0xFAFF or 0x20000 <= code <= 0x3134F
+
+
+def romanize_zh(text: str) -> str:
+    """Chinese as tone-marked pinyin, one Latin word per Chinese word.
+
+    jieba finds the words and pypinyin reads each one as a whole, which is what
+    picks 觉 as *jué* in 觉得 and *jiào* in 睡觉 — reading character by
+    character gets polyphones wrong far more often. Both are MIT and already
+    installed through `misaki[zh]`. Tones are the dictionary's: the sandhi of
+    不 and 一 is not written, as it is not in textbook pinyin either.
+
+    Anything that is not Han passes through as it was written: Latin, digits,
+    emoji, spaces.
+    """
+    import jieba
+    from pypinyin import Style, pinyin
+
+    out = []
+    words = jieba.lcut(text)
+    for index, word in enumerate(words):
+        if not any(_is_han(char) for char in word):
+            out.append(word.translate(ZH_PUNCTUATION))
+            continue
+        syllables = [
+            reading[0]
+            for reading in pinyin(word, style=Style.TONE, errors=lambda chars: list(chars))
+        ]
+        latin = syllables[0] + "".join(
+            ("'" + syllable) if syllable[:1] in ZH_VOWEL_START else syllable
+            for syllable in syllables[1:]
+        )
+        # A space between words, but not after an opening bracket or quote.
+        if out and not out[-1][-1:].isspace() and out[-1][-1:] not in "(\"'":
+            latin = " " + latin
+        following = words[index + 1] if index + 1 < len(words) else ""
+        if following[:1].isalnum() and not any(_is_han(char) for char in following):
+            latin += " "
+        out.append(latin)
+    return "".join(out).rstrip()
+
+
+_cutlet = None
+# Kana, the CJK block, and the full-width forms and punctuation cutlet writes.
+_JA_RUN = re.compile("[\u3000-\u30ff\u31f0-\u31ff\u3400-\u9fff\uf900-\ufaff\uff01-\uff9f]+")
+
+
+def romanize_ja(text: str) -> str:
+    """Japanese as Hepburn romaji, through cutlet (MIT) and unidic-lite (MIT;
+    the dictionary is BSD) — not pykakasi or unidecode, which are GPL.
+
+    Only the Japanese runs go through cutlet. It rewrites anything it does not
+    recognise as `?`, which would turn an emoji in a message into a question
+    mark. Katakana loanwords are written as romaji (`koohii`), not as the English
+    they came from: the point is how it reads in Japanese.
+
+    Loaded on first use, like `zh_phonemes`: building the tagger reads the
+    dictionary, which a service that never sees Japanese need not pay for.
+    """
+    global _cutlet
+    if _cutlet is None:
+        import cutlet
+
+        _cutlet = cutlet.Cutlet()
+        _cutlet.use_foreign_spelling = False
+
+    def one(match: "re.Match[str]") -> str:
+        latin = _cutlet.romaji(match.group(0), capitalize=match.start() == 0)
+        # Japanese needs no space before `Anna`; the romaji beside it does.
+        if text[match.start() - 1 : match.start()].isalnum():
+            latin = " " + latin
+        if text[match.end() : match.end() + 1].isalnum():
+            latin += " "
+        return latin
+
+    return _JA_RUN.sub(one, text)
+
+
+ROMANIZERS = {"zh": romanize_zh, "ja": romanize_ja}
 
 
 _piper_voices: "OrderedDict[str, object]" = OrderedDict()
@@ -268,6 +377,10 @@ class Handler(BaseHTTPRequestHandler):
     # default session, and a 2 GB machine has no second model to spare; Fly's
     # concurrency limit keeps the queue short from the outside.
     lock = threading.Lock()
+    # Its own lock, not the synthesis one: a reading takes milliseconds and must
+    # not queue behind a cold Kokoro. One at a time because neither jieba's
+    # lazy dictionary load nor MeCab's tagger is safe to share across threads.
+    romanize_lock = threading.Lock()
     secret = os.environ.get("TTS_SECRET") or None
 
     def log_message(self, fmt, *args):  # one line per request, to stdout, for `fly logs`
@@ -291,7 +404,7 @@ class Handler(BaseHTTPRequestHandler):
             self._json(404, {"error": "not found"})
 
     def do_POST(self):
-        if self.path != "/synthesize":
+        if self.path not in ("/synthesize", "/romanize"):
             return self._json(404, {"error": "not found"})
         if self.secret and self.headers.get("X-TTS-Secret") != self.secret:
             return self._json(401, {"error": "bad secret"})
@@ -301,8 +414,18 @@ class Handler(BaseHTTPRequestHandler):
             text = str(body.get("text", "")).strip()
             lang = str(body.get("lang", ""))
             voice = str(body.get("voice", ""))
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, AttributeError):
             return self._json(400, {"error": "bad json"})
+
+        if self.path == "/romanize":
+            romanizer = ROMANIZERS.get(lang)
+            if romanizer is None:
+                return self._json(400, {"error": f"cannot romanize language {lang!r}"})
+            if not text or len(text) > MAX_ROMANIZE_TEXT:
+                return self._json(400, {"error": "text is empty or too long"})
+            with self.romanize_lock:
+                latin = romanizer(text)
+            return self._json(200, {"text": latin})
 
         if not text or len(text) > MAX_TEXT:
             return self._json(400, {"error": "text is empty or too long"})

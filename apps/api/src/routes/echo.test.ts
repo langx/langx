@@ -1979,6 +1979,7 @@ describe('echo', () => {
             asked.push(input)
             return Promise.resolve(new Uint8Array([1, 2, 3, 4]))
           },
+          romanize: () => Promise.reject(new Error('not used')),
         },
       }
     }

@@ -228,7 +228,11 @@ belong to the published LangX app.
 holding Kokoro-82M, which reads a member's own Echo card aloud on request.
 It is separate because the model and its runtime are a few hundred megabytes
 that the API's image and 512 MB have no room for, and optional because
-nothing else depends on it.
+nothing else depends on it. It also writes Chinese and Japanese chat
+messages in Latin letters (`POST /romanize`: pinyin through jieba and
+pypinyin, romaji through cutlet and unidic-lite); without it, those two
+languages simply get no "Show in Latin letters" row, while the scripts the
+app romanizes on the phone are unaffected.
 
 Locally, follow the docstring in `apps/tts/server.py` — a venv, the two model
 files from the kokoro-onnx release, espeak-ng and ffmpeg from your package

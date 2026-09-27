@@ -56,6 +56,7 @@ import {
   useMessageWindow,
   useTranslate,
   useSpeakMessage,
+  useRomanizeMessage,
   type ClearedUnread,
   type MessageDto,
 } from '../api/queries'
@@ -286,6 +287,7 @@ export function ChatScreen({
    * costs a few microseconds and no request.
    */
   const [romanizations, setRomanizations] = useState<Record<string, string>>({})
+  const [romanizing, setRomanizing] = useState<string | null>(null)
   /**
    * Readings, by message id, and only for as long as this screen is open.
    *
@@ -523,6 +525,7 @@ export function ChatScreen({
    */
   const player = useAudioPlayer(null)
   const speakMessageApi = useSpeakMessage()
+  const romanizeApi = useRomanizeMessage()
   /** Some deployments have no voice service at all; then there is no row. */
   const voiceService = useAppConfig().data?.voiceService === true
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
@@ -1590,6 +1593,24 @@ export function ChatScreen({
     player.play()
   }
 
+  /**
+   * Chinese or Japanese in Latin letters, from the voice service — the two
+   * scripts where the reading depends on the word, which the rules on this
+   * device cannot know. One at a time, like `speak`: it is the same machine.
+   * No quota to explain on failure; busy or broken, the answer is "try again".
+   */
+  async function romanizeRemotely(message: MessageDto): Promise<void> {
+    setRomanizing(message._id)
+    try {
+      const reading = await romanizeApi.mutateAsync({ conversationId, messageId: message._id })
+      setRomanizations((current) => ({ ...current, [message._id]: reading.text }))
+    } catch {
+      await showAlert(t('chat.romanizeUnavailable'), t('chat.romanizeFailed'))
+    } finally {
+      setRomanizing(null)
+    }
+  }
+
   async function speak(message: MessageDto): Promise<void> {
     const known = speech[message._id]
     if (known) {
@@ -1665,9 +1686,12 @@ export function ChatScreen({
           sourceLang: message.translation?.sourceLang,
           contextLangs: conversationLangs,
         }) !== undefined,
-      // The rules run here; Chinese and Japanese need the voice service and are
-      // not offered until that route exists.
-      canRomanize: romanization?.engine === 'rules',
+      // The rules run here. Chinese and Japanese need the voice service, so
+      // they wait for a deployment that has one — and for any reading of
+      // theirs already in flight.
+      canRomanize:
+        romanization?.engine === 'rules' ||
+        (romanization?.engine === 'service' && voiceService && romanizing === null),
       bodyLength: message.body.trim().length,
       sentenceCount: splitSentences(message.body).length,
       wordCount: lookupWords(message.body).length,
@@ -1739,6 +1763,8 @@ export function ChatScreen({
       if (romanization?.engine === 'rules') {
         const latin = romanization.romanize(message.body)
         setRomanizations((current) => ({ ...current, [message._id]: latin }))
+      } else if (romanization?.engine === 'service') {
+        await romanizeRemotely(message)
       }
     } else if (picked.id === 'correct') {
       setPart(null)
@@ -2465,6 +2491,7 @@ export function ChatScreen({
                       translation={translations[row.message._id]}
                       translating={translating === row.message._id}
                       romanization={romanizations[row.message._id]}
+                      romanizing={romanizing === row.message._id}
                       speaking={speaking === row.message._id}
                       hasReading={speech[row.message._id] !== undefined}
                       onReplayReading={onReplayReading}

@@ -196,8 +196,12 @@ PRs; see `docs/decisions.md` → _Transliteration runs on rules we own_.
 - `apps/tts/server.py` gains `POST /romanize`: pypinyin and jieba for
   tone-marked, word-segmented pinyin; cutlet and unidic-lite for Hepburn
   romaji. No GPL packages (pykakasi, unidecode).
-- The API calls it through the TTS provider, behind a participant check, a
-  rate limit and a cache. No `TTS_URL`, no row for Chinese and Japanese.
+- The API calls it through the TTS provider at
+  `POST /conversations/:id/messages/:messageId/romanize`, behind the same
+  participant gate as `/speak`, a rate limit and a 90-day cache
+  (`romanizationCache`). No quota: it costs milliseconds and no money per
+  call. The language is decided on the server from the text. No `TTS_URL`,
+  no row for Chinese and Japanese (`voiceService` in app-config).
 
 ### PR 8 — Voice note transcripts, on a Whisper service
 

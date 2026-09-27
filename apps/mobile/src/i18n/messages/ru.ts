@@ -1159,6 +1159,9 @@ export const ru: Localized<EnMessages> = {
     playAgain: 'Послушать ещё раз',
     speakUnavailable: 'Не удалось прочитать вслух',
     speakFailed: 'Попробуй ещё раз через минуту.',
+    romanizing: 'Переводим в латиницу…',
+    romanizeUnavailable: 'Не удалось показать латиницей',
+    romanizeFailed: 'Попробуй ещё раз через минуту.',
     speakLimit: {
       one: 'Ты использовал {count} прочтение на сегодня. Лимит обновится через 24 часа.',
       other: 'Ты использовал {count} прочтений на сегодня. Лимит обновится через 24 часа.',

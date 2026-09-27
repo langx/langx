@@ -10,3 +10,18 @@ misaki[zh]==0.9.4
 # Piper for the thirty-one languages Kokoro does not read; see server.py.
 # GPL-3, and it runs as its own service that we do not distribute.
 piper-tts==1.8.0
+
+# Chat's "Show in Latin letters" for Chinese: jieba finds the words and
+# pypinyin reads them. Both MIT, both already here through `misaki[zh]` —
+# pinned by name as well because `/romanize` calls them directly and its
+# output is theirs. See `romanize_zh` in server.py.
+jieba==0.42.1
+pypinyin==0.55.0
+
+# And for Japanese: cutlet (MIT) over fugashi (MIT, with MeCab under BSD) and
+# the unidic-lite dictionary (MIT; UniDic itself BSD). pykakasi and unidecode
+# would be the obvious picks and are GPL, so they are not used. See
+# `romanize_ja` in server.py.
+cutlet==0.5.2
+fugashi==1.5.2
+unidic-lite==1.0.8

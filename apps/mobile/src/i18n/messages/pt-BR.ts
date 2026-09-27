@@ -1060,6 +1060,9 @@ export const ptBR: Localized<EnMessages> = {
     playAgain: 'Ouvir de novo',
     speakUnavailable: 'Não deu para ler em voz alta',
     speakFailed: 'Tente de novo daqui a pouco.',
+    romanizing: 'Passando para letras latinas…',
+    romanizeUnavailable: 'Não foi possível mostrar em letras latinas',
+    romanizeFailed: 'Tente de novo daqui a pouco.',
     speakLimit: {
       one: 'Você usou a {count} leitura de hoje. Ela volta em 24 horas.',
       other: 'Você usou as {count} leituras de hoje. Elas voltam em 24 horas.',

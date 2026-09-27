@@ -1091,6 +1091,9 @@ export const de: Localized<EnMessages> = {
     playAgain: 'Nochmal abspielen',
     speakUnavailable: 'Konnte das nicht vorlesen',
     speakFailed: 'Versuch es gleich noch einmal.',
+    romanizing: 'Wird in lateinische Buchstaben übertragen…',
+    romanizeUnavailable: 'Konnte nicht in lateinischen Buchstaben angezeigt werden',
+    romanizeFailed: 'Versuch es gleich noch einmal.',
     speakLimit: {
       one: 'Du hast die {count} Lesung für heute verbraucht. In 24 Stunden gibt es wieder neue.',
       other:

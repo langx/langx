@@ -1210,6 +1210,9 @@ export const en = {
     playAgain: 'Play again',
     speakUnavailable: 'Couldn’t read that aloud',
     speakFailed: 'Try again in a moment.',
+    romanizing: 'Writing it in Latin letters…',
+    romanizeUnavailable: 'Couldn’t show it in Latin letters',
+    romanizeFailed: 'Try again in a moment.',
     speakLimit: {
       one: 'You’ve used today’s {count} reading. It resets in 24 hours.',
       other: 'You’ve used today’s {count} readings. They reset in 24 hours.',

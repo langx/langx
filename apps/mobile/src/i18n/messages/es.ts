@@ -1066,6 +1066,9 @@ export const es: Localized<EnMessages> = {
     playAgain: 'Escuchar otra vez',
     speakUnavailable: 'No se pudo leer en voz alta',
     speakFailed: 'Vuelve a intentarlo en un momento.',
+    romanizing: 'Pasando a letras latinas…',
+    romanizeUnavailable: 'No se pudo mostrar en letras latinas',
+    romanizeFailed: 'Inténtalo de nuevo en un momento.',
     speakLimit: {
       one: 'Has usado la {count} lectura de hoy. Se renueva en 24 horas.',
       other: 'Has usado las {count} lecturas de hoy. Se renuevan en 24 horas.',

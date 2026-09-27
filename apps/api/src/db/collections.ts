@@ -66,6 +66,13 @@ export const COLLECTIONS = {
   profileViews: 'profileViews',
   translationCache: 'translationCache',
   /**
+   * Chinese and Japanese messages in Latin letters, as the voice service read
+   * them. The `_id` is `<lang>:<sha1 of text>`, so a sentence two threads
+   * share is read once. Rows expire, so a better dictionary in a later image
+   * reaches old sentences too.
+   */
+  romanizationCache: 'romanizationCache',
+  /**
    * What a linked page said about itself, keyed by the address as sent. A
    * cache, not a record: every row expires, a failed read included, so a page
    * that was down is tried again tomorrow rather than never.

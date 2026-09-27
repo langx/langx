@@ -16,7 +16,16 @@ that `piper-tts` 1.8.0 does not know.
 import json
 import sys
 
-from server import kokoro_wav, load_kokoro, load_piper, piper_wav, to_aac, zh_phonemes
+from server import (
+    kokoro_wav,
+    load_kokoro,
+    load_piper,
+    piper_wav,
+    romanize_ja,
+    romanize_zh,
+    to_aac,
+    zh_phonemes,
+)
 
 
 def main() -> int:
@@ -35,6 +44,21 @@ def main() -> int:
         print("kokoro produced nothing for chinese", flush=True)
         return 1
     print("zh ok", flush=True)
+
+    # `/romanize` needs no model, but it needs its dictionaries: jieba's, and
+    # the UniDic that cutlet reads through MeCab. A wheel that installed
+    # without its data fails here rather than on the first person to ask.
+    # Word by word and tone-marked, and the emoji left where it was.
+    readings = {
+        "zh": (romanize_zh, "我觉得睡觉很好。😀", "wǒ juéde shuìjiào hěn hǎo. 😀"),
+        "ja": (romanize_ja, "東京に行きたい 😀", "Tokyo ni ikitai 😀"),
+    }
+    for lang, (romanize, text, expected) in readings.items():
+        got = romanize(text)
+        if got != expected:
+            print(f"romanize {lang}: expected {expected!r}, got {got!r}", flush=True)
+            return 1
+        print(f"romanize {lang} ok", flush=True)
 
     failures = []
     with open("voices.json", encoding="utf8") as handle:
