@@ -1163,6 +1163,7 @@ export const de: Localized<EnMessages> = {
     replyingTo: 'Antwort an {name}',
     deleted: 'Diese Nachricht wurde gelöscht',
     goToQuoted: 'Zur zitierten Nachricht',
+    spoiler: 'Spoiler, zum Anzeigen tippen',
     deleteTitle: 'Nachricht löschen',
     deleteBothSides: 'Das lässt sich nicht rückgängig machen.',
     deleteOwnSide: 'Auf ihrem Gerät bleibt sie.',

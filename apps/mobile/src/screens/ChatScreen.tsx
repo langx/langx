@@ -14,6 +14,7 @@ import {
   REPLY_PREVIEW_MAX_LENGTH,
   hasFeature,
   splitSentences,
+  stripFormatting,
   webUrl,
   messageTranslationSchema,
   romanizationFor,
@@ -1460,7 +1461,7 @@ export function ChatScreen({
                 replyTo: {
                   messageId: reply._id,
                   senderId: reply.senderId,
-                  preview: quote ?? reply.body,
+                  preview: stripFormatting(quote ?? reply.body),
                 },
               }
             : {}),
@@ -1541,7 +1542,12 @@ export function ChatScreen({
     if (!target || alreadyTranslated) return
     setTranslating(message._id)
     try {
-      const result = await translateApi.mutateAsync({ text: message.body, targetLang: target })
+      // Without the markers, which a translator mangles, and with a spoiler
+      // still covered: the translation is drawn in the open under the bubble.
+      const result = await translateApi.mutateAsync({
+        text: stripFormatting(message.body),
+        targetLang: target,
+      })
       setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
     } catch (error) {
       if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
@@ -1717,7 +1723,7 @@ export function ChatScreen({
     })
 
     const picked = await openMessageMenu({
-      preview: message.body || t(messagePreviewKey(message.type)),
+      preview: stripFormatting(message.body) || t(messagePreviewKey(message.type)),
       mine: isMine(message),
       // So the menu lifts the picture out of the thread rather than the word
       // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
@@ -2145,7 +2151,7 @@ export function ChatScreen({
     : correcting
       ? {
           label: t('chat.correcting'),
-          preview: correctingPart ?? correcting.body,
+          preview: stripFormatting(correctingPart ?? correcting.body),
           clear: () => {
             setCorrecting(null)
             setDraft('')
@@ -2172,7 +2178,9 @@ export function ChatScreen({
                 label: isMine(replyingTo)
                   ? t('chat.replyingToYourself')
                   : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-                preview: replyQuote ?? (replyingTo.body || t(messagePreviewKey(replyingTo.type))),
+                preview:
+                  stripFormatting(replyQuote ?? replyingTo.body) ||
+                  t(messagePreviewKey(replyingTo.type)),
                 clear: () => setReplyingTo(null),
               }
             : null
