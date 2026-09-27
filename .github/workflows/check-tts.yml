@@ -93,6 +93,15 @@ jobs:
           test "$code" = "400"
           echo "turkish refused with $code"
 
+          # Chat's Latin-letter readings, which need the dictionaries rather
+          # than a model: Chinese and Japanese each answer with some text.
+          for body in '{"text":"你好","lang":"zh"}' '{"text":"こんにちは","lang":"ja"}'; do
+            out=$(curl -fsS -X POST localhost:8080/romanize \
+              -H 'Content-Type: application/json' -d "$body")
+            echo "$out" | python3 -c 'import json,sys; assert json.load(sys.stdin)["text"]'
+            echo "$body -> $out"
+          done
+
       - name: Logs, if anything above failed
         if: failure()
         run: docker logs tts || true

@@ -1,4 +1,9 @@
-import { TtsBusyError, type SynthesizeInput, type TtsProvider } from './TtsProvider'
+import {
+  TtsBusyError,
+  type RomanizeInput,
+  type SynthesizeInput,
+  type TtsProvider,
+} from './TtsProvider'
 
 /**
  * Sixty seconds, not the global thirty: the service sleeps between readings,
@@ -21,7 +26,20 @@ export class HttpTtsProvider implements TtsProvider {
   }
 
   async synthesize(input: SynthesizeInput): Promise<Uint8Array> {
-    const response = await fetch(`${this.#url}/synthesize`, {
+    const response = await this.#post('/synthesize', input)
+    return new Uint8Array(await response.arrayBuffer())
+  }
+
+  async romanize(input: RomanizeInput): Promise<string> {
+    const response = await this.#post('/romanize', input)
+    const body = (await response.json()) as { text?: unknown }
+    if (typeof body.text !== 'string') throw new Error('TTS service sent no romanization')
+    return body.text
+  }
+
+  /** One call to the service, with its secret, its timeout and its busy answer. */
+  async #post(path: string, input: SynthesizeInput | RomanizeInput): Promise<Response> {
+    const response = await fetch(`${this.#url}${path}`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -40,6 +58,6 @@ export class HttpTtsProvider implements TtsProvider {
       const detail = (await response.text()).slice(0, 200)
       throw new Error(`TTS service answered ${response.status}: ${detail}`)
     }
-    return new Uint8Array(await response.arrayBuffer())
+    return response
   }
 }

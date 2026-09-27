@@ -1,3 +1,5 @@
+import type { RomanizationServiceLang } from '@langx/shared'
+
 export interface SynthesizeInput {
   text: string
   /** A LangX language code — `en`, `pt`. The service maps it to the model's. */
@@ -13,6 +15,18 @@ export interface SynthesizeInput {
  */
 export interface TtsProvider {
   synthesize(input: SynthesizeInput): Promise<Uint8Array>
+  /**
+   * Chinese or Japanese in Latin letters — pinyin or romaji. On the voice
+   * service because its Chinese segmenter is already there for Kokoro, and
+   * because which reading a character takes needs a dictionary. The other
+   * scripts are rules in `@langx/shared` and never reach this.
+   */
+  romanize(input: RomanizeInput): Promise<string>
+}
+
+export interface RomanizeInput {
+  text: string
+  lang: RomanizationServiceLang
 }
 
 /**

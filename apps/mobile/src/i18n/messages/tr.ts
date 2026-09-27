@@ -1063,6 +1063,9 @@ export const tr: Localized<EnMessages> = {
     playAgain: 'Tekrar dinle',
     speakUnavailable: 'Bu mesaj sesli okunamadı',
     speakFailed: 'Birazdan tekrar dene.',
+    romanizing: 'Latin harflerine çevriliyor…',
+    romanizeUnavailable: 'Latin harfleriyle gösterilemedi',
+    romanizeFailed: 'Birazdan tekrar dene.',
     speakLimit: {
       one: 'Bugünkü {count} okumanı kullandın. 24 saat içinde yenilenir.',
       other: 'Bugünkü {count} okumanı kullandın. 24 saat içinde yenilenir.',

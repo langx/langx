@@ -31,6 +31,7 @@ import {
   listStarredMessages,
   setConversationFlag,
 } from '../modules/chat/mutations'
+import { romanizeMessage } from '../modules/chat/romanize'
 import { speakMessage } from '../modules/chat/speak'
 import { fanOutMessage } from '../ws/fanOut'
 import { sendTraySync } from '../ws/traySync'
@@ -190,6 +191,40 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
       const reading = await speakMessage(
         app.mongo.db,
         app.storage,
+        app.tts,
+        request.userId,
+        request.params.id,
+        request.params.messageId,
+      )
+      return reply.send(reading)
+    },
+  )
+
+  /*
+   * A Chinese or Japanese message in Latin letters, from the voice service.
+   * The other scripts are romanized on the phone and never come here.
+   *
+   * No body, for `/speak`'s reason: the language is decided from the text we
+   * hold, because it picks the cache key. `requireMember` for the same reason
+   * too — it wakes a machine of ours. No quota (see `romanizeMessage`); the
+   * limit here is looser than `/speak`'s because a reading takes milliseconds
+   * rather than seconds of synthesis.
+   */
+  app.post(
+    '/conversations/:id/messages/:messageId/romanize',
+    {
+      preHandler: requireMember,
+      schema: {
+        params: z.object({
+          id: z.string().trim().min(1),
+          messageId: z.string().trim().min(1),
+        }),
+      },
+      config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const reading = await romanizeMessage(
+        app.mongo.db,
         app.tts,
         request.userId,
         request.params.id,

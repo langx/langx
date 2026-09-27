@@ -5,6 +5,8 @@ import {
   isCyrillic,
   romanizeCyrillic,
 } from './cyrillic'
+import { z } from 'zod'
+import { MAX_MESSAGE_LENGTH } from '../chat'
 import type { CyrillicLang } from './cyrillic'
 import { isDevanagari, romanizeDevanagari } from './devanagari'
 import { isGreek, romanizeGreek } from './greek'
@@ -38,7 +40,24 @@ export { romanizeHangul } from './hangul'
  * See `docs/decisions.md` → *Transliteration runs on rules we own*.
  */
 export type RomanizationRulesLang = CyrillicLang | 'el' | 'ko' | 'hi'
-export type RomanizationServiceLang = 'zh' | 'ja'
+export const ROMANIZATION_SERVICE_LANGS = ['zh', 'ja'] as const
+export type RomanizationServiceLang = (typeof ROMANIZATION_SERVICE_LANGS)[number]
+
+/**
+ * The longest text the voice service romanizes, mirroring `MAX_ROMANIZE_TEXT`
+ * in `apps/tts/server.py` (a test reads that file and checks). Every message
+ * fits: a reading is dictionary lookups, not synthesis, so there is no reason
+ * to cap it below what chat lets somebody send.
+ */
+export const ROMANIZE_MAX_TEXT_LENGTH = MAX_MESSAGE_LENGTH
+
+/** What `POST …/romanize` answers. A cache hit is `cached: true`. */
+export const messageRomanizationSchema = z.object({
+  text: z.string(),
+  lang: z.enum(ROMANIZATION_SERVICE_LANGS),
+  cached: z.boolean(),
+})
+export type MessageRomanization = z.infer<typeof messageRomanizationSchema>
 
 export type Romanization =
   | { engine: 'rules'; lang: RomanizationRulesLang; romanize: (text: string) => string }

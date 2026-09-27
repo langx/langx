@@ -527,6 +527,9 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 },
   ],
 
+  // The lookup is the `_id`; this only lets Mongo drop a stale reading.
+  [COLLECTIONS.romanizationCache]: [{ key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 }],
+
   [COLLECTIONS.linkPreviews]: [
     // The lookup, and what makes two readers opening the same link at once
     // write one row rather than two.

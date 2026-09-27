@@ -1179,6 +1179,9 @@ export const ar: Localized<EnMessages> = {
     playAgain: 'استمع مرة أخرى',
     speakUnavailable: 'تعذّرت قراءة هذه الرسالة بصوت عالٍ',
     speakFailed: 'حاول مرة أخرى بعد قليل.',
+    romanizing: 'جارٍ كتابتها بالحروف اللاتينية…',
+    romanizeUnavailable: 'تعذّر عرضها بالحروف اللاتينية',
+    romanizeFailed: 'حاول مرة أخرى بعد قليل.',
     speakLimit: {
       one: 'لقد استخدمت قراءة اليوم ({count}). يتجدّد الحد خلال 24 ساعة.',
       other: 'لقد استخدمت قراءات اليوم ({count}). يتجدّد الحد خلال 24 ساعة.',

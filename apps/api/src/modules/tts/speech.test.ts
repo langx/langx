@@ -1,6 +1,12 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { ECHO_SYNTH_VOICES, SPEECH_VOICES, TTS_MAX_TEXT_LENGTH } from '@langx/shared'
+import {
+  ECHO_SYNTH_VOICES,
+  ROMANIZATION_SERVICE_LANGS,
+  ROMANIZE_MAX_TEXT_LENGTH,
+  SPEECH_VOICES,
+  TTS_MAX_TEXT_LENGTH,
+} from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 
 /**
@@ -26,6 +32,18 @@ describe('the voice service and the tables it mirrors', () => {
 
     const max = source.match(/^MAX_TEXT = (\d+)$/m)
     expect(Number(max?.[1])).toBe(TTS_MAX_TEXT_LENGTH)
+  })
+
+  /** Over the service's cap, a message the app offered to romanize gets a 400. */
+  it('agrees about the romanization cap and languages', () => {
+    const source = readFileSync(join(TTS_DIR, 'server.py'), 'utf8')
+
+    const max = source.match(/^MAX_ROMANIZE_TEXT = (\d+)$/m)
+    expect(Number(max?.[1])).toBe(ROMANIZE_MAX_TEXT_LENGTH)
+
+    const table = source.match(/^ROMANIZERS = \{(.*)\}$/m)?.[1] ?? ''
+    const langs = [...table.matchAll(/"([a-z]{2})":/g)].map((match) => match[1])
+    expect(langs.sort()).toEqual([...ROMANIZATION_SERVICE_LANGS].sort())
   })
 
   /**

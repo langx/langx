@@ -5560,8 +5560,12 @@ dictionary would do better.
 
 Chinese and Japanese cannot be done that way — which reading a character
 takes depends on the word it is in — so they go to our own voice service,
-which already carries the Chinese segmenter for Kokoro. They are a separate
-change, and the menu does not offer them until that route exists. A reading
+which already carries the Chinese segmenter for Kokoro: jieba and pypinyin
+for word-segmented, tone-marked pinyin, cutlet and unidic-lite for Hepburn
+romaji. pykakasi and unidecode, the obvious Japanese picks, are GPL and are
+not used. The API caches each reading for ninety days and charges no quota —
+quotas here count what costs money per unit, and this is milliseconds of
+dictionary lookups on a machine already running for the voices. A reading
 from there is machine-drafted and shown unreviewed, which the Echo packs do
 not allow (see _Pinyin is drafted by a machine and read by a person_). The
 difference is what happens next: a pack's reading is memorised from a card,

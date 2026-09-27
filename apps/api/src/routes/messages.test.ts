@@ -166,6 +166,7 @@ describe('Faz 5 — conversation/message history REST', () => {
             asked.push(input)
             return Promise.resolve(new Uint8Array([0, 1, 2, 3]))
           },
+          romanize: () => Promise.reject(new Error('not used')),
         },
       }
     }
@@ -376,6 +377,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       const { TtsBusyError } = await import('../tts/TtsProvider')
       const busy = {
         synthesize: () => Promise.reject(new TtsBusyError(503)),
+        romanize: () => Promise.reject(new TtsBusyError(503)),
       }
       const { speakMessage } = await import('../modules/chat/speak')
 
@@ -451,6 +453,136 @@ describe('Faz 5 — conversation/message history REST', () => {
         headers: { cookie: reader.cookie },
       })
       expect(configured.statusCode).toBeGreaterThanOrEqual(400)
+    })
+  })
+
+  /**
+   * Chinese and Japanese in Latin letters, through the voice service. Driven
+   * through `romanizeMessage` with a fake provider, like reading aloud above,
+   * because this suite's app has no voice service.
+   */
+  describe('romanizing a message', () => {
+    function fakeRomanizer(answer = 'nǐ hǎo') {
+      const asked: { text: string; lang: string }[] = []
+      return {
+        asked,
+        tts: {
+          synthesize: () => Promise.reject(new Error('not used')),
+          romanize: (input: { text: string; lang: string }) => {
+            asked.push(input)
+            return Promise.resolve(answer)
+          },
+        },
+      }
+    }
+
+    async function threadWith(prefix: string, body: string, langs = {}) {
+      const writer = await newUser(`${prefix}-a@example.com`, langs)
+      const reader = await newUser(`${prefix}-b@example.com`, langs)
+      const thread = (await startConversation(writer, reader.userId, 'hey'))._id
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const sent = await sendTextMessage(handle.db, writer.userId, {
+        conversationId: thread,
+        body,
+      })
+      return { writer, reader, thread, messageId: sent.message._id.toString() }
+    }
+
+    it('reads Chinese through the service once, then from the cache', async () => {
+      const first = await threadWith('roman-zh-1', '你好，朋友们')
+      const second = await threadWith('roman-zh-2', '你好，朋友们')
+      const { romanizeMessage } = await import('../modules/chat/romanize')
+
+      const one = fakeRomanizer('nǐhǎo, péngyǒumen')
+      const reading = await romanizeMessage(
+        handle.db,
+        one.tts,
+        first.reader.userId,
+        first.thread,
+        first.messageId,
+      )
+      expect(reading).toEqual({ text: 'nǐhǎo, péngyǒumen', lang: 'zh', cached: false })
+      expect(one.asked).toEqual([{ text: '你好，朋友们', lang: 'zh' }])
+
+      // Another thread, the same sentence: the machine is not asked again.
+      const two = fakeRomanizer()
+      const again = await romanizeMessage(
+        handle.db,
+        two.tts,
+        second.reader.userId,
+        second.thread,
+        second.messageId,
+      )
+      expect(again).toEqual({ text: 'nǐhǎo, péngyǒumen', lang: 'zh', cached: true })
+      expect(two.asked).toHaveLength(0)
+    })
+
+    it('decides Japanese from kana, and from the people when there is only Han', async () => {
+      const kana = await threadWith('roman-ja-kana', 'こんにちは')
+      const han = await threadWith('roman-ja-han', '日本語', {
+        nativeLanguages: [{ code: 'ja' }],
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
+      })
+      const { romanizeMessage } = await import('../modules/chat/romanize')
+
+      const { tts, asked } = fakeRomanizer('konnichiwa')
+      await romanizeMessage(handle.db, tts, kana.reader.userId, kana.thread, kana.messageId)
+      await romanizeMessage(handle.db, tts, han.reader.userId, han.thread, han.messageId)
+      expect(asked.map((input) => input.lang)).toEqual(['ja', 'ja'])
+    })
+
+    it('refuses what the phone romanizes itself, without waking the machine', async () => {
+      const { reader, thread, messageId } = await threadWith('roman-ru', 'Привет, как дела?')
+      const { tts, asked } = fakeRomanizer()
+      const { romanizeMessage } = await import('../modules/chat/romanize')
+
+      await expect(
+        romanizeMessage(handle.db, tts, reader.userId, thread, messageId),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+      expect(asked).toHaveLength(0)
+    })
+
+    it('is not a way into a thread you are not in', async () => {
+      const { thread, messageId } = await threadWith('roman-outsider', '谢谢你')
+      const outsider = await newUser('roman-outsider-c@example.com')
+      const { tts, asked } = fakeRomanizer()
+      const { romanizeMessage } = await import('../modules/chat/romanize')
+
+      await expect(
+        romanizeMessage(handle.db, tts, outsider.userId, thread, messageId),
+      ).rejects.toMatchObject({ code: 'NOT_FOUND' })
+      expect(asked).toHaveLength(0)
+    })
+
+    it('says "try again" when the machine had no room', async () => {
+      const { reader, thread, messageId } = await threadWith('roman-busy', '我们明天见')
+      const { TtsBusyError } = await import('../tts/TtsProvider')
+      const { romanizeMessage } = await import('../modules/chat/romanize')
+      const busy = {
+        synthesize: () => Promise.reject(new TtsBusyError(503)),
+        romanize: () => Promise.reject(new TtsBusyError(503)),
+      }
+
+      await expect(
+        romanizeMessage(handle.db, busy, reader.userId, thread, messageId),
+      ).rejects.toMatchObject({ code: 'RATE_LIMITED' })
+    })
+
+    it('is a member route, and fails clearly with no voice service', async () => {
+      const { reader, thread, messageId } = await threadWith('roman-route', '早上好')
+
+      const anonymous = await app.inject({
+        method: 'POST',
+        url: `/conversations/${thread}/messages/${messageId}/romanize`,
+      })
+      expect(anonymous.statusCode).toBe(401)
+
+      const unconfigured = await app.inject({
+        method: 'POST',
+        url: `/conversations/${thread}/messages/${messageId}/romanize`,
+        headers: { cookie: reader.cookie },
+      })
+      expect(unconfigured.statusCode).toBeGreaterThanOrEqual(400)
     })
   })
 

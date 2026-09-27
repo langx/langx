@@ -69,6 +69,8 @@ export interface MessageBubbleProps {
   translating: boolean
   /** The message in Latin letters, asked for from the menu. */
   romanization?: string | undefined
+  /** A reading is on its way from the voice service (Chinese, Japanese). */
+  romanizing?: boolean
   /** A reading of this bubble is being made; the machine may be cold. */
   speaking: boolean
   /**
@@ -180,6 +182,7 @@ export const MessageBubble = memo(function MessageBubble({
   translation,
   translating,
   romanization,
+  romanizing = false,
   speaking,
   hasReading,
   onReplayReading,
@@ -899,6 +902,7 @@ export const MessageBubble = memo(function MessageBubble({
       {/* The link is gone — translate is a menu row now. This only reports the
             request already in flight. */}
       {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
+      {romanizing ? <Text style={styles.translateLink}>{t('chat.romanizing')}</Text> : null}
       {reading}
       {/* Beside the clock, not in place of it: "when" and "changed since" are
             two different facts and the reader wants both. */}

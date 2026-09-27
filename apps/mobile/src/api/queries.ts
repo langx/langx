@@ -46,6 +46,7 @@ import {
   type AppConfig,
   ERROR_CODES,
   type MessageSpeech,
+  type MessageRomanization,
   type AuthoredCorrectionsPage,
   type ProfileBadge,
   type PublicBadges,
@@ -3484,6 +3485,25 @@ export function useSpeakMessage() {
     onSuccess: (reading) => {
       if (!reading.cached) void client.invalidateQueries({ queryKey: keys.quota })
     },
+  })
+}
+
+/**
+ * A Chinese or Japanese message in Latin letters, from the voice service.
+ *
+ * No language in the body, for `useSpeakMessage`'s reason. The voice timeout
+ * rather than the default: the reading itself takes milliseconds, but it is
+ * the same machine, and it may be waking up. No quota, so nothing to refetch.
+ */
+export function useRomanizeMessage() {
+  return useMutation({
+    mutationFn: (input: { conversationId: string; messageId: string }) =>
+      withVoiceTimeout<MessageRomanization>(
+        `/conversations/${encodeURIComponent(input.conversationId)}/messages/${encodeURIComponent(
+          input.messageId,
+        )}/romanize`,
+        { method: 'POST' },
+      ),
   })
 }
 
