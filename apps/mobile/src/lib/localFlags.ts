@@ -235,6 +235,13 @@ export const FLAG_KEYS = {
    * is, not about the account.
    */
   echoAutoplayOff: 'echoAutoplayOff',
+  /**
+   * JSON: the emoji last picked from the reaction picker, newest first.
+   *
+   * Device-level because it is a convenience of this keyboard, the way the
+   * phone's own recent-emoji row is; `emojiPicker.ts` caps and sanitises it.
+   */
+  recentReactions: 'recentReactions',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

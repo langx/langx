@@ -1275,6 +1275,21 @@ export const en = {
     more: 'More…',
     backToFirstPage: 'Back to the first page',
     reactWith: 'React with {emoji}',
+    moreReactions: 'More reactions',
+    emojiSearch: 'Search emoji',
+    emojiNoResults: 'No emoji found',
+    emojiGroups: {
+      recent: 'Recent',
+      smileys: 'Smileys',
+      people: 'People',
+      nature: 'Animals & nature',
+      food: 'Food & drink',
+      travel: 'Travel & places',
+      activities: 'Activities',
+      objects: 'Objects',
+      symbols: 'Symbols',
+      flags: 'Flags',
+    },
   },
 
   day: {
