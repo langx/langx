@@ -1221,6 +1221,13 @@ export const ru: Localized<EnMessages> = {
     tabPicker: 'Фото и видео или голосовые',
   },
 
+  chatSearch: {
+    open: 'Поиск',
+    placeholder: 'Поиск в этом чате',
+    hint: 'Найдите сообщение по любому слову из него.',
+    none: 'Нет сообщений с «{term}».',
+  },
+
   messageMenu: {
     more: 'Ещё…',
     backToFirstPage: 'Назад на первую страницу',

@@ -1124,6 +1124,13 @@ export const tr: Localized<EnMessages> = {
     tabPicker: 'Fotoğraf ve video ya da sesli notlar',
   },
 
+  chatSearch: {
+    open: 'Ara',
+    placeholder: 'Bu sohbette ara',
+    hint: 'Bir mesajı içindeki herhangi bir kelimeyle bul.',
+    none: '“{term}” geçen mesaj yok.',
+  },
+
   messageMenu: {
     more: 'Daha fazla…',
     backToFirstPage: 'İlk sayfaya dön',

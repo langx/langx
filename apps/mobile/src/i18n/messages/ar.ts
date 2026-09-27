@@ -1243,6 +1243,13 @@ export const ar: Localized<EnMessages> = {
     tabPicker: 'صور وفيديو أو رسائل صوتية',
   },
 
+  chatSearch: {
+    open: 'بحث',
+    placeholder: 'ابحث في هذه المحادثة',
+    hint: 'اعثر على رسالة بأي كلمة فيها.',
+    none: 'لا توجد رسائل تحتوي على «{term}».',
+  },
+
   messageMenu: {
     more: 'المزيد…',
     backToFirstPage: 'العودة إلى الصفحة الأولى',

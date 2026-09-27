@@ -72,6 +72,7 @@ import { MessageBubble } from '../components/MessageBubble'
 import { MessagePartsSheet } from '../components/MessagePartsSheet'
 import { WordLookup } from '../components/WordLookup'
 import { PhotoViewer } from '../components/PhotoViewer'
+import { ChatSearch } from '../components/ChatSearch'
 import { AttachmentPreviewRow, type PendingAttachment } from '../components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../components/ui/Avatar'
@@ -404,6 +405,7 @@ export function ChatScreen({
    * was tapped is the difference between paging and hunting.
    */
   const [viewing, setViewing] = useState<{ items: Media[]; index: number } | null>(null)
+  const [searching, setSearching] = useState(false)
   const [pending, setPending] = useState<PendingMedia[]>([])
 
   /*
@@ -2075,6 +2077,9 @@ export function ChatScreen({
     const muted = conversation.data?.muted ?? false
     const choice = await chooseAlert(partner.displayName, undefined, [
       { label: t('chat.viewProfile'), value: 'profile' },
+      // First of the "find something in here" rows, because it is the one
+      // that needs nothing to have been kept.
+      { label: t('chatSearch.open'), value: 'search' },
       { label: t('chats.starredMessages'), value: 'starred' },
       // Beside Starred, because the two answer the same question — where did
       // the thing I wanted to keep go — and differ only in how much shape it
@@ -2092,6 +2097,8 @@ export function ChatScreen({
     ])
     if (choice === 'profile') {
       openProfile(partner.handle, `/(app)/chat/${conversationId}`)
+    } else if (choice === 'search') {
+      setSearching(true)
     } else if (choice === 'starred') {
       router.push('/(app)/starred')
     } else if (choice === 'phrases') {
@@ -2695,6 +2702,18 @@ export function ChatScreen({
             />
           )}
         </View>
+        {searching ? (
+          <ChatSearch
+            conversationId={conversationId}
+            myId={me.data?._id}
+            partnerName={partner?.displayName ?? ''}
+            onClose={() => setSearching(false)}
+            onPick={(messageId) => {
+              setSearching(false)
+              onJumpTo(messageId)
+            }}
+          />
+        ) : null}
         <PhotoViewer
           photos={viewing?.items ?? []}
           index={viewing?.index ?? null}

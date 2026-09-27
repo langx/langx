@@ -1153,6 +1153,13 @@ export const de: Localized<EnMessages> = {
     tabPicker: 'Fotos und Video oder Sprachnachrichten',
   },
 
+  chatSearch: {
+    open: 'Suchen',
+    placeholder: 'In diesem Chat suchen',
+    hint: 'Finde eine Nachricht über ein beliebiges Wort darin.',
+    none: 'Keine Nachrichten mit „{term}“.',
+  },
+
   messageMenu: {
     more: 'Mehr…',
     backToFirstPage: 'Zurück zur ersten Seite',

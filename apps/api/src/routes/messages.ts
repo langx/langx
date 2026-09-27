@@ -1,5 +1,6 @@
 import {
   conversationFlagsSchema,
+  conversationSearchQuerySchema,
   ERROR_CODES,
   listConversationMediaQuerySchema,
   listConversationsQuerySchema,
@@ -23,6 +24,7 @@ import {
 } from '../modules/chat/messages'
 import { assertConversationAccess } from '../modules/chat/access'
 import { listConversationMedia } from '../modules/chat/conversationMedia'
+import { searchConversation } from '../modules/chat/search'
 import { toConversationView } from '../modules/chat/conversationView'
 import { toMessageView } from '../modules/chat/messageView'
 import { listCorrectionsWritten } from '../modules/chat/corrections'
@@ -288,6 +290,34 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const page = await listConversationMedia(
+        app.mongo.db,
+        request.userId,
+        request.params.id,
+        request.query,
+      )
+      return reply.send(page)
+    },
+  )
+
+  /*
+   * Its own rate limit, tighter than the global one, for the reason
+   * `/discovery/handles` has one: a search box is called per keystroke, the
+   * client's debounce is not what enforces anything, and this is a route that
+   * takes a pattern and walks a thread with it. See `searchConversation` for
+   * how far one call may walk.
+   */
+  app.get(
+    '/conversations/:id/search',
+    {
+      preHandler: requireAuth,
+      schema: {
+        params: z.object({ id: z.string().trim().min(1) }),
+        querystring: conversationSearchQuerySchema,
+      },
+      config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const page = await searchConversation(
         app.mongo.db,
         request.userId,
         request.params.id,

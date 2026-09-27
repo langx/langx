@@ -284,7 +284,7 @@ Status: done (#1611)
 
 ### PR 13 — Search within a conversation
 
-Status: planned
+Status: in review
 
 - `GET /conversations/:id/search?q=`: a repository function with a
   participant check and an escaped, case-insensitive regex, scanning one
