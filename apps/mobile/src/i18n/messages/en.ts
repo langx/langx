@@ -1243,8 +1243,8 @@ export const en = {
     voiceMessageUnavailable: 'This voice message will not play on this device.',
     mediaLockedTitle: 'Not yet',
     mediaLocked: {
-      one: 'Photos and voice notes unlock after one more message from them.',
-      other: 'Photos and voice notes unlock after {count} more messages from them.',
+      one: 'Photos, voice notes and locations unlock after one more message from them.',
+      other: 'Photos, voice notes and locations unlock after {count} more messages from them.',
     },
     speaking: 'Reading aloud…',
     playAgain: 'Play again',

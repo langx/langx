@@ -1091,9 +1091,9 @@ export const ptBR: Localized<EnMessages> = {
     voiceMessageUnavailable: 'Esta mensagem de voz não toca neste dispositivo.',
     mediaLockedTitle: 'Ainda não',
     mediaLocked: {
-      one: 'Fotos, vídeos e mensagens de voz são liberados depois de mais uma mensagem da outra pessoa.',
+      one: 'Fotos, vídeos, mensagens de voz e localização são liberados depois de mais uma mensagem da outra pessoa.',
       other:
-        'Fotos, vídeos e mensagens de voz são liberados depois de mais {count} mensagens da outra pessoa.',
+        'Fotos, vídeos, mensagens de voz e localização são liberados depois de mais {count} mensagens da outra pessoa.',
     },
     speaking: 'Lendo em voz alta…',
     playAgain: 'Ouvir de novo',

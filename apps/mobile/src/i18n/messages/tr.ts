@@ -1095,8 +1095,8 @@ export const tr: Localized<EnMessages> = {
     voiceMessageUnavailable: 'Bu sesli mesaj bu cihazda çalınamıyor.',
     mediaLockedTitle: 'Henüz değil',
     mediaLocked: {
-      one: 'Fotoğraf ve sesli mesajlar, karşı taraftan bir mesaj daha gelince açılır.',
-      other: 'Fotoğraf ve sesli mesajlar, karşı taraftan {count} mesaj daha gelince açılır.',
+      one: 'Fotoğraf, sesli mesaj ve konum, karşı taraftan bir mesaj daha gelince açılır.',
+      other: 'Fotoğraf, sesli mesaj ve konum, karşı taraftan {count} mesaj daha gelince açılır.',
     },
     speaking: 'Sesli okunuyor…',
     playAgain: 'Tekrar dinle',

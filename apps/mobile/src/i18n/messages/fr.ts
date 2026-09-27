@@ -1101,9 +1101,9 @@ export const fr: Localized<EnMessages> = {
     voiceMessageUnavailable: 'Ce message vocal ne peut pas être lu sur cet appareil.',
     mediaLockedTitle: 'Pas encore',
     mediaLocked: {
-      one: 'Les photos, vidéos et notes vocales se débloquent après un message de plus de l’autre personne.',
+      one: 'Les photos, vidéos, notes vocales et positions se débloquent après un message de plus de l’autre personne.',
       other:
-        'Les photos, vidéos et notes vocales se débloquent après {count} messages de plus de l’autre personne.',
+        'Les photos, vidéos, notes vocales et positions se débloquent après {count} messages de plus de l’autre personne.',
     },
     speaking: 'Lecture à voix haute…',
     playAgain: 'Réécouter',

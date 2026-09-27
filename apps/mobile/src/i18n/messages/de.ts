@@ -1122,9 +1122,9 @@ export const de: Localized<EnMessages> = {
     voiceMessageUnavailable: 'Diese Sprachnachricht lässt sich auf diesem Gerät nicht abspielen.',
     mediaLockedTitle: 'Noch nicht',
     mediaLocked: {
-      one: 'Fotos und Sprachnachrichten werden nach einer weiteren Nachricht von der anderen Person freigeschaltet.',
+      one: 'Fotos, Sprachnachrichten und Standorte werden nach einer weiteren Nachricht von der anderen Person freigeschaltet.',
       other:
-        'Fotos und Sprachnachrichten werden nach {count} weiteren Nachrichten von der anderen Person freigeschaltet.',
+        'Fotos, Sprachnachrichten und Standorte werden nach {count} weiteren Nachrichten von der anderen Person freigeschaltet.',
     },
     speaking: 'Wird vorgelesen…',
     playAgain: 'Nochmal abspielen',
