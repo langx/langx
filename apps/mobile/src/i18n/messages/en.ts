@@ -203,6 +203,7 @@ export const en = {
     replyPart: 'Reply to part',
     correctPart: 'Correct part',
     words: 'Words',
+    romanize: 'Show in Latin letters',
   },
 
   /**

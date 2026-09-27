@@ -172,6 +172,7 @@ export const ptBR: Localized<EnMessages> = {
     replyPart: 'Responder a uma parte',
     correctPart: 'Corrigir uma parte',
     words: 'Palavras',
+    romanize: 'Ver em letras latinas',
   },
 
   echo: {

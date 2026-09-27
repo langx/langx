@@ -10,6 +10,7 @@ export const MESSAGE_ACTION_IDS = [
   'correct',
   'correctPart',
   'words',
+  'romanize',
   'echo',
   'delete',
   'edit',
@@ -54,6 +55,12 @@ export interface MessageActionContext {
    * service is not, so the row must be earned rather than assumed.
    */
   canSpeak?: boolean
+  /**
+   * Whether the caller can show this message in Latin letters and has not
+   * already: `romanizationFor` found an engine for it. Hidden by default, like
+   * `canSpeak` — most messages are in a script that needs none.
+   */
+  canRomanize?: boolean
   /** Characters the service would be asked to read. The cap is its own. */
   bodyLength: number
   /**
@@ -303,6 +310,22 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
       id: 'words',
       label: t('messageActions.words'),
       icon: 'text-outline',
+      page: 'more',
+    })
+  }
+
+  /*
+   * How it reads, in Latin letters. On your own messages too, like `speak`:
+   * checking how what you wrote in Korean reads is part of writing it. Text
+   * only — the same row on a caption or a correction would be a second way to
+   * the same thing with less room to show it. On the second page, beside
+   * Words: both are for the reader still learning the script.
+   */
+  if (context.canRomanize === true && context.hasBody && context.type === 'text') {
+    actions.push({
+      id: 'romanize',
+      label: t('messageActions.romanize'),
+      icon: 'glasses-outline',
       page: 'more',
     })
   }

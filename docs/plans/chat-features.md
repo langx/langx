@@ -170,18 +170,34 @@ Status: done (#1614)
 
 ### PR 7 — Transliteration: how it reads
 
-Status: planned
+Status: in review
 
-- An optional `romanize(text, lang)` on `TranslationProvider`, backed by
-  Google Cloud Translation v3 `romanizeText` with the same service account.
-  **First step: confirm which languages that endpoint supports.** A language
-  it does not support gets no button.
-- `packages/shared`: `needsRomanization(text)` — whether the text has any
-  non-Latin letters, with `\p{Script=...}` compiled inside a `try` the way
-  `singleEmoji.ts` does it.
-- Route `/translate/romanize`, in the same module as translate, with its own
-  cache key and the `translations` quota. The menu gains "Show pronunciation",
-  and the result sits under the message the way a translation does.
+Open source, no Google — Behic's decision, replacing the first draft on
+`romanizeText` (Preview, no Chinese or Korean, billed per character). Two
+PRs; see `docs/decisions.md` → _Transliteration runs on rules we own_.
+
+**7a — rules and the menu row.**
+
+- `packages/shared/src/romanize/`: pure, dependency-free transliterators with
+  tests — Cyrillic (Russian, Ukrainian, Belarusian, Serbian, Bulgarian, one
+  published standard each), Greek (ELOT 743), Korean (Revised Romanization
+  with the syllable-boundary sound changes), Hindi (Hunterian without
+  diacritics, schwa-deletion heuristic). Anything not in the script passes
+  through as is.
+- `romanizationFor(text, langs)` picks the engine: `rules`, `service` (Chinese
+  and Japanese) or `null`. Arabic, Persian, Urdu, Hebrew and Thai are `null`
+  on purpose.
+- The menu gains "Show in Latin letters" on text messages the rules can read,
+  on the second page beside Words. The result sits under the message the way
+  a translation does. It runs on the device: no request, no quota.
+
+**7b — Chinese and Japanese on the voice service.**
+
+- `apps/tts/server.py` gains `POST /romanize`: pypinyin and jieba for
+  tone-marked, word-segmented pinyin; cutlet and unidic-lite for Hepburn
+  romaji. No GPL packages (pykakasi, unidecode).
+- The API calls it through the TTS provider, behind a participant check, a
+  rate limit and a cache. No `TTS_URL`, no row for Chinese and Japanese.
 
 ### PR 8 — Voice note transcripts, on a Whisper service
 

@@ -67,6 +67,8 @@ export interface MessageBubbleProps {
   partnerName: string
   translation?: string | undefined
   translating: boolean
+  /** The message in Latin letters, asked for from the menu. */
+  romanization?: string | undefined
   /** A reading of this bubble is being made; the machine may be cold. */
   speaking: boolean
   /**
@@ -177,6 +179,7 @@ export const MessageBubble = memo(function MessageBubble({
   partnerName,
   translation,
   translating,
+  romanization,
   speaking,
   hasReading,
   onReplayReading,
@@ -836,6 +839,22 @@ export const MessageBubble = memo(function MessageBubble({
         <View style={styles.sentTranslationRow}>
           <Feather name="globe" size={13} color={colors.textFaint} />
           <Text style={styles.sentTranslation}>{message.translation.text}</Text>
+        </View>
+      ) : null}
+      {/*
+        Above the translation, because it is the same sentence in other
+        letters, while the translation is a different sentence. The same row
+        and colour, so it reads as the machine's help rather than as a reply.
+      */}
+      {romanization ? (
+        <View style={styles.translationRow}>
+          <Ionicons
+            name="glasses-outline"
+            size={14}
+            color={colors.accent}
+            style={styles.translationIcon}
+          />
+          <Text style={styles.translation}>{romanization}</Text>
         </View>
       ) : null}
       {translation ? (

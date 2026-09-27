@@ -176,6 +176,7 @@ export const fr: Localized<EnMessages> = {
     replyPart: 'Répondre à une partie',
     correctPart: 'Corriger une partie',
     words: 'Mots',
+    romanize: 'Voir en lettres latines',
   },
 
   echo: {

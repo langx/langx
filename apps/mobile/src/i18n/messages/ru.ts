@@ -181,6 +181,7 @@ export const ru: Localized<EnMessages> = {
     replyPart: 'Ответить на часть',
     correctPart: 'Исправить часть',
     words: 'Слова',
+    romanize: 'Показать латиницей',
   },
 
   echo: {

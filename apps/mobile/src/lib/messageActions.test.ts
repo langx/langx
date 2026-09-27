@@ -330,6 +330,23 @@ describe('part of a message', () => {
   })
 })
 
+describe('romanize', () => {
+  it('is hidden unless the caller found an engine for the text', () => {
+    expect(ids()).not.toContain('romanize')
+    expect(ids({ canRomanize: true })).toContain('romanize')
+    expect(find({ canRomanize: true }, 'romanize')?.page).toBe('more')
+  })
+
+  it('is offered on your own messages and in a channel, on text only', () => {
+    expect(ids({ canRomanize: true, mine: true })).toContain('romanize')
+    expect(ids({ canRomanize: true, channel: true })).toContain('romanize')
+    expect(ids({ canRomanize: true, hasBody: false })).not.toContain('romanize')
+    for (const type of MESSAGE_TYPES.filter((type) => type !== 'text')) {
+      expect(ids({ canRomanize: true, type }), type).not.toContain('romanize')
+    }
+  })
+})
+
 describe('words', () => {
   it('is offered on the other person’s text with a word in it', () => {
     expect(ids()).toContain('words')
