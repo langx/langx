@@ -135,7 +135,7 @@ Status: done (#1608)
 
 ### PR 5 — Reply to, or correct, part of a message
 
-Status: in review
+Status: done (#1612)
 
 A bubble has no text selection, and one would fight the long-press menu, so:
 
@@ -157,7 +157,7 @@ A bubble has no text selection, and one would fight the long-press menu, so:
 
 ### PR 6 — Tap a word: its translation, and Echo
 
-Status: in review
+Status: done (#1614)
 
 - The menu gains "Words", which opens `MessagePartsSheet` in word mode
   (`splitWords` from PR 5).

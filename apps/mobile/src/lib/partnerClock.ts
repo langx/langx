@@ -12,8 +12,8 @@ import type { Locale } from '@langx/shared'
  * Compared as drawn, not as named, for the reason `meetingTheirWhenFor` in the
  * chat screen gives: a reader with no zone on file compares against the
  * device, and two zones with different names can agree right now
- * (`Europe/London` and `Africa/Abidjan` in winter). Either way "11:14 PM for
- * them" beside a phone that also says 11:14 PM is a line that says nothing.
+ * (`Europe/London` and `Africa/Abidjan` in winter). Either way "11:14 PM local
+ * time" beside a phone that also says 11:14 PM is a line that says nothing.
  *
  * `null` rather than a throw for a zone the runtime does not know. The field is
  * any non-empty string as far as the schema is concerned, Hermes ships its own

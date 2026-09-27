@@ -16,7 +16,7 @@ interface PresenceLineProps {
    */
   lastActiveAt?: string | undefined
   /**
-   * Their zone, to add what time it is for them. Only the chat headers pass
+   * Their zone, to add their local time. Only the chat headers pass
    * it — that is where "is this a sensible hour to write?" gets asked.
    *
    * Absent when they hide their city, and for the same reason as above — the
@@ -44,7 +44,7 @@ const neverTicks = () => () => {}
  * timestamp lets a stale cache decay correctly instead of lying.
  *
  * With a `timezone`, their clock follows on the same line — "Online · 11:14 PM
- * for them" — and stands alone when their presence is hidden, since the two
+ * local time" — and stands alone when their presence is hidden, since the two
  * are separate switches. One line still, cut from the end: the header is
  * narrow, and presence is the half worth keeping when something has to go.
  */

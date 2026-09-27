@@ -988,8 +988,8 @@ export const de: Localized<EnMessages> = {
       one: 'Zuletzt vor {count} Jahr gesehen',
       other: 'Zuletzt vor {count} Jahren gesehen',
     },
-    theirTime: '{time} bei ihnen',
-    withTheirTimeAccessibility: '{presence}. Bei ihnen ist es {time}.',
+    theirTime: 'Ortszeit {time}',
+    withTheirTimeAccessibility: '{presence}. Ortszeit {time}.',
   },
   chat: {
     channelOnly:

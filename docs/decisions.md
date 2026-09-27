@@ -5504,6 +5504,35 @@ Mutations are never written: unsent messages are `unsentStore.ts`'s to keep,
 in a shape the chat screen can retry, and a restored mutation has no function
 to run.
 
+## The profile's timezone follows the device
+
+Onboarding wrote `timezone` once and nothing wrote it again, so every account
+from before that — and every one restored from v1 — had none. The streak ran
+on UTC for them, and the chat header's "11:14 PM local time" had nothing to
+draw from. `useTimezoneSync` now writes the device's zone on launch and on
+each foreground: when the profile has none, or when the two differ and the
+cooldown has passed.
+
+**Silent**, because nobody asked for it at that moment and there is only one
+right answer; the device already knows it. A refusal is a network failure or
+the cooldown, and the next foreground tries again.
+
+**Bound by the same cooldown as a manual change.** The streak runs on the
+profile's local day (see _Phase 8_ above), so a zone that follows the device
+unconditionally would let a phone setting open a second local day inside one
+UTC day. The client checks `TIMEZONE_UPDATE_COOLDOWN_MS` only to avoid sending
+a request it knows will be refused; the server's check is the rule.
+
+**A change of zone moves the streak's day keys with it.** `lastQualifiedDay`
+is a day on the old calendar and the next action is judged on the new one, and
+at one instant the two can be a day apart. Left alone, a westward move put
+today _before_ the last credited day and `nextStreak` reset the run to 1 — an
+American who wrote in the evening was credited on UTC's tomorrow, and the first
+fill would have ended their streak. Eastward, the same moment counted as a
+second day. `streakDaysInZone` shifts `lastQualifiedDay` and `lastActionDay` by
+the difference between the two todays, so the streak stands exactly where it
+did relative to today: no day lost, none gained.
+
 ## Transliteration runs on rules we own
 
 "Show in Latin letters" in the message menu puts a message's reading under
