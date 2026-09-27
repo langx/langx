@@ -37,9 +37,10 @@ export const MAX_POST_NOTE_LENGTH = 500
  * How many corrections make a post "Top" in the feed and on its own screen.
  * Only a post that asks for a correction can earn it.
  *
- * There is no ranking to derive the badge from — nothing may sort by likes or
- * comments — so it is a threshold on the one count the card already shows.
- * Here rather than in the app so the card and the post screen read one number.
+ * The timeline has a ranking now, but it deliberately ignores likes and
+ * comments (see `FEED_RANK`), so it cannot say which post is "top" — the
+ * badge stays a threshold on the one count the card already shows. Here
+ * rather than in the app so the card and the post screen read one number.
  */
 export const FEED_TOP_CORRECTIONS = 5
 
@@ -92,6 +93,67 @@ export const FEED_POSTS_PER_24H = 20
  * table we do not need yet.
  */
 export const FEED_FOLLOWING_SOURCE_LIMIT = 500
+
+/**
+ * The timeline's weights: what makes a post relevant *to the person reading
+ * it*. Every term is something the reader can act on or learn from:
+ *
+ * - `base` — every post is worth something, so nothing is ever hidden by rank;
+ * - `audience` — the author is somebody you follow or have talked to;
+ * - `peer` — the post is in a language you are learning, so you can learn
+ *   from it;
+ * - `needsYou` — it asks for help nobody has given yet, in a language you
+ *   speak natively, and you are able to give it.
+ *
+ * **Never** likes or comments, and never the author's presence or paid tier:
+ * a popularity term turns the feed into a contest, presence would leak
+ * `hideOnlineStatus`, and paying buys no reach. A moment in your own native
+ * language earns no language bonus — the bonus rewards exchange, not
+ * familiarity.
+ *
+ * Changing any of these, or the formula in `timelineRank.ts`, bumps
+ * `FEED_RANK_VERSION`.
+ */
+export const FEED_RANK = { base: 1, audience: 3, peer: 1, needsYou: 4 } as const
+
+/** Hours for the social part of a post's score to halve: a day and a half. */
+export const FEED_RANK_SOCIAL_HALF_LIFE_H = 36
+
+/**
+ * Hours for the `needsYou` term to halve: a week. Slower than the social half
+ * on purpose — with one decay, a question nobody had answered in two days fell
+ * below a fresh unrelated photo, and a queue that stops draining its oldest
+ * questions is the failure the old correction queue existed to prevent.
+ */
+export const FEED_RANK_ASK_HALF_LIFE_H = 168
+
+/**
+ * Each older post by the same author in the window counts this much of the
+ * one before it, so ten moments in an hour are one card at full weight and
+ * nine that fall away — nobody fills the top by posting more.
+ */
+export const FEED_RANK_AUTHOR_REPEAT = 0.5
+
+/**
+ * How many of the newest posts the timeline ranks. Pinned by both ends on page
+ * one, so every later page re-ranks exactly the same rows. Below this window
+ * the feed continues in plain recency.
+ */
+export const FEED_TIMELINE_WINDOW = 200
+
+/**
+ * Your own post stays at the top this long after you write it — where the app
+ * already put it when you pressed Post — so a refresh does not move it. After
+ * that it ranks on the base weight alone: your own post is not news to you.
+ */
+export const FEED_OWN_PIN_MINUTES = 60
+
+/**
+ * Written into every timeline cursor. A cursor from another version is refused
+ * with `reason: 'stale_cursor'` and the client starts again from page one, so
+ * a change to the ranking cannot splice two orders into one scroll.
+ */
+export const FEED_RANK_VERSION = 1
 
 /**
  * The two sections an installed build knows, and the wire enum it speaks.
@@ -457,6 +519,25 @@ export const feedPageSchema = z.object({
   nextCursor: z.string().nullable(),
 })
 export type FeedPage = z.infer<typeof feedPageSchema>
+
+/**
+ * `GET /feed/timeline` — every post in one list, most relevant to the reader
+ * first. No `kind`: the timeline has no sections, and what a post asks for is
+ * a badge on its card rather than a tab.
+ *
+ * The cursor is opaque and versioned (`tl<version>.…`). A cursor from another
+ * ranking version is a 400 with `reason: 'stale_cursor'`, and the answer is to
+ * load page one again.
+ */
+export const listTimelineQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
+export type ListTimelineQuery = z.infer<typeof listTimelineQuerySchema>
+
+/** The same page shape as a section's, so a card renders from either. */
+export const timelinePageSchema = feedPageSchema
+export type TimelinePage = FeedPage
 
 export const POST_CORRECTIONS_PAGE_SIZE_DEFAULT = 20
 export const POST_CORRECTIONS_PAGE_SIZE_MAX = 50
