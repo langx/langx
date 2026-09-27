@@ -54,6 +54,7 @@ export const es: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Reproducir vídeo',
+    unavailable: 'Ya no está disponible',
     sourceTitle: 'Añadir una foto',
     sourceCamera: 'Hacer una foto',
     sourceLibrary: 'Elegir de la galería',

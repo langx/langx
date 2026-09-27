@@ -51,6 +51,7 @@ export const ptBR: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Reproduzir vídeo',
+    unavailable: 'Não está mais disponível',
     sourceTitle: 'Adicionar uma foto',
     sourceCamera: 'Tirar uma foto',
     sourceLibrary: 'Escolher da galeria',

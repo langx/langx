@@ -64,6 +64,7 @@ export const ar: Localized<EnMessages> = {
 
   media: {
     playVideo: 'تشغيل الفيديو',
+    unavailable: 'لم يعد متاحًا',
     sourceTitle: 'إضافة صورة',
     sourceCamera: 'التقاط صورة',
     sourceLibrary: 'الاختيار من المعرض',

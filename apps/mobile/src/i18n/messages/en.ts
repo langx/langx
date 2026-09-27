@@ -83,6 +83,7 @@ export const en = {
 
   media: {
     playVideo: 'Play video',
+    unavailable: 'No longer available',
     sourceTitle: 'Add a photo',
     sourceCamera: 'Take a photo',
     sourceLibrary: 'Choose from library',

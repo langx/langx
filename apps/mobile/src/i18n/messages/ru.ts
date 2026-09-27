@@ -61,6 +61,7 @@ export const ru: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Воспроизвести видео',
+    unavailable: 'Больше недоступно',
     sourceTitle: 'Добавить фото',
     sourceCamera: 'Сделать фото',
     sourceLibrary: 'Выбрать из галереи',

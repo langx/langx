@@ -66,6 +66,7 @@ export const tr: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Videoyu oynat',
+    unavailable: 'Artık mevcut değil',
     sourceTitle: 'Fotoğraf ekle',
     sourceCamera: 'Fotoğraf çek',
     sourceLibrary: 'Galeriden seç',
