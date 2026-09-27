@@ -333,6 +333,22 @@ Status: planned
 - Giphy's terms: the "Powered by GIPHY" attribution, and GIFs shown from
   Giphy's own URLs.
 
+### Emoticons become emoji, when asked
+
+Status: in review
+
+Not in the survey; Behic asked for it: typing `:D` should offer 😄.
+
+- `packages/shared/src/emoticons.ts` (+ test): a table of ASCII emoticons
+  (`:)`, `:D`, `xD`, `<3`, `^^`, `-_-`, …) and about fifty `:shortcode:`
+  names. `emoticonAt(text, cursor)` reads only the whole word ending at the
+  caret, so `http://`, `10:30` and `a:b` never match; a partial `:sm` offers
+  up to five shortcodes.
+- `ChatComposer.tsx`: a chip above the field while a shortcut sits under the
+  caret; a tap swaps it in. **Suggested, never replaced as you type** — the
+  literal text stays unless the person picks the emoji, and the server stores
+  whatever was sent.
+
 ---
 
 ## Verification

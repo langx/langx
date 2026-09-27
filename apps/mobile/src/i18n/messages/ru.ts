@@ -53,6 +53,7 @@ export const ru: Localized<EnMessages> = {
     percentPending: '…',
     attachMedia: 'Прикрепить фото или видео',
     attachMenu: 'Прикрепить',
+    emojiSuggestion: 'Заменить на {emoji}',
     attachLibrary: 'Фото или видео',
     attachCamera: 'Сделать фото',
     attachVoice: 'Голосовое',

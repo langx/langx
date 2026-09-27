@@ -58,6 +58,7 @@ export const tr: Localized<EnMessages> = {
     percentPending: '…',
     attachMedia: 'Fotoğraf veya video ekle',
     attachMenu: 'Ekle',
+    emojiSuggestion: '{emoji} ile değiştir',
     attachLibrary: 'Fotoğraf veya video',
     attachCamera: 'Fotoğraf çek',
     attachVoice: 'Sesli not',

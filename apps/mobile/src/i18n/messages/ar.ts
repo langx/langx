@@ -56,6 +56,7 @@ export const ar: Localized<EnMessages> = {
     percentPending: '…',
     attachMedia: 'إرفاق صور أو مقاطع فيديو',
     attachMenu: 'إرفاق',
+    emojiSuggestion: 'استبدال بـ {emoji}',
     attachLibrary: 'صورة أو فيديو',
     attachCamera: 'التقاط صورة',
     attachVoice: 'رسالة صوتية',

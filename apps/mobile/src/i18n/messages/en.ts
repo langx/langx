@@ -75,6 +75,7 @@ export const en = {
     percentPending: '…',
     attachMedia: 'Attach photos or videos',
     attachMenu: 'Attach',
+    emojiSuggestion: 'Replace with {emoji}',
     attachLibrary: 'Photo or video',
     attachCamera: 'Take a photo',
     attachVoice: 'Voice note',

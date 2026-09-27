@@ -43,6 +43,7 @@ export const ptBR: Localized<EnMessages> = {
     percentPending: '…',
     attachMedia: 'Anexar fotos ou vídeos',
     attachMenu: 'Anexar',
+    emojiSuggestion: 'Substituir por {emoji}',
     attachLibrary: 'Foto ou vídeo',
     attachCamera: 'Tirar uma foto',
     attachVoice: 'Nota de voz',
