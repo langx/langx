@@ -167,7 +167,7 @@ describe('guests', () => {
       payload: guestBody,
     })
 
-    for (const url of ['/discovery', '/feed']) {
+    for (const url of ['/discovery', '/feed', '/feed/timeline']) {
       const response = await app.inject({ method: 'GET', url, headers: { cookie } })
       expect(response.statusCode, `${url}: ${response.body}`).toBe(200)
     }

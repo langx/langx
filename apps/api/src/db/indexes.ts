@@ -591,7 +591,13 @@ export const INDEXES: Partial<IndexSpec> = {
     // read newest-first within a `correctionCount` bucket, so one compound
     // index serves both orders.
     { key: { correctionCount: 1, createdAt: -1, _id: -1 }, name: 'needs_correction' },
+    /*
+     * The timeline's window, its pinned range on later pages and the recency
+     * tail below it — all three bounded scans of this one index, so the
+     * "can be dropped" note further down no longer applies to it.
+     */
     { key: { createdAt: -1, _id: -1 }, name: 'recent' },
+    // Also the daily post cap's count (`FEED_POSTS_PER_24H`).
     { key: { authorId: 1, createdAt: -1 }, name: 'author' },
     /**
      * The two feed sections, each led by `kind`.
@@ -607,6 +613,13 @@ export const INDEXES: Partial<IndexSpec> = {
      * a correction post. `$in` bounds the scan on this index; `$ne` reads the
      * same and cannot be bounded, which would quietly turn the main feed into a
      * collection scan.
+     *
+     * A moment is stored with `kind: 'moment'`, which falls outside both
+     * indexes' bounds on purpose: installed builds read their sections from
+     * these, and a post that asks for nothing belongs in neither. Kept for
+     * those builds — the timeline reads `recent`. If the timeline ever needs an
+     * ask-led band, it gets a new name (say `asks_recent`), never a wider key
+     * here.
      */
     { key: { kind: 1, correctionCount: 1, createdAt: -1, _id: -1 }, name: 'kind_needs_correction' },
     { key: { kind: 1, answerCount: 1, createdAt: -1, _id: -1 }, name: 'kind_answer_queue' },

@@ -61,7 +61,7 @@ export { readCorrectionSummary }
  * page. A list that mixes the kinds has to ask for both, and can afford to:
  * it is one person's own posts, not the whole collection.
  */
-async function hydratePosts(
+export async function hydratePosts(
   db: Db,
   userId: string,
   items: Post[],
@@ -120,6 +120,54 @@ async function hydratePosts(
   })
 }
 
+/**
+ * Who a reader's feed puts first, or weighs more: the union of two
+ * relationships, not one.
+ *
+ * The follow graph is the real answer, and the people you have actually
+ * talked to are the one this app had before there was a graph — dropping them
+ * would have emptied the old "Following" tab for every existing user on the
+ * day the Follow button shipped, and a conversation partner is somebody you
+ * are following in every sense except the button.
+ *
+ * Follows come first in the union so that a deliberate choice outranks an
+ * incidental one when the cap in `boundAudience` bites. Two reads in parallel;
+ * shared by the section feed and the timeline so the two cannot disagree about
+ * who your people are.
+ */
+export async function readAudience(db: Db, userId: string): Promise<string[]> {
+  const [follows, conversations] = await Promise.all([
+    followingIds(db, userId, FEED_FOLLOWING_SOURCE_LIMIT),
+    db
+      .collection<{ participants: string[] }>(COLLECTIONS.conversations)
+      .find({ participants: userId })
+      // Sorted and capped, which is what makes the truncation mean something
+      // rather than being whichever rows Mongo happened to return.
+      // `participants_recent` already backs this exact order.
+      .sort({ 'lastMessage.createdAt': -1 })
+      .limit(FEED_FOLLOWING_SOURCE_LIMIT)
+      .project<{ participants: string[] }>({ participants: 1 })
+      .toArray(),
+  ])
+  const partners = conversations.flatMap((c) => c.participants).filter((id) => id !== userId)
+  return [...follows, ...partners]
+}
+
+/**
+ * `readAudience`'s union without the reader, without anybody on either side of
+ * a block, and bounded — the section feed uses it as an `$in`, and an `$in` is
+ * a list the planner has to carry. See `FEED_FOLLOWING_SOURCE_LIMIT`.
+ */
+export function boundAudience(
+  related: readonly string[],
+  userId: string,
+  hidden: readonly string[],
+): string[] {
+  return [...new Set(related)]
+    .filter((id) => id !== userId && !hidden.includes(id))
+    .slice(0, FEED_FOLLOWING_SOURCE_LIMIT)
+}
+
 export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Promise<FeedPage> {
   const posts = db.collection<Post>(COLLECTIONS.posts)
 
@@ -138,43 +186,14 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
   // both directions, so neither party appears in the other's feed.
   // Independent of each other, so they go together: the block list does not
   // narrow the audience lookups, it filters their result.
-  const [hidden, follows, conversations] = await Promise.all([
+  //
+  // Empty for the pronunciation section, which has one queue and no graph in
+  // it yet — so it falls straight through to the second query below.
+  const [hidden, related] = await Promise.all([
     blockedUserIds(db, userId),
-    pronunciation ? Promise.resolve([]) : followingIds(db, userId, FEED_FOLLOWING_SOURCE_LIMIT),
-    pronunciation
-      ? Promise.resolve([])
-      : db
-          .collection<{ participants: string[] }>(COLLECTIONS.conversations)
-          .find({ participants: userId })
-          // Sorted and capped, which is what makes the truncation below mean
-          // something rather than being whichever rows Mongo happened to
-          // return. `participants_recent` already backs this exact order.
-          .sort({ 'lastMessage.createdAt': -1 })
-          .limit(FEED_FOLLOWING_SOURCE_LIMIT)
-          .project<{ participants: string[] }>({ participants: 1 })
-          .toArray(),
+    pronunciation ? Promise.resolve([]) : readAudience(db, userId),
   ])
-
-  /*
-   * Who comes first: the union of two relationships, not one.
-   *
-   * The follow graph is the real answer, and the people you have actually
-   * talked to are the one this app had before there was a graph — dropping
-   * them would have emptied the old "Following" tab for every existing user on
-   * the day the Follow button shipped, and a conversation partner is somebody
-   * you are following in every sense except the button.
-   *
-   * Bounded, because the result is an `$in`: see
-   * `FEED_FOLLOWING_SOURCE_LIMIT`. Follows come first in the union so that a
-   * deliberate choice outranks an incidental one when the cap bites.
-   *
-   * Empty for the pronunciation section, which has one queue and no graph in
-   * it yet — so it falls straight through to the second query below.
-   */
-  const partners = conversations.flatMap((c) => c.participants).filter((id) => id !== userId)
-  const audience = [...new Set([...follows, ...partners])]
-    .filter((id) => id !== userId && !hidden.includes(id))
-    .slice(0, FEED_FOLLOWING_SOURCE_LIMIT)
+  const audience = boundAudience(related, userId, hidden)
 
   /**
    * `$in` with `null`, not `$ne`.
@@ -316,11 +335,11 @@ export async function listMyPosts(
   }
 }
 
-const EMPTY_CORRECTION_SUMMARY = {
+export const EMPTY_CORRECTION_SUMMARY = {
   topByPost: new Map<string, PostCorrectionDoc>(),
   viewerCorrected: new Set<string>(),
 }
-const EMPTY_ANSWER_SUMMARY = {
+export const EMPTY_ANSWER_SUMMARY = {
   topByPost: new Map<string, PronunciationAnswerDoc>(),
   viewerAnswered: new Set<string>(),
 }
