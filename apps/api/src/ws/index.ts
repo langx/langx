@@ -11,6 +11,7 @@ import {
   sendPhraseSchema,
   sendQuizSchema,
   sendStickerSchema,
+  forwardMessageSchema,
   sendMediaMessageSchema,
   sendTextMessageSchema,
 } from '@langx/shared'
@@ -45,6 +46,7 @@ import {
   sendPhrase,
   sendQuiz,
   sendSticker,
+  forwardMessage,
   sendMediaMessage,
   sendTextMessage,
 } from '../modules/chat/messages'
@@ -408,6 +410,24 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then(({ message, conversation }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
           // Projected, for the reason `message:send` gives above.
+          ack?.({ ok: true, data: toMessageView(message, userId) })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    /**
+     * Every guard is in `forwardMessage`, including the media quota: unlike
+     * `message:media` there are no client-named files to check before the
+     * unit is spent, so there is nothing for this handler to do first. The
+     * attachment bucket, because a forward can carry one.
+     */
+    socket.on('message:forward', (payload: unknown, ack: Ack) => {
+      if (!limited('message:media', ack)) return
+      forwardMessageSchema
+        .parseAsync(payload)
+        .then((input) => forwardMessage(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
           ack?.({ ok: true, data: toMessageView(message, userId) })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))

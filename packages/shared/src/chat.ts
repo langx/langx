@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { isSingleEmoji } from './singleEmoji'
 // The attachment shape lives in `media.ts` now, shared with the feed. Re-exported
 // here so `@langx/shared` keeps one import surface and nothing had to be renamed
 // to discover that a post and a message carry the same thing.
@@ -413,9 +414,10 @@ export const TYPING_TTL_MS = 6_000
 /**
  * The reaction strip.
  *
- * Eight, which is what fills the pill edge to edge on a 390pt screen — the
- * menu sizes the strip to this list, so any shorter one leaves empty pill
- * after the last emoji. It is still short enough to be a glance rather than a
+ * Eight, which with the "+" that opens the full picker after them is what
+ * fills the pill edge to edge on a 390pt screen — the menu sizes the strip to
+ * this list, so any shorter one leaves empty pill after the last emoji. The
+ * strip is the quick way, not the limit: any single emoji is a reaction. It is still short enough to be a glance rather than a
  * decision, and on a narrower phone the strip scrolls rather than shrinking
  * cells that are already only just tappable.
  *
@@ -433,11 +435,41 @@ export type MessageReaction = (typeof MESSAGE_REACTIONS)[number]
  *
  * Named here rather than written into the gesture, because the glyph is
  * `U+2764 U+FE0F` and a bare `❤` typed at a call site is a different string —
- * it would pass review, read identically in a diff, and fail
- * `reactToMessageSchema`'s enum at run time. Typed as `MessageReaction`, so it
- * cannot drift out of the strip either.
+ * it would pass review, read identically in a diff, and be stored as a second
+ * heart beside the strip's, each with its own count. Typed as
+ * `MessageReaction`, so it cannot drift out of the strip either.
  */
 export const DOUBLE_TAP_REACTION: MessageReaction = '❤️'
+
+/**
+ * The longest reaction the server stores, in UTF-8 bytes.
+ *
+ * The longest emoji in use — a kiss with two skin tones — is 35; 64 leaves
+ * room for whatever Unicode adds without ever letting a reaction key, which
+ * becomes a field name on the message, grow into a payload.
+ */
+export const MAX_REACTION_BYTES = 64
+
+function utf8Length(value: string): number {
+  let bytes = 0
+  for (const char of value) {
+    const code = char.codePointAt(0) ?? 0
+    bytes += code < 0x80 ? 1 : code < 0x800 ? 2 : code < 0x10000 ? 3 : 4
+  }
+  return bytes
+}
+
+/**
+ * Whether a string can be a reaction: exactly one emoji, of any kind.
+ *
+ * The strip only offers `MESSAGE_REACTIONS`, but the picker behind its "+"
+ * offers the whole keyboard, so this is the rule both the server and the app
+ * check. Being one emoji is also what keeps `.` and `$` out of a key that
+ * becomes a field name on the message.
+ */
+export function isReactionEmoji(value: string): boolean {
+  return utf8Length(value) <= MAX_REACTION_BYTES && isSingleEmoji(value)
+}
 
 /**
  * How long a sender can withdraw a message from the other person's device.
@@ -523,7 +555,7 @@ export const reactToMessageSchema = z.object({
   conversationId: z.string().trim().min(1),
   messageId: z.string().trim().min(1),
   /** Null clears whatever this user had on the message. */
-  emoji: z.enum(MESSAGE_REACTIONS).nullable(),
+  emoji: z.string().refine(isReactionEmoji, 'A reaction is a single emoji').nullable(),
 })
 export type ReactToMessageInput = z.infer<typeof reactToMessageSchema>
 
@@ -677,6 +709,27 @@ export const listConversationMediaQuerySchema = z.object({
 })
 export type ListConversationMediaQuery = z.infer<typeof listConversationMediaQuerySchema>
 
+/**
+ * `GET /conversations/:id/search` — finding a sentence in one thread.
+ *
+ * Two characters at least, for the reason the handle and city searches have
+ * the same floor: one letter matches nearly every message and answers nothing.
+ * A ceiling because the term becomes a pattern run against every body in the
+ * thread, and nobody searches for a paragraph.
+ *
+ * No `limit` on the query: a search page is a fixed size, so there is no
+ * second knob somebody can turn up to make one request scan further.
+ */
+export const CONVERSATION_SEARCH_MIN_LENGTH = 2
+export const CONVERSATION_SEARCH_MAX_LENGTH = 100
+export const CONVERSATION_SEARCH_PAGE_SIZE = 30
+
+export const conversationSearchQuerySchema = z.object({
+  q: z.string().trim().min(CONVERSATION_SEARCH_MIN_LENGTH).max(CONVERSATION_SEARCH_MAX_LENGTH),
+  cursor: z.string().trim().min(1).optional(),
+})
+export type ConversationSearchQuery = z.infer<typeof conversationSearchQuerySchema>
+
 export const CONVERSATION_PAGE_SIZE_DEFAULT = 20
 export const CONVERSATION_PAGE_SIZE_MAX = 50
 
@@ -775,6 +828,39 @@ export const sendMediaMessageSchema = z.preprocess(
   }),
 )
 export type SendMediaMessageInput = z.infer<typeof sendMediaMessageSchema>
+
+/**
+ * What can be forwarded: a sentence, or the files on a message.
+ *
+ * The structured kinds stay where they were made. A quiz's answer, a
+ * meeting's status and a correction's target all belong to the two people who
+ * wrote them, and a copy in another thread would either carry state that
+ * means nothing there or lose the part that made it worth sending. A phrase
+ * card also writes a deck row, and a sticker is gated on owning its pack —
+ * neither is a copy of a message. Shared so the menu and the server agree.
+ */
+export const FORWARDABLE_MESSAGE_TYPES = ['text', 'image', 'audio', 'video'] as const
+
+export function isForwardableType(type: string): boolean {
+  return (FORWARDABLE_MESSAGE_TYPES as readonly string[]).includes(type)
+}
+
+/**
+ * Forward one message into a conversation.
+ *
+ * Only the id of the original travels, never its words or its files. The
+ * server reads them from a message it has checked the forwarder can see, so
+ * "forwarded" can never be stamped on something nobody sent — and an
+ * attachment arrives as a file already in our bucket, which is why there is
+ * no second upload.
+ */
+export const forwardMessageSchema = z.object({
+  /** Where it is going. */
+  conversationId: z.string().trim().min(1),
+  /** The message being forwarded, from any thread the sender is in. */
+  messageId: z.string().trim().min(1),
+})
+export type ForwardMessageInput = z.infer<typeof forwardMessageSchema>
 
 /**
  * What the ticks under your own message mean, in the order they happen:

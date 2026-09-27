@@ -1,0 +1,8 @@
+# Pinned, because the model format and the runtime move together: a newer
+# CTranslate2 is what a converted model is checked against, and faster-whisper
+# names the version it was built for. Both MIT.
+faster-whisper==1.2.1
+ctranslate2==4.8.2
+
+# Downloads the model in the Dockerfile, at a pinned revision. Apache-2.0.
+huggingface_hub==1.33.0

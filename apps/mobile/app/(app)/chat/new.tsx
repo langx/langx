@@ -79,6 +79,12 @@ export default function NewChatScreen() {
    * real message in it.
    */
   const [sending, setSending] = useState<MessageDto | null>(null)
+  /**
+   * A conversation not started yet is the emptiest one there is, so starters
+   * are always on offer until the first send — seeded by the partner, there
+   * being no conversation id to seed them by.
+   */
+  const offerTopics = !suspended && !sending && partnerId !== ''
 
   /*
    * A conversation these two already have makes this the wrong screen: the
@@ -248,7 +254,10 @@ export default function NewChatScreen() {
           so the screen already looks like the thread it is about to become.
         */}
         <View style={styles.thread}>
-          <ComposerHint slot="chat" style={styles.threadTip} />
+          {/* One opener at a time: while the composer offers conversation
+            starters they are the invitation. Once a send is on its way the
+            tip comes back, as it will be in the thread that replaces this. */}
+          {offerTopics ? null : <ComposerHint slot="chat" style={styles.threadTip} />}
           {sending ? (
             /*
               At the bottom of the column, which is where the thread that
@@ -307,6 +316,7 @@ export default function NewChatScreen() {
               partner ? t('chat.sayHello', { name: partner.displayName }) : t('chat.writeMessage')
             }
             onSend={() => void send()}
+            topicSeed={offerTopics ? partnerId : undefined}
             busy={startConversation.isPending}
             autoFocus
           />

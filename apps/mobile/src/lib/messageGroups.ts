@@ -150,7 +150,7 @@ export function dayLabel(day: string, { t, locale, now = new Date() }: DayLabelO
  * heading for the person reading it, which is the only reader this grouping
  * has — unlike the streak, nothing is being awarded here.
  */
-function dayKeyOf(iso: string): string {
+export function dayKeyOf(iso: string): string {
   const at = new Date(iso)
   return Number.isNaN(at.getTime()) ? '' : dayKeyOfDate(at)
 }
