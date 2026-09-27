@@ -38,3 +38,39 @@ describe('linkedParts', () => {
     ])
   })
 })
+
+describe('linkedParts with formatting', () => {
+  it('drops the markers and styles what they held', () => {
+    expect(linkedParts('a *big* _deal_')).toEqual([
+      { at: 0, text: 'a ' },
+      { at: 3, text: 'big', style: 'bold' },
+      { at: 7, text: ' ' },
+      { at: 9, text: 'deal', style: 'italic' },
+    ])
+  })
+
+  it('keeps a link inside a span tappable, and styled', () => {
+    expect(linkedParts('~see langx.io~')).toEqual([
+      { at: 1, text: 'see ', style: 'strike' },
+      { at: 5, text: 'langx.io', href: 'https://langx.io', style: 'strike' },
+    ])
+  })
+
+  it('groups what a spoiler hides', () => {
+    expect(linkedParts('he ||asks @anna|| ok')).toEqual([
+      { at: 0, text: 'he ' },
+      {
+        at: 3,
+        spoiler: [
+          { at: 5, text: 'asks ' },
+          { at: 10, text: '@anna', handle: 'anna' },
+        ],
+      },
+      { at: 17, text: ' ok' },
+    ])
+  })
+
+  it('is still null for markers that format nothing', () => {
+    expect(linkedParts('2*3*4 and snake_case_name')).toBeNull()
+  })
+})

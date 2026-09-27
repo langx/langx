@@ -7,6 +7,7 @@ import {
   type AppConfigResponse,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { NotConfiguredSttProvider } from '../stt/createSttProvider'
 import { NotConfiguredTtsProvider } from '../tts/createTtsProvider'
 import { getAppConfig } from '../modules/appConfig/appConfig'
 
@@ -46,6 +47,7 @@ export const appConfigRoutes: FastifyPluginAsyncZod = async (app) => {
         discord: Boolean(registered.discord),
       },
       voiceService: !(app.tts instanceof NotConfiguredTtsProvider),
+      transcriptService: !(app.stt instanceof NotConfiguredSttProvider),
     }
     // Short cache: long enough to absorb a launch stampede, short enough that
     // turning maintenance on is not stuck behind a CDN.

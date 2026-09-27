@@ -5,6 +5,7 @@ import { useRef, useState, type ReactNode } from 'react'
 import {
   Platform,
   Pressable,
+  ScrollView,
   Text,
   TextInput,
   View,
@@ -12,6 +13,7 @@ import {
   type TextInputKeyPressEventData,
 } from 'react-native'
 import { useT } from '../i18n'
+import { pickStarters } from '../lib/conversationStarters'
 import { enterSendsOnNative, shouldSubmitOnEnter } from '../lib/submitOnEnter'
 import { makeStyles, useTheme } from '../lib/theme'
 import { ComposerHint } from './ComposerHint'
@@ -30,6 +32,11 @@ interface ChatComposerProps {
   placeholder: string
   onSend: () => void
   /**
+   * A long press on the send button — "Send later" in a thread. Absent where
+   * there is nothing to schedule into, like the screen that starts one.
+   */
+  onSendLongPress?: () => void
+  /**
    * Something other than the text is ready to go — a picked photo — so the
    * send button stays up with an empty field.
    */
@@ -46,6 +53,13 @@ interface ChatComposerProps {
   idleAction?: ReactNode
   /** Above the row, under the hairline — the mode banner and the picked attachments. */
   above?: ReactNode
+  /**
+   * Set when the thread has nothing to answer yet — empty, or quiet for
+   * `CONVERSATION_STALE_DAYS` — and the composer should offer conversation
+   * starters, shuffled from this seed. The caller decides when; the composer
+   * only draws them, and only while the field is empty.
+   */
+  topicSeed?: string | undefined
 }
 
 /**
@@ -63,12 +77,14 @@ export function ChatComposer({
   onChangeText,
   placeholder,
   onSend,
+  onSendLongPress,
   hasAttachment = false,
   busy = false,
   autoFocus = false,
   leading,
   idleAction,
   above,
+  topicSeed,
 }: ChatComposerProps) {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -90,6 +106,15 @@ export function ChatComposer({
    * space, makes the chip go away and leaves the text exactly as it was.
    */
   const emoticon = selection && selection.start !== selection.end ? null : emoticonAt(value, cursor)
+  /** Which page of starters is showing; the shuffle button turns it. */
+  const [topicRound, setTopicRound] = useState(0)
+  /*
+   * Only on an empty field: the first letter typed is the person's own
+   * opener, and the chips would then be competing with it. An empty field
+   * also means there is no emoticon under the caret, so the two chip rows
+   * are never on screen together.
+   */
+  const topics = topicSeed !== undefined && value === '' ? pickStarters(topicSeed, topicRound) : []
 
   const pickEmoji = (emoji: string) => {
     if (!emoticon) return
@@ -101,9 +126,58 @@ export function ChatComposer({
     input.current?.focus()
   }
 
+  /*
+   * Written into the field, never sent: the question is a suggestion, and the
+   * person may want to add to it, or answer it themselves first.
+   */
+  const pickTopic = (text: string) => {
+    setSelection({ start: text.length, end: text.length })
+    onChangeText(text)
+    input.current?.focus()
+  }
+
   return (
     <View style={styles.composer}>
       {above}
+      {topics.length > 0 ? (
+        <View style={styles.topicRow}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('chat.topicsShuffle')}
+            hitSlop={8}
+            onPress={() => setTopicRound((round) => round + 1)}
+            style={({ pressed }) => [styles.topicShuffle, pressed && styles.emojiChipPressed]}
+          >
+            <Feather name="shuffle" size={16} color={colors.textMuted} />
+          </Pressable>
+          {/* One scrolling line rather than a wrapped block: three questions
+            wrapped would push the thread up by a third of a phone screen. */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            style={styles.topicScroll}
+            contentContainerStyle={styles.topicList}
+          >
+            {topics.map((topic) => {
+              const text = t(`chat.topics.${topic}`)
+              return (
+                <Pressable
+                  key={topic}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('chat.topicChip', { topic: text })}
+                  onPress={() => pickTopic(text)}
+                  style={({ pressed }) => [styles.topicChip, pressed && styles.emojiChipPressed]}
+                >
+                  <Text style={styles.topicText} numberOfLines={1}>
+                    {text}
+                  </Text>
+                </Pressable>
+              )
+            })}
+          </ScrollView>
+        </View>
+      ) : null}
       {/* Straight above the field it edits, and only while there is a
         shortcut under the caret — so it never sits beside the reply banner or
         the attachments for longer than one word. */}
@@ -177,6 +251,7 @@ export function ChatComposer({
               accessibilityRole="button"
               accessibilityLabel={t('common.send')}
               onPress={onSend}
+              {...(onSendLongPress ? { onLongPress: onSendLongPress } : {})}
               disabled={busy}
               style={({ pressed }) => [styles.send, pressed && !busy && styles.sendPressed]}
             >
@@ -233,6 +308,27 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingVertical: 4,
   },
   emojiChipPressed: { opacity: 0.6 },
+  topicRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  topicShuffle: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    height: 32,
+    justifyContent: 'center',
+    width: 32,
+  },
+  // The rest of the row, so the chips scroll inside it rather than past the edge.
+  topicScroll: { flex: 1 },
+  topicList: { gap: spacing.sm },
+  topicChip: {
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    justifyContent: 'center',
+    minHeight: 32,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  topicText: { ...font.caption, color: colors.text },
   emoji: { fontSize: 22, lineHeight: 28 },
   emojiName: { ...font.caption, color: colors.textMuted },
   hint: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },

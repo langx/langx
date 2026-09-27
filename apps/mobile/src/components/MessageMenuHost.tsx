@@ -3,6 +3,7 @@ import { Image } from 'expo-image'
 import { isBigEmoji } from '../lib/singleEmoji'
 import { useEffect, useState } from 'react'
 import {
+  Animated,
   Modal,
   Platform,
   Pressable,
@@ -12,6 +13,7 @@ import {
   View,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useKeyboardInset } from '../hooks/useKeyboardInset'
 import { paginateActions, type MessageActionPage } from '../lib/messageActions'
 import {
   resolveMessageMenu,
@@ -22,6 +24,7 @@ import { messageMenuLayout } from '../lib/messageMenuLayout'
 import { stickerAsset } from '../lib/stickerAssets'
 import { makeStyles, useTheme } from '../lib/theme'
 import { MediaGallery } from './MediaBubble'
+import { ReactionPicker } from './ReactionPicker'
 import { Button } from './ui/Button'
 import { useLocale, useT } from '../i18n'
 
@@ -49,7 +52,10 @@ export function MessageMenuHost() {
 
   const [request, setRequest] = useState<MessageMenuRequest | null>(null)
   const [page, setPage] = useState<MessageActionPage>('primary')
+  /** The strip's "+" swaps the menu for the full picker, in the same Modal. */
+  const [picking, setPicking] = useState(false)
   const insets = useSafeAreaInsets()
+  const keyboardInset = useKeyboardInset()
   const screen = useWindowDimensions()
 
   useEffect(
@@ -58,6 +64,7 @@ export function MessageMenuHost() {
         // A new menu always opens on the first page; leaving it on `more`
         // would show the second page of a message nobody asked about.
         setPage('primary')
+        setPicking(false)
         setRequest(next)
       }),
     [],
@@ -155,26 +162,75 @@ export function MessageMenuHost() {
     </>
   )
 
+  /*
+    The "+" sits outside the scroll: on a phone too narrow for the whole strip
+    the emoji scroll under it, and the way to every other emoji stays in view.
+  */
   const strip = request.reactions ? (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.stripInner}
-      style={styles.strip}
-    >
-      {request.reactions.map((emoji) => (
-        <Pressable
-          key={emoji}
-          accessibilityRole="button"
-          accessibilityLabel={t('messageMenu.reactWith', { emoji })}
-          onPress={() => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
-          style={[styles.emoji, request.myReaction === emoji && styles.emojiChosen]}
-        >
-          <Text style={styles.emojiGlyph}>{emoji}</Text>
-        </Pressable>
-      ))}
-    </ScrollView>
+    <View style={styles.strip}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.stripInner}
+        style={styles.stripScroll}
+      >
+        {request.reactions.map((emoji) => (
+          <Pressable
+            key={emoji}
+            accessibilityRole="button"
+            accessibilityLabel={t('messageMenu.reactWith', { emoji })}
+            onPress={() => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
+            style={[styles.emoji, request.myReaction === emoji && styles.emojiChosen]}
+          >
+            <Text style={styles.emojiGlyph}>{emoji}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('messageMenu.moreReactions')}
+        onPress={() => setPicking(true)}
+        style={[styles.emoji, styles.stripPlus]}
+      >
+        <Ionicons name="add" size={24} color={colors.textMuted} />
+      </Pressable>
+    </View>
   ) : null
+
+  if (picking) {
+    // A sheet whatever the menu was: the grid needs the width an anchored
+    // popover does not have. Android's back button returns to the menu; the
+    // scrim closes everything, as it does for the menu itself.
+    return (
+      <Modal transparent animationType="fade" visible onRequestClose={() => setPicking(false)}>
+        <Pressable
+          style={[styles.backdrop, wide ? styles.backdropCentred : styles.backdropBottom]}
+          onPress={dismiss}
+        >
+          <Animated.View
+            style={[
+              styles.pickerHolder,
+              wide && styles.pickerHolderWide,
+              { paddingBottom: keyboardInset },
+            ]}
+          >
+            <Pressable
+              style={[
+                styles.sheet,
+                wide ? styles.sheetCard : { paddingBottom: insets.bottom + spacing.lg },
+              ]}
+              onPress={() => {}}
+            >
+              {wide ? null : <View style={styles.handle} />}
+              <ReactionPicker
+                onPick={(emoji) => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
+              />
+            </Pressable>
+          </Animated.View>
+        </Pressable>
+      </Modal>
+    )
+  }
 
   /**
    * What the lifted copy draws.
@@ -241,7 +297,7 @@ export function MessageMenuHost() {
      * withdrawn one — reserves nothing, rather than a band of empty air.
      */
     const stripWidth = request.reactions
-      ? Math.min(stripWidthFor(request.reactions.length), screen.width - 24)
+      ? Math.min(stripWidthFor(request.reactions.length + 1), screen.width - 24)
       : 0
     const layout = messageMenuLayout({
       anchor: request.anchor,
@@ -346,9 +402,14 @@ const ROW_HEIGHT = 46
 const MENU_CHROME = 18
 /** Fits the longest label at 15 — Russian's "remove from starred", German's. */
 const MENU_WIDTH = 264
-/** `emoji` and `stripInner`'s own numbers: a 42 cell, 2 between, 6 of padding and an outline each side. */
-const EMOJI_CELL = 42
-const EMOJI_GAP = 2
+/**
+ * `emoji` and `stripInner`'s own numbers: a 38 cell, 1 between, 6 of padding
+ * and an outline each side. The "+" is one more cell, counted in — and the
+ * reason the cell is 38 rather than 42: at 42 the strip and its "+" no longer
+ * fit a 390pt screen, and the strip that used to fill the pill would scroll.
+ */
+const EMOJI_CELL = 38
+const EMOJI_GAP = 1
 const STRIP_CHROME = 14
 const STRIP_HEIGHT = EMOJI_CELL + STRIP_CHROME
 
@@ -427,11 +488,24 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     borderColor: colors.border,
     borderRadius: radius.pill,
     borderWidth: 1,
-    flexGrow: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
+  stripScroll: { flexGrow: 0, flexShrink: 1 },
   // The three numbers `stripWidthFor` counts with, so the pill it sizes and the
-  // cells it holds cannot drift apart.
-  stripInner: { alignItems: 'center', gap: EMOJI_GAP, paddingHorizontal: 6, paddingVertical: 6 },
+  // cells it holds cannot drift apart. The trailing gap is the one before "+".
+  stripInner: {
+    alignItems: 'center',
+    gap: EMOJI_GAP,
+    paddingStart: 6,
+    paddingEnd: EMOJI_GAP,
+    paddingVertical: 6,
+  },
+  stripPlus: { marginEnd: 6 },
+  // Full width, so the sheet inside keeps the width it has without a holder;
+  // centred on web, where the sheet is a card of its own width.
+  pickerHolder: { width: '100%' },
+  pickerHolderWide: { alignItems: 'center' },
   emoji: {
     alignItems: 'center',
     borderRadius: radius.pill,

@@ -89,6 +89,14 @@ export async function configureNotifications(): Promise<void> {
            the one thing that made it quick.
           */
           opensAppToForeground: false,
+          /*
+           iOS asks for Face ID or the passcode before running it. Without
+           that, a reply typed on the lock screen runs while the Keychain is
+           still locked, the session cookie cannot be read, and the send goes
+           out signed in as nobody — refused, and silently. It is the same
+           limit the silent push is designed around (see `TraySync`).
+          */
+          isAuthenticationRequired: true,
         },
       },
     ])

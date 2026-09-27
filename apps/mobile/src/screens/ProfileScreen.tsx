@@ -1,12 +1,20 @@
 import Feather from '@expo/vector-icons/Feather'
-import { wornCosmetic } from '@langx/shared'
+import { profileUrl, wornCosmetic } from '@langx/shared'
 import { router, useIsFocused } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { authClient } from '../lib/auth-client'
 import { requireAccount } from '../lib/requireAccount'
-import { useBlockUser, useMe, useProfile, usePublicSummary, useSetFollow } from '../api/queries'
+import {
+  useBlockUser,
+  useMe,
+  useProfile,
+  usePublicSummary,
+  useSetFollow,
+  type ConversationDto,
+} from '../api/queries'
 import { ActivityMap } from '../components/ActivityMap'
+import { ConversationPicker } from '../components/ConversationPicker'
 import { WebTitle } from '../components/WebTitle'
 import { Avatar } from '../components/ui/Avatar'
 import { placeLabel } from '../lib/placeLabel'
@@ -23,7 +31,8 @@ import { BadgeStrip } from '../components/BadgeStrip'
 import { StatTile } from '../components/ui/StatTile'
 import { ProfileSkeleton } from '../components/skeletons/ProfileSkeleton'
 import { Screen } from '../components/ui/Screen'
-import { chooseAlert, confirmAlert } from '../lib/alert'
+import { chooseAlert, confirmAlert, showAlert } from '../lib/alert'
+import { emitWithAck, getSocket } from '../lib/socket'
 import { goBackTo, openBadges, openFollows, openPostCorrections } from '../lib/navigation'
 import { shareLink } from '../lib/share'
 import { profileShareText } from '../lib/shareText'
@@ -65,6 +74,8 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
   const block = useBlockUser()
 
   const [avatarOpen, setAvatarOpen] = useState(false)
+  /** Choosing the thread this profile is about to be sent into. */
+  const [sending, setSending] = useState(false)
   /*
    * Both queries or neither: the header comes from one and the week's map
    * below it from the other, so a pull that refreshed only the top would
@@ -164,14 +175,37 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
   async function openActions(): Promise<void> {
     const action = await chooseAlert(user.displayName, undefined, [
       { label: t('share.profile'), value: 'share' },
+      { label: t('share.sendInChat'), value: 'send' },
       { label: t('common.report'), value: 'report', destructive: true },
       { label: t('common.block'), value: 'block', destructive: true },
     ])
     if (action === 'share')
       void shareLink(profileShareText(t, { name: user.displayName, handle: user.handle }))
+    if (action === 'send' && requireAccount(session?.user, { action: 'other' })) setSending(true)
     if (action === 'report')
       router.push({ pathname: '/(app)/report', params: { userId: user._id } })
     if (action === 'block') void confirmBlock()
+  }
+
+  /**
+   * The bare link, as an ordinary text message — no message type of its own.
+   * The thread draws a profile link as the person's card, so the link *is*
+   * the share, and a build that predates the card still shows a link that
+   * opens. `message:send` is the whole of it: every guard a sentence passes
+   * through, this passes through.
+   */
+  async function sendTo(conversation: ConversationDto): Promise<void> {
+    setSending(false)
+    try {
+      const socket = await getSocket()
+      await emitWithAck(socket, 'message:send', {
+        conversationId: conversation._id,
+        body: profileUrl(user.handle),
+      })
+      showToast(t('conversationPicker.sent'))
+    } catch {
+      void showAlert(t('chat.couldNotSend'), t('common.retry'))
+    }
   }
 
   return (
@@ -194,7 +228,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
         {isSelf ? null : (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`${t('share.profile')} · ${t('common.report')} · ${t('common.block')}`}
+            accessibilityLabel={`${t('share.profile')} · ${t('share.sendInChat')} · ${t('common.report')} · ${t('common.block')}`}
             onPress={() => void openActions()}
             hitSlop={8}
             style={({ pressed }) => [styles.more, pressed && styles.iconPressed]}
@@ -347,6 +381,16 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
           photos={[{ url: user.avatarUrl }]}
           index={avatarOpen ? 0 : null}
           onClose={() => setAvatarOpen(false)}
+        />
+      ) : null}
+      {/* Mounted only while open: a profile has no business reading the chat
+          list otherwise, and a guest has none to read. */}
+      {sending ? (
+        <ConversationPicker
+          visible
+          title={t('conversationPicker.sendProfileTitle')}
+          onPick={(conversation) => void sendTo(conversation)}
+          onClose={() => setSending(false)}
         />
       ) : null}
 

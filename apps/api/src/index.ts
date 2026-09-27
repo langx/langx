@@ -10,6 +10,7 @@ import { loadEnv, publicApiUrl, unsubscribeSecret } from './env'
 import { createPersonDeleterFromEnv } from './modules/analytics/personDeleter'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
+import { createSttProvider } from './stt/createSttProvider'
 import { createTtsProvider } from './tts/createTtsProvider'
 import { createAnthropicProvider } from './modules/official/assistantProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
@@ -19,6 +20,7 @@ import { ExpoPushSender } from './modules/push/devices'
 import type { NotificationEmailContext } from './email/notify'
 import { startLegacyImportScheduler } from './modules/handles/legacyImportScheduler'
 import { startMeetingReminderScheduler } from './modules/push/meetingReminders'
+import { startScheduledMessageScheduler } from './modules/chat/scheduledSender'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
 import { startNotificationScheduler } from './modules/notifications/scheduler'
 import { startDailyPoolScheduler } from './modules/tokens/poolScheduler'
@@ -56,6 +58,10 @@ async function main(): Promise<void> {
   // only "Read it aloud" on a member's own card says it cannot.
   const tts = createTtsProvider(env)
 
+  // The not-configured one without `STT_URL`, and then the app is told so
+  // and never offers a transcript.
+  const stt = createSttProvider(env)
+
   // `null` without a key. @langx still greets and announces — those are ours,
   // not the model's — and a message to it is answered with the offline line.
   const assistant = createAnthropicProvider(env)
@@ -82,6 +88,7 @@ async function main(): Promise<void> {
     translation,
     revenueCat,
     tts,
+    stt,
     push,
     email: emailSender,
     assistant,
@@ -113,6 +120,9 @@ async function main(): Promise<void> {
     startPurgeScheduler(db, app.log, { storage, ...(analytics ? { analytics } : {}) }),
     startStreakReminderScheduler(db, push, app.log),
     startMeetingReminderScheduler(db, push, app.log),
+    // The app rather than the db: a scheduled message is sent through the same
+    // fan-out as a live one, and that needs the socket server.
+    startScheduledMessageScheduler(app),
     startLegacyImportScheduler(db, app.log),
     /*
      * Not a scheduled *job* — it writes no ledger and claims no period. Every

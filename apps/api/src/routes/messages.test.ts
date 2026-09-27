@@ -1,4 +1,5 @@
 import {
+  CONVERSATION_SEARCH_PAGE_SIZE,
   MAX_ATTACHMENTS,
   MAX_PINNED_CONVERSATIONS,
   MAX_IMAGE_BYTES,
@@ -19,6 +20,7 @@ import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import type { Profile } from '../modules/profiles/profiles'
+import type { Message } from '../modules/chat/conversations'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -453,6 +455,286 @@ describe('Faz 5 — conversation/message history REST', () => {
         headers: { cookie: reader.cookie },
       })
       expect(configured.statusCode).toBeGreaterThanOrEqual(400)
+    })
+  })
+
+  /**
+   * A voice note written out. Driven through `transcribeMessage` with a fake
+   * service and a fake bucket, like reading aloud above, because this suite's
+   * app has neither — which the last test here checks it says.
+   */
+  describe('writing a voice note out', () => {
+    const BUCKET = 'https://media.test'
+
+    function fakeStorage() {
+      const read: string[] = []
+      return {
+        read,
+        storage: {
+          getUploadUrl: () => {
+            throw new Error('not used')
+          },
+          putObject: () => Promise.reject(new Error('not used')),
+          getObject: (key: string) => {
+            read.push(key)
+            return Promise.resolve(new Uint8Array([1, 2, 3]))
+          },
+          deleteObject: () => Promise.resolve(),
+          keyFromPublicUrl: (url: string) =>
+            url.startsWith(`${BUCKET}/`) ? url.slice(BUCKET.length + 1) : null,
+        },
+      }
+    }
+
+    function fakeStt(heard = { text: ' günaydın, nasılsın? ', lang: 'tr' }) {
+      const asked: { bytes: number; langs: readonly string[] }[] = []
+      return {
+        asked,
+        stt: {
+          transcribe: (input: { audio: Uint8Array; langs: readonly string[] }) => {
+            asked.push({ bytes: input.audio.byteLength, langs: input.langs })
+            return Promise.resolve(heard)
+          },
+        },
+      }
+    }
+
+    /**
+     * A thread with one voice note in it, written straight to the collection:
+     * the media gate a real send passes is not what these tests are about.
+     */
+    async function noteIn(prefix: string, url = `${BUCKET}/chat/x/note.m4a`) {
+      const speaker = await newUser(`${prefix}-a@example.com`)
+      const reader = await newUser(`${prefix}-b@example.com`, {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'tr', level: 'beginner', priority: 1 }],
+      })
+      const thread = (await startConversation(speaker, reader.userId, 'hey'))._id
+      const note = { url, contentType: 'audio/mp4', sizeBytes: 3, durationSeconds: 2 }
+      const messageId = new ObjectId()
+      await handle.db.collection(COLLECTIONS.messages).insertOne({
+        _id: messageId,
+        conversationId: new ObjectId(thread),
+        senderId: speaker.userId,
+        type: 'audio',
+        body: '',
+        attachments: [note],
+        media: note,
+        createdAt: new Date(),
+      })
+      return { speaker, reader, thread, messageId: messageId.toHexString() }
+    }
+
+    async function spent(userId: string): Promise<number> {
+      const profile = await handle.db
+        .collection<{ quota?: { transcripts?: Date[] } }>(COLLECTIONS.profiles)
+        .findOne({ _id: userId } as never)
+      return profile?.quota?.transcripts?.length ?? 0
+    }
+
+    it('writes the note out once, keeps it on the note, and charges one unit', async () => {
+      const { reader, thread, messageId } = await noteIn('stt-once')
+      const { storage, read } = fakeStorage()
+      const { stt, asked } = fakeStt()
+      const { transcribeMessage } = await import('../modules/chat/transcript')
+
+      const transcript = await transcribeMessage(
+        handle.db,
+        storage,
+        stt,
+        reader.userId,
+        thread,
+        messageId,
+      )
+
+      expect(transcript).toEqual({ text: 'günaydın, nasılsın?', lang: 'tr', cached: false })
+      expect(read).toEqual(['chat/x/note.m4a'])
+      // The sender's languages first — the note is theirs — then the reader's.
+      expect(asked[0]?.langs).toEqual(['tr', 'en'])
+      expect(await spent(reader.userId)).toBe(1)
+
+      // On the attachment, in both places a row holds it, so both people and
+      // every build read it back with the message.
+      const row = await handle.db
+        .collection<Message>(COLLECTIONS.messages)
+        .findOne({ _id: new ObjectId(messageId) })
+      const kept = { text: 'günaydın, nasılsın?', lang: 'tr' }
+      expect(row?.attachments?.[0]?.transcript).toEqual(kept)
+      expect(row?.media?.transcript).toEqual(kept)
+    })
+
+    it('serves the kept words to the other person for free', async () => {
+      const { speaker, reader, thread, messageId } = await noteIn('stt-cached')
+      const { transcribeMessage } = await import('../modules/chat/transcript')
+      await transcribeMessage(
+        handle.db,
+        fakeStorage().storage,
+        fakeStt().stt,
+        reader.userId,
+        thread,
+        messageId,
+      )
+
+      const again = fakeStt()
+      const theirs = await transcribeMessage(
+        handle.db,
+        fakeStorage().storage,
+        again.stt,
+        speaker.userId,
+        thread,
+        messageId,
+      )
+
+      expect(theirs.cached).toBe(true)
+      expect(theirs.text).toBe('günaydın, nasılsın?')
+      expect(again.asked).toHaveLength(0)
+      expect(await spent(speaker.userId)).toBe(0)
+      expect(await spent(reader.userId)).toBe(1)
+
+      // And the history carries it, so nobody has to ask at all.
+      const page = await app.inject({
+        method: 'GET',
+        url: `/conversations/${thread}/messages`,
+        headers: { cookie: speaker.cookie },
+      })
+      const listed = page
+        .json<{ items: { _id: string; attachments?: { transcript?: { text: string } }[] }[] }>()
+        .items.find((item) => item._id === messageId)
+      expect(listed?.attachments?.[0]?.transcript?.text).toBe('günaydın, nasılsın?')
+    })
+
+    it('gives the unit back when the service fails, and keeps nothing', async () => {
+      const { reader, thread, messageId } = await noteIn('stt-refund')
+      const { SttBusyError } = await import('../stt/SttProvider')
+      const { transcribeMessage } = await import('../modules/chat/transcript')
+
+      const busy = { transcribe: () => Promise.reject(new SttBusyError(503)) }
+      const refused = await transcribeMessage(
+        handle.db,
+        fakeStorage().storage,
+        busy,
+        reader.userId,
+        thread,
+        messageId,
+      ).then(
+        () => null,
+        (caught: unknown) => caught as { code: string },
+      )
+      expect(refused?.code).toBe('RATE_LIMITED')
+
+      const broken = { transcribe: () => Promise.reject(new Error('connection reset')) }
+      await expect(
+        transcribeMessage(
+          handle.db,
+          fakeStorage().storage,
+          broken,
+          reader.userId,
+          thread,
+          messageId,
+        ),
+      ).rejects.toThrow('connection reset')
+
+      expect(await spent(reader.userId)).toBe(0)
+      const row = await handle.db
+        .collection<Message>(COLLECTIONS.messages)
+        .findOne({ _id: new ObjectId(messageId) })
+      expect(row?.attachments?.[0]?.transcript).toBeUndefined()
+    })
+
+    it('is not a way into a thread you are not in', async () => {
+      const { thread, messageId } = await noteIn('stt-outsider')
+      const outsider = await newUser('stt-outsider-c@example.com')
+      const { stt, asked } = fakeStt()
+      const { transcribeMessage } = await import('../modules/chat/transcript')
+
+      await expect(
+        transcribeMessage(
+          handle.db,
+          fakeStorage().storage,
+          stt,
+          outsider.userId,
+          thread,
+          messageId,
+        ),
+      ).rejects.toMatchObject({ code: 'NOT_FOUND' })
+      expect(asked).toHaveLength(0)
+      expect(await spent(outsider.userId)).toBe(0)
+    })
+
+    it('never fetches a note that is not in our bucket', async () => {
+      const { reader, thread, messageId } = await noteIn(
+        'stt-foreign',
+        'https://elsewhere.test/note.m4a',
+      )
+      const { storage, read } = fakeStorage()
+      const { stt, asked } = fakeStt()
+      const { transcribeMessage } = await import('../modules/chat/transcript')
+
+      await expect(
+        transcribeMessage(handle.db, storage, stt, reader.userId, thread, messageId),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+      expect(read).toHaveLength(0)
+      expect(asked).toHaveLength(0)
+      expect(await spent(reader.userId)).toBe(0)
+    })
+
+    it('stops at the daily ceiling with a retry time', async () => {
+      const { reader, thread, messageId } = await noteIn('stt-quota')
+      const limit = PLAN_LIMITS.free.transcriptsPerDay ?? 0
+      await handle.db.collection(COLLECTIONS.profiles).updateOne({ _id: reader.userId } as never, {
+        $set: { 'quota.transcripts': Array.from({ length: limit }, () => new Date()) },
+      })
+      const { stt, asked } = fakeStt()
+      const { transcribeMessage } = await import('../modules/chat/transcript')
+
+      const refused = await transcribeMessage(
+        handle.db,
+        fakeStorage().storage,
+        stt,
+        reader.userId,
+        thread,
+        messageId,
+      ).then(
+        () => null,
+        (caught: unknown) => caught as { code: string; retryAt?: string },
+      )
+      expect(refused?.code).toBe('QUOTA_EXCEEDED')
+      expect(typeof refused?.retryAt).toBe('string')
+      expect(asked).toHaveLength(0)
+    })
+
+    it('is a member route, and a client cannot send a transcript of its own', async () => {
+      const { reader, thread, messageId } = await noteIn('stt-route')
+
+      const anonymous = await app.inject({
+        method: 'POST',
+        url: `/conversations/${thread}/messages/${messageId}/transcript`,
+      })
+      expect(anonymous.statusCode).toBe(401)
+
+      // This suite's app has no storage and no transcript service, so a
+      // signed-in member gets a refusal rather than words.
+      const configured = await app.inject({
+        method: 'POST',
+        url: `/conversations/${thread}/messages/${messageId}/transcript`,
+        headers: { cookie: reader.cookie },
+      })
+      expect(configured.statusCode).toBeGreaterThanOrEqual(400)
+
+      // The send schema does not know the field, so words put in a body are
+      // dropped before anything could store them.
+      const parsed = sendMediaMessageSchema.parse({
+        conversationId: thread,
+        attachments: [
+          {
+            url: `${BUCKET}/chat/x/other.m4a`,
+            contentType: 'audio/mp4',
+            sizeBytes: 3,
+            transcript: { text: 'words nobody said' },
+          },
+        ],
+      })
+      expect(parsed.attachments[0]).not.toHaveProperty('transcript')
     })
   })
 
@@ -2424,6 +2706,166 @@ describe('Faz 5 — conversation/message history REST', () => {
     })
   })
 
+  describe('GET /conversations/:id/search', () => {
+    async function pair(prefix: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const conversationId = (await startConversation(a, b.userId, 'hey'))._id
+      return { a, b, conversationId }
+    }
+
+    async function say(from: { userId: string }, conversationId: string, body: string) {
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const { message } = await sendTextMessage(handle.db, from.userId, { conversationId, body })
+      return message._id.toHexString()
+    }
+
+    /** Annotated rather than inferred: `inject().json()` is `any`. */
+    interface SearchBody {
+      items: { _id: string; body: string }[]
+      nextCursor: string | null
+    }
+
+    async function search(
+      user: { cookie: string },
+      conversationId: string,
+      q: string,
+      cursor?: string,
+    ): Promise<{ statusCode: number; body: SearchBody }> {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/search?q=${encodeURIComponent(q)}${
+          cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''
+        }`,
+        headers: { cookie: user.cookie },
+      })
+      const body: SearchBody = response.json()
+      return { statusCode: response.statusCode, body }
+    }
+
+    it('finds a word in any case, newest first, and nothing else', async () => {
+      const { a, b, conversationId } = await pair('search-basic')
+      const older = await say(a, conversationId, 'Shall we meet in Berlin?')
+      await say(b, conversationId, 'Sounds good')
+      const newer = await say(b, conversationId, 'BERLIN it is')
+
+      const { statusCode, body } = await search(a, conversationId, 'berlin')
+      expect(statusCode).toBe(200)
+      expect(body.items.map((m) => m._id)).toEqual([newer, older])
+      expect(body.nextCursor).toBeNull()
+    })
+
+    it('tells a stranger nothing, with the same 404 as a missing thread', async () => {
+      const { a, conversationId } = await pair('search-stranger')
+      await say(a, conversationId, 'a secret plan')
+      const outsider = await newUser('search-outsider@example.com')
+
+      const { statusCode, body } = await search(outsider, conversationId, 'secret')
+      expect(statusCode).toBe(404)
+      expect(JSON.stringify(body)).not.toContain('secret plan')
+    })
+
+    it('leaves out a withdrawn message, and one the reader hid only for the reader', async () => {
+      const { a, b, conversationId } = await pair('search-hidden')
+      const withdrawn = await say(a, conversationId, 'coffee at nine')
+      const hidden = await say(a, conversationId, 'coffee at ten')
+      const kept = await say(a, conversationId, 'coffee at eleven')
+      const { deleteMessage } = await import('../modules/chat/mutations')
+      await deleteMessage(handle.db, a.userId, {
+        conversationId,
+        messageId: withdrawn,
+        scope: 'everyone',
+      })
+      await deleteMessage(handle.db, b.userId, { conversationId, messageId: hidden, scope: 'me' })
+
+      const forB = await search(b, conversationId, 'coffee')
+      expect(forB.body.items.map((m) => m._id)).toEqual([kept])
+
+      // "Delete for me" is one-sided, so the search has to be too.
+      const forA = await search(a, conversationId, 'coffee')
+      expect(forA.body.items.map((m) => m._id)).toEqual([kept, hidden])
+    })
+
+    /**
+     * The term is matched as the characters typed. Unescaped, `a.c` would
+     * also find "abc", and a nested quantifier would be a pattern the server
+     * spends its whole time budget on.
+     */
+    it('treats regex metacharacters as the characters themselves', async () => {
+      const { a, conversationId } = await pair('search-escape')
+      const literal = await say(a, conversationId, 'the file is a.c, not abc')
+      await say(a, conversationId, 'abc only')
+      const brackets = await say(a, conversationId, 'costs $5 (roughly) [maybe]')
+
+      const dot = await search(a, conversationId, 'a.c')
+      expect(dot.body.items.map((m) => m._id)).toEqual([literal])
+
+      const meta = await search(a, conversationId, '(roughly) [maybe]')
+      expect(meta.body.items.map((m) => m._id)).toEqual([brackets])
+
+      const evil = await search(a, conversationId, '(a+)+$')
+      expect(evil.statusCode).toBe(200)
+      expect(evil.body.items).toEqual([])
+    })
+
+    it('refuses a term too short to mean anything', async () => {
+      const { a, conversationId } = await pair('search-short')
+      const { statusCode } = await search(a, conversationId, ' x ')
+      expect(statusCode).toBe(400)
+    })
+
+    it('pages with a cursor without repeating or dropping a hit', async () => {
+      const { a, b, conversationId } = await pair('search-paging')
+      const wanted: string[] = []
+      for (let n = 0; n < CONVERSATION_SEARCH_PAGE_SIZE + 3; n++) {
+        wanted.push(await say(n % 2 ? a : b, conversationId, `needle ${n}`))
+        // Noise between the hits, so a page is not simply the last N rows.
+        await say(a, conversationId, 'hay')
+      }
+
+      const first = await search(a, conversationId, 'needle')
+      expect(first.body.items).toHaveLength(CONVERSATION_SEARCH_PAGE_SIZE)
+      expect(first.body.nextCursor).not.toBeNull()
+
+      const second = await search(a, conversationId, 'needle', first.body.nextCursor ?? '')
+      expect(second.body.nextCursor).toBeNull()
+
+      const seen = [...first.body.items, ...second.body.items].map((m) => m._id)
+      expect(seen).toEqual([...wanted].reverse())
+    })
+
+    it('answers a cursor it did not mint with a 400, not a 500', async () => {
+      const { a, conversationId } = await pair('search-bad-cursor')
+      const { statusCode } = await search(a, conversationId, 'hey', 'nonsense')
+      expect(statusCode).toBe(400)
+    })
+
+    /**
+     * Keeps the claim in `searchConversation` honest: the regex cannot use an
+     * index, but the scan it runs over must still be one thread's keys walked
+     * in order — never the collection, and never a sort in memory.
+     */
+    it('walks one thread through its index, without a blocking sort', async () => {
+      const { a, conversationId } = await pair('search-explain')
+      const plan = await handle.db
+        .collection(COLLECTIONS.messages)
+        .find({
+          conversationId: new ObjectId(conversationId),
+          deletedAt: { $exists: false },
+          hiddenFor: { $ne: a.userId },
+          body: { $regex: 'hey', $options: 'i' },
+        })
+        .sort({ createdAt: -1, _id: -1 })
+        .explain('queryPlanner')
+      // The winning plan only, for the reason the media test spells out.
+      const { queryPlanner } = plan as { queryPlanner: { winningPlan: unknown } }
+      const shape = JSON.stringify(queryPlanner.winningPlan)
+      expect(shape).toContain('conversation_created_id')
+      expect(shape).not.toContain('COLLSCAN')
+      expect(shape).not.toContain('"stage":"SORT"')
+    })
+  })
+
   describe('replies and the around window', () => {
     async function thread(prefix: string, count: number) {
       const a = await newUser(`${prefix}-a@example.com`)
@@ -2614,7 +3056,8 @@ describe('Faz 5 — conversation/message history REST', () => {
         messageId,
         emoji: '🔥',
       })
-      expect(moved.message.reactions?.['👍']).toEqual([])
+      // Nobody is left on it, so the emoji goes rather than staying as `[]`.
+      expect(moved.message.reactions?.['👍']).toBeUndefined()
       expect(moved.message.reactions?.['🔥']).toEqual([b.userId])
 
       const cleared = await reactToMessage(handle.db, b.userId, {
@@ -2622,7 +3065,31 @@ describe('Faz 5 — conversation/message history REST', () => {
         messageId,
         emoji: '🔥',
       })
-      expect(cleared.message.reactions?.['🔥']).toEqual([])
+      expect(cleared.message.reactions?.['🔥']).toBeUndefined()
+    })
+
+    /** The picker offers the whole keyboard, not only the strip. */
+    it('stores any single emoji, beside the other person on the same one', async () => {
+      const { a, b, conversationId, messageId } = await pair('react-any')
+      const { reactToMessage } = await import('../modules/chat/mutations')
+
+      await reactToMessage(handle.db, a.userId, { conversationId, messageId, emoji: '🦄' })
+      const both = await reactToMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        emoji: '🦄',
+      })
+      expect(both.message.reactions?.['🦄']).toEqual([a.userId, b.userId])
+
+      const moved = await reactToMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        emoji: '👩🏻‍❤️‍💋‍👨🏼',
+      })
+      expect(moved.message.reactions).toEqual({
+        '🦄': [a.userId],
+        '👩🏻‍❤️‍💋‍👨🏼': [b.userId],
+      })
     })
 
     /** One tap must never be a payout, or the emoji strip becomes a farm. */

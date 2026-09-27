@@ -205,7 +205,7 @@ PRs; see `docs/decisions.md` → _Transliteration runs on rules we own_.
 
 ### PR 8 — Voice note transcripts, on a Whisper service
 
-Status: planned
+Status: in review
 
 - A new `apps/stt/` on the `apps/tts` pattern: Python, faster-whisper (MIT),
   the `small` model in int8, `POST /transcribe` taking audio and a language
@@ -225,7 +225,7 @@ Status: planned
 
 ### PR 9 — "Send later" and "Send in their morning"
 
-Status: planned
+Status: in review
 
 - A new `scheduledMessages` collection (`collections.ts`) with its repository
   in `modules/chat/scheduled.ts`. Indexes `{ status, sendAt }` and
@@ -250,7 +250,7 @@ Status: planned
 
 ### PR 10 — Formatting and spoilers
 
-Status: planned
+Status: in review
 
 - `packages/shared/src/formatting.ts` (+ test): `*bold*`, `_italic_`,
   `~strikethrough~` and `||spoiler||` become a list of spans — word-boundary
@@ -261,7 +261,7 @@ Status: planned
 
 ### PR 11 — React with any emoji
 
-Status: planned
+Status: in review
 
 - `reactToMessageSchema`: `z.enum(MESSAGE_REACTIONS)` becomes a single-emoji
   check (the `isBigEmoji` / `bigEmojiCount === 1` logic moves to shared, or is
@@ -284,7 +284,7 @@ Status: done (#1611)
 
 ### PR 13 — Search within a conversation
 
-Status: planned
+Status: in review
 
 - `GET /conversations/:id/search?q=`: a repository function with a
   participant check and an escaped, case-insensitive regex, scanning one
@@ -297,7 +297,7 @@ Status: planned
 
 ### PR 14 — A conversation picker, forwarding, and sharing a profile into a chat
 
-Status: planned
+Status: in review
 
 - A new `components/ConversationPicker`: a sheet over the `chats.tsx` data,
   with search.
@@ -312,7 +312,7 @@ Status: planned
 
 ### PR 15 — Conversation starters
 
-Status: planned
+Status: in review
 
 - `packages/shared`: a list of topic ids; their wording lives in i18n
   (`chat.topics.*`).
@@ -323,7 +323,11 @@ Status: planned
 
 ### PR 16 — GIFs, through Giphy
 
-Status: planned
+Status: dropped
+
+Giphy's API terms forbid proxying requests and caching media URLs
+(<https://developers.giphy.com/docs/api/>), so the server-side design below is
+not allowed; revisit with another provider later.
 
 - `GIPHY_API_KEY` is optional (`env.ts`, `.env.example`); without it there is
   no button.
