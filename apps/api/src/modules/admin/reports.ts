@@ -2,6 +2,7 @@ import type { AdminReportListQuery, ReportStatus } from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Report } from '../moderation/blocks'
+import type { PostCommentDoc } from '../feed/documents'
 import type { Post } from '../feed/feed'
 import type { Profile } from '../profiles/profiles'
 
@@ -33,6 +34,24 @@ export interface AdminReportRow {
   reporter: AdminParty
   /** Whether the report named a post, so the list can say so without loading it. */
   aboutPost: boolean
+  /** The same, for a report raised from a comment. */
+  aboutComment: boolean
+}
+
+/**
+ * A reported comment as the panel judges it: its words, whether they are still
+ * up, and where it was said. Read unfiltered, like the post beside it.
+ */
+export interface AdminReportedComment {
+  id: string
+  /** `null` once its author removed the words and replies kept the row. */
+  body: string | null
+  postId: string
+  /** The opening of the post it sits under, for context; not what is judged. */
+  postBody: string | null
+  /** Whether it is a reply in a thread rather than a comment on the post. */
+  isReply: boolean
+  hiddenAt: string | null
 }
 
 export interface AdminReportDetail extends AdminReportRow {
@@ -41,6 +60,8 @@ export interface AdminReportDetail extends AdminReportRow {
    * post it has already hidden. Everything else treats hidden as missing.
    */
   post: { id: string; body: string; language: string; hiddenAt: string | null } | null
+  /** The comment, when the report named one. Never beside `post` — see `Report.commentId`. */
+  comment: AdminReportedComment | null
   /** What is in force on the reported account right now. */
   suspension: Profile['suspension'] | null
   /** Other reports against the same account still waiting, this one excluded. */
@@ -159,6 +180,7 @@ export async function getReport(
 
   return {
     ...toRow(report, parties),
+    comment: await readComment(db, report.commentId),
     post: post
       ? {
           id: post._id.toHexString(),
@@ -245,6 +267,29 @@ function toRow(report: Report, parties: Map<string, AdminParty>): AdminReportRow
     reported: parties.get(report.reportedId) ?? unknown(report.reportedId),
     reporter: parties.get(report.reporterId) ?? unknown(report.reporterId),
     aboutPost: report.postId !== undefined,
+    aboutComment: report.commentId !== undefined,
+  }
+}
+
+async function readComment(
+  db: Db,
+  commentId: ObjectId | undefined,
+): Promise<AdminReportedComment | null> {
+  if (!commentId) return null
+  const comment = await db
+    .collection<PostCommentDoc>(COLLECTIONS.postComments)
+    .findOne({ _id: commentId })
+  if (!comment) return null
+  const post = await db
+    .collection<Post>(COLLECTIONS.posts)
+    .findOne({ _id: comment.postId }, { projection: { body: 1 } })
+  return {
+    id: comment._id.toHexString(),
+    body: comment.deletedAt ? null : (comment.body ?? null),
+    postId: comment.postId.toHexString(),
+    postBody: post?.body ?? null,
+    isReply: comment.parentId !== undefined,
+    hiddenAt: comment.hiddenAt ? comment.hiddenAt.toISOString() : null,
   }
 }
 

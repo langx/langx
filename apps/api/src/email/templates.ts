@@ -1283,6 +1283,12 @@ function partyText(role: string, party: ReportedParty): string[] {
  * game to probe. Telling *us* is the entire point.
  */
 export function reportEmail(input: {
+  /**
+   * The reported comment, when the report was raised from one: its words
+   * (`null` once its author removed them), and a link to and the opening of
+   * the post it sits under. Optional so every other caller is unchanged.
+   */
+  comment?: { postId: string; body: string | null; postBody: string | null } | null
   reportId: string
   reason: ReportReason
   details: string | null
@@ -1341,6 +1347,20 @@ export function reportEmail(input: {
     ? `<p style="margin:16px 0 8px;"><strong>The post</strong></p><blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 16px;padding:0 0 0 12px;color:#333;">${escapeHtml(input.postBody)}</blockquote>`
     : ''
 
+  // As quoted as the post above, and for the same reason: most comment reports
+  // can be judged from the remark alone. The post is a link and an opening,
+  // because it was not what was reported.
+  const comment = input.comment
+  const commentQuoted = comment
+    ? `<p style="margin:16px 0 8px;"><strong>The comment</strong> under <a href="${encodeURI(
+        postUrl(comment.postId),
+      )}">this post</a>${comment.postBody ? `: <span style="color:#888;">${escapeHtml(comment.postBody.slice(0, 140))}</span>` : ''}</p>${
+        comment.body !== null
+          ? `<blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 16px;padding:0 0 0 12px;color:#333;">${escapeHtml(comment.body)}</blockquote>`
+          : '<p style="color:#888;">Its author has since removed the words.</p>'
+      }`
+    : ''
+
   return {
     subject,
     html: `<!doctype html>
@@ -1351,6 +1371,7 @@ export function reportEmail(input: {
     <p><strong>Reason</strong> ${escapeHtml(reason)}</p>
     ${details}
     ${quoted}
+    ${commentQuoted}
     ${partyHtml('Reported', input.reported)}
     ${partyHtml('Reporter', input.reporter)}
     ${pointers.length ? `<p><strong>Raised from</strong></p><ul>${pointers.join('')}</ul>` : ''}
@@ -1374,6 +1395,13 @@ export function reportEmail(input: {
       input.details ?? 'No details were given.',
       '',
       ...(input.postBody ? ['The post:', input.postBody, ''] : []),
+      ...(comment
+        ? [
+            `The comment (under ${postUrl(comment.postId)}):`,
+            comment.body ?? '(its author has since removed the words)',
+            '',
+          ]
+        : []),
       ...partyText('Reported', input.reported),
       ...partyText('Reporter', input.reporter),
       '',

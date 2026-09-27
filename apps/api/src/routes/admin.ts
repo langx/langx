@@ -76,6 +76,8 @@ const REFUSALS: Record<ReviewRefusal, [code: string, status: number, message: st
   account_gone: [ERROR_CODES.NOT_FOUND, 404, 'That account no longer exists'],
   not_a_post: [ERROR_CODES.VALIDATION_FAILED, 400, 'That report is not about a post'],
   post_gone: [ERROR_CODES.NOT_FOUND, 404, 'That post no longer exists'],
+  not_a_comment: [ERROR_CODES.VALIDATION_FAILED, 400, 'That report is not about a comment'],
+  comment_gone: [ERROR_CODES.NOT_FOUND, 404, 'That comment no longer exists'],
 }
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
