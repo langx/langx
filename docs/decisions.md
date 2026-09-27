@@ -5503,3 +5503,47 @@ would retire those requests, is a server change of its own.
 Mutations are never written: unsent messages are `unsentStore.ts`'s to keep,
 in a shape the chat screen can retry, and a restored mutation has no function
 to run.
+
+## Transliteration runs on rules we own
+
+"Show in Latin letters" in the message menu puts a message's reading under
+it, the way a translation sits. The roadmap first put it on Google Cloud
+Translation's `romanizeText`, behind the service account translation already
+uses. It is not there, for three reasons:
+
+- **It is a Preview endpoint**, with no promise it keeps its shape or exists.
+- **It does not cover the languages that need it most.** As of September 2026
+  it romanizes Amharic, Arabic, Belarusian, Bengali, Hindi, Japanese, Burmese,
+  Russian, Serbian and Ukrainian — not Chinese, Korean or Greek, which is most
+  of the demand in a language exchange.
+- **It is billed per character**, as translation is, for something that is,
+  for most scripts, a table lookup.
+
+So the scripts whose spelling tells you the sound are transliterated by pure
+TypeScript in `packages/shared/src/romanize/`: Cyrillic (Russian, Ukrainian,
+Belarusian, Serbian, Bulgarian — one published standard each, named in
+`cyrillic.ts`), Greek (ELOT 743), Korean (Revised Romanization, with the sound
+changes between syllables) and Hindi (a diacritic-free Hunterian with a
+schwa-deletion heuristic). They run on the device: no request, no quota, no
+cache, nothing to keep, and they work offline. Each file says what its rules
+do not handle; Hindi's inherent vowel and Korean's inserted `ㄴ` are where a
+dictionary would do better.
+
+Chinese and Japanese cannot be done that way — which reading a character
+takes depends on the word it is in — so they go to our own voice service,
+which already carries the Chinese segmenter for Kokoro. They are a separate
+change, and the menu does not offer them until that route exists. A reading
+from there is machine-drafted and shown unreviewed, which the Echo packs do
+not allow (see _Pinyin is drafted by a machine and read by a person_). The
+difference is what happens next: a pack's reading is memorised from a card,
+while this one is a hint about one message, on screen for as long as the
+thread is open, drawn in the accent colour the other machine help uses.
+
+**Arabic, Persian, Urdu and Hebrew get no reading, on purpose.** They are
+written without most of their vowels; the letters of كتب are `ktb`, and
+whether that is _kataba_, _kutub_ or _kutiba_ is grammar and context. A
+guess shown as "how it reads" would teach the word wrong, which is worse than
+no row. **Thai** is left out for a different reason: no spaces between words
+and tones that depend on the syllable, so doing it properly needs the
+dictionary-backed segmenter this design exists to avoid. `romanizationFor`
+answers `null` for all of them, and the row is not drawn.

@@ -184,6 +184,7 @@ export const tr: Localized<EnMessages> = {
     replyPart: 'Bir kısmını yanıtla',
     correctPart: 'Bir kısmını düzelt',
     words: 'Kelimeler',
+    romanize: 'Latin harfleriyle göster',
   },
 
   echo: {

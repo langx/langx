@@ -174,6 +174,7 @@ export const ar: Localized<EnMessages> = {
     replyPart: 'الرد على جزء',
     correctPart: 'تصحيح جزء',
     words: 'الكلمات',
+    romanize: 'عرض بالحروف اللاتينية',
   },
 
   echo: {

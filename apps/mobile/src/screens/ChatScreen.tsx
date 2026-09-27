@@ -16,6 +16,7 @@ import {
   splitSentences,
   webUrl,
   messageTranslationSchema,
+  romanizationFor,
   type MessageAsk,
   type MessageTranslation,
   TYPING_IDLE_MS,
@@ -278,6 +279,13 @@ export function ChatScreen({
   // original so the learner can compare the two.
   const [translations, setTranslations] = useState<Record<string, string>>({})
   const [translating, setTranslating] = useState<string | null>(null)
+  /**
+   * The same message in Latin letters, by message id, under the bubble the way
+   * a translation is. Worked out on this device from rules in `@langx/shared`,
+   * so there is nothing to keep: opening the thread again and asking again
+   * costs a few microseconds and no request.
+   */
+  const [romanizations, setRomanizations] = useState<Record<string, string>>({})
   /**
    * Readings, by message id, and only for as long as this screen is open.
    *
@@ -1625,6 +1633,21 @@ export function ChatScreen({
     anchor?: AnchorRect,
   ): Promise<void> {
     const picture = pictureOf(message)
+    /*
+     * Which languages the letters could be in, the author's first: a Russian
+     * sentence without `ы` or `ё` reads the same through the Ukrainian table,
+     * and the person who wrote it is the best guess at which one they meant.
+     */
+    const author = isMine(message) ? me.data : partner
+    const romanization =
+      message.type === 'text' && romanizations[message._id] === undefined
+        ? romanizationFor(message.body, [
+            message.translation?.sourceLang,
+            ...(author?.nativeLanguages ?? []).map((language) => language.code),
+            ...(author?.learning ?? []).map((language) => language.code),
+            ...conversationLangs,
+          ])
+        : null
     // Nothing left to act on: a withdrawn message is a placeholder, and the
     // one thing anyone might want — hiding it — is offered through the same
     // row, so it is still worth opening.
@@ -1642,6 +1665,9 @@ export function ChatScreen({
           sourceLang: message.translation?.sourceLang,
           contextLangs: conversationLangs,
         }) !== undefined,
+      // The rules run here; Chinese and Japanese need the voice service and are
+      // not offered until that route exists.
+      canRomanize: romanization?.engine === 'rules',
       bodyLength: message.body.trim().length,
       sentenceCount: splitSentences(message.body).length,
       wordCount: lookupWords(message.body).length,
@@ -1709,6 +1735,11 @@ export function ChatScreen({
       await translate(message, alreadyTranslated)
     } else if (picked.id === 'speak') {
       await speak(message)
+    } else if (picked.id === 'romanize') {
+      if (romanization?.engine === 'rules') {
+        const latin = romanization.romanize(message.body)
+        setRomanizations((current) => ({ ...current, [message._id]: latin }))
+      }
     } else if (picked.id === 'correct') {
       setPart(null)
       setCorrecting(message)
@@ -2433,6 +2464,7 @@ export function ChatScreen({
                       partnerName={partner?.displayName ?? t('chat.them')}
                       translation={translations[row.message._id]}
                       translating={translating === row.message._id}
+                      romanization={romanizations[row.message._id]}
                       speaking={speaking === row.message._id}
                       hasReading={speech[row.message._id] !== undefined}
                       onReplayReading={onReplayReading}
