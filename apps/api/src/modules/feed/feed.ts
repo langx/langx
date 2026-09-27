@@ -1,6 +1,7 @@
 import {
   ERROR_CODES,
   TOKEN_RULES,
+  attachmentsOf,
   type CreatePostCorrectionInput,
   type CreatePostInput,
   type FeedPage,
@@ -35,55 +36,11 @@ import type { PostCommentDoc } from './documents'
 import { notHidden } from './documents'
 import type { Post, PostCorrectionDoc, PronunciationAnswerDoc } from './documents'
 import { correctionDto, loadAuthors, postDto } from './dto'
+import { readCorrectionSummary } from './correctionSummary'
 import { readAnswerSummary } from './pronunciation'
 
 export type { Post, PostCorrectionDoc } from './documents'
-
-/**
- * The one correction each card shows, and whether the viewer has already
- * answered — without reading the rest.
- *
- * The obvious version fetches every correction for the page and picks the first
- * of each in JS. That is fine for a post with two answers and quadratic-feeling
- * for one with three hundred: a single popular post makes every request that
- * happens to include it transfer its whole correction list to compute two
- * booleans' worth of output.
- *
- * `$group`/`$first` after an index-backed `$sort` returns one document per
- * post, so what crosses the wire is O(posts) rather than O(corrections). The
- * viewer lookup is a separate targeted query on `post_author_unique` rather
- * than a second pass over the same documents — it reads at most one row per
- * post by definition, since that index is unique.
- */
-export async function readCorrectionSummary(
-  db: Db,
-  userId: string,
-  ids: ObjectId[],
-): Promise<{ topByPost: Map<string, PostCorrectionDoc>; viewerCorrected: Set<string> }> {
-  if (ids.length === 0) return { topByPost: new Map(), viewerCorrected: new Set() }
-
-  const corrections = db.collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
-  const [tops, mine] = await Promise.all([
-    corrections
-      .aggregate<{ _id: ObjectId; top: PostCorrectionDoc }>([
-        { $match: { postId: { $in: ids } } },
-        // Matches `post_created` ({ postId: 1, createdAt: 1 }), so the sort is
-        // a scan of the index rather than an in-memory sort of the documents.
-        { $sort: { postId: 1, createdAt: 1 } },
-        { $group: { _id: '$postId', top: { $first: '$$ROOT' } } },
-      ])
-      .toArray(),
-    corrections
-      .find({ postId: { $in: ids }, authorId: userId })
-      .project<{ postId: ObjectId }>({ postId: 1 })
-      .toArray(),
-  ])
-
-  return {
-    topByPost: new Map(tops.map((row) => [row._id.toHexString(), row.top])),
-    viewerCorrected: new Set(mine.map((row) => row.postId.toHexString())),
-  }
-}
+export { readCorrectionSummary }
 
 /**
  * A page of posts turned into what a card needs: the author, the one reply
@@ -103,9 +60,19 @@ async function hydratePosts(
   want: { corrections: boolean; answers: boolean },
 ): Promise<FeedPost[]> {
   const ids = items.map((post) => post._id)
+  /*
+   * Only the posts that have a reply at all are asked about. A post whose
+   * count is zero has no top reply by definition, and the viewer cannot have
+   * written one either — so the aggregate would come back empty for it, and a
+   * page of fresh posts skips the query altogether (both summaries return
+   * without one on an empty list). The count is written in the same call that
+   * inserts the reply, so it is never behind the rows it counts.
+   */
+  const corrected = items.filter((post) => post.correctionCount > 0).map((post) => post._id)
+  const answered = items.filter((post) => (post.answerCount ?? 0) > 0).map((post) => post._id)
   const [corrections, answers, commentCounts, echoed] = await Promise.all([
-    want.corrections ? readCorrectionSummary(db, userId, ids) : EMPTY_CORRECTION_SUMMARY,
-    want.answers ? readAnswerSummary(db, userId, ids) : EMPTY_ANSWER_SUMMARY,
+    want.corrections ? readCorrectionSummary(db, userId, corrected) : EMPTY_CORRECTION_SUMMARY,
+    want.answers ? readAnswerSummary(db, userId, answered) : EMPTY_ANSWER_SUMMARY,
     readCommentSummary(db, ids),
     // One more query for the whole page, on the same argument the like
     // summary makes: the mark is per viewer, and `card_source_unique` reads
@@ -435,6 +402,12 @@ export async function correctPost(
   if (post.authorId === userId) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot correct your own post')
   }
+  // A blocked author's post is absent, and a write against it is too — the
+  // same 404 the thread gives. Every list already leaves such a post out, so
+  // this closes the path that starts from a remembered id instead.
+  if ((await blockedUserIds(db, userId)).includes(post.authorId)) {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
+  }
 
   const picked = input.attachments ?? []
   if (picked.length > 0) {
@@ -578,8 +551,28 @@ export async function listPostCorrections(
   const last = items.at(-1)
 
   const top = topByPost.get(postId) ?? null
+  /*
+   * The other half of the post, when it has one: a request for a recording
+   * that somebody has answered. Every build opens a post through this read
+   * first, so leaving the answer summary out drew a recorded post as
+   * unanswered and its top take as unliked until the second request landed.
+   *
+   * A stage after the post read rather than a sixth branch of the one above,
+   * because whether it is needed is a fact about the post. It costs time
+   * between here and the database, not another round trip from the phone,
+   * and nothing at all on a post nobody has recorded on yet.
+   */
+  const answerSummary =
+    post.kind === 'pronunciation' && (post.answerCount ?? 0) > 0
+      ? await readAnswerSummary(db, userId, [_id])
+      : EMPTY_ANSWER_SUMMARY
+  const topAnswer = answerSummary.topByPost.get(postId) ?? null
   const [authors, likes] = await Promise.all([
-    loadAuthors(db, [post.authorId, ...items.map((doc) => doc.authorId)]),
+    loadAuthors(db, [
+      post.authorId,
+      ...items.map((doc) => doc.authorId),
+      ...(topAnswer ? [topAnswer.authorId] : []),
+    ]),
     readLikeSummary(db, userId, {
       postIds: [_id],
       // The top correction is on page one and nowhere else, so past the first
@@ -589,7 +582,7 @@ export async function listPostCorrections(
         ...items.map((doc) => doc._id),
         ...(top && !items.some((doc) => doc._id.equals(top._id)) ? [top._id] : []),
       ],
-      answerIds: [],
+      answerIds: topAnswer ? [topAnswer._id] : [],
     }),
   ])
 
@@ -598,9 +591,9 @@ export async function listPostCorrections(
       authors,
       likes,
       top,
-      topAnswer: null,
+      topAnswer,
       correctedByViewer: viewerCorrected.has(postId),
-      answeredByViewer: false,
+      answeredByViewer: answerSummary.viewerAnswered.has(postId),
       echoedByViewer: echoed.has(postId),
       commentCount: commentCounts.get(postId) ?? 0,
     }),
@@ -723,6 +716,30 @@ export async function deletePost(
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   }
 
+  if (!(await deletePostCascade(db, post, storage))) {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
+  }
+}
+
+/**
+ * A post and everything hanging off it: its corrections, answers, comments,
+ * the likes on all of those, and every object in the bucket any of them
+ * named.
+ *
+ * Separate from `deletePost` because the account purge deletes a post too —
+ * a moment that is nothing but its photos — and a second copy of this list is
+ * the one that forgets a collection. No ownership check of its own: the
+ * caller has already decided whose post this is, and the delete still filters
+ * on the author it read, so the two-devices race `deletePost` describes still
+ * resolves to one delete.
+ * `false` means somebody else deleted it first.
+ */
+export async function deletePostCascade(
+  db: Db,
+  post: Post,
+  storage?: StorageProvider,
+): Promise<boolean> {
+  const _id = post._id
   const corrections = db.collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
   const answers = db.collection<PronunciationAnswerDoc>(COLLECTIONS.pronunciationAnswers)
 
@@ -733,8 +750,10 @@ export async function deletePost(
     answers.find({ postId: _id }).toArray(),
   ])
 
-  const deleted = await db.collection<Post>(COLLECTIONS.posts).deleteOne({ _id, authorId: userId })
-  if (deleted.deletedCount === 0) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
+  const deleted = await db
+    .collection<Post>(COLLECTIONS.posts)
+    .deleteOne({ _id, authorId: post.authorId })
+  if (deleted.deletedCount === 0) return false
 
   /*
    * The post goes first so it leaves the feed immediately and a correction
@@ -759,11 +778,14 @@ export async function deletePost(
     }),
   ])
 
+  // Every file, not the first: a gallery leaves as many objects behind as it
+  // put there, and `media` is only the first of them repeated.
   await deleteObjects(storage, [
-    post.media?.url,
-    ...childCorrections.map((c) => c.media?.url),
+    ...attachmentsOf(post).map((item) => item.url),
+    ...childCorrections.flatMap((c) => attachmentsOf(c).map((item) => item.url)),
     ...childAnswers.flatMap((a) => [a.media.url, a.slowMedia?.url]),
   ])
+  return true
 }
 
 /**
@@ -830,5 +852,5 @@ export async function deleteCorrection(
       .updateOne({ _id: post_id }, { $inc: { correctionCount: -1 } }),
     db.collection(COLLECTIONS.likes).deleteMany({ targetType: 'correction', targetId: _id }),
   ])
-  await deleteObjects(storage, [doc?.media?.url])
+  await deleteObjects(storage, doc ? attachmentsOf(doc).map((item) => item.url) : [])
 }
