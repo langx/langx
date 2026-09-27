@@ -36,7 +36,7 @@ export interface PendingAttachment {
  * the grounds that in a thread picking is sending; it does not any more, so
  * the two hold a file the same way and the row that shows it is one component.
  */
-function VideoThumb({ uri, uploading }: { uri: string; uploading: boolean }) {
+function VideoThumb({ uri, uploading, size }: { uri: string; uploading: boolean; size: number }) {
   const styles = useStyles()
   const { colors } = useTheme()
   /*
@@ -50,7 +50,7 @@ function VideoThumb({ uri, uploading }: { uri: string; uploading: boolean }) {
   })
 
   return (
-    <View style={styles.thumb}>
+    <View style={[styles.thumb, { height: size, width: size }]}>
       <VideoView
         player={player}
         style={styles.thumbFill}
@@ -142,11 +142,13 @@ function AttachmentThumb({
   attachment,
   onRemove,
   progress,
+  size,
 }: {
   attachment: PendingAttachment
   onRemove: () => void
   /** Where this file is, or `null` when it is not being sent. */
   progress: UploadProgress | null
+  size: number
 }) {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -162,9 +164,13 @@ function AttachmentThumb({
   return (
     <View accessible accessibilityLabel={label}>
       {attachment.kind === 'image' ? (
-        <Image source={{ uri: attachment.uri }} style={styles.thumb} contentFit="cover" />
+        <Image
+          source={{ uri: attachment.uri }}
+          style={[styles.thumb, { height: size, width: size }]}
+          contentFit="cover"
+        />
       ) : attachment.kind === 'video' ? (
-        <VideoThumb uri={attachment.uri} uploading={progress !== null} />
+        <VideoThumb uri={attachment.uri} uploading={progress !== null} size={size} />
       ) : (
         <VoiceDraft attachment={attachment} />
       )}
@@ -184,7 +190,10 @@ function AttachmentThumb({
          * post is submitted the file is on its way and taking it back is not
          * something the composer can still offer.
          */
-        <View style={[styles.thumb, styles.uploading]} pointerEvents="none">
+        <View
+          style={[styles.thumb, { height: size, width: size }, styles.uploading]}
+          pointerEvents="none"
+        >
           {/*
             A number and nothing else, unlike `PendingMediaBubble`, which has a
             bubble's width to spell it out in. Reading the file into memory has
@@ -214,9 +223,16 @@ export function AttachmentPreviewRow({
   pending,
   onRemove,
   progress = null,
+  size = THUMB_SIZE,
 }: {
   pending: readonly PendingAttachment[]
   onRemove: (index: number) => void
+  /**
+   * The square's side. The post composer asks for a bigger one: there the
+   * picture can be the whole post, and a 64pt thumbnail is too small to judge
+   * whether it is the right one.
+   */
+  size?: number
   /**
    * Which file is being sent and how far along, or `null` when nothing is.
    * Chat passes nothing: there, picking is sending, and the progress belongs
@@ -242,6 +258,7 @@ export function AttachmentPreviewRow({
           attachment={attachment}
           onRemove={() => onRemove(index)}
           progress={thumbProgress(index, progress)}
+          size={size}
         />
       ))}
     </ScrollView>
@@ -259,6 +276,9 @@ export function AttachmentPreview({
   if (!pending) return null
   return <AttachmentPreviewRow pending={[pending]} onRemove={onClear} />
 }
+
+/** The default square, sized for a chat composer's single line. */
+const THUMB_SIZE = 64
 
 const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   previewScroll: { flexGrow: 0, marginBottom: spacing.sm },

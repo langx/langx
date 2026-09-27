@@ -55,7 +55,7 @@ import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { foldCorrection, markCorrected } from '../../../src/lib/feedCache'
-import { asksOf, type PostAsk } from '../../../src/lib/postAsks'
+import { askSummary, asksOf, type PostAsk } from '../../../src/lib/postAsks'
 import { replyRefusalKey } from '../../../src/lib/postRefusal'
 import { openPost, openProfile } from '../../../src/lib/navigation'
 import { listState } from '../../../src/lib/listState'
@@ -462,15 +462,23 @@ export default function FeedScreen() {
             ListFooterComponent={
               feed.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
             }
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               const mine = item.author._id === me.data?._id
               const asks = asksOf(item)
               const correcting = asks.includes('correction')
               const pronouncing = asks.includes('pronunciation')
               const media = attachmentsOf(item)
               const text = item.body.trim()
-              const open = () =>
-                twoPane ? setSelected(item._id) : openPost(item._id, '/(app)/(tabs)/feed')
+              const open = () => {
+                // What the ranking weights are tuned against: is what it puts
+                // first what gets opened, and do asks or moments get the taps.
+                track({
+                  name: 'feed_card_opened',
+                  properties: { position: index, asks: askSummary(asks) },
+                })
+                if (twoPane) setSelected(item._id)
+                else openPost(item._id, '/(app)/(tabs)/feed')
+              }
               /*
                * The one trailing action is pushed to the end; everything after
                * it follows it. More than one `marginStart: 'auto'` in a row

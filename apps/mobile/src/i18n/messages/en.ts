@@ -116,7 +116,8 @@ export const en = {
     discoverRadius: 'Nearby goes from closest outwards. Set a radius in the filters to stop it.',
     discoverSearch: 'Looking for someone in particular? Search their handle.',
     feedCorrect: 'Fixing one sentence takes a moment and is the most useful thing you can do here.',
-    feedPronounce: 'Cannot say a word? Ask, and someone will record it for you.',
+    feedPronounce:
+      'Cannot say a word? Post it and tick Pronunciation needed — someone will record it.',
     dismiss: 'Dismiss this tip',
     section: 'Tips',
     show: 'Show tips',
@@ -126,7 +127,7 @@ export const en = {
       'Hold any message to correct it — corrections are the most useful thing you can send.',
     chatSwipeReply: 'Swipe a message to the right to reply to it.',
     discoverFilters: 'Use the filters to narrow by level, age or country.',
-    feedAsk: 'Stuck on a sentence? Post it here and someone will fix it.',
+    feedAsk: 'Stuck on a sentence? Post it and tick Correction needed.',
     chatEcho:
       'Hold a message and choose Add echo. It comes back tomorrow, then in three days, then in a week.',
     chatAttach:
@@ -147,6 +148,7 @@ export const en = {
     echoOwn:
       'Write a card of your own from All cards. Leave the meaning empty and it is translated for you.',
     echoRecord: 'Open a card to add a picture, or to record it in your own voice.',
+    feedMoment: 'Share a photo, a video or a line from your day — no question needed.',
   },
   tour: {
     announcement: '{title}. {body}',
@@ -170,9 +172,9 @@ export const en = {
       'Every conversation you start lives here, and the ones still waiting on you sit in their own tab.',
     tabChatsGuestBody:
       'Conversations live here. You can read and browse without an account — messaging is the one thing that needs one.',
-    tabFeedTitle: 'Ask and learn',
+    tabFeedTitle: 'Share and learn',
     tabFeedBody:
-      'The Feed is the whole room: get a sentence corrected, hear how a word is said, and do the same for someone else.',
+      'The Feed is one timeline: share a moment from your day, or tick Correction needed or Pronunciation needed on a post — and help someone else with theirs.',
   },
   theme: {
     section: 'Appearance',
@@ -358,15 +360,11 @@ export const en = {
     readAloudFailedTitle: 'Could not read this card aloud',
     readAloudLimitBody: 'You can have {count} cards read aloud a day. It resets tomorrow.',
     spokenBy: 'Spoken by {name}',
-    /** Names the feed, because the post is public and the chat one was not. */
-    askToHearIt: 'Ask the feed how it is said',
     /** On an answer, when the card that asked has no recording yet. */
     keepOnCard: 'Keep on my card',
     /** On an answer already kept: said, not offered, so nothing is greyed out. */
     audioAlreadyKept: 'On your card',
     audioKept: 'Kept on your card',
-    /** Names the feed, as the pronunciation one does. */
-    askForCorrection: 'Ask the feed to correct it',
     /** On a correction, when the card that asked is the viewer's own. */
     keepCorrection: 'Keep this as my sentence',
     correctionKept: 'Your card now says this',
@@ -449,6 +447,7 @@ export const en = {
       'Spacing and self-testing: the two best-proven findings in memory research, since the 1880s.',
     aboutClose: 'Got it',
     audioFull: 'This card already holds as many recordings as it can keep.',
+    postToFeed: 'Post to the feed',
   },
 
   messageMeta: {
@@ -906,7 +905,7 @@ export const en = {
     meetingsBody:
       'An hour before a call you both agreed to. The evening mail says what tomorrow holds.',
     social: 'The feed and the people on it',
-    socialBody: 'Follows, corrections on your posts, and likes.',
+    socialBody: 'Follows, comments, corrections and recordings on your posts, and likes.',
     wallet: 'Tokens',
     walletBody: 'The daily pool paying out, and your hourly gift.',
     promotions: 'News and offers',
@@ -978,9 +977,8 @@ export const en = {
     publicEmptyBody: '@{handle} has not corrected a post here yet.',
   },
   myPosts: {
-    emptyTitle: 'Nothing asked yet',
-    emptyBody:
-      'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
+    emptyTitle: 'Nothing posted yet',
+    emptyBody: 'Share a moment or ask about a sentence — everything you post appears here.',
   },
   discover: {
     pickTitle: 'Nobody open',
@@ -1348,7 +1346,7 @@ export const en = {
     unread: 'Unread',
     markAllRead: 'Mark all read',
     emptyTitle: 'Nothing yet',
-    emptyBody: 'Follows, corrections and likes on what you post land here.',
+    emptyBody: 'Follows, comments, corrections, recordings and likes on what you post land here.',
     follow: '{name} followed you',
     postComment: '{name} commented on your post',
     postCorrection: '{name} corrected your sentence',
@@ -1396,16 +1394,9 @@ export const en = {
     pickTitle: 'No post open',
     pickBody: 'Pick one from the feed and it opens here.',
     topTag: 'Top',
-    ask: '+ Ask',
-    askTitle: 'Your sentence in {language}',
     postLanguage: 'Language to post in',
-    askPlaceholder: 'The sentence you are unsure about…',
     posting: 'Posting…',
-    posted: 'Posted. Somebody will correct it.',
     correctionSent: 'Correction sent. Thank you.',
-    correctedEmptyTitle: 'Everything is corrected',
-    correctedEmptyBody:
-      'Nobody is waiting for help right now. Post a sentence of your own, or come back later.',
     noCorrections: 'No corrections yet',
     corrections: { one: '{count} correction', other: '{count} corrections' },
     topCorrection: 'Top correction ·',
@@ -1431,8 +1422,6 @@ export const en = {
     correctionsEmptyBody: 'Be the first to correct this sentence.',
     title: 'Feed',
     post: 'Post',
-    correctionSection: 'Corrections',
-    pronunciationSection: 'Pronunciation',
     comment: 'Comment',
     comments: { one: '{count} comment', other: '{count} comments' },
     addComment: 'Add a comment',
@@ -1440,11 +1429,6 @@ export const en = {
     allComments: 'Comments',
     showMoreComments: 'Show more comments',
     commentsEmptyBody: 'Be the first to say something.',
-    pronounceAsk: '+ How is it said?',
-    pronounceTitle: 'The word in {language}',
-    pronouncePlaceholder: 'The word or sentence you cannot say…',
-    pronounceEmptyTitle: 'Nothing to say out loud',
-    pronounceEmptyBody: 'Nobody is waiting to hear a word said. Ask about one of your own.',
     answers: {
       one: '{count} recording',
       other: '{count} recordings',
@@ -1463,6 +1447,11 @@ export const en = {
     answersEmptyBody: 'Be the first to say it out loud.',
     needRecording: 'Record it once before sending.',
     alreadyCorrected: 'You have already corrected this one.',
+    /**
+     * Superseded by `notAsking` and the reason keys, and no longer shown by
+     * this build. Kept while installed builds that do show it are in use —
+     * an unused key is harmless, a missing one in an OTA is not.
+     */
     wrongPostKind: 'That post is asking for something else.',
     deletePost: 'Delete post',
     deleteComment: 'Delete comment',
@@ -1478,15 +1467,20 @@ export const en = {
       one: '+{count} token · Unlimited on every plan',
       other: '+{count} tokens · Unlimited on every plan',
     },
-    composeHint:
-      'Somebody native will fix it — usually within the hour. Corrections are unlimited on every plan.',
     voiceNote: 'Voice note',
     top: 'Top',
     newPost: '+ Post',
     emptyTitle: 'Nothing here yet',
     emptyBody: 'Share something from your day, or ask for help with a sentence.',
+    /**
+     * A card's badge: the state of somebody else's post, in the third person.
+     * The same English as the composer's chips (`askCorrection` below), and
+     * separate keys on purpose — several languages word "this post needs" and
+     * "I need" differently. Chat's `askBadge*` are a third pair.
+     */
     badgeCorrection: 'Correction needed',
     badgePronunciation: 'Pronunciation needed',
+    /** A screen-reader hint on a card's words, which open the post. */
     openPost: 'Opens the post',
     viewPost: 'View post',
     notAsking: 'This post isn’t asking for that.',
@@ -1504,7 +1498,24 @@ export const en = {
     commentRemoved: 'Comment removed',
     reportComment: 'Report comment',
     commentOptions: 'Comment options',
+    /** The replies a thread is not showing yet; never zero when it is drawn. */
     viewReplies: { one: 'View {count} more reply', other: 'View {count} more replies' },
+    composeTitle: 'New post',
+    captionPlaceholder: 'Say something in {language}…',
+    postedPlain: 'Posted.',
+    postedPronunciation: 'Posted. Somebody will say it for you.',
+    postedBoth: 'Posted. Somebody will correct it and say it for you.',
+    askPronunciationHint: 'Somebody native will record it for you, at normal speed and slowly.',
+    askSectionTitle: 'Ask for help (optional)',
+    /** The composer's chips: first-person intent. See `badgeCorrection`. */
+    askCorrection: 'Correction needed',
+    askPronunciation: 'Pronunciation needed',
+    addMedia: 'Add a photo or video',
+    postLanguageRequired:
+      'Add a language you speak or are learning to your profile, and you can post in it.',
+    postedCorrection: 'Posted. Somebody will correct it.',
+    askCorrectionHint:
+      'Somebody native will fix it — usually within the hour. Corrections are unlimited on every plan.',
   },
 
   profile: {
@@ -1637,9 +1648,9 @@ export const en = {
     echoTitle: 'Keep it in Echo',
     echoBody:
       'Hold a message and choose Add to Echo. The sentence comes back in the Echo tab just before you would forget it, until you know it.',
-    feedTitle: 'Ask the Feed',
+    feedTitle: 'The Feed',
     feedBody:
-      'Post a sentence to have it corrected, or ask how a word is said and someone will record it. Then do the same for somebody else.',
+      'Share a photo, a video or a sentence. Want help with it? Tick Correction needed or Pronunciation needed and someone native will answer. Then do the same for somebody else.',
     streakTitle: 'Streaks and tokens',
     streakBody:
       'One message a day keeps your streak alive. Talking and teaching earn tokens, which you can spend on a streak freeze or a new look for your profile.',

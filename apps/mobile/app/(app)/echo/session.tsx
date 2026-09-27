@@ -293,10 +293,8 @@ export default function EchoSessionScreen() {
 
   const verdict = card && producing ? productionVerdict(typed, card.front) : 'wrong'
 
-  /** The card as a question for the feed, or `null` when it cannot be one. */
+  /** The card as a post for the feed, or `null` when it cannot be one. */
   const ask = card ? echoAskParams(card, languages) : null
-  /** The same card as the other question: whether the sentence is right. */
-  const askCorrection = card ? echoAskParams(card, languages, 'correction') : null
 
   /** What the grade buttons say: the same function the server will run. */
   function intervalLabel(value: EchoGrade): string {
@@ -305,7 +303,9 @@ export default function EchoSessionScreen() {
   }
 
   /**
-   * Opens the composer as a pronunciation post, with the sentence in it.
+   * Opens the composer as an edit of this card: the sentence in it, and
+   * *Pronunciation needed* already ticked. Everything can be changed there —
+   * the words, the ask, a correction ask added — before anything is posted.
    *
    * It used to open the conversation the card came from, which made this the
    * one path out of Echo and back into a chat — and limited it to the cards
@@ -314,11 +314,10 @@ export default function EchoSessionScreen() {
    * The feed asks the same question of everybody.
    *
    * The card's id rides along so that `compose` can tell the card which post
-   * it asked on; that link is what lets an answer's recording come back here
-   * in one tap.
+   * it asked on; that link is what lets an answer come back here in one tap.
    */
-  function askTheFeed(params: EchoAskParams): void {
-    track({ name: 'echo_ask_opened', properties: { kind: params.kind } })
+  function postToFeed(params: EchoAskParams): void {
+    track({ name: 'echo_ask_opened', properties: { kind: 'pronunciation', entry: 'session' } })
     router.push({ pathname: '/(app)/compose', params })
   }
 
@@ -481,32 +480,26 @@ export default function EchoSessionScreen() {
             /* The sentence as it was written. Data, never interface copy. */
             <Text style={styles.front}>{card.front}</Text>
           )}
-          {!producing && recordings.length === 0 && ask ? (
-            <Pressable
-              accessibilityRole="button"
-              hitSlop={8}
-              onPress={() => askTheFeed(ask)}
-              style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
-            >
-              <Feather name="mic" size={16} color={colors.accent} />
-              <Text style={styles.speakerLabel}>{t('echo.askToHearIt')}</Text>
-            </Pressable>
-          ) : null}
           {/*
-          Whether the sentence is right, which is a different question from how
-          it is said and has no answer on the card to suppress it — a card can
-          always turn out to be wrong. Only before the answer, so it does not
-          sit among the grades.
+          One way to the feed, in the card body and never in the grade row: it
+          is not a grade, and a button among the grades gets pressed as one.
+          Only while the sentence on screen is not the hidden answer — a
+          recognition card, before and after it is revealed. A production card
+          hides its sentence, and the composer would open with the answer typed
+          in; those cards post from the card screen and the cards list instead.
+
+          Offered with recordings on the card too: another voice is still worth
+          asking for, and a full card is explained where keeping one is tried.
         */}
-          {!revealed && askCorrection ? (
+          {!producing && ask ? (
             <Pressable
               accessibilityRole="button"
               hitSlop={8}
-              onPress={() => askTheFeed(askCorrection)}
+              onPress={() => postToFeed(ask)}
               style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
             >
-              <Feather name="edit-3" size={16} color={colors.accent} />
-              <Text style={styles.speakerLabel}>{t('echo.askForCorrection')}</Text>
+              <Feather name="send" size={16} color={colors.accent} />
+              <Text style={styles.speakerLabel}>{t('echo.postToFeed')}</Text>
             </Pressable>
           ) : null}
           {/*

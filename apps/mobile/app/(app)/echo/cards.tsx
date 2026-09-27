@@ -1,12 +1,13 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { EchoCard } from '@langx/shared'
 import { router } from 'expo-router'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FlatList, Pressable, RefreshControl, Text, TextInput, View } from 'react-native'
 import {
   useArchiveEchoCards,
   useEchoCards,
   useEchoSummary,
+  useMe,
   useRemoveEcho,
 } from '../../../src/api/queries'
 import { LoadFailed } from '../../../src/components/LoadFailed'
@@ -23,6 +24,9 @@ import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { useDebounced } from '../../../src/hooks/useDebounced'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
+import { track } from '../../../src/lib/analytics'
+import { echoAskParams } from '../../../src/lib/echoAsk'
+import { postLanguages } from '../../../src/lib/postLanguage'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { dueInCompact } from '../../../src/lib/format'
 import { listState } from '../../../src/lib/listState'
@@ -55,6 +59,9 @@ export default function EchoCardsScreen() {
   const cards = useEchoCards(lang ?? undefined, term || undefined, archived)
   const removeEcho = useRemoveEcho()
   const archive = useArchiveEchoCards()
+  const me = useMe()
+  // What decides whether a card can be posted: a language you learn.
+  const postable = useMemo(() => postLanguages(me.data?.learning), [me.data])
   const [openRow, setOpenRow] = useState<string | null>(null)
   /*
    * `null` is not selecting. An empty set is selecting nothing yet — and the
@@ -132,8 +139,11 @@ export default function EchoCardsScreen() {
    * `chats.tsx` makes for doing both there.
    */
   async function openMore(card: EchoCard): Promise<void> {
+    // Offered only when the card can be a post; see `echoAskParams`.
+    const post = echoAskParams(card, postable)
     const choice = await chooseAlert(t('echo.cards'), undefined, [
       { label: t('common.edit'), value: 'edit' as const },
+      ...(post ? [{ label: t('echo.postToFeed'), value: 'post' as const }] : []),
       {
         label: archived ? t('echo.unarchive') : t('echo.archiveCard'),
         value: 'archive' as const,
@@ -142,6 +152,10 @@ export default function EchoCardsScreen() {
       { label: t('echo.remove'), value: 'remove' as const, destructive: true },
     ])
     if (choice === 'edit') openEdit(card)
+    if (choice === 'post' && post) {
+      track({ name: 'echo_ask_opened', properties: { kind: 'pronunciation', entry: 'cards' } })
+      router.push({ pathname: '/(app)/compose', params: post })
+    }
     if (choice === 'archive') setArchivedOn([card._id], !archived)
     if (choice === 'select') setSelected(new Set([card._id]))
     if (choice === 'remove') await confirmRemove(card)

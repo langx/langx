@@ -100,7 +100,8 @@ export const tr: Localized<EnMessages> = {
       'Yakında en yakından başlayıp dışa doğru gider. Sınırlamak için filtrelerden bir yarıçap seç.',
     discoverSearch: 'Belirli birini mi arıyorsun? Kullanıcı adıyla ara.',
     feedCorrect: 'Bir cümleyi düzeltmek bir dakikanı alır ve burada yapabileceğin en faydalı şey.',
-    feedPronounce: 'Bir kelimeyi söyleyemiyor musun? Sor, biri senin için kaydetsin.',
+    feedPronounce:
+      'Bir kelimeyi söyleyemiyor musun? Paylaş ve Telaffuz gerekli seçeneğini işaretle — biri senin için kaydetsin.',
     dismiss: 'Bu ipucunu kapat',
     section: 'İpuçları',
     show: 'İpuçlarını göster',
@@ -109,7 +110,7 @@ export const tr: Localized<EnMessages> = {
       'Düzeltmek için bir mesaja basılı tut — gönderebileceğin en faydalı şey bir düzeltme.',
     chatSwipeReply: 'Yanıtlamak için mesajı sağa kaydır.',
     discoverFilters: 'Seviyeye, yaşa veya ülkeye göre daraltmak için filtreleri kullan.',
-    feedAsk: 'Bir cümlede takıldın mı? Buraya at, biri düzeltsin.',
+    feedAsk: 'Bir cümlede mi takıldın? Paylaş ve Düzeltme gerekli seçeneğini işaretle.',
     chatEcho:
       'Bir mesaja basılı tutup Echo’ya ekle’yi seç. Yarın geri gelir, sonra üç gün, sonra bir hafta sonra.',
     chatAttach:
@@ -129,6 +130,7 @@ export const tr: Localized<EnMessages> = {
       'Bir kartı ezbere mi biliyorsun? Tüm kartlar’dan arşivle. Her şeyi saklar, bir daha gelmez.',
     echoOwn: 'Tüm kartlar’dan kendi kartını yaz. Anlamı boş bırak, senin için çevrilir.',
     echoRecord: 'Bir kartı aç; resim ekle ya da kendi sesinle kaydet.',
+    feedMoment: 'Gününden bir fotoğraf, video ya da bir cümle paylaş — soru sormak şart değil.',
   },
   tour: {
     announcement: '{title}. {body}',
@@ -151,9 +153,9 @@ export const tr: Localized<EnMessages> = {
     tabEchoBody: 'Sohbetten bir cümle sakla, bilene kadar karşına çıksın.',
     tabChatsGuestBody:
       'Sohbetler burada toplanır. Hesapsız gezip okuyabilirsin — hesap isteyen tek şey mesaj yazmak.',
-    tabFeedTitle: 'Sor ve öğren',
+    tabFeedTitle: 'Paylaş ve öğren',
     tabFeedBody:
-      'Akış tüm topluluğun ortak alanı: bir cümleni düzelttir, bir kelimenin nasıl söylendiğini dinle, aynısını başkası için yap.',
+      'Akış tek bir zaman çizelgesi: gününden bir an paylaş ya da gönderinde Düzeltme gerekli veya Telaffuz gerekli seçeneğini işaretle — sonra başkasına da yardım et.',
   },
   theme: {
     section: 'Görünüm',
@@ -302,11 +304,9 @@ export const tr: Localized<EnMessages> = {
     readAloudFailedTitle: 'Bu kart seslendirilemedi',
     readAloudLimitBody: 'Günde {count} kart seslendirebilirsin. Yarın sıfırlanır.',
     spokenBy: '{name} seslendirdi',
-    askToHearIt: "Feed'de nasıl söylendiğini sor",
     keepOnCard: 'Kartıma ekle',
     audioAlreadyKept: 'Kartında',
     audioKept: 'Kartına eklendi',
-    askForCorrection: "Feed'de düzeltmesini iste",
     keepCorrection: 'Cümlem olarak kaydet',
     correctionKept: 'Kartın artık bunu diyor',
     seeCard: 'Kartı gör',
@@ -367,6 +367,7 @@ export const tr: Localized<EnMessages> = {
       'Aralıklı tekrar ve kendini test etme: 1880’lerden beri en sağlam iki hafıza bulgusu.',
     aboutClose: 'Anladım',
     audioFull: 'Bu kart tutabileceği kadar kayıt tutuyor.',
+    postToFeed: 'Akışa gönder',
   },
 
   messageMeta: {
@@ -786,7 +787,7 @@ export const tr: Localized<EnMessages> = {
     meetingsBody:
       'İkinizin de kabul ettiği bir görüşmeden bir saat önce. Akşam maili yarın ne olduğunu söyler.',
     social: 'Akış ve oradaki insanlar',
-    socialBody: 'Takipler, gönderilerine gelen düzeltmeler ve beğeniler.',
+    socialBody: 'Takipler, gönderilerine gelen yorumlar, düzeltmeler ve kayıtlar, beğeniler.',
     wallet: 'Token’lar',
     walletBody: 'Günlük havuzun ödemesi ve saatlik hediyen.',
     promotions: 'Haberler ve kampanyalar',
@@ -846,8 +847,8 @@ export const tr: Localized<EnMessages> = {
     publicEmptyBody: '@{handle} burada henüz bir gönderi düzeltmedi.',
   },
   myPosts: {
-    emptyTitle: 'Henüz bir şey sormadın',
-    emptyBody: 'Emin olmadığın bir cümleyi ya da söyleyemediğin bir kelimeyi sor — burada görünür.',
+    emptyTitle: 'Henüz bir şey paylaşmadın',
+    emptyBody: 'Bir an paylaş ya da bir cümleyi sor — paylaştığın her şey burada görünür.',
   },
   discover: {
     pickTitle: 'Kimse açık değil',
@@ -1192,7 +1193,8 @@ export const tr: Localized<EnMessages> = {
     unread: 'Okunmamış',
     markAllRead: 'Tümünü okundu yap',
     emptyTitle: 'Henüz bir şey yok',
-    emptyBody: 'Takipler, düzeltmeler ve paylaştıklarına gelen beğeniler burada.',
+    emptyBody:
+      'Paylaştıklarına gelen takipler, yorumlar, düzeltmeler, kayıtlar ve beğeniler burada görünür.',
     follow: '{name} seni takip etti',
     postComment: '{name} gönderine yorum yaptı',
     postCorrection: '{name} cümleni düzeltti',
@@ -1232,16 +1234,9 @@ export const tr: Localized<EnMessages> = {
     pickTitle: 'Açık gönderi yok',
     pickBody: 'Akıştan birini seç, burada açılsın.',
     topTag: 'En iyi',
-    ask: '+ Sor',
-    askTitle: '{language} dilindeki cümlen',
     postLanguage: 'Paylaşacağın dil',
-    askPlaceholder: 'Emin olmadığın cümle…',
     posting: 'Paylaşılıyor…',
-    posted: 'Paylaşıldı. Birisi düzeltecektir.',
     correctionSent: 'Düzeltme gönderildi. Teşekkürler.',
-    correctedEmptyTitle: 'Her şey düzeltilmiş',
-    correctedEmptyBody:
-      'Şu anda yardım bekleyen kimse yok. Kendi cümleni paylaş ya da sonra tekrar uğra.',
     noCorrections: 'Henüz düzeltme yok',
     corrections: { one: '{count} düzeltme', other: '{count} düzeltme' },
     topCorrection: 'En iyi düzeltme ·',
@@ -1267,8 +1262,6 @@ export const tr: Localized<EnMessages> = {
     correctionsEmptyBody: 'Bu cümleyi ilk düzelten sen ol.',
     title: 'Akış',
     post: 'Paylaş',
-    correctionSection: 'Düzeltmeler',
-    pronunciationSection: 'Telaffuz',
     comment: 'Yorum yap',
     comments: { one: '{count} yorum', other: '{count} yorum' },
     addComment: 'Yorum ekle',
@@ -1276,11 +1269,6 @@ export const tr: Localized<EnMessages> = {
     allComments: 'Yorumlar',
     showMoreComments: 'Daha fazla yorum',
     commentsEmptyBody: 'İlk sözü sen söyle.',
-    pronounceAsk: '+ Nasıl okunur?',
-    pronounceTitle: '{language} dilindeki kelime',
-    pronouncePlaceholder: 'Söyleyemediğin kelime veya cümle…',
-    pronounceEmptyTitle: 'Sesli söylenecek bir şey yok',
-    pronounceEmptyBody: 'Kimse bir kelimenin okunuşunu beklemiyor. Kendi kelimeni sor.',
     answers: {
       one: '{count} kayıt',
       other: '{count} kayıt',
@@ -1314,8 +1302,6 @@ export const tr: Localized<EnMessages> = {
       one: '+{count} jeton · Her planda sınırsız',
       other: '+{count} jeton · Her planda sınırsız',
     },
-    composeHint:
-      'Anadili olan biri düzeltir — genellikle bir saat içinde. Düzeltmeler her planda sınırsız.',
     voiceNote: 'Ses kaydı',
     top: 'Öne çıkan',
     newPost: '+ Paylaş',
@@ -1341,6 +1327,21 @@ export const tr: Localized<EnMessages> = {
     reportComment: 'Yorumu bildir',
     commentOptions: 'Yorum seçenekleri',
     viewReplies: { one: '{count} yanıt daha gör', other: '{count} yanıt daha gör' },
+    composeTitle: 'Yeni gönderi',
+    captionPlaceholder: '{language} dilinde bir şey söyle…',
+    postedPlain: 'Paylaşıldı.',
+    postedPronunciation: 'Paylaşıldı. Birisi senin için seslendirecek.',
+    postedBoth: 'Paylaşıldı. Birisi düzeltip senin için seslendirecek.',
+    askPronunciationHint: 'Anadili olan biri senin için kaydedecek, normal hızda ve yavaşça.',
+    askSectionTitle: 'Yardım iste (isteğe bağlı)',
+    askCorrection: 'Düzeltme gerekli',
+    askPronunciation: 'Telaffuz gerekli',
+    addMedia: 'Fotoğraf veya video ekle',
+    postLanguageRequired:
+      'Profiline konuştuğun ya da öğrendiğin bir dil ekle, o dilde paylaşabilirsin.',
+    postedCorrection: 'Paylaşıldı. Birisi düzeltecektir.',
+    askCorrectionHint:
+      'Anadili olan biri düzeltir — genellikle bir saat içinde. Düzeltmeler her planda sınırsız.',
   },
 
   profile: {
@@ -1455,9 +1456,9 @@ export const tr: Localized<EnMessages> = {
     echoTitle: 'Echo’da sakla',
     echoBody:
       'Bir mesaja basılı tutup Echo’ya ekle’yi seç. Cümle, tam unutmak üzereyken Echo sekmesinde geri gelir; ta ki onu öğrenene dek.',
-    feedTitle: 'Akış’a sor',
+    feedTitle: 'Akış',
     feedBody:
-      'Düzeltilmesi için bir cümle paylaş ya da bir kelimenin nasıl söylendiğini sor, biri senin için kaydetsin. Sonra aynısını bir başkası için yap.',
+      'Bir fotoğraf, video ya da cümle paylaş. Yardım mı istiyorsun? Düzeltme gerekli ya da Telaffuz gerekli seçeneğini işaretle, anadili olan biri yanıtlasın. Sonra sen de başkası için aynısını yap.',
     streakTitle: 'Seriler ve jetonlar',
     streakBody:
       'Günde bir mesaj serini ayakta tutar. Konuşmak ve öğretmek jeton kazandırır; bunları seri dondurmaya ya da profilin için yeni bir görünüme harcayabilirsin.',

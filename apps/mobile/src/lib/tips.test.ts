@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
+import { createTranslate, type MessageKey } from '../i18n/runtime'
 import {
   DEFAULT_TIP_STATE,
+  TIP_IDS,
   TIP_SLOTS,
   advanceSlot,
   dismissTip,
@@ -111,6 +113,23 @@ describe('rotation', () => {
     const back = setTipsEnabled(used, true)
     expect(back.seen).toEqual({})
     expect(pickTip(back, 'chat')).toBe(TIP_SLOTS.chat[0])
+  })
+})
+
+describe('the tips themselves', () => {
+  /*
+   * `Tip.tsx` builds its key as `tips.${id}` with a cast, so no compile check
+   * notices an id with no sentence — it would ship as a dotted path on the
+   * yellow card.
+   */
+  it('has an English sentence for every tip id', () => {
+    const t = createTranslate('en')
+    for (const id of TIP_IDS) expect(t(`tips.${id}` as MessageKey), id).not.toBe(`tips.${id}`)
+  })
+
+  it('teaches the feed at least three things, the moment first', () => {
+    expect(TIP_SLOTS.feed.length).toBeGreaterThanOrEqual(3)
+    expect(TIP_SLOTS.feed[0]).toBe('feedMoment')
   })
 })
 

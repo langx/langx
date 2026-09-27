@@ -97,7 +97,7 @@ export const ar: Localized<EnMessages> = {
     discoverRadius: '«قريبون» يبدأ من الأقرب ويتوسّع. اضبط نطاقًا من الفلاتر لتحديده.',
     discoverSearch: 'تبحث عن شخص بعينه؟ ابحث باسم المستخدم.',
     feedCorrect: 'تصحيح جملة واحدة يستغرق لحظة، وهو أنفع ما يمكنك فعله هنا.',
-    feedPronounce: 'لا تعرف كيف تنطق كلمة؟ اسأل وسيسجّلها لك أحدهم.',
+    feedPronounce: 'لا تعرف كيف تنطق كلمة؟ انشرها واختر «أحتاج إلى النطق» — وسيسجّلها أحدهم.',
     dismiss: 'إخفاء هذه النصيحة',
     section: 'نصائح',
     show: 'إظهار النصائح',
@@ -105,7 +105,7 @@ export const ar: Localized<EnMessages> = {
     chatCorrect: 'اضغط مطولًا على رسالة لتصحيحها — أنفع ما يمكنك إرساله.',
     chatSwipeReply: 'اسحب الرسالة إلى اليمين للرد عليها.',
     discoverFilters: 'استخدم المرشحات للتضييق حسب المستوى أو العمر أو البلد.',
-    feedAsk: 'تعثرت في جملة؟ انشرها هنا وسيصححها أحدهم.',
+    feedAsk: 'عالق في جملة؟ انشرها واختر «أحتاج إلى تصحيح».',
     chatEcho:
       'اضغط مطوّلًا على رسالة واختر «أضف إلى صدى». تعود غدًا، ثم بعد ثلاثة أيام، ثم بعد أسبوع.',
     chatAttach: 'زر + بجانب حقل الكتابة يمكنه طلب تصحيح، أو اقتراح وقت للحديث، أو طرح سؤال.',
@@ -120,6 +120,7 @@ export const ar: Localized<EnMessages> = {
     echoArchive: 'تحفظ بطاقة عن ظهر قلب؟ أرشفها من «كل البطاقات». تحتفظ بكل شيء وتتوقف عن العودة.',
     echoOwn: 'اكتب بطاقتك بنفسك من «كل البطاقات». اترك المعنى فارغًا وسيُترجم لك.',
     echoRecord: 'افتح بطاقة لتضيف صورة أو تسجّلها بصوتك.',
+    feedMoment: 'شارك صورة أو فيديو أو جملة من يومك — لا حاجة إلى سؤال.',
   },
   tour: {
     announcement: '{title}. {body}',
@@ -142,8 +143,9 @@ export const ar: Localized<EnMessages> = {
     tabEchoBody: 'احفظ جملة من أي محادثة، وستعود إليك حتى تتقنها.',
     tabChatsGuestBody:
       'المحادثات تجتمع هنا. يمكنك التصفح والقراءة دون حساب — الكتابة وحدها هي ما يحتاج إليه.',
-    tabFeedTitle: 'اسأل وتعلّم',
-    tabFeedBody: 'التدفّق هو الغرفة كلها: صحِّح جملتك، واسمع كيف تُنطق كلمة، وافعل المثل لغيرك.',
+    tabFeedTitle: 'شارك وتعلّم',
+    tabFeedBody:
+      'الأخبار خط زمني واحد: شارك لحظة من يومك، أو اختر «أحتاج إلى تصحيح» أو «أحتاج إلى النطق» في منشور — وساعد الآخرين في منشوراتهم.',
   },
   theme: {
     section: 'المظهر',
@@ -319,11 +321,9 @@ export const ar: Localized<EnMessages> = {
     readAloudFailedTitle: 'تعذّر قراءة هذه البطاقة بصوت عالٍ',
     readAloudLimitBody: 'يمكنك قراءة {count} بطاقة بصوت عالٍ في اليوم. يبدأ العد من جديد غدًا.',
     spokenBy: 'بصوت {name}',
-    askToHearIt: 'اسأل في التغذية عن طريقة النطق',
     keepOnCard: 'احفظها في بطاقتي',
     audioAlreadyKept: 'في بطاقتك',
     audioKept: 'حُفظت في بطاقتك',
-    askForCorrection: 'اطلب في التغذية تصحيحها',
     keepCorrection: 'احفظها كجملتي',
     correctionKept: 'بطاقتك تقول هذا الآن',
     seeCard: 'عرض البطاقة',
@@ -386,6 +386,7 @@ export const ar: Localized<EnMessages> = {
       'التكرار المتباعد والاختبار الذاتي: أكثر نتيجتين مُثبتتين عن الذاكرة منذ ثمانينيات القرن التاسع عشر.',
     aboutClose: 'فهمت',
     audioFull: 'تحتوي هذه البطاقة على أقصى عدد من التسجيلات يمكنها الاحتفاظ به.',
+    postToFeed: 'انشر في الأخبار',
   },
 
   messageMeta: {
@@ -872,7 +873,7 @@ export const ar: Localized<EnMessages> = {
     meetings: 'المواعيد',
     meetingsBody: 'قبل ساعة من مكالمة اتفقتما عليها. وبريد المساء يقول ما ينتظرك غدًا.',
     social: 'الموجز ومن فيه',
-    socialBody: 'المتابعات والتصحيحات على منشوراتك والإعجابات.',
+    socialBody: 'المتابعات، والتعليقات والتصحيحات والتسجيلات على منشوراتك، والإعجابات.',
     wallet: 'الرموز',
     walletBody: 'التوزيع اليومي وهديتك كل ساعة.',
     promotions: 'الأخبار والعروض',
@@ -931,8 +932,8 @@ export const ar: Localized<EnMessages> = {
     publicEmptyBody: 'لم يصحّح @{handle} أي منشور هنا بعد.',
   },
   myPosts: {
-    emptyTitle: 'لم تسأل عن شيء بعد',
-    emptyBody: 'اسأل عن جملة لست متأكدًا منها، أو كلمة لا تستطيع نطقها — ستظهر هنا.',
+    emptyTitle: 'لم تنشر شيئًا بعد',
+    emptyBody: 'شارك لحظة أو اسأل عن جملة — كل ما تنشره يظهر هنا.',
   },
   discover: {
     pickTitle: 'لا أحد مفتوح',
@@ -1322,7 +1323,7 @@ export const ar: Localized<EnMessages> = {
     unread: 'غير مقروء',
     markAllRead: 'تعليم الكل كمقروء',
     emptyTitle: 'لا شيء بعد',
-    emptyBody: 'المتابعات والتصحيحات والإعجابات على منشوراتك تصل إلى هنا.',
+    emptyBody: 'تصلك هنا المتابعات والتعليقات والتصحيحات والتسجيلات والإعجابات على ما تنشره.',
     follow: 'بدأ {name} بمتابعتك',
     postComment: 'علّق {name} على منشورك',
     postCorrection: 'صحّح {name} جملتك',
@@ -1390,15 +1391,9 @@ export const ar: Localized<EnMessages> = {
     pickTitle: 'لا منشور مفتوح',
     pickBody: 'اختر واحدًا من التغذية ليفتح هنا.',
     topTag: 'الأفضل',
-    ask: '+ اسأل',
-    askTitle: 'جملتك بلغة {language}',
     postLanguage: 'لغة المنشور',
-    askPlaceholder: 'الجملة التي لست متأكدًا منها…',
     posting: 'جارٍ النشر…',
-    posted: 'نُشرت. سيصحّحها أحدهم.',
     correctionSent: 'أُرسل التصحيح. شكرًا.',
-    correctedEmptyTitle: 'كل شيء مُصحَّح',
-    correctedEmptyBody: 'لا أحد ينتظر المساعدة الآن. انشر جملة لك أو عد لاحقًا.',
     noCorrections: 'لا تصحيحات بعد',
     corrections: {
       zero: '{count} تصحيح',
@@ -1438,8 +1433,6 @@ export const ar: Localized<EnMessages> = {
     correctionsEmptyBody: 'كن أول من يصحح هذه الجملة.',
     title: 'الأخبار',
     post: 'نشر',
-    correctionSection: 'التصحيحات',
-    pronunciationSection: 'النطق',
     comment: 'علّق',
     comments: {
       zero: 'لا تعليقات',
@@ -1454,11 +1447,6 @@ export const ar: Localized<EnMessages> = {
     allComments: 'التعليقات',
     showMoreComments: 'عرض المزيد من التعليقات',
     commentsEmptyBody: 'كن أول من يعلّق.',
-    pronounceAsk: '+ كيف تُنطق؟',
-    pronounceTitle: 'الكلمة بالـ{language}',
-    pronouncePlaceholder: 'الكلمة أو الجملة التي لا تستطيع نطقها…',
-    pronounceEmptyTitle: 'لا شيء لقوله بصوت عالٍ',
-    pronounceEmptyBody: 'لا أحد ينتظر سماع كلمة. اسأل عن كلمتك.',
     answers: {
       zero: 'لا تسجيلات',
       one: 'تسجيل واحد',
@@ -1500,7 +1488,6 @@ export const ar: Localized<EnMessages> = {
       many: '+{count} رمزًا · بلا حدود في كل الخطط',
       other: '+{count} رمز · بلا حدود في كل الخطط',
     },
-    composeHint: 'سيصححها متحدث أصلي — عادةً خلال ساعة. التصحيحات بلا حدود في كل الخطط.',
     voiceNote: 'مقطع صوتي',
     top: 'الأبرز',
     newPost: '+ انشر',
@@ -1533,6 +1520,19 @@ export const ar: Localized<EnMessages> = {
       many: 'عرض {count} ردًّا آخر',
       other: 'عرض {count} ردّ آخر',
     },
+    composeTitle: 'منشور جديد',
+    captionPlaceholder: 'قل شيئًا بلغة {language}…',
+    postedPlain: 'نُشر.',
+    postedPronunciation: 'نُشر. سينطقه أحدهم لك.',
+    postedBoth: 'نُشر. سيصحّحه أحدهم وينطقه لك.',
+    askPronunciationHint: 'سيسجّله لك متحدث أصلي، بالسرعة العادية وببطء.',
+    askSectionTitle: 'اطلب المساعدة (اختياري)',
+    askCorrection: 'أحتاج إلى تصحيح',
+    askPronunciation: 'أحتاج إلى النطق',
+    addMedia: 'أضف صورة أو فيديو',
+    postLanguageRequired: 'أضف إلى ملفك لغة تتحدّثها أو تتعلّمها لتتمكّن من النشر بها.',
+    postedCorrection: 'نُشرت. سيصحّحها أحدهم.',
+    askCorrectionHint: 'سيصححها متحدث أصلي — عادةً خلال ساعة. التصحيحات بلا حدود في كل الخطط.',
   },
 
   profile: {
@@ -1681,9 +1681,9 @@ export const ar: Localized<EnMessages> = {
     echoTitle: 'احفظها في صدى',
     echoBody:
       'اضغط مطوّلًا على رسالة واختر «أضف إلى صدى». تعود الجملة في تبويب صدى قُبيل أن تنساها، حتى تحفظها.',
-    feedTitle: 'اسأل في الأخبار',
+    feedTitle: 'الأخبار',
     feedBody:
-      'انشر جملة ليصحّحها أحدهم، أو اسأل كيف تُنطق كلمة وسيسجّلها لك أحدهم. ثم افعل المثل لغيرك.',
+      'شارك صورة أو فيديو أو جملة. تريد مساعدة؟ اختر «أحتاج إلى تصحيح» أو «أحتاج إلى النطق» وسيجيبك متحدث أصلي. ثم افعل الشيء نفسه لغيرك.',
     streakTitle: 'السلاسل والرموز',
     streakBody:
       'رسالة واحدة يوميًا تُبقي سلسلتك حيّة. الحديث والتعليم يكسبانك رموزًا يمكنك إنفاقها على تجميد السلسلة أو على مظهر جديد لملفك.',

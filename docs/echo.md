@@ -118,17 +118,19 @@ The feed is the other place a learner meets a sentence worth keeping — their
 own, once somebody has corrected it, or a stranger's that a native reader
 recorded. Both become Echo cards with the same tap.
 
-| Field    | From                                                                                                                                                                                                                                                                       |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `front`  | The post body. If the post has corrections, the **top correction's `corrected` text** — the corrected sentence is the thing to learn, and the top one is what the feed already ranks first.                                                                                |
-| `back`   | The translation of the original body into the reader's language, by the same rule as a chat capture.                                                                                                                                                                       |
-| `lang`   | `post.language` — the language the author is learning, which the post already carries.                                                                                                                                                                                     |
-| `audio`  | On a pronunciation post, the top answer's `media` and, if recorded, `slowMedia`. A native speaker saying the sentence, already uploaded. "Top" is the **oldest**, not the most-liked — `readAnswerSummary` sorts by `createdAt`, on the feed's own "first, not best" rule. |
-| `source` | `{ kind: 'post', postId, authorId }`, `sourceKey: post:<id>`. Deep-links to the post detail.                                                                                                                                                                               |
+| Field    | From                                                                                                                                                                                                                                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `front`  | The post body. If the post has corrections, the **top correction's `corrected` text** — the corrected sentence is the thing to learn, and the top one is what the feed already ranks first.                                                                                           |
+| `back`   | The translation of the original body into the reader's language, by the same rule as a chat capture.                                                                                                                                                                                  |
+| `lang`   | `post.language`, which the post already carries — a language the author learns, or, on a moment that asks for nothing, one they speak.                                                                                                                                                |
+| `audio`  | On a post asking for pronunciation, the top answer's `media` and, if recorded, `slowMedia`. A native speaker saying the sentence, already uploaded. "Top" is the **oldest**, not the most-liked — `readAnswerSummary` sorts by `createdAt`, on the feed's own "first, not best" rule. |
+| `source` | `{ kind: 'post', postId, authorId }`, `sourceKey: post:<id>`. Deep-links to the post detail.                                                                                                                                                                                          |
 
-Entry points: the post's action row in the feed and the detail screen. Same
-capture cap, same repository gate (`listPost` access rules apply before the
-card is written).
+Entry points: a card's long-press sheet in the feed and the detail screen.
+Both offer it only on a post with words — a photo posted without a caption has
+no sentence to keep, and the server refuses one (`captureFromPost` on `''`).
+Same capture cap, same repository gate (`listPost` access rules apply before
+the card is written).
 
 ## A card you write yourself
 
@@ -196,10 +198,10 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    (`answersMessageId`) and the asked message is stamped `answeredAt`, the
    way `sendCorrection` already stamps `correctedAt`. Capture copies the
    URL, so the card keeps playing after the recording is deleted. A card
-   with no recording offers **Ask the feed how it is said** — see _Later,
-   without adding a screen_; it used to open the conversation and now opens a
-   pronunciation post, and an answer to that post can be kept on the card in
-   one tap.
+   offers **Post to the feed** — see _Later, without adding a screen_; it
+   used to open the conversation, and now opens the composer with the
+   sentence in it and _Pronunciation needed_ ticked, and an answer to that
+   post can be kept on the card in one tap.
 
 3. **Text-to-speech, on the server — on request, from the card.** Built, and
    it was refused first. Google Cloud Text-to-Speech was costed before it was
@@ -417,12 +419,12 @@ violated by accident:
 
 Four collections, registered in `collections.ts`:
 
-| Collection      | Holds                                                                                                                                                                              |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, audio?, image?, askedPostId?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
-| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                                                     |
-| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                                            |
-| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                                                    |
+| Collection      | Holds                                                                                                                                                                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, audio?, image?, askedPostId?, askedCorrectionPostId?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
+| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                                                                             |
+| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                                                                    |
+| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                                                                            |
 
 `source` is a tagged union:
 
@@ -455,7 +457,12 @@ Indexes, in `indexes.ts`:
   `askedPostId: { $exists: true }` — which of your cards asked this post. One
   card per post per person, which is what makes the reverse lookup a point
   read. Partial and not sparse: almost no card has ever asked anything, and a
-  plain unique index would collide on the missing value.
+  plain unique index would collide on the missing value. This is the card's
+  _pronunciation_ slot.
+- **unique `{ userId, askedCorrectionPostId }` on `echoCards`**
+  (`owner_asked_correction_unique`), partial the same way — the card's
+  _correction_ slot. Independent of the one above, so one card may hold both
+  slots for one post: a post can ask for both.
 - **unique `{ userId, reviewId }` on `echoReviews`**, `reviewId` minted by the
   client. A session submitted twice because the network dropped and the app
   retried must be physically incapable of advancing a card twice or paying
@@ -854,39 +861,72 @@ Three things the first three phases do not need and that ride on machinery
 already there. None adds a screen; each is one branch in code that exists.
 
 1. ~~**Ask the partner from a card.**~~ **Built in phase 1, and since
-   replaced.** It opened the conversation the card came from, with the
+   replaced twice.** It opened the conversation the card came from, with the
    composer armed for a `pronunciation` ask. Two things were wrong with that.
    It existed only for cards whose `source.kind` is `chat`, so a pack card —
    the kind most likely to have no recording — was offered nothing. And it
    asked one person, who may never answer.
 
-   **Now it asks the feed.** A card with no recording offers "Ask the feed how
-   it is said", which opens `compose` as a `pronunciation` post with the
-   sentence, the card's language and the card's id already in it. Nothing new
-   was written for the composer; the section and the screen were both already
-   there. `echoAsk.ts` decides whether the button is drawn at all, refusing a
-   front longer than `MAX_POST_LENGTH` and a language its owner is not
-   learning — the two things `createPost` would reject — because a composer
-   that silently falls back to another language would file the sentence under
-   the wrong one.
+   It then asked the feed, as two buttons in the session: "Ask the feed how
+   it is said" on a card with no recording, and "Ask the feed to correct it"
+   before the answer was revealed.
 
-   **And the answer comes back.** The card remembers the post it asked on in
-   `askedPostId`, written by `POST /echo/cards/:id/ask` once the post exists —
-   a second call rather than a field on `createPostSchema`, so the feed module
-   keeps knowing nothing about Echo. On that post, every answer then carries
-   one more action: keep this recording on the card that asked. It replaces
-   whatever the card had, deliberately — the reason to tap it on a card that
-   already speaks is that the first voice was hard to follow.
+   **Now it is one action, "Post to the feed".** The feed is one timeline and
+   asking is two optional ticks on a post, so the card opens `compose` as an
+   edit of itself: the sentence, the card's language and the card's id, with
+   _Pronunciation needed_ already ticked (`echoAskParams` → `asks:
+'pronunciation'`). Everything can be changed before posting — the words,
+   the ask, a correction ask added beside it. It is offered in three places,
+   each sending `echo_ask_opened` with its `entry`:
 
-   The client sends an **answer id, never a URL**. `attachAnswerAudio` reads
-   the media off the answer itself and requires
-   `answer.postId === card.askedPostId`, which is the whole authorisation
-   story: you can only ever attach an answer written on a post one of your own
-   cards asked.
+   - **The session**, on a recognition card, before and after the reveal —
+     in the card body, never in the grade row, where a button gets pressed
+     as a grade. A production card hides the sentence, and the composer
+     would open with the answer typed in, so it gets nothing in the session.
+     The old correction button's `!revealed` gate on production cards is
+     gone with it: that was exactly the leak.
+   - **The card screen**, as a row, for every card — production cards post
+     from here.
+   - **The cards list**, in a row's menu.
+
+   `echoAsk.ts` decides whether it is drawn at all, refusing a front longer
+   than `MAX_POST_LENGTH` and a language its owner is not learning — the two
+   things `createPost` would reject for an ask — because a composer that
+   silently falls back to another language would file the sentence under the
+   wrong one. It no longer hides the action once the card holds recordings:
+   another voice is still worth asking for, and a full card is said where it
+   matters (below).
+
+   **And the answer comes back.** Once the post exists, `POST
+/echo/cards/:id/ask` fills the card's slots from the post's asks: a
+   pronunciation ask → `askedPostId`, a correction ask →
+   `askedCorrectionPostId`, both → both in one call. A second call rather
+   than a field on `createPostSchema`, so the feed module keeps knowing
+   nothing about Echo; the composer makes it only when there is a card
+   **and** at least one ask, because a moment asks for nothing and has no
+   slot to fill.
+
+   On that post each reply carries one more action, drawn only for the slot
+   that names the post — the same check the server makes:
+
+   - a recording: **Keep on my card**. It is _added_ to what the card holds,
+     not a replacement — two people answering is the reason to ask, and the
+     card is where to compare them — up to `ECHO_AUDIO_MAX` (4). The fifth is
+     refused, and the post screen says the card is full (`echo.audioFull`).
+   - a correction: **Keep this as my sentence**, which _replaces_ the card's
+     front, because a card whose sentence is wrong teaches the mistake every
+     time it comes back.
+
+   The client sends an **answer or correction id, never a URL or a text**.
+   `attachAnswerAudio` requires `answer.postId === card.askedPostId` and
+   `applyCorrection` requires `correction.postId === card.askedCorrectionPostId`,
+   which is the whole authorisation story: you can only ever keep a reply
+   written on a post one of your own cards asked.
 
    One limitation, left on purpose: a card asked twice keeps only the newer
-   post, and the older one stops offering the button. A list of every question
-   a card ever asked is machinery for something nobody would read.
+   post in each slot, and the older one stops offering the buttons. A list of
+   every question a card ever asked is machinery for something nobody would
+   read.
 
 2. **A card from a quiz message.** A `quiz` message already carries the
    question and the option its author marked correct. Add echo on it makes

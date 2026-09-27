@@ -69,7 +69,7 @@ import type {
   ReferralStatus,
   CreatePostCommentInput,
   CreatePostCorrectionInput,
-  CreatePostInput,
+  CreatePostRequest,
   CreatePronunciationAnswerInput,
   FeedPage,
   FeedPost,
@@ -1585,7 +1585,7 @@ export function useCreateShareCard() {
 export function useCreatePost() {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: (input: CreatePostInput) => api.post<FeedPost>('/posts', input),
+    mutationFn: (input: CreatePostRequest) => api.post<FeedPost>('/posts', input),
     /*
      * A patch, not an invalidation — see `prependPost`. `POST /posts` answers
      * with the whole card, so nothing is missing. The timeline and "My posts"
