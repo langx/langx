@@ -5581,6 +5581,46 @@ and tones that depend on the syllable, so doing it properly needs the
 dictionary-backed segmenter this design exists to avoid. `romanizationFor`
 answers `null` for all of them, and the row is not drawn.
 
+## Voice notes are written out on a machine of ours
+
+"Show text" under a voice note could have been a call to a cloud speech API —
+Google, Deepgram, OpenAI's hosted Whisper — in a day's work and with better
+accuracy on a good day. It is `apps/stt` instead, a faster-whisper process on
+a private Fly app of our own, for three reasons in order of weight.
+
+**A voice note is the most private thing in a thread.** It is somebody's
+voice, saying something to one other person. Storing it in our bucket is the
+promise the app already makes; sending it to a third party to be listened to
+is a different promise, one the privacy forms would have to declare and one a
+person recording to a friend has not agreed to. Translation does send text
+out, and that was argued for on the grounds that no one can host a translator
+for a hundred languages — Whisper is exactly the model that can be hosted.
+
+**The meter is ours, the way it became ours for readings.** A hosted API bills
+per second of audio, and a two-minute note is the unit people send; the
+readings story (_…and came back, self-hosted_, above) is the precedent for
+turning a bill into a `[[vm]]` line on a machine that sleeps. The ceiling is
+still a number in `PLAN_LIMITS`, `transcriptsPerDay`, finite on every tier and
+lower than the readings beside it because one transcript is several readings'
+worth of CPU. It is not a paywall and a refusal is a plain alert.
+
+**The licence is clean all the way down**: faster-whisper, the Whisper weights
+and Systran's CTranslate2 conversion are all MIT, and the image downloads a
+pinned revision of that conversion. `small` in int8 on the CPU, because it is
+the largest multilingual size that fits a 2 GB machine and the first that is
+honestly useful beyond English — a wrong word is worse in the language
+somebody is learning than in their own, and that is where `base` fails.
+
+Two shapes follow from what a language exchange knows that Whisper does not.
+**The two people's languages go with the note** as candidates, and the service
+picks the likeliest of those rather than of Whisper's hundred: a slow, careful
+sentence from a learner is exactly what open detection mistakes for English,
+and the text that follows is then English too. And **the words are kept on the
+attachment**, not in a cache keyed by hash: they describe that one recording,
+both people are entitled to them, and whoever asks first pays the one unit.
+They are still shown only on request — somebody practising their listening has
+not asked to read the answer.
+
 ## "Send later" is the server's job, and it asks again at send time
 
 A long press on send offers "In their morning" and "Pick a time". The message

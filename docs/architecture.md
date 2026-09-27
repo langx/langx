@@ -225,6 +225,16 @@ _contents_ live in `GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON` rather than Google's
 usual file-path convention, because a platform secret store holds strings, not
 files.
 
+**Transcripts:** an `SttProvider` interface over `apps/stt`, our own Python
+process running faster-whisper's multilingual `small` model on the CPU — the
+voice service's pattern, on its own private, scale-to-zero Fly app. "Show text"
+under a chat voice note sends the note's bytes from our bucket, with the two
+people's languages as the likely candidates, and keeps the words on the
+attachment (`transcript`), so whoever asks first spends one unit of
+`PLAN_LIMITS.transcriptsPerDay` and everybody after reads it free. Without
+`STT_URL` the app is told `transcriptService: false` and draws no button. See
+`docs/decisions.md` → _Voice notes are written out on a machine of ours_.
+
 ## Auth, age gate and username claim
 
 - Server: `betterAuth({ database: mongodbAdapter(db, { client }) })` —
@@ -327,6 +337,7 @@ live in `TIER_NAMES` and the identifiers never move.
 | Sort by distance (Nearby)   | —                                            | —              | **Yes**        |
 | Boosted profile on Discover | —                                            | **Yes**        | **First**      |
 | Translation                 | **20** per rolling 24h                       | **300**        | **1000**       |
+| Voice notes shown as text   | **10** per rolling 24h                       | **50**         | **150**        |
 | Languages you are learning  | **1**                                        | **2**          | **5**          |
 | Languages you speak         | **1**                                        | **2**          | **5**          |
 | **Message correction**      | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
@@ -833,7 +844,9 @@ fetches it, runs ffmpeg over it and stores AAC in MP4 instead — before the
 insert, so the row is right the first time anything reads it. Everything else
 comes back as it went in, and a host without ffmpeg stores the original. The
 same fetch reads every voice note's `waveform` — the bars its bubble draws —
-onto the attachment; it describes the file and never changes it. Size is capped when the upload
+onto the attachment; it describes the file and never changes it. A voice
+note's `transcript` sits on the attachment the same way, written only by the
+transcript route and never accepted from a send. Size is capped when the upload
 URL is _signed_ rather than after the bytes have been paid for, and
 `PLAN_LIMITS.mediaPer24h` caps the count on the free tier — a ceiling on abuse
 rather than a paywall, since v1 offered both free. Corrections stay uncapped

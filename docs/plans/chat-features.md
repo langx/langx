@@ -205,7 +205,7 @@ PRs; see `docs/decisions.md` → _Transliteration runs on rules we own_.
 
 ### PR 8 — Voice note transcripts, on a Whisper service
 
-Status: planned
+Status: in review
 
 - A new `apps/stt/` on the `apps/tts` pattern: Python, faster-whisper (MIT),
   the `small` model in int8, `POST /transcribe` taking audio and a language

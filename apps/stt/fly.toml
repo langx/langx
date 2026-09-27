@@ -1,0 +1,60 @@
+# The transcript service on Fly.io — see server.py for what it is.
+#
+# Secrets are NOT here — this file is committed and the repo is public. Set
+# STT_SECRET with `fly secrets set -a langx-stt`; the API is given the same
+# value. Deploy with `flyctl deploy apps/stt` from the repository root, which
+# deploy-stt.yml does on every merge that touches apps/stt.
+
+app = 'langx-stt'
+primary_region = 'fra'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  PORT = '8080'
+  # The machine's four vCPUs, all for the one transcription the lock allows.
+  STT_THREADS = '4'
+
+# No `[deploy] strategy`, for the voice service's reason: one machine, and a
+# request during the swap waits for the new one to boot.
+
+# Private, and asleep between requests, exactly as `apps/tts/fly.toml` — read
+# that file for the reasoning. No public IP, only a Flycast address
+# (`fly ips allocate-v6 --private`), so `langx-stt.flycast` resolves from the
+# API's machines and nowhere else; `min_machines_running = 0` is the cost
+# story; `suspend` rather than `stop` because resuming a snapshot with the
+# model already in memory is a couple of seconds, where a cold boot loads
+# 460 MB before it can hear anything.
+[http_service]
+  internal_port = 8080
+  auto_stop_machines = 'suspend'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+  # One transcription at a time — server.py holds a lock around the model —
+  # and one more waiting. Past that the proxy answers 503, which the API turns
+  # into "busy, try again" and refunds the quota for.
+  [http_service.concurrency]
+    type = 'requests'
+    soft_limit = 1
+    hard_limit = 2
+
+# /health answers only once the model is loaded. The grace period is sized for
+# a cold boot loading it, the same sixty seconds as the voice service.
+[[http_service.checks]]
+  interval = '15s'
+  timeout = '5s'
+  grace_period = '60s'
+  method = 'GET'
+  path = '/health'
+
+# 2 GB for a 460 MB model: CTranslate2's int8 `small` sits near a gigabyte
+# resident, and decoding a two-minute note adds little. Four shared vCPUs
+# rather than the voice service's two, because transcription is the slow one:
+# a two-minute note is tens of seconds of CPU, and the threads divide it.
+# Suspension is capped at 4 GB of memory, which this is under.
+[[vm]]
+  size = 'shared-cpu-4x'
+  memory = '2gb'

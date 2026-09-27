@@ -1127,6 +1127,13 @@ export const de: Localized<EnMessages> = {
       other:
         'Du hast die {count} Lesungen für heute verbraucht. In 24 Stunden gibt es wieder neue.',
     },
+    showText: 'Text anzeigen',
+    transcribing: 'Wird aufgeschrieben…',
+    transcriptEmpty: 'In dieser Nachricht waren keine Worte zu hören.',
+    transcriptUnavailable: 'Konnte nicht aufgeschrieben werden',
+    transcriptFailed: 'Versuch es gleich noch einmal.',
+    transcriptLimit:
+      'Du hast die Abschriften für heute verbraucht. In 24 Stunden gibt es wieder neue.',
     copied: 'Kopiert',
     couldNotSend: 'Konnte nicht gesendet werden',
     mediaQuota: 'Du hast das heutige Limit für Fotos, Videos und Sprachnachrichten erreicht.',

@@ -4,6 +4,7 @@ import {
   canEditMessage,
   translateTargetFor,
   attachmentsOf,
+  isAudioContentType,
   MAX_ATTACHMENTS,
   MAX_VIDEO_SECONDS,
   type Media,
@@ -61,6 +62,7 @@ import {
   useTranslate,
   useSpeakMessage,
   useRomanizeMessage,
+  useTranscribeMessage,
   type ClearedUnread,
   type ConversationDto,
   type MessageDto,
@@ -318,6 +320,15 @@ export function ChatScreen({
    */
   const [speech, setSpeech] = useState<Record<string, string>>({})
   const [speaking, setSpeaking] = useState<string | null>(null)
+  /**
+   * Voice notes shown as text, by message id — only the ones this reader asked
+   * to see. The words themselves are kept on the note by the server once
+   * anybody has asked, so this is what is *shown*, not what is known: a note
+   * that arrives already written out still waits for its "Show text" tap,
+   * because somebody practising their listening has not asked to read it.
+   */
+  const [transcripts, setTranscripts] = useState<Record<string, string>>({})
+  const [transcribing, setTranscribing] = useState<string | null>(null)
   const listRef = useRef<FlatList<MessageRow>>(null)
   /**
    * The newest message at the moment the reader scrolled away from the bottom,
@@ -546,8 +557,11 @@ export function ChatScreen({
   const player = useAudioPlayer(null)
   const speakMessageApi = useSpeakMessage()
   const romanizeApi = useRomanizeMessage()
+  const transcribeApi = useTranscribeMessage()
   /** Some deployments have no voice service at all; then there is no row. */
   const voiceService = useAppConfig().data?.voiceService === true
+  /** Nor a transcript service; then no voice note offers its text. */
+  const transcriptService = useAppConfig().data?.transcriptService === true
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
@@ -1733,6 +1747,42 @@ export function ChatScreen({
   }
 
   /**
+   * A voice note as text, under its bubble.
+   *
+   * Free and instant when anybody in the thread already asked — the words came
+   * with the message. Otherwise one at a time, like `speak`: the service writes
+   * out one note at a time, and a second request would only queue behind it.
+   */
+  async function showText(message: MessageDto): Promise<void> {
+    const kept = attachmentsOf(message).find((media) =>
+      isAudioContentType(media.contentType),
+    )?.transcript
+    if (kept) {
+      setTranscripts((current) => ({ ...current, [message._id]: kept.text }))
+      return
+    }
+    if (transcribing !== null) return
+    setTranscribing(message._id)
+    try {
+      const result = await transcribeApi.mutateAsync({ conversationId, messageId: message._id })
+      setTranscripts((current) => ({ ...current, [message._id]: result.text }))
+    } catch (error) {
+      // A ceiling, not a gate, for `speak`'s reason: `transcriptsPerDay` is
+      // finite on every tier, so there is nothing to sell here.
+      await showAlert(
+        t('chat.transcriptUnavailable'),
+        t(
+          errorCodeOf(error) === 'QUOTA_EXCEEDED'
+            ? 'chat.transcriptLimit'
+            : 'chat.transcriptFailed',
+        ),
+      )
+    } finally {
+      setTranscribing(null)
+    }
+  }
+
+  /**
    * Long-press on any bubble. Correction used to *be* the gesture, on the
    * other person's text only; it is one row here, which is what let the other
    * three exist at all.
@@ -2169,6 +2219,15 @@ export function ChatScreen({
   })
   const onReplayReading = useCallback((message: MessageDto) => {
     void speakRef.current(message)
+  }, [])
+
+  /** The voice note's "Show text", stabilised for the same reason. */
+  const showTextRef = useRef(showText)
+  useEffect(() => {
+    showTextRef.current = showText
+  })
+  const onShowText = useCallback((message: MessageDto) => {
+    void showTextRef.current(message)
   }, [])
 
   /** The bubble's Echo chip, stabilised for the same reason. */
@@ -2654,6 +2713,11 @@ export function ChatScreen({
                       speaking={speaking === row.message._id}
                       hasReading={speech[row.message._id] !== undefined}
                       onReplayReading={onReplayReading}
+                      transcript={transcripts[row.message._id]}
+                      transcribing={transcribing === row.message._id}
+                      {...(transcriptService && !isOutgoingId(row.message._id)
+                        ? { onShowText }
+                        : {})}
                       highlighted={highlighted === row.message._id}
                       askAnswered={answeredAsks.has(row.message._id)}
                       onAnswerAsk={answerAsk}
