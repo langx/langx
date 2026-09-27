@@ -61,6 +61,7 @@ export const ru: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Воспроизвести видео',
+    unavailable: 'Больше недоступно',
     sourceTitle: 'Добавить фото',
     sourceCamera: 'Сделать фото',
     sourceLibrary: 'Выбрать из галереи',
@@ -183,6 +184,7 @@ export const ru: Localized<EnMessages> = {
     correctPart: 'Исправить часть',
     words: 'Слова',
     romanize: 'Показать латиницей',
+    forward: 'Переслать',
   },
 
   echo: {
@@ -385,6 +387,16 @@ export const ru: Localized<EnMessages> = {
     aboutClose: 'Понятно',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Переслать в…',
+    sendProfileTitle: 'Отправить профиль в…',
+    searchPlaceholder: 'Поиск по чатам',
+    empty: 'Пока нет чатов, куда можно отправить.',
+    noMatches: 'Нет подходящих чатов.',
+    forwarded: 'Переслано',
+    sent: 'Отправлено',
+  },
+
   messageMeta: {
     sent: 'Отправлено',
     delivered: 'Доставлено',
@@ -401,6 +413,7 @@ export const ru: Localized<EnMessages> = {
     meeting: 'Встреча',
     quiz: 'Викторина',
     correction: 'Исправление',
+    forwarded: 'Переслано',
   },
 
   interests: {
@@ -2253,6 +2266,7 @@ export const ru: Localized<EnMessages> = {
     copied: 'Ссылка скопирована',
     copiedText: 'Текст скопирован',
     profile: 'Поделиться профилем',
+    sendInChat: 'Отправить в чат',
     profileMessage: 'Познакомьтесь с {name} в LangX: {url}',
     postMessage: '«{excerpt}» — {language}, практика в LangX: {url}',
     streak: 'Поделиться серией',

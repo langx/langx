@@ -64,6 +64,7 @@ export const ar: Localized<EnMessages> = {
 
   media: {
     playVideo: 'تشغيل الفيديو',
+    unavailable: 'لم يعد متاحًا',
     sourceTitle: 'إضافة صورة',
     sourceCamera: 'التقاط صورة',
     sourceLibrary: 'الاختيار من المعرض',
@@ -176,6 +177,7 @@ export const ar: Localized<EnMessages> = {
     correctPart: 'تصحيح جزء',
     words: 'الكلمات',
     romanize: 'عرض بالحروف اللاتينية',
+    forward: 'إعادة توجيه',
   },
 
   echo: {
@@ -387,6 +389,16 @@ export const ar: Localized<EnMessages> = {
     aboutClose: 'فهمت',
   },
 
+  conversationPicker: {
+    forwardTitle: 'إعادة توجيه إلى…',
+    sendProfileTitle: 'إرسال الملف إلى…',
+    searchPlaceholder: 'ابحث في محادثاتك',
+    empty: 'لا توجد محادثات للإرسال إليها بعد.',
+    noMatches: 'لا توجد محادثات مطابقة.',
+    forwarded: 'تمت إعادة التوجيه',
+    sent: 'تم الإرسال',
+  },
+
   messageMeta: {
     sent: 'أُرسلت',
     delivered: 'وصلت',
@@ -403,6 +415,7 @@ export const ar: Localized<EnMessages> = {
     meeting: 'اجتماع',
     quiz: 'سؤال',
     correction: 'تصحيح',
+    forwarded: 'مُعاد توجيهها',
   },
 
   interests: {
@@ -2346,6 +2359,7 @@ export const ar: Localized<EnMessages> = {
     copied: 'تم نسخ الرابط',
     copiedText: 'تم نسخ النص',
     profile: 'مشاركة الملف',
+    sendInChat: 'إرسال في محادثة',
     profileMessage: 'تعرّف على {name} في LangX: {url}',
     postMessage: '«{excerpt}» — تدريب على {language} في LangX: {url}',
     streak: 'مشاركة سلسلتي',

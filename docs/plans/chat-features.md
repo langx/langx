@@ -297,7 +297,7 @@ Status: in review
 
 ### PR 14 — A conversation picker, forwarding, and sharing a profile into a chat
 
-Status: planned
+Status: in review
 
 - A new `components/ConversationPicker`: a sheet over the `chats.tsx` data,
   with search.

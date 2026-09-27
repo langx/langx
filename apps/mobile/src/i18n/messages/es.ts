@@ -54,6 +54,7 @@ export const es: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Reproducir vídeo',
+    unavailable: 'Ya no está disponible',
     sourceTitle: 'Añadir una foto',
     sourceCamera: 'Hacer una foto',
     sourceLibrary: 'Elegir de la galería',
@@ -177,6 +178,7 @@ export const es: Localized<EnMessages> = {
     correctPart: 'Corregir una parte',
     words: 'Palabras',
     romanize: 'Ver en letras latinas',
+    forward: 'Reenviar',
   },
 
   echo: {
@@ -359,6 +361,16 @@ export const es: Localized<EnMessages> = {
     aboutClose: 'Entendido',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Reenviar a…',
+    sendProfileTitle: 'Enviar perfil a…',
+    searchPlaceholder: 'Busca en tus chats',
+    empty: 'Aún no tienes chats a los que enviar.',
+    noMatches: 'Ningún chat coincide.',
+    forwarded: 'Reenviado',
+    sent: 'Enviado',
+  },
+
   messageMeta: {
     sent: 'Enviado',
     delivered: 'Entregado',
@@ -375,6 +387,7 @@ export const es: Localized<EnMessages> = {
     meeting: 'Reunión',
     quiz: 'Pregunta',
     correction: 'Corrección',
+    forwarded: 'Reenviado',
   },
 
   interests: {
@@ -2023,6 +2036,7 @@ export const es: Localized<EnMessages> = {
     copied: 'Enlace copiado',
     copiedText: 'Texto copiado',
     profile: 'Compartir perfil',
+    sendInChat: 'Enviar en un chat',
     profileMessage: 'Conoce a {name} en LangX: {url}',
     postMessage: '“{excerpt}” — práctica de {language} en LangX: {url}',
     streak: 'Compartir mi racha',
