@@ -1303,6 +1303,11 @@ export const es: Localized<EnMessages> = {
       one: '{name} y {count} persona más grabaron tu frase',
       other: '{name} y {count} personas más grabaron tu frase',
     },
+    commentReply: '{name} respondió a tu comentario',
+    commentReplyOthers: {
+      one: '{name} y {count} persona más respondieron a tu comentario',
+      other: '{name} y {count} personas más respondieron a tu comentario',
+    },
     badgeEarned: 'Ganaste una insignia nueva',
     walletPool: {
       one: 'El bote de ayer te pagó {count} ficha',

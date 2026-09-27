@@ -1303,6 +1303,11 @@ export const tr: Localized<EnMessages> = {
       one: '{name} ve {count} kişi daha cümleni seslendirdi',
       other: '{name} ve {count} kişi daha cümleni seslendirdi',
     },
+    commentReply: '{name} yorumuna yanıt verdi',
+    commentReplyOthers: {
+      one: '{name} ve {count} kişi daha yorumuna yanıt verdi',
+      other: '{name} ve {count} kişi daha yorumuna yanıt verdi',
+    },
     badgeEarned: 'Yeni bir rozet kazandın',
     walletPool: {
       one: 'Dünkü havuz sana {count} jeton ödedi',

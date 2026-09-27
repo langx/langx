@@ -186,6 +186,10 @@ const GROUPED_KINDS: InAppNotificationKind[] = [
   'postCorrection',
   'pronunciationAnswer',
   'like',
+  // Keyed on the post like the rest, not the thread: somebody answered in two
+  // threads under one sentence reads that as one conversation, and the row
+  // opens the post either way.
+  'commentReply',
 ]
 
 /**

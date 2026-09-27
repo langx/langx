@@ -77,6 +77,10 @@ export const ptBR: Localized<ServerMessages> = {
 
       commentBody: 'Toque para ler.',
 
+      commentReplyTitle: '{name} respondeu ao seu comentário',
+
+      commentReplyBody: 'Toque para ler a resposta.',
+
       likesTitle: {
         one: 'Sua publicação recebeu 1 curtida',
         other: 'Sua publicação recebeu {count} curtidas',

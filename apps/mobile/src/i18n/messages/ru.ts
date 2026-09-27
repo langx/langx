@@ -1416,6 +1416,13 @@ export const ru: Localized<EnMessages> = {
       many: '{name} и ещё {count} человек записали ваше предложение',
       other: '{name} и ещё {count} человека записали ваше предложение',
     },
+    commentReply: '{name} ответил на ваш комментарий',
+    commentReplyOthers: {
+      one: '{name} и ещё {count} человек ответили на ваш комментарий',
+      few: '{name} и ещё {count} человека ответили на ваш комментарий',
+      many: '{name} и ещё {count} человек ответили на ваш комментарий',
+      other: '{name} и ещё {count} человека ответили на ваш комментарий',
+    },
     badgeEarned: 'Вы получили новый значок',
     walletPool: {
       one: 'Вчерашний банк принёс вам {count} жетон',

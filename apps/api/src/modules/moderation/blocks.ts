@@ -9,6 +9,7 @@ import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
+import type { PostCommentDoc } from '../feed/documents'
 
 export interface Block {
   _id: ObjectId
@@ -28,6 +29,13 @@ export interface Report {
   messageId?: ObjectId
   /** The post, when the report was raised from the feed. */
   postId?: ObjectId
+  /**
+   * The comment, when the report was raised from one. **Never beside
+   * `postId`**: the post a comment sits under is read from the comment, and a
+   * `postId` here would offer "Hide this post" against somebody who was never
+   * reported.
+   */
+  commentId?: ObjectId
   status: 'open' | 'reviewing' | 'actioned' | 'dismissed'
   createdAt: Date
   /**
@@ -184,7 +192,23 @@ export async function reportUser(
       throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed message id')
     }
   }
-  if (input.postId !== undefined) {
+  if (input.commentId !== undefined) {
+    /*
+     * The comment has to be the reported person's own. A report is about an
+     * account, and one that names somebody else's comment would put a stranger's
+     * words in front of the moderator as evidence against the wrong person.
+     * Read unfiltered: a comment already hidden can still be reported again.
+     */
+    const comment = ObjectId.isValid(input.commentId)
+      ? await db
+          .collection<PostCommentDoc>(COLLECTIONS.postComments)
+          .findOne({ _id: new ObjectId(input.commentId) }, { projection: { authorId: 1 } })
+      : null
+    if (!comment || comment.authorId !== input.userId) {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Comment not found')
+    }
+    report.commentId = comment._id
+  } else if (input.postId !== undefined) {
     try {
       report.postId = new ObjectId(input.postId)
     } catch {

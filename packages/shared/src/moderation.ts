@@ -53,6 +53,14 @@ export const reportSchema = z.object({
    * alongside a profile and a message.
    */
   postId: z.string().trim().min(1).optional(),
+  /**
+   * Optional pointer to one comment. The comment has to be the reported
+   * person's own, which the server checks, and the post it sits under is
+   * looked up from it rather than trusted from `postId`: a comment report is
+   * about the comment, and a stray `postId` beside it would offer a moderator
+   * "Hide this post" on somebody who was never reported.
+   */
+  commentId: z.string().trim().min(1).optional(),
 })
 export type ReportInput = z.infer<typeof reportSchema>
 
@@ -160,6 +168,10 @@ export type ReviewKind = (typeof REVIEW_KINDS)[number]
  * nothing a person cannot undo, and a hard delete takes the post, its
  * corrections and its attachments with it. Hiding is the reversible half of
  * the same intent; a genuine deletion stays a script run by hand.
+ *
+ * `hide_comment` and `unhide_comment` are the same pair one level down, for a
+ * report that names a comment, and for the same reasons: one remark is the
+ * problem, and hiding it is undone by the next click.
  */
 export const REPORT_REVIEW_ACTIONS = [
   'suspend',
@@ -167,6 +179,8 @@ export const REPORT_REVIEW_ACTIONS = [
   'dismiss',
   'hide_post',
   'unhide_post',
+  'hide_comment',
+  'unhide_comment',
 ] as const
 export const APPEAL_REVIEW_ACTIONS = ['shorten', 'lift', 'keep'] as const
 export const REVIEW_ACTIONS = [...REPORT_REVIEW_ACTIONS, ...APPEAL_REVIEW_ACTIONS] as const

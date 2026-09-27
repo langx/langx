@@ -785,6 +785,17 @@ export const INDEXES: Partial<IndexSpec> = {
      * paid for a comment, so there is nothing a repeat could farm.
      */
     { key: { postId: 1, createdAt: 1, _id: 1 }, name: 'post_created_id' },
+    /**
+     * Threads: a post's first comments (`parentId: null`, which also matches
+     * the field missing on every comment written before replies), and one
+     * thread's replies (`parentId: <root>`), each oldest first.
+     *
+     * A **new name** rather than `parentId` wedged into `post_created_id`:
+     * re-keying an index under a name that already exists is an
+     * IndexOptionsConflict at boot, which crash-loops the API. The old one
+     * stays for the flat list installed builds read, which names no parent.
+     */
+    { key: { postId: 1, parentId: 1, createdAt: 1, _id: 1 }, name: 'post_parent_created_id' },
     // The purge and the export, both of which name only the author.
     { key: { authorId: 1, createdAt: -1 }, name: 'author_recent' },
   ],

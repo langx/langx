@@ -120,6 +120,25 @@ export interface PostCommentDoc {
   _id: ObjectId
   postId: ObjectId
   authorId: string
-  body: string
+  /** Absent only on a tombstone — see `deletedAt`. */
+  body?: string
   createdAt: Date
+  /**
+   * The thread's **first** comment, on a reply; absent on a comment on the
+   * post. Always the root, never the reply being answered, so there is one
+   * level of nesting and a thread is one indexed range. A missing field
+   * indexes as null, which is what lets `{ parentId: null }` find the roots
+   * on `post_parent_created_id` without a migration.
+   */
+  parentId?: ObjectId
+  /** Who a reply to a reply answers. Absent on a reply to the root itself. */
+  replyToAuthorId?: string
+  /**
+   * The author removed a thread's first comment while it had replies. The
+   * words go (`body` is unset), the row stays so the replies keep something
+   * to hang from, and the last reply's delete takes it with it.
+   */
+  deletedAt?: Date
+  /** A moderator hid it, from a report. As on a post: a date, never a flag. */
+  hiddenAt?: Date
 }

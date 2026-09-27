@@ -92,7 +92,13 @@ export default function AdminReportsScreen() {
                   item.reporter.handle,
                   item.reporter.userId,
                 )}`}
-                value={item.aboutPost ? ADMIN.reports.aboutPost : undefined}
+                value={
+                  item.aboutPost
+                    ? ADMIN.reports.aboutPost
+                    : item.aboutComment
+                      ? ADMIN.reports.aboutComment
+                      : undefined
+                }
                 onPress={() => router.push(`/(app)/admin/reports/${item.id}`)}
                 last={index === (reports.data?.items.length ?? 0) - 1}
               />

@@ -499,6 +499,19 @@ export const IN_APP_NOTIFICATION_KINDS = [
   'badgeEarned',
   'walletPool',
   'profileVisits',
+  /**
+   * Somebody answered your comment. Its own kind rather than `postComment`,
+   * which says "commented on your post" — untrue for anybody who is not the
+   * post's author.
+   *
+   * **Known here, not yet written.** The 2.7 store build draws the inbox with
+   * a `switch` that has no `default`, so a row of a kind it has never heard
+   * of throws inside the list's render and takes the whole screen down with
+   * it. The server keeps these replies to push until that build is gone — see
+   * `COMMENT_REPLY_INBOX_ROWS` in `routes/feed.ts`. Listing the kind now is
+   * what lets the next build ship ready for the rows.
+   */
+  'commentReply',
 ] as const
 export type InAppNotificationKind = (typeof IN_APP_NOTIFICATION_KINDS)[number]
 
