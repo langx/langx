@@ -37,11 +37,13 @@ export default function ReportScreen() {
   const t = useT()
   const report = useReportUser()
 
-  const { userId, conversationId, messageId, postId } = useLocalSearchParams<{
+  const { userId, conversationId, messageId, postId, commentId } = useLocalSearchParams<{
     userId: string
     conversationId?: string
     messageId?: string
     postId?: string
+    /** With `postId`: a comment on that post, reported rather than the post. */
+    commentId?: string
   }>()
 
   const [reason, setReason] = useState<ReportReason | undefined>(undefined)
@@ -54,11 +56,13 @@ export default function ReportScreen() {
     : conversationId
       ? `/(app)/chat/${conversationId}`
       : '/(app)/(tabs)/discover'
-  const question = postId
-    ? t('report.postQuestion')
-    : messageId
-      ? t('report.messageQuestion')
-      : t('report.profileQuestion')
+  const question = commentId
+    ? t('report.commentQuestion')
+    : postId
+      ? t('report.postQuestion')
+      : messageId
+        ? t('report.messageQuestion')
+        : t('report.profileQuestion')
 
   function submit(): void {
     if (!reason || report.isPending) return
@@ -70,7 +74,11 @@ export default function ReportScreen() {
         ...(trimmed ? { details: trimmed } : {}),
         ...(conversationId ? { conversationId } : {}),
         ...(messageId ? { messageId } : {}),
-        ...(postId ? { postId } : {}),
+        // A comment report names the comment alone: the server finds its post,
+        // and a `postId` beside it would offer a moderator "Hide this post" on
+        // somebody who was never reported for one.
+        ...(postId && !commentId ? { postId } : {}),
+        ...(commentId ? { commentId } : {}),
       },
       {
         onSuccess: () => {

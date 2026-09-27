@@ -11,8 +11,11 @@ import {
   applyAnswer,
   applyCommentCount,
   applyCorrection,
+  applyEchoed,
+  applyEchoedToThread,
   applyLike,
   applyLikeToThread,
+  applyReplyRemoved,
   markCorrected,
   prependPost,
   removePost,
@@ -249,5 +252,64 @@ describe('markCorrected', () => {
     const patched = markCorrected(data, 'p1')
     expect(patched!.pages[0]!.items[0]!.correctedByViewer).toBe(true)
     expect(patched!.pages[0]!.items[0]!.correctionCount).toBe(3)
+  })
+})
+
+describe('applyEchoed', () => {
+  it('sets and clears the Echo mark without a refetch', () => {
+    const kept = applyEchoed(pages([post()]), 'p1', true)
+    expect(kept!.pages[0]!.items[0]!.echoedByViewer).toBe(true)
+    const cleared = applyEchoed(kept, 'p1', false)
+    expect(cleared!.pages[0]!.items[0]!.echoedByViewer).toBe(false)
+  })
+
+  it('leaves a post that already agrees untouched', () => {
+    const data = pages([post({ echoedByViewer: true })])
+    expect(applyEchoed(data, 'p1', true)).toBe(data)
+  })
+})
+
+describe('applyEchoedToThread', () => {
+  it('marks the post a thread page carries', () => {
+    const data: InfiniteData<PostCorrectionsPage> = {
+      pages: [{ post: post(), items: [], nextCursor: null }],
+      pageParams: [''],
+    }
+    const patched = applyEchoedToThread(data, 'p1', true)
+    expect(patched!.pages[0]!.post.echoedByViewer).toBe(true)
+    expect(applyEchoedToThread(data, 'other', true)).toBe(data)
+  })
+})
+
+describe('applyReplyRemoved', () => {
+  it('takes your correction off the card and empties the panel it headed', () => {
+    const data = pages([
+      post({ correctionCount: 2, correctedByViewer: true, topCorrection: correction('c1') }),
+    ])
+    const patched = applyReplyRemoved(data, 'p1', 'correction', 'c1')!.pages[0]!.items[0]!
+    expect(patched.correctionCount).toBe(1)
+    expect(patched.correctedByViewer).toBe(false)
+    expect(patched.topCorrection).toBeNull()
+  })
+
+  it('keeps somebody else’s top reply in place', () => {
+    const data = pages([post({ answerCount: 2, answeredByViewer: true, topAnswer: answer('a0') })])
+    const patched = applyReplyRemoved(data, 'p1', 'answer', 'a1')!.pages[0]!.items[0]!
+    expect(patched.answerCount).toBe(1)
+    expect(patched.answeredByViewer).toBe(false)
+    expect(patched.topAnswer?._id).toBe('a0')
+  })
+
+  it('never counts below zero', () => {
+    const patched = applyReplyRemoved(pages([post()]), 'p1', 'correction', 'c1')
+    expect(patched!.pages[0]!.items[0]!.correctionCount).toBe(0)
+  })
+})
+
+describe('prependPost on the timeline', () => {
+  it('puts a moment — a post that asks for nothing — at the top like any other', () => {
+    const moment = { ...post({ _id: 'm1', body: '' }), asks: [] } as FeedPost
+    const patched = prependPost(pages([post()]), moment)
+    expect(patched!.pages[0]!.items.map((item) => item._id)).toEqual(['m1', 'p1'])
   })
 })

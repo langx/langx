@@ -19,17 +19,17 @@ type AnswerPages = InfiniteData<PronunciationAnswersPage> | undefined
  * A correction patched into the loaded feed pages instead of invalidating them.
  *
  * The invalidation was not a performance choice that went too far, it was a
- * disappearing card. The correction queue sorts `correctionCount` **ascending**,
- * so a refetch right after you answer re-sorts that post behind every
- * unanswered post in the collection — the card you just acted on vanished
- * rather than flipping to "You corrected this". That sort is not the bug: it is
- * what makes the queue drain, and inverting it would trade a UI glitch for the
- * product.
+ * disappearing card. Every order the feed has had moves an answered post: the
+ * old correction section sorted `correctionCount` ascending, and the timeline
+ * drops an ask's "needs you" weight the moment it has one answer. A refetch
+ * right after you answer therefore re-sorts the post away — the card you just
+ * acted on vanished rather than flipping to "You corrected this". That order is
+ * not the bug: it is what makes open questions drain, and inverting it would
+ * trade a UI glitch for the product.
  *
- * So the fix belongs here. The next natural refetch — pull-to-refresh, tab
- * switch, remount — sorts it away for real, which is correct: it no longer
- * belongs at the top of a queue of unanswered sentences. It just should not
- * happen in the same frame as the tap.
+ * So the fix belongs here. The next natural refetch — pull-to-refresh, which
+ * starts the timeline again from page one — sorts it away for real, which is
+ * correct. It just should not happen in the same frame as the tap.
  */
 export function applyCorrection(data: Pages, postId: string, correction: PostCorrection): Pages {
   return patchPost(data, postId, (post) => ({
@@ -46,17 +46,15 @@ export function applyCorrection(data: Pages, postId: string, correction: PostCor
 }
 
 /**
- * A recording patched in, on the same terms as a correction.
- *
- * The pronunciation queue sorts `answerCount` ascending for the same reason the
- * correction queue sorts on its own count, so a refetch here has the same
- * disappearing-card failure and the same answer: patch now, let the next
+ * A recording patched in, on the same terms as a correction: a pronunciation
+ * ask loses its weight at its first recording, so a refetch here has the same
+ * disappearing-card failure and the same answer — patch now, let the next
  * natural refetch re-sort.
  */
 export function applyAnswer(data: Pages, postId: string, answer: PronunciationAnswer): Pages {
   return patchPost(data, postId, (post) => ({
     ...post,
-    answerCount: post.answerCount + 1,
+    answerCount: (post.answerCount ?? 0) + 1,
     answeredByViewer: true,
     // Oldest, not best — the same rule `topCorrection` follows. Yours is the
     // oldest exactly when nobody had answered.
@@ -77,6 +75,70 @@ export function applyCommentCount(data: Pages, postId: string, delta: number): P
     ...post,
     commentCount: Math.max(0, post.commentCount + delta),
   }))
+}
+
+/**
+ * Your own correction or recording taken back off a card.
+ *
+ * Patched for the reason everything here is: the timeline is re-read page by
+ * page on a refetch, and one delete is not worth that. Only the viewer deletes
+ * their own reply, so their `…ByViewer` flag goes false with it. When the reply
+ * was the card's top one, the panel empties rather than guessing which reply
+ * is now the oldest — the post screen, which the delete happened on, has the
+ * real list, and the next natural refetch brings the card's back.
+ */
+export function applyReplyRemoved(
+  data: Pages,
+  postId: string,
+  reply: 'correction' | 'answer',
+  replyId: string,
+): Pages {
+  return patchPost(data, postId, (post) =>
+    reply === 'correction'
+      ? {
+          ...post,
+          correctionCount: Math.max(0, post.correctionCount - 1),
+          correctedByViewer: false,
+          topCorrection: post.topCorrection?._id === replyId ? null : post.topCorrection,
+        }
+      : {
+          ...post,
+          answerCount: Math.max(0, (post.answerCount ?? 0) - 1),
+          answeredByViewer: false,
+          topAnswer: post.topAnswer?._id === replyId ? null : post.topAnswer,
+        },
+  )
+}
+
+/**
+ * The Echo mark on a post, set or cleared.
+ *
+ * Keeping a post's sentence used to invalidate the whole `['feed']` prefix,
+ * which on the timeline means re-reading every loaded page — each one a
+ * ranked window read — to learn one boolean the client already knows.
+ */
+export function applyEchoed(data: Pages, postId: string, echoed: boolean): Pages {
+  return patchPost(data, postId, (post) =>
+    post.echoedByViewer === echoed ? post : { ...post, echoedByViewer: echoed },
+  )
+}
+
+/**
+ * The same mark on the post a thread's pages carry, so the post screen's
+ * "Add to Echo" flips with the card behind it.
+ */
+export function applyEchoedToThread<Page extends { post: FeedPost }>(
+  data: InfiniteData<Page> | undefined,
+  postId: string,
+  echoed: boolean,
+): InfiniteData<Page> | undefined {
+  if (!data || !data.pages.some((page) => page.post._id === postId)) return data
+  return {
+    ...data,
+    pages: data.pages.map((page) =>
+      page.post._id === postId ? { ...page, post: { ...page.post, echoedByViewer: echoed } } : page,
+    ),
+  }
 }
 
 /**
@@ -118,18 +180,15 @@ export function markCorrected(data: Pages, postId: string): Pages {
  * A post you just wrote, put at the top of the loaded pages instead of
  * refetching for it.
  *
- * The feed is stitched from two queries — the people you follow or have talked
- * to, then everybody else — and the viewer is not in their own audience, so a
- * post of yours always lands in the second half, behind every post by somebody
- * you know. Invalidating on success meant the refetch applied that order and
- * the sentence you had just written appeared far below the fold, which reads
- * as "it did not post".
+ * The timeline pins your own posts first for their first hour, so this is
+ * where the server would put it too — but a refetch re-reads every loaded
+ * page, and the ranking window it re-reads is pinned to page one's moment, so
+ * the new post is not even in it until pull-to-refresh starts a new one.
+ * Patching is both cheaper and the only way it shows up at once.
  *
- * Same treatment as `applyCorrection`, for the same reason: patch now, and let
- * the next natural refetch put it where the server says it belongs. The server
- * order is not wrong — a queue that drains has to sort by how few answers a
- * post has, not by who wrote it — it just should not decide where your own
- * post goes in the frame where you wrote it.
+ * The rule came from the old sections, where the viewer was never in their own
+ * audience and a post of yours landed behind everyone you know. It still holds
+ * for "My posts", which is patched the same way.
  */
 export function prependPost(data: Pages, post: FeedPost): Pages {
   if (!data) return data
@@ -145,13 +204,20 @@ export function prependPost(data: Pages, post: FeedPost): Pages {
 
 function patchPost(data: Pages, postId: string, patch: (post: FeedPost) => FeedPost): Pages {
   if (!data) return data
-  let found = false
+  let changed = false
   const pages = data.pages.map((page) => {
     if (!page.items.some((post) => post._id === postId)) return page
-    found = true
-    return { ...page, items: page.items.map((post) => (post._id === postId ? patch(post) : post)) }
+    const items = page.items.map((post) => {
+      if (post._id !== postId) return post
+      const next = patch(post)
+      if (next !== post) changed = true
+      return next
+    })
+    return { ...page, items }
   })
-  return found ? { ...data, pages } : data
+  // A patch that handed the post back unchanged (`markCorrected` on a card
+  // already marked) is a no-op too, not only a post that is not loaded.
+  return changed ? { ...data, pages } : data
 }
 
 /**

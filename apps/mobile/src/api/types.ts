@@ -24,6 +24,7 @@ export type {
   LikeTargetType,
   PeoplePage,
   PostComment,
+  PostCommentReply,
   PostCommentsPage,
   PostCorrection,
   PostCorrectionsPage,
@@ -47,12 +48,13 @@ export type {
   GiftClaim,
   TokenHistory,
   TokenHistoryDay,
+  TimelinePage,
   TokenSummary,
 } from '@langx/shared'
 
 // Re-exported above for consumers; imported here because a `export ... from`
 // does not bind the name locally and the DTOs below need to use it.
-import type { Equipped, FollowState, LanguageLevel, PlanTier } from '@langx/shared'
+import type { CreatePostInput, Equipped, FollowState, LanguageLevel, PlanTier } from '@langx/shared'
 
 export interface PublicProfileDto {
   /** Set when the viewer already has a thread with this person. */
@@ -166,3 +168,24 @@ export interface HandleSearchResult {
 export interface HandleSearchPage {
   items: HandleSearchResult[]
 }
+
+/**
+ * `POST /posts` as the composer sends it. `CreatePostInput` is the schema's
+ * *output*, where `kind` has been defaulted and is always there; a client that
+ * sends `asks` sends no `kind`, because `asks` wins on the server anyway.
+ */
+export type CreatePostRequest = Omit<CreatePostInput, 'kind'>
+
+/**
+ * The `reason` values the feed's refusals carry beside their `code`
+ * (`ApiErrorBody.reason`, a plain string on the wire). `@langx/shared` does
+ * not name the set, so the client names the ones it words — an unknown one
+ * falls back to a generic sentence rather than failing to compile.
+ */
+export type PostRefusalReason =
+  | 'not_asked'
+  | 'ask_needs_words'
+  | 'ask_needs_learning_language'
+  | 'moment_needs_content'
+  | 'language_not_yours'
+  | 'stale_cursor'

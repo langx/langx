@@ -11,9 +11,14 @@ import {
 import { useAudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { useEchoCard, useRemoveEcho, useSynthesiseEchoCard } from '../../../../src/api/queries'
+import {
+  useEchoCard,
+  useMe,
+  useRemoveEcho,
+  useSynthesiseEchoCard,
+} from '../../../../src/api/queries'
 import { LoadFailed } from '../../../../src/components/LoadFailed'
 import { Avatar } from '../../../../src/components/ui/Avatar'
 import { Button } from '../../../../src/components/ui/Button'
@@ -31,6 +36,9 @@ import { voiceLabel } from '../../../../src/i18n/labels'
 import { useAppConfig } from '../../../../src/hooks/useAppConfig'
 import { useProfileCache } from '../../../../src/hooks/useProfileCache'
 import { confirmAlert, showAlert } from '../../../../src/lib/alert'
+import { track } from '../../../../src/lib/analytics'
+import { echoAskParams } from '../../../../src/lib/echoAsk'
+import { postLanguages } from '../../../../src/lib/postLanguage'
 import { errorCodeOf } from '../../../../src/lib/errors'
 import { dueInCompact } from '../../../../src/lib/format'
 import { goBackTo } from '../../../../src/lib/navigation'
@@ -144,6 +152,7 @@ function Card({ card }: { card: EchoCard }) {
       </View>
 
       <Source card={card} />
+      <PostToFeed card={card} />
       <Remove card={card} />
     </View>
   )
@@ -216,6 +225,39 @@ function Source({ card }: { card: EchoCard }) {
         <Feather name="chevron-right" size={18} color={colors.textFaint} />
       </Pressable>
     </View>
+  )
+}
+
+/**
+ * "Post to the feed", from the card itself.
+ *
+ * The session offers it only on a recognition card, because a production card
+ * hides the sentence it would post. Here nothing is hidden, so every card that
+ * can be a post gets the row — production cards included, which is where they
+ * post from. Absent when `echoAskParams` says the card cannot be one: too long,
+ * or in a language the person does not learn.
+ */
+function PostToFeed({ card }: { card: EchoCard }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const me = useMe()
+  const languages = useMemo(() => postLanguages(me.data?.learning), [me.data])
+  const params = echoAskParams(card, languages)
+  if (!params) return null
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={() => {
+        track({ name: 'echo_ask_opened', properties: { kind: 'pronunciation', entry: 'card' } })
+        router.push({ pathname: '/(app)/compose', params })
+      }}
+      style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+    >
+      <Feather name="send" size={16} color={colors.accent} />
+      <Text style={styles.speakerLabel}>{t('echo.postToFeed')}</Text>
+    </Pressable>
   )
 }
 

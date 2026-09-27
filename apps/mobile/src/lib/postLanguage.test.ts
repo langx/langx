@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { postLanguages, resolvePostLanguage } from './postLanguage'
+import { asksAllowedIn, momentLanguages, postLanguages, resolvePostLanguage } from './postLanguage'
 
 describe('postLanguages', () => {
   it('orders by priority, not by the order the API sent', () => {
@@ -55,5 +55,45 @@ describe('resolvePostLanguage', () => {
   it('resolves to nothing when there is nothing to post in', () => {
     expect(resolvePostLanguage([], 'ru')).toBeUndefined()
     expect(resolvePostLanguage([], null)).toBeUndefined()
+  })
+})
+
+describe('momentLanguages', () => {
+  const learning = [
+    { code: 'ru', priority: 2 },
+    { code: 'es', priority: 1 },
+  ]
+
+  it('offers the languages you speak after the ones you learn', () => {
+    expect(momentLanguages(learning, [{ code: 'tr' }, { code: 'en' }])).toEqual([
+      'es',
+      'ru',
+      'tr',
+      'en',
+    ])
+  })
+
+  it('lists a language once, however many times the profile names it', () => {
+    expect(momentLanguages(learning, [{ code: 'es' }, { code: 'tr' }, { code: 'tr' }])).toEqual([
+      'es',
+      'ru',
+      'tr',
+    ])
+  })
+
+  it('copes with a profile that has not loaded', () => {
+    expect(momentLanguages(undefined, undefined)).toEqual([])
+    expect(momentLanguages(undefined, [{ code: 'tr' }])).toEqual(['tr'])
+  })
+})
+
+describe('asksAllowedIn', () => {
+  const learning = [{ code: 'es', priority: 1 }]
+
+  it('allows asking only in a language you learn', () => {
+    expect(asksAllowedIn('es', learning)).toBe(true)
+    // Native-only: the chips go disabled, and the text is never relabelled.
+    expect(asksAllowedIn('tr', learning)).toBe(false)
+    expect(asksAllowedIn(undefined, learning)).toBe(false)
   })
 })

@@ -13,6 +13,7 @@ import type {
   PushKind,
 } from '@langx/shared'
 import type { OnboardingStep } from './onboardingStep'
+import type { AskSummary } from './postAsks'
 import type { TourTargetId } from './tour'
 import type { PurchaseOutcome } from './purchases'
 
@@ -417,20 +418,48 @@ export type AnalyticsEvent =
     }
   | {
       /**
-       * The composer was opened from a card, to ask the feed.
+       * The composer was opened from a card — "Post to the feed".
        *
        * Echo's one path back out into the exchange, and what makes it more
        * than a flashcard drawer: a sentence you cannot say becomes a question
-       * somebody answers in their own voice. `kind` is which question — how
-       * it is said, or whether it is right.
+       * somebody answers in their own voice. `kind` is the ask the composer
+       * opens with, and from this build on it is always `pronunciation` — the
+       * writer can change it there. Its values are unchanged so dashboard
+       * 963222 keeps one series across the switch. `entry` is which of the
+       * three places it was opened from.
        *
-       * Counts the ask being opened, not posted. What is posted is counted by
-       * `message_sent`, which cannot tell an Echo ask from any other post;
-       * the gap between the two is people who opened the composer and thought
-       * better of it.
+       * Counts the composer being opened, not a post. What is posted is
+       * `post_created` with `from: 'echo'` — `message_sent` is chat only — and
+       * the gap between the two is people who opened it and thought better
+       * of it.
        */
       name: 'echo_ask_opened'
-      properties: { kind: PostKind }
+      properties: { kind: PostKind; entry: 'session' | 'card' | 'cards' }
+    }
+  | {
+      /**
+       * A post was written.
+       *
+       * The measure of whether optional asks are used, and how: `asks` is
+       * which were ticked (`none` is a moment), `media` how many files went
+       * with it, `hasText` whether it has words — a photo-only moment has
+       * none. `from` separates the feed's own composer from Echo's "Post to
+       * the feed". Installed builds from before this never send it, so early
+       * counts undercount the whole population.
+       */
+      name: 'post_created'
+      properties: { asks: AskSummary; media: number; hasText: boolean; from: 'feed' | 'echo' }
+    }
+  | {
+      /**
+       * A timeline card was opened, and where in the list it sat.
+       *
+       * The input for tuning the ranking weights: whether people open what
+       * the ranking puts first, and whether asks or moments get the taps.
+       * `position` is zero-based among the cards loaded.
+       */
+      name: 'feed_card_opened'
+      properties: { position: number; asks: AskSummary }
     }
   | {
       /**

@@ -1,7 +1,7 @@
-import { MAX_POST_LENGTH, type EchoCard, type LanguageCode, type PostKind } from '@langx/shared'
+import { MAX_POST_LENGTH, type EchoCard, type LanguageCode } from '@langx/shared'
 
 /**
- * What the composer needs to open as a pronunciation post, already filled in.
+ * What the composer needs to open as an edit of a card's sentence.
  *
  * A `type` and not an `interface`, which is the one thing here that looks
  * arbitrary. `router.push` wants `Record<string, string | ...>`, and TypeScript
@@ -10,19 +10,24 @@ import { MAX_POST_LENGTH, type EchoCard, type LanguageCode, type PostKind } from
  * shape that is otherwise identical.
  */
 export type EchoAskParams = {
-  /** Which question: how it is said, or whether it is right. */
-  kind: PostKind
+  /**
+   * The asks the composer opens with, as the comma string it parses
+   * (`asksFromParams`). Always `'pronunciation'` from a card: hearing the
+   * sentence said is what a card most often lacks. Everything is editable in
+   * the composer — the writer can untick it, or tick a correction too.
+   */
+  asks: string
   draft: string
   lang: LanguageCode
   card: string
 }
 
 /**
- * The card, as a question for the feed — or `null` when it cannot be one.
+ * The card, as a post for the feed — or `null` when it cannot be one.
  *
  * Both refusals are the server's own rules, read ahead of time rather than
  * discovered on submit: `createPost` rejects a body over `MAX_POST_LENGTH`,
- * and it rejects a post in a language you are not learning.
+ * and it rejects an ask in a language you are not learning.
  *
  * The second is why this returns `null` instead of letting the composer sort
  * it out. `resolvePostLanguage` falls back to your first learning language
@@ -30,15 +35,19 @@ export type EchoAskParams = {
  * the feed labelled as French — and a card's `lang` is any code in
  * `languages.ts`, not only the ones you are learning. A button that is not
  * there is better than a sentence filed under the wrong language.
+ *
+ * A card that already holds as many recordings as it keeps still gets the
+ * button. People can still record on the post, and the one thing that is
+ * refused — keeping another recording on the card — is said where it is
+ * tried (`echo.audioFull`).
  */
 export function echoAskParams(
   card: Pick<EchoCard, '_id' | 'front' | 'lang'>,
   languages: readonly LanguageCode[],
-  kind: PostKind = 'pronunciation',
 ): EchoAskParams | null {
   const draft = card.front.trim()
   if (!draft || draft.length > MAX_POST_LENGTH) return null
   const lang = languages.find((code) => code === card.lang)
   if (!lang) return null
-  return { kind, draft, lang, card: card._id }
+  return { asks: 'pronunciation', draft, lang, card: card._id }
 }

@@ -11,8 +11,20 @@ import { PostScreen } from '../../../src/screens/PostScreen'
  * No redirect, for the reason `profile/[handle]` gives: a post has three
  * parents — the feed, the corrections list and a correction's own page — so
  * only the feed's own rows fill the feed's own panel.
+ *
+ * `comment` is set by a reply notification: the thread to bring into view.
  */
 export default function PostRoute() {
-  const { id, from } = useLocalSearchParams<{ id: string; from?: string }>()
-  return <PostScreen postId={id ?? ''} {...(from ? { from } : {})} />
+  const { id, from, comment } = useLocalSearchParams<{
+    id: string
+    from?: string
+    comment?: string
+  }>()
+  return (
+    <PostScreen
+      postId={id ?? ''}
+      {...(from ? { from } : {})}
+      {...(comment ? { focusCommentId: comment } : {})}
+    />
+  )
 }

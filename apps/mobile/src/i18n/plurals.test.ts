@@ -65,4 +65,22 @@ describe('counts that vary with user data inflect', () => {
     expect(ar('feed.answers', { count: 2 })).toBe('تسجيلان')
     expect(ar('feed.answers', { count: 5 })).toBe('5 تسجيلات')
   })
+
+  it('counts the replies a thread is hiding in every Russian and Arabic form', () => {
+    // The one count comment replies added. "View 1 more replies" is the bug
+    // in English; in these two it is three and five different wrong words.
+    const ru = createTranslate('ru')
+    expect(ru('feed.viewReplies', { count: 1 })).toBe('Показать ещё 1 ответ')
+    expect(ru('feed.viewReplies', { count: 3 })).toBe('Показать ещё 3 ответа')
+    expect(ru('feed.viewReplies', { count: 11 })).toBe('Показать ещё 11 ответов')
+
+    const ar = createTranslate('ar')
+    expect(ar('feed.viewReplies', { count: 1 })).toBe('عرض ردّ آخر')
+    expect(ar('feed.viewReplies', { count: 2 })).toBe('عرض ردّين آخرين')
+    expect(ar('feed.viewReplies', { count: 5 })).toBe('عرض 5 ردود أخرى')
+    expect(ar('feed.viewReplies', { count: 12 })).toBe('عرض 12 ردًّا آخر')
+
+    const en = createTranslate('en')
+    expect(en('feed.viewReplies', { count: 1 })).toBe('View 1 more reply')
+  })
 })

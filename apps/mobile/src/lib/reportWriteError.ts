@@ -1,6 +1,7 @@
 import { MAX_VIDEO_SECONDS } from '@langx/shared'
 import { ApiRequestError } from '../api/client'
 import type { TranslateFn } from '../i18n'
+import { postRefusalKey } from './postRefusal'
 import { isOfflineFailure } from './reportActionError'
 import { showToast } from './toast'
 
@@ -36,6 +37,19 @@ export function reportWriteError(caught: unknown, t: TranslateFn): void {
     showToast(t('feed.attachmentFailed'))
     return
   }
+  /*
+   * The feed's own refusals, told apart by `reason` — and the daily post cap,
+   * a `QUOTA_EXCEEDED` like the media quota but with `limit: 'postsPer24h'`,
+   * which would otherwise be worded as an attachment limit on a post with no
+   * attachment. A `VALIDATION_FAILED` without a reason gets the generic
+   * "couldn't post that": it is an API that does not know asks yet, and
+   * nothing the writer changes gets it through.
+   */
+  const refusal = postRefusalKey(caught)
+  if (refusal) {
+    showToast(t(refusal))
+    return
+  }
   if (caught.code === 'QUOTA_EXCEEDED') {
     showToast(t('feed.mediaQuota'))
     return
@@ -52,7 +66,5 @@ export function reportWriteError(caught: unknown, t: TranslateFn): void {
     showToast(t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS }))
     return
   }
-  showToast(
-    caught.code === 'VALIDATION_FAILED' ? t('feed.wrongPostKind') : t('feed.attachmentFailed'),
-  )
+  showToast(t('feed.attachmentFailed'))
 }

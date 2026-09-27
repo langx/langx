@@ -88,7 +88,8 @@ export const fr: Localized<EnMessages> = {
     discoverSearch: 'Vous cherchez quelqu’un en particulier ? Cherchez son identifiant.',
     feedCorrect:
       'Corriger une phrase prend un instant et c’est le plus utile que vous puissiez faire ici.',
-    feedPronounce: 'Vous ne savez pas dire un mot ? Demandez, quelqu’un l’enregistrera pour vous.',
+    feedPronounce:
+      'Vous n’arrivez pas à dire un mot ? Publiez-le et cochez Besoin de la prononciation — quelqu’un l’enregistrera.',
     dismiss: 'Masquer ce conseil',
     section: 'Conseils',
     show: 'Afficher les conseils',
@@ -98,7 +99,7 @@ export const fr: Localized<EnMessages> = {
       'Appuie longuement sur un message pour le corriger — le plus utile que tu puisses envoyer.',
     chatSwipeReply: 'Fais glisser un message vers la droite pour y répondre.',
     discoverFilters: 'Utilise les filtres pour affiner par niveau, âge ou pays.',
-    feedAsk: 'Bloqué sur une phrase ? Publie-la ici, quelqu’un la corrigera.',
+    feedAsk: 'Bloqué sur une phrase ? Publiez-la et cochez Besoin d’une correction.',
     chatEcho:
       'Appuie longuement sur un message et choisis Ajouter à Echo. Il revient demain, puis dans trois jours, puis dans une semaine.',
     chatAttach:
@@ -121,6 +122,8 @@ export const fr: Localized<EnMessages> = {
     echoOwn:
       'Écris ta propre carte depuis Toutes les cartes. Laisse le sens vide et il sera traduit pour toi.',
     echoRecord: 'Ouvre une carte pour y ajouter une image ou l’enregistrer avec ta propre voix.',
+    feedMoment:
+      'Partagez une photo, une vidéo ou une phrase de votre journée — pas besoin de poser une question.',
   },
   tour: {
     announcement: '{title}\u00a0: {body}',
@@ -144,9 +147,9 @@ export const fr: Localized<EnMessages> = {
       'Chaque conversation que tu commences vit ici, et celles qui t’attendent ont leur propre onglet.',
     tabChatsGuestBody:
       'Les conversations vivent ici. Tu peux lire et explorer sans compte — écrire est la seule chose qui en demande un.',
-    tabFeedTitle: 'Demande et apprends',
+    tabFeedTitle: 'Partager et apprendre',
     tabFeedBody:
-      'Le Fil, c’est toute la communauté : fais corriger une phrase, écoute comment un mot se prononce, et rends la pareille à quelqu’un.',
+      'Le fil est un seul flux : partagez un moment de votre journée, ou cochez Besoin d’une correction ou Besoin de la prononciation sur une publication — et aidez les autres avec les leurs.',
   },
   theme: {
     section: 'Apparence',
@@ -296,11 +299,9 @@ export const fr: Localized<EnMessages> = {
     readAloudFailedTitle: 'Impossible de lire cette carte à voix haute',
     readAloudLimitBody: 'Tu peux faire lire {count} cartes par jour. Ça repart demain.',
     spokenBy: 'Dit par {name}',
-    askToHearIt: 'Demander au fil comment ça se dit',
     keepOnCard: 'Garder sur ma carte',
     audioAlreadyKept: 'Sur ta carte',
     audioKept: 'Gardé sur ta carte',
-    askForCorrection: 'Demander au fil de le corriger',
     keepCorrection: 'Garder comme ma phrase',
     correctionKept: 'Ta carte dit maintenant ceci',
     seeCard: 'Voir la carte',
@@ -360,6 +361,8 @@ export const fr: Localized<EnMessages> = {
     aboutProof:
       'Espacement et autotest : les deux résultats les mieux établis sur la mémoire, depuis 1880.',
     aboutClose: 'J’ai compris',
+    audioFull: 'Cette carte contient déjà autant d’enregistrements qu’elle peut en garder.',
+    postToFeed: 'Publier dans le fil',
   },
 
   conversationPicker: {
@@ -803,7 +806,8 @@ export const fr: Localized<EnMessages> = {
     meetingsBody:
       "Une heure avant un appel que vous avez accepté tous les deux. L'e-mail du soir dit ce qui vous attend demain.",
     social: 'Le fil et les gens qui y sont',
-    socialBody: 'Abonnements, corrections de vos publications et j’aime.',
+    socialBody:
+      'Abonnements, commentaires, corrections et enregistrements sur vos publications, et mentions J’aime.',
     wallet: 'Jetons',
     walletBody: 'La distribution quotidienne et votre cadeau horaire.',
     promotions: 'Actualités et offres',
@@ -864,9 +868,9 @@ export const fr: Localized<EnMessages> = {
     publicEmptyBody: '@{handle} n’a pas encore corrigé de publication ici.',
   },
   myPosts: {
-    emptyTitle: 'Tu n’as encore rien demandé',
+    emptyTitle: 'Rien publié pour l’instant',
     emptyBody:
-      'Pose une question sur une phrase dont tu n’es pas sûr, ou un mot que tu n’arrives pas à dire — elle apparaîtra ici.',
+      'Partagez un moment ou posez une question sur une phrase — tout ce que vous publiez apparaît ici.',
   },
   discover: {
     pickTitle: 'Personne d’ouvert',
@@ -1289,6 +1293,7 @@ export const fr: Localized<EnMessages> = {
     messageSent: 'Signalé. Merci — nous les examinons tous.',
     profileSent: 'Signalement envoyé. Nous allons regarder.',
     failed: 'Signalement impossible',
+    commentQuestion: 'Pourquoi signalez-vous ce commentaire ?',
   },
 
   inbox: {
@@ -1297,7 +1302,8 @@ export const fr: Localized<EnMessages> = {
     unread: 'Non lu',
     markAllRead: 'Tout marquer comme lu',
     emptyTitle: 'Rien pour le moment',
-    emptyBody: 'Les abonnements, les corrections et les j’aime arrivent ici.',
+    emptyBody:
+      'Les abonnements, commentaires, corrections, enregistrements et mentions J’aime sur vos publications arrivent ici.',
     follow: '{name} vous suit',
     postComment: '{name} a commenté votre publication',
     postCorrection: '{name} a corrigé votre phrase',
@@ -1342,16 +1348,9 @@ export const fr: Localized<EnMessages> = {
     pickTitle: 'Aucun post ouvert',
     pickBody: 'Choisissez-en un dans le fil, il s’ouvre ici.',
     topTag: 'Meilleure',
-    ask: '+ Demander',
-    askTitle: 'Ta phrase en {language}',
     postLanguage: 'Langue de la publication',
-    askPlaceholder: 'La phrase dont tu n’es pas sûr…',
     posting: 'Publication…',
-    posted: 'Publié. Quelqu’un la corrigera.',
     correctionSent: 'Correction envoyée. Merci.',
-    correctedEmptyTitle: 'Tout est corrigé',
-    correctedEmptyBody:
-      'Personne n’attend d’aide pour le moment. Publie une phrase à toi, ou reviens plus tard.',
     noCorrections: 'Pas encore de correction',
     corrections: { one: '{count} correction', other: '{count} corrections' },
     topCorrection: 'Meilleure correction ·',
@@ -1377,8 +1376,6 @@ export const fr: Localized<EnMessages> = {
     correctionsEmptyBody: 'Soyez la première personne à corriger cette phrase.',
     title: 'Fil',
     post: 'Publier',
-    correctionSection: 'Corrections',
-    pronunciationSection: 'Prononciation',
     comment: 'Commenter',
     comments: { one: '{count} commentaire', other: '{count} commentaires' },
     addComment: 'Ajouter un commentaire',
@@ -1386,12 +1383,6 @@ export const fr: Localized<EnMessages> = {
     allComments: 'Commentaires',
     showMoreComments: 'Voir plus de commentaires',
     commentsEmptyBody: 'Soyez le premier à réagir.',
-    pronounceAsk: '+ Comment ça se dit ?',
-    pronounceTitle: 'Le mot en {language}',
-    pronouncePlaceholder: 'Le mot ou la phrase que vous n’arrivez pas à dire…',
-    pronounceEmptyTitle: 'Rien à dire à voix haute',
-    pronounceEmptyBody:
-      'Personne n’attend d’entendre un mot. Posez la question pour l’un des vôtres.',
     answers: {
       one: '{count} enregistrement',
       other: '{count} enregistrements',
@@ -1425,10 +1416,48 @@ export const fr: Localized<EnMessages> = {
       one: '+{count} jeton · Illimité sur tous les forfaits',
       other: '+{count} jetons · Illimité sur tous les forfaits',
     },
-    composeHint:
-      'Quelqu’un de natif la corrigera, en général dans l’heure. Les corrections sont illimitées sur tous les forfaits.',
     voiceNote: 'Note vocale',
     top: 'Top',
+    newPost: '+ Publier',
+    emptyTitle: 'Rien ici pour l’instant',
+    emptyBody: 'Partagez un moment de votre journée, ou demandez de l’aide sur une phrase.',
+    badgeCorrection: 'Correction demandée',
+    badgePronunciation: 'Prononciation demandée',
+    openPost: 'Ouvre la publication',
+    viewPost: 'Voir la publication',
+    notAsking: 'Cette publication ne demande pas cela.',
+    needsText: 'Pour demander de l’aide, écrivez la phrase concernée.',
+    askNeedsLearning:
+      'Demander de l’aide se fait dans une langue que vous apprenez — choisissez-en une ci-dessus.',
+    needsSomething: 'Écrivez quelque chose, ou ajoutez une photo ou une vidéo.',
+    languageNotYours: 'Vous pouvez publier dans une langue que vous parlez ou apprenez.',
+    postLimit: 'Vous avez beaucoup publié aujourd’hui. Réessayez demain.',
+    postFailed: 'Impossible de publier — réessayez dans un instant.',
+    correctionsTitle: 'Corrections',
+    recordingsTitle: 'Enregistrements',
+    reply: 'Répondre',
+    replyingTo: 'En réponse à {name}',
+    cancelReply: 'Annuler la réponse',
+    commentRemoved: 'Commentaire supprimé',
+    reportComment: 'Signaler le commentaire',
+    commentOptions: 'Options du commentaire',
+    viewReplies: { one: 'Voir {count} autre réponse', other: 'Voir {count} autres réponses' },
+    composeTitle: 'Nouvelle publication',
+    captionPlaceholder: 'Dites quelque chose en {language}…',
+    postedPlain: 'Publié.',
+    postedPronunciation: 'Publié. Quelqu’un le prononcera pour vous.',
+    postedBoth: 'Publié. Quelqu’un le corrigera et le prononcera pour vous.',
+    askPronunciationHint:
+      'Un locuteur natif l’enregistrera pour vous, à vitesse normale et lentement.',
+    askSectionTitle: 'Demander de l’aide (facultatif)',
+    askCorrection: 'Besoin d’une correction',
+    askPronunciation: 'Besoin de la prononciation',
+    addMedia: 'Ajouter une photo ou une vidéo',
+    postLanguageRequired:
+      'Ajoutez à votre profil une langue que vous parlez ou apprenez pour publier dans cette langue.',
+    postedCorrection: 'Publié. Quelqu’un la corrigera.',
+    askCorrectionHint:
+      'Quelqu’un de natif la corrigera, en général dans l’heure. Les corrections sont illimitées sur tous les forfaits.',
   },
 
   profile: {
@@ -1548,9 +1577,9 @@ export const fr: Localized<EnMessages> = {
     echoTitle: 'Garde-le dans Echo',
     echoBody:
       'Appuie longuement sur un message et choisis Ajouter à Echo. La phrase revient dans l’onglet Echo juste avant que tu l’oublies, jusqu’à ce que tu la connaisses.',
-    feedTitle: 'Demande au Fil',
+    feedTitle: 'Le fil',
     feedBody:
-      'Publie une phrase pour la faire corriger, ou demande comment se dit un mot et quelqu’un l’enregistrera. Puis fais de même pour quelqu’un d’autre.',
+      'Partagez une photo, une vidéo ou une phrase. Besoin d’aide ? Cochez Besoin d’une correction ou Besoin de la prononciation et un locuteur natif répondra. Puis faites de même pour quelqu’un d’autre.',
     streakTitle: 'Séries et jetons',
     streakBody:
       'Un message par jour garde ta série en vie. Parler et enseigner rapportent des jetons, à dépenser en gel de série ou en nouveau style pour ton profil.',
@@ -2145,6 +2174,7 @@ export const fr: Localized<EnMessages> = {
     },
     badge: 'Partager le badge {label}',
     badgeMessage: 'J’ai obtenu le badge « {label} » sur LangX. Pratique avec moi : {url}',
+    postMessageNoText: 'Un moment en {language} sur LangX : {url}',
   },
 
   linkDevice: {

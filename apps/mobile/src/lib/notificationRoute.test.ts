@@ -39,6 +39,10 @@ describe('notificationRoute', () => {
 
   it('sends feed news to the post, the person, or the inbox', () => {
     expect(notificationRoute({ kind: 'social', postId: 'p1' })).toBe('/post/p1')
+    // A reply names its comment, and the post opens at that thread.
+    expect(notificationRoute({ kind: 'social', postId: 'p1', commentId: 'c9' })).toBe(
+      '/post/p1?comment=c9',
+    )
     expect(notificationRoute({ kind: 'social', handle: 'sofia' })).toBe('/sofia')
     // Neither id: the notification centre, not the feed. The row this push
     // came from is the first thing in it, and the feed mentions it nowhere.

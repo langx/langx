@@ -23,6 +23,12 @@ interface AttachmentBarProps {
    * something the report cannot use.
    */
   voiceNote?: boolean
+  /**
+   * The picker chip's words, when a screen leads with it. The composer does:
+   * a photo or a video can be the whole post now, so "Add a photo or video"
+   * says what the chip is for there, where "Photo" undersold it.
+   */
+  mediaLabel?: string
 }
 
 /**
@@ -40,7 +46,13 @@ interface AttachmentBarProps {
  * while recording, which is chat's arrangement. A component with enough props
  * to serve both would not be a component.
  */
-export function AttachmentBar({ pending, onPick, disabled, voiceNote = true }: AttachmentBarProps) {
+export function AttachmentBar({
+  pending,
+  onPick,
+  disabled,
+  voiceNote = true,
+  mediaLabel,
+}: AttachmentBarProps) {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -145,7 +157,7 @@ export function AttachmentBar({ pending, onPick, disabled, voiceNote = true }: A
         ]}
       >
         <Feather name="image" size={18} color={colors.text} />
-        <Text style={styles.chipLabel}>{t('composer.attachLibrary')}</Text>
+        <Text style={styles.chipLabel}>{mediaLabel ?? t('composer.attachLibrary')}</Text>
       </Pressable>
       {voiceNote ? (
         <Pressable

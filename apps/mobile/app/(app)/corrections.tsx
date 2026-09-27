@@ -1,3 +1,5 @@
+import Feather from '@expo/vector-icons/Feather'
+import { Image } from 'expo-image'
 import { useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native'
 import { router } from 'expo-router'
@@ -9,7 +11,7 @@ import {
   type MessageDto,
 } from '../../src/api/queries'
 import type { FeedPost } from '../../src/api/types'
-import type { AuthoredCorrection } from '@langx/shared'
+import { attachmentsOf, isImageContentType, type AuthoredCorrection } from '@langx/shared'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
@@ -23,7 +25,8 @@ import { relativeTime } from '../../src/lib/format'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { goBackTo, openPost } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
-import { makeStyles } from '../../src/lib/theme'
+import { asksOf } from '../../src/lib/postAsks'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -258,13 +261,33 @@ function PostRow({ post, styles }: { post: FeedPost; styles: ReturnType<typeof u
   const { locale } = useLocale()
   const names = useDisplayNames()
 
+  const { colors } = useTheme()
+
   /*
-   * Which number a row shows follows the post's own kind, not a screen-wide
-   * flag — this is the one list where the two sit next to each other, so the
-   * count and the word for it have to be read off the post.
+   * Which numbers a row shows follow the post's own asks, not a screen-wide
+   * flag — this is the one list where every kind of post sits side by side.
+   * A count per ask; a moment, which asks for nothing, shows its comments.
    */
-  const pronunciation = post.kind === 'pronunciation'
-  const replies = pronunciation ? post.answerCount : post.correctionCount
+  const asks = asksOf(post)
+  const counts = [
+    ...(asks.includes('correction')
+      ? [
+          post.correctionCount > 0
+            ? t('feed.corrections', { count: post.correctionCount })
+            : t('feed.noCorrections'),
+        ]
+      : []),
+    ...(asks.includes('pronunciation')
+      ? [
+          (post.answerCount ?? 0) > 0
+            ? t('feed.answers', { count: post.answerCount ?? 0 })
+            : t('feed.noAnswers'),
+        ]
+      : []),
+    ...(asks.length === 0 ? [t('feed.comments', { count: post.commentCount })] : []),
+  ]
+  // A post with no words is its picture, so the row shows that instead.
+  const first = post.body.trim() ? undefined : attachmentsOf(post)[0]
 
   return (
     <Pressable
@@ -276,12 +299,18 @@ function PostRow({ post, styles }: { post: FeedPost; styles: ReturnType<typeof u
         <Text style={styles.language}>{names.language(post.language)}</Text>
         <Text style={styles.when}>{relativeTime(post.createdAt, { t, locale })}</Text>
       </View>
-      <Text style={styles.postBody}>{post.body}</Text>
-      <Text style={styles.count}>
-        {replies > 0
-          ? t(pronunciation ? 'feed.answers' : 'feed.corrections', { count: replies })
-          : t(pronunciation ? 'feed.noAnswers' : 'feed.noCorrections')}
-      </Text>
+      {first ? (
+        <View style={styles.thumb}>
+          {isImageContentType(first.contentType) ? (
+            <Image source={{ uri: first.url }} style={styles.thumbFill} contentFit="cover" />
+          ) : (
+            <Feather name="video" size={20} color={colors.textMuted} />
+          )}
+        </View>
+      ) : (
+        <Text style={styles.postBody}>{post.body}</Text>
+      )}
+      <Text style={styles.count}>{counts.join(' · ')}</Text>
     </Pressable>
   )
 }
@@ -341,7 +370,7 @@ function Row({
 
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
 
-const useStyles = makeStyles(({ colors, spacing }) => ({
+const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   loading: { paddingVertical: spacing.lg },
   list: { paddingTop: spacing.sm },
   row: {
@@ -367,5 +396,15 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   corrected: { color: colors.text, fontSize: 16, fontWeight: '600', lineHeight: 23 },
   language: { color: colors.accent, fontSize: 13, fontWeight: '700' },
   postBody: { color: colors.text, fontSize: 17, lineHeight: 25 },
+  thumb: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.md,
+    height: 72,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: 72,
+  },
+  thumbFill: { height: '100%', width: '100%' },
   count: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
 }))

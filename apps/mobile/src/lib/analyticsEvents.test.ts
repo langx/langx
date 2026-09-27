@@ -98,6 +98,12 @@ describe('every event survives the sanitizer', () => {
     { name: 'push_registration_failed', properties: { step: 'token', reason: 'Error' } },
     { name: 'filters_applied', properties: { count: 3, pro: true } },
     { name: 'tokens_spent', properties: { sku: 'frame_gold', kind: 'frame', amount: 250 } },
+    { name: 'echo_ask_opened', properties: { kind: 'pronunciation', entry: 'cards' } },
+    {
+      name: 'post_created',
+      properties: { asks: 'none', media: 2, hasText: false, from: 'feed' },
+    },
+    { name: 'feed_card_opened', properties: { position: 4, asks: 'both' } },
   ]
 
   for (const event of events) {

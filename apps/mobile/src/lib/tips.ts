@@ -32,7 +32,7 @@ export const TIP_SLOTS = {
   ],
   chats: ['chatsSwipe', 'chatsPin', 'chatsUnreplied', 'chatsStarred'],
   discover: ['discoverFilters', 'discoverRadius', 'discoverSearch', 'discoverActive'],
-  feed: ['feedAsk', 'feedCorrect', 'feedPronounce', 'feedEcho', 'feedSlowTake'],
+  feed: ['feedMoment', 'feedAsk', 'feedCorrect', 'feedPronounce', 'feedEcho', 'feedSlowTake'],
   /**
    * The review tab, once there is a card to review. Every one of these is
    * about a control the tab does not draw — Again is on the session, Archive

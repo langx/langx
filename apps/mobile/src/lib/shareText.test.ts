@@ -53,6 +53,14 @@ describe('the sentences', () => {
     }
   })
 
+  it('shares a caption-less post without an empty quote', () => {
+    const { message, url } = postShareText(t, { id: 'abc', body: '  ', languageName: 'Spanish' })
+    expect(message).toContain(url)
+    expect(message).toContain('Spanish')
+    expect(message).not.toContain('“')
+    expect(message).not.toContain('”')
+  })
+
   it('links a profile to the profile, not to an invite', () => {
     const { url } = profileShareText(t, { name: 'Deniz', handle: 'deniz' })
     expect(url).toBe('https://app.langx.io/deniz')

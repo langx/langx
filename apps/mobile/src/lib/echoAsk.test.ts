@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { MAX_POST_LENGTH, type LanguageCode } from '@langx/shared'
 import { echoAskParams } from './echoAsk'
+import { asksFromParams } from './postDraft'
 
 const LEARNING: LanguageCode[] = ['fr', 'es']
 
@@ -11,11 +12,16 @@ function card(front: string, lang: string) {
 describe('echoAskParams', () => {
   it('carries the sentence, the language and the card id', () => {
     expect(echoAskParams(card('  Bonjour  ', 'fr'), LEARNING)).toEqual({
-      kind: 'pronunciation',
+      asks: 'pronunciation',
       draft: 'Bonjour',
       lang: 'fr',
       card: 'card1',
     })
+  })
+
+  it('always opens the composer with Pronunciation needed ticked, and only that', () => {
+    const params = echoAskParams(card('Bonjour', 'fr'), LEARNING)
+    expect(asksFromParams({ asks: params!.asks })).toEqual(['pronunciation'])
   })
 
   it('refuses a sentence longer than a post may be', () => {

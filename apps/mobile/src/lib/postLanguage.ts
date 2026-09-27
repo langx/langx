@@ -31,6 +31,37 @@ export function postLanguages(learning: readonly LearningEntry[] | undefined): L
 }
 
 /**
+ * Every language a post may be in: the ones you learn, most important first,
+ * then the ones you speak.
+ *
+ * Wider than `postLanguages` because a moment — a post that asks for nothing —
+ * may be in your own language: natives sharing their day is what learners come
+ * to read. Asking for help stays learning-only, which the composer shows by
+ * disabling the ask chips on a native-only language (`asksAllowedIn`) rather
+ * than by quietly moving the text to another language.
+ */
+export function momentLanguages(
+  learning: readonly LearningEntry[] | undefined,
+  native: readonly { code: string }[] | undefined,
+): LanguageCode[] {
+  const learned = postLanguages(learning)
+  const spoken = (native ?? [])
+    .map((entry) => entry.code)
+    .filter(isLanguageCode)
+    .filter((code) => !learned.includes(code))
+  // A language listed twice in `native` would be offered twice without this.
+  return [...learned, ...new Set(spoken)]
+}
+
+/** Whether a post in `language` may ask for help: only in a language you learn. */
+export function asksAllowedIn(
+  language: string | undefined,
+  learning: readonly LearningEntry[] | undefined,
+): boolean {
+  return !!language && postLanguages(learning).some((code) => code === language)
+}
+
+/**
  * Which language the composer is actually posting in.
  *
  * Takes `chosen` as a loose `string | null` on purpose: it is a *wish*, not a

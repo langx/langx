@@ -7,6 +7,15 @@ interface ChipProps {
   selected?: boolean
   onPress?: () => void
   tone?: 'default' | 'accent' | 'secondary' | 'streak' | 'pro' | 'proPlus'
+  /**
+   * Opt-in: a chip that is one of several independent on/off choices — the
+   * composer's two asks — says so to a screen reader. Without it a tappable
+   * chip is announced as nothing in particular, and `SegmentedControl` is the
+   * wrong control for independent choices: it is a radio group.
+   */
+  accessibilityRole?: 'checkbox'
+  /** Drawn faded and not pressable; read out as unavailable with the role above. */
+  disabled?: boolean
 }
 
 type Tone = NonNullable<ChipProps['tone']>
@@ -36,7 +45,14 @@ function toneColour(colors: ThemeColors, tone: Tone): string {
  * own background colour — unreadable, and only visible on a screen that
  * happened to use a selected chip without an `onPress`.
  */
-export function Chip({ label, selected = false, onPress, tone = 'default' }: ChipProps) {
+export function Chip({
+  label,
+  selected = false,
+  onPress,
+  tone = 'default',
+  accessibilityRole,
+  disabled = false,
+}: ChipProps) {
   const { colors } = useTheme()
   const styles = useStyles()
 
@@ -74,7 +90,24 @@ export function Chip({ label, selected = false, onPress, tone = 'default' }: Chi
 
   if (!onPress) return <View style={container}>{body}</View>
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [...container, pressed && styles.pressed]}>
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      {...(accessibilityRole
+        ? {
+            accessibilityRole,
+            accessibilityState: { checked: selected, disabled },
+            // react-native-web maps `disabled` out of `accessibilityState` but
+            // not `checked`, so the web build said nothing about the tick.
+            'aria-checked': selected,
+          }
+        : {})}
+      style={({ pressed }) => [
+        ...container,
+        disabled && styles.disabled,
+        pressed && styles.pressed,
+      ]}
+    >
       {body}
     </Pressable>
   )
@@ -93,4 +126,5 @@ const useStyles = makeStyles(({ spacing, radius }) => ({
   },
   label: { fontSize: 14, fontWeight: '600' },
   pressed: { opacity: 0.7 },
+  disabled: { opacity: 0.45 },
 }))

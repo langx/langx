@@ -35,18 +35,11 @@ const ROWS = [
   'Scan a code',
   'Preview my profile',
   'Day streak',
+  // The two ask chips on the compose screen, named when the prompt describes
+  // the Feed.
+  'Correction needed',
+  'Pronunciation needed',
 ]
-
-/**
- * The two ask chips on the compose screen, which the prompt names when it
- * describes the Feed.
- *
- * Checked against the prompt only for now: the app's catalogue gains these
- * words with the client half of the timeline, which merges after this API
- * change. Once it has, they belong in `ROWS` above, where the catalogue is
- * checked too.
- */
-const FEED_ASKS = ['Correction needed', 'Pronunciation needed']
 
 /** The app's own words about what a token is, which the prompt repeats verbatim. */
 const TOKEN_PROMISE = 'There is no chain, no contract and no market.'
@@ -73,10 +66,6 @@ describe('what the assistant says is in the app', () => {
   it.each(ROWS)('still calls it “%s”, as the app does', (row) => {
     expect(prompt).toContain(row)
     expect(catalogue).toContain(`'${row}'`)
-  })
-
-  it.each(FEED_ASKS)('names the “%s” ask when it describes the Feed', (ask) => {
-    expect(prompt).toContain(ask)
   })
 
   it('says every ask is optional, and that comments take replies', () => {
