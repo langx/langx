@@ -178,6 +178,19 @@ export interface ApiErrorBody {
   permanent?: boolean
   /** Present on QUOTA_EXCEEDED: ISO timestamp when the next slot frees up. */
   retryAt?: string
+  /**
+   * Which rule refused an otherwise well-formed request, when one `code` covers
+   * several and the client words them differently — "this post is not asking
+   * for that" against "an ask needs words", both `VALIDATION_FAILED`.
+   *
+   * Its own field rather than something inside `details`, because `details` is
+   * already taken: the global handler fills it with zod's issue list on every
+   * schema failure, and a client reading a reason out of that would be parsing
+   * zod. Optional and additive, so a build that predates it keeps branching on
+   * `code` and shows exactly what it showed before. An absent `reason` means
+   * "no more specific answer" and deserves a generic sentence, not a guess.
+   */
+  reason?: string
   details?: unknown
 }
 
