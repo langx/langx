@@ -1722,6 +1722,87 @@ describe('echo', () => {
       expect((await forPost(asker, written)).json<{ _id: string }>()._id).toBe(cardId)
     })
 
+    /** A post row written straight in, in a shape no writer of this build produces. */
+    async function storedPost(author: SignedUpUser, fields: Record<string, unknown>) {
+      const _id = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id,
+        authorId: author.userId,
+        body: 'squirrel',
+        language: 'en',
+        correctionCount: 0,
+        createdAt: new Date(),
+        ...fields,
+      })
+      return _id.toHexString()
+    }
+
+    async function slots(user: SignedUpUser, cardId: string) {
+      return (
+        await app.inject({
+          method: 'GET',
+          url: `/echo/cards/${cardId}`,
+          headers: { cookie: user.cookie },
+        })
+      ).json<{ askedPostId?: string; askedCorrectionPostId?: string }>()
+    }
+
+    // Every post from before the pronunciation section has no `kind`, and
+    // each of them asked for a correction.
+    it('files a post with no kind and no asks under the correction slot', async () => {
+      const [asker, friend] = await newPair('ask-legacy')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const postId = await storedPost(asker, {})
+
+      expect((await link(asker, cardId, postId)).statusCode).toBe(200)
+      const card = await slots(asker, cardId)
+      expect(card.askedCorrectionPostId).toBe(postId)
+      expect(card.askedPostId).toBeUndefined()
+    })
+
+    it('fills both slots from a post asking for both, and moves both together', async () => {
+      const [asker, friend] = await newPair('ask-both-one-post')
+      const first = await makeCard(asker, friend, 'squirrel')
+      // A second card of the asker's own, from a post rather than the chat:
+      // one conversation per pair means one first message to capture.
+      const second = (
+        await capture(asker, { kind: 'post', postId: await askPost(asker, 'thorough') })
+      ).json<{ card: { _id: string } }>().card._id
+      const postId = await storedPost(asker, {
+        asks: ['correction', 'pronunciation'],
+        kind: 'correction',
+        answerCount: 0,
+      })
+
+      expect((await link(asker, first, postId)).statusCode).toBe(200)
+      expect(await slots(asker, first)).toMatchObject({
+        askedPostId: postId,
+        askedCorrectionPostId: postId,
+      })
+
+      // Re-asking from another card clears every slot it is about to set, so
+      // neither partial unique collides.
+      const moved = await link(asker, second, postId)
+      expect(moved.statusCode, moved.body).toBe(200)
+      expect(await slots(asker, second)).toMatchObject({
+        askedPostId: postId,
+        askedCorrectionPostId: postId,
+      })
+      const old = await slots(asker, first)
+      expect(old.askedPostId).toBeUndefined()
+      expect(old.askedCorrectionPostId).toBeUndefined()
+    })
+
+    it('refuses to link a post that asks for nothing', async () => {
+      const [asker, friend] = await newPair('ask-moment')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const postId = await storedPost(asker, { asks: [], kind: 'moment', answerCount: 0 })
+
+      const refused = await link(asker, cardId, postId)
+      expect(refused.statusCode).toBe(400)
+      expect(refused.json<{ reason?: string }>().reason).toBe('not_asked')
+    })
+
     it('puts a correction on the card as its sentence', async () => {
       const [asker, friend] = await newPair('correction-keep')
       const cardId = await makeCard(asker, friend, 'i has a squirrel')

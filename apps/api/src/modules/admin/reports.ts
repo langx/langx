@@ -1,7 +1,9 @@
 import {
+  asksOf,
   attachmentsOf,
   type AdminReportListQuery,
   type Media,
+  type PostAsk,
   type ReportStatus,
 } from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
@@ -57,6 +59,8 @@ export interface AdminReportDetail extends AdminReportRow {
      * second question about which field an older row kept its file in.
      */
     attachments: Media[]
+    /** What it asked for; empty for a moment. */
+    asks: PostAsk[]
   } | null
   /** What is in force on the reported account right now. */
   suspension: Profile['suspension'] | null
@@ -183,6 +187,7 @@ export async function getReport(
           language: post.language,
           hiddenAt: post.hiddenAt ? post.hiddenAt.toISOString() : null,
           attachments: attachmentsOf(post),
+          asks: asksOf(post),
         }
       : null,
     suspension: reported?.suspension ?? null,
