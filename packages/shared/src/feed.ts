@@ -35,14 +35,38 @@ export const MAX_POST_NOTE_LENGTH = 500
 
 /**
  * How many corrections make a post "Top" in the feed and on its own screen.
+ * Only a post that asks for a correction can earn it.
  *
- * There is no ranking to derive the badge from — nothing may sort by likes or
- * comments — so it is a threshold on the one count the card already shows.
- * Here rather than in the app so the card and the post screen read one number.
+ * The timeline has a ranking now, but it deliberately ignores likes and
+ * comments (see `FEED_RANK`), so it cannot say which post is "top" — the
+ * badge stays a threshold on the one count the card already shows. Here
+ * rather than in the app so the card and the post screen read one number.
  */
 export const FEED_TOP_CORRECTIONS = 5
 
 export const postBodySchema = z.string().trim().min(1).max(MAX_POST_LENGTH)
+
+/**
+ * A post's words, which may be none.
+ *
+ * Its own schema rather than a loosened `postBodySchema`, because a
+ * correction's `corrected` shares that one and must never be empty. The rules
+ * that decide when a caption may be empty depend on what the post asks for and
+ * what it carries, and those live in `createPost` — as refusals with a
+ * `reason` a client can word, which a schema failure cannot carry.
+ */
+export const postCaptionSchema = z.string().trim().max(MAX_POST_LENGTH)
+
+/**
+ * How many posts one account may write in twenty-four hours.
+ *
+ * Abuse control, not a tier: a sentence costs nothing to post, and the
+ * timeline ranks a window of recent posts, so a flood is the one way to push
+ * everybody else out of it. Media posts are bounded twice — this and the daily
+ * media quota. Config rather than a plan limit because paying does not make
+ * flooding acceptable.
+ */
+export const FEED_POSTS_PER_24H = 20
 
 /**
  * The section queues installed builds read (`GET /feed?kind=`): one queue per
@@ -69,6 +93,67 @@ export const postBodySchema = z.string().trim().min(1).max(MAX_POST_LENGTH)
  * table we do not need yet.
  */
 export const FEED_FOLLOWING_SOURCE_LIMIT = 500
+
+/**
+ * The timeline's weights: what makes a post relevant *to the person reading
+ * it*. Every term is something the reader can act on or learn from:
+ *
+ * - `base` — every post is worth something, so nothing is ever hidden by rank;
+ * - `audience` — the author is somebody you follow or have talked to;
+ * - `peer` — the post is in a language you are learning, so you can learn
+ *   from it;
+ * - `needsYou` — it asks for help nobody has given yet, in a language you
+ *   speak natively, and you are able to give it.
+ *
+ * **Never** likes or comments, and never the author's presence or paid tier:
+ * a popularity term turns the feed into a contest, presence would leak
+ * `hideOnlineStatus`, and paying buys no reach. A moment in your own native
+ * language earns no language bonus — the bonus rewards exchange, not
+ * familiarity.
+ *
+ * Changing any of these, or the formula in `timelineRank.ts`, bumps
+ * `FEED_RANK_VERSION`.
+ */
+export const FEED_RANK = { base: 1, audience: 3, peer: 1, needsYou: 4 } as const
+
+/** Hours for the social part of a post's score to halve: a day and a half. */
+export const FEED_RANK_SOCIAL_HALF_LIFE_H = 36
+
+/**
+ * Hours for the `needsYou` term to halve: a week. Slower than the social half
+ * on purpose — with one decay, a question nobody had answered in two days fell
+ * below a fresh unrelated photo, and a queue that stops draining its oldest
+ * questions is the failure the old correction queue existed to prevent.
+ */
+export const FEED_RANK_ASK_HALF_LIFE_H = 168
+
+/**
+ * Each older post by the same author in the window counts this much of the
+ * one before it, so ten moments in an hour are one card at full weight and
+ * nine that fall away — nobody fills the top by posting more.
+ */
+export const FEED_RANK_AUTHOR_REPEAT = 0.5
+
+/**
+ * How many of the newest posts the timeline ranks. Pinned by both ends on page
+ * one, so every later page re-ranks exactly the same rows. Below this window
+ * the feed continues in plain recency.
+ */
+export const FEED_TIMELINE_WINDOW = 200
+
+/**
+ * Your own post stays at the top this long after you write it — where the app
+ * already put it when you pressed Post — so a refresh does not move it. After
+ * that it ranks on the base weight alone: your own post is not news to you.
+ */
+export const FEED_OWN_PIN_MINUTES = 60
+
+/**
+ * Written into every timeline cursor. A cursor from another version is refused
+ * with `reason: 'stale_cursor'` and the client starts again from page one, so
+ * a change to the ranking cannot splice two orders into one scroll.
+ */
+export const FEED_RANK_VERSION = 1
 
 /**
  * The two sections an installed build knows, and the wire enum it speaks.
@@ -156,34 +241,41 @@ export function legacyKindOf(asks: readonly PostAsk[]): PostKind {
 export const createPostSchema = z.preprocess(
   withLegacyMedia,
   z.object({
-    body: postBodySchema,
-    /** What language the sentence is in — the one the author is learning. */
+    /**
+     * The words, which may be empty only on a post that asks for nothing and
+     * carries a photo or a video — see `createPost`. Any ask needs words: a
+     * correction is an edit of them, and a recording is them said aloud.
+     */
+    body: postCaptionSchema,
+    /**
+     * What language the post is in. One the author is learning for any ask;
+     * a moment may also be in a language they speak natively.
+     */
     language: languageCodeSchema,
     /**
-     * Photos or short videos of the thing being asked about, or a recording of
-     * the sentence being said.
+     * Photos or short videos, or a recording of the sentence being said.
      *
-     * An attachment to a sentence, not a replacement for one: `body` stays
-     * required. With no text there is nothing for `corrected` to be an edit of,
-     * and the correction composer seeds itself with the post's words. Loosening
-     * this later is backwards-compatible; tightening it would not be.
+     * A photo or a video can be the whole post when it asks for nothing. A
+     * voice note alone cannot: there is nothing on the card to read, and a
+     * recording with no words is the one attachment the feed has no way to
+     * show without them.
      */
     attachments: attachmentsSchema.optional(),
     /**
      * Defaulted, so a client that predates the pronunciation section keeps
-     * posting exactly what it always posted.
+     * posting exactly what it always posted. Ignored when `asks` is sent.
      */
     kind: z.enum(POST_KINDS).default('correction'),
     /**
-     * Reserved, and refused. A client that sends `asks` is asking for a post
-     * this API cannot store yet — possibly one that asks for nothing — and
-     * zod's default would strip the unknown key and file it as a correction
-     * request instead. Refusing loudly is the difference between a moment that
-     * fails to post and a moment that quietly becomes a request for help the
-     * author never made. It also covers a rollback or a blue-green overlap
-     * that puts an older machine behind a newer client.
+     * What the post asks for — none, one or both. Wins over `kind` when both
+     * are present; absent means "the one `kind` names", which is every
+     * request an installed build makes.
      */
-    asks: z.never().optional(),
+    asks: z
+      .array(z.enum(POST_ASKS))
+      .max(POST_ASKS.length)
+      .refine((asks) => new Set(asks).size === asks.length, 'An ask may appear once')
+      .optional(),
   }),
 )
 export type CreatePostInput = z.infer<typeof createPostSchema>
@@ -427,6 +519,25 @@ export const feedPageSchema = z.object({
   nextCursor: z.string().nullable(),
 })
 export type FeedPage = z.infer<typeof feedPageSchema>
+
+/**
+ * `GET /feed/timeline` — every post in one list, most relevant to the reader
+ * first. No `kind`: the timeline has no sections, and what a post asks for is
+ * a badge on its card rather than a tab.
+ *
+ * The cursor is opaque and versioned (`tl<version>.…`). A cursor from another
+ * ranking version is a 400 with `reason: 'stale_cursor'`, and the answer is to
+ * load page one again.
+ */
+export const listTimelineQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
+export type ListTimelineQuery = z.infer<typeof listTimelineQuerySchema>
+
+/** The same page shape as a section's, so a card renders from either. */
+export const timelinePageSchema = feedPageSchema
+export type TimelinePage = FeedPage
 
 export const POST_CORRECTIONS_PAGE_SIZE_DEFAULT = 20
 export const POST_CORRECTIONS_PAGE_SIZE_MAX = 50

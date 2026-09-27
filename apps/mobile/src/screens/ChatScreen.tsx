@@ -4,6 +4,7 @@ import {
   canEditMessage,
   translateTargetFor,
   attachmentsOf,
+  isAudioContentType,
   MAX_ATTACHMENTS,
   MAX_VIDEO_SECONDS,
   type Media,
@@ -61,6 +62,7 @@ import {
   useTranslate,
   useSpeakMessage,
   useRomanizeMessage,
+  useTranscribeMessage,
   type ClearedUnread,
   type ConversationDto,
   type MessageDto,
@@ -111,6 +113,7 @@ import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { speechLanguageFor } from '../lib/speechLanguage'
 import { errorCodeOf } from '../lib/errors'
 import { listState } from '../lib/listState'
+import { startersDue } from '../lib/conversationStarters'
 import { messageActionsFor, unsentActionsFor } from '../lib/messageActions'
 import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
@@ -124,7 +127,11 @@ import { placeLabel } from '../lib/sharedLocation'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
-import { ScheduledMessageRows, useScheduleMessage } from '../components/ScheduledMessages'
+import {
+  ScheduledMessageRows,
+  useScheduleMessage,
+  useScheduledMessages,
+} from '../components/ScheduledMessages'
 import { ScheduleTimeSheet } from '../components/ScheduleTimeSheet'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
@@ -315,6 +322,15 @@ export function ChatScreen({
    */
   const [speech, setSpeech] = useState<Record<string, string>>({})
   const [speaking, setSpeaking] = useState<string | null>(null)
+  /**
+   * Voice notes shown as text, by message id — only the ones this reader asked
+   * to see. The words themselves are kept on the note by the server once
+   * anybody has asked, so this is what is *shown*, not what is known: a note
+   * that arrives already written out still waits for its "Show text" tap,
+   * because somebody practising their listening has not asked to read it.
+   */
+  const [transcripts, setTranscripts] = useState<Record<string, string>>({})
+  const [transcribing, setTranscribing] = useState<string | null>(null)
   const listRef = useRef<FlatList<MessageRow>>(null)
   /**
    * The newest message at the moment the reader scrolled away from the bottom,
@@ -543,8 +559,11 @@ export function ChatScreen({
   const player = useAudioPlayer(null)
   const speakMessageApi = useSpeakMessage()
   const romanizeApi = useRomanizeMessage()
+  const transcribeApi = useTranscribeMessage()
   /** Some deployments have no voice service at all; then there is no row. */
   const voiceService = useAppConfig().data?.voiceService === true
+  /** Nor a transcript service; then no voice note offers its text. */
+  const transcriptService = useAppConfig().data?.transcriptService === true
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
@@ -1789,6 +1808,42 @@ export function ChatScreen({
   }
 
   /**
+   * A voice note as text, under its bubble.
+   *
+   * Free and instant when anybody in the thread already asked — the words came
+   * with the message. Otherwise one at a time, like `speak`: the service writes
+   * out one note at a time, and a second request would only queue behind it.
+   */
+  async function showText(message: MessageDto): Promise<void> {
+    const kept = attachmentsOf(message).find((media) =>
+      isAudioContentType(media.contentType),
+    )?.transcript
+    if (kept) {
+      setTranscripts((current) => ({ ...current, [message._id]: kept.text }))
+      return
+    }
+    if (transcribing !== null) return
+    setTranscribing(message._id)
+    try {
+      const result = await transcribeApi.mutateAsync({ conversationId, messageId: message._id })
+      setTranscripts((current) => ({ ...current, [message._id]: result.text }))
+    } catch (error) {
+      // A ceiling, not a gate, for `speak`'s reason: `transcriptsPerDay` is
+      // finite on every tier, so there is nothing to sell here.
+      await showAlert(
+        t('chat.transcriptUnavailable'),
+        t(
+          errorCodeOf(error) === 'QUOTA_EXCEEDED'
+            ? 'chat.transcriptLimit'
+            : 'chat.transcriptFailed',
+        ),
+      )
+    } finally {
+      setTranscribing(null)
+    }
+  }
+
+  /**
    * Long-press on any bubble. Correction used to *be* the gesture, on the
    * other person's text only; it is one row here, which is what let the other
    * three exist at all.
@@ -2227,6 +2282,15 @@ export function ChatScreen({
     void speakRef.current(message)
   }, [])
 
+  /** The voice note's "Show text", stabilised for the same reason. */
+  const showTextRef = useRef(showText)
+  useEffect(() => {
+    showTextRef.current = showText
+  })
+  const onShowText = useCallback((message: MessageDto) => {
+    void showTextRef.current(message)
+  }, [])
+
   /** The bubble's Echo chip, stabilised for the same reason. */
   const addEchoRef = useRef(addEcho)
   useEffect(() => {
@@ -2363,6 +2427,29 @@ export function ChatScreen({
                 clear: () => setReplyingTo(null),
               }
             : null
+
+  /*
+   * Conversation starters, when the thread has nothing to answer: no message
+   * yet, or a newest one that has gone stale. `threadItems`, not `items`, so a
+   * sentence just sent — still a stand-in — puts them away at once; an unsent
+   * row, a scheduled message, a picked attachment or a recording does the
+   * same, since the person has plainly started. Not in a window
+   * opened on an old message (the newest is not loaded there), not in a mode
+   * (a reply or an edit is already a sentence with a purpose), and not while
+   * the thread is loading or failed, when "empty" is not known yet.
+   */
+  // The same query the pending rows draw from, so this costs no request.
+  const scheduledCount = useScheduledMessages(conversationId).data?.length ?? 0
+  const offerTopics =
+    !readOnly &&
+    !mode &&
+    jumpAnchor === null &&
+    unsent.length === 0 &&
+    scheduledCount === 0 &&
+    pendingMedia.length === 0 &&
+    !recorder.isRecording &&
+    (state === 'empty' || state === 'content') &&
+    startersDue(threadItems[0]?.createdAt, Date.now())
 
   return (
     /*
@@ -2622,7 +2709,9 @@ export function ChatScreen({
                 ListFooterComponent={
                   <>
                     {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
-                    {items.length < SHORT_THREAD_MESSAGES ? (
+                    {/* One opener at a time: the starters above the composer
+                    are the same invitation, and a better one when offered. */}
+                    {items.length < SHORT_THREAD_MESSAGES && !offerTopics ? (
                       <ComposerHint slot="chat" style={styles.threadTip} />
                     ) : null}
                   </>
@@ -2685,6 +2774,11 @@ export function ChatScreen({
                       speaking={speaking === row.message._id}
                       hasReading={speech[row.message._id] !== undefined}
                       onReplayReading={onReplayReading}
+                      transcript={transcripts[row.message._id]}
+                      transcribing={transcribing === row.message._id}
+                      {...(transcriptService && !isOutgoingId(row.message._id)
+                        ? { onShowText }
+                        : {})}
                       highlighted={highlighted === row.message._id}
                       askAnswered={answeredAsks.has(row.message._id)}
                       onAnswerAsk={answerAsk}
@@ -2783,6 +2877,7 @@ export function ChatScreen({
                     : t('chat.writeMessage')
               }
               onSend={() => void send()}
+              topicSeed={offerTopics ? conversationId : undefined}
               {...(canSchedule ? { onSendLongPress: () => void openScheduleMenu() } : {})}
               hasAttachment={pendingMedia.length > 0}
               busy={sendingMedia}

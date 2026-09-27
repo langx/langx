@@ -360,6 +360,77 @@ describe('deleting an account', () => {
       expect(kept?.media).toBeUndefined()
     })
 
+    /*
+     * A photo posted with no words is nothing once its photo is gone, so it
+     * goes whole — with the comments and likes on it. Anything with words
+     * stays as "Deleted account", as every post always has.
+     */
+    it('deletes a moment with no words, and keeps every post that has some', async () => {
+      const her = userId('f1')
+      const commenter = userId('f2')
+      await seed(her, { deletedAt: expired() })
+      const photo = {
+        url: `${BASE}/posts/${her}/moment.jpg`,
+        contentType: 'image/jpeg',
+        sizeBytes: 1024,
+      }
+      const base = { authorId: her, language: 'en', correctionCount: 0, createdAt: new Date() }
+      const wordless = new ObjectId()
+      const captioned = new ObjectId()
+      const legacy = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertMany([
+        {
+          ...base,
+          _id: wordless,
+          body: '',
+          asks: [],
+          kind: 'moment',
+          answerCount: 0,
+          attachments: [photo],
+          media: photo,
+        },
+        {
+          ...base,
+          _id: captioned,
+          body: 'Lunch by the river.',
+          asks: [],
+          kind: 'moment',
+          answerCount: 0,
+          attachments: [photo],
+          media: photo,
+        },
+        // Every post from before `asks` and `kind`: a correction request.
+        { ...base, _id: legacy, body: 'I has a pen.' },
+      ])
+      await handle.db.collection(COLLECTIONS.postComments).insertOne({
+        _id: new ObjectId(),
+        postId: wordless,
+        authorId: commenter,
+        body: 'Lovely.',
+        createdAt: new Date(),
+      })
+      await handle.db.collection(COLLECTIONS.likes).insertOne({
+        _id: new ObjectId(),
+        userId: commenter,
+        targetType: 'post',
+        targetId: wordless,
+        createdAt: new Date(),
+      })
+
+      await purgeExpiredAccounts(handle.db, { storage: fakeStorage() })
+
+      const posts = handle.db.collection(COLLECTIONS.posts)
+      expect(await posts.countDocuments({ _id: wordless })).toBe(0)
+      expect(
+        await handle.db.collection(COLLECTIONS.postComments).countDocuments({ postId: wordless }),
+      ).toBe(0)
+      expect(
+        await handle.db.collection(COLLECTIONS.likes).countDocuments({ targetId: wordless }),
+      ).toBe(0)
+      expect((await posts.findOne({ _id: captioned }))?.body).toBe('Lunch by the river.')
+      expect((await posts.findOne({ _id: legacy }))?.body).toBe('I has a pen.')
+    })
+
     it('purges an account that never came from v1 just the same', async () => {
       const plain = userId('d1')
       await seed(plain, { deletedAt: expired() })

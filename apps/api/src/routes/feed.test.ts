@@ -1,4 +1,10 @@
-import { MAX_ATTACHMENTS, MAX_VIDEO_SECONDS, TOKEN_RULES } from '@langx/shared'
+import {
+  FEED_POSTS_PER_24H,
+  FEED_RANK_VERSION,
+  MAX_ATTACHMENTS,
+  MAX_VIDEO_SECONDS,
+  TOKEN_RULES,
+} from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -14,6 +20,7 @@ import { createTranslationProvider } from '../translation/createTranslationProvi
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import { deleteCorrection, deletePost } from '../modules/feed/feed'
+import { listTimeline, olderThan, visibleTo, withinRange } from '../modules/feed/timeline'
 import type { StorageProvider, UploadUrl } from '../storage/StorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 
@@ -990,6 +997,164 @@ describe('community feed', () => {
       }
     })
 
+    function postAsks(user: SignedUpUser, payload: Record<string, unknown>) {
+      return app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: user.cookie },
+        payload: { language: 'en', ...payload },
+      })
+    }
+
+    const photo = (owner: SignedUpUser, name = 'moment') => ({
+      url: `https://cdn.example.com/posts/${owner.userId}/${name}.jpg`,
+      contentType: 'image/jpeg',
+      sizeBytes: 1024,
+      width: 800,
+      height: 600,
+    })
+
+    const sectionIds = async (user: SignedUpUser, kind: string) =>
+      (await feed(user, `kind=${kind}`))
+        .json<{ items: { _id: string }[] }>()
+        .items.map((i) => i._id)
+
+    it('posts a moment, and keeps it out of both of an old build’s sections', async () => {
+      const author = await newUser('moment-author@example.com')
+      const reader = await newUser('moment-reader@example.com')
+      const created = await postAsks(author, { body: 'Lunch by the river.', asks: [] })
+      expect(created.statusCode, created.body).toBe(201)
+      const moment = created.json<{ _id: string; asks: string[]; kind: string }>()
+      expect(moment.asks).toEqual([])
+      // The two values an installed build's enum has; never `'moment'`.
+      expect(moment.kind).toBe('correction')
+
+      const stored = await handle.db
+        .collection<{ kind?: string }>(COLLECTIONS.posts)
+        .findOne({ _id: new ObjectId(moment._id) })
+      expect(stored?.kind).toBe('moment')
+      expect(await sectionIds(reader, 'correction')).not.toContain(moment._id)
+      expect(await sectionIds(reader, 'pronunciation')).not.toContain(moment._id)
+    })
+
+    it('files a post asking for both under corrections only, and takes both helps', async () => {
+      const author = await newUser('both-api-author@example.com')
+      const helper = await newUser('both-api-helper@example.com')
+      const created = await postAsks(author, {
+        body: 'I has a squirrel.',
+        asks: ['pronunciation', 'correction'],
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      const both = created.json<{ _id: string; asks: string[]; kind: string }>()
+      // Stored sorted, whatever order they were sent in.
+      expect(both.asks).toEqual(['correction', 'pronunciation'])
+      expect(both.kind).toBe('correction')
+      expect(await sectionIds(helper, 'correction')).toContain(both._id)
+      expect(await sectionIds(helper, 'pronunciation')).not.toContain(both._id)
+
+      expect((await correct(helper, both._id, 'I have a squirrel.')).statusCode).toBe(201)
+      expect((await answer(helper, both._id)).statusCode).toBe(201)
+    })
+
+    it('lets asks win over kind', async () => {
+      const author = await newUser('asks-win-author@example.com')
+      const created = await postAsks(author, {
+        body: 'Squirrel.',
+        kind: 'pronunciation',
+        asks: ['correction'],
+      })
+      expect(created.json<{ asks: string[]; kind: string }>()).toMatchObject({
+        asks: ['correction'],
+        kind: 'correction',
+      })
+    })
+
+    it('refuses the same ask twice, and more asks than exist', async () => {
+      const author = await newUser('asks-dup-author@example.com')
+      expect(
+        (await postAsks(author, { body: 'Hi.', asks: ['correction', 'correction'] })).statusCode,
+      ).toBe(400)
+    })
+
+    it('posts a photo with no words when it asks for nothing', async () => {
+      const author = await newUser('photo-moment-author@example.com')
+      const created = await postAsks(author, { body: '', asks: [], attachments: [photo(author)] })
+      expect(created.statusCode, created.body).toBe(201)
+      expect(created.json<{ body: string }>().body).toBe('')
+    })
+
+    it('says which rule refused a post, and keeps the old code for each', async () => {
+      const author = await newUser('post-rules-author@example.com')
+      const refusal = async (payload: Record<string, unknown>) => {
+        const response = await postAsks(author, payload)
+        expect(response.statusCode, response.body).toBe(400)
+        const body = response.json<{ code: string; reason?: string }>()
+        expect(body.code).toBe('VALIDATION_FAILED')
+        return body.reason
+      }
+      const voice = {
+        url: `https://cdn.example.com/posts/${author.userId}/voice.m4a`,
+        contentType: 'audio/m4a',
+        sizeBytes: 4096,
+        durationSeconds: 3,
+      }
+
+      // A voice note alone is not a moment: nothing on the card to look at.
+      expect(await refusal({ body: '', asks: [], attachments: [voice] })).toBe(
+        'moment_needs_content',
+      )
+      expect(await refusal({ body: '   ', asks: [] })).toBe('moment_needs_content')
+      // Any ask needs words, a photo or not.
+      expect(await refusal({ body: '', asks: ['correction'], attachments: [photo(author)] })).toBe(
+        'ask_needs_words',
+      )
+      // An installed build's empty body: still refused, with the code it knows.
+      expect(await refusal({ body: '' })).toBe('ask_needs_words')
+      // The author is `tr` native, `en` learning (see `onboardingBody`).
+      expect(await refusal({ body: 'Merhaba.', language: 'tr', asks: ['correction'] })).toBe(
+        'ask_needs_learning_language',
+      )
+      expect(await refusal({ body: 'Bonjour.', language: 'fr', asks: [] })).toBe(
+        'language_not_yours',
+      )
+    })
+
+    it('posts a moment in a language the author speaks natively', async () => {
+      const author = await newUser('native-moment-author@example.com')
+      const created = await postAsks(author, {
+        body: 'Bugün hava çok güzel.',
+        language: 'tr',
+        asks: [],
+      })
+      expect(created.statusCode, created.body).toBe(201)
+    })
+
+    it('stops at the daily post cap, and says when the next slot frees', async () => {
+      const author = await newUser('post-cap-author@example.com')
+      const now = Date.now()
+      // The earlier posts written straight in: twenty requests would only
+      // test the same insert twenty times.
+      await handle.db.collection(COLLECTIONS.posts).insertMany(
+        Array.from({ length: FEED_POSTS_PER_24H }, (_, i) => ({
+          _id: new ObjectId(),
+          authorId: author.userId,
+          body: `Post ${i}.`,
+          language: 'en',
+          asks: [],
+          kind: 'moment',
+          correctionCount: 0,
+          answerCount: 0,
+          createdAt: new Date(now - (FEED_POSTS_PER_24H - i) * 60_000),
+        })),
+      )
+
+      const refused = await postAsks(author, { body: 'One too many.', asks: [] })
+      const body = refused.json<{ code: string; limit?: string; retryAt?: string }>()
+      expect(body.code).toBe('QUOTA_EXCEEDED')
+      expect(body.limit).toBe('postsPer24h')
+      expect(new Date(body.retryAt ?? 0).getTime()).toBeGreaterThan(now)
+    })
+
     it('takes both kinds of help on a post asking for both, and pays for each', async () => {
       const author = await newUser('asks-both-author@example.com')
       const helper = await newUser('asks-both-helper@example.com')
@@ -1873,13 +2038,15 @@ describe('community feed', () => {
       expect(seen.post.correctedByViewer).toBe(true)
     })
 
-    it('refuses `asks` loudly rather than filing it as a correction request', async () => {
+    // `asks` itself is accepted since moments shipped; an ask this API does not
+    // know is still refused by the schema rather than stripped.
+    it('refuses an ask it does not know rather than filing it as a correction', async () => {
       const author = await newUser('asks-refused@example.com')
       const response = await app.inject({
         method: 'POST',
         url: '/posts',
         headers: { cookie: author.cookie },
-        payload: { body: 'A photo of my lunch.', language: 'en', asks: [] },
+        payload: { body: 'A photo of my lunch.', language: 'en', asks: ['compliment'] },
       })
       expect(response.statusCode).toBe(400)
       const body = response.json<{ code: string; details?: unknown }>()
@@ -1910,6 +2077,318 @@ describe('community feed', () => {
       expect(mine.json<{ items: { kind: string }[] }>().items.map((i) => i.kind)).toEqual([
         'correction',
       ])
+    })
+  })
+
+  describe('timeline', () => {
+    type Page = {
+      items: {
+        _id: string
+        asks?: string[]
+        kind: string
+        topCorrection: { corrected: string } | null
+        topAnswer: { _id: string; likedByViewer: boolean } | null
+      }[]
+      nextCursor: string | null
+    }
+
+    function timeline(user: SignedUpUser, qs = '') {
+      return app.inject({
+        method: 'GET',
+        url: `/feed/timeline${qs ? `?${qs}` : ''}`,
+        headers: { cookie: user.cookie },
+      })
+    }
+
+    /** Every page through the route, to exhaustion. */
+    async function walkRoute(user: SignedUpUser): Promise<Page['items']> {
+      const seen: Page['items'] = []
+      let cursor: string | null = null
+      for (let guard = 0; guard < 100; guard++) {
+        const response = await timeline(
+          user,
+          `limit=50${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`,
+        )
+        expect(response.statusCode, response.body).toBe(200)
+        const page = response.json<Page>()
+        seen.push(...page.items)
+        cursor = page.nextCursor
+        if (!cursor) return seen
+      }
+      throw new Error('the timeline never ended')
+    }
+
+    /**
+     * One page straight from the module, with a window small enough to cross.
+     * Injectable because this suite shares one database: the window is always
+     * the newest posts in the whole collection, and each test's fixtures are
+     * the newest when it runs.
+     */
+    function modulePage(user: SignedUpUser, limit: number, cursor: string | null, window: number) {
+      return listTimeline(
+        handle.db,
+        { userId: user.userId, canAnswer: true },
+        { limit, ...(cursor ? { cursor } : {}) },
+        { window },
+      )
+    }
+
+    async function walkModule(
+      user: SignedUpUser,
+      { limit, window }: { limit: number; window: number },
+      between?: (page: number, served: string[]) => Promise<void>,
+    ): Promise<string[]> {
+      const ids: string[] = []
+      let cursor: string | null = null
+      for (let page = 0; page < 500; page++) {
+        const result = await modulePage(user, limit, cursor, window)
+        ids.push(...result.items.map((item) => item._id))
+        if (between) await between(page, ids)
+        cursor = result.nextCursor
+        if (!cursor) return ids
+      }
+      throw new Error('the timeline never ended')
+    }
+
+    async function visiblePostIds(): Promise<string[]> {
+      const rows = await handle.db
+        .collection(COLLECTIONS.posts)
+        .find({ hiddenAt: { $exists: false } })
+        .project<{ _id: ObjectId }>({ _id: 1 })
+        .toArray()
+      return rows.map((row) => row._id.toHexString())
+    }
+
+    /** Posts a second apart, newest first, written straight in. */
+    async function insertPosts(
+      authorId: string,
+      count: number,
+      fields: Record<string, unknown> = {},
+    ): Promise<string[]> {
+      const base = Date.now()
+      const rows = Array.from({ length: count }, (_, i) => ({
+        _id: new ObjectId(),
+        authorId,
+        body: `Timeline fixture ${i}.`,
+        language: 'en',
+        asks: [],
+        kind: 'moment',
+        correctionCount: 0,
+        answerCount: 0,
+        createdAt: new Date(base - i * 1000),
+        ...fields,
+      }))
+      await handle.db.collection(COLLECTIONS.posts).insertMany(rows)
+      return rows.map((row) => row._id.toHexString())
+    }
+
+    it('has every kind of post in it — asks of every shape, legacy rows and moments', async () => {
+      const author = await newUser('tl-shapes-author@example.com')
+      const viewer = await newUser('tl-shapes-viewer@example.com')
+      const ids: string[] = []
+      for (const asks of [[], ['correction'], ['pronunciation'], ['correction', 'pronunciation']]) {
+        const created = await app.inject({
+          method: 'POST',
+          url: '/posts',
+          headers: { cookie: author.cookie },
+          payload: { body: `Asks ${asks.join('+') || 'nothing'}.`, language: 'en', asks },
+        })
+        expect(created.statusCode, created.body).toBe(201)
+        ids.push(created.json<{ _id: string }>()._id)
+      }
+      const legacy = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id: legacy,
+        authorId: author.userId,
+        body: 'From before the sections.',
+        language: 'en',
+        correctionCount: 0,
+        createdAt: new Date(),
+      })
+
+      const byId = new Map((await walkRoute(viewer)).map((item) => [item._id, item]))
+      for (const id of [...ids, legacy.toHexString()]) expect(byId.has(id), id).toBe(true)
+      expect(byId.get(legacy.toHexString())?.asks).toEqual(['correction'])
+      expect(byId.get(ids[0]!)?.asks).toEqual([])
+      expect(byId.get(ids[3]!)?.asks).toEqual(['correction', 'pronunciation'])
+    })
+
+    it('draws the top reply and the viewer’s like on a mixed page', async () => {
+      const author = await newUser('tl-hydrate-author@example.com')
+      const helper = await newUser('tl-hydrate-helper@example.com')
+      const viewer = await newUser('tl-hydrate-viewer@example.com')
+      const written = (await post(author, 'He go home.')).json<{ _id: string }>()._id
+      await correct(helper, written, 'He goes home.')
+      const spoken = (await ask(author, 'squirrel')).json<{ _id: string }>()._id
+      const answerId = (await answer(helper, spoken)).json<{ _id: string }>()._id
+      await app.inject({
+        method: 'PUT',
+        url: '/likes',
+        headers: { cookie: viewer.cookie },
+        payload: { targetType: 'answer', targetId: answerId },
+      })
+
+      // Walked rather than read from page one: where these rank depends on
+      // everything else this suite has posted.
+      const items = await walkRoute(viewer)
+      const correction = items.find((item) => item._id === written)
+      const recording = items.find((item) => item._id === spoken)
+      expect(correction?.topCorrection?.corrected).toBe('He goes home.')
+      expect(recording?.topAnswer?._id).toBe(answerId)
+      expect(recording?.topAnswer?.likedByViewer).toBe(true)
+    })
+
+    it('walks every page once, across the window and into the tail', async () => {
+      const a = await newUser('tl-walk-a@example.com')
+      const b = await newUser('tl-walk-b@example.com')
+      const viewer = await newUser('tl-walk-viewer@example.com')
+      await insertPosts(a.userId, 6)
+      await insertPosts(b.userId, 6, { language: 'tr', asks: ['correction'], kind: 'correction' })
+
+      const ids = await walkModule(viewer, { limit: 4, window: 7 })
+      expect(new Set(ids).size).toBe(ids.length)
+      expect(new Set(ids)).toEqual(new Set(await visiblePostIds()))
+    })
+
+    it('neither repeats nor skips when a post in the window is deleted between pages', async () => {
+      const a = await newUser('tl-delete-a@example.com')
+      const viewer = await newUser('tl-delete-viewer@example.com')
+      const fixtures = await insertPosts(a.userId, 8)
+
+      let deleted: string | undefined
+      const ids = await walkModule(viewer, { limit: 3, window: 8 }, async (page, served) => {
+        if (page !== 0) return
+        deleted = fixtures.find((id) => !served.includes(id))
+        if (deleted) await deletePost(handle.db, a.userId, deleted)
+      })
+      expect(deleted).toBeDefined()
+      expect(new Set(ids).size).toBe(ids.length)
+      expect(ids).not.toContain(deleted)
+      expect(new Set(ids)).toEqual(new Set(await visiblePostIds()))
+    })
+
+    it('never serves a post hidden between one page and the next', async () => {
+      const a = await newUser('tl-hide-a@example.com')
+      const viewer = await newUser('tl-hide-viewer@example.com')
+      const fixtures = await insertPosts(a.userId, 8)
+
+      let hidden: string | undefined
+      const ids = await walkModule(viewer, { limit: 3, window: 8 }, async (page, served) => {
+        if (page !== 0) return
+        hidden = fixtures.find((id) => !served.includes(id))
+        if (hidden) {
+          await handle.db
+            .collection(COLLECTIONS.posts)
+            .updateOne({ _id: new ObjectId(hidden) }, { $set: { hiddenAt: new Date() } })
+        }
+      })
+      expect(hidden).toBeDefined()
+      expect(ids).not.toContain(hidden)
+    })
+
+    it('leaves out a blocked author, in both directions', async () => {
+      const rude = await newUser('tl-block-rude@example.com')
+      const viewer = await newUser('tl-block-viewer@example.com')
+      const theirs = await insertPosts(rude.userId, 3)
+      await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: rude.cookie },
+        payload: { userId: viewer.userId },
+      })
+
+      const ids = await walkModule(viewer, { limit: 20, window: 10 })
+      for (const id of theirs) expect(ids).not.toContain(id)
+    })
+
+    it('does not shift page two when somebody posts in between', async () => {
+      const a = await newUser('tl-stable-a@example.com')
+      const viewer = await newUser('tl-stable-viewer@example.com')
+      await insertPosts(a.userId, 6)
+
+      const first = await modulePage(viewer, 3, null, 6)
+      const before = await modulePage(viewer, 3, first.nextCursor, 6)
+      await post(a, 'A post written between the two pages.')
+      const after = await modulePage(viewer, 3, first.nextCursor, 6)
+      expect(after.items.map((item) => item._id)).toEqual(before.items.map((item) => item._id))
+    })
+
+    it('refuses a cursor from another ranking version as stale, and a section cursor', async () => {
+      const viewer = await newUser('tl-stale-viewer@example.com')
+      const stale = `tl${FEED_RANK_VERSION + 1}.t.${Date.now()}-${new ObjectId().toHexString()}`
+      const response = await timeline(viewer, `cursor=${encodeURIComponent(stale)}`)
+      expect(response.statusCode).toBe(400)
+      expect(response.json<{ code: string; reason?: string }>()).toMatchObject({
+        code: 'VALIDATION_FAILED',
+        reason: 'stale_cursor',
+      })
+
+      const section = (await feed(viewer, 'limit=1')).json<{ nextCursor: string | null }>()
+      expect(section.nextCursor).not.toBeNull()
+      const crossed = await timeline(viewer, `cursor=${encodeURIComponent(section.nextCursor!)}`)
+      expect(crossed.statusCode).toBe(400)
+    })
+
+    /*
+     * The reads the timeline makes, each on the index it was written for — and
+     * bounded: the range read has to stop at the floor rather than walk the
+     * rest of the collection looking for rows that are not there.
+     */
+    describe('index use', () => {
+      async function explain(filter: Record<string, unknown>, limit: number) {
+        const result = (await handle.db
+          .collection(COLLECTIONS.posts)
+          .find(filter)
+          .sort({ createdAt: -1, _id: -1 })
+          .limit(limit)
+          .explain('executionStats')) as unknown as {
+          executionStats: { totalKeysExamined: number; nReturned: number }
+        }
+        return { serialized: JSON.stringify(result), stats: result.executionStats }
+      }
+
+      it('reads the window, a pinned range and the tail on `recent`', async () => {
+        const a = await newUser('tl-explain-a@example.com')
+        const fixtures = await insertPosts(a.userId, 10)
+        const rows = await handle.db
+          .collection(COLLECTIONS.posts)
+          .find({ _id: { $in: fixtures.map((id) => new ObjectId(id)) } })
+          .sort({ createdAt: -1, _id: -1 })
+          .toArray()
+        const point = (i: number) => ({ date: rows[i]!.createdAt as Date, id: rows[i]!._id })
+        const filter = visibleTo(['someone-blocked'])
+
+        const window = await explain(filter, 10)
+        expect(window.serialized).toContain('"indexName":"recent"')
+        expect(window.serialized).not.toContain('COLLSCAN')
+
+        const range = await explain({ ...filter, ...withinRange(point(2), point(6)) }, 400)
+        expect(range.serialized).toContain('"indexName":"recent"')
+        expect(range.serialized).not.toContain('COLLSCAN')
+        // Everything in the range — this suite's other posts from the same
+        // seconds included — and bounded by it, not by the collection.
+        const inRange = await handle.db
+          .collection(COLLECTIONS.posts)
+          .countDocuments({ ...filter, ...withinRange(point(2), point(6)) })
+        expect(range.stats.nReturned).toBe(inRange)
+        expect(range.stats.totalKeysExamined).toBeLessThanOrEqual(inRange + 2)
+        expect(inRange).toBeLessThan(await handle.db.collection(COLLECTIONS.posts).countDocuments())
+
+        const tail = await explain({ ...filter, ...olderThan(point(6)) }, 3)
+        expect(tail.serialized).toContain('"indexName":"recent"')
+        expect(tail.serialized).not.toContain('COLLSCAN')
+      })
+
+      it('counts the daily post cap on `author`', async () => {
+        const result = await handle.db
+          .collection(COLLECTIONS.posts)
+          .find({ authorId: 'anyone', createdAt: { $gte: new Date(Date.now() - 86_400_000) } })
+          .limit(FEED_POSTS_PER_24H + 1)
+          .explain('executionStats')
+        const serialized = JSON.stringify(result)
+        expect(serialized).toContain('"indexName":"author"')
+        expect(serialized).not.toContain('COLLSCAN')
+      })
     })
   })
 })

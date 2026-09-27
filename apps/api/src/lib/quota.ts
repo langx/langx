@@ -34,6 +34,11 @@ export type TrackedQuotaKind =
    * afternoon cannot silence the Echo button.
    */
   | 'chatVoices'
+  /**
+   * A voice note written out by the transcript service; one unit per note,
+   * and only for whoever asks first — the words are then kept on the note.
+   */
+  | 'transcripts'
 
 export interface QuotaStatus {
   limit: number | null

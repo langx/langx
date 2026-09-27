@@ -8,6 +8,7 @@ import {
   listPostCommentsQuerySchema,
   listPostCorrectionsQuerySchema,
   listPronunciationAnswersQuerySchema,
+  listTimelineQuerySchema,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -29,6 +30,7 @@ import {
   listMyPosts,
   listPostCorrections,
 } from '../modules/feed/feed'
+import { listTimeline } from '../modules/feed/timeline'
 import {
   answerPronunciation,
   deleteAnswer,
@@ -111,6 +113,33 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireAuth, schema: { querystring: listFeedQuerySchema } },
     async (request, reply) => {
       return reply.send(await listFeed(app.mongo.db, request.userId, request.query))
+    },
+  )
+
+  /**
+   * Every post in one list, most relevant to the reader first — see
+   * `modules/feed/timeline.ts`. Signed-in, not verified: guests browse, and
+   * `canAnswer` tells the ranking not to boost asks the reader cannot act on.
+   *
+   * A route of its own rather than `?view=` on `/feed`: a new build against an
+   * older API gets a clean 404 its error screen retries, instead of silently
+   * being handed the correction section, and a cursor can never cross between
+   * the two orders. `/feed?kind=` stays exactly as it is for installed builds.
+   */
+  app.get(
+    '/feed/timeline',
+    { preHandler: requireAuth, schema: { querystring: listTimelineQuerySchema } },
+    async (request, reply) => {
+      return reply.send(
+        await listTimeline(
+          app.mongo.db,
+          { userId: request.userId, canAnswer: request.emailVerified && !request.isGuest },
+          request.query,
+          {
+            log: (fields) => request.log.info(fields, 'feed timeline window'),
+          },
+        ),
+      )
     },
   )
 

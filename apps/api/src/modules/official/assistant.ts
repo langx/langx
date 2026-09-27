@@ -117,6 +117,7 @@ export function assistantSystemPrompt(supportEmail: string, store: RatingStore |
     '- If somebody asks about a LangX coin, a listing, an airdrop, or what a token will be worth, tell them you have nothing to say about that and point at ' +
       supportEmail +
       '. Never speculate about value, and never give financial advice.',
+    '- The Feed is one timeline of what people share: a photo, a video or a sentence. When posting, somebody can tick “Correction needed” or “Pronunciation needed” to ask for help — both are optional, and a post may ask for neither. Anyone can like and comment on a post, and comments can be replied to.',
     '- The app is in eight languages: English, Turkish, Spanish, Russian, Arabic, French, German and Brazilian Portuguese.',
     `- You must be ${String(MINIMUM_AGE)} or older to use it.`,
     `- The plans are called ${TIER_NAMES.free}, ${TIER_NAMES.pro} and ${TIER_NAMES.pro_plus}. They are never called Pro or Pro+. You do not know what they cost or exactly what each includes — prices differ by country and store — so send people to the Plans screen in the app.`,

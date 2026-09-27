@@ -82,7 +82,7 @@ export const es: Localized<ServerMessages> = {
         other: 'Tu publicación tiene {count} me gusta',
       },
 
-      likesBody: 'A alguien le gustó lo que escribiste.',
+      likesBody: 'A alguien le gustó tu publicación.',
     },
 
     /** Tokens arriving. */
@@ -256,15 +256,15 @@ export const es: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: '1 respuesta a lo que escribiste hoy',
-      other: '{count} respuestas a lo que escribiste hoy',
+      one: '1 respuesta a lo que publicaste hoy',
+      other: '{count} respuestas a lo que publicaste hoy',
     },
 
     feedDigestPreheader: 'Respondieron a lo que publicaste',
 
     feedDigestBody: {
-      one: 'Alguien respondió a una frase que publicaste hoy.',
-      other: '{count} personas respondieron a frases que publicaste hoy.',
+      one: 'Alguien respondió a algo que publicaste hoy.',
+      other: '{count} personas respondieron a lo que publicaste hoy.',
     },
 
     feedDigestCorrections: { one: '1 corrección', other: '{count} correcciones' },
@@ -402,7 +402,7 @@ export const es: Localized<ServerMessages> = {
 
     welcomeStep1: 'Encuentra a alguien que hable lo que estás aprendiendo y salúdalo.',
 
-    welcomeStep2: 'Publica una frase en el Feed y deja que la corrijan.',
+    welcomeStep2: 'Comparte algo de tu día en el Feed y, si quieres, pide una corrección.',
 
     welcomeStep3: 'Vuelve mañana: dos días seguidos inician una racha.',
 

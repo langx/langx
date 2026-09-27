@@ -153,6 +153,7 @@ describe('plan limits', () => {
       'initiationsPer24h',
       'translationsPer24h',
       'mediaPer24h',
+      'transcriptsPerDay',
       'maxLearningLanguages',
       'maxNativeLanguages',
     ] as const

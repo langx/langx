@@ -1,0 +1,84 @@
+# The transcript service's image, built on the pull request that changes it —
+# `check-tts.yml`'s sibling, for the same reason: without it the first build of
+# a change to `apps/stt` is `deploy-stt.yml` on main, and a wheel that will not
+# install or a model that will not load fails during a deploy rather than in
+# review. Almost nothing in that directory is exercised by `pnpm test`.
+#
+# It builds and throws the image away. Publishing is `deploy-stt.yml`'s job,
+# and it is the only thing holding the Fly token.
+name: Check STT image
+
+on:
+  pull_request:
+    paths:
+      - apps/stt/**
+      - .github/workflows/check-stt.yml
+      - '!**/*.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-stt-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Docker Hub resets the token request often enough that a base image
+      # that will not resolve is retried rather than reported — see
+      # check-tts.yml, where it happened.
+      - name: Pull the base image
+        run: |
+          for attempt in 1 2 3 4 5; do
+            docker pull python:3.12-slim && exit 0
+            echo "pull failed (attempt $attempt), retrying"
+            sleep $((attempt * 10))
+          done
+          exit 1
+
+      # No push, no registry, no cache, for check-tts.yml's reason: a green
+      # build here is a claim about the download and the wheels today.
+      - name: Build the image
+        run: docker build --progress=plain -t langx-stt:pr apps/stt
+
+      # The build's selftest proves the model loads and a note decodes, but a
+      # tone has no words. This speaks a sentence on the runner — espeak-ng,
+      # which is robotic and so a harder test than a person, never part of the
+      # image — encodes it the way a phone does, and asks the running
+      # container what it heard.
+      - name: Start it and ask for a transcript
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q espeak-ng ffmpeg
+          espeak-ng -v en-us -w /tmp/note.wav "Good morning. I would like a cup of coffee, please."
+          ffmpeg -loglevel error -y -i /tmp/note.wav -c:a aac -b:a 64k /tmp/note.m4a
+
+          docker run -d --name stt -p 8080:8080 -e STT_SECRET=ci langx-stt:pr
+          for i in $(seq 1 60); do
+            if curl -fsS localhost:8080/health >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          curl -fsS localhost:8080/health
+
+          out=$(curl -fsS -X POST --data-binary @/tmp/note.m4a -H 'X-STT-Secret: ci' \
+            'localhost:8080/transcribe?lang=tr,en')
+          echo "$out"
+          echo "$out" | python3 -c '
+          import json, sys
+          body = json.load(sys.stdin)
+          assert body["lang"] == "en", body
+          assert "coffee" in body["text"].lower(), body
+          '
+
+          # Without the secret it is refused before anything is decoded.
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+            --data-binary @/tmp/note.m4a localhost:8080/transcribe)
+          test "$code" = "401"
+          echo "no secret refused with $code"
+
+      - name: Logs, if anything above failed
+        if: failure()
+        run: docker logs stt || true
