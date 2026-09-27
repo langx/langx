@@ -1095,6 +1095,7 @@ export const ptBR: Localized<EnMessages> = {
     replyingTo: 'Respondendo a {name}',
     deleted: 'Esta mensagem foi apagada',
     goToQuoted: 'Ir para a mensagem citada',
+    spoiler: 'Spoiler, toque para revelar',
     deleteTitle: 'Excluir mensagem',
     deleteBothSides: 'Isso não dá para desfazer.',
     deleteOwnSide: 'Ela continua no aparelho da outra pessoa.',
