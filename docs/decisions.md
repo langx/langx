@@ -1855,6 +1855,10 @@ language) and registers it with each push device (so a streak reminder is, too).
 
 ## The feed's cursor split on the wrong dot
 
+> **Amended 27 September 2026 — see _The feed is one timeline, ranked for the reader_ below.** The timeline's
+> cursors are a second family, `tl<version>.…`, which neither decoder accepts
+> from the other; the section cursors below are unchanged.
+
 The `needsCorrection` tab sorts `(correctionCount, createdAt, _id)`, so its
 cursor has to carry the count; the `following` tab sorts by recency and does
 not. One encoding, told apart by a `<count>.` prefix — and the decoder looked
@@ -1981,6 +1985,9 @@ The bar this paragraph sets is unchanged: it is not "never a third action", it
 is that one costs a product rule, and a like still does not clear it.
 
 ## Likes are counted, not denormalized — and must never become a sort key
+
+> **Restated 27 September 2026 — see _The feed is one timeline, ranked for the reader_ below.** The feed now
+> has a ranking, and likes are still not in it.
 
 `posts.correctionCount` is denormalized, and its comment says why: it is the
 sort key for the `needsCorrection` tab, and an index cannot sort on a count it
@@ -2274,6 +2281,9 @@ ordering explicit rather than incidental.
 
 ## Comments pay nothing, and cannot be liked
 
+> **Restated 27 September 2026 — see _The feed is one timeline, ranked for the reader_ below.** Comments are
+> still never a ranking input.
+
 A like pays nothing because one tap is not worth paying for. A comment is one
 sentence, which is barely more, and unlike a correction there is nothing in its
 shape that makes it teaching. Two accounts can trade sentences all day.
@@ -2456,6 +2466,11 @@ Never on somebody else's map. The public activity endpoint sends an intensity
 and no source, the same line that already hides which squares were bought.
 
 ## The feed has one queue, and the people you follow come first
+
+> **Superseded for the timeline, 27 September 2026 — see _The feed is one timeline, ranked for the reader_ below.**
+> There, the people you follow are a weight, not a band that always comes
+> first. Everything below still holds for `GET /feed?kind=`, which installed
+> builds read.
 
 The correction section had two tabs, "Needs a correction" and "Following". The
 second one split a small feed into two smaller ones, and made the reader choose
@@ -5671,6 +5686,78 @@ outright rather than letting zod strip it, so a rollback, a blue-green overlap
 or a stale machine turns a moment into a loud failure, never into a correction
 request its author did not make. APIs deploy before the client that sends
 `asks`; if one is ever reverted under a live client, revert the client first.
+
+## The feed is one timeline, ranked for the reader
+
+_27 September 2026._ With asks optional (see the entry above), two sections
+stopped making sense: a moment belongs in neither, and a post asking for both
+belonged in both. New builds read `GET /feed/timeline` — every post in one
+list, most relevant to the person reading it first. `GET /feed?kind=` stays
+exactly as it was for installed builds.
+
+**What "relevant" means.** A post scores a base weight, plus more if its author
+is somebody you follow or have talked to (`audience`), if it is in a language
+you are learning (`peer`), and — decaying over a week rather than a day and a
+half — if it asks for help nobody has given yet, in a language you speak
+natively, and you can give it (`needsYou`). The weights and half-lives are
+config (`FEED_RANK*` in `packages/shared`); the formula is pure, in
+`modules/feed/timelineRank.ts`.
+
+- **Likes and comments are never inputs**, nor presence, nor paid tier. The
+  entries on likes and comments above are restated, not relaxed: a ranking
+  that counts chatter becomes a popularity contest, presence would leak
+  `hideOnlineStatus`, and paying buys no reach.
+- **Following is a weight, not a band.** The "people you follow first" rule is
+  reversed for the timeline: a fresh open question in your native language can
+  outrank a friend's day-old photo. It is kept for the sections.
+- **Language only rewards exchange.** A post you can learn from, or an ask you
+  can answer. A moment in your own native language gets no bonus — that is
+  familiarity, not exchange (the lesson of the one-sided-match entry).
+- **Asks still drain.** `needsYou` counts only an ask with no answer yet, per
+  ask, so a post asking for both keeps pulling natives while either half is
+  open, and drops for everybody once both are answered. The slower decay is
+  what keeps a question unanswered for three days above a friend's photo from
+  yesterday — with one decay it fell below, and the queue stopped draining.
+- **Nobody fills the top.** Each older post by the same author in the window
+  counts half the one before it.
+- **Guests and unverified readers** get no `needsYou`: they cannot act on it.
+- **Your own post** stays on top for an hour, where the app put it when you
+  pressed Post, then ranks on the base weight alone.
+- **No hourly jitter** in this version; decay already moves the top every hour.
+
+**The window, not the collection.** The score is not a field, so no index can
+sort by it — the objection that has always stopped an in-memory sort. Page one
+reads the newest `FEED_TIMELINE_WINDOW` (200) posts on `recent`, projected to
+the eight fields ranking reads, and pins three things in the cursor: the `now`
+the scores decayed against, and the newest and oldest `(createdAt, _id)` it
+read. Every later page re-reads exactly that range and ranks it again, so the
+order is identical; a post written since cannot enter, and a delete, hide or
+block only removes itself. Below the window the feed continues in plain
+recency, in the same response, so it never ends early. The assumption that 200
+posts cover more than an open ask's half-life is logged on every page one; the
+follow-up if it stops holding is a second small read of open asks, not a
+bigger window.
+
+**A keyset, not an offset.** The cursor carries the last key served — tier,
+integer score, `createdAt`, `_id` — so a count changing between pages moves
+only that card. Cursors are versioned: `tl<FEED_RANK_VERSION>.`, and any change
+to a weight or the formula bumps it. A cursor from another version is a 400
+with `reason: 'stale_cursor'` and the client starts from page one — which is
+what a persisted page from an older build needs, too. The `tl` prefix can never
+be read as a section cursor (`[f.]<count>.…`) or the other way round. This
+amends the cursor-by-shape entry.
+
+**No new index.** The window, the pinned range and the tail are bounded scans
+of `recent`; the page's own documents are fetched by `_id` with the filters
+applied again; the daily cap counts on `author`. `kind_needs_correction` and
+`kind_answer_queue` stay for installed builds. A later ask-led band would get
+a new name, never a wider key on a live index.
+
+**Cost.** A window page is about a dozen reads, in one client round trip: the
+reader's blocks, follows, conversations and profile in parallel, the window,
+the page, and hydration — which only asks the correction and answer summaries
+about posts whose count is above zero. Caching the reader across pages was
+rejected: a new block would stay stale for the life of the cache.
 
 ## Voice notes are written out on a machine of ours
 
