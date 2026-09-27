@@ -1107,9 +1107,9 @@ export const en = {
     lastSeenMonths: { one: 'Last seen {count} month ago', other: 'Last seen {count} months ago' },
     lastSeenYears: { one: 'Last seen {count} year ago', other: 'Last seen {count} years ago' },
     /** After the presence in a chat header: the other person's clock, when it is not the reader's. */
-    theirTime: '{time} for them',
+    theirTime: '{time} local time',
     /** The same line read aloud, where the "·" between the halves would be spoken as a symbol. */
-    withTheirTimeAccessibility: '{presence}. It’s {time} for them.',
+    withTheirTimeAccessibility: '{presence}. Local time {time}.',
   },
   chat: {
     /** Shown where the composer would be, on an account that takes no messages. */

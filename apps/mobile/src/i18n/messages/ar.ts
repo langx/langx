@@ -1075,8 +1075,8 @@ export const ar: Localized<EnMessages> = {
       many: 'شوهد قبل {count} سنة',
       other: 'شوهد قبل {count} سنة',
     },
-    theirTime: '{time} بتوقيته',
-    withTheirTimeAccessibility: '{presence}. الساعة الآن {time} بتوقيته.',
+    theirTime: '{time} بالتوقيت المحلي',
+    withTheirTimeAccessibility: '{presence}. {time} بالتوقيت المحلي.',
   },
   chat: {
     channelOnly: 'ينشر هذا الحساب الأخبار والإعلانات. لا يمكنك الرد هنا.',
