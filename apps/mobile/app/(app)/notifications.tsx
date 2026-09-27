@@ -37,6 +37,7 @@ const KIND_ICONS: Record<InAppNotificationKind, keyof typeof Feather.glyphMap> =
   badgeEarned: 'award',
   walletPool: 'gift',
   profileVisits: 'eye',
+  commentReply: 'corner-down-right',
 }
 
 /**

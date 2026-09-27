@@ -1306,6 +1306,11 @@ export const ptBR: Localized<EnMessages> = {
       one: '{name} e mais {count} pessoa gravaram sua frase',
       other: '{name} e mais {count} pessoas gravaram sua frase',
     },
+    commentReply: '{name} respondeu ao seu comentário',
+    commentReplyOthers: {
+      one: '{name} e mais {count} pessoa responderam ao seu comentário',
+      other: '{name} e mais {count} pessoas responderam ao seu comentário',
+    },
     badgeEarned: 'Você ganhou uma nova insígnia',
     walletPool: {
       one: 'O bolo de ontem pagou {count} ficha a você',

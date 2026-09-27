@@ -309,6 +309,15 @@ export const MAX_COMMENT_LENGTH = MAX_POST_NOTE_LENGTH
  */
 export const createPostCommentSchema = z.object({
   body: z.string().trim().min(1).max(MAX_COMMENT_LENGTH),
+  /**
+   * The comment this answers, or absent for a comment on the post itself.
+   *
+   * Any comment's id will do, a reply's included: the server files every
+   * reply under its thread's first comment, so there is one level of nesting
+   * however deep the conversation goes. A client never has to work out which
+   * comment is the root.
+   */
+  parentId: z.string().trim().min(1).optional(),
 })
 export type CreatePostCommentInput = z.infer<typeof createPostCommentSchema>
 
@@ -403,13 +412,53 @@ export const pronunciationAnswerSchema = z.object({
 })
 export type PronunciationAnswer = z.infer<typeof pronunciationAnswerSchema>
 
-export const postCommentSchema = z.object({
+/**
+ * One comment, as a reply is drawn: no thread of its own underneath it.
+ *
+ * Every field after `createdAt` is optional and **absent unless it says
+ * something**, so a comment nobody answered serialises exactly as it did
+ * before replies existed — the shape installed builds read.
+ */
+export const postCommentReplySchema = z.object({
   _id: z.string(),
   author: feedAuthorSchema,
+  /** `''` on a removed comment, which says so in `deleted`. */
   body: z.string(),
   createdAt: z.string(),
+  /** The thread's first comment, on a reply. Absent on a comment on the post. */
+  parentId: z.string().optional(),
+  /**
+   * Who a reply to a reply answers, so the row can start with their name.
+   * Absent on a reply to the thread's first comment, where it goes without
+   * saying.
+   */
+  replyTo: feedAuthorSchema.optional(),
+  /**
+   * The thread's first comment was removed — by its author, or by a moderator
+   * — while replies to it survive. Drawn as "Comment removed" so the replies
+   * keep the thing they were answering. Never on a comment with no replies,
+   * which simply disappears.
+   */
+  deleted: z.literal(true).optional(),
+})
+export type PostCommentReply = z.infer<typeof postCommentReplySchema>
+
+export const postCommentSchema = postCommentReplySchema.extend({
+  /** Threaded reads only: how many replies the thread holds, for "View N more". */
+  replyCount: z.number().int().nonnegative().optional(),
+  /** Threaded reads only: the first `COMMENT_REPLY_PREVIEW`, oldest first. */
+  replies: z.array(postCommentReplySchema).optional(),
 })
 export type PostComment = z.infer<typeof postCommentSchema>
+
+/**
+ * How many replies a threaded read carries under each comment.
+ *
+ * Two, Instagram's number: enough to show the thread is a conversation, few
+ * enough that a post with ten busy threads is still a page of comments rather
+ * than a page of one. The rest are one tap away, on their own endpoint.
+ */
+export const COMMENT_REPLY_PREVIEW = 2
 
 export const likersPageSchema = z.object({
   items: z.array(feedAuthorSchema),
@@ -620,8 +669,30 @@ export const listPostCommentsQuerySchema = z.object({
     .min(1)
     .max(POST_COMMENTS_PAGE_SIZE_MAX)
     .default(POST_COMMENTS_PAGE_SIZE_DEFAULT),
+  /**
+   * Threads instead of one flat list: the comments on the post, each with its
+   * `replyCount` and first replies, and the replies nowhere else.
+   *
+   * Opt-in, because the flat list is what every installed build reads. Without
+   * it the answer is the list those builds were written against — replies
+   * included, in the order they were written — so nothing a reply adds is
+   * invisible to them, only unindented.
+   */
+  threaded: z.stringbool().default(false),
 })
 export type ListPostCommentsQuery = z.infer<typeof listPostCommentsQuerySchema>
+
+/** `GET /posts/:id/comments/:commentId/replies` — one thread, oldest first. */
+export const listCommentRepliesQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(POST_COMMENTS_PAGE_SIZE_MAX)
+    .default(POST_COMMENTS_PAGE_SIZE_DEFAULT),
+})
+export type ListCommentRepliesQuery = z.infer<typeof listCommentRepliesQuerySchema>
 
 export const postCommentsPageSchema = z.object({
   /**

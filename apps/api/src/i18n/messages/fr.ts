@@ -80,6 +80,10 @@ export const fr: Localized<ServerMessages> = {
 
       commentBody: 'Touchez pour la lire.',
 
+      commentReplyTitle: '{name} a répondu à votre commentaire',
+
+      commentReplyBody: 'Touchez pour lire la réponse.',
+
       likesTitle: {
         one: 'Votre publication a 1 j’aime',
         other: 'Votre publication a {count} j’aime',

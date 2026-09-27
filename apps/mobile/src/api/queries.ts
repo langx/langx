@@ -2820,6 +2820,8 @@ export interface AdminReportDto {
   reported: AdminPartyDto
   reporter: AdminPartyDto
   aboutPost: boolean
+  /** Raised from a comment. Absent from an API older than comment reports. */
+  aboutComment?: boolean
   post?: {
     id: string
     body: string
@@ -2827,6 +2829,15 @@ export interface AdminReportDto {
     hiddenAt: string | null
     /** Absent from an API that predates it, so read with `?? []`. */
     attachments?: Media[]
+  } | null
+  /** The reported comment, on the detail read. `body` is `null` once its author removed it. */
+  comment?: {
+    id: string
+    body: string | null
+    postId: string
+    postBody: string | null
+    isReply: boolean
+    hiddenAt: string | null
   } | null
   suspension?: { until: string; permanent: boolean; reason: string } | null
   otherOpenReports?: number
