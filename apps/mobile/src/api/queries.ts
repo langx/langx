@@ -2777,7 +2777,14 @@ export interface AdminReportDto {
   reported: AdminPartyDto
   reporter: AdminPartyDto
   aboutPost: boolean
-  post?: { id: string; body: string; language: string; hiddenAt: string | null } | null
+  post?: {
+    id: string
+    body: string
+    language: string
+    hiddenAt: string | null
+    /** Absent from an API that predates it, so read with `?? []`. */
+    attachments?: Media[]
+  } | null
   suspension?: { until: string; permanent: boolean; reason: string } | null
   otherOpenReports?: number
   /** What the reporter was thanked with. Only on the detail read, like the three above. */

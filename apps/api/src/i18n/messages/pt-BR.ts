@@ -274,6 +274,10 @@ export const ptBR: Localized<ServerMessages> = {
 
     feedDigestButton: 'Ler as respostas',
 
+    feedDigestPhoto: 'Sua foto',
+
+    feedDigestVideo: 'Seu vídeo',
+
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Pessoas com quem você poderia praticar',
 
