@@ -902,6 +902,117 @@ describe('community feed', () => {
     })
   })
 
+  describe('asks', () => {
+    it('stores the one ask an old-style post names, beside its section', async () => {
+      const author = await newUser('asks-stored-author@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      const askId = (await ask(author, 'squirrel')).json<{ _id: string }>()._id
+
+      const rows = await handle.db
+        .collection<{ _id: ObjectId; asks?: string[]; kind?: string; answerCount?: number }>(
+          COLLECTIONS.posts,
+        )
+        .find({ _id: { $in: [new ObjectId(postId), new ObjectId(askId)] } })
+        .toArray()
+      const byId = new Map(rows.map((row) => [row._id.toHexString(), row]))
+      expect(byId.get(postId)).toMatchObject({
+        asks: ['correction'],
+        kind: 'correction',
+        answerCount: 0,
+      })
+      expect(byId.get(askId)).toMatchObject({
+        asks: ['pronunciation'],
+        kind: 'pronunciation',
+        answerCount: 0,
+      })
+    })
+
+    it('carries the asks on the card, and reads them for a post that predates them', async () => {
+      const author = await newUser('asks-dto-author@example.com')
+      const reader = await newUser('asks-dto-reader@example.com')
+      const created = await post(author, 'I has a pen.')
+      expect(created.json<{ asks: string[]; kind: string }>()).toMatchObject({
+        asks: ['correction'],
+        kind: 'correction',
+      })
+      const legacyId = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id: legacyId,
+        authorId: author.userId,
+        body: 'From before the sections.',
+        language: 'en',
+        correctionCount: 0,
+        createdAt: new Date(),
+      })
+
+      const items = (await feed(reader, 'kind=correction')).json<{
+        items: { _id: string; asks: string[]; kind: string }[]
+      }>().items
+      expect(items.find((i) => i._id === legacyId.toHexString())).toMatchObject({
+        asks: ['correction'],
+        kind: 'correction',
+      })
+    })
+
+    /*
+     * A post that asks for nothing cannot be written through this API yet, so
+     * the row goes in directly. The refusal is the author's consent holding.
+     */
+    it('refuses a correction and a recording on a post that asked for neither', async () => {
+      const author = await newUser('asks-moment-author@example.com')
+      const helper = await newUser('asks-moment-helper@example.com')
+      const _id = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id,
+        authorId: author.userId,
+        body: 'My lunch today.',
+        language: 'en',
+        asks: [],
+        kind: 'moment',
+        correctionCount: 0,
+        answerCount: 0,
+        createdAt: new Date(),
+      })
+
+      const corrected = await correct(helper, _id.toHexString(), 'My lunch, today.')
+      expect(corrected.statusCode).toBe(400)
+      expect(corrected.json<{ reason?: string }>().reason).toBe('not_asked')
+      const recorded = await answer(helper, _id.toHexString())
+      expect(recorded.statusCode).toBe(400)
+      expect(recorded.json<{ reason?: string }>().reason).toBe('not_asked')
+
+      // And an old build's sections never list it.
+      for (const kind of ['correction', 'pronunciation']) {
+        const ids = (await feed(helper, `kind=${kind}`))
+          .json<{ items: { _id: string }[] }>()
+          .items.map((i) => i._id)
+        expect(ids).not.toContain(_id.toHexString())
+      }
+    })
+
+    it('takes both kinds of help on a post asking for both, and pays for each', async () => {
+      const author = await newUser('asks-both-author@example.com')
+      const helper = await newUser('asks-both-helper@example.com')
+      const _id = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id,
+        authorId: author.userId,
+        body: 'I has a squirrel.',
+        language: 'en',
+        asks: ['correction', 'pronunciation'],
+        kind: 'correction',
+        correctionCount: 0,
+        answerCount: 0,
+        createdAt: new Date(),
+      })
+
+      expect((await correct(helper, _id.toHexString(), 'I have a squirrel.')).statusCode).toBe(201)
+      expect((await answer(helper, _id.toHexString())).statusCode).toBe(201)
+      expect(await ledgerRows(helper.userId, 'correction')).toBe(1)
+      expect(await ledgerRows(helper.userId, 'pronunciation')).toBe(1)
+    })
+  })
+
   describe('comments', () => {
     it('counts a comment on the card and lists it on the post', async () => {
       const author = await newUser('comment-author@example.com')

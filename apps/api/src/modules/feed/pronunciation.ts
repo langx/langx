@@ -1,6 +1,7 @@
 import {
   ERROR_CODES,
   TOKEN_RULES,
+  asksOf,
   type CreatePronunciationAnswerInput,
   type ListPronunciationAnswersQuery,
   type PronunciationAnswer,
@@ -93,14 +94,12 @@ export async function answerPronunciation(
 
   const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() })
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
-  // Without this the collection fills with rows no reader ever queries: the
-  // pronunciation section is the only place answers are listed, and a
-  // correction post is never in it.
-  if ((post.kind ?? 'correction') !== 'pronunciation') {
-    throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
-      'That post asks for a correction, not a recording',
-    )
+  // Only an asked-for recording can be given: the ask is the author's consent,
+  // and a post that did not ask for one has no place to show it.
+  if (!asksOf(post).includes('pronunciation')) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That post is not asking for a recording', {
+      reason: 'not_asked',
+    })
   }
   // Recording your own word is not teaching, and it would pay for it.
   if (post.authorId === userId) {

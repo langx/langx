@@ -1,7 +1,10 @@
 import {
   ERROR_CODES,
   TOKEN_RULES,
+  asksOf,
   attachmentsOf,
+  legacySectionOf,
+  type PostAsk,
   type CreatePostCorrectionInput,
   type CreatePostInput,
   type FeedPage,
@@ -341,16 +344,23 @@ export async function createPost(
   // the whole of it. A voice note recorded in a browser becomes AAC here.
   const attachments = normalizeAttachments ? await normalizeAttachments(picked) : picked
 
+  // Every caller still names one section, so the asks are that one. The
+  // schema refuses `asks` itself until this API can store a post that asks
+  // for nothing.
+  const asks: PostAsk[] = [input.kind]
   const doc: Post = {
     _id: new ObjectId(),
     authorId: userId,
     body: input.body,
     language: input.language,
-    // Written explicitly on every new post, so the missing-field case only ever
-    // covers rows that predate the field.
-    kind: input.kind,
+    asks,
+    // Written explicitly on every new post, beside the asks it is derived
+    // from, so the missing-field case only ever covers rows that predate it.
+    kind: legacySectionOf(asks),
     correctionCount: 0,
-    ...(input.kind === 'pronunciation' ? { answerCount: 0 } : {}),
+    // Both counts on every post, so nothing has to know which ones a count
+    // can be missing from — only rows older than `asks` lack this one.
+    answerCount: 0,
     ...(attachments.length > 0 ? { attachments } : {}),
     // The first file, repeated, for builds that predate `attachments`. See the
     // same two lines in `sendMediaMessage`.
@@ -389,14 +399,13 @@ export async function correctPost(
   // right answer, so the filter goes in rather than a branch beside it.
   const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() })
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
-  // The mirror of the guard in `answerPronunciation`. A request for a recording
-  // is not a sentence to rewrite, and a correction on one would sit in a list
-  // that section never reads.
-  if ((post.kind ?? 'correction') !== 'correction') {
-    throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
-      'That post asks for a recording, not a correction',
-    )
+  // Only an asked-for correction can be given. The ask is the author's
+  // consent to having their words rewritten — and the award for it is
+  // uncapped, so a post that never asked must not be a way to earn it.
+  if (!asksOf(post).includes('correction')) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That post is not asking for a correction', {
+      reason: 'not_asked',
+    })
   }
   // Correcting your own sentence is not teaching, and it would pay for it.
   if (post.authorId === userId) {
@@ -563,7 +572,7 @@ export async function listPostCorrections(
    * and nothing at all on a post nobody has recorded on yet.
    */
   const answerSummary =
-    post.kind === 'pronunciation' && (post.answerCount ?? 0) > 0
+    asksOf(post).includes('pronunciation') && (post.answerCount ?? 0) > 0
       ? await readAnswerSummary(db, userId, [_id])
       : EMPTY_ANSWER_SUMMARY
   const topAnswer = answerSummary.topByPost.get(postId) ?? null
