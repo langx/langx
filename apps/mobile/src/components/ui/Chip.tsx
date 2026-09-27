@@ -94,7 +94,13 @@ export function Chip({
       onPress={onPress}
       disabled={disabled}
       {...(accessibilityRole
-        ? { accessibilityRole, accessibilityState: { checked: selected, disabled } }
+        ? {
+            accessibilityRole,
+            accessibilityState: { checked: selected, disabled },
+            // react-native-web maps `disabled` out of `accessibilityState` but
+            // not `checked`, so the web build said nothing about the tick.
+            'aria-checked': selected,
+          }
         : {})}
       style={({ pressed }) => [
         ...container,
