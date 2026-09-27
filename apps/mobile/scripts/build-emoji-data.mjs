@@ -1,20 +1,24 @@
-/* global console */
+/* global Buffer, console, fetch */
 /**
  * Writes `src/lib/emojiData.ts`, the list the reaction picker draws.
  *
- *   npm pack unicode-emoji-json && tar xzf unicode-emoji-json-*.tgz
- *   node scripts/build-emoji-data.mjs package/data-by-group.json
+ *   node scripts/build-emoji-data.mjs
  *
  * The source is `unicode-emoji-json` (MIT), which is Unicode's own emoji-test
- * data as JSON. It is read from a path rather than installed, because the app
- * needs about 40 KB of it, once, not an 800 KB package on every install.
+ * data as JSON. It is fetched from a pinned version and checked against a
+ * checksum rather than installed, because the app needs about 40 KB of it,
+ * once, not an 800 KB package on every install. The script takes no
+ * arguments: a pinned URL and a hash leave nothing to point it elsewhere, and
+ * a changed file fails loudly instead of quietly changing the picker. To move
+ * to a newer version, change both constants together.
  *
  * Only what a phone can draw is kept: emoji up to `MAX_EMOJI_VERSION`, the
  * base form of each (no skin-tone variants), and nothing from the "Component"
  * group, which holds bare skin tones and hair styles that are not emoji on
  * their own.
  */
-import { readFileSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -38,13 +42,18 @@ const GROUPS = {
   flags: 'flags',
 }
 
-const source = process.argv[2]
-if (!source) {
-  console.error('usage: node scripts/build-emoji-data.mjs <path to data-by-group.json>')
-  process.exit(1)
+const SOURCE_URL = 'https://cdn.jsdelivr.net/npm/unicode-emoji-json@0.9.0/data-by-group.json'
+const SOURCE_SHA256 = 'aa1fbede396c174a29af35e9dbb1f5a0e5de9b746c0b5a4bf1652562caf385ee'
+
+const response = await fetch(SOURCE_URL)
+if (!response.ok) throw new Error(`${SOURCE_URL}: HTTP ${response.status}`)
+const body = Buffer.from(await response.arrayBuffer())
+const digest = createHash('sha256').update(body).digest('hex')
+if (digest !== SOURCE_SHA256) {
+  throw new Error(`${SOURCE_URL}: sha256 ${digest}, expected ${SOURCE_SHA256}`)
 }
 
-const groups = JSON.parse(readFileSync(source, 'utf8'))
+const groups = JSON.parse(body.toString('utf8'))
 const out = []
 for (const group of groups) {
   const id = GROUPS[group.slug]
