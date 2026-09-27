@@ -2614,7 +2614,8 @@ describe('Faz 5 — conversation/message history REST', () => {
         messageId,
         emoji: '🔥',
       })
-      expect(moved.message.reactions?.['👍']).toEqual([])
+      // Nobody is left on it, so the emoji goes rather than staying as `[]`.
+      expect(moved.message.reactions?.['👍']).toBeUndefined()
       expect(moved.message.reactions?.['🔥']).toEqual([b.userId])
 
       const cleared = await reactToMessage(handle.db, b.userId, {
@@ -2622,7 +2623,31 @@ describe('Faz 5 — conversation/message history REST', () => {
         messageId,
         emoji: '🔥',
       })
-      expect(cleared.message.reactions?.['🔥']).toEqual([])
+      expect(cleared.message.reactions?.['🔥']).toBeUndefined()
+    })
+
+    /** The picker offers the whole keyboard, not only the strip. */
+    it('stores any single emoji, beside the other person on the same one', async () => {
+      const { a, b, conversationId, messageId } = await pair('react-any')
+      const { reactToMessage } = await import('../modules/chat/mutations')
+
+      await reactToMessage(handle.db, a.userId, { conversationId, messageId, emoji: '🦄' })
+      const both = await reactToMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        emoji: '🦄',
+      })
+      expect(both.message.reactions?.['🦄']).toEqual([a.userId, b.userId])
+
+      const moved = await reactToMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        emoji: '👩🏻‍❤️‍💋‍👨🏼',
+      })
+      expect(moved.message.reactions).toEqual({
+        '🦄': [a.userId],
+        '👩🏻‍❤️‍💋‍👨🏼': [b.userId],
+      })
     })
 
     /** One tap must never be a payout, or the emoji strip becomes a farm. */

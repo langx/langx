@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { isSingleEmoji } from './singleEmoji'
 // The attachment shape lives in `media.ts` now, shared with the feed. Re-exported
 // here so `@langx/shared` keeps one import surface and nothing had to be renamed
 // to discover that a post and a message carry the same thing.
@@ -413,9 +414,10 @@ export const TYPING_TTL_MS = 6_000
 /**
  * The reaction strip.
  *
- * Eight, which is what fills the pill edge to edge on a 390pt screen — the
- * menu sizes the strip to this list, so any shorter one leaves empty pill
- * after the last emoji. It is still short enough to be a glance rather than a
+ * Eight, which with the "+" that opens the full picker after them is what
+ * fills the pill edge to edge on a 390pt screen — the menu sizes the strip to
+ * this list, so any shorter one leaves empty pill after the last emoji. The
+ * strip is the quick way, not the limit: any single emoji is a reaction. It is still short enough to be a glance rather than a
  * decision, and on a narrower phone the strip scrolls rather than shrinking
  * cells that are already only just tappable.
  *
@@ -433,11 +435,41 @@ export type MessageReaction = (typeof MESSAGE_REACTIONS)[number]
  *
  * Named here rather than written into the gesture, because the glyph is
  * `U+2764 U+FE0F` and a bare `❤` typed at a call site is a different string —
- * it would pass review, read identically in a diff, and fail
- * `reactToMessageSchema`'s enum at run time. Typed as `MessageReaction`, so it
- * cannot drift out of the strip either.
+ * it would pass review, read identically in a diff, and be stored as a second
+ * heart beside the strip's, each with its own count. Typed as
+ * `MessageReaction`, so it cannot drift out of the strip either.
  */
 export const DOUBLE_TAP_REACTION: MessageReaction = '❤️'
+
+/**
+ * The longest reaction the server stores, in UTF-8 bytes.
+ *
+ * The longest emoji in use — a kiss with two skin tones — is 35; 64 leaves
+ * room for whatever Unicode adds without ever letting a reaction key, which
+ * becomes a field name on the message, grow into a payload.
+ */
+export const MAX_REACTION_BYTES = 64
+
+function utf8Length(value: string): number {
+  let bytes = 0
+  for (const char of value) {
+    const code = char.codePointAt(0) ?? 0
+    bytes += code < 0x80 ? 1 : code < 0x800 ? 2 : code < 0x10000 ? 3 : 4
+  }
+  return bytes
+}
+
+/**
+ * Whether a string can be a reaction: exactly one emoji, of any kind.
+ *
+ * The strip only offers `MESSAGE_REACTIONS`, but the picker behind its "+"
+ * offers the whole keyboard, so this is the rule both the server and the app
+ * check. Being one emoji is also what keeps `.` and `$` out of a key that
+ * becomes a field name on the message.
+ */
+export function isReactionEmoji(value: string): boolean {
+  return utf8Length(value) <= MAX_REACTION_BYTES && isSingleEmoji(value)
+}
 
 /**
  * How long a sender can withdraw a message from the other person's device.
@@ -523,7 +555,7 @@ export const reactToMessageSchema = z.object({
   conversationId: z.string().trim().min(1),
   messageId: z.string().trim().min(1),
   /** Null clears whatever this user had on the message. */
-  emoji: z.enum(MESSAGE_REACTIONS).nullable(),
+  emoji: z.string().refine(isReactionEmoji, 'A reaction is a single emoji').nullable(),
 })
 export type ReactToMessageInput = z.infer<typeof reactToMessageSchema>
 
