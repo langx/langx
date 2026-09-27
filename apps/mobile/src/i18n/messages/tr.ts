@@ -1163,6 +1163,21 @@ export const tr: Localized<EnMessages> = {
     more: 'Daha fazla…',
     backToFirstPage: 'İlk sayfaya dön',
     reactWith: '{emoji} ile tepki ver',
+    moreReactions: 'Diğer tepkiler',
+    emojiSearch: 'Emoji ara',
+    emojiNoResults: 'Emoji bulunamadı',
+    emojiGroups: {
+      recent: 'Son kullanılanlar',
+      smileys: 'İfadeler',
+      people: 'İnsanlar',
+      nature: 'Hayvanlar ve doğa',
+      food: 'Yiyecek ve içecek',
+      travel: 'Seyahat ve yerler',
+      activities: 'Etkinlikler',
+      objects: 'Nesneler',
+      symbols: 'Semboller',
+      flags: 'Bayraklar',
+    },
   },
 
   day: {

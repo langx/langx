@@ -261,7 +261,7 @@ Status: in review
 
 ### PR 11 — React with any emoji
 
-Status: planned
+Status: in review
 
 - `reactToMessageSchema`: `z.enum(MESSAGE_REACTIONS)` becomes a single-emoji
   check (the `isBigEmoji` / `bigEmojiCount === 1` logic moves to shared, or is
