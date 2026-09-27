@@ -1099,6 +1099,7 @@ export const tr: Localized<EnMessages> = {
     replyingTo: '{name} adlı kişiye yanıt',
     deleted: 'Bu mesaj silindi',
     goToQuoted: 'Alıntılanan mesaja git',
+    spoiler: 'Spoiler, göstermek için dokun',
     deleteTitle: 'Mesajı sil',
     deleteBothSides: 'Bu geri alınamaz.',
     deleteOwnSide: 'Karşı tarafın cihazında kalır.',
