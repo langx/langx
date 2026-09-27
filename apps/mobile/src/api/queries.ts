@@ -847,6 +847,8 @@ export interface MessageDto {
   ask?: MessageAsk
   /** The sender's own words in the reader's language, sent with the message. */
   translation?: MessageTranslation
+  /** A copy of a message from another of the sender's threads. */
+  forwarded?: boolean
   phrase?: { term: string; meaning: string; example?: string; lang: string }
   meeting?: {
     startsAt: string

@@ -183,7 +183,13 @@ export async function purgeExpiredAccounts(
       const sentMedia = await db
         .collection<Message>(COLLECTIONS.messages)
         .find(
-          { senderId: userId, $or: [{ media: { $exists: true } }, { attachments: { $ne: [] } }] },
+          {
+            senderId: userId,
+            // A forward points at somebody else's upload; those bytes go when
+            // *their* account does, not when the forwarder's does.
+            forwarded: { $ne: true },
+            $or: [{ media: { $exists: true } }, { attachments: { $ne: [] } }],
+          },
           { projection: { media: 1, attachments: 1 } },
         )
         .toArray()

@@ -777,6 +777,39 @@ export const sendMediaMessageSchema = z.preprocess(
 export type SendMediaMessageInput = z.infer<typeof sendMediaMessageSchema>
 
 /**
+ * What can be forwarded: a sentence, or the files on a message.
+ *
+ * The structured kinds stay where they were made. A quiz's answer, a
+ * meeting's status and a correction's target all belong to the two people who
+ * wrote them, and a copy in another thread would either carry state that
+ * means nothing there or lose the part that made it worth sending. A phrase
+ * card also writes a deck row, and a sticker is gated on owning its pack —
+ * neither is a copy of a message. Shared so the menu and the server agree.
+ */
+export const FORWARDABLE_MESSAGE_TYPES = ['text', 'image', 'audio', 'video'] as const
+
+export function isForwardableType(type: string): boolean {
+  return (FORWARDABLE_MESSAGE_TYPES as readonly string[]).includes(type)
+}
+
+/**
+ * Forward one message into a conversation.
+ *
+ * Only the id of the original travels, never its words or its files. The
+ * server reads them from a message it has checked the forwarder can see, so
+ * "forwarded" can never be stamped on something nobody sent — and an
+ * attachment arrives as a file already in our bucket, which is why there is
+ * no second upload.
+ */
+export const forwardMessageSchema = z.object({
+  /** Where it is going. */
+  conversationId: z.string().trim().min(1),
+  /** The message being forwarded, from any thread the sender is in. */
+  messageId: z.string().trim().min(1),
+})
+export type ForwardMessageInput = z.infer<typeof forwardMessageSchema>
+
+/**
  * What the ticks under your own message mean, in the order they happen:
  *
  * - `sent` — one tick. The server has it. Nothing more is claimed: the other

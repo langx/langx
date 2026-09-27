@@ -178,6 +178,7 @@ export const fr: Localized<EnMessages> = {
     correctPart: 'Corriger une partie',
     words: 'Mots',
     romanize: 'Voir en lettres latines',
+    forward: 'Transférer',
   },
 
   echo: {
@@ -360,6 +361,16 @@ export const fr: Localized<EnMessages> = {
     aboutClose: 'J’ai compris',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Transférer à…',
+    sendProfileTitle: 'Envoyer le profil à…',
+    searchPlaceholder: 'Rechercher dans vos discussions',
+    empty: 'Aucune discussion où l’envoyer pour l’instant.',
+    noMatches: 'Aucune discussion ne correspond.',
+    forwarded: 'Transféré',
+    sent: 'Envoyé',
+  },
+
   messageMeta: {
     sent: 'Envoyé',
     delivered: 'Distribué',
@@ -376,6 +387,7 @@ export const fr: Localized<EnMessages> = {
     meeting: 'Rendez-vous',
     quiz: 'Quiz',
     correction: 'Correction',
+    forwarded: 'Transféré',
   },
 
   interests: {
@@ -2021,6 +2033,7 @@ export const fr: Localized<EnMessages> = {
     copied: 'Lien copié',
     copiedText: 'Texte copié',
     profile: 'Partager le profil',
+    sendInChat: 'Envoyer dans une discussion',
     profileMessage: 'Fais connaissance avec {name} sur LangX : {url}',
     postMessage: '« {excerpt} » — {language}, en pratique sur LangX : {url}',
     streak: 'Partager ma série',

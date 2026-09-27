@@ -148,6 +148,16 @@ export interface Message {
    * pair and it survives a reload.
    */
   translation?: MessageTranslation
+  /**
+   * A copy of a message from another thread, made by `forwardMessage`.
+   *
+   * A flag rather than a pointer back: the original sits in a conversation
+   * the new reader is not in, and naming it would tell them it exists. For an
+   * attachment it also means the files are *not this message's own* — they
+   * are the original's, shared rather than uploaded twice — so nothing that
+   * deletes this message may delete them.
+   */
+  forwarded?: true
   /** A word worth keeping. Mirrored into `phraseCards`, which the deck reads. */
   phrase?: { term: string; meaning: string; example?: string; lang: string }
   /**

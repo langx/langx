@@ -58,6 +58,7 @@ import {
   useSpeakMessage,
   useRomanizeMessage,
   type ClearedUnread,
+  type ConversationDto,
   type MessageDto,
 } from '../api/queries'
 import * as Clipboard from 'expo-clipboard'
@@ -70,6 +71,7 @@ import { ComposerHint } from '../components/ComposerHint'
 import { LoadFailed } from '../components/LoadFailed'
 import { MessageBubble } from '../components/MessageBubble'
 import { MessagePartsSheet } from '../components/MessagePartsSheet'
+import { ConversationPicker } from '../components/ConversationPicker'
 import { WordLookup } from '../components/WordLookup'
 import { PhotoViewer } from '../components/PhotoViewer'
 import { AttachmentPreviewRow, type PendingAttachment } from '../components/AttachmentPreview'
@@ -355,6 +357,8 @@ export function ChatScreen({
     word: string | null
   } | null>(null)
   const [editing, setEditing] = useState<MessageDto | null>(null)
+  /** The message on its way to another thread, while the picker is open. */
+  const [forwarding, setForwarding] = useState<MessageDto | null>(null)
   /**
    * The message a jump is centred on, or null while the live thread is showing.
    *
@@ -1813,10 +1817,46 @@ export function ChatScreen({
       })
     } else if (picked.id === 'echo') {
       await (message.echoed ? removeEcho(message) : addEcho(message))
+    } else if (picked.id === 'forward') {
+      setForwarding(message)
     } else if (picked.id === 'saveMedia') {
       await saveMessageMedia(message)
     } else if (picked.id === 'report') {
       reportMessage(message)
+    }
+  }
+
+  /**
+   * Sends the message the picker was opened for into the thread picked.
+   *
+   * Only the ids travel; the server reads the words and the files itself and
+   * checks the target the way it checks any send. The refusals worth naming
+   * are the two a person can do something about, and both are about the
+   * *target*: its media gate, and today's attachments.
+   */
+  async function forwardTo(target: ConversationDto): Promise<void> {
+    const message = forwarding
+    setForwarding(null)
+    if (!message) return
+    try {
+      const socket = await getSocket()
+      const saved = await emitWithAck<MessageDto>(socket, 'message:forward', {
+        conversationId: target._id,
+        messageId: message._id,
+      })
+      // Into this very thread: drawn from the ack, as a send is. See `landed`.
+      if (target._id === conversationId) landed(saved)
+      showToast(t('conversationPicker.forwarded'))
+    } catch (error) {
+      const code = errorCodeOf(error)
+      void showAlert(
+        t('chat.couldNotSend'),
+        code === 'QUOTA_EXCEEDED'
+          ? t('chat.mediaQuota')
+          : code === 'MEDIA_LOCKED'
+            ? t('chat.mediaLocked', { count: Math.max(1, target.mediaLockedFor) })
+            : t('common.retry'),
+      )
     }
   }
 
@@ -2701,6 +2741,16 @@ export function ChatScreen({
           onClose={() => setViewing(null)}
           onIndexChange={(index) => setViewing((open) => (open ? { ...open, index } : open))}
         />
+        {/* Mounted only while open, so a thread never reads the chat list it
+            is not showing. */}
+        {forwarding ? (
+          <ConversationPicker
+            visible
+            title={t('conversationPicker.forwardTitle')}
+            onPick={(target) => void forwardTo(target)}
+            onClose={() => setForwarding(null)}
+          />
+        ) : null}
         <MessagePartsSheet
           title={
             choosingPart?.mode === 'correct'

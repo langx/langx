@@ -48,6 +48,7 @@ describe('messageActionsFor', () => {
       'star',
       'pin',
       'phrase',
+      'forward',
       'share',
       'report',
     ])
@@ -238,6 +239,35 @@ describe('messageActionsFor', () => {
     })
   })
 
+  describe('forward', () => {
+    it('is offered on text and on a message with files, on the second page', () => {
+      expect(find({}, 'forward')?.page).toBe('more')
+      for (const type of ['image', 'audio', 'video'] as const) {
+        expect(ids({ type, hasMedia: true, hasBody: false }), type).toContain('forward')
+      }
+    })
+
+    it('is offered on your own messages too', () => {
+      expect(ids({ mine: true })).toContain('forward')
+    })
+
+    /** A withdrawn message keeps its type and loses what would travel. */
+    it('is not offered once the words or the files are gone', () => {
+      expect(ids({ hasBody: false })).not.toContain('forward')
+      expect(ids({ type: 'image', hasMedia: false, hasBody: true })).not.toContain('forward')
+    })
+
+    it('is not offered on the kinds that stay where they were made', () => {
+      for (const type of ['correction', 'phrase', 'meeting', 'quiz', 'sticker'] as const) {
+        expect(ids({ type, hasMedia: true }), type).not.toContain('forward')
+      }
+    })
+
+    it('is not offered in a channel', () => {
+      expect(ids({ channel: true })).not.toContain('forward')
+    })
+  })
+
   describe('save to device', () => {
     it('is offered on a photo or video message, on the first page', () => {
       for (const type of ['image', 'video'] as const) {
@@ -393,7 +423,15 @@ describe('paginateActions', () => {
 
   it('puts the rest behind More', () => {
     const { actions, hasMore } = paginateActions(all, 'more')
-    expect(actions.map((a) => a.id)).toEqual(['words', 'star', 'pin', 'phrase', 'share', 'report'])
+    expect(actions.map((a) => a.id)).toEqual([
+      'words',
+      'star',
+      'pin',
+      'phrase',
+      'forward',
+      'share',
+      'report',
+    ])
     expect(hasMore).toBe(false)
   })
 
