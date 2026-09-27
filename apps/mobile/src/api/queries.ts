@@ -548,6 +548,8 @@ export interface MeProfile {
    */
   cityName?: string
   timezone?: string
+  /** When `timezone` last changed; the server's cooldown counts from it. */
+  timezoneUpdatedAt?: string
   photos?: { url: string }[]
   nativeLanguages: { code: string }[]
   learning: { code: string; level: LanguageLevel; priority: number }[]

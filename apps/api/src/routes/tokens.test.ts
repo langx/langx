@@ -648,6 +648,37 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(changed.json<{ code: string }>().code).toBe('RATE_LIMITED')
       expect(changed.json<{ retryAt?: string }>().retryAt).toBeTruthy()
     })
+
+    it('carries a streak credited today across a first zone, neither resetting nor adding a day', async () => {
+      // An account with no zone on file — a v1 import, say — whose streak runs
+      // on UTC. Whichever of the two zones is on another calendar day right
+      // now; at every UTC hour at least one of them is.
+      const user = await newUser('xp-tz-first-fill@example.com')
+      const now = new Date()
+      const utcToday = utcDayKey(now)
+      const zone =
+        localDayKey(now, 'Pacific/Kiritimati') !== utcToday
+          ? 'Pacific/Kiritimati'
+          : 'Pacific/Pago_Pago'
+      await setStreak(user.userId, 12, utcToday)
+
+      const filled = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { timezone: zone },
+      })
+      expect(filled.statusCode, filled.body).toBe(200)
+      const profile = filled.json<Profile>()
+      expect(profile.streak.lastQualifiedDay).toBe(localDayKey(now, zone))
+      expect(profile.streak.lastActionDay).toBe(localDayKey(now, zone))
+
+      // Still credited for today on the new calendar: westward this used to
+      // reset to 1, eastward it used to count the same moment as a new day.
+      const result = await checkIn(user)
+      expect(result.advanced).toBe(false)
+      expect(result.current).toBe(12)
+    })
   })
 
   it('bumps stats.lastActiveAt so discovery can see the sender as online', async () => {

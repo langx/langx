@@ -46,6 +46,40 @@ export function streakDay(profile: Pick<Profile, 'timezone'>, at: Date): string 
 }
 
 /**
+ * The streak's day keys moved onto a new zone's calendar, for a timezone
+ * change at `at` — or `null` when the change moves nothing.
+ *
+ * `lastQualifiedDay` is a day on the *old* zone's calendar and `advance`
+ * compares it with a today taken from the new one. At one instant the two
+ * calendars can be a day apart, and left alone that gap is read as history.
+ * Westward, today lands before the last credited day; `nextStreak` finds no
+ * consecutive day and resets to 1 — which is what an American evening user,
+ * credited on UTC's tomorrow, would get the first time the app fills in their
+ * zone. Eastward, the same moment is credited as a second day (and a milestone
+ * paid twice), or a streak that was only due today reads as one day missed.
+ *
+ * Shifting both keys by the difference keeps where the streak stands relative
+ * to today — credited today, due today, one day missed — exactly what it was
+ * before the change, so moving zones neither breaks a run nor adds to one.
+ */
+export function streakDaysInZone(
+  profile: Pick<Profile, 'timezone' | 'streak'>,
+  nextZone: string,
+  at: Date,
+): { lastQualifiedDay: string; lastActionDay: string | null } | null {
+  const { lastQualifiedDay, lastActionDay } = profile.streak
+  if (lastQualifiedDay === null) return null
+  const shift = Math.round(
+    (Date.parse(localDayKey(at, nextZone)) - Date.parse(streakDay(profile, at))) / 86_400_000,
+  )
+  if (shift === 0) return null
+  return {
+    lastQualifiedDay: shiftDayKey(lastQualifiedDay, shift),
+    lastActionDay: lastActionDay ? shiftDayKey(lastActionDay, shift) : null,
+  }
+}
+
+/**
  * Credits today's streak for a **meaningful action** — a message, a
  * correction, a recorded pronunciation answer, or a completed Echo session.
  *
