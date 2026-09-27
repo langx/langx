@@ -10,6 +10,7 @@ import { loadEnv, publicApiUrl, unsubscribeSecret } from './env'
 import { createPersonDeleterFromEnv } from './modules/analytics/personDeleter'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
+import { createSttProvider } from './stt/createSttProvider'
 import { createTtsProvider } from './tts/createTtsProvider'
 import { createAnthropicProvider } from './modules/official/assistantProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
@@ -56,6 +57,10 @@ async function main(): Promise<void> {
   // only "Read it aloud" on a member's own card says it cannot.
   const tts = createTtsProvider(env)
 
+  // The not-configured one without `STT_URL`, and then the app is told so
+  // and never offers a transcript.
+  const stt = createSttProvider(env)
+
   // `null` without a key. @langx still greets and announces — those are ours,
   // not the model's — and a message to it is answered with the offline line.
   const assistant = createAnthropicProvider(env)
@@ -82,6 +87,7 @@ async function main(): Promise<void> {
     translation,
     revenueCat,
     tts,
+    stt,
     push,
     email: emailSender,
     assistant,

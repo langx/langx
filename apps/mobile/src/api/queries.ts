@@ -47,6 +47,8 @@ import {
   ERROR_CODES,
   type MessageSpeech,
   type MessageRomanization,
+  type MessageTranscript,
+  type VoiceTranscript,
   type AuthoredCorrectionsPage,
   type ProfileBadge,
   type PublicBadges,
@@ -828,6 +830,8 @@ export interface MessageMediaDto {
   durationSeconds?: number
   width?: number
   height?: number
+  /** A voice note's words, once somebody in the thread has asked for them. */
+  transcript?: VoiceTranscript
 }
 
 export interface MessageDto {
@@ -3429,11 +3433,21 @@ export function useAttachEchoAudio() {
  */
 const VOICE_TIMEOUT_MS = 75_000
 
-function withVoiceTimeout<T>(path: string, init: RequestInit): Promise<T> {
+/**
+ * The same reasoning for the transcript service, whose own deadline in the API
+ * is two minutes (`HttpSttProvider`) — a note can be two minutes of speech.
+ */
+const TRANSCRIPT_TIMEOUT_MS = 135_000
+
+function withVoiceTimeout<T>(
+  path: string,
+  init: RequestInit,
+  timeoutMs = VOICE_TIMEOUT_MS,
+): Promise<T> {
   const controller = new AbortController()
   const timer = setTimeout(() => {
     controller.abort()
-  }, VOICE_TIMEOUT_MS)
+  }, timeoutMs)
   return api.request<T>(path, { ...init, signal: controller.signal }).finally(() => {
     clearTimeout(timer)
   })
@@ -3504,6 +3518,30 @@ export function useRomanizeMessage() {
         )}/romanize`,
         { method: 'POST' },
       ),
+  })
+}
+
+/**
+ * A voice note written out, by the transcript service.
+ *
+ * No body, for `useSpeakMessage`'s reason. The quota is refetched only when a
+ * unit was spent; a note somebody in the thread already had written out is
+ * free, and comes back `cached`.
+ */
+export function useTranscribeMessage() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { conversationId: string; messageId: string }) =>
+      withVoiceTimeout<MessageTranscript>(
+        `/conversations/${encodeURIComponent(input.conversationId)}/messages/${encodeURIComponent(
+          input.messageId,
+        )}/transcript`,
+        { method: 'POST' },
+        TRANSCRIPT_TIMEOUT_MS,
+      ),
+    onSuccess: (transcript) => {
+      if (!transcript.cached) void client.invalidateQueries({ queryKey: keys.quota })
+    },
   })
 }
 

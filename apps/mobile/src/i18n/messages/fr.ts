@@ -1078,6 +1078,13 @@ export const fr: Localized<EnMessages> = {
       one: 'Tu as utilisé la {count} lecture du jour. Elle se renouvelle sous 24 heures.',
       other: 'Tu as utilisé les {count} lectures du jour. Elles se renouvellent sous 24 heures.',
     },
+    showText: 'Afficher le texte',
+    transcribing: 'Transcription…',
+    transcriptEmpty: 'Aucun mot entendu dans ce message.',
+    transcriptUnavailable: 'Impossible de transcrire',
+    transcriptFailed: 'Réessaie dans un instant.',
+    transcriptLimit:
+      'Tu as utilisé les transcriptions du jour. Elles se renouvellent sous 24 heures.',
     copied: 'Copié',
     couldNotSend: 'Envoi impossible',
     mediaQuota: 'Vous avez atteint la limite du jour pour les photos, vidéos et messages vocaux.',

@@ -59,6 +59,8 @@ import {
   type AttachmentNormalizer,
 } from './modules/media/transcodeAudio'
 import type { TranslationProvider } from './translation/TranslationProvider'
+import { NotConfiguredSttProvider } from './stt/createSttProvider'
+import type { SttProvider } from './stt/SttProvider'
 import { NotConfiguredTtsProvider } from './tts/createTtsProvider'
 import type { TtsProvider } from './tts/TtsProvider'
 import { attachSocketServer } from './ws'
@@ -79,6 +81,7 @@ declare module 'fastify' {
     normalizeAttachments: AttachmentNormalizer
     translation: TranslationProvider
     tts: TtsProvider
+    stt: SttProvider
     revenueCat: RevenueCatClient
     push: PushSender
     /**
@@ -124,6 +127,8 @@ export interface BuildAppOptions {
    * `TTS_URL` — so no test has to name a service it never calls.
    */
   tts?: TtsProvider
+  /** Defaults to the not-configured one, for `tts`'s reason. */
+  stt?: SttProvider
   /**
    * Defaults to the logging no-op. Production passes `ExpoPushSender`
    * explicitly from index.ts; leaving it optional keeps every test from having
@@ -164,6 +169,7 @@ export async function buildApp({
   translation,
   revenueCat,
   tts = new NotConfiguredTtsProvider(),
+  stt = new NotConfiguredSttProvider(),
   push = new LoggingPushSender(),
   email = new ConsoleEmailSender(console),
   assistant = null,
@@ -225,6 +231,7 @@ export async function buildApp({
   )
   app.decorate('translation', translation)
   app.decorate('tts', tts)
+  app.decorate('stt', stt)
   app.decorate('revenueCat', revenueCat)
   app.decorate('push', push)
   app.decorate('email', email)

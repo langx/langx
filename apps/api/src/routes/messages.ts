@@ -33,6 +33,7 @@ import {
 } from '../modules/chat/mutations'
 import { romanizeMessage } from '../modules/chat/romanize'
 import { speakMessage } from '../modules/chat/speak'
+import { transcribeMessage } from '../modules/chat/transcript'
 import { fanOutMessage } from '../ws/fanOut'
 import { sendTraySync } from '../ws/traySync'
 
@@ -231,6 +232,40 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
         request.params.messageId,
       )
       return reply.send(reading)
+    },
+  )
+
+  /*
+   * A voice note, written out by the transcript service.
+   *
+   * No body, for `/speak`'s reason: the likely languages are read from the two
+   * profiles, not taken from the caller. `requireMember` because it wakes a
+   * machine of ours, and a tighter limit than `/speak`'s because each call can
+   * be two minutes of audio rather than one sentence; the daily ceiling is
+   * `transcripts`.
+   */
+  app.post(
+    '/conversations/:id/messages/:messageId/transcript',
+    {
+      preHandler: requireMember,
+      schema: {
+        params: z.object({
+          id: z.string().trim().min(1),
+          messageId: z.string().trim().min(1),
+        }),
+      },
+      config: { rateLimit: { max: 6, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const transcript = await transcribeMessage(
+        app.mongo.db,
+        app.storage,
+        app.stt,
+        request.userId,
+        request.params.id,
+        request.params.messageId,
+      )
+      return reply.send(transcript)
     },
   )
 
