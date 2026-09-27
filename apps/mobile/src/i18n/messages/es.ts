@@ -1115,6 +1115,7 @@ export const es: Localized<EnMessages> = {
     replyingTo: 'Respondiendo a {name}',
     deleted: 'Este mensaje se ha eliminado',
     goToQuoted: 'Ir al mensaje citado',
+    spoiler: 'Spoiler, toca para mostrar',
     deleteTitle: 'Eliminar mensaje',
     deleteBothSides: 'Esto no se puede deshacer.',
     deleteOwnSide: 'Se queda en su dispositivo.',
@@ -1138,6 +1139,13 @@ export const es: Localized<EnMessages> = {
     emptyVisual: 'Las fotos y los vídeos que os enviéis se juntarán aquí.',
     emptyAudio: 'Las notas de voz de este chat se juntarán aquí.',
     tabPicker: 'Fotos y vídeo, o notas de voz',
+  },
+
+  chatSearch: {
+    open: 'Buscar',
+    placeholder: 'Buscar en este chat',
+    hint: 'Encuentra un mensaje por cualquier palabra que contenga.',
+    none: 'No hay mensajes con «{term}».',
   },
 
   messageMenu: {

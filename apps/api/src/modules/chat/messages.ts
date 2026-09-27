@@ -16,6 +16,7 @@ import {
   type SendStickerInput,
   findCosmetic,
   hasFeature,
+  stripFormatting,
   type SendTextMessageInput,
   type ForwardMessageInput,
   isForwardableType,
@@ -121,9 +122,10 @@ async function resolveReplyTo(
   return {
     messageId: target._id,
     senderId: target.senderId,
-    preview: (
-      quote ??
-      (target.body || previewFor(target.type, attachmentsOf(target).length))
+    // Stripped before it is cut: a cut through a `||spoiler||` would leave its
+    // closing marker behind, and the words would show with nothing to hide them.
+    preview: stripFormatting(
+      quote ?? (target.body || previewFor(target.type, attachmentsOf(target).length)),
     ).slice(0, REPLY_PREVIEW_MAX_LENGTH),
   }
 }

@@ -1259,6 +1259,8 @@ export const en = {
     replyingTo: 'Replying to {name}',
     deleted: 'This message was deleted',
     goToQuoted: 'Go to the quoted message',
+    /** A hidden `||spoiler||` in a message, read out before it is tapped open. */
+    spoiler: 'Spoiler, tap to reveal',
     deleteTitle: 'Delete message',
     deleteBothSides: 'This cannot be undone.',
     deleteOwnSide: 'It stays on their device.',
@@ -1282,6 +1284,13 @@ export const en = {
     emptyVisual: 'Photos and video you send each other will collect here.',
     emptyAudio: 'Voice notes from this chat will collect here.',
     tabPicker: 'Photos and video, or voice notes',
+  },
+
+  chatSearch: {
+    open: 'Search',
+    placeholder: 'Search this chat',
+    hint: 'Find a message by any word in it.',
+    none: 'No messages with “{term}”.',
   },
 
   messageMenu: {

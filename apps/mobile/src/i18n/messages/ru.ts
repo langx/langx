@@ -1209,6 +1209,7 @@ export const ru: Localized<EnMessages> = {
     replyingTo: 'Ответ {name}',
     deleted: 'Это сообщение удалено',
     goToQuoted: 'К цитируемому сообщению',
+    spoiler: 'Спойлер, нажмите, чтобы показать',
     deleteTitle: 'Удалить сообщение',
     deleteBothSides: 'Это не отменить.',
     deleteOwnSide: 'На его устройстве оно останется.',
@@ -1232,6 +1233,13 @@ export const ru: Localized<EnMessages> = {
     emptyVisual: 'Здесь соберутся фото и видео, которыми вы обменяетесь.',
     emptyAudio: 'Здесь соберутся голосовые из этого чата.',
     tabPicker: 'Фото и видео или голосовые',
+  },
+
+  chatSearch: {
+    open: 'Поиск',
+    placeholder: 'Поиск в этом чате',
+    hint: 'Найдите сообщение по любому слову из него.',
+    none: 'Нет сообщений с «{term}».',
   },
 
   messageMenu: {

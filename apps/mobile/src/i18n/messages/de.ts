@@ -1141,6 +1141,7 @@ export const de: Localized<EnMessages> = {
     replyingTo: 'Antwort an {name}',
     deleted: 'Diese Nachricht wurde gelöscht',
     goToQuoted: 'Zur zitierten Nachricht',
+    spoiler: 'Spoiler, zum Anzeigen tippen',
     deleteTitle: 'Nachricht löschen',
     deleteBothSides: 'Das lässt sich nicht rückgängig machen.',
     deleteOwnSide: 'Auf ihrem Gerät bleibt sie.',
@@ -1164,6 +1165,13 @@ export const de: Localized<EnMessages> = {
     emptyVisual: 'Fotos und Videos, die ihr euch schickt, sammeln sich hier.',
     emptyAudio: 'Sprachnachrichten aus diesem Chat sammeln sich hier.',
     tabPicker: 'Fotos und Video oder Sprachnachrichten',
+  },
+
+  chatSearch: {
+    open: 'Suchen',
+    placeholder: 'In diesem Chat suchen',
+    hint: 'Finde eine Nachricht über ein beliebiges Wort darin.',
+    none: 'Keine Nachrichten mit „{term}“.',
   },
 
   messageMenu: {

@@ -1231,6 +1231,7 @@ export const ar: Localized<EnMessages> = {
     replyingTo: 'رد على {name}',
     deleted: 'حُذفت هذه الرسالة',
     goToQuoted: 'الذهاب إلى الرسالة المقتبسة',
+    spoiler: 'حرق للأحداث، اضغط للكشف',
     deleteTitle: 'حذف الرسالة',
     deleteBothSides: 'لا يمكن التراجع عن هذا.',
     deleteOwnSide: 'ستبقى على جهازه.',
@@ -1254,6 +1255,13 @@ export const ar: Localized<EnMessages> = {
     emptyVisual: 'ستُجمع هنا الصور ومقاطع الفيديو التي تتبادلانها.',
     emptyAudio: 'ستُجمع هنا الرسائل الصوتية من هذه المحادثة.',
     tabPicker: 'صور وفيديو أو رسائل صوتية',
+  },
+
+  chatSearch: {
+    open: 'بحث',
+    placeholder: 'ابحث في هذه المحادثة',
+    hint: 'اعثر على رسالة بأي كلمة فيها.',
+    none: 'لا توجد رسائل تحتوي على «{term}».',
   },
 
   messageMenu: {

@@ -677,6 +677,27 @@ export const listConversationMediaQuerySchema = z.object({
 })
 export type ListConversationMediaQuery = z.infer<typeof listConversationMediaQuerySchema>
 
+/**
+ * `GET /conversations/:id/search` — finding a sentence in one thread.
+ *
+ * Two characters at least, for the reason the handle and city searches have
+ * the same floor: one letter matches nearly every message and answers nothing.
+ * A ceiling because the term becomes a pattern run against every body in the
+ * thread, and nobody searches for a paragraph.
+ *
+ * No `limit` on the query: a search page is a fixed size, so there is no
+ * second knob somebody can turn up to make one request scan further.
+ */
+export const CONVERSATION_SEARCH_MIN_LENGTH = 2
+export const CONVERSATION_SEARCH_MAX_LENGTH = 100
+export const CONVERSATION_SEARCH_PAGE_SIZE = 30
+
+export const conversationSearchQuerySchema = z.object({
+  q: z.string().trim().min(CONVERSATION_SEARCH_MIN_LENGTH).max(CONVERSATION_SEARCH_MAX_LENGTH),
+  cursor: z.string().trim().min(1).optional(),
+})
+export type ConversationSearchQuery = z.infer<typeof conversationSearchQuerySchema>
+
 export const CONVERSATION_PAGE_SIZE_DEFAULT = 20
 export const CONVERSATION_PAGE_SIZE_MAX = 50
 

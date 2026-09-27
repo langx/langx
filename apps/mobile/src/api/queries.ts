@@ -51,6 +51,7 @@ import {
   type ProfileBadge,
   type PublicBadges,
   type UpcomingMeeting,
+  CONVERSATION_SEARCH_MIN_LENGTH,
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
@@ -171,6 +172,7 @@ export const keys = {
    * tabs cannot show the other tab's rows for a frame.
    */
   conversationMedia: (id: string, tab: string) => ['conversationMedia', id, tab] as const,
+  conversationSearch: (id: string, term: string) => ['conversationSearch', id, term] as const,
   /**
    * Under the same `['phraseCards']` prefix as the per-conversation deck: both
    * are read on mount and neither is patched by the socket, so sharing the
@@ -2322,6 +2324,38 @@ export function useConversationMedia(conversationId: string, tab: MediaTab) {
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     enabled: conversationId.length > 0,
+  })
+}
+
+export interface ConversationSearchPageDto {
+  items: MessageDto[]
+  nextCursor: string | null
+}
+
+/**
+ * Finding a sentence in one thread, newest first.
+ *
+ * The term is in the key, so every settled term is its own list and a page
+ * fetched for "berl" is never shown under "berlin". `keepPreviousData` holds
+ * the last answer on screen while the next one is asked for, the way the
+ * handle search does, rather than flashing a spinner on every keystroke.
+ * Never patched by the socket: a search is a question asked once, and a
+ * message sent while it is open is not what anybody was looking for.
+ */
+export function useConversationSearch(conversationId: string, term: string) {
+  const trimmed = term.trim()
+  return useInfiniteQuery({
+    queryKey: keys.conversationSearch(conversationId, trimmed),
+    queryFn: ({ pageParam }) =>
+      api.get<ConversationSearchPageDto>(
+        `/conversations/${conversationId}/search?q=${encodeURIComponent(trimmed)}${
+          pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''
+        }`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled: conversationId.length > 0 && trimmed.length >= CONVERSATION_SEARCH_MIN_LENGTH,
+    placeholderData: keepPreviousData,
   })
 }
 

@@ -1112,6 +1112,7 @@ export const tr: Localized<EnMessages> = {
     replyingTo: '{name} adlı kişiye yanıt',
     deleted: 'Bu mesaj silindi',
     goToQuoted: 'Alıntılanan mesaja git',
+    spoiler: 'Spoiler, göstermek için dokun',
     deleteTitle: 'Mesajı sil',
     deleteBothSides: 'Bu geri alınamaz.',
     deleteOwnSide: 'Karşı tarafın cihazında kalır.',
@@ -1135,6 +1136,13 @@ export const tr: Localized<EnMessages> = {
     emptyVisual: 'Birbirinize gönderdiğiniz fotoğraf ve videolar burada birikir.',
     emptyAudio: 'Bu sohbetteki sesli notlar burada birikir.',
     tabPicker: 'Fotoğraf ve video ya da sesli notlar',
+  },
+
+  chatSearch: {
+    open: 'Ara',
+    placeholder: 'Bu sohbette ara',
+    hint: 'Bir mesajı içindeki herhangi bir kelimeyle bul.',
+    none: '“{term}” geçen mesaj yok.',
   },
 
   messageMenu: {
