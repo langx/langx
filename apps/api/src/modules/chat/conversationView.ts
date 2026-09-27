@@ -1,4 +1,4 @@
-import { MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES } from '@langx/shared'
+import { MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES, stripFormatting } from '@langx/shared'
 import type { Conversation } from './conversations'
 import type { ConversationPartner } from '../profiles/profiles'
 
@@ -68,7 +68,13 @@ export function toConversationView(conversation: Conversation, viewerId: string)
   return {
     _id: conversation._id.toHexString(),
     participants: conversation.participants,
-    lastMessage: conversation.lastMessage,
+    // Stripped here, on the way out, rather than where it is written: a send,
+    // an edit, a first message and an official delivery all write it, and
+    // one place to read it through cannot miss one of them.
+    lastMessage: {
+      ...conversation.lastMessage,
+      body: stripFormatting(conversation.lastMessage.body),
+    },
     unread: conversation.unread?.[viewerId] ?? 0,
     pinned: conversation.pinnedBy?.[viewerId] === true,
     archived: conversation.archivedBy?.[viewerId] === true,

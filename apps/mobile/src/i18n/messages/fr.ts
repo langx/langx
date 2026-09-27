@@ -1106,6 +1106,7 @@ export const fr: Localized<EnMessages> = {
     replyingTo: 'Réponse à {name}',
     deleted: 'Ce message a été supprimé',
     goToQuoted: 'Aller au message cité',
+    spoiler: 'Spoiler, touchez pour afficher',
     deleteTitle: 'Supprimer le message',
     deleteBothSides: 'C’est irréversible.',
     deleteOwnSide: 'Il reste sur son appareil.',

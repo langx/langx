@@ -1246,6 +1246,8 @@ export const en = {
     replyingTo: 'Replying to {name}',
     deleted: 'This message was deleted',
     goToQuoted: 'Go to the quoted message',
+    /** A hidden `||spoiler||` in a message, read out before it is tapped open. */
+    spoiler: 'Spoiler, tap to reveal',
     deleteTitle: 'Delete message',
     deleteBothSides: 'This cannot be undone.',
     deleteOwnSide: 'It stays on their device.',

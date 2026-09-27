@@ -1218,6 +1218,7 @@ export const ar: Localized<EnMessages> = {
     replyingTo: 'رد على {name}',
     deleted: 'حُذفت هذه الرسالة',
     goToQuoted: 'الذهاب إلى الرسالة المقتبسة',
+    spoiler: 'حرق للأحداث، اضغط للكشف',
     deleteTitle: 'حذف الرسالة',
     deleteBothSides: 'لا يمكن التراجع عن هذا.',
     deleteOwnSide: 'ستبقى على جهازه.',
