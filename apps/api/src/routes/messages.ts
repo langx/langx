@@ -1,5 +1,6 @@
 import {
   conversationFlagsSchema,
+  conversationSearchQuerySchema,
   ERROR_CODES,
   listConversationMediaQuerySchema,
   listConversationsQuerySchema,
@@ -23,6 +24,7 @@ import {
 } from '../modules/chat/messages'
 import { assertConversationAccess } from '../modules/chat/access'
 import { listConversationMedia } from '../modules/chat/conversationMedia'
+import { searchConversation } from '../modules/chat/search'
 import { toConversationView } from '../modules/chat/conversationView'
 import { toMessageView } from '../modules/chat/messageView'
 import { listCorrectionsWritten } from '../modules/chat/corrections'
@@ -33,6 +35,7 @@ import {
 } from '../modules/chat/mutations'
 import { romanizeMessage } from '../modules/chat/romanize'
 import { speakMessage } from '../modules/chat/speak'
+import { transcribeMessage } from '../modules/chat/transcript'
 import { fanOutMessage } from '../ws/fanOut'
 import { sendTraySync } from '../ws/traySync'
 
@@ -234,6 +237,40 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
+  /*
+   * A voice note, written out by the transcript service.
+   *
+   * No body, for `/speak`'s reason: the likely languages are read from the two
+   * profiles, not taken from the caller. `requireMember` because it wakes a
+   * machine of ours, and a tighter limit than `/speak`'s because each call can
+   * be two minutes of audio rather than one sentence; the daily ceiling is
+   * `transcripts`.
+   */
+  app.post(
+    '/conversations/:id/messages/:messageId/transcript',
+    {
+      preHandler: requireMember,
+      schema: {
+        params: z.object({
+          id: z.string().trim().min(1),
+          messageId: z.string().trim().min(1),
+        }),
+      },
+      config: { rateLimit: { max: 6, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const transcript = await transcribeMessage(
+        app.mongo.db,
+        app.storage,
+        app.stt,
+        request.userId,
+        request.params.id,
+        request.params.messageId,
+      )
+      return reply.send(transcript)
+    },
+  )
+
   app.get(
     '/conversations/:id/messages',
     {
@@ -288,6 +325,34 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const page = await listConversationMedia(
+        app.mongo.db,
+        request.userId,
+        request.params.id,
+        request.query,
+      )
+      return reply.send(page)
+    },
+  )
+
+  /*
+   * Its own rate limit, tighter than the global one, for the reason
+   * `/discovery/handles` has one: a search box is called per keystroke, the
+   * client's debounce is not what enforces anything, and this is a route that
+   * takes a pattern and walks a thread with it. See `searchConversation` for
+   * how far one call may walk.
+   */
+  app.get(
+    '/conversations/:id/search',
+    {
+      preHandler: requireAuth,
+      schema: {
+        params: z.object({ id: z.string().trim().min(1) }),
+        querystring: conversationSearchQuerySchema,
+      },
+      config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const page = await searchConversation(
         app.mongo.db,
         request.userId,
         request.params.id,

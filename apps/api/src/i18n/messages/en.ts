@@ -290,6 +290,14 @@ export const en = {
 
     feedDigestButton: 'Read the replies',
 
+    /**
+     * In place of the opening words, for a photo or a video posted without
+     * any. A description of the post, so the mail draws it unquoted.
+     */
+    feedDigestPhoto: 'Your photo',
+
+    feedDigestVideo: 'Your video',
+
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'People you could practise with',
 

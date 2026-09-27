@@ -281,6 +281,10 @@ export const es: Localized<ServerMessages> = {
 
     feedDigestButton: 'Leer las respuestas',
 
+    feedDigestPhoto: 'Tu foto',
+
+    feedDigestVideo: 'Tu video',
+
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Gente con la que podrías practicar',
 

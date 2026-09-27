@@ -110,6 +110,11 @@ describe('app config, maintenance and the version gate', () => {
       expect(response.json<{ voiceService: boolean }>().voiceService).toBe(false)
     })
 
+    it('says whether a voice note can be written out, from whether STT_URL is set', async () => {
+      const response = await get('/app-config')
+      expect(response.json<{ transcriptService: boolean }>().transcriptService).toBe(false)
+    })
+
     it('reports a provider as available once its credentials are set', async () => {
       const env = loadEnv({
         NODE_ENV: 'test',

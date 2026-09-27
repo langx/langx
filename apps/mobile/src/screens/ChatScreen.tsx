@@ -4,6 +4,7 @@ import {
   canEditMessage,
   translateTargetFor,
   attachmentsOf,
+  isAudioContentType,
   MAX_ATTACHMENTS,
   MAX_VIDEO_SECONDS,
   type Media,
@@ -14,12 +15,16 @@ import {
   REPLY_PREVIEW_MAX_LENGTH,
   hasFeature,
   splitSentences,
+  stripFormatting,
   webUrl,
   messageTranslationSchema,
   romanizationFor,
   type MessageAsk,
   type MessageTranslation,
   TYPING_IDLE_MS,
+  ERROR_CODES,
+  MAX_SCHEDULED_PER_CONVERSATION,
+  THEIR_MORNING_HOUR,
 } from '@langx/shared'
 import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import {
@@ -57,7 +62,9 @@ import {
   useTranslate,
   useSpeakMessage,
   useRomanizeMessage,
+  useTranscribeMessage,
   type ClearedUnread,
+  type ConversationDto,
   type MessageDto,
 } from '../api/queries'
 import * as Clipboard from 'expo-clipboard'
@@ -70,8 +77,10 @@ import { ComposerHint } from '../components/ComposerHint'
 import { LoadFailed } from '../components/LoadFailed'
 import { MessageBubble } from '../components/MessageBubble'
 import { MessagePartsSheet } from '../components/MessagePartsSheet'
+import { ConversationPicker } from '../components/ConversationPicker'
 import { WordLookup } from '../components/WordLookup'
 import { PhotoViewer } from '../components/PhotoViewer'
+import { ChatSearch } from '../components/ChatSearch'
 import { AttachmentPreviewRow, type PendingAttachment } from '../components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../components/ui/Avatar'
@@ -104,6 +113,7 @@ import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { speechLanguageFor } from '../lib/speechLanguage'
 import { errorCodeOf } from '../lib/errors'
 import { listState } from '../lib/listState'
+import { startersDue } from '../lib/conversationStarters'
 import { messageActionsFor, unsentActionsFor } from '../lib/messageActions'
 import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
@@ -115,6 +125,12 @@ import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
+import {
+  ScheduledMessageRows,
+  useScheduleMessage,
+  useScheduledMessages,
+} from '../components/ScheduledMessages'
+import { ScheduleTimeSheet } from '../components/ScheduleTimeSheet'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
   addPending,
@@ -275,6 +291,9 @@ export function ChatScreen({
    * off the moment there is nothing to translate into.
    */
   const [sendTranslated, setSendTranslated] = useState(false)
+  /** "Pick a time" is open, from a long press on send. */
+  const [pickingSendTime, setPickingSendTime] = useState(false)
+  const scheduleMessage = useScheduleMessage(conversationId)
   const [partnerTyping, setPartnerTyping] = useState(false)
   // Keyed by message id: a translation replaces nothing, it sits under the
   // original so the learner can compare the two.
@@ -301,6 +320,15 @@ export function ChatScreen({
    */
   const [speech, setSpeech] = useState<Record<string, string>>({})
   const [speaking, setSpeaking] = useState<string | null>(null)
+  /**
+   * Voice notes shown as text, by message id — only the ones this reader asked
+   * to see. The words themselves are kept on the note by the server once
+   * anybody has asked, so this is what is *shown*, not what is known: a note
+   * that arrives already written out still waits for its "Show text" tap,
+   * because somebody practising their listening has not asked to read it.
+   */
+  const [transcripts, setTranscripts] = useState<Record<string, string>>({})
+  const [transcribing, setTranscribing] = useState<string | null>(null)
   const listRef = useRef<FlatList<MessageRow>>(null)
   /**
    * The newest message at the moment the reader scrolled away from the bottom,
@@ -355,6 +383,8 @@ export function ChatScreen({
     word: string | null
   } | null>(null)
   const [editing, setEditing] = useState<MessageDto | null>(null)
+  /** The message on its way to another thread, while the picker is open. */
+  const [forwarding, setForwarding] = useState<MessageDto | null>(null)
   /**
    * The message a jump is centred on, or null while the live thread is showing.
    *
@@ -404,6 +434,7 @@ export function ChatScreen({
    * was tapped is the difference between paging and hunting.
    */
   const [viewing, setViewing] = useState<{ items: Media[]; index: number } | null>(null)
+  const [searching, setSearching] = useState(false)
   const [pending, setPending] = useState<PendingMedia[]>([])
 
   /*
@@ -526,8 +557,11 @@ export function ChatScreen({
   const player = useAudioPlayer(null)
   const speakMessageApi = useSpeakMessage()
   const romanizeApi = useRomanizeMessage()
+  const transcribeApi = useTranscribeMessage()
   /** Some deployments have no voice service at all; then there is no row. */
   const voiceService = useAppConfig().data?.voiceService === true
+  /** Nor a transcript service; then no voice note offers its text. */
+  const transcriptService = useAppConfig().data?.transcriptService === true
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
@@ -1459,7 +1493,7 @@ export function ChatScreen({
                 replyTo: {
                   messageId: reply._id,
                   senderId: reply.senderId,
-                  preview: quote ?? reply.body,
+                  preview: stripFormatting(quote ?? reply.body),
                 },
               }
             : {}),
@@ -1475,6 +1509,70 @@ export function ChatScreen({
     // Inverted, so the newest message is offset 0.
     listRef.current?.scrollToOffset({ offset: 0, animated: true })
     setAwayFrom(null)
+  }
+
+  /**
+   * "Send later" is plain text only, so it is offered only while the composer
+   * holds nothing else: a reply, an ask, a translation or an attachment would
+   * each be dropped from a message sent tomorrow without saying so, and an
+   * edit or a correction is not a new message at all.
+   */
+  const canSchedule =
+    draft.trim().length > 0 &&
+    pendingMedia.length === 0 &&
+    !editing &&
+    !correcting &&
+    !replyingTo &&
+    !asking &&
+    !sendTranslated
+
+  async function openScheduleMenu(): Promise<void> {
+    // Nine on the clock, in this reader's way of writing it. UTC on both
+    // sides, so the device's own zone cannot shift the hour being named.
+    const morning = new Intl.DateTimeFormat(locale, {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: 'UTC',
+    }).format(Date.UTC(2000, 0, 1, THEIR_MORNING_HOUR))
+    const choice = await chooseAlert(t('chat.scheduleTitle'), undefined, [
+      // Only when their public profile carries a zone. The server works the
+      // time out from the same field, and a hidden one is hidden from both.
+      ...(partner?.timezone
+        ? [
+            {
+              label: t('chat.scheduleTheirMorning', { time: morning }),
+              value: 'morning' as const,
+              icon: 'sunrise',
+            },
+          ]
+        : []),
+      { label: t('chat.schedulePick'), value: 'pick' as const, icon: 'clock' },
+    ])
+    if (choice === 'morning') void scheduleDraft({ mode: 'theirMorning' })
+    if (choice === 'pick') setPickingSendTime(true)
+  }
+
+  /** The draft leaves the composer only once the server has it. */
+  async function scheduleDraft(when: { sendAt: string } | { mode: 'theirMorning' }): Promise<void> {
+    const body = draft.trim()
+    if (!body) return
+    try {
+      await scheduleMessage.mutateAsync({
+        body,
+        clientId: newClientId(Date.now(), Math.random()),
+        ...when,
+      })
+      setPickingSendTime(false)
+      setDraft('')
+      notifyTyping(false)
+    } catch (caught) {
+      void showAlert(
+        t('chat.couldNotSend'),
+        errorCodeOf(caught) === ERROR_CODES.QUOTA_EXCEEDED
+          ? t('chat.scheduleTooMany', { count: MAX_SCHEDULED_PER_CONVERSATION })
+          : t('chat.scheduleFailed'),
+      )
+    }
   }
 
   /**
@@ -1540,7 +1638,12 @@ export function ChatScreen({
     if (!target || alreadyTranslated) return
     setTranslating(message._id)
     try {
-      const result = await translateApi.mutateAsync({ text: message.body, targetLang: target })
+      // Without the markers, which a translator mangles, and with a spoiler
+      // still covered: the translation is drawn in the open under the bubble.
+      const result = await translateApi.mutateAsync({
+        text: stripFormatting(message.body),
+        targetLang: target,
+      })
       setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
     } catch (error) {
       if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
@@ -1644,6 +1747,42 @@ export function ChatScreen({
   }
 
   /**
+   * A voice note as text, under its bubble.
+   *
+   * Free and instant when anybody in the thread already asked — the words came
+   * with the message. Otherwise one at a time, like `speak`: the service writes
+   * out one note at a time, and a second request would only queue behind it.
+   */
+  async function showText(message: MessageDto): Promise<void> {
+    const kept = attachmentsOf(message).find((media) =>
+      isAudioContentType(media.contentType),
+    )?.transcript
+    if (kept) {
+      setTranscripts((current) => ({ ...current, [message._id]: kept.text }))
+      return
+    }
+    if (transcribing !== null) return
+    setTranscribing(message._id)
+    try {
+      const result = await transcribeApi.mutateAsync({ conversationId, messageId: message._id })
+      setTranscripts((current) => ({ ...current, [message._id]: result.text }))
+    } catch (error) {
+      // A ceiling, not a gate, for `speak`'s reason: `transcriptsPerDay` is
+      // finite on every tier, so there is nothing to sell here.
+      await showAlert(
+        t('chat.transcriptUnavailable'),
+        t(
+          errorCodeOf(error) === 'QUOTA_EXCEEDED'
+            ? 'chat.transcriptLimit'
+            : 'chat.transcriptFailed',
+        ),
+      )
+    } finally {
+      setTranscribing(null)
+    }
+  }
+
+  /**
    * Long-press on any bubble. Correction used to *be* the gesture, on the
    * other person's text only; it is one row here, which is what let the other
    * three exist at all.
@@ -1716,7 +1855,7 @@ export function ChatScreen({
     })
 
     const picked = await openMessageMenu({
-      preview: message.body || t(messagePreviewKey(message.type)),
+      preview: stripFormatting(message.body) || t(messagePreviewKey(message.type)),
       mine: isMine(message),
       // So the menu lifts the picture out of the thread rather than the word
       // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
@@ -1813,10 +1952,46 @@ export function ChatScreen({
       })
     } else if (picked.id === 'echo') {
       await (message.echoed ? removeEcho(message) : addEcho(message))
+    } else if (picked.id === 'forward') {
+      setForwarding(message)
     } else if (picked.id === 'saveMedia') {
       await saveMessageMedia(message)
     } else if (picked.id === 'report') {
       reportMessage(message)
+    }
+  }
+
+  /**
+   * Sends the message the picker was opened for into the thread picked.
+   *
+   * Only the ids travel; the server reads the words and the files itself and
+   * checks the target the way it checks any send. The refusals worth naming
+   * are the two a person can do something about, and both are about the
+   * *target*: its media gate, and today's attachments.
+   */
+  async function forwardTo(target: ConversationDto): Promise<void> {
+    const message = forwarding
+    setForwarding(null)
+    if (!message) return
+    try {
+      const socket = await getSocket()
+      const saved = await emitWithAck<MessageDto>(socket, 'message:forward', {
+        conversationId: target._id,
+        messageId: message._id,
+      })
+      // Into this very thread: drawn from the ack, as a send is. See `landed`.
+      if (target._id === conversationId) landed(saved)
+      showToast(t('conversationPicker.forwarded'))
+    } catch (error) {
+      const code = errorCodeOf(error)
+      void showAlert(
+        t('chat.couldNotSend'),
+        code === 'QUOTA_EXCEEDED'
+          ? t('chat.mediaQuota')
+          : code === 'MEDIA_LOCKED'
+            ? t('chat.mediaLocked', { count: Math.max(1, target.mediaLockedFor) })
+            : t('common.retry'),
+      )
     }
   }
 
@@ -2046,6 +2221,15 @@ export function ChatScreen({
     void speakRef.current(message)
   }, [])
 
+  /** The voice note's "Show text", stabilised for the same reason. */
+  const showTextRef = useRef(showText)
+  useEffect(() => {
+    showTextRef.current = showText
+  })
+  const onShowText = useCallback((message: MessageDto) => {
+    void showTextRef.current(message)
+  }, [])
+
   /** The bubble's Echo chip, stabilised for the same reason. */
   const addEchoRef = useRef(addEcho)
   useEffect(() => {
@@ -2075,6 +2259,9 @@ export function ChatScreen({
     const muted = conversation.data?.muted ?? false
     const choice = await chooseAlert(partner.displayName, undefined, [
       { label: t('chat.viewProfile'), value: 'profile' },
+      // First of the "find something in here" rows, because it is the one
+      // that needs nothing to have been kept.
+      { label: t('chatSearch.open'), value: 'search' },
       { label: t('chats.starredMessages'), value: 'starred' },
       // Beside Starred, because the two answer the same question — where did
       // the thing I wanted to keep go — and differ only in how much shape it
@@ -2092,6 +2279,8 @@ export function ChatScreen({
     ])
     if (choice === 'profile') {
       openProfile(partner.handle, `/(app)/chat/${conversationId}`)
+    } else if (choice === 'search') {
+      setSearching(true)
     } else if (choice === 'starred') {
       router.push('/(app)/starred')
     } else if (choice === 'phrases') {
@@ -2144,7 +2333,7 @@ export function ChatScreen({
     : correcting
       ? {
           label: t('chat.correcting'),
-          preview: correctingPart ?? correcting.body,
+          preview: stripFormatting(correctingPart ?? correcting.body),
           clear: () => {
             setCorrecting(null)
             setDraft('')
@@ -2171,10 +2360,35 @@ export function ChatScreen({
                 label: isMine(replyingTo)
                   ? t('chat.replyingToYourself')
                   : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-                preview: replyQuote ?? (replyingTo.body || t(messagePreviewKey(replyingTo.type))),
+                preview:
+                  stripFormatting(replyQuote ?? replyingTo.body) ||
+                  t(messagePreviewKey(replyingTo.type)),
                 clear: () => setReplyingTo(null),
               }
             : null
+
+  /*
+   * Conversation starters, when the thread has nothing to answer: no message
+   * yet, or a newest one that has gone stale. `threadItems`, not `items`, so a
+   * sentence just sent — still a stand-in — puts them away at once; an unsent
+   * row, a scheduled message, a picked attachment or a recording does the
+   * same, since the person has plainly started. Not in a window
+   * opened on an old message (the newest is not loaded there), not in a mode
+   * (a reply or an edit is already a sentence with a purpose), and not while
+   * the thread is loading or failed, when "empty" is not known yet.
+   */
+  // The same query the pending rows draw from, so this costs no request.
+  const scheduledCount = useScheduledMessages(conversationId).data?.length ?? 0
+  const offerTopics =
+    !readOnly &&
+    !mode &&
+    jumpAnchor === null &&
+    unsent.length === 0 &&
+    scheduledCount === 0 &&
+    pendingMedia.length === 0 &&
+    !recorder.isRecording &&
+    (state === 'empty' || state === 'content') &&
+    startersDue(threadItems[0]?.createdAt, Date.now())
 
   return (
     /*
@@ -2416,6 +2630,8 @@ export function ChatScreen({
                         })}
                       </View>
                     ) : null}
+                    {/* Your own words still to come, under everything already sent. */}
+                    <ScheduledMessageRows conversationId={conversationId} />
                     {/*
                     Last, so it sits nearest the composer: inverted, this header
                     is the bottom of the thread, and the other person typing is
@@ -2432,7 +2648,9 @@ export function ChatScreen({
                 ListFooterComponent={
                   <>
                     {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
-                    {items.length < SHORT_THREAD_MESSAGES ? (
+                    {/* One opener at a time: the starters above the composer
+                    are the same invitation, and a better one when offered. */}
+                    {items.length < SHORT_THREAD_MESSAGES && !offerTopics ? (
                       <ComposerHint slot="chat" style={styles.threadTip} />
                     ) : null}
                   </>
@@ -2495,6 +2713,11 @@ export function ChatScreen({
                       speaking={speaking === row.message._id}
                       hasReading={speech[row.message._id] !== undefined}
                       onReplayReading={onReplayReading}
+                      transcript={transcripts[row.message._id]}
+                      transcribing={transcribing === row.message._id}
+                      {...(transcriptService && !isOutgoingId(row.message._id)
+                        ? { onShowText }
+                        : {})}
                       highlighted={highlighted === row.message._id}
                       askAnswered={answeredAsks.has(row.message._id)}
                       onAnswerAsk={answerAsk}
@@ -2593,6 +2816,8 @@ export function ChatScreen({
                     : t('chat.writeMessage')
               }
               onSend={() => void send()}
+              topicSeed={offerTopics ? conversationId : undefined}
+              {...(canSchedule ? { onSendLongPress: () => void openScheduleMenu() } : {})}
               hasAttachment={pendingMedia.length > 0}
               busy={sendingMedia}
               above={
@@ -2695,12 +2920,40 @@ export function ChatScreen({
             />
           )}
         </View>
+        <ScheduleTimeSheet
+          visible={pickingSendTime}
+          busy={scheduleMessage.isPending}
+          onClose={() => setPickingSendTime(false)}
+          onConfirm={(at) => void scheduleDraft({ sendAt: at.toISOString() })}
+        />
+        {searching ? (
+          <ChatSearch
+            conversationId={conversationId}
+            myId={me.data?._id}
+            partnerName={partner?.displayName ?? ''}
+            onClose={() => setSearching(false)}
+            onPick={(messageId) => {
+              setSearching(false)
+              onJumpTo(messageId)
+            }}
+          />
+        ) : null}
         <PhotoViewer
           photos={viewing?.items ?? []}
           index={viewing?.index ?? null}
           onClose={() => setViewing(null)}
           onIndexChange={(index) => setViewing((open) => (open ? { ...open, index } : open))}
         />
+        {/* Mounted only while open, so a thread never reads the chat list it
+            is not showing. */}
+        {forwarding ? (
+          <ConversationPicker
+            visible
+            title={t('conversationPicker.forwardTitle')}
+            onPick={(target) => void forwardTo(target)}
+            onClose={() => setForwarding(null)}
+          />
+        ) : null}
         <MessagePartsSheet
           title={
             choosingPart?.mode === 'correct'

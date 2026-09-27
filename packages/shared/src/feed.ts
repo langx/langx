@@ -4,8 +4,12 @@ import { languageLevelSchema } from './level'
 import { attachmentsSchema, mediaKindSchema, mediaSchema } from './media'
 
 /**
- * The community feed: a sentence somebody is unsure about, and the corrections
- * other people leave on it.
+ * The community feed: what people post — a sentence, a photo, a clip — and the
+ * help other people leave on it when the post asks for some.
+ *
+ * Asking is a flag on a post, not the reason it exists: a post may ask for a
+ * correction, for somebody to say it aloud, for both, or for nothing (a
+ * moment). See `POST_ASKS`.
  *
  * Deliberately *not* a chat. A conversation needs both people present and
  * matched; a post needs neither, which is what it is for — the learner with a
@@ -41,15 +45,16 @@ export const FEED_TOP_CORRECTIONS = 5
 export const postBodySchema = z.string().trim().min(1).max(MAX_POST_LENGTH)
 
 /**
- * One queue, not a recency feed. Sorting by recency alone means the newest
- * post gets every correction and a post that sat unanswered for an hour never
- * gets one; putting the uncorrected ones first is what makes the queue drain.
+ * The section queues installed builds read (`GET /feed?kind=`): one queue per
+ * ask, not a recency feed. Sorting by recency alone means the newest post gets
+ * every correction and a post that sat unanswered for an hour never gets one;
+ * putting the uncorrected ones first is what makes the queue drain.
  *
  * Within that, the people you follow come first. There used to be a second
  * tab for them; it split one small feed into two smaller ones and made the
  * reader choose between helping a friend and helping whoever waited longest.
  * Now it is one list: your people, uncorrected first — then everybody else,
- * uncorrected first.
+ * uncorrected first. Kept exactly as it is for the builds that still read it.
  */
 
 /**
@@ -66,19 +71,87 @@ export const postBodySchema = z.string().trim().min(1).max(MAX_POST_LENGTH)
 export const FEED_FOLLOWING_SOURCE_LIMIT = 500
 
 /**
- * What a post is asking for, and therefore which half of the feed it lives in.
+ * The two sections an installed build knows, and the wire enum it speaks.
  *
- * A routing discriminator, not a content one: it decides which section shows
- * the post, which composer answers it and which endpoint that answer goes to.
- * The attachment's own kind is still derived from its content type — this does
- * not start a second habit of writing down what the bytes already say.
+ * Once the whole model, now its legacy projection: what a post asks for is
+ * `asks` below, and `kind` is what an older client sends when it posts and
+ * reads back to decide which of its two tabs a post belongs in. A routing
+ * discriminator, not a content one — the attachment's own kind is still
+ * derived from its content type.
  *
- * Absent on every post written before this shipped, and those are all
- * corrections. The reader spells that out rather than backfilling: see the
- * `$in` in `listFeed`.
+ * Absent on every post written before the pronunciation section shipped, and
+ * those are all corrections. The reader spells that out rather than
+ * backfilling: see the `$in` in `listFeed` and `asksOf` below.
  */
 export const POST_KINDS = ['correction', 'pronunciation'] as const
 export type PostKind = (typeof POST_KINDS)[number]
+
+/**
+ * What a post asks the people reading it to do: correct its words, say them
+ * aloud, both, or nothing.
+ *
+ * Only an asked-for help can be given — a correction lands only on a post
+ * asking for one, a recording only on a post asking for one — so the ask is
+ * the author's consent, not a label. A post that asks for nothing is a
+ * moment: something from somebody's day, which gets likes and comments.
+ *
+ * Stored sorted in this order and without repeats, so two posts asking for the
+ * same thing store the same array.
+ */
+export const POST_ASKS = ['correction', 'pronunciation'] as const
+export type PostAsk = (typeof POST_ASKS)[number]
+
+/**
+ * What the post asks for, read from whichever field it has.
+ *
+ * `asks` when the row carries it — every post written since it existed.
+ * Otherwise the row predates it and its `kind` says: `'pronunciation'` asked
+ * for a recording, `'moment'` asked for nothing, and anything else — including
+ * a missing `kind`, which is every post from before the pronunciation section —
+ * asked for a correction. No backfill, the same bargain `attachmentsOf` made:
+ * a reader that understands both shapes costs less than a migration and
+ * cannot half-finish.
+ *
+ * Read through this rather than `post.asks` everywhere, including on the
+ * client: a page persisted by an older build, or served by an older API during
+ * a deploy, has no `asks` at all.
+ */
+export function asksOf(post: { asks?: readonly PostAsk[] | undefined; kind?: string }): PostAsk[] {
+  if (post.asks) return [...post.asks]
+  if (post.kind === 'pronunciation') return ['pronunciation']
+  if (post.kind === 'moment') return []
+  return ['correction']
+}
+
+/**
+ * The value stored in a post's `kind` for a given set of asks — the section an
+ * installed build's queue finds it in.
+ *
+ * A post asking for both is filed as a correction: that is the section that
+ * reaches the most readers, and the pronunciation half of it simply is not
+ * offered to a build that cannot show two halves. A post asking for nothing is
+ * `'moment'`, a value neither old filter matches (`$in: ['correction', null]`
+ * and `'pronunciation'`), so moments never appear in an old build's tabs and
+ * are never correctable there against their caption.
+ *
+ * Invariant: on a row with `asks`, `kind === legacySectionOf(asks)`. Anything
+ * that ever changes asks after creation writes both in one update.
+ */
+export function legacySectionOf(asks: readonly PostAsk[]): PostKind | 'moment' {
+  if (asks.length === 0) return 'moment'
+  return asks.includes('correction') ? 'correction' : 'pronunciation'
+}
+
+/**
+ * The two-value `kind` a response carries, so an installed build files the
+ * post in the tab it would have filed it in — and never receives a value its
+ * enum does not have. Only a post asking for a recording and nothing else is
+ * `'pronunciation'`; everything else, a moment included, reads as a
+ * correction, which an old build never lists a moment under anyway.
+ */
+export function legacyKindOf(asks: readonly PostAsk[]): PostKind {
+  return asks.length === 1 && asks[0] === 'pronunciation' ? 'pronunciation' : 'correction'
+}
 
 export const createPostSchema = z.preprocess(
   withLegacyMedia,
@@ -101,6 +174,16 @@ export const createPostSchema = z.preprocess(
      * posting exactly what it always posted.
      */
     kind: z.enum(POST_KINDS).default('correction'),
+    /**
+     * Reserved, and refused. A client that sends `asks` is asking for a post
+     * this API cannot store yet — possibly one that asks for nothing — and
+     * zod's default would strip the unknown key and file it as a correction
+     * request instead. Refusing loudly is the difference between a moment that
+     * fails to post and a moment that quietly becomes a request for help the
+     * author never made. It also covers a rollback or a blue-green overlap
+     * that puts an older machine behind a newer client.
+     */
+    asks: z.never().optional(),
   }),
 )
 export type CreatePostInput = z.infer<typeof createPostSchema>
@@ -307,12 +390,21 @@ export const feedPostSchema = z.object({
   /** The author's own level in `language`, resolved at read time from their profile. */
   level: languageLevelSchema.nullable(),
   /**
-   * Which section the post belongs to. Filled for every post the server
-   * returns, including the ones on disk that predate the field.
+   * The section an installed build files the post under — the legacy
+   * projection of `asks`, via `legacyKindOf`. Filled for every post the server
+   * returns, including the ones on disk that predate the field. New code reads
+   * `asksOf(post)` instead.
    */
   kind: z.enum(POST_KINDS),
+  /**
+   * What the post asks for. Sent on every post, but optional here on purpose:
+   * a page persisted before the field existed, or served by an older API
+   * during a deploy, has none — and the optional type is what makes every
+   * reader go through `asksOf` rather than trusting `post.asks`.
+   */
+  asks: z.array(z.enum(POST_ASKS)).optional(),
   correctionCount: z.number().int(),
-  /** Zero on a correction post, and the pronunciation section's sort key. */
+  /** Zero on a post that asks for no recording, and the pronunciation section's sort key. */
   answerCount: z.number().int().nonnegative(),
   /**
    * Counted at read time rather than stored. Nothing sorts by it, so there is
@@ -369,10 +461,9 @@ export type ListFeedQuery = z.infer<typeof listFeedQuerySchema>
 /**
  * Your own posts, and deliberately without a `kind`.
  *
- * The feed is split into sections because a stranger arriving to help wants one
- * job at a time. Looking for something you wrote yourself is the opposite
- * errand — you remember asking, not which half of the screen you asked from —
- * so this list mixes the two and sorts by when you wrote them.
+ * Whatever each one asked for — a correction, a recording, both or nothing —
+ * because looking for something you wrote yourself is remembering that you
+ * posted it, not what you asked. Mixed, and sorted by when you wrote them.
  */
 export const listMyPostsQuerySchema = z.object({
   cursor: z.string().optional(),

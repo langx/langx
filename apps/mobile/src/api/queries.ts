@@ -47,10 +47,13 @@ import {
   ERROR_CODES,
   type MessageSpeech,
   type MessageRomanization,
+  type MessageTranscript,
+  type VoiceTranscript,
   type AuthoredCorrectionsPage,
   type ProfileBadge,
   type PublicBadges,
   type UpcomingMeeting,
+  CONVERSATION_SEARCH_MIN_LENGTH,
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
@@ -171,6 +174,7 @@ export const keys = {
    * tabs cannot show the other tab's rows for a frame.
    */
   conversationMedia: (id: string, tab: string) => ['conversationMedia', id, tab] as const,
+  conversationSearch: (id: string, term: string) => ['conversationSearch', id, term] as const,
   /**
    * Under the same `['phraseCards']` prefix as the per-conversation deck: both
    * are read on mount and neither is patched by the socket, so sharing the
@@ -828,6 +832,8 @@ export interface MessageMediaDto {
   durationSeconds?: number
   width?: number
   height?: number
+  /** A voice note's words, once somebody in the thread has asked for them. */
+  transcript?: VoiceTranscript
 }
 
 export interface MessageDto {
@@ -847,6 +853,8 @@ export interface MessageDto {
   ask?: MessageAsk
   /** The sender's own words in the reader's language, sent with the message. */
   translation?: MessageTranslation
+  /** A copy of a message from another of the sender's threads. */
+  forwarded?: boolean
   phrase?: { term: string; meaning: string; example?: string; lang: string }
   meeting?: {
     startsAt: string
@@ -2323,6 +2331,38 @@ export function useConversationMedia(conversationId: string, tab: MediaTab) {
   })
 }
 
+export interface ConversationSearchPageDto {
+  items: MessageDto[]
+  nextCursor: string | null
+}
+
+/**
+ * Finding a sentence in one thread, newest first.
+ *
+ * The term is in the key, so every settled term is its own list and a page
+ * fetched for "berl" is never shown under "berlin". `keepPreviousData` holds
+ * the last answer on screen while the next one is asked for, the way the
+ * handle search does, rather than flashing a spinner on every keystroke.
+ * Never patched by the socket: a search is a question asked once, and a
+ * message sent while it is open is not what anybody was looking for.
+ */
+export function useConversationSearch(conversationId: string, term: string) {
+  const trimmed = term.trim()
+  return useInfiniteQuery({
+    queryKey: keys.conversationSearch(conversationId, trimmed),
+    queryFn: ({ pageParam }) =>
+      api.get<ConversationSearchPageDto>(
+        `/conversations/${conversationId}/search?q=${encodeURIComponent(trimmed)}${
+          pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''
+        }`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled: conversationId.length > 0 && trimmed.length >= CONVERSATION_SEARCH_MIN_LENGTH,
+    placeholderData: keepPreviousData,
+  })
+}
+
 export interface CrossPhraseCardDto extends PhraseCardDto {
   conversationId: string
   /** The other side of the thread it came from; resolve the name separately. */
@@ -2779,7 +2819,14 @@ export interface AdminReportDto {
   aboutPost: boolean
   /** Raised from a comment. Absent from an API older than comment reports. */
   aboutComment?: boolean
-  post?: { id: string; body: string; language: string; hiddenAt: string | null } | null
+  post?: {
+    id: string
+    body: string
+    language: string
+    hiddenAt: string | null
+    /** Absent from an API that predates it, so read with `?? []`. */
+    attachments?: Media[]
+  } | null
   /** The reported comment, on the detail read. `body` is `null` once its author removed it. */
   comment?: {
     id: string
@@ -3440,11 +3487,21 @@ export function useAttachEchoAudio() {
  */
 const VOICE_TIMEOUT_MS = 75_000
 
-function withVoiceTimeout<T>(path: string, init: RequestInit): Promise<T> {
+/**
+ * The same reasoning for the transcript service, whose own deadline in the API
+ * is two minutes (`HttpSttProvider`) — a note can be two minutes of speech.
+ */
+const TRANSCRIPT_TIMEOUT_MS = 135_000
+
+function withVoiceTimeout<T>(
+  path: string,
+  init: RequestInit,
+  timeoutMs = VOICE_TIMEOUT_MS,
+): Promise<T> {
   const controller = new AbortController()
   const timer = setTimeout(() => {
     controller.abort()
-  }, VOICE_TIMEOUT_MS)
+  }, timeoutMs)
   return api.request<T>(path, { ...init, signal: controller.signal }).finally(() => {
     clearTimeout(timer)
   })
@@ -3515,6 +3572,30 @@ export function useRomanizeMessage() {
         )}/romanize`,
         { method: 'POST' },
       ),
+  })
+}
+
+/**
+ * A voice note written out, by the transcript service.
+ *
+ * No body, for `useSpeakMessage`'s reason. The quota is refetched only when a
+ * unit was spent; a note somebody in the thread already had written out is
+ * free, and comes back `cached`.
+ */
+export function useTranscribeMessage() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { conversationId: string; messageId: string }) =>
+      withVoiceTimeout<MessageTranscript>(
+        `/conversations/${encodeURIComponent(input.conversationId)}/messages/${encodeURIComponent(
+          input.messageId,
+        )}/transcript`,
+        { method: 'POST' },
+        TRANSCRIPT_TIMEOUT_MS,
+      ),
+    onSuccess: (transcript) => {
+      if (!transcript.cached) void client.invalidateQueries({ queryKey: keys.quota })
+    },
   })
 }
 

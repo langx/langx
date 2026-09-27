@@ -3,9 +3,12 @@ import {
   appealSchema,
   attachmentsOf,
   blockSchema,
+  isImageContentType,
+  isVideoContentType,
   moderationListQuerySchema,
   reportSchema,
   reviewDecisionSchema,
+  type Media,
   type ReviewAction,
 } from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
@@ -84,10 +87,18 @@ function actionForm(token: string, action: ReviewAction, label: string): string 
  */
 function postSection(token: string, post: Post | null): string {
   if (!post) return ''
-  const attachments = attachmentsOf(post).length
-  const files = attachments > 0 ? ` · ${attachments} attachment${attachments > 1 ? 's' : ''}` : ''
+  const attachments = attachmentsOf(post)
+  const files =
+    attachments.length > 0
+      ? ` · ${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`
+      : ''
   return `<p style="margin:24px 0 8px;"><strong>The post</strong> <span style="color:#888;">${escapeHtml(post.language)}${files}</span></p>
-          <blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 12px;padding:0 0 0 12px;color:#333;">${escapeHtml(post.body)}</blockquote>
+          ${
+            post.body.trim()
+              ? `<blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 12px;padding:0 0 0 12px;color:#333;">${escapeHtml(post.body)}</blockquote>`
+              : '<p style="color:#888;margin:0 0 12px;">(no caption)</p>'
+          }
+          ${attachmentsHtml(attachments)}
           ${
             post.hiddenAt
               ? `<p style="background:#fff3cd;padding:12px;border-radius:8px;">Hidden since <strong>${escapeHtml(post.hiddenAt.toISOString())}</strong>. Nobody can see it, its author included.</p>
@@ -146,6 +157,28 @@ function commentSection(
                  ${actionForm(token, 'unhide_comment', 'Show it again')}`
               : actionForm(token, 'hide_comment', 'Hide this comment')
           }`
+}
+
+/**
+ * What the post carried, shown rather than counted.
+ *
+ * A photo is most of what a photo post says, and a report about one cannot be
+ * judged from "1 attachment". Pictures are drawn, small; a clip or a voice
+ * note is a link, because a player on this page would start fetching it for
+ * whoever merely opened the review. Opening this page is already a decision
+ * to look — the report mail, which arrives unasked, links everything instead.
+ */
+function attachmentsHtml(attachments: readonly Media[]): string {
+  if (attachments.length === 0) return ''
+  const items = attachments.map((item, index) => {
+    const url = escapeHtml(item.url)
+    if (isImageContentType(item.contentType)) {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer"><img src="${url}" alt="Attachment ${index + 1}" style="width:120px;height:120px;object-fit:cover;border-radius:8px;border:1px solid #ddd;" /></a>`
+    }
+    const kind = isVideoContentType(item.contentType) ? 'Video' : 'Audio'
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 12px;border:1px solid #ddd;border-radius:8px;color:#111;">${kind} ${index + 1}</a>`
+  })
+  return `<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;">${items.join('')}</div>`
 }
 
 /** Why a decision could not be made, as this page says it. */
@@ -267,7 +300,10 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
         result.report.postId
           ? app.mongo.db
               .collection<Post>(COLLECTIONS.posts)
-              .findOne({ _id: result.report.postId }, { projection: { body: 1 } })
+              .findOne(
+                { _id: result.report.postId },
+                { projection: { body: 1, attachments: 1, media: 1 } },
+              )
           : null,
       ])
       const reportedComment = await readReportedComment(app.mongo.db, result.report.commentId)
@@ -296,6 +332,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
               postId: result.report.postId?.toHexString() ?? null,
             },
             postBody: post?.body ?? null,
+            postAttachments: post ? attachmentsOf(post) : [],
             reviewUrl: reviewUrl(
               publicApiUrl(app.env),
               signReviewToken(app.env.BETTER_AUTH_SECRET, {

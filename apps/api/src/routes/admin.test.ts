@@ -783,6 +783,43 @@ describe('the operator panel', () => {
       expect((await profiles().findOne({ _id: target.userId }))?.tokenFrozenAt).toBeUndefined()
     })
 
+    it('carries a reported post’s files, so a picture can be judged from the picture', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const author = await newUser()
+      const reporter = await newUser()
+      const _id = new ObjectId()
+      const photo = {
+        url: `https://cdn.example.com/posts/${author.userId}/1.jpg`,
+        contentType: 'image/jpeg',
+        sizeBytes: 1024,
+      }
+      // Written directly: a post with no words has no writer yet.
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id,
+        authorId: author.userId,
+        body: '',
+        language: 'en',
+        correctionCount: 0,
+        attachments: [photo],
+        media: photo,
+        createdAt: new Date(),
+      })
+      const filed = await post(reporter, '/reports', {
+        userId: author.userId,
+        reason: 'inappropriate_content',
+        postId: _id.toHexString(),
+      })
+      expect(filed.statusCode, filed.body).toBe(201)
+      const reportId = filed.json<{ id: string }>().id
+
+      const detail = (await get(admin, `/admin/reports/${reportId}`)).json<{
+        post: { body: string; attachments: { url: string }[] } | null
+      }>()
+      expect(detail.post?.body).toBe('')
+      expect(detail.post?.attachments.map((item) => item.url)).toEqual([photo.url])
+    })
+
     it('hides a post nobody reported, and can put it back', async () => {
       const admin = await newUser()
       await makeAdmin(admin)

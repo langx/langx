@@ -295,6 +295,10 @@ export const ru: Localized<ServerMessages> = {
 
     feedDigestButton: 'Читать ответы',
 
+    feedDigestPhoto: 'Ваше фото',
+
+    feedDigestVideo: 'Ваше видео',
+
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Люди, с которыми можно попрактиковаться',
 

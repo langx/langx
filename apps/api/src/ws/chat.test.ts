@@ -822,6 +822,29 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       expect(ack.error?.code).toBe('VALIDATION_FAILED')
     })
 
+    it('stores an emoji from outside the strip, and refuses one that is not an emoji', async () => {
+      const { bobSocket, conversationId, messageId, bob } = await sent('ws-react-any')
+      const react = (emoji: string) =>
+        new Promise<{ ok: boolean; data?: { reactions?: Record<string, string[]> } }>((resolve) => {
+          bobSocket.emit('message:react', { conversationId, messageId, emoji }, resolve)
+        })
+
+      const stored = await react('🇹🇷')
+      expect(stored.ok).toBe(true)
+      expect(stored.data?.reactions?.['🇹🇷']).toEqual([bob.userId])
+
+      // A field path, then two emoji: neither is a reaction, and neither lands.
+      for (const bad of ['a.b', '$set', '👍👍']) {
+        const refused = (await react(bad)) as { ok: boolean; error?: { code: string } }
+        expect(refused.ok).toBe(false)
+        expect(refused.error?.code).toBe('VALIDATION_FAILED')
+      }
+      const row = await handle.db
+        .collection<{ reactions?: Record<string, string[]> }>(COLLECTIONS.messages)
+        .findOne({ _id: new ObjectId(messageId) })
+      expect(row?.reactions).toEqual({ '🇹🇷': [bob.userId] })
+    })
+
     /** `loadMutableMessage` is the guard, and it is the only one. */
     it('refuses a mutation from someone outside the conversation', async () => {
       const { conversationId, messageId } = await sent('ws-outsider')

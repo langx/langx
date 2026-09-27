@@ -1,6 +1,8 @@
 import {
+  asksOf,
   attachmentsOf,
   languageLevelSchema,
+  legacyKindOf,
   type FeedPost,
   type PostComment,
   type PostCorrection,
@@ -123,15 +125,18 @@ export interface PostDtoContext {
 
 export function postDto(post: Post, context: PostDtoContext): FeedPost {
   const profile = context.authors.get(post.authorId)
+  const asks = asksOf(post)
   return {
     _id: post._id.toHexString(),
     author: authorDto(profile, post.authorId),
     body: post.body,
     language: post.language,
     level: levelOf(profile, post.language),
-    // The gap a missing field leaves is filled here, once, rather than by a
-    // backfill: every post that predates the field is a correction post.
-    kind: post.kind ?? 'correction',
+    // Derived from the asks rather than copied from the row, so an installed
+    // build only ever receives one of the two values its enum has — a moment
+    // reads as a correction, which is a tab an old build never lists it in.
+    kind: legacyKindOf(asks),
+    asks,
     correctionCount: post.correctionCount,
     answerCount: post.answerCount ?? 0,
     commentCount: context.commentCount,

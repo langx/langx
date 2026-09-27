@@ -224,6 +224,16 @@ const envSchema = z.object({
   TTS_URL: emptyToUndefined(z.url().optional()),
   TTS_SECRET: emptyToUndefined(z.string().optional()),
 
+  /*
+   * The transcript service, for "Show text" on a chat voice note. A separate
+   * process (see `apps/stt`) for the voice service's reason: Whisper is half a
+   * gigabyte of model under Python. Unset, the app is told there is no such
+   * service and does not draw the button; everything else is untouched. The
+   * secret mirrors what the service checks, as `TTS_SECRET` does.
+   */
+  STT_URL: emptyToUndefined(z.url().optional()),
+  STT_SECRET: emptyToUndefined(z.string().optional()),
+
   // Faz 6: translation. Left unset, `/translate` returns a clear
   // TRANSLATION_NOT_CONFIGURED-style error; every other route still works.
   // The service-account key's *content* goes here (not a file path like

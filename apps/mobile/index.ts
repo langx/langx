@@ -2,6 +2,8 @@ import 'expo-router/entry'
 import { Platform } from 'react-native'
 // At module scope, so the task exists before a background launch asks for it.
 import './src/lib/traySyncTask'
+// And the notification Reply box, which can launch the app with no screen.
+import './src/lib/quickReplyListener'
 
 /**
  * The app's entry point, which used to be `expo-router/entry` itself.

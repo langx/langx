@@ -1,4 +1,4 @@
-import { isImageContentType } from '@langx/shared'
+import { isImageContentType, MAX_VIDEO_SECONDS } from '@langx/shared'
 import * as ImagePicker from 'expo-image-picker'
 import { Platform } from 'react-native'
 import { chooseAlert } from './alert'
@@ -185,7 +185,17 @@ export async function pickMediaAssets(options: PickMediaOptions): Promise<PickMe
       ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     ...(source === 'library'
       ? { allowsMultipleSelection: true, selectionLimit: Math.max(1, options.remaining) }
-      : {}),
+      : {
+          /*
+           * The camera stops at the length the server accepts, rather than
+           * letting somebody record two minutes only to be refused after the
+           * upload. One ceiling for every caller — chat, posts, profile — because
+           * the server has one: `MAX_VIDEO_SECONDS` bounds a message and a post
+           * alike. Seconds, and ignored on the web, where the browser decides.
+           * Quality is deliberately left alone: it would lower chat's too.
+           */
+          videoMaxDuration: MAX_VIDEO_SECONDS,
+        }),
   }
   const result =
     source === 'camera'

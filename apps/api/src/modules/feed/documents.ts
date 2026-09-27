@@ -1,4 +1,4 @@
-import type { Media } from '@langx/shared'
+import type { Media, PostAsk, PostKind } from '@langx/shared'
 import type { Document, ObjectId } from 'mongodb'
 
 /**
@@ -10,21 +10,35 @@ import type { Document, ObjectId } from 'mongodb'
  * and would not.
  */
 
+/**
+ * What `kind` can hold on disk: the two sections an installed build knows,
+ * plus `'moment'` for a post that asks for nothing — a value neither old
+ * section's filter matches, which is the whole reason it is stored.
+ */
+export type StoredPostKind = PostKind | 'moment'
+
 export interface Post {
   _id: ObjectId
   authorId: string
   body: string
   language: string
   /**
-   * Which half of the feed this belongs to, and **absent on every post written
-   * before the pronunciation section shipped** — those are all corrections.
-   *
-   * Optional here and required on the DTO: the reader fills the gap
-   * (`post.kind ?? 'correction'`) rather than a migration doing it, and the
-   * correction section's query matches `{ $in: ['correction', null] }`. Writes
-   * always set it explicitly, so the absence only ever shrinks.
+   * What the post asks for: see `POST_ASKS`. Written on every post since the
+   * field existed, sorted and without repeats; **absent on every older row**,
+   * which is why it is read through `asksOf` and never directly.
    */
-  kind?: 'correction' | 'pronunciation'
+  asks?: PostAsk[]
+  /**
+   * The section an installed build finds this in — `legacySectionOf(asks)` on
+   * every row that has `asks`, and written in the same insert. **Absent on
+   * every post written before the pronunciation section shipped**, and those
+   * are all corrections.
+   *
+   * No backfill: `asksOf` fills the gap on read, and the correction section's
+   * query matches `{ $in: ['correction', null] }`. Writes always set it
+   * explicitly, so the absence only ever shrinks.
+   */
+  kind?: StoredPostKind
   /**
    * Denormalized, and one of the two numbers here that are. It is the sort key
    * for the correction queue, and an index cannot sort on a count it would
@@ -35,9 +49,8 @@ export interface Post {
   correctionCount: number
   /**
    * The same bargain as `correctionCount`, for the pronunciation section's
-   * queue. Written only on `kind: 'pronunciation'` posts; a legacy post has
-   * neither this nor `kind`, which is safe only because a legacy post never
-   * appears on the tab that sorts by it.
+   * queue. Written as `0` on every post since `asks` existed; older rows have
+   * it only if they were pronunciation posts, so every reader says `?? 0`.
    */
   answerCount?: number
   /**

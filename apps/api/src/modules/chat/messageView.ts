@@ -44,6 +44,8 @@ export interface MessageView {
   ask?: MessageAsk
   /** Sent with the message by its author. See `Message.translation`. */
   translation?: MessageTranslation
+  /** A copy from another thread. See `Message.forwarded`. */
+  forwarded?: true
   phrase?: { term: string; meaning: string; example?: string; lang: string }
   meeting?: {
     startsAt: string
@@ -155,6 +157,7 @@ export function toMessageView(
   // A tombstone asks for nothing: the sentence it was about is gone.
   if (!deleted && message.ask) view.ask = message.ask
   if (!deleted && message.translation) view.translation = message.translation
+  if (!deleted && message.forwarded) view.forwarded = true
   if (!deleted && message.phrase) view.phrase = message.phrase
   if (!deleted && message.sticker) view.sticker = message.sticker
   if (!deleted && message.quiz) {

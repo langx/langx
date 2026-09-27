@@ -1,4 +1,5 @@
 import {
+  asksOf,
   attachmentsOf,
   ECHO_AUDIO_MAX,
   ECHO_FRONT_MAX_LENGTH,
@@ -707,9 +708,9 @@ export async function updateCard(
  * keeping it that way. A link that never gets written costs the button on the
  * post screen and nothing else, so the client does not retry or report it.
  *
- * The post must be the caller's own pronunciation post. Not a privacy
- * measure — a post id is not a secret — but the invariant the attach below
- * leans on: a card can only ever point at a question its owner asked.
+ * The post must be the caller's own, and must ask for something. Not a
+ * privacy measure — a post id is not a secret — but the invariant the attach
+ * below leans on: a card can only ever point at a question its owner asked.
  */
 export async function linkAsk(
   db: Db,
@@ -726,30 +727,44 @@ export async function linkAsk(
   if (!post) throw notFound('Post not found')
 
   /*
-   * Which field the link lands in is the post's own kind, not the caller's
-   * word for it: a card remembers the question it asked for a recording and
+   * Which fields the link lands in are the post's own asks, not the caller's
+   * word for them: a card remembers the question it asked for a recording and
    * the question it asked for a correction separately, so asking for one does
-   * not take the other's button off a post somebody is still answering.
+   * not take the other's button off a post somebody is still answering. A
+   * post asking for both fills both slots — the two partial uniques are
+   * independent, so one card may hold one post twice. `asksOf` maps a legacy
+   * row exactly as the old `kind` test did.
    */
-  const field = post.kind === 'pronunciation' ? 'askedPostId' : 'askedCorrectionPostId'
+  const asks = asksOf(post)
+  if (asks.length === 0) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That post is not asking for anything', {
+      reason: 'not_asked',
+    })
+  }
+  const fields = asks.map((ask) =>
+    ask === 'pronunciation' ? ('askedPostId' as const) : ('askedCorrectionPostId' as const),
+  )
 
   /*
    * The post is asked from one card, so a second card claiming it would break
-   * the partial unique index rather than overwrite. Clearing it first is what
-   * makes re-asking from a different card work, and it is why this is two
-   * writes instead of one.
+   * the partial unique index rather than overwrite. Clearing every slot being
+   * set first is what makes re-asking from a different card work, and it is
+   * why this is two writes instead of one. One clear per slot rather than an
+   * `$or`: a card holding this post in one slot may hold a different post in
+   * the other, and that link is not this call's to drop.
    */
-  await db
-    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
-    .updateMany({ userId, [field]: input.postId }, { $unset: { [field]: '' } })
+  const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
+  await Promise.all(
+    fields.map((field) =>
+      cards.updateMany({ userId, [field]: input.postId }, { $unset: { [field]: '' } }),
+    ),
+  )
 
-  const updated = await db
-    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
-    .findOneAndUpdate(
-      { _id: new ObjectId(cardId), userId },
-      { $set: { [field]: input.postId } },
-      { returnDocument: 'after' },
-    )
+  const updated = await cards.findOneAndUpdate(
+    { _id: new ObjectId(cardId), userId },
+    { $set: Object.fromEntries(fields.map((field) => [field, input.postId])) },
+    { returnDocument: 'after' },
+  )
   if (!updated) throw notFound('Card not found')
 
   return toEchoCard(updated)

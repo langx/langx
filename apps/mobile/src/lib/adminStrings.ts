@@ -150,6 +150,7 @@ export const ADMIN = {
     details: 'What they wrote',
     noDetails: 'No details were given.',
     post: 'The post',
+    noCaption: '(no caption)',
     postHidden: 'Hidden. Nobody can see it, its author included.',
     account: 'The account',
     inForce: 'Already suspended — deciding again replaces that.',

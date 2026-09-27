@@ -254,6 +254,11 @@ what the trigger column is for: they are worth a line in a letter that is
 going out, and never worth one of their own. The hourly gift is in neither
 table — a button becoming available is not something that happened.
 
+A message scheduled with "Send later" is a message: it pushes when it goes
+out, through the same fan-out as one typed at that moment, under `messages`.
+Nothing is sent to its author when it goes, and nothing when it fails — the
+failed row sits under the thread instead, where the words are.
+
 ### Reading counts
 
 The four sections whose news also sits in the notification centre — replies,
