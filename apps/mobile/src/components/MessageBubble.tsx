@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { memo, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
 import {
   Animated,
+  Linking,
   Platform,
   Pressable,
   Text,
@@ -46,6 +47,7 @@ import { MediaGallery } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
 import { Image } from 'expo-image'
 import { stickerAsset } from '../lib/stickerAssets'
+import { coordinatesText, mapsUrl } from '../lib/sharedLocation'
 import { useT, type MessageKey } from '../i18n'
 import { createDoubleTap, doubleTapToReactEnabled } from '../lib/doubleTapToReact'
 import { impact } from '../lib/haptics'
@@ -611,6 +613,46 @@ export const MessageBubble = memo(function MessageBubble({
     )
   }
 
+  if (message.type === 'location' && message.location) {
+    const place = message.location
+    return shell(
+      <Pressable onPress={tap} onLongPress={press} style={column}>
+        {/*
+          A card, not a map. A map tile needs a provider and a key, and a
+          picture of a street would say more than an approximate point means.
+        */}
+        <View ref={box} style={[styles.card, flash]}>
+          <Text style={styles.cardKicker}>
+            {place.precision === 'approximate'
+              ? t('chat.locationCardApproximate')
+              : t('chat.locationCard')}
+          </Text>
+          <View style={styles.locationRow}>
+            <Feather name="map-pin" size={16} color={colors.accent} />
+            <Text style={styles.locationPlace}>
+              {place.label ?? coordinatesText(place, place.precision)}
+            </Text>
+          </View>
+          {/*
+            `Linking`, not the in-app browser `openExternal` uses: these links
+            are meant to be caught by the Maps app, which a browser sheet
+            would stand in front of.
+          */}
+          <Pressable
+            accessibilityRole="link"
+            hitSlop={8}
+            onLongPress={press}
+            onPress={() => void Linking.openURL(mapsUrl(place, Platform.OS)).catch(() => {})}
+          >
+            <Text style={styles.locationOpen}>{t('chat.locationOpenInMaps')}</Text>
+          </Pressable>
+        </View>
+        {badge}
+        <View style={styles.cardMeta}>{meta}</View>
+      </Pressable>,
+    )
+  }
+
   if (message.type === 'quiz' && message.quiz) {
     const quiz = message.quiz
     const answered = quiz.answer !== undefined
@@ -1119,6 +1161,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   phraseExample: { color: colors.textMuted, fontSize: 14, fontStyle: 'italic', lineHeight: 20 },
   meetingWhen: { color: colors.text, fontSize: 16, fontWeight: '700' },
   sticker: { height: 112, width: 112 },
+  locationRow: { alignItems: 'center', flexDirection: 'row', gap: 6, marginTop: 2 },
+  locationPlace: { color: colors.text, flexShrink: 1, fontSize: 16, fontWeight: '700' },
+  locationOpen: { color: colors.accent, fontSize: 13, fontWeight: '700', marginTop: 8 },
   quizOption: {
     alignItems: 'center',
     backgroundColor: colors.bg,

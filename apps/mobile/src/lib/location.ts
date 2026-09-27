@@ -2,6 +2,7 @@ import type { MessageKey, TranslateFn } from '../i18n/runtime'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
 import { confirmAlert, showAlert } from './alert'
+import type { GeocodedAddress } from './sharedLocation'
 
 /**
  * Reading the device's position, and the one decision that makes this file
@@ -59,11 +60,20 @@ export interface CaptureOptions {
    * broken rather than thrifty.
    */
   fresh?: boolean
+  /**
+   * Ask for GPS rather than `ACCURACY`, and skip the cache.
+   *
+   * Only for a place shared in a chat, where "exact" is a promise to the
+   * reader: everything above is about a kilometre grid, and a hundred metres
+   * is plenty for that and not enough for "I'm at this café".
+   */
+  precise?: boolean
 }
 
 export async function captureLocation({
   promptIfNeeded = true,
   fresh = false,
+  precise = false,
 }: CaptureOptions = {}): Promise<LocationResult> {
   // `getForegroundPermissionsAsync` first, so a user who has already granted
   // it is never re-prompted; `request` only runs the first time.
@@ -84,21 +94,43 @@ export async function captureLocation({
     // one from now land in the same grid cell unless the user has travelled,
     // and if they have, the next refresh catches it. `fresh` is the caller
     // saying it cannot wait for that next refresh.
-    const position = fresh
-      ? null
-      : await Location.getLastKnownPositionAsync({
-          maxAge: 60 * 60 * 1000,
-          // The same rule as `ACCURACY`, applied to the fix we did not ask
-          // for. Without it the cache can hand back the three-kilometre
-          // network estimate some other app left behind, which is the reading
-          // `Lowest` used to produce and the one the grid cannot absorb.
-          // Rejecting it returns `null`, and the line below asks properly.
-          requiredAccuracy: 1000,
-        })
-    const fix = position ?? (await Location.getCurrentPositionAsync({ accuracy: ACCURACY }))
+    const position =
+      fresh || precise
+        ? null
+        : await Location.getLastKnownPositionAsync({
+            maxAge: 60 * 60 * 1000,
+            // The same rule as `ACCURACY`, applied to the fix we did not ask
+            // for. Without it the cache can hand back the three-kilometre
+            // network estimate some other app left behind, which is the reading
+            // `Lowest` used to produce and the one the grid cannot absorb.
+            // Rejecting it returns `null`, and the line below asks properly.
+            requiredAccuracy: 1000,
+          })
+    const fix =
+      position ??
+      (await Location.getCurrentPositionAsync({
+        accuracy: precise ? Location.Accuracy.High : ACCURACY,
+      }))
     return { ok: true, lat: fix.coords.latitude, lng: fix.coords.longitude }
   } catch {
     return { ok: false, reason: 'unavailable' }
+  }
+}
+
+/**
+ * What the OS calls the place at this point, or `undefined`.
+ *
+ * Asked of the OS's own geocoder, so there is no map provider of ours, no key
+ * and nothing to ship natively. The web has no geocoder to ask and throws,
+ * and a phone offline has nothing to answer with — both are the ordinary
+ * case of a card showing its coordinates instead.
+ */
+export async function geocodePlace(lat: number, lng: number): Promise<GeocodedAddress | undefined> {
+  try {
+    const [address] = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lng })
+    return address
+  } catch {
+    return undefined
   }
 }
 

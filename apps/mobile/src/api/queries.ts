@@ -23,6 +23,7 @@ import {
   type MessageAsk,
   type MessageTranslation,
   type MessageType,
+  type SharedLocationPrecision,
   type CaptureEchoInput,
   type CaptureEchoResult,
   type CreateShareCardInput,
@@ -869,6 +870,8 @@ export interface MessageDto {
     answer?: { index: number; at: string }
   }
   sticker?: { packId: string; stickerId: string }
+  /** A place shared once. Already on the server's grid when approximate. */
+  location?: { lat: number; lng: number; precision: SharedLocationPrecision; label?: string }
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */

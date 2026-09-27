@@ -232,7 +232,9 @@ export async function deleteMessage(
     { _id: message._id, senderId: userId, deletedAt: { $exists: false } },
     {
       $set: { deletedAt: now, deletedBy: userId, body: '' },
-      $unset: { attachments: '', media: '', correction: '', replyTo: '' },
+      // `location` with the files: a withdrawn place must not stay on the
+      // server any more than a withdrawn photo does.
+      $unset: { attachments: '', media: '', correction: '', replyTo: '', location: '' },
     },
   )
 

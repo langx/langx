@@ -11,6 +11,9 @@ import {
   isReactionEmoji,
   reactToMessageSchema,
   sendTextMessageSchema,
+  LOCATION_LABEL_MAX_LENGTH,
+  sendLocationSchema,
+  storedLocationPoint,
 } from './chat'
 
 describe('deliveryStateOf', () => {
@@ -176,5 +179,47 @@ describe('reactToMessageSchema', () => {
     const stretched = '👍' + '\u{FE0F}'.repeat(MAX_REACTION_BYTES)
     expect(isReactionEmoji('👍\u{FE0F}')).toBe(true)
     expect(accepts(stretched)).toBe(false)
+  })
+})
+
+describe('sendLocationSchema', () => {
+  const base = { conversationId: 'c1', lat: 40.99, lng: 29.03, precision: 'approximate' }
+  const accepts = (fields: Record<string, unknown>): boolean =>
+    sendLocationSchema.safeParse({ ...base, ...fields }).success
+
+  it('takes both ends of the globe and nothing past them', () => {
+    expect(accepts({ lat: 90, lng: 180 })).toBe(true)
+    expect(accepts({ lat: -90, lng: -180 })).toBe(true)
+    expect(accepts({ lat: 90.01 })).toBe(false)
+    expect(accepts({ lat: -90.01 })).toBe(false)
+    expect(accepts({ lng: 180.01 })).toBe(false)
+    expect(accepts({ lng: -180.01 })).toBe(false)
+    expect(accepts({ lat: Number.NaN })).toBe(false)
+    expect(accepts({ lat: '40.99' })).toBe(false)
+  })
+
+  it('knows two precisions and no third', () => {
+    expect(accepts({ precision: 'exact' })).toBe(true)
+    expect(accepts({ precision: 'street' })).toBe(false)
+    expect(accepts({ precision: undefined })).toBe(false)
+  })
+
+  it('bounds the place name, and refuses a blank one', () => {
+    expect(accepts({ label: 'Kadıköy, İstanbul' })).toBe(true)
+    expect(accepts({ label: 'a'.repeat(LOCATION_LABEL_MAX_LENGTH) })).toBe(true)
+    expect(accepts({ label: 'a'.repeat(LOCATION_LABEL_MAX_LENGTH + 1) })).toBe(false)
+    expect(accepts({ label: '   ' })).toBe(false)
+  })
+})
+
+describe('storedLocationPoint', () => {
+  const precise = { lat: 40.987654, lng: 29.036789 }
+
+  it('puts an approximate point on the discovery grid', () => {
+    expect(storedLocationPoint(precise, 'approximate')).toEqual({ lat: 40.99, lng: 29.04 })
+  })
+
+  it('leaves an exact point exactly as it was sent', () => {
+    expect(storedLocationPoint(precise, 'exact')).toEqual(precise)
   })
 })

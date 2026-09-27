@@ -357,6 +357,23 @@ Not in the survey; Behic asked for it: typing `:D` should offer 😄.
   literal text stays unless the person picks the emoji, and the server stores
   whatever was sent.
 
+### Share a location, once
+
+Status: in review
+
+Not in the survey; Behic asked for it. Not live: one point, sent once.
+
+- A new `location` message type, through every place a message type touches:
+  `MESSAGE_TYPES`, `sendLocationSchema` (`{ lat, lng, precision, label? }`),
+  `Message.location`, `sendLocation`, `previewFor` (`📍 Location`, never the
+  place), the `message:location` socket event, `messageView`, `MessageDto`, a
+  `MessageBubble` card with "Open in Maps", the starred list, and i18n.
+- The sender picks **approximate** (first in the sheet) or **exact**. The
+  server rounds an approximate point onto discovery's ~1 km grid itself; exact
+  is stored as sent. The place name is resolved on the device; there is no
+  map image, provider or key, so it ships over the air.
+- The media lock applies, as it does to a photo.
+
 ---
 
 ## Verification

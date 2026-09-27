@@ -387,8 +387,12 @@ export async function purgeExpiredAccounts(
     await db.collection<Message>(COLLECTIONS.messages).updateMany(
       { senderId: userId },
       // `media` goes with the body: the object behind it has just been
-      // deleted, so leaving the reference would render a broken image.
-      { $set: { body: '', deletedWithAccount: true }, $unset: { correction: '', media: '' } },
+      // deleted, so leaving the reference would render a broken image. A
+      // shared place goes too: it says where this person was.
+      {
+        $set: { body: '', deletedWithAccount: true },
+        $unset: { correction: '', media: '', location: '' },
+      },
     )
 
     /**

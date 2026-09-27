@@ -5833,6 +5833,36 @@ Text only, in an existing conversation: the first message of a thread spends
 the initiation quota and an attachment spends storage, and neither should be
 charged at a time the sender is not there to see it.
 
+## A shared location is a card, rounded by the server, and behind the media lock
+
+The `+` menu can send where you are, once — not a live location. The bubble
+is a card: a pin, the place's name, and "Open in Maps".
+
+**No map image.** A tile needs a map provider, an API key and, for a native
+map view, a new native module — which is a store release rather than an
+update over the air. The name is resolved by the sender's phone at send time
+(`reverseGeocodeAsync`), and "Open in Maps" is an https link Apple Maps or
+Google Maps catches. The web has no geocoder, and there the card shows the
+coordinates instead.
+
+**Approximate is rounded on the server.** The sheet offers approximate first
+and exact second, and says what exact gives away. An approximate point is put
+on the ~1 km grid discovery already stores (`coarsen`) by `sendLocation`,
+whatever the client sent: a card that says "approximate area" over somebody's
+front door is the one failure this feature cannot have, and a client that
+forgot to round — or chose not to — would produce exactly that. The client
+also names only the area for an approximate place, because a street name on
+that card would undo the rounding. Exact is stored as sent; the person chose
+it on a sheet that said so.
+
+**The media lock applies**, although nothing is uploaded. The lock
+(`MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES`) exists so that a stranger's first
+move cannot be something nobody agreed to receive, and "here is where I am" is
+that as much as a photograph is. There is no media quota: no bytes are stored.
+A withdrawn location and a purged account's locations are removed from the
+row, not only hidden, and the chat list and push say `📍 Location`, never the
+place.
+
 ## Comments get one level of replies
 
 _27 September 2026._

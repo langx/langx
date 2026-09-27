@@ -5,6 +5,7 @@ import {
   type MessageTranslation,
   type MessageMedia,
   type MessageType,
+  type SharedLocationPrecision,
   type StartConversationInput,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
@@ -184,6 +185,12 @@ export interface Message {
   }
   /** Which picture, out of which pack. The art itself is in the app bundle. */
   sticker?: { packId: string; stickerId: string }
+  /**
+   * A place, shared once. An approximate point is already on the grid here —
+   * `sendLocation` rounds it before the insert, so the finer reading never
+   * exists on the server. `label` is the name the sender's device resolved.
+   */
+  location?: { lat: number; lng: number; precision: SharedLocationPrecision; label?: string }
   /**
    * Everything attached to this message, in the order it was picked.
    *
