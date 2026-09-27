@@ -106,6 +106,14 @@ export const COLLECTIONS = {
    */
   phraseCards: 'phraseCards',
   /**
+   * Text messages written now and sent later by the server — "Send later" and
+   * "In their morning". A collection of their own rather than a `messages` row
+   * with a future `createdAt`: every read of a thread would then have to
+   * filter out what has not happened yet, and one that forgot would show the
+   * recipient a message before its time. Only the author ever reads these.
+   */
+  scheduledMessages: 'scheduledMessages',
+  /**
    * Text remarks on a post. Unlimited, unpaid, unlikeable — the one thing in
    * the feed that costs nothing to leave and earns nothing for leaving it,
    * which is what makes it safe to be unlimited.

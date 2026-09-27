@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bigEmojiCount, isBigEmoji, MAX_BIG_EMOJI } from './singleEmoji'
+import { bigEmojiCount, isBigEmoji, isSingleEmoji, MAX_BIG_EMOJI } from './singleEmoji'
 
 describe('bigEmojiCount', () => {
   it('counts plain emoji', () => {
@@ -24,6 +24,12 @@ describe('bigEmojiCount', () => {
     expect(bigEmojiCount('🇹🇷')).toBe(1)
     expect(bigEmojiCount('🇹🇷🇷🇺')).toBe(2)
     expect(bigEmojiCount('\u{1F1F9}')).toBe(0)
+  })
+
+  /** England, Scotland and Wales: a black flag, tag letters, then a cancel tag. */
+  it('treats a subdivision flag as one', () => {
+    expect(bigEmojiCount('🏴󠁧󠁢󠁥󠁮󠁧󠁿')).toBe(1)
+    expect(bigEmojiCount('🏴󠁧󠁢󠁥󠁮󠁧󠁿🏴󠁧󠁢󠁷󠁬󠁳󠁿')).toBe(2)
   })
 
   /**
@@ -56,5 +62,20 @@ describe('isBigEmoji', () => {
     // Past the cap it is a sentence in emoji, which reads better at body size.
     expect(isBigEmoji('😀'.repeat(MAX_BIG_EMOJI + 1))).toBe(false)
     expect(isBigEmoji('hello')).toBe(false)
+  })
+})
+
+describe('isSingleEmoji', () => {
+  it('is true for exactly one emoji', () => {
+    expect(isSingleEmoji('😀')).toBe(true)
+    expect(isSingleEmoji('👨‍👩‍👧‍👦')).toBe(true)
+    expect(isSingleEmoji('🏴󠁧󠁢󠁥󠁮󠁧󠁿')).toBe(true)
+  })
+
+  it('is false for two, for none and for any whitespace', () => {
+    expect(isSingleEmoji('😀😀')).toBe(false)
+    expect(isSingleEmoji('')).toBe(false)
+    expect(isSingleEmoji('😀 ')).toBe(false)
+    expect(isSingleEmoji('hi')).toBe(false)
   })
 })

@@ -414,6 +414,19 @@ export const MessageBubble = memo(function MessageBubble({
     </Pressable>
   ) : null
 
+  /*
+   * Above the bubble, where the quote goes, and as quiet as it: it says where
+   * the words came from without competing with them. Nothing more than that
+   * — whose thread they were in is not this reader's to know. A tombstone
+   * never carries the flag, so this needs no `deleted` check.
+   */
+  const forwarded = message.forwarded ? (
+    <View style={styles.forwardedRow}>
+      <Feather name="corner-up-right" size={12} color={colors.textMuted} />
+      <Text style={styles.forwardedText}>{t('messageMeta.forwarded')}</Text>
+    </View>
+  ) : null
+
   /**
    * Every message is a short column on its side: the quote above, the bubble,
    * then what hangs under it — the translation, the clock. v3 moves the meta
@@ -695,6 +708,7 @@ export const MessageBubble = memo(function MessageBubble({
         }
         style={column}
       >
+        {forwarded}
         {quote}
         <View ref={box} style={bubble}>
           {attachments.length > 0 ? (
@@ -801,6 +815,7 @@ export const MessageBubble = memo(function MessageBubble({
         onLongPress={press}
         style={column}
       >
+        {forwarded}
         {quote}
         <View ref={box}>
           <Animated.Text style={[styles.heroText, { transform: [{ scale: heroScale }] }]}>
@@ -829,6 +844,7 @@ export const MessageBubble = memo(function MessageBubble({
 
   return shell(
     <Pressable onPress={tap} onLongPress={press} style={column}>
+      {forwarded}
       {quote}
       <View ref={box} style={bubble}>
         <LinkedText style={styles.bubbleText} from={from} onLongPress={press}>
@@ -1044,6 +1060,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   highlighted: { borderColor: colors.accent, borderWidth: 2 },
   tombstone: { backgroundColor: colors.fill },
   edited: { ...font.caption, color: colors.textMuted, fontStyle: 'italic' },
+  forwardedRow: { alignItems: 'center', flexDirection: 'row', gap: 4 },
+  forwardedText: { ...font.caption, color: colors.textMuted, fontStyle: 'italic' },
   tombstoneRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   tombstoneText: { ...font.body, color: colors.textMuted, fontStyle: 'italic' },
   /**

@@ -4,14 +4,13 @@ import {
   MAX_PINNED_CONVERSATIONS,
   canEditMessage,
   ERROR_CODES,
-  MESSAGE_REACTIONS,
   type DeleteMessageInput,
   type EditMessageInput,
   type PinMessageInput,
   type ReactToMessageInput,
   type StarMessageInput,
 } from '@langx/shared'
-import { ObjectId, type Db, type UpdateFilter } from 'mongodb'
+import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
@@ -73,10 +72,14 @@ export async function loadMutableMessage(
  * One reaction per person: tapping the same emoji clears it, tapping a
  * different one moves it.
  *
- * Written as a pull from every emoji except the chosen one plus an add to that
- * one, which is a single update over disjoint paths. Rewriting the whole map
- * would have been simpler and wrong — it would clobber a reaction the other
- * person added between the read and the write.
+ * Written as one pipeline update that rebuilds the map from the document as
+ * the database holds it at write time: take this user out of every emoji, drop
+ * any emoji left with nobody, then add them to the chosen one. Rewriting the
+ * map from the copy read above would clobber a reaction the other person added
+ * in between. A `$pull` per emoji — what this was while the strip was the only
+ * source — needs the list of keys up front, and with any emoji allowed that
+ * list is whatever was on the document when it was read, which can already be
+ * stale; it also left an empty list behind for every emoji ever tried.
  *
  * Deliberately not on the token path: `awardForSend` is never called, no
  * `dailyActivity` counter moves and the streak does not advance. A reaction
@@ -113,16 +116,59 @@ export async function reactToMessage(
   )?.[0]
   const next = input.emoji && input.emoji !== current ? input.emoji : null
 
-  const pull: Record<string, string> = {}
-  for (const emoji of MESSAGE_REACTIONS) {
-    if (emoji !== next) pull[`reactions.${emoji}`] = userId
+  // Every value below reaches the database as data, never as a path: the emoji
+  // is a `k` in `$arrayToObject` and goes in through `$literal`, so even a key
+  // that slipped past `reactToMessageSchema` could not address another field.
+  const withoutMe = {
+    $map: {
+      input: { $objectToArray: { $ifNull: ['$reactions', {}] } },
+      as: 'r',
+      in: {
+        k: '$$r.k',
+        v: { $filter: { input: '$$r.v', as: 'u', cond: { $ne: ['$$u', userId] } } },
+      },
+    },
   }
-  const update: UpdateFilter<Message> = { $pull: pull }
-  if (next) update.$addToSet = { [`reactions.${next}`]: userId }
+  const entries = next
+    ? {
+        $let: {
+          vars: { entries: withoutMe, next: { $literal: next } },
+          in: {
+            $cond: [
+              { $in: ['$$next', '$$entries.k'] },
+              {
+                $map: {
+                  input: '$$entries',
+                  as: 'r',
+                  in: {
+                    k: '$$r.k',
+                    v: {
+                      $cond: [
+                        { $eq: ['$$r.k', '$$next'] },
+                        { $concatArrays: ['$$r.v', [userId]] },
+                        '$$r.v',
+                      ],
+                    },
+                  },
+                },
+              },
+              { $concatArrays: ['$$entries', [{ k: '$$next', v: [userId] }]] },
+            ],
+          },
+        },
+      }
+    : withoutMe
+  const reactions = {
+    $arrayToObject: {
+      $filter: { input: entries, as: 'r', cond: { $gt: [{ $size: '$$r.v' }, 0] } },
+    },
+  }
 
   const updated = await db
     .collection<Message>(COLLECTIONS.messages)
-    .findOneAndUpdate({ _id: message._id }, update, { returnDocument: 'after' })
+    .findOneAndUpdate({ _id: message._id }, [{ $set: { reactions } }], {
+      returnDocument: 'after',
+    })
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
 
   return { message: updated, conversation, audience: 'both' }
@@ -254,6 +300,10 @@ async function applyDeleteSideEffects(
  */
 async function deleteAttachment(message: Message, storage?: StorageProvider): Promise<void> {
   if (!storage || !supportsPut(storage)) return
+  // A forward's files are the original's, shared rather than copied, and the
+  // original is still in somebody's thread. Withdrawing the copy is not the
+  // copy's author's call to make about them.
+  if (message.forwarded) return
   // Every file, not just the first: a gallery leaves as many objects behind as
   // it put there, and `attachmentsOf` is what makes one deleted photo and six
   // the same code path.

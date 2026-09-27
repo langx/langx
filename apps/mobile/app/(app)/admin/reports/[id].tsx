@@ -10,6 +10,8 @@ import {
   type AdminAppealDto,
 } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
+import { MediaGallery } from '../../../../src/components/MediaBubble'
+import { PhotoViewer } from '../../../../src/components/PhotoViewer'
 import { Button } from '../../../../src/components/ui/Button'
 import { Callout } from '../../../../src/components/ui/Callout'
 import { Card } from '../../../../src/components/ui/Card'
@@ -53,6 +55,7 @@ export default function AdminCaseScreen() {
   const [days, setDays] = useState('7')
   const reward = useAdminRewardReporter()
   const [amount, setAmount] = useState(String(BOUNTY_MIN))
+  const [viewing, setViewing] = useState<number | null>(null)
   const tokens = Math.min(BOUNTY_MAX, Math.max(BOUNTY_MIN, Number.parseInt(amount, 10) || 0))
 
   async function run(
@@ -197,7 +200,24 @@ export default function AdminCaseScreen() {
               <>
                 <Text style={styles.heading}>{ADMIN.reports.post}</Text>
                 <Card>
-                  <Text style={styles.quote}>{report.data.post.body}</Text>
+                  {/* A photo posted without words has nothing to quote, and an
+                      empty card reads as a failed load. */}
+                  {report.data.post.body.trim() ? (
+                    <Text style={styles.quote}>{report.data.post.body}</Text>
+                  ) : (
+                    <Text style={styles.muted}>{ADMIN.reports.noCaption}</Text>
+                  )}
+                  {/* The picture is usually what was reported, so it is drawn
+                      here rather than counted — the same call the emailed
+                      review page makes. */}
+                  {report.data.post.attachments?.length ? (
+                    <View style={styles.media}>
+                      <MediaGallery
+                        items={report.data.post.attachments}
+                        onOpen={(index) => setViewing(index)}
+                      />
+                    </View>
+                  ) : null}
                 </Card>
                 {report.data.post.hiddenAt ? (
                   <Callout tone="warning">
@@ -286,6 +306,12 @@ export default function AdminCaseScreen() {
           </Callout>
         )}
       </Screen>
+      <PhotoViewer
+        photos={report.data?.post?.attachments ?? []}
+        index={viewing}
+        onClose={() => setViewing(null)}
+        onIndexChange={setViewing}
+      />
     </AdminGate>
   )
 }
@@ -306,4 +332,5 @@ const useStyles = makeStyles((theme) => ({
   quote: { fontSize: 15, color: theme.colors.text, lineHeight: 22 },
   rewarded: { fontSize: 15, fontWeight: '700', color: theme.colors.text },
   actions: { gap: 12, marginTop: 16 },
+  media: { marginTop: 12 },
 }))

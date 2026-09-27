@@ -433,6 +433,31 @@ export const INDEXES: Partial<IndexSpec> = {
     },
   ],
 
+  [COLLECTIONS.scheduledMessages]: [
+    // The scheduler's one question: what is due. Claimed oldest first.
+    { key: { status: 1, sendAt: 1 }, name: 'status_send_at' },
+    // The author's pending list under a thread.
+    {
+      key: { senderId: 1, conversationId: 1, status: 1 },
+      name: 'sender_conversation_status',
+    },
+    /**
+     * A create whose answer was lost is retried with the same id, and this is
+     * what makes the retry find the first row instead of queueing a second
+     * copy. Per sender for the reason `sender_client_id_unique` on `messages`
+     * is. Not partial: the schema requires `clientId` here.
+     *
+     * The send itself is kept single by two other things — the atomic claim
+     * from `pending` to `sending`, and the message's own `clientId`
+     * (`scheduled:<rowId>`), which `sender_client_id_unique` refuses twice.
+     */
+    { key: { senderId: 1, clientId: 1 }, name: 'sender_client_id_unique', unique: true },
+    // A sent row has done its job once the message exists; a month is long
+    // enough to answer "did it go?". Only `sent` rows carry `sentAt`, so a
+    // pending or failed one never expires out from under its author.
+    { key: { sentAt: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
+  ],
+
   [COLLECTIONS.blocks]: [
     { key: { blockerId: 1, blockedId: 1 }, name: 'blocker_blocked_unique', unique: true },
     { key: { blockedId: 1 }, name: 'blocked' },

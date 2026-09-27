@@ -179,6 +179,37 @@ export function localDayStart(dayKey: string, timeZone: string): Date {
   }
 }
 
+/**
+ * The instant a zone's clock reads `hour`:00 on a `YYYY-MM-DD` local day —
+ * `localDayStart` for an hour other than midnight, and by the same
+ * guess-and-correct, for the reason given there: the offset at UTC's reading
+ * of that wall clock can be on the far side of a DST change from the offset at
+ * the wall clock itself.
+ *
+ * Its own function rather than `localDayStart` plus `hour` hours, because on
+ * the day the clocks change that sum is an hour out: 09:00 on the day New York
+ * springs forward is eight hours after the day began, not nine.
+ *
+ * An hour that falls inside a spring-forward gap has no exact answer and gets
+ * one within an hour of it; no zone moves its clocks across the morning, which
+ * is what this is for. Falls back to UTC for an unusable zone, like its
+ * sibling.
+ */
+export function localTimeOn(dayKey: string, hour: number, timeZone: string): Date {
+  const wall = Date.parse(`${dayKey}T${String(hour).padStart(2, '0')}:00:00Z`)
+  if (Number.isNaN(wall)) throw new TypeError(`Invalid day key or hour: ${dayKey} ${hour}`)
+  try {
+    const guess = wall - offsetAt(wall, timeZone)
+    const corrected = wall - offsetAt(guess, timeZone)
+    const at = new Date(corrected)
+    return localDayKey(at, timeZone) === dayKey && localHour(at, timeZone) === hour
+      ? at
+      : new Date(guess)
+  } catch {
+    return new Date(wall)
+  }
+}
+
 /** Shift a `YYYY-MM-DD` key by whole days. */
 export function shiftDayKey(dayKey: string, days: number): string {
   const ms = Date.parse(`${dayKey}T00:00:00Z`)

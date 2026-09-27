@@ -1,6 +1,7 @@
 import {
   ERROR_CODES,
   TOKEN_RULES,
+  asksOf,
   type CreatePronunciationAnswerInput,
   type ListPronunciationAnswersQuery,
   type PronunciationAnswer,
@@ -20,7 +21,8 @@ import { recordQualifyingAction } from '../tokens/streak'
 import { assertAttachable, deleteObjects } from './attachments'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { notHidden } from './documents'
-import type { Post, PronunciationAnswerDoc } from './documents'
+import type { Post, PostCorrectionDoc, PronunciationAnswerDoc } from './documents'
+import { readCorrectionSummary } from './correctionSummary'
 import { answerDto, loadAuthors, postDto } from './dto'
 import { EMPTY_LIKE_SUMMARY, readLikeSummary } from './likes'
 import { readCommentSummary } from './comments'
@@ -92,18 +94,20 @@ export async function answerPronunciation(
 
   const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() })
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
-  // Without this the collection fills with rows no reader ever queries: the
-  // pronunciation section is the only place answers are listed, and a
-  // correction post is never in it.
-  if ((post.kind ?? 'correction') !== 'pronunciation') {
-    throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
-      'That post asks for a correction, not a recording',
-    )
+  // Only an asked-for recording can be given: the ask is the author's consent,
+  // and a post that did not ask for one has no place to show it.
+  if (!asksOf(post).includes('pronunciation')) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That post is not asking for a recording', {
+      reason: 'not_asked',
+    })
   }
   // Recording your own word is not teaching, and it would pay for it.
   if (post.authorId === userId) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot answer your own request')
+  }
+  // Absent to somebody on either side of a block, as in `correctPost`.
+  if ((await blockedUserIds(db, userId)).includes(post.authorId)) {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   }
 
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
@@ -244,11 +248,26 @@ export async function listPronunciationAnswers(
   const last = items.at(-1)
 
   const top = topByPost.get(postId) ?? null
+  /*
+   * The mirror of the stage `listPostCorrections` adds for answers: a post
+   * that has been corrected carries its top correction here too, so the
+   * header reads the same whichever of the two lists opened it. Only when
+   * there is one — see that function for why this is a stage of its own.
+   */
+  const correctionSummary =
+    post.correctionCount > 0
+      ? await readCorrectionSummary(db, userId, [_id])
+      : { topByPost: new Map<string, PostCorrectionDoc>(), viewerCorrected: new Set<string>() }
+  const topCorrection = correctionSummary.topByPost.get(postId) ?? null
   const [authors, likes] = await Promise.all([
-    loadAuthors(db, [post.authorId, ...items.map((doc) => doc.authorId)]),
+    loadAuthors(db, [
+      post.authorId,
+      ...items.map((doc) => doc.authorId),
+      ...(topCorrection ? [topCorrection.authorId] : []),
+    ]),
     readLikeSummary(db, userId, {
       postIds: [_id],
-      correctionIds: [],
+      correctionIds: topCorrection ? [topCorrection._id] : [],
       // The top answer is on page one and nowhere else, so past the first page
       // it has to be named explicitly or the header's copy of it would claim
       // nobody had liked it.
@@ -263,9 +282,9 @@ export async function listPronunciationAnswers(
     post: postDto(post, {
       authors,
       likes,
-      top: null,
+      top: topCorrection,
       topAnswer: top,
-      correctedByViewer: false,
+      correctedByViewer: correctionSummary.viewerCorrected.has(postId),
       answeredByViewer: viewerAnswered.has(postId),
       echoedByViewer: echoed.has(postId),
       commentCount: commentCounts.get(postId) ?? 0,

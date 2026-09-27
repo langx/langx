@@ -1,4 +1,5 @@
 import { ACCOUNT_DELETION_GRACE_DAYS, handlesMatch } from '@langx/shared'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { COLLECTIONS } from '../../db/collections'
@@ -311,6 +312,52 @@ describe('deleting an account', () => {
       expect(storage.deleted).toContain('legacy/her-old-avatar.jpg')
       expect(storage.deleted).toContain('legacy/her-gallery.jpg')
       expect(storage.deleted).toContain('legacy/her-photo.jpg')
+    })
+
+    /*
+     * A gallery is `attachments`, and `media` is only its first item repeated,
+     * so unsetting `media` alone left every other file referenced after the
+     * purge had deleted it. The prefix sweep catches what no row names.
+     */
+    it('takes every file off a post, and sweeps the posts prefix', async () => {
+      const her = userId('e1')
+      await seed(her, { deletedAt: expired() })
+      const file = (name: string) => ({
+        url: `${BASE}/posts/${her}/${name}.jpg`,
+        contentType: 'image/jpeg',
+        sizeBytes: 1024,
+      })
+      const postId = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id: postId,
+        authorId: her,
+        body: 'a sentence with two photos',
+        language: 'en',
+        correctionCount: 0,
+        attachments: [file('one'), file('two')],
+        media: file('one'),
+        createdAt: new Date(),
+      })
+      const storage = fakeStorage() as ReturnType<typeof fakeStorage> & {
+        prefixes: string[]
+        deleteByPrefix: (prefix: string) => Promise<number>
+      }
+      storage.prefixes = []
+      storage.deleteByPrefix = (prefix: string) => {
+        storage.prefixes.push(prefix)
+        return Promise.resolve(0)
+      }
+
+      await purgeExpiredAccounts(handle.db, { storage })
+
+      expect(storage.deleted).toContain(`posts/${her}/one.jpg`)
+      expect(storage.deleted).toContain(`posts/${her}/two.jpg`)
+      expect(storage.prefixes).toContain(`posts/${her}/`)
+      // The words survive the account; the references to deleted files do not.
+      const kept = await handle.db.collection(COLLECTIONS.posts).findOne({ _id: postId })
+      expect(kept?.body).toBe('a sentence with two photos')
+      expect(kept?.attachments).toBeUndefined()
+      expect(kept?.media).toBeUndefined()
     })
 
     it('purges an account that never came from v1 just the same', async () => {

@@ -66,6 +66,7 @@ export const tr: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Videoyu oynat',
+    unavailable: 'Artık mevcut değil',
     sourceTitle: 'Fotoğraf ekle',
     sourceCamera: 'Fotoğraf çek',
     sourceLibrary: 'Galeriden seç',
@@ -186,6 +187,7 @@ export const tr: Localized<EnMessages> = {
     correctPart: 'Bir kısmını düzelt',
     words: 'Kelimeler',
     romanize: 'Latin harfleriyle göster',
+    forward: 'Yönlendir',
   },
 
   echo: {
@@ -368,6 +370,16 @@ export const tr: Localized<EnMessages> = {
     aboutClose: 'Anladım',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Yönlendir…',
+    sendProfileTitle: 'Profili gönder…',
+    searchPlaceholder: 'Sohbetlerinde ara',
+    empty: 'Henüz gönderebileceğin bir sohbet yok.',
+    noMatches: 'Eşleşen sohbet yok.',
+    forwarded: 'Yönlendirildi',
+    sent: 'Gönderildi',
+  },
+
   messageMeta: {
     sent: 'Gönderildi',
     delivered: 'İletildi',
@@ -384,6 +396,7 @@ export const tr: Localized<EnMessages> = {
     meeting: 'Toplantı',
     quiz: 'Soru',
     correction: 'Düzeltme',
+    forwarded: 'Yönlendirildi',
   },
 
   interests: {
@@ -1039,6 +1052,20 @@ export const tr: Localized<EnMessages> = {
     meetingLength: 'Ne kadar',
     meetingPast: 'Geçmemiş bir saat seç.',
     meetingFailed: 'Bu randevu güncellenemedi.',
+    scheduleTitle: 'Sonra gönder',
+    scheduleTheirMorning: 'Onun sabahında (onun saatiyle {time})',
+    schedulePick: 'Saat seç',
+    scheduleConfirm: 'Zamanla',
+    scheduleFailed: 'Bu mesaj zamanlanamadı.',
+    scheduleTooMany: {
+      one: 'Bir sohbette aynı anda en fazla {count} mesaj bekleyebilir.',
+      other: 'Bir sohbette aynı anda en fazla {count} mesaj bekleyebilir.',
+    },
+    scheduledFor: '{time} gönderilecek',
+    scheduledSending: 'Gönderiliyor…',
+    scheduledNotSent: 'Gönderilemedi',
+    scheduledDismiss: 'Kaldır',
+    scheduledCancel: 'Zamanlanmış mesajı iptal et',
     translating: 'Çevriliyor…',
     writeMessage: 'Bir mesaj yaz…',
     writeCorrection: 'Düzeltmeyi yaz…',
@@ -1105,6 +1132,7 @@ export const tr: Localized<EnMessages> = {
     replyingTo: '{name} adlı kişiye yanıt',
     deleted: 'Bu mesaj silindi',
     goToQuoted: 'Alıntılanan mesaja git',
+    spoiler: 'Spoiler, göstermek için dokun',
     deleteTitle: 'Mesajı sil',
     deleteBothSides: 'Bu geri alınamaz.',
     deleteOwnSide: 'Karşı tarafın cihazında kalır.',
@@ -1130,10 +1158,32 @@ export const tr: Localized<EnMessages> = {
     tabPicker: 'Fotoğraf ve video ya da sesli notlar',
   },
 
+  chatSearch: {
+    open: 'Ara',
+    placeholder: 'Bu sohbette ara',
+    hint: 'Bir mesajı içindeki herhangi bir kelimeyle bul.',
+    none: '“{term}” geçen mesaj yok.',
+  },
+
   messageMenu: {
     more: 'Daha fazla…',
     backToFirstPage: 'İlk sayfaya dön',
     reactWith: '{emoji} ile tepki ver',
+    moreReactions: 'Diğer tepkiler',
+    emojiSearch: 'Emoji ara',
+    emojiNoResults: 'Emoji bulunamadı',
+    emojiGroups: {
+      recent: 'Son kullanılanlar',
+      smileys: 'İfadeler',
+      people: 'İnsanlar',
+      nature: 'Hayvanlar ve doğa',
+      food: 'Yiyecek ve içecek',
+      travel: 'Seyahat ve yerler',
+      activities: 'Etkinlikler',
+      objects: 'Nesneler',
+      symbols: 'Semboller',
+      flags: 'Bayraklar',
+    },
   },
 
   day: {
@@ -2008,6 +2058,7 @@ export const tr: Localized<EnMessages> = {
     copied: 'Link kopyalandı',
     copiedText: 'Metin kopyalandı',
     profile: 'Profili paylaş',
+    sendInChat: 'Bir sohbette gönder',
     profileMessage: 'LangX’te {name} ile tanış: {url}',
     postMessage: '“{excerpt}” — LangX’te {language} pratiği: {url}',
     streak: 'Serimi paylaş',

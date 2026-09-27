@@ -5620,3 +5620,37 @@ attachment**, not in a cache keyed by hash: they describe that one recording,
 both people are entitled to them, and whoever asks first pays the one unit.
 They are still shown only on request — somebody practising their listening has
 not asked to read the answer.
+
+## "Send later" is the server's job, and it asks again at send time
+
+A long press on send offers "In their morning" and "Pick a time". The message
+waits in `scheduledMessages` and a one-minute pass sends it
+(`modules/chat/scheduledSender.ts`). The phone could have held it and sent it
+itself, and that was the rejected version: a phone asleep, offline or
+uninstalled at 09:00 sends nothing, and the person who scheduled it has no way
+to know. The server is awake at nine.
+
+**Their morning is worked out on the server**, from the timezone the partner's
+public profile shows. "Hide my city" withholds that zone (see
+`toPublicProfile`), and the option is not offered then: a server that
+answered "their morning" anyway would be telling the sender the one thing the
+setting exists to hide.
+
+**Everything is checked again when it goes.** A row is claimed from `pending`
+to `sending` with one `findOneAndUpdate`, so two machines cannot both take it,
+and then sent through `sendTextMessage` and `fanOutMessage` — the functions
+every live text send uses. A block placed overnight, a partner suspended or
+deleted since, the sender's own suspension: each refuses the scheduled message
+exactly as it would refuse one typed at nine, and the row turns `failed` with
+the refusal's code, drawn under the thread until its author dismisses it. A
+check made only when the message was written would have let the scheduler
+deliver to somebody who had since blocked the sender.
+
+**Sent once.** The message carries `clientId: scheduled:<rowId>`, so
+`sender_client_id_unique` refuses a second copy even if a claim dies between
+writing the message and recording it; the stale claim is retried once, finds
+the message already there, and records it without announcing it again.
+
+Text only, in an existing conversation: the first message of a thread spends
+the initiation quota and an attachment spends storage, and neither should be
+charged at a time the sender is not there to see it.

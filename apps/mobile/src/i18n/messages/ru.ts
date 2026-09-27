@@ -61,6 +61,7 @@ export const ru: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Воспроизвести видео',
+    unavailable: 'Больше недоступно',
     sourceTitle: 'Добавить фото',
     sourceCamera: 'Сделать фото',
     sourceLibrary: 'Выбрать из галереи',
@@ -183,6 +184,7 @@ export const ru: Localized<EnMessages> = {
     correctPart: 'Исправить часть',
     words: 'Слова',
     romanize: 'Показать латиницей',
+    forward: 'Переслать',
   },
 
   echo: {
@@ -385,6 +387,16 @@ export const ru: Localized<EnMessages> = {
     aboutClose: 'Понятно',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Переслать в…',
+    sendProfileTitle: 'Отправить профиль в…',
+    searchPlaceholder: 'Поиск по чатам',
+    empty: 'Пока нет чатов, куда можно отправить.',
+    noMatches: 'Нет подходящих чатов.',
+    forwarded: 'Переслано',
+    sent: 'Отправлено',
+  },
+
   messageMeta: {
     sent: 'Отправлено',
     delivered: 'Доставлено',
@@ -401,6 +413,7 @@ export const ru: Localized<EnMessages> = {
     meeting: 'Встреча',
     quiz: 'Викторина',
     correction: 'Исправление',
+    forwarded: 'Переслано',
   },
 
   interests: {
@@ -1132,6 +1145,22 @@ export const ru: Localized<EnMessages> = {
     meetingLength: 'Сколько',
     meetingPast: 'Выбери время, которое ещё не прошло.',
     meetingFailed: 'Не удалось обновить эту встречу.',
+    scheduleTitle: 'Отправить позже',
+    scheduleTheirMorning: 'Утром у собеседника ({time} по его времени)',
+    schedulePick: 'Выбрать время',
+    scheduleConfirm: 'Запланировать',
+    scheduleFailed: 'Не удалось запланировать сообщение.',
+    scheduleTooMany: {
+      one: 'В одном чате может ждать не больше {count} сообщения.',
+      few: 'В одном чате может ждать не больше {count} сообщений.',
+      many: 'В одном чате может ждать не больше {count} сообщений.',
+      other: 'В одном чате может ждать не больше {count} сообщения.',
+    },
+    scheduledFor: 'Отправится {time}',
+    scheduledSending: 'Отправляется…',
+    scheduledNotSent: 'Не удалось отправить',
+    scheduledDismiss: 'Убрать',
+    scheduledCancel: 'Отменить запланированное сообщение',
     translating: 'Переводим…',
     writeMessage: 'Напиши сообщение…',
     writeCorrection: 'Напиши исправление…',
@@ -1202,6 +1231,7 @@ export const ru: Localized<EnMessages> = {
     replyingTo: 'Ответ {name}',
     deleted: 'Это сообщение удалено',
     goToQuoted: 'К цитируемому сообщению',
+    spoiler: 'Спойлер, нажмите, чтобы показать',
     deleteTitle: 'Удалить сообщение',
     deleteBothSides: 'Это не отменить.',
     deleteOwnSide: 'На его устройстве оно останется.',
@@ -1227,10 +1257,32 @@ export const ru: Localized<EnMessages> = {
     tabPicker: 'Фото и видео или голосовые',
   },
 
+  chatSearch: {
+    open: 'Поиск',
+    placeholder: 'Поиск в этом чате',
+    hint: 'Найдите сообщение по любому слову из него.',
+    none: 'Нет сообщений с «{term}».',
+  },
+
   messageMenu: {
     more: 'Ещё…',
     backToFirstPage: 'Назад на первую страницу',
     reactWith: 'Реакция {emoji}',
+    moreReactions: 'Другие реакции',
+    emojiSearch: 'Поиск эмодзи',
+    emojiNoResults: 'Эмодзи не найдены',
+    emojiGroups: {
+      recent: 'Недавние',
+      smileys: 'Смайлики',
+      people: 'Люди',
+      nature: 'Животные и природа',
+      food: 'Еда и напитки',
+      travel: 'Путешествия и места',
+      activities: 'Занятия',
+      objects: 'Предметы',
+      symbols: 'Символы',
+      flags: 'Флаги',
+    },
   },
 
   day: { today: 'Сегодня', yesterday: 'Вчера' },
@@ -2235,6 +2287,7 @@ export const ru: Localized<EnMessages> = {
     copied: 'Ссылка скопирована',
     copiedText: 'Текст скопирован',
     profile: 'Поделиться профилем',
+    sendInChat: 'Отправить в чат',
     profileMessage: 'Познакомьтесь с {name} в LangX: {url}',
     postMessage: '«{excerpt}» — {language}, практика в LangX: {url}',
     streak: 'Поделиться серией',

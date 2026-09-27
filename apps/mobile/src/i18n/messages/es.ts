@@ -54,6 +54,7 @@ export const es: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Reproducir vídeo',
+    unavailable: 'Ya no está disponible',
     sourceTitle: 'Añadir una foto',
     sourceCamera: 'Hacer una foto',
     sourceLibrary: 'Elegir de la galería',
@@ -177,6 +178,7 @@ export const es: Localized<EnMessages> = {
     correctPart: 'Corregir una parte',
     words: 'Palabras',
     romanize: 'Ver en letras latinas',
+    forward: 'Reenviar',
   },
 
   echo: {
@@ -359,6 +361,16 @@ export const es: Localized<EnMessages> = {
     aboutClose: 'Entendido',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Reenviar a…',
+    sendProfileTitle: 'Enviar perfil a…',
+    searchPlaceholder: 'Busca en tus chats',
+    empty: 'Aún no tienes chats a los que enviar.',
+    noMatches: 'Ningún chat coincide.',
+    forwarded: 'Reenviado',
+    sent: 'Enviado',
+  },
+
   messageMeta: {
     sent: 'Enviado',
     delivered: 'Entregado',
@@ -375,6 +387,7 @@ export const es: Localized<EnMessages> = {
     meeting: 'Reunión',
     quiz: 'Pregunta',
     correction: 'Corrección',
+    forwarded: 'Reenviado',
   },
 
   interests: {
@@ -1040,6 +1053,20 @@ export const es: Localized<EnMessages> = {
     meetingLength: 'Cuánto dura',
     meetingPast: 'Elige una hora que no haya pasado.',
     meetingFailed: 'No se pudo actualizar esa cita.',
+    scheduleTitle: 'Enviar más tarde',
+    scheduleTheirMorning: 'En su mañana ({time} su hora)',
+    schedulePick: 'Elegir una hora',
+    scheduleConfirm: 'Programar',
+    scheduleFailed: 'No se pudo programar ese mensaje.',
+    scheduleTooMany: {
+      one: 'Solo puede esperar {count} mensaje por conversación a la vez.',
+      other: 'Pueden esperar hasta {count} mensajes por conversación a la vez.',
+    },
+    scheduledFor: 'Se envía {time}',
+    scheduledSending: 'Enviando…',
+    scheduledNotSent: 'No se pudo enviar',
+    scheduledDismiss: 'Descartar',
+    scheduledCancel: 'Cancelar el mensaje programado',
     translating: 'Traduciendo…',
     writeMessage: 'Escribe un mensaje…',
     writeCorrection: 'Escribe la corrección…',
@@ -1108,6 +1135,7 @@ export const es: Localized<EnMessages> = {
     replyingTo: 'Respondiendo a {name}',
     deleted: 'Este mensaje se ha eliminado',
     goToQuoted: 'Ir al mensaje citado',
+    spoiler: 'Spoiler, toca para mostrar',
     deleteTitle: 'Eliminar mensaje',
     deleteBothSides: 'Esto no se puede deshacer.',
     deleteOwnSide: 'Se queda en su dispositivo.',
@@ -1133,10 +1161,32 @@ export const es: Localized<EnMessages> = {
     tabPicker: 'Fotos y vídeo, o notas de voz',
   },
 
+  chatSearch: {
+    open: 'Buscar',
+    placeholder: 'Buscar en este chat',
+    hint: 'Encuentra un mensaje por cualquier palabra que contenga.',
+    none: 'No hay mensajes con «{term}».',
+  },
+
   messageMenu: {
     more: 'Más…',
     backToFirstPage: 'Volver a la primera página',
     reactWith: 'Reaccionar con {emoji}',
+    moreReactions: 'Más reacciones',
+    emojiSearch: 'Buscar emoji',
+    emojiNoResults: 'No se encontraron emojis',
+    emojiGroups: {
+      recent: 'Recientes',
+      smileys: 'Caras',
+      people: 'Personas',
+      nature: 'Animales y naturaleza',
+      food: 'Comida y bebida',
+      travel: 'Viajes y lugares',
+      activities: 'Actividades',
+      objects: 'Objetos',
+      symbols: 'Símbolos',
+      flags: 'Banderas',
+    },
   },
 
   day: { today: 'Hoy', yesterday: 'Ayer' },
@@ -2007,6 +2057,7 @@ export const es: Localized<EnMessages> = {
     copied: 'Enlace copiado',
     copiedText: 'Texto copiado',
     profile: 'Compartir perfil',
+    sendInChat: 'Enviar en un chat',
     profileMessage: 'Conoce a {name} en LangX: {url}',
     postMessage: '“{excerpt}” — práctica de {language} en LangX: {url}',
     streak: 'Compartir mi racha',

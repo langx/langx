@@ -83,6 +83,7 @@ export const en = {
 
   media: {
     playVideo: 'Play video',
+    unavailable: 'No longer available',
     sourceTitle: 'Add a photo',
     sourceCamera: 'Take a photo',
     sourceLibrary: 'Choose from library',
@@ -205,6 +206,7 @@ export const en = {
     correctPart: 'Correct part',
     words: 'Words',
     romanize: 'Show in Latin letters',
+    forward: 'Forward',
   },
 
   /**
@@ -450,6 +452,16 @@ export const en = {
     aboutClose: 'Got it',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Forward to…',
+    sendProfileTitle: 'Send profile to…',
+    searchPlaceholder: 'Search your chats',
+    empty: 'No chats to send to yet.',
+    noMatches: 'No chats match that.',
+    forwarded: 'Forwarded',
+    sent: 'Sent',
+  },
+
   messageMeta: {
     sent: 'Sent',
     delivered: 'Delivered',
@@ -466,6 +478,7 @@ export const en = {
     meeting: 'Meeting',
     quiz: 'Quiz',
     correction: 'Correction',
+    forwarded: 'Forwarded',
   },
 
   /**
@@ -1185,6 +1198,21 @@ export const en = {
     meetingLength: 'How long',
     meetingPast: 'Pick a time that has not passed.',
     meetingFailed: 'Could not update that meeting.',
+    /** Long press on the send button: when the message should go instead of now. */
+    scheduleTitle: 'Send later',
+    scheduleTheirMorning: 'In their morning ({time} their time)',
+    schedulePick: 'Pick a time',
+    scheduleConfirm: 'Schedule',
+    scheduleFailed: 'Could not schedule that message.',
+    scheduleTooMany: {
+      one: 'Only {count} message can wait in a conversation at a time.',
+      other: 'Up to {count} messages can wait in a conversation at a time.',
+    },
+    scheduledFor: 'Sends {time}',
+    scheduledSending: 'Sending…',
+    scheduledNotSent: 'Could not be sent',
+    scheduledDismiss: 'Dismiss',
+    scheduledCancel: 'Cancel this scheduled message',
     translating: 'Translating…',
     writeMessage: 'Write a message…',
     writeCorrection: 'Write the correction…',
@@ -1252,6 +1280,8 @@ export const en = {
     replyingTo: 'Replying to {name}',
     deleted: 'This message was deleted',
     goToQuoted: 'Go to the quoted message',
+    /** A hidden `||spoiler||` in a message, read out before it is tapped open. */
+    spoiler: 'Spoiler, tap to reveal',
     deleteTitle: 'Delete message',
     deleteBothSides: 'This cannot be undone.',
     deleteOwnSide: 'It stays on their device.',
@@ -1277,10 +1307,32 @@ export const en = {
     tabPicker: 'Photos and video, or voice notes',
   },
 
+  chatSearch: {
+    open: 'Search',
+    placeholder: 'Search this chat',
+    hint: 'Find a message by any word in it.',
+    none: 'No messages with “{term}”.',
+  },
+
   messageMenu: {
     more: 'More…',
     backToFirstPage: 'Back to the first page',
     reactWith: 'React with {emoji}',
+    moreReactions: 'More reactions',
+    emojiSearch: 'Search emoji',
+    emojiNoResults: 'No emoji found',
+    emojiGroups: {
+      recent: 'Recent',
+      smileys: 'Smileys',
+      people: 'People',
+      nature: 'Animals & nature',
+      food: 'Food & drink',
+      travel: 'Travel & places',
+      activities: 'Activities',
+      objects: 'Objects',
+      symbols: 'Symbols',
+      flags: 'Flags',
+    },
   },
 
   day: {
@@ -2211,6 +2263,7 @@ export const en = {
     copied: 'Link copied',
     copiedText: 'Text copied',
     profile: 'Share profile',
+    sendInChat: 'Send in a chat',
     profileMessage: 'Meet {name} on LangX: {url}',
     postMessage: '“{excerpt}” — {language} practice on LangX: {url}',
     streak: 'Share my streak',

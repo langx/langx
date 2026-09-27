@@ -51,6 +51,7 @@ export const de: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Video abspielen',
+    unavailable: 'Nicht mehr verfügbar',
     sourceTitle: 'Foto hinzufügen',
     sourceCamera: 'Foto aufnehmen',
     sourceLibrary: 'Aus der Galerie wählen',
@@ -177,6 +178,7 @@ export const de: Localized<EnMessages> = {
     correctPart: 'Einen Teil korrigieren',
     words: 'Wörter',
     romanize: 'In lateinischen Buchstaben',
+    forward: 'Weiterleiten',
   },
 
   echo: {
@@ -360,6 +362,16 @@ export const de: Localized<EnMessages> = {
     aboutClose: 'Verstanden',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Weiterleiten an…',
+    sendProfileTitle: 'Profil senden an…',
+    searchPlaceholder: 'Chats durchsuchen',
+    empty: 'Noch keine Chats zum Senden.',
+    noMatches: 'Kein Chat passt dazu.',
+    forwarded: 'Weitergeleitet',
+    sent: 'Gesendet',
+  },
+
   messageMeta: {
     sent: 'Gesendet',
     delivered: 'Zugestellt',
@@ -376,6 +388,7 @@ export const de: Localized<EnMessages> = {
     meeting: 'Termin',
     quiz: 'Quiz',
     correction: 'Korrektur',
+    forwarded: 'Weitergeleitet',
   },
 
   interests: {
@@ -1065,6 +1078,20 @@ export const de: Localized<EnMessages> = {
     meetingLength: 'Wie lange',
     meetingPast: 'Wähle eine Zeit, die noch nicht vorbei ist.',
     meetingFailed: 'Der Termin konnte nicht aktualisiert werden.',
+    scheduleTitle: 'Später senden',
+    scheduleTheirMorning: 'Bei ihnen am Morgen ({time} Ortszeit dort)',
+    schedulePick: 'Zeit wählen',
+    scheduleConfirm: 'Planen',
+    scheduleFailed: 'Die Nachricht konnte nicht geplant werden.',
+    scheduleTooMany: {
+      one: 'In einem Chat kann nur {count} Nachricht gleichzeitig warten.',
+      other: 'In einem Chat können bis zu {count} Nachrichten gleichzeitig warten.',
+    },
+    scheduledFor: 'Wird {time} gesendet',
+    scheduledSending: 'Wird gesendet…',
+    scheduledNotSent: 'Konnte nicht gesendet werden',
+    scheduledDismiss: 'Entfernen',
+    scheduledCancel: 'Geplante Nachricht abbrechen',
     translating: 'Wird übersetzt…',
     writeMessage: 'Schreib eine Nachricht…',
     writeCorrection: 'Schreib die Korrektur…',
@@ -1135,6 +1162,7 @@ export const de: Localized<EnMessages> = {
     replyingTo: 'Antwort an {name}',
     deleted: 'Diese Nachricht wurde gelöscht',
     goToQuoted: 'Zur zitierten Nachricht',
+    spoiler: 'Spoiler, zum Anzeigen tippen',
     deleteTitle: 'Nachricht löschen',
     deleteBothSides: 'Das lässt sich nicht rückgängig machen.',
     deleteOwnSide: 'Auf ihrem Gerät bleibt sie.',
@@ -1160,10 +1188,32 @@ export const de: Localized<EnMessages> = {
     tabPicker: 'Fotos und Video oder Sprachnachrichten',
   },
 
+  chatSearch: {
+    open: 'Suchen',
+    placeholder: 'In diesem Chat suchen',
+    hint: 'Finde eine Nachricht über ein beliebiges Wort darin.',
+    none: 'Keine Nachrichten mit „{term}“.',
+  },
+
   messageMenu: {
     more: 'Mehr…',
     backToFirstPage: 'Zurück zur ersten Seite',
     reactWith: 'Mit {emoji} reagieren',
+    moreReactions: 'Weitere Reaktionen',
+    emojiSearch: 'Emoji suchen',
+    emojiNoResults: 'Keine Emoji gefunden',
+    emojiGroups: {
+      recent: 'Zuletzt verwendet',
+      smileys: 'Smileys',
+      people: 'Menschen',
+      nature: 'Tiere & Natur',
+      food: 'Essen & Trinken',
+      travel: 'Reisen & Orte',
+      activities: 'Aktivitäten',
+      objects: 'Objekte',
+      symbols: 'Symbole',
+      flags: 'Flaggen',
+    },
   },
 
   day: { today: 'Heute', yesterday: 'Gestern' },
@@ -2048,6 +2098,7 @@ export const de: Localized<EnMessages> = {
     copied: 'Link kopiert',
     copiedText: 'Text kopiert',
     profile: 'Profil teilen',
+    sendInChat: 'In einem Chat senden',
     profileMessage: 'Lern {name} auf LangX kennen: {url}',
     postMessage: '„{excerpt}“ — {language} üben auf LangX: {url}',
     streak: 'Meine Serie teilen',

@@ -51,6 +51,7 @@ export const ptBR: Localized<EnMessages> = {
 
   media: {
     playVideo: 'Reproduzir vídeo',
+    unavailable: 'Não está mais disponível',
     sourceTitle: 'Adicionar uma foto',
     sourceCamera: 'Tirar uma foto',
     sourceLibrary: 'Escolher da galeria',
@@ -174,6 +175,7 @@ export const ptBR: Localized<EnMessages> = {
     correctPart: 'Corrigir uma parte',
     words: 'Palavras',
     romanize: 'Ver em letras latinas',
+    forward: 'Encaminhar',
   },
 
   echo: {
@@ -356,6 +358,16 @@ export const ptBR: Localized<EnMessages> = {
     aboutClose: 'Entendi',
   },
 
+  conversationPicker: {
+    forwardTitle: 'Encaminhar para…',
+    sendProfileTitle: 'Enviar perfil para…',
+    searchPlaceholder: 'Buscar nas suas conversas',
+    empty: 'Ainda não há conversas para enviar.',
+    noMatches: 'Nenhuma conversa encontrada.',
+    forwarded: 'Encaminhada',
+    sent: 'Enviado',
+  },
+
   messageMeta: {
     sent: 'Enviada',
     delivered: 'Entregue',
@@ -372,6 +384,7 @@ export const ptBR: Localized<EnMessages> = {
     meeting: 'Reunião',
     quiz: 'Quiz',
     correction: 'Correção',
+    forwarded: 'Encaminhada',
   },
 
   interests: {
@@ -1034,6 +1047,20 @@ export const ptBR: Localized<EnMessages> = {
     meetingLength: 'Duração',
     meetingPast: 'Escolha um horário que ainda não passou.',
     meetingFailed: 'Não foi possível atualizar esse encontro.',
+    scheduleTitle: 'Enviar mais tarde',
+    scheduleTheirMorning: 'Na manhã da pessoa ({time} no horário dela)',
+    schedulePick: 'Escolher um horário',
+    scheduleConfirm: 'Agendar',
+    scheduleFailed: 'Não foi possível agendar essa mensagem.',
+    scheduleTooMany: {
+      one: 'Até {count} mensagem pode esperar por conversa.',
+      other: 'Até {count} mensagens podem esperar por conversa.',
+    },
+    scheduledFor: 'Envia {time}',
+    scheduledSending: 'Enviando…',
+    scheduledNotSent: 'Não foi possível enviar',
+    scheduledDismiss: 'Descartar',
+    scheduledCancel: 'Cancelar a mensagem agendada',
     translating: 'Traduzindo…',
     writeMessage: 'Escreva uma mensagem…',
     writeCorrection: 'Escreva a correção…',
@@ -1101,6 +1128,7 @@ export const ptBR: Localized<EnMessages> = {
     replyingTo: 'Respondendo a {name}',
     deleted: 'Esta mensagem foi apagada',
     goToQuoted: 'Ir para a mensagem citada',
+    spoiler: 'Spoiler, toque para revelar',
     deleteTitle: 'Excluir mensagem',
     deleteBothSides: 'Isso não dá para desfazer.',
     deleteOwnSide: 'Ela continua no aparelho da outra pessoa.',
@@ -1126,10 +1154,32 @@ export const ptBR: Localized<EnMessages> = {
     tabPicker: 'Fotos e vídeo, ou mensagens de voz',
   },
 
+  chatSearch: {
+    open: 'Buscar',
+    placeholder: 'Buscar nesta conversa',
+    hint: 'Encontre uma mensagem por qualquer palavra dela.',
+    none: 'Nenhuma mensagem com “{term}”.',
+  },
+
   messageMenu: {
     more: 'Mais…',
     backToFirstPage: 'Voltar para a primeira página',
     reactWith: 'Reagir com {emoji}',
+    moreReactions: 'Mais reações',
+    emojiSearch: 'Buscar emoji',
+    emojiNoResults: 'Nenhum emoji encontrado',
+    emojiGroups: {
+      recent: 'Recentes',
+      smileys: 'Carinhas',
+      people: 'Pessoas',
+      nature: 'Animais e natureza',
+      food: 'Comidas e bebidas',
+      travel: 'Viagens e lugares',
+      activities: 'Atividades',
+      objects: 'Objetos',
+      symbols: 'Símbolos',
+      flags: 'Bandeiras',
+    },
   },
 
   day: { today: 'Hoje', yesterday: 'Ontem' },
@@ -2006,6 +2056,7 @@ export const ptBR: Localized<EnMessages> = {
     copied: 'Link copiado',
     copiedText: 'Texto copiado',
     profile: 'Compartilhar perfil',
+    sendInChat: 'Enviar em uma conversa',
     profileMessage: 'Conheça {name} no LangX: {url}',
     postMessage: '“{excerpt}” — prática de {language} no LangX: {url}',
     streak: 'Compartilhar minha sequência',

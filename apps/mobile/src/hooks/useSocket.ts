@@ -1,4 +1,4 @@
-import { notificationsAllowed, PRESENCE_HEARTBEAT_MS } from '@langx/shared'
+import { notificationsAllowed, PRESENCE_HEARTBEAT_MS, stripFormatting } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
 import { onlineManager, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
@@ -168,7 +168,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
             if (!old || !meId) return old
             const next = applyIncomingMessage(old, {
               conversationId,
-              body: message.body,
+              body: stripFormatting(message.body),
               senderId: message.senderId,
               createdAt: message.createdAt,
               forUserId: meId,
@@ -219,7 +219,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
             conversationId,
             senderId: message.senderId,
             preview: previewOf(message.type),
-            body: message.body,
+            body: stripFormatting(message.body),
           })
         }
       })

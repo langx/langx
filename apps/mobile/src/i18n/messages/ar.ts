@@ -64,6 +64,7 @@ export const ar: Localized<EnMessages> = {
 
   media: {
     playVideo: 'تشغيل الفيديو',
+    unavailable: 'لم يعد متاحًا',
     sourceTitle: 'إضافة صورة',
     sourceCamera: 'التقاط صورة',
     sourceLibrary: 'الاختيار من المعرض',
@@ -176,6 +177,7 @@ export const ar: Localized<EnMessages> = {
     correctPart: 'تصحيح جزء',
     words: 'الكلمات',
     romanize: 'عرض بالحروف اللاتينية',
+    forward: 'إعادة توجيه',
   },
 
   echo: {
@@ -387,6 +389,16 @@ export const ar: Localized<EnMessages> = {
     aboutClose: 'فهمت',
   },
 
+  conversationPicker: {
+    forwardTitle: 'إعادة توجيه إلى…',
+    sendProfileTitle: 'إرسال الملف إلى…',
+    searchPlaceholder: 'ابحث في محادثاتك',
+    empty: 'لا توجد محادثات للإرسال إليها بعد.',
+    noMatches: 'لا توجد محادثات مطابقة.',
+    forwarded: 'تمت إعادة التوجيه',
+    sent: 'تم الإرسال',
+  },
+
   messageMeta: {
     sent: 'أُرسلت',
     delivered: 'وصلت',
@@ -403,6 +415,7 @@ export const ar: Localized<EnMessages> = {
     meeting: 'اجتماع',
     quiz: 'سؤال',
     correction: 'تصحيح',
+    forwarded: 'مُعاد توجيهها',
   },
 
   interests: {
@@ -1149,6 +1162,24 @@ export const ar: Localized<EnMessages> = {
     meetingLength: 'كم المدة',
     meetingPast: 'اختر وقتًا لم يمضِ بعد.',
     meetingFailed: 'تعذّر تحديث هذا الموعد.',
+    scheduleTitle: 'إرسال لاحقًا',
+    scheduleTheirMorning: 'في صباحه ({time} بتوقيته)',
+    schedulePick: 'اختيار وقت',
+    scheduleConfirm: 'جدولة',
+    scheduleFailed: 'تعذّرت جدولة هذه الرسالة.',
+    scheduleTooMany: {
+      zero: 'لا يمكن جدولة رسائل هنا.',
+      one: 'يمكن أن تنتظر رسالة واحدة فقط في المحادثة.',
+      two: 'يمكن أن تنتظر رسالتان فقط في المحادثة.',
+      few: 'يمكن أن تنتظر حتى {count} رسائل في المحادثة.',
+      many: 'يمكن أن تنتظر حتى {count} رسالة في المحادثة.',
+      other: 'يمكن أن تنتظر حتى {count} رسالة في المحادثة.',
+    },
+    scheduledFor: 'تُرسل {time}',
+    scheduledSending: 'جارٍ الإرسال…',
+    scheduledNotSent: 'تعذّر الإرسال',
+    scheduledDismiss: 'إزالة',
+    scheduledCancel: 'إلغاء الرسالة المجدولة',
     translating: 'جارٍ الترجمة…',
     writeMessage: 'اكتب رسالة…',
     writeCorrection: 'اكتب التصحيح…',
@@ -1224,6 +1255,7 @@ export const ar: Localized<EnMessages> = {
     replyingTo: 'رد على {name}',
     deleted: 'حُذفت هذه الرسالة',
     goToQuoted: 'الذهاب إلى الرسالة المقتبسة',
+    spoiler: 'حرق للأحداث، اضغط للكشف',
     deleteTitle: 'حذف الرسالة',
     deleteBothSides: 'لا يمكن التراجع عن هذا.',
     deleteOwnSide: 'ستبقى على جهازه.',
@@ -1249,10 +1281,32 @@ export const ar: Localized<EnMessages> = {
     tabPicker: 'صور وفيديو أو رسائل صوتية',
   },
 
+  chatSearch: {
+    open: 'بحث',
+    placeholder: 'ابحث في هذه المحادثة',
+    hint: 'اعثر على رسالة بأي كلمة فيها.',
+    none: 'لا توجد رسائل تحتوي على «{term}».',
+  },
+
   messageMenu: {
     more: 'المزيد…',
     backToFirstPage: 'العودة إلى الصفحة الأولى',
     reactWith: 'التفاعل بـ {emoji}',
+    moreReactions: 'مزيد من التفاعلات',
+    emojiSearch: 'البحث عن رمز تعبيري',
+    emojiNoResults: 'لم يُعثر على رموز تعبيرية',
+    emojiGroups: {
+      recent: 'الأخيرة',
+      smileys: 'الوجوه الضاحكة',
+      people: 'الأشخاص',
+      nature: 'الحيوانات والطبيعة',
+      food: 'الطعام والشراب',
+      travel: 'السفر والأماكن',
+      activities: 'الأنشطة',
+      objects: 'الأشياء',
+      symbols: 'الرموز',
+      flags: 'الأعلام',
+    },
   },
 
   day: { today: 'اليوم', yesterday: 'أمس' },
@@ -2326,6 +2380,7 @@ export const ar: Localized<EnMessages> = {
     copied: 'تم نسخ الرابط',
     copiedText: 'تم نسخ النص',
     profile: 'مشاركة الملف',
+    sendInChat: 'إرسال في محادثة',
     profileMessage: 'تعرّف على {name} في LangX: {url}',
     postMessage: '«{excerpt}» — تدريب على {language} في LangX: {url}',
     streak: 'مشاركة سلسلتي',
