@@ -1132,6 +1132,13 @@ export const fr: Localized<EnMessages> = {
     tabPicker: 'Photos et vidéo, ou messages vocaux',
   },
 
+  chatSearch: {
+    open: 'Rechercher',
+    placeholder: 'Rechercher dans cette discussion',
+    hint: 'Retrouvez un message grâce à n’importe quel mot qu’il contient.',
+    none: 'Aucun message avec « {term} ».',
+  },
+
   messageMenu: {
     more: 'Plus…',
     backToFirstPage: 'Revenir à la première page',

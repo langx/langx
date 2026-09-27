@@ -1121,6 +1121,13 @@ export const ptBR: Localized<EnMessages> = {
     tabPicker: 'Fotos e vídeo, ou mensagens de voz',
   },
 
+  chatSearch: {
+    open: 'Buscar',
+    placeholder: 'Buscar nesta conversa',
+    hint: 'Encontre uma mensagem por qualquer palavra dela.',
+    none: 'Nenhuma mensagem com “{term}”.',
+  },
+
   messageMenu: {
     more: 'Mais…',
     backToFirstPage: 'Voltar para a primeira página',

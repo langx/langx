@@ -1273,6 +1273,13 @@ export const en = {
     tabPicker: 'Photos and video, or voice notes',
   },
 
+  chatSearch: {
+    open: 'Search',
+    placeholder: 'Search this chat',
+    hint: 'Find a message by any word in it.',
+    none: 'No messages with “{term}”.',
+  },
+
   messageMenu: {
     more: 'More…',
     backToFirstPage: 'Back to the first page',
