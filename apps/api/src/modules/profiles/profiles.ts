@@ -53,6 +53,7 @@ import { restoreByHash } from '../handles/legacyRestore'
 import { isSuspended } from '../moderation/suspension'
 import { attachReferral } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
+import { streakDaysInZone } from '../tokens/streak'
 
 export interface Profile {
   _id: string
@@ -1220,6 +1221,26 @@ export async function updateProfile(
       )
     }
     timezoneUpdatedAt = now
+
+    // Its own write, guarded on the values it was computed from: a message
+    // crediting the streak between the read above and this would otherwise be
+    // overwritten with a key derived from the day before it.
+    const moved = streakDaysInZone(current, input.timezone, now)
+    if (moved) {
+      await profiles.updateOne(
+        {
+          _id: userId,
+          'streak.lastQualifiedDay': current.streak.lastQualifiedDay,
+          'streak.lastActionDay': current.streak.lastActionDay ?? null,
+        },
+        {
+          $set: {
+            'streak.lastQualifiedDay': moved.lastQualifiedDay,
+            'streak.lastActionDay': moved.lastActionDay,
+          },
+        },
+      )
+    }
   }
 
   const result = await profiles.findOneAndUpdate(

@@ -7,6 +7,7 @@ import { useTheme } from '../../src/lib/theme'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useLocationRefresh } from '../../src/hooks/useLocationRefresh'
+import { useTimezoneSync } from '../../src/hooks/useTimezoneSync'
 import { useDailyCheckIn } from '../../src/hooks/useDailyCheckIn'
 import { useCompanionDirectory } from '../../src/hooks/useCompanionDirectory'
 import { useCompanionSnapshot } from '../../src/hooks/useCompanionSnapshot'
@@ -51,6 +52,7 @@ export default function AppLayout() {
   const isGuest = shouldGateGuest(session?.user)
   useSocket({ enabled: !isGuest })
   useLocationRefresh({ enabled: !isGuest })
+  useTimezoneSync({ enabled: !isGuest })
   useDailyCheckIn({ enabled: !isGuest })
   usePushRegistration({ enabled: !isGuest })
   // Here rather than in the root layout: every destination a notification has
