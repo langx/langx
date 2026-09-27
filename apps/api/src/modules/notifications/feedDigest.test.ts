@@ -124,6 +124,49 @@ describe("the day's replies to somebody's posts", () => {
     expect(sender.messages[0]?.text).not.toContain('THE CORRECTED SENTENCE')
   })
 
+  /*
+   * A photo posted without words has nothing to quote. The mail names it by
+   * what it is instead of drawing an empty pair of quotation marks.
+   */
+  it('names a post with no words by its picture or its clip, unquoted', async () => {
+    const author = await newProfile()
+    const photo = new ObjectId()
+    const clip = new ObjectId()
+    const file = (name: string, contentType: string) => ({
+      url: `https://cdn.example.com/posts/${author}/${name}`,
+      contentType,
+      sizeBytes: 1024,
+    })
+    await handle.db.collection(COLLECTIONS.posts).insertMany([
+      {
+        _id: photo,
+        authorId: author,
+        body: '',
+        language: 'en',
+        attachments: [file('1.jpg', 'image/jpeg')],
+        createdAt: EVENING,
+      },
+      {
+        _id: clip,
+        authorId: author,
+        body: '',
+        language: 'en',
+        attachments: [file('2.jpg', 'image/jpeg'), file('3.mp4', 'video/mp4')],
+        createdAt: EVENING,
+      },
+    ])
+    await reply(COLLECTIONS.postComments, photo)
+    await reply(COLLECTIONS.postComments, clip)
+
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
+    const mail = sender.messages[0]
+    expect(mail?.html).toContain('Your photo')
+    expect(mail?.html).toContain('Your video')
+    expect(mail?.html).not.toContain('&ldquo;&rdquo;')
+    expect(mail?.text).toContain('Your photo')
+    expect(mail?.text).not.toContain('""')
+  })
+
   it('goes once a day, and waits for the evening where the reader is', async () => {
     const author = await newProfile()
     await reply(COLLECTIONS.postCorrections, await newPost(author, 'hello'))

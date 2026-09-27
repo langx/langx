@@ -62,8 +62,9 @@ export interface PickedAssetLike {
  * Refusing here rather than after the upload is the whole point: a sixty-four
  * megabyte video costs minutes of somebody's data before the server gets a say,
  * and the answer would be the same either way. A library pick cannot be
- * trimmed — `videoMaxDuration` only bounds what the camera records — so a long
- * clip has to be refused with a reason rather than silently shortened.
+ * trimmed — `videoMaxDuration` stops the camera at the ceiling, but bounds
+ * nothing already in the library — so a long clip has to be refused with a
+ * reason rather than silently shortened.
  *
  * Pure, and importing nothing from react-native, so the rules are tested.
  */

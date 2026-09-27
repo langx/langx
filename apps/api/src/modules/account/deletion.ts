@@ -305,8 +305,15 @@ export async function purgeExpiredAccounts(
        * Only `echo/` — never the URLs on the cards themselves. A card's other
        * media is a copy of a message's, a post's or a pack's object, which
        * outlives the card and belongs to whatever still plays it.
+       *
+       * And `posts/`, which is where every feed upload is signed to: a post's
+       * photos, a correction's voice note, both takes of a recorded answer.
+       * The rows are swept by URL above, so this catches what no row names —
+       * an upload whose post was never sent, or one a failed write left
+       * behind. Everything under it is this person's, and every reference to
+       * it is unset or deleted below.
        */
-      for (const prefix of [`feedback/${userId}/`, `echo/${userId}/`]) {
+      for (const prefix of [`feedback/${userId}/`, `echo/${userId}/`, `posts/${userId}/`]) {
         try {
           objectsDeleted += await options.storage.deleteByPrefix(prefix)
         } catch {
@@ -331,10 +338,14 @@ export async function purgeExpiredAccounts(
      * queue forever.
      */
     await Promise.all([
-      db.collection(COLLECTIONS.posts).updateMany({ authorId: userId }, { $unset: { media: '' } }),
+      // Both fields: `media` is only the first of `attachments` repeated, and
+      // unsetting it alone left every gallery pointing at deleted files.
+      db
+        .collection(COLLECTIONS.posts)
+        .updateMany({ authorId: userId }, { $unset: { media: '', attachments: '' } }),
       db
         .collection(COLLECTIONS.postCorrections)
-        .updateMany({ authorId: userId }, { $unset: { media: '' } }),
+        .updateMany({ authorId: userId }, { $unset: { media: '', attachments: '' } }),
       db.collection(COLLECTIONS.pronunciationAnswers).deleteMany({ authorId: userId }),
       ...feedAnswerPostIds.map(([postId, count]) =>
         db

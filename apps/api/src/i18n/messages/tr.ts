@@ -260,6 +260,10 @@ export const tr: Localized<ServerMessages> = {
 
     feedDigestButton: 'Yanıtları oku',
 
+    feedDigestPhoto: 'Fotoğrafın',
+
+    feedDigestVideo: 'Videon',
+
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Pratik yapabileceğin kişiler',
 

@@ -26,6 +26,13 @@ export class ApiRequestError extends Error {
    */
   readonly until?: string | null
   readonly permanent?: boolean
+  /**
+   * Which rule refused a request whose `code` covers several — see
+   * `ApiErrorBody.reason`. Absent from an API that predates it, and absent on
+   * refusals that have only one meaning, so a screen maps the reasons it knows
+   * and falls back to a generic sentence for everything else.
+   */
+  readonly reason?: string
 
   constructor(
     status: number,
@@ -38,6 +45,7 @@ export class ApiRequestError extends Error {
       max?: number
       until?: string | null
       permanent?: boolean
+      reason?: string
     },
   ) {
     // English on purpose: this is what lands in a log or a crash report, and
@@ -53,6 +61,7 @@ export class ApiRequestError extends Error {
     if (body.max !== undefined) this.max = body.max
     if (body.until !== undefined) this.until = body.until
     if (body.permanent !== undefined) this.permanent = body.permanent
+    if (body.reason) this.reason = body.reason
   }
 }
 

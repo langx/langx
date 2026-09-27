@@ -282,6 +282,10 @@ export const ar: Localized<ServerMessages> = {
 
     feedDigestButton: 'اقرأ الردود',
 
+    feedDigestPhoto: 'الصورة التي نشرتها',
+
+    feedDigestVideo: 'الفيديو الذي نشرته',
+
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'أشخاص يمكنك التدرب معهم',
 

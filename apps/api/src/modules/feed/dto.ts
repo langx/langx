@@ -114,7 +114,10 @@ export function postDto(post: Post, context: PostDtoContext): FeedPost {
     level: levelOf(profile, post.language),
     // The gap a missing field leaves is filled here, once, rather than by a
     // backfill: every post that predates the field is a correction post.
-    kind: post.kind ?? 'correction',
+    // Anything that is not exactly `'pronunciation'` reads as a correction, so
+    // a stored value this build does not know never reaches a client whose
+    // enum has only these two.
+    kind: post.kind === 'pronunciation' ? 'pronunciation' : 'correction',
     correctionCount: post.correctionCount,
     answerCount: post.answerCount ?? 0,
     commentCount: context.commentCount,
