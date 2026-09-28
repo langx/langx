@@ -533,6 +533,11 @@ export function PostScreen({
           setComposing(false)
           showToast(t('feed.answerSent'))
           void answerQuery.refetch()
+          // And the post, which rides on the corrections pages: without it
+          // the header kept "0 recordings" and the recorder stayed open for
+          // a second take the server would refuse — `answeredByViewer` is
+          // what takes it away. The correction path above does the same.
+          void query.refetch()
         },
         onError: (caught) => {
           setTakes({})
