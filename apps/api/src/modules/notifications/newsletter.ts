@@ -1,4 +1,10 @@
-import { PROMOTION_LOCAL_HOUR, localDayKey, notificationsAllowed } from '@langx/shared'
+import {
+  PROMOTION_LOCAL_HOUR,
+  aggregateId,
+  localDayKey,
+  notificationsAllowed,
+  type MonthlyRecapDto,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
@@ -79,6 +85,33 @@ export async function personalMonth(
     corrections: days.reduce((total, day) => total + (day.corrections ?? 0), 0),
     tokens,
     streak: profile?.streak?.current ?? 0,
+  }
+}
+
+/**
+ * The in-app recap: the email's personal half plus the month's Echo row.
+ *
+ * Same source as the letter on purpose, so the card someone shares and the
+ * mail they got the same week cannot show two different numbers.
+ */
+export async function recapForMonth(
+  db: Db,
+  userId: string,
+  month: string,
+): Promise<MonthlyRecapDto> {
+  const [personal, echo] = await Promise.all([
+    personalMonth(db, userId, month),
+    db
+      .collection<{ _id: string; reviews: number }>(COLLECTIONS.echoAggregates)
+      .findOne({ _id: aggregateId(userId, 'month', month) }),
+  ])
+  return {
+    month,
+    messages: personal.messages,
+    corrections: personal.corrections,
+    tokens: personal.tokens,
+    echoReviews: echo?.reviews ?? 0,
+    currentStreak: personal.streak,
   }
 }
 

@@ -36,6 +36,9 @@ const GLYPH: Record<CardKind, string> = {
     'M12 2l2.6 1.9 3.2-.2.9 3.1 2.6 1.9-1.4 2.9 1.4 2.9-2.6 1.9-.9 3.1-3.2-.2L12 22l-2.6-1.9-3.2.2-.9-3.1L2.7 15.4l1.4-2.9-1.4-2.9 2.6-1.9.9-3.1 3.2.2z',
   // A cup.
   rank: 'M6 3h12v3h3v3a4 4 0 0 1-4 4h-.3A6 6 0 0 1 13 16v3h3v2H8v-2h3v-3a6 6 0 0 1-3.7-2.9H7a4 4 0 0 1-4-4V6h3zM5 8v1a2 2 0 0 0 1 1.7V8zm14 0h-2v2.7A2 2 0 0 0 19 9z',
+  // A calendar page.
+  recap:
+    'M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3zM5 9v10h14V9zm2 2h4v4H7z',
 }
 
 /** An SVG data URI, because satori draws images and not raw markup. */
@@ -70,13 +73,15 @@ const GROUND: Record<CardKind, string> = {
   streak: '#f79009',
   badge: '#7a5af8',
   rank: '#ffc409',
+  recap: '#009f70',
 }
 
-/** Yellow needs dark type on it; the other two do not. */
+/** Yellow needs dark type on it; the others do not. */
 const ON_GROUND: Record<CardKind, string> = {
   streak: PAPER,
   badge: PAPER,
   rank: '#201900',
+  recap: PAPER,
 }
 
 /**

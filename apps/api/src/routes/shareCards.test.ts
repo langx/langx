@@ -255,6 +255,58 @@ describe('share cards', () => {
     expect(response.statusCode).toBe(401)
   })
 
+  it('answers the recap from the ledger rows, and a recap card is a kind the page can read', async () => {
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ handle: 'cardhaver' })
+    const userId = profile!._id
+    await handle.db.collection(COLLECTIONS.dailyActivity).insertMany([
+      { userId, day: '2026-08-03', messages: 4, corrections: 1 },
+      { userId, day: '2026-08-20', messages: 6, corrections: 2 },
+      // The next month's row must not leak into August.
+      { userId, day: '2026-09-01', messages: 50, corrections: 50 },
+    ] as never[])
+    await handle.db
+      .collection(COLLECTIONS.echoAggregates)
+      .insertOne({ _id: `${userId}:month:2026-08`, userId, reviews: 31 } as never)
+
+    const recap = await app.inject({
+      method: 'GET',
+      url: '/me/recap?month=2026-08',
+      headers: { cookie },
+    })
+    expect(recap.statusCode, recap.body).toBe(200)
+    expect(recap.json()).toMatchObject({
+      month: '2026-08',
+      messages: 10,
+      corrections: 3,
+      echoReviews: 31,
+    })
+
+    const bad = await app.inject({
+      method: 'GET',
+      url: '/me/recap?month=2026-13',
+      headers: { cookie },
+    })
+    expect(bad.statusCode).toBe(400)
+    const anon = await app.inject({ method: 'GET', url: '/me/recap' })
+    expect(anon.statusCode).toBe(401)
+
+    const created = await make({
+      kind: 'recap',
+      shape: 'story',
+      headline: 'August',
+      caption: '10 messages · 31 Echo cards',
+    })
+    expect(created.statusCode, created.body).toBe(201)
+    const page = await app.inject({
+      method: 'GET',
+      url: `/public/share/${created.json<{ id: string }>().id}`,
+    })
+    expect(page.statusCode, page.body).toBe(200)
+    expect(page.json<{ kind: string }>().kind).toBe('recap')
+  }, 60_000)
+
   it('draws every shape at the size it claims', async () => {
     // The three ratios exist so a card is not cropped or letterboxed by the
     // place it is posted; a shape that renders at the wrong size defeats that

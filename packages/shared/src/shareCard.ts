@@ -11,11 +11,14 @@ export const CARD_SHAPES = ['story', 'square', 'wide'] as const
 export type CardShape = (typeof CARD_SHAPES)[number]
 
 /**
- * What a card can be about. Achievements only — a streak, a badge, a rank are
- * things the owner did, so a card of one is somebody sharing their own
- * progress. A post or a message is somebody else's sentence.
+ * What a card can be about. Achievements only — a streak, a badge, a rank, a
+ * month's recap are things the owner did, so a card of one is somebody sharing
+ * their own progress. A post or a message is somebody else's sentence.
+ *
+ * `publicShareCardSchema` validates the stored kind on the way out, so a kind
+ * has to be listed here before any card of it is written.
  */
-export const CARD_KINDS = ['streak', 'badge', 'rank'] as const
+export const CARD_KINDS = ['streak', 'badge', 'rank', 'recap'] as const
 export type CardKind = (typeof CARD_KINDS)[number]
 
 /**
@@ -51,3 +54,29 @@ export const publicShareCardSchema = z.object({
   handle: z.string(),
 })
 export type PublicShareCard = z.infer<typeof publicShareCardSchema>
+
+/** `?month=YYYY-MM`; omitted means the month before the current UTC one. */
+export const monthlyRecapQuerySchema = z.object({
+  month: z
+    .string()
+    .regex(/^\d{4}-(0[1-9]|1[0-2])$/)
+    .optional(),
+})
+
+/**
+ * One person's month, computed on the server from the same rows the monthly
+ * email reads.
+ *
+ * `currentStreak` is today's streak, not the month's: nothing stores a streak
+ * per month, so the screen labels it as the current one rather than implying
+ * a history it does not have.
+ */
+export const monthlyRecapSchema = z.object({
+  month: z.string(),
+  messages: z.number().int().nonnegative(),
+  corrections: z.number().int().nonnegative(),
+  tokens: z.number().int(),
+  echoReviews: z.number().int().nonnegative(),
+  currentStreak: z.number().int().nonnegative(),
+})
+export type MonthlyRecapDto = z.infer<typeof monthlyRecapSchema>
