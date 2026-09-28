@@ -3,7 +3,15 @@ import * as SplashScreen from 'expo-splash-screen'
 import { usePathname } from 'expo-router'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
-import { ActivityIndicator, Animated, Easing, Image, StyleSheet, View } from 'react-native'
+import {
+  ActivityIndicator,
+  Animated,
+  Easing,
+  Image,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from 'react-native'
 import badge from '../../assets/splash/badge.png'
 import introFilm from '../../assets/splash/intro.mp4'
 import { useT } from '../i18n'
@@ -29,6 +37,8 @@ const FILM_GROUND = '#ffc409'
  * disc is exactly `FILM_GROUND`, so on the yellow ground only the mark shows.
  */
 const MARK_SIZE = 160
+/** `intro.mp4` is 1080 by 1920. */
+const FILM_ASPECT = 1080 / 1920
 
 /**
  * The opening.
@@ -245,6 +255,12 @@ function IntroFilm({
   onDone: () => void
 }) {
   const styles = useStyles()
+  // Cover on a phone, where the frame's shape is the screen's. On anything
+  // wider than the film (a desktop browser, a tablet on its side) cover blew
+  // the mark up to the window's width; contain keeps the whole frame, and its
+  // edges are the same yellow as the ground around it.
+  const window = useWindowDimensions()
+  const fit = window.width / window.height > FILM_ASPECT ? 'contain' : 'cover'
   const player = useVideoPlayer(introFilm, (instance) => {
     instance.muted = true
     instance.loop = false
@@ -291,7 +307,7 @@ function IntroFilm({
       <VideoView
         player={player}
         style={styles.film}
-        contentFit="cover"
+        contentFit={fit}
         nativeControls={false}
         surfaceType="textureView"
         useExoShutter={false}
