@@ -504,16 +504,77 @@ export const IN_APP_NOTIFICATION_KINDS = [
    * which says "commented on your post" — untrue for anybody who is not the
    * post's author.
    *
-   * **Known here, not yet written.** The 2.7 store build draws the inbox with
-   * a `switch` that has no `default`, so a row of a kind it has never heard
-   * of throws inside the list's render and takes the whole screen down with
-   * it. The server keeps these replies to push until that build is gone — see
-   * `COMMENT_REPLY_INBOX_ROWS` in `routes/feed.ts`. Listing the kind now is
-   * what lets the next build ship ready for the rows.
+   * The first kind added after 2.7, and so the first that only reaches a
+   * client which says it can draw it — see `INBOX_KINDS_V2_7` below.
    */
   'commentReply',
 ] as const
 export type InAppNotificationKind = (typeof IN_APP_NOTIFICATION_KINDS)[number]
+
+/**
+ * The kinds every build up to and including 2.7 can draw — and the most the
+ * server ever sends a client that does not say what it can draw.
+ *
+ * Written down once, here, because it is a fact about code already on phones
+ * and it can never change. Those builds render the notification centre
+ * through a `switch` with no `default` and then read `copy.key` off the
+ * answer, with no error boundary above the list: one row of a kind they have
+ * never heard of throws inside the render and takes the screen, and with it
+ * the app, down. It has been these eight since the centre shipped in 2.3.
+ *
+ * An OTA does not rescue them. The 2.7 binary runs 2.7's JavaScript until the
+ * update lands, and every older binary runs its own for good — the update's
+ * fingerprint does not match theirs. So a new kind is gated on the client's
+ * *declaration*, not on its version: the version header names the binary,
+ * which says nothing about which JavaScript is running inside it.
+ *
+ * Never add to this list. A new kind goes in `IN_APP_NOTIFICATION_KINDS`, and
+ * a build that can draw it says so through `INBOX_KINDS_HEADER`.
+ */
+export const INBOX_KINDS_V2_7 = [
+  'follow',
+  'postComment',
+  'postCorrection',
+  'pronunciationAnswer',
+  'like',
+  'badgeEarned',
+  'walletPool',
+  'profileVisits',
+] as const satisfies readonly InAppNotificationKind[]
+
+/**
+ * How a client names the inbox kinds it can draw: a comma-separated list on
+ * every REST request. The socket carries the same list as `auth.inboxKinds`
+ * (`INBOX_KINDS_AUTH_KEY`), because React Native cannot set headers on that
+ * transport.
+ *
+ * A list of kinds rather than a capability version: a version would need a
+ * table on the server of which number meant which kinds, kept in step by
+ * hand, and a list is its own table.
+ */
+export const INBOX_KINDS_HEADER = 'x-inbox-kinds'
+export const INBOX_KINDS_AUTH_KEY = 'inboxKinds'
+
+/**
+ * What the server may send a client, from what the client declared.
+ *
+ * The declared kinds the server also knows, in the server's order. Anything
+ * it does not recognise is ignored — a newer client may name a kind this
+ * server has not shipped yet. Nothing declared, or nothing recognised, is a
+ * build from before the declaration existed, and gets `INBOX_KINDS_V2_7`.
+ *
+ * Accepts a header's value (a string, or an array when the header was sent
+ * twice) or whatever arrived in the socket's `auth`, so it is typed `unknown`:
+ * both are client input and either may be anything at all.
+ */
+export function acceptedInboxKinds(declared: unknown): readonly InAppNotificationKind[] {
+  const parts = (Array.isArray(declared) ? declared : [declared])
+    .filter((value): value is string => typeof value === 'string')
+    .flatMap((value) => value.split(','))
+    .map((value) => value.trim())
+  const kinds = IN_APP_NOTIFICATION_KINDS.filter((kind) => parts.includes(kind))
+  return kinds.length > 0 ? kinds : INBOX_KINDS_V2_7
+}
 
 export const NOTIFICATIONS_PAGE_SIZE_DEFAULT = 30
 export const NOTIFICATIONS_PAGE_SIZE_MAX = 100

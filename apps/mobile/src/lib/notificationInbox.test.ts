@@ -2,11 +2,15 @@ import { IN_APP_NOTIFICATION_KINDS } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
 import { describe, expect, it } from 'vitest'
 import {
+  DRAWABLE_INBOX_KINDS,
+  drawableRows,
+  isDrawableRow,
   markPagesRead,
   notificationCopy,
   notificationHref,
   type InboxItem,
 } from './notificationInbox'
+import { belongsTo } from './trayScope'
 
 const SOFIA = { handle: 'sofia', displayName: 'Sofia' }
 const HERE = '/(app)/notifications'
@@ -69,13 +73,13 @@ describe('notificationCopy', () => {
       'pronunciationAnswer',
       'commentReply',
     ] as const) {
-      expect(notificationCopy(row({ kind, actor: SOFIA })).key, kind).toBe(`inbox.${kind}`)
+      expect(notificationCopy(row({ kind, actor: SOFIA }))?.key, kind).toBe(`inbox.${kind}`)
 
       const many = notificationCopy(row({ kind, actor: SOFIA, count: 3 }))
-      expect(many.key, kind).toBe(`inbox.${kind}Others`)
+      expect(many?.key, kind).toBe(`inbox.${kind}Others`)
       // The plural selects on the number of *others*, never on the total —
       // the sentence already names the first one.
-      expect(many.params, kind).toEqual({ name: 'Sofia', count: 3 })
+      expect(many?.params, kind).toEqual({ name: 'Sofia', count: 3 })
     }
   })
 
@@ -85,18 +89,18 @@ describe('notificationCopy', () => {
    * it would produce, and English has no plural category that avoids it.
    */
   it('treats a zero count as nobody else', () => {
-    expect(notificationCopy(row({ kind: 'like', actor: SOFIA, count: 0 })).key).toBe('inbox.like')
+    expect(notificationCopy(row({ kind: 'like', actor: SOFIA, count: 0 }))?.key).toBe('inbox.like')
   })
 
   it('names nobody on a kind that has no actor', () => {
-    expect(notificationCopy(row({ kind: 'walletPool', count: 40 })).params).toEqual({ count: 40 })
+    expect(notificationCopy(row({ kind: 'walletPool', count: 40 }))?.params).toEqual({ count: 40 })
   })
 
   it('falls back to the handle when there is no display name', () => {
     const copy = notificationCopy(
       row({ kind: 'follow', actor: { handle: 'sofia', displayName: '' } }),
     )
-    expect(copy.params).toEqual({ name: 'sofia' })
+    expect(copy?.params).toEqual({ name: 'sofia' })
   })
 
   /**
@@ -106,17 +110,19 @@ describe('notificationCopy', () => {
    * given.
    */
   it('keeps a folded row’s sentence about its own day', () => {
-    expect(notificationCopy(row({ kind: 'walletPool', count: 250, earlier: 2 })).params).toEqual({
+    expect(notificationCopy(row({ kind: 'walletPool', count: 250, earlier: 2 }))?.params).toEqual({
       count: 250,
     })
-    expect(notificationCopy(row({ kind: 'profileVisits', count: 10, earlier: 2 })).params).toEqual({
-      count: 10,
-    })
+    expect(notificationCopy(row({ kind: 'profileVisits', count: 10, earlier: 2 }))?.params).toEqual(
+      {
+        count: 10,
+      },
+    )
   })
 
   it('has a line for every kind there is', () => {
     for (const kind of IN_APP_NOTIFICATION_KINDS) {
-      expect(notificationCopy(row({ kind, actor: SOFIA, count: 2 })).key).toMatch(/^inbox\./)
+      expect(notificationCopy(row({ kind, actor: SOFIA, count: 2 }))?.key).toMatch(/^inbox\./)
     }
   })
 })
@@ -147,5 +153,59 @@ describe('markPagesRead', () => {
 
   it('leaves an empty cache alone', () => {
     expect(markPagesRead(undefined)).toBeUndefined()
+  })
+})
+
+/**
+ * What 2.7 got wrong: a kind it had never heard of reached its list, the
+ * `switch` fell through to `undefined`, and reading `.key` off that threw
+ * inside the render. The server no longer sends such a row; these are the
+ * net under it, for the day a kind arrives that this build was not compiled
+ * with.
+ */
+describe('a kind this build does not know', () => {
+  // Cast, because the compiler is right that no such kind exists — the wire
+  // is not the compiler.
+  const future = { _id: 'n9', kind: 'somethingFromTheFuture', read: false } as unknown as InboxItem
+
+  it('has no line and no destination, and does not throw', () => {
+    expect(() => notificationCopy(future)).not.toThrow()
+    expect(notificationCopy(future)).toBeNull()
+    expect(notificationHref(future, HERE)).toBeNull()
+  })
+
+  it('owns no push in the shade', () => {
+    const row = { kind: future.kind, postId: 'p1' }
+    expect(belongsTo({ kind: 'social', postId: 'p1' }, { row })).toBe(false)
+  })
+
+  it('is left out of the list, with anything else malformed', () => {
+    const good = { _id: 'a', kind: 'follow', read: false, createdAt: '2026-09-27T12:00:00Z' }
+    expect(isDrawableRow(good)).toBe(true)
+    for (const bad of [
+      null,
+      'follow',
+      { ...good, kind: 'somethingFromTheFuture' },
+      { ...good, _id: undefined },
+      { ...good, read: 'no' },
+      { ...good, createdAt: undefined },
+    ]) {
+      expect(isDrawableRow(bad), JSON.stringify(bad)).toBe(false)
+    }
+    expect(
+      drawableRows([
+        { items: [good, { ...good, _id: 'b', kind: 'somethingFromTheFuture' }] },
+        { items: 'not a list' },
+        null,
+      ]).map((item) => item._id),
+    ).toEqual(['a'])
+    expect(drawableRows(undefined)).toEqual([])
+  })
+})
+
+describe('DRAWABLE_INBOX_KINDS', () => {
+  it('declares every kind this build was compiled with', () => {
+    expect(DRAWABLE_INBOX_KINDS.split(',')).toEqual([...IN_APP_NOTIFICATION_KINDS])
+    expect(DRAWABLE_INBOX_KINDS).toContain('commentReply')
   })
 })

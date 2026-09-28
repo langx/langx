@@ -5935,3 +5935,29 @@ that cannot draw the row are gone, and the post's author keeps the
 post author who is also in the thread gets the reply push instead of the
 comment push, never both. `postComment` was not reused for the others because
 it says "commented on your post", which is false for them.
+
+_27 September 2026, later: the rows are on, behind a declaration._ Waiting for
+the 2.7 build to be gone was waiting for something that does not happen: the
+OTA reaches a 2.7 binary only once it has been opened and restarted, and never
+reaches an older one, whose fingerprint it does not match. The version header
+cannot tell them apart either — it names the binary, not the JavaScript inside
+it. So the client now says what it can draw. Every request carries
+`x-inbox-kinds` (`INBOX_KINDS_HEADER`), a comma-separated list of the kinds the
+build was compiled with, and the socket carries the same list as
+`auth.inboxKinds`. A client that says nothing is treated as 2.7 and is sent
+only `INBOX_KINDS_V2_7`, the eight kinds every build since the centre has
+drawn, written down once in `packages/shared` and never to be added to. Every
+read path takes the list: the page, its grouping, the bell's count, a
+single-row read (a row of a kind you were never shown reads nothing) and
+"Mark all read" (which leaves the kinds you cannot see unread, for the build
+that can). `notification:new` goes to a room per kind, `inboxRoom`, which a
+socket joins only for the kinds it declared, and `notification:read` goes to
+the rooms of the kinds the read touched. `COMMENT_REPLY_INBOX_ROWS` is gone and
+`commentReply` rows are written for everybody in the thread, the post's author
+included. The price is on the old builds and it is a missing row, not a crash:
+a post author on 2.7 who is in the thread gets the reply push and no row, where
+the flag had given them a `postComment` one. The client got the net the old one
+lacked as well — every `switch` over the kind has a `never`-typed `default`,
+malformed rows are dropped before the list sees them, and each row renders
+inside `RowBoundary` — so the next kind needs only its entry in
+`IN_APP_NOTIFICATION_KINDS`.

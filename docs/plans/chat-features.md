@@ -377,6 +377,11 @@ Not in the survey; Behic asked for it. Not live: one point, sent once.
   is stored as sent. The place name is resolved on the device; there is no
   map image, provider or key, so it ships over the air.
 - The media lock applies, as it does to a photo.
+- Fixed after launch: a second share froze the dialogs on iOS. The precision
+  sheet came back inside the attach menu's slide-out and iOS silently refused
+  to present it, leaving an invisible sheet at the head of the alert queue.
+  `AlertHost` now waits for `onDismiss` (`alertPresentation.ts`); the GPS fix
+  and the geocode have timeouts, and the "+" spins while locating.
 
 ---
 

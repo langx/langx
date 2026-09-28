@@ -16,6 +16,8 @@ import {
   applyLike,
   applyLikeToThread,
   applyReplyRemoved,
+  foldCorrection,
+  type FoldRun,
   markCorrected,
   prependPost,
   removePost,
@@ -311,5 +313,70 @@ describe('prependPost on the timeline', () => {
     const moment = { ...post({ _id: 'm1', body: '' }), asks: [] } as FeedPost
     const patched = prependPost(pages([post()]), moment)
     expect(patched!.pages[0]!.items.map((item) => item._id)).toEqual(['m1', 'p1'])
+  })
+})
+
+/** `kept` plain, `removed` as ~~struck~~, `added` as **bold**: one line to compare. */
+const drawn = (runs: FoldRun[]): string =>
+  runs
+    .map((run) =>
+      run.kind === 'kept'
+        ? run.text
+        : run.kind === 'removed'
+          ? `~~${run.text}~~`
+          : `**${run.text}**`,
+    )
+    .join('')
+
+describe('foldCorrection', () => {
+  it.each([
+    // The report: adding `, please` redrew `coffee` as struck and retyped.
+    [
+      'I would like a cup of coffee',
+      'I would like a cup of coffee, please',
+      'I would like a cup of coffee**, please**',
+    ],
+    ['Hello', 'Hello!', 'Hello**!**'],
+    ['Yes I know', 'Yes, I know', 'Yes**,** I know'],
+    ['I have a cat.', 'I have a dog.', 'I have a ~~cat~~ **dog**.'],
+    ['Dónde está el baño', '¿Dónde está el baño?', '**¿**Dónde está el baño**?**'],
+    ['كيف حالك?', 'كيف حالك؟', 'كيف حالك~~?~~**؟**'],
+    ['I dont know', "I don't know", "I don**'**t know"],
+    // Struck punctuation stays attached to its word, as it was written.
+    ['Hello, world', 'Hello world', 'Hello~~,~~ world'],
+    ['Hello world!', 'Hello world', 'Hello world~~!~~'],
+    // A struck suffix is part of a word, not a word of its own.
+    ['she have a car', 'she has a car', 'she ha~~ve~~**s** a car'],
+    // Whole words keep the spaces they always had.
+    ['I go home', 'I run home', 'I ~~go~~ **run** home'],
+    ['Go home', 'Went home', '~~Go~~ **Went** home'],
+    ['I really like it', 'I like it', 'I ~~really~~ like it'],
+    ['I going home', 'I am going home', 'I **am** going home'],
+  ])('draws %j → %j as %j', (original, corrected, expected) => {
+    expect(drawn(foldCorrection(original, corrected))).toBe(expected)
+  })
+
+  /**
+   * The corrected sentence is what the line says; the struck runs are
+   * annotations dropped into it. Leave them out and it must read the same —
+   * up to spacing, since a struck word is given a space of its own to stand
+   * in. The exact-whitespace invariant is `diffCorrection`'s, and tested there.
+   */
+  it.each([
+    ['I would like a cup of coffee', 'I would like a cup of coffee, please'],
+    ['Hello, world', 'Hello world'],
+    ['she have a car and he have a bike', 'she has a car and he has a bike'],
+    ['Como estas', '¿Cómo estás?'],
+    ['نعم أعرف', 'نعم، أعرف'],
+    ['我去学校，他在家。', '我去了学校，他不在家。'],
+    ['line one\nline two', 'line one\nline two!'],
+  ])('keeps the corrected sentence intact: %j → %j', (original, corrected) => {
+    const runs = foldCorrection(original, corrected)
+    const text = runs
+      .filter((run) => run.kind !== 'removed')
+      .map((run) => run.text)
+      .join('')
+    const squash = (value: string): string => value.replace(/\s+/g, ' ').trim()
+    expect(squash(text)).toBe(squash(corrected))
   })
 })

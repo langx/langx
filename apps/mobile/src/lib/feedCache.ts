@@ -332,6 +332,17 @@ export function foldCorrection(original: string, corrected: string): FoldRun[] {
     const last = runs[runs.length - 1]
     if (last && !/\s$/.test(last.text)) emit(' ', 'kept')
   }
+  // Where the shim applies is decided by the original's own spacing, not
+  // assumed: a struck word stood between spaces, but a struck comma or a struck
+  // suffix (`ha~~ve~~s`) was attached to the letter before it, and padding it
+  // on both sides drew `Hello ~~,~~  world`. `spaceAfterStrike` waits for the
+  // next kept letter, since the corrected side may bring its own space first;
+  // `wordStruck` puts a space between a struck word and the word replacing it.
+  let spaceAfterStrike = false
+  let wordStruck = false
+  // The start of the line counts as a space: nothing is attached to it.
+  const endsInSpace = (segment: { text: string } | undefined): boolean =>
+    !segment || /\s$/.test(segment.text)
 
   let i = 0
   let j = 0
@@ -351,9 +362,11 @@ export function foldCorrection(original: string, corrected: string): FoldRun[] {
       continue
     }
     if (sa?.changed) {
-      space()
+      const spaced = i > 0 && endsInSpace(a[i - 1])
+      if (spaced) space()
       emit(sa.text, 'removed')
-      space()
+      spaceAfterStrike = /^\s/.test(a[i + 1]?.text ?? '')
+      wordStruck = i === 0 || spaced
       i += 1
       ai = 0
       continue
@@ -367,6 +380,8 @@ export function foldCorrection(original: string, corrected: string): FoldRun[] {
       continue
     }
     if (sb?.changed) {
+      if (wordStruck && endsInSpace(b[j - 1])) space()
+      spaceAfterStrike = wordStruck = false
       emit(sb.text, 'added')
       j += 1
       bj = 0
@@ -381,6 +396,7 @@ export function foldCorrection(original: string, corrected: string): FoldRun[] {
     }
     const cb = sb.text.charAt(bj)
     if (/\s/.test(cb)) {
+      spaceAfterStrike = wordStruck = false
       emit(cb, 'kept')
       bj += 1
       continue
@@ -389,6 +405,8 @@ export function foldCorrection(original: string, corrected: string): FoldRun[] {
       ai += 1
       continue
     }
+    if (spaceAfterStrike) space()
+    spaceAfterStrike = wordStruck = false
     emit(cb, 'kept')
     bj += 1
     if (sa) ai += 1
