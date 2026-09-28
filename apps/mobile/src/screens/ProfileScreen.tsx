@@ -370,7 +370,9 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
                 <Text style={styles.fact}>{summary.data.streak.current}</Text>
               </View>
             ) : null}
-            {user.official ? null : <PresenceLine lastActiveAt={user.lastActiveAt} />}
+            {user.official ? null : (
+              <PresenceLine lastActiveAt={user.lastActiveAt} timezone={user.timezone} />
+            )}
           </View>
         </View>
       </View>
