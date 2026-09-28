@@ -58,8 +58,8 @@ async function main(): Promise<void> {
   // only "Read it aloud" on a member's own card says it cannot.
   const tts = createTtsProvider(env)
 
-  // The not-configured one without `STT_URL`, and then the app is told so
-  // and never offers a transcript.
+  // The not-configured one without `TTS_URL` too — Whisper lives in the voice
+  // service — and then the app is told so and never offers a transcript.
   const stt = createSttProvider(env)
 
   // `null` without a key. @langx still greets and announces — those are ours,

@@ -44,6 +44,9 @@ describe('invalidateMissedEvents', () => {
       ['notificationsUnread'],
       ['messages', 'c1'],
       ['messages', 'c1', 'around', 'm9'],
+      // The chat header's presence line. A message that arrived as a push
+      // leaves it saying "last seen" long ago until this refetches it.
+      ['profile', 'u1'],
     ]
     for (const key of [...stale, ['me']]) client.setQueryData(key, {})
 

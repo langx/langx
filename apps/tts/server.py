@@ -6,7 +6,7 @@ is Node and ffmpeg. Kokoro is a 300 MB ONNX model under a Python runtime with
 espeak-ng beside it — nothing the API's image or memory has room for, and
 nothing it needs for anything else. This process holds the model, answers on
 the organisation's private network only, and scales to zero between requests;
-the API's `HttpTtsProvider` is its only caller.
+the API's `HttpTtsProvider` and `HttpSttProvider` are its only callers.
 
 **The same engine as `tools/echo-content/tts/generate.py`**, deliberately: a
 pack's readings and a member's own card come out of the same model in the same
@@ -28,6 +28,20 @@ Turkish, Arabic, Japanese and Korean voices are CC BY-NC, so this service does
 not read those languages at all. `voices.json` is the manifest, generated from
 `SPEECH_VOICES` in `packages/shared/src/speech.ts`, which stays the definition.
 
+**And Whisper, the other direction: a voice note in, its words out.** Chat's
+"Show text" is faster-whisper's `small`, in int8, on the CPU — the largest
+multilingual Whisper that fits here beside Kokoro, and the first size that is
+honestly useful beyond English; `base` is three times faster and noticeably
+worse at the languages people are learning, which is the one place a wrong word
+does real harm. It lives in this process rather than one of its own because
+the machine is already paid for and already sleeps: a second app would be a
+second machine, a second token and a second cold start for a feature used a
+few times an hour. Ours rather than a cloud speech API because a voice note is
+somebody's voice saying something private to one other person, and handing it
+to a third party to be heard is a different privacy promise from storing it in
+our own bucket. The licence bar is Kokoro's: faster-whisper, CTranslate2,
+OpenAI's weights and Systran's conversion of them are all MIT.
+
 Routes:
     GET  /health                -> 200 once the model is loaded
     POST /synthesize            -> audio/mp4
@@ -35,33 +49,51 @@ Routes:
          X-TTS-Secret: <TTS_SECRET>, when the service was started with one
     POST /romanize              -> application/json {"text": "..."}
          {"text": "...", "lang": "zh"}      zh or ja only; same secret header
+    POST /transcribe?lang=tr,en -> application/json {"text": "...", "lang": "tr"}
+         body: the voice note's bytes, as stored — AAC, MP3, Ogg or WebM;
+         same secret header
 
 `/romanize` is chat's "Show in Latin letters" for the two languages rules
 cannot read, because which reading a character takes depends on the word it
 sits in. It lives here because the Chinese segmenter and pinyin tables are
 already in this image for Kokoro; see `romanize_zh` and `romanize_ja`.
 
-`lang` is a LangX language code; which engine reads it, and the espeak-ng code
+`/synthesize`'s `lang` is a LangX language code; which engine reads it, and the espeak-ng code
 Kokoro wants, are both decided here, so the API never learns what a phonemiser
 is. A code or a voice this file does not know is a 400, not a guess — a reading
 in the wrong accent is worse than none, and the app hides the button for
 languages the API does not offer.
 
+`/transcribe`'s `lang` is optional: the languages the note is likely to be in,
+which for a language exchange is the two people's own. Whisper's open detection
+is the weak part of a short note — a Turkish sentence read slowly is
+confidently "English" often enough to matter, and the words that follow are
+then English too — and a thread's languages are the one thing we know that it
+does not. One code reads the note as that language; several pick the likeliest
+of those; none leaves Whisper to decide. Codes Whisper does not know are
+dropped rather than refused, because the list is a profile's languages and some
+of those have no speech at all. The language it was read as comes back either
+way.
+
 Environment:
     PORT            default 8080
-    TTS_SECRET      optional; when set, every /synthesize must carry it
+    TTS_SECRET      optional; when set, every POST must carry it
     TTS_MODEL       default ./kokoro-v1.0.onnx
     TTS_VOICES      default ./voices-v1.0.bin
     TTS_PIPER_DIR   where the Piper models live; default ./piper
     TTS_PIPER_CACHE how many Piper voices to hold in memory at once; default 3
     ESPEAK_LIBRARY  the espeak-ng shared library to phonemise with; see load_kokoro
     ESPEAK_DATA     its espeak-ng-data directory
+    WHISPER_MODEL   a directory holding the CTranslate2 model; default ./whisper-small
+    WHISPER_THREADS CPU threads for one transcription; default 4, the machine's count
 
 Run locally:
     python3.12 -m venv .venv && .venv/bin/pip install -r requirements.txt
     brew install espeak-ng ffmpeg      # apt-get on Linux; the Dockerfile does it
     curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
     curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+    .venv/bin/python -c "from huggingface_hub import snapshot_download; \\
+      snapshot_download('Systran/faster-whisper-small', local_dir='whisper-small')"
     PORT=8090 ESPEAK_LIBRARY=/opt/homebrew/lib/libespeak-ng.dylib \
       ESPEAK_DATA=/opt/homebrew/share/espeak-ng-data .venv/bin/python server.py
 """
@@ -78,6 +110,7 @@ import wave
 from collections import OrderedDict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 # Mirrors `ECHO_SYNTH_VOICES` in `packages/shared/src/echoPacks.ts`, which is
 # the definition — the API refuses before asking, this refuses in case it did
@@ -108,6 +141,24 @@ MAX_TEXT = 400
 # `ROMANIZE_MAX_TEXT_LENGTH` and checked by a test that reads this file. A
 # reading is milliseconds of dictionary lookups, so the cap is the message's.
 MAX_ROMANIZE_TEXT = 2000
+
+# The longest voice note chat can send (`MAX_AUDIO_SECONDS` in
+# `packages/shared/src/media.ts`), equal by hand and checked by a test that
+# reads this file. The duration on the row is the phone's claim; this is
+# measured from the decoded samples, so a note that lied about its length is
+# still refused rather than read for ten minutes.
+MAX_AUDIO_SECONDS = 120
+
+# And its byte ceiling (`MAX_AUDIO_BYTES`), for the same reason and checked by
+# the same test. Read before anything is decoded, so a body this large is never
+# held in memory at all.
+MAX_AUDIO_BYTES = 16 * 1024 * 1024
+
+# What Whisper resamples everything to, and so what a sample count divides by.
+SAMPLE_RATE = 16000
+
+# A thread's two people hold a handful of languages; a longer list is not a hint.
+MAX_LANGUAGE_HINTS = 12
 
 HERE = Path(__file__).resolve().parent
 
@@ -371,16 +422,100 @@ def to_aac(wav: bytes) -> bytes:
     return done.stdout
 
 
+def load_whisper():
+    from faster_whisper import WhisperModel
+
+    path = os.environ.get("WHISPER_MODEL", str(HERE / "whisper-small"))
+    threads = int(os.environ.get("WHISPER_THREADS", "4"))
+    # int8 is what makes `small` fit beside Kokoro and run at a usable speed on
+    # shared CPUs; its accuracy against float32 is within noise for this model.
+    return WhisperModel(path, device="cpu", compute_type="int8", cpu_threads=threads)
+
+
+_whisper = None
+
+
+def whisper():
+    """The Whisper model, loaded by the first transcription rather than at boot.
+
+    Kokoro is what `/health` waits for, and a cold boot is already twenty-odd
+    seconds of it; loading Whisper there too would put its seconds in front of
+    every reading after a deploy, for a feature most wake-ups never use. Here
+    they are paid once, by the first note, inside a two-minute timeout — and
+    after that the model is in the suspended snapshot like Kokoro is. A Whisper
+    that cannot load fails that request, not the service: a reading still works.
+
+    Called only under `Handler.transcribe_lock`, so two first notes load it once.
+    """
+    global _whisper
+    if _whisper is None:
+        _whisper = load_whisper()
+    return _whisper
+
+
+def decode(audio: bytes):
+    """The note as 16 kHz mono float samples, whatever container it came in."""
+    from faster_whisper.audio import decode_audio
+
+    return decode_audio(io.BytesIO(audio), sampling_rate=SAMPLE_RATE)
+
+
+def pick_language(model, samples, langs: "list[str]") -> "str | None":
+    """Which of the likely languages the note is in, or `None` to let Whisper decide.
+
+    Several candidates cost one extra pass of the encoder over the first thirty
+    seconds: the price of asking Whisper for its whole distribution rather than
+    only its favourite — and the favourite is what goes wrong.
+    """
+    known = [code for code in langs if code in model.supported_languages]
+    if len(known) <= 1:
+        return known[0] if known else None
+    _, _, probabilities = model.detect_language(samples)
+    ranked = dict(probabilities)
+    return max(known, key=lambda code: ranked.get(code, 0.0))
+
+
+def transcribe(model, samples, lang: "str | None") -> dict:
+    """Whisper over decoded samples: the words, and the language they were read as.
+
+    Greedy (`beam_size=1`) rather than the default beam of five: on a shared CPU
+    the beam is most of the wait, and on a voice note — one person, a phone
+    held close — it changes a word now and then rather than the sentence.
+
+    `vad_filter` drops the silence before Whisper sees it. A note is often a
+    few seconds of breath around a sentence, and silence is where Whisper
+    invents words, so this is accuracy as much as speed.
+
+    `condition_on_previous_text=False` so one misheard segment cannot talk the
+    next into the same mistake — the failure that turns a long note into one
+    phrase repeated to the end.
+    """
+    segments, info = model.transcribe(
+        samples,
+        language=lang,
+        beam_size=1,
+        vad_filter=True,
+        condition_on_previous_text=False,
+    )
+    text = " ".join(segment.text.strip() for segment in segments).strip()
+    return {"text": text, "lang": info.language}
+
+
 class Handler(BaseHTTPRequestHandler):
     kokoro = None
     # One synthesis at a time. The model is not thread-safe under ONNX Runtime's
-    # default session, and a 2 GB machine has no second model to spare; Fly's
+    # default session, and the machine has room for one Kokoro, not two; Fly's
     # concurrency limit keeps the queue short from the outside.
     lock = threading.Lock()
     # Its own lock, not the synthesis one: a reading takes milliseconds and must
     # not queue behind a cold Kokoro. One at a time because neither jieba's
     # lazy dictionary load nor MeCab's tagger is safe to share across threads.
     romanize_lock = threading.Lock()
+    # And its own again for Whisper, both ways round: a two-minute note is tens
+    # of seconds of CPU and must not hold up a one-sentence reading, and a
+    # reading must not make a note wait. One at a time within it, because a
+    # second transcription on the same four threads only makes both slower.
+    transcribe_lock = threading.Lock()
     secret = os.environ.get("TTS_SECRET") or None
 
     def log_message(self, fmt, *args):  # one line per request, to stdout, for `fly logs`
@@ -404,10 +539,13 @@ class Handler(BaseHTTPRequestHandler):
             self._json(404, {"error": "not found"})
 
     def do_POST(self):
-        if self.path not in ("/synthesize", "/romanize"):
+        url = urlparse(self.path)
+        if url.path not in ("/synthesize", "/romanize", "/transcribe"):
             return self._json(404, {"error": "not found"})
         if self.secret and self.headers.get("X-TTS-Secret") != self.secret:
             return self._json(401, {"error": "bad secret"})
+        if url.path == "/transcribe":
+            return self._transcribe(url.query)
         try:
             length = int(self.headers.get("Content-Length") or 0)
             body = json.loads(self.rfile.read(length) or b"{}")
@@ -417,7 +555,7 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, TypeError, AttributeError):
             return self._json(400, {"error": "bad json"})
 
-        if self.path == "/romanize":
+        if url.path == "/romanize":
             romanizer = ROMANIZERS.get(lang)
             if romanizer is None:
                 return self._json(400, {"error": f"cannot romanize language {lang!r}"})
@@ -460,6 +598,36 @@ class Handler(BaseHTTPRequestHandler):
         with self.lock:
             wav = piper_wav(load_piper(voice, model), text)
         self._send(200, to_aac(wav), "audio/mp4")
+
+    def _transcribe(self, query: str) -> None:
+        # The note's bytes as the body, not JSON: up to 16 MB, and base64 would
+        # add a third to it on both ends for nothing.
+        hints = [code for code in (parse_qs(query).get("lang") or [""])[0].split(",") if code]
+        if len(hints) > MAX_LANGUAGE_HINTS:
+            return self._json(400, {"error": "too many languages"})
+
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            return self._json(400, {"error": "bad content length"})
+        if length <= 0 or length > MAX_AUDIO_BYTES:
+            return self._json(413, {"error": "audio is empty or too large"})
+
+        # Decoded before the lock: it needs no model, and a note that will not
+        # decode should not wait behind one that does.
+        try:
+            samples = decode(self.rfile.read(length))
+        except Exception as caught:  # noqa: BLE001 - PyAV raises a family of its own
+            return self._json(400, {"error": f"could not decode audio: {type(caught).__name__}"})
+        # A little over the cap, so a note the phone stopped at 120.0 seconds
+        # and the container rounds up is still read.
+        if len(samples) > (MAX_AUDIO_SECONDS + 2) * SAMPLE_RATE:
+            return self._json(413, {"error": "audio is too long"})
+
+        with self.transcribe_lock:
+            model = whisper()
+            result = transcribe(model, samples, pick_language(model, samples, hints))
+        self._json(200, result)
 
 
 def main() -> int:

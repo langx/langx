@@ -148,7 +148,7 @@ export const mediaSchema = z.object({
 export type Media = z.infer<typeof mediaSchema>
 
 /**
- * What a voice note says, written out by the transcript service (`apps/stt`).
+ * What a voice note says, written out by Whisper in the voice service (`apps/tts`).
  *
  * `lang` is the language Whisper read it as. A Whisper code, not one of ours —
  * the same two letters for nearly every language both know, but not checked

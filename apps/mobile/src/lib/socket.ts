@@ -1,9 +1,10 @@
-import { APP_SCHEME, SOCKET_ACK_TIMEOUT_MS } from '@langx/shared'
+import { APP_SCHEME, INBOX_KINDS_AUTH_KEY, SOCKET_ACK_TIMEOUT_MS } from '@langx/shared'
 import { Platform } from 'react-native'
 import { io, type Socket } from 'socket.io-client'
 import { API_URL } from './apiUrl'
 import { authClient } from './auth-client'
 import { deviceId } from './deviceId'
+import { DRAWABLE_INBOX_KINDS } from './notificationInbox'
 
 let socket: Socket | null = null
 
@@ -52,6 +53,12 @@ export async function getSocket(): Promise<Socket> {
    * can push to the devices that are not here.
    */
   auth.deviceId = await deviceId()
+  /*
+   * The inbox kinds this build can draw — the socket's copy of the header
+   * `apiFetch`'s requests carry. Without it the server treats this connection
+   * as the 2.7 build and never tells it about a kind added since.
+   */
+  auth[INBOX_KINDS_AUTH_KEY] = DRAWABLE_INBOX_KINDS
 
   socket ??= io(API_URL, {
     auth,

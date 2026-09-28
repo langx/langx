@@ -9,7 +9,7 @@ import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import type { AppServer } from '../../ws/types'
-import { userRoom } from '../../ws/types'
+import { inboxRoom } from '../../ws/types'
 import type { Post } from '../feed/documents'
 import { blockedUserIds } from '../moderation/blocks'
 import type { Profile } from '../profiles/profiles'
@@ -126,7 +126,11 @@ export async function recordNotification(
   }
 
   try {
-    live?.io.to(userRoom(input.userId)).emit('notification:new', {})
+    // The kind's room, not the account's: a socket joins it only when its
+    // client said it can draw this kind (see `ws/index.ts`). The event carries
+    // nothing, but it is still news about a row — and a client that cannot be
+    // shown the row has no business refetching its list and bell over it.
+    live?.io.to(inboxRoom(input.userId, input.kind)).emit('notification:new', {})
   } catch (error) {
     live?.logger.error({ err: error, userId: input.userId }, 'notification emit failed')
   }
@@ -307,6 +311,21 @@ function isDrawable(
 }
 
 /**
+ * The rows one client may be told about: this reader's, of the kinds it can
+ * draw.
+ *
+ * Every read path starts here — the list, the bell, both reads — because the
+ * alternative was trusting each client to skip what it cannot draw, and the
+ * builds up to 2.7 do not: an unknown kind throws inside their list's render.
+ * A kind that is not in `kinds` is invisible, not unreadable: it is not
+ * listed, not counted, not grouped with anything, and not marked read. See
+ * `INBOX_KINDS_V2_7`.
+ */
+function visibleTo(userId: string, kinds: readonly InAppNotificationKind[]): Document {
+  return { userId, kind: { $in: [...kinds] } }
+}
+
+/**
  * The inbox, newest first.
  *
  * Shaped like `listLikers`, including the part that matters most: a row whose
@@ -322,10 +341,12 @@ export async function listNotifications(
   db: Db,
   userId: string,
   query: ListNotificationsQuery,
+  /** What this client can draw — `acceptedInboxKinds`. See `visibleTo`. */
+  kinds: readonly InAppNotificationKind[],
 ): Promise<NotificationsPage> {
   const hidden = await blockedUserIds(db, userId)
 
-  const filter: Document = { userId }
+  const filter: Document = visibleTo(userId, kinds)
   if (hidden.length > 0) filter.actorId = { $nin: hidden }
 
   const after: Document[] = []
@@ -455,9 +476,14 @@ export async function listNotifications(
  * being "lots": `unreadBadge` draws `99+` anyway. Sorted before the cap so the
  * hundred it keeps are the hundred the list opens on.
  */
-export async function countUnreadNotifications(db: Db, userId: string): Promise<number> {
+export async function countUnreadNotifications(
+  db: Db,
+  userId: string,
+  /** The same `kinds` the list was read with, or the badge counts rows it cannot open. */
+  kinds: readonly InAppNotificationKind[],
+): Promise<number> {
   const hidden = await blockedUserIds(db, userId)
-  const match: Document = { userId }
+  const match: Document = visibleTo(userId, kinds)
   if (hidden.length > 0) match.actorId = { $nin: hidden }
 
   const groups = await db
@@ -497,6 +523,12 @@ export async function markNotificationsRead(
   db: Db,
   userId: string,
   /**
+   * What this client can draw. "Mark all read" on a build that cannot see a
+   * kind must leave that kind unread: nobody looked at it, and the build that
+   * can show it should still find it new.
+   */
+  kinds: readonly InAppNotificationKind[],
+  /**
    * One row's id to read just that one, or nothing for the lot.
    *
    * "That one" means the whole pile behind it, not the single document: the
@@ -506,15 +538,16 @@ export async function markNotificationsRead(
    */
   only?: ObjectId,
   now: Date = new Date(),
-): Promise<{ readAt: string; read: number }> {
+): Promise<{ readAt: string; read: number; kinds: readonly InAppNotificationKind[] }> {
   const rows = db.collection<NotificationDoc>(COLLECTIONS.notifications)
-  const filter: Document = { userId, readAt: { $exists: false } }
+  const filter: Document = { ...visibleTo(userId, kinds), readAt: { $exists: false } }
 
   if (only) {
     // Scoped by `userId` as well as `_id`, so an id belonging to somebody else
-    // matches nothing rather than reading their inbox for them.
-    const row = await rows.findOne({ _id: only, userId })
-    if (!row) return { readAt: now.toISOString(), read: 0 }
+    // matches nothing rather than reading their inbox for them — and by kind,
+    // so a client cannot read a row it was never shown.
+    const row = await rows.findOne({ _id: only, ...visibleTo(userId, kinds) })
+    if (!row) return { readAt: now.toISOString(), read: 0, kinds: [] }
     filter.kind = row.kind
     // The same rule `GROUP_KEY` applies, spelled out: a kind that collapses is
     // marked across its post, a kind that repeats is marked across itself, and
@@ -526,7 +559,13 @@ export async function markNotificationsRead(
   }
 
   const result = await rows.updateMany(filter, { $set: { readAt: now } })
-  return { readAt: now.toISOString(), read: result.modifiedCount }
+  return {
+    readAt: now.toISOString(),
+    read: result.modifiedCount,
+    // Which kinds the read could have touched, so the route tells exactly the
+    // sockets that can draw them. Not part of the response.
+    kinds: only ? [filter.kind as InAppNotificationKind] : kinds,
+  }
 }
 
 /** Guards a `kind` that came off the wire or out of an older row. */

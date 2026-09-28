@@ -1,4 +1,4 @@
-import { COMMENT_REPLY_PREVIEW } from '@langx/shared'
+import { COMMENT_REPLY_PREVIEW, IN_APP_NOTIFICATION_KINDS, INBOX_KINDS_HEADER } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -16,7 +16,6 @@ import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
-import { COMMENT_REPLY_INBOX_ROWS } from './feed'
 
 /**
  * One level of replies under a post's comments, and reporting a comment.
@@ -443,6 +442,32 @@ describe('comment replies', () => {
         .find({ userId })
         .toArray()
 
+    /** Polled, like `claims`: the rows are written after the response. */
+    async function rowsOnceThere(userId: string, expected: number) {
+      for (let attempt = 0; attempt < 40; attempt++) {
+        if ((await rowsFor(userId)).length >= expected) break
+        await new Promise((resolve) => setTimeout(resolve, 50))
+      }
+      return rowsFor(userId)
+    }
+
+    /**
+     * The centre as one client sees it. `declares` is a build that sends
+     * `INBOX_KINDS_HEADER`; without it the request is the 2.7 store build's.
+     */
+    async function centre(user: SignedUpUser, declares: boolean) {
+      const headers = {
+        cookie: user.cookie,
+        ...(declares ? { [INBOX_KINDS_HEADER]: IN_APP_NOTIFICATION_KINDS.join(',') } : {}),
+      }
+      const list = await app.inject({ method: 'GET', url: '/me/notifications', headers })
+      const unread = await app.inject({ method: 'GET', url: '/me/notifications/unread', headers })
+      return {
+        kinds: list.json<{ items: { kind: string; count?: number }[] }>().items,
+        unread: unread.json<{ total: number }>().total,
+      }
+    }
+
     it('tells the thread and the answered person, and the post author once', async () => {
       const author = await newUser()
       const a = await newUser()
@@ -460,19 +485,32 @@ describe('comment replies', () => {
       expect(await claims('social.postReply', author.userId, 1)).toBe(1)
       expect(await claims('social.commentReply', author.userId, 0)).toBe(0)
 
-      // Push-only for now: no reply rows, and the author's rows are postComment.
-      expect(COMMENT_REPLY_INBOX_ROWS).toBe(false)
-      for (let attempt = 0; attempt < 40; attempt++) {
-        if ((await rowsFor(author.userId)).length >= 3) break
-        await new Promise((resolve) => setTimeout(resolve, 50))
-      }
-      expect((await rowsFor(author.userId)).map((row) => row.kind)).toEqual([
+      // The author's rows are postComment, one per comment, as they always were.
+      expect((await rowsOnceThere(author.userId, 3)).map((row) => row.kind)).toEqual([
         'postComment',
         'postComment',
         'postComment',
       ])
-      expect(await rowsFor(a.userId)).toHaveLength(0)
-      expect(await rowsFor(b.userId)).toHaveLength(0)
+      // The thread's rows are commentReply: two for the root's author, one
+      // for the person answered.
+      expect((await rowsOnceThere(a.userId, 2)).map((row) => row.kind)).toEqual([
+        'commentReply',
+        'commentReply',
+      ])
+      expect((await rowsOnceThere(b.userId, 1)).map((row) => row.kind)).toEqual(['commentReply'])
+
+      // A build that says it can draw them sees them, piled on the post.
+      expect(await centre(a, true)).toEqual({
+        kinds: [expect.objectContaining({ kind: 'commentReply', count: 1 })],
+        unread: 1,
+      })
+      // The 2.7 build never does: not listed, not counted.
+      expect(await centre(a, false)).toEqual({ kinds: [], unread: 0 })
+      expect(await centre(b, false)).toEqual({ kinds: [], unread: 0 })
+      // And what it could always draw is untouched.
+      expect((await centre(author, false)).kinds).toEqual([
+        expect.objectContaining({ kind: 'postComment', count: 2 }),
+      ])
     })
 
     it('sends a post author in the thread the reply push instead of the comment one', async () => {
@@ -484,12 +522,14 @@ describe('comment replies', () => {
 
       expect(await claims('social.commentReply', author.userId, 1)).toBe(1)
       expect(await claims('social.postReply', author.userId, 0)).toBe(0)
-      // One row, the kind every installed build can draw.
-      for (let attempt = 0; attempt < 40; attempt++) {
-        if ((await rowsFor(author.userId)).length > 0) break
-        await new Promise((resolve) => setTimeout(resolve, 50))
-      }
-      expect((await rowsFor(author.userId)).map((row) => row.kind)).toEqual(['postComment'])
+      // One row, and it is the reply's, never the comment's as well.
+      expect((await rowsOnceThere(author.userId, 1)).map((row) => row.kind)).toEqual([
+        'commentReply',
+      ])
+      expect((await centre(author, true)).kinds.map((row) => row.kind)).toEqual(['commentReply'])
+      // The price of drawing it only where it can be drawn: on 2.7 this reply
+      // is a push and no row.
+      expect(await centre(author, false)).toEqual({ kinds: [], unread: 0 })
     })
   })
 

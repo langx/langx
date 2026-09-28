@@ -2,7 +2,14 @@ import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useState } from 'react'
 import { Modal, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { dismissValue, resolveAlert, subscribeToAlerts, type AlertRequest } from '../lib/alert'
+import { dismissValue, resolveAlert, subscribeToAlerts } from '../lib/alert'
+import {
+  NO_ALERT,
+  alertDismissed,
+  alertWanted,
+  isAlertVisible,
+  type AlertPresentation,
+} from '../lib/alertPresentation'
 import { makeStyles, useTheme } from '../lib/theme'
 import { Button } from './ui/Button'
 
@@ -29,10 +36,28 @@ export function AlertHost() {
   const { colors } = useTheme()
   const insets = useSafeAreaInsets()
 
-  const [request, setRequest] = useState<AlertRequest<unknown> | null>(null)
+  const [presentation, setPresentation] = useState<AlertPresentation>(NO_ALERT)
 
-  useEffect(() => subscribeToAlerts(setRequest), [])
+  // See `alertPresentation.ts`: on iOS the next dialog waits for the last one
+  // to finish sliding away, or iOS drops it and the queue stalls behind it.
+  useEffect(
+    () =>
+      subscribeToAlerts((next) =>
+        setPresentation((state) => alertWanted(state, next, Platform.OS === 'ios')),
+      ),
+    [],
+  )
 
+  // A net under `onDismiss`, well past the slide's length. If it ever failed
+  // to arrive, every dialog after this one would wait for ever — the very
+  // stall the wait exists to prevent.
+  useEffect(() => {
+    if (!presentation.closing) return
+    const timer = setTimeout(() => setPresentation(alertDismissed), 1000)
+    return () => clearTimeout(timer)
+  }, [presentation.closing])
+
+  const request = presentation.drawn
   if (!request) return null
   const dismiss = (): void => resolveAlert(request.id, dismissValue(request.buttons))
   const wide = Platform.OS === 'web'
@@ -49,7 +74,13 @@ export function AlertHost() {
   const rows = request.buttons.filter((button) => button !== foot)
 
   return (
-    <Modal transparent animationType={wide ? 'fade' : 'slide'} visible onRequestClose={dismiss}>
+    <Modal
+      transparent
+      animationType={wide ? 'fade' : 'slide'}
+      visible={isAlertVisible(presentation)}
+      onRequestClose={dismiss}
+      onDismiss={() => setPresentation(alertDismissed)}
+    >
       {/* Tapping outside is the same as cancelling, and the same as the back button. */}
       <Pressable
         style={[styles.backdrop, wide ? styles.backdropCentred : styles.backdropBottom]}

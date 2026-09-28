@@ -90,7 +90,9 @@ export default function PhotoStep() {
         void showAlert(t('editProfile.saveFailed'), t('common.retry'))
         return
       }
-      setSaving(false)
+      // `saving` stays set: the screen is leaving, and resetting it in the same
+      // tick as the `replace` below is a white page on Android
+      // (`leavingScreenState.test.ts`).
     }
     track({
       // Skipping counts: the step is over either way, and the funnel is

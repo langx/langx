@@ -56,6 +56,21 @@ const EAS_PROJECT_ID = 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115'
 const PHOTOS_PERMISSION =
   'LangX uses your photo library so you can share photos and videos in chat.'
 
+/**
+ * The Maps SDK key the location bubble's map needs on Android (iOS draws with
+ * Apple Maps, which takes none). An EAS environment variable, never a file in
+ * this repo — and although it is not a secret in the strict sense (it is in
+ * every APK, and what protects it is the package-and-certificate restriction
+ * on Google's side), a public repo is not where it goes.
+ *
+ * Unset, the build carries no key and `extra.googleMapsAndroid` says so, and
+ * the bubble keeps its card: the SDK throws the moment a map view starts
+ * without a key. Both halves are in the fingerprint, which is what makes that
+ * flag trustworthy — and is also why the value has to be the same on the
+ * builder and on the runner that publishes updates (`release-runbook.md`).
+ */
+const GOOGLE_MAPS_ANDROID_API_KEY = process.env.GOOGLE_MAPS_ANDROID_API_KEY || undefined
+
 const config: ExpoConfig = {
   name: 'LangX',
   slug: 'langx',
@@ -131,6 +146,9 @@ const config: ExpoConfig = {
      */
     ...(process.env.GOOGLE_SERVICES_JSON
       ? { googleServicesFile: process.env.GOOGLE_SERVICES_JSON }
+      : {}),
+    ...(GOOGLE_MAPS_ANDROID_API_KEY
+      ? { config: { googleMaps: { apiKey: GOOGLE_MAPS_ANDROID_API_KEY } } }
       : {}),
     /**
      * expo-image-picker declares `READ_EXTERNAL_STORAGE` (up to API 32) and
@@ -300,6 +318,12 @@ const config: ExpoConfig = {
      * See `plugins/withSceneLifecycle.js`.
      */
     './plugins/withSceneLifecycle',
+    /*
+     * `fontScale` in the main activity's `configChanges`. Without it, changing
+     * the system font size recreated the activity and dropped the reader back
+     * on Discover. See `plugins/withFontScaleConfigChange.js`.
+     */
+    './plugins/withFontScaleConfigChange',
     /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
@@ -485,6 +509,15 @@ const config: ExpoConfig = {
      */
     'expo-sharing',
     /*
+     * The map above a shared location (`LocationMapPreview`). No options: the
+     * plugin's only job is adding location permissions for the map's "my
+     * location" dot, which this map never shows — `expo-location` already owns
+     * that permission and its sentence. Named for the same fingerprint reason
+     * as `expo-font` and the others that take no options. The Android key is
+     * `android.config`, further up.
+     */
+    'expo-maps',
+    /*
      * The scanner behind the scan icon on the Me tab (`(app)/scan.tsx`).
      * `NSCameraUsageDescription` was already written by expo-image-picker;
      * this plugin writes it again with a sentence that names both jobs the
@@ -643,6 +676,9 @@ const config: ExpoConfig = {
 
   extra: {
     eas: { projectId: EAS_PROJECT_ID },
+    // Read by `LocationMapPreview`: `android.config` is stripped from the
+    // config the app can see, so the key's presence is passed on as a flag.
+    googleMapsAndroid: Boolean(GOOGLE_MAPS_ANDROID_API_KEY),
   },
 }
 

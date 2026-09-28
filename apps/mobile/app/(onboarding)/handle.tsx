@@ -152,14 +152,16 @@ export default function HandleStep() {
       // `HANDLE_TAKEN` is worth its own words now that Continue no longer
       // requires a successful pre-check: this is the path somebody lands on
       // when the check could not run and the name really was gone.
+      setSubmitting(false)
       setSubmitError(
         error instanceof ApiRequestError && error.code === ERROR_CODES.HANDLE_TAKEN
           ? t('onboarding.handleTaken', { handle: current.handle })
           : t('onboarding.profileFailed'),
       )
-    } finally {
-      setSubmitting(false)
     }
+    // No `finally` resetting `submitting`: on success this screen is leaving,
+    // and a state change in the same tick as its `replace` is a white page on
+    // Android (`leavingScreenState.test.ts`). Only the failure path stays.
   }
 
   /*

@@ -1,7 +1,8 @@
 import { apiFetch } from './apiFetch'
-import { ERROR_CODES, type ApiErrorBody } from '@langx/shared'
+import { ERROR_CODES, INBOX_KINDS_HEADER, type ApiErrorBody } from '@langx/shared'
 import { router } from 'expo-router'
 import { currentLocale } from '../i18n/runtime'
+import { DRAWABLE_INBOX_KINDS } from '../lib/notificationInbox'
 
 export class ApiRequestError extends Error {
   readonly code: string
@@ -80,6 +81,14 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
       // emails use it today — the API's own errors are codes — but it costs
       // one header and it is the only signal a signed-out request carries.
       'accept-language': currentLocale(),
+      /*
+       * Which notification-centre rows this build can draw. On every request
+       * rather than the three inbox routes, because those three have to agree
+       * — a bell counting a row the list will not show is the bug this
+       * prevents — and the tray sweep reads the list too. Without it the
+       * server answers as it would the 2.7 build. See `INBOX_KINDS_V2_7`.
+       */
+      [INBOX_KINDS_HEADER]: DRAWABLE_INBOX_KINDS,
       ...init.headers,
     },
   })

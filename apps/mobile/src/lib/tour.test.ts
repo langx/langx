@@ -18,6 +18,9 @@ import {
   TOUR_GUEST_BODIES,
   TOUR_TABS,
   tourBodyKey,
+  tourOffRoute,
+  tourRoute,
+  routeOfSegments,
   type TourState,
 } from './tour'
 
@@ -162,6 +165,42 @@ describe('walking the run', () => {
     const state = startTour({ guest: false })
     expect(progress(state)).toEqual({ current: 1, total: TOUR_STEPS.length })
     expect(progress(advance(state)).current).toBe(2)
+  })
+})
+
+describe('stepping aside for another screen', () => {
+  const pair = TOUR_STEPS[0]!
+  const chats = TOUR_STEPS.find((step) => step.target === 'tabChats')!
+  const post = routeOfSegments(['(app)', 'post', '[id]'])
+
+  it('spells a focused route the way TOUR_TABS does', () => {
+    expect(routeOfSegments(['(app)', '(tabs)', 'discover'])).toBe(TOUR_TABS.discover)
+    expect(tourRoute(pair)).toBe(TOUR_TABS.discover)
+    expect(tourRoute(chats)).toBe(TOUR_TABS.chats)
+  })
+
+  it('stays up on the screen it is touring', () => {
+    expect(tourOffRoute(pair, TOUR_TABS.discover, false)).toBe(false)
+    expect(tourOffRoute(chats, TOUR_TABS.chats, true)).toBe(false)
+  })
+
+  it('pauses when a deep link opens a screen outside the tabs', () => {
+    expect(tourOffRoute(pair, post, false)).toBe(true)
+    expect(tourOffRoute(chats, post, false)).toBe(true)
+    expect(tourOffRoute(chats, post, true)).toBe(true)
+  })
+
+  it('pauses a Discovery step when another tab is focused', () => {
+    expect(tourOffRoute(pair, TOUR_TABS.me, false)).toBe(true)
+    expect(tourOffRoute(pair, TOUR_TABS.chats, false)).toBe(true)
+  })
+
+  it('does not pause while its own switch to a tab is landing', () => {
+    expect(tourOffRoute(chats, TOUR_TABS.discover, false)).toBe(false)
+  })
+
+  it('pauses a tab step that has landed once the tab changes under it', () => {
+    expect(tourOffRoute(chats, TOUR_TABS.feed, true)).toBe(true)
   })
 })
 

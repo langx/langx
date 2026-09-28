@@ -238,6 +238,39 @@ export function progress(state: TourState): { current: number; total: number } {
   return { current: state.index + 1, total: state.steps.length }
 }
 
+/** The tab a step is drawn over: its own, or Discovery for the steps that name none. */
+export function tourRoute(step: TourStep): TourTab {
+  return step.tab ?? TOUR_TABS.discover
+}
+
+/** The route the navigator has focused, in the same spelling as `TOUR_TABS`. */
+export function routeOfSegments(segments: readonly string[]): string {
+  return `/${segments.join('/')}`
+}
+
+/**
+ * Whether the run has to step aside because the screen it is touring is not
+ * the one showing.
+ *
+ * The overlay is a Modal, so nothing the navigator does can cover it: a deep
+ * link — a tapped push, `langx://post/…` — opened a screen *under* the dim,
+ * and the ring went on circling where a Discovery element had been. The run
+ * **pauses** rather than ends. It is a once-per-install thing, and a push the
+ * reader tapped is not a reader who said "enough"; that is what Skip and the
+ * back button mean. Coming back to the toured tab picks up the same step.
+ *
+ * `arrived` is whether this step's own tab has been seen focused yet. A step
+ * that switches tab spends a moment on the tab it came from, and pausing then
+ * would unmount the dim between two steps of one run — so a tour tab that is
+ * merely *early* is not a reason to pause, while any screen outside the run's
+ * tabs always is.
+ */
+export function tourOffRoute(step: TourStep, route: string, arrived: boolean): boolean {
+  if (route === tourRoute(step)) return false
+  const onRunTab = TOUR_STEPS.some((each) => tourRoute(each) === route)
+  return !onRunTab || !step.tab || arrived
+}
+
 /* ------------------------------------------------------------------ store */
 
 type Listener = (state: TourState | null) => void

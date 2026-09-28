@@ -1,7 +1,16 @@
+import { useSegments } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
 import { Animated, Pressable, Text } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { dismissToast, subscribeToToasts, type Toast } from '../lib/toast'
+import { useAppReady } from '../hooks/useAppReady'
+import { SPLASH_TIMING } from '../lib/splashTiming'
+import {
+  dismissToast,
+  msUntilToastsMayShow,
+  subscribeToToasts,
+  toastEdge,
+  type Toast,
+} from '../lib/toast'
 import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles } from '../lib/theme'
 
@@ -25,20 +34,33 @@ export function ToastHost() {
   const [toast, setToast] = useState<Toast | null>(null)
   const enter = useRef(new Animated.Value(0)).current
   const insets = useSafeAreaInsets()
+  const edge = toastEdge(useSegments())
 
   useEffect(() => subscribeToToasts(setToast), [])
 
+  /*
+   * Held back until the opening has gone, and its clock with it — see
+   * `msUntilToastsMayShow`. Queued toasts wait rather than being dropped.
+   */
+  const ready = useAppReady()
+  const [settled, setSettled] = useState(false)
   useEffect(() => {
-    if (!toast) return
+    if (!ready || settled) return
+    const timer = setTimeout(() => setSettled(true), msUntilToastsMayShow(SPLASH_TIMING))
+    return () => clearTimeout(timer)
+  }, [ready, settled])
+
+  useEffect(() => {
+    if (!toast || !settled) return
     enter.setValue(0)
     Animated.timing(enter, { toValue: 1, duration: 300, useNativeDriver: true }).start()
     // Keyed on the id, so a second toast arriving restarts the clock for
     // itself rather than inheriting what was left of the first one's.
     const timer = setTimeout(() => dismissToast(toast.id), toast.durationMs)
     return () => clearTimeout(timer)
-  }, [toast, enter])
+  }, [toast, enter, settled])
 
-  if (!toast) return null
+  if (!toast || !settled) return null
 
   return (
     <Animated.View
@@ -47,11 +69,16 @@ export function ToastHost() {
         styles.layer,
         // Above the tab bar with room to spare, and above the committing
         // button on a screen that has one — the band v3 leaves for it.
-        { bottom: insets.bottom + 86 },
+        edge === 'top' ? { top: insets.top + 12 } : { bottom: insets.bottom + 86 },
         {
           opacity: enter,
           transform: [
-            { translateY: enter.interpolate({ inputRange: [0, 1], outputRange: [10, 0] }) },
+            {
+              translateY: enter.interpolate({
+                inputRange: [0, 1],
+                outputRange: [edge === 'top' ? -10 : 10, 0],
+              }),
+            },
           ],
         },
       ]}

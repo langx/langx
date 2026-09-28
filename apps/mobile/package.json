@@ -1,6 +1,6 @@
 {
   "name": "@langx/mobile",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "private": true,
   "license": "BSD-3-Clause",
   "description": "LangX v2 client — iOS, Android and web from one Expo codebase",
@@ -14,6 +14,7 @@
     "ios": "expo run:ios",
     "android": "expo run:android",
     "gen:strings": "tsx scripts/generate-xcstrings.ts",
+    "gen:names": "tsx scripts/build-display-names.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p functions",
     "test": "vitest run"
   },
@@ -53,6 +54,7 @@
     "expo-linking": "~57.0.10",
     "expo-localization": "^57.0.2",
     "expo-location": "~57.0.19",
+    "expo-maps": "~57.0.3",
     "expo-media-library": "~57.0.5",
     "expo-network": "~57.0.2",
     "expo-notifications": "~57.0.20",

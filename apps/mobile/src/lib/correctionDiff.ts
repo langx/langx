@@ -35,7 +35,7 @@ const MAX_TOKENS = 600
 
 /**
  * How long a replaced pair may be before the character-level pass gives up.
- * The pass exists for `gidiyom → gidiyorum` and for a missing comma; running
+ * The pass exists for `gidiyom → gidiyorum` and `dont → don't`; running
  * it on two long sentences that happen to align 1:1 buys nothing and costs the
  * square of their length.
  */
@@ -85,17 +85,53 @@ interface Block {
 }
 
 /**
- * A word plus whatever whitespace follows it, so the tokens of a string join
- * back to that exact string — the invariant the whole file rests on. Leading
- * whitespace rides on the first token for the same reason.
+ * Word characters, where a word may carry an apostrophe or a hyphen *between*
+ * two of them: `don't`, `l'eau`, `İstanbul'a`, `well-known`. Marks are word
+ * characters so that an accent typed as a combining character (`e` + U+0301)
+ * and the Arabic short vowels stay on their letter.
+ */
+const WORD = String.raw`[\p{L}\p{M}\p{N}]+(?:['’‐‑-][\p{L}\p{M}\p{N}]+)*`
+
+/**
+ * Everything else that is not whitespace, as one run: `,`, `?!`, `¿`, `«`,
+ * `،`, `؟`, `。`, and symbols and emoji along with them. A mark that follows
+ * one (an emoji's variation selector) rides on it rather than starting a word.
+ */
+const NON_WORD = String.raw`(?:[^\s\p{L}\p{M}\p{N}]\p{M}*)+`
+
+/**
+ * Between them the two classes cover every character that is not whitespace,
+ * so the matches tile the string with nothing skipped.
+ */
+const TOKEN = new RegExp(String.raw`\s*(?:${WORD}|${NON_WORD})\s*`, 'gu')
+
+/**
+ * A word or a run of punctuation, plus whatever whitespace follows it, so the
+ * tokens of a string join back to that exact string — the invariant the whole
+ * file rests on. Leading whitespace rides on the first token for the same
+ * reason.
+ *
+ * Punctuation is its own token because a learner's sentence is mostly missing
+ * it: split on whitespace alone, `coffee` against `coffee,` is two different
+ * words, and adding `, please` redrew `coffee` as deleted and retyped. Apart,
+ * `coffee` matches and only what was added is coloured.
+ *
+ * Whitespace is not a token of its own. It rides on the token before it and
+ * is left out of the comparison, so a correction that only changes spacing
+ * draws no colour — splitting it out would let every space match every other
+ * and anchor the alignment on nothing.
+ *
+ * Text written without spaces still arrives as one token per clause, now
+ * split at `，` and `。`, which leaves the character pass one clause to narrow
+ * rather than the whole message.
  */
 function tokenize(text: string): string[] {
-  const tokens = text.match(/\s*\S+\s*/g)
+  const tokens = text.match(TOKEN)
   if (tokens) return tokens
   return text.length > 0 ? [text] : []
 }
 
-/** The word inside a token, without the whitespace that surrounds it. */
+/** The word or punctuation inside a token, without the whitespace around it. */
 function word(token: string): string {
   return token.trim()
 }
@@ -125,6 +161,9 @@ function pushRun(into: DiffSegment[], tokens: string[]): void {
   push(into, text.slice(trimmed.length), false)
 }
 
+/** A character that belongs to the one before it: a mark, or a low surrogate. */
+const CONTINUES = /^[\p{M}\uDC00-\uDFFF]$/u
+
 /**
  * One word swapped for one word: mark only the letters that differ.
  *
@@ -132,7 +171,7 @@ function pushRun(into: DiffSegment[], tokens: string[]): void {
  * usually a suffix (`gidiyom` → `gidiyorum`), and colouring the whole word
  * hides which part of it was the mistake. It is also what makes the diff
  * useful for languages written without spaces, where the tokenizer produces
- * one long token per side and this is the only pass that can say anything.
+ * one long token per clause and this is the only pass that can say anything.
  *
  * Returns false when it does not apply, leaving the caller to mark the run
  * whole.
@@ -154,6 +193,24 @@ function refine(block: Block, left: DiffSegment[], right: DiffSegment[]): boolea
     wordA[wordA.length - 1 - suffix] === wordB[wordB.length - 1 - suffix]
   ) {
     suffix++
+  }
+
+  // Never cut between a letter and what is still part of it: a combining
+  // accent (`cafe` + U+0301 → `café`) or the second half of a surrogate pair
+  // (most emoji, rarer CJK). Cut there, the run on its own draws as a dotted
+  // circle or a replacement box, so the boundary steps back to the letter.
+  while (
+    prefix > 0 &&
+    (CONTINUES.test(wordA.charAt(prefix)) || CONTINUES.test(wordB.charAt(prefix)))
+  ) {
+    prefix--
+  }
+  while (
+    suffix > 0 &&
+    (CONTINUES.test(wordA.charAt(wordA.length - suffix)) ||
+      CONTINUES.test(wordB.charAt(wordB.length - suffix)))
+  ) {
+    suffix--
   }
 
   // Nothing in common worth keeping: two different words rather than one word

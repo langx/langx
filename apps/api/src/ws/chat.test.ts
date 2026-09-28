@@ -1,4 +1,10 @@
-import { MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES, TRAY_SYNC_MAX_THREADS } from '@langx/shared'
+import {
+  IN_APP_NOTIFICATION_KINDS,
+  INBOX_KINDS_AUTH_KEY,
+  INBOX_KINDS_HEADER,
+  MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
+  TRAY_SYNC_MAX_THREADS,
+} from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -11,6 +17,7 @@ import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
+import { recordNotification } from '../modules/notifications/inbox'
 import type { Profile } from '../modules/profiles/profiles'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -103,13 +110,18 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     return response.json<{ _id: string }>()
   }
 
-  function connectSocket(cookie: string | undefined, deviceId?: string): Promise<ClientSocket> {
+  function connectSocket(
+    cookie: string | undefined,
+    deviceId?: string,
+    extraAuth: Record<string, string> = {},
+  ): Promise<ClientSocket> {
     return new Promise((resolve, reject) => {
       const socket = ioClient(baseUrl, {
         transports: ['websocket'],
         auth: {
           ...(cookie ? { cookie } : {}),
           ...(deviceId ? { deviceId } : {}),
+          ...extraAuth,
         },
         forceNew: true,
         reconnection: false,
@@ -1216,6 +1228,91 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
         }),
       ).toBe(0)
       expect(await mediaUnitsSpent(a.userId)).toBe(0)
+    })
+  })
+
+  /**
+   * The socket's half of the inbox gate: `notification:new` about a kind
+   * reaches only the sockets whose client said it can draw it — the same
+   * answer `GET /me/notifications` gives. A 2.7 phone and a newer one signed in
+   * to the same account hear different things.
+   */
+  describe('the inbox kinds a socket declared', () => {
+    const declares = { [INBOX_KINDS_AUTH_KEY]: IN_APP_NOTIFICATION_KINDS.join(',') }
+
+    /** Resolves true if the event arrives within the window, false if not. */
+    const hears = (socket: ClientSocket, event: string) =>
+      waitForEvent(socket, event, 600).then(
+        () => true,
+        () => false,
+      )
+
+    it('tells only a declaring socket about a new kind, and both about an old one', async () => {
+      const reader = await newUser('inbox-gate-reader@example.com')
+      const actor = await newUser('inbox-gate-actor@example.com')
+      const old = await connectSocket(reader.cookie, 'phone-2-7')
+      const current = await connectSocket(reader.cookie, 'phone-current', declares)
+      const live = { io: app.io, logger: app.log }
+
+      const [oldHeard, currentHeard] = await Promise.all([
+        hears(old, 'notification:new'),
+        hears(current, 'notification:new'),
+        recordNotification(
+          handle.db,
+          {
+            userId: reader.userId,
+            kind: 'commentReply',
+            refId: 'socket-reply',
+            actorId: actor.userId,
+            postId: new ObjectId(),
+          },
+          live,
+        ),
+      ])
+      expect({ oldHeard, currentHeard }).toEqual({ oldHeard: false, currentHeard: true })
+
+      const both = await Promise.all([
+        hears(old, 'notification:new'),
+        hears(current, 'notification:new'),
+        recordNotification(
+          handle.db,
+          { userId: reader.userId, kind: 'follow', refId: actor.userId, actorId: actor.userId },
+          live,
+        ),
+      ])
+      expect(both.slice(0, 2)).toEqual([true, true])
+    })
+
+    it('tells only a declaring socket that a row of a new kind was read', async () => {
+      const reader = await newUser('inbox-gate-read@example.com')
+      const actor = await newUser('inbox-gate-read-actor@example.com')
+      await recordNotification(handle.db, {
+        userId: reader.userId,
+        kind: 'commentReply',
+        refId: 'socket-read',
+        actorId: actor.userId,
+        postId: new ObjectId(),
+      })
+      const row = await handle.db
+        .collection(COLLECTIONS.notifications)
+        .findOne({ userId: reader.userId, kind: 'commentReply' })
+      const old = await connectSocket(reader.cookie, 'phone-2-7')
+      const current = await connectSocket(reader.cookie, 'phone-current', declares)
+
+      const [oldHeard, currentHeard] = await Promise.all([
+        hears(old, 'notification:read'),
+        hears(current, 'notification:read'),
+        app.inject({
+          method: 'POST',
+          url: '/me/notifications/read',
+          headers: {
+            cookie: reader.cookie,
+            [INBOX_KINDS_HEADER]: IN_APP_NOTIFICATION_KINDS.join(','),
+          },
+          payload: { id: row?._id.toHexString() },
+        }),
+      ])
+      expect({ oldHeard, currentHeard }).toEqual({ oldHeard: false, currentHeard: true })
     })
   })
 })

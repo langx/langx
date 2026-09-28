@@ -1,8 +1,11 @@
 import {
+  acceptedInboxKinds,
   ERROR_CODES,
+  INBOX_KINDS_HEADER,
   listNotificationsQuerySchema,
   markNotificationsReadSchema,
 } from '@langx/shared'
+import type { FastifyRequest } from 'fastify'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ObjectId } from 'mongodb'
 import { ApiError } from '../lib/ApiError'
@@ -13,7 +16,19 @@ import {
   markNotificationsRead,
 } from '../modules/notifications/inbox'
 import { sendTraySync } from '../ws/traySync'
-import { userRoom } from '../ws/types'
+import { inboxRoom } from '../ws/types'
+
+/**
+ * The kinds this request's client can draw.
+ *
+ * Read on every route here, the reads included, because the three answers
+ * have to agree: a bell counting a row the list will not show, or a "Mark all
+ * read" reaching one, is the list and the badge disagreeing again. A request
+ * without the header is a build from 2.7 or before. See `INBOX_KINDS_V2_7`.
+ */
+function kindsOf(request: FastifyRequest) {
+  return acceptedInboxKinds(request.headers[INBOX_KINDS_HEADER])
+}
 
 /**
  * The notification centre.
@@ -29,7 +44,9 @@ export const notificationRoutes: FastifyPluginAsyncZod = async (app) => {
     '/me/notifications',
     { preHandler: requireAuth, schema: { querystring: listNotificationsQuerySchema } },
     async (request, reply) => {
-      return reply.send(await listNotifications(app.mongo.db, request.userId, request.query))
+      return reply.send(
+        await listNotifications(app.mongo.db, request.userId, request.query, kindsOf(request)),
+      )
     },
   )
 
@@ -40,7 +57,7 @@ export const notificationRoutes: FastifyPluginAsyncZod = async (app) => {
    * besides.
    */
   app.get('/me/notifications/unread', { preHandler: requireAuth }, async (request, reply) => {
-    const total = await countUnreadNotifications(app.mongo.db, request.userId)
+    const total = await countUnreadNotifications(app.mongo.db, request.userId, kindsOf(request))
     return reply.send({ total })
   })
 
@@ -69,7 +86,12 @@ export const notificationRoutes: FastifyPluginAsyncZod = async (app) => {
           throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed notification id')
         }
       }
-      const result = await markNotificationsRead(app.mongo.db, request.userId, only)
+      const { kinds, ...result } = await markNotificationsRead(
+        app.mongo.db,
+        request.userId,
+        kindsOf(request),
+        only,
+      )
       /*
        * And say so to this account's *other* devices.
        *
@@ -78,8 +100,17 @@ export const notificationRoutes: FastifyPluginAsyncZod = async (app) => {
        * room is still drawing the old one with no way of finding out. The
        * emitter is the reader's own room, so this is the one socket event whose
        * sender and audience are the same person.
+       *
+       * Addressed to the rooms of the kinds the read could have touched, not
+       * to the whole account: a build that cannot draw a `commentReply` has
+       * nothing to refetch when one is read, and on a single row that read
+       * nothing, there is nobody to tell.
        */
-      app.io.to(userRoom(request.userId)).emit('notification:read', {})
+      if (kinds.length > 0) {
+        app.io
+          .to(kinds.map((kind) => inboxRoom(request.userId, kind)))
+          .emit('notification:read', {})
+      }
       // And the phones with no socket to hear that on. See `ws/traySync.ts`.
       if (result.read > 0) void sendTraySync(app, request.userId)
       return reply.send(result)

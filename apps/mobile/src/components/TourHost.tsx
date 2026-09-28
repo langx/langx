@@ -1,4 +1,4 @@
-import { router } from 'expo-router'
+import { router, useSegments } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import {
   AccessibilityInfo,
@@ -23,9 +23,12 @@ import {
   measureTourTarget,
   progress,
   resolveFrom,
+  routeOfSegments,
   setTourState,
   subscribeToTour,
   tourBodyKey,
+  tourOffRoute,
+  tourRoute,
   TOUR_TABS,
   type TourRect,
   type TourState,
@@ -101,6 +104,18 @@ export function TourHost() {
   const step = state ? currentStep(state) : undefined
   const target = step?.target
 
+  /*
+   * Which run state has seen its own tab focused. Kept against the state
+   * rather than as a boolean so a new step starts out not arrived without an
+   * effect having to reset it first.
+   */
+  const route = routeOfSegments(useSegments())
+  const [arrivedAt, setArrivedAt] = useState<TourState | null>(null)
+  useEffect(() => {
+    if (state && step && route === tourRoute(step)) setArrivedAt(state)
+  }, [route, state, step])
+  const paused = step ? tourOffRoute(step, route, arrivedAt === state) : false
+
   const finish = useCallback((reason: 'completed' | 'skipped', at: TourState) => {
     const shown = currentStep(at)
     track(
@@ -135,7 +150,13 @@ export function TourHost() {
    * laid out at zero size — is skipped rather than drawn as an empty ring.
    */
   useEffect(() => {
-    if (!state || !step || !target) return
+    /*
+     * Paused means another screen is showing: nothing is measured, and above
+     * all nothing navigates — a step that names a tab would otherwise pull the
+     * reader off the post they just opened. Unpausing re-runs this, so the
+     * step is measured afresh on whatever the tab looks like now.
+     */
+    if (!state || !step || !target || paused) return
     let cancelled = false
     setAnchor(null)
     const index = state.index
@@ -190,9 +211,9 @@ export function TourHost() {
     }
     // `state` itself is safe to depend on: it only ever gets a new identity
     // when the run actually moves, because nothing publishes without changing.
-  }, [goNext, screen.height, screen.width, state, step, t, target])
+  }, [goNext, paused, screen.height, screen.width, state, step, t, target])
 
-  if (!state || !step) return null
+  if (!state || !step || paused) return null
 
   const layout = anchor ? tourLayout({ anchor, screen, insets }) : null
   const { current, total } = progress(state)

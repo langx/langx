@@ -109,6 +109,18 @@ export function useKeyboardClearance(scrollTo: (offset: number, animated: boolea
   const content = useRef<View>(null)
   const scroll = useRef(scrollTo)
   scroll.current = scrollTo
+  /**
+   * `pad` as it is on screen right now, mid-animation included. iOS can send
+   * `keyboardWillShow` twice for one focus (the keyboard, then its suggestion
+   * bar), and the second arrives while the first pad is still growing.
+   */
+  const padNow = useRef(0)
+  useEffect(() => {
+    const id = pad.addListener(({ value }) => {
+      padNow.current = value
+    })
+    return () => pad.removeListener(id)
+  }, [pad])
 
   /** Android's clearance: see the second half of the comment above. */
   const run = useCallback(() => {
@@ -152,21 +164,52 @@ export function useKeyboardClearance(scrollTo: (offset: number, animated: boolea
     if (!ios) return
     // Follows `keyboardWillChangeFrame`'s timing: the keyboard's own
     // duration, and a linear curve since the keyboard's is private.
-    const follow = (event: KeyboardEvent, toValue: number) =>
+    const follow = (event: KeyboardEvent, toValue: number, done?: () => void) =>
       Animated.timing(pad, {
         toValue,
         duration: event.duration || 250,
         easing: (t) => t,
         useNativeDriver: false,
-      }).start()
+      }).start(({ finished }) => {
+        if (finished) done?.()
+      })
     const show = Keyboard.addListener('keyboardWillShow', (event) => {
       const top = event.endCoordinates.screenY
-      frameRef.current?.measureInWindow((_x, y, _width, height) =>
-        follow(event, Math.max(0, y + height - top)),
-      )
-      field.current?.measureInWindow((_x, y, _width, height) => {
-        const covered = y + height + spacing.md - top
-        if (covered > 0) scroll.current(scrollY.current + covered, true)
+      frameRef.current?.measureInWindow((_x, y, _width, height) => {
+        const next = Math.max(0, y + height - top)
+        const current = padNow.current
+        /*
+         * Cleared against whichever comes first, the keyboard or the scroll
+         * view's own bottom edge — the same rule as Android's. The two differ
+         * when something is pinned under the list inside the padded frame, as
+         * the post screen's recorder is, and a box lifted only above the
+         * keyboard lands behind it. `grow` is the pad still to come: the edge
+         * is measured while the pad may not have reached it.
+         */
+        const reveal = (grow: number) => {
+          const box = field.current
+          if (!box) return
+          const clear = (bottom: number) =>
+            box.measureInWindow((_bx, boxY, _bw, boxHeight) => {
+              const covered = boxY + boxHeight + spacing.md - bottom
+              if (covered > 0) scroll.current(scrollY.current + covered, true)
+            })
+          const view = scroller.current
+          if (!view) return clear(top)
+          view.measureInWindow((_vx, viewY, _vw, viewHeight) =>
+            clear(Math.min(top, viewY + viewHeight - grow)),
+          )
+        }
+        // Once as the keyboard rises, so the two move together…
+        reveal(next - current)
+        /*
+         * …and once more when the pad has landed. The first scroll asks for an
+         * offset past the end of a list that has not shrunk yet, and iOS
+         * clamps it as the frame changes under the animation — measured on the
+         * post screen, the box stopped about half its button short. By now
+         * nothing is moving, so this is a no-op whenever the first one held.
+         */
+        follow(event, next, () => reveal(0))
       })
     })
     const hide = Keyboard.addListener('keyboardWillHide', (event) => follow(event, 0))
@@ -185,6 +228,11 @@ export function useKeyboardClearance(scrollTo: (offset: number, animated: boolea
           scrollEventThrottle: 16,
           onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
             scrollY.current = event.nativeEvent.contentOffset.y
+          },
+          // The scroll view itself, for its bottom edge; see the Android
+          // branch for why it comes from the event rather than a ref.
+          onLayout: (event: LayoutChangeEvent) => {
+            scroller.current = event.target
           },
         }
       : android

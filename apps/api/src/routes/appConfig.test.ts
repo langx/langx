@@ -14,8 +14,10 @@ import {
   updateAppConfig,
 } from '../modules/appConfig/appConfig'
 import { createStorageProvider } from '../storage/createStorageProvider'
+import { createSttProvider } from '../stt/createSttProvider'
 import { CapturingEmailSender } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
+import { createTtsProvider } from '../tts/createTtsProvider'
 
 describe('app config, maintenance and the version gate', () => {
   let replSet: MongoMemoryReplSet
@@ -110,7 +112,8 @@ describe('app config, maintenance and the version gate', () => {
       expect(response.json<{ voiceService: boolean }>().voiceService).toBe(false)
     })
 
-    it('says whether a voice note can be written out, from whether STT_URL is set', async () => {
+    it('says whether a voice note can be written out, from whether the voice service is set', async () => {
+      // Whisper runs in the voice service, so it is the same TTS_URL.
       const response = await get('/app-config')
       expect(response.json<{ transcriptService: boolean }>().transcriptService).toBe(false)
     })
@@ -125,6 +128,7 @@ describe('app config, maintenance and the version gate', () => {
         BETTER_AUTH_URL: 'http://localhost:4000',
         GOOGLE_CLIENT_ID: 'google-client-id',
         GOOGLE_CLIENT_SECRET: 'google-client-secret',
+        TTS_URL: 'http://localhost:8090',
       })
       const configured = await buildApp({
         env,
@@ -139,6 +143,8 @@ describe('app config, maintenance and the version gate', () => {
         storage: createStorageProvider(env),
         translation: createTranslationProvider(env),
         revenueCat: createRevenueCatClientFromEnv(env),
+        tts: createTtsProvider(env),
+        stt: createSttProvider(env),
       })
       await configured.ready()
       try {
@@ -152,6 +158,10 @@ describe('app config, maintenance and the version gate', () => {
           facebook: false,
           discord: false,
         })
+        // One service reads aloud and writes out, so one URL turns on both.
+        expect(
+          response.json<{ voiceService: boolean; transcriptService: boolean }>(),
+        ).toMatchObject({ voiceService: true, transcriptService: true })
       } finally {
         await configured.close()
       }

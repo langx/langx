@@ -1,4 +1,5 @@
-"""Load every voice the image was built with and encode a word in it.
+"""Load every voice the image was built with and encode a word in it — and load
+Whisper and run a note through every step a transcription takes.
 
 Run at build time, so a model that 404'd, arrived truncated, or needs a Piper
 this image does not have fails the build rather than the first request after a
@@ -13,19 +14,45 @@ be a real one: `lt_LT-reginute1-medium` is built for a `lithuanian` phoneme type
 that `piper-tts` 1.8.0 does not know.
 """
 
+import io
 import json
+import math
+import struct
 import sys
+import wave
 
 from server import (
+    SAMPLE_RATE,
+    decode,
     kokoro_wav,
     load_kokoro,
     load_piper,
+    load_whisper,
+    pick_language,
     piper_wav,
     romanize_ja,
     romanize_zh,
     to_aac,
+    transcribe,
     zh_phonemes,
 )
+
+
+def tone_wav(seconds: float = 2.0) -> bytes:
+    """A second or two of a 440 Hz tone as WAV bytes — something for Whisper to decode."""
+    frames = int(SAMPLE_RATE * seconds)
+    buffer = io.BytesIO()
+    with wave.open(buffer, "wb") as out:
+        out.setnchannels(1)
+        out.setsampwidth(2)
+        out.setframerate(SAMPLE_RATE)
+        out.writeframes(
+            b"".join(
+                struct.pack("<h", int(8000 * math.sin(2 * math.pi * 440 * i / SAMPLE_RATE)))
+                for i in range(frames)
+            )
+        )
+    return buffer.getvalue()
 
 
 def main() -> int:
@@ -59,6 +86,30 @@ def main() -> int:
             print(f"romanize {lang}: expected {expected!r}, got {got!r}", flush=True)
             return 1
         print(f"romanize {lang} ok", flush=True)
+
+    # Whisper, in the same interpreter as both engines, for the reason the
+    # docstring gives: it brings ONNX Runtime (for its silence filter) and
+    # PyAV's own ffmpeg libraries, and a clash with either shows up only here.
+    # A tone has no words, so this proves the model loads and every step of a
+    # request runs; what comes out is `check-tts.yml`'s to ask, with a
+    # sentence spoken on the runner. All three hint paths: Whisper's own
+    # detection, one hint that skips it, and several that ask for the
+    # distribution — with a code it does not know.
+    model = load_whisper()
+    samples = decode(tone_wav())
+    if abs(len(samples) - 2 * SAMPLE_RATE) > SAMPLE_RATE // 10:
+        print(f"decoded {len(samples)} samples from two seconds", flush=True)
+        return 1
+    for hints in ([], ["en"], ["tr", "en", "ase"]):
+        lang = pick_language(model, samples, hints)
+        if hints and lang not in hints:
+            print(f"hints {hints!r} picked {lang!r}", flush=True)
+            return 1
+        result = transcribe(model, samples, lang)
+        if not isinstance(result.get("text"), str) or not result.get("lang"):
+            print(f"transcribe with hints {hints!r} returned {result!r}", flush=True)
+            return 1
+    print("whisper ok", flush=True)
 
     failures = []
     with open("voices.json", encoding="utf8") as handle:
