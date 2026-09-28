@@ -130,6 +130,12 @@ export function AppSplash() {
    * screen rather than as a flash.
    */
   const disc = useRef(new Animated.Value(0)).current
+  /**
+   * The native splash has been asked to go. Nothing moves before it has: on
+   * Android it covered the first half-second of the disc, which then played
+   * out unseen behind it.
+   */
+  const [nativeGone, setNativeGone] = useState(false)
 
   const finishIntro = useCallback(() => setIntroDone(true), [])
   const showFilm = useCallback(() => setFilmFrame(true), [])
@@ -163,7 +169,7 @@ export function AppSplash() {
    * as it leaves the screen, so the part the eye is on is the part that is slow.
    */
   useEffect(() => {
-    if (reduceMotion) return
+    if (reduceMotion || !nativeGone) return
     let growing: Animated.CompositeAnimation | null = null
     const timer = setTimeout(() => {
       growing = Animated.timing(disc, {
@@ -182,7 +188,7 @@ export function AppSplash() {
       disc.setValue(0)
       setCovered(false)
     }
-  }, [reduceMotion, disc])
+  }, [reduceMotion, nativeGone, disc])
 
   /*
    * A film that fails before the yellow is up — a missing file errors within
@@ -260,7 +266,9 @@ export function AppSplash() {
     const { width, height } = event.nativeEvent.layout
     setSize({ width, height })
     requestAnimationFrame(() => {
-      void SplashScreen.hideAsync().catch(() => undefined)
+      void SplashScreen.hideAsync()
+        .catch(() => undefined)
+        .finally(() => setNativeGone(true))
     })
   }, [])
 
@@ -298,16 +306,21 @@ export function AppSplash() {
           </Animated.View>
 
           {!reduceMotion && (
+            // Drawn at the badge's size and scaled up to the diameter, so the
+            // view is small whatever the window, and scale 1 is the badge's
+            // own disc.
             <Animated.View
               style={[
                 styles.disc,
                 {
-                  borderRadius: diameter / 2,
-                  height: diameter,
-                  left: (size.width - diameter) / 2,
-                  top: (size.height - diameter) / 2,
-                  width: diameter,
-                  transform: [{ scale: disc }],
+                  transform: [
+                    {
+                      scale: disc.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, diameter / TILE_SIZE],
+                      }),
+                    },
+                  ],
                 },
               ]}
             />
@@ -434,11 +447,17 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   centred: { alignItems: 'center', justifyContent: 'center' },
   /**
-   * Sized to the window and grown by a transform from nothing, rather than
-   * sized by its width — a layout-animated circle is a reflow every frame, off
-   * the native driver, on the busiest thread of the launch.
+   * Badge-sized and grown by a transform, rather than by its width — a
+   * layout-animated circle is a reflow every frame, off the native driver, on
+   * the busiest thread of the launch.
    */
-  disc: { backgroundColor: FILM_GROUND, position: 'absolute' },
+  disc: {
+    backgroundColor: FILM_GROUND,
+    borderRadius: TILE_SIZE / 2,
+    height: TILE_SIZE,
+    position: 'absolute',
+    width: TILE_SIZE,
+  },
   fill: {
     alignItems: 'center',
     backgroundColor: colors.bg,
