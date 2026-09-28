@@ -3,6 +3,7 @@ import * as Location from 'expo-location'
 import { router } from 'expo-router'
 import { confirmAlert, showAlert } from './alert'
 import type { GeocodedAddress } from './sharedLocation'
+import { withTimeout } from './withTimeout'
 
 /**
  * Reading the device's position, and the one decision that makes this file
@@ -26,6 +27,20 @@ import type { GeocodedAddress } from './sharedLocation'
  * they chose.
  */
 const ACCURACY = Location.Accuracy.Balanced
+
+/**
+ * How long a place shared in a chat waits for GPS before settling for the
+ * last fix the phone had. The person is looking at a chat with nothing
+ * happening; indoors a high-accuracy fix can take far longer than this, or
+ * never come.
+ */
+const PRECISE_FIX_TIMEOUT_MS = 8000
+
+/**
+ * How long the sheet waits to name the place. A name is a nicety — the card
+ * shows coordinates without one — and not worth holding the sheet back for.
+ */
+const GEOCODE_TIMEOUT_MS = 4000
 
 /**
  * A fix, or `null` with a reason. Deliberately not a thrown error: every
@@ -108,13 +123,34 @@ export async function captureLocation({
           })
     const fix =
       position ??
-      (await Location.getCurrentPositionAsync({
-        accuracy: precise ? Location.Accuracy.High : ACCURACY,
-      }))
+      (precise
+        ? await preciseFix()
+        : await Location.getCurrentPositionAsync({ accuracy: ACCURACY }))
+    if (!fix) return { ok: false, reason: 'unavailable' }
     return { ok: true, lat: fix.coords.latitude, lng: fix.coords.longitude }
   } catch {
     return { ok: false, reason: 'unavailable' }
   }
+}
+
+/**
+ * GPS for a place shared in a chat, or — when it has not answered in time —
+ * the phone's last fix from the past few minutes, which is where the person
+ * almost certainly still is. `null` when there is neither.
+ *
+ * The fallback must be within a hundred metres, `ACCURACY`'s own figure: the
+ * sheet offers "exact" for whatever comes back, and a fix too coarse to keep
+ * that promise is worse than saying there was none.
+ */
+async function preciseFix(): Promise<Location.LocationObject | null> {
+  const fix = await withTimeout(
+    Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High }),
+    PRECISE_FIX_TIMEOUT_MS,
+  )
+  return (
+    fix ??
+    (await Location.getLastKnownPositionAsync({ maxAge: 5 * 60 * 1000, requiredAccuracy: 100 }))
+  )
 }
 
 /**
@@ -127,8 +163,11 @@ export async function captureLocation({
  */
 export async function geocodePlace(lat: number, lng: number): Promise<GeocodedAddress | undefined> {
   try {
-    const [address] = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lng })
-    return address
+    const addresses = await withTimeout(
+      Location.reverseGeocodeAsync({ latitude: lat, longitude: lng }),
+      GEOCODE_TIMEOUT_MS,
+    )
+    return addresses?.[0]
   } catch {
     return undefined
   }
