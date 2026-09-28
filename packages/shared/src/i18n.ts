@@ -1,4 +1,5 @@
 import { DEFAULT_LOCALE, type Locale } from './locales'
+import { pluralCategory } from './pluralRules'
 
 /**
  * The message catalogue's shape, and the engine that reads one.
@@ -94,29 +95,6 @@ export type Paths<T> = {
 /** Values substituted into `{placeholders}`. */
 export type MessageParams = Record<string, string | number>
 
-/**
- * `Intl.PluralRules` is not free to construct and `t` is called dozens of
- * times per render, so the eight we can ever need are built once.
- */
-const pluralRules = new Map<string, Intl.PluralRules | null>()
-
-function rulesFor(locale: Locale): Intl.PluralRules | null {
-  const cached = pluralRules.get(locale)
-  if (cached !== undefined) return cached
-
-  let rules: Intl.PluralRules | null
-  try {
-    rules = new Intl.PluralRules(locale)
-  } catch {
-    // Hermes ships full ICU on both platforms today, but a stripped build or
-    // an old web engine can leave `Intl` partial. Losing the plural rules for
-    // a locale should cost that locale its grammar, not the whole screen.
-    rules = null
-  }
-  pluralRules.set(locale, rules)
-  return rules
-}
-
 function isPlural(value: Message | Catalog): value is Plural {
   if (typeof value !== 'object' || typeof (value as Plural).other !== 'string') return false
   return Object.keys(value).every((key) => PLURAL_CATEGORIES.has(key))
@@ -142,9 +120,7 @@ function lookup(catalog: Catalog, key: string): Message | undefined {
  * the `Plural` type requires it and nothing else.
  */
 function selectPlural(plural: Plural, locale: Locale, count: number): string {
-  const rules = rulesFor(locale)
-  const category = rules ? rules.select(count) : count === 1 ? 'one' : 'other'
-  return plural[category] ?? plural.other
+  return plural[pluralCategory(locale, count)] ?? plural.other
 }
 
 /**
