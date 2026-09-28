@@ -397,11 +397,16 @@ REEL.scene('08-exchange', (ctx) => {
   const transformOf = (s) =>
     `translate(${f3(s.px)} ${f3(s.py)}) rotate(${f3(s.rho)}) scale(${f3(s.S)}) translate(-512 -512)`
 
-  /* Stream offset: 200 units a beat, plus a 43-unit surge snapped in on each of beats 0-3. */
+  /*
+   * Stream offset: a constant 243 units a beat. The storyboard asked for a
+   * 43-unit surge snapped in on each beat; on 'snap' that is a 45 px jump in
+   * one frame out of a 9 px/frame flow, which reads as the text catching and
+   * skipping, not as a pulse. The beat stays in the hairline. 243 is the old
+   * 200 a beat plus the four surges spread evenly, so the bend at beat 4 still
+   * starts on the same words.
+   */
   function streamed(bt) {
-    let v = 200 * bt
-    for (let k = 0; k < 4; k++) v += 43 * eSnap(clamp01((bt - k) / 0.25))
-    return v
+    return 243 * bt
   }
 
   /* The hairline's beat pulse, 1.5 → 4 → 1.5 px inside a quarter beat. */

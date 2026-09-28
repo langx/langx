@@ -11,6 +11,7 @@
  *   node tools/showreel/snap.mjs --from 10 --to 14 --n 12
  *   node tools/showreel/snap.mjs --times 0,4.5,9.99 --full      # 1920x1080 frames, no sheet
  *   node tools/showreel/snap.mjs --boundaries                    # last/first frame of every cut
+ *   add --format vertical to any of them for the 9:16 cut
  *
  * Prints the sheet's path and any build or draw error the page reported.
  */
@@ -48,7 +49,7 @@ async function loadChromium() {
   return (loaded.default ?? loaded).chromium
 }
 
-export async function openReel({ width, height, tc = true }) {
+export async function openReel({ width, height, tc = true, format = 'wide' }) {
   const chromium = await loadChromium()
   const browser = await chromium.launch({ channel: process.env.REEL_CHANNEL ?? 'chrome' })
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 })
@@ -58,7 +59,7 @@ export async function openReel({ width, height, tc = true }) {
       logs.push(`${msg.type()}: ${msg.text()}`)
   })
   page.on('pageerror', (error) => logs.push(`pageerror: ${error.message}`))
-  await page.goto(`${PAGE}?capture${tc ? '&tc' : ''}`, { waitUntil: 'load' })
+  await page.goto(`${PAGE}?capture&format=${format}${tc ? '&tc' : ''}`, { waitUntil: 'load' })
   await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', null, {
     timeout: 30000,
   })
@@ -73,9 +74,11 @@ export async function openReel({ width, height, tc = true }) {
 async function main() {
   const a = args()
   const full = Boolean(a.full)
-  const width = full ? 1920 : 960
-  const height = full ? 1080 : 540
-  const { browser, page, logs, info } = await openReel({ width, height })
+  const format = a.format === 'vertical' ? 'vertical' : 'wide'
+  const [W, H] = format === 'vertical' ? [1080, 1920] : [1920, 1080]
+  const width = full ? W : W / 2
+  const height = full ? H : H / 2
+  const { browser, page, logs, info } = await openReel({ width, height, format })
   const FRAME = 1 / 60
 
   let times = []
@@ -118,7 +121,7 @@ async function main() {
   if (full) {
     console.log(`frames: ${dir}`)
   } else {
-    const cols = Number(a.cols ?? 4)
+    const cols = Number(a.cols ?? (format === 'vertical' ? 8 : 4))
     const rows = Math.ceil(times.length / cols)
     const sheet = join(dir, 'sheet.png')
     execFileSync('ffmpeg', [
@@ -130,7 +133,7 @@ async function main() {
       '-i',
       join(dir, 'f%03d.png'),
       '-vf',
-      `scale=480:-1,tile=${cols}x${rows}:padding=6:margin=6:color=0x444444`,
+      `scale=${format === 'vertical' ? 270 : 480}:-1,tile=${cols}x${rows}:padding=6:margin=6:color=0x444444`,
       '-frames:v',
       '1',
       sheet,

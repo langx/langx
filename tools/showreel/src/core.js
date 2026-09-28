@@ -14,8 +14,15 @@
 ;(function () {
   'use strict'
 
-  const W = 1920
-  const H = 1080
+  /*
+   * One set of scenes, two frames: 16:9 for screens and a 9:16 cut for phones
+   * and vertical feeds. Each scene reads ctx.portrait and lays itself out for
+   * the frame it is given; the timing, the cues and the score are the same in
+   * both. W and H change only through setFormat, before a build.
+   */
+  const FORMATS = { wide: { W: 1920, H: 1080 }, vertical: { W: 1080, H: 1920 } }
+  let W = 1920
+  let H = 1080
   const BPM = 120
   const BEAT = 60 / BPM
   const BAR = BEAT * 4
@@ -134,11 +141,14 @@
   }
 
   /*
+   * A page may set window.REEL_PLAN before this file loads to play a different
+   * cut from the same runtime — the app's launch animation is one.
+   *
    * Timing and grounds for every scene, in beats. Owned here rather than by
    * the scene files so that no builder can drift a boundary its neighbour is
    * cutting against. Filled from the storyboard.
    */
-  const PLAN = [
+  const PLAN = window.REEL_PLAN || [
     /* PLAN:BEGIN */
     {
       id: '01-caret',
@@ -389,6 +399,7 @@
     tc: params.has('tc'),
     solo: params.get('scene'),
     at: params.has('t') ? Number(params.get('t')) : null,
+    format: FORMATS[params.get('format')] ? params.get('format') : null,
   }
   REEL.mode = MODE
 
@@ -406,6 +417,38 @@
     const x = (vw - W * fitScale) / 2
     const y = (vh - H * fitScale) / 2
     stage.style.transform = `translate(${x}px, ${y}px) scale(${fitScale})`
+  }
+
+  function setFormat(format) {
+    REEL.format = format
+    W = FORMATS[format].W
+    H = FORMATS[format].H
+    REEL.W = W
+    REEL.H = H
+    stage.style.width = W + 'px'
+    stage.style.height = H + 'px'
+    document.documentElement.dataset.format = format
+  }
+
+  const PREF_KEY = 'langx-reel-format'
+  function storedFormat() {
+    try {
+      const v = window.sessionStorage.getItem(PREF_KEY)
+      return FORMATS[v] ? v : null
+    } catch {
+      return null
+    }
+  }
+  function storeFormat(format) {
+    try {
+      window.sessionStorage.setItem(PREF_KEY, format)
+    } catch {
+      // A blocked storage only costs the choice surviving a reload.
+    }
+  }
+  /** What the window suggests: a tall window gets the vertical cut. */
+  function fittingFormat() {
+    return viewport.clientHeight > viewport.clientWidth ? 'vertical' : 'wide'
   }
 
   function canvasScale() {
@@ -437,6 +480,11 @@
       E: REEL.E,
       MARK,
       CUT,
+      format: REEL.format,
+      portrait: REEL.format === 'vertical',
+      /** The stage's centre: (960, 540) wide, (540, 960) vertical. */
+      CX: W / 2,
+      CY: H / 2,
       BEAT,
       BAR,
       b: (n) => n * BEAT,
@@ -574,6 +622,34 @@
     const last = PLAN[PLAN.length - 1]
     REEL.duration = (last.start + last.dur) * BEAT
     master.set({}, {}, REEL.duration)
+  }
+
+  /**
+   * Tear the reel down and build it again in the other frame, keeping the
+   * playhead. Builders are pure functions of their context, so a second run
+   * is the same as a first.
+   */
+  function rebuild(format) {
+    const t = REEL.master.time() - EPS
+    const was = state.playing
+    pause()
+    REEL.master.kill()
+    stage.textContent = ''
+    draws.length = 0
+    REEL.cues.length = 0
+    REEL.errors.length = 0
+    REEL.scenes.length = 0
+    setFormat(format)
+    fit()
+    build()
+    render(clamp(t))
+    if (was) play()
+    if (hud) hud.sync()
+  }
+  REEL.setFormat = (format) => {
+    if (!FORMATS[format] || format === REEL.format) return
+    storeFormat(format)
+    rebuild(format)
   }
 
   /* --------------------------------------------------------------- render */
@@ -783,6 +859,11 @@
       { class: 'hud-btn hud-sound', attrs: { type: 'button', id: 'reel-sound' } },
       bar,
     )
+    const formatBtn = el(
+      'button',
+      { class: 'hud-btn hud-format', attrs: { type: 'button', id: 'reel-format' } },
+      bar,
+    )
     const replayBtn = el(
       'button',
       { class: 'hud-btn', attrs: { type: 'button', id: 'reel-replay', 'aria-label': 'Replay' } },
@@ -801,6 +882,9 @@
 
     playBtn.addEventListener('click', () => {
       toggle()
+    })
+    formatBtn.addEventListener('click', () => {
+      REEL.setFormat(REEL.format === 'wide' ? 'vertical' : 'wide')
     })
     replayBtn.addEventListener('click', () => {
       seekTo(0)
@@ -876,6 +960,8 @@
       } else if (e.key === 'm') {
         setSound(!state.sound)
         hint.hidden = true
+      } else if (e.key === 'v') {
+        REEL.setFormat(REEL.format === 'wide' ? 'vertical' : 'wide')
       } else if (e.key === 'r') {
         seekTo(0)
         play()
@@ -899,6 +985,11 @@
         soundBtn.innerHTML = state.sound ? ICONS.soundOn : ICONS.soundOff
         soundBtn.setAttribute('aria-label', state.sound ? 'Mute' : 'Sound on')
         soundBtn.setAttribute('aria-pressed', String(state.sound))
+        formatBtn.textContent = REEL.format === 'wide' ? '9:16' : '16:9'
+        formatBtn.setAttribute(
+          'aria-label',
+          REEL.format === 'wide' ? 'Switch to the vertical cut' : 'Switch to the wide cut',
+        )
         if (!state.playing) reveal(true)
       },
       reveal,
@@ -944,6 +1035,9 @@
     gsap.registerPlugin(CustomEase, SplitText, MorphSVGPlugin, DrawSVGPlugin)
     viewport = document.getElementById('viewport')
     stage = document.getElementById('stage')
+    // Capture renders exactly what it is asked for; a viewer gets the frame
+    // their window suits, unless they picked one.
+    setFormat(MODE.format || (MODE.capture ? 'wide' : storedFormat() || fittingFormat()))
     fit()
     window.addEventListener('resize', fit)
 
@@ -973,6 +1067,16 @@
     if (!MODE.capture) {
       hud = buildHud()
       gsap.ticker.add(tick)
+      // Turning a phone follows the phone, until the viewer picks a frame.
+      let settle
+      window.addEventListener('resize', () => {
+        clearTimeout(settle)
+        settle = setTimeout(() => {
+          if (!MODE.format && !storedFormat() && fittingFormat() !== REEL.format) {
+            rebuild(fittingFormat())
+          }
+        }, 250)
+      })
     }
 
     document.documentElement.dataset.ready = 'true'

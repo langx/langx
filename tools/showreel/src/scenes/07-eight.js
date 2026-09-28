@@ -72,7 +72,7 @@ REEL.scene('07-eight', (ctx) => {
   const mFont = `900 170px ${F.display}`
   const LINES = [
     { str: 'No ads', B: 360 },
-    { str: 'Nothing sold', B: 560 },
+    { str: 'Real people', B: 560 },
     { str: 'Open source', B: 760 },
   ]
   let asc = 0

@@ -7,7 +7,8 @@
  * rendered by the page itself through an OfflineAudioContext, from the same
  * cue list the live player schedules, so picture and sound cannot drift.
  *
- * Usage: node tools/showreel/render.mjs [--fps 60] [--from 0] [--to <end>] [--out out/langx-reel.mp4]
+ * Usage: node tools/showreel/render.mjs [--fps 60] [--format wide|vertical] [--from 0] [--to <end>] [--out <file>]
+ *        (the default file is out/langx-reel-16x9.mp4, or -9x16 for --format vertical)
  *        node tools/showreel/render.mjs --audio-only 1     # just out/langx-reel.wav
  */
 import { spawn } from 'node:child_process'
@@ -28,10 +29,13 @@ function args() {
 async function main() {
   const a = args()
   const fps = Number(a.fps ?? 60)
-  const outFile = resolve(a.out ?? join(HERE, 'out', 'langx-reel.mp4'))
+  const format = a.format === 'vertical' ? 'vertical' : 'wide'
+  const [W, H] = format === 'vertical' ? [1080, 1920] : [1920, 1080]
+  const aspect = format === 'vertical' ? '9x16' : '16x9'
+  const outFile = resolve(a.out ?? join(HERE, 'out', `langx-reel-${aspect}.mp4`))
   mkdirSync(dirname(outFile), { recursive: true })
 
-  const { browser, page, logs, info } = await openReel({ width: 1920, height: 1080, tc: false })
+  const { browser, page, logs, info } = await openReel({ width: W, height: H, tc: false, format })
   if (info.errors.length) console.warn(`page reported:\n  ${info.errors.join('\n  ')}`)
   const from = Number(a.from ?? 0)
   const to = Math.min(Number(a.to ?? info.duration), info.duration)
