@@ -207,13 +207,17 @@ PRs; see `docs/decisions.md` → _Transliteration runs on rules we own_.
 
 Status: in review
 
-- A new `apps/stt/` on the `apps/tts` pattern: Python, faster-whisper (MIT),
-  the `small` model in int8, `POST /transcribe` taking audio and a language
-  hint, an `X-STT-Secret` header, scale-to-zero on Fly, with `fly.toml`,
-  `Dockerfile` and `selftest.py`.
-- API: `STT_URL` and `STT_SECRET` (`env.ts`, `.env.example`), and
-  `createSttProvider` in `apps/api/src/stt/`, which is null when they are
-  unset — and then the feature is hidden.
+- Transcription runs inside the voice service, `apps/tts`: faster-whisper
+  (MIT), the `small` model in int8, `POST /transcribe` taking audio and a
+  language hint, behind the same `X-TTS-Secret` header, with a lock of its own
+  and the model loaded on the first transcription. It first shipped as a
+  separate `apps/stt` Fly app; that app was never created, so its deploy
+  failed, and it was folded into the machine that already existed and already
+  sleeps (`docs/decisions.md` → _Voice notes are written out on a machine of
+  ours_). `apps/tts/fly.toml` grew to `shared-cpu-4x` with 3 GB for it.
+- API: `createSttProvider` in `apps/api/src/stt/` reads the voice service's
+  own `TTS_URL` and `TTS_SECRET`, and is the not-configured provider when
+  they are unset — and then the feature is hidden.
 - Quota: `transcriptsPerDay` in `limits.ts` (`PlanLimits`, all three plans,
   `QUOTA_KINDS`, `QUOTA_LIMIT_KEY`) and `TrackedQuotaKind` in `quota.ts`; the
   website and GitBook copies follow.

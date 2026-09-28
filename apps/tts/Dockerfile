@@ -25,6 +25,20 @@ RUN curl -fsSL -o kokoro-v1.0.onnx "$MODEL_BASE/kokoro-v1.0.onnx" \
   && echo "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5  kokoro-v1.0.onnx" | sha256sum -c - \
   && echo "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d  voices-v1.0.bin" | sha256sum -c -
 
+# Whisper for `/transcribe`, at a pinned revision of Systran's conversion (MIT,
+# like the weights it was converted from), so a re-uploaded model cannot become
+# a different transcriber unnoticed — the revision is to Hugging Face what the
+# hashes above are to Kokoro's release. In the image for Kokoro's reason, and in
+# a layer of its own before the voices and the code, so neither a new voice nor
+# an edit to server.py downloads 460 MB again. No apt packages for it: PyAV's
+# wheel carries the ffmpeg libraries that decode a note.
+ARG WHISPER_REPO=Systran/faster-whisper-small
+ARG WHISPER_REVISION=536b0662742c02347bc0e980a01041f333bce120
+RUN python -c "from huggingface_hub import snapshot_download; \
+snapshot_download('$WHISPER_REPO', revision='$WHISPER_REVISION', local_dir='whisper-small')" \
+  && rm -rf whisper-small/.cache \
+  && du -sh whisper-small
+
 # The Piper models the manifest names, one language each, in a layer of their
 # own so that editing `server.py` does not re-download two gigabytes and a
 # deploy that changes no voice pushes no voice. `voices.json` is copied first
@@ -73,8 +87,9 @@ RUN set -eux; \
 ENV ESPEAK_LIBRARY=/usr/local/lib/libespeak-ng.so.1 \
     ESPEAK_DATA=/usr/local/share/espeak-ng-data
 
-# Every voice, loaded and encoded — see selftest.py for what it proves and why
-# it reports all of them rather than stopping at the first.
+# Every voice, loaded and encoded, and Whisper loaded and run — see selftest.py
+# for what it proves and why it reports all of them rather than stopping at the
+# first.
 COPY selftest.py ./
 RUN python selftest.py
 

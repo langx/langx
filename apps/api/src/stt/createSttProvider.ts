@@ -9,11 +9,16 @@ import type { SttProvider, TranscribeInput, TranscribeResult } from './SttProvid
  */
 export class NotConfiguredSttProvider implements SttProvider {
   transcribe(_input: TranscribeInput): Promise<TranscribeResult> {
-    return Promise.reject(new Error('The transcript service is not configured — set STT_URL'))
+    return Promise.reject(new Error('The voice service is not configured — set TTS_URL'))
   }
 }
 
+/**
+ * The voice service's URL and secret, not a pair of its own: Whisper runs in
+ * `apps/tts` beside Kokoro, so one setting turns on both reading aloud and
+ * transcripts. See `docs/decisions.md` for why they share a machine.
+ */
 export function createSttProvider(env: Env): SttProvider {
-  if (env.STT_URL) return new HttpSttProvider(env.STT_URL, env.STT_SECRET)
+  if (env.TTS_URL) return new HttpSttProvider(env.TTS_URL, env.TTS_SECRET)
   return new NotConfiguredSttProvider()
 }

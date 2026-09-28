@@ -14,7 +14,7 @@ import {
  */
 const TIMEOUT_MS = 120_000
 
-/** The service in `apps/stt`, over plain HTTP on the private network. */
+/** `/transcribe` on the voice service in `apps/tts`, over plain HTTP on the private network. */
 export class HttpSttProvider implements SttProvider {
   readonly #url: string
   readonly #secret: string | undefined
@@ -33,7 +33,7 @@ export class HttpSttProvider implements SttProvider {
       method: 'POST',
       headers: {
         'content-type': 'application/octet-stream',
-        ...(this.#secret ? { 'x-stt-secret': this.#secret } : {}),
+        ...(this.#secret ? { 'x-tts-secret': this.#secret } : {}),
       },
       body: input.audio,
       signal: AbortSignal.timeout(TIMEOUT_MS),
