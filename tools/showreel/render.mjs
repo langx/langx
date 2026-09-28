@@ -38,8 +38,10 @@ async function main() {
   const aspect = format === 'vertical' ? '9x16' : '16x9'
   const pageName = a.page ?? 'index'
   const splash = pageName === 'splash'
+  const theme = a.theme === 'dark' ? 'dark' : 'light'
+  const suffix = theme === 'dark' ? '-dark' : ''
   const outFile = resolve(
-    a.out ?? join(HERE, 'out', `langx-${splash ? 'splash' : 'reel'}-${aspect}.mp4`),
+    a.out ?? join(HERE, 'out', `langx-${splash ? 'splash' : 'reel'}-${aspect}${suffix}.mp4`),
   )
   mkdirSync(dirname(outFile), { recursive: true })
 
@@ -49,6 +51,7 @@ async function main() {
     tc: false,
     format,
     page: pageName,
+    theme,
   })
   if (info.errors.length) console.warn(`page reported:\n  ${info.errors.join('\n  ')}`)
   const from = Number(a.from ?? 0)
