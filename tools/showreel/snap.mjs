@@ -12,6 +12,7 @@
  *   node tools/showreel/snap.mjs --times 0,4.5,9.99 --full      # 1920x1080 frames, no sheet
  *   node tools/showreel/snap.mjs --boundaries                    # last/first frame of every cut
  *   add --format vertical to any of them for the 9:16 cut
+ *   add --page splash to look at the app's launch animation instead of the reel
  *
  * Prints the sheet's path and any build or draw error the page reported.
  */
@@ -21,7 +22,12 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-const PAGE = pathToFileURL(join(HERE, 'src', 'index.html')).href
+/** The pages the runtime can play: the reel, and the app's launch animation. */
+export const PAGES = { index: 'index.html', splash: 'splash.html' }
+const pageUrl = (page) => {
+  if (!PAGES[page]) throw new Error(`no page ${page}; have ${Object.keys(PAGES).join(', ')}`)
+  return pathToFileURL(join(HERE, 'src', PAGES[page])).href
+}
 
 function args() {
   const out = {}
@@ -49,7 +55,13 @@ async function loadChromium() {
   return (loaded.default ?? loaded).chromium
 }
 
-export async function openReel({ width, height, tc = true, format = 'wide' }) {
+export async function openReel({
+  width,
+  height,
+  tc = true,
+  format = 'wide',
+  page: name = 'index',
+}) {
   const chromium = await loadChromium()
   const browser = await chromium.launch({ channel: process.env.REEL_CHANNEL ?? 'chrome' })
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 })
@@ -59,7 +71,9 @@ export async function openReel({ width, height, tc = true, format = 'wide' }) {
       logs.push(`${msg.type()}: ${msg.text()}`)
   })
   page.on('pageerror', (error) => logs.push(`pageerror: ${error.message}`))
-  await page.goto(`${PAGE}?capture&format=${format}${tc ? '&tc' : ''}`, { waitUntil: 'load' })
+  await page.goto(`${pageUrl(name)}?capture&format=${format}${tc ? '&tc' : ''}`, {
+    waitUntil: 'load',
+  })
   await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', null, {
     timeout: 30000,
   })
@@ -78,7 +92,8 @@ async function main() {
   const [W, H] = format === 'vertical' ? [1080, 1920] : [1920, 1080]
   const width = full ? W : W / 2
   const height = full ? H : H / 2
-  const { browser, page, logs, info } = await openReel({ width, height, format })
+  const pageName = typeof a.page === 'string' ? a.page : 'index'
+  const { browser, page, logs, info } = await openReel({ width, height, format, page: pageName })
   const FRAME = 1 / 60
 
   let times = []

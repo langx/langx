@@ -5,9 +5,9 @@ video — a 1920x1080 stage scaled to fit, a synthesized score, a scrubber — a
 ends on the logo lockup, which is also the frame it rests on. The same page
 renders frame by frame to an MP4.
 
-It is not the app's launch screen. That one is `AppSplash.tsx` and it has about
-a second to live; this is the long version, for the website, a store listing, a
-talk or a reel.
+This is the long version, for the website, a store listing, a talk or a reel.
+The app's launch animation is cut from its finale by the same runtime; see
+[The launch animation](#the-launch-animation).
 
 ## Looking at it
 
@@ -53,6 +53,36 @@ node tools/showreel/render.mjs --fps 60
 ```
 
 Everything they write goes to `out/`, which git ignores.
+
+## The launch animation
+
+`src/splash.html` plays one scene, `src/splash/splash.js`: two rails of hellos
+stream in along the Cut, bend into the arcs, turn 540° and lock into the mark
+on the yellow — 08's finale with no hairline, wordmark or tagline. It sets
+`window.REEL_PLAN` before `core.js` loads, has no score, and is laid out for the
+9:16 frame. The app plays the result as `apps/mobile/assets/splash/intro.mp4`,
+from `AppSplash.tsx`.
+
+```bash
+node tools/showreel/snap.mjs --page splash --format vertical --n 24
+node tools/showreel/render.mjs --page splash --format vertical --fps 60 \
+  --out apps/mobile/assets/splash/intro.mp4
+```
+
+What the app relies on, and what `render.mjs --page splash` produces:
+
+- **Frame 0 is bare `#ffc409`.** The app cuts to the film from a view of that
+  colour, so nothing may be on it.
+- **The colour tags.** H.264 in yuv420p, BT.709 matrix and primaries, sRGB
+  transfer. Check a re-render with `ffprobe`; the reason for the transfer tag
+  is in `render.mjs`.
+- **The length.** `SPLASH_TIMING.INTRO_MS` in `apps/mobile/src/lib/splashTiming.ts`
+  must equal the film's; a test reads the file and fails if it does not.
+- **No audio track**, `+faststart`, and a few hundred KB: it ships in every
+  over-the-air update.
+
+The scene copies 08's geometry instead of sharing it, so the reel can change
+without moving the app's opening.
 
 ## How it is built
 
