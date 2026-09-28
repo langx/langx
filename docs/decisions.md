@@ -5996,3 +5996,45 @@ lacked as well — every `switch` over the kind has a `never`-typed `default`,
 malformed rows are dropped before the list sees them, and each row renders
 inside `RowBoundary` — so the next kind needs only its entry in
 `IN_APP_NOTIFICATION_KINDS`.
+
+## A correction pays once per message, and never for your own
+
+_28 September 2026._ `sendCorrection` checked only that its target was in the
+same conversation, and `awardForSend` filed the ten tokens under the
+correction's own `_id`, so every correction minted a fresh `refId`. A
+correction of your own message paid, and so did every repeat of one, into the
+week, month and year buckets the leaderboards rank — limited only by the
+socket's rate limit. The app offers Correct only on the other person's text,
+which guarded nothing: the socket takes any message id in the thread. Found
+while planning a monthly leaderboard contest, which is exactly what a farm like
+that would decide.
+
+**Your own message is refused** — `VALIDATION_FAILED`, before anything is
+written: no message, no `correctedAt` locking the sentence against its author's
+edits, no pool count, nothing for `countCorrectionsWritten` to put towards a
+badge. It is the rule `correctPost` holds for a post, for the reason given
+there: correcting your own sentence is not teaching. The website's line was
+already "Correct someone else's sentence". Accepting it and paying zero was the
+other option and the worse one, because an accepted self-correction would still
+count as teaching everywhere that counts corrections.
+
+**A repeat is sent, and pays nothing.** The award's `refId` is now
+`msgcorr:<targetMessageId>`, so the ledger's `{userId, kind, refId}` unique
+index is the rule "paid once per message per person" — the design `postcorr:`
+and `pron:` already use, and race-proof for their reason: a burst of repeats is
+answered by the index, not by a read. Repeats are not refused. "Corrections are
+unlimited on every plan" is a published claim, `correctPart` exists to correct a
+long message a sentence at a time, and a test sends fifty corrections of one
+message from a free account. The price is that a second sentence of the same
+message earns nothing — the bargain a post strikes too, where a second
+correction is not even accepted. No `TOKEN_RULES` number moved, so the website,
+token.langx.io and the GitBook pages stay as they are.
+
+**The daily pool is untouched.** Its term is "corrections you wrote today" in
+the published formula, and deciding that a repeat should not count there is a
+change to the pool, not to this award.
+
+**Rows written before this keep their old key**, the correction's own id, so a
+message corrected before the deploy can pay its corrector once more. No
+backfill this time: that is one payment per pair that already existed, once,
+and not worth a second in-place rewrite of a ledger whose rule is append-only.

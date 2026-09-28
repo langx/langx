@@ -337,6 +337,74 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(after.today.corrections).toBe(1)
     })
 
+    /**
+     * The app offers Correct only on the other person's text, but the socket
+     * takes any message id in the thread. Correcting your own sentence is not
+     * teaching, and it paid ten tokens a time into every ranked period.
+     */
+    it('refuses a correction of your own message, and pays nothing for it', async () => {
+      const a = await newUser('xp-self-correction-a@example.com')
+      const b = await newUser('xp-self-correction-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'hello')
+      const { message } = await reply(a.userId, conversationId, 'I has a apple')
+
+      const before = await summary(a)
+      await expect(correct(a.userId, conversationId, String(message._id))).rejects.toMatchObject({
+        code: 'VALIDATION_FAILED',
+      })
+
+      const after = await summary(a)
+      expect(after.tokens).toEqual(before.tokens)
+      expect(after.today.corrections).toBe(0)
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.messages)
+          .countDocuments({ conversationId: new ObjectId(conversationId), type: 'correction' }),
+      ).toBe(0)
+      // Refused before anything was written, so the sentence stays editable.
+      const target = await handle.db.collection(COLLECTIONS.messages).findOne({ _id: message._id })
+      expect(target?.correctedAt).toBeUndefined()
+    })
+
+    /**
+     * Unlimited is about sending, and stays true: a message can be corrected
+     * as often as anybody likes — another sentence of it, a better go at the
+     * first. It pays once. The award is filed under the corrected message, so
+     * the ledger's unique index answers every repeat, a burst included.
+     */
+    it('pays for correcting a message once, however many times it is corrected', async () => {
+      const a = await newUser('xp-correction-repeat-a@example.com')
+      const b = await newUser('xp-correction-repeat-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'hello')
+      // b speaks first, so the reciprocity bonus is paid before anything is measured.
+      await reply(b.userId, conversationId, 'hi')
+      const { message: first } = await reply(a.userId, conversationId, 'I has a apple')
+      const { message: second } = await reply(a.userId, conversationId, 'She go home')
+
+      const before = (await summary(b)).tokens
+      await correct(b.userId, conversationId, String(first._id))
+      await correct(b.userId, conversationId, String(first._id))
+      // All at once: the shape a read-then-write check would let through.
+      const burst = await Promise.all(
+        Array.from({ length: 5 }, () => correct(b.userId, conversationId, String(first._id))),
+      )
+      expect(burst.every(({ message }) => message.type === 'correction')).toBe(true)
+
+      const repeated = (await summary(b)).tokens
+      expect(repeated.week - before.week).toBe(TOKEN_RULES.award.correction)
+      expect(repeated.all - before.all).toBe(TOKEN_RULES.award.correction)
+
+      // Another message is another piece of teaching, and pays as it always did.
+      await correct(b.userId, conversationId, String(second._id))
+      expect((await summary(b)).tokens.week - repeated.week).toBe(TOKEN_RULES.award.correction)
+
+      const rows = (await earnedLedgerOf(b.userId)).filter((row) => row.kind === 'correction')
+      expect(rows.map((row) => row.refId)).toEqual([
+        `msgcorr:${first._id.toHexString()}`,
+        `msgcorr:${second._id.toHexString()}`,
+      ])
+    })
+
     it('pays the reciprocity bonus to both sides, exactly once', async () => {
       const a = await newUser('xp-mutual-a@example.com')
       const b = await newUser('xp-mutual-b@example.com')
