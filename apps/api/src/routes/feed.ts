@@ -49,23 +49,6 @@ const childParamsSchema = z.object({ postId: z.string(), id: z.string() })
 const threadParamsSchema = z.object({ id: z.string(), commentId: z.string() })
 
 /**
- * Whether a reply to a comment writes an inbox row of its own kind.
- *
- * **Off, because of the 2.7 store build.** Its notification centre renders each
- * row through a `switch` with no `default` and then reads `copy.key` off the
- * answer, so a kind it has never heard of throws inside the list's render and
- * the whole screen fails — not a blank row, a broken page, for everybody with
- * one such row in their first thirty. Push is safe on that build (its data
- * says `social` and carries a `postId`, which it already opens), so replies are
- * push-only until the builds that cannot draw the row are gone. The post's
- * author keeps today's `postComment` row either way.
- *
- * Turning this on is the whole change: the kind is already in
- * `IN_APP_NOTIFICATION_KINDS`, the grouping and the client's copy exist.
- */
-export const COMMENT_REPLY_INBOX_ROWS = false
-
-/**
  * Tells a post's author that somebody answered them.
  *
  * Never awaited into the response and never allowed to throw: the correction
@@ -136,10 +119,11 @@ function tellTheAuthor(
  * Tells the people in a comment thread that somebody answered in it.
  *
  * Who hears: the thread's first commenter, and — on a reply to a reply — the
- * person answered. Each gets the reply push, throttled per thread. The post's
- * author hears as they always have, a `postComment` row and push, unless they
- * are one of those two, in which case the reply push is theirs and the
- * comment push is not sent: **nobody is told twice about one comment.**
+ * person answered. Each gets a `commentReply` row and the reply push,
+ * throttled per thread. The post's author hears as they always have, a
+ * `postComment` row and push, unless they are one of those two, in which case
+ * the reply's row and push are theirs and the comment's are not written:
+ * **nobody is told twice about one comment.**
  *
  * The same never-throws contract as `tellTheAuthor`.
  */
@@ -164,20 +148,24 @@ function tellTheThread(
     ].filter((id) => id !== responderId)
 
     for (const userId of told) {
-      const isPostAuthor = userId === post.authorId
-      if (COMMENT_REPLY_INBOX_ROWS || isPostAuthor) {
-        await recordNotification(
-          db,
-          {
-            userId,
-            kind: COMMENT_REPLY_INBOX_ROWS ? INBOX_KIND.commentReply : INBOX_KIND.comment,
-            refId: replyId,
-            actorId: responderId,
-            postId: post._id,
-          },
-          live,
-        )
-      }
+      /*
+       * Written for everybody in the thread, the post's author included. A
+       * build that cannot draw the kind is never sent it — `visibleTo` in the
+       * inbox and the socket's `inboxRoom` see to that — so this no longer
+       * waits for the 2.7 build to be gone. What that build loses is the row,
+       * not the news: the push still reaches it.
+       */
+      await recordNotification(
+        db,
+        {
+          userId,
+          kind: INBOX_KIND.commentReply,
+          refId: replyId,
+          actorId: responderId,
+          postId: post._id,
+        },
+        live,
+      )
       await notifyPostReply(db, senders, {
         postId: post._id,
         authorId: userId,
