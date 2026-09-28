@@ -84,10 +84,12 @@ export default function WelcomeBackScreen() {
     } catch {
       // Not worth blocking on. The worst case is seeing this screen once more,
       // and refusing to move them on would be a far worse answer than that.
-    } finally {
-      setBusy(false)
-      router.replace(next)
     }
+    // `busy` stays set: this screen is leaving, and on Android a state change
+    // inside a screen in the same commit as the `replace` that removes it
+    // kills the React instance — a white page until the app is reopened. See
+    // `src/lib/leavingScreenState.test.ts`.
+    router.replace(next)
   }
 
   /*

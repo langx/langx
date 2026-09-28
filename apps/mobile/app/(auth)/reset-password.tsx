@@ -35,12 +35,13 @@ export default function ResetPassword() {
     setError(undefined)
     setLoading(true)
     const { error: resetError } = await authClient.resetPassword({ newPassword, token })
-    setLoading(false)
 
     if (resetError) {
+      setLoading(false)
       setError(t(authErrorKey(resetError) ?? 'errors.resetFailed'))
       return
     }
+    // No `setLoading(false)` on the way out — see `leavingScreenState.test.ts`.
     router.replace('/(auth)/sign-in')
   }
 

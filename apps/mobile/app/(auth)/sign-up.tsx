@@ -73,12 +73,13 @@ export default function SignUp() {
       // No `callbackURL`: the API builds the mailed link itself, as
       // `app/verify-email.tsx` explains, so anything passed here is ignored.
     })
-    setLoading(false)
-
     if (signUpError) {
+      setLoading(false)
       setError(t(authErrorKey(signUpError) ?? (online ? 'errors.signUpFailed' : 'common.offline')))
       return
     }
+    // Still loading on the way out, on purpose: resetting it in the same tick
+    // as the `replace` is a white page on Android (`leavingScreenState.test.ts`).
     router.replace({ pathname: '/(auth)/check-email', params: { email } })
   }
 
