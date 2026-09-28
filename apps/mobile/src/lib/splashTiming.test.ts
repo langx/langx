@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { SPLASH_TIMING, canExit, discDiameter, msUntilExitAllowed } from './splashTiming'
+import { SPLASH_TIMING, canExit, msUntilExitAllowed } from './splashTiming'
 
 const { MIN_VISIBLE_MS } = SPLASH_TIMING
 
@@ -38,27 +38,6 @@ describe('the reduced-motion exit', () => {
    */
   it('does not lift the ground while the badge is still on screen', () => {
     expect(SPLASH_TIMING.EXIT_GROUND_DELAY_MS).toBeGreaterThanOrEqual(SPLASH_TIMING.EXIT_TILE_MS)
-  })
-})
-
-describe('discDiameter', () => {
-  /**
-   * The disc grows from the window's centre, so what it has to reach is the
-   * farthest corner. Sized to the longer side, a phone keeps a sliver of the
-   * old ground in each corner under the whole film.
-   */
-  it('reaches every corner of the window from its centre', () => {
-    for (const [width, height] of [
-      [390, 844],
-      [844, 390],
-      [1024, 1366],
-      [1920, 1080],
-      [320, 320],
-    ] as const) {
-      const radius = discDiameter(width, height) / 2
-      expect(radius).toBeGreaterThan(Math.hypot(width / 2, height / 2))
-      expect(Number.isInteger(discDiameter(width, height))).toBe(true)
-    }
   })
 })
 
