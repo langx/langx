@@ -1,7 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
-import type { InAppNotificationKind } from '@langx/shared'
+import type { InAppNotification, InAppNotificationKind } from '@langx/shared'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useMarkNotificationsRead, useNotifications } from '../../src/api/queries'
+import { RowBoundary } from '../../src/components/RowBoundary'
 import { PersonRowSkeleton } from '../../src/components/skeletons/PersonRowSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
@@ -13,7 +14,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { relativeTime } from '../../src/lib/format'
 import { goBackTo, openNotification } from '../../src/lib/navigation'
-import { notificationCopy, notificationHref } from '../../src/lib/notificationInbox'
+import { drawableRows, notificationCopy, notificationHref } from '../../src/lib/notificationInbox'
 import { clearFromTray } from '../../src/lib/notifications'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 
@@ -56,14 +57,14 @@ const KIND_ICONS: Record<InAppNotificationKind, keyof typeof Feather.glyphMap> =
 export default function NotificationsScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const { colors } = useTheme()
   const t = useT()
-  const { locale } = useLocale()
 
   const list = useNotifications()
   const markRead = useMarkNotificationsRead()
   const pull = usePullToRefresh(() => list.refetch())
-  const items = dedupeById(list.data?.pages.flatMap((page) => page.items) ?? [])
+  // Only the rows this build can draw, whatever arrived. The server already
+  // sends no other kind; this is the net under it. See `isDrawableRow`.
+  const items = dedupeById(drawableRows(list.data?.pages))
 
   const hasUnread = items.some((item) => !item.read)
 
@@ -118,70 +119,89 @@ export default function NotificationsScreen() {
           ListEmptyComponent={
             <EmptyState icon="bell" title={t('inbox.emptyTitle')} body={t('inbox.emptyBody')} />
           }
-          renderItem={({ item }) => {
-            const copy = notificationCopy(item)
-            const href = notificationHref(item, HERE)
-            const unread = !item.read
-            return (
-              <Pressable
-                accessibilityRole="button"
-                // A row whose target is gone is not a button that opens an
-                // empty screen — it is not a button.
-                disabled={!href}
-                onPress={() => {
-                  if (!href) return
-                  // Opening it *is* dealing with it, so the dot goes and the
-                  // bell drops by one. The server reads the whole pile behind
-                  // this row, which is what the row was already speaking for.
-                  if (!item.read) markRead.mutate(item._id)
-                  // Read or not, whatever announced it is stale in the shade.
-                  void clearFromTray({ row: item })
-                  openNotification(href)
-                }}
-                style={({ pressed }) => [
-                  styles.row,
-                  unread && styles.unread,
-                  pressed && styles.pressed,
-                ]}
-              >
-                {item.actor ? (
-                  <Avatar
-                    url={item.actor.avatarUrl}
-                    name={item.actor.displayName}
-                    seed={item.actor._id}
-                  />
-                ) : (
-                  <View style={styles.glyph}>
-                    <Feather name={KIND_ICONS[item.kind]} size={20} color={colors.textMuted} />
-                  </View>
-                )}
-                <View style={styles.body}>
-                  <Text style={styles.line} numberOfLines={2}>
-                    {t(copy.key, copy.params)}
-                  </Text>
-                  {item.preview ? (
-                    <Text style={styles.preview} numberOfLines={1}>
-                      {item.preview}
-                    </Text>
-                  ) : null}
-                  <Text style={styles.when}>
-                    {relativeTime(item.createdAt, { t, locale })}
-                    {/*
-                     * The days this row speaks for, where it speaks for any.
-                     * Beside the time rather than in the sentence: the
-                     * sentence is the newest day's and stays true, and how
-                     * far back the fold reaches is a fact about when.
-                     */}
-                    {item.earlier ? ` · ${t('inbox.earlier', { count: item.earlier })}` : ''}
-                  </Text>
-                </View>
-                {unread ? <View style={styles.dot} accessibilityLabel={t('inbox.unread')} /> : null}
-              </Pressable>
-            )
-          }}
+          renderItem={({ item }) => (
+            // One row that throws is one row missing, not the screen.
+            <RowBoundary>
+              <NotificationRow item={item} onRead={(id) => markRead.mutate(id)} />
+            </RowBoundary>
+          )}
         />
       )}
     </Screen>
+  )
+}
+
+/**
+ * One row of the centre.
+ *
+ * Its own component rather than the body of `renderItem`, so everything it
+ * computes happens inside `RowBoundary`: a `renderItem` that threw would throw
+ * in the list's own render, above any boundary its row could be wrapped in.
+ */
+function NotificationRow({
+  item,
+  onRead,
+}: {
+  item: InAppNotification
+  onRead: (id: string) => void
+}) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const { locale } = useLocale()
+
+  const copy = notificationCopy(item)
+  // A kind this build does not know says nothing, so it draws nothing.
+  if (!copy) return null
+  const href = notificationHref(item, HERE)
+  const unread = !item.read
+  return (
+    <Pressable
+      accessibilityRole="button"
+      // A row whose target is gone is not a button that opens an
+      // empty screen — it is not a button.
+      disabled={!href}
+      onPress={() => {
+        if (!href) return
+        // Opening it *is* dealing with it, so the dot goes and the
+        // bell drops by one. The server reads the whole pile behind
+        // this row, which is what the row was already speaking for.
+        if (!item.read) onRead(item._id)
+        // Read or not, whatever announced it is stale in the shade.
+        void clearFromTray({ row: item })
+        openNotification(href)
+      }}
+      style={({ pressed }) => [styles.row, unread && styles.unread, pressed && styles.pressed]}
+    >
+      {item.actor ? (
+        <Avatar url={item.actor.avatarUrl} name={item.actor.displayName} seed={item.actor._id} />
+      ) : (
+        <View style={styles.glyph}>
+          <Feather name={KIND_ICONS[item.kind]} size={20} color={colors.textMuted} />
+        </View>
+      )}
+      <View style={styles.body}>
+        <Text style={styles.line} numberOfLines={2}>
+          {t(copy.key, copy.params)}
+        </Text>
+        {item.preview ? (
+          <Text style={styles.preview} numberOfLines={1}>
+            {item.preview}
+          </Text>
+        ) : null}
+        <Text style={styles.when}>
+          {relativeTime(item.createdAt, { t, locale })}
+          {/*
+           * The days this row speaks for, where it speaks for any.
+           * Beside the time rather than in the sentence: the
+           * sentence is the newest day's and stays true, and how
+           * far back the fold reaches is a fact about when.
+           */}
+          {item.earlier ? ` · ${t('inbox.earlier', { count: item.earlier })}` : ''}
+        </Text>
+      </View>
+      {unread ? <View style={styles.dot} accessibilityLabel={t('inbox.unread')} /> : null}
+    </Pressable>
   )
 }
 

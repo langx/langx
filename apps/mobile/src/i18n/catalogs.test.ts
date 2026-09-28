@@ -209,12 +209,15 @@ describe('dynamically built keys', () => {
   it('resolves a line for every notification the inbox can show', () => {
     for (const kind of IN_APP_NOTIFICATION_KINDS) {
       for (const count of [0, 3]) {
-        const { key, params } = notificationCopy({
+        const copy = notificationCopy({
           _id: 'n1',
           kind,
           actor: { handle: 'sofia', displayName: 'Sofia' },
           count,
         })
+        expect(copy, kind).not.toBeNull()
+        if (!copy) continue
+        const { key, params } = copy
         const line = t(key, params)
         expect(line, `${kind}/${String(count)}`).not.toContain('inbox.')
         // `interpolate` leaves an unfilled placeholder in the text on purpose,
