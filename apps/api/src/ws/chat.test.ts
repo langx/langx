@@ -1341,4 +1341,60 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       expect({ oldHeard, currentHeard }).toEqual({ oldHeard: false, currentHeard: true })
     })
   })
+
+  /*
+   * The socket twin of `POST .../poll-answer`. The same `answerPoll` sits
+   * behind both, so what this proves is that the socket reaches it — and
+   * that the one-answer rule holds when the second attempt comes over REST.
+   */
+  it('answers a poll over the socket, once, whichever transport tries again', async () => {
+    const sender = await newUser('poll-ws-sender@example.com')
+    const reader = await newUser('poll-ws-reader@example.com')
+    const conversation = await startConversation(sender, reader.userId)
+    const messageId = new ObjectId()
+    await handle.db.collection(COLLECTIONS.messages).insertOne({
+      _id: messageId,
+      conversationId: new ObjectId(conversation._id),
+      senderId: sender.userId,
+      type: 'text',
+      body: 'Where did you hear about us?',
+      interactive: {
+        kind: 'poll',
+        pollId: 'poll-ws',
+        options: [
+          { id: 'friend', label: 'A friend' },
+          { id: 'google', label: 'Google' },
+        ],
+      },
+      createdAt: new Date(),
+    })
+
+    const socket = await connectSocket(reader.cookie)
+    const ack = await new Promise<{ ok: boolean; data?: { interactive?: { answer?: string } } }>(
+      (resolve) => {
+        socket.emit(
+          'poll:answer',
+          {
+            conversationId: conversation._id,
+            messageId: messageId.toHexString(),
+            optionId: 'google',
+          },
+          resolve,
+        )
+      },
+    )
+    expect(ack.ok).toBe(true)
+    expect(ack.data?.interactive?.answer).toBe('google')
+
+    const again = await app.inject({
+      method: 'POST',
+      url: `/conversations/${conversation._id}/messages/${messageId.toHexString()}/poll-answer`,
+      headers: { cookie: reader.cookie },
+      payload: { optionId: 'friend' },
+    })
+    expect(again.json<{ interactive: { answer?: string } }>().interactive.answer).toBe('google')
+    expect(
+      await handle.db.collection(COLLECTIONS.pollAnswers).countDocuments({ pollId: 'poll-ws' }),
+    ).toBe(1)
+  })
 })

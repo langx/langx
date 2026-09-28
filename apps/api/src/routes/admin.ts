@@ -36,6 +36,7 @@ import {
   updateBroadcastBodies,
 } from '../modules/admin/broadcast'
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
+import { pollResults } from '../modules/chat/polls'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
 import { listOnline, readAdminPulse } from '../modules/admin/pulse'
@@ -700,7 +701,16 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const job = await getBroadcast(app.mongo.db, request.params.id)
       if (!job) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such broadcast')
-      return reply.send(job)
+      // A poll's answers, per option, beside the job that asked it.
+      const poll = job.interactive?.kind === 'poll' ? job.interactive : null
+      const pollResultsView = poll
+        ? await pollResults(
+            app.mongo.db,
+            poll.pollId,
+            poll.options.map((option) => option.id),
+          )
+        : undefined
+      return reply.send({ ...job, ...(pollResultsView ? { pollResults: pollResultsView } : {}) })
     },
   )
 

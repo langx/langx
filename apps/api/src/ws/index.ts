@@ -4,6 +4,7 @@ import {
   pinMessageSchema,
   reactToMessageSchema,
   starMessageSchema,
+  answerPollSchema,
   answerQuizSchema,
   respondToMeetingSchema,
   sendCorrectionSchema,
@@ -52,6 +53,7 @@ import {
   sendMediaMessage,
   sendTextMessage,
 } from '../modules/chat/messages'
+import { answerPoll } from '../modules/chat/polls'
 import { fanOutConversationPinned, fanOutMessage, fanOutMessageUpdate } from './fanOut'
 import { sendTraySync } from './traySync'
 import { PresenceThrottle, clientBuildOf, touchPresence } from '../modules/presence/presence'
@@ -542,6 +544,23 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then(({ message, conversation }) => {
           fanOutMessageUpdate(io, conversation, message, 'both', userId)
           ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    /**
+     * A poll under a broadcast. `answerPoll` is the REST route's too, so the
+     * one-answer rule is the index's and not this handler's. Only the
+     * answerer's own devices are told: the sender is `@langx`.
+     */
+    socket.on('poll:answer', (payload: unknown, ack: Ack) => {
+      if (!limited('message:react', ack)) return
+      answerPollSchema
+        .parseAsync(payload)
+        .then((input) => answerPoll(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          fanOutMessageUpdate(io, conversation, message, 'actor', userId)
+          ack?.({ ok: true, data: toMessageView(message, userId) })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })

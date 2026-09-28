@@ -26,6 +26,11 @@
  * `broadcasts/` prefix, which belongs to nobody, because the message rows keep
  * pointing at it long after this script has exited.
  *
+ * A `poll.json` or `card.json` beside the bodies puts chips or a button under
+ * every copy — the shape is `broadcastInteractiveSchema`, with a label per
+ * locale, and each reader gets theirs. One or the other, and never with a
+ * picture: chips belong under a sentence, not a caption.
+ *
  * Usage:
  *   pnpm --filter @langx/api exec tsx --env-file=../../.env \
  *     scripts/send-announcement.ts --id 2026-09-copilot --body announcements/copilot [--confirm]
@@ -39,7 +44,13 @@
 import { randomUUID } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { SUPPORTED_LOCALES, type Locale, type MessageMedia } from '@langx/shared'
+import {
+  broadcastInteractiveSchema,
+  SUPPORTED_LOCALES,
+  type BroadcastInteractive,
+  type Locale,
+  type MessageMedia,
+} from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { loadEnv, publicApiUrl, type Env } from '../src/env'
 import {
@@ -66,6 +77,23 @@ function loadBodies(dir: string): Record<string, string> {
   }
   if (!bodies.en) throw new Error(`${dir}/en.txt is required — it is the fallback`)
   return bodies
+}
+
+/**
+ * `<dir>/poll.json` or `<dir>/card.json`, validated. Both at once is refused
+ * rather than one picked: which of two files wins is not something to find
+ * out from the thread.
+ */
+function loadInteractive(dir: string): BroadcastInteractive | undefined {
+  const found = ['poll', 'card']
+    .map((kind) => ({ kind, path: join(dir, `${kind}.json`) }))
+    .filter((file) => existsSync(file.path))
+  if (found.length === 0) return undefined
+  if (found.length > 1) throw new Error(`${dir} has both poll.json and card.json — pick one`)
+  const [file] = found
+  const spec = broadcastInteractiveSchema.parse(JSON.parse(readFileSync(file!.path, 'utf8')))
+  if (spec.kind !== file!.kind) throw new Error(`${file!.path} says kind "${spec.kind}"`)
+  return spec
 }
 
 /**
@@ -115,6 +143,7 @@ async function main(): Promise<void> {
 
   const env = loadEnv()
   const bodies = loadBodies(dir)
+  const interactive = loadInteractive(dir)
   const { db, close } = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
 
   try {
@@ -132,6 +161,11 @@ async function main(): Promise<void> {
      * for a job that will not be changed — and a `--confirm` run reaches here
      * with the files still on disk.
      */
+    const hasPictures = SUPPORTED_LOCALES.some((locale) => existsSync(join(dir, `${locale}.png`)))
+    // Checked before the upload, so a refused run leaves nothing in the bucket.
+    if (interactive && hasPictures) {
+      throw new Error(`${dir} has pictures and a ${interactive.kind} — chips go under text only`)
+    }
     const images = existing ? {} : await uploadImages(dir, env)
     const job =
       existing ??
@@ -139,6 +173,7 @@ async function main(): Promise<void> {
         id: slug,
         bodies,
         images,
+        ...(interactive ? { interactive } : {}),
         pushTitle: 'LangX',
         createdBy: 'script:send-announcement',
       }))
@@ -147,6 +182,7 @@ async function main(): Promise<void> {
     console.log(`  status:     ${job.status}${existing ? ' (already queued — left as it is)' : ''}`)
     console.log(`  recipients: ${job.total}`)
     console.log(`  locales:    ${Object.keys(job.bodies).join(', ')}`)
+    console.log(`  interactive: ${job.interactive?.kind ?? 'none'}`)
     console.log(`  pictures:   ${Object.keys(job.images ?? {}).join(', ') || 'none'}`)
     console.log(`\n  en.txt:\n${job.bodies.en?.slice(0, 300) ?? ''}\n`)
 

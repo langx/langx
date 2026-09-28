@@ -1,4 +1,11 @@
-import type { BroadcastStatus, Locale, MessageMedia } from '@langx/shared'
+import {
+  resolveInteractive,
+  type BroadcastInteractive,
+  type BroadcastStatus,
+  type Locale,
+  type MessageInteractive,
+  type MessageMedia,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { notSuspended } from '../moderation/suspension'
@@ -35,6 +42,12 @@ export interface BroadcastJob {
    * writes whichever `<locale>.png` sit next to the bodies.
    */
   images?: Record<string, MessageMedia>
+  /**
+   * A poll or a one-button card under every copy, authored in all eight
+   * languages and resolved per reader. Written by the announcement script
+   * from `poll.json` / `card.json`; the panel has no editor for it.
+   */
+  interactive?: BroadcastInteractive
   pushTitle: string
   status: BroadcastStatus
   createdAt: Date
@@ -107,6 +120,7 @@ export async function createBroadcast(
     id: string
     bodies: Record<string, string>
     images?: Record<string, MessageMedia>
+    interactive?: BroadcastInteractive
     pushTitle: string
     createdBy: string
   },
@@ -116,6 +130,7 @@ export async function createBroadcast(
     _id: input.id,
     bodies: input.bodies,
     ...(input.images && Object.keys(input.images).length > 0 ? { images: input.images } : {}),
+    ...(input.interactive ? { interactive: input.interactive } : {}),
     pushTitle: input.pushTitle,
     // A draft sends nothing. Starting it is a second, separate request — which
     // is the only reason a back button or a double tap cannot broadcast.
@@ -263,4 +278,9 @@ export function bodyFor(job: BroadcastJob, locale: Locale): string {
  */
 export function mediaFor(job: BroadcastJob, locale: Locale): MessageMedia | undefined {
   return job.images?.[locale] ?? job.images?.en
+}
+
+/** The poll or card for one reader, in their language. */
+export function interactiveFor(job: BroadcastJob, locale: Locale): MessageInteractive | undefined {
+  return job.interactive ? resolveInteractive(job.interactive, locale) : undefined
 }

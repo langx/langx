@@ -240,6 +240,12 @@ export const COLLECTIONS = {
    * See `modules/admin/broadcast.ts`.
    */
   broadcastQueue: 'broadcastQueue',
+  /**
+   * One row per person per poll a broadcast asked. The unique `{pollId,
+   * userId}` is the one-answer rule, and the rows are what the panel counts.
+   * See `modules/chat/polls.ts`.
+   */
+  pollAnswers: 'pollAnswers',
   jobRuns: 'jobRuns',
   /**
    * One document per scheduled pass, holding its last run. A record, not a

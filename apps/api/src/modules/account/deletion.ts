@@ -423,6 +423,7 @@ export async function purgeExpiredAccounts(
       // on content that survives the author, the same way a post outlives the
       // account that wrote it.
       db.collection(COLLECTIONS.likes).deleteMany({ userId }),
+      db.collection(COLLECTIONS.pollAnswers).deleteMany({ userId }),
       /*
        * Both sides, and the second is the one that is easy to forget.
        *

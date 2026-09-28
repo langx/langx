@@ -1,0 +1,110 @@
+{
+  "kind": "poll",
+  "pollId": "2026-10-heard-from",
+  "options": [
+    {
+      "id": "store-search",
+      "labels": {
+        "en": "App store search",
+        "tr": "Mağaza araması",
+        "es": "Búsqueda en la tienda",
+        "ru": "Поиск в магазине",
+        "ar": "البحث في المتجر",
+        "fr": "Recherche dans le store",
+        "de": "Suche im App Store",
+        "pt-BR": "Busca na loja"
+      }
+    },
+    {
+      "id": "friend",
+      "labels": {
+        "en": "A friend",
+        "tr": "Bir arkadaş",
+        "es": "Un amigo",
+        "ru": "Друг",
+        "ar": "صديق",
+        "fr": "Un ami",
+        "de": "Freunde",
+        "pt-BR": "Um amigo"
+      }
+    },
+    {
+      "id": "instagram",
+      "labels": {
+        "en": "Instagram",
+        "tr": "Instagram",
+        "es": "Instagram",
+        "ru": "Instagram",
+        "ar": "Instagram",
+        "fr": "Instagram",
+        "de": "Instagram",
+        "pt-BR": "Instagram"
+      }
+    },
+    {
+      "id": "tiktok",
+      "labels": {
+        "en": "TikTok",
+        "tr": "TikTok",
+        "es": "TikTok",
+        "ru": "TikTok",
+        "ar": "TikTok",
+        "fr": "TikTok",
+        "de": "TikTok",
+        "pt-BR": "TikTok"
+      }
+    },
+    {
+      "id": "youtube",
+      "labels": {
+        "en": "YouTube",
+        "tr": "YouTube",
+        "es": "YouTube",
+        "ru": "YouTube",
+        "ar": "YouTube",
+        "fr": "YouTube",
+        "de": "YouTube",
+        "pt-BR": "YouTube"
+      }
+    },
+    {
+      "id": "reddit",
+      "labels": {
+        "en": "Reddit",
+        "tr": "Reddit",
+        "es": "Reddit",
+        "ru": "Reddit",
+        "ar": "Reddit",
+        "fr": "Reddit",
+        "de": "Reddit",
+        "pt-BR": "Reddit"
+      }
+    },
+    {
+      "id": "google",
+      "labels": {
+        "en": "Google",
+        "tr": "Google",
+        "es": "Google",
+        "ru": "Google",
+        "ar": "Google",
+        "fr": "Google",
+        "de": "Google",
+        "pt-BR": "Google"
+      }
+    },
+    {
+      "id": "other",
+      "labels": {
+        "en": "Somewhere else",
+        "tr": "Diğer",
+        "es": "Otro",
+        "ru": "Другое",
+        "ar": "مكان آخر",
+        "fr": "Autre",
+        "de": "Woanders",
+        "pt-BR": "Outro"
+      }
+    }
+  ]
+}
