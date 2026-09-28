@@ -746,7 +746,7 @@ be a data blob every consumer parses at import.
 | `echoNewCardsPerDay` | null | null | null     | The one row that may be metered later. Free at launch.   |
 | `echoCapturesPerDay` | 250  | 250  | 250      | Abuse ceiling on server-side translation. Not a paywall. |
 | `echoReviewsPerDay`  | null | null | null     | Reviews are **never** capped, on any tier, ever.         |
-| `echoVoicesPerDay`   | 10   | 50   | 100      | Cards read aloud by the server voice; one unit per card. |
+| `echoVoicesPerDay`   | 50   | 200  | 500      | Cards read aloud by the server voice; one unit per card. |
 
 If a number changes it changes by hand in three more places —
 `website/src/lib/data/plans.ts`, `website/src/lib/data/features.ts`, and the
