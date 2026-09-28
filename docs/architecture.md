@@ -516,7 +516,10 @@ makes a one-off migration credit safe to apply exactly once.
 
 Both teaching awards are filed under the **post's** id, not the row's, so
 deleting a correction or a recording and writing a new one cannot be paid
-twice: the ledger's `{userId, kind, refId}` unique index is the rule.
+twice: the ledger's `{userId, kind, refId}` unique index is the rule. A chat
+correction is filed the same way, under the **message** it corrects: a message
+can be corrected as often as anyone likes and pays its corrector once, and
+nobody can correct their own.
 
 **2) Referrals**, and the only award paid to somebody other than the person who
 acted. Nothing is paid for a sign-up: the invitee has to verify an email,

@@ -808,7 +808,8 @@ export async function sendLocation(
 
 /**
  * Unlimited on both tiers by design — see `PLAN_LIMITS.correctionsPer24h`'s
- * doc comment. No quota call anywhere in this path.
+ * doc comment. No quota call anywhere in this path. Unlimited to send, not to
+ * earn from: a message pays its corrector once (`messageCorrectionRefId`).
  */
 export async function sendCorrection(
   db: Db,
@@ -829,6 +830,13 @@ export async function sendCorrection(
     .findOne({ _id: targetId, conversationId: conversation._id })
   if (!target) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Target message not found in this conversation')
+  }
+
+  // Correcting your own sentence is not teaching, and it would pay for it —
+  // the rule `correctPost` holds for a post. The menu never offers it, which
+  // guards nothing: the socket takes any message id in the thread.
+  if (target.senderId === senderId) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot correct your own message')
   }
 
   // The same rule as a reply's quote: `original` is shown as what the other

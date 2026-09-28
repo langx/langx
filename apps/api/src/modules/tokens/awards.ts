@@ -23,6 +23,21 @@ function mutualRefId(conversation: Conversation): string {
 }
 
 /**
+ * `refId` for a chat correction: the message it corrects, not the correction.
+ *
+ * Keyed on the correction's own id, every correction minted a fresh `refId`,
+ * and correcting one sentence over and over paid ten tokens a time into every
+ * ranked period. Keyed on the target, the ledger's unique index *is* the rule
+ * "paid once per message per person" — the rule `postcorr:` holds for a post,
+ * and prefixed for the same reason. Sending stays unlimited; paying does not.
+ */
+function messageCorrectionRefId(message: Message): string {
+  // Always set on a correction: `sendCorrection` is its only writer.
+  const target = message.correction?.targetMessageId ?? message._id
+  return `msgcorr:${target.toHexString()}`
+}
+
+/**
  * Everything a single send earns, in one place, called from the two paths that
  * create a message: `recordMessage` (replies, text and corrections, over REST
  * and the socket alike) and `startConversation` (the very first message, which
@@ -86,13 +101,14 @@ export async function awardForSend(
   if (message.type === 'correction') {
     // Uncapped on purpose: corrections are unlimited on both tiers
     // (`PLAN_LIMITS.correctionsPer24h`) and teaching is the behaviour the
-    // whole economy exists to reward.
+    // whole economy exists to reward. Uncapped is not unbounded: each message
+    // pays its corrector once — see `messageCorrectionRefId`.
     await recordActivity(db, { userId: senderId, kind: 'correction', at, timeZone })
     const award = await awardTokens(db, {
       userId: senderId,
       kind: 'correction',
       amount: frozen ? 0 : TOKEN_RULES.award.correction,
-      refId: message._id.toHexString(),
+      refId: messageCorrectionRefId(message),
       at,
     })
     tokens += award.amount

@@ -623,6 +623,32 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     })
   })
 
+  // The menu never offers it; this is the socket answering a client that skips the menu.
+  it('refuses a correction of the sender’s own message', async () => {
+    const alice = await newUser('ws-correct-self-alice@example.com')
+    const bob = await newUser('ws-correct-self-bob@example.com')
+    const conversation = await startConversation(alice, bob.userId, 'I has a apple')
+    const aliceSocket = await connectSocket(alice.cookie)
+
+    const history = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}/messages`,
+      headers: { cookie: alice.cookie },
+    })
+    const ownId = history.json<{ items: { _id: string }[] }>().items[0]?._id
+    expect(ownId).toBeDefined()
+
+    const ack = await new Promise<{ ok: boolean; error?: { code: string } }>((resolve) => {
+      aliceSocket.emit(
+        'message:correct',
+        { conversationId: conversation._id, targetMessageId: ownId, corrected: 'I have an apple' },
+        (response: { ok: boolean; error?: { code: string } }) => resolve(response),
+      )
+    })
+    expect(ack.ok).toBe(false)
+    expect(ack.error?.code).toBe('VALIDATION_FAILED')
+  })
+
   it('rejects sending into a conversation the socket owner is not part of', async () => {
     const alice = await newUser('ws-notpart-alice@example.com')
     const bob = await newUser('ws-notpart-bob@example.com')
