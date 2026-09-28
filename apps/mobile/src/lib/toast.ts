@@ -43,6 +43,45 @@ export interface Toast {
 /** Long enough to read a short sentence without having to stop and read it. */
 export const TOAST_DURATION_MS = 4000
 
+/**
+ * For a toast that offers something to press. Reading the sentence is not the
+ * whole job: the reader then has to decide, and reach for it. At four seconds
+ * the pill was gone by the time a thumb arrived, and the tap landed on
+ * whatever had been underneath it — on the welcome screen, "Create an
+ * account".
+ */
+export const ACTION_TOAST_DURATION_MS = 8000
+
+/**
+ * How long after the app says it is ready a toast may appear.
+ *
+ * `markAppReady` fires when the first screen is up, which is when the opening
+ * animation *starts* to leave, not when it has gone: it may still hold for its
+ * minimum time and then fades out over its own exit. A toast raised before
+ * then — the update notice, whose download often finishes during that very
+ * opening — spent most of its life under the logo, surfaced for a moment and
+ * vanished as the reader went for it. The numbers are the opening's own:
+ * its longest hold plus its exit.
+ */
+export function msUntilToastsMayShow(timing: {
+  MIN_VISIBLE_MS: number
+  EXIT_GROUND_DELAY_MS: number
+  EXIT_GROUND_MS: number
+}): number {
+  return timing.MIN_VISIBLE_MS + timing.EXIT_GROUND_DELAY_MS + timing.EXIT_GROUND_MS
+}
+
+/**
+ * Which edge a toast sits on, from the route's segments.
+ *
+ * The bottom, above the tab bar, everywhere the tab bar is. The signed-out
+ * screens have no tab bar, and their bottom is exactly where their buttons
+ * are — the pill sat on "Create an account" — so there it sits at the top.
+ */
+export function toastEdge(segments: readonly string[]): 'top' | 'bottom' {
+  return segments[0] === '(auth)' ? 'top' : 'bottom'
+}
+
 type Listener = (toast: Toast | null) => void
 
 let nextId = 1

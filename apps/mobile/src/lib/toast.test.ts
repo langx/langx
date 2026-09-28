@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { SPLASH_TIMING } from './splashTiming'
 import {
+  ACTION_TOAST_DURATION_MS,
   TOAST_DURATION_MS,
   dismissToast,
+  msUntilToastsMayShow,
+  toastEdge,
   resetToastsForTest,
   showToast,
   subscribeToToasts,
@@ -86,5 +90,30 @@ describe('showToast', () => {
     unsubscribe()
     showToast('Nobody is listening')
     expect(current).toBeNull()
+  })
+})
+
+describe('when and where a toast shows', () => {
+  it('waits out the opening: its longest hold and its whole exit', () => {
+    expect(msUntilToastsMayShow(SPLASH_TIMING)).toBe(
+      SPLASH_TIMING.MIN_VISIBLE_MS +
+        SPLASH_TIMING.EXIT_GROUND_DELAY_MS +
+        SPLASH_TIMING.EXIT_GROUND_MS,
+    )
+  })
+
+  it('gives a toast with something to press longer than one without', () => {
+    expect(ACTION_TOAST_DURATION_MS).toBeGreaterThanOrEqual(TOAST_DURATION_MS * 2)
+  })
+
+  it('sits at the top on the signed-out screens, whose bottom is their buttons', () => {
+    expect(toastEdge(['(auth)', 'welcome'])).toBe('top')
+    expect(toastEdge(['(auth)', 'sign-in'])).toBe('top')
+  })
+
+  it('sits above the tab bar everywhere else', () => {
+    expect(toastEdge(['(app)', '(tabs)', 'discover'])).toBe('bottom')
+    expect(toastEdge(['(onboarding)', 'languages'])).toBe('bottom')
+    expect(toastEdge([])).toBe('bottom')
   })
 })
