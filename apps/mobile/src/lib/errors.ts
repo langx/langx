@@ -45,6 +45,24 @@ export function authErrorKey(
 }
 
 /**
+ * What the sign-in form says when a sign-in did not work, for both ways it can
+ * fail.
+ *
+ * "Every client call resolves rather than throws" above is true of the server
+ * answering; it is not true of everything in front of it. The Expo plugin reads
+ * the app's config and SecureStore before a request leaves, and either can
+ * throw — and a throw used to reach nothing but the form's `finally`, so the
+ * button spun for a moment and then sat there saying nothing. Pass the error
+ * the call returned, or `undefined` for one that threw: both end in a sentence.
+ */
+export function signInFailureKey(
+  error: BetterAuthErrorLike | null | undefined,
+  online: boolean,
+): MessageKey {
+  return authErrorKey(error) ?? (online ? 'errors.signInFailed' : 'common.offline')
+}
+
+/**
  * Codes that mean "the person changed their mind", not "something broke".
  *
  * Google answers a cancelled consent screen with OAuth 2.0's own

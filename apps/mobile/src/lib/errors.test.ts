@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { errorCodeOf, oauthReturnErrorKey } from './errors'
+import { errorCodeOf, oauthReturnErrorKey, signInFailureKey } from './errors'
 
 /**
  * `ApiRequestError` is deliberately not imported: `api/client` reaches
@@ -65,5 +65,24 @@ describe('oauthReturnErrorKey', () => {
     expect(oauthReturnErrorKey('oauth_provider_not_found')).toBe('errors.signInFailed')
     expect(oauthReturnErrorKey('email_not_found')).toBe('errors.signInFailed')
     expect(oauthReturnErrorKey('state_not_found')).toBe('errors.signInFailed')
+  })
+})
+
+describe('signInFailureKey', () => {
+  it('names a known code', () => {
+    expect(signInFailureKey({ code: 'INVALID_EMAIL_OR_PASSWORD' }, true)).toBe(
+      'errors.invalidCredentials',
+    )
+  })
+
+  it('falls back to the generic failure, or to offline, for an unknown code', () => {
+    expect(signInFailureKey({ code: 'SOMETHING_NEW' }, true)).toBe('errors.signInFailed')
+    expect(signInFailureKey({ code: 'SOMETHING_NEW' }, false)).toBe('common.offline')
+  })
+
+  // The call that threw has no error object at all, and must still say something.
+  it('says something for a call that threw', () => {
+    expect(signInFailureKey(undefined, true)).toBe('errors.signInFailed')
+    expect(signInFailureKey(undefined, false)).toBe('common.offline')
   })
 })
