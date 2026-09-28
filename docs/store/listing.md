@@ -334,14 +334,19 @@ included. Both are written out below, per language.
 
 ## What's new (release notes)
 
-These are **2.7's** notes. 2.6 put LangX in the car and on the wrist but its
-notes only ever described the watch, so 2.7 is where the car is announced: on
-iOS as CarPlay, where a tap has Siri read out every message waiting and take a
-reply, and on Play as Android Auto. The rest is 2.7's own: the app opens on the
-chats and profiles it saw last instead of an empty screen (#1603), a
-notification read on another device leaves this one even while the app is
-closed (#1598, #1602), "typing…" stops when the other person does, and the Me
-tab ends in a short guide to how LangX works (#1600).
+These are **2.8's** notes. 2.8 is the Feed's release: one timeline ordered for
+the reader (#1632, #1622), moments — a photo, a video or a sentence — with
+Correction needed and Pronunciation needed as optional asks on any post (#1626,
+#1629), replies to comments (#1623, #1636), and an Echo card posted to the Feed
+with Pronunciation needed already ticked. Around it sits the chat work merged
+since 2.7: any emoji as a reaction (#1625), search within a conversation
+(#1624), send later (#1627), forwarding (#1628), sharing a location (#1633),
+tapping a word to translate it (#1614), conversation starters (#1621) and Show
+text on voice notes (#1631). A profile shows the other person's local time
+(#1648). Arabic and Russian counts read correctly on the phones, which had no
+plural rules of their own (#1634). On Android the white page after signing up
+is gone (#1641, #1645) and changing the system font size no longer resets the
+app (#1647).
 
 A version update needs release notes in **every** localization, not just the
 primary one — App Store Connect will not let the version be submitted with one
@@ -351,15 +356,15 @@ The last line is not optional in any language. Every v1 user has to sign up
 again — the old password hashes could not be migrated — and without that
 sentence the first thing a returning user meets is a login that rejects them.
 
-**The first line differs by store.** iOS says _CarPlay_ and _Siri_, Play says
-_Android Auto_. Everything after it is identical.
+**The Android line is Play's alone.** The white page and the font-size reset
+never happened on iOS, so the App Store notes do not mention them.
 
-**Not claimed, deliberately.** Sign-in with Facebook and Discord is in the code
-(#1599) but the production API has no credentials for either, so the buttons do
-not show and the notes do not mention them. Dropping a photo onto a thread
-(#1601) is a web feature and is not in a store's notes. The server work that
-makes the app faster (#1604) is felt rather than announced — the cache line
-already says the part a person notices.
+**Not claimed, deliberately.** The smaller chat changes — formatting and
+spoilers, muting, the "New messages" line, the voice-note waveform and speed,
+Latin letters for a message — are left for people to find; listing all of them
+would bury the Feed. The map preview in a location bubble (#1638) needs a
+Google Maps key on Android, so "share where you are" is claimed and the map is
+not.
 
 ### Promotional text (iOS only, 170 characters)
 
@@ -383,159 +388,208 @@ the current one. Play has no equivalent field.
 
 **English**
 
-> In the car, LangX works with CarPlay: tap a chat and Siri reads out every message waiting, then takes your reply.
-> The app opens on your chats and profiles from last time, before the network has answered.
-> A notification you already read on another device disappears from this one too - even when the app is closed.
-> "Typing…" stops when they stop.
-> The Me tab ends with a short guide to how LangX works.
+> The Feed is now one timeline, ordered for you. Share a moment from your day: a photo, a video or a sentence.
+> Want help with a post? Tick Correction needed or Pronunciation needed - only if you want to.
+> You can reply to a comment now.
+> In Echo, post a card to the Feed - Pronunciation needed is ticked for you.
+> Someone's local time shows on their profile.
+> In chats, react with any emoji, search a conversation, send a message later, forward it or share where you are.
+> Tap a word in a message to translate it and keep it in Echo.
+> Voice notes have Show text, so you can read what was said.
+> Not sure what to say? Tap a conversation starter.
+> Counts in Arabic and Russian read correctly now.
 >
 > Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
 
 **Türkçe**
 
-> Arabada LangX artık CarPlay'de: bir sohbete dokun, Siri bekleyen tüm mesajları okusun, sonra cevabını alsın.
-> Uygulama, ağ cevap vermeden önce son gördüğün sohbetler ve profillerle açılıyor.
-> Başka bir cihazda okuduğun bildirim bu cihazdan da kalkıyor - uygulama kapalıyken bile.
-> "Yazıyor…" karşı taraf durunca duruyor.
-> Ben sekmesinin sonunda LangX'in nasıl çalıştığını anlatan kısa bir rehber var.
+> Akış artık tek bir liste ve sana göre sıralanıyor. Gününden bir an paylaş: bir fotoğraf, bir video ya da bir cümle.
+> Gönderinde yardım mı istiyorsun? Düzeltme gerekli ya da Telaffuz gerekli'yi işaretle - sadece istersen.
+> Artık bir yoruma cevap verebilirsin.
+> Echo'da bir kartı Akış'a gönder - Telaffuz gerekli senin için işaretli gelir.
+> Birinin yerel saati artık profilinde görünüyor.
+> Sohbetlerde istediğin emojiyle tepki ver, sohbette ara, mesajı sonra gönder, ilet ya da konumunu paylaş.
+> Bir mesajdaki kelimeye dokun, çevirisini gör ve Echo'ya ekle.
+> Sesli mesajlarda Metni göster var; söyleneni okuyabilirsin.
+> Ne diyeceğini bilemedin mi? Bir sohbet başlatıcıya dokun.
+> Arapça ve Rusçada sayılı ifadeler artık doğru yazılıyor.
 >
 > Eski uygulamadan mı dönüyorsun? Daha önce kullandığın e-postayla kaydol - kullanıcı adın seni bekliyor.
 
 **Español**
 
-> En el coche, LangX funciona con CarPlay: toca un chat y Siri lee en voz alta todos los mensajes pendientes y luego toma tu respuesta.
-> La app se abre con tus chats y perfiles de la última vez, antes de que responda la red.
-> Una notificación que ya leíste en otro dispositivo también desaparece de este - incluso con la app cerrada.
-> "Escribiendo…" se detiene cuando la otra persona se detiene.
-> La pestaña Yo termina con una breve guía sobre cómo funciona LangX.
+> El Muro es ahora una sola línea de tiempo, ordenada para ti. Comparte un momento de tu día: una foto, un video o una frase.
+> ¿Quieres ayuda con una publicación? Marca Necesito corrección o Necesito pronunciación - solo si quieres.
+> Ya puedes responder a un comentario.
+> En Echo, publica una tarjeta en el Muro - Necesito pronunciación ya viene marcado.
+> La hora local de cada persona aparece en su perfil.
+> En los chats, reacciona con cualquier emoji, busca en una conversación, envía un mensaje más tarde, reenvíalo o comparte dónde estás.
+> Toca una palabra de un mensaje para traducirla y guardarla en Echo.
+> Los mensajes de voz tienen Mostrar texto, para leer lo que se dijo.
+> ¿No sabes qué decir? Toca un tema para conversar.
+> Las cantidades en árabe y ruso ahora se escriben bien.
 >
 > ¿Vuelves de la app anterior? Regístrate con el correo que usabas antes - tu nombre de usuario te está esperando.
 
 **Русский**
 
-> В машине LangX работает с CarPlay: нажми на чат, и Siri прочитает все ожидающие сообщения, а потом запишет твой ответ.
-> Приложение открывается с чатами и профилями, которые ты видел в прошлый раз, ещё до ответа сети.
-> Уведомление, прочитанное на другом устройстве, исчезает и с этого - даже когда приложение закрыто.
-> «Печатает…» пропадает, когда собеседник перестаёт печатать.
-> Вкладка «Я» заканчивается коротким рассказом о том, как устроен LangX.
+> Лента теперь единая и собрана для тебя. Делись моментами своего дня: фото, видео или фразой.
+> Нужна помощь с постом? Отметь «Нужно исправление» или «Нужно произношение» - только если хочешь.
+> Теперь можно ответить на комментарий.
+> В Эхо опубликуй карточку в Ленте - «Нужно произношение» уже отмечено.
+> Местное время человека видно в его профиле.
+> В чатах: реагируй любым эмодзи, ищи по переписке, отправляй сообщение позже, пересылай его или делись местоположением.
+> Нажми на слово в сообщении, чтобы перевести его и сохранить в Эхо.
+> У голосовых сообщений есть «Показать текст» - можно прочитать, что было сказано.
+> Не знаешь, что сказать? Нажми на тему для разговора.
+> В арабском и русском теперь правильные формы слов после чисел.
 >
 > Возвращаешься из старого приложения? Зарегистрируйся с той же почтой - твоё имя пользователя ждёт тебя.
 
 **العربية**
 
-> في السيارة، يعمل LangX مع CarPlay: اضغط على محادثة وستقرأ Siri كل الرسائل المنتظرة ثم تأخذ ردّك.
-> يفتح التطبيق على محادثاتك والملفات الشخصية التي رأيتها آخر مرة، قبل أن تستجيب الشبكة.
-> الإشعار الذي قرأته على جهاز آخر يختفي من هذا الجهاز أيضًا - حتى والتطبيق مغلق.
-> تتوقف "يكتب…" عندما يتوقف الطرف الآخر.
-> ينتهي تبويب "أنا" بدليل قصير عن طريقة عمل LangX.
+> أصبحت الأخبار خطًا زمنيًا واحدًا مرتبًا لك. شارك لحظة من يومك: صورة أو فيديو أو جملة.
+> تريد مساعدة في منشور؟ اختر "أحتاج إلى تصحيح" أو "أحتاج إلى النطق" - فقط إن أردت.
+> يمكنك الآن الرد على تعليق.
+> في صدى، انشر بطاقة في الأخبار - وسيكون "أحتاج إلى النطق" محددًا لك.
+> يظهر الوقت المحلي للشخص في ملفه الشخصي.
+> في المحادثات: تفاعل بأي رمز تعبيري، وابحث داخل المحادثة، وأرسل رسالة لاحقًا، وأعد توجيهها أو شارك موقعك.
+> اضغط على كلمة في رسالة لترجمتها وحفظها في صدى.
+> في الرسائل الصوتية زر "إظهار النص" لتقرأ ما قيل.
+> لا تعرف ماذا تقول؟ اضغط على فكرة للحديث.
+> صيغ الأعداد بالعربية والروسية صحيحة الآن.
 >
 > عائد من التطبيق القديم؟ سجّل بالبريد الإلكتروني الذي استخدمته من قبل - اسم المستخدم الخاص بك في انتظارك.
 
 **Français**
 
-> En voiture, LangX fonctionne avec CarPlay : touchez une conversation et Siri lit tous les messages en attente, puis prend votre réponse.
-> L'app s'ouvre sur vos conversations et profils de la dernière fois, avant même la réponse du réseau.
-> Une notification déjà lue sur un autre appareil disparaît aussi de celui-ci - même app fermée.
-> « Écrit… » s'arrête quand l'autre personne s'arrête.
-> L'onglet Moi se termine par un court guide sur le fonctionnement de LangX.
+> Le Fil est maintenant une seule chronologie, triée pour vous. Partagez un moment de votre journée : une photo, une vidéo ou une phrase.
+> Besoin d'aide sur une publication ? Cochez Besoin d'une correction ou Besoin de la prononciation - seulement si vous voulez.
+> Vous pouvez maintenant répondre à un commentaire.
+> Dans Echo, publiez une carte dans le Fil - Besoin de la prononciation est déjà coché.
+> L'heure locale de chacun s'affiche sur son profil.
+> Dans les conversations, réagissez avec n'importe quel emoji, cherchez dans une conversation, envoyez un message plus tard, transférez-le ou partagez où vous êtes.
+> Touchez un mot dans un message pour le traduire et le garder dans Echo.
+> Les messages vocaux ont Afficher le texte, pour lire ce qui a été dit.
+> Vous ne savez pas quoi dire ? Touchez une idée de conversation.
+> Les quantités en arabe et en russe s'écrivent maintenant correctement.
 >
 > Vous revenez de l'ancienne app ? Inscrivez-vous avec l'e-mail utilisé auparavant - votre nom d'utilisateur vous attend.
 
 **Deutsch**
 
-> Im Auto funktioniert LangX mit CarPlay: Tippe auf einen Chat, und Siri liest alle wartenden Nachrichten vor und nimmt deine Antwort auf.
-> Die App öffnet mit deinen Chats und Profilen vom letzten Mal, noch bevor das Netz antwortet.
-> Eine auf einem anderen Gerät gelesene Benachrichtigung verschwindet auch hier - selbst bei geschlossener App.
-> „Schreibt…“ hört auf, wenn die andere Person aufhört.
-> Der Tab „Ich“ endet mit einer kurzen Anleitung, wie LangX funktioniert.
+> Der Feed ist jetzt eine einzige Timeline, für dich sortiert. Teile einen Moment aus deinem Tag: ein Foto, ein Video oder einen Satz.
+> Hilfe bei einem Beitrag? Hake Korrektur gewünscht oder Aussprache gewünscht an - nur wenn du willst.
+> Du kannst jetzt auf einen Kommentar antworten.
+> Poste in Echo eine Karte in den Feed - Aussprache gewünscht ist schon angehakt.
+> Die Ortszeit einer Person steht in ihrem Profil.
+> In Chats reagierst du mit jedem Emoji, suchst in einer Unterhaltung, sendest eine Nachricht später, leitest sie weiter oder teilst, wo du bist.
+> Tippe auf ein Wort in einer Nachricht, um es zu übersetzen und in Echo zu behalten.
+> Sprachnachrichten haben Text anzeigen, damit du lesen kannst, was gesagt wurde.
+> Keine Idee, was du sagen sollst? Tippe auf eine Gesprächsidee.
+> Mengenangaben auf Arabisch und Russisch stimmen jetzt.
 >
 > Kommst du von der alten App? Registriere dich mit der E-Mail, die du vorher genutzt hast - dein Benutzername wartet auf dich.
 
 **Português do Brasil**
 
-> No carro, o LangX funciona com o CarPlay: toque em uma conversa e a Siri lê todas as mensagens que estão esperando, depois anota sua resposta.
-> O app abre com suas conversas e perfis da última vez, antes de a rede responder.
-> Uma notificação que você já leu em outro aparelho some deste também - mesmo com o app fechado.
-> "Digitando…" para quando a outra pessoa para.
-> A aba Eu termina com um guia curto sobre como o LangX funciona.
+> O Feed agora é uma linha do tempo só, organizada para você. Compartilhe um momento do seu dia: uma foto, um vídeo ou uma frase.
+> Quer ajuda com um post? Marque Preciso de correção ou Preciso da pronúncia - só se quiser.
+> Agora você pode responder a um comentário.
+> No Echo, publique um cartão no Feed - Preciso da pronúncia já vem marcado.
+> O horário local de cada pessoa aparece no perfil dela.
+> Nas conversas, reaja com qualquer emoji, pesquise numa conversa, envie uma mensagem mais tarde, encaminhe ou compartilhe onde você está.
+> Toque numa palavra de uma mensagem para traduzir e guardar no Echo.
+> As mensagens de voz têm Mostrar texto, para ler o que foi dito.
+> Sem saber o que dizer? Toque numa ideia de conversa.
+> As quantidades em árabe e russo agora aparecem do jeito certo.
 >
 > Voltando do app antigo? Cadastre-se com o e-mail que você usava antes - seu nome de usuário está esperando por você.
 
 ### Play release notes (500 characters)
 
 Play's "What's new" field caps at **500 characters per language**, and Play
-truncates silently. What was dropped to fit: the guide line. The car, the
-cache, the notification and "typing" lines and the returning-user line are in
-every one.
+truncates silently. What was dropped to fit: the chat lines, Show text, the
+conversation starters and the counts line. The Feed, the asks, comment replies
+with the Echo card, local time, the Android fixes and the returning-user line
+are in every one.
 
 **English**
 
-> In the car, LangX works with Android Auto: it reads each new message out, and you answer by voice.
-> The app opens on your chats and profiles from last time, before the network has answered.
-> A notification you already read on another device disappears from this one too - even when the app is closed.
-> "Typing…" stops when they stop.
+> The Feed is now one timeline, ordered for you. Share a moment from your day: a photo, a video or a sentence.
+> Want help? Tick Correction needed or Pronunciation needed when you post.
+> Reply to comments, and post an Echo card to the Feed.
+> Someone's local time shows on their profile.
+> No more white page after signing up, and changing the font size keeps your place.
 >
 > Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
 
 **Türkçe**
 
-> Arabada LangX artık Android Auto'da: her yeni mesajı sesli okuyor, sen de sesinle cevap veriyorsun.
-> Uygulama, ağ cevap vermeden önce son gördüğün sohbetler ve profillerle açılıyor.
-> Başka bir cihazda okuduğun bildirim bu cihazdan da kalkıyor - uygulama kapalıyken bile.
-> "Yazıyor…" karşı taraf durunca duruyor.
+> Akış artık tek bir liste ve sana göre sıralanıyor. Gününden bir an paylaş: bir fotoğraf, bir video ya da bir cümle.
+> Yardım mı istiyorsun? Paylaşırken Düzeltme gerekli ya da Telaffuz gerekli'yi işaretle.
+> Yorumlara cevap ver, Echo kartını Akış'a gönder.
+> Birinin yerel saati profilinde görünüyor.
+> Kaydolduktan sonra beyaz sayfa yok; yazı boyutunu değiştirince kaldığın yerde kalıyorsun.
 >
 > Eski uygulamadan mı dönüyorsun? Daha önce kullandığın e-postayla kaydol - kullanıcı adın seni bekliyor.
 
 **Español**
 
-> En el coche, LangX funciona con Android Auto: lee en voz alta cada mensaje nuevo y respondes con la voz.
-> La app se abre con tus chats y perfiles de la última vez, antes de que responda la red.
-> Una notificación que ya leíste en otro dispositivo también desaparece de este - incluso con la app cerrada.
-> "Escribiendo…" se detiene cuando la otra persona se detiene.
+> El Muro es ahora una sola línea de tiempo, ordenada para ti. Comparte tu día: una foto, un video o una frase.
+> ¿Quieres ayuda? Marca Necesito corrección o Necesito pronunciación al publicar.
+> Responde a comentarios y publica una tarjeta de Echo en el Muro.
+> Cada perfil muestra la hora local.
+> Sin página en blanco al registrarte, y el tamaño de letra ya no te saca de donde estabas.
 >
 > ¿Vuelves de la app anterior? Regístrate con el correo que usabas antes - tu nombre de usuario te está esperando.
 
 **Русский**
 
-> В машине LangX работает с Android Auto: читает каждое новое сообщение вслух, а ты отвечаешь голосом.
-> Приложение открывается с чатами и профилями, которые ты видел в прошлый раз, ещё до ответа сети.
-> Уведомление, прочитанное на другом устройстве, исчезает и с этого - даже когда приложение закрыто.
-> «Печатает…» пропадает, когда собеседник перестаёт печатать.
+> Лента теперь единая и собрана для тебя. Делись моментами своего дня: фото, видео или фразой.
+> Нужна помощь? Отметь «Нужно исправление» или «Нужно произношение» при публикации.
+> Отвечай на комментарии и публикуй карточки из Эхо в Ленте.
+> Местное время человека видно в его профиле.
+> Больше нет белого экрана после регистрации, а смена размера шрифта не сбрасывает экран.
 >
 > Возвращаешься из старого приложения? Зарегистрируйся с той же почтой - твоё имя пользователя ждёт тебя.
 
 **العربية**
 
-> في السيارة، يعمل LangX مع Android Auto: يقرأ كل رسالة جديدة بصوت عالٍ وتردّ بصوتك.
-> يفتح التطبيق على محادثاتك والملفات الشخصية التي رأيتها آخر مرة، قبل أن تستجيب الشبكة.
-> الإشعار الذي قرأته على جهاز آخر يختفي من هذا الجهاز أيضًا - حتى والتطبيق مغلق.
-> تتوقف "يكتب…" عندما يتوقف الطرف الآخر.
+> أصبحت الأخبار خطًا زمنيًا واحدًا مرتبًا لك. شارك لحظة من يومك: صورة أو فيديو أو جملة.
+> تريد مساعدة؟ اختر "أحتاج إلى تصحيح" أو "أحتاج إلى النطق" عند النشر.
+> ردّ على التعليقات، وانشر بطاقة من صدى في الأخبار.
+> يظهر الوقت المحلي للشخص في ملفه الشخصي.
+> لا صفحة بيضاء بعد التسجيل، وتغيير حجم الخط يبقيك حيث كنت.
 >
 > عائد من التطبيق القديم؟ سجّل بالبريد الإلكتروني الذي استخدمته من قبل - اسم المستخدم الخاص بك في انتظارك.
 
 **Français**
 
-> En voiture, LangX fonctionne avec Android Auto : il lit chaque nouveau message à voix haute et vous répondez à la voix.
-> L'app s'ouvre sur vos conversations et profils de la dernière fois, avant même la réponse du réseau.
-> Une notification déjà lue sur un autre appareil disparaît aussi de celui-ci - même app fermée.
-> « Écrit… » s'arrête quand l'autre personne s'arrête.
+> Le Fil devient une seule chronologie, triée pour vous. Partagez votre journée : photo, vidéo ou phrase.
+> Besoin d'aide ? Cochez Besoin d'une correction ou Besoin de la prononciation.
+> Répondez aux commentaires et publiez une carte Echo dans le Fil.
+> Chaque profil affiche l'heure locale.
+> Fini la page blanche à l'inscription ; changer la taille du texte garde votre place.
 >
 > Vous revenez de l'ancienne app ? Inscrivez-vous avec l'e-mail utilisé auparavant - votre nom d'utilisateur vous attend.
 
 **Deutsch**
 
-> Im Auto funktioniert LangX mit Android Auto: Es liest jede neue Nachricht vor, und du antwortest per Sprache.
-> Die App öffnet mit deinen Chats und Profilen vom letzten Mal, noch bevor das Netz antwortet.
-> Eine auf einem anderen Gerät gelesene Benachrichtigung verschwindet auch hier - selbst bei geschlossener App.
-> „Schreibt…“ hört auf, wenn die andere Person aufhört.
+> Der Feed ist jetzt eine Timeline, für dich sortiert. Teile deinen Tag: Foto, Video oder Satz.
+> Hilfe gewünscht? Hake beim Posten Korrektur gewünscht oder Aussprache gewünscht an.
+> Antworte auf Kommentare und poste eine Echo-Karte in den Feed.
+> Jedes Profil zeigt die Ortszeit.
+> Keine weiße Seite mehr nach der Registrierung; eine neue Schriftgröße lässt dich, wo du warst.
 >
 > Kommst du von der alten App? Registriere dich mit der E-Mail, die du vorher genutzt hast - dein Benutzername wartet auf dich.
 
 **Português do Brasil**
 
-> No carro, o LangX funciona com o Android Auto: lê cada mensagem nova em voz alta e você responde por voz.
-> O app abre com suas conversas e perfis da última vez, antes de a rede responder.
-> Uma notificação que você já leu em outro aparelho some deste também - mesmo com o app fechado.
-> "Digitando…" para quando a outra pessoa para.
+> O Feed agora é uma linha do tempo só, organizada para você. Compartilhe seu dia: uma foto, um vídeo ou uma frase.
+> Quer ajuda? Marque Preciso de correção ou Preciso da pronúncia ao publicar.
+> Responda a comentários e publique um cartão do Echo no Feed.
+> Cada perfil mostra o horário local.
+> Chega de página em branco após o cadastro, e mudar o tamanho da letra mantém você onde estava.
 >
 > Voltando do app antigo? Cadastre-se com o e-mail que você usava antes - seu nome de usuário está esperando por você.
