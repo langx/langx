@@ -167,3 +167,20 @@ describe('a screen leaving by router.replace or router.back', () => {
     expect(ROOTS.flatMap(sourceFiles).flatMap(offences)).toEqual([])
   })
 })
+
+/*
+ * The same failure from inside the shared button. Its face gains a
+ * `transform` while pressed, its wrapper an opacity while disabled, and
+ * without `collapsable={false}` on both Fabric
+ * un-flattens it on every press — creating a native view and moving the
+ * label into it. A press that also navigates the screen away (the onboarding
+ * finish button) ran that move in the detaching commit: a white page on
+ * every tap, reproduced on a Release APK on 28 September 2026.
+ */
+describe('the shared Button', () => {
+  it('keeps its wrapper and its pressed face real views', () => {
+    const button = readFileSync(path.join(MOBILE, 'src/components/ui/Button.tsx'), 'utf8')
+    // The wrapper's `disabled` opacity and the face's pressed transform.
+    expect(button.match(/collapsable=\{false\}/g)).toHaveLength(2)
+  })
+})
