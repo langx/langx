@@ -81,6 +81,17 @@ export function Button({
       >
         {({ pressed }) => (
           <View
+            /*
+             * Always a real view. The press adds a `transform`, and on
+             * Android's Fabric a view that gains one stops being flattened
+             * into its parent — so every press created a native view and
+             * moved the label into it. When the same press navigated this
+             * screen away (`router.replace`), that move landed in the commit
+             * that detaches the screen, and Fabric failed with "addViewAt:
+             * … already has a parent": a white page in a release build. The
+             * onboarding finish button did exactly that on every tap.
+             */
+            collapsable={false}
             style={[
               small ? styles.faceSmall : styles.face,
               {
