@@ -338,7 +338,7 @@ live in `TIER_NAMES` and the identifiers never move.
 | Sort by distance (Nearby)   | —                                            | —              | **Yes**        |
 | Boosted profile on Discover | —                                            | **Yes**        | **First**      |
 | Translation                 | **20** per rolling 24h                       | **300**        | **1000**       |
-| Voice notes shown as text   | **10** per rolling 24h                       | **50**         | **150**        |
+| Voice notes shown as text   | **50** per rolling 24h                       | **150**        | **400**        |
 | Languages you are learning  | **1**                                        | **2**          | **5**          |
 | Languages you speak         | **1**                                        | **2**          | **5**          |
 | **Message correction**      | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
