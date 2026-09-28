@@ -69,6 +69,122 @@ describe('diffCorrection', () => {
     expect(changed(diff.corrected)).toEqual(['了'])
   })
 
+  /**
+   * Punctuation is its own token. Split on whitespace alone, `coffee` and
+   * `coffee,` were two different words, and a correction that only added
+   * `, please` drew `coffee` as deleted and typed again.
+   */
+  it('marks punctuation added after a word without redrawing the word', () => {
+    const diff = diffCorrection(
+      'I would like a cup of coffee',
+      'I would like a cup of coffee, please',
+    )
+    expect(changed(diff.original)).toEqual([])
+    expect(changed(diff.corrected)).toEqual([', please'])
+    expect(join(diff.corrected)).toBe('I would like a cup of coffee, please')
+  })
+
+  it('marks a trailing exclamation mark on its own', () => {
+    const diff = diffCorrection('Hello', 'Hello!')
+    expect(changed(diff.original)).toEqual([])
+    expect(changed(diff.corrected)).toEqual(['!'])
+  })
+
+  it('marks a comma inserted mid-sentence and leaves the words around it alone', () => {
+    const diff = diffCorrection('Yes I know', 'Yes, I know')
+    expect(changed(diff.original)).toEqual([])
+    expect(changed(diff.corrected)).toEqual([','])
+    expect(join(diff.original)).toBe('Yes I know')
+    expect(join(diff.corrected)).toBe('Yes, I know')
+  })
+
+  it('marks a word changed before a full stop without the full stop', () => {
+    const diff = diffCorrection('I have a cat.', 'I have a dog.')
+    expect(changed(diff.original)).toEqual(['cat'])
+    expect(changed(diff.corrected)).toEqual(['dog'])
+  })
+
+  it('marks a removed comma on the original side only', () => {
+    const diff = diffCorrection('Hello, world', 'Hello world')
+    expect(changed(diff.original)).toEqual([','])
+    expect(changed(diff.corrected)).toEqual([])
+  })
+
+  it('treats the Spanish opening marks as punctuation of their own', () => {
+    const diff = diffCorrection('Dónde está el baño', '¿Dónde está el baño?')
+    expect(changed(diff.original)).toEqual([])
+    expect(changed(diff.corrected)).toEqual(['¿', '?'])
+  })
+
+  it('treats Arabic punctuation as punctuation', () => {
+    const question = diffCorrection('كيف حالك', 'كيف حالك؟')
+    expect(changed(question.original)).toEqual([])
+    expect(changed(question.corrected)).toEqual(['؟'])
+
+    const latinMark = diffCorrection('كيف حالك?', 'كيف حالك؟')
+    expect(changed(latinMark.original)).toEqual(['?'])
+    expect(changed(latinMark.corrected)).toEqual(['؟'])
+
+    const comma = diffCorrection('نعم أعرف', 'نعم، أعرف')
+    expect(changed(comma.original)).toEqual([])
+    expect(changed(comma.corrected)).toEqual(['،'])
+  })
+
+  it('marks Cyrillic punctuation on its own', () => {
+    const diff = diffCorrection('Как дела', 'Как дела?')
+    expect(changed(diff.corrected)).toEqual(['?'])
+  })
+
+  /**
+   * An apostrophe or a hyphen between two letters is part of the word. Split
+   * out, `dont → don't` would be one word against three tokens and redrawn
+   * whole; kept in, the character pass narrows it to the apostrophe.
+   */
+  it.each([
+    ['I dont know', "I don't know", "'"],
+    ['I dont know', 'I don’t know', '’'],
+    ['je bois leau', "je bois l'eau", "'"],
+    ['İstanbula gidiyorum', "İstanbul'a gidiyorum", "'"],
+    ['a wellknown fact', 'a well-known fact', '-'],
+  ])('keeps an apostrophe or hyphen inside its word: %j → %j', (original, corrected, mark) => {
+    const diff = diffCorrection(original, corrected)
+    expect(changed(diff.original)).toEqual([])
+    expect(changed(diff.corrected)).toEqual([mark])
+  })
+
+  it('narrows an accent fix to the letter, with the full stop left alone', () => {
+    const diff = diffCorrection('un cafe.', 'un café.')
+    expect(changed(diff.original)).toEqual(['e'])
+    expect(changed(diff.corrected)).toEqual(['é'])
+  })
+
+  /**
+   * An accent typed as a combining character is two code units. Cutting
+   * between them would draw the accent alone, as a dotted circle.
+   */
+  it('never splits a combining accent from its letter', () => {
+    const diff = diffCorrection('un cafe au lait', 'un cafe\u0301 au lait')
+    expect(changed(diff.original)).toEqual(['e'])
+    expect(changed(diff.corrected)).toEqual(['e\u0301'])
+  })
+
+  it('never splits a surrogate pair', () => {
+    const diff = diffCorrection('nice 😀', 'nice 😃')
+    expect(changed(diff.original)).toEqual(['😀'])
+    expect(changed(diff.corrected)).toEqual(['😃'])
+  })
+
+  /**
+   * Text without spaces is split at its own punctuation now, so two edits in
+   * two clauses are narrowed one clause at a time — before, the character pass
+   * saw the whole message as one word and coloured everything between them.
+   */
+  it('narrows each clause of text written without spaces separately', () => {
+    const diff = diffCorrection('我去学校，他在家。', '我去了学校，他不在家。')
+    expect(changed(diff.original)).toEqual([])
+    expect(changed(diff.corrected)).toEqual(['了', '不'])
+  })
+
   it('leaves an unchanged sentence unmarked', () => {
     const diff = diffCorrection('all good here', 'all good here')
     expect(changed(diff.original)).toEqual([])
@@ -96,6 +212,14 @@ describe('diffCorrection', () => {
     ['everything was deleted', ''],
     ['我昨天去学校', '我昨天去了学校'],
     ['one', 'completely different words entirely'],
+    ['I would like a cup of coffee', 'I would like a cup of coffee, please'],
+    ['Hello , world !', 'Hello, world!'],
+    ['  Dónde está el baño  ', '¿Dónde está el baño?\n'],
+    ['كيف حالك?', 'كيف حالك؟'],
+    ['我去学校，他在家。', '我去了学校，他不在家。'],
+    ["don't stop", 'do not stop!!'],
+    ['«Bonjour»', '« Bonjour ! »'],
+    ['nice 😀', 'nice 😃 ❤️'],
   ])('joins back to exactly what went in: %j → %j', (original, corrected) => {
     const diff = diffCorrection(original, corrected)
     expect(join(diff.original)).toBe(original)
