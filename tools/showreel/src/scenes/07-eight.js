@@ -19,7 +19,6 @@ REEL.scene('07-eight', (ctx) => {
   const BEAT = ctx.BEAT
   const ez = (e) => gsap.parseEase(e)
   const eSnap = ez(E.snap)
-  const eCut = ez(E.cut)
   const eWhip = ez(E.whip)
   const eSpring = ez(E.spring)
   const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x)
@@ -118,6 +117,13 @@ REEL.scene('07-eight', (ctx) => {
   // Sideways drift in px/s. The last two stops start 40 px apart, so they part
   // in opposite directions rather than landing on each other.
   const DRIFT = [150, 190, -170]
+  // A 'cut' fall into the landing peaked at 6700-8000 px/s: a 33 px dot jumping
+  // 120-165 px on its last frame, which strobes whatever the stretch. The fall
+  // is gravity up to a terminal speed instead, then a straight drop at it, so a
+  // dot moves at most 56 px a frame (66 at its centre into the landing squash):
+  // under the 4000 px/s tracking cap, and still landing on its beat. The
+  // accelerating phase is sized so the fall covers its distance exactly.
+  const TERMINAL = 3360
   const dots = LINES.map((line, i) => {
     let px
     try {
@@ -129,14 +135,19 @@ REEL.scene('07-eight', (ctx) => {
     }
     const el = text(manifesto, '.', { ...MF, spacing: 0, x: px, y: line.B, fill: C.white })
     el.style.visibility = 'hidden'
+    const d0 = 3 + 0.125 * i
+    const floor = 1040 - (line.B + dotInk.d)
+    const fallT = (3.5 - d0) * BEAT
     return {
       el,
       line,
-      d0: 3 + 0.125 * i,
+      d0,
       bx: px + (dotInk.r - dotInk.l) / 2,
       by: line.B + dotInk.d,
-      floor: 1040 - (line.B + dotInk.d),
+      floor,
       vx: DRIFT[i],
+      // floor = TERMINAL * (fallT - ta / 2): the time spent accelerating.
+      ta: 2 * (fallT - floor / TERMINAL),
     }
   })
 
@@ -339,9 +350,10 @@ REEL.scene('07-eight', (ctx) => {
       layoutWords()
     }
 
-    // The full stops: a pop as they let go, a 'cut' fall with speed-stretch,
-    // one closed-form hop off y=1040 with a squash released on 'spring', and
-    // the same parabola carries them out through the bottom of the frame.
+    // The full stops: a pop as they let go, a fall to terminal speed with
+    // speed-stretch, one closed-form hop off y=1040 with a squash released on
+    // 'spring', and the same parabola carries them out through the bottom of
+    // the frame.
     for (const d of dots) {
       attr(d.line.stop, 'fill-opacity', tb < d.d0 ? '1' : '0')
       if (tb < d.d0 || tb >= 3.75) {
@@ -353,11 +365,13 @@ REEL.scene('07-eight', (ctx) => {
       let sx
       let sy
       if (tb < 3.5) {
-        const u = (tb - d.d0) / (3.5 - d.d0)
+        const since = (tb - d.d0) * BEAT
         const pop = 1 + 0.3 * Math.sin(Math.PI * clamp01((tb - d.d0) / 0.125))
-        dy = eCut(u) * d.floor
-        sy = pop * (1 + 0.2 * u * u)
-        sx = pop * (1 - 0.08 * u * u)
+        // k is the speed as a fraction of TERMINAL, so the stretch peaks with it.
+        const k = Math.min(1, since / d.ta)
+        dy = since < d.ta ? (TERMINAL * since * since) / (2 * d.ta) : TERMINAL * (since - d.ta / 2)
+        sy = pop * (1 + 0.2 * k)
+        sx = pop * (1 - 0.08 * k)
       } else {
         const w = (tb - 3.5) / 0.1875
         dy = d.floor - 60 * 4 * w * (1 - w)

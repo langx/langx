@@ -416,14 +416,29 @@ REEL.scene('05-echo', (ctx) => {
   const odX = 960 + 540 - (odLay.l + odLay.r) / 2
   const odB = 470
   const PITCH = 1.2 * OD
-  const POP = 0.25
+  // The last 0.8 of a cell locks on 'pop' (back.out(1.7)): its 10% overshoot
+  // is 8% of a cell. It first reaches its target 37% of the way in, and that
+  // crossing is the hit the eye reads, so it is the part placed on the lock
+  // beat; the overshoot and settle ring on after it. It leaves at 4.7 times
+  // its average speed (s + 3 for back.out(s)).
+  const POP = 0.375
+  const POP_D = 0.8
   const POP_HIT = 1 - 1.7 / 2.7
+  // Every reel spins up to the speed the pop leaves at, so the hand-over has
+  // no seam: 0.8·4.7/0.375 = 10 cells a beat, a third of a cell per 60 fps
+  // frame. Above about half a cell a frame a strip of identical-looking digits
+  // aliases (it seems to stall or run backwards), which is why the spec's
+  // extra laps are gone: two laps of the ones in 3/8 of a beat was two cells
+  // a frame. Blank to the final digit is all the travel there is time for.
+  const V = (POP_D * 4.7) / POP
   const odWrap = g(ladderLayer)
-  // Each reel starts on a blank cell, so the spin is also the reveal.
+  // Each reel starts on a blank cell, so the spin is also the reveal. The tens
+  // and ones start with the leap; the hundreds, with half the travel, an 8th
+  // later, so the three spin-ups share one shape.
   const REELS = [
-    { final: 3, laps: 0, lock: 11.875 },
-    { final: 6, laps: 1, lock: 11.9375 },
-    { final: 5, laps: 2, lock: 12.0 },
+    { final: 3, start: 11.125, lock: 11.875 },
+    { final: 6, start: 11, lock: 11.9375 },
+    { final: 5, start: 11, lock: 12.0 },
   ]
   const reels = REELS.map((rd, i) => {
     const c = odLay.chars[i]
@@ -432,20 +447,25 @@ REEL.scene('05-echo', (ctx) => {
     const wrap = g(odWrap, { 'clip-path': m.url })
     const strip = g(wrap)
     const cells = ['']
-    for (let n = 0; n <= rd.laps * 10 + rd.final; n++) cells.push(String(n % 10))
+    for (let n = 0; n <= rd.final; n++) cells.push(String(n))
     cells.forEach((d, k) => {
       if (d) text(strip, d, cx, odB + k * PITCH, 900, OD, C.white, { 'text-anchor': 'middle' })
     })
     const steps = cells.length - 1
-    // Spin (a controlled rotation, so 'glide'), then the last 0.8 of a cell
-    // locks on 'pop': its 10% overshoot is 8% of a cell. back.out(1.7) first
-    // reaches its target 37% of the way in, and that crossing is the hit the
-    // eye reads, so it is the part placed on the lock beat; the overshoot
-    // and settle ring on after it.
+    // Spin-up: speed ramps linearly from rest over the first `a` of the spin,
+    // then holds at V into the pop. `a` is whatever makes the spin cover its
+    // cells in its time at that top speed.
     const popAt = rd.lock - POP_HIT * POP
-    tl.to(strip, { y: -(steps - 0.8) * PITCH, duration: b(popAt - 11.25), ease: E.glide }, b(11.25))
+    const sigma = (V * (popAt - rd.start)) / (steps - POP_D)
+    const a = 2 * (1 - 1 / sigma)
+    const spin = (u) => (u < a ? (sigma * u * u) / (2 * a) : sigma * (u - a / 2))
+    tl.to(
+      strip,
+      { y: -(steps - POP_D) * PITCH, duration: b(popAt - rd.start), ease: spin },
+      b(rd.start),
+    )
     tl.to(strip, { y: -steps * PITCH, duration: b(POP), ease: E.pop }, b(popAt))
-    return { strip, steps, popAt, lock: rd.lock }
+    return { strip, steps, popAt, start: rd.start, lock: rd.lock, spin }
   })
 
   /* ------------------------------------------------ 13.0 the exits */
@@ -680,13 +700,13 @@ REEL.scene('05-echo', (ctx) => {
   {
     const r = reels[1]
     let prev = 0
-    for (let ms = 0; ms <= (b(r.lock) - b(11.25)) * 1000; ms++) {
-      const t = b(11.25) + ms / 1000
+    for (let ms = 0; ms <= (b(r.lock) - b(r.start)) * 1000; ms++) {
+      const t = b(r.start) + ms / 1000
       const tb = t / BEAT
       const pos =
         tb < r.popAt
-          ? (r.steps - 0.8) * fx.glide(seg(tb, 11.25, r.popAt))
-          : r.steps - 0.8 + 0.8 * fx.pop(seg(tb, r.popAt, r.popAt + POP))
+          ? (r.steps - POP_D) * r.spin(seg(tb, r.start, r.popAt))
+          : r.steps - POP_D + POP_D * fx.pop(seg(tb, r.popAt, r.popAt + POP))
       const cell = Math.floor(pos + 0.5)
       // The last cell is the lock, which has its own tick below.
       if (cell > prev && cell < r.steps) {

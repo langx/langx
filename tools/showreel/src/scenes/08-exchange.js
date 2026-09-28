@@ -458,6 +458,10 @@ REEL.scene('08-exchange', (ctx) => {
 
   // 0.0 SPLIT-OPEN: the blade shows 12 px for two frames, the plates part along the Cut.
   tl.set(blade, { visibility: 'hidden' }, 2 / 60)
+  // The bars stay ink while the plates cover the stage's edges. On 'snap' the
+  // plates have uncovered about half of every edge by the second frame, so the
+  // bars turn yellow with the blade, not a beat early.
+  ctx.letterbox(C.deep, 0, 2 / 60)
   tl.to(plateUL, { x: -343.3, y: -969.4, duration: b(0.75), ease: E.snap }, b(0))
   tl.to(plateLR, { x: 343.3, y: 969.4, duration: b(0.75), ease: E.snap }, b(0))
   tl.set(plates, { visibility: 'hidden' }, b(0.75))

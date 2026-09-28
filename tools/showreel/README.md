@@ -99,6 +99,7 @@ against.
 | `draw(fn)`                        | `fn(localTime)` runs on every rendered frame while the scene is visible                     |
 | `cue(t, name, opts?)`             | a sound at local time `t` — see the vocabulary in `audio.js`                                |
 | `ground(color, t, d?, ease?)`     | change the scene's ground and the letterbox at `t`, over `d` seconds                        |
+| `letterbox(color, from, to)`      | hold the bars around the stage at `color` over local [from, to), whatever the ground is     |
 | `rng(seed)`                       | a seeded random source; never `Math.random()`                                               |
 
 `mark()`'s group is centred on `(x, y)` with GSAP's `svgOrigin` at the mark's

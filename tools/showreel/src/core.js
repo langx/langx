@@ -397,6 +397,7 @@
     fitScale = 1
   const draws = []
   const grounds = {}
+  const boxes = {}
 
   function fit() {
     const vw = viewport.clientWidth
@@ -488,6 +489,16 @@
         grounds[plan.id].push({ t0: t || 0, t1: (t || 0) + (d || 0), to: color, ease })
         grounds[plan.id].sort((a, b) => a.t0 - b.t0)
       },
+      /**
+       * Hold the letterbox — the bars around the stage when the window is not
+       * 16:9 — at `color` over local [from, to), whatever the ground is. For a
+       * scene whose ground is covered at first by something it draws: without
+       * it, 08's bars turn yellow on the frame the ink plates start to part,
+       * a beat before the yellow they frame is on screen.
+       */
+      letterbox(color, from, to) {
+        boxes[plan.id].push({ from, to, color })
+      },
     }
     return ctx
   }
@@ -524,6 +535,7 @@
 
     PLAN.forEach((plan, index) => {
       grounds[plan.id] = []
+      boxes[plan.id] = []
       const root = el(
         'div',
         {
@@ -605,7 +617,9 @@
       }
     }
     if (top) {
-      const g = grounds[top.id].length ? groundAt(top, t - top.start) : top.ground
+      const local = t - top.start
+      let g = grounds[top.id].length ? groundAt(top, local) : top.ground
+      for (const box of boxes[top.id]) if (local >= box.from && local < box.to) g = box.color
       document.documentElement.style.setProperty('--ground', g)
     }
     for (const d of draws) {

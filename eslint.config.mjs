@@ -19,6 +19,10 @@ export default tseslint.config(
       // Throwaway Playwright scripts kept as a record of how things were
       // checked, not as code that ships. Linting them buys nothing.
       'tools/ext-lab/**',
+      // The reel's scratch output: frames, sheets, and the throwaway measuring
+      // scripts written while tuning a scene. Git ignores it; eslint does not
+      // read .gitignore, so it would lint whatever the last session left there.
+      'tools/showreel/out/**',
       // Another branch's checkout, living inside this one. Git excludes it;
       // eslint walked it and reported that branch's files as this branch's
       // errors, which is indistinguishable from having broken something.
