@@ -223,6 +223,12 @@ own app need their own bundle identifier, their own signing keys, and their
 own store listings. Do not reuse the identifiers in `app.config.ts` — they
 belong to the published LangX app.
 
+The map in a shared location's bubble needs `GOOGLE_MAPS_ANDROID_API_KEY` at
+build time on Android — a Maps SDK for Android key from Google Cloud,
+restricted to your package name and signing certificate. Without it the
+Android build shows the card without a map; iOS uses Apple Maps and needs no
+key.
+
 ## The voice service
 
 `apps/tts` is the one part of the API that is not the API: a Python process

@@ -373,6 +373,10 @@ Not in the survey; Behic asked for it. Not live: one point, sent once.
   is stored as sent. The place name is resolved on the device; there is no
   map image, provider or key, so it ships over the air.
 - The media lock applies, as it does to a photo.
+- A native map preview on top of the card (`expo-maps`; Apple Maps / Google
+  Maps), non-interactive, a pin for exact and a ~1 km circle for approximate,
+  and the card alone wherever the build cannot draw one. Needs a store build
+  and `GOOGLE_MAPS_ANDROID_API_KEY` in EAS. Status: in review
 
 ---
 

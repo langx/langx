@@ -48,6 +48,7 @@ import { MessageMeta } from './MessageMeta'
 import { Image } from 'expo-image'
 import { stickerAsset } from '../lib/stickerAssets'
 import { coordinatesText, mapsUrl } from '../lib/sharedLocation'
+import { LocationMapPreview } from './LocationMapPreview'
 import { useT, type MessageKey } from '../i18n'
 import { createDoubleTap, doubleTapToReactEnabled } from '../lib/doubleTapToReact'
 import { impact } from '../lib/haptics'
@@ -618,10 +619,13 @@ export const MessageBubble = memo(function MessageBubble({
     return shell(
       <Pressable onPress={tap} onLongPress={press} style={column}>
         {/*
-          A card, not a map. A map tile needs a provider and a key, and a
-          picture of a street would say more than an approximate point means.
+          A card, with a native map on top where the build has one — see
+          `LocationMapPreview`, which draws nothing where it cannot, leaving
+          the card as it was. An approximate point is a circle there, never a
+          pin: a pin would say more than the point means.
         */}
         <View ref={box} style={[styles.card, flash]}>
+          <LocationMapPreview point={place} precision={place.precision} onLongPress={press} />
           <Text style={styles.cardKicker}>
             {place.precision === 'approximate'
               ? t('chat.locationCardApproximate')
