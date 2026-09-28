@@ -21,9 +21,19 @@
  * closed-form in the beat, built from the style bible's eases; the few
  * whole-scene scalars (zoom, rule growth, the bubble morph) are tweened on
  * the timeline and read by the draw.
+ *
+ * On the 9:16 stage the grid is the same 4×4 and 8×8, built of portrait
+ * cells (270×480, then 135×240), so it still fills the frame. The story is
+ * re-staged for the phone rather than rotated: the cursor's path stays in the
+ * middle of the frame, clear of the feed's chrome, the conveyors run along
+ * the bottom row and the right-hand column where that chrome sits, and Han,
+ * kana and Hangul stand as vertical columns, which the tall cells are shaped
+ * for. The sound is always scheduled from the wide story, so both cuts share
+ * one score.
  */
 REEL.scene('03-grid', (ctx) => {
-  const { tl, b, E, C, G, F, CUT, W, H } = ctx
+  const { tl, b, E, C, G, F, CUT, W, H, CX, CY } = ctx
+  const PORTRAIT = ctx.portrait
   const BEAT = ctx.BEAT
 
   const cv = ctx.canvas()
@@ -39,12 +49,14 @@ REEL.scene('03-grid', (ctx) => {
 
   /* ------------------------------------------------------------ constants */
 
-  const CW4 = 480
-  const CH4 = 270
-  const CW8 = 240
-  const CH8 = 135
-  const ZX = 640 // the pull-back's fixed point: cell (1,1) fills the stage at zoom 4
-  const ZY = 360
+  // 480×270 and 240×135 wide; 270×480 and 135×240 on the 9:16 stage.
+  const CW4 = W / 4
+  const CH4 = H / 4
+  const CW8 = W / 8
+  const CH8 = H / 8
+  // The pull-back's fixed point: cell (1,1) fills the stage at zoom 4.
+  const ZX = PORTRAIT ? 360 : 640
+  const ZY = PORTRAIT ? 640 : 360
 
   // A reel runs one cell per 16th. It stops on back.out(1.7): starting that
   // ease with the reel's own speed means covering v·D/4.7 cells in it, and
@@ -70,10 +82,16 @@ REEL.scene('03-grid', (ctx) => {
     L: [C.ink, C.muted],
     Y: [C.onYellow, C.onYellow],
   }
+  // A portrait cell is 270 wide: 56 px is the largest size that sets Merhaba
+  // and Γειά σου inside it with a margin, and the 8×8 halves it.
   const SIZE = {
-    4: { word: 72, label: 14, lx: 16, ly: 28, step: 22 },
-    8: { word: 40, label: 10, lx: 10, ly: 19, step: 16 },
+    4: { word: PORTRAIT ? 56 : 72, label: 14, lx: 16, ly: 28, step: 22 },
+    8: { word: PORTRAIT ? 28 : 40, label: 10, lx: 10, ly: 19, step: 16 },
   }
+  // In a tall cell Han, kana and Hangul are set as a vertical column, the way
+  // all three are traditionally read: a five-syllable greeting stands in the
+  // cell's height instead of overrunning its width.
+  const COLUMN = PORTRAIT ? new Set(['zh', 'ja', 'ko']) : new Set()
 
   const WI = Object.fromEntries(G.map((x, i) => [x.lang, i]))
   const CODE = G.map((x) => x.lang.toUpperCase())
@@ -110,7 +128,68 @@ REEL.scene('03-grid', (ctx) => {
   const labelFont = (px) => `800 ${px}px ${F.display}`
   const labelTrack = (px) => 0.14 * px
 
+  // A vertical column, set solid: each character centred on the column's
+  // axis by its advance, one em apart. Runs are relative to the ink centre.
+  const columnCache = new Map()
+  function column(i, px) {
+    const key = `${i}|${px}`
+    let col = columnCache.get(key)
+    if (!col) {
+      const font = wordFont(i, px)
+      let l = Infinity
+      let r = -Infinity
+      let t = Infinity
+      let bt = -Infinity
+      const runs = [...G[i].text].map((ch, j) => {
+        const m = metrics(ch, font, 0)
+        const x = -m.adv / 2
+        const y = j * px
+        l = Math.min(l, x - m.L)
+        r = Math.max(r, x + m.R)
+        t = Math.min(t, y - m.A)
+        bt = Math.max(bt, y + m.D)
+        return { ch, x, y }
+      })
+      const cx = (l + r) / 2
+      const cy = (t + bt) / 2
+      col = {
+        font,
+        runs: runs.map((q) => ({ ch: q.ch, x: q.x - cx, y: q.y - cy })),
+        hw: (r - l) / 2,
+        hh: (bt - t) / 2,
+      }
+      columnCache.set(key, col)
+    }
+    return col
+  }
+  const isColumn = (i) => COLUMN.has(G[i].lang)
+
+  // Half the ink box of a greeting, around its centre.
+  function inkHalf(i, px) {
+    if (isColumn(i)) {
+      const col = column(i, px)
+      return [col.hw, col.hh]
+    }
+    const k = metrics(G[i].text, wordFont(i, px), wordTrack(i, px))
+    return [(k.L + k.R) / 2, (k.A + k.D) / 2]
+  }
+
   /* -------------------------------------------------------------- atlas */
+
+  function makeColumnSprite(i, px, color) {
+    const col = column(i, px)
+    const pad = 3
+    const c = document.createElement('canvas')
+    c.width = Math.ceil((2 * col.hw + 2 * pad) * K)
+    c.height = Math.ceil((2 * col.hh + 2 * pad) * K)
+    const x = c.getContext('2d')
+    x.scale(K, K)
+    x.font = col.font
+    x.direction = 'ltr'
+    x.fillStyle = color
+    for (const q of col.runs) x.fillText(q.ch, pad + col.hw + q.x, pad + col.hh + q.y)
+    return { c, w: c.width / K, h: c.height / K, ix: pad + col.hw, iy: pad + col.hh }
+  }
 
   function makeSprite(text, font, ls, color) {
     const m = metrics(text, font, ls)
@@ -145,7 +224,9 @@ REEL.scene('03-grid', (ctx) => {
       G.forEach((gr, i) => {
         atlas.set(
           `w${i}|${mode}|${ck}`,
-          makeSprite(gr.text, wordFont(i, s.word), wordTrack(i, s.word), INKS[ck][0]),
+          isColumn(i)
+            ? makeColumnSprite(i, s.word, INKS[ck][0])
+            : makeSprite(gr.text, wordFont(i, s.word), wordTrack(i, s.word), INKS[ck][0]),
         )
         atlas.set(
           `l${i}|${mode}|${ck}`,
@@ -177,6 +258,18 @@ REEL.scene('03-grid', (ctx) => {
 
   // Direct setting, for the frames where the camera is still zoomed in.
   function wordDirect(i, px, color, cx, cy, sx, sy) {
+    if (isColumn(i)) {
+      const col = column(i, px)
+      g.save()
+      g.font = col.font
+      g.letterSpacing = '0px'
+      g.fillStyle = color
+      g.translate(cx, cy)
+      g.scale(sx, sy)
+      for (const q of col.runs) g.fillText(q.ch, q.x, q.y)
+      g.restore()
+      return
+    }
     const font = wordFont(i, px)
     const ls = wordTrack(i, px)
     const m = metrics(G[i].text, font, ls)
@@ -235,11 +328,15 @@ REEL.scene('03-grid', (ctx) => {
     return { l: l - pad, r: r + 1 - pad, t: t - base, b: bt + 1 - base }
   }
   const ZH = G[WI.zh]
-  const zhFont = `800 480px ${ZH.font}`
-  const zhInk = scanInk(ZH.text, zhFont, 480, 0)
-  const zhX = 960 - (zhInk.l + zhInk.r) / 2
+  // Wide: 480 px, annotation at (120, baseline 134). Portrait: 400 px, (96, 284).
+  const zhPx = PORTRAIT ? 400 : 480
+  const annL = PORTRAIT ? 96 : 120
+  const annB = PORTRAIT ? 284 : 134
+  const zhFont = `800 ${zhPx}px ${ZH.font}`
+  const zhInk = scanInk(ZH.text, zhFont, zhPx, 0)
+  const zhX = CX - (zhInk.l + zhInk.r) / 2
   // S2 sets it in the DOM, which puts a text baseline on a whole pixel.
-  const zhY = Math.round(540 - (zhInk.t + zhInk.b) / 2)
+  const zhY = Math.round(CY - (zhInk.t + zhInk.b) / 2)
   const annFont = `800 24px ${F.display}`
   const annTrack = 0.12 * 24
   const annText = 'ZH · HAN'
@@ -247,12 +344,12 @@ REEL.scene('03-grid', (ctx) => {
   // browser paints on whole pixels, then slid by a GSAP x from its 'PT ·
   // LATIN' home to here. Reproduce that snapping, or the arrow sits half a
   // pixel off S2's on the handoff frame.
-  const arrowHome = 120 + metrics('PT · LATIN ', annFont, annTrack).adv
+  const arrowHome = annL + metrics('PT · LATIN ', annFont, annTrack).adv
   const arrowX =
-    120 +
+    annL +
     metrics(`${annText} `, annFont, annTrack).adv +
     (Math.round(arrowHome - 6) - (arrowHome - 6))
-  const capMid = 134 + scanInk('PTLATIN', annFont, 24, annTrack).t / 2 // mid cap height
+  const capMid = annB + scanInk('PTLATIN', annFont, 24, annTrack).t / 2 // mid cap height
   const arrowY = Math.round(capMid - 15) + 15
 
   function drawComposition(x, y, sc) {
@@ -266,7 +363,7 @@ REEL.scene('03-grid', (ctx) => {
     g.font = annFont
     g.letterSpacing = `${annTrack}px`
     g.fillStyle = C.faint
-    g.fillText(annText, 120, 134)
+    g.fillText(annText, annL, annB)
     // The arrow is drawn, never a glyph: 2 px stroke, 18 px shaft, 6 px head.
     g.strokeStyle = C.faint
     g.lineWidth = 2
@@ -282,299 +379,393 @@ REEL.scene('03-grid', (ctx) => {
     g.restore()
   }
 
-  /* --------------------------------------------------------------- reels */
+  /* ------------------------------------------------------------ staging */
 
-  const RS = ctx.rng(3002)
-  const randWord = (avoid) => {
-    for (;;) {
-      const w = Math.floor(RS() * G.length)
-      if (!avoid.includes(w)) return w
-    }
+  // Where things happen, per stage. Cells are (column, row). The cursor
+  // starts on `start`, hops on 1, 2 and 3, and its last 4×4 cell is where
+  // Hola trades in on 2 (from `hola`); on 4 it keeps that cell's top-left
+  // quarter and hops on 5, 5.5 and 6, ending on the cell that becomes the
+  // bubble. `row` slides right on 1.3-2, `col` slides down on 2.3-3.
+  // prettier-ignore
+  const STAGES = {
+    wide: {
+      W: 1920,
+      H: 1080,
+      // [word, ground] by row; the cursor starts on Hello, whose own ground is white.
+      INIT: [
+        ['es', 'f'], ['fr', 'd'], ['hi', 'w'], ['ru', 'f'],
+        ['ar', 'w'], ['zh', 'd'], ['ko', 'f'], ['pt', 'd'],
+        ['he', 'd'], ['it', 'f'], ['ja', 'w'], ['de', 'd'],
+        ['tr', 'w'], ['th', 'd'], ['en', 'w'], ['el', 'f'],
+      ],
+      start: [2, 3],
+      hops: [[3, 1], [3, 0], [1, 0]],
+      hola: [0, 0],
+      row: 2,
+      col: 0,
+      hops8: [[3, 1], [2, 1], [1, 1]],
+    },
+    // The phone: the cursor never leaves the middle of the frame (rows 0-2,
+    // columns 0-2, away from the caption band and the button rail), and the
+    // conveyors are the bottom row and the right-hand column — texture under
+    // the chrome. The grounds are a proper three-colouring: no two cells of
+    // one ground share an edge.
+    vertical: {
+      W: 1080,
+      H: 1920,
+      INIT: [
+        ['es', 'f'], ['ar', 'w'], ['he', 'd'], ['tr', 'f'],
+        ['fr', 'w'], ['zh', 'd'], ['it', 'f'], ['th', 'd'],
+        ['hi', 'd'], ['ko', 'f'], ['en', 'd'], ['ja', 'f'],
+        ['ru', 'w'], ['pt', 'd'], ['de', 'f'], ['el', 'w'],
+      ],
+      start: [2, 2],
+      hops: [[0, 1], [2, 0], [1, 1]],
+      hola: [0, 0],
+      row: 3,
+      col: 3,
+      hops8: [[3, 3], [2, 3], [1, 2]],
+    },
   }
 
-  /**
-   * A reel's position P (in cells; items move down as it grows) as a pure
-   * function of the beat. Either already spinning since T0, or starting from
-   * rest at tA with a 'lift' counter-nudge and a 'cut' spin-up. Speed is
-   * trimmed so the landing item is a whole number of cells away and the
-   * velocity is continuous into the 'pop' stop.
+  /*
+   * The whole story — every reel, flip, conveyor and ring — for one staging,
+   * as data. Each call draws from its own seeded sources, so the wide story
+   * is the same wherever it is built: the picture uses this stage's, the
+   * sound always the wide one's.
    */
-  function makeReel(o) {
-    const tE = o.tStop - CROSS * STOP
-    let P
-    let Kf
-    let kMin
-    if (o.tA == null) {
-      const d = (V * STOP) / POP_V0
-      Kf = Math.ceil(d + V * (tE - o.T0)) + 1
-      P = (t) =>
-        t < tE ? Kf - d - V * (tE - t) : t < tE + STOP ? Kf - d + d * POP((t - tE) / STOP) : Kf
-      kMin = Math.floor(P(o.T0)) - 1
-    } else {
-      const a = 0.125
-      const acc = 0.125
-      const back = 0.06
-      const t1 = o.tA + a + acc
-      const span = acc / 3 + (tE - t1) + STOP / POP_V0
-      Kf = Math.max(2, Math.round(V * span))
-      const v = (Kf + back) / span
-      const d = (v * STOP) / POP_V0
-      const x1 = (v * acc) / 3
-      P = (t) => {
-        if (t < o.tA) return 0
-        if (t < o.tA + a) return -back * LIFT((t - o.tA) / a)
-        if (t < t1) return -back + x1 * CUTE((t - o.tA - a) / acc)
-        if (t < tE) return -back + x1 + v * (t - t1)
-        if (t < tE + STOP) return Kf - d + d * POP((t - tE) / STOP)
-        return Kf
-      }
-      kMin = -2
-    }
-    const strip = []
-    for (let k = kMin; k <= Kf + 1; k++) {
-      if (k === Kf) strip.push(o.to)
-      else if (k === 0 && o.tA != null) strip.push(o.from)
-      else strip.push(randWord([strip[strip.length - 1], o.to, o.from]))
-    }
-    const at = (k) => strip[Math.max(0, Math.min(strip.length - 1, k - kMin))]
-    return {
-      P,
-      at,
-      to: o.to,
-      tA: o.tA == null ? -Infinity : o.tA,
-      tStop: o.tStop,
-      end: tE + STOP,
-    }
-  }
-  const still = (word) => ({ P: () => 0, at: () => word, to: word, tA: -Infinity, end: -Infinity })
+  function story(L) {
+    const CW4s = L.W / 4
+    const CW8s = L.W / 8
+    const CH8s = L.H / 8
 
-  /* ------------------------------------------------------ the 4×4 story */
+    /* ------------------------------------------------------------- reels */
 
-  // [word, ground] by row; the cursor starts on Hello, whose own ground is white.
-  const INIT = [
-    ['es', 'f'], ['fr', 'd'], ['hi', 'w'], ['ru', 'f'],
-    ['ar', 'w'], ['zh', 'd'], ['ko', 'f'], ['pt', 'd'],
-    ['he', 'd'], ['it', 'f'], ['ja', 'w'], ['de', 'd'],
-    ['tr', 'w'], ['th', 'd'], ['en', 'w'], ['el', 'f'],
-  ] // prettier-ignore
-  const ID = (c, r) => r * 4 + c
-  const cards = INIT.map(([lang, base], id) => ({
-    id,
-    c0: id % 4,
-    r0: Math.floor(id / 4),
-    word: WI[lang],
-    base,
-    yellow0: id === ID(2, 3),
-    reels: [],
-    flips: [],
-    labelRolls: [],
-  }))
-
-  // Conveyors: a 1/8-beat 'lift' counter-nudge, then one cell on 'whip'.
-  const ROW = { row: 2, t0: 1.175, t1: 1.3, t2: 2.0 }
-  const COL = { col: 0, t0: 2.175, t1: 2.3, t2: 3.0 }
-  function convOff(tb, M) {
-    if (tb < M.t0) return 0
-    if (tb < M.t1) return -0.06 * LIFT((tb - M.t0) / (M.t1 - M.t0))
-    if (tb < M.t2) return -0.06 + 1.06 * WHIP((tb - M.t1) / (M.t2 - M.t1))
-    return 1
-  }
-  function posAt(card, tb) {
-    let c = card.c0
-    let r = card.r0
-    let ox = 0
-    let oy = 0
-    let axis = null
-    if (r === ROW.row) {
-      const o = convOff(tb, ROW)
-      if (tb >= ROW.t2) c = (c + 1) % 4
-      else if (o !== 0) {
-        ox = o
-        axis = ROW
+    const RS = ctx.rng(3002)
+    const randWord = (avoid) => {
+      for (;;) {
+        const w = Math.floor(RS() * G.length)
+        if (!avoid.includes(w)) return w
       }
     }
-    if (c === COL.col && !axis) {
-      const o = convOff(tb, COL)
-      if (tb >= COL.t2) r = (r + 1) % 4
-      else if (o !== 0) {
-        oy = o
-        axis = COL
+
+    /**
+     * A reel's position P (in cells; items move down as it grows) as a pure
+     * function of the beat. Either already spinning since T0, or starting from
+     * rest at tA with a 'lift' counter-nudge and a 'cut' spin-up. Speed is
+     * trimmed so the landing item is a whole number of cells away and the
+     * velocity is continuous into the 'pop' stop.
+     */
+    function makeReel(o) {
+      const tE = o.tStop - CROSS * STOP
+      let P
+      let Kf
+      let kMin
+      if (o.tA == null) {
+        const d = (V * STOP) / POP_V0
+        Kf = Math.ceil(d + V * (tE - o.T0)) + 1
+        P = (t) =>
+          t < tE ? Kf - d - V * (tE - t) : t < tE + STOP ? Kf - d + d * POP((t - tE) / STOP) : Kf
+        kMin = Math.floor(P(o.T0)) - 1
+      } else {
+        const a = 0.125
+        const acc = 0.125
+        const back = 0.06
+        const t1 = o.tA + a + acc
+        const span = acc / 3 + (tE - t1) + STOP / POP_V0
+        Kf = Math.max(2, Math.round(V * span))
+        const v = (Kf + back) / span
+        const d = (v * STOP) / POP_V0
+        const x1 = (v * acc) / 3
+        P = (t) => {
+          if (t < o.tA) return 0
+          if (t < o.tA + a) return -back * LIFT((t - o.tA) / a)
+          if (t < t1) return -back + x1 * CUTE((t - o.tA - a) / acc)
+          if (t < tE) return -back + x1 + v * (t - t1)
+          if (t < tE + STOP) return Kf - d + d * POP((t - tE) / STOP)
+          return Kf
+        }
+        kMin = -2
+      }
+      const strip = []
+      for (let k = kMin; k <= Kf + 1; k++) {
+        if (k === Kf) strip.push(o.to)
+        else if (k === 0 && o.tA != null) strip.push(o.from)
+        else strip.push(randWord([strip[strip.length - 1], o.to, o.from]))
+      }
+      const at = (k) => strip[Math.max(0, Math.min(strip.length - 1, k - kMin))]
+      return {
+        P,
+        at,
+        to: o.to,
+        tA: o.tA == null ? -Infinity : o.tA,
+        tStop: o.tStop,
+        end: tE + STOP,
       }
     }
-    return { c, r, ox, oy, axis }
-  }
-  const cardAt = (c, r, tb) =>
-    cards.find((k) => {
-      const p = posAt(k, tb)
-      return p.c === c && p.r === r && !p.axis
+    const still = (word) => ({
+      P: () => 0,
+      at: () => word,
+      to: word,
+      tA: -Infinity,
+      end: -Infinity,
     })
-  const reelAt = (card, tb) => {
-    let cur = card.reels[0]
-    for (const r of card.reels) if (r.tA <= tb) cur = r
-    return cur
-  }
-  const wordAt = (card, tb) => reelAt(card, tb).to
 
-  // The pull-back: every cell but (1,1) is mid-spin and stops in Chebyshev
-  // rings around it. From (1,1) a 4×4 grid only has rings 1 and 2.
-  const R1 = ctx.rng(3001)
-  const pick = (list) => list[Math.floor(R1() * list.length)]
-  const RING_STOP = { 1: 0.5, 2: 0.625 }
-  const carried = []
-  {
-    const pool = cards.filter((k) => ![ID(1, 1), ID(2, 3), ID(3, 1)].includes(k.id))
-    while (carried.length < 2) {
-      const k = pick(pool)
-      if (!carried.includes(k)) carried.push(k)
-    }
-  }
-  for (const card of cards) {
-    if (card.id === ID(1, 1)) {
-      card.reels.push(still(-1))
-      card.reels.push(makeReel({ tA: 0.5, tStop: 1.0, from: -1, to: card.word }))
-      continue
-    }
-    const ring = Math.max(Math.abs(card.c0 - 1), Math.abs(card.r0 - 1))
-    const tStop = carried.includes(card) ? 1.0 : RING_STOP[ring]
-    card.reels.push(makeReel({ tA: null, T0: 0, tStop, to: card.word }))
-  }
+    /* ---------------------------------------------------- the 4×4 story */
 
-  // Beat rolls: three non-cursor cells slot-roll and land on the beat.
-  function roll(card, tStop, to) {
-    const from = wordAt(card, tStop - 0.5)
-    card.reels.push(makeReel({ tA: tStop - 0.5, tStop, from, to }))
-  }
-  function freshWord(card, tStop) {
-    const p = posAt(card, tStop)
-    const avoid = [wordAt(card, tStop - 0.5)]
-    for (const [dc, dr] of [
-      [1, 0],
-      [-1, 0],
-      [0, 1],
-      [0, -1],
-    ]) {
-      const n = cardAt((p.c + dc + 4) % 4, (p.r + dr + 4) % 4, tStop)
-      if (n) avoid.push(wordAt(n, tStop - 0.5))
-    }
-    for (;;) {
-      const w = Math.floor(R1() * G.length)
-      if (!avoid.includes(w)) return w
-    }
-  }
-  // 2.0: Hola and Bonjour trade cells, so the cursor's third hop lands on Hola.
-  roll(cards[ID(1, 0)], 2.0, WI.es)
-  roll(cards[ID(0, 0)], 2.0, WI.fr)
-  {
-    const skip = [ID(1, 0), ID(0, 0), ID(3, 1), ID(3, 0)]
-    const pool = cards.filter((k) => k.r0 !== ROW.row && !skip.includes(k.id))
-    const k = pick(pool)
-    roll(k, 2.0, freshWord(k, 2.0))
-  }
-  {
-    const inCol0 = (k) => posAt(k, 2.5).c === COL.col
-    const skip = [ID(3, 0), ID(1, 0)]
-    const pool = cards.filter((k) => !inCol0(k) && !skip.includes(k.id))
-    const chosen = []
-    while (chosen.length < 3) {
-      const k = pick(pool)
-      if (!chosen.includes(k)) chosen.push(k)
-    }
-    for (const k of chosen) roll(k, 3.0, freshWord(k, 3.0))
-  }
+    const ID = (c, r) => r * 4 + c
+    const START = ID(...L.start)
+    const [H1, H2, H3] = L.hops.map((h) => ID(...h))
+    const HOLA = ID(...L.hola)
+    const cards = L.INIT.map(([lang, base], id) => ({
+      id,
+      c0: id % 4,
+      r0: Math.floor(id / 4),
+      word: WI[lang],
+      base,
+      yellow0: id === START,
+      reels: [],
+      flips: [],
+      labelRolls: [],
+    }))
 
-  // The cursor hops on 1, 2 and 3: the old and the new cell flip together.
-  const HOPS4 = [
-    [1.0, ID(2, 3), ID(3, 1)],
-    [2.0, ID(3, 1), ID(3, 0)],
-    [3.0, ID(3, 0), ID(1, 0)],
-  ]
-  for (const [tc, from, to] of HOPS4) {
-    cards[from].flips.push({ tc, from: 'y', to: cards[from].base })
-    cards[to].flips.push({ tc, from: cards[to].base, to: 'y' })
-  }
-  const isYellow = (card, tb) => {
-    let y = card.yellow0
-    for (const f of card.flips) if (tb >= f.tc) y = f.to === 'y'
-    return y
-  }
-
-  // On every 16th one cell's code label rolls (through two others, back to its own).
-  {
-    let prev = null
-    for (let i = 0; i < 12; i++) {
-      const t0 = 1 + i * 0.25
-      const t1 = t0 + 0.25
-      const pool = cards.filter((k) => {
-        if (k === prev || isYellow(k, t0) || isYellow(k, t1)) return false
-        if (k.flips.some((f) => f.tc + HALF > t0 && f.tc - HALF < t1)) return false
-        if (k.reels.some((r) => r.tA < t1 && r.end > t0)) return false
-        const a = posAt(k, t0)
-        const z = posAt(k, t1)
-        return !a.axis && !z.axis && a.c === z.c && a.r === z.r
-      })
-      const k = pick(pool)
-      const own = wordAt(k, t0)
-      k.labelRolls.push({
-        t0,
-        codes: [own, randWord([own]), randWord([own]), own],
-      })
-      prev = k
+    // Conveyors: a 1/8-beat 'lift' counter-nudge, then one cell on 'whip'.
+    const ROW = { row: L.row, t0: 1.175, t1: 1.3, t2: 2.0 }
+    const COL = { col: L.col, t0: 2.175, t1: 2.3, t2: 3.0 }
+    function convOff(tb, M) {
+      if (tb < M.t0) return 0
+      if (tb < M.t1) return -0.06 * LIFT((tb - M.t0) / (M.t1 - M.t0))
+      if (tb < M.t2) return -0.06 + 1.06 * WHIP((tb - M.t1) / (M.t2 - M.t1))
+      return 1
     }
-  }
-
-  /* ------------------------------------------------------ the 8×8 story */
-
-  // Each 8×8 cell keeps the ground of the 4×4 cell it was cut from; the
-  // cursor keeps only its top-left quarter.
-  const R3 = ctx.rng(3003)
-  const HN = 960 * CUT.n[0] + 540 * CUT.n[1] // the stage's half-extent along n (975.7)
-  const cells = []
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const parent = cardAt(c >> 1, r >> 1, 3.75)
-      const cx = c * CW8 + CW8 / 2
-      const cy = r * CH8 + CH8 / 2
-      const p = (cx - 960) * CUT.n[0] + (cy - 540) * CUT.n[1]
-      const avoid = [WI.es]
-      if (c > 0) avoid.push(cells[cells.length - 1].word)
-      if (r > 0) avoid.push(cells[cells.length - 8].word)
-      let word
-      do word = Math.floor(R3() * G.length)
-      while (avoid.includes(word))
-      const cell = {
-        c,
-        r,
-        base: parent.base,
-        word,
-        ring: Math.max(Math.abs(c - 1), Math.abs(r - 1)),
-        yellow0: c === 2 && r === 0,
-        flips: [],
-        reel: null,
+    function posAt(card, tb) {
+      let c = card.c0
+      let r = card.r0
+      let ox = 0
+      let oy = 0
+      let axis = null
+      if (r === ROW.row) {
+        const o = convOff(tb, ROW)
+        if (tb >= ROW.t2) c = (c + 1) % 4
+        else if (o !== 0) {
+          ox = o
+          axis = ROW
+        }
       }
-      if (!cell.yellow0)
-        cell.reel = makeReel({ tA: null, T0: 4, tStop: 4 + (p + HN) / (2 * HN), to: word })
-      cells.push(cell)
+      if (c === COL.col && !axis) {
+        const o = convOff(tb, COL)
+        if (tb >= COL.t2) r = (r + 1) % 4
+        else if (o !== 0) {
+          oy = o
+          axis = COL
+        }
+      }
+      return { c, r, ox, oy, axis }
+    }
+    const cardAt = (c, r, tb) =>
+      cards.find((k) => {
+        const p = posAt(k, tb)
+        return p.c === c && p.r === r && !p.axis
+      })
+    const reelAt = (card, tb) => {
+      let cur = card.reels[0]
+      for (const r of card.reels) if (r.tA <= tb) cur = r
+      return cur
+    }
+    const wordAt = (card, tb) => reelAt(card, tb).to
+
+    // The pull-back: every cell but (1,1) is mid-spin and stops in Chebyshev
+    // rings around it. From (1,1) a 4×4 grid only has rings 1 and 2.
+    const R1 = ctx.rng(3001)
+    const pick = (list) => list[Math.floor(R1() * list.length)]
+    const RING_STOP = { 1: 0.5, 2: 0.625 }
+    const carried = []
+    {
+      const pool = cards.filter((k) => ![ID(1, 1), START, H1].includes(k.id))
+      while (carried.length < 2) {
+        const k = pick(pool)
+        if (!carried.includes(k)) carried.push(k)
+      }
+    }
+    for (const card of cards) {
+      if (card.id === ID(1, 1)) {
+        card.reels.push(still(-1))
+        card.reels.push(makeReel({ tA: 0.5, tStop: 1.0, from: -1, to: card.word }))
+        continue
+      }
+      const ring = Math.max(Math.abs(card.c0 - 1), Math.abs(card.r0 - 1))
+      const tStop = carried.includes(card) ? 1.0 : RING_STOP[ring]
+      card.reels.push(makeReel({ tA: null, T0: 0, tStop, to: card.word }))
+    }
+
+    // Beat rolls: three non-cursor cells slot-roll and land on the beat.
+    function roll(card, tStop, to) {
+      const from = wordAt(card, tStop - 0.5)
+      card.reels.push(makeReel({ tA: tStop - 0.5, tStop, from, to }))
+    }
+    function freshWord(card, tStop) {
+      const p = posAt(card, tStop)
+      const avoid = [wordAt(card, tStop - 0.5)]
+      for (const [dc, dr] of [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ]) {
+        const n = cardAt((p.c + dc + 4) % 4, (p.r + dr + 4) % 4, tStop)
+        if (n) avoid.push(wordAt(n, tStop - 0.5))
+      }
+      for (;;) {
+        const w = Math.floor(R1() * G.length)
+        if (!avoid.includes(w)) return w
+      }
+    }
+    // 2.0: Hola trades cells with the cursor's last 4×4 stop, so the third
+    // hop lands on Hola.
+    roll(cards[H3], 2.0, WI.es)
+    roll(cards[HOLA], 2.0, cards[H3].word)
+    {
+      const skip = [H3, HOLA, H1, H2]
+      const pool = cards.filter((k) => k.r0 !== ROW.row && !skip.includes(k.id))
+      const k = pick(pool)
+      roll(k, 2.0, freshWord(k, 2.0))
+    }
+    {
+      const inCol = (k) => posAt(k, 2.5).c === COL.col
+      const skip = [H2, H3]
+      const pool = cards.filter((k) => !inCol(k) && !skip.includes(k.id))
+      const chosen = []
+      while (chosen.length < 3) {
+        const k = pick(pool)
+        if (!chosen.includes(k)) chosen.push(k)
+      }
+      for (const k of chosen) roll(k, 3.0, freshWord(k, 3.0))
+    }
+
+    // The cursor hops on 1, 2 and 3: the old and the new cell flip together.
+    const HOPS4 = [
+      [1.0, START, H1],
+      [2.0, H1, H2],
+      [3.0, H2, H3],
+    ]
+    for (const [tc, from, to] of HOPS4) {
+      cards[from].flips.push({ tc, from: 'y', to: cards[from].base })
+      cards[to].flips.push({ tc, from: cards[to].base, to: 'y' })
+    }
+    const isYellow = (card, tb) => {
+      let y = card.yellow0
+      for (const f of card.flips) if (tb >= f.tc) y = f.to === 'y'
+      return y
+    }
+
+    // On every 16th one cell's code label rolls (through two others, back to its own).
+    {
+      let prev = null
+      for (let i = 0; i < 12; i++) {
+        const t0 = 1 + i * 0.25
+        const t1 = t0 + 0.25
+        const pool = cards.filter((k) => {
+          if (k === prev || isYellow(k, t0) || isYellow(k, t1)) return false
+          if (k.flips.some((f) => f.tc + HALF > t0 && f.tc - HALF < t1)) return false
+          if (k.reels.some((r) => r.tA < t1 && r.end > t0)) return false
+          const a = posAt(k, t0)
+          const z = posAt(k, t1)
+          return !a.axis && !z.axis && a.c === z.c && a.r === z.r
+        })
+        const k = pick(pool)
+        const own = wordAt(k, t0)
+        k.labelRolls.push({
+          t0,
+          codes: [own, randWord([own]), randWord([own]), own],
+        })
+        prev = k
+      }
+    }
+
+    /* ---------------------------------------------------- the 8×8 story */
+
+    // Each 8×8 cell keeps the ground of the 4×4 cell it was cut from; the
+    // cursor keeps only its top-left quarter.
+    const R3 = ctx.rng(3003)
+    const Q = [2 * L.hops[2][0], 2 * L.hops[2][1]]
+    const FIN = L.hops8[2]
+    // The stage's half-extent along n: 975.7 wide.
+    const HN = (L.W / 2) * CUT.n[0] + (L.H / 2) * CUT.n[1]
+    const cells = []
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const parent = cardAt(c >> 1, r >> 1, 3.75)
+        const cx = c * CW8s + CW8s / 2
+        const cy = r * CH8s + CH8s / 2
+        const p = (cx - L.W / 2) * CUT.n[0] + (cy - L.H / 2) * CUT.n[1]
+        const avoid = [WI.es]
+        if (c > 0) avoid.push(cells[cells.length - 1].word)
+        if (r > 0) avoid.push(cells[cells.length - 8].word)
+        let word
+        do word = Math.floor(R3() * G.length)
+        while (avoid.includes(word))
+        const cell = {
+          c,
+          r,
+          base: parent.base,
+          word,
+          ring: Math.max(Math.abs(c - FIN[0]), Math.abs(r - FIN[1])),
+          yellow0: c === Q[0] && r === Q[1],
+          flips: [],
+          reel: null,
+        }
+        if (!cell.yellow0)
+          cell.reel = makeReel({ tA: null, T0: 4, tStop: 4 + (p + HN) / (2 * HN), to: word })
+        cells.push(cell)
+      }
+    }
+    const cell8 = (c, r) => cells[r * 8 + c]
+    const HOPS8 = [
+      [5.0, Q, L.hops8[0]],
+      [5.5, L.hops8[0], L.hops8[1]],
+      [6.0, L.hops8[1], L.hops8[2]],
+    ]
+    for (const [tc, a, z] of HOPS8) {
+      cell8(a[0], a[1]).flips.push({ tc, toY: false })
+      cell8(z[0], z[1]).flips.push({ tc, toY: true })
+    }
+
+    return {
+      CW4: CW4s,
+      CW8: CW8s,
+      ID,
+      cards,
+      ROW,
+      COL,
+      convOff,
+      posAt,
+      reelAt,
+      carried,
+      RING_STOP,
+      HOPS4,
+      cells,
+      HOPS8,
+      CUR: cell8(...FIN),
     }
   }
-  const cell8 = (c, r) => cells[r * 8 + c]
-  const HOPS8 = [
-    [5.0, [2, 0], [3, 1]],
-    [5.5, [3, 1], [2, 1]],
-    [6.0, [2, 1], [1, 1]],
-  ]
-  for (const [tc, a, z] of HOPS8) {
-    cell8(a[0], a[1]).flips.push({ tc, toY: false })
-    cell8(z[0], z[1]).flips.push({ tc, toY: true })
-  }
-  const CUR = cell8(1, 1)
+
+  const ST = story(PORTRAIT ? STAGES.vertical : STAGES.wide)
+  const { cards, ROW, convOff, posAt, reelAt, cells, CUR } = ST
+  // Both stagings end on a cursor whose farthest ring is 6.
   const ringStart = (k) => 6.25 + 0.1875 * (6 - k)
 
   /* ------------------------------------------------------ Hola, the bubble */
 
   const holaFont = `700 52px ${F.display}`
   const holaM = metrics('Hola', holaFont, 0)
-  const BUB = { x: 400, y: 260, w: holaM.adv + 72, h: 128, tx: 436, ty: 342 }
-  const HOLA_S = 40 / 52
+  // Wide, where S4's chat opens; portrait, on the phone's chat column (x 96-984).
+  const BUB = PORTRAIT
+    ? { x: 96, y: 700, w: holaM.adv + 72, h: 128, tx: 132, ty: 782 }
+    : { x: 400, y: 260, w: holaM.adv + 72, h: 128, tx: 436, ty: 342 }
+  // Wide, the cursor's Hola is set like every other 8×8 greeting. A portrait
+  // 8×8 cell is too narrow for that to read on a phone, and this one word is
+  // what the eye follows into the chat, so there it stands a size up.
+  const HOLA_S = (PORTRAIT ? 36 : SIZE[8].word) / 52
 
   function drawHola(x0, y0, s, color) {
     g.save()
@@ -665,10 +856,10 @@ REEL.scene('03-grid', (ctx) => {
     const m = S.mid
     const cx = x + CW4 / 2
     const cy = y + CH4 / 2
-    const k = metrics(G[wi].text, wordFont(wi, SIZE[4].word), wordTrack(wi, SIZE[4].word))
+    const [kx, ky] = inkHalf(wi, SIZE[4].word)
     const gap = 16
-    const hx = (k.L + k.R) / 2 + gap
-    const hy = (k.A + k.D) / 2 + gap
+    const hx = kx + gap
+    const hy = ky + gap
     const ex = (CW4 / 2) * m
     const ey = (CH4 / 2) * m
     g.strokeStyle = gk === 'd' ? C.nightBorder : C.deep
@@ -932,43 +1123,46 @@ REEL.scene('03-grid', (ctx) => {
 
   /* --------------------------------------------------------------- sound */
 
+  // Scheduled from the wide story whatever the stage, so both cuts have one
+  // score: the same reel stops, the same clacks, panned by the same columns.
+  const WS = PORTRAIT ? story(STAGES.wide) : ST
   const panX = (x) => Math.max(-1, Math.min(1, ((x - 960) / 960) * 0.85))
   ctx.cue(b(0), 'impact', { gain: 1 })
   // Reel-stop clicks per ring, one per column, panned by it.
   for (const ring of [1, 2]) {
     const cols = new Set(
-      cards
-        .filter((k) => !carried.includes(k) && k.id !== ID(1, 1))
+      WS.cards
+        .filter((k) => !WS.carried.includes(k) && k.id !== WS.ID(1, 1))
         .filter((k) => Math.max(Math.abs(k.c0 - 1), Math.abs(k.r0 - 1)) === ring)
         .map((k) => k.c0),
     )
     for (const c of cols)
-      ctx.cue(b(RING_STOP[ring]), 'tick', { gain: 0.35, pan: panX(c * CW4 + CW4 / 2) })
+      ctx.cue(b(WS.RING_STOP[ring]), 'tick', { gain: 0.35, pan: panX(c * WS.CW4 + WS.CW4 / 2) })
   }
   // Cursor blips (two notes, bright) and the slot clacks of the rolling cells.
-  for (const [tc] of HOPS4) {
+  for (const [tc] of WS.HOPS4) {
     ctx.cue(b(tc), 'pop', { note: 'A5', gain: 0.55 })
     ctx.cue(b(tc + 0.125), 'pop', { note: 'D6', gain: 0.45 })
   }
-  for (const card of cards) {
+  for (const card of WS.cards) {
     for (const r of card.reels) {
       if (r.tStop >= 1 && r.tStop <= 3)
         ctx.cue(b(r.tStop), 'clack', {
           gain: 0.4,
-          pan: panX(posAt(card, r.tStop).c * CW4 + CW4 / 2),
+          pan: panX(WS.posAt(card, r.tStop).c * WS.CW4 + WS.CW4 / 2),
         })
     }
   }
-  ctx.cue(b(ROW.t1), 'swish', { gain: 0.5, pan: 0.3, dur: b(ROW.t2 - ROW.t1) })
-  ctx.cue(b(COL.t1), 'swish', { gain: 0.5, pan: -0.65, dur: b(COL.t2 - COL.t1) })
+  ctx.cue(b(WS.ROW.t1), 'swish', { gain: 0.5, pan: 0.3, dur: b(WS.ROW.t2 - WS.ROW.t1) })
+  ctx.cue(b(WS.COL.t1), 'swish', { gain: 0.5, pan: -0.65, dur: b(WS.COL.t2 - WS.COL.t1) })
   ctx.cue(b(3.75), 'whoosh', { gain: 0.5, dur: b(0.25) })
   // ZIPPER: the wave front, one grain per reel stop.
   ctx.cue(b(4), 'glitch', { gain: 0.35, dur: b(1) })
-  for (const cell of cells) {
+  for (const cell of WS.cells) {
     if (cell.reel)
-      ctx.cue(b(cell.reel.tStop), 'tick', { gain: 0.16, pan: panX(cell.c * CW8 + CW8 / 2) })
+      ctx.cue(b(cell.reel.tStop), 'tick', { gain: 0.16, pan: panX(cell.c * WS.CW8 + WS.CW8 / 2) })
   }
-  for (const [tc] of HOPS8) ctx.cue(b(tc), 'pop', { note: 'A5', gain: 0.5 })
+  for (const [tc] of WS.HOPS8) ctx.cue(b(tc), 'pop', { note: 'A5', gain: 0.5 })
   // Paper flicks, denser as the rings close.
   for (let k = 6; k >= 1; k--) {
     const n = 7 - k

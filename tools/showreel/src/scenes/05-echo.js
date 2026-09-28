@@ -22,6 +22,105 @@ REEL.scene('05-echo', (ctx) => {
   const clamp01 = (p) => Math.max(0, Math.min(1, p))
   const seg = (tb, b0, b1) => clamp01((tb - b0) / (b1 - b0))
   const f2 = (n) => Math.round(n * 100) / 100
+  const { CX, CY } = ctx
+
+  /*
+   * Where things stand in each frame. The wide numbers are the storyboard's.
+   * The 9:16 cut stacks the struck word over its correction in the tall
+   * middle, narrows the card to 800 so the sentence can grow, and steepens
+   * the ladder: the treads shrink to what the (smaller) card needs and the
+   * last riser takes the height, so the leap onto '365 days' is a real climb.
+   * Its labels start 20 px right of their riser, which is what lets '365'
+   * sit under the top tread inside the right-hand safe margin.
+   */
+  const WIDE_P = {
+    c0: [960, 540],
+    t1: [450, 882],
+    t2: [750, 712],
+    e1: [975, 615],
+    e2: [1125, 518],
+    e3: [1275, 421],
+    t4: [1500, 252],
+  }
+  const L = ctx.portrait
+    ? {
+        // The struck word's centre after the step back, and 'tengo''s ink centre.
+        struckY: 690,
+        tengoY: 1000,
+        SZ: 76,
+        card: { x: 140, y: 660, width: 800, height: 600 },
+        cardHW: 400,
+        K: 0.12,
+        echo: { x: 140, base: 560, size: 140 },
+        STAIRS: [
+          [44, 1400],
+          [270, 1400],
+          [270, 1230],
+          [420, 1230],
+          [420, 1133],
+          [520, 1133],
+          [520, 1036],
+          [620, 1036],
+          [620, 939],
+          [720, 939],
+          [720, 560],
+          [960, 560],
+        ],
+        // A card rests 3 px (half the stroke) plus 300·K above its tread.
+        P: {
+          c0: [CX, CY],
+          t1: [198, 1361],
+          t2: [355, 1191],
+          e1: [470, 1094],
+          e2: [570, 997],
+          e3: [670, 900],
+          t4: [849, 521],
+        },
+        labels: { l10: [198, 1470], l1: [355, 1300], days: [849, 780, 56] },
+        DOTS: [
+          [470, 1173, 10.25],
+          [570, 1076, 10.5],
+          [670, 979, 10.75],
+        ],
+        od: { cx: 849, base: 720, size: 125 },
+        leapApex: 321,
+        // 24 px at K = 0.12.
+        ember: 200,
+      }
+    : {
+        struckY: 330,
+        tengoY: 610,
+        SZ: 72,
+        card: { x: 480, y: 240, width: 960, height: 600 },
+        cardHW: 480,
+        K: 0.15,
+        echo: { x: 140, base: 190, size: 110 },
+        STAIRS: [
+          [300, 930],
+          [600, 930],
+          [600, 760],
+          [900, 760],
+          [900, 663],
+          [1050, 663],
+          [1050, 566],
+          [1200, 566],
+          [1200, 469],
+          [1350, 469],
+          [1350, 300],
+          [1650, 300],
+        ],
+        P: WIDE_P,
+        labels: { l10: [450, 1000], l1: [750, 830], days: [1500, 530, 56] },
+        DOTS: [
+          [975, 703, 10.25],
+          [1125, 606, 10.5],
+          [1275, 509, 10.75],
+        ],
+        od: { cx: 960 + 540, base: 470, size: 150 },
+        leapApex: 72,
+        // 160 local px at the card's 0.15 is the 24 px dot.
+        ember: 160,
+      }
 
   /* ------------------------------------------------------------ measuring */
 
@@ -107,8 +206,8 @@ REEL.scene('05-echo', (ctx) => {
 
   const ES = 260
   const esLay = layout('estoy', 700, ES)
-  const esX = 960 - (esLay.l + esLay.r) / 2
-  const esB = 540 + (esLay.a - esLay.d) / 2
+  const esX = CX - (esLay.l + esLay.r) / 2
+  const esB = CY + (esLay.a - esLay.d) / 2
   const inkL = esX + esLay.l
   const inkR = esX + esLay.r
 
@@ -121,7 +220,11 @@ REEL.scene('05-echo', (ctx) => {
   // space: during the bloom that group is at scale 0.5 with its ink centre on
   // (960,330), so stage (960,610) is local (960,1100) and radii double.
   const bloomClip = ctx.svg('clipPath', { id: 's5-bloom' }, defs)
-  const bloomLocal = ctx.svg('circle', { cx: 960, cy: 1100, r: 0 }, bloomClip)
+  const bloomLocal = ctx.svg(
+    'circle',
+    { cx: CX, cy: CY + (L.tengoY - L.struckY) * 2, r: 0 },
+    bloomClip,
+  )
   text(stCollapse, 'estoy', esX, esB, 700, ES, C.muted, {
     'clip-path': 'url(#s5-bloom)',
   })
@@ -143,7 +246,7 @@ REEL.scene('05-echo', (ctx) => {
     },
     stCollapse,
   )
-  gsap.set(stMove, { scale: 1.04, svgOrigin: '960 540' })
+  gsap.set(stMove, { scale: 1.04, svgOrigin: `${CX} ${CY}` })
   gsap.set(strike, { drawSVG: '0%' })
 
   // Recoil, then stillness until the pen.
@@ -153,7 +256,7 @@ REEL.scene('05-echo', (ctx) => {
   tl.set(estoyA, { fill: C.faint }, b(1))
   tl.to(stSag, { y: 4, duration: b(0.5), ease: E.spring }, b(1))
   // Centre lands on (960,330) with the sag already counted.
-  tl.to(stMove, { scale: 0.5, y: -214, duration: b(0.75), ease: E.snap }, b(1))
+  tl.to(stMove, { scale: 0.5, y: L.struckY - CY - 4, duration: b(0.75), ease: E.snap }, b(1))
   tl.to(
     stCollapse,
     { scaleX: 0, svgOrigin: `${f2(sx0 - 11)} ${f2(xMid)}`, duration: b(0.25), ease: E.cut },
@@ -163,7 +266,7 @@ REEL.scene('05-echo', (ctx) => {
 
   /* ------------------------------------------------------ 2.0 the bloom */
 
-  const disc = ctx.svg('circle', { cx: 960, cy: 610, r: 0, fill: C.greenTint }, discLayer)
+  const disc = ctx.svg('circle', { cx: CX, cy: L.tengoY, r: 0, fill: C.greenTint }, discLayer)
   tl.to(disc, { attr: { r: 1250 }, duration: b(0.75), ease: E.snap }, b(2))
   tl.to(bloomLocal, { attr: { r: 2500 }, duration: b(0.75), ease: E.snap }, b(2))
   ctx.ground(C.greenTint, b(2.75))
@@ -173,32 +276,28 @@ REEL.scene('05-echo', (ctx) => {
   // The WORLD: full-frame tint under the text from 4.0, closing to the card.
   const world = ctx.svg(
     'rect',
-    { x: 0, y: 0, width: 1920, height: 1080, rx: 0, fill: C.greenTint, visibility: 'hidden' },
+    { x: 0, y: 0, width: ctx.W, height: ctx.H, rx: 0, fill: C.greenTint, visibility: 'hidden' },
     cardG,
   )
   tl.set(world, { visibility: 'visible' }, b(4))
   tl.set(disc, { visibility: 'hidden' }, b(4))
   ctx.ground(C.night, b(4))
-  tl.to(
-    world,
-    { attr: { x: 480, y: 240, width: 960, height: 600, rx: 40 }, duration: b(1), ease: E.whip },
-    b(4),
-  )
+  tl.to(world, { attr: Object.assign({ rx: 40 }, L.card), duration: b(1), ease: E.whip }, b(4))
   tl.to(world, { fill: C.white, duration: b(0.5), ease: E.glide }, b(4.5))
 
   const sentG = g(cardG)
 
-  const SZ = 72
+  const SZ = L.SZ
   const TRACK = -0.02
   const sentLay = layout('Sí, tengo hambre.', 800, SZ, TRACK * SZ)
-  const sentX = 960 - (sentLay.l + sentLay.r) / 2
-  const sentB = 540 + capHeight(800, SZ) / 2
+  const sentX = CX - (sentLay.l + sentLay.r) / 2
+  const sentB = CY + capHeight(800, SZ) / 2
 
   // 'tengo', authored at 260 with its ink centre on (960,610).
   const TG = 260
   const tgLay = layout('tengo', 800, TG, TRACK * TG)
-  const tgX = 960 - (tgLay.l + tgLay.r) / 2
-  const tgB = 610 + (tgLay.a - tgLay.d) / 2
+  const tgX = CX - (tgLay.l + tgLay.r) / 2
+  const tgB = L.tengoY + (tgLay.a - tgLay.d) / 2
   const tgK = SZ / TG
   const slotX = sentX + sentLay.chars[4].x
   const tgSlot = g(sentG)
@@ -214,7 +313,7 @@ REEL.scene('05-echo', (ctx) => {
   tl.to(tgChars, { y: 0, duration: 0.3, ease: E.pop, stagger: b(1 / 32) }, b(1.275))
 
   // The happy hop, and its landing squash about the baseline.
-  const tgFoot = `${f2(960)} ${f2(tgB)}`
+  const tgFoot = `${f2(CX)} ${f2(tgB)}`
   tl.to(tgHop, { y: -24, duration: b(0.25), ease: E.lift }, b(2.5))
   tl.to(tgHop, { y: 0, duration: b(0.25), ease: E.cut }, b(2.75))
   tl.set(tgSq, { scaleX: 1.05, scaleY: 0.95, svgOrigin: tgFoot }, b(3))
@@ -253,13 +352,14 @@ REEL.scene('05-echo', (ctx) => {
 
   /* --------------------------------------------------- 5.0 'Echo' title */
 
-  const ECHO = 110
+  const ECHO = L.echo.size
   const echoLay = layout('Echo', 900, ECHO, TRACK * ECHO)
-  const echoX = 140 - echoLay.l
-  const echoMask = clip(100, 190 - 1.05 * ECHO, echoLay.w + 120, 1.4 * ECHO)
+  const echoX = L.echo.x - echoLay.l
+  const echoB = L.echo.base
+  const echoMask = clip(L.echo.x - 40, echoB - 1.05 * ECHO, echoLay.w + 120, 1.4 * ECHO)
   const echoWrap = g(titleLayer, { 'clip-path': echoMask.url })
   const echoExit = g(echoWrap)
-  const echoChars = chars(echoExit, echoLay, echoX, 190, 900, ECHO, C.white)
+  const echoChars = chars(echoExit, echoLay, echoX, echoB, 900, ECHO, C.white)
   gsap.set(echoChars, { y: 1.45 * ECHO })
   // 5.0-5.5 including the stagger: the 'o' lands on 5.5.
   tl.to(echoChars, { y: 0, duration: b(0.5 - 3 / 32), ease: E.snap, stagger: b(1 / 32) }, b(5))
@@ -278,17 +378,17 @@ REEL.scene('05-echo', (ctx) => {
       green: i >= 3 && i < 8,
     })
   })
-  // Each character folds to the bar's axis (y 540). Inside 'tengo' that point
-  // is expressed in the 260 px word's own space.
-  const tgLocal540 = tgB + (540 - sentB) / tgK
+  // Each character folds to the bar's axis (the card's middle, y 540 wide).
+  // Inside 'tengo' that point is expressed in the 260 px word's own space.
+  const tgLocalAxis = tgB + (CY - sentB) / tgK
   const charOrigin = sentChars.map((el, i) => {
-    if (i >= 3 && i < 8) return `${f2(tgX + el._c.cx)} ${f2(tgLocal540)}`
-    return `${f2(barInfo[i].x)} 540`
+    if (i >= 3 && i < 8) return `${f2(tgX + el._c.cx)} ${f2(tgLocalAxis)}`
+    return `${f2(barInfo[i].x)} ${CY}`
   })
 
   const barsG = g(cardG)
   const bars = barInfo.map((bi) =>
-    ctx.svg('rect', { x: f2(bi.x - 5), y: 540, width: 10, height: 0, rx: 5, fill: C.ink }, barsG),
+    ctx.svg('rect', { x: f2(bi.x - 5), y: CY, width: 10, height: 0, rx: 5, fill: C.ink }, barsG),
   )
 
   tl.to(
@@ -302,8 +402,11 @@ REEL.scene('05-echo', (ctx) => {
     b(7.5),
   )
 
-  // Speaker: a box, a cone and two waves, 56 px, drawn.
-  const spk = g(cardG, { transform: 'translate(548 776)' })
+  // Speaker: a box, a cone and two waves, 56 px, drawn, 68 px in from the
+  // card's bottom-left corner.
+  const spkX = L.card.x + 68
+  const spkY = L.card.y + L.card.height - 64
+  const spk = g(cardG, { transform: `translate(${spkX} ${spkY})` })
   const spkIn = g(spk)
   ctx.svg(
     'path',
@@ -331,33 +434,21 @@ REEL.scene('05-echo', (ctx) => {
   tl.to(spkIn, { scale: 1, duration: b(0.5), ease: E.pop }, b(5.5))
   tl.to(spkIn, { scale: 0, duration: b(0.25), ease: E.cut }, b(7.5))
 
-  // Playhead: a 3 px line from 450 to 630 with a 12 px dot on top.
+  // Playhead: a 3 px line 180 px tall about the bar axis (y 450 to 630 wide),
+  // with a 12 px dot on top.
   const phX0 = barInfo[0].x - 20
   const phX1 = barInfo[barInfo.length - 1].x + 20
   const ph = g(cardG)
   const phIn = g(ph)
-  ctx.svg('rect', { x: -1.5, y: 450, width: 3, height: 180, fill: C.blue }, phIn)
-  ctx.svg('circle', { cx: 0, cy: 450, r: 6, fill: C.blue }, phIn)
-  gsap.set(phIn, { scaleY: 0, svgOrigin: '0 630' })
+  ctx.svg('rect', { x: -1.5, y: CY - 90, width: 3, height: 180, fill: C.blue }, phIn)
+  ctx.svg('circle', { cx: 0, cy: CY - 90, r: 6, fill: C.blue }, phIn)
+  gsap.set(phIn, { scaleY: 0, svgOrigin: `0 ${CY + 90}` })
   tl.to(phIn, { scaleY: 1, duration: b(0.25), ease: E.snap }, b(5.75))
   tl.to(phIn, { scaleY: 0, duration: b(0.25), ease: E.cut }, b(7.5))
 
   /* ------------------------------------------------------ the ladder */
 
-  const STAIRS = [
-    [300, 930],
-    [600, 930],
-    [600, 760],
-    [900, 760],
-    [900, 663],
-    [1050, 663],
-    [1050, 566],
-    [1200, 566],
-    [1200, 469],
-    [1350, 469],
-    [1350, 300],
-    [1650, 300],
-  ]
+  const STAIRS = L.STAIRS
   const stairs = ctx.svg(
     'polyline',
     {
@@ -386,19 +477,15 @@ REEL.scene('05-echo', (ctx) => {
     gsap.set(mv, { y: 1.45 * size })
     return { mv, size }
   }
-  const lbl10 = label('10 minutes', 450, 1000, 800, 52)
-  const lbl1 = label('1 day', 750, 830, 800, 52)
-  const lblDays = label('days', 1500, 530, 800, 56)
+  const lbl10 = label('10 minutes', L.labels.l10[0], L.labels.l10[1], 800, 52)
+  const lbl1 = label('1 day', L.labels.l1[0], L.labels.l1[1], 800, 52)
+  const lblDays = label('days', L.labels.days[0], L.labels.days[1], 800, L.labels.days[2])
   tl.to(lbl10.mv, { y: 0, duration: b(0.5), ease: E.snap }, b(9))
   tl.to(lbl1.mv, { y: 0, duration: b(0.5), ease: E.snap }, b(10))
   tl.to(lblDays.mv, { y: 0, duration: b(0.5), ease: E.snap }, b(12))
 
   // The ellipsis: one dot per hop, each in a window it can exit through.
-  const DOTS = [
-    [975, 703, 10.25],
-    [1125, 606, 10.5],
-    [1275, 509, 10.75],
-  ]
+  const DOTS = L.DOTS
   const dots = DOTS.map(([x, y, at]) => {
     const m = clip(x - 12, y - 12, 24, 24)
     const wrap = g(ladderLayer, { 'clip-path': m.url })
@@ -411,10 +498,10 @@ REEL.scene('05-echo', (ctx) => {
 
   /* --------------------------------------------------- the odometer */
 
-  const OD = 150
+  const OD = L.od.size
   const odLay = layout('365', 900, OD, TRACK * OD)
-  const odX = 960 + 540 - (odLay.l + odLay.r) / 2
-  const odB = 470
+  const odX = L.od.cx - (odLay.l + odLay.r) / 2
+  const odB = L.od.base
   const PITCH = 1.2 * OD
   // The last 0.8 of a cell locks on 'pop' (back.out(1.7)): its 10% overshoot
   // is 8% of a cell. It first reaches its target 37% of the way in, and that
@@ -472,13 +559,13 @@ REEL.scene('05-echo', (ctx) => {
 
   tl.to(stairs, { drawSVG: '100% 100%', duration: b(0.5), ease: E.cut }, b(13))
   const exits = [
-    [lbl10.mv, 1.45 * 52],
-    [lbl1.mv, 1.45 * 52],
+    [lbl10.mv, 1.45 * lbl10.size],
+    [lbl1.mv, 1.45 * lbl1.size],
     [dots[0].mv, 26],
     [dots[1].mv, 26],
     [dots[2].mv, 26],
     [reels, 1.1 * OD],
-    [lblDays.mv, 1.45 * 56],
+    [lblDays.mv, 1.45 * lblDays.size],
     [echoExit, 1.45 * ECHO],
   ]
   exits.forEach(([el, dy], i) => {
@@ -490,26 +577,22 @@ REEL.scene('05-echo', (ctx) => {
 
   /* ------------------------------------------------ 13.5 the ember */
 
-  tl.to(sentG, { scale: 0, svgOrigin: '960 540', duration: b(0.25), ease: E.cut }, b(13.5))
-  // 160 local px at the card's 0.15 is the 24 px dot.
+  tl.to(sentG, { scale: 0, svgOrigin: `${CX} ${CY}`, duration: b(0.25), ease: E.cut }, b(13.5))
+  const EM = L.ember
   tl.to(
     world,
-    { attr: { x: 880, y: 460, width: 160, height: 160, rx: 80 }, duration: b(1.5), ease: E.whip },
+    {
+      attr: { x: CX - EM / 2, y: CY - EM / 2, width: EM, height: EM, rx: EM / 2 },
+      duration: b(1.5),
+      ease: E.whip,
+    },
     b(13.5),
   )
 
   /* ---------------------------------------- the card's path, closed-form */
 
-  const K = 0.15
-  const P = {
-    c0: [960, 540],
-    t1: [450, 882],
-    t2: [750, 712],
-    e1: [975, 615],
-    e2: [1125, 518],
-    e3: [1275, 421],
-    t4: [1500, 252],
-  }
+  const K = L.K
+  const P = L.P
   /** h for y = y0 + (y1-y0)u - 4h·u(1-u) whose highest point is apexY. */
   function hopH(y0, y1, apexY) {
     const D = y0 - apexY
@@ -534,10 +617,11 @@ REEL.scene('05-echo', (ctx) => {
    * treads, 144 px card), and one that caught up later ('cut') landed at
    * 5000 px/s, over the cap.
    */
-  const riseThenGlide = (dl, h) => {
+  const riseThen = (ease, dl, h) => {
     const a = Math.abs(dl) / (4 * h)
-    return (u) => fx.glide(clamp01((u - a) / (1 - a)))
+    return (u) => ease(clamp01((u - a) / (1 - a)))
   }
+  const riseThenGlide = (dl, h) => riseThen(fx.glide, dl, h)
   // h = 140 is the storyboard's figure used as the formula's h: an apex 68 px
   // above T2 and a 3900 px/s take-off. Reading it as 140 px above T2 needed
   // h = 217 and a 5400 px/s take-off.
@@ -545,12 +629,35 @@ REEL.scene('05-echo', (ctx) => {
   // The ellipsis at h = 100: an apex about 57 px above each landing tread
   // (the '60 px apex'), with a take-off of 3980 px/s, at the cap.
   const HOP_E = 100
+  // In portrait the treads are only as long as the card needs, so the two
+  // hops that start flush against a riser (the step to T2, and the leap up a
+  // 379 px riser) rise clear of it before they travel, as the ellipsis does.
+  const leapDl = P.t4[1] - P.e3[1]
+  const leapH = hopH(P.e3[1], P.t4[1], L.leapApex)
   const HOPS = [
-    makeHop(9.625, 10, P.t1, P.t2, HOP_T2, [1.05, 0.9], 0.1, fx.glide),
+    makeHop(
+      9.625,
+      10,
+      P.t1,
+      P.t2,
+      HOP_T2,
+      [1.05, 0.9],
+      0.1,
+      ctx.portrait ? riseThenGlide(P.t2[1] - P.t1[1], HOP_T2) : fx.glide,
+    ),
     makeHop(10, 10.25, P.t2, P.e1, HOP_E, [1.1, 0.86], 0.06, riseThenGlide(-97, HOP_E)),
     makeHop(10.25, 10.5, P.e1, P.e2, HOP_E, [1.03, 0.88], 0.06, riseThenGlide(-97, HOP_E)),
     makeHop(10.5, 10.75, P.e2, P.e3, HOP_E, [1.03, 0.88], 0.06, riseThenGlide(-97, HOP_E)),
-    makeHop(11, 12, P.e3, P.t4, hopH(P.e3[1], P.t4[1], 72), [1.04, 0.75], 0.15, fx.cut),
+    makeHop(
+      11,
+      12,
+      P.e3,
+      P.t4,
+      leapH,
+      [1.04, 0.75],
+      0.15,
+      ctx.portrait ? riseThen(fx.cut, leapDl, leapH) : fx.cut,
+    ),
   ]
   function hopState(hp, tb, s) {
     const u = seg(tb, hp.b0, hp.b1)
@@ -566,7 +673,7 @@ REEL.scene('05-echo', (ctx) => {
   }
 
   function cardState(tb) {
-    const s = { cx: 960, cy: 540, k: 1, tilt: 0, sx: 1, sy: 1, bottom: true, heel: false }
+    const s = { cx: CX, cy: CY, k: 1, tilt: 0, sx: 1, sy: 1, bottom: true, heel: false }
     if (tb < 7.75) {
       s.bottom = false
       if (tb >= 5 && tb < 5.25) s.sy = lerp(1, 0.97, fx.lift(seg(tb, 5, 5.25)))
@@ -617,8 +724,8 @@ REEL.scene('05-echo', (ctx) => {
       s.sx = lerp(1.15, 1, q)
     } else {
       const w = fx.whip(seg(tb, 13.5, 15))
-      s.cx = lerp(P.t4[0], 960, w)
-      s.cy = lerp(P.t4[1], 540, w)
+      s.cx = lerp(P.t4[0], CX, w)
+      s.cy = lerp(P.t4[1], CY, w)
     }
     return s
   }
@@ -637,13 +744,13 @@ REEL.scene('05-echo', (ctx) => {
     const a = s.bottom ? 300 * s.k : 0
     // Rearing for the leap, the card tips back onto its heel (bottom-left
     // corner) rather than about its middle, so no corner dips into the tread.
-    const px = s.heel ? -480 * s.k : 0
+    const px = s.heel ? -L.cardHW * s.k : 0
     const py = s.heel ? a : 0
     const tr =
       `translate(${f2(s.cx + px)} ${f2(s.cy + py)}) rotate(${f2(s.tilt)}) ` +
       `translate(${f2(-px)} ${f2(a - py)}) ` +
       `scale(${s.sx.toFixed(4)} ${s.sy.toFixed(4)}) translate(0 ${f2(-a)}) ` +
-      `scale(${s.k.toFixed(4)}) translate(-960 -540)`
+      `scale(${s.k.toFixed(4)}) translate(${-CX} ${-CY})`
     if (tr !== lastCard) {
       cardG.setAttribute('transform', tr)
       lastCard = tr
@@ -658,7 +765,7 @@ REEL.scene('05-echo', (ctx) => {
       const grow = fx.snap(clamp01((t - b(5.5) - 0.01 * i) / b(0.5)))
       const fold = 1 - fx.snap(clamp01((t - b(7.5) - 0.01 * i) / b(0.25)))
       const h = bi.base * (0.6 + 0.4 * kick(tAbs - 0.004 * i)) * grow * fold
-      bar.setAttribute('y', f2(540 - h / 2))
+      bar.setAttribute('y', f2(CY - h / 2))
       bar.setAttribute('height', f2(h))
       bar.setAttribute('visibility', h > 0.2 ? 'visible' : 'hidden')
       const played = tb >= 6 && bi.x < phx
@@ -668,7 +775,20 @@ REEL.scene('05-echo', (ctx) => {
 
   /* ------------------------------------------------------------- sound */
 
+  /*
+   * The score is the same in both formats, so every cue is placed by the wide
+   * layout: pans and the read-aloud notes come from wide positions.
+   */
   const pan = (x) => Math.max(-1, Math.min(1, (x - 960) / 960))
+  const wideBarX = ctx.portrait
+    ? (() => {
+        const lay = layout('Sí, tengo hambre.', 800, 72, TRACK * 72)
+        const x0 = 960 - (lay.l + lay.r) / 2
+        return lay.chars.filter((c) => c.ch.trim()).map((c) => x0 + c.cx)
+      })()
+    : barInfo.map((bi) => bi.x)
+  const wPhX0 = wideBarX[0] - 20
+  const wPhX1 = wideBarX[wideBarX.length - 1] + 20
   ctx.cue(b(0.75), 'reverse', { dur: b(0.25), gain: 0.5 })
   ctx.cue(b(1), 'glitch', { gain: 0.6 })
   ctx.cue(b(1.5), 'thunk', { note: 'D2', gain: 0.35 })
@@ -682,20 +802,22 @@ REEL.scene('05-echo', (ctx) => {
   const SCALE = ['D5', 'E5', 'F#5', 'A5', 'B5', 'D6']
   for (let k = 0; k < 6; k++) {
     const at = 6 + k * 0.25
-    const x = lerp(phX0, phX1, seg(at, 6, 7.5))
-    let near = barInfo[0]
-    for (const bi of barInfo) if (Math.abs(bi.x - x) < Math.abs(near.x - x)) near = bi
-    const note = SCALE[Math.min(5, Math.floor(((near.base - 30) / 110) * 6))]
+    const x = lerp(wPhX0, wPhX1, seg(at, 6, 7.5))
+    let near = 0
+    wideBarX.forEach((bx, i) => {
+      if (Math.abs(bx - x) < Math.abs(wideBarX[near] - x)) near = i
+    })
+    const note = SCALE[Math.min(5, Math.floor(((barInfo[near].base - 30) / 110) * 6))]
     ctx.cue(b(at), 'pluck', { note, gain: 0.45, pan: pan(x) })
   }
   ctx.cue(b(7.75), 'whoosh', { dur: b(1.25), gain: 0.55, pan: -0.5 })
   ctx.cue(b(8.25), 'riser', { dur: b(0.75), gain: 0.35 })
-  ctx.cue(b(9), 'pop', { note: 'D5', pan: pan(P.t1[0]) })
-  ctx.cue(b(10), 'pop', { note: 'F#5', pan: pan(P.t2[0]) })
-  ctx.cue(b(10.25), 'pop', { note: 'A5', gain: 0.6, pan: pan(P.e1[0]) })
-  ctx.cue(b(10.5), 'pop', { note: 'B5', gain: 0.6, pan: pan(P.e2[0]) })
-  ctx.cue(b(10.75), 'pop', { note: 'C#6', gain: 0.6, pan: pan(P.e3[0]) })
-  ctx.cue(b(10.75), 'reverse', { dur: b(0.25), gain: 0.4, pan: pan(P.e3[0]) })
+  ctx.cue(b(9), 'pop', { note: 'D5', pan: pan(WIDE_P.t1[0]) })
+  ctx.cue(b(10), 'pop', { note: 'F#5', pan: pan(WIDE_P.t2[0]) })
+  ctx.cue(b(10.25), 'pop', { note: 'A5', gain: 0.6, pan: pan(WIDE_P.e1[0]) })
+  ctx.cue(b(10.5), 'pop', { note: 'B5', gain: 0.6, pan: pan(WIDE_P.e2[0]) })
+  ctx.cue(b(10.75), 'pop', { note: 'C#6', gain: 0.6, pan: pan(WIDE_P.e3[0]) })
+  ctx.cue(b(10.75), 'reverse', { dur: b(0.25), gain: 0.4, pan: pan(WIDE_P.e3[0]) })
   // The ratchet: one tick per cell the tens reel passes, from its own curve.
   {
     const r = reels[1]

@@ -11,10 +11,13 @@
  */
 REEL.scene('01-caret', (ctx) => {
   const { tl, b, E, C, F } = ctx
+  // The 9:16 cut keeps the same word at the same size, centred on the taller
+  // stage: the baseline sits 106 px under the centre in both frames.
+  const P = ctx.portrait
 
   /* ------------------------------------------------------------ numbers */
 
-  const BASE = 646
+  const BASE = P ? 1066 : 646
   const SIZE = 300
   const TRACK = -0.02 * SIZE
   const FONT = `800 ${SIZE}px ${F.display}`
@@ -27,18 +30,19 @@ REEL.scene('01-caret', (ctx) => {
   const A_SIZE = 24
   const A_TRACK = 0.12 * A_SIZE
   const A_FONT = `800 ${A_SIZE}px ${F.display}`
-  const A_LEFT = 120
-  const A_BASE = 134
+  const A_LEFT = P ? 96 : 120
+  const A_BASE = P ? 284 : 134
   const A_MH = 34
   const A_PAD = 4
 
   const CARET_W = 12
   const CARET_H = 190
   const CARET_GAP = 16
-  const CARET_Y = 540 // 445-635
+  const CARET_Y = ctx.CY // 445-635 wide, 865-1055 portrait
 
-  const GUIDE_X0 = 120
-  const GUIDE_X1 = 1800
+  // The rule runs margin to margin: the annotation's left edge, mirrored.
+  const GUIDE_X0 = P ? 96 : 120
+  const GUIDE_X1 = P ? 984 : 1800
   const DIP = 16
   const DIP_REACH = 120
 
@@ -95,9 +99,9 @@ REEL.scene('01-caret', (ctx) => {
   const hola = measure('Hola', FONT, TRACK)
   const ola = measure('Olá', FONT, TRACK)
   // Hallo keeps Hello's left edge: only the letters right of the swap move.
-  const L_HELLO = 960 - hello.adv / 2
-  const L_HOLA = 960 - hola.adv / 2
-  const L_OLA = 960 - ola.adv / 2
+  const L_HELLO = ctx.CX - hello.adv / 2
+  const L_HOLA = ctx.CX - hola.adv / 2
+  const L_OLA = ctx.CX - ola.adv / 2
   const at = (m, left) => m.xs.map((x) => left + x)
   const P_HELLO = at(hello, L_HELLO)
   const P_HALLO = at(hallo, L_HELLO)
@@ -124,7 +128,7 @@ REEL.scene('01-caret', (ctx) => {
     guideLayer,
   )
 
-  const word = ctx.el('div', { style: box(1920, 1080) })
+  const word = ctx.el('div', { style: box(ctx.W, ctx.H) })
   const glyphStyle = {
     position: 'absolute',
     left: `${PADX}px`,
@@ -334,8 +338,13 @@ REEL.scene('01-caret', (ctx) => {
     transformOrigin: `${PADX + (hallo.ink[3].l + hallo.ink[3].r) / 2 - hallo.xs[3]}px ${bOff - ascent('l', FONT) / 2}px`,
   })
   tl.to(gL2.slot, { y: -8, ease: E.lift, duration: b(0.125), ...d }, b(4.125))
-  tl.to(gL2.slot, { y: 700, ease: E.cut, duration: 0.35, ...d }, b(4.25))
-  tl.to(gL2.up, { rotation: 18, ease: E.cut, duration: 0.35, ...d }, b(4.25))
+  // On the tall stage 700 px leaves the 'l' lying in the lower third, so it
+  // falls the whole height out of frame, over a little longer than 0.35 s
+  // (which would hit 9800 px/s) but not so long that it is still in the row
+  // when its neighbours start closing up on 4.75.
+  const DROP = P ? { y: 1150, t: 0.4 } : { y: 700, t: 0.35 }
+  tl.to(gL2.slot, { y: DROP.y, ease: E.cut, duration: DROP.t, ...d }, b(4.25))
+  tl.to(gL2.up, { rotation: 18, ease: E.cut, duration: DROP.t, ...d }, b(4.25))
 
   // Close up and re-centre as Hola, locking on 5. The orbiting pair's slots
   // carry the orbit's end offset, so they land on Hola's pen positions. It
@@ -376,8 +385,13 @@ REEL.scene('01-caret', (ctx) => {
   // sight at 5.35 so that it crosses into the frame near 5.9 and lands at
   // about 4000 px/s, the tracked-object cap; dropped over the 0.175 s from
   // 5.9 it covered 600 px in three frames and hit at 10000 px/s.
-  tl.set(accent, { autoAlpha: 1 }, b(5.35))
-  tl.to(accent, { y: 0, scale: 1, ease: E.cut, duration: b(6.25 - 5.35), ...d }, b(5.35))
+  // The tall stage puts 420 px more of sky above the word. Falling it in the
+  // same time would land at ~7000 px/s, so the portrait fall starts earlier by
+  // the distance ratio ('cut' is power3.in: landing speed is 3 * distance /
+  // time) and lands at the same speed; it enters the frame on the H's flick.
+  const ACC_T0 = P ? 6.25 - ((6.25 - 5.35) * (200 + accTopStage)) / (200 + 646 - ACC_TOP) : 5.35
+  tl.set(accent, { autoAlpha: 1 }, b(ACC_T0))
+  tl.to(accent, { y: 0, scale: 1, ease: E.cut, duration: b(6.25 - ACC_T0), ...d }, b(ACC_T0))
   const hop = (h, from) => {
     tl.to(accent, { y: -h, ease: E.lift, duration: b(0.0625), ...d }, b(from))
     tl.to(accent, { y: 0, ease: E.cut, duration: b(0.0625), ...d }, b(from + 0.0625))
@@ -417,7 +431,15 @@ REEL.scene('01-caret', (ctx) => {
   tl.to(caret, { rotation: 57, ease: E.snap, duration: b(0.625), ...d }, b(6.875))
   tl.to(
     caret,
-    { scaleX: 3 / 100, scaleY: 2600 / 100, x: 960, y: 540, ease: E.snap, duration: b(0.5), ...d },
+    {
+      scaleX: 3 / 100,
+      scaleY: 2600 / 100,
+      x: ctx.CX,
+      y: ctx.CY,
+      ease: E.snap,
+      duration: b(0.5),
+      ...d,
+    },
     b(7),
   )
   // 7.5-8: nothing moves. S2 replicates this frame.

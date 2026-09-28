@@ -13,9 +13,21 @@
  * above the dark one with its own white ground and clipped to the half-plane
  * behind a Cut-parallel edge. The dark copy underneath is its complement, so
  * a word straddling the edge changes colour exactly on it.
+ *
+ * Portrait: the same beats, restacked for a frame 1080 wide. The manifesto is
+ * set at the size that fits 'Open source.' between x=96 and the right safe
+ * edge, on a wider line pitch that centres the block in the tall frame. The
+ * block sits at the height that keeps each stop's fall inside the distance a
+ * dot can cover at terminal speed, so the stops keep their beats and their
+ * speed cap; below that floor there is room to show them leave, so they fall
+ * on out of the frame instead of vanishing. The roll is sized so Teşekkürler
+ * fits the same width, centred on (540,960), with the tab row under it on a
+ * tighter pitch; the bar then has almost exactly the wide cut's distance to
+ * travel to the centre.
  */
 REEL.scene('07-eight', (ctx) => {
-  const { tl, b, E, C, F, CUT } = ctx
+  const { tl, b, E, C, F, CUT, W, H, CX, CY } = ctx
+  const P = ctx.portrait
   const BEAT = ctx.BEAT
   const ez = (e) => gsap.parseEase(e)
   const eSnap = ez(E.snap)
@@ -64,22 +76,28 @@ REEL.scene('07-eight', (ctx) => {
   }
 
   /* The scene's own dark ground: during the sweep back to dark the stage ground is still white. */
-  ctx.svg('rect', { x: 0, y: 0, width: 1920, height: 1080, fill: C.deep }, layer)
+  ctx.svg('rect', { x: 0, y: 0, width: W, height: H, fill: C.deep }, layer)
 
   /* ------------------------------------------------------------ manifesto */
 
-  const MF = { family: F.display, weight: 900, size: 170, spacing: -0.02 * 170 }
-  const mFont = `900 170px ${F.display}`
+  // Portrait: 144 px puts 'Open source.' (1019 px of ink at 170) on x 96-960.
+  // The pitch and the floor are held to the fall budget in the stops' comment.
+  const M_SIZE = P ? 144 : 170
+  const M_LEFT = P ? 96 : 200
+  const M_B = P ? [720, 940, 1160] : [360, 560, 760]
+  const FLOOR = P ? 1440 : 1040
+  const MF = { family: F.display, weight: 900, size: M_SIZE, spacing: -0.02 * M_SIZE }
+  const mFont = `900 ${M_SIZE}px ${F.display}`
   const LINES = [
-    { str: 'No ads', B: 360 },
-    { str: 'Real people', B: 560 },
-    { str: 'Open source', B: 760 },
+    { str: 'No ads', B: M_B[0] },
+    { str: 'Real people', B: M_B[1] },
+    { str: 'Open source', B: M_B[2] },
   ]
   let asc = 0
   let desc = 0
   for (const line of LINES) {
     const m = ink(`${line.str}.`, mFont, MF.spacing)
-    line.x = 200 + m.l // ink left edge on x=200
+    line.x = M_LEFT + m.l // ink left edge on M_LEFT
     asc = Math.max(asc, m.a)
     desc = Math.max(desc, m.d)
   }
@@ -102,28 +120,41 @@ REEL.scene('07-eight', (ctx) => {
     const mask = clip('rect', {
       x: 0,
       y: line.B - asc - 6 - STRETCH_ROOM,
-      width: 1920,
+      width: W,
       height: maskH + EXIT_CROUCH + STRETCH_ROOM,
     })
     const wrap = group(manifesto, { 'clip-path': mask.url })
     line.squash = group(wrap)
     line.text = text(line.squash, line.str, { ...MF, x: line.x, y: line.B, fill: C.white })
     line.stop = ctx.svg('tspan', { text: '.' }, line.text)
-    gsap.set(line.squash, { svgOrigin: `200 ${line.B}` })
+    gsap.set(line.squash, { svgOrigin: `${M_LEFT} ${line.B}` })
   }
 
   /* The full stops, as free glyphs that take over from the inline ones at 3.0. */
   const dotInk = ink('.', mFont, 0)
-  // Sideways drift in px/s. The last two stops start 40 px apart, so they part
-  // in opposite directions rather than landing on each other.
-  const DRIFT = [150, 190, -170]
+  // Sideways drift in px/s, fanning out from left to right. 'Real people.' ends
+  // just short of 'Open source.', so its stop sits a few dozen px left of the
+  // last one: the middle stop drifts left and the last one right, or the two
+  // close on each other and land as one blob.
+  const DRIFT = [-150, -300, 280]
   // A 'cut' fall into the landing peaked at 6700-8000 px/s: a 33 px dot jumping
   // 120-165 px on its last frame, which strobes whatever the stretch. The fall
   // is gravity up to a terminal speed instead, then a straight drop at it, so a
   // dot moves at most 56 px a frame (66 at its centre into the landing squash):
   // under the 4000 px/s tracking cap, and still landing on its beat. The
   // accelerating phase is sized so the fall covers its distance exactly.
+  // That only works for a drop between TERMINAL * fallT / 2 and TERMINAL *
+  // fallT: 420-840, 315-630 and 210-420 px for the three stops. Wide's are
+  // about 678, 478 and 278; portrait's baselines and floor give 718, 498, 278.
   const TERMINAL = 3360
+  // The hop is 60 * 4w(1 - w) px over w = 0..1 (3/16 of a beat). Portrait runs
+  // it on past w = 1 until its fall reaches TERMINAL, at HOP_WT, HOP_DT px
+  // below the floor.
+  const HOP_S = 0.1875 * BEAT
+  const HOP_V = 240 / HOP_S
+  const HOP_WT = (TERMINAL / HOP_V + 1) / 2
+  const HOP_DT = 240 * HOP_WT * (HOP_WT - 1)
+  const DOT_H = dotInk.a + dotInk.d
   const dots = LINES.map((line, i) => {
     let px
     try {
@@ -136,7 +167,7 @@ REEL.scene('07-eight', (ctx) => {
     const el = text(manifesto, '.', { ...MF, spacing: 0, x: px, y: line.B, fill: C.white })
     el.style.visibility = 'hidden'
     const d0 = 3 + 0.125 * i
-    const floor = 1040 - (line.B + dotInk.d)
+    const floor = FLOOR - (line.B + dotInk.d)
     const fallT = (3.5 - d0) * BEAT
     return {
       el,
@@ -179,8 +210,11 @@ REEL.scene('07-eight', (ctx) => {
   /* ------------------------------------------------------------ the eight */
 
   const LANGS = ['en', 'tr', 'es', 'de', 'fr', 'ru', 'ar', 'pt']
-  const WORD_SIZE = 200
-  const WIN = { x0: 260, x1: 1660, y: 410, h: 260 }
+  // Portrait: 156 px fits Teşekkürler (1070 px of ink at 200) inside x 123-957,
+  // clear of the right safe edge; the window and the exit scale with it.
+  const WORD_SIZE = P ? 156 : 200
+  const WIN = P ? { x0: 60, x1: 1020, y: CY - 102, h: 204 } : { x0: 260, x1: 1660, y: 410, h: 260 }
+  const WORD_EXIT = P ? -220 : -280
   const words = LANGS.map((lang, i) => {
     const w = ctx.TL[lang]
     const rtl = w.dir === 'rtl'
@@ -199,14 +233,18 @@ REEL.scene('07-eight', (ctx) => {
 
   const CODE = { family: F.display, weight: 800, size: 30, spacing: 0.14 * 30 }
   const cFont = `800 30px ${F.display}`
+  // Portrait: eight 105 px tabs centred on x=540 span 120-960, the safe width.
+  const CODE_X0 = P ? CX - 3.5 * 105 : 435
+  const CODE_PITCH = P ? 105 : 150
+  const CODE_B = P ? CY + 280 : 860
   const codes = LANGS.map((lang, i) => {
     const str = lang.toUpperCase()
     const m = ink(str, cFont, CODE.spacing)
-    const cx = 435 + 150 * i
+    const cx = CODE_X0 + CODE_PITCH * i
     const half = (m.l + m.r) / 2
     return { str, x: cx - (m.r - m.l) / 2, left: cx - half, right: cx + half, copies: [] }
   })
-  const codeMask = clip('rect', { x: 0, y: 826, width: 1920, height: 46 })
+  const codeMask = clip('rect', { x: 0, y: CODE_B - 34, width: W, height: 46 })
   const CODE_DROP = 44
 
   const PALETTES = [
@@ -216,7 +254,7 @@ REEL.scene('07-eight', (ctx) => {
   const sweepClip = clip('polygon', { points: '0,0 0,0 0,0' })
   const eightDark = group(layer)
   const eightLight = group(layer, { 'clip-path': sweepClip.url })
-  ctx.svg('rect', { x: 0, y: 0, width: 1920, height: 1080, fill: C.white }, eightLight)
+  ctx.svg('rect', { x: 0, y: 0, width: W, height: H, fill: C.white }, eightLight)
 
   ;[eightDark, eightLight].forEach((parent, p) => {
     const pal = PALETTES[p]
@@ -236,14 +274,14 @@ REEL.scene('07-eight', (ctx) => {
     }
     const row = group(parent, { 'clip-path': codeMask.url })
     for (const c of codes) {
-      c.copies.push(text(row, c.str, { ...CODE, x: c.x, y: 860, fill: pal.idle }))
+      c.copies.push(text(row, c.str, { ...CODE, x: c.x, y: CODE_B, fill: pal.idle }))
     }
   })
 
   /*
-   * Words are centred on (960,540) by measured ink: horizontally per word; a
-   * shared baseline for the Latin and Cyrillic words (their cap height centred
-   * on 540) so the roll does not bob; the Arabic by its own ink box. Redone
+   * Words are centred on the stage's centre by measured ink: horizontally per
+   * word; a shared baseline for the Latin and Cyrillic words (their cap height
+   * centred on it) so the roll does not bob; the Arabic by its own ink box. Redone
    * once the Latin Extended face (the ş of Teşekkürler) has arrived: the boot
    * probes do not load it.
    */
@@ -255,12 +293,12 @@ REEL.scene('07-eight', (ctx) => {
       let y
       if (w.rtl) {
         const m = ink(w.str, wFontOf(w), 0, 'center', 'rtl')
-        x = 960 - (m.r - m.l) / 2
-        y = 540 + (m.a - m.d) / 2
+        x = CX - (m.r - m.l) / 2
+        y = CY + (m.a - m.d) / 2
       } else {
         const m = ink(w.str, wFontOf(w), w.spacing)
-        x = 960 - (m.r - m.l) / 2
-        y = 540 + cap / 2
+        x = CX - (m.r - m.l) / 2
+        y = CY + cap / 2
       }
       for (const t of w.copies) {
         t.setAttribute('x', x.toFixed(2))
@@ -288,7 +326,7 @@ REEL.scene('07-eight', (ctx) => {
   // 8.0-8.5: Obrigado leaves up through the window, after a small crouch.
   const last = words[words.length - 1]
   tl.to(last.exits, { y: 14, duration: b(0.125), ease: E.lift }, b(7.875))
-  tl.to(last.exits, { y: -280, duration: b(0.5), ease: E.cut }, b(8))
+  tl.to(last.exits, { y: WORD_EXIT, duration: b(0.5), ease: E.cut }, b(8))
 
   /* --------------------------------------------------------- the tab bar */
 
@@ -297,7 +335,7 @@ REEL.scene('07-eight', (ctx) => {
     { stroke: C.yellow, 'stroke-width': 8, 'stroke-linecap': 'butt', visibility: 'hidden' },
     layer,
   )
-  const S = { x1: codes[0].left, x2: codes[0].left, y: 888, rot: 0, w: 8 }
+  const S = { x1: codes[0].left, x2: codes[0].left, y: CODE_B + 28, rot: 0, w: 8 }
   tl.to(S, { x2: codes[0].right, duration: 0.1, ease: E.snap }, b(4))
   for (let i = 1; i < codes.length; i++) {
     // Caterpillar: the leading edge goes first and fast, the trailing edge follows.
@@ -315,7 +353,7 @@ REEL.scene('07-eight', (ctx) => {
   // 9.125-10.0: it turns -33°, stretches to 2600, thins to 4 and travels to the stage centre: the Cut.
   tl.to(
     S,
-    { x1: 960 - 1300, x2: 960 + 1300, y: 540, rot: -33, w: 4, duration: b(0.875), ease: E.whip },
+    { x1: CX - 1300, x2: CX + 1300, y: CY, rot: -33, w: 4, duration: b(0.875), ease: E.whip },
     b(9.125),
   )
 
@@ -340,7 +378,7 @@ REEL.scene('07-eight', (ctx) => {
   const [nx, ny] = CUT.n
   const [ux, uy] = CUT.dUp
   const SWEEP_FROM = -10
-  const SWEEP_TO = 1962 // (1920,1080)·n is 1951.5
+  const SWEEP_TO = P ? 2210 : 1962 // (1920,1080)·n is 1951.5, (1080,1920)·n 2198.5
 
   ctx.draw((t) => {
     const tb = t / BEAT
@@ -351,16 +389,15 @@ REEL.scene('07-eight', (ctx) => {
     }
 
     // The full stops: a pop as they let go, a fall to terminal speed with
-    // speed-stretch, one closed-form hop off y=1040 with a squash released on
+    // speed-stretch, one closed-form hop off FLOOR with a squash released on
     // 'spring', and the same parabola carries them out through the bottom of
     // the frame.
     for (const d of dots) {
       attr(d.line.stop, 'fill-opacity', tb < d.d0 ? '1' : '0')
-      if (tb < d.d0 || tb >= 3.75) {
+      if (tb < d.d0 || tb >= (P ? 4.5 : 3.75)) {
         attr(d.el, 'visibility', 'hidden')
         continue
       }
-      attr(d.el, 'visibility', 'visible')
       let dy
       let sx
       let sy
@@ -377,7 +414,22 @@ REEL.scene('07-eight', (ctx) => {
         dy = d.floor - 60 * 4 * w * (1 - w)
         sy = 0.62 + 0.38 * eSpring(clamp01((tb - 3.5) / 0.25))
         sx = 1 + (1 - sy) * 0.9
+        if (P && w > 1) {
+          // Portrait's floor is 480 px above the frame's bottom edge: past the
+          // hop the parabola runs on until it reaches terminal speed, then the
+          // dot drops straight out at it, stretching with the speed as it fell in.
+          if (w > HOP_WT) dy = d.floor + HOP_DT + TERMINAL * (w - HOP_WT) * HOP_S
+          const k = Math.min(1, (HOP_V * (2 * w - 1)) / TERMINAL)
+          sy *= 1 + 0.2 * k
+          sx *= 1 - 0.08 * k
+        }
       }
+      // Wide hides the stops on 3.75, already below the frame; portrait when they have left it.
+      if (P && d.by + dy - DOT_H * sy > H) {
+        attr(d.el, 'visibility', 'hidden')
+        continue
+      }
+      attr(d.el, 'visibility', 'visible')
       const dx = d.vx * (tb - d.d0) * BEAT
       attr(
         d.el,
@@ -463,8 +515,18 @@ REEL.scene('07-eight', (ctx) => {
   ctx.cue(b(0), 'impact', { note: 'F#2' })
   ctx.cue(b(1), 'impact', { note: 'G2' })
   ctx.cue(b(2), 'impact', { note: 'A2' })
+  // The score is the same in both cuts, so portrait pans each pop where the
+  // wide cut's stop sits: 170 px type from x=200, as measured above.
+  function widePan(line) {
+    const font = `900 170px ${F.display}`
+    const left = 200 + ink(`${line.str}.`, font, -3.4).l
+    const advance = probe.measureText(line.str).width // same font and tracking as that ink()
+    const dot = ink('.', font, 0)
+    return (left + advance + (dot.r - dot.l) / 2 - 960) / 960
+  }
   dots.forEach((d, i) => {
-    ctx.cue(b(d.d0), 'pop', { note: ['A5', 'B5', 'C#6'][i], gain: 0.5, pan: (d.bx - 960) / 960 })
+    const pan = P ? widePan(d.line) : (d.bx - 960) / 960
+    ctx.cue(b(d.d0), 'pop', { note: ['A5', 'B5', 'C#6'][i], gain: 0.5, pan })
   })
   ctx.cue(b(3.5), 'tick', { note: 'D6', gain: 0.35 })
   ctx.cue(b(3.5), 'swish', { gain: 0.5, dur: b(0.5) })

@@ -12,7 +12,7 @@
  * discrete — the plates, the ink draw, the lock, the letters — is on ctx.tl.
  */
 REEL.scene('08-exchange', (ctx) => {
-  const { tl, b, E, C, F, CUT, MARK } = ctx
+  const { tl, b, E, C, F, CUT, MARK, W, H, CX, CY, portrait } = ctx
 
   const ease = (e) => (typeof e === 'function' ? e : gsap.parseEase(e))
   const eSnap = ease(E.snap)
@@ -32,8 +32,29 @@ REEL.scene('08-exchange', (ctx) => {
   const RM = MARK.rm // 193.4, the arcs' centre line
   const LEN = Math.PI * RM // 607.6: a rail is exactly one half-circumference long
   const INK = MARK.stroke // 83.8
-  const LOCK = { x: 401.3, y: 493.8, S: 480 / 1024 }
-  const START = { x: 960, y: 540, S: 1.4 }
+  /*
+   * The 9:16 cut stacks the lockup instead: mark above, wordmark below it,
+   * the tagline on two lines under that, all on x = 540 and the group a
+   * little above the frame's middle. The camera then pulls straight up the
+   * frame's axis into the mark. It opens at 1.9, not 1.4: that makes each
+   * rail about as long as the frame is wide, so the hellos cross the whole
+   * phone, while the bent bands' flat ends (±276 units from P) still clear
+   * its sides.
+   */
+  const V = portrait && {
+    S0: 1.9,
+    markY: 668,
+    markSize: 560,
+    K: 0.375,
+    wordBase: 1100,
+    tagFont: 48,
+    tagBases: [1222, 1288],
+    tagLines: ['The friendly way to practise', 'a language with real people'],
+  }
+  const LOCK = portrait
+    ? { x: CX, y: V.markY, S: V.markSize / 1024 }
+    : { x: 401.3, y: 493.8, S: 480 / 1024 }
+  const START = { x: CX, y: CY, S: portrait ? V.S0 : 1.4 }
 
   /* --------------------------------------------------------------- layers */
 
@@ -208,7 +229,7 @@ REEL.scene('08-exchange', (ctx) => {
   const inkW = ctx.svg('path', Object.assign({ d: inkWhiteD }, strokeAttrs('#ffffff')), turn)
 
   // The mark itself, which replaces the turn group on the lock frame.
-  const m = ctx.mark(layer, { x: LOCK.x, y: LOCK.y, size: 480, shade: C.yellowShade })
+  const m = ctx.mark(layer, { x: LOCK.x, y: LOCK.y, size: LOCK.S * 1024, shade: C.yellowShade })
 
   /* ------------------------------------------------------------ wordmark */
 
@@ -219,8 +240,13 @@ REEL.scene('08-exchange', (ctx) => {
     g: 'M2553.61 822.074Q2518.221 822.074 2485.78 816.176Q2453.34 810.277 2428.436 798.481Q2413.363 791.927 2407.137 781.441Q2400.911 770.956 2401.894 759.159Q2402.877 747.363 2409.759 738.188Q2416.64 729.013 2427.126 725.408Q2437.612 721.804 2449.408 727.047Q2478.244 740.154 2502.82 744.086Q2527.396 748.018 2545.091 748.018Q2587.034 748.018 2608.005 729.013Q2628.977 710.007 2628.977 670.686V620.878H2634.875Q2625.044 651.025 2594.243 670.03Q2563.441 689.036 2526.085 689.036Q2482.831 689.036 2450.719 669.047Q2418.606 649.059 2400.911 612.686Q2383.217 576.314 2383.217 528.472Q2383.217 492.428 2393.375 462.936Q2403.533 433.445 2422.211 412.474Q2440.888 391.502 2467.43 380.033Q2493.972 368.565 2526.085 368.565Q2564.751 368.565 2594.57 387.242Q2624.389 405.92 2634.22 436.067L2627.666 457.038V419.683Q2627.666 395.434 2640.445 382.655Q2653.225 369.875 2676.818 369.875Q2700.411 369.875 2712.863 382.655Q2725.315 395.434 2725.315 419.683V659.544Q2725.315 740.154 2681.078 781.114Q2636.841 822.074 2553.61 822.074ZM2555.576 614.98Q2577.859 614.98 2593.915 604.494Q2609.971 594.008 2619.146 574.675Q2628.321 555.342 2628.321 528.472Q2628.321 487.84 2608.333 465.23Q2588.344 442.62 2555.576 442.62Q2533.294 442.62 2516.91 452.778Q2500.526 462.936 2491.679 482.27Q2482.831 501.603 2482.831 528.472Q2482.831 569.105 2502.492 592.042Q2522.153 614.98 2555.576 614.98Z',
     X: 'M2826.24 702.798Q2806.579 702.798 2793.8 691.985Q2781.02 681.171 2779.054 665.115Q2777.088 649.059 2789.54 632.019L2934.374 439.999V485.219L2795.438 300.407Q2782.986 282.712 2784.625 266.656Q2786.263 250.6 2799.043 239.786Q2811.822 228.973 2830.828 228.973Q2847.212 228.973 2859.336 236.837Q2871.46 244.702 2883.912 261.741L2992.046 411.163H2959.278L3066.757 261.741Q3079.209 244.046 3091.661 236.51Q3104.113 228.973 3120.497 228.973Q3140.157 228.973 3152.937 239.459Q3165.716 249.944 3167.355 266.001Q3168.993 282.057 3155.886 300.407L3016.294 485.219V439.999L3160.474 632.019Q3173.581 649.059 3171.942 665.115Q3170.304 681.171 3157.524 691.985Q3144.745 702.798 3124.429 702.798Q3108.7 702.798 3096.576 694.934Q3084.452 687.07 3071.345 669.375L2958.623 514.055H2992.046L2879.324 669.375Q2866.872 687.07 2854.42 694.934Q2841.969 702.798 2826.24 702.798Z',
   }
-  const LOCKUP_T = 'translate(161.3 253.8) scale(0.46875)'
-  const K = 0.46875
+  // The wordmark's ink runs x 1316.291-3171.942 in these outlines and sits on y 696.9.
+  const K = portrait ? V.K : 0.46875
+  const WX = portrait ? f3(CX - ((1316.291 + 3171.942) / 2) * K) : 161.3
+  const WY = portrait ? f3(V.wordBase - 696.9 * K) : 253.8
+  const LOCKUP_T = portrait
+    ? `translate(${WX} ${WY}) scale(${K})`
+    : 'translate(161.3 253.8) scale(0.46875)'
   const letters = {}
   for (const key of ['L', 'a', 'n', 'g', 'X']) {
     const clipId = `s8-clip-${key}`
@@ -231,10 +257,10 @@ REEL.scene('08-exchange', (ctx) => {
     const path = ctx.svg('path', { d: WORD[key], fill: C.ink, transform: LOCKUP_T }, rot)
     const bb = path.getBBox()
     const box = {
-      x0: 161.3 + bb.x * K,
-      y0: 253.8 + bb.y * K,
-      x1: 161.3 + (bb.x + bb.width) * K,
-      y1: 253.8 + (bb.y + bb.height) * K,
+      x0: WX + bb.x * K,
+      y0: WY + bb.y * K,
+      x1: WX + (bb.x + bb.width) * K,
+      y1: WY + (bb.y + bb.height) * K,
     }
     letters[key] = { clip, wrap, mover, rot, box }
   }
@@ -248,7 +274,7 @@ REEL.scene('08-exchange', (ctx) => {
    */
   const cellX = (letters.g.box.x1 + letters.X.box.x0) / 2
   const cellClip = ctx.svg('clipPath', { id: 's8-cell-X', clipPathUnits: 'userSpaceOnUse' }, defs)
-  ctx.svg('rect', { x: f3(cellX), y: 0, width: f3(1920 - cellX), height: 1080 }, cellClip)
+  ctx.svg('rect', { x: f3(cellX), y: 0, width: f3(W - cellX), height: H }, cellClip)
   ctx.svg('g', { 'clip-path': 'url(#s8-cell-X)' }, layer).appendChild(letters.X.wrap)
 
   /*
@@ -260,8 +286,12 @@ REEL.scene('08-exchange', (ctx) => {
    * the rise, and moves at about 1000 px/s rather than the 5000 a floor-fixed
    * rise from a full letter-height below needed.
    */
-  const RISE = 60
-  const X_CENTRE = { x: 1556.1, y: 472.2 }
+  // The rise keeps its proportion to the letters in the smaller portrait wordmark.
+  const RISE = portrait ? f3((60 * K) / 0.46875) : 60
+  const XB = letters.X.box
+  const X_CENTRE = portrait
+    ? { x: f3((XB.x0 + XB.x1) / 2), y: f3((XB.y0 + XB.y1) / 2) }
+    : { x: 1556.1, y: 472.2 }
   const along = (x, y) => nx * x + ny * y
   for (const key of Object.keys(letters)) {
     const L = letters[key]
@@ -306,36 +336,50 @@ REEL.scene('08-exchange', (ctx) => {
   /* ------------------------------------------------------------- tagline */
 
   const TAG = 'The friendly way to practise a language with real people'
-  const TAG_FONT = `700 40px ${F.display}`
-  const TAG_BASE = 740
+  // Portrait breaks it in two near-equal lines; each line rises out of its own mask.
+  const TAG_LINES = portrait
+    ? V.tagLines.map((text, i) => ({ text, base: V.tagBases[i] }))
+    : [{ text: TAG, base: 740 }]
+  const TAG_SIZE = portrait ? V.tagFont : 40
+  const tk = TAG_SIZE / 40
+  const TAG_FONT = `700 ${TAG_SIZE}px ${F.display}`
   const meter = document.createElement('canvas').getContext('2d')
   meter.font = TAG_FONT
-  const full = meter.measureText(TAG)
-  const tagX = 960 - (full.actualBoundingBoxRight - full.actualBoundingBoxLeft) / 2
-  const inkRight = tagX + full.actualBoundingBoxRight
   const capH = meter.measureText('T').actualBoundingBoxAscent
-
-  const tagClip = ctx.svg('clipPath', { id: 's8-clip-tag', clipPathUnits: 'userSpaceOnUse' }, defs)
-  ctx.svg('rect', { x: 0, y: TAG_BASE - 60, width: 1920, height: 76 }, tagClip)
-  const tagWrap = ctx.svg('g', { 'clip-path': 'url(#s8-clip-tag)' }, layer)
   const words = []
-  let at = 0
-  for (const word of TAG.split(' ')) {
-    const x = tagX + meter.measureText(TAG.slice(0, at)).width
-    const node = ctx.svg('text', { x: f3(x), y: TAG_BASE, fill: C.onYellow, text: word }, tagWrap)
-    Object.assign(node.style, { font: TAG_FONT, whiteSpace: 'pre' })
-    words.push(node)
-    at += word.length + 1
-  }
+  let inkRight = 0
+  let lastBase = 0
+  TAG_LINES.forEach((line, li) => {
+    const full = meter.measureText(line.text)
+    const tagX = CX - (full.actualBoundingBoxRight - full.actualBoundingBoxLeft) / 2
+    inkRight = tagX + full.actualBoundingBoxRight
+    lastBase = line.base
+    const clipId = li ? `s8-clip-tag-${li}` : 's8-clip-tag'
+    const tagClip = ctx.svg('clipPath', { id: clipId, clipPathUnits: 'userSpaceOnUse' }, defs)
+    ctx.svg('rect', { x: 0, y: line.base - 60 * tk, width: W, height: 76 * tk }, tagClip)
+    const tagWrap = ctx.svg('g', { 'clip-path': `url(#${clipId})` }, layer)
+    let at = 0
+    for (const word of line.text.split(' ')) {
+      const x = tagX + meter.measureText(line.text.slice(0, at)).width
+      const node = ctx.svg(
+        'text',
+        { x: f3(x), y: line.base, fill: C.onYellow, text: word },
+        tagWrap,
+      )
+      Object.assign(node.style, { font: TAG_FONT, whiteSpace: 'pre' })
+      words.push(node)
+      at += word.length + 1
+    }
+  })
 
   // The bookend caret: 4×44, 8 px after the ink of 'people', centred on the cap height.
   const caret = ctx.svg(
     'rect',
     {
-      x: f3(inkRight + 8),
-      y: f3(TAG_BASE - capH / 2 - 22),
-      width: 4,
-      height: 44,
+      x: f3(inkRight + 8 * tk),
+      y: f3(lastBase - capH / 2 - 22 * tk),
+      width: f3(4 * tk),
+      height: f3(44 * tk),
       fill: C.onYellow,
     },
     layer,
@@ -348,10 +392,10 @@ REEL.scene('08-exchange', (ctx) => {
   const plate = (side) => {
     const far = 3200
     const pts = [
-      [960 - far * ux, 540 - far * uy],
-      [960 + far * ux, 540 + far * uy],
-      [960 + far * ux + side * far * nx, 540 + far * uy + side * far * ny],
-      [960 - far * ux + side * far * nx, 540 - far * uy + side * far * ny],
+      [CX - far * ux, CY - far * uy],
+      [CX + far * ux, CY + far * uy],
+      [CX + far * ux + side * far * nx, CY + far * uy + side * far * ny],
+      [CX - far * ux + side * far * nx, CY - far * uy + side * far * ny],
     ]
     return ctx.svg(
       'polygon',
@@ -361,12 +405,17 @@ REEL.scene('08-exchange', (ctx) => {
   }
   const plateUL = plate(-1)
   const plateLR = plate(1)
+  /*
+   * Only frame 0 ever shows the blade: from frame 1 it lies over the yellow
+   * the plates have opened. Portrait keeps it at the handoff table's 4 px, so
+   * its first frame is S7's last exactly.
+   */
   const blade = ctx.svg(
     'path',
     {
-      d: `M${f3(960 - 1300 * ux)} ${f3(540 - 1300 * uy)}L${f3(960 + 1300 * ux)} ${f3(540 + 1300 * uy)}`,
+      d: `M${f3(CX - 1300 * ux)} ${f3(CY - 1300 * uy)}L${f3(CX + 1300 * ux)} ${f3(CY + 1300 * uy)}`,
       stroke: C.yellow,
-      'stroke-width': 12,
+      'stroke-width': portrait ? 4 : 12,
       'stroke-linecap': 'butt',
       fill: 'none',
     },
@@ -467,8 +516,14 @@ REEL.scene('08-exchange', (ctx) => {
   // plates have uncovered about half of every edge by the second frame, so the
   // bars turn yellow with the blade, not a beat early.
   ctx.letterbox(C.deep, 0, 2 / 60)
-  tl.to(plateUL, { x: -343.3, y: -969.4, duration: b(0.75), ease: E.snap }, b(0))
-  tl.to(plateLR, { x: 343.3, y: 969.4, duration: b(0.75), ease: E.snap }, b(0))
+  /*
+   * The travel carries each plate 1000 px off the Cut, past the wide frame's
+   * far corners (976 px). The tall frame's are 1099 px off it, so portrait
+   * goes 15% further along the same line.
+   */
+  const reach = portrait ? 1.15 : 1
+  tl.to(plateUL, { x: -343.3 * reach, y: -969.4 * reach, duration: b(0.75), ease: E.snap }, b(0))
+  tl.to(plateLR, { x: 343.3 * reach, y: 969.4 * reach, duration: b(0.75), ease: E.snap }, b(0))
   tl.set(plates, { visibility: 'hidden' }, b(0.75))
 
   // 7.0-9.0 INK-IN, then the lettering underneath is gone.

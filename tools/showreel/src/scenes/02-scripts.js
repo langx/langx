@@ -10,13 +10,32 @@
  * a canvas render of the word is scanned for its inked pixels. Layout boxes
  * lie about side bearings, and for Devanagari the one number that matters —
  * where the headline sits — has no metric at all.
+ *
+ * The 9:16 cut keeps every beat and recomposes the type for a phone's width:
+ * the specimen system (sizes, guide gap, the headline bar) is scaled as one
+ * so the widest word fits between the margins, and the quarter turn grows as
+ * it turns, so the Hangul row that fits the width lands on a kana column
+ * that uses the height.
  */
 REEL.scene('02-scripts', (ctx) => {
-  const { tl, b, E, C, F, GL, CUT, root } = ctx
+  const { tl, b, E, C, F, GL, CUT, root, W, CX, CY } = ctx
+  const PT = ctx.portrait
   const [ux, uy] = CUT.dUp
   const [nx, ny] = CUT.n
   const WHITE = '#ffffff'
   const font = (px, family) => `800 ${px}px ${family}`
+
+  // The specimen system. Wide sets it at the storyboard's sizes. Portrait
+  // scales all of it by one factor rather than fitting word by word, so the
+  // relay keeps its proportions and the guides stay true for every script:
+  // Привет, the widest, inks 1044 px at 300 and 814 px at 0.78 — x 133–947,
+  // clear of the right-hand chrome. The baseline sits 106 px below centre in
+  // both frames, as 01-caret's does.
+  const K = PT ? 0.78 : 1
+  const size = (px) => Math.round(px * K)
+  const BASE = PT ? 1066 : 646
+  const CAP = BASE - size(212)
+  const BAR_W = PT ? 18 : 22
   // Hidden by opacity as well as visibility: a child set visible would show
   // through a parent that is only visibility-hidden.
   const HIDDEN = { visibility: 'hidden', opacity: '0' }
@@ -116,7 +135,7 @@ REEL.scene('02-scripts', (ctx) => {
 
   /* ------------------------------------------------------------- the Cut */
 
-  const P = [960, 540]
+  const P = [CX, CY]
   const far = 4000
   /** The half-plane on one side of the Cut through P: -1 upper-left, +1 lower-right. */
   function halfPlane(side, px = P[0], py = P[1]) {
@@ -129,8 +148,16 @@ REEL.scene('02-scripts', (ctx) => {
 
   /* ---------------------------------------------------------- annotation */
 
-  // Nunito 800 24 px, 0.12em tracking, left 120, baseline 134 — as in S1.
-  const ANN = { f: font(24, F.display), ls: 24 * 0.12, x: 120, base: 134, lh: 34, rise: 26 }
+  // Nunito 800 24 px, 0.12em tracking, left 120, baseline 134 — as in S1
+  // (portrait: left 96, baseline 284, below the feeds' top chrome).
+  const ANN = {
+    f: font(24, F.display),
+    ls: 24 * 0.12,
+    x: PT ? 96 : 120,
+    base: PT ? 284 : 134,
+    lh: 34,
+    rise: 26,
+  }
   const annX = (str) => {
     const xs = []
     for (let i = 0; i < str.length; i++) {
@@ -180,36 +207,39 @@ REEL.scene('02-scripts', (ctx) => {
   // The shake at 7.0 moves everything in the world; the slice sits above it.
   const world = layer(root)
 
-  // Type-specimen guides: baseline 646 and cap line 434, on whole pixel rows.
+  // Type-specimen guides on the baseline and the cap line (wide: 646 and 434),
+  // on whole pixel rows.
   const guideSvg = ctx.svgLayer(world)
-  const guides = [646.5, 433.5].map((y) =>
+  const guides = [BASE + 0.5, CAP - 0.5].map((y) =>
     ctx.svg(
       'path',
-      { d: `M120 ${y}H1800`, stroke: C.border, 'stroke-width': 1, fill: 'none' },
+      { d: `M${ANN.x} ${y}H${W - ANN.x}`, stroke: C.border, 'stroke-width': 1, fill: 'none' },
       guideSvg,
     ),
   )
 
   // RU — Привет, split into letters that rise out of a line mask.
-  const ru = type(world, GL.ru.text, font(300, GL.ru.font), {
+  const ruPx = size(300)
+  const ru = type(world, GL.ru.text, font(ruPx, GL.ru.font), {
     color: C.ink,
     letterSpacing: '-0.02em',
-    lineHeight: '420px',
-    padding: '0px 40px',
+    lineHeight: `${size(420)}px`,
+    padding: `0px ${size(40)}px`,
     overflow: 'hidden',
   })
   const ruChars = ctx.split(ru.node, { type: 'chars' }).chars
   {
     const first = ruChars[0]
     const last = ruChars[ruChars.length - 1]
-    const f = font(300, GL.ru.font)
-    const inkL = first.offsetLeft + scan(first.textContent, f, 300).l
-    const inkR = last.offsetLeft + scan(last.textContent, f, 300).r
-    place(ru, 960 - (inkL + inkR) / 2, 646)
+    const f = font(ruPx, GL.ru.font)
+    const inkL = first.offsetLeft + scan(first.textContent, f, ruPx).l
+    const inkR = last.offsetLeft + scan(last.textContent, f, ruPx).r
+    place(ru, CX - (inkL + inkR) / 2, BASE)
   }
 
   // EL — Γειά σου, one word that inhales its tracking.
-  const EL = { px: 260, from: 260 * 0.5, to: 260 * -0.02 }
+  const elPx = size(260)
+  const EL = { px: elPx, from: elPx * 0.5, to: elPx * -0.02 }
   const elFont = font(EL.px, GL.el.font)
   const el = type(world, GL.el.text, elFont, {
     color: C.ink,
@@ -219,28 +249,37 @@ REEL.scene('02-scripts', (ctx) => {
   })
   {
     const ink = scan(GL.el.text, elFont, EL.px, EL.to)
-    place(el, 960 - (ink.l + ink.r) / 2, 646)
+    place(el, CX - (ink.l + ink.r) / 2, BASE)
   }
   // Tracking lands after every character, so the ink's right edge moves by
   // (n - 1) gaps; sliding x by half of that keeps the ink centred throughout.
   const elDrift = (-(GL.el.text.length - 1) * (EL.from - EL.to)) / 2
 
   // HE — שלום, revealed from the right by an edge parallel to the Cut.
-  const heFont = font(300, GL.he.font)
+  const hePx = size(300)
+  const heFont = font(hePx, GL.he.font)
   const heWrap = layer(world, HIDDEN)
-  const he = type(heWrap, GL.he.text, heFont, { color: WHITE, lineHeight: '420px' }, { dir: 'rtl' })
+  const he = type(
+    heWrap,
+    GL.he.text,
+    heFont,
+    { color: WHITE, lineHeight: `${size(420)}px` },
+    { dir: 'rtl' },
+  )
   {
-    const ink = scan(GL.he.text, heFont, 300, 0, 'rtl')
-    place(he, 960 - (ink.l + ink.r) / 2, 646)
+    const ink = scan(GL.he.text, heFont, hePx, 0, 'rtl')
+    place(he, CX - (ink.l + ink.r) / 2, BASE)
   }
 
-  // HI — नमस्ते, whole, hanging from its own headline at y 434.
-  const hiFont = font(280, GL.hi.font)
-  const hiWrap = layer(world, { ...HIDDEN, clipPath: 'inset(423px 0px 0px 0px)' })
-  const hi = type(hiWrap, GL.hi.text, hiFont, { color: WHITE, lineHeight: '448px' })
+  // HI — नमस्ते, whole, hanging from its own headline on the cap line.
+  const hiPx = size(280)
+  const hiFont = font(hiPx, GL.hi.font)
+  const hiClip = `inset(${CAP - BAR_W / 2}px 0px 0px 0px)`
+  const hiWrap = layer(world, { ...HIDDEN, clipPath: hiClip })
+  const hi = type(hiWrap, GL.hi.text, hiFont, { color: WHITE, lineHeight: `${size(448)}px` })
   const bar = {}
   {
-    const ink = scan(GL.hi.text, hiFont, 280)
+    const ink = scan(GL.hi.text, hiFont, hiPx)
     // The headline is the widest run of ink: the rows around the fullest one
     // that stay within 90% of it. (The bowls below it are wide too, but never
     // that wide, and never contiguous with it.)
@@ -254,9 +293,9 @@ REEL.scene('02-scripts', (ctx) => {
     const mid = (head[0].y + head[head.length - 1].y + 1) / 2
     bar.x0 = Math.min(...head.map((row) => row.l))
     bar.x1 = Math.max(...head.map((row) => row.r))
-    const left = 960 - (ink.l + ink.r) / 2
-    place(hi, left, 434 - mid)
-    bar.top = Math.floor(434 - mid + ink.t) - 2
+    const left = CX - (ink.l + ink.r) / 2
+    place(hi, left, CAP - mid)
+    bar.top = Math.floor(CAP - mid + ink.t) - 2
     bar.x0 += left
     bar.x1 += left
   }
@@ -264,9 +303,9 @@ REEL.scene('02-scripts', (ctx) => {
   const barPath = ctx.svg(
     'path',
     {
-      d: `M${bar.x0.toFixed(1)} 434H${bar.x1.toFixed(1)}`,
+      d: `M${bar.x0.toFixed(1)} ${CAP}H${bar.x1.toFixed(1)}`,
       stroke: WHITE,
-      'stroke-width': 22,
+      'stroke-width': BAR_W,
       fill: 'none',
       style: HIDDEN,
     },
@@ -275,41 +314,47 @@ REEL.scene('02-scripts', (ctx) => {
 
   // KO — 안녕하세요, five 170 px em cells spanning x 535-1385 around (960, 540).
   // Noto's CJK em box runs 0.88 em above the baseline to 0.12 em below it.
-  const CELL = 170
+  // Portrait: the row's cells are 160 px (x 140-940, inside the margins) and
+  // the column's 208 px (y 440-1480): the turn scales the row by COL / CELL
+  // on its way round, so the frame's height is what the match cut lands in.
+  const CELL = PT ? 160 : 170
+  const COL = PT ? 208 : 170
   const emBase = CELL * 0.88
   const koFont = font(CELL, GL.ko.font)
-  const jaFont = font(CELL, GL.ja.font)
+  const jaFont = font(COL, GL.ja.font)
+  const ORIGIN = `${CX}px ${CY}px`
   // The em cells carry the rhythm; the whole set is then nudged so its INK
   // is centred on (960, 540). Noto's CJK glyphs sit a few px left of and
   // above their em box's centre, so the row and the column are each off by
   // 7-9 px without it. Both being ink-centred is also what makes the turned
   // row land exactly on the column at the match cut.
-  function inkNudge(chars, f, along) {
-    const ink = chars.map((ch) => scan(ch, f, CELL))
+  function inkNudge(chars, f, along, cell) {
+    const eb = cell * 0.88
+    const ink = chars.map((ch) => scan(ch, f, cell))
     const n = chars.length - 1
-    // Pen origin of glyph i: (CELL·i, emBase) along the run, 0 across it.
-    const lo = along === 'x' ? ink[0].l : emBase + ink[0].t
-    const hi = along === 'x' ? CELL * n + ink[n].r : CELL * n + emBase + ink[n].b
+    // Pen origin of glyph i: (cell·i, eb) along the run, 0 across it.
+    const lo = along === 'x' ? ink[0].l : eb + ink[0].t
+    const hi = along === 'x' ? cell * n + ink[n].r : cell * n + eb + ink[n].b
     const acrossLo =
-      along === 'x' ? Math.min(...ink.map((k) => emBase + k.t)) : Math.min(...ink.map((k) => k.l))
+      along === 'x' ? Math.min(...ink.map((k) => eb + k.t)) : Math.min(...ink.map((k) => k.l))
     const acrossHi =
-      along === 'x' ? Math.max(...ink.map((k) => emBase + k.b)) : Math.max(...ink.map((k) => k.r))
-    const run = (CELL * chars.length) / 2 - (lo + hi) / 2
-    const across = CELL / 2 - (acrossLo + acrossHi) / 2
+      along === 'x' ? Math.max(...ink.map((k) => eb + k.b)) : Math.max(...ink.map((k) => k.r))
+    const run = (cell * chars.length) / 2 - (lo + hi) / 2
+    const across = cell / 2 - (acrossLo + acrossHi) / 2
     return along === 'x' ? { dx: run, dy: across } : { dx: across, dy: run }
   }
-  const koNudge = inkNudge(Array.from(GL.ko.text), koFont, 'x')
-  const jaNudge = inkNudge(Array.from(GL.ja.text), jaFont, 'y')
+  const koNudge = inkNudge(Array.from(GL.ko.text), koFont, 'x', CELL)
+  const jaNudge = inkNudge(Array.from(GL.ja.text), jaFont, 'y', COL)
   function hangulRow(parent) {
-    const row = layer(parent, { transformOrigin: '960px 540px', ...HIDDEN })
+    const row = layer(parent, { transformOrigin: ORIGIN, ...HIDDEN })
     const cells = Array.from(GL.ko.text).map((ch, i) => {
       const cell = ctx.el(
         'div',
         {
           style: {
             position: 'absolute',
-            left: `${535 + CELL * i + koNudge.dx}px`,
-            top: `${540 - CELL / 2 + koNudge.dy}px`,
+            left: `${CX - CELL * 2.5 + CELL * i + koNudge.dx}px`,
+            top: `${CY - CELL / 2 + koNudge.dy}px`,
             width: `${CELL}px`,
             height: `${CELL}px`,
           },
@@ -331,35 +376,37 @@ REEL.scene('02-scripts', (ctx) => {
   const ko = hangulRow(world)
 
   // JA — こんにちは, a vertical column in the box the turned row fills.
-  const ja = layer(world, { transformOrigin: '960px 540px', ...HIDDEN })
+  const ja = layer(world, { transformOrigin: ORIGIN, ...HIDDEN })
   const kana = Array.from(GL.ja.text).map((ch, i) => {
     const mask = ctx.el(
       'div',
       {
         style: {
           position: 'absolute',
-          left: `${960 - CELL / 2 + jaNudge.dx}px`,
-          top: `${115 + CELL * i + jaNudge.dy}px`,
-          width: `${CELL}px`,
-          height: `${CELL}px`,
+          left: `${CX - COL / 2 + jaNudge.dx}px`,
+          top: `${CY - COL * 2.5 + COL * i + jaNudge.dy}px`,
+          width: `${COL}px`,
+          height: `${COL}px`,
           overflow: 'hidden',
         },
       },
       ja,
     )
     const inner = ctx.el('div', { style: { position: 'absolute', inset: '0px' } }, mask)
-    const g = type(inner, ch, jaFont, { color: WHITE, lineHeight: `${CELL * 1.5}px` })
-    place(g, 0, emBase)
+    const g = type(inner, ch, jaFont, { color: WHITE, lineHeight: `${COL * 1.5}px` })
+    place(g, 0, COL * 0.88)
     return inner
   })
 
-  // ZH — 你好, ink box centred on (960, 540).
-  const zhFont = font(480, GL.zh.font)
-  const zhWrap = layer(world, { transformOrigin: '960px 540px', ...HIDDEN })
+  // ZH — 你好, ink box centred on (960, 540); 400 px in portrait (786 px of
+  // ink at 480 would crowd the margins).
+  const zhPx = PT ? 400 : 480
+  const zhFont = font(zhPx, GL.zh.font)
+  const zhWrap = layer(world, { transformOrigin: ORIGIN, ...HIDDEN })
   const zh = type(zhWrap, GL.zh.text, zhFont, { color: WHITE, lineHeight: '700px' })
   {
-    const ink = scan(GL.zh.text, zhFont, 480)
-    place(zh, 960 - (ink.l + ink.r) / 2, 540 - (ink.t + ink.b) / 2)
+    const ink = scan(GL.zh.text, zhFont, zhPx)
+    place(zh, CX - (ink.l + ink.r) / 2, CY - (ink.t + ink.b) / 2)
   }
 
   // The annotation, one glyph per mask so only the changed letters roll.
@@ -417,7 +464,7 @@ REEL.scene('02-scripts', (ctx) => {
     // Centred by advance as 01-caret does it: canvas counts the tracking
     // after the last letter too, and the advance does not.
     const olaAdv = advance(GL.pt.text, font(300, F.display), -6) + 6
-    place(ola, 960 - olaAdv / 2, 646)
+    place(ola, CX - olaAdv / 2, BASE)
     const note = type(half, 'PT · LATIN', ANN.f, {
       color: C.faint,
       letterSpacing: `${ANN.ls}px`,
@@ -450,7 +497,12 @@ REEL.scene('02-scripts', (ctx) => {
   const hide = (target, at) => tl.set(target, { autoAlpha: 0 }, at)
 
   // 0.0 SLICE. The line flashes 12 px for two frames, then the halves slip
-  // along the Cut, then part along its normal and leave the frame.
+  // along the Cut, then part along its normal and leave the frame. The tall
+  // frame's far corners are 1100 px from the Cut along its normal (wide:
+  // 976), so portrait throws the halves 1400 px: on the last 60 fps frame
+  // before they are hidden the 'cut' ease has covered 92% of it, which is
+  // clear of the frame; 1200 would leave a sliver of each half in a corner.
+  const PART = PT ? 1400 : 1200
   tl.set([upper.line, lower.line], { attr: { 'stroke-width': 3 } }, b(1 / 15))
   for (const [half, s] of [
     [upper.half, 1],
@@ -462,8 +514,8 @@ REEL.scene('02-scripts', (ctx) => {
       half,
       slip,
       {
-        x: slip.x - 1200 * nx * s,
-        y: slip.y - 1200 * ny * s,
+        x: slip.x - PART * nx * s,
+        y: slip.y - PART * ny * s,
         duration: b(0.625),
         ease: E.cut,
         ...once,
@@ -518,8 +570,8 @@ REEL.scene('02-scripts', (ctx) => {
   show(heWrap, b(2))
   tl.fromTo(
     heWrap,
-    { clipPath: halfPlane(1, 960 + 900) },
-    { clipPath: halfPlane(1, 960 - 900), duration: 0.4, ease: E.snap },
+    { clipPath: halfPlane(1, CX + 900) },
+    { clipPath: halfPlane(1, CX - 900), duration: 0.4, ease: E.snap },
     b(2),
   )
   // It drifts 60 px left with the edge and comes to rest centred.
@@ -551,7 +603,7 @@ REEL.scene('02-scripts', (ctx) => {
   hide(barPath, b(3.75))
   tl.fromTo(
     hiWrap,
-    { clipPath: 'inset(423px 0px 0px 0px)' },
+    { clipPath: hiClip },
     { clipPath: `inset(${bar.top}px 0px 0px 0px)`, duration: b(0.25), ease: E.snap, ...once },
     b(3.75),
   )
@@ -582,6 +634,8 @@ REEL.scene('02-scripts', (ctx) => {
 
   // 5.0 THE QUARTER TURN: a counter-turn, then 90° clockwise, accelerating
   // into the cut. The trails are the same turn evaluated 1, 2, 3 frames late.
+  // Portrait grows the row to the column's size on the same ease as it turns.
+  const grow = PT ? [{ scale: 1 }, { scale: COL / CELL }] : [{}, {}]
   const turn = (target, lag) => {
     tl.fromTo(
       target,
@@ -591,8 +645,8 @@ REEL.scene('02-scripts', (ctx) => {
     )
     tl.fromTo(
       target,
-      { rotation: -5 },
-      { rotation: 90, duration: b(0.875), ease: E.cut, ...once },
+      { rotation: -5, ...grow[0] },
+      { rotation: 90, ...grow[1], duration: b(0.875), ease: E.cut, ...once },
       b(5.125) + lag,
     )
   }

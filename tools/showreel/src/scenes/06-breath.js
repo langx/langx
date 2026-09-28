@@ -13,11 +13,16 @@
  * we measure are exactly the ink we draw. The push-in is applied in the
  * canvas transform, so the type is re-rasterised at 1.03 rather than a
  * bitmap scaled up.
+ *
+ * Portrait: the same word, centred on (540,960) at 200 px so Merhaba fits the
+ * width, and the same line — which at 33 degrees in a 1080-wide frame runs
+ * edge to edge and cuts the tall frame on a long diagonal. The wide cut's
+ * offsets are hand-tuned numbers; the portrait ones are measured from the ink
+ * boxes below, since both words and the frame changed shape.
  */
 REEL.scene('06-breath', (ctx) => {
   const { tl, b, E, C, CUT, GL } = ctx
-  const CX = 960
-  const CY = 540
+  const { CX, CY, portrait } = ctx
   const INK = C.ink
 
   /* ------------------------------------------------------------ measuring */
@@ -26,7 +31,7 @@ REEL.scene('06-breath', (ctx) => {
   const g = cv.g
 
   const LATIN = 'Merhaba'
-  const LATIN_PX = 240
+  const LATIN_PX = portrait ? 200 : 240
   const LATIN_TRACK = -0.02 * LATIN_PX
   const latinFont = `800 ${LATIN_PX}px ${ctx.F.display}`
   const ar = GL.ar
@@ -57,7 +62,7 @@ REEL.scene('06-breath', (ctx) => {
   const arabicM = measure(ar.text, arabicFont, 0, 'rtl')
 
   // Anchor each word (textAlign centre, alphabetic baseline) so its INK box is
-  // centred on (960,540).
+  // centred on the stage's centre.
   const anchor = (m) => ({
     x: CX - (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2,
     y: CY - (m.actualBoundingBoxDescent - m.actualBoundingBoxAscent) / 2,
@@ -65,11 +70,29 @@ REEL.scene('06-breath', (ctx) => {
   const latinAt = anchor(latinM)
   const arabicAt = anchor(arabicM)
 
+  // The line's horizontal offset from the centre that puts it through (x, y).
+  const [dux, duy] = CUT.dUp
+  const offAt = (x, y) => x - CX - ((y - CY) / duy) * dux
+  const ink = (at, m) => ({
+    l: at.x - m.actualBoundingBoxLeft,
+    r: at.x + m.actualBoundingBoxRight,
+    t: at.y - m.actualBoundingBoxAscent,
+    b: at.y + m.actualBoundingBoxDescent,
+  })
+  const arInk = ink(arabicAt, arabicM)
+
+  // Where the line rests. Wide keeps its tuned -700/+700. Portrait rests 8 px
+  // past the Arabic ink box's bottom-right corner — the corner a 33 degree
+  // line reaches last on its way right, and the taller of the two words — and
+  // starts at the mirror of that, which clears Merhaba by more.
+  const SIDE = portrait ? offAt(arInk.r + 8, arInk.b) : 700
+  const START = -SIDE
+
   /* ------------------------------------------------------------- timeline */
 
   // Everything the canvas reads. `off` is the hairline's horizontal offset
-  // from (960,540); `half` its drawn half-length; `ar` switches layer B on.
-  const P = { push: 1, r: 12, half: 0, off: -700, ar: 0 }
+  // from the centre; `half` its drawn half-length; `ar` switches layer B on.
+  const P = { push: 1, r: 12, half: 0, off: START, ar: 0 }
 
   // The only continuous motion: a linear 1.00 -> 1.03 creep over the slot.
   tl.fromTo(P, { push: 1 }, { push: 1.03, duration: ctx.dur, ease: 'none' }, 0)
@@ -94,19 +117,28 @@ REEL.scene('06-breath', (ctx) => {
   // (991.5 reaches them) at every offset the line visits, and on expo.out the
   // visible tip then decelerates into the frame edge over about eight frames.
   // Drawn to 1300, the tip crossed the frame in two frames and read as a pop.
-  const HALF = 1010
+  // Portrait: at 33 degrees in a frame 1080 wide the line leaves through the
+  // side edges, and from the start offset only its upper half is in frame; it
+  // is drawn to clear the right edge by 10 px, for the same slow landing.
+  const HALF = portrait ? (ctx.W - (CX + START)) / dux + 10 : 1010
   tl.fromTo(
     P,
     { half: 0 },
     { half: HALF, duration: b(0.5), ease: E.snap, immediateRender: false },
     b(0.75),
   )
+  // Then, while both its ends are off-frame, it grows to the length the rest
+  // of the scene needs: the lean's right-most offset puts the lower end past
+  // the left edge, and on the way out the upper end must pass the top edge
+  // (CY / sin 33 degrees) rather than the right. Growing an off-frame end is
+  // invisible; drawn at this length on b0.75, the tip would pop across.
+  if (portrait) tl.set(P, { half: CY / -duy + 18 }, b(1.25))
 
   // 1.25-2.75 it walks right and writes Merhaba in its reading direction.
   tl.fromTo(
     P,
-    { off: -700 },
-    { off: 700, duration: b(1.5), ease: E.glide, immediateRender: false },
+    { off: START },
+    { off: SIDE, duration: b(1.5), ease: E.glide, immediateRender: false },
     b(1.25),
   )
 
@@ -119,24 +151,21 @@ REEL.scene('06-breath', (ctx) => {
   // unfinished, notched at 33 degrees, through the glide's slow landing on b6.
   // So the rewrite comes to rest where the line clears the Arabic ink box's
   // top-left corner by 8 px (about -800), and the word is whole on the beat.
-  const [dux, duy] = CUT.dUp
-  const arInkLeft = arabicAt.x - arabicM.actualBoundingBoxLeft
-  const arInkTop = arabicAt.y - arabicM.actualBoundingBoxAscent
-  const REST = Math.min(-700, arInkLeft - 8 - CX - ((arInkTop - CY) / duy) * dux)
+  const REST = Math.min(START, offAt(arInk.l - 8, arInk.t))
   // The wind-up: in the last 16th of the stillness the line leans back 5% of
   // the walk to come, to the right, on 'lift', and the glide leaves from
   // there. Both ends are at rest, so the lean and the walk join without a
   // kink; leaning right only hides more of the Arabic and none of the Latin.
-  const LEAN = 0.05 * (700 - REST)
+  const LEAN = 0.05 * (SIDE - REST)
   tl.fromTo(
     P,
-    { off: 700 },
-    { off: 700 + LEAN, duration: b(0.25), ease: E.lift, immediateRender: false },
+    { off: SIDE },
+    { off: SIDE + LEAN, duration: b(0.25), ease: E.lift, immediateRender: false },
     b(3.75),
   )
   tl.fromTo(
     P,
-    { off: 700 + LEAN },
+    { off: SIDE + LEAN },
     { off: REST, duration: b(2), ease: E.glide, immediateRender: false },
     b(4),
   )
@@ -144,10 +173,16 @@ REEL.scene('06-breath', (ctx) => {
   // 6.0-6.5 it accelerates out. The spec's -1600 still leaves the line across
   // the top-left corner (at 33 degrees it needs x < 0 at y = 0), so it goes
   // on to -1800, where every point of it is off the stage scaled to 1.03.
+  // Portrait: the same test, through the top-left corner.
   tl.fromTo(
     P,
     { off: REST },
-    { off: -1800, duration: b(0.5), ease: E.cut, immediateRender: false },
+    {
+      off: portrait ? offAt(-10, 0) : -1800,
+      duration: b(0.5),
+      ease: E.cut,
+      immediateRender: false,
+    },
     b(6),
   )
 

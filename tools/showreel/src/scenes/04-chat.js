@@ -97,12 +97,27 @@ REEL.scene('04-chat', (ctx) => {
     track(target, fromVars, toVars, s.t0, s.t1, s.at)
   }
 
+  /*
+   * Where the three bubbles sit, in stage px. Wide: the storyboard's column,
+   * x 400-1520. Portrait: a phone's chat column, x 96-984, the same bubbles and
+   * the same 52 px gaps stacked down the middle of the tall frame, so the thread
+   * reads the way it would on the phone it is being watched on.
+   */
+  const L = ctx.portrait
+    ? { b1: [96, 700], b2: [984, 880], typing: [96, 1060] }
+    : { b1: [400, 260], b2: [1520, 440], typing: [400, 620] }
+
   /* ------------------------------------------------ B1: Sofia's question */
 
-  const B1 = { x: u(400), top: u(260), h: u(128), tx: u(436), base: u(342) }
+  const B1 = { x: u(L.b1[0]), top: u(L.b1[1]), h: u(128) }
+  B1.tx = B1.x + u(36)
+  B1.base = B1.top + u(82)
+  /* Portrait only: Sofia's side of the thread in one group, so it can leave
+     the frame during the push-in (see there). Wide draws straight into world. */
+  const thread = ctx.portrait ? ctx.svg('g', {}, world) : world
   const b1Text = '¡Hola! ¿Tienes hambre?'
   const b1W = (s) => adv(s) + u(72)
-  const b1 = bubble(world, {
+  const b1 = bubble(thread, {
     x: B1.x,
     y: B1.top,
     w: b1W('Hola'),
@@ -112,19 +127,19 @@ REEL.scene('04-chat', (ctx) => {
   })
 
   const at1 = (prefix) => B1.tx + adv(prefix)
-  const inv = text('¡', B1.tx, B1.base, world)
-  const hola = text('Hola', B1.tx, B1.base, world)
-  const bang = text('!', at1('¡Hola'), B1.base, world)
+  const inv = text('¡', B1.tx, B1.base, thread)
+  const hola = text('Hola', B1.tx, B1.base, thread)
+  const bang = text('!', at1('¡Hola'), B1.base, thread)
   /* One line mask for the two words that rise into the bubble. Its right edge
      is the bubble's, so a word the lagging bubble has not reached yet is not
      drawn on the white beside it: the bubble's growth uncovers the rise. */
-  const line1 = clipped(world, B1.x, B1.base - u(62), b1W('Hola'), u(80))
+  const line1 = clipped(thread, B1.x, B1.base - u(62), b1W('Hola'), u(80))
   const tienes = text('¿Tienes', at1('¡Hola! '), B1.base, line1)
   const hambreQ = text('hambre?', at1('¡Hola! ¿Tienes '), B1.base, line1)
 
   const LABEL = `800 ${u(26)}px ${F.display}`
-  const labelMask = clipped(world, u(396), u(240 - 30), u(160), u(40))
-  const label = text('Sofia', u(404), u(240), labelMask, { font: LABEL })
+  const labelMask = clipped(thread, B1.x - u(4), B1.top - u(50), u(160), u(40))
+  const label = text('Sofia', B1.x + u(4), B1.top - u(20), labelMask, { font: LABEL })
   label.setAttribute('fill', C.muted)
 
   // b0: '¡' and '!' pop in around 'Hola', which steps right to make room.
@@ -155,7 +170,9 @@ REEL.scene('04-chat', (ctx) => {
 
   /* ------------------------------------------------- B2: the learner */
 
-  const B2 = { right: u(1520), top: u(440), h: u(128), end: u(1484), base: u(522) }
+  const B2 = { right: u(L.b2[0]), top: u(L.b2[1]), h: u(128) }
+  B2.end = B2.right - u(36)
+  B2.base = B2.top + u(82)
   const full = 'Sí, estoy hambre.'
   const X0 = B2.end - adv(full)
   const b2 = ctx.svg('g', {}, world)
@@ -167,7 +184,7 @@ REEL.scene('04-chat', (ctx) => {
     fill: C.blueTint,
     tail: 'br',
   }).body
-  // The line is placed so the typed prefix always ends at x=1484.
+  // The line is placed so the typed prefix always ends at B2.end (x=1484 wide).
   const line2 = ctx.svg('g', {}, b2)
   gsap.set(line2, { x: adv(full) })
 
@@ -186,7 +203,7 @@ REEL.scene('04-chat', (ctx) => {
   // The caret never moves: the typed text is right-anchored against it.
   const caret = ctx.svg(
     'rect',
-    { x: B2.end, y: u(480), width: u(4), height: u(60), fill: C.ink },
+    { x: B2.end, y: B2.top + u(40), width: u(4), height: u(60), fill: C.ink },
     b2,
   )
 
@@ -274,11 +291,16 @@ REEL.scene('04-chat', (ctx) => {
 
   /* ------------------------------------------ Sofia typing, b4.5–5.5 */
 
+  const [TX, TY] = L.typing
   const typing = ctx.svg('g', {}, world)
-  bubble(typing, { x: u(400), y: u(620), w: u(176), h: u(128), fill: C.fill, tail: 'bl' })
-  gsap.set(typing, { svgOrigin: `${u(400)} ${u(748)}` })
-  ;[452, 488, 524].forEach((cx, i) => {
-    const dot = ctx.svg('circle', { cx: u(cx), cy: u(684), r: u(8), fill: C.muted }, typing)
+  bubble(typing, { x: u(TX), y: u(TY), w: u(176), h: u(128), fill: C.fill, tail: 'bl' })
+  gsap.set(typing, { svgOrigin: `${u(TX)} ${u(TY + 128)}` })
+  ;[52, 88, 124].forEach((dx, i) => {
+    const dot = ctx.svg(
+      'circle',
+      { cx: u(TX + dx), cy: u(TY + 64), r: u(8), fill: C.muted },
+      typing,
+    )
     // y = -12·max(0, sin(2π(2t − i/3))), t in beats: the ease IS the formula.
     tl.fromTo(
       dot,
@@ -321,7 +343,12 @@ REEL.scene('04-chat', (ctx) => {
     { scale: S1, duration: b(2), ease: zoomEase, immediateRender: false },
     b(5.5),
   )
-  tl.fromTo(cam, { x: 0, y: 0 }, { x: 960 - Ex, y: 540 - Ey, duration: b(2), ease: E.whip }, b(5.5))
+  tl.fromTo(
+    cam,
+    { x: 0, y: 0 },
+    { x: ctx.CX - Ex, y: ctx.CY - Ey, duration: b(2), ease: E.whip },
+    b(5.5),
+  )
 
   /*
    * B2 becomes the band. At scale 5, with 'estoy' centred, the bubble's r36
@@ -331,9 +358,10 @@ REEL.scene('04-chat', (ctx) => {
    * last frame is a full-bleed band. It is an exit, so it runs on 'cut': the
    * bubble keeps its shape while the eye can read it and the end leaves the
    * frame late, landing with the camera on b7.5. Final screen x of a world x is
-   * 960 + (x - Ex·K), because the camera's 5 and the world's 1/5 cancel.
+   * CX + (x - Ex·K), because the camera's 5 and the world's 1/5 cancel. (In
+   * portrait the narrower frame already crops the end, so EXT comes out 0.)
    */
-  const bandLeft = 960 + (B2.right - wEnd - Ex * K)
+  const bandLeft = ctx.CX + (B2.right - wEnd - Ex * K)
   const EXT = Math.max(0, bandLeft + u(36) + 40)
   tl.fromTo(
     b2Body,
@@ -346,6 +374,24 @@ REEL.scene('04-chat', (ctx) => {
     },
     b(5.5),
   )
+
+  /*
+   * Portrait: the tall frame leaves ~600 px of white above the band, and
+   * Sofia's bubble, 52 px over B2, would land in it at scale 5 — a grey slab of
+   * giant cropped text where the handoff wants white. Her side of the thread
+   * leaves upward with the push, on 'cut' like the band's end, so it reads as
+   * the zoom carrying it away and is gone by the landing. Final screen y of a
+   * world y is CY + (y - Ey·K).
+   */
+  if (ctx.portrait) {
+    const lift = ctx.CY + (B1.top + B1.h - Ey * K) + 40
+    tl.fromTo(
+      thread,
+      { y: 0 },
+      { y: -Math.max(0, lift), duration: b(2), ease: E.cut, immediateRender: false },
+      b(5.5),
+    )
+  }
 
   /* ------------------------------------------------------------- sound */
 
