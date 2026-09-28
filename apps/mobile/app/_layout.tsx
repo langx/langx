@@ -73,6 +73,16 @@ const BOOT_STALL_MS = 10_000
 void SplashScreen.preventAutoHideAsync().catch(() => undefined)
 
 /*
+ * No fade when the native splash goes. AppSplash's first frame is the native
+ * one pixel for pixel and starts moving once it is gone; Android's default is
+ * a 400 ms fade on an accelerating curve, so the native view stayed nearly
+ * opaque over the start of the launch animation and then dissolved into the
+ * middle of it — the film showed through a translucent badge. iOS does not
+ * fade unless asked to.
+ */
+SplashScreen.setOptions({ duration: 0 })
+
+/*
  * Module scope, and it has to be: the `expo-router` integration is read once
  * when `ObserveRoot`'s provider mounts and throws if the answer changes after
  * that, so there is no effect early enough to do this in.

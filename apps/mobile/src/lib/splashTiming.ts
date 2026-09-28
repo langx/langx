@@ -1,6 +1,6 @@
 /**
- * The numbers behind the opening animation, and the two pieces of arithmetic in
- * it that are easy to get wrong.
+ * The numbers behind the opening animation, and the pieces of arithmetic in it
+ * that are easy to get wrong.
  *
  * Split from the component for the reason `swipeAction` and `pinch` are: a
  * renderer cannot be loaded in this package's tests, and "did a fast boot flash
@@ -15,55 +15,60 @@ const EXIT_TILE_MS = 260
 
 export const SPLASH_TIMING = {
   /**
-   * How long the logo stays up at minimum, measured from mount.
+   * How long the logo stays up at minimum, measured from mount, when it is the
+   * whole opening: with reduced motion on, where there is no film to wait for.
    *
    * A warm start resolves the session from a cached cookie almost immediately,
    * and without a floor the logo would appear and vanish inside about eighty
    * milliseconds — read as a flicker, not as an opening.
-   *
-   * Nothing above this is waiting to finish. The halo below is a loop with no
-   * end state, so the exit can start at any point in it without showing the
-   * reader an animation being interrupted — which is what the floor had to be
-   * raised for when the opening was four springs that had to land first.
    */
   MIN_VISIBLE_MS: 800,
   /**
    * Nothing signalled. Not "the app is fine" — just "stop hiding it": whatever
    * is slow, the reader is better off seeing the screen behind this and its
-   * own spinner than a logo breathing at them indefinitely.
+   * own spinner than a logo held at them indefinitely.
    */
   TIMEOUT_MS: 5000,
-  /** One halo's whole life: born at the badge's edge, gone before the corners. */
-  HALO_MS: 2600,
-  /** Three in the air at once, a third of a cycle apart. See `haloDelayMs`. */
-  HALO_COUNT: 3,
   /**
-   * Multiples of the badge's own width. It starts on the badge's edge, so the
-   * ring reads as leaving the mark rather than arriving around it, and stops
-   * at a little under a phone's width — a ring still at full radius when it
-   * reaches the bezel is a stripe across the screen, which is what the four
-   * rotating arcs this replaces looked like.
+   * How long the badge sits perfectly still before anything moves.
+   *
+   * The first frame of this layer is the frame the native splash hands over
+   * on, and the two are meant to be the same picture. Motion starting on that
+   * frame is motion starting on the one frame most likely to be dropped — a
+   * pop with no cause. A beat of stillness puts the handover behind us first.
    */
-  HALO_TO_SCALE: 2.2,
-  /** Faint on purpose: three of these overlap, and they are behind the mark. */
-  HALO_OPACITY: 0.45,
+  HOLD_MS: 150,
   /**
-   * How far into its life a halo is at full strength. It fades *in* over the
-   * first tenth so the ring does not appear as a hard edge sitting on the
-   * badge, and fades out over the rest.
+   * The yellow disc growing from the badge's centre until it covers the
+   * screen. Short: it is a transition into the film, not part of it.
    */
-  HALO_FADE_IN: 0.1,
-  /** Slower than `Skeleton`'s 700/700, and about half a halo, so the two agree. */
-  BREATH_HALF_MS: 1300,
-  BREATH_SCALE: 1.03,
-  /** The halos go first, and quickly: they are the part that says "still working". */
-  EXIT_HALO_MS: 200,
+  DISC_MS: 400,
   /**
-   * The badge drifting towards the reader as it dissolves. Small — at more than
-   * a few percent this stops being a hand-off and becomes a zoom.
+   * The film's own length: `assets/splash/intro.mp4`, 162 frames at 60 fps.
+   * A test reads the file and holds this to it, because the stall guard below
+   * is measured from it.
+   */
+  INTRO_MS: 2700,
+  /**
+   * How long the yellow waits for the film to start playing before giving up
+   * on it and leaving from the yellow instead. A slow disk or a decoder that
+   * never answers must not turn the opening into a yellow screen.
+   */
+  INTRO_WAIT_MS: 1500,
+  /**
+   * Past the film's length, how long a film that started but never reported
+   * its end is given. A film can start and then stall — a decoder that stops,
+   * a buffer that never refills — and the end event is then never sent, so it
+   * cannot be the only way out.
+   */
+  INTRO_STALL_MS: 1500,
+  /** The whole layer lifting off the app once the film is over and the app is up. */
+  EXIT_FADE_MS: 300,
+  /**
+   * With reduced motion, the badge dissolving in place. Scale stays at 1:
+   * drifting towards the reader is exactly the movement they turned off.
    */
   EXIT_TILE_MS,
-  EXIT_TILE_SCALE: 1.06,
   /**
    * The ground waits for the badge to be **gone**, not merely on its way out,
    * which is why this is `EXIT_TILE_MS` exactly rather than a smaller number
@@ -100,18 +105,36 @@ export function msUntilExitAllowed(mountedAtMs: number, nowMs: number): number {
 }
 
 /**
- * When the halo at `index` first sets off.
+ * The diameter of a disc, centred on the window, that covers all of it.
  *
- * All three run the identical loop; the only thing that distinguishes them is
- * that each starts a fraction of a cycle after the last, once, before its loop
- * begins. That is what makes the ripple continuous: at any instant one ring is
- * leaving the badge, one is halfway out and one is fading at the edge.
- *
- * The failure it exists to prevent is spacing them by a constant. A gap that
- * does not divide `HALO_MS` leaves a beat with nothing on screen every cycle —
- * a pause in a loop that is supposed to have no seam, which reads as a stall
- * on the one screen where a stall means the app has hung.
+ * The disc is grown by a scale transform from the badge's centre, which is the
+ * window's centre, so it has to reach the corners, not the edges: sized to the
+ * longer side, a tall phone keeps four slivers of the old ground in its
+ * corners for the whole film. Rounded up and given a point either side, so an
+ * antialiased rim never lands on the last row of pixels.
  */
-export function haloDelayMs(index: number): number {
-  return Math.round((index * SPLASH_TIMING.HALO_MS) / SPLASH_TIMING.HALO_COUNT)
+export function discDiameter(width: number, height: number): number {
+  return Math.ceil(Math.hypot(width, height)) + 2
+}
+
+/**
+ * Whether the opening may leave.
+ *
+ * With motion, it waits for both halves: the app being ready and the film
+ * being over — played to the end, or given up on. An app that is ready early
+ * does not cut the film short, and a film that ends early holds its last frame
+ * until the app is ready. With reduced motion there is no film, so readiness
+ * alone decides (the floor is `msUntilExitAllowed`'s job).
+ */
+export function canExit({
+  ready,
+  introDone,
+  reduceMotion,
+}: {
+  ready: boolean
+  introDone: boolean
+  reduceMotion: boolean
+}): boolean {
+  if (!ready) return false
+  return reduceMotion || introDone
 }

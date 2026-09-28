@@ -1,0 +1,928 @@
+{
+  "title": "SAY IT BACK — the LangX reel",
+  "logline": "A white caret types 'Hello' and edits it through three languages, then turns 57° and becomes the knife that cuts the reel open. Sixteen scripts each move the way they are read. A living grid of greetings folds into a chat where Sofia asks a question and the learner hesitates, makes a mistake and is corrected in green. The corrected line becomes an Echo card that hops the review ladder to 365 days. One quiet line then rewrites Merhaba as مرحبا, and 'Thank you' rolls through the app's eight languages. At the end two rivers of hellos bend along that same 57° line into the two arcs of the LangX mark, trade places in one 540° turn and lock on the downbeat of bar 21. 88 beats at 120 BPM (44 s).",
+  "signatureMotif": "THE CUT, and its partner THE TURN.\n\nTHE CUT is the straight line the mark's flat ends are cut on.\n- Screen angles, y down, clockwise:\n  - direction 147°: d = (-0.83867, 0.54464); read left to right it RISES about 33°: dUp = (0.83867, -0.54464);\n  - normal 57°: n = (0.54464, 0.83867), which is also the direction of the mark's hard shadow.\n- Derived once from MARK and added to core.js as REEL.CUT = { deg: 147, dUp, n }. It passes through the mark's CANVAS CENTRE (512,512), not through either arc centre.\n  - The two flat-end lines sit ±2.35 canvas units either side of it: 1.1 px at the lockup scale.\n  - Anywhere on stage, the Cut is 'the line through point P at 147°'. When no mark is on screen, P = (960,540).\n- Arc centres for a mark whose canvas centre is P, at canvas scale k and rotation θ:\n  - black = P + k·R(θ)·(79, -48.5);\n  - white = P + k·R(θ)·(-79, 48.5).\n  - Interpolate between these exact centres; never recompute an angle.\n- Where the Cut appears:\n  1. b0–8: born when the caret rotates +57° (from 90° to 147°) and stretches into it.\n  2. b8: the only standard SLICE, owned by S2.\n  3. Parallel echoes of it:\n     - S2's Hebrew mask edge;\n     - S3's reel-stop wave front;\n     - S5's staircase slope;\n     - S6's hairline, which WRITES Merhaba left to right, then walks back and writes مرحبا right to left;\n     - S7's theme-sweep edge.\n  4. b65–66: S7's yellow tab bar rotates -33° and becomes it again.\n  5. b68: SPLIT-OPEN. The ink ground parts along it to reveal yellow, and it stays behind as a #201900 hairline.\n  6. b80: in the finale it proves to be the line the arcs are cut on. The hairline retracts into the seam at the lock.\n\nTHE TURN: two things trade places by rotating 180°, the way the white arc is the black arc turned 180° about the canvas centre. It appears:\n- b11–12.5: 'a' and 'o' orbit to turn Hallo into Hola;\n- b10: S2's reading-direction arrow flips for Hebrew;\n- b13–14: the Hangul row turns 90° and becomes the Japanese column (a quarter Turn);\n- b74–80: the finale's 540° exchange of the black and white halves;\n- b80.5–82.5: the X of the wordmark lands by a half-turn.\n\nRules the motif carries:\n(a) The complete mark appears exactly ONCE, at the lock (b80). Before that only the Cut and the Turn allude to it.\n(b) After the lock the mark never moves again.\n(c) Full yellow ground appears only from b68. Before that yellow is at most ONE object per frame: the S3 cursor cell, the S7 tab bar and line.\n(d) The hard 57° shadow belongs to the mark alone: #e0ac08 on yellow, #deab06 on ink. No type or UI ever carries it.\n\nBookend: the caret. It opens the reel (frame 0 is 'Hello|'), returns in S4 as the learner's hesitating cursor, and blinks once after the tagline before the final still.",
+  "totalBeats": 88,
+  "styleBible": {
+    "motionPrinciples": "1. Every move has three parts:\n- ANTICIPATION: a lift, crouch or counter-turn of 4-10%, over 1/8 to 1/4 beat, with 'lift'.\n- A DECISIVE ARRIVAL: either an overshoot ('pop' or 'spring') or a dead stop ('cut' into the beat).\n- FOLLOW-THROUGH: a squash released on 'spring', or a lean that settles.\nNothing floats. No idle sine drift. No staggered fade-ins. Opacity is not a transition: things enter through masks, scale, draw or cut. Opacity is used only for echo trails and two-copy colour crossings.\n\n2. RHYTHM\n- Every hard cut and every landing falls on a beat or a subdivision (8th = 0.5 beat, 16th = 0.25, 32nd = 0.125).\n- Big hits fall on bar lines: b16, b44, b68, b80.\n- The piece autoplays muted, so the picture must carry the beat on its own.\n- There is one 8th of total silence before each drop and before the lock: b15.75, b31.75, b67.75, b79.75.\n\n3. STILLNESS IS A BEAT\n- An outgoing frame that a slice or split-open replicates holds perfectly still for at least 0.5 beat.\n- There is exactly one breath (S6, 4 s).\n- The end card is still for the last 4 beats.\n\n4. DETERMINISM\n- Every visual is a pure function of the playhead.\n- Randomness: ctx.rng(seed) with seed = 1000·sceneNumber + purpose index.\n- Springs, hops, shakes and envelopes are closed-form:\n  - hop: y = y0 + (y1-y0)·u - h·4u(1-u);\n  - shake: A·e^(-t/τ)·sin(2πft);\n  - kick envelope: e^(-6φ), where φ is the beat phase from ABSOLUTE time.\n- Never accumulate per frame.\n- No tl.call does visual work, and no CSS animations or transitions.\n- Canvas draws read only the t they are given.\n- A scene's timeline never runs past its slot, and scenes never overlap.\n\n5. SPEED CAPS WITHOUT BLUR\n- The mark and hero type (80 px or larger) turn at no more than about 300°/s.\n- Anything the eye tracks moves at no more than about 4000 px/s.\n- Exceptions:\n  - exits leaving the frame;\n  - the first 3 frames of a pull-back reveal;\n  - the last 1/2 beat of a rotation that accelerates into a hard cut, which carries echo trails.\n- Replacements for blur:\n  - SPEED-STRETCH: scale along the motion by up to 1.2 at peak velocity.\n  - ECHO TRAILS, only where a scene names them: 3 hard-edged ghost copies of the same element rendered at t-1/30, t-2/30 and t-3/30 s, at 30%, 15% and 6% opacity. Each ghost is the same closed-form state evaluated at the earlier time, so it seeks correctly.\n\n6. SCRIPTS\n- Split only Latin, Cyrillic, Greek, kana, Han and whole Hangul syllables.\n- Arabic, Hebrew, Devanagari and Thai move as whole words, behind masks.\n- RTL words are revealed and travel right to left.\n\n7. CRAFT\n- Author text at its largest on-screen size and scale it down.\n- Measure only after REEL.boot's font promise resolves.\n- Dense fields (S3 grid, S8 rails) are Canvas2D or single SVG paths, never hundreds of transformed DOM nodes.\n- Render the MP4 at 60 fps.\n- With prefers-reduced-motion the page opens on the final lockup frame (b88).",
+    "eases": [
+      {
+        "name": "snap",
+        "definition": "expo.out",
+        "use": "Decisive arrivals with no overshoot: masked rises, reveals, the camera landing, the bubble and card morphs, the hairline draw-in, the shadow snap at the lock. 0.2-0.45 s."
+      },
+      {
+        "name": "pop",
+        "definition": "back.out(1.7)",
+        "use": "Arrivals with about 10% overshoot: glyph pops, bubble pops, reel stops, odometer digit locks, dots, speaker glyph. Up to 0.25 s."
+      },
+      {
+        "name": "whip",
+        "definition": "M0,0 C0.7,0 0.2,1 1,1",
+        "use": "Heavy-in, heavy-out travel: push-ins, card flights, the world-to-card contraction, conveyor slides, the tab bar becoming the Cut. Use it at least 0.5 s for large distances to respect the speed cap."
+      },
+      {
+        "name": "cut",
+        "definition": "power3.in",
+        "use": "Accelerating INTO a beat or off the frame: exits, the slice halves parting, collapses, the green strike landing on the beat, stamps (a dead stop, no overshoot), anything whose end is the hit."
+      },
+      {
+        "name": "glide",
+        "definition": "sine.inOut",
+        "use": "Controlled rotation and slow travel: every Turn (letter orbits, the 540° finale spin), the S6 hairline walks, the staircase draw, the finale camera. It is never used for idle drift."
+      },
+      {
+        "name": "spring",
+        "definition": "M0,0 C0.08,0.6 0.14,1.25 0.22,1.22 0.3,1.19 0.34,0.93 0.44,0.94 0.54,0.95 0.58,1.03 0.68,1.02 0.78,1.01 0.84,1 1,1",
+        "use": "Closed-form damped spring with about 22% overshoot, then -6% and +2%, then settled. Used for landing squash releases, baseline dips, sags, the accent bounce and the 'tengo' hop. 0.25-0.5 s."
+      },
+      {
+        "name": "lift",
+        "definition": "power2.out",
+        "use": "Anticipations and the up-half of hops: lifts, crouches, counter-turns, wind-ups, squashes before a release. 1/8 to 1/4 beat."
+      }
+    ],
+    "colorRules": "PALETTE: REEL.C tokens only. Do not invent shades.\n- Grounds: deep #121318, ink #17191c, night #1c1f24, white #ffffff, fill #f4f5f7, green tint #e2f6ee, yellow #ffc409 (full ground ONLY in S8, from b68).\n- Text: #17191c on light, #ffffff on dark, #201900 on yellow.\n- Muted: #62676d on light, #9aa1a7 on dark.\n- Hairlines and guides: #e8eaec on white, #2c3036 on dark.\n\nTHE MARK\n- Arcs are always #000000 and #ffffff.\n- It sits only on yellow (shadow #e0ac08) or ink (shadow #deab06).\n- Shadow: 20 canvas units along 57° = (10.893, 16.773) canvas units, built by ctx.mark(). Its shadows group stays unrotated, so the shadow is always in screen space.\n- To turn an arc, tween [arc, arcShadow] together with svgOrigin on the arc's centre. Never rotate g while the shadows are visible.\n- No hard shadow on type, bubbles or cards, ever.\n\nPRODUCT UI COLOURS\n- Own bubble #e9f0fe; partner bubble #f4f5f7; bubble text #17191c.\n- Corrections always #009f70, highlight #e2f6ee.\n- Blue #3b6cf6 only for read aloud: speaker glyph, playhead, played bars.\n- Streak orange and pro purple are not used.\n\nYELLOW\n- Before b68, at most ONE yellow object per frame: the S3 cursor cell, the S7 tab bar, the S7 Cut line.\n- The film's first yellow ground is the split-open at b68.\n\nPHOTOSENSITIVITY\n- At most one full-frame ground or luminance change per beat, and never 3 in any 1 s window.\n- Scheduled ground changes: b8, b10, b12, b14, b16 (grid), b32, b34-34.75 (green bloom), b36-37 (card contraction), b48-48.75 (white bloom), b56, b60.5, b62.5, b68.\n- Fast montages change content, never the ground.\n- Check the MP4 with a PEAT/Harding-style tool.\n\nNo gradients, glows, blur, neon, glass or CSS filters.",
+    "typeRules": "LOADER TRUTH (src/index.html):\n- Nunito static weights 400/600/700/800/900 only. Therefore NO weight tweens, anywhere.\n- Noto Sans Arabic, Devanagari, Thai and Hebrew at 500 and 800.\n- Noto Sans JP, KR, SC and Greek-via-Noto-Sans at 500 and 800, subset with text= to the greetings and thank-yous. No jamo, no filler glyphs, and no 900 weight for Noto.\n- Nunito has no Greek, so 'Γειά σου' is always Noto Sans 800.\n- Arrows (→ ← ↓) are drawn as inline SVG: a 2 px stroke with an 18 px shaft and a 6 px head, never as glyphs.\n\nHERO DISPLAY\n- Nunito 800 (manifesto 900), tracking -0.02em.\n- Other scripts in their Noto family at 800.\n- Chat text Nunito 700 52 px. Labels Nunito 800 24 px, tracking 0.12em.\n\nANNOTATION (S1/S2)\n- 'CODE · SCRIPT' plus an SVG arrow.\n- Nunito 800 24 px, tracking 0.12em, left x=120, baseline y=134.\n- #9aa1a7 on dark, #62676d on white.\n- Only the changed characters update, each rolling vertically inside its own 1-glyph mask (0.06 s per char, 32nd stagger, 'pop').\n\nMEASURING\n- Every centring uses the measured INK bbox after fonts load.\n- Optical centre for a Latin word at 300 px: horizontally centred on x=960, baseline y=646.\n\nWORDMARK\n- Never typeset. Use the outlined wordmark path (third <path>) of branding/brand/logo/lockup-horizontal.svg, in the sibling repo next to this one, in #17191c as shipped.\n- Split it into letters by subpath x-range in its 3190×1024 frame:\n  - L 1316-1638;\n  - a 1655-1962;\n  - n 2022-2338;\n  - g 2383-2726 (two subpaths);\n  - X 2779-3172, centre (2975.5, 465.9).\n\nLOCKUP (brand construction, H = 480 px)\n- Group transform translate(161.3, 253.8) scale(0.46875) on the 3190×1024 lockup frame.\n- Mark = ctx.mark(layer, {x: 401.3, y: 493.8, size: 480, shade: '#e0ac08'}).\n- The lockup ink bbox (x 271.8-1648.1, y 360.8-639.2) is centred on x=960.\n- Wordmark pen at 0.24·H after the canvas edge; cap and baseline at 0.681·H = y 580.5.\n\nTAGLINE\n- Verbatim: 'The friendly way to practise a language with real people'.\n- Nunito 700, 40 px, #201900, centred on x=960, baseline y=740.",
+    "transitionGrammar": "The runtime, core.js:\n- A scene is visible only inside [start, start+dur).\n- Later scenes paint over earlier ones on an opaque ground.\n- Scenes never overlap.\n- Every boundary is therefore OWNED BY THE INCOMING SCENE and is one of five types, each used deliberately:\n\n1. HARD CUT ON THE BEAT WITH A MATCH\n- b16 → no; that one is an identical frame (type 2).\n- b32: colour-inverted, size-matched cut on 'estoy'.\n- b56: hard contrast cut out of the breath into the manifesto slam.\n- The incoming scene's frame 0 is specified to the pixel.\n\n2. IDENTICAL-FRAME HANDOFF\nThe incoming scene's first frame is pixel-identical to the outgoing's last:\n- b16: S3 pulls back from S2's frame, which becomes one grid cell;\n- b24: S4 continues S3's bubble;\n- b48: S6 starts on S5's dot.\n\n3. SLICE (used exactly once, b8)\nThe incoming scene draws a REPLICA of the outgoing still frame as two clip-path halves on each side of the Cut through (960,540), over its own composed world. Relative to the incoming scene's beat 0:\n- 0.0 to 2 frames: the replica's line flashes from 3 to 12 px and back;\n- 0.0-0.125: the halves slip 24 px along ±dUp (upper-left half +dUp, lower-right half -dUp), 'snap';\n- 0.125-0.75: the halves part 1200 px along ∓n (upper-left along -n, lower-right along +n), 'cut'.\n\n4. SPLIT-OPEN (used exactly once, b68)\n- The incoming scene draws the outgoing ink ground as two half-plane plates meeting on the Cut.\n- The Cut line flashes to 12 px for 2 frames.\n- The plates part: upper-left by (-343.3, -969.4), lower-right by (+343.3, +969.4), 'snap', 0.75 beat.\n- The line stays behind in the world.\n\n5. BLOOM FROM THE POINT OF EXCHANGE\nA disc grows out of the exact point where something was exchanged or corrected, and the new ground arrives inside it:\n- b34: green tint out of the correction;\n- b48: white out of the ember.\n- Any object crossing a bloom edge exists as two copies with complementary clips, so its colour flips exactly at the edge.\n- Call ctx.ground(newColour) on the frame the disc covers the stage.\n\nInside scenes, the same vocabulary applies:\n- carried-element morphs: cell → bubble, card → dot, tab bar → Cut;\n- match cuts on shape: horizontal Hangul → vertical kana.\n\nNo more than one slice and one split-open in the film. Never two identical transitions back to back.\n\nVerify every boundary with snap.mjs --boundaries."
+  },
+  "scenes": [
+    {
+      "id": "01-caret",
+      "title": "Caret — the cursor edits, then becomes the knife",
+      "startBeat": 0,
+      "durBeats": 8,
+      "ground": "#121318",
+      "synopsis": "Frame 0 is the thumbnail: 'Hello|' in white on deep ink.\n\nThe caret waits, steps back like an arrow key, and turns Hello into Hallo by swapping one letter. Then 'a' and 'o' orbit each other to make Hola (the Turn in two letters), while the dropped 'l' dents a spring-loaded baseline. The H is flicked away and an accent falls onto the 'a': Olá.\n\nThe caret then rotates 57° and stretches into the infinite Cut line lying across the word. The first product idea (one greeting, many languages, exchanged) lands inside 3 seconds.",
+      "shotList": "All beats are relative to the scene start (b0). Ground #121318.\n\nSETUP (frame 0, the thumbnail)\n- WORD: 'Hello', Nunito 800, 300 px, tracking -0.02em, #ffffff. Each letter is its own span (SplitText chars), horizontally centred on x=960 by measured advance, baseline y=646.\n- CARET: #ffffff rect 12×190, left edge 16 px after the word's right ink edge, spanning y 445-635.\n- ANNOTATION: 'EN · LATIN' plus an SVG → arrow, Nunito 800 24 px, tracking 0.12em, #9aa1a7, left x=120, baseline 134.\n- Nothing moves on frame 0.\n\nTIMELINE\n- 0.0-2.0 COUNT-IN: the caret blinks with hard steps via tl.set: on 0-0.5, off 0.5-1.0, on 1.0-1.5, off 1.5-2.0. The word is dead still.\n- 2.0 / 2.25 / 2.5 ARROW KEYS: the caret is on and jumps (tl.set, no tween) one character left on each 16th: to l|o, then l|l, then e|l, measured from the glyph boxes.\n- 3.0-3.5 BASELINE GUIDE: a 1 px #2c3036 line at y=646 draws in from the left, x 120 → 1800 (DrawSVG, 'snap').\n- 3.0 HELLO→HALLO:\n  - 'e' drops down out of its own glyph-box mask (yPercent 0→110, 'cut', 0.12 s).\n  - 'a' drops in from above (yPercent -110→0, 'pop', 0.2 s).\n  - Letters to its right shift by the measured width difference ('snap', 0.2 s).\n  - The caret jumps to a|l.\n  - The annotation rolls EN→DE.\n- 3.5: the caret goes off and stays hidden.\n- 3.75-4.0 ANTICIPATION: 'a' (index 1) and 'o' (index 4) lift 10 px ('lift').\n- 4.0-5.0 THE TURN IN MINIATURE:\n  - 'a' and 'o' orbit 180° clockwise about their shared midpoint, 'a' over the top and 'o' under the baseline. Positions only; the glyphs stay upright. 'glide', 0.5 s, peak under 2600 px/s.\n  - Each lands with a 4 px vertical settle ('spring', 0.2 s).\n- 4.25 THE DROP: the second 'l' (index 3) falls through the baseline: y +700, rotation 18°, 'cut', 0.35 s.\n  - Where it crosses, the baseline guide dips 16 px at that x and springs back ('spring', 0.4 s, a closed-form bump confined to ±120 px around the fall point).\n- 4.5-5.0: the remaining four glyphs close up and re-centre to form 'Hola', centred on 960 ('snap'). They lock on 5.0. The annotation rolls DE→ES.\n- 5.5-6.5 HOLA→OLÁ:\n  - 5.5: 'H' leans +6° about its baseline ('lift', 0.06 s).\n  - 5.625: 'H' is flicked off to the left: x -700, rotation -40°, 'cut', 0.2 s. As an exit it may exceed the speed cap; it gets speed-stretch scaleX 1.2.\n  - 5.75: 'o' rolls to 'O' inside its glyph mask ('pop', 0.12 s). 'O', 'l' and 'a' close up and re-centre on 960 ('snap', lands 6.25).\n  - 5.9: a detached acute accent falls from y -200. It is a clipped copy of the 'á' glyph showing only what is above the x-height line minus 4 px, 1.3× size, #ffffff.\n  - The accent lands on the 'a' at 6.25 and bounces twice: 18 px, then 6 px, landing 6.375 and 6.5 (closed-form hop, then 'spring').\n  - On 6.5 the plain 'a' plus the accent are swapped for the real 'á' glyph (pixel-identical).\n  - The annotation rolls ES→PT.\n- 6.5-6.75: the baseline guide retracts to the right ('cut').\n- 6.75: the caret reappears (tl.set) 16 px after 'Olá'.\n- 6.75-6.875: the caret counter-turns -6° about its centre ('lift').\n- 6.875-7.5 THE CARET BECOMES THE CUT, all 'snap':\n  - it rotates to +57° (its long axis goes from 90° to 147°);\n  - its length grows 190 → 2600 px;\n  - its thickness thins 12 → 3 px;\n  - its centre travels to (960,540).\n  - It now lies exactly on REEL.CUT through (960,540), rising 33° to the right across 'Olá'.\n- 7.5-8.0: everything holds perfectly still. This is the frame S2 replicates.",
+      "techniques": [
+        "frame-0 thumbnail: a word and a hard-stepped caret",
+        "arrow-key caret back-steps on 16ths (tl.set, no tweens)",
+        "single-glyph mask swap (Hello/Hallo minimal pair)",
+        "two-glyph 180° orbit swap: the Turn in miniature",
+        "gravity drop with a closed-form spring dent in the baseline guide",
+        "flick-off with lean anticipation and speed-stretch",
+        "falling accent with two closed-form bounces, swapped for the real glyph on the settle",
+        "object-to-motif transform: the caret rotates 57° and stretches into the infinite Cut"
+      ],
+      "copy": [
+        "Hello",
+        "Hallo",
+        "Hola",
+        "Olá",
+        "EN · LATIN →",
+        "DE · LATIN →",
+        "ES · LATIN →",
+        "PT · LATIN →"
+      ],
+      "wowMoment": "The most familiar mark in typing edits one greeting into three languages: an 'a' and an 'o' orbit each other while the dropped 'l' dents the baseline. Then the caret turns 57° and becomes an endless line lying across the word it just wrote.",
+      "handoffIn": "Reel start, b0:\n- ground #121318;\n- 'Hello', Nunito 800 300 px, tracking -0.02em, #ffffff, centred on x=960, baseline 646;\n- caret #ffffff 12×190, 16 px after the word, y 445-635, ON;\n- annotation 'EN · LATIN →', Nunito 800 24 px, tracking 0.12em, #9aa1a7, left 120, baseline 134.\nThis frame is the page thumbnail.",
+      "handoffOut": "Still from b7.5 to b8:\n- ground #121318;\n- 'Olá', Nunito 800 300 px, tracking -0.02em, #ffffff, centred on x=960 by measured advance, baseline 646;\n- annotation 'PT · LATIN →' (SVG arrow), Nunito 800 24 px, 0.12em, #9aa1a7, left 120, baseline 134;\n- a 3 px #ffffff line on the Cut through (960,540) at 147°, 2600 px long, centred on (960,540).\nNo guide, no caret. S2 replicates this frame for the slice.",
+      "audioCues": [
+        {
+          "atBeat": 0,
+          "cue": "tick",
+          "note": "caret tick: dry 2.4 kHz sine burst, 15 ms. The reel's first sound."
+        },
+        {
+          "atBeat": 1,
+          "cue": "tick",
+          "note": "caret tick"
+        },
+        {
+          "atBeat": 2,
+          "cue": "sub",
+          "note": "D1 drone fades in over 6 beats"
+        },
+        {
+          "atBeat": 2,
+          "cue": "tick",
+          "note": "arrow tick, softer and pitched down; also at 2.25 and 2.5"
+        },
+        {
+          "atBeat": 3,
+          "cue": "pluck",
+          "note": "E5, the letter swap"
+        },
+        {
+          "atBeat": 4,
+          "cue": "swish",
+          "note": "orbit: two pitched swishes, rising and falling, panned L/R opposite"
+        },
+        {
+          "atBeat": 4.4,
+          "cue": "kick",
+          "note": "low tom thud as the 'l' falls"
+        },
+        {
+          "atBeat": 4.6,
+          "cue": "pop",
+          "note": "low sine 'boing' for the baseline dip"
+        },
+        {
+          "atBeat": 5,
+          "cue": "pluck",
+          "note": "F#5, Hola locks"
+        },
+        {
+          "atBeat": 5.625,
+          "cue": "whoosh",
+          "note": "whip crack of the flick"
+        },
+        {
+          "atBeat": 6.25,
+          "cue": "pop",
+          "note": "accent lands; ghost pops at 6.375 and 6.5"
+        },
+        {
+          "atBeat": 6.5,
+          "cue": "pluck",
+          "note": "A5, Olá"
+        },
+        {
+          "atBeat": 6.75,
+          "cue": "tick",
+          "note": "caret returns"
+        },
+        {
+          "atBeat": 6.875,
+          "cue": "swish",
+          "note": "filtered noise sweeping up as the caret rotates"
+        },
+        {
+          "atBeat": 7,
+          "cue": "reverse",
+          "note": "reverse swell into b8"
+        }
+      ]
+    },
+    {
+      "id": "02-scripts",
+      "title": "Relay — every script moves the way it is read",
+      "startBeat": 8,
+      "durBeats": 8,
+      "ground": "#ffffff",
+      "synopsis": "The caret's Cut slices Olá in half. Through the gap, seven scripts relay the greeting, each entering the way it is read:\n- Cyrillic rises left to right.\n- Greek inhales into place.\n- Hebrew is revealed right to left, and the arrow turns.\n- Devanagari hangs from its headline bar.\n- Korean syllables stamp in.\n- The Hangul row turns 90° and cuts on the beat into the vertical Japanese column.\n- 你好 slams down with a camera shake.\nThe ground changes only on even beats.",
+      "shotList": "All beats relative to b8. Guides are 1 px hairlines at the baseline (y=646) and cap line (y=434), spanning x 120-1800: #e8eaec on white, #2c3036 on ink. The annotation style is as in S1 (#62676d on white, #9aa1a7 on ink).\n\n0.0 SLICE (the film's only standard slice), over S2's white world:\n- S2 draws S1's final frame (see handoffIn) as two clip-path halves on each side of the Cut through (960,540).\n- Frames 0-1: the replica's line is 12 px, then back to 3 px.\n- 0.0-0.125: the halves slip 24 px along ±dUp ('snap').\n- 0.125-0.75: the halves part 1200 px along ∓n ('cut').\n- Beneath, in S2's world: ground #ffffff, and the annotation already reads 'PT · LATIN →' in #62676d.\n\n0.25-0.75: in S2's world, guides draw from the left (DrawSVG, 'snap'). The annotation rolls to 'RU · CYRILLIC →'.\n\n0.25-0.96 'Привет': Nunito 800, 300 px, #17191c, centred on 960, baseline 646. Its chars rise left to right out of a line mask (yPercent 105→0, 'snap', 0.2 s, stagger 1/32 beat).\n\n1.0-2.0 'Привет' → 'Γειά σου':\n- 1.0-1.2: 'Привет' chars drop out through the mask, right to left ('cut', 1/32 stagger).\n- 1.25: 'Γειά σου' (Noto Sans 800, 260 px, #17191c, centred on 960, baseline 646) enters as ONE word. Its tracking goes from +0.5em to -0.02em ('snap', 0.4 s) while it rises 30 px → 0: it inhales into place.\n- The annotation rolls to 'EL · GREEK →'.\n- It holds still from 1.75.\n\n2.0 HARD CUT to #121318 (ctx.ground('#121318', b(2))):\n- Guides switch to #2c3036.\n- 'שלום' (Noto Sans Hebrew 800, 300 px, #ffffff, centred, baseline 646) is revealed RIGHT TO LEFT by a clip edge parallel to the Cut, travelling from x+900 to x-900 ('snap', 0.4 s). The word drifts 60 px left with the edge.\n- The annotation's SVG arrow turns 180° about its centre ('glide', 0.2 s; the Turn) while the text rolls to 'HE · HEBREW'.\n\n3.0 DEVANAGARI (whole word, never split):\n- 'שלום' exits leftwards, continuing its reading direction: x -1400, 'cut', 0.25 s.\n- At the same time a 22 px #ffffff bar draws left to right along y 423-445 (DrawSVG, 'snap', 0.25 s). This is the headline.\n- 'नमस्ते' (Noto Sans Devanagari 800, 280 px, #ffffff) is positioned so its own headline is at y=434 (measured once at init by scanning a canvas render). It hangs down from the bar: clipped at y=423, translating from -100% to 0 ('snap', 0.35 s).\n- The drawn bar is removed on the frame the word lands.\n- The annotation rolls to 'HI · DEVANAGARI →'.\n\n3.75-4.0: guides retract to the right ('cut').\n\n4.0 HARD CUT to #ffffff (ctx.ground('#ffffff', b(4))):\n- '안녕하세요' (Noto Sans KR 800, 170 px, #17191c) is set as a row whose five syllables span x 535-1385, centred on (960,540).\n- Syllables STAMP in on 32nds, starting 4.0, 4.125, 4.25, 4.375, 4.5. Each goes from scale 1.3 to 1 with 'cut' in 0.1 beat: a dead stop, no overshoot.\n- The annotation rolls to 'KO · HANGUL →'.\n\n5.0-6.0 THE QUARTER TURN:\n- The Hangul row rotates 90° clockwise about (960,540) with 'cut', accelerating into the cut.\n- ECHO TRAILS on 5.5-6.0. This is the one allowed over-cap rotation, because it lands in a hard cut.\n\n6.0 HARD CUT to #121318 (ctx.ground('#121318', b(6))). A match cut on shape:\n- vertical 'こんにちは' (writing-mode vertical-rl, Noto Sans JP 800, 170 px, #ffffff) occupies a column centred on x=960, y 115-965: the same box the rotated row filled.\n- Its characters cascade top to bottom inside per-character masks (yPercent -100→0, 'snap', 1/32 stagger).\n- The annotation rolls to 'JA · KANA' with the arrow turned to point down.\n\n6.75-7.0: the column compresses to its centre (scaleY 1→0.15, 'cut').\n\n7.0 SLAM:\n- '你好' (Noto Sans SC 800, 480 px, #ffffff, ink bbox centred on (960,540)) goes from scale 1.5 to 1 with 'cut' in 0.18 s: a dead stop.\n- The stage content shakes: x offset 14·e^(-t/0.08 s)·sin(2π·18·t), under 0.5 px by 7.6.\n- The annotation rolls to 'ZH · HAN →'.\n\n7.6-8.0: dead still.",
+      "techniques": [
+        "standard diagonal SLICE with a replica of the outgoing frame (used once)",
+        "masked left-to-right character rise (Cyrillic)",
+        "tracking 'inhale' on a whole word (Greek)",
+        "right-to-left clip edge parallel to the Cut, with the arrow's 180° Turn (Hebrew)",
+        "DrawSVG headline bar with the word hanging from it (Devanagari, measured alignment)",
+        "syllable stamps with a dead stop on 32nds (Hangul)",
+        "90° rotation into a hard cut, with echo trails: horizontal row → vertical column match cut",
+        "column compress then SLAM with a closed-form shake",
+        "type-specimen guides and a rolling annotation"
+      ],
+      "copy": [
+        "Olá",
+        "PT · LATIN →",
+        "Привет",
+        "RU · CYRILLIC →",
+        "Γειά σου",
+        "EL · GREEK →",
+        "שלום",
+        "HE · HEBREW ←",
+        "नमस्ते",
+        "HI · DEVANAGARI →",
+        "안녕하세요",
+        "KO · HANGUL →",
+        "こんにちは",
+        "JA · KANA ↓",
+        "你好",
+        "ZH · HAN →"
+      ],
+      "wowMoment": "The Korean row turns 90° and, on the downbeat, becomes the Japanese vertical column in the same box. Two beats earlier, Hebrew was written from the right while its arrow turned around.",
+      "handoffIn": "b8. S2 draws a REPLICA of S1's still frame:\n- #121318;\n- 'Olá', Nunito 800 300 px, -0.02em, #ffffff, centred on x=960, baseline 646;\n- annotation 'PT · LATIN →', Nunito 800 24 px, 0.12em, #9aa1a7, left 120, baseline 134;\n- a 3 px #ffffff line on the Cut through (960,540), 2600 px long.\nThe replica is split into two clip-path halves along the line, over S2's own ground #ffffff.",
+      "handoffOut": "b16, still from b15.6:\n- ground #121318;\n- '你好', Noto Sans SC 800, 480 px, #ffffff, ink bbox centred on (960,540), scale 1, no shake offset;\n- annotation 'ZH · HAN →', Nunito 800 24 px, 0.12em, #9aa1a7, left 120, baseline 134.\nNo guides.",
+      "audioCues": [
+        {
+          "atBeat": 0,
+          "cue": "glitch",
+          "note": "BLADE: metallic 'shing', noise plus a resonant ping, as the halves slip"
+        },
+        {
+          "atBeat": 0,
+          "cue": "kick",
+          "note": "first downbeat, with sub. Half-time groove b8-12: kick on 0 and 2 relative, clap on 1 and 3."
+        },
+        {
+          "atBeat": 0.125,
+          "cue": "whoosh",
+          "note": "slice whoosh, the halves panned hard L and R"
+        },
+        {
+          "atBeat": 0.25,
+          "cue": "chord",
+          "note": "Bm7 pluck chord as the Cyrillic rises"
+        },
+        {
+          "atBeat": 1.25,
+          "cue": "reverse",
+          "note": "Greek inhale: short reverse swell"
+        },
+        {
+          "atBeat": 2,
+          "cue": "clap",
+          "note": "hard cut to ink"
+        },
+        {
+          "atBeat": 2,
+          "cue": "swish",
+          "note": "the RTL edge, panned right to left"
+        },
+        {
+          "atBeat": 2.1,
+          "cue": "tick",
+          "note": "the arrow flips"
+        },
+        {
+          "atBeat": 3,
+          "cue": "whoosh",
+          "note": "'zip' as the headline bar draws"
+        },
+        {
+          "atBeat": 3.2,
+          "cue": "sub",
+          "note": "soft low drop as the word hangs"
+        },
+        {
+          "atBeat": 4,
+          "cue": "pluck",
+          "note": "jamo-free stamps: pitched ticks D5 E5 F#5 A5 B5 on the five 32nds. Full groove b12-16: four-on-the-floor, clap on 2 and 4, 8th hats."
+        },
+        {
+          "atBeat": 5,
+          "cue": "riser",
+          "note": "rotation riser, tight, into the cut"
+        },
+        {
+          "atBeat": 6,
+          "cue": "impact",
+          "note": "THUNK on the match cut"
+        },
+        {
+          "atBeat": 6,
+          "cue": "tick",
+          "note": "five kana ticks on 32nds"
+        },
+        {
+          "atBeat": 7,
+          "cue": "impact",
+          "note": "你好 slam: kick + sub + noise burst"
+        },
+        {
+          "atBeat": 7,
+          "cue": "snare",
+          "note": "snare roll, 16ths then 32nds, to 7.75"
+        },
+        {
+          "atBeat": 7.75,
+          "cue": "silence",
+          "note": "one 8th of silence before the drop"
+        }
+      ]
+    },
+    {
+      "id": "03-grid",
+      "title": "Specimen Grid — the frame was one cell",
+      "startBeat": 16,
+      "durBeats": 8,
+      "ground": "#ffffff",
+      "synopsis": "THE DROP. The 你好 frame shrinks to reveal it was one cell of a living 4×4 grid of every greeting. The cells spin as slot reels, and a single yellow cursor hops through them on the beat while rows and columns conveyor-slide.\n\nThe grid splits into 8×8. All 64 reels stop along a wave front parallel to the Cut. The cells then flip blank in rings that close in on the cursor, which is holding 'Hola', and the yellow cell becomes Sofia's grey chat bubble.",
+      "shotList": "All of this is drawn in Canvas2D from a greeting atlas built after fonts load (canvas fillText shapes complex scripts correctly).\n\nCELL STYLE\n- 4×4 cells are 480×270, at col c: x=480c, row r: y=270r.\n- The greeting sits at 72 px, centred in the cell: Nunito 800 for Latin and Cyrillic; the matching Noto 800 for the others.\n- A code label sits at cell-local (16, 28): Nunito 800 14 px, tracking 0.14em, muted.\n- Text colour: #17191c on light cells, #ffffff on ink, #201900 on yellow.\n- Grid rules: 2 px #121318, drawn in screen space (lineWidth 2 / zoom).\n\nINITIAL 4×4 (word, cell ground):\n- row 0: Hola #f4f5f7 | Bonjour #121318 | नमस्ते #ffffff | Привет #f4f5f7\n- row 1: مرحبا #ffffff | 你好 #121318 (the carried S2 frame) | 안녕하세요 #f4f5f7 | Olá #121318\n- row 2: שלום #121318 | Ciao #f4f5f7 | こんにちは #ffffff | Hallo #121318\n- row 3: Merhaba #ffffff | สวัสดี #121318 | Hello #ffc409 (the CURSOR, the only yellow) | Γειά σου #f4f5f7\n\nTIMELINE (beats relative to b16)\n0.0-0.75 PULL-BACK:\n- The whole grid starts at zoom 4 about (640,360). There, cell (1,1) exactly fills the stage and renders the S2 composition at cell scale: 你好 at 480 px and the annotation, pixel-identical to S2's last frame.\n- The zoom goes 4→1 ('snap', 0.75 beat).\n- The other 15 cells are mid-spin: vertical strips of seeded greetings scrolling at 1 cell height per 1/16 beat, with speed-stretch scaleY 1.2.\n- They stop ('pop', 8% overshoot) in Chebyshev rings from cell (1,1): ring 1 at 0.5, ring 2 at 0.625, ring 3 at 0.75.\n- Grid rules grow out of every intersection, 0.25-0.75 ('snap').\n- 1.0: cell (1,1) rolls, like the others, into standard style (你好 at 72 px, label 'ZH').\n\n1.0-4.0 GROOVE (seeded rng 3001):\n- Every beat, three non-cursor cells slot-roll to a new greeting, landing on the beat ('pop'). Excluded: the cursor and any moving row or column.\n- On every 16th, one cell's code label rolls.\n- CURSOR hops on 1.0 → (3,1), 2.0 → (3,0), 3.0 → (1,0). Each hop flips the old and new cell with a rotateX faked as scaleY = |cos| over 0.18 s. Grounds swap at the edge-on frame, so the yellow is always exactly one cell.\n- 1.3-2.0: row 2 conveyor-slides one cell right with wrap-around ('whip'; it settles on 2.0).\n- 2.3-3.0: column 0 slides one cell down with wrap ('whip').\n\n3.75-4.0 SUBDIVIDE: a midline grows across every cell from its centre ('snap').\n\n4.0 8×8:\n- Cells become 240×135, greetings 40 px, labels 10 px.\n- Every cell is a spinning reel except the cursor, which becomes the top-left quarter of its old cell, (2,0), and shows 'Hola' in #201900.\n- The cursor 'Hola' is authored in Nunito 700 at 52 px and drawn at scale 40/52.\n\n4.0-5.0 THE CUT, DRAWN WITH TIMING:\n- Reel stops travel as a straight front parallel to the Cut, moving along n from the top-left corner to the bottom-right.\n- A cell stops ('pop') at 4.0 + (p+975.7)/1951.4 beats, where p = (cx-960)·0.54464 + (cy-540)·0.83867 is the cell centre's position along n.\n\n5.0 / 5.5 / 6.0: the cursor hops on 8ths, carrying 'Hola': → (3,1), → (2,1), → (1,1) (x 240-480, y 135-270). The cell it leaves flips back to its seeded greeting.\n\n6.25-7.5 CLEAR-OUT:\n- Every non-cursor cell flips to blank #ffffff (scaleY cos-fake, 0.3 beat) in Chebyshev rings closing on the cursor. Ring k (1-6) starts at 6.25 + 0.1875·(6-k).\n- Grid rules shorten toward the cursor with the rings ('cut').\n- From 7.4 the frame is white plus the yellow cursor cell.\n\n7.5-8.0 CELL TO BUBBLE ('snap', lands on 8.0):\n- The yellow rect moves from (240,135, 240×135) to x 400, y 260, h 128, width = measured 'Hola' (Nunito 700 52 px) + 72.\n- Corner radius goes 0→36, except the bottom-left corner 0→8.\n- The fill tweens #ffc409→#f4f5f7 over 7.5-7.9.\n- 'Hola' scales 40/52→1 and moves to left x=436, baseline 342. Its colour goes #201900→#17191c.",
+      "techniques": [
+        "pull-back drop reveal: the whole previous frame becomes one cell",
+        "16, then 64, slot reels with seeded stops and speed-stretch",
+        "one travelling yellow cursor cell (the 'yellow once' rule as a game)",
+        "card flips faked as scaleY=cos with a ground swap at edge-on",
+        "conveyor row and column shifts with wrap",
+        "reel-stop wave front travelling along the Cut's normal",
+        "concentric clear-out rings converging on one cell",
+        "rect-to-bubble shape morph carrying its word"
+      ],
+      "copy": [
+        "你好",
+        "ZH · HAN →",
+        "Hello",
+        "Merhaba",
+        "Hola",
+        "Hallo",
+        "Bonjour",
+        "Привет",
+        "مرحبا",
+        "Olá",
+        "Ciao",
+        "こんにちは",
+        "안녕하세요",
+        "नमस्ते",
+        "สวัสดี",
+        "שלום",
+        "Γειά σου",
+        "EN",
+        "TR",
+        "ES",
+        "DE",
+        "FR",
+        "RU",
+        "AR",
+        "PT",
+        "IT",
+        "JA",
+        "KO",
+        "ZH",
+        "HI",
+        "TH",
+        "HE",
+        "EL"
+      ],
+      "wowMoment": "On the drop, the frame we were watching shrinks into a single cell of a living grid of all sixteen greetings. Later, 64 reels stop in a perfect diagonal wave that runs exactly along the reel's Cut.",
+      "handoffIn": "b16 is pixel-identical to S2's last frame:\n- #121318;\n- '你好', Noto Sans SC 800 480 px, #ffffff, ink bbox centred on (960,540);\n- annotation 'ZH · HAN →', Nunito 800 24 px, #9aa1a7, at (120, baseline 134).\nS3 renders it as cell (1,1) at grid zoom 4 about (640,360), with no grid rules yet.",
+      "handoffOut": "b24:\n- ground #ffffff, full frame;\n- one bubble at x 400, y 260, height 128, width = measured 'Hola' (Nunito 700 52 px) + 72, radius 36 except bottom-left 8, fill #f4f5f7;\n- 'Hola', Nunito 700 52 px, #17191c, left edge x=436, baseline y=342.\nNothing else.",
+      "audioCues": [
+        {
+          "atBeat": 0,
+          "cue": "impact",
+          "note": "DROP 1: kick + sub + clap + noise. Full kit from here: four-on-the-floor, clap on 2 and 4, 16th hats, D sub bassline."
+        },
+        {
+          "atBeat": 0.5,
+          "cue": "tick",
+          "note": "reel-stop clicks on 0.5 / 0.625 / 0.75, panned by column"
+        },
+        {
+          "atBeat": 1,
+          "cue": "pop",
+          "note": "cursor blip (two-note, bright) on 1, 2 and 3, plus slot clacks for the three rolling cells"
+        },
+        {
+          "atBeat": 1.3,
+          "cue": "swish",
+          "note": "tape-slide for the row conveyor; again at 2.3 for the column"
+        },
+        {
+          "atBeat": 3.75,
+          "cue": "whoosh",
+          "note": "subdivide zip"
+        },
+        {
+          "atBeat": 4,
+          "cue": "glitch",
+          "note": "ZIPPER: 63 granular ticks timed to the wave front, 4.0-5.0"
+        },
+        {
+          "atBeat": 5,
+          "cue": "pop",
+          "note": "cursor blips on 5.0, 5.5, 6.0"
+        },
+        {
+          "atBeat": 6.25,
+          "cue": "tick",
+          "note": "paper-flick ticks, denser as the rings close, to 7.4"
+        },
+        {
+          "atBeat": 7.5,
+          "cue": "pop",
+          "note": "soft round BUBBLE POP landing on 8.0"
+        }
+      ]
+    },
+    {
+      "id": "04-chat",
+      "title": "Chat — Sofia asks, the learner hesitates",
+      "startBeat": 24,
+      "durBeats": 8,
+      "ground": "#ffffff",
+      "synopsis": "A typographic chat, not a phone mockup. Sofia's 'Hola' grows into '¡Hola! ¿Tienes hambre?'.\n\nThe learner's own blue-tint bubble opens with the caret from the cold open. 'Sí,' comes out quickly; then the caret blinks twice and the beat drops out, a hesitation acted purely in timing. Then 'estoy hambre.' is rushed out and sent.\n\nSofia starts typing, and the camera whips in on the wrong word until 'estoy' fills the frame.",
+      "shotList": "LAYOUT\n- The chat column runs x 400-1520. Bubble text is Nunito 700, 52 px, #17191c. Radius 36; tail corner 8.\n- B1: Sofia, partner bubble #f4f5f7: left x=400, top 260, h 128, text left 436, baseline 342.\n- B2: own bubble #e9f0fe: right edge x=1520, top 440, h 128, text baseline 522, 36 px padding. It is right-anchored, so it grows leftwards.\n- No shadows.\n\nTIMELINE (beats relative to b24)\n0.0-0.75 B1 COMPLETES:\n- '¡' and '!' pop in around 'Hola' (scale 0→1, 'pop', 0.15 s).\n- '¿Tienes' at 0.25 and 'hambre?' at 0.5 rise from line masks ('snap', 0.25 s).\n- The bubble widens to the measured width ('snap', lagging 1/16 beat).\n- 0.25: the name label 'Sofia' (Nunito 800 26 px, #62676d, x=404, baseline 240) rises from its mask.\n\n1.0 B2 OPENS:\n- It pops from its bottom-right tail corner ('pop'), 120 wide.\n- It holds the CARET: a #17191c rect 4×60 at text-end x=1484, y 480-540, blinking with hard steps.\n\n1.5: 'Sí,' types. The word rises 14 px and scales 0.8→1 ('pop', chars 0.02 s apart). The bubble's left edge follows the measured text width ('snap', lagging 1/16 beat). The text keeps its right edge at 1484, and the caret sits after the last word.\n\n2.0 and 2.5 HESITATION: the caret blinks off at 2.0 and on at 2.25, off at 2.5 and on at 2.75 (tl.set). Nothing else moves, and the music's kit drops out from 2.0 to 3.0.\n\n3.0: 'estoy' types (same move). 3.25: 'hambre.' types, rushed.\n\n3.75: the caret disappears (tl.set).\n\n4.0 SEND: B2 does a send-hop (y -8 → 0, 'lift' then 'spring').\n\n4.5-5.5 SOFIA TYPING:\n- A #f4f5f7 bubble 176×128 at x=400, top 620 holds three #62676d dots, 16 px, centred at x 452 / 488 / 524, y 684.\n- Dot i: y = -12·max(0, sin(2π(2t_beats - i/3))), a pure function of time.\n- 5.5: the bubble collapses toward its tail corner (scaleY→0, 'cut', 0.1 s).\n\n5.25-5.5 ANTICIPATION: the whole chat group eases to scale 0.98 about the measured ink centre of 'estoy' ('lift').\n\n5.5-7.5 PUSH-IN:\n- The chat group scales 0.98 → 5.0 ('whip', 1 s), translated so the measured ink-bbox centre of 'estoy' lands exactly on (960,540).\n- 'estoy' is then effectively Nunito 700 at 260 px.\n- B2 becomes a full-width #e9f0fe band about 640 px tall. 'Sí,' and 'hambre.' are cropped at the frame edges; white shows above and below the band.\n\n7.5-8.0: dead still.",
+      "techniques": [
+        "live bubble growth as words arrive (masked word rises, measured width)",
+        "the cold-open caret returning inside the product",
+        "character acting through timing: two blinks of hesitation before the mistake, with the kit dropping out",
+        "pure-sine typing indicator",
+        "anticipation then whip push-in onto one measured word"
+      ],
+      "copy": [
+        "Hola",
+        "¡Hola! ¿Tienes hambre?",
+        "Sofia",
+        "Sí,",
+        "estoy",
+        "hambre.",
+        "Sí, estoy hambre."
+      ],
+      "wowMoment": "The hesitation. The caret blinks twice before the wrong word and the music holds its breath with it. Then the camera whips into that one word until it fills the screen.",
+      "handoffIn": "b24:\n- ground #ffffff;\n- bubble at x 400, y 260, h 128, width = 'Hola' (Nunito 700 52 px) + 72, radius 36 with bottom-left 8, fill #f4f5f7;\n- 'Hola', Nunito 700 52 px, #17191c, left x=436, baseline 342.",
+      "handoffOut": "Still from b31.5 to b32:\n- the chat group at scale 5;\n- 'estoy' (Nunito 700, effective 260 px, #17191c) with its measured ink-bbox centre exactly at (960,540), on the #e9f0fe own-bubble band about 640 px tall spanning the full width;\n- #ffffff above and below the band;\n- 'Sí,' and 'hambre.' partly visible, cropped at the left and right edges.\nS5 hard-cuts on b32.",
+      "audioCues": [
+        {
+          "atBeat": 0,
+          "cue": "kick",
+          "note": "groove strips to kick plus a soft rim (clap, low gain); hats off; bass softer"
+        },
+        {
+          "atBeat": 0,
+          "cue": "pluck",
+          "note": "word plinks at 0 / 0.25 / 0.5"
+        },
+        {
+          "atBeat": 1,
+          "cue": "pop",
+          "note": "B2 opens"
+        },
+        {
+          "atBeat": 1.5,
+          "cue": "tick",
+          "note": "typing tick for 'Sí,'"
+        },
+        {
+          "atBeat": 2,
+          "cue": "silence",
+          "note": "kit drops out for the hesitation beat; only the caret ticks remain"
+        },
+        {
+          "atBeat": 2,
+          "cue": "tick",
+          "note": "hesitation caret ticks at 2.0 and 2.5"
+        },
+        {
+          "atBeat": 3,
+          "cue": "tick",
+          "note": "typing ticks at 3.0 and 3.25; the kit returns on 3.0"
+        },
+        {
+          "atBeat": 4,
+          "cue": "pop",
+          "note": "SEND pop"
+        },
+        {
+          "atBeat": 4.5,
+          "cue": "hat",
+          "note": "shaker-like closed hats on 16ths under the typing dots, to 5.5"
+        },
+        {
+          "atBeat": 5.5,
+          "cue": "riser",
+          "note": "push-in riser, hard stop at 7.75"
+        },
+        {
+          "atBeat": 7.75,
+          "cue": "silence",
+          "note": "one 8th of silence"
+        }
+      ]
+    },
+    {
+      "id": "05-echo",
+      "title": "Green pen — the corrected line climbs the ladder",
+      "startBeat": 32,
+      "durBeats": 16,
+      "ground": "#17191c",
+      "synopsis": "A colour-inverted, size-matched hard cut strands the mistake, white on ink, in silence. A hand-drawn green line strikes it exactly on the beat. The struck word steps back and 'tengo' rises in green, and the world blooms green from the point of correction.\n\nThe sentence reassembles as 'Sí, tengo hambre.', and the green world contracts into a white Echo card on the night ground. The card reads itself aloud: its letters turn into waveform bars that pulse with the kick, with the corrected word still green inside the sound.\n\nThen the card shrinks and hops up the review ladder: '10 minutes', '1 day', three quick hops across the '…', and one big leap onto '365 days' as the odometer locks on the downbeat. Finally the card condenses into a single white ember.",
+      "shotList": "All beats relative to b32.\n\n0.0 HARD CUT, colour-inverted:\n- ground #17191c; 'estoy', Nunito 700 260 px, #ffffff, with the same measured ink bbox as S4, centred on (960,540), at scale 1.04.\n- 0.0-0.25: recoil to 1.0 ('snap').\n- 0.25-0.75: total stillness.\n\n0.75-1.0 GREEN PEN:\n- A #009f70 stroke, 22 px, round caps. Quadratic path from (inkLeft-20, xMid) to (inkRight+20, xMid - tan1.5°·(w+40)), bowed up 6 px, where xMid = baseline - 0.26 em.\n- DrawSVG 0→100% with 'cut', landing on 1.0.\n\n1.0: on impact 'estoy' steps to #9aa1a7 (tl.set) and sags 4 px ('spring', 0.25 s).\n\n1.0-1.75: 'estoy' and its strike scale to 0.5 and move so their centre is (960,330) ('snap').\n\n1.25-2.0 'tengo': Nunito 800 260 px, #009f70, ink centre (960,610). Its chars rise from a line mask (yPercent 110→0, 'pop', 0.3 s, 1/32 stagger); the last lands on 2.0.\n\n2.0-2.75 GREEN BLOOM:\n- A #e2f6ee disc grows from (960,610), r 0→1250 ('snap').\n- The struck word is two copies with complementary clips: #9aa1a7 outside the disc, #62676d inside.\n- ctx.ground('#e2f6ee', b(2.75)).\n\n2.5-3.0 'tengo' HOPS: up 24 px ('lift', 2.5-2.75), down ('cut', 2.75-3.0). At 3.0 it squashes 1.05/0.95, released with 'spring' over 0.25 s.\n\n3.0-3.25: the struck word and its strike collapse (scaleX→0 about their left edge, 'cut').\n\n3.25-4.0 SENTENCE:\n- 'tengo' scales to 72/260 and slides into its slot.\n- 'Sí,' (at 3.5) and 'hambre.' (at 3.625), Nunito 800 72 px #17191c, rise from line masks.\n- The final 'Sí, tengo hambre.' (tengo #009f70) is optically centred on (960,540) and lands on 4.0 ('snap').\n\n4.0 ctx.ground('#1c1f24', b(4)): instant, hidden under a full-frame #e2f6ee WORLD rect that sits beneath the text.\n\n4.0-5.0 WORLD TO CARD:\n- The WORLD's inset clip closes to 960×600 centred (x 480-1440, y 240-840), radius 0→40 ('whip', lands on 5.0).\n- Its fill goes #e2f6ee→#ffffff over 4.5-5.0 ('glide').\n\n5.0-5.5:\n- 'Echo' (Nunito 900 110 px, #ffffff, left x=140, baseline 190) rises by character ('snap', 1/32).\n- The card squashes scaleY 0.97 ('lift', 5.0-5.25), released with 'spring'.\n\n5.5-7.75 READ ALOUD:\n- 5.5: a #3b6cf6 speaker glyph (56 px, drawn in SVG) pops at (548,776).\n- 5.5-6.0: each character becomes a bar. The char scales Y→0 about its centre while a 10 px bar (radius 5) grows at the char's centre x, vertical centre y=540, with seeded height 30-140 px (rng 5001) ('snap', 0.01 s stagger left to right). Bars for 'tengo' are #009f70; the others #17191c.\n- 6.0-7.5: a playhead sweeps linearly ('none') from the first bar -20 to the last bar +20: a 3 px #3b6cf6 line, y 450-630, with a 12 px dot on top. Bars behind it turn #3b6cf6; green bars stay green.\n- Every bar's height = base·(0.6 + 0.4·e^(-6φ)), where φ is the beat phase of ABSOLUTE time, with a 4 ms delay per bar index.\n- 7.5-7.75: the bars fold back into characters ('snap'), colours reset, and the speaker scales out ('cut').\n\n7.75-9.0 FLIGHT:\n- The card scales to 0.15 (144×90, radius 6) and travels on an arc peaking 120 px above the straight path to T1 (450,882) ('whip').\n- It tilts -8° at mid-flight and is back to 0 on landing ('glide').\n\n8.25-9.0 STAIRCASE:\n- A 6 px #ffffff polyline with butt caps, drawn from the bottom-left (DrawSVG, 'glide'):\n  (300,930) (600,930) (600,760) (900,760) (900,663) (1050,663) (1050,566) (1200,566) (1200,469) (1350,469) (1350,300) (1650,300).\n- Its overall slope is the Cut's.\n- The card's resting centre on a tread at y = treadY - 48.\n\n9.0 LAND T1:\n- Contact squash scaleY 0.85 / scaleX 1.12, released with 'spring' over 0.25 s.\n- '10 minutes' (Nunito 800 52 px #ffffff, centred x 450, baseline 1000) rises ('snap').\n\n9.5-10.0 HOP TO T2:\n- Crouch 9.5-9.625 (scaleY 0.9, 'lift').\n- A closed-form parabolic hop to (750,712) with its apex 140 px above, stretching to scaleY 1.1 at peak velocity. It lands on 10.0 with a squash.\n- '1 day' (centred x 750, baseline 830) rises.\n\n10.0-10.75 ELLIPSIS:\n- Hops with a 60 px apex land on the 16ths 10.25 (975,615), 10.5 (1125,518) and 10.75 (1275,421).\n- Each landing pops a 14 px #ffffff dot ('pop'), at (975,703), (1125,606) and (1275,509) in turn.\n- The intervals in between are implied, never named.\n\n10.75-11.0: deep crouch, scaleY 0.75 ('lift').\n\n11.0-12.0 THE LONG ONE:\n- A parabolic leap to T4 (1500,252) with the apex at centre y=72.\n- It tilts -12° at takeoff, back to 0 by landing ('glide'), with scaleY 1.15 stretch at peak velocity. No spin.\n- ODOMETER '365' (Nunito 900 150 px #ffffff, centred x 1500, baseline 470): three masked digit reels start at 11.25.\n  - Hundreds 0→3; tens 0→6 plus one extra revolution; ones 0→5 plus two.\n  - They lock on 11.875, 11.9375 and 12.0 ('pop', 8% overshoot).\n\n12.0 IMPACT: landing squash 0.8/1.15, released with 'spring'. 'days' (Nunito 800 56 px, centred x 1500, baseline 530) rises.\n\n12.0-13.0: hold.\n\n13.0-13.5:\n- The staircase un-draws from its bottom-left end ('cut').\n- The labels, dots, '365', 'days' and 'Echo' exit upward through their masks ('cut', 1/32 stagger).\n\n13.5-15.0 EMBER:\n- The card travels to (960,540) ('whip').\n- Its text scales to 0 by 13.75 ('cut').\n- Its box morphs from 144×90 radius 6 to 24×24 radius 12 ('whip'), landing on 15.0 as a white dot.\n\n15.0-16.0: the dot holds still.",
+      "techniques": [
+        "colour-inverted, size-matched hard cut onto the stranded mistake",
+        "DrawSVG hand-drawn green strike (bowed, rising 1.5°) landing on the beat",
+        "struck word steps back; the correction rises in green through a line mask",
+        "ground bloom out of the point of correction, with two-copy colour crossing",
+        "squash-and-stretch happy hop",
+        "sentence reassembly with masked word insertion",
+        "inset-clip contraction: the whole world becomes the Echo card",
+        "text → waveform bars (Latin chars only) pulsing on a closed-form kick envelope, with a blue playhead",
+        "squash-and-stretch hops up a DrawSVG staircase at the Cut's slope",
+        "ellipsis dots popped one per hop (implying steps without inventing them)",
+        "odometer digit reels with extra revolutions and a staggered lock on the bar line",
+        "card condenses into a single ember"
+      ],
+      "copy": [
+        "estoy",
+        "tengo",
+        "Sí,",
+        "hambre.",
+        "Sí, tengo hambre.",
+        "Echo",
+        "10 minutes",
+        "1 day",
+        "365",
+        "days"
+      ],
+      "wowMoment": "A green line strikes the stranded word exactly on the beat, and the world blooms green from the correction. The corrected sentence then reads itself aloud as its own waveform, with 'tengo' still green inside the sound. After that the card skitters up the review ladder and leaps onto '365 days' as the odometer locks on the downbeat.",
+      "handoffIn": "b32, hard cut:\n- ground #17191c;\n- only 'estoy', Nunito 700 260 px, #ffffff, with the same measured ink bbox as in S4, centred on (960,540), at scale 1.04 (the recoil start).",
+      "handoffOut": "b48, still from b47:\n- ground #1c1f24;\n- one #ffffff dot, 24 px diameter, centred on (960,540).\nNothing else.",
+      "audioCues": [
+        {
+          "atBeat": 0,
+          "cue": "silence",
+          "note": "everything cuts; faint room tone only, 0-0.75"
+        },
+        {
+          "atBeat": 0.75,
+          "cue": "reverse",
+          "note": "pen scratch: band-passed noise sweep into the beat"
+        },
+        {
+          "atBeat": 1,
+          "cue": "snare",
+          "note": "STRIKE: snare + dry glitch scratch"
+        },
+        {
+          "atBeat": 1.5,
+          "cue": "sub",
+          "note": "soft low 'mistake' blip"
+        },
+        {
+          "atBeat": 2,
+          "cue": "pluck",
+          "note": "CORRECT CHIME: two-note pluck D6→F#6. The half-time groove returns: kick on 0/2, clap on 1/3 of each bar."
+        },
+        {
+          "atBeat": 2,
+          "cue": "shimmer",
+          "note": "green bloom pad, 2.0-2.75"
+        },
+        {
+          "atBeat": 3,
+          "cue": "pop",
+          "note": "hop landing"
+        },
+        {
+          "atBeat": 4,
+          "cue": "boom",
+          "note": "CARD WHOOMP: low downward sweep, landing on 5.0"
+        },
+        {
+          "atBeat": 5,
+          "cue": "hat",
+          "note": "hats return on 8ths, with a bouncing bass"
+        },
+        {
+          "atBeat": 5.5,
+          "cue": "pop",
+          "note": "speaker glyph"
+        },
+        {
+          "atBeat": 6,
+          "cue": "pluck",
+          "note": "READ-ALOUD: formant-filtered saw plucks on 16ths, pitched to the bar heights, 6.0-7.5 (no real voice)"
+        },
+        {
+          "atBeat": 7.75,
+          "cue": "whoosh",
+          "note": "flight whoosh to 9.0"
+        },
+        {
+          "atBeat": 8.25,
+          "cue": "riser",
+          "note": "thin rising zip as the staircase draws"
+        },
+        {
+          "atBeat": 9,
+          "cue": "pop",
+          "note": "land D5 + kick"
+        },
+        {
+          "atBeat": 10,
+          "cue": "pop",
+          "note": "land F#5 + kick"
+        },
+        {
+          "atBeat": 10.25,
+          "cue": "pop",
+          "note": "micro pops A5 / B5 / C#6 on 10.25, 10.5, 10.75"
+        },
+        {
+          "atBeat": 10.75,
+          "cue": "reverse",
+          "note": "crouch creak into the leap"
+        },
+        {
+          "atBeat": 11.25,
+          "cue": "tick",
+          "note": "odometer ratchet, accelerating then decelerating, to 12.0"
+        },
+        {
+          "atBeat": 12,
+          "cue": "impact",
+          "note": "'365' LOCK on the bar line: kick + sub + bell (pluck D6, long)"
+        },
+        {
+          "atBeat": 13,
+          "cue": "reverse",
+          "note": "un-draw zip"
+        },
+        {
+          "atBeat": 13.5,
+          "cue": "swish",
+          "note": "card condensing into the ember"
+        },
+        {
+          "atBeat": 15,
+          "cue": "tick",
+          "note": "ember tick (the caret tick, softer)"
+        },
+        {
+          "atBeat": 15.75,
+          "cue": "silence",
+          "note": "one 8th of silence before the breath"
+        }
+      ]
+    },
+    {
+      "id": "06-breath",
+      "title": "Breath — one line writes Merhaba, then writes it back",
+      "startBeat": 48,
+      "durBeats": 8,
+      "ground": "#1c1f24",
+      "synopsis": "The one quiet moment of the reel.\n\nThe ember blooms into a white world. A thin ink hairline at the Cut angle walks left to right and writes 'Merhaba' behind it in Turkish's reading direction. It waits. Then it walks back right to left, erasing Merhaba from its last letter while writing the same greeting as مرحبا from the right, the way Arabic is written.\n\nIt leaves the frame, and the Arabic sits perfectly still.",
+      "shotList": "All beats relative to b48. The whole scene layer pushes in 1.00→1.03 about (960,540), linear ('none'), over 0-8. This is the only continuous motion.\n\n0.0: #1c1f24, with the white dot (24 px) at (960,540).\n\n0.0-0.75 WHITE BLOOM:\n- The dot grows into a #ffffff disc, r 12→1110 ('snap').\n- ctx.ground('#ffffff', b(0.75)).\n\n0.75-1.25: a 2 px #17191c hairline parallel to the Cut, through (260,540) (offset x = -700), draws out from its centre in both directions to 1300 px each side (DrawSVG, 'snap').\n\n1.25-2.75 WRITE MERHABA:\n- The hairline translates horizontally from offset -700 to +700 ('glide', 0.75 s), keeping its angle.\n- LAYER A: 'Merhaba', Nunito 800 240 px, tracking -0.02em, #17191c, ink centred on (960,540). It is clipped to the half-plane LEFT of the hairline, so it appears letter by letter in its reading direction as the line passes.\n\n2.75-4.0: stillness.\n\n4.0: LAYER B is enabled: 'مرحبا', Noto Sans Arabic 800, #17191c, dir rtl, one whole word. Its font-size is chosen at init so its advance equals Merhaba's measured advance, with the same ink centre (960,540). It is clipped to the half-plane RIGHT of the hairline. At 4.0 the line sits at +700, clear of both words' ink, so nothing shows yet.\n\n4.0-6.0 REWRITE: the hairline travels from +700 to -700 ('glide', 1 s). Behind it the Arabic is written from the right, and ahead of it the Latin is erased from its last letter backwards.\n\n6.0-6.5: the hairline accelerates off to the left, offset -700 → -1600 ('cut').\n\n6.5-8.0: nothing but مرحبا, dead still apart from the 1.03 push-in creep.",
+      "techniques": [
+        "bloom from the ember (the point of exchange) into a white world",
+        "a single travelling hairline as a bidirectional clip mask",
+        "LTR write, then an RTL rewrite of the same greeting in two scripts",
+        "advance-matched sizing across scripts (measured at init)",
+        "stillness and a near-imperceptible linear push-in as the only motion"
+      ],
+      "copy": ["Merhaba", "مرحبا"],
+      "wowMoment": "One thin line walks right and writes Merhaba. Then it walks back and, behind it, the same greeting reappears as مرحبا, written from the right as Arabic is.",
+      "handoffIn": "b48:\n- ground #1c1f24;\n- one #ffffff dot, 24 px diameter, centred on (960,540).",
+      "handoffOut": "b56, still from b55:\n- ground #ffffff;\n- 'مرحبا', Noto Sans Arabic 800, #17191c, font-size fitted so its advance equals 'Merhaba' at Nunito 800 240 px, ink centred on (960,540);\n- the whole layer at scale 1.03 about (960,540);\n- no hairline.\nS7 hard-cuts on b56.",
+      "audioCues": [
+        {
+          "atBeat": 0,
+          "cue": "chord",
+          "note": "PAD: warm Dmaj9 with sub D1, no drums; filter opens with the bloom"
+        },
+        {
+          "atBeat": 0.75,
+          "cue": "shimmer",
+          "note": "hairline shimmer: high sine glide"
+        },
+        {
+          "atBeat": 1.25,
+          "cue": "whoosh",
+          "note": "soft airy sweep panned L→R with the line"
+        },
+        {
+          "atBeat": 4,
+          "cue": "chord",
+          "note": "change to Bm9"
+        },
+        {
+          "atBeat": 4,
+          "cue": "reverse",
+          "note": "tape-reversed pad swell panned R→L with the line, 4.0-6.0"
+        },
+        {
+          "atBeat": 6,
+          "cue": "swish",
+          "note": "the line leaves"
+        },
+        {
+          "atBeat": 7.75,
+          "cue": "silence",
+          "note": "one 8th of silence before the manifesto slam"
+        }
+      ]
+    },
+    {
+      "id": "07-eight",
+      "title": "The Eight — manifesto, and thank you in every interface language",
+      "startBeat": 56,
+      "durBeats": 12,
+      "ground": "#121318",
+      "synopsis": "A hard contrast cut out of the breath. Three lines slam onto ink, one per beat: 'No ads.', 'Real people.', 'Open source.'. Their full stops fall off and bounce away.\n\nThen 'Thank you' flips through the app's eight interface languages on every 8th. Each word is wiped in its own reading direction, and a yellow tab bar caterpillars under the language codes. Mid-roll, a diagonal edge at the Cut angle sweeps the frame to light theme, and two beats later back to dark, without the roll missing a step.\n\nFinally the yellow tab bar turns -33° and stretches into the Cut line itself.",
+      "shotList": "All beats relative to b56.\n\n0.0 HARD CUT:\n- ground #121318; 'No ads.' in Nunito 900 170 px, #ffffff, left x=200, baseline 360.\n- On frame 0 it is at scale 1.08 about (200,360), slamming to 1.0 ('snap', 0.12 s).\n\n0.75-1.0: 'Real people.' (baseline 560) rises from its line mask (yPercent 105→0, 'cut'), dead stop on 1.0.\n\n1.75-2.0: 'Open source.' (baseline 760) does the same, dead stop on 2.0. No shadows.\n\n3.0-3.75: the three full stops detach on 32nds (3.0, 3.125, 3.25).\n- Each falls with 'cut' to y 1040, bounces once 60 px (a closed-form hop, then 'spring'), and falls below the stage by 3.75.\n\n3.5-4.0: the lines exit upward through their masks ('cut', 1/32 stagger, bottom line first).\n\n4.0-8.0 THE EIGHT\nTAB ROW:\n- 'EN TR ES DE FR RU AR PT': Nunito 800 30 px, tracking 0.14em, baseline y=860, code centres at x = 435 + 150i.\n- Inactive codes #9aa1a7; the active code #ffffff.\n- A #ffc409 bar, 8 px (y 884-892), as wide as the active code's measured width: the only yellow.\n- CATERPILLAR hop on each change: the leading edge moves first ('snap', 0.1 s), the trailing edge follows ('snap', 0.18 s).\n\nWORD:\n- A window at x 260-1660, y 410-670. One word at a time: Nunito 800 200 px #ffffff, centred on (960,540). شكرا is Noto Sans Arabic 800, whole word.\n- Changes land on the 8ths: 4.0 Thank you (EN), 4.5 Teşekkürler (TR), 5.0 Gracias (ES), 5.5 Danke (DE), 6.0 Merci (FR), 6.5 Спасибо (RU), 7.0 شكرا (AR), 7.5 Obrigado (PT).\n- Each change is a vertical WIPE EDGE crossing the window in the word's reading direction ('snap', 0.2 s): left to right for LTR words, right to left for شكرا. The new word shows behind the edge and the old one ahead of it.\n- The new word also slides 40 px → 0 in its reading direction.\n\nTHEME SWEEPS (the ground never changes on the 8ths, only here):\n- 5.0-5.5 TO LIGHT: an edge parallel to the Cut crosses the stage along +n, top-left to bottom-right ('whip').\n  - Behind it is a second palette copy: ground #ffffff, word #17191c, inactive codes #62676d, active code #17191c, bar #ffc409.\n  - It is built as two complete layers with complementary half-plane clips. ctx.ground('#ffffff', b(5.5)).\n- 7.0-7.5 BACK TO DARK: the same, crossing bottom-right to top-left. ctx.ground('#121318', b(7.5)).\n- The roll and the tab bar keep changing on every 8th through both sweeps.\n\n8.0-8.5 EXITS:\n- 'Obrigado' exits upward through the window ('cut').\n- The codes drop down through their mask ('cut', 1/32 stagger from EN).\n- Only the yellow bar under PT remains (centre x 1485, y 888).\n\n8.5-9.0: the bar alone, still.\n\n9.0-10.0 THE TAB BAR BECOMES THE CUT:\n- 9.0-9.125: anticipation, scaleX 0.9 ('lift').\n- 9.125-10.0, all 'whip':\n  - it rotates -33° about its centre, so it lies at 147°, rising to the right;\n  - its length grows to 2600 px;\n  - its thickness thins 8 → 4 px;\n  - its centre travels to (960,540).\n\n10.0-12.0: dead still. Ink, plus one 4 px yellow line on the Cut.",
+      "techniques": [
+        "hard contrast cut that is itself the first slam",
+        "masked line slams with dead stops on the beats",
+        "falling punctuation with one closed-form bounce",
+        "8th-note content roll on a constant ground (flash-safe hyper-cut)",
+        "reading-direction-aware wipes (RTL for Arabic)",
+        "caterpillar tab indicator (leading and trailing edges on different durations)",
+        "light/dark theme shown by a Cut-parallel sweep, built as two palette layers with complementary clips",
+        "object-to-motif transform: the yellow tab bar rotates -33° and stretches into the Cut"
+      ],
+      "copy": [
+        "No ads.",
+        "Real people.",
+        "Open source.",
+        "Thank you",
+        "Teşekkürler",
+        "Gracias",
+        "Danke",
+        "Merci",
+        "Спасибо",
+        "شكرا",
+        "Obrigado",
+        "EN",
+        "TR",
+        "ES",
+        "DE",
+        "FR",
+        "RU",
+        "AR",
+        "PT"
+      ],
+      "wowMoment": "While 'Thank you' flips through all eight interface languages on every 8th, a diagonal edge turns the whole screen light and, two beats later, dark again, without the roll missing a step. Then the little yellow tab bar turns and stretches into the reel's Cut.",
+      "handoffIn": "b56, hard cut:\n- ground #121318;\n- 'No ads.', Nunito 900 170 px, #ffffff, left x=200, baseline 360, at scale 1.08 about (200,360).\nNothing else.",
+      "handoffOut": "b68, still from b66:\n- ground #121318;\n- one 4 px #ffc409 line on the Cut through (960,540) at 147°, 2600 px long, centred on (960,540).\nNothing else.",
+      "audioCues": [
+        {
+          "atBeat": 0,
+          "cue": "impact",
+          "note": "kick + clap + sub hit, chord D/F#"
+        },
+        {
+          "atBeat": 1,
+          "cue": "impact",
+          "note": "chord G(add9)"
+        },
+        {
+          "atBeat": 2,
+          "cue": "impact",
+          "note": "chord A"
+        },
+        {
+          "atBeat": 3,
+          "cue": "pop",
+          "note": "dot pops on 3.0, 3.125, 3.25, then tiny bounce ticks"
+        },
+        {
+          "atBeat": 3.5,
+          "cue": "swish",
+          "note": "exit"
+        },
+        {
+          "atBeat": 4,
+          "cue": "kick",
+          "note": "GROOVE RETURNS: four-on-the-floor, clap on 2 and 4, 16th hats"
+        },
+        {
+          "atBeat": 4,
+          "cue": "tick",
+          "note": "slot clack + tab blip on every 8th 4.0-7.5; blip pitch follows the code index (D major scale up)"
+        },
+        {
+          "atBeat": 5,
+          "cue": "whoosh",
+          "note": "bright upward whoosh: to light"
+        },
+        {
+          "atBeat": 7,
+          "cue": "whoosh",
+          "note": "darker downward whoosh: back to dark"
+        },
+        {
+          "atBeat": 8,
+          "cue": "swish",
+          "note": "exits"
+        },
+        {
+          "atBeat": 9,
+          "cue": "reverse",
+          "note": "the bar turns into the line"
+        },
+        {
+          "atBeat": 10,
+          "cue": "riser",
+          "note": "riser + snare roll (16ths → 32nds), 10.0-11.75"
+        },
+        {
+          "atBeat": 11.75,
+          "cue": "silence",
+          "note": "one 8th of silence before drop 2"
+        }
+      ]
+    },
+    {
+      "id": "08-exchange",
+      "title": "Exchange — the hellos bend into the mark",
+      "startBeat": 68,
+      "durBeats": 20,
+      "ground": "#ffc409",
+      "synopsis": "DROP 2. The ink ground splits open along the Cut and reveals the film's first yellow. The line stays behind as a hairline.\n\nTwo rivers of hellos, black Latin and white non-Latin scripts, stream in opposite directions on rails parallel to it. The rails bend at constant length into two arc bands. Then the pair makes one 540° turn while the camera pulls back into the lockup position, and the bands are inked into the solid black and white arcs.\n\nOn the downbeat of bar 21 they lock: the hard shadow snaps out and the hairline retracts into the seam. It was the line the mark is cut on all along.\n\nThe wordmark rises with a half-turning X, the tagline follows, the caret blinks once, and the frame holds still.",
+      "shotList": "All beats relative to b68.\n\nMARK GEOMETRY\n- A 'turn group' (SVG) uses transform translate(P) rotate(ρ) scale(S) translate(-512,-512), in the mark's 1024 canvas units.\n- P starts at (960,540), ρ at 180 (swapped), S at 1.4.\n- It has NO shadows.\n\n0.0 SPLIT-OPEN (the only one):\n- S8 draws, on top, two #121318 half-plane plates meeting on the Cut through (960,540), with the 4 px #ffc409 line on the seam: pixel-identical to S7.\n- Frames 0-1: the yellow line is 12 px, then it is removed.\n- 0.0-0.75: the upper-left plate moves by (-343.3,-969.4) and the lower-right by (+343.3,+969.4) ('snap').\n- Beneath, S8's world: ground #ffc409, the rails mid-stream, and a 1.5 px #201900 HAIRLINE on the Cut through P, 2600 px long.\n\n0.0-4.0 RAILS (inside the turn group, canvas units; each rail is 607.6 units = π·193.4 long):\n- BLACK rail: text 'Hello · Merhaba · Hola · Hallo · Bonjour · Привет · Olá · Ciao · ' repeated, Nunito 900, #000000.\n  - Midpoint (485.7,301.3) canvas = the black arc's centreline at 237°.\n  - On stage at ρ=180 that is the lower-right rail, midpoint (996.8,835).\n- WHITE rail: text 'こんにちは · 안녕하세요 · 你好 · नमस्ते · สวัสดี · שלום · مرحبا · Γειά σου · ' repeated, Noto 800 families, #ffffff.\n  - Midpoint (538.3,722.7) canvas; on stage the upper-left rail, midpoint (923.1,245).\n  - Each RTL word is isolated in its own tspan (direction rtl, unicode-bidi isolate).\n- Both rails are tangent to their arc's centreline at the midpoint, so they are parallel to the Cut.\n- Text is 67 canvas units (94 px on stage), vertically centred on the path via dominant-baseline, and reads up-right on stage.\n- No shadows on the rails.\n- STREAM: the textPath startOffset runs linearly ('none'), 200 units per beat, black rail up-right and white rail down-left, with seeded starting offsets.\n- Each beat 0,1,2,3 adds a +43-unit surge ('snap', 0.25 beat).\n- The hairline pulses 1.5→4→1.5 px on each beat ('snap' up, 'cut' down within 0.25 beat).\n- The rails' ends are hard cuts: text simply appears and disappears there.\n\n4.0-6.0 THE BEND (constant length, 'glide'):\n- Curvature κ goes 0 → 1/193.4.\n- Each rail is recomputed every frame as an arc of fixed length 607.6 through its midpoint, bending toward its own arc centre. Use a straight line while |κ| < 1e-4.\n- At 6.0 the rails ARE the arc centrelines: black = arcStroke(591,463.5,193.4,147,327), white = arcStroke(433,560.5,193.4,327,507). The text keeps streaming along them.\n\n6.0-12.0 THE TURN:\n- 6.0-6.25: wind-up, ρ 180→174 ('lift').\n- 6.25-12.0: ρ 174→720 ('glide', 2.875 s; peak about 298°/s; one direction; decelerates once; dead stop on 12.0).\n- 6.0-12.0 camera, both 'glide': P travels (960,540)→(401.3,493.8), and S goes 1.4→0.46875. The hairline is always drawn through the current P at 147°.\n- INK-IN:\n  - 7.0-8.5: a #000000 stroke, width 83.8, butt caps, along the black centreline (DrawSVG 0→100%, 'whip');\n  - 7.5-9.0: the same in #ffffff for the white arc.\n  - Letters are covered as the stroke passes. At 9.0 the rails are hidden.\n- ECHO TRAILS on the two solid strokes only, 9.0-11.0.\n\n12.0 LOCK (b80, bar 21 downbeat):\n- On this frame the turn group is replaced by ctx.mark(layer, {x:401.3, y:493.8, size:480, shade:'#e0ac08'}). At ρ=720 its geometry is identical to the group's.\n- Its shadows group translate starts at (0,0) and snaps to (10.893,16.773) canvas units (5.1, 7.9 px) ('snap', 0.25 s).\n- The hairline retracts both ends into P (401.3,493.8), where it passes through the seam between the flat ends (DrawSVG, 'cut', 0.25 s).\n- From here the mark never moves.\n\n12.5-14.5 WORDMARK:\n- The outlined letters from lockup-horizontal.svg sit in a group with transform translate(161.3,253.8) scale(0.46875), fill #17191c.\n- Each letter rises 60 px through a clip whose edge is parallel to the Cut, so it reveals corner-first ('snap', 0.4 s): L at 12.5, a at 12.75, n at 13.0, g at 13.25.\n- X: it rotates in-plane 180°→0 about its centre, (1556.1,472.2) on stage, over 12.5-14.5 ('glide', peak about 283°/s). It rises through its clip over 13.5-14.5. It lands on 14.5, completing the final half-turn.\n\n14.5-15.5 TAGLINE: 'The friendly way to practise a language with real people', Nunito 700 40 px, #201900, centred on x=960, baseline 740. Its words rise from a line mask ('snap', 1/32 stagger).\n\n15.5-16.0: a #201900 caret, 4×44 px, 8 px after 'people', covering the tagline's cap height, is ON (tl.set on 15.5, off on 16.0). The bookend.\n\n16.0-20.0: nothing moves. The b88 frame is the resting frame and the poster.",
+      "techniques": [
+        "split-open along the Cut revealing the first yellow ground, with the line left behind",
+        "counter-streaming kinetic tickers on SVG textPath with beat surges (bidi-isolated RTL runs)",
+        "constant-length curvature bend: straight type becomes the arc bands without stretching",
+        "the Turn: a single 540° exchange with wind-up, a 300°/s speed cap and one deceleration",
+        "camera pull-back and travel during the spin, landing in the brand lockup position",
+        "DrawSVG ink-in with 83.8-unit butt-capped strokes covering the words",
+        "echo trails as blur-free smear",
+        "hard-shadow snap as the lock hit; the hairline retracts into the seam",
+        "wordmark from the brand's outlined letters, Cut-parallel mask reveal, and an X landing on a half-turn",
+        "masked line reveal for the tagline",
+        "caret blink bookend, then 4 beats of absolute stillness"
+      ],
+      "copy": [
+        "Hello · Merhaba · Hola · Hallo · Bonjour · Привет · Olá · Ciao ·",
+        "こんにちは · 안녕하세요 · 你好 · नमस्ते · สวัสดี · שלום · مرحبا · Γειά σου ·",
+        "LangX",
+        "The friendly way to practise a language with real people"
+      ],
+      "wowMoment": "Two diagonal rivers of hellos, in every script, bend into the two arcs of the LangX mark, swing 540° to trade places and lock on the downbeat. The hairline the reel has been cutting along since its first second retracts into the seam, showing it was the mark's own cut line all along.",
+      "handoffIn": "b68. S8 draws a replica of S7's final frame on top:\n- two #121318 half-plane plates meeting on the Cut through (960,540);\n- a 4 px #ffc409 line on the seam, 2600 px long.\nBeneath the plates:\n- ground #ffc409;\n- both rails at S=1.4, ρ=180, straight and mid-stream (seeded offsets);\n- a 1.5 px #201900 hairline on the Cut through (960,540).",
+      "handoffOut": "Reel end, b88, static from b84:\n- ground #ffc409;\n- ctx.mark at canvas centre (401.3,493.8), size 480 (scale 0.46875), black and white arcs in true orientation, shadows #e0ac08 at 20 canvas units along 57° (5.1, 7.9 px);\n- 'LangX' outlined wordmark #17191c in a group translate(161.3,253.8) scale(0.46875), baseline y 580.5, lockup ink bbox x 271.8-1648.1 centred on x=960;\n- tagline 'The friendly way to practise a language with real people', Nunito 700 40 px, #201900, centred on x=960, baseline 740.\nNo hairline, no caret. With prefers-reduced-motion the page opens on this frame.",
+      "audioCues": [
+        {
+          "atBeat": 0,
+          "cue": "impact",
+          "note": "DROP 2, the biggest groove: kick + sub + noise crash; full kit with a 16th-note lead arp"
+        },
+        {
+          "atBeat": 0,
+          "cue": "glitch",
+          "note": "blade flash as the plates split; plates' whoosh panned hard L/R"
+        },
+        {
+          "atBeat": 0,
+          "cue": "sub",
+          "note": "ticker 'thrum' on every kick 0-4, matching the surge"
+        },
+        {
+          "atBeat": 3,
+          "cue": "snare",
+          "note": "snare fill"
+        },
+        {
+          "atBeat": 4,
+          "cue": "riser",
+          "note": "BEND riser: a sustained synth pitch-bending up a fifth exactly as the rails curve, 4.0-6.0"
+        },
+        {
+          "atBeat": 6,
+          "cue": "silence",
+          "note": "drums out"
+        },
+        {
+          "atBeat": 6,
+          "cue": "whoosh",
+          "note": "TURN whoosh: long filtered noise whose cutoff tracks angular speed, 6.0-12.0"
+        },
+        {
+          "atBeat": 6.25,
+          "cue": "tick",
+          "note": "PAWL ticks: one per 15° of rotation, times derived from the glide ease, so they speed up then slow down"
+        },
+        {
+          "atBeat": 7,
+          "cue": "shimmer",
+          "note": "ink-in swell, black (lower); a second, higher swell at 7.5 for white"
+        },
+        {
+          "atBeat": 10,
+          "cue": "snare",
+          "note": "snare roll + riser, 10.0-11.75"
+        },
+        {
+          "atBeat": 11.75,
+          "cue": "silence",
+          "note": "one 8th of total silence"
+        },
+        {
+          "atBeat": 12,
+          "cue": "impact",
+          "note": "LOCK, the biggest hit: kick + sub drop + noise crash + the first root-position D major chord of the film"
+        },
+        {
+          "atBeat": 12,
+          "cue": "tick",
+          "note": "shadow SNAP click"
+        },
+        {
+          "atBeat": 12.5,
+          "cue": "pluck",
+          "note": "letter plucks L a n g on 12.5, 12.75, 13.0, 13.25: D5 E5 F#5 A5"
+        },
+        {
+          "atBeat": 14.5,
+          "cue": "pop",
+          "note": "X lands: bright D6 pop + clap"
+        },
+        {
+          "atBeat": 14.5,
+          "cue": "shimmer",
+          "note": "tagline shimmer"
+        },
+        {
+          "atBeat": 15.5,
+          "cue": "tick",
+          "note": "the caret tick from b0: the bookend"
+        },
+        {
+          "atBeat": 16,
+          "cue": "chord",
+          "note": "chord tail decays to silence by 20.0"
+        }
+      ]
+    }
+  ],
+  "music": {
+    "key": "D major, with B minor for tension. 120 BPM, 4/4. 22 bars, 88 beats, 44 s. Every D chord before the lock is voiced as add9 or first inversion. The first root-position D major arrives exactly on the LOCK at b80, so the ear lands home with the eye.",
+    "chordsPerBar": "- Bar 1 (b0): D(add9) pedal, drone only.\n- Bar 2 (b4): D(add9).\n- Bar 3 (b8): Bm7.\n- Bar 4 (b12): G(add9) → A.\n- Bar 5 (b16): D/F#.\n- Bar 6 (b20): Bm7.\n- Bar 7 (b24): G(add9).\n- Bar 8 (b28): A(sus4) → A.\n- Bar 9 (b32): silence, then Bm7 from b33.\n- Bar 10 (b36): G(add9).\n- Bar 11 (b40): D/F#.\n- Bar 12 (b44): D/A on the 365 lock → A.\n- Bar 13 (b48): Dmaj9 (pad).\n- Bar 14 (b52): Bm9 (pad).\n- Bar 15 (b56): D/F# | G(add9) | A, the three manifesto hits.\n- Bar 16 (b60): Bm7.\n- Bar 17 (b64): A(sus4), riser.\n- Bar 18 (b68): D/F#, drop 2.\n- Bar 19 (b72): Bm7 → bend.\n- Bar 20 (b76): G(add9) → A(sus4) during the turn; silence at b79.75.\n- Bar 21 (b80): D major ROOT POSITION, the LOCK.\n- Bar 22 (b84): D, ringing out to silence at b88.",
+    "arrangement": "- Bars 1-2 (b0-8), INTRO / S1: no drums.\n  - The dry caret tick on b0 and b1.\n  - A D1 sub drone from b2.\n  - Arrow ticks.\n  - One pluck per edit on a rising pentatonic (E5, F#5, A5), with swishes for the orbit and the flick.\n  - A reverse swell into the slice.\n- Bars 3-4 (b8-16), BUILD / S2:\n  - Blade + whoosh on the slice.\n  - Half-time kit in bar 3 (kick on 1, clap on 3), full four-on-the-floor with 8th hats in bar 4.\n  - One sound per script: RTL swish, headline zip, stamp ticks, a rotation riser and a thunk on the match cut.\n  - The 你好 slam at b15, a snare roll, and 8th silence at b15.75.\n- Bars 5-6 (b16-24), DROP 1 / S3:\n  - Impact, then kick, clap on 2 and 4, 16th hats and a D sub bassline.\n  - Cursor blips and slot clacks carry the melody.\n  - A 63-tick granular zipper rides the Cut wave front.\n  - Paper flicks, and a bubble pop.\n- Bars 7-8 (b24-32), VERSE / S4:\n  - Stripped to kick + soft rim; UI foley carries the rhythm.\n  - The kit drops out for exactly the hesitation beat (b26-27).\n  - A push-in riser with a hard stop and 8th silence at b31.75.\n- Bars 9-12 (b32-48), THE CORRECTION + ECHO / S5:\n  - Room tone, then the strike (snare + scratch) on b33 and the green chime D6→F#6.\n  - A half-time groove, a card whoomp, then formant read-aloud plucks riding the kick envelope.\n  - Landing pops climb D5 F#5 A5 B5 C#6 up the ladder.\n  - The 365 lock on the bar line b44: impact + long bell.\n  - An ember tick, and 8th silence at b47.75.\n- Bars 13-14 (b48-56), BREATH / S6:\n  - No drums: a Dmaj9 pad resolving to Bm9, and a sub.\n  - A high shimmer for the hairline and a tape-reversed swell panned right to left for the rewrite.\n  - 8th silence at b55.75.\n- Bars 15-17 (b56-68), MANIFESTO + EIGHT / S7:\n  - Three impact hits D/F#, G, A on b56, b57, b58, then dot pops.\n  - The groove returns at b60, with a slot clack and a pitched tab blip on every 8th.\n  - An up-whoosh to light at b61 and a down-whoosh to dark at b63.\n  - A riser + snare roll from b66, and 8th silence at b67.75.\n- Bar 18 (b68), DROP 2 / S8: the fullest groove, with a 16th-note arp and ticker thrums on every kick.\n- Bars 19-20 (b72-80), FINALE:\n  - The bend riser pitch-bends up a fifth with the curvature.\n  - Drums out at b74.\n  - The turn whoosh's cutoff tracks angular speed.\n  - Pawl ticks fall one per 15° of rotation.\n  - Ink-in swells, then a snare roll.\n  - 8th silence at b79.75.\n- Bar 21 (b80), LOCK: the biggest impact of the reel, with the first root-position D chord, the shadow-snap click, letter plucks D5 E5 F#5 A5, a D6 pop on the X at b82.5 and the tagline shimmer.\n- Bar 22 (b84-88), END: the chord tail decays. The caret tick at b83.5 is the last sound, the same tick as b0.\n\nPlanned silences: b15.75, b31.75, b47.75, b55.75, b67.75, b79.75.\n\nAll cues are placed from the one beat grid that drives the S5 kick envelope. Render the MP4 audio offline (OfflineAudioContext) and mux it in.",
+    "sound": "Everything is synthesized in WebAudio. The palette is warm and human, not trailer-epic:\n- a light 909-style kit: sine-drop kick, noise clap, short closed and open hats;\n- a round sine sub;\n- soft FM mallet and kalimba plucks, with pluck chords for stabs;\n- a formant-filtered saw as the only 'voice' (read aloud), never real speech;\n- one warm detuned pad, for the breath and the tail only;\n- filtered-noise whooshes, swishes and risers (reverse versions for inhales);\n- a metallic 'blade' glitch for the slice and split;\n- dry 15 ms ticks, including THE CARET TICK (2.4 kHz sine burst), which opens and closes the reel;\n- short sine pops for landings, pitched up the D major scale as things climb;\n- one long bell (a pluck with a long decay) for the 365 lock.\n\nMix: sidechain the pad and sub to the kick envelope. Pan whooshes with on-screen direction: slice halves hard left and right, the RTL rewrite right to left, the turn whoosh following the angle."
+  }
+}

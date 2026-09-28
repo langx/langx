@@ -19,6 +19,10 @@ export default tseslint.config(
       // Throwaway Playwright scripts kept as a record of how things were
       // checked, not as code that ships. Linting them buys nothing.
       'tools/ext-lab/**',
+      // The reel's scratch output: frames, sheets, and the throwaway measuring
+      // scripts written while tuning a scene. Git ignores it; eslint does not
+      // read .gitignore, so it would lint whatever the last session left there.
+      'tools/showreel/out/**',
       // Another branch's checkout, living inside this one. Git excludes it;
       // eslint walked it and reported that branch's files as this branch's
       // errors, which is indistinguishable from having broken something.
@@ -204,6 +208,53 @@ export default tseslint.config(
         require: 'readonly',
         __dirname: 'readonly',
         process: 'readonly',
+      },
+    },
+  },
+  {
+    /*
+     * The motion reel's page. Classic scripts sharing one document rather than
+     * modules, so the page still works opened straight from a disk: GSAP and
+     * its plugins are globals from CDN script tags, and the scenes reach the
+     * runtime through `window.REEL`. After the CommonJS block above, which
+     * would otherwise claim these files.
+     */
+    files: ['tools/showreel/src/**/*.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        location: 'readonly',
+        navigator: 'readonly',
+        performance: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        URLSearchParams: 'readonly',
+        AudioContext: 'readonly',
+        OfflineAudioContext: 'readonly',
+        btoa: 'readonly',
+        gsap: 'readonly',
+        CustomEase: 'readonly',
+        SplitText: 'readonly',
+        MorphSVGPlugin: 'readonly',
+        DrawSVGPlugin: 'readonly',
+        REEL: 'readonly',
+      },
+    },
+  },
+  {
+    // The reel's snapshot, build and render scripts: Node, like tools/promo-video.
+    files: ['tools/showreel/*.mjs'],
+    languageOptions: {
+      sourceType: 'module',
+      globals: {
+        Buffer: 'readonly',
+        console: 'readonly',
+        process: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
       },
     },
   },
