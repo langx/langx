@@ -66,3 +66,16 @@ export function ensurePlaybackAudioMode(): Promise<void> {
 export function ensureRecordingAudioMode(): Promise<void> {
   return apply('recording')
 }
+
+/**
+ * Forget what the session was set to, so the next play configures it again.
+ *
+ * For a player that sets the session behind this file's back. The launch
+ * film's expo-video player leaves iOS in `playback` with mixing on; without
+ * this, `applied` would still say `playback` from the call at app start, the
+ * first voice note would skip `setAudioModeAsync`, and it would play mixed
+ * under whatever music the person had on instead of taking over.
+ */
+export function forgetAudioMode(): void {
+  applied = null
+}

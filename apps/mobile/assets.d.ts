@@ -19,3 +19,12 @@ declare module '*.svg' {
   const asset: number
   export default asset
 }
+
+/**
+ * The same, for the launch film. Metro's default `assetExts` carries `mp4`,
+ * and `expo-video` takes the asset id as a source on all three platforms.
+ */
+declare module '*.mp4' {
+  const asset: number
+  export default asset
+}
