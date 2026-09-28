@@ -46,6 +46,7 @@ import { ApiError } from '../../lib/ApiError'
 import { hidesOnlineStatus } from './presenceVisibility'
 import { assertOwnObject } from '../../lib/assertOwnBucket'
 import { markReservationClaimed, reservationVerdict } from '../handles/handleReservations'
+import type { PendingDeletionFeedback } from '../account/deletionFeedback'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { cameFromV1 } from '../handles/legacyPrecreate'
 import { isUserSuppressed } from '../notifications/suppressions'
@@ -453,6 +454,8 @@ export interface Profile {
     appeal?: { at: Date; text: string; decidedAt?: Date; decidedBy?: string }
   }
   deletedAt?: Date
+  /** "Why are you leaving?", held until the purge — see `deletionFeedback.ts`. */
+  deletionFeedback?: PendingDeletionFeedback
   createdAt: Date
   updatedAt: Date
 }

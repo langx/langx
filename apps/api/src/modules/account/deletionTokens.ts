@@ -1,3 +1,4 @@
+import type { AccountDeletionReason } from '@langx/shared'
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -22,6 +23,13 @@ export interface DeletionToken {
   tokenHash: string
   createdAt: Date
   expiresAt: Date
+  /**
+   * The "why are you leaving?" answer given on the screen that asked for this
+   * link. It rides here because the page the link opens is the API's, not the
+   * app's, and nothing else carries it from one to the other. Gone with the
+   * row — spent or expired — like everything else on it.
+   */
+  feedback?: { reason?: AccountDeletionReason; note?: string }
 }
 
 /** Long enough that guessing is not a strategy; short enough to survive a mail client. */
@@ -46,7 +54,12 @@ function hash(token: string): string {
  * One per user, enforced by a unique index rather than by remembering to
  * delete: asking twice must not leave two spendable links behind.
  */
-export async function mintDeletionToken(db: Db, userId: string, now = new Date()): Promise<string> {
+export async function mintDeletionToken(
+  db: Db,
+  userId: string,
+  now = new Date(),
+  feedback?: DeletionToken['feedback'],
+): Promise<string> {
   const token = randomBytes(TOKEN_BYTES).toString('base64url')
   await db.collection<DeletionToken>(COLLECTIONS.deletionTokens).replaceOne(
     { _id: userId },
@@ -55,6 +68,7 @@ export async function mintDeletionToken(db: Db, userId: string, now = new Date()
       tokenHash: hash(token),
       createdAt: now,
       expiresAt: new Date(now.getTime() + DELETION_TOKEN_TTL_MS),
+      ...(feedback ? { feedback } : {}),
     },
     { upsert: true },
   )
@@ -89,12 +103,15 @@ export async function verifyDeletionToken(
   return found.length === given.length && timingSafeEqual(found, given) ? row.userId : null
 }
 
-/** Spends it. Answers whether it was still there to spend. */
-export async function burnDeletionToken(db: Db, token: string): Promise<boolean> {
-  const result = await db
+/**
+ * Spends it. Answers with the row it spent — which is how the feedback it was
+ * carrying reaches `requestDeletion` — or `null` when there was nothing left
+ * to spend.
+ */
+export async function burnDeletionToken(db: Db, token: string): Promise<DeletionToken | null> {
+  return db
     .collection<DeletionToken>(COLLECTIONS.deletionTokens)
-    .deleteOne({ tokenHash: hash(token) })
-  return result.deletedCount > 0
+    .findOneAndDelete({ tokenHash: hash(token) })
 }
 
 /** Where the email's button points; the page there only *asks*. */

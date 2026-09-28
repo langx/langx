@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { handlesMatch } from './account'
+import {
+  ACCOUNT_DELETION_NOTE_MAX,
+  deleteAccountSchema,
+  deletionRequestSchema,
+  handlesMatch,
+} from './account'
 
 describe('handlesMatch', () => {
   it('accepts the handle exactly as it is stored', () => {
@@ -20,5 +25,30 @@ describe('handlesMatch', () => {
     expect(handlesMatch('so fia', 'sofia')).toBe(false)
     expect(handlesMatch('', 'sofia')).toBe(false)
     expect(handlesMatch('@', 'sofia')).toBe(false)
+  })
+})
+
+describe('the optional answer to "why are you leaving?"', () => {
+  it('is optional — an older build that sends only the confirmation still deletes', () => {
+    expect(deleteAccountSchema.parse({ confirm: 'DELETE' })).toEqual({ confirm: 'DELETE' })
+    expect(deletionRequestSchema.parse({ handle: 'sofia' })).toEqual({ handle: 'sofia' })
+  })
+
+  it('takes a reason from the list and a trimmed note', () => {
+    expect(
+      deleteAccountSchema.parse({ confirm: 'DELETE', reason: 'taking_a_break', note: '  soon ' }),
+    ).toEqual({ confirm: 'DELETE', reason: 'taking_a_break', note: 'soon' })
+  })
+
+  it('treats an empty note as no note', () => {
+    expect(deletionRequestSchema.parse({ handle: 'sofia', note: '   ' })).toEqual({
+      handle: 'sofia',
+    })
+  })
+
+  it('refuses a reason that is not on the list, and a note past the cap', () => {
+    expect(deleteAccountSchema.safeParse({ confirm: 'DELETE', reason: 'meh' }).success).toBe(false)
+    const long = 'a'.repeat(ACCOUNT_DELETION_NOTE_MAX + 1)
+    expect(deleteAccountSchema.safeParse({ confirm: 'DELETE', note: long }).success).toBe(false)
   })
 })

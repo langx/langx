@@ -1354,6 +1354,12 @@ creates accounts; GDPR additionally requires access and portability.
   ledger and aggregates. Messages the user _sent_ stay in place with their
   content cleared — they are part of a conversation the other person is also a
   party to.
+- Before the handle step the screen asks, optionally, why — one reason from
+  `ACCOUNT_DELETION_REASONS` and a short note. It is held on the profile as
+  `deletionFeedback` until the purge, which writes it to
+  `accountDeletionFeedback` with no user id, handle or email and a day-granular
+  date; signing back in discards it. It never blocks deletion. See
+  `docs/decisions.md` → _"Why are you leaving?"_.
 - A user with an active subscription is shown the cancellation path first; a
   store subscription cannot be cancelled from our side.
 - `GET /me/export` → one JSON document with everything we hold.

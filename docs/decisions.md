@@ -6038,3 +6038,48 @@ change to the pool, not to this award.
 message corrected before the deploy can pay its corrector once more. No
 backfill this time: that is one payment per pair that already existed, once,
 and not worth a second in-place rewrite of a ledger whose rule is append-only.
+
+## "Why are you leaving?" is asked, kept without a name, and never in the way
+
+_28 September 2026._ The delete-account screen now opens on one question — a
+single choice from `ACCOUNT_DELETION_REASONS` and an optional note of up to
+`ACCOUNT_DELETION_NOTE_MAX` characters — before the handle step, which is
+unchanged.
+
+**Optional, all the way down.** "Continue" needs nothing picked, "Skip" sits
+right under it, the request carries nothing when it is skipped, and both routes accept a body
+without either field — every build already in people's hands sends exactly
+that. Deletion is a right the stores require to be reachable; a question that
+had to be answered first would be a toll on it, and an answer given to get
+past a form is worth less than none.
+
+**Anonymous, and anonymous at the moment it matters.** The row in
+`accountDeletionFeedback` has no user id, handle, email, country or language:
+the reason, the note, the plan, whole 30-day months of account age, and the
+_day_ it was written — a day, not an instant, because `analyticsDeletions` is
+written in the same purge keyed by the user id, and a shared millisecond is a
+join. The screen asks people to leave names out of the note, and says their
+answer is kept with nothing linking it back to them.
+
+**Held on the profile until the purge, not written at the request.** During
+the 30 days the answer is `profiles.deletionFeedback`, one more field of an
+account that still exists, and `cancelDeletion` removes it with `deletedAt`.
+Written straight away, it would count people who changed their mind as people
+who left, and for a month its date would match `deletedAt` on a profile that
+was still there. The purge writes the anonymous row in the same `Promise.all`
+that deletes the profile. The cost is that the panel's numbers run a grace
+period behind: "last 30 days" means purged in the last 30 days. The plan is
+the one exception taken at request time, because a subscription can lapse
+during the grace period and "a paying member left" is the fact worth keeping.
+On the emailed path the answer rides on the `deletionTokens` row, since the
+page the link opens belongs to the API and nothing else carries it there; the
+row is gone once spent or expired.
+
+**It never blocks the deletion.** `recordDeletionFeedback` swallows its own
+failure and logs it without an id. Losing an opinion is a shame; stranding the
+purge it rides in is a broken promise.
+
+The operator panel's system screen counts rows per reason over 30 and 90 days,
+every reason listed with its zeroes. Notes are not shown there; reading them is
+a database query, which is where it should stay until there are enough to need
+more.

@@ -535,6 +535,12 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { createdAt: 1 }, name: 'created_at' },
   ],
 
+  [COLLECTIONS.accountDeletionFeedback]: [
+    // The operator panel counts the last 90 days of these; without it that
+    // count is a collection scan on every open of the dashboard.
+    { key: { createdAt: 1 }, name: 'created_at' },
+  ],
+
   [COLLECTIONS.deletionTokens]: [
     // The lookup, and the "one live link per user" rule in one index: minting
     // a second replaces the first rather than leaving both spendable.

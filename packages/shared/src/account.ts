@@ -11,10 +11,54 @@ import { passwordSchema } from './password'
  */
 export const ACCOUNT_DELETION_GRACE_DAYS = 30
 
+/**
+ * Why somebody is leaving, as one of a fixed list.
+ *
+ * A list rather than free text alone because twenty answers in twenty words
+ * each cannot be counted, and counting is the point — the note beside it is
+ * for what the list did not think of. The order is the order the screen shows
+ * them in, with `other` last.
+ */
+export const ACCOUNT_DELETION_REASONS = [
+  'not_enough_partners',
+  // Its own entry rather than folded into `other`: in a language exchange it
+  // is the reason that most needs acting on, and the one least likely to be
+  // written out in a note.
+  'unwanted_messages',
+  'found_partner_elsewhere',
+  'too_many_notifications',
+  'privacy_concerns',
+  'bugs_or_problems',
+  'taking_a_break',
+  'other',
+] as const
+export type AccountDeletionReason = (typeof ACCOUNT_DELETION_REASONS)[number]
+
+/** Long enough for a sentence or three; a leaving note is not an essay. */
+export const ACCOUNT_DELETION_NOTE_MAX = 500
+
+/**
+ * The optional answer to "why are you leaving?". Both fields optional, and
+ * the whole thing may be absent: the question is asked, never required, and an
+ * older build that sends neither must keep deleting exactly as before.
+ *
+ * An empty note is no note — the screen sends the box's contents as they are,
+ * and a row holding `""` would count as feedback nobody gave.
+ */
+const deletionFeedbackShape = {
+  reason: z.enum(ACCOUNT_DELETION_REASONS).optional(),
+  note: z
+    .string()
+    .trim()
+    .max(ACCOUNT_DELETION_NOTE_MAX)
+    .transform((note) => (note === '' ? undefined : note))
+    .optional(),
+}
+
 export const deleteAccountSchema = z.object({
   /** Typed confirmation, so this cannot be an accidental POST. */
   confirm: z.literal('DELETE'),
-  reason: z.string().trim().max(500).optional(),
+  ...deletionFeedbackShape,
 })
 export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>
 
@@ -28,6 +72,10 @@ export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>
  */
 export const deletionRequestSchema = z.object({
   handle: z.string().trim().min(1).max(64),
+  // Asked here too, because on this path nothing else is: the link in the mail
+  // opens a page on the API, and the app never speaks again before the account
+  // goes. Held on the link until it is followed — see `deletionTokens.ts`.
+  ...deletionFeedbackShape,
 })
 export type DeletionRequestInput = z.infer<typeof deletionRequestSchema>
 

@@ -10,6 +10,7 @@ import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { getAppConfig } from '../appConfig/appConfig'
 import { readJobHealth, type JobHealth } from './jobHealth'
+import { countDeletionReasons, type DeletionReasonCount } from '../account/deletionFeedback'
 import { countActiveToday } from '../tokens/dailyActivity'
 import { DAILY_POOL_JOB, type JobRun, type PoolResult } from '../tokens/pool'
 import {
@@ -132,6 +133,8 @@ export interface AdminStats {
     jobs: JobHealth[]
     suppressions: { total: number; unsubscribed: number; bounced: number; complained: number }
     purge: { accounts: number; analytics: number }
+    /** Why purged accounts said they left, every reason listed, zeroes included. */
+    leaving: DeletionReasonCount[]
     assistantCallsToday: number
     campaigns: { id: string; status: string; sent: number; total: number }[]
     config: AppConfig
@@ -202,6 +205,7 @@ async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<A
     suppressions,
     purgeAccounts,
     purgeAnalytics,
+    leaving,
     assistantCallsToday,
     campaigns,
     config,
@@ -233,6 +237,7 @@ async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<A
     countSuppressions(db),
     profiles.countDocuments({ deletedAt: { $exists: true } }),
     db.collection(COLLECTIONS.analyticsDeletions).countDocuments({}),
+    countDeletionReasons(db, now),
     assistantCalls(db, utcToday),
     listCampaignProgress(db),
     getAppConfig(db),
@@ -260,6 +265,7 @@ async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<A
       jobs,
       suppressions,
       purge: { accounts: purgeAccounts, analytics: purgeAnalytics },
+      leaving,
       assistantCallsToday,
       campaigns,
       config,

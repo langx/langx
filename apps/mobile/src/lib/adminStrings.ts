@@ -355,6 +355,8 @@ export const ADMIN = {
     purge: 'Waiting to be purged',
     purgeAccounts: 'accounts',
     purgeAnalytics: 'analytics rows',
+    leaving: 'Why people left (purged, 30d · 90d)',
+    leavingNone: 'Nobody who left gave a reason in the last 90 days.',
     assistant: 'Copilot calls today (UTC)',
     campaigns: 'Email campaigns',
     config: 'Config',

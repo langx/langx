@@ -1,4 +1,5 @@
 import {
+  ACCOUNT_DELETION_REASONS,
   COSMETICS,
   GENDERS,
   INTEREST_SUGGESTIONS,
@@ -19,6 +20,7 @@ import { TOUR_TARGETS, tourBodyKey } from '../lib/tour'
 import { catalogs } from './catalogs'
 import {
   accountAgeLabel,
+  deletionReasonLabel,
   genderLabel,
   genderShortLabel,
   interestLabel,
@@ -155,6 +157,12 @@ describe('dynamically built keys', () => {
   it('resolves one for every report reason', () => {
     for (const reason of REPORT_REASONS) {
       expect(reportReasonLabel(t, reason)).not.toBe(`report.${reason}`)
+    }
+  })
+
+  it('resolves one for every reason for leaving', () => {
+    for (const reason of ACCOUNT_DELETION_REASONS) {
+      expect(deletionReasonLabel(t, reason)).not.toContain('deletion.reason')
     }
   })
 
