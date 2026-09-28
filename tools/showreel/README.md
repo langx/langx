@@ -63,15 +63,22 @@ on the yellow — 08's finale with no hairline, wordmark or tagline. It sets
 9:16 frame. The app plays the result as `apps/mobile/assets/splash/intro.mp4`,
 from `AppSplash.tsx`.
 
+`--theme dark` is the night cut, `intro-dark.mp4`, which a device in dark mode
+plays: the app's dark ground `#1c1f24`, the black arc and its rail in yellow,
+a black hard shadow. `assets/splash/badge-dark.png` (the reduced-motion still)
+is its last frame, cropped.
+
 ```bash
 node tools/showreel/snap.mjs --page splash --format vertical --n 24
 node tools/showreel/render.mjs --page splash --format vertical --fps 60 \
   --out apps/mobile/assets/splash/intro.mp4
+node tools/showreel/render.mjs --page splash --format vertical --fps 60 --theme dark \
+  --out apps/mobile/assets/splash/intro-dark.mp4
 ```
 
 What the app relies on, and what `render.mjs --page splash` produces:
 
-- **Frame 0 is bare `#ffc409`.** The app cuts to the film from a view of that
+- **Frame 0 is bare `#ffc409`** (`#1c1f24` for the night cut). The app cuts to the film from a view of that
   colour, so nothing may be on it.
 - **The colour tags.** H.264 in yuv420p, BT.709 matrix and primaries, sRGB
   transfer. Check a re-render with `ffprobe`; the reason for the transfer tag

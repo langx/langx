@@ -8,12 +8,17 @@ import {
   Animated,
   Easing,
   Image,
+  Platform,
   StyleSheet,
   View,
+  useColorScheme,
   useWindowDimensions,
+  type ViewStyle,
 } from 'react-native'
 import badge from '../../assets/splash/badge.png'
+import badgeDark from '../../assets/splash/badge-dark.png'
 import introFilm from '../../assets/splash/intro.mp4'
+import introFilmDark from '../../assets/splash/intro-dark.mp4'
 import { useT } from '../i18n'
 import { useAppReady } from '../hooks/useAppReady'
 import { useReduceMotion } from '../hooks/useReduceMotion'
@@ -24,17 +29,50 @@ import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles } from '../lib/theme'
 
 /**
- * The launch's one colour: the native splash's ground (`backgroundColor` in
- * `app.config.ts`'s `expo-splash-screen` block, both schemes), this layer's
- * first frame, and every pixel of the film's first frame. The three have to be
- * the same yellow for the opening to read as one piece. The film is rendered
- * by `tools/showreel` (`--page splash`); change them together or not at all.
+ * The launch's one colour per scheme: the native splash's ground
+ * (`backgroundColor` in `app.config.ts`'s `expo-splash-screen` block, and its
+ * `dark` twin), this layer's first frame, and every pixel of the film's first
+ * frame. The three have to match for the opening to read as one piece. The
+ * films are rendered by `tools/showreel` (`--page splash`, `--theme dark` for
+ * the night cut); change them together or not at all.
+ *
+ * Dark is the app's dark `bg`: a full yellow screen at night was a glare.
  */
-const FILM_GROUND = '#ffc409'
+const LAUNCH = {
+  light: { ground: '#ffc409', film: introFilm, badge },
+  dark: { ground: '#1c1f24', film: introFilmDark, badge: badgeDark },
+} as const
 
 /**
- * Only for reduced motion, where there is no film: the mark on its disc, whose
- * disc is exactly `FILM_GROUND`, so on the yellow ground only the mark shows.
+ * Which cut to play. The device's scheme, not the app's theme preference: the
+ * native splash can only follow the device, and the film has to start on the
+ * colour the OS just drew. Read once, so a scheme change mid-launch cannot
+ * swap the film under itself.
+ */
+function useLaunchCut() {
+  const scheme = useColorScheme()
+  const [cut] = useState(() => LAUNCH[scheme === 'dark' ? 'dark' : 'light'])
+  return cut
+}
+
+/**
+ * The ground before the film, on the web. The web build is a static export,
+ * so this layer is in the HTML before any script can ask for the scheme, and
+ * the prerender has no scheme to ask: a dark-mode visitor was shown the yellow
+ * until the app hydrated. `light-dark()` lets the browser pick from the first
+ * paint; `colorScheme` on the same element is what it picks by. It rides in
+ * the fallback of a variable nothing sets because react-native-web drops a
+ * colour it cannot parse, and passes anything starting with `var(` through.
+ */
+const WEB_GROUND = {
+  backgroundColor: `var(--launch-ground, light-dark(${LAUNCH.light.ground}, ${LAUNCH.dark.ground}))`,
+  colorScheme: 'light dark',
+} as unknown as ViewStyle
+
+/**
+ * Only for reduced motion, where there is no film: the mark on its ground,
+ * which is exactly the cut's `ground`, so only the mark shows. `badge-dark.png`
+ * is the dark film's last frame, cropped.
  */
 const MARK_SIZE = 160
 /** `intro.mp4` is 1080 by 1920. */
@@ -63,6 +101,7 @@ const FILM_ASPECT = 1080 / 1920
  */
 export function AppSplash() {
   const styles = useStyles()
+  const cut = useLaunchCut()
   const t = useT()
   const ready = useAppReady()
   const reduceMotion = useReduceMotion()
@@ -212,13 +251,28 @@ export function AppSplash() {
       accessibilityLabel={t('common.oneMoment')}
       style={[StyleSheet.absoluteFill, styles.layer, { opacity: layer }]}
     >
-      {withFilm && <IntroFilm covered={nativeGone} onFirstFrame={showFilm} onDone={finishIntro} />}
+      {withFilm && (
+        <IntroFilm
+          source={cut.film}
+          ground={cut.ground}
+          covered={nativeGone}
+          onFirstFrame={showFilm}
+          onDone={finishIntro}
+        />
+      )}
 
       {!filmShown && (
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.ground]}>
+        <View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            styles.ground,
+            Platform.OS === 'web' ? WEB_GROUND : { backgroundColor: cut.ground },
+          ]}
+        >
           {reduceMotion && (
             <Animated.View style={[styles.mark, { opacity: mark }]}>
-              <Image source={badge} style={styles.markImage} resizeMode="contain" />
+              <Image source={cut.badge} style={styles.markImage} resizeMode="contain" />
             </Animated.View>
           )}
         </View>
@@ -246,10 +300,14 @@ export function AppSplash() {
  * playing video fullscreen.
  */
 function IntroFilm({
+  source,
+  ground,
   covered,
   onFirstFrame,
   onDone,
 }: {
+  source: number
+  ground: string
   covered: boolean
   onFirstFrame: () => void
   onDone: () => void
@@ -261,7 +319,7 @@ function IntroFilm({
   // edges are the same yellow as the ground around it.
   const window = useWindowDimensions()
   const fit = window.width / window.height > FILM_ASPECT ? 'contain' : 'cover'
-  const player = useVideoPlayer(introFilm, (instance) => {
+  const player = useVideoPlayer(source, (instance) => {
     instance.muted = true
     instance.loop = false
     instance.audioMixingMode = 'mixWithOthers'
@@ -302,7 +360,7 @@ function IntroFilm({
       pointerEvents="none"
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      style={[StyleSheet.absoluteFill, { backgroundColor: FILM_GROUND }]}
+      style={[StyleSheet.absoluteFill, { backgroundColor: ground }]}
     >
       <VideoView
         player={player}
@@ -347,7 +405,7 @@ const useStyles = makeStyles(({ colors }) => ({
     overflow: 'hidden',
     zIndex: OVERLAY_LAYER.splash,
   },
-  ground: { alignItems: 'center', backgroundColor: FILM_GROUND, justifyContent: 'center' },
+  ground: { alignItems: 'center', justifyContent: 'center' },
   fill: {
     alignItems: 'center',
     backgroundColor: colors.bg,
