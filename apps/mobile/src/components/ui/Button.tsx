@@ -67,7 +67,14 @@ export function Button({
   const drop = small ? 3 : 4
 
   return (
-    <View style={[styles.wrap, isDisabled && styles.disabled, style]}>
+    <View
+      // Always a real view too: `disabled` is an opacity, and an opacity below
+      // one also stops a view being flattened. A form whose request settles
+      // as it navigates away (the report screen: pending → done → back) flips
+      // it in exactly the commit described on the face below.
+      collapsable={false}
+      style={[styles.wrap, isDisabled && styles.disabled, style]}
+    >
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled, busy: loading }}
