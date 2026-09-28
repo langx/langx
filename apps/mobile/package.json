@@ -14,6 +14,7 @@
     "ios": "expo run:ios",
     "android": "expo run:android",
     "gen:strings": "tsx scripts/generate-xcstrings.ts",
+    "gen:names": "tsx scripts/build-display-names.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p functions",
     "test": "vitest run"
   },
