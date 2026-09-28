@@ -2380,4 +2380,34 @@ export const ptBR: Localized<EnMessages> = {
     exchangeStartsIn: 'Começa em',
     exchangeEndsIn: 'Termina em',
   },
+  recap: {
+    meTitle: 'Seu resumo de {month}',
+    meBody: 'Seu mês no LangX, pronto para compartilhar.',
+    title: 'Seu {month}',
+    messages: {
+      one: '{count} mensagem',
+      other: '{count} mensagens',
+    },
+    corrections: {
+      one: '{count} correção',
+      other: '{count} correções',
+    },
+    echoReviews: {
+      one: '{count} cartão do Echo revisado',
+      other: '{count} cartões do Echo revisados',
+    },
+    tokens: {
+      one: '{count} token ganho',
+      other: '{count} tokens ganhos',
+    },
+    currentStreak: {
+      one: 'Sequência atual: {count} dia',
+      other: 'Sequência atual: {count} dias',
+    },
+    quiet: 'Um mês tranquilo. O próximo já começou.',
+    share: 'Compartilhar meu mês',
+    cardCaption: 'meu mês no LangX',
+    shareMessage: 'Meu {month} no LangX: {messages}, {reviews}. Pratique comigo: {url}',
+    failed: 'Não foi possível carregar o resumo.',
+  },
 }

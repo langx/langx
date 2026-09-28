@@ -2609,6 +2609,36 @@ export const en = {
     exchangeStartsIn: 'Starts in',
     exchangeEndsIn: 'Ends in',
   },
+  recap: {
+    meTitle: 'Your {month} recap',
+    meBody: 'Your month on LangX, ready to share.',
+    title: 'Your {month}',
+    messages: {
+      one: '{count} message',
+      other: '{count} messages',
+    },
+    corrections: {
+      one: '{count} correction',
+      other: '{count} corrections',
+    },
+    echoReviews: {
+      one: '{count} Echo card reviewed',
+      other: '{count} Echo cards reviewed',
+    },
+    tokens: {
+      one: '{count} token earned',
+      other: '{count} tokens earned',
+    },
+    currentStreak: {
+      one: 'Current streak: {count} day',
+      other: 'Current streak: {count} days',
+    },
+    quiet: 'A quiet month. The next one has already started.',
+    share: 'Share my month',
+    cardCaption: 'my month on LangX',
+    shareMessage: 'My {month} on LangX: {messages}, {reviews}. Practise with me: {url}',
+    failed: 'Could not load the recap.',
+  },
 } as const
 
 export type EnMessages = typeof en

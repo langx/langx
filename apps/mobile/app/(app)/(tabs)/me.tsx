@@ -45,6 +45,7 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { badgeLabel, interestLabel, useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { compactCount } from '../../../src/lib/format'
+import { monthName, recapMonthFor } from '../../../src/lib/recapMonth'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { useChangeAvatar } from '../../../src/hooks/useChangeAvatar'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
@@ -70,6 +71,7 @@ export default function MeScreen() {
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
+  const recapMonth = recapMonthFor(new Date())
   const names = useDisplayNames()
 
   const me = useMe()
@@ -432,6 +434,15 @@ export default function MeScreen() {
       {/* The balance is the way into the wallet, which has nowhere else to be
           reached from — a row with the number on it, now that the tiles above
           are the week's. */}
+      {/* Last month's recap, for the first week of this one only. */}
+      {recapMonth ? (
+        <ListRow
+          title={t('recap.meTitle', { month: monthName(recapMonth, locale) })}
+          subtitle={t('recap.meBody')}
+          onPress={() => router.push({ pathname: '/(app)/recap', params: { month: recapMonth } })}
+        />
+      ) : null}
+
       <ListRow
         title={t('me.wallet')}
         value={compactCount(balance, locale)}

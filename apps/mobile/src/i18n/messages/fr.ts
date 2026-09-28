@@ -2404,4 +2404,35 @@ export const fr: Localized<EnMessages> = {
     exchangeStartsIn: 'Commence dans',
     exchangeEndsIn: 'Se termine dans',
   },
+  recap: {
+    meTitle: 'Ton bilan de {month}',
+    meBody: 'Ton mois sur LangX, prêt à partager.',
+    title: 'Ton mois de {month}',
+    messages: {
+      one: '{count} message',
+      other: '{count} messages',
+    },
+    corrections: {
+      one: '{count} correction',
+      other: '{count} corrections',
+    },
+    echoReviews: {
+      one: '{count} carte Echo révisée',
+      other: '{count} cartes Echo révisées',
+    },
+    tokens: {
+      one: '{count} jeton gagné',
+      other: '{count} jetons gagnés',
+    },
+    currentStreak: {
+      one: 'Série actuelle : {count} jour',
+      other: 'Série actuelle : {count} jours',
+    },
+    quiet: 'Un mois calme. Le suivant a déjà commencé.',
+    share: 'Partager mon mois',
+    cardCaption: 'mon mois sur LangX',
+    shareMessage:
+      'Mon mois de {month} sur LangX : {messages}, {reviews}. Pratique avec moi : {url}',
+    failed: 'Impossible de charger le bilan.',
+  },
 }
