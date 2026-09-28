@@ -319,6 +319,12 @@ const config: ExpoConfig = {
      */
     './plugins/withSceneLifecycle',
     /*
+     * `fontScale` in the main activity's `configChanges`. Without it, changing
+     * the system font size recreated the activity and dropped the reader back
+     * on Discover. See `plugins/withFontScaleConfigChange.js`.
+     */
+    './plugins/withFontScaleConfigChange',
+    /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
      * so the views live in `widgets/` as TSX and the plugin only has to write
