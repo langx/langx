@@ -373,16 +373,16 @@ description, **can be changed without shipping a build**. That is what it is
 for: it carries the newest thing while the build that introduced it is still
 the current one. Play has no equivalent field.
 
-| Language            | Promotional text                                                                                                                                                     |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| English             | LangX is on your wrist. See who wrote, open the conversation and reply from your watch — even with the app closed. Echo adds five languages and a leaderboard.       |
-| Türkçe              | LangX artık bileğinde. Kim yazmış gör, sohbeti aç, saatinden cevap ver — uygulama kapalıyken bile. Echo'ya beş dil ve bir liderlik tablosu eklendi.                  |
-| Español             | LangX en tu muñeca. Mira quién escribió, abre la conversación y responde desde el reloj, incluso con la app cerrada. Echo suma cinco idiomas y una clasificación.    |
-| Русский             | LangX теперь на запястье. Посмотри, кто написал, открой разговор и ответь с часов — даже когда приложение закрыто. В Echo пять языков и таблица лидеров.             |
-| العربية             | LangX على معصمك. شاهد من راسلك، افتح المحادثة وردّ من ساعتك — حتى والتطبيق مغلق. وفي Echo خمس لغات جديدة ولوحة متصدرين.                                              |
-| Français            | LangX à votre poignet. Voyez qui a écrit, ouvrez la conversation et répondez depuis la montre — même app fermée. Echo ajoute cinq langues et un classement.          |
-| Deutsch             | LangX am Handgelenk. Sieh, wer geschrieben hat, öffne die Unterhaltung und antworte von der Uhr — auch bei geschlossener App. Echo: fünf Sprachen, eine Bestenliste. |
-| Português do Brasil | LangX no seu pulso. Veja quem escreveu, abra a conversa e responda pelo relógio — mesmo com o app fechado. O Echo ganhou cinco idiomas e um ranking.                 |
+| Language            | Promotional text                                                                                                                                               |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| English             | The Feed is one timeline now. Share a photo, a video or a sentence from your day, and ask for a correction or pronunciation only when you want to.             |
+| Türkçe              | Akış artık tek bir liste. Gününden bir fotoğraf, video ya da cümle paylaş; istediğinde düzeltme ya da telaffuz iste.                                           |
+| Español             | El Muro ahora es una sola línea de tiempo. Comparte una foto, un video o una frase de tu día y pide corrección o pronunciación solo si quieres.                |
+| Русский             | Лента теперь единая. Делись фото, видео или фразой из своего дня и проси исправление или произношение, только когда хочешь.                                    |
+| العربية             | أصبحت الأخبار خطًا زمنيًا واحدًا. شارك صورة أو فيديو أو جملة من يومك، واطلب تصحيحًا أو نطقًا متى أردت.                                                         |
+| Français            | Le Fil est une seule chronologie. Partagez une photo, une vidéo ou une phrase de votre journée, et demandez une correction ou la prononciation si vous voulez. |
+| Deutsch             | Der Feed ist jetzt eine einzige Timeline. Teile ein Foto, ein Video oder einen Satz aus deinem Tag und bitte um Korrektur oder Aussprache, wenn du willst.     |
+| Português do Brasil | O Feed agora é uma linha do tempo só. Compartilhe uma foto, um vídeo ou uma frase do seu dia e peça correção ou pronúncia quando quiser.                       |
 
 ### Release notes
 
