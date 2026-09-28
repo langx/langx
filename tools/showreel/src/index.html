@@ -1,0 +1,247 @@
+<meta charset="utf-8" />
+<title>LangX Motion Reel</title>
+<meta
+  name="description"
+  content="A motion-design reel for LangX: two arcs, sixteen greetings, one exchange."
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!--
+  Nunito carries Latin and Cyrillic. The other scripts come from Noto; the CJK
+  faces are subset with `text=` to the greetings the reel actually sets,
+  because a full Japanese or Chinese face is several megabytes for ten glyphs.
+  Arabic, Devanagari and Thai are loaded whole: a `text=` subset keeps the
+  characters but can drop the contextual forms and conjuncts they shape into.
+-->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&family=Noto+Sans+Arabic:wght@500;800&family=Noto+Sans+Devanagari:wght@500;800&family=Noto+Sans+Thai:wght@500;800&family=Noto+Sans+Hebrew:wght@500;800&display=block"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;800&family=Noto+Sans+KR:wght@500;800&family=Noto+Sans+SC:wght@500;800&family=Noto+Sans:wght@500;800&text=%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%EC%95%88%EB%85%95%ED%95%98%EC%84%B8%EC%9A%94%EA%B0%90%EC%82%AC%ED%95%A9%EB%8B%88%EB%8B%A4%E4%BD%A0%E5%A5%BD%E8%B0%A2%CE%93%CE%B5%CE%B9%CE%AC%20%CF%83%CE%BF%CF%85&display=block"
+/>
+<style>
+  :root {
+    color-scheme: dark;
+    --ground: #ffc409;
+    --hud-bg: #17191c;
+    --hud-fg: #f2f3f5;
+    --hud-muted: #9aa1a9;
+    --hud-line: #2c3036;
+    --hud-accent: #ffc409;
+    --hud-focus: #7c9cf9;
+  }
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--ground);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-family:
+      'Nunito',
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      sans-serif;
+  }
+  #viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--ground);
+    touch-action: manipulation;
+  }
+  #stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: 0 0;
+    overflow: hidden;
+    contain: layout paint;
+  }
+  .scene {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .scene * {
+    box-sizing: border-box;
+  }
+
+  /* The player. Out of the way while the reel runs; back on a touch or a key. */
+  .hud {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    transition:
+      opacity 240ms ease,
+      transform 240ms ease;
+  }
+  .hud[data-visible='false'] {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .hud-bar {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: min(760px, 100%);
+    padding: 8px 12px;
+    border-radius: 14px;
+    background: var(--hud-bg);
+    color: var(--hud-fg);
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.5);
+  }
+  .hud-btn {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+  .hud-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  .hud-btn:hover {
+    background: var(--hud-line);
+  }
+  .hud-btn:focus-visible,
+  .hud-track:focus-visible,
+  .sound-hint:focus-visible {
+    outline: 2px solid var(--hud-focus);
+    outline-offset: 2px;
+  }
+  .hud-time {
+    flex: none;
+    font:
+      600 13px/1 ui-monospace,
+      'SF Mono',
+      Menlo,
+      Consolas,
+      monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--hud-muted);
+    letter-spacing: 0.02em;
+  }
+  .hud-track {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 28px;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .hud-track::before,
+  .hud-fill {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 12px;
+    height: 4px;
+    border-radius: 2px;
+  }
+  .hud-track::before {
+    background: var(--hud-line);
+  }
+  .hud-fill {
+    background: var(--hud-accent);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  .hud-chapters {
+    position: absolute;
+    inset: 0;
+  }
+  .hud-chapter {
+    position: absolute;
+    top: 10px;
+    height: 8px;
+    border-left: 2px solid var(--hud-bg);
+  }
+  .sound-hint {
+    position: absolute;
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 10px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--hud-bg);
+    color: var(--hud-fg);
+    font:
+      700 14px/1 'Nunito',
+      system-ui,
+      sans-serif;
+    cursor: pointer;
+  }
+  .sound-hint svg {
+    width: 20px;
+    height: 20px;
+  }
+  .tc {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #fff;
+    font:
+      600 12px/1.2 ui-monospace,
+      Menlo,
+      monospace;
+    z-index: 60;
+  }
+  @media (max-width: 480px) {
+    .hud-time {
+      display: none;
+    }
+  }
+</style>
+
+<div id="viewport" role="region" aria-label="LangX motion reel">
+  <div id="stage"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/CustomEase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/SplitText.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/MorphSVGPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/DrawSVGPlugin.min.js"></script>
+<script src="core.js"></script>
+<script src="audio.js"></script>
+<!-- SCENES:BEGIN -->
+<script src="scenes/01-caret.js"></script>
+<script src="scenes/02-scripts.js"></script>
+<script src="scenes/03-grid.js"></script>
+<script src="scenes/04-chat.js"></script>
+<script src="scenes/05-echo.js"></script>
+<script src="scenes/06-breath.js"></script>
+<script src="scenes/07-eight.js"></script>
+<script src="scenes/08-exchange.js"></script>
+<!-- SCENES:END -->
+<script>
+  window.REEL.boot()
+</script>
