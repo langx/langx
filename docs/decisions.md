@@ -5864,12 +5864,39 @@ charged at a time the sender is not there to see it.
 The `+` menu can send where you are, once — not a live location. The bubble
 is a card: a pin, the place's name, and "Open in Maps".
 
-**No map image.** A tile needs a map provider, an API key and, for a native
-map view, a new native module — which is a store release rather than an
-update over the air. The name is resolved by the sender's phone at send time
-(`reverseGeocodeAsync`), and "Open in Maps" is an https link Apple Maps or
-Google Maps catches. The web has no geocoder, and there the card shows the
-coordinates instead.
+**It shipped without a map image.** A tile needs a map provider, an API key
+and, for a native map view, a new native module — which is a store release
+rather than an update over the air. The name is resolved by the sender's phone
+at send time (`reverseGeocodeAsync`), and "Open in Maps" is an https link
+Apple Maps or Google Maps catches. The web has no geocoder, and there the card
+shows the coordinates instead.
+
+**Then a native map went on top of the card**, because Behic wanted the
+WhatsApp bubble and decided it should be a real map rather than a picture of
+one. `expo-maps` (Apple Maps on iOS, Google Maps on Android) rather than
+`react-native-maps`: it is versioned with the SDK like every other `expo-*`
+module here, so `bundledNativeModules.json` names its version and it moves
+with an SDK upgrade instead of on its own release train — and every native
+version bump is a fingerprint change that cuts off over-the-air updates
+(`release-runbook.md`). What that gives up is Android's lite mode; the map is
+instead a fixed-size view with every control off and `pointerEvents: 'none'`,
+so it cannot pan under the list's scroll or the swipe-to-reply, and a tap on it
+is the same link as "Open in Maps". **Approximate is a translucent circle one
+grid step wide and no pin**: the stored point is a grid point the sender may
+be half a kilometre from, and a pin on it would claim the precision the
+rounding removed.
+
+**The map is optional at runtime, not only at build time.**
+`LocationMapPreview` asks for the native module by name
+(`requireOptionalNativeModule`) and requires `expo-maps` only after the answer
+is yes, since the package throws on import where the module is missing; the
+decision is `canShowMapPreview`, tested. iOS below 17 cannot draw it, and an
+Android build without `GOOGLE_MAPS_ANDROID_API_KEY` would crash when the SDK
+starts, so it learns about the key from `extra.googleMapsAndroid`. In every
+one of those cases, and on the web, the bubble is the card it was before.
+The fingerprint keeps this bundle away from store builds without the module;
+the guard is for the builds it does not cover — an older development client —
+and for the day it fails.
 
 **Approximate is rounded on the server.** The sheet offers approximate first
 and exact second, and says what exact gives away. An approximate point is put

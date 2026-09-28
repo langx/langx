@@ -383,6 +383,10 @@ Not in the survey; Behic asked for it. Not live: one point, sent once.
   to present it, leaving an invisible sheet at the head of the alert queue.
   `AlertHost` now waits for `onDismiss` (`alertPresentation.ts`); the GPS fix
   and the geocode have timeouts, and the "+" spins while locating.
+- A native map preview on top of the card (`expo-maps`; Apple Maps / Google
+  Maps), non-interactive, a pin for exact and a ~1 km circle for approximate,
+  and the card alone wherever the build cannot draw one. Needs a store build
+  and `GOOGLE_MAPS_ANDROID_API_KEY` in EAS. Status: done (#1638)
 
 ---
 

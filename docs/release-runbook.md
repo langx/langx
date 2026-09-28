@@ -455,6 +455,31 @@ variable that `--environment production` cannot read off a builder. Whether it
 actually moves the hash was never measured — the check needs a worktree with
 `apps/mobile` installed — so it is supplied rather than gambled on.
 
+`GOOGLE_MAPS_ANDROID_API_KEY`, the key behind the map in a location bubble,
+**was** measured, and it moves the hash — on both platforms, since the whole
+config is hashed — and a different value moves it again. So it lives in exactly
+one place, the EAS `production` environment, with **Sensitive** visibility and
+not Secret: `deploy-ota.yml`'s `--environment production` reads Plain text and
+Sensitive variables and cannot read Secret ones, and a runner that computes the
+config without the key publishes to a runtime version no build has. It is not a
+secret in the first place — it ships inside every APK, and what protects it is
+the restriction on Google's side. The app reads its presence through
+`extra.googleMapsAndroid`; a build without it shows the card and no map.
+
+- [ ] **Google Maps key for Android.** Google Cloud (the Firebase project is
+      fine) → enable _Maps SDK for Android_ → create an API key restricted to
+      that one API and to Android apps: package
+      `tech.newchapter.languageXchange` with the SHA-1 of **both** certificates
+      in _Android needs both fingerprints_ above — the app signing key, which is
+      what signs every install from Play, and the upload key, which signs an
+      internal build. Then
+      `eas env:create --environment production --name GOOGLE_MAPS_ANDROID_API_KEY --visibility sensitive`.
+      Create it **before** the build that ships `expo-maps`: added later, it
+      changes the runtime version and that build stops receiving updates. After
+      the build, the first OTA's runtime version (`eas update:list`) should
+      match the build's (`eas build:list`) — if it does not, the runner is not
+      seeing the variable.
+
 - [x] **The GitHub repo is linked**: the merge of #1157 and #1158 on
       5 September 2026 each started the OTA with trigger `refs/heads/main@…`
       and no hand on it, back when it was `update.yml` on expo.dev. It is
