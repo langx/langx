@@ -360,6 +360,13 @@ export const COLLECTIONS = {
    */
   analyticsDeletions: 'analyticsDeletions',
   /**
+   * Why people left, one row per purged account that said, and nothing that
+   * says whose — no user id, no handle, a day rather than an instant. Written
+   * by the purge, not by the request, so a change of mind is never counted.
+   * See `modules/account/deletionFeedback.ts`.
+   */
+  accountDeletionFeedback: 'accountDeletionFeedback',
+  /**
    * One row per Instagram comment we have answered, holding the comment id as
    * its `_id` and nothing worth reading.
    *

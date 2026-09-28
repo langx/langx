@@ -1,3 +1,4 @@
+import { ACCOUNT_DELETION_NOTE_MAX } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -389,6 +390,76 @@ describe('unsubscribing from a link in an email', () => {
       const response = await request()
       expect(response.statusCode, response.body).toBe(200)
       expect(emailSender.messages.at(-1)?.subject).toBe(translator('en')('email.deleteSubject'))
+    })
+  })
+
+  /**
+   * "Why are you leaving?" rides both ways in: the direct route, and the
+   * emailed link, where it has to survive the trip through the mail.
+   */
+  describe('the optional reason for leaving', () => {
+    async function profileOf(id: string): Promise<Profile | null> {
+      return handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: id })
+    }
+    function deleteDirectly(payload: Record<string, unknown>) {
+      return app.inject({ method: 'POST', url: '/me/delete', headers: { cookie }, payload })
+    }
+
+    it('deletes without one, exactly as before', async () => {
+      const response = await deleteDirectly({ confirm: 'DELETE' })
+      expect(response.statusCode, response.body).toBe(200)
+      const profile = await profileOf(userId)
+      expect(profile?.deletedAt).toBeInstanceOf(Date)
+      expect(profile?.deletionFeedback).toBeUndefined()
+    })
+
+    it('keeps the reason and note given on the direct route', async () => {
+      const response = await deleteDirectly({
+        confirm: 'DELETE',
+        reason: 'too_many_notifications',
+        note: '  Too many pings.  ',
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect((await profileOf(userId))?.deletionFeedback).toEqual({
+        reason: 'too_many_notifications',
+        note: 'Too many pings.',
+        tier: 'free',
+      })
+    })
+
+    it('refuses a reason off the list, and a note past the cap, deleting nothing', async () => {
+      const unknown = await deleteDirectly({ confirm: 'DELETE', reason: 'bored' })
+      expect(unknown.statusCode).toBe(400)
+      const long = await deleteDirectly({
+        confirm: 'DELETE',
+        note: 'x'.repeat(ACCOUNT_DELETION_NOTE_MAX + 1),
+      })
+      expect(long.statusCode).toBe(400)
+      expect((await profileOf(userId))?.deletedAt).toBeUndefined()
+    })
+
+    it('carries the answer through the emailed link', async () => {
+      const asked = await app.inject({
+        method: 'POST',
+        url: '/me/delete/request',
+        headers: { cookie },
+        payload: { handle: profileHandle, reason: 'found_partner_elsewhere' },
+      })
+      expect(asked.statusCode, asked.body).toBe(200)
+      // Nothing is on the profile until the link is followed.
+      expect((await profileOf(userId))?.deletionFeedback).toBeUndefined()
+
+      const token = /token=([\w-]+)/.exec(emailSender.messages.at(-1)?.text ?? '')?.[1]
+      expect(token).toBeTruthy()
+      const confirmed = await app.inject({
+        method: 'POST',
+        url: `/account/delete/confirm?token=${token}`,
+      })
+      expect(confirmed.statusCode).toBe(200)
+      expect((await profileOf(userId))?.deletionFeedback).toEqual({
+        reason: 'found_partner_elsewhere',
+        tier: 'free',
+      })
     })
   })
 })

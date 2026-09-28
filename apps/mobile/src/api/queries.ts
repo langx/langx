@@ -1,4 +1,5 @@
 import {
+  type AccountDeletionReason,
   type FeedbackInput,
   type LinkPreviewResponse,
   type SharedProfile,
@@ -2867,6 +2868,8 @@ export interface AdminStatsDto {
     }[]
     suppressions: { total: number; unsubscribed: number; bounced: number; complained: number }
     purge: { accounts: number; analytics: number }
+    /** Every reason, zeroes included, counted when the purge wrote the row. */
+    leaving: { reason: AccountDeletionReason; last30: number; last90: number }[]
     assistantCallsToday: number
     campaigns: { id: string; status: string; sent: number; total: number }[]
     /*
