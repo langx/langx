@@ -25,3 +25,16 @@ pypinyin==0.55.0
 cutlet==0.5.2
 fugashi==1.5.2
 unidic-lite==1.0.8
+
+# Chat's "Show text" on a voice note: faster-whisper (MIT) over CTranslate2
+# (MIT), with OpenAI's Whisper weights (MIT) in Systran's conversion of them
+# (MIT). PyAV comes with it to decode the note — BSD, over an LGPL ffmpeg it
+# ships as shared libraries. Pinned, because the model format and the runtime
+# move together: a newer CTranslate2 is what a converted model is checked
+# against, and faster-whisper names the version it was built for. See
+# `transcribe` in server.py.
+faster-whisper==1.2.1
+ctranslate2==4.8.2
+
+# Downloads the Whisper model in the Dockerfile, at a pinned revision. Apache-2.0.
+huggingface_hub==1.33.0

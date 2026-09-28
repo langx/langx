@@ -21,7 +21,7 @@ import { loadMutableMessage } from './mutations'
  * person's, each native before learning.
  *
  * The service picks the likeliest of these rather than letting Whisper choose
- * among a hundred, which is where a short note goes wrong — see `apps/stt`.
+ * among a hundred, which is where a short note goes wrong — see `apps/tts`.
  * Both people's, because a learner's note is as often in the language they are
  * learning as in their own, and that language is usually the other person's.
  */

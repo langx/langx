@@ -1,4 +1,9 @@
-import type { InAppNotificationKind, MessageParams } from '@langx/shared'
+import {
+  IN_APP_NOTIFICATION_KINDS,
+  type InAppNotification,
+  type InAppNotificationKind,
+  type MessageParams,
+} from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
 import type { MessageKey } from '../i18n/runtime'
 import { profileHref } from './profileHref'
@@ -11,6 +16,53 @@ import { profileHref } from './profileHref'
  * asserting has to live somewhere vitest can reach. Everything here is a
  * function of its arguments — no `router`, no `Feather`, no theme.
  */
+
+/**
+ * The inbox kinds this build can draw, as it tells the server.
+ *
+ * Every kind it was compiled against, and that is a claim the compiler backs:
+ * `notificationCopy`, `notificationHref` and the screen's icon table each fail
+ * to build when a kind is missing from them. The server sends nothing else —
+ * see `INBOX_KINDS_V2_7` for the build that could not say this and crashed.
+ * Sent as `INBOX_KINDS_HEADER` on every request and as the socket's
+ * `auth.inboxKinds`.
+ */
+export const DRAWABLE_INBOX_KINDS: string = IN_APP_NOTIFICATION_KINDS.join(',')
+
+/**
+ * Whether a row off the wire is one this screen can draw at all.
+ *
+ * The server only sends the kinds declared above, so this is the second net,
+ * not the first: a server with a bug, a proxy that dropped the header, a row
+ * written by hand. The 2.7 build had no such net, and one unknown row took the
+ * whole screen down. A row that fails here is left out — nothing about it can
+ * be said honestly, and a blank line saying nothing is not a row.
+ */
+export function isDrawableRow(value: unknown): value is InAppNotification {
+  if (typeof value !== 'object' || value === null) return false
+  const row = value as Partial<Record<keyof InAppNotification, unknown>>
+  return (
+    typeof row._id === 'string' &&
+    typeof row.kind === 'string' &&
+    (IN_APP_NOTIFICATION_KINDS as readonly string[]).includes(row.kind) &&
+    typeof row.read === 'boolean' &&
+    typeof row.createdAt === 'string'
+  )
+}
+
+/**
+ * Every row of every loaded page that `isDrawableRow` accepts.
+ *
+ * Typed loosely on purpose: a page is whatever the server sent, and a page
+ * with no `items` array is as possible as a row with no `_id`. Neither may
+ * take the screen with it.
+ */
+export function drawableRows(pages: readonly unknown[] | undefined): InAppNotification[] {
+  return (pages ?? []).flatMap((page) => {
+    const items = (page as { items?: unknown } | null)?.items
+    return Array.isArray(items) ? items.filter(isDrawableRow) : []
+  })
+}
 
 /** Only the fields these mappers read, so a test can build one in three lines. */
 export interface InboxItem {
@@ -32,11 +84,16 @@ export interface InboxItem {
  * plural forms are chosen by the catalogue in the reader's own language. A
  * count assembled here would be English grammar wearing eight translations.
  *
- * The `switch` has no `default` on purpose: adding a kind to
- * `IN_APP_NOTIFICATION_KINDS` and forgetting it here is then a compile error
- * rather than a row that renders its own key.
+ * `null` for a kind this build does not know, and the row is then not drawn.
+ * The `default` is typed `never`, so adding a kind to
+ * `IN_APP_NOTIFICATION_KINDS` and forgetting it here is still a compile error
+ * — but what is on the wire is not what was compiled, and the 2.7 build, whose
+ * `switch` had no `default` at all, answered an unknown kind with `undefined`
+ * and crashed reading `.key` off it.
  */
-export function notificationCopy(item: InboxItem): { key: MessageKey; params: MessageParams } {
+export function notificationCopy(
+  item: InboxItem,
+): { key: MessageKey; params: MessageParams } | null {
   // `||`, not `??`: a display name can be an empty string, and a line reading
   // " followed you" is worse than one that falls back to the handle. Same
   // spelling the push sender uses.
@@ -70,6 +127,8 @@ export function notificationCopy(item: InboxItem): { key: MessageKey; params: Me
       return { key: 'inbox.walletPool', params: { count: item.count ?? 0 } }
     case 'profileVisits':
       return { key: 'inbox.profileVisits', params: { count: item.count ?? 0 } }
+    default:
+      return unknownKind(item.kind, null)
   }
 }
 
@@ -102,7 +161,20 @@ export function notificationHref(item: InboxItem, from: string): string | null {
       return '/(app)/wallet/pool'
     case 'profileVisits':
       return '/(app)/viewers'
+    default:
+      return unknownKind(item.kind, null)
   }
+}
+
+/**
+ * The `default` of every `switch` over an inbox kind.
+ *
+ * `never` makes a forgotten kind a compile error, exactly as a `switch` with
+ * no `default` did; the fallback is what a kind nobody compiled in gets at
+ * run time, instead of `undefined`.
+ */
+export function unknownKind<T>(_kind: never, fallback: T): T {
+  return fallback
 }
 
 /**

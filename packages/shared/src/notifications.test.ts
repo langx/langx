@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
+  acceptedInboxKinds,
   DEFAULT_NOTIFICATION_PREFS,
+  IN_APP_NOTIFICATION_KINDS,
+  INBOX_KINDS_V2_7,
   NOTIFICATION_CHANNELS,
   NOTIFICATION_TYPES,
   notificationPrefsSchema,
@@ -274,5 +277,29 @@ describe('notificationsUntouched', () => {
   it("takes v1's silence as a decision and its default as none", () => {
     expect(notificationsUntouched(false)).toBe(false)
     expect(notificationsUntouched(true)).toBe(true)
+  })
+})
+
+describe('acceptedInboxKinds', () => {
+  it('gives a client that declares nothing only what 2.7 can draw', () => {
+    for (const declared of [undefined, null, '', ' , ', 42, {}, [], ['nonsense']]) {
+      expect(acceptedInboxKinds(declared)).toEqual(INBOX_KINDS_V2_7)
+    }
+    expect(INBOX_KINDS_V2_7).not.toContain('commentReply')
+  })
+
+  it('honours a declaration, in either shape', () => {
+    expect(acceptedInboxKinds(IN_APP_NOTIFICATION_KINDS.join(','))).toEqual(
+      IN_APP_NOTIFICATION_KINDS,
+    )
+    expect(acceptedInboxKinds(['follow, commentReply', 'like'])).toEqual([
+      'follow',
+      'like',
+      'commentReply',
+    ])
+  })
+
+  it('ignores a kind this server has never heard of', () => {
+    expect(acceptedInboxKinds('follow,somethingFromTheFuture')).toEqual(['follow'])
   })
 })

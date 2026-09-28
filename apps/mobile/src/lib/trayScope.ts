@@ -4,6 +4,7 @@ import {
   type InAppNotification,
   type TraySync,
 } from '@langx/shared'
+import { unknownKind } from './notificationInbox'
 
 /**
  * Which notifications in the OS shade a read has made stale.
@@ -74,6 +75,9 @@ export function belongsTo(data: unknown, scope: TrayScope): boolean {
       return kind === 'profileVisits'
     case 'walletPool':
       return kind === 'wallet'
+    // A row of a kind this build does not know owns no push it could name.
+    default:
+      return unknownKind(row.kind, false)
   }
 }
 

@@ -50,6 +50,7 @@ export default function VerifyEmailScreen() {
     if (!token || busy) return
     setBusy(true)
     setError(null)
+    let leaving = false
     try {
       // No `callbackURL`: with one, Better Auth answers a bad token with a
       // redirect instead of an error, and the app would read a failure as a
@@ -64,9 +65,13 @@ export default function VerifyEmailScreen() {
       // The only place the email path can be counted: it is the first moment
       // the app knows a mailed link was actually opened by the person.
       track({ name: 'signup_verified', properties: { method: 'email' } })
+      leaving = true
       router.replace('/')
     } finally {
-      setBusy(false)
+      // Only on the path that stays: resetting state in the same tick as the
+      // `replace` that removes this screen is a white page on Android
+      // (`src/lib/leavingScreenState.test.ts`).
+      if (!leaving) setBusy(false)
     }
   }
 

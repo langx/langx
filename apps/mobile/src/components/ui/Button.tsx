@@ -67,7 +67,14 @@ export function Button({
   const drop = small ? 3 : 4
 
   return (
-    <View style={[styles.wrap, isDisabled && styles.disabled, style]}>
+    <View
+      // Always a real view too: `disabled` is an opacity, and an opacity below
+      // one also stops a view being flattened. A form whose request settles
+      // as it navigates away (the report screen: pending → done → back) flips
+      // it in exactly the commit described on the face below.
+      collapsable={false}
+      style={[styles.wrap, isDisabled && styles.disabled, style]}
+    >
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled, busy: loading }}
@@ -81,6 +88,17 @@ export function Button({
       >
         {({ pressed }) => (
           <View
+            /*
+             * Always a real view. The press adds a `transform`, and on
+             * Android's Fabric a view that gains one stops being flattened
+             * into its parent — so every press created a native view and
+             * moved the label into it. When the same press navigated this
+             * screen away (`router.replace`), that move landed in the commit
+             * that detaches the screen, and Fabric failed with "addViewAt:
+             * … already has a parent": a white page in a release build. The
+             * onboarding finish button did exactly that on every tap.
+             */
+            collapsable={false}
             style={[
               small ? styles.faceSmall : styles.face,
               {

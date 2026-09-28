@@ -52,6 +52,7 @@ export default function MagicLinkScreen() {
     if (!token || busy) return
     setBusy(true)
     setError(null)
+    let leaving = false
     try {
       const { error: verifyError } = await withSignInProgress(() =>
         authClient.magicLink.verify({
@@ -66,9 +67,13 @@ export default function MagicLinkScreen() {
       // client's own listener list does not include this endpoint. Harmless
       // on native, where the Expo client already notified.
       authClient.$store.notify('$sessionSignal')
+      leaving = true
       router.replace('/')
     } finally {
-      setBusy(false)
+      // Only on the path that stays: resetting state in the same tick as the
+      // `replace` that removes this screen is a white page on Android
+      // (`src/lib/leavingScreenState.test.ts`).
+      if (!leaving) setBusy(false)
     }
   }
 

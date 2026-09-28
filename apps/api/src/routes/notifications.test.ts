@@ -1,3 +1,4 @@
+import { IN_APP_NOTIFICATION_KINDS, INBOX_KINDS_HEADER } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { ObjectId } from 'mongodb'
@@ -640,6 +641,105 @@ describe('notification centre', () => {
 
       await markRead(mine, rows[0]?._id)
       expect((await unread(theirs)).json<{ total: number }>().total).toBe(1)
+    })
+  })
+
+  /**
+   * A kind added after 2.7 reaches only a client that says it can draw it.
+   *
+   * The 2.7 store build throws on a kind it does not know, inside the list's
+   * render, and an OTA cannot reach every copy of it. So a request without
+   * `INBOX_KINDS_HEADER` is that build, and every read path answers it as if
+   * the newer rows were not there — the list, the bell and both reads.
+   */
+  describe('what a client can draw', () => {
+    const NEW = { [INBOX_KINDS_HEADER]: IN_APP_NOTIFICATION_KINDS.join(',') }
+
+    function as(user: SignedUpUser, declares: boolean) {
+      const headers = { cookie: user.cookie, ...(declares ? NEW : {}) }
+      return {
+        list: async () =>
+          (await app.inject({ method: 'GET', url: '/me/notifications', headers })).json<{
+            items: InboxRow[]
+          }>().items,
+        unread: async () =>
+          (await app.inject({ method: 'GET', url: '/me/notifications/unread', headers })).json<{
+            total: number
+          }>().total,
+        read: async (id?: string) =>
+          (
+            await app.inject({
+              method: 'POST',
+              url: '/me/notifications/read',
+              headers,
+              payload: id ? { id } : {},
+            })
+          ).json<{ read: number }>().read,
+      }
+    }
+
+    /** Two replies on one post and a follow — a pile of the new kind, and an old one. */
+    async function seed(prefix: string) {
+      const reader = await newUser(`${prefix}-reader@example.com`)
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const postId = new ObjectId(await post(reader, 'Somebody answered my comment.'))
+      for (const [actor, refId] of [
+        [a, 'reply-1'],
+        [b, 'reply-2'],
+      ] as const) {
+        await recordNotification(handle.db, {
+          userId: reader.userId,
+          kind: 'commentReply',
+          refId,
+          actorId: actor.userId,
+          postId,
+        })
+      }
+      await follow(a, reader.userId)
+      await inbox(reader, 1)
+      return { reader, postId: postId.toHexString() }
+    }
+
+    it('never lists or counts it for a client that declared nothing', async () => {
+      const { reader } = await seed('gate-old')
+      const old = as(reader, false)
+
+      expect((await old.list()).map((row) => row.kind)).toEqual(['follow'])
+      expect(await old.unread()).toBe(1)
+    })
+
+    it('lists it, piled on its post, for a client that declared it', async () => {
+      const { reader, postId } = await seed('gate-new')
+      const rows = await as(reader, true).list()
+
+      expect(rows.map((row) => row.kind).sort()).toEqual(['commentReply', 'follow'])
+      // Grouping is untouched by the gate: two replies, one row, one other.
+      expect(rows.find((row) => row.kind === 'commentReply')).toMatchObject({ postId, count: 1 })
+      expect(await as(reader, true).unread()).toBe(2)
+    })
+
+    it('leaves it unread when an old client marks everything read', async () => {
+      const { reader } = await seed('gate-mark-all')
+
+      expect(await as(reader, false).read()).toBe(1)
+      expect(await as(reader, false).unread()).toBe(0)
+      // Nobody has looked at the replies, so the build that can show them
+      // still finds them new.
+      expect(await as(reader, true).unread()).toBe(1)
+      expect(await as(reader, true).read()).toBe(2)
+      expect(await as(reader, true).unread()).toBe(0)
+    })
+
+    it('will not read one of its rows by id for a client that cannot draw it', async () => {
+      const { reader } = await seed('gate-mark-one')
+      const reply = (await as(reader, true).list()).find((row) => row.kind === 'commentReply')
+
+      expect(await as(reader, false).read(reply?._id)).toBe(0)
+      expect(await as(reader, true).unread()).toBe(2)
+      // The build that can draw it reads the whole pile.
+      expect(await as(reader, true).read(reply?._id)).toBe(2)
+      expect(await as(reader, true).unread()).toBe(1)
     })
   })
 

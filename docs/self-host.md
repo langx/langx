@@ -25,8 +25,8 @@ a voice note recorded in a browser is stored as recorded — WebM, which iPhones
 cannot play, and which the app then says it cannot play — and every voice note
 is drawn as even bars instead of its waveform, no `TTS_URL`
 means "Read it aloud" on a member's own Echo card fails with a clear error
-while a pack's readings, made offline, still play, and no `STT_URL` means a
-voice note offers no "Show text". That is deliberate — a self-hoster should be able to
+while a pack's readings, made offline, still play, and a voice note offers no
+"Show text". That is deliberate — a self-hoster should be able to
 get a working instance before deciding which paid services they want.
 
 ## Quick start
@@ -233,17 +233,24 @@ key.
 
 `apps/tts` is the one part of the API that is not the API: a Python process
 holding Kokoro-82M, which reads a member's own Echo card aloud on request.
-It is separate because the model and its runtime are a few hundred megabytes
+It is separate because the models and their runtime are more than a gigabyte
 that the API's image and 512 MB have no room for, and optional because
 nothing else depends on it. It also writes Chinese and Japanese chat
 messages in Latin letters (`POST /romanize`: pinyin through jieba and
 pypinyin, romaji through cutlet and unidic-lite); without it, those two
 languages simply get no "Show in Latin letters" row, while the scripts the
-app romanizes on the phone are unaffected.
+app romanizes on the phone are unaffected. And it writes a chat voice note out
+as text when somebody taps "Show text" (`POST /transcribe`: faster-whisper's
+multilingual `small`, MIT like the Whisper weights it was converted from);
+without it the app is told there is no transcript service and never draws the
+button.
 
 Locally, follow the docstring in `apps/tts/server.py` — a venv, the two model
-files from the kokoro-onnx release, espeak-ng and ffmpeg from your package
-manager — and point the API at it with `TTS_URL=http://localhost:8090`.
+files from the kokoro-onnx release, the Whisper model from Hugging Face,
+espeak-ng and ffmpeg from your package manager — and point the API at it with
+`TTS_URL=http://localhost:8090`. Whisper is loaded by the first transcription
+rather than at start, so a local run that never asks for one never needs the
+model on disk.
 
 In production it is the Fly app `langx-tts`, built from `apps/tts/Dockerfile`
 and deployed by `deploy-tts.yml` (`flyctl deploy apps/tts`) on every merge
@@ -265,42 +272,12 @@ before it could read anything. A deploy still replaces the machine and Fly may
 drop a snapshot, so the API waits sixty seconds for the cold case and the app
 shows a spinner.
 
-## The transcript service
-
-`apps/stt` is the voice service's sibling: a Python process holding
-faster-whisper's multilingual `small` model (MIT, like the Whisper weights it
-was converted from), which writes a chat voice note out as text when somebody
-taps "Show text". Separate for the same reason — half a gigabyte of model the
-API has no room for — and optional: without `STT_URL` the app is told there is
-no transcript service and never draws the button.
-
-Locally, follow the docstring in `apps/stt/server.py` — a venv and the model
-downloaded from Hugging Face; no system packages, since PyAV's wheel carries
-the decoders — and point the API at it with `STT_URL=http://localhost:8091`.
-
-In production it is the Fly app `langx-stt`, built from `apps/stt/Dockerfile`
-and deployed by `deploy-stt.yml` on every merge that touches the directory.
-It is set up once, by hand, in this order:
-
-1. `fly apps create langx-stt` in the same organisation as the API, so the
-   two share its private network.
-2. `fly ips allocate-v6 --private -a langx-stt` — a Flycast address and no
-   public IP, exactly as for the voice service.
-3. Generate a long random secret (`openssl rand -hex 32`) and set it on the
-   service: `fly secrets set -a langx-stt STT_SECRET=…`.
-4. `fly tokens create deploy -a langx-stt` and store the token as the GitHub
-   Actions secret `FLY_STT_API_TOKEN` — its own token, scoped to this app.
-5. Run the _Deploy STT_ workflow by hand (it has `workflow_dispatch`), or
-   `flyctl deploy apps/stt` from the repository root. The build downloads the
-   model and runs `selftest.py`, so a broken image fails there.
-6. Give the API both values: `STT_URL=http://langx-stt.flycast` — no port,
-   for the reason given for `TTS_URL` above — and the same `STT_SECRET`.
-
-It sleeps by `suspend` and wakes on the first request, like the voice service.
 A transcript takes longer than a reading — a note can be two minutes of
 speech — so the API waits two minutes for it and the app shows "Writing it
-out…" meanwhile. The machine is `shared-cpu-4x` with 2 GB; if notes routinely
-take too long, a larger CPU is a `fly.toml` change, not a code change.
+out…" meanwhile. The first one after the machine boots also loads Whisper, a
+few seconds more. The machine is `shared-cpu-4x` with 3 GB, which its
+`fly.toml` explains from a measurement; if notes routinely take too long, a
+larger CPU is a `fly.toml` change, not a code change.
 
 ## Storage: B2 or R2
 

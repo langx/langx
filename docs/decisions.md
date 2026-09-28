@@ -5763,8 +5763,8 @@ rejected: a new block would stay stale for the life of the cache.
 
 "Show text" under a voice note could have been a call to a cloud speech API —
 Google, Deepgram, OpenAI's hosted Whisper — in a day's work and with better
-accuracy on a good day. It is `apps/stt` instead, a faster-whisper process on
-a private Fly app of our own, for three reasons in order of weight.
+accuracy on a good day. It is faster-whisper instead, inside the voice service
+on the private Fly app we already run, for three reasons in order of weight.
 
 **A voice note is the most private thing in a thread.** It is somebody's
 voice, saying something to one other person. Storing it in our bucket is the
@@ -5785,9 +5785,27 @@ worth of CPU. It is not a paywall and a refusal is a plain alert.
 **The licence is clean all the way down**: faster-whisper, the Whisper weights
 and Systran's CTranslate2 conversion are all MIT, and the image downloads a
 pinned revision of that conversion. `small` in int8 on the CPU, because it is
-the largest multilingual size that fits a 2 GB machine and the first that is
+the largest multilingual size that fits beside Kokoro and the first that is
 honestly useful beyond English — a wrong word is worse in the language
 somebody is learning than in their own, and that is where `base` fails.
+
+**It lives in the voice service, not beside it.** The first version was
+`apps/stt`, a Fly app of its own on the voice service's pattern, and it never
+ran: its deploy failed on a merge because the app and its deploy token did not
+exist yet, and creating them was six manual steps for a feature used a few
+times an hour. Folding it into `apps/tts` removed all of them — the machine
+is already paid for, already private, already asleep between requests, and
+already deployed by `deploy-tts.yml` on every merge — and one `TTS_URL` now
+turns on both directions. What that cost is a bigger machine: Kokoro, a full
+Piper cache and Whisper reading a long note peak above 2 GB together, so the
+voice service went from `shared-cpu-2x`/2 GB to `shared-cpu-4x`/3 GB (its
+`fly.toml` has the measurement), a cent an hour more while awake and nothing
+while asleep. It is also past the 2 GB Fly recommends for suspending, which
+makes its snapshot slower to write and read back; the alternative was a
+machine that runs out of memory on the longest notes. What was kept apart is
+the waiting: Whisper has a lock of its own, so a two-minute note never holds
+up a one-sentence reading, and it is loaded by the first transcription rather
+than at boot, so a cold start for a reading is no slower than it was.
 
 Two shapes follow from what a language exchange knows that Whisper does not.
 **The two people's languages go with the note** as candidates, and the service
@@ -5944,3 +5962,29 @@ that cannot draw the row are gone, and the post's author keeps the
 post author who is also in the thread gets the reply push instead of the
 comment push, never both. `postComment` was not reused for the others because
 it says "commented on your post", which is false for them.
+
+_27 September 2026, later: the rows are on, behind a declaration._ Waiting for
+the 2.7 build to be gone was waiting for something that does not happen: the
+OTA reaches a 2.7 binary only once it has been opened and restarted, and never
+reaches an older one, whose fingerprint it does not match. The version header
+cannot tell them apart either — it names the binary, not the JavaScript inside
+it. So the client now says what it can draw. Every request carries
+`x-inbox-kinds` (`INBOX_KINDS_HEADER`), a comma-separated list of the kinds the
+build was compiled with, and the socket carries the same list as
+`auth.inboxKinds`. A client that says nothing is treated as 2.7 and is sent
+only `INBOX_KINDS_V2_7`, the eight kinds every build since the centre has
+drawn, written down once in `packages/shared` and never to be added to. Every
+read path takes the list: the page, its grouping, the bell's count, a
+single-row read (a row of a kind you were never shown reads nothing) and
+"Mark all read" (which leaves the kinds you cannot see unread, for the build
+that can). `notification:new` goes to a room per kind, `inboxRoom`, which a
+socket joins only for the kinds it declared, and `notification:read` goes to
+the rooms of the kinds the read touched. `COMMENT_REPLY_INBOX_ROWS` is gone and
+`commentReply` rows are written for everybody in the thread, the post's author
+included. The price is on the old builds and it is a missing row, not a crash:
+a post author on 2.7 who is in the thread gets the reply push and no row, where
+the flag had given them a `postComment` one. The client got the net the old one
+lacked as well — every `switch` over the kind has a `never`-typed `default`,
+malformed rows are dropped before the list sees them, and each row renders
+inside `RowBoundary` — so the next kind needs only its entry in
+`IN_APP_NOTIFICATION_KINDS`.

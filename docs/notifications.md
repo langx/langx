@@ -458,19 +458,40 @@ happened, read by a bell in the Me header and a screen behind it.
 | -------------------------------------------------------- | ---------------------------------- | ----------------------------------- |
 | `follow`                                                 | `routes/follows.ts`                | the follower's id                   |
 | `postComment` / `postCorrection` / `pronunciationAnswer` | `routes/feed.ts` → `tellTheAuthor` | the reply's own id                  |
-| `commentReply` — **not written yet**, see below          | `routes/feed.ts` → `tellTheThread` | the reply's own id                  |
+| `commentReply` — only to a client that declares it       | `routes/feed.ts` → `tellTheThread` | the reply's own id                  |
 | `like`                                                   | `routes/likes.ts`                  | `<targetType>:<targetId>:<actorId>` |
 | `badgeEarned`                                            | `notifications/badges.ts`          | the badge id                        |
 | `walletPool`                                             | `tokens/pool.ts`, at the payout    | the pool day                        |
 | `profileVisits`                                          | `notifications/profileVisits.ts`   | the local day                       |
 
-`commentReply` is in `IN_APP_NOTIFICATION_KINDS` and the client can draw it,
-but `COMMENT_REPLY_INBOX_ROWS` keeps the server from writing it: the 2.7 store
-build renders this list through a `switch` with no `default`, and an unknown
-kind throws inside the render instead of drawing a blank row. Until the builds
-that cannot draw it are gone, a reply to your comment is a push only — and the
-post's author, when the reply lands on their post, still gets the `postComment`
-row they always did.
+### Which kinds a client is sent
+
+The 2.7 store build, and every build before it, renders this list through a
+`switch` with no `default`: a kind it does not know throws inside the render
+and takes the screen down. An OTA does not reach all of them, so the server
+sends each client only the kinds it says it can draw.
+
+- **The declaration.** `x-inbox-kinds` (`INBOX_KINDS_HEADER`) on every REST
+  request, a comma-separated list; `auth.inboxKinds` on the socket handshake.
+  The app sends `IN_APP_NOTIFICATION_KINDS` as it was compiled, which the
+  compiler vouches for. `acceptedInboxKinds` keeps the names the server knows.
+- **Nothing declared** is a 2.7-or-older build and gets `INBOX_KINDS_V2_7` —
+  the eight kinds before `commentReply`. That list never grows.
+- **Gated:** the page and its grouping, the bell, a single-row read (a row the
+  client was never shown reads nothing) and "Mark all read" (the kinds it
+  cannot see stay unread for a build that can). `notification:new` goes to
+  `inboxRoom(userId, kind)`, joined per declared kind; `notification:read` to
+  the rooms of the kinds the read touched.
+- **Not gated:** the silent push's `inboxClear`. It goes to phones with no
+  socket, whose JavaScript nothing names, and carries no row — so it counts
+  every kind, which can only keep a push in the shade longer, never clear one
+  about something unread.
+
+So a reply to your comment is a `commentReply` row for a build that declares it
+and a push only on 2.7 — for the post's author in the thread too, who on that
+build no longer gets a `postComment` row for it. The client has its own net as
+well: unknown kinds and malformed rows are dropped before the list, and each
+row draws inside `RowBoundary`.
 
 ### The five rules it runs on
 

@@ -1,8 +1,9 @@
 # Making the chat feel current — roadmap
 
-## Status on 26 September 2026
+## Status on 28 September 2026
 
-**Stage 1 under way.** Sixteen pull requests in three stages, each one
+**All done except PR 16 (GIFs, dropped); the native map preview (#1638)
+waits for a native build.** Sixteen pull requests in three stages, each one
 separate. Every PR below has a `Status:` line of its own under its heading,
 and the PR that does the work updates that line and no other — so two PRs in
 flight never edit the same lines of this file.
@@ -170,7 +171,7 @@ Status: done (#1614)
 
 ### PR 7 — Transliteration: how it reads
 
-Status: in review
+Status: done (#1616, #1617)
 
 Open source, no Google — Behic's decision, replacing the first draft on
 `romanizeText` (Preview, no Chinese or Korean, billed per character). Two
@@ -205,15 +206,19 @@ PRs; see `docs/decisions.md` → _Transliteration runs on rules we own_.
 
 ### PR 8 — Voice note transcripts, on a Whisper service
 
-Status: in review
+Status: done (#1631, #1639)
 
-- A new `apps/stt/` on the `apps/tts` pattern: Python, faster-whisper (MIT),
-  the `small` model in int8, `POST /transcribe` taking audio and a language
-  hint, an `X-STT-Secret` header, scale-to-zero on Fly, with `fly.toml`,
-  `Dockerfile` and `selftest.py`.
-- API: `STT_URL` and `STT_SECRET` (`env.ts`, `.env.example`), and
-  `createSttProvider` in `apps/api/src/stt/`, which is null when they are
-  unset — and then the feature is hidden.
+- Transcription runs inside the voice service, `apps/tts`: faster-whisper
+  (MIT), the `small` model in int8, `POST /transcribe` taking audio and a
+  language hint, behind the same `X-TTS-Secret` header, with a lock of its own
+  and the model loaded on the first transcription. It first shipped as a
+  separate `apps/stt` Fly app; that app was never created, so its deploy
+  failed, and it was folded into the machine that already existed and already
+  sleeps (`docs/decisions.md` → _Voice notes are written out on a machine of
+  ours_). `apps/tts/fly.toml` grew to `shared-cpu-4x` with 3 GB for it.
+- API: `createSttProvider` in `apps/api/src/stt/` reads the voice service's
+  own `TTS_URL` and `TTS_SECRET`, and is the not-configured provider when
+  they are unset — and then the feature is hidden.
 - Quota: `transcriptsPerDay` in `limits.ts` (`PlanLimits`, all three plans,
   `QUOTA_KINDS`, `QUOTA_LIMIT_KEY`) and `TrackedQuotaKind` in `quota.ts`; the
   website and GitBook copies follow.
@@ -225,7 +230,7 @@ Status: in review
 
 ### PR 9 — "Send later" and "Send in their morning"
 
-Status: in review
+Status: done (#1627)
 
 - A new `scheduledMessages` collection (`collections.ts`) with its repository
   in `modules/chat/scheduled.ts`. Indexes `{ status, sendAt }` and
@@ -250,7 +255,7 @@ Status: in review
 
 ### PR 10 — Formatting and spoilers
 
-Status: in review
+Status: done (#1619)
 
 - `packages/shared/src/formatting.ts` (+ test): `*bold*`, `_italic_`,
   `~strikethrough~` and `||spoiler||` become a list of spans — word-boundary
@@ -261,7 +266,7 @@ Status: in review
 
 ### PR 11 — React with any emoji
 
-Status: in review
+Status: done (#1625)
 
 - `reactToMessageSchema`: `z.enum(MESSAGE_REACTIONS)` becomes a single-emoji
   check (the `isBigEmoji` / `bigEmojiCount === 1` logic moves to shared, or is
@@ -284,7 +289,7 @@ Status: done (#1611)
 
 ### PR 13 — Search within a conversation
 
-Status: in review
+Status: done (#1624)
 
 - `GET /conversations/:id/search?q=`: a repository function with a
   participant check and an escaped, case-insensitive regex, scanning one
@@ -297,7 +302,7 @@ Status: in review
 
 ### PR 14 — A conversation picker, forwarding, and sharing a profile into a chat
 
-Status: in review
+Status: done (#1628)
 
 - A new `components/ConversationPicker`: a sheet over the `chats.tsx` data,
   with search.
@@ -312,7 +317,7 @@ Status: in review
 
 ### PR 15 — Conversation starters
 
-Status: in review
+Status: done (#1621)
 
 - `packages/shared`: a list of topic ids; their wording lives in i18n
   (`chat.topics.*`).
@@ -343,7 +348,7 @@ not allowed; revisit with another provider later.
 
 ### Emoticons become emoji, when asked
 
-Status: in review
+Status: done (#1618)
 
 Not in the survey; Behic asked for it: typing `:D` should offer 😄.
 
@@ -359,7 +364,7 @@ Not in the survey; Behic asked for it: typing `:D` should offer 😄.
 
 ### Share a location, once
 
-Status: in review
+Status: done (#1633, #1637)
 
 Not in the survey; Behic asked for it. Not live: one point, sent once.
 
@@ -373,10 +378,15 @@ Not in the survey; Behic asked for it. Not live: one point, sent once.
   is stored as sent. The place name is resolved on the device; there is no
   map image, provider or key, so it ships over the air.
 - The media lock applies, as it does to a photo.
+- Fixed after launch: a second share froze the dialogs on iOS. The precision
+  sheet came back inside the attach menu's slide-out and iOS silently refused
+  to present it, leaving an invisible sheet at the head of the alert queue.
+  `AlertHost` now waits for `onDismiss` (`alertPresentation.ts`); the GPS fix
+  and the geocode have timeouts, and the "+" spins while locating.
 - A native map preview on top of the card (`expo-maps`; Apple Maps / Google
   Maps), non-interactive, a pin for exact and a ~1 km circle for approximate,
   and the card alone wherever the build cannot draw one. Needs a store build
-  and `GOOGLE_MAPS_ANDROID_API_KEY` in EAS. Status: in review
+  and `GOOGLE_MAPS_ANDROID_API_KEY` in EAS. Status: done (#1638)
 
 ---
 

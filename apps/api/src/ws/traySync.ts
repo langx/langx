@@ -1,4 +1,9 @@
-import { TRAY_SYNC_KIND, TRAY_SYNC_MAX_THREADS, type TraySync } from '@langx/shared'
+import {
+  IN_APP_NOTIFICATION_KINDS,
+  TRAY_SYNC_KIND,
+  TRAY_SYNC_MAX_THREADS,
+  type TraySync,
+} from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import type { Db } from 'mongodb'
 import { countUnread, unreadThreadIds } from '../modules/chat/messages'
@@ -23,7 +28,18 @@ export async function traySyncFor(
     countUnread(db, userId),
     // One over the limit, to know the list would have been cut short.
     unreadThreadIds(db, userId, TRAY_SYNC_MAX_THREADS + 1),
-    countUnreadNotifications(db, userId),
+    /*
+     * Every kind, whatever the phones can draw. This goes to devices with no
+     * socket, so nothing says which JavaScript they run — and it carries no
+     * row and no number, only whether the pushes about the centre may leave
+     * the shade. Counting every kind can only keep a push there too long: a
+     * 2.7 phone keeps its `social` pushes while a `commentReply` it cannot
+     * show is unread, until its own sweep on the next open — which asks as
+     * 2.7 does, row by row — clears the ones whose rows it has read. Counting
+     * fewer could clear a newer phone's push about a row nobody has read,
+     * which is the worse mistake.
+     */
+    countUnreadNotifications(db, userId, IN_APP_NOTIFICATION_KINDS),
   ])
   return {
     kind: TRAY_SYNC_KIND,

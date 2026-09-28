@@ -213,26 +213,18 @@ const envSchema = z.object({
   FFMPEG_PATH: z.string().min(1).default('ffmpeg'),
 
   /*
-   * The voice service, for a member's own Echo card. A separate process (see
-   * `apps/tts`) because the model and its runtime are a few hundred megabytes
-   * of Python that the API's own image and 512 MB have no room for. Unset,
-   * "Read it aloud" fails with a clear error and everything else is untouched;
-   * a pack's readings were made offline and never pass through here. The
-   * secret is belt-and-braces on a private network, and mirrors what the
-   * service itself checks.
+   * The voice service, for a member's own Echo card and for "Show text" on a
+   * chat voice note — it reads aloud with Kokoro and Piper and writes out with
+   * Whisper. A separate process (see `apps/tts`) because the models and their
+   * runtime are a gigabyte and more of Python that the API's own image and
+   * 512 MB have no room for. Unset, "Read it aloud" fails with a clear error,
+   * the app is told there are no transcripts and draws no button for them,
+   * and everything else is untouched; a pack's readings were made offline and
+   * never pass through here. The secret is belt-and-braces on a private
+   * network, and mirrors what the service itself checks.
    */
   TTS_URL: emptyToUndefined(z.url().optional()),
   TTS_SECRET: emptyToUndefined(z.string().optional()),
-
-  /*
-   * The transcript service, for "Show text" on a chat voice note. A separate
-   * process (see `apps/stt`) for the voice service's reason: Whisper is half a
-   * gigabyte of model under Python. Unset, the app is told there is no such
-   * service and does not draw the button; everything else is untouched. The
-   * secret mirrors what the service checks, as `TTS_SECRET` does.
-   */
-  STT_URL: emptyToUndefined(z.url().optional()),
-  STT_SECRET: emptyToUndefined(z.string().optional()),
 
   // Faz 6: translation. Left unset, `/translate` returns a clear
   // TRANSLATION_NOT_CONFIGURED-style error; every other route still works.

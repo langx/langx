@@ -6,7 +6,7 @@ import { Linking, Platform, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { useSignalAppReady } from '../hooks/useAppReady'
 import { makeStyles, useTheme } from '../lib/theme'
-import { showToast, TOAST_DURATION_MS } from '../lib/toast'
+import { ACTION_TOAST_DURATION_MS, showToast } from '../lib/toast'
 import { currentTranslate } from '../i18n/runtime'
 import { useLocale, useT } from '../i18n'
 import { Button } from './ui/Button'
@@ -82,7 +82,7 @@ export function AppGate({ children }: { children: ReactNode }) {
         // effect runs once, and taking `t` as a dependency would re-run the
         // whole check every time the locale changes.
         const translate = currentTranslate()
-        showToast(translate('update.downloaded'), TOAST_DURATION_MS, {
+        showToast(translate('update.downloaded'), ACTION_TOAST_DURATION_MS, {
           label: translate('update.restart'),
           onPress: () => void Updates.reloadAsync(),
         })

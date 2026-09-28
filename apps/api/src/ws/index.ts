@@ -20,7 +20,7 @@ import type { FastifyInstance } from 'fastify'
 import { createAdapter } from '@socket.io/mongo-adapter'
 import { Server as SocketIOServer } from 'socket.io'
 import { z, ZodError } from 'zod'
-import { ERROR_CODES } from '@langx/shared'
+import { acceptedInboxKinds, ERROR_CODES, INBOX_KINDS_AUTH_KEY } from '@langx/shared'
 import { ApiError } from '../lib/ApiError'
 import { consumeQuota } from '../lib/quota'
 import { effectiveTier } from '../modules/profiles/entitlement'
@@ -56,7 +56,7 @@ import { fanOutConversationPinned, fanOutMessage, fanOutMessageUpdate } from './
 import { sendTraySync } from './traySync'
 import { PresenceThrottle, clientBuildOf, touchPresence } from '../modules/presence/presence'
 import { SocketRateLimiter } from './rateLimit'
-import { userRoom, type AppServer, type AppSocket } from './types'
+import { inboxRoom, userRoom, type AppServer, type AppSocket } from './types'
 
 type AckResponse =
   { ok: true; data?: unknown } | { ok: false; error: { code: string; message: string } }
@@ -230,6 +230,15 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
          */
         const deviceId = (socket.handshake.auth as { deviceId?: string } | undefined)?.deviceId
         if (typeof deviceId === 'string' && deviceId.length > 0) socket.data.deviceId = deviceId
+        /*
+         * What this client can draw in the notification centre, from the same
+         * `auth` object. REST reads it from `INBOX_KINDS_HEADER`; this is the
+         * socket's copy of that guard, so `notification:new` is gated exactly
+         * as the list is. Nothing said is a build from 2.7 or before.
+         */
+        socket.data.inboxKinds = acceptedInboxKinds(
+          (socket.handshake.auth as Record<string, unknown> | undefined)?.[INBOX_KINDS_AUTH_KEY],
+        )
         next()
       },
       (error: unknown) => next(error instanceof Error ? error : new Error('UNAUTHENTICATED')),
@@ -240,7 +249,10 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     const userId = socket.data.userId
     socket.data.limiter = new SocketRateLimiter()
     socket.data.presence = new PresenceThrottle()
-    void socket.join(userRoom(userId))
+    void socket.join([
+      userRoom(userId),
+      ...socket.data.inboxKinds.map((kind) => inboxRoom(userId, kind)),
+    ])
 
     /*
      * Every event, not just the first one: see `ACCESS_RECHECK_MS`. This is

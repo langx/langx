@@ -10,7 +10,7 @@ import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
 import { authClient } from '../../src/lib/auth-client'
 import { useIsOnline } from '../../src/hooks/useIsOnline'
-import { authErrorKey } from '../../src/lib/errors'
+import { signInFailureKey } from '../../src/lib/errors'
 import { goBackTo } from '../../src/lib/navigation'
 import { withSignInProgress } from '../../src/lib/signInProgress'
 import { useT } from '../../src/i18n'
@@ -47,9 +47,7 @@ export default function SignIn() {
         authClient.signIn.email({ email, password }),
       )
       if (signInError) {
-        setError(
-          t(authErrorKey(signInError) ?? (online ? 'errors.signInFailed' : 'common.offline')),
-        )
+        setError(t(signInFailureKey(signInError, online)))
         return
       }
       /*
@@ -73,6 +71,9 @@ export default function SignIn() {
        * than inside `(auth)`, so nothing unmounts them and the guard alone
        * would leave the reader sitting on them. They keep their call.
        */
+    } catch {
+      // Thrown before the server could answer — see `signInFailureKey`.
+      setError(t(signInFailureKey(undefined, online)))
     } finally {
       setLoading(false)
     }
