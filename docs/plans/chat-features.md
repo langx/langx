@@ -1,8 +1,9 @@
 # Making the chat feel current — roadmap
 
-## Status on 26 September 2026
+## Status on 28 September 2026
 
-**Stage 1 under way.** Sixteen pull requests in three stages, each one
+**All done except PR 16 (GIFs, dropped); the native map preview (#1638)
+waits for a native build.** Sixteen pull requests in three stages, each one
 separate. Every PR below has a `Status:` line of its own under its heading,
 and the PR that does the work updates that line and no other — so two PRs in
 flight never edit the same lines of this file.
