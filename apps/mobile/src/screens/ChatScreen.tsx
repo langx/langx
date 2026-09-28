@@ -122,8 +122,13 @@ import { goBackTo, openProfile } from '../lib/navigation'
 import { openPaywall } from '../lib/paywall'
 import { lookupWords, wordCardLang } from '../lib/wordLookup'
 import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
-import { captureLocation, geocodePlace, reportLocationFailure } from '../lib/location'
-import { placeLabel } from '../lib/sharedLocation'
+import {
+  captureLocation,
+  geocodePlace,
+  reportLocationFailure,
+  type LocationResult,
+} from '../lib/location'
+import { placeLabel, type GeocodedAddress } from '../lib/sharedLocation'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
@@ -408,6 +413,13 @@ export function ChatScreen({
   const review = useReviewPrompt()
   /** Only for the pill's dress: white ground and accent ring while it has focus. */
   const [sendingMedia, setSendingMedia] = useState(false)
+  /**
+   * Between choosing "Share location" and its sheet: the fix and the place
+   * name, up to a dozen seconds indoors. The "+" turns into a spinner and
+   * stops taking presses, so the wait is visible and a second tap cannot start
+   * a second fix whose sheet would queue behind the first.
+   */
+  const [locating, setLocating] = useState(false)
   /**
    * Picked, and waiting for the send button.
    *
@@ -1011,12 +1023,21 @@ export function ChatScreen({
    * thinking. The server rounds it again regardless.
    */
   async function shareLocation(): Promise<void> {
-    const fix = await captureLocation({ precise: true })
+    setLocating(true)
+    let fix: LocationResult
+    let address: GeocodedAddress | undefined
+    try {
+      fix = await captureLocation({ precise: true })
+      address = fix.ok ? await geocodePlace(fix.lat, fix.lng) : undefined
+    } finally {
+      // Before the sheet, not after it: what is left from here on is the
+      // person's to answer, and the "+" is not what they are waiting on.
+      setLocating(false)
+    }
     if (!fix.ok) {
       await reportLocationFailure(fix.reason, t, 'location.failedTitle')
       return
     }
-    const address = await geocodePlace(fix.lat, fix.lng)
     const area = placeLabel(address, 'approximate')
     const name = partner?.displayName ?? t('chat.them')
     const precision = await chooseAlert(
@@ -2945,6 +2966,7 @@ export function ChatScreen({
                     onPress={() => void openAttachMenu()}
                     disabled={
                       sendingMedia ||
+                      locating ||
                       pendingMedia.length >= MAX_ATTACHMENTS ||
                       // A voice draft is waiting for the send button, and a note
                       // travels alone. Send it or throw it away first.
@@ -2953,7 +2975,11 @@ export function ChatScreen({
                     hitSlop={8}
                     style={styles.attach}
                   >
-                    <Feather name="plus" size={22} color={colors.textMuted} />
+                    {locating ? (
+                      <ActivityIndicator size="small" color={colors.textMuted} />
+                    ) : (
+                      <Feather name="plus" size={22} color={colors.textMuted} />
+                    )}
                   </Pressable>
                 )
               }
