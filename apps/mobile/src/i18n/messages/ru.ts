@@ -1108,6 +1108,7 @@ export const ru: Localized<EnMessages> = {
     phraseCard: 'Выражение',
     meetingCard: 'Предложенное время',
     quizCard: 'Викторина',
+    pollThanks: 'Спасибо!',
     stickers: 'Стикеры',
     stickerBuy: 'Открыть за {price} токенов',
     quizAddOption: 'Добавить вариант',

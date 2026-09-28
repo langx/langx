@@ -22,3 +22,17 @@ export async function openStoreListing(): Promise<void> {
     // No store app and no browser to hand it to — nothing more to do.
   }
 }
+
+/**
+ * The listing opened on its review form, for the "rate us" card under a
+ * broadcast. Apple takes `action=write-review`; Play has no such parameter,
+ * so Android lands on the listing, where the stars are.
+ */
+export async function openStoreReview(): Promise<void> {
+  const url = Platform.OS === 'ios' ? `${STORE_URL}?action=write-review` : STORE_URL
+  try {
+    await Linking.openURL(url)
+  } catch {
+    // As above: nowhere to send it.
+  }
+}
