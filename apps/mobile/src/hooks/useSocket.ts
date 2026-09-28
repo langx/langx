@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { AppState } from 'react-native'
 import type { Socket } from 'socket.io-client'
 import type { MeProfile, MessageDto } from '../api/queries'
+import type { PublicProfileDto } from '../api/types'
 import {
   invalidateNotifications,
   invalidateUnread,
@@ -29,6 +30,7 @@ import {
   type MessagePageDto,
 } from '../lib/messageCache'
 import { clearFromTray, sweepTray } from '../lib/notifications'
+import { applyPresence } from '../lib/presenceCache'
 import { closeSocket, getSocket, restartSocket } from '../lib/socket'
 
 /**
@@ -140,6 +142,16 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
          */
         if (meId && message.senderId !== meId) {
           track({ name: 'message_received', properties: { kind: message.type } })
+          /*
+           * A message is its sender being here. The chat header reads their
+           * presence off a profile cached for five minutes, and it kept
+           * saying "last seen 27 minutes ago" under the message they had just
+           * sent. The prefix, because a profile is cached under its handle as
+           * well as its id; `applyPresence` matches on the id inside.
+           */
+          queryClient.setQueriesData<PublicProfileDto>({ queryKey: ['profile'] }, (old) =>
+            applyPresence(old, message.senderId, message.createdAt),
+          )
         }
 
         queryClient.setQueriesData<InfiniteData<MessagePageDto>>(

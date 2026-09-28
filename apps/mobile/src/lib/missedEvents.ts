@@ -63,5 +63,15 @@ export async function invalidateMissedEvents(queryClient: QueryClient): Promise<
      */
     queryClient.invalidateQueries({ queryKey: ['notifications'] }),
     queryClient.invalidateQueries({ queryKey: ['notificationsUnread'] }),
+    /*
+     * Presence, for the same reason. The chat header reads it off a cached
+     * profile, and `useSocket` moves that forward when a message arrives — but
+     * a message sent while the phone slept arrives as a push, so the header
+     * said "last seen 27 minutes ago" over the message the refetch above had
+     * just brought in. Active queries only, which is the open thread's partner
+     * and any profile on screen, not one per chat row: the list carries its
+     * partners itself.
+     */
+    queryClient.invalidateQueries({ queryKey: ['profile'] }),
   ])
 }

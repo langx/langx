@@ -2946,6 +2946,14 @@ resume: `inactive → active` is the notification shade or Face ID going away a
 second later, the socket never dropped, and on iOS that happens far more
 often.
 
+Presence has the same gap. The chat header reads "last seen" off a cached
+profile, and a message sent while the phone slept left it saying "27 minutes
+ago" under that very message. A `message:new` from someone now moves their
+cached `lastActiveAt` forward (never onto a profile that hides it, never
+backwards), and a resume invalidates the `['profile']` prefix too — only the
+active ones refetch, which is the open thread's partner, not a request per
+chat row, since the list carries its partners itself.
+
 Left as it was: the ~45 s after a resume during which the server may still
 see the old socket in the user's room, so a message sent in that window gets
 neither a push nor a delivery stamp until the ping timeout. That is fan-out
