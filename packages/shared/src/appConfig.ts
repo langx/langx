@@ -119,8 +119,10 @@ export const appConfigResponseSchema = appConfigSchema.extend({
    */
   voiceService: z.boolean(),
   /**
-   * Whether this deployment can write a voice note out as text — whether the
-   * process was started with `STT_URL` — for `voiceService`'s reason.
+   * Whether this deployment can write a voice note out as text — for
+   * `voiceService`'s reason, and from the same `TTS_URL`, because Whisper runs
+   * in the voice service. The two are the same answer today; they are two
+   * fields so the app asks the question it means.
    */
   transcriptService: z.boolean(),
 })

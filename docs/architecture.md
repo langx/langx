@@ -225,14 +225,15 @@ _contents_ live in `GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON` rather than Google's
 usual file-path convention, because a platform secret store holds strings, not
 files.
 
-**Transcripts:** an `SttProvider` interface over `apps/stt`, our own Python
-process running faster-whisper's multilingual `small` model on the CPU — the
-voice service's pattern, on its own private, scale-to-zero Fly app. "Show text"
+**Transcripts:** an `SttProvider` interface over `POST /transcribe` on the
+voice service in `apps/tts`, which runs faster-whisper's multilingual `small`
+model on the CPU beside Kokoro — the same private, scale-to-zero Fly app, with
+a lock of its own so a note and a reading never wait on each other. "Show text"
 under a chat voice note sends the note's bytes from our bucket, with the two
 people's languages as the likely candidates, and keeps the words on the
 attachment (`transcript`), so whoever asks first spends one unit of
 `PLAN_LIMITS.transcriptsPerDay` and everybody after reads it free. Without
-`STT_URL` the app is told `transcriptService: false` and draws no button. See
+`TTS_URL` the app is told `transcriptService: false` and draws no button. See
 `docs/decisions.md` → _Voice notes are written out on a machine of ours_.
 
 ## Auth, age gate and username claim

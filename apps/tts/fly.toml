@@ -15,7 +15,7 @@ primary_region = 'fra'
   PORT = '8080'
 
 # No `[deploy] strategy`: one machine, and a request during the swap simply
-# waits for the new one to boot. Blue-green would double a 2 GB machine for
+# waits for the new one to boot. Blue-green would double a 3 GB machine for
 # a service that answers a few times an hour.
 
 # Private, and asleep between requests. The app has no public IP — only a
@@ -41,9 +41,10 @@ primary_region = 'fra'
 # Two things suspension is not. It is not durable — Fly may drop a snapshot,
 # and a deploy replaces the machine outright — so a cold boot stays a normal
 # event rather than a fault, and the sixty seconds `HttpTtsProvider` allows
-# itself are still sized for one. And it is capped at 4 GB of memory, which
-# the 2 GB below is under, with about 800 MB of that in use once the model is
-# loaded.
+# itself are still sized for one. And it is not free of size: Fly recommends it
+# for machines of 2 GB or less and discourages larger ones, because a bigger
+# snapshot takes longer to write and read back. The machine below is 3 GB for
+# Whisper's sake; see `[[vm]]` for why that is the smaller of two bad trades.
 [http_service]
   internal_port = 8080
   auto_stop_machines = 'suspend'
@@ -51,19 +52,24 @@ primary_region = 'fra'
   min_machines_running = 0
   processes = ['app']
 
-  # One reading at a time — server.py holds a lock around the model — and one
-  # more waiting. Past that the proxy answers 503 rather than queueing a
-  # minute of requests behind a cold start; the API's timeout is sixty seconds
-  # and the app's button shows a spinner, so a refusal is a retry, not a hang.
+  # One reading and one transcription at a time — server.py holds a lock
+  # around each model, separately so that neither waits on the other — and
+  # one more of each waiting. Past that the proxy answers 503 rather than
+  # queueing a minute of requests behind a cold start or a two-minute note;
+  # the app shows a spinner either way, so a refusal is a retry, not a hang.
+  # The proxy counts requests, not routes, so four is the sum rather than a
+  # promise about the mix.
   [http_service.concurrency]
     type = 'requests'
-    soft_limit = 1
-    hard_limit = 2
+    soft_limit = 2
+    hard_limit = 4
 
 # /health answers only once the model is loaded, so the grace period is the
 # load: a few seconds for the fp32 model from a warm disk, longer on a cold
 # machine. Sixty is generous on purpose — a check that fails during the load
-# restarts a machine that was about to be ready.
+# restarts a machine that was about to be ready. Kokoro's load only: Whisper
+# is loaded by the first transcription, not at boot (see `whisper` in
+# server.py), so it adds nothing here.
 [[http_service.checks]]
   interval = '15s'
   timeout = '5s'
@@ -71,10 +77,26 @@ primary_region = 'fra'
   method = 'GET'
   path = '/health'
 
-# 2 GB for a 300 MB model: ONNX Runtime's session and the phonemiser's tables
-# take several times the file, and a machine that swaps mid-read is slower
-# than one that costs a cent more while awake. Two shared vCPUs halve the
-# read time over one, and it is asleep most of the day either way.
+# 3 GB, from a measurement rather than the file sizes. One process with
+# everything this service can hold, measured on 28 September 2026: Kokoro
+# loaded and one reading made, 610 MB resident; three Piper voices in the
+# cache, 900 MB; Whisper `small` loaded in int8, 1.57 GB; and while it reads a
+# one- or two-minute note, peaks of 2.0 to 2.3 GB. A 2 GB machine would be
+# killed for memory by the longest notes once the Piper cache is full, and
+# the kernel takes its share first.
+#
+# Which leaves two trades, and this is the smaller. More memory than Fly
+# recommends for suspending (see `[http_service]`) makes the snapshot slower
+# to write and resume; less makes the service crash under a long note. 3 GB
+# is the measured peak with room for the kernel and the allocator's slack; 4
+# would be further still from Fly's recommendation for a margin nothing
+# measured asks for.
+#
+# Four shared vCPUs rather than two, because transcription is the slow one: a
+# two-minute note is tens of seconds of CPU and the threads divide it, and a
+# reading made alongside it still has cores to run on. Billed per second
+# while awake only — about 2.5 cents an hour at Fly's list price against 1.6
+# for the 2x/2 GB it replaced — and asleep most of the day either way.
 [[vm]]
-  size = 'shared-cpu-2x'
-  memory = '2gb'
+  size = 'shared-cpu-4x'
+  memory = '3gb'
