@@ -455,6 +455,7 @@ export const fr: Localized<EnMessages> = {
     days: { one: '{count} jour', other: '{count} jours' },
     messages: { one: '{count} message', other: '{count} messages' },
     corrections: { one: '{count} correction', other: '{count} corrections' },
+    feed: { one: '{count} dans le fil', other: '{count} dans le fil' },
     accountAgeToday: "aujourd'hui",
     accountAgeDays: { one: 'il y a {count} jour', other: 'il y a {count} jours' },
     accountAgeMonths: { one: 'il y a {count} mois', other: 'il y a {count} mois' },
@@ -1514,7 +1515,6 @@ export const fr: Localized<EnMessages> = {
     editProfile: 'Modifier le profil',
     settings: 'Réglages',
     scan: 'Scanner un code',
-    corrections: 'Corrections',
     wallet: 'Portefeuille',
     previewProfile: 'Aperçu de mon profil',
     previewProfileBody: 'Vois ton profil comme les autres le voient',
@@ -1826,7 +1826,7 @@ export const fr: Localized<EnMessages> = {
     appIconFailed: 'Impossible de changer l’icône',
     showWeekChart: 'Afficher le graphique de la semaine',
     showWeekChartBody:
-      'Les jours où vous avez envoyé des messages et des corrections, sur votre profil.',
+      'Les jours où vous avez été actif dans les discussions et le fil, sur votre profil.',
     voiceCredits: 'Voix et licences',
     voiceCreditsBody:
       'Les messages sont lus à voix haute par des modèles vocaux libres. La plupart ne nous demandent rien ; ceux ci-dessous sont sous licence à condition que nous créditions les personnes qui les ont enregistrés.',
@@ -1952,7 +1952,7 @@ export const fr: Localized<EnMessages> = {
     lockedAccessibility: '{title}, verrouillé',
     lockedStreak: '{current} jours sur {threshold}',
     lockedNeeds: 'Achète d’abord {title}',
-    lockedCorrections: '{current} corrections sur {threshold}',
+    lockedFeed: '{current} sur {threshold} dans le fil',
     frameKind: 'Cadre de profil',
     stickerKind: 'Pack de stickers',
     titleKind: 'Titre',
@@ -2019,7 +2019,7 @@ export const fr: Localized<EnMessages> = {
     shareForDay: 'Votre part du {day}',
     todaySoFar: 'Aujourd’hui',
     activityScore: { one: '{count} d’activité', other: '{count} d’activité' },
-    todayBreakdown: '{messages} messages, {corrections} corrections, {partners} personnes.',
+    todayBreakdown: '{messages} messages, {feed} dans le fil, {partners} personnes.',
     poolParticipants: { one: '{n} actif ce jour-là', other: '{n} actifs ce jour-là' },
     poolShareOfPool: '{percent} de la cagnotte du jour',
     poolActiveToday: { one: '{n} actif aujourd’hui', other: '{n} actifs aujourd’hui' },
@@ -2134,12 +2134,12 @@ export const fr: Localized<EnMessages> = {
     earned: 'Obtenu · {month}',
     earnedLabel: 'Obtenu',
     locked: 'Verrouillé',
-    firstCorrection: 'Première correction',
+    firstFeed: 'Première fois dans le fil',
     streakDays: { one: '{formatted} jour', other: '{formatted} jours' },
     messagesSent: { one: '{formatted} message', other: '{formatted} messages' },
     tokensEarned: { one: '{formatted} jeton gagné', other: '{formatted} jetons gagnés' },
     memberDays: { one: '{formatted} jour de membre', other: '{formatted} jours de membre' },
-    corrections: { one: '{formatted} correction', other: '{formatted} corrections' },
+    feed: { one: '{formatted} dans le fil', other: '{formatted} dans le fil' },
     earlyAdopter: 'Utilisateur de la première heure',
     earnedOf: '{earned} sur {total} obtenus',
     emptyTitle: 'Pas encore de badges',
@@ -2415,7 +2415,7 @@ export const fr: Localized<EnMessages> = {
 
   weekly: {
     messages: 'Messages',
-    summary: 'Cette semaine : {messages} et {corrections}.',
+    summary: 'Cette semaine : {messages} et {feed}.',
   },
 
   watch: {
@@ -2481,10 +2481,7 @@ export const fr: Localized<EnMessages> = {
       one: '{count} message',
       other: '{count} messages',
     },
-    corrections: {
-      one: '{count} correction',
-      other: '{count} corrections',
-    },
+    feed: { one: '{count} dans le fil', other: '{count} dans le fil' },
     echoReviews: {
       one: '{count} carte Echo révisée',
       other: '{count} cartes Echo révisées',

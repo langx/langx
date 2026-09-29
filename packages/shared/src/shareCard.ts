@@ -74,6 +74,12 @@ export const monthlyRecapQuerySchema = z.object({
 export const monthlyRecapSchema = z.object({
   month: z.string(),
   messages: z.number().int().nonnegative(),
+  /** Posts plus corrections, as on a profile's feed tile. */
+  feed: z.number().int().nonnegative(),
+  /**
+   * The same number as `feed`, under the name installed builds read. It
+   * counted corrections alone before the feed replaced that count.
+   */
   corrections: z.number().int().nonnegative(),
   tokens: z.number().int(),
   echoReviews: z.number().int().nonnegative(),

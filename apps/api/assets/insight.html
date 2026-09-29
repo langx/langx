@@ -6,7 +6,7 @@
     <title>LangX — public stats</title>
     <meta
       name="description"
-      content="How much language exchange is actually happening on LangX: members, messages, corrections and the languages they are in."
+      content="How much language exchange is actually happening on LangX: members, messages, the feed and the languages they are in."
     />
     <link rel="icon" href="/public/insight/icon.png" />
     <style>
@@ -410,8 +410,8 @@
             <dd id="t-messages">—</dd>
           </div>
           <div class="tile">
-            <dt>Corrections</dt>
-            <dd id="t-corrections">—</dd>
+            <dt>Feed</dt>
+            <dd id="t-feed">—</dd>
           </div>
           <div class="tile">
             <dt>Languages</dt>
@@ -425,9 +425,7 @@
           <div class="switch" role="group" aria-label="Metric">
             <button type="button" data-metric="members" aria-pressed="true">New members</button>
             <button type="button" data-metric="messages" aria-pressed="false">Messages</button>
-            <button type="button" data-metric="corrections" aria-pressed="false">
-              Corrections
-            </button>
+            <button type="button" data-metric="feed" aria-pressed="false">Feed</button>
           </div>
           <div class="chart">
             <div class="plot" id="plot"></div>
@@ -442,7 +440,7 @@
                   <th>Day</th>
                   <th>New members</th>
                   <th>Messages</th>
-                  <th>Corrections</th>
+                  <th>Feed</th>
                 </tr>
               </thead>
               <tbody id="table"></tbody>
@@ -498,7 +496,7 @@
       const METRICS = {
         members: { title: 'New members', word: 'new members' },
         messages: { title: 'Messages', word: 'messages' },
-        corrections: { title: 'Corrections', word: 'corrections' },
+        feed: { title: 'Feed', word: 'posts and corrections' },
       }
 
       const el = (id) => document.getElementById(id)
@@ -615,7 +613,7 @@
             DAY.format(new Date(point.day)),
             NUM.format(point.members),
             NUM.format(point.messages),
-            NUM.format(point.corrections),
+            NUM.format(point.feed),
           ]) {
             const td = document.createElement('td')
             td.textContent = value
@@ -628,7 +626,7 @@
       function draw() {
         text('t-members', NUM.format(stats.totals.members))
         text('t-messages', NUM.format(stats.totals.messages))
-        text('t-corrections', NUM.format(stats.totals.corrections))
+        text('t-feed', NUM.format(stats.totals.feed))
         text('t-languages', NUM.format(stats.totals.languages))
         text('s-longest', NUM.format(stats.streaks.longest))
         text('s-active', NUM.format(stats.streaks.active))

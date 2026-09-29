@@ -502,6 +502,14 @@ export const ar: Localized<EnMessages> = {
       many: '{count} تصحيحًا',
       other: '{count} تصحيح',
     },
+    feed: {
+      zero: '{count} في الأخبار',
+      one: '{count} في الأخبار',
+      two: '{count} في الأخبار',
+      few: '{count} في الأخبار',
+      many: '{count} في الأخبار',
+      other: '{count} في الأخبار',
+    },
     accountAgeToday: 'اليوم',
     accountAgeDays: {
       zero: 'قبل {count} يوم',
@@ -1742,7 +1750,6 @@ export const ar: Localized<EnMessages> = {
     editProfile: 'تعديل الملف',
     settings: 'الإعدادات',
     scan: 'مسح رمز',
-    corrections: 'التصحيحات',
     wallet: 'المحفظة',
     previewProfile: 'معاينة ملفي الشخصي',
     previewProfileBody: 'شاهد ملفك كما يراه الآخرون',
@@ -2056,7 +2063,7 @@ export const ar: Localized<EnMessages> = {
     appIconChanged: 'تم تغيير الأيقونة.',
     appIconFailed: 'تعذّر تغيير الأيقونة',
     showWeekChart: 'إظهار رسم هذا الأسبوع',
-    showWeekChartBody: 'الأيام التي أرسلت فيها رسائل وتصحيحات، على ملفك.',
+    showWeekChartBody: 'الأيام التي كنت فيها نشطًا في المحادثات والأخبار، على ملفك.',
     voiceCredits: 'الأصوات والتراخيص',
     voiceCreditsBody:
       'تُقرأ الرسائل بصوت عالٍ عبر نماذج صوتية مفتوحة المصدر. معظمها لا يطلب منا شيئًا؛ أما الواردة أدناه فمرخّصة بشرط أن ننسب الفضل لمن سجّلوها.',
@@ -2185,7 +2192,7 @@ export const ar: Localized<EnMessages> = {
     lockedAccessibility: '‏{title}، مقفل',
     lockedStreak: '‏{current} من {threshold} يوم',
     lockedNeeds: 'اشترِ {title} أولًا',
-    lockedCorrections: '‏{current} من {threshold} تصحيح',
+    lockedFeed: '‏{current} من {threshold} في الأخبار',
     frameKind: 'إطار الملف',
     stickerKind: 'حزمة ملصقات',
     titleKind: 'لقب',
@@ -2273,7 +2280,7 @@ export const ar: Localized<EnMessages> = {
       many: '{count} نشاط',
       other: '{count} نشاط',
     },
-    todayBreakdown: '{messages} رسالة، {corrections} تصحيح، {partners} أشخاص.',
+    todayBreakdown: '{messages} رسالة، {feed} في الأخبار، {partners} أشخاص.',
     poolParticipants: {
       zero: 'لا أحد كان نشطًا ذلك اليوم',
       one: 'شخص واحد كان نشطًا ذلك اليوم',
@@ -2415,7 +2422,7 @@ export const ar: Localized<EnMessages> = {
     earned: 'حُصل عليها · {month}',
     earnedLabel: 'حُصل عليها',
     locked: 'مقفلة',
-    firstCorrection: 'أول تصحيح',
+    firstFeed: 'أول مرة في الأخبار',
     streakDays: {
       zero: '{formatted} يوم',
       one: 'يوم واحد',
@@ -2448,13 +2455,13 @@ export const ar: Localized<EnMessages> = {
       many: '{formatted} يومًا كعضو',
       other: '{formatted} يوم كعضو',
     },
-    corrections: {
-      zero: '{formatted} تصحيح',
-      one: 'تصحيح واحد',
-      two: 'تصحيحان',
-      few: '{formatted} تصحيحات',
-      many: '{formatted} تصحيحًا',
-      other: '{formatted} تصحيح',
+    feed: {
+      zero: '{formatted} في الأخبار',
+      one: '{formatted} في الأخبار',
+      two: '{formatted} في الأخبار',
+      few: '{formatted} في الأخبار',
+      many: '{formatted} في الأخبار',
+      other: '{formatted} في الأخبار',
     },
     earlyAdopter: 'من الأوائل',
     earnedOf: 'حصلت على {earned} من {total}',
@@ -2776,7 +2783,7 @@ export const ar: Localized<EnMessages> = {
 
   weekly: {
     messages: 'الرسائل',
-    summary: 'هذا الأسبوع: {messages} و{corrections}.',
+    summary: 'هذا الأسبوع: {messages} و{feed}.',
   },
 
   watch: {
@@ -2845,13 +2852,13 @@ export const ar: Localized<EnMessages> = {
       many: '{count} رسالة',
       other: '{count} رسالة',
     },
-    corrections: {
-      zero: '{count} تصحيح',
-      one: 'تصحيح واحد',
-      two: 'تصحيحان',
-      few: '{count} تصحيحات',
-      many: '{count} تصحيحًا',
-      other: '{count} تصحيح',
+    feed: {
+      zero: '{count} في الأخبار',
+      one: '{count} في الأخبار',
+      two: '{count} في الأخبار',
+      few: '{count} في الأخبار',
+      many: '{count} في الأخبار',
+      other: '{count} في الأخبار',
     },
     echoReviews: {
       zero: '{count} بطاقة Echo مراجَعة',

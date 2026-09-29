@@ -115,9 +115,7 @@ export function badgeLabel(
   const wording: Record<BadgeKind, () => string> = {
     streak: () => t('badges.streakDays', { count: threshold, formatted }),
     correction: () =>
-      threshold === 1
-        ? t('badges.firstCorrection')
-        : t('badges.corrections', { count: threshold, formatted }),
+      threshold === 1 ? t('badges.firstFeed') : t('badges.feed', { count: threshold, formatted }),
     messages: () => t('badges.messagesSent', { count: threshold, formatted }),
     tokens: () => t('badges.tokensEarned', { count: threshold, formatted }),
     veteran: () => t('badges.memberDays', { count: threshold, formatted }),

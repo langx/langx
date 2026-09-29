@@ -343,10 +343,21 @@ export async function listPostsByAuthor(
 /**
  * How many posts `listPostsByAuthor` would page through: the same filter, so
  * the tile's number and the list it opens cannot disagree. On the `author`
- * index.
+ * index, which `since` also fits.
  */
-export async function countPostsByAuthor(db: Db, authorId: string): Promise<number> {
-  return db.collection<Post>(COLLECTIONS.posts).countDocuments({ authorId, ...notHidden() })
+export async function countPostsByAuthor(
+  db: Db,
+  authorId: string,
+  since?: Date,
+  until?: Date,
+): Promise<number> {
+  return db.collection<Post>(COLLECTIONS.posts).countDocuments({
+    authorId,
+    ...(since || until
+      ? { createdAt: { ...(since ? { $gte: since } : {}), ...(until ? { $lt: until } : {}) } }
+      : {}),
+    ...notHidden(),
+  })
 }
 
 export const EMPTY_CORRECTION_SUMMARY = {

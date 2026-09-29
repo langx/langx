@@ -98,7 +98,8 @@ that damages trust.
   tokens could buy a paid feature, farming tokens would become a substitute for
   subscribing.
 - One frame, **Aurora**, cannot be bought at any balance: it needs a 365-day
-  streak _and_ 5,000 corrections written. Say it as an achievement, never as a
+  streak _and_ 5,000 in the feed (posts and corrections, the number on the
+  profile's Feed tile). Say it as an achievement, never as a
   premium tier — the difference is that everybody can see the requirement and
   nobody can pay past it.
 - The store also holds an **hourly gift** (added 5 September 2026): once an
