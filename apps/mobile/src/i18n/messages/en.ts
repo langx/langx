@@ -2513,6 +2513,9 @@ export const en = {
     notSetUp: 'Purchasing is not set up on this platform yet.',
     legal:
       'Subscriptions renew automatically until cancelled. Cancel any time from your Apple or Google account — cancelling stops the next renewal and keeps access until the current period ends.',
+    /** The same promise for a purchase made on the web, which no Apple or Google account holds. */
+    legalWeb:
+      'Subscriptions renew automatically until cancelled. Cancel any time in Settings → Subscription → Manage or cancel — cancelling stops the next renewal and keeps access until the current period ends.',
     trialTerms: {
       one: '{count} day free, then {price} {period}',
       other: '{count} days free, then {price} {period}',

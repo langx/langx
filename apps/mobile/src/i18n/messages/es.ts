@@ -2298,6 +2298,8 @@ export const es: Localized<EnMessages> = {
     notSetUp: 'Las compras todavía no están configuradas en esta plataforma.',
     legal:
       'Las suscripciones se renuevan automáticamente hasta que se cancelan. Puedes cancelar cuando quieras desde tu cuenta de Apple o Google: la cancelación detiene la siguiente renovación y mantiene el acceso hasta el final del periodo en curso.',
+    legalWeb:
+      'Las suscripciones se renuevan automáticamente hasta que se cancelan. Puedes cancelar cuando quieras en Ajustes → Suscripción → Gestionar o cancelar: la cancelación detiene la siguiente renovación y mantiene el acceso hasta el final del periodo en curso.',
     trialTerms: {
       one: '{count} día gratis, después {price} {period}',
       other: '{count} días gratis, después {price} {period}',

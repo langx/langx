@@ -2295,6 +2295,8 @@ export const tr: Localized<EnMessages> = {
     notSetUp: 'Bu platformda satın alma henüz ayarlanmadı.',
     legal:
       'Abonelikler iptal edilene kadar otomatik yenilenir. Apple ya da Google hesabından istediğin zaman iptal edebilirsin — iptal sonraki yenilemeyi durdurur, mevcut dönem sonuna kadar erişimin sürer.',
+    legalWeb:
+      'Abonelikler iptal edilene kadar otomatik yenilenir. Ayarlar → Abonelik → Yönet veya iptal et bölümünden istediğin zaman iptal edebilirsin — iptal sonraki yenilemeyi durdurur, mevcut dönem sonuna kadar erişimin sürer.',
     trialTerms: {
       one: '{count} gün ücretsiz, sonra {period} {price}',
       other: '{count} gün ücretsiz, sonra {period} {price}',

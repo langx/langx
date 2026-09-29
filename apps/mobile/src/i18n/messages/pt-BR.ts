@@ -2297,6 +2297,8 @@ export const ptBR: Localized<EnMessages> = {
     notSetUp: 'As compras ainda não foram configuradas nesta plataforma.',
     legal:
       'As assinaturas se renovam automaticamente até serem canceladas. Você pode cancelar quando quiser na sua conta da Apple ou do Google — o cancelamento interrompe a próxima renovação e mantém o acesso até o fim do período atual.',
+    legalWeb:
+      'As assinaturas se renovam automaticamente até serem canceladas. Você pode cancelar quando quiser em Configurações → Assinatura → Gerenciar ou cancelar — o cancelamento interrompe a próxima renovação e mantém o acesso até o fim do período atual.',
     trialTerms: {
       one: '{count} dia grátis, depois {price} {period}',
       other: '{count} dias grátis, depois {price} {period}',

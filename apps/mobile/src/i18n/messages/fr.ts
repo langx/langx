@@ -2320,6 +2320,8 @@ export const fr: Localized<EnMessages> = {
     notSetUp: 'Les achats ne sont pas encore configurés sur cette plateforme.',
     legal:
       'Les abonnements se renouvellent automatiquement jusqu’à résiliation. Tu peux résilier à tout moment depuis ton compte Apple ou Google — la résiliation arrête le renouvellement suivant et conserve l’accès jusqu’à la fin de la période en cours.',
+    legalWeb:
+      'Les abonnements se renouvellent automatiquement jusqu’à résiliation. Tu peux résilier à tout moment dans Réglages → Abonnement → Gérer ou résilier — la résiliation arrête le renouvellement suivant et conserve l’accès jusqu’à la fin de la période en cours.',
     trialTerms: {
       one: '{count} jour offert, puis {price} {period}',
       other: '{count} jours offerts, puis {price} {period}',

@@ -706,7 +706,13 @@ export default function PaywallScreen() {
           ) : null}
 
           <View style={styles.footnote}>
-            <Text style={styles.legal}>{t('paywall.legal')}</Text>
+            {/*
+              A web purchase is held by RevenueCat's own store, not by Apple or
+              Google, and is cancelled from the portal behind Settings.
+            */}
+            <Text style={styles.legal}>
+              {t(Platform.OS === 'web' ? 'paywall.legalWeb' : 'paywall.legal')}
+            </Text>
             <View style={styles.legalLinks}>
               <Pressable onPress={() => void Linking.openURL(TERMS_URL)} hitSlop={8}>
                 <Text style={styles.legalLink}>{t('paywall.terms')}</Text>

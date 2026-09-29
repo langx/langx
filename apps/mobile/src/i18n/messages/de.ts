@@ -2342,6 +2342,8 @@ export const de: Localized<EnMessages> = {
     notSetUp: 'Käufe sind auf dieser Plattform noch nicht eingerichtet.',
     legal:
       'Abos verlängern sich automatisch, bis sie gekündigt werden. Du kannst jederzeit über dein Apple- oder Google-Konto kündigen — die Kündigung stoppt die nächste Verlängerung, der Zugang bleibt bis zum Ende des laufenden Zeitraums.',
+    legalWeb:
+      'Abos verlängern sich automatisch, bis sie gekündigt werden. Du kannst jederzeit unter Einstellungen → Abo → Verwalten oder kündigen kündigen — die Kündigung stoppt die nächste Verlängerung, der Zugang bleibt bis zum Ende des laufenden Zeitraums.',
     trialTerms: {
       one: '{count} Tag gratis, danach {price} {period}',
       other: '{count} Tage gratis, danach {price} {period}',
