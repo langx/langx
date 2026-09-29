@@ -716,6 +716,68 @@ per language, and `docs/store/listing.md` only carries English. And screenshots
 are keyed off **language, not country**: a listing is shown to whoever reads
 the store in that language, wherever they are.
 
+## One plan: Pro
+
+On 28 September 2026 Fluent and Polyglot became one plan, **Pro**, with
+Polyglot's contents at Fluent's price (`decisions.md` → _One plan: Pro_). The
+code is one PR; the stores and RevenueCat are these steps, none of which needs
+an app version. The app reads every price from the store.
+
+**Prices.** Pro is Fluent's price in every storefront, so no Fluent product
+changes price. The rule of 24 September stays: yearly = 12 × a `.99` month +
+0.11, truncated to the month on the paywall (`perMonthPrice.ts`).
+
+| Storefront         | Monthly | Yearly (per month on the paywall) |
+| ------------------ | ------- | --------------------------------- |
+| US                 | $9.99   | $83.99 ($6.99)                    |
+| Euro               | €10.99  | €95.99 (€7.99)                    |
+| UK                 | £9.99   | £83.99 (£6.99)                    |
+| Canada / Australia | 13.99   | 119.99 (9.99)                     |
+| Türkiye            | ₺214.99 | ₺1,799.99 (₺149.99)               |
+
+The yearly card says "N months free", computed as `floor(12 − yearly ÷
+monthly)` from the store's own prices (`planSaving.ts` → `yearlyFreeMonths`);
+every storefront above is 3.3–3.6, so every one reads "3 months free". Below
+one month it falls back to "Save N%". The 24 September price script's guard
+"refuse a Polyglot price at or below Fluent's" becomes "Polyglot = Fluent" for
+this round.
+
+- [ ] **App Store:** a one-week free introductory offer on
+      `langx_fluent_monthly` (all storefronts; the yearly one has had seven days
+      since 4 September). Polyglot products lowered to Fluent's price, starting
+      the next day at the earliest; if nobody holds one, remove them from sale
+      (removing stops an existing subscriber's renewal, so only then).
+      Display name and description "LangX Pro" in all eight languages — IAP
+      review, no app version
+- [ ] **Play:** a `free-trial` offer on the Fluent monthly (7 days, new
+      customers who never subscribed); Polyglot lowered and its old price
+      cohort migrated (`migratePrices`, no consent needed) or deactivated if
+      nobody holds it; name and benefit list. Net = gross ÷ (1 + VAT)
+- [ ] **Web (RevenueCat Billing):** `langx_fluent_monthly_v2` ($9.99) and
+      `langx_fluent_yearly_v3` ($83.99) already sit in the `$rc_*` slots. Add
+      the 7-day trial to the monthly; if a web product's trial cannot be
+      changed after creation, create `langx_pro_monthly` and put it in the
+      slot. Delete the Fluent ↔ Polyglot subscription-change rules. An active
+      web Polyglot subscriber (there were none on 9 September) is moved to Pro
+      by hand or refunded the difference
+- [ ] **Offering:** `default` stays; `$rc_*` are already the Fluent products.
+      `pro_plus_*` stay in place, at the same price now, for apps released
+      before the single plan; current code does not list them
+- [ ] After the API is live on **both** Fly machines (an old machine's
+      refresh could still write `pro_plus`), run
+      `apps/api/scripts/merge-pro-tiers.ts` dry, then `--apply`, and repeat
+      until it reports zero. `count-paid-subscribers.ts` then shows
+      `pro_plus` = 0
+- [ ] Sibling repos the same day: website plans/FAQ/legal, GitBook, and
+      token.langx.io's "cannot unlock Fluent or Polyglot" lines
+
+**Old apps.** Apps up to 2.8 unlock features off their own profile's tier and
+call `pro` Fluent. The API therefore answers every own-profile route with
+`pro_plus` for any paid tier (`toOwnProfileWire`), so an old app shows a Pro
+subscriber everything unlocked. Remove that — and raise `minVersion` past the
+old builds — once `stats.appVersion` shows no build older than the first one
+carrying the single-plan JS.
+
 ## The paywall sells the trial and the saving
 
 Both yearly subscriptions carry a **seven-day free trial** — an introductory
@@ -854,7 +916,9 @@ of it runs together.
 - [ ] Paid apps agreement accepted (Apple + Google)
 - [ ] Bank and tax details submitted
 - [ ] Subscription group + products created in App Store Connect. **Both
-      tiers in one group, Polyglot ranked above Fluent.** That ranking is the
+      tiers in one group, Polyglot ranked above Fluent.** (History: since the
+      single plan all four products are one price and Fluent's are sold as
+      Pro — see _One plan: Pro_ below.) That ranking is the
       whole upgrade mechanism on iOS: the paywall calls the same
       `purchasePackage` for an upgrade as for a first purchase, and StoreKit
       swaps the subscription and refunds Fluent's unused time only because
@@ -941,17 +1005,17 @@ of it runs together.
 - [x] Create the web products at the same prices as the App Store and Play
       products they mirror, and add them to the **`default` offering** under
       exactly the package identifiers in `packages/shared/src/billing.ts` →
-      `PACKAGES`: `$rc_monthly`, `$rc_annual`, `$rc_lifetime`,
-      `pro_plus_monthly`, `pro_plus_yearly`. A package the dashboard offers and
+      `PACKAGES`: `$rc_monthly`, `$rc_annual`, `$rc_lifetime`. The
+      `pro_plus_*` packages stay in the offering for apps released before the
+      single plan and are not in `PACKAGES` any more. A package the dashboard offers and
       `PACKAGES` does not know is skipped by `getWebBillingOffers` — visibly,
       rather than sold at the wrong price under the wrong tier. A package
       `PACKAGES` knows that the web offering lacks simply does not appear in a
       browser, which is the honest answer if `$rc_lifetime` turns out to have
       no Web Billing equivalent
 - [x] Attach the same entitlements the native products grant: `pro`, and
-      **both** `pro_plus` and `pro` for the two Pro+ products. The overlap is
-      deliberate and `ENTITLEMENT_PRECEDENCE` resolves it; a Pro+ web product
-      granting only `pro_plus` is a subscriber every `pro` guard refuses
+      **both** `pro_plus` and `pro` for the two Polyglot products. Both ids mean
+      Pro now; `getEntitlement` keeps whichever ends last
 - [x] Set the checkout's terms URL to `https://langx.io/terms-conditions`,
       under _Billing → Terms consent_. It feeds an optional "agree before
       paying" checkbox that is left **off**; the footer link a customer
@@ -1006,7 +1070,9 @@ of it runs together.
       Wyoming, USA." The registered name in the Wyoming Articles of
       Organization is _New Chapter Technology Limited Liability Company_; the
       footer uses the everyday short form
-- [ ] **Define the upgrade paths, or the web cannot upgrade at all.** A web
+- [ ] **Retired with the single plan — delete the Fluent ↔ Polyglot rules.**
+      What follows is kept as the record of what was set up.
+      **Define the upgrade paths, or the web cannot upgrade at all.** A web
       subscriber changes plan in RevenueCat's portal — the paywall's "Change
       plan" button opens it — and the portal only offers a move between two
       products when a path is defined: RevenueCat → Product Catalog →
@@ -1109,7 +1175,7 @@ to be checked on a device before the submission rather than after.
 
 ## Location changes both privacy forms
 
-Nearby (Polyglot) added the app's first location permission, so two answers that
+Nearby (then Polyglot, now Pro) added the app's first location permission, so two answers that
 were "no" had to become "yes". **Both consoles were read back box by box on
 20 September 2026 and already carry every answer below**, so this section is now
 a record rather than a task; the sentence that used to stand here, calling two
