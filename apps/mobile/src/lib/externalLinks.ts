@@ -43,6 +43,14 @@ export const PRIVACY_URL = `${SITE}/privacy-policy`
 export const TERMS_URL = `${SITE}/terms-conditions`
 
 /**
+ * Apple's standard licence agreement, which is the EULA every App Store
+ * subscription here is sold under (`docs/store/listing.md`). Guideline 3.1.2
+ * wants it one tap from the purchase inside the app as well as in the
+ * description, so the iOS paywall links it beside the terms.
+ */
+export const APPLE_EULA_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
+
+/**
  * The five the stores and the law expect to be reachable from inside the app,
  * plus the one nobody requires: the community guidelines. They go first
  * because they are the only row here somebody might read by choice.
