@@ -2071,6 +2071,7 @@ export const en = {
     currentPlan: 'Current plan',
     renewsOn: 'Renews on',
     endsOn: 'Ends on',
+    giftUntil: 'Gift · until {date}',
     lifetime: 'Lifetime',
     plan: 'Plan',
     manageSubscription: 'Manage or cancel',
@@ -2501,6 +2502,8 @@ export const en = {
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
     lifetimeNotice: 'You have {plan} for life. Nothing renews and nothing is charged.',
+    giftNotice:
+      'You have {plan} as a gift until {date}. Subscribe to keep it after that — nothing is charged before you choose to.',
     includedIn: 'Included in {plan}',
     currentPlan: 'Your current plan',
     purchaseFailed: 'That purchase did not go through. Nothing was charged.',

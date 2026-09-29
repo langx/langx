@@ -1890,6 +1890,7 @@ export const fr: Localized<EnMessages> = {
     currentPlan: 'Formule actuelle',
     renewsOn: 'Renouvellement le',
     endsOn: 'Se termine le',
+    giftUntil: 'Cadeau · jusqu’au {date}',
     lifetime: 'À vie',
     plan: 'Formule',
     manageSubscription: 'Gérer ou résilier',
@@ -2308,6 +2309,8 @@ export const fr: Localized<EnMessages> = {
       'Tu as utilisé tes {count} nouvelles discussions du jour. Tu peux toujours répondre à tout ce que tu reçois, sans limite.',
     manageNotice: 'Tu es sur {plan}. Gère-le ou annule-le depuis ton compte du store.',
     lifetimeNotice: 'Tu as {plan} à vie. Rien ne se renouvelle, rien n’est facturé.',
+    giftNotice:
+      'Tu as {plan} en cadeau jusqu’au {date}. Abonne-toi pour le garder ensuite — rien n’est débité avant que tu le choisisses.',
     includedIn: 'Inclus dans {plan}',
     currentPlan: 'Ta formule actuelle',
     purchaseFailed: 'Cet achat n’a pas abouti. Rien n’a été débité.',

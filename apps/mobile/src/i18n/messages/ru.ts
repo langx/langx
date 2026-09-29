@@ -2050,6 +2050,7 @@ export const ru: Localized<EnMessages> = {
     currentPlan: 'Текущий тариф',
     renewsOn: 'Продлится',
     endsOn: 'Закончится',
+    giftUntil: 'Подарок · до {date}',
     lifetime: 'Навсегда',
     plan: 'Тариф',
     manageSubscription: 'Управлять или отменить',
@@ -2529,6 +2530,8 @@ export const ru: Localized<EnMessages> = {
       'Ты израсходовал {count} новых чатов на сегодня. Отвечать на всё входящее по-прежнему можно без ограничений.',
     manageNotice: 'У тебя {plan}. Управлять или отменить можно в аккаунте магазина.',
     lifetimeNotice: 'У тебя {plan} навсегда. Ничего не продлевается и не списывается.',
+    giftNotice:
+      'У тебя {plan} в подарок до {date}. Оформи подписку, чтобы он остался и после, — ничего не спишется, пока ты сам не решишь.',
     includedIn: 'Входит в {plan}',
     currentPlan: 'Твой текущий план',
     purchaseFailed: 'Покупка не прошла. Деньги не списаны.',

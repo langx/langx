@@ -152,15 +152,29 @@ export function useSettingsModel() {
    * paid plan with no expiry is a lifetime — there is no date to show and
    * nothing to renew.
    */
+  /**
+   * A gift of months (`store: 'gift'`): Pro that nobody pays for and that
+   * simply stops on a date. It is said as a gift — "Ends on" alone reads like
+   * a cancelled subscription — and it has no store page to manage, but it can
+   * be subscribed on top of, which is what the plan row offers.
+   */
+  const gift = tier !== 'free' && entitlement?.store === 'gift'
   const renewal =
     !entitlement || tier === 'free'
       ? null
       : !entitlement.expiresAt
         ? { label: t('settings.plan'), value: t('settings.lifetime') }
-        : {
-            label: entitlement.willRenew ? t('settings.renewsOn') : t('settings.endsOn'),
-            value: new Date(entitlement.expiresAt).toLocaleDateString(activeLocale),
-          }
+        : gift
+          ? {
+              label: t('settings.plan'),
+              value: t('settings.giftUntil', {
+                date: new Date(entitlement.expiresAt).toLocaleDateString(activeLocale),
+              }),
+            }
+          : {
+              label: entitlement.willRenew ? t('settings.renewsOn') : t('settings.endsOn'),
+              value: new Date(entitlement.expiresAt).toLocaleDateString(activeLocale),
+            }
   /**
    * RevenueCat's per-customer link, which only the web store has one of, and
    * only for someone who bought there — so it is asked for rather than known,
@@ -183,12 +197,15 @@ export function useSettingsModel() {
       cancelled = true
     }
   }, [isPaid])
-  const manageUrl = isPaid
-    ? manageSubscriptionUrl(
-        { managementURL: rcManageUrl, store: entitlement?.store ?? null },
-        Platform.OS,
-      )
-    : null
+  // Nothing to manage or cancel in a gift. RevenueCat may still hand back a
+  // management link from an older web purchase, which would be the wrong one.
+  const manageUrl =
+    isPaid && !gift
+      ? manageSubscriptionUrl(
+          { managementURL: rcManageUrl, store: entitlement?.store ?? null },
+          Platform.OS,
+        )
+      : null
   const tips = useTips()
   const analytics = useAnalyticsPreference()
   // No row without a key: a switch that changes nothing is worse than none,
@@ -408,6 +425,7 @@ export function useSettingsModel() {
     tier,
     tierName: TIER_NAMES[tier],
     renewal,
+    gift,
     manageUrl,
     tips,
     analytics,

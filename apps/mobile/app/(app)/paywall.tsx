@@ -34,7 +34,7 @@ import {
 } from '../../src/lib/purchases'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { PRIVACY_URL, TERMS_URL } from '../../src/lib/externalLinks'
-import { useT, type MessageKey } from '../../src/i18n'
+import { useLocale, useT, type MessageKey } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
@@ -204,6 +204,7 @@ export default function PaywallScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const { locale: activeLocale } = useLocale()
 
   // Reached from the profile, the viewer list, filters, Discover and a chat
   // thread, so the caller says where back leads.
@@ -359,6 +360,7 @@ export default function PaywallScreen() {
       : undefined
 
   const boughtOn = platformOfStore(held.store)
+  const gift = tier !== 'free' && held.store === 'gift' && Boolean(held.expiresAt)
   const isCurrent = change === 'covered'
   const tint = colors.pro
   /*
@@ -437,6 +439,19 @@ export default function PaywallScreen() {
               `boughtOn` is what makes it true of every grant: `platformOfStore`
               answers `null` for anything no store of ours sold.
             */}
+            {/*
+              A gift of months: it ends on a date and nothing renews it, so
+              the offer below is a real one — subscribing is how Pro carries
+              on after the gift.
+            */}
+            {gift ? (
+              <Text style={styles.contextText}>
+                {t('paywall.giftNotice', {
+                  plan: TIER_NAMES[tier],
+                  date: new Date(held.expiresAt as string).toLocaleDateString(activeLocale),
+                })}
+              </Text>
+            ) : null}
             {tier !== 'free' && (held.store === 'promotional' || boughtOn) ? (
               <Text style={styles.contextText}>
                 {held.store === 'promotional'

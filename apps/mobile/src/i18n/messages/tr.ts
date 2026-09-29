@@ -1871,6 +1871,7 @@ export const tr: Localized<EnMessages> = {
     currentPlan: 'Mevcut plan',
     renewsOn: 'Yenilenme',
     endsOn: 'Bitiş',
+    giftUntil: 'Hediye · {date} tarihine kadar',
     lifetime: 'Ömür boyu',
     plan: 'Plan',
     manageSubscription: 'Yönet veya iptal et',
@@ -2283,6 +2284,8 @@ export const tr: Localized<EnMessages> = {
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
     lifetimeNotice: '{plan} ömür boyu senin. Yenilenen ya da ödenen bir şey yok.',
+    giftNotice:
+      '{plan} sende {date} tarihine kadar hediye. Sonrasında da sürmesi için abone olabilirsin — sen seçmeden hiçbir ücret alınmaz.',
     includedIn: '{plan} planına dahil',
     currentPlan: 'Mevcut planın',
     purchaseFailed: 'Bu satın alma tamamlanmadı. Hiçbir ücret alınmadı.',

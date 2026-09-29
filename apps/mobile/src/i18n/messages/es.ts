@@ -1872,6 +1872,7 @@ export const es: Localized<EnMessages> = {
     currentPlan: 'Plan actual',
     renewsOn: 'Se renueva el',
     endsOn: 'Termina el',
+    giftUntil: 'Regalo · hasta el {date}',
     lifetime: 'De por vida',
     plan: 'Plan',
     manageSubscription: 'Gestionar o cancelar',
@@ -2286,6 +2287,8 @@ export const es: Localized<EnMessages> = {
       'Has usado los {count} chats nuevos de hoy. Puedes seguir respondiendo a todo lo que recibas, sin límite.',
     manageNotice: 'Tienes {plan}. Gestiónalo o cancélalo desde tu cuenta de la tienda.',
     lifetimeNotice: 'Tienes {plan} de por vida. Nada se renueva ni se cobra.',
+    giftNotice:
+      'Tienes {plan} de regalo hasta el {date}. Suscríbete para conservarlo después; no se cobra nada hasta que lo decidas.',
     includedIn: 'Incluido en {plan}',
     currentPlan: 'Tu plan actual',
     purchaseFailed: 'Esa compra no se completó. No se ha cobrado nada.',
