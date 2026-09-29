@@ -6279,3 +6279,18 @@ without the code being looked at. A lifetime holder and an official account
 are refused, each with its own reason, and so is every other refusal
 (`GIFT_CODE_REJECTED` with `reason`), because "used up" and "you already used
 it" are different sentences.
+
+## Corrections and the feed are two numbers
+
+For a day, "feed" — posts plus corrections — replaced the correction count
+everywhere a person's record was shown: the badge ladder, the Aurora frame's
+5,000, the weekly chart, the pool screen, the recap, insight and the operator
+panel. It was reverted the same day. A single sum said neither how much
+somebody teaches nor how much they ask, and it moved thresholds that name
+one act (a badge called "100 corrections", a frame earned by teaching) onto
+a number that also counts the other.
+
+What stayed is the split: the profile and the Me tab show **Corrections** and
+**Feed** as two tiles. Corrections is `countCorrectionsWritten`, unchanged;
+Feed is `countPostsByAuthor`, posts not hidden. Each tile opens its own tab of
+the same list screen. Everything else counts corrections as it did before.

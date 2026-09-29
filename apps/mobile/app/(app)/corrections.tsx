@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import {
   useAuthoredCorrections,
   useCorrectionsWritten,
@@ -52,7 +52,11 @@ export default function WritingScreen() {
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()
-  const [tab, setTab] = useState<'corrections' | 'posts'>('corrections')
+  // The Feed tile on the Me tab opens this on the posts.
+  const params = useLocalSearchParams<{ tab?: string }>()
+  const [tab, setTab] = useState<'corrections' | 'posts'>(
+    params.tab === 'posts' ? 'posts' : 'corrections',
+  )
 
   const page = useCorrectionsWritten()
   // Your own post corrections come from the public route under your own
