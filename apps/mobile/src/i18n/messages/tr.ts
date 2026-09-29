@@ -1456,6 +1456,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Pro üye',
     official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',
@@ -2333,6 +2334,29 @@ export const tr: Localized<EnMessages> = {
     },
     continueFree: 'Ücretsiz devam et',
     perMonthBilledYearly: 'aylık · yıllık faturalandırılır',
+  },
+
+  proWelcome: {
+    titlePurchase: 'Artık Pro’sun',
+    titleTrial: 'Ücretsiz Pro haftan başladı',
+    titleGift: {
+      one: '{count} ay Pro, bizden 🎁',
+      other: '{count} ay Pro, bizden 🎁',
+    },
+    titleGiftOpen: 'Pro, bizden 🎁',
+    titleReferral: {
+      one: 'Davetlerin sana {count} ay Pro kazandırdı',
+      other: 'Davetlerin sana {count} ay Pro kazandırdı',
+    },
+    titleStreak: {
+      one: 'Serin sana {count} ay Pro kazandırdı',
+      other: 'Serin sana {count} ay Pro kazandırdı',
+    },
+    titleMerge: 'Fluent ve Polyglot artık tek plan: Pro',
+    body: 'Her şeyin kilidi açıldı. Önce bunları dene:',
+    bodyMerge: 'Hangisi sende olursa olsun, artık hepsi sende. Önce bunları dene:',
+    andMore: 've daha fazlası',
+    start: 'Keşfetmeye başla',
   },
 
   pickers: {

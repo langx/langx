@@ -12,6 +12,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { creditReferrerForSubscription } from '../referrals/settle'
 import type { Profile } from '../profiles/profiles'
 import { refreshEntitlement, refreshEntitlementIfHeld } from './refresh'
+import { welcomeIfBecamePro } from './proWelcome'
 import type { RevenueCatClient } from './revenueCatClient'
 import { notifyBilling, type BillingNotifier } from './notify'
 
@@ -159,7 +160,22 @@ export async function processRevenueCatWebhook(
       ...(periodType ? { periodType } : {}),
     }
     if (record.expiresAt) entitlement.expiresAt = record.expiresAt
-    await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
+    /*
+     * With the pre-image, for the welcome: this is the path a purchase takes
+     * when RevenueCat cannot be asked, and the reconciled branch above has
+     * its own edge inside `refreshEntitlement`. Swallowed like the credit
+     * below, and for the same reason.
+     */
+    const before = await profiles.findOneAndUpdate(
+      { _id: userId },
+      { $set: { entitlement, updatedAt: now } },
+      { returnDocument: 'before', projection: { entitlement: 1 } },
+    )
+    try {
+      await welcomeIfBecamePro(db, userId, before?.entitlement, entitlement, now)
+    } catch (error) {
+      console.error('[billing] pro welcome failed', { userId, error })
+    }
 
     /*
      * Any grant event, once the entitlement it wrote is one somebody pays

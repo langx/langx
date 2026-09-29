@@ -417,4 +417,154 @@ describe('processRevenueCatWebhook', () => {
       expect((await getProfile('gift-user-offline'))?.entitlement.tier).toBe('pro')
     })
   })
+
+  /**
+   * "You're Pro now" is left on the edge into Pro, whichever path writes it:
+   * the event itself when RevenueCat cannot be asked, or the subscriber
+   * record through `refreshEntitlement` when it can.
+   */
+  describe('the Pro welcome', () => {
+    const inAMonth = () => Date.now() + 30 * 24 * 60 * 60 * 1000
+
+    it('leaves a purchase welcome on a first purchase without a client', async () => {
+      await insertProfile(minimalProfile('welcome-buyer'))
+
+      await processRevenueCatWebhook(handle.db, {
+        id: 'evt-welcome-buy',
+        type: 'INITIAL_PURCHASE',
+        app_user_id: 'welcome-buyer',
+        store: 'APP_STORE',
+        period_type: 'NORMAL',
+        expiration_at_ms: inAMonth(),
+      })
+
+      const welcome = (await getProfile('welcome-buyer'))?.proWelcome
+      expect(welcome?.source).toBe('purchase')
+      expect(welcome?.at).toBeInstanceOf(Date)
+    })
+
+    it('calls a free week a trial', async () => {
+      await insertProfile(minimalProfile('welcome-trial'))
+
+      await processRevenueCatWebhook(handle.db, {
+        id: 'evt-welcome-trial',
+        type: 'INITIAL_PURCHASE',
+        app_user_id: 'welcome-trial',
+        store: 'PLAY_STORE',
+        period_type: 'TRIAL',
+        expiration_at_ms: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      })
+
+      expect((await getProfile('welcome-trial'))?.proWelcome?.source).toBe('trial')
+    })
+
+    it('calls a promotional grant a gift, not a purchase', async () => {
+      await insertProfile(minimalProfile('welcome-gift'))
+
+      await processRevenueCatWebhook(handle.db, {
+        id: 'evt-welcome-gift',
+        type: 'NON_RENEWING_PURCHASE',
+        app_user_id: 'welcome-gift',
+        store: 'PROMOTIONAL',
+        entitlement_ids: ['pro'],
+      })
+
+      expect((await getProfile('welcome-gift'))?.proWelcome?.source).toBe('gift')
+    })
+
+    it('says nothing when the trial turns into a paid month', async () => {
+      await insertProfile({
+        ...minimalProfile('welcome-renewal'),
+        entitlement: {
+          tier: 'pro',
+          willRenew: true,
+          store: 'APP_STORE',
+          periodType: 'trial',
+          expiresAt: new Date(Date.now() + 60_000),
+          updatedAt: new Date(),
+        },
+      })
+
+      await processRevenueCatWebhook(handle.db, {
+        id: 'evt-welcome-renewal',
+        type: 'RENEWAL',
+        app_user_id: 'welcome-renewal',
+        store: 'APP_STORE',
+        period_type: 'NORMAL',
+        expiration_at_ms: inAMonth(),
+      })
+
+      const profile = await getProfile('welcome-renewal')
+      expect(profile?.entitlement.periodType).toBe('normal')
+      expect(profile?.proWelcome).toBeUndefined()
+    })
+
+    it('welcomes back a lapsed subscriber whose expiry was never recorded', async () => {
+      await insertProfile({
+        ...minimalProfile('welcome-lapsed'),
+        entitlement: {
+          tier: 'pro_plus',
+          willRenew: false,
+          store: 'APP_STORE',
+          expiresAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date(),
+        },
+      })
+
+      await processRevenueCatWebhook(handle.db, {
+        id: 'evt-welcome-lapsed',
+        type: 'INITIAL_PURCHASE',
+        app_user_id: 'welcome-lapsed',
+        store: 'APP_STORE',
+        period_type: 'NORMAL',
+        expiration_at_ms: inAMonth(),
+      })
+
+      expect((await getProfile('welcome-lapsed'))?.proWelcome?.source).toBe('purchase')
+    })
+
+    it('leaves the welcome through the subscriber record when RevenueCat answers', async () => {
+      await insertProfile(minimalProfile('welcome-reconciled'))
+      const client: RevenueCatClient = {
+        getEntitlement: () =>
+          Promise.resolve({
+            tier: 'pro',
+            expiresAt: new Date(inAMonth()),
+            productId: 'langx_fluent_monthly',
+            store: 'app_store',
+            willRenew: true,
+            periodType: 'trial',
+          }),
+        grantLifetimeEntitlement: () => Promise.resolve(),
+      }
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-welcome-reconciled',
+          type: 'INITIAL_PURCHASE',
+          app_user_id: 'welcome-reconciled',
+          store: 'APP_STORE',
+          period_type: 'TRIAL',
+        },
+        client,
+      )
+      const first = (await getProfile('welcome-reconciled'))?.proWelcome
+      expect(first?.source).toBe('trial')
+
+      // A later event over the same record is no edge, and moves nothing.
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-welcome-reconciled-2',
+          type: 'UNCANCELLATION',
+          app_user_id: 'welcome-reconciled',
+          store: 'APP_STORE',
+        },
+        client,
+      )
+
+      expect((await getProfile('welcome-reconciled'))?.proWelcome).toEqual(first)
+    })
+  })
 })

@@ -1488,6 +1488,7 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Pro-Mitglied',
     official: 'Offizielles Konto',
     suspendedTag: 'Gesperrt',
     deletedTag: 'Konto gelöscht',
@@ -2380,6 +2381,29 @@ export const de: Localized<EnMessages> = {
     },
     continueFree: 'Kostenlos weitermachen',
     perMonthBilledYearly: 'pro Monat · jährlich abgerechnet',
+  },
+
+  proWelcome: {
+    titlePurchase: 'Du bist jetzt Pro',
+    titleTrial: 'Deine kostenlose Pro-Woche hat begonnen',
+    titleGift: {
+      one: '{count} Monat Pro, von uns geschenkt 🎁',
+      other: '{count} Monate Pro, von uns geschenkt 🎁',
+    },
+    titleGiftOpen: 'Pro, von uns geschenkt 🎁',
+    titleReferral: {
+      one: 'Deine Einladungen bringen dir {count} Monat Pro',
+      other: 'Deine Einladungen bringen dir {count} Monate Pro',
+    },
+    titleStreak: {
+      one: 'Deine Serie bringt dir {count} Monat Pro',
+      other: 'Deine Serie bringt dir {count} Monate Pro',
+    },
+    titleMerge: 'Fluent und Polyglot sind jetzt ein Plan: Pro',
+    body: 'Alles ist freigeschaltet. Probier zuerst das hier:',
+    bodyMerge: 'Egal, welchen du hattest – jetzt hast du alles. Probier zuerst das hier:',
+    andMore: 'und vieles mehr',
+    start: 'Jetzt entdecken',
   },
 
   pickers: {

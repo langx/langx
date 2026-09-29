@@ -1655,6 +1655,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'عضو Pro',
     official: 'حساب رسمي',
     suspendedTag: 'معلّق',
     deletedTag: 'حساب محذوف',
@@ -2705,6 +2706,41 @@ export const ar: Localized<EnMessages> = {
     },
     continueFree: 'المتابعة مجانًا',
     perMonthBilledYearly: 'شهريًا · تُحصَّل سنويًا',
+  },
+
+  proWelcome: {
+    titlePurchase: 'مرحبًا بك في Pro',
+    titleTrial: 'بدأ أسبوعك المجاني في Pro',
+    titleGift: {
+      zero: '{count} شهر من Pro هدية منّا 🎁',
+      one: 'شهر من Pro هدية منّا 🎁',
+      two: 'شهران من Pro هدية منّا 🎁',
+      few: '{count} أشهر من Pro هدية منّا 🎁',
+      many: '{count} شهرًا من Pro هدية منّا 🎁',
+      other: '{count} شهر من Pro هدية منّا 🎁',
+    },
+    titleGiftOpen: 'Pro هدية منّا 🎁',
+    titleReferral: {
+      zero: 'منحتك دعواتك {count} شهر من Pro',
+      one: 'منحتك دعواتك شهرًا من Pro',
+      two: 'منحتك دعواتك شهرين من Pro',
+      few: 'منحتك دعواتك {count} أشهر من Pro',
+      many: 'منحتك دعواتك {count} شهرًا من Pro',
+      other: 'منحتك دعواتك {count} شهر من Pro',
+    },
+    titleStreak: {
+      zero: 'منحتك سلسلتك {count} شهر من Pro',
+      one: 'منحتك سلسلتك شهرًا من Pro',
+      two: 'منحتك سلسلتك شهرين من Pro',
+      few: 'منحتك سلسلتك {count} أشهر من Pro',
+      many: 'منحتك سلسلتك {count} شهرًا من Pro',
+      other: 'منحتك سلسلتك {count} شهر من Pro',
+    },
+    titleMerge: 'أصبح Fluent وPolyglot خطة واحدة: Pro',
+    body: 'كل شيء مفتوح الآن. جرّب هذه أولًا:',
+    bodyMerge: 'أيًّا كانت خطتك، أصبح لديك كل شيء الآن. جرّب هذه أولًا:',
+    andMore: 'والمزيد',
+    start: 'ابدأ الاستكشاف',
   },
 
   pickers: {

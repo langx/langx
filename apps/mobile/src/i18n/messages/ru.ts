@@ -1601,6 +1601,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Участник Pro',
     official: 'Официальный аккаунт',
     suspendedTag: 'Заблокирован',
     deletedTag: 'Аккаунт удалён',
@@ -2591,6 +2592,35 @@ export const ru: Localized<EnMessages> = {
     },
     continueFree: 'Продолжить бесплатно',
     perMonthBilledYearly: 'в месяц · оплата раз в год',
+  },
+
+  proWelcome: {
+    titlePurchase: 'Теперь у тебя Pro',
+    titleTrial: 'Твоя бесплатная неделя Pro началась',
+    titleGift: {
+      one: '{count} месяц Pro в подарок 🎁',
+      few: '{count} месяца Pro в подарок 🎁',
+      many: '{count} месяцев Pro в подарок 🎁',
+      other: '{count} месяца Pro в подарок 🎁',
+    },
+    titleGiftOpen: 'Pro в подарок 🎁',
+    titleReferral: {
+      one: 'Твои приглашения принесли тебе {count} месяц Pro',
+      few: 'Твои приглашения принесли тебе {count} месяца Pro',
+      many: 'Твои приглашения принесли тебе {count} месяцев Pro',
+      other: 'Твои приглашения принесли тебе {count} месяца Pro',
+    },
+    titleStreak: {
+      one: 'Твоя серия принесла тебе {count} месяц Pro',
+      few: 'Твоя серия принесла тебе {count} месяца Pro',
+      many: 'Твоя серия принесла тебе {count} месяцев Pro',
+      other: 'Твоя серия принесла тебе {count} месяца Pro',
+    },
+    titleMerge: 'Fluent и Polyglot теперь один план: Pro',
+    body: 'Всё открыто. С чего можно начать:',
+    bodyMerge: 'Какой бы план у тебя ни был, теперь у тебя есть всё. С чего можно начать:',
+    andMore: 'и многое другое',
+    start: 'Начать',
   },
 
   pickers: {

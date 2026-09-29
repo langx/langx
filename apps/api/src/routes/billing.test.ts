@@ -601,6 +601,44 @@ describe('Faz 7 — billing', () => {
       expect(profile?.entitlement.tier).toBe('pro')
     })
 
+    /**
+     * The refresh is the path a purchase usually takes — the paywall calls it
+     * the moment the store sheet closes — so it is where "You're Pro now" is
+     * most often written, and `/profiles/me` is how the app finds it.
+     */
+    it('leaves a welcome on the first refresh into Pro, and none on the next', async () => {
+      const user = await newUser('refresh-welcome@example.com')
+      fakeRevenueCat.unavailable = false
+      fakeRevenueCat.next = {
+        tier: 'pro',
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        productId: 'langx_fluent_monthly',
+        store: 'app_store',
+        willRenew: true,
+        periodType: 'trial',
+      }
+
+      const refresh = () =>
+        app.inject({ method: 'POST', url: '/billing/refresh', headers: { cookie: user.cookie } })
+      expect((await refresh()).statusCode).toBe(200)
+
+      const me = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      const welcome = me.json<{ proWelcome?: { at: string; source: string } }>().proWelcome
+      expect(welcome?.source).toBe('trial')
+
+      expect((await refresh()).statusCode).toBe(200)
+      const again = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(again.json<{ proWelcome?: unknown }>().proWelcome).toEqual(welcome)
+    })
+
     it('reconciles to free when RevenueCat reports no active entitlement', async () => {
       const user = await newUser('refresh-inactive@example.com')
       fakeRevenueCat.unavailable = false

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from '
 import { track } from '../lib/analytics'
 import { isLaunchOver, subscribeToLaunchOver } from '../lib/launchOver'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../lib/localFlags'
+import { isProWelcomeOpen, subscribeToProWelcomeOpen } from '../lib/proWelcome'
 import {
   hasTourTarget,
   resolveFrom,
@@ -34,6 +35,9 @@ export async function startTourOnce(options: { guest: boolean }): Promise<void> 
   starting = true
   try {
     if (await readBoolFlag(FLAG_KEYS.discoverTourSeen)) return
+    // Checked again after the storage read: "You're Pro now" can open while it
+    // is in flight, and then this run waits for it rather than opening under it.
+    if (isProWelcomeOpen()) return
     const first = resolveFrom(startTour(options), hasTourTarget)
     if (!first) return
     await setBoolFlag(FLAG_KEYS.discoverTourSeen, true)
@@ -87,14 +91,20 @@ export function useDiscoveryTour({ ready, guest, onFinished }: DiscoveryTourOpti
    * third argument is for the web's static prerender, as in `useAppReady`.
    */
   const launchOver = useSyncExternalStore(subscribeToLaunchOver, isLaunchOver, isLaunchOver)
+  // Nor while "You're Pro now" is up; it goes first. See `proWelcome.ts`.
+  const welcomeOpen = useSyncExternalStore(
+    subscribeToProWelcomeOpen,
+    isProWelcomeOpen,
+    isProWelcomeOpen,
+  )
   const wasOpen = useRef(false)
   const finished = useRef(onFinished)
   finished.current = onFinished
 
   useFocusEffect(
     useCallback(() => {
-      if (ready && launchOver) void startTourOnce({ guest })
-    }, [guest, ready, launchOver]),
+      if (ready && launchOver && !welcomeOpen) void startTourOnce({ guest })
+    }, [guest, ready, launchOver, welcomeOpen]),
   )
 
   useEffect(() => {

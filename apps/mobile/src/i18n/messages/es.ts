@@ -1457,6 +1457,7 @@ export const es: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Miembro Pro',
     official: 'Cuenta oficial',
     suspendedTag: 'Suspendida',
     deletedTag: 'Cuenta eliminada',
@@ -2336,6 +2337,29 @@ export const es: Localized<EnMessages> = {
     },
     continueFree: 'Seguir gratis',
     perMonthBilledYearly: 'al mes · facturado anualmente',
+  },
+
+  proWelcome: {
+    titlePurchase: 'Ya eres Pro',
+    titleTrial: 'Tu semana gratis de Pro ha empezado',
+    titleGift: {
+      one: '{count} mes de Pro, de regalo 🎁',
+      other: '{count} meses de Pro, de regalo 🎁',
+    },
+    titleGiftOpen: 'Pro, de regalo 🎁',
+    titleReferral: {
+      one: 'Tus invitaciones te han dado {count} mes de Pro',
+      other: 'Tus invitaciones te han dado {count} meses de Pro',
+    },
+    titleStreak: {
+      one: 'Tu racha te ha dado {count} mes de Pro',
+      other: 'Tu racha te ha dado {count} meses de Pro',
+    },
+    titleMerge: 'Fluent y Polyglot ahora son un solo plan: Pro',
+    body: 'Todo está desbloqueado. Algunas cosas para probar primero:',
+    bodyMerge: 'Tuvieras el que tuvieras, ahora lo tienes todo. Algunas cosas para probar primero:',
+    andMore: 'y mucho más',
+    start: 'Empezar a explorar',
   },
 
   pickers: {

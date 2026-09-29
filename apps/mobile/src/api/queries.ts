@@ -16,6 +16,7 @@ import {
   type PlanFeature,
   type PlanTier,
   type StoredPaidPlanTier,
+  type ProWelcomeSource,
   type StoredPlanTier,
   type CheckInResult,
   type MediaKind,
@@ -670,6 +671,14 @@ export interface MeProfile {
     lifetimeGranted?: StoredPaidPlanTier | null
     acknowledgedAt?: string
   }
+  /**
+   * A "You're Pro now" screen waiting to be seen, written by the server on
+   * the edge into Pro and cleared by `useAckProWelcome`. `months` is there
+   * for a grant of a fixed length. `source` is typed as today's list, but a
+   * newer server may send one this build does not know — `proWelcomeCopy`
+   * falls back rather than trusting it.
+   */
+  proWelcome?: { at: string; source: ProWelcomeSource; months?: number }
 }
 
 /**
@@ -723,6 +732,29 @@ export function useRefreshEntitlement() {
     mutationFn: () => api.post('/billing/refresh', {}),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: keys.me })
+    },
+  })
+}
+
+/**
+ * Dismisses the "You're Pro now" screen, by the `at` it showed.
+ *
+ * The cache is cleared before the request, and only of that welcome: the
+ * screen must not open a second time while the POST is in flight, and a newer
+ * welcome that arrived meanwhile has a different `at` and stays. A failed
+ * request is not retried — the server still holds it, and the next launch
+ * shows it again, which is the right way for a dismissal to fail.
+ */
+export function useAckProWelcome() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (at: string) => api.post('/me/pro-welcome/ack', { at }),
+    onMutate: (at) => {
+      queryClient.setQueryData<MeProfile>(keys.me, (current) => {
+        if (current?.proWelcome?.at !== at) return current
+        const { proWelcome: _shown, ...rest } = current
+        return rest
+      })
     },
   })
 }

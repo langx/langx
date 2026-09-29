@@ -1633,6 +1633,7 @@ export const en = {
   },
 
   profile: {
+    proBadge: 'Pro member',
     /** Screen-reader label for the tick beside @langx and @copilot. */
     official: 'Official account',
     suspendedTag: 'Suspended',
@@ -2551,6 +2552,29 @@ export const en = {
     },
     continueFree: 'Continue free',
     perMonthBilledYearly: 'a month · billed yearly',
+  },
+
+  proWelcome: {
+    titlePurchase: 'You’re Pro now',
+    titleTrial: 'Your free Pro week has started',
+    titleGift: {
+      one: '{count} month of Pro, on us 🎁',
+      other: '{count} months of Pro, on us 🎁',
+    },
+    titleGiftOpen: 'Pro, on us 🎁',
+    titleReferral: {
+      one: 'Your invites earned you {count} month of Pro',
+      other: 'Your invites earned you {count} months of Pro',
+    },
+    titleStreak: {
+      one: 'Your streak earned you {count} month of Pro',
+      other: 'Your streak earned you {count} months of Pro',
+    },
+    titleMerge: 'Fluent and Polyglot are now one plan: Pro',
+    body: 'Everything is unlocked. A few things to try first:',
+    bodyMerge: 'Whichever you had, you now have all of it. A few things to try first:',
+    andMore: 'and more',
+    start: 'Start exploring',
   },
 
   pickers: {

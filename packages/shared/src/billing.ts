@@ -210,3 +210,29 @@ export const ENTITLEMENT_REVOKE_EVENTS = ['EXPIRATION'] as const
 
 /** Access continues until `expiresAt`; only `willRenew` flips. */
 export const ENTITLEMENT_CANCEL_EVENTS = ['CANCELLATION'] as const
+
+/**
+ * Why somebody has just become Pro, which is what the "You're Pro now" screen
+ * titles itself by.
+ *
+ * `purchase` and `trial` are read off the entitlement itself; `gift`,
+ * `referral` and `streak` are all promotional grants and only the gift's own
+ * record can tell them apart; `merge` is the one-off note to everybody who held
+ * Fluent or Polyglot when the two became one plan.
+ */
+export const PRO_WELCOME_SOURCES = [
+  'purchase',
+  'trial',
+  'gift',
+  'referral',
+  'streak',
+  'merge',
+] as const
+export type ProWelcomeSource = (typeof PRO_WELCOME_SOURCES)[number]
+
+/**
+ * `POST /me/pro-welcome/ack`. `at` is the welcome the client showed, so that
+ * dismissing an old one cannot clear a newer one written in between.
+ */
+export const proWelcomeAckSchema = z.object({ at: z.iso.datetime() })
+export type ProWelcomeAck = z.infer<typeof proWelcomeAckSchema>
