@@ -63,6 +63,13 @@ export interface FakeRevenueCat extends RevenueCatClient {
    * RevenueCat, so a gifted lifetime outlives a bought subscription that lapses.
    */
   expire(appUserId: string): RevenueCatEvent | null
+  /**
+   * Ends every dated promotional grant now and returns the `EXPIRATION`
+   * RevenueCat sends for one — `store: 'PROMOTIONAL'`, which is how the
+   * webhook tells a gift running out from a subscription lapsing. A lifetime
+   * grant is untouched, as it is at RevenueCat.
+   */
+  expireGift(appUserId: string): RevenueCatEvent | null
 }
 
 /**
@@ -101,6 +108,12 @@ interface FakeSubscriber {
   subscription: FakeSubscription | null
   /** Promotional lifetime grants: no product, no expiry, nothing to renew. */
   promotional: EntitlementId[]
+  /**
+   * Dated promotional grants — gifts of months. A list rather than one date
+   * per entitlement because RevenueCat keeps each grant, and the entitlement
+   * lasts as long as the latest of them.
+   */
+  gifts: { entitlementId: EntitlementId; expiresAt: Date }[]
 }
 
 /**
@@ -114,6 +127,11 @@ function fakeProductId(tier: PaidPlanTier, period: BillingPeriod): string {
 /** Named like RevenueCat names its own promotional products, so `isPromotionalLifetime` recognises it. */
 function promoProductId(entitlementId: EntitlementId): string {
   return `rc_promo_${entitlementId}_lifetime`
+}
+
+/** A dated promotional product: `rc_promo_` without `_lifetime`, which is what `isPromotionalTimed` reads as a gift. */
+function giftProductId(entitlementId: EntitlementId): string {
+  return `rc_promo_${entitlementId}_custom`
 }
 
 function isActive(subscription: FakeSubscription, now: Date): boolean {
@@ -130,7 +148,7 @@ export function createFakeRevenueCat(): FakeRevenueCat {
   function subscriber(appUserId: string): FakeSubscriber {
     let record = subscribers.get(appUserId)
     if (!record) {
-      record = { subscription: null, promotional: [] }
+      record = { subscription: null, promotional: [], gifts: [] }
       subscribers.set(appUserId, record)
     }
     return record
@@ -205,6 +223,25 @@ export function createFakeRevenueCat(): FakeRevenueCat {
       return event('EXPIRATION', appUserId, subscription)
     },
 
+    expireGift(appUserId: string): RevenueCatEvent | null {
+      const record = subscribers.get(appUserId)
+      const gift = record?.gifts.at(-1)
+      if (!record || !gift) return null
+      record.gifts = []
+      return {
+        id: `fake_${randomUUID()}`,
+        type: 'EXPIRATION',
+        app_user_id: appUserId,
+        product_id: giftProductId(gift.entitlementId),
+        // RevenueCat's own spelling for a promotional grant's events, upper
+        // case like every webhook store value.
+        store: 'PROMOTIONAL',
+        environment: 'SANDBOX',
+        expiration_at_ms: Date.now(),
+        entitlement_ids: [gift.entitlementId],
+      }
+    },
+
     getEntitlement(appUserId: string): Promise<SubscriberEntitlement | null> {
       const record = subscribers.get(appUserId)
       if (!record) return Promise.resolve(null)
@@ -239,6 +276,17 @@ export function createFakeRevenueCat(): FakeRevenueCat {
           periodType: null,
         })
       }
+      for (const gift of record.gifts) {
+        if (gift.expiresAt.getTime() <= now.getTime()) continue
+        candidates.push({
+          tier: ENTITLEMENT_TIERS[gift.entitlementId],
+          expiresAt: gift.expiresAt,
+          productId: giftProductId(gift.entitlementId),
+          store: 'gift',
+          willRenew: false,
+          periodType: null,
+        })
+      }
       return Promise.resolve(pickEntitlement(candidates))
     },
 
@@ -249,6 +297,25 @@ export function createFakeRevenueCat(): FakeRevenueCat {
       // subscription here rather than inside it.
       if (!record.promotional.includes(entitlementId as EntitlementId)) {
         record.promotional.push(entitlementId as EntitlementId)
+      }
+      return Promise.resolve()
+    },
+
+    grantPromotionalEntitlement(
+      appUserId: string,
+      entitlementId: string,
+      endsAt: Date,
+    ): Promise<void> {
+      const record = subscriber(appUserId)
+      // A repeat of the same end is the duplicate RevenueCat ignores, so a
+      // retried grant leaves one row here too.
+      const id = entitlementId as EntitlementId
+      if (
+        !record.gifts.some(
+          (g) => g.entitlementId === id && g.expiresAt.getTime() === endsAt.getTime(),
+        )
+      ) {
+        record.gifts.push({ entitlementId: id, expiresAt: new Date(endsAt) })
       }
       return Promise.resolve()
     },

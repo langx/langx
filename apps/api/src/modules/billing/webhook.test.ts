@@ -326,6 +326,7 @@ describe('processRevenueCatWebhook', () => {
           periodType: null,
         }),
       grantLifetimeEntitlement: () => Promise.resolve(),
+      grantPromotionalEntitlement: () => Promise.resolve(),
     }
 
     it('stays on the lifetime when the trailing grant event arrives', async () => {
@@ -396,6 +397,7 @@ describe('processRevenueCatWebhook', () => {
       const down: RevenueCatClient = {
         getEntitlement: () => Promise.reject(new Error('RevenueCat is down')),
         grantLifetimeEntitlement: () => Promise.resolve(),
+        grantPromotionalEntitlement: () => Promise.resolve(),
       }
 
       const result = await processRevenueCatWebhook(
