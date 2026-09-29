@@ -359,16 +359,24 @@ export const ADMIN = {
     maintenanceOn: 'ON',
     maintenanceOff: 'off',
     readOnly:
-      'Everything else is read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
+      'Maintenance and the flags are read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
     minVersion: 'Minimum version',
     flags: 'Flags',
     latestVersion: 'Latest version',
     raiseBanner: 'Raise the update banner',
     raiseBannerHint:
-      'The version now live in the stores. Everyone on an older build gets a dismissible banner offering the store. Nothing is blocked — that is Minimum version, and it is still a script.',
+      'The version now live in the stores. Everyone on an older build gets a dismissible banner offering the store. Nothing is blocked — that is Minimum version, below.',
     versionPlaceholder: 'e.g. 2.3',
     set: 'Set',
     setDone: (platform: string, version: string) => `Latest ${platform} version is now ${version}`,
+    forceUpdate: 'Force an update',
+    forceUpdateHint:
+      'After a breaking release. Anyone below this version sees "update to continue" on their next launch or return to the app, signed in or not, and cannot go on until they update. It cannot be above the latest version for the platform — set that first. Set 0.0.0 to lift it.',
+    forceAboveLatest: (platform: string, latest: string) =>
+      `Above the latest ${platform} version (${latest}). Raise that first.`,
+    confirmForce: (platform: string, version: string) =>
+      `Block every ${platform} build below ${version} until it updates?`,
+    minDone: (platform: string, version: string) => `Minimum ${platform} version is now ${version}`,
   },
 
   common: {

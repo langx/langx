@@ -856,6 +856,25 @@ typo is a 400 rather than a fourth platform key or a string that sorts below
 every build. The write is recorded in the audit log like every other panel
 action: a banner nobody remembers raising is a mystery a week later.
 
+### And, since 2.8, the minimum
+
+`minVersion` followed it onto the panel, through
+`POST /admin/app-config/min-version`, and it does block — that is its job. The
+line above was drawn at "can this refuse somebody service", and this crosses
+it knowingly, for the reason `latestVersion` did: it is raised the day a
+breaking store release goes live, which is a release-day chore and not an
+incident, and a chore that needs a machine that can reach Mongo is a chore that
+gets skipped.
+
+What keeps its blast radius bounded is one rule on the way in: the route
+refuses a minimum above the platform's `latestVersion`. Without that, one typo
+(`2.9` for `2.8`) sends every user of a platform to a store listing that cannot
+satisfy it — and on the web, where the served bundle is already the newest,
+with nowhere to go at all. With it, the worst mistake is a floor the store can
+already meet, undone by typing a lower number into the same field; the panel
+asks before raising and not before lowering. Maintenance and the flags, which
+can stop the app for everybody whatever version they run, stay in the script.
+
 ## Maintenance — two switches on purpose
 
 The database-backed flag is the everyday one: a single write, no redeploy. The

@@ -2,6 +2,7 @@ import {
   ERROR_CODES,
   adminLatestVersionSchema,
   adminListQuerySchema,
+  adminMinVersionSchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
   adminReportListQuerySchema,
@@ -12,7 +13,9 @@ import {
   broadcastCreateSchema,
   broadcastImageSchema,
   broadcastUpdateSchema,
+  compareVersions,
   reviewDecisionSchema,
+  versionForPlatform,
   withPlatformVersion,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -151,12 +154,13 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
   /**
    * Telling everyone on an older build that a new one is in the stores.
    *
-   * The one piece of `AppConfig` the panel writes, and the exception is about
-   * *when* it is needed rather than about convenience. This is set the moment a
-   * store release goes live — a moment decided by Apple's review queue, not by
-   * whether anybody is sitting at a machine that can reach Mongo. Everything
-   * else in the config stays in `scripts/maintenance.ts`; see
-   * `adminLatestVersionSchema` for where the line is and why it is there.
+   * One of the two pieces of `AppConfig` the panel writes, with `minVersion`
+   * below, and the exception is about *when* it is needed rather than about
+   * convenience. This is set the moment a store release goes live — a moment
+   * decided by Apple's review queue, not by whether anybody is sitting at a
+   * machine that can reach Mongo. Maintenance and the flags stay in
+   * `scripts/maintenance.ts`; see `adminLatestVersionSchema` for where the line
+   * is and why it is there.
    *
    * Read-modify-write rather than a `$set` on the nested key, which is what the
    * script does too: one operator holds this flag, so the race the atomic
@@ -193,6 +197,53 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       await recordAdminAction(app.mongo.db, request.log, {
         adminId: request.userId,
         action: 'appConfig.latestVersion',
+        payload: { platform, version },
+      })
+      return reply.send(config)
+    },
+  )
+
+  /**
+   * Forcing everyone below a version to update before they can go on.
+   *
+   * The day a breaking store release goes live, not in an incident — which is
+   * why it sits beside the banner rather than with the kill switch in
+   * `scripts/maintenance.ts`. Every client already reads it: `AppGate` blocks on
+   * `updateRequired` at launch and on every return to the foreground, signed in
+   * or not.
+   *
+   * Refused above the platform's `latestVersion`. A minimum nobody can install
+   * sends every user to a store listing that cannot satisfy it — the whole
+   * platform locked out by one typo, and on the web, where the served bundle
+   * *is* the latest, with nowhere at all to go. Publishing the build and
+   * raising the banner first is the order anyway; this makes it the only one.
+   * Lowering is always allowed, so a mistake is undone from the same field.
+   */
+  app.post(
+    '/admin/app-config/min-version',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminMinVersionSchema },
+      config: { rateLimit: limit(20, '1 minute') },
+    },
+    async (request, reply) => {
+      const { platform, version } = request.body
+      const current = await getAppConfig(app.mongo.db)
+      const latest = versionForPlatform(current.latestVersion, platform)
+      if (compareVersions(version, latest) > 0) {
+        throw new ApiError(
+          ERROR_CODES.VALIDATION_FAILED,
+          `Minimum ${version} is above the latest ${platform} version (${latest}); raise that first`,
+        )
+      }
+      const config = await updateAppConfig(app.mongo.db, {
+        minVersion: withPlatformVersion(current.minVersion, platform, version),
+      })
+      forgetAdminStats()
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'appConfig.minVersion',
         payload: { platform, version },
       })
       return reply.send(config)
