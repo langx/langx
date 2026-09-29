@@ -591,6 +591,23 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1, createdAt: -1 }, name: 'user_created' },
   ],
 
+  [COLLECTIONS.proGifts]: [
+    /*
+     * No unique index: the key that says what a gift is for is the `_id`,
+     * so "one gift per milestone, per referral slot, per operator click" is
+     * the primary key and cannot be dropped. These are the three reads.
+     *
+     * The lease: "the oldest pending row nobody holds", asked every tick by
+     * both machines.
+     */
+    { key: { status: 1, lockedUntil: 1, createdAt: 1 }, name: 'status_locked' },
+    // One person's gifts by end — the stack a new gift goes on top of, and
+    // the operator panel's list.
+    { key: { userId: 1, endsAt: -1 }, name: 'user_ends' },
+    // Granted gifts about to end, or ended: the reminders and the goodbye.
+    { key: { status: 1, endsAt: 1 }, name: 'status_ends' },
+  ],
+
   [COLLECTIONS.tokenLedger]: [
     // The single most important index here: the same message cannot be awarded
     // twice, whether it arrived over REST or the socket, and a re-run cron

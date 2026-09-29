@@ -532,6 +532,10 @@ export const fr: Localized<ServerMessages> = {
     suspensionUpdatedText: 'Ta suspension LangX a été mise à jour. {detail}',
     lifetimeGiftSubject: '{plan}, à vie',
     lifetimeGiftButton: 'Voir ma formule',
+    proGiftSubject: 'Un cadeau pour toi : LangX Pro',
+    proGiftButton: 'Ouvrir LangX',
+    proGiftEndingSubject: 'Ton cadeau Pro se termine le {date}',
+    proGiftEndingButton: 'Voir ma formule',
   },
 
   lifetimeGift: {
@@ -546,6 +550,33 @@ export const fr: Localized<ServerMessages> = {
       other:
         'Ton ancien solde a été converti à raison de cent jetons v1 pour un, donc {carried} d’entre eux sont dans ton nouveau portefeuille. Il contient {balance} jetons aujourd’hui.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      one: 'Félicitations ! On t’offre {count} mois de LangX Pro. LangX est entièrement open source, et on voulait te remercier d’en faire partie.',
+      other:
+        'Félicitations ! On t’offre {count} mois de LangX Pro. LangX est entièrement open source, et on voulait te remercier d’en faire partie.',
+    },
+    introReferral: {
+      one: '{friends} amis que tu as invités ont commencé à discuter sur LangX — {count} mois de Pro pour toi !',
+      other:
+        '{friends} amis que tu as invités ont commencé à discuter sur LangX — {count} mois de Pro pour toi !',
+    },
+    introStreak: {
+      one: 'Une série de {days} jours ! {count} mois de Pro, offert par nous.',
+      other: 'Une série de {days} jours ! {count} mois de Pro, offerts par nous.',
+    },
+    perks:
+      'Avec Pro, tu peux :\n• lancer autant de conversations que tu veux\n• traduire bien plus chaque jour\n• voir qui a consulté ton profil, et naviguer sans être vu\n• te démarquer dans Découvrir et filtrer par genre et par ville',
+    andMore: '…et bien plus encore.',
+    until: 'Ton Pro dure jusqu’au {date}.',
+    untilPaying:
+      'Ça ne suspend ni ne modifie la facturation de ton abonnement — mais si ton abonnement prend fin un jour, Pro continue jusqu’au {date}.',
+    reminderWeek:
+      'Petit rappel : ton cadeau Pro se termine le {date}. Si tu veux garder Pro ensuite, les options sont dans l’app, sous Réglages → Abonnement.',
+    reminderDay: 'Ton cadeau Pro se termine dans un jour, le {date}.',
+    ended:
+      'Ton cadeau Pro est terminé. Merci de l’avoir passé avec nous — on espère qu’il a aidé ta pratique. 💛',
   },
   reportReason: {
     spam: 'Spam',

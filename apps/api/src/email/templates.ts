@@ -1181,6 +1181,36 @@ export function lifetimeGiftEmail(
   }
 }
 
+/**
+ * A gift of Pro, a reminder that one ends, in an inbox.
+ *
+ * The paragraphs are the @langx message's, word for word — the same news in
+ * two places must not read as two senders. Escaped, and line breaks kept,
+ * because the list of what Pro opens is written one line per item.
+ *
+ * `shell` with an empty footer, as the lifetime gift's is: "you can ignore
+ * this" is the wrong thing to say under something given.
+ */
+export function proGiftEmail(
+  locale: Locale,
+  input: { subject: string; paragraphs: string[]; button: string; url: string },
+): Email {
+  const html = input.paragraphs
+    .map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\n/g, '<br />')}</p>`)
+    .join('\n       ')
+  return {
+    subject: input.subject,
+    html: shell(
+      locale,
+      escapeHtml(input.paragraphs[0] ?? input.subject),
+      `${html}
+       <p>${button(encodeURI(input.url), input.button)}</p>`,
+      '',
+    ),
+    text: `${input.paragraphs.join('\n\n')}\n\n${input.url}`,
+  }
+}
+
 /** User-typed text goes into an HTML body, so it is escaped before it does. */
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)

@@ -517,6 +517,9 @@ export async function purgeExpiredAccounts(
       // and a row left behind is a deleted account still holding a rank.
       db.collection(COLLECTIONS.echoAggregates).deleteMany({ userId }),
       db.collection(COLLECTIONS.subscriptions).deleteMany({ userId }),
+      // Gifts of Pro, with the operator's note about why. A gift still
+      // pending for a deleted account would only ever be skipped.
+      db.collection(COLLECTIONS.proGifts).deleteMany({ userId }),
       // The rows behind the images deleted above. A card's `_id` is a public
       // `/s/<id>` page about a person, so leaving it is leaving a profile
       // fragment up after the profile is gone.

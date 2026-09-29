@@ -208,6 +208,12 @@ export const COLLECTIONS = {
 
   // billing
   subscriptions: 'subscriptions',
+  /**
+   * Months of Pro given rather than bought — by an operator, for a streak, or
+   * for invitees. `_id` is what the gift is for (`streak:100:<user>`), which
+   * is the whole of its idempotency; see `modules/billing/proGifts.ts`.
+   */
+  proGifts: 'proGifts',
 
   /**
    * Who invited whom. `_id` is the **invitee**, so "one referrer per person,

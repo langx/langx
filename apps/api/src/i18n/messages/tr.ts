@@ -507,6 +507,10 @@ export const tr: Localized<ServerMessages> = {
     suspensionUpdatedText: 'LangX askıya alma durumun güncellendi. {detail}',
     lifetimeGiftSubject: '{plan}, ömür boyu',
     lifetimeGiftButton: 'Planımı gör',
+    proGiftSubject: 'Sana bir hediye: LangX Pro',
+    proGiftButton: "LangX'i aç",
+    proGiftEndingSubject: 'Pro hediyen {date} tarihinde bitiyor',
+    proGiftEndingButton: 'Planımı gör',
   },
 
   lifetimeGift: {
@@ -521,6 +525,32 @@ export const tr: Localized<ServerMessages> = {
       other:
         'Eski bakiyen yüz v1 jetonu bire gelecek şekilde aktarıldı, yani {carried} tanesi yeni cüzdanında. Bugün {balance} jeton tutuyor.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      one: 'Tebrikler! Sana {count} ay LangX Pro hediye ediyoruz. LangX tamamen açık kaynak; bizimle olduğun için teşekkür etmek istedik.',
+      other:
+        'Tebrikler! Sana {count} ay LangX Pro hediye ediyoruz. LangX tamamen açık kaynak; bizimle olduğun için teşekkür etmek istedik.',
+    },
+    introReferral: {
+      one: "Davet ettiğin {friends} arkadaşın LangX'te konuşmaya başladı — {count} ay Pro senin!",
+      other: "Davet ettiğin {friends} arkadaşın LangX'te konuşmaya başladı — {count} ay Pro senin!",
+    },
+    introStreak: {
+      one: '{days} günlük seri! {count} ay Pro bizden.',
+      other: '{days} günlük seri! {count} ay Pro bizden.',
+    },
+    perks:
+      "Pro ile:\n• istediğin kadar sohbet başlatabilirsin\n• her gün çok daha fazlasını çevirebilirsin\n• profiline kimin baktığını görebilir, görünmeden gezinebilirsin\n• Keşfet'te öne çıkabilir, cinsiyete ve şehre göre filtreleyebilirsin",
+    andMore: '…ve çok daha fazlası.',
+    until: "Pro'n {date} tarihine kadar sürüyor.",
+    untilPaying:
+      'Aboneliğinin faturalandırmasını durdurmaz ya da değiştirmez — ama aboneliğin bir gün biterse Pro {date} tarihine kadar devam eder.',
+    reminderWeek:
+      "Bilgin olsun: Pro hediyen {date} tarihinde bitiyor. Sonrasında da Pro'yu sürdürmek istersen seçenekler uygulamada Ayarlar → Abonelik bölümünde.",
+    reminderDay: 'Pro hediyen bir gün sonra, {date} tarihinde bitiyor.',
+    ended:
+      'Pro hediyen sona erdi. Onu bizimle geçirdiğin için teşekkürler — umarız pratiğine iyi gelmiştir. 💛',
   },
   reportReason: {
     spam: 'Spam',
