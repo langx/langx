@@ -4,6 +4,7 @@ import type { Profile } from '../profiles/profiles'
 import { readActivityWeek } from './dailyActivity'
 import { getBadgeSummary } from './badges'
 import { countCorrectionsWritten } from './corrections'
+import { countPostsByAuthor } from '../feed/feed'
 import { readAggregates, type TokenAggregate } from './ledger'
 import { badgeStripMarks, periodKeys, type ProfileBadge } from '@langx/shared'
 
@@ -29,6 +30,12 @@ import { badgeStripMarks, periodKeys, type ProfileBadge } from '@langx/shared'
 export interface PublicSummary {
   streak: { current: number; longest: number }
   corrections: number
+  /**
+   * How many posts they have up. Its own field rather than folded into
+   * `corrections`, which badges and the owner's own tile also read as a count
+   * of teaching; the profile's feed tile adds the two.
+   */
+  posts: number
   /**
    * The newest badge of each kind, for the strip above the bio — see
    * `badgeStripMarks` for why a climbed ladder sends one mark and not four.
@@ -77,9 +84,10 @@ export async function getPublicSummary(
 
   // The week is read only when it will be sent: it is its own query, and a
   // switched-off chart should not cost the page a lookup that is thrown away.
-  const [tokens, corrections, badges, week] = await Promise.all([
+  const [tokens, corrections, posts, badges, week] = await Promise.all([
     readAggregates(db, userId, at),
     countCorrectionsWritten(db, userId),
+    countPostsByAuthor(db, userId),
     getBadgeSummary(db, userId, at),
     chart ? readActivityWeek(db, userId, at, profile.timezone ?? 'UTC') : undefined,
   ])
@@ -87,6 +95,7 @@ export async function getPublicSummary(
   return {
     streak: { current: profile.streak.current, longest: profile.streak.longest },
     corrections,
+    posts,
     rank: await weekPercentile(db, tokens.week, at),
     /*
      * Which badges is no longer only the owner's page — the strip draws the

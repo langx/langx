@@ -855,10 +855,11 @@ export const tr: Localized<EnMessages> = {
     tabCorrections: 'Düzeltmeler',
     tabPosts: 'Gönderiler',
     forName: '{name} için',
-    publicTitle: 'Düzeltmeler',
     publicNote: 'Gönderilere yazılan düzeltmeler. Sohbette düzeltilen, o sohbette kalır.',
     publicEmptyTitle: 'Henüz gönderi düzeltmesi yok',
     publicEmptyBody: '@{handle} burada henüz bir gönderi düzeltmedi.',
+    publicPostsEmptyTitle: 'Henüz gönderi yok',
+    publicPostsEmptyBody: '@{handle} burada henüz bir şey paylaşmadı.',
   },
   myPosts: {
     emptyTitle: 'Henüz bir şey paylaşmadın',

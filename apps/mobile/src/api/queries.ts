@@ -999,6 +999,11 @@ export interface PublicActivityDto {
 export interface PublicSummaryDto {
   streak: { current: number; longest: number }
   corrections: number
+  /**
+   * Added after `corrections`, so an older API leaves it out; the feed tile
+   * reads a missing one as zero rather than drawing `NaN`.
+   */
+  posts?: number
   /** The newest badge of each kind, for the strip above the bio. */
   topBadges: ProfileBadge[]
   tokens: number
@@ -1045,6 +1050,20 @@ export function useAuthoredCorrections(handle: string) {
     queryFn: ({ pageParam }) =>
       api.get<AuthoredCorrectionsPage>(
         `/profiles/${handle}/corrections${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled: handle.length > 0,
+  })
+}
+
+/** Somebody's posts, newest first — the other half of their feed tile. */
+export function useAuthoredPosts(handle: string) {
+  return useInfiniteQuery({
+    queryKey: ['profilePosts', handle] as const,
+    queryFn: ({ pageParam }) =>
+      api.get<FeedPage>(
+        `/profiles/${handle}/posts${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,

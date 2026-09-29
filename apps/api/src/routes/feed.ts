@@ -34,7 +34,7 @@ import {
   deleteCorrection,
   deletePost,
   listFeed,
-  listMyPosts,
+  listPostsByAuthor,
   listPostCorrections,
 } from '../modules/feed/feed'
 import { listTimeline } from '../modules/feed/timeline'
@@ -248,7 +248,9 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
     '/me/posts',
     { preHandler: requireAuth, schema: { querystring: listMyPostsQuerySchema } },
     async (request, reply) => {
-      return reply.send(await listMyPosts(app.mongo.db, request.userId, request.query))
+      return reply.send(
+        await listPostsByAuthor(app.mongo.db, request.userId, request.userId, request.query),
+      )
     },
   )
 

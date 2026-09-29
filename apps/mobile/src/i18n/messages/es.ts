@@ -855,11 +855,12 @@ export const es: Localized<EnMessages> = {
     tabCorrections: 'Correcciones',
     tabPosts: 'Publicaciones',
     forName: 'Para {name}',
-    publicTitle: 'Correcciones',
     publicNote:
       'Correcciones escritas en publicaciones. Lo corregido en un chat se queda en ese chat.',
     publicEmptyTitle: 'Aún no hay correcciones en publicaciones',
     publicEmptyBody: '@{handle} todavía no ha corregido ninguna publicación aquí.',
+    publicPostsEmptyTitle: 'Aún no hay publicaciones',
+    publicPostsEmptyBody: '@{handle} todavía no ha publicado nada aquí.',
   },
   myPosts: {
     emptyTitle: 'Aún no has publicado nada',

@@ -1890,6 +1890,72 @@ describe('community feed', () => {
     })
   })
 
+  describe('somebody else’s posts', () => {
+    function theirs(viewer: SignedUpUser, of: string, qs = '') {
+      return app.inject({
+        method: 'GET',
+        url: `/profiles/${of}/posts${qs ? `?${qs}` : ''}`,
+        headers: { cookie: viewer.cookie },
+      })
+    }
+
+    function summaryOf(viewer: SignedUpUser, of: string) {
+      return app.inject({
+        method: 'GET',
+        url: `/profiles/${of}/summary`,
+        headers: { cookie: viewer.cookie },
+      })
+    }
+
+    it('lists their posts newest first, and the summary counts the same ones', async () => {
+      const author = await newUser('theirs-author@example.com', { handle: 'theirsauthor' })
+      const other = await newUser('theirs-other@example.com')
+      const viewer = await newUser('theirs-viewer@example.com')
+
+      const corrected = (await post(author, 'I has a question.')).json<{ _id: string }>()._id
+      const asked = (await ask(author, 'squirrel')).json<{ _id: string }>()._id
+      const hidden = (await post(author, 'Hidden by a moderator.')).json<{ _id: string }>()._id
+      await post(other, 'Not theirs.')
+      await handle.db
+        .collection(COLLECTIONS.posts)
+        .updateOne({ _id: new ObjectId(hidden) }, { $set: { hiddenAt: new Date() } })
+
+      const page = (await theirs(viewer, 'theirsauthor')).json<{
+        items: { _id: string }[]
+        nextCursor: string | null
+      }>()
+      // A hidden post is absent, as it is from the author's own list: hiding
+      // is silent, and a stranger's view of the profile must not break that.
+      expect(page.items.map((i) => i._id)).toEqual([asked, corrected])
+      expect(page.nextCursor).toBeNull()
+
+      // The tile's number and the list it opens are one filter, not two.
+      const summary = (await summaryOf(viewer, 'theirsauthor')).json<{ posts: number }>()
+      expect(summary.posts).toBe(2)
+    })
+
+    it('is absent to somebody the author blocked', async () => {
+      const author = await newUser('theirs-block-author@example.com', {
+        handle: 'theirsblocker',
+      })
+      const viewer = await newUser('theirs-block-viewer@example.com')
+      await post(author, 'Not for you.')
+      await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: author.cookie },
+        payload: { userId: viewer.userId },
+      })
+
+      expect((await theirs(viewer, 'theirsblocker')).statusCode).toBe(404)
+    })
+
+    it('is absent rather than forbidden for a handle nobody answers to', async () => {
+      const viewer = await newUser('theirs-missing-viewer@example.com')
+      expect((await theirs(viewer, 'nobodyatall')).statusCode).toBe(404)
+    })
+  })
+
   describe('hardening before moments', () => {
     const BASE = 'https://cdn.example.com'
     const picture = (owner: SignedUpUser, name: string) => ({
