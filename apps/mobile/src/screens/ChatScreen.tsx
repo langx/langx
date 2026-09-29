@@ -1362,6 +1362,7 @@ export function ChatScreen({
       if (code === 'QUOTA_EXCEEDED') {
         // A plain alert and nothing to buy: the ceiling is the same on every
         // plan since the single one, so the paywall would sell nothing.
+        track({ name: 'fair_use_limit_hit', properties: { kind: 'media' } })
         setPending((list) => removePending(list, clientId))
         await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
         return

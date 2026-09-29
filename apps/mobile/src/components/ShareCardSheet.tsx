@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ActivityIndicator, Modal, Platform, Pressable, Text } from 'react-native'
 import { useCreateShareCard } from '../api/queries'
 import { useT, type MessageKey } from '../i18n'
+import { track } from '../lib/analytics'
 import { shareImage, shareLink } from '../lib/share'
 import type { ShareContent } from '../lib/shareText'
 import { makeStyles } from '../lib/theme'
@@ -124,9 +125,17 @@ export function ShareCardSheet({
         headline: request.headline,
         caption: request.caption,
       })
+      track({
+        name: 'share_card_created',
+        properties: { kind: request.kind, shape, link_only: false, failed: false },
+      })
       shareAfterClose(shareCard(card))
     } catch (caught) {
       void caught
+      track({
+        name: 'share_card_created',
+        properties: { kind: request.kind, shape, link_only: false, failed: true },
+      })
       showToast(t('share.cardFailed'))
       const fallback = request.fallback
       shareAfterClose(() => shareLink(fallback))
@@ -173,6 +182,10 @@ export function ShareCardSheet({
             disabled={busy !== null}
             onPress={() => {
               if (!request) return onClose()
+              track({
+                name: 'share_card_created',
+                properties: { kind: request.kind, shape: null, link_only: true, failed: false },
+              })
               const fallback = request.fallback
               shareAfterClose(() => shareLink(fallback))
             }}

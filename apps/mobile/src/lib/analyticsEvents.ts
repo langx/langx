@@ -1,5 +1,7 @@
 import type {
   BillingPeriod,
+  CardKind,
+  CardShape,
   CosmeticKind,
   EchoGrade,
   EchoSourceKind,
@@ -562,6 +564,25 @@ export type AnalyticsEvent =
        */
       name: 'langx_card_tapped'
       properties: { action: 'storeReview' | 'openUrl' | 'openRoute' }
+    }
+  | {
+      /**
+       * A share sheet for a card — streak, badge, rank or a recap — was acted
+       * on. `link_only` is the "Just the link" row, which never picks a
+       * `shape`; `failed` is the render or share falling back to the plain
+       * link rather than the picture.
+       */
+      name: 'share_card_created'
+      properties: { kind: CardKind; shape: CardShape | null; link_only: boolean; failed: boolean }
+    }
+  | {
+      /**
+       * A fair-use ceiling was hit — today, the media quota on a chat send.
+       * It is a plain alert with nothing to buy, not a paywall, which is why
+       * it is its own event rather than a `paywall_viewed` source.
+       */
+      name: 'fair_use_limit_hit'
+      properties: { kind: 'media' }
     }
 
 export type AnalyticsEventName = AnalyticsEvent['name']

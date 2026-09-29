@@ -120,6 +120,15 @@ describe('every event survives the sanitizer', () => {
     { name: 'pro_welcome_closed', properties: { source: 'trial', action: 'start' } },
     { name: 'langx_poll_answered', properties: { poll_id: 'launch-poll', option_id: 'yes' } },
     { name: 'langx_card_tapped', properties: { action: 'openRoute' } },
+    {
+      name: 'share_card_created',
+      properties: { kind: 'streak', shape: 'story', link_only: false, failed: false },
+    },
+    {
+      name: 'share_card_created',
+      properties: { kind: 'badge', shape: null, link_only: true, failed: false },
+    },
+    { name: 'fair_use_limit_hit', properties: { kind: 'media' } },
   ]
 
   for (const event of events) {
