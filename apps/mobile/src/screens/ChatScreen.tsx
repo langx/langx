@@ -840,6 +840,12 @@ export function ChatScreen({
     try {
       const socket = await getSocket()
       await emitWithAck(socket, 'poll:answer', { conversationId, messageId: message._id, optionId })
+      if (message.interactive?.kind === 'poll') {
+        track({
+          name: 'langx_poll_answered',
+          properties: { poll_id: message.interactive.pollId, option_id: optionId },
+        })
+      }
     } catch (caught) {
       void caught
       void showAlert(t('chat.couldNotSend'))
@@ -850,9 +856,15 @@ export function ChatScreen({
   function cardAction(message: MessageDto): void {
     if (message.interactive?.kind !== 'card') return
     const action = message.interactive.button.action
+    track({ name: 'langx_card_tapped', properties: { action: action.type } })
     if (action.type === 'storeReview') void openStoreReview()
     else if (action.type === 'openUrl') void Linking.openURL(action.url).catch(() => undefined)
-    else router.push(action.route)
+    // A card's own route may point at the paywall without saying why it's
+    // there — `openPaywall` is what stamps `paywall_viewed.source` instead of
+    // letting `parseSource` fall back to the generic `gate`.
+    else if (action.route === '/paywall' || action.route.startsWith('/paywall?')) {
+      openPaywall(undefined, undefined, 'langx')
+    } else router.push(action.route)
   }
 
   /** Accepts, declines or withdraws. The server decides who may do which. */
@@ -1350,6 +1362,7 @@ export function ChatScreen({
       if (code === 'QUOTA_EXCEEDED') {
         // A plain alert and nothing to buy: the ceiling is the same on every
         // plan since the single one, so the paywall would sell nothing.
+        track({ name: 'fair_use_limit_hit', properties: { kind: 'media' } })
         setPending((list) => removePending(list, clientId))
         await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
         return

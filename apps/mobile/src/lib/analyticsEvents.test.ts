@@ -116,6 +116,19 @@ describe('every event survives the sanitizer', () => {
       properties: { asks: 'none', media: 2, hasText: false, from: 'feed' },
     },
     { name: 'feed_card_opened', properties: { position: 4, asks: 'both' } },
+    { name: 'pro_welcome_shown', properties: { source: 'gift', months: 3 } },
+    { name: 'pro_welcome_closed', properties: { source: 'trial', action: 'start' } },
+    { name: 'langx_poll_answered', properties: { poll_id: 'launch-poll', option_id: 'yes' } },
+    { name: 'langx_card_tapped', properties: { action: 'openRoute' } },
+    {
+      name: 'share_card_created',
+      properties: { kind: 'streak', shape: 'story', link_only: false, failed: false },
+    },
+    {
+      name: 'share_card_created',
+      properties: { kind: 'badge', shape: null, link_only: true, failed: false },
+    },
+    { name: 'fair_use_limit_hit', properties: { kind: 'media' } },
   ]
 
   for (const event of events) {
