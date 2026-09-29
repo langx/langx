@@ -355,11 +355,12 @@ describe('share cards', () => {
       recap: { ...RECAP_WORDS, month: '2026-06', locale: 'fr' },
       storagePublicBaseUrl: undefined,
     })
-    // French groups with a narrow no-break space, and capitalises the month.
+    // French groups with a no-break space here (see recapCard.ts), and the
+    // month is capitalised.
     expect(content.month).toBe('Juin')
     // No Echo row and no streak: the next numbers in line take their tiles.
     expect(content.stats.map((each) => [each.stat, each.value])).toEqual([
-      ['messages', '1\u202f234'],
+      ['messages', '1\u00a0234'],
       ['corrections', '5'],
       ['activeDays', '2'],
     ])

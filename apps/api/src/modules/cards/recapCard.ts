@@ -84,7 +84,9 @@ export async function recapCardContent(
     ...(recap.languages ? { languages: recap.languages } : {}),
     stats: recapHighlights(numbers).map((stat) => ({
       stat,
-      value: format.format(numbers[stat]),
+      // French groups digits with a narrow no-break space, which Nunito does not
+      // have: satori drew "1204". The ordinary no-break space it does have.
+      value: format.format(numbers[stat]).replace(/\u202f/g, '\u00a0'),
       label: recap.labels[stat],
     })),
     handle: input.handle,
