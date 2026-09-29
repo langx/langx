@@ -2468,31 +2468,92 @@ export const tr: Localized<EnMessages> = {
   recap: {
     meTitle: '{month} özetin',
     meBody: 'LangX’teki ayın, paylaşmaya hazır.',
-    title: '{month} ayın',
     messages: {
       one: '{count} mesaj',
       other: '{count} mesaj',
     },
-    corrections: {
-      one: '{count} düzeltme',
-      other: '{count} düzeltme',
-    },
     echoReviews: {
       one: '{count} Echo kartı tekrar edildi',
       other: '{count} Echo kartı tekrar edildi',
-    },
-    tokens: {
-      one: '{count} token kazanıldı',
-      other: '{count} token kazanıldı',
-    },
-    currentStreak: {
-      one: 'Bugünkü seri: {count} gün',
-      other: 'Bugünkü seri: {count} gün',
     },
     quiet: 'Sakin bir aydı. Yenisi çoktan başladı.',
     share: 'Ayımı paylaş',
     cardCaption: 'LangX’teki ayım',
     shareMessage: 'LangX’te {month}: {messages}, {reviews}. Benimle pratik yap: {url}',
     failed: 'Özet yüklenemedi.',
+    story: {
+      close: 'Kapat',
+      next: 'Sonraki',
+      previous: 'Önceki',
+      slideOf: '{index}/{total}',
+      introKicker: 'Ayın',
+      introLine: 'İki dilde geçen bir ay. İşte seninki.',
+      introHint: 'Devam etmek için dokun',
+      messagesKicker: 'Konuştun',
+      messagesLine: {
+        one: 'mesaj, dil değişimlerinde',
+        other: 'mesaj, dil değişimlerinde',
+      },
+      people: {
+        one: '{count} kişiyle',
+        other: '{count} kişiyle',
+      },
+      correctionsKicker: 'Sen de katkı verdin',
+      correctionsLine: {
+        one: 'cümleyi, senin dilini öğrenen biri için düzelttin',
+        other: 'cümleyi, senin dilini öğrenenler için düzelttin',
+      },
+      echoKicker: 'Hatırladın',
+      echoLine: {
+        one: 'Echo kartı tekrar ettin; bu kelime artık senin',
+        other: 'Echo kartı tekrar ettin; bu kelimeler artık senin',
+      },
+      streakKicker: 'Gelmeye devam ettin',
+      streakLine: {
+        one: 'günlük seri, hâlâ sürüyor.',
+        other: 'günlük seri, hâlâ sürüyor.',
+      },
+      activeDaysLine: {
+        one: 'Bu ay {count} gün aktiftin.',
+        other: 'Bu ay {count} gün aktiftin.',
+      },
+      activeDaysOnlyLine: {
+        one: 'gün, bu ay pratik yaptın.',
+        other: 'gün, bu ay pratik yaptın.',
+      },
+      justLink: 'Sadece bağlantıyı gönder',
+    },
+    card: {
+      kicker: 'Ayım',
+      people: {
+        one: 'iki dilde, {count} kişiyle',
+        other: 'iki dilde, {count} kişiyle',
+      },
+      languages: '{native} → {learning} öğreniyor',
+      messages: {
+        one: 'mesaj gönderildi',
+        other: 'mesaj gönderildi',
+      },
+      corrections: {
+        one: 'cümle düzeltildi',
+        other: 'cümle düzeltildi',
+      },
+      echoReviews: {
+        one: 'Echo kartı tekrar edildi',
+        other: 'Echo kartı tekrar edildi',
+      },
+      activeDays: {
+        one: 'aktif gün',
+        other: 'aktif gün',
+      },
+      currentStreak: {
+        one: 'günlük seri, sürüyor',
+        other: 'günlük seri, sürüyor',
+      },
+      tokens: {
+        one: 'token kazanıldı',
+        other: 'token kazanıldı',
+      },
+    },
   },
 }

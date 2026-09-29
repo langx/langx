@@ -2705,32 +2705,102 @@ export const en = {
   recap: {
     meTitle: 'Your {month} recap',
     meBody: 'Your month on LangX, ready to share.',
-    title: 'Your {month}',
     messages: {
       one: '{count} message',
       other: '{count} messages',
     },
-    corrections: {
-      one: '{count} correction',
-      other: '{count} corrections',
-    },
     echoReviews: {
       one: '{count} Echo card reviewed',
       other: '{count} Echo cards reviewed',
-    },
-    tokens: {
-      one: '{count} token earned',
-      other: '{count} tokens earned',
-    },
-    currentStreak: {
-      one: 'Current streak: {count} day',
-      other: 'Current streak: {count} days',
     },
     quiet: 'A quiet month. The next one has already started.',
     share: 'Share my month',
     cardCaption: 'my month on LangX',
     shareMessage: 'My {month} on LangX: {messages}, {reviews}. Practise with me: {url}',
     failed: 'Could not load the recap.',
+    /**
+     * The full-screen story `recap.tsx` plays, one number per slide. A slide's
+     * line follows its big numeral, so each is the rest of that sentence.
+     */
+    story: {
+      close: 'Close',
+      next: 'Next',
+      previous: 'Previous',
+      slideOf: '{index} of {total}',
+      introKicker: 'Your month',
+      introLine: 'A month of two languages. Here’s yours.',
+      introHint: 'Tap to go on',
+      messagesKicker: 'You talked',
+      messagesLine: {
+        one: 'message in your language exchanges',
+        other: 'messages in your language exchanges',
+      },
+      people: {
+        one: 'with {count} person',
+        other: 'with {count} people',
+      },
+      correctionsKicker: 'You gave back',
+      correctionsLine: {
+        one: 'sentence you corrected for someone learning your language',
+        other: 'sentences you corrected for people learning your language',
+      },
+      echoKicker: 'You remembered',
+      echoLine: {
+        one: 'Echo card reviewed — a word that’s yours now',
+        other: 'Echo cards reviewed — words that are yours now',
+      },
+      streakKicker: 'You kept showing up',
+      streakLine: {
+        one: 'day streak, and it’s still going.',
+        other: 'day streak, and it’s still going.',
+      },
+      activeDaysLine: {
+        one: '{count} active day this month.',
+        other: '{count} active days this month.',
+      },
+      activeDaysOnlyLine: {
+        one: 'day you practised this month.',
+        other: 'days you practised this month.',
+      },
+      justLink: 'Just send the link',
+    },
+    /**
+     * The words on the recap share card and on the story's last slide, which
+     * shows the same numbers. The server draws the card, so in Arabic these
+     * carry no Latin word: satori reverses one inside a right-to-left line.
+     */
+    card: {
+      kicker: 'My month',
+      people: {
+        one: 'in two languages, with {count} person',
+        other: 'in two languages, with {count} people',
+      },
+      languages: '{native} → learning {learning}',
+      messages: {
+        one: 'message sent',
+        other: 'messages sent',
+      },
+      corrections: {
+        one: 'sentence corrected',
+        other: 'sentences corrected',
+      },
+      echoReviews: {
+        one: 'Echo card reviewed',
+        other: 'Echo cards reviewed',
+      },
+      activeDays: {
+        one: 'day active',
+        other: 'days active',
+      },
+      currentStreak: {
+        one: 'day streak, still going',
+        other: 'day streak, still going',
+      },
+      tokens: {
+        one: 'token earned',
+        other: 'tokens earned',
+      },
+    },
   },
 } as const
 

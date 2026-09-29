@@ -1,4 +1,4 @@
-import { CARD_SHAPES, type CardKind, type CardShape } from '@langx/shared'
+import { CARD_SHAPES, type CardKind, type CardShape, type RecapCardInput } from '@langx/shared'
 import { File, Paths } from 'expo-file-system'
 import { useState } from 'react'
 import { ActivityIndicator, Modal, Platform, Pressable, Text } from 'react-native'
@@ -24,6 +24,8 @@ export interface ShareCardRequest {
   caption: string
   /** The sentence to share when there is no picture, and beside the link when there is. */
   fallback: ShareContent
+  /** A recap's words; the server draws the poster from them and its own numbers. */
+  recap?: RecapCardInput
 }
 
 /** A share that has been decided on but not yet handed to the OS. */
@@ -124,6 +126,7 @@ export function ShareCardSheet({
         shape,
         headline: request.headline,
         caption: request.caption,
+        ...(request.recap ? { recap: request.recap } : {}),
       })
       track({
         name: 'share_card_created',

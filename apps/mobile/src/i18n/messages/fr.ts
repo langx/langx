@@ -2495,26 +2495,13 @@ export const fr: Localized<EnMessages> = {
   recap: {
     meTitle: 'Ton bilan de {month}',
     meBody: 'Ton mois sur LangX, prêt à partager.',
-    title: 'Ton mois de {month}',
     messages: {
       one: '{count} message',
       other: '{count} messages',
     },
-    corrections: {
-      one: '{count} correction',
-      other: '{count} corrections',
-    },
     echoReviews: {
       one: '{count} carte Echo révisée',
       other: '{count} cartes Echo révisées',
-    },
-    tokens: {
-      one: '{count} jeton gagné',
-      other: '{count} jetons gagnés',
-    },
-    currentStreak: {
-      one: 'Série actuelle : {count} jour',
-      other: 'Série actuelle : {count} jours',
     },
     quiet: 'Un mois calme. Le suivant a déjà commencé.',
     share: 'Partager mon mois',
@@ -2522,5 +2509,79 @@ export const fr: Localized<EnMessages> = {
     shareMessage:
       'Mon mois de {month} sur LangX : {messages}, {reviews}. Pratique avec moi : {url}',
     failed: 'Impossible de charger le bilan.',
+    story: {
+      close: 'Fermer',
+      next: 'Suivant',
+      previous: 'Précédent',
+      slideOf: '{index} sur {total}',
+      introKicker: 'Ton mois',
+      introLine: 'Un mois en deux langues. Voici le tien.',
+      introHint: 'Touche pour continuer',
+      messagesKicker: 'Tu as parlé',
+      messagesLine: {
+        one: 'message dans tes échanges linguistiques',
+        other: 'messages dans tes échanges linguistiques',
+      },
+      people: {
+        one: 'avec {count} personne',
+        other: 'avec {count} personnes',
+      },
+      correctionsKicker: 'Tu as rendu la pareille',
+      correctionsLine: {
+        one: 'phrase corrigée pour quelqu’un qui apprend ta langue',
+        other: 'phrases corrigées pour des gens qui apprennent ta langue',
+      },
+      echoKicker: 'Tu as retenu',
+      echoLine: {
+        one: 'carte Echo révisée — un mot qui est à toi maintenant',
+        other: 'cartes Echo révisées — des mots qui sont à toi maintenant',
+      },
+      streakKicker: 'Tu as tenu bon',
+      streakLine: {
+        one: 'jour de série, et ça continue.',
+        other: 'jours de série, et ça continue.',
+      },
+      activeDaysLine: {
+        one: '{count} jour actif ce mois-ci.',
+        other: '{count} jours actifs ce mois-ci.',
+      },
+      activeDaysOnlyLine: {
+        one: 'jour de pratique ce mois-ci.',
+        other: 'jours de pratique ce mois-ci.',
+      },
+      justLink: 'Envoyer juste le lien',
+    },
+    card: {
+      kicker: 'Mon mois',
+      people: {
+        one: 'en deux langues, avec {count} personne',
+        other: 'en deux langues, avec {count} personnes',
+      },
+      languages: '{native} → j’apprends {learning}',
+      messages: {
+        one: 'message envoyé',
+        other: 'messages envoyés',
+      },
+      corrections: {
+        one: 'phrase corrigée',
+        other: 'phrases corrigées',
+      },
+      echoReviews: {
+        one: 'carte Echo révisée',
+        other: 'cartes Echo révisées',
+      },
+      activeDays: {
+        one: 'jour actif',
+        other: 'jours actifs',
+      },
+      currentStreak: {
+        one: 'jour de série, en cours',
+        other: 'jours de série, en cours',
+      },
+      tokens: {
+        one: 'jeton gagné',
+        other: 'jetons gagnés',
+      },
+    },
   },
 }

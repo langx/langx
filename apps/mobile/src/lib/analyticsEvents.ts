@@ -348,6 +348,16 @@ export type AnalyticsEvent =
       properties: { sku: string; kind: CosmeticKind | 'consumable'; amount: number }
     }
   | {
+      /**
+       * The monthly recap story was left — closed, swiped away or navigated
+       * from. `slides_seen` is how far it got (the intro is 1), `completed`
+       * whether that was the last slide, the one with the share on it. Sent
+       * once per viewing, as it goes; which numbers were on it never leaves.
+       */
+      name: 'recap_story_viewed'
+      properties: { slides_seen: number; completed: boolean }
+    }
+  | {
       /** The first-run tour opened. Once per install, so this counts installs toured. */
       name: 'tour_started'
       properties: { is_guest: boolean }

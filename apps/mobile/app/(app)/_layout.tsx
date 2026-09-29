@@ -127,6 +127,15 @@ export default function AppLayout() {
               : {}),
           })}
         />
+        {/*
+          The recap is a story: it rises from the bottom because a swipe down
+          is how it leaves, and the edge-back gesture is off because a swipe
+          across is how its slides step.
+        */}
+        <Stack.Screen
+          name="recap"
+          options={{ animation: 'slide_from_bottom', gestureEnabled: false }}
+        />
       </Stack>
       {/*
         "You're Pro now". Here, at the root of the signed-in area, because the
