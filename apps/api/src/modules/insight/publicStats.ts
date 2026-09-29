@@ -44,15 +44,14 @@ export interface DailyPoint {
   day: string
   members: number
   messages: number
-  /** Posts plus post corrections: the feed, the public half of the app. */
-  feed: number
+  corrections: number
 }
 
 export interface PublicStats {
   /** When the numbers were computed, not when they were served. */
   generatedAt: string
   days: number
-  totals: { members: number; messages: number; feed: number; languages: number }
+  totals: { members: number; messages: number; corrections: number; languages: number }
   streaks: { longest: number; active: number }
   /** One entry per day of the window, zeros included — a chart needs the gaps. */
   daily: DailyPoint[]
@@ -170,28 +169,22 @@ async function computePublicStats(db: Db, now: Date): Promise<PublicStats> {
   const [
     members,
     messages,
-    posts,
     corrections,
     languages,
     streaks,
     newMembers,
     sentMessages,
-    newPosts,
     madeCorrections,
     learning,
     native,
   ] = await Promise.all([
     db.collection(COLLECTIONS.profiles).countDocuments(LIVE_MEMBERS),
     db.collection(COLLECTIONS.messages).countDocuments({}),
-    // Hidden posts included, as deleted messages are above: this is how much
-    // happened, not what is on show.
-    db.collection(COLLECTIONS.posts).countDocuments({}),
     db.collection(COLLECTIONS.postCorrections).countDocuments({}),
     distinctLearning(db),
     streakTotals(db),
     perDay(db, COLLECTIONS.profiles, since, LIVE_MEMBERS),
     perDay(db, COLLECTIONS.messages, since, {}),
-    perDay(db, COLLECTIONS.posts, since, {}),
     perDay(db, COLLECTIONS.postCorrections, since, {}),
     topLanguages(db, 'learning'),
     topLanguages(db, 'nativeLanguages'),
@@ -200,13 +193,13 @@ async function computePublicStats(db: Db, now: Date): Promise<PublicStats> {
   return {
     generatedAt: now.toISOString(),
     days: WINDOW_DAYS,
-    totals: { members, messages, feed: posts + corrections, languages },
+    totals: { members, messages, corrections, languages },
     streaks,
     daily: keys.map((day) => ({
       day,
       members: newMembers.get(day) ?? 0,
       messages: sentMessages.get(day) ?? 0,
-      feed: (newPosts.get(day) ?? 0) + (madeCorrections.get(day) ?? 0),
+      corrections: madeCorrections.get(day) ?? 0,
     })),
     learning,
     native,

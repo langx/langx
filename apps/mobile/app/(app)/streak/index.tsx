@@ -88,8 +88,7 @@ export default function StreakScreen() {
     t,
     balance,
     longestStreak: streak?.longest ?? 0,
-    lifetimeCorrections:
-      (tokens.data?.lifetime.corrections ?? 0) + (tokens.data?.lifetime.posts ?? 0),
+    lifetimeCorrections: tokens.data?.lifetime.corrections ?? 0,
     owned: wallet.data?.owned ?? [],
     streakFreezes: wallet.data?.streakFreezes ?? 0,
   }).find((offer) => offer.id === STREAK_FREEZE_SKU)

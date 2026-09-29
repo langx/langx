@@ -41,12 +41,12 @@ describe('counts that vary with user data inflect', () => {
   it('composes a two-count sentence from two pluralised halves', () => {
     const t = createTranslate('ru')
     const line = t('weekly.summary', {
-      messages: t('format.messages', { count: 5 }),
-      feed: t('format.feed', { count: 3 }),
+      messages: t('format.messages', { count: 1 }),
+      corrections: t('format.corrections', { count: 3 }),
     })
-    // Each half inflects on its own count — here "5 сообщений", which a
-    // single plural entry keyed on the other number could never have got right.
-    expect(line).toBe('На этой неделе: 5 сообщений и 3 в ленте.')
+    // One message, three corrections — two different rules in one sentence,
+    // which a single plural entry could never have got right.
+    expect(line).toBe('На этой неделе: 1 сообщение и 3 исправления.')
   })
 
   it('pluralises the new feed counts in the two languages that split hardest', () => {

@@ -60,10 +60,6 @@ describe('public stats', () => {
     await handle.db
       .collection(COLLECTIONS.postCorrections)
       .insertMany([{ authorId: 'ada', createdAt: TODAY }])
-    // A post yesterday: the feed counts posts and post corrections together.
-    await handle.db
-      .collection(COLLECTIONS.posts)
-      .insertMany([{ authorId: 'bo', createdAt: YESTERDAY }])
     resetPublicStatsCache()
   }, 120_000)
 
@@ -77,7 +73,7 @@ describe('public stats', () => {
     const stats = await readPublicStats(handle.db, NOW)
     expect(stats.totals.members).toBe(2)
     expect(stats.totals.messages).toBe(3)
-    expect(stats.totals.feed).toBe(2)
+    expect(stats.totals.corrections).toBe(1)
     // Spanish and German. French and Italian belong to the two non-members.
     expect(stats.totals.languages).toBe(2)
   })
@@ -91,13 +87,13 @@ describe('public stats', () => {
       day: '2026-09-08',
       members: 1,
       messages: 0,
-      feed: 1,
+      corrections: 1,
     })
     expect(stats.daily.at(-2)).toEqual({
       day: '2026-09-07',
       members: 0,
       messages: 2,
-      feed: 1,
+      corrections: 0,
     })
     // The old message and the old member are in the totals and nowhere here.
     expect(stats.daily.reduce((sum, point) => sum + point.messages, 0)).toBe(2)
@@ -131,9 +127,11 @@ describe('public stats', () => {
       .collection(COLLECTIONS.postCorrections)
       .insertOne({ authorId: 'bo', createdAt: TODAY })
 
-    expect((await readPublicStats(handle.db, NOW)).totals.feed).toBe(first.totals.feed)
+    expect((await readPublicStats(handle.db, NOW)).totals.corrections).toBe(
+      first.totals.corrections,
+    )
     resetPublicStatsCache()
-    expect((await readPublicStats(handle.db, NOW)).totals.feed).toBe(3)
+    expect((await readPublicStats(handle.db, NOW)).totals.corrections).toBe(2)
   })
 })
 

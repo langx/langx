@@ -462,7 +462,6 @@ export const tr: Localized<EnMessages> = {
     days: { one: '{count} gün', other: '{count} gün' },
     messages: { one: '{count} mesaj', other: '{count} mesaj' },
     corrections: { one: '{count} düzeltme', other: '{count} düzeltme' },
-    feed: { one: 'Akışta {count}', other: 'Akışta {count}' },
     accountAgeToday: 'bugün',
     accountAgeDays: { one: '{count} gün önce', other: '{count} gün önce' },
     accountAgeMonths: { one: '{count} ay önce', other: '{count} ay önce' },
@@ -1506,6 +1505,7 @@ export const tr: Localized<EnMessages> = {
     editProfile: 'Profili düzenle',
     settings: 'Ayarlar',
     scan: 'Kod tara',
+    corrections: 'Düzeltme',
     wallet: 'Cüzdan',
     previewProfile: 'Profilimi önizle',
     previewProfileBody: 'Profilini başkalarının gördüğü gibi gör',
@@ -1806,7 +1806,7 @@ export const tr: Localized<EnMessages> = {
     appIconChanged: 'İkon değişti.',
     appIconFailed: 'İkon değiştirilemedi',
     showWeekChart: 'Bu haftanın grafiğini göster',
-    showWeekChartBody: 'Hangi günler sohbetlerde ve akışta aktif olduğun, profilinde.',
+    showWeekChartBody: 'Hangi günler mesaj ve düzeltme gönderdiğin, profilinde.',
     voiceCredits: 'Sesler ve lisanslar',
     voiceCreditsBody:
       'Mesajlar açık kaynaklı ses modelleriyle okunuyor. Çoğu bizden bir şey istemiyor; aşağıdakiler ise kaydı yapanların anılması şartıyla lisanslı.',
@@ -1931,7 +1931,7 @@ export const tr: Localized<EnMessages> = {
     lockedAccessibility: '{title}, kilitli',
     lockedStreak: '{threshold} günün {current} günü',
     lockedNeeds: 'Önce {title} al',
-    lockedFeed: 'Akışta {threshold} içinden {current}',
+    lockedCorrections: '{threshold} düzeltmenin {current} tanesi',
     frameKind: 'Profil çerçevesi',
     stickerKind: 'Sticker paketi',
     titleKind: 'Unvan',
@@ -1999,7 +1999,7 @@ export const tr: Localized<EnMessages> = {
     shareForDay: '{day} için payın',
     todaySoFar: 'Bugün şu ana kadar',
     activityScore: { one: '{count} aktivite', other: '{count} aktivite' },
-    todayBreakdown: '{messages} mesaj, akışta {feed}, {partners} kişi.',
+    todayBreakdown: '{messages} mesaj, {corrections} düzeltme, {partners} kişi.',
     poolParticipants: { one: 'O gün {n} kişi aktifti', other: 'O gün {n} kişi aktifti' },
     poolShareOfPool: 'Günlük havuzun {percent} kadarı',
     poolActiveToday: { one: 'Bugün {n} kişi aktif', other: 'Bugün {n} kişi aktif' },
@@ -2111,12 +2111,12 @@ export const tr: Localized<EnMessages> = {
     earned: 'Kazanıldı · {month}',
     earnedLabel: 'Kazanıldı',
     locked: 'Kilitli',
-    firstFeed: 'Akışta ilk kez',
+    firstCorrection: 'İlk düzeltme',
     streakDays: { one: '{formatted} gün', other: '{formatted} gün' },
     messagesSent: { one: '{formatted} mesaj', other: '{formatted} mesaj' },
     tokensEarned: { one: '{formatted} token kazanıldı', other: '{formatted} token kazanıldı' },
     memberDays: { one: '{formatted} gün üye', other: '{formatted} gün üye' },
-    feed: { one: 'Akışta {formatted}', other: 'Akışta {formatted}' },
+    corrections: { one: '{formatted} düzeltme', other: '{formatted} düzeltme' },
     earlyAdopter: 'İlk kullanıcılardan',
     earnedOf: '{total} rozetten {earned} tanesi kazanıldı',
     emptyTitle: 'Henüz rozet yok',
@@ -2408,7 +2408,7 @@ export const tr: Localized<EnMessages> = {
 
   weekly: {
     messages: 'Mesajlar',
-    summary: 'Bu hafta: {messages} ve {feed}.',
+    summary: 'Bu hafta: {messages} ve {corrections}.',
   },
 
   watch: {
@@ -2473,7 +2473,10 @@ export const tr: Localized<EnMessages> = {
       one: '{count} mesaj',
       other: '{count} mesaj',
     },
-    feed: { one: 'Akışta {count}', other: 'Akışta {count}' },
+    corrections: {
+      one: '{count} düzeltme',
+      other: '{count} düzeltme',
+    },
     echoReviews: {
       one: '{count} Echo kartı tekrar edildi',
       other: '{count} Echo kartı tekrar edildi',

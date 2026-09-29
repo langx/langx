@@ -8,7 +8,6 @@ import {
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import { notHidden, type Post } from '../feed/documents'
 
 /**
  * One document per user per **UTC** day. Two readers depend on it:
@@ -187,7 +186,7 @@ export async function readActivityWeek(
   userId: string,
   at: Date = new Date(),
   timeZone = 'UTC',
-): Promise<{ day: string; messages: number; corrections: number; posts: number }[]> {
+): Promise<{ day: string; messages: number; corrections: number }[]> {
   const today = localDayKey(at, timeZone)
   const days = Array.from({ length: ACTIVITY_WEEK_DAYS }, (_, i) =>
     shiftDayKey(today, i - (ACTIVITY_WEEK_DAYS - 1)),
@@ -203,28 +202,10 @@ export async function readActivityWeek(
     shiftDayKey(today, i - ACTIVITY_WEEK_DAYS),
   )
 
-  const [docs, posts] = await Promise.all([
-    db
-      .collection<DailyActivity>(COLLECTIONS.dailyActivity)
-      .find({ _id: { $in: utcDays.map((day) => dailyActivityId(userId, day)) } })
-      .toArray(),
-    /*
-     * Posts are read from the posts themselves rather than from a counter
-     * here: the chart draws the feed — corrections and posts — and a post
-     * counter would have to go through `recordActivity`, whose counters feed
-     * the pool's published weights. The same nine-UTC-day reach as above, on
-     * the `author` index, and hidden posts left out as everywhere else.
-     */
-    db
-      .collection<Post>(COLLECTIONS.posts)
-      .find({
-        authorId: userId,
-        createdAt: { $gte: new Date(`${utcDays[0]}T00:00:00Z`) },
-        ...notHidden(),
-      })
-      .project<{ createdAt: Date }>({ createdAt: 1 })
-      .toArray(),
-  ])
+  const docs = await db
+    .collection<DailyActivity>(COLLECTIONS.dailyActivity)
+    .find({ _id: { $in: utcDays.map((day) => dailyActivityId(userId, day)) } })
+    .toArray()
 
   const totals = new Map(days.map((day) => [day, { messages: 0, corrections: 0 }]))
   const add = (day: string, messages: number, corrections: number): void => {
@@ -265,17 +246,10 @@ export async function readActivityWeek(
     )
   }
 
-  const postsByDay = new Map<string, number>()
-  for (const post of posts) {
-    const day = localDayKey(post.createdAt, timeZone)
-    postsByDay.set(day, (postsByDay.get(day) ?? 0) + 1)
-  }
-
   return days.map((day) => ({
     day,
     messages: totals.get(day)?.messages ?? 0,
     corrections: totals.get(day)?.corrections ?? 0,
-    posts: postsByDay.get(day) ?? 0,
   }))
 }
 

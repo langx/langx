@@ -1,6 +1,5 @@
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import { countPostsByAuthor } from '../feed/feed'
 
 /**
  * How much teaching this user has ever done: a correction in a thread, a
@@ -57,23 +56,4 @@ export async function countCorrectionsWritten(db: Db, userId: string): Promise<n
     db.collection(COLLECTIONS.pronunciationAnswers).countDocuments({ authorId: userId }),
   ])
   return posts + chat + recordings
-}
-
-/**
- * The feed count: every correction above plus every post up. This is the
- * number a person's own record shows everywhere — the feed tile, the badge
- * ladder, the frame that has to be earned — because a post asking for help
- * and a correction giving it are the two halves of the same exchange, and a
- * record that counted only one of them undersold everybody who mostly asks.
- *
- * Posts are counted exactly as `countPostsByAuthor` counts them, so the tile
- * and the list it opens agree. Unlike corrections, that count can go down: a
- * deleted or hidden post leaves it.
- */
-export async function countFeedWritten(db: Db, userId: string): Promise<number> {
-  const [corrections, posts] = await Promise.all([
-    countCorrectionsWritten(db, userId),
-    countPostsByAuthor(db, userId),
-  ])
-  return corrections + posts
 }

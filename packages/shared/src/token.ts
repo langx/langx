@@ -648,12 +648,6 @@ export const tokenSummarySchema = z.object({
     day: z.string(),
     messages: z.number().int(),
     corrections: z.number().int(),
-    /**
-     * Posts up this UTC day, so the screen can show the feed (corrections and
-     * posts) beside messages. Not part of the pool score, whose weights are a
-     * published formula. Optional because an older API leaves it out.
-     */
-    posts: z.number().int().optional(),
     mutualConversations: z.number().int(),
     distinctPartners: z.number().int(),
     /** Provisional; the real share is only known when the pool closes the day. */
@@ -720,8 +714,6 @@ export const tokenSummarySchema = z.object({
         day: z.string(),
         messages: z.number().int(),
         corrections: z.number().int(),
-        /** Posts up that local day; the chart stacks it with corrections as the feed. */
-        posts: z.number().int().optional(),
       }),
     )
     .length(7),

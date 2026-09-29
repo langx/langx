@@ -580,7 +580,7 @@ export function newsletterEmail(
     : `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:12px 0 0;">
         ${[
           stat(t('email.newsletterMessages'), recap.personal.messages),
-          stat(t('email.newsletterFeed'), recap.personal.feed),
+          stat(t('email.newsletterCorrections'), recap.personal.corrections),
           stat(t('email.newsletterTokens'), recap.personal.tokens),
           stat(t('email.newsletterStreak'), recap.personal.streak),
         ].join('\n        ')}
@@ -590,7 +590,7 @@ export function newsletterEmail(
         ${[
           stat(t('email.newsletterNewMembers'), recap.community.members),
           stat(t('email.newsletterMessagesSent'), recap.community.messages),
-          stat(t('email.newsletterFeed'), recap.community.feed),
+          stat(t('email.newsletterCorrectionsMade'), recap.community.corrections),
         ].join('\n        ')}
       </table>`
 
@@ -630,7 +630,7 @@ export function newsletterEmail(
           ? [t('email.newsletterQuiet')]
           : [
               `${t('email.newsletterMessages')}: ${recap.personal.messages}`,
-              `${t('email.newsletterFeed')}: ${recap.personal.feed}`,
+              `${t('email.newsletterCorrections')}: ${recap.personal.corrections}`,
               `${t('email.newsletterTokens')}: ${recap.personal.tokens}`,
               `${t('email.newsletterStreak')}: ${recap.personal.streak}`,
             ]),
@@ -638,7 +638,7 @@ export function newsletterEmail(
         t('email.newsletterEverybody'),
         `${t('email.newsletterNewMembers')}: ${recap.community.members}`,
         `${t('email.newsletterMessagesSent')}: ${recap.community.messages}`,
-        `${t('email.newsletterFeed')}: ${recap.community.feed}`,
+        `${t('email.newsletterCorrectionsMade')}: ${recap.community.corrections}`,
         ...(note
           ? [
               '',

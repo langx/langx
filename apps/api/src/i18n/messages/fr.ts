@@ -244,11 +244,11 @@ export const fr: Localized<ServerMessages> = {
     newsletterEverybody: 'Le mois de tous',
 
     newsletterQuiet:
-      'Vous avez été silencieux ce mois-ci : aucun message, rien dans le fil. Les personnes ci-dessous ne l’ont pas été, et elles sont toujours là.',
+      'Vous avez été silencieux ce mois-ci : aucun message, aucune correction. Les personnes ci-dessous ne l’ont pas été, et elles sont toujours là.',
 
     newsletterMessages: 'Messages envoyés',
 
-    newsletterFeed: 'Fil',
+    newsletterCorrections: 'Corrections données',
 
     newsletterTokens: 'Jetons gagnés',
 
@@ -257,6 +257,8 @@ export const fr: Localized<ServerMessages> = {
     newsletterNewMembers: 'Nouveaux membres',
 
     newsletterMessagesSent: 'Messages envoyés',
+
+    newsletterCorrectionsMade: 'Corrections faites',
 
     newsletterButton: 'Ouvrir LangX',
 

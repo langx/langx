@@ -427,7 +427,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
 
       {/*
         The numbers: the quickest read of whether this person is here to
-        teach. The streak has moved up beside the name, and all three of these
+        teach. The streak has moved up beside the name, and every one of these
         are the way into what they count — the "›" is the hint that it opens.
 
         Pressable at zero too, the way the follower tile always has been. A
@@ -437,14 +437,20 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
       {summary.data && !user.official ? (
         <View style={styles.stats}>
           {/*
-            Their posts and their corrections as one number, under the name of
-            the tab both live in; the screen it opens has a tab for each.
+            Corrections and posts as two numbers, each opening its own tab of
+            the same screen. One sum of the two said neither how much somebody
+            teaches nor how much they ask.
           */}
           <StatTile
             tone="success"
+            label={`${t('me.corrections')} ›`}
+            value={String(summary.data.corrections)}
+            onPress={() => openPostCorrections(user.handle, here, 'corrections')}
+          />
+          <StatTile
             label={`${t('tabs.feed')} ›`}
-            value={String(summary.data.corrections + (summary.data.posts ?? 0))}
-            onPress={() => openPostCorrections(user.handle, here)}
+            value={String(summary.data.posts ?? 0)}
+            onPress={() => openPostCorrections(user.handle, here, 'posts')}
           />
           {/*
             Where the badge tile was. The strip below says what they have

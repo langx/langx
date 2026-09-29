@@ -18,7 +18,7 @@ interface WeeklyChartProps {
 /**
  * This week's messages and corrections, one column per day.
  *
- * Two series stacked — the feed (corrections and posts) in green over messages in blue — with a
+ * Two series stacked — corrections in green over messages in blue — with a
  * legend underneath rather than a header above: the counts are already on the
  * tiles, so all the chart has to say is which colour is which. The bars
  * themselves are `WeekBars`, shared with the visitors page.
@@ -29,10 +29,7 @@ export function WeeklyChart({ week, hiddenFromOthers = false }: WeeklyChartProps
   const t = useT()
 
   const messages = (week ?? []).reduce((sum, day) => sum + day.messages, 0)
-  // The green series is the feed: corrections and posts. `posts` is absent
-  // from an API older than it, which reads as none rather than `NaN`.
-  const feedOf = (day: NonNullable<typeof week>[number]) => day.corrections + (day.posts ?? 0)
-  const feed = (week ?? []).reduce((sum, day) => sum + feedOf(day), 0)
+  const corrections = (week ?? []).reduce((sum, day) => sum + day.corrections, 0)
 
   return (
     <View style={styles.section}>
@@ -41,11 +38,11 @@ export function WeeklyChart({ week, hiddenFromOthers = false }: WeeklyChartProps
           days={week.map((day) => ({
             day: day.day,
             total: day.messages,
-            stacked: feedOf(day),
+            stacked: day.corrections,
           }))}
           accessibilityLabel={t('weekly.summary', {
             messages: t('format.messages', { count: messages }),
-            feed: t('format.feed', { count: feed }),
+            corrections: t('format.corrections', { count: corrections }),
           })}
         />
       ) : (
@@ -59,7 +56,7 @@ export function WeeklyChart({ week, hiddenFromOthers = false }: WeeklyChartProps
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.swatch, { backgroundColor: colors.success }]} />
-          <Text style={styles.legendLabel}>{t('tabs.feed')}</Text>
+          <Text style={styles.legendLabel}>{t('me.corrections')}</Text>
         </View>
         {hiddenFromOthers ? <HiddenFromOthers style={styles.hidden} /> : null}
       </View>

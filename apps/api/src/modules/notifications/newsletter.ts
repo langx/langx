@@ -12,16 +12,14 @@ import { newsletterEmail } from '../../email/templates'
 import { noteFor } from '../../email/newsletters'
 import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
-import { countPostsByAuthor } from '../feed/feed'
 import { alreadyClaimed, claimOnce } from './ledger'
 import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
 
 /** What a month looked like for one person, and for everybody. */
 export interface MonthlyRecap {
   month: string
-  /** `feed` is posts plus corrections, as on a profile. */
-  personal: { messages: number; feed: number; tokens: number; streak: number }
-  community: { members: number; messages: number; feed: number }
+  personal: { messages: number; corrections: number; tokens: number; streak: number }
+  community: { members: number; messages: number; corrections: number }
   /** True when the personal half is all zeroes — a different letter. */
   quiet: boolean
 }
@@ -36,7 +34,7 @@ export function lastMonthKey(now: Date): string {
 /**
  * The community numbers, computed once per tick rather than once per reader.
  *
- * Four counts over a month of rows. On a database this size that is
+ * Three counts over a month of rows. On a database this size that is
  * milliseconds; if it ever is not, the answer is a `jobRuns` row holding the
  * month's totals rather than a cache here, since every instance would want
  * the same three numbers.
@@ -45,15 +43,14 @@ export async function communityMonth(db: Db, month: string): Promise<MonthlyReca
   const from = new Date(`${month}-01T00:00:00.000Z`)
   const to = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1))
   const range = { $gte: from, $lt: to }
-  const [members, messages, posts, corrections] = await Promise.all([
+  const [members, messages, corrections] = await Promise.all([
     db
       .collection(COLLECTIONS.profiles)
       .countDocuments({ createdAt: range, guest: { $exists: false } }),
     db.collection(COLLECTIONS.messages).countDocuments({ createdAt: range }),
-    db.collection(COLLECTIONS.posts).countDocuments({ createdAt: range }),
     db.collection(COLLECTIONS.postCorrections).countDocuments({ createdAt: range }),
   ])
-  return { members, messages, feed: posts + corrections }
+  return { members, messages, corrections }
 }
 
 /**
@@ -70,17 +67,10 @@ export async function personalMonth(
   userId: string,
   month: string,
 ): Promise<MonthlyRecap['personal']> {
-  const from = new Date(`${month}-01T00:00:00.000Z`)
-  const to = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1))
-  const [days, posts] = await Promise.all([
-    db
-      .collection<{ messages?: number; corrections?: number }>(COLLECTIONS.dailyActivity)
-      .find({ userId, day: { $gte: `${month}-01`, $lte: `${month}-31` } })
-      .toArray(),
-    // The other half of the feed: posts are not a `dailyActivity` counter,
-    // so they are counted where they are, over the same UTC month.
-    countPostsByAuthor(db, userId, from, to),
-  ])
+  const days = await db
+    .collection<{ messages?: number; corrections?: number }>(COLLECTIONS.dailyActivity)
+    .find({ userId, day: { $gte: `${month}-01`, $lte: `${month}-31` } })
+    .toArray()
   const tokens =
     (
       await db
@@ -92,7 +82,7 @@ export async function personalMonth(
     .findOne({ _id: userId }, { projection: { streak: 1 } })
   return {
     messages: days.reduce((total, day) => total + (day.messages ?? 0), 0),
-    feed: posts + days.reduce((total, day) => total + (day.corrections ?? 0), 0),
+    corrections: days.reduce((total, day) => total + (day.corrections ?? 0), 0),
     tokens,
     streak: profile?.streak?.current ?? 0,
   }
@@ -118,9 +108,7 @@ export async function recapForMonth(
   return {
     month,
     messages: personal.messages,
-    feed: personal.feed,
-    // Installed builds read this one; it carries the same number now.
-    corrections: personal.feed,
+    corrections: personal.corrections,
     tokens: personal.tokens,
     echoReviews: echo?.reviews ?? 0,
     currentStreak: personal.streak,
@@ -186,7 +174,7 @@ export async function runNewsletterPass(
       month,
       personal,
       community,
-      quiet: personal.messages === 0 && personal.feed === 0 && personal.tokens === 0,
+      quiet: personal.messages === 0 && personal.corrections === 0 && personal.tokens === 0,
     }
 
     if (!(await claimOnce(db, 'promo.newsletter', profile._id, month))) continue

@@ -494,12 +494,6 @@ export const ru: Localized<EnMessages> = {
       many: '{count} исправлений',
       other: '{count} исправления',
     },
-    feed: {
-      one: '{count} в ленте',
-      few: '{count} в ленте',
-      many: '{count} в ленте',
-      other: '{count} в ленте',
-    },
     accountAgeToday: 'сегодня',
     accountAgeDays: {
       one: '{count} день назад',
@@ -1682,6 +1676,7 @@ export const ru: Localized<EnMessages> = {
     editProfile: 'Изменить профиль',
     settings: 'Настройки',
     scan: 'Сканировать код',
+    corrections: 'Исправления',
     wallet: 'Кошелёк',
     previewProfile: 'Посмотреть мой профиль',
     previewProfileBody: 'Взгляните на профиль глазами других',
@@ -1991,7 +1986,7 @@ export const ru: Localized<EnMessages> = {
     appIconChanged: 'Иконка изменена.',
     appIconFailed: 'Не удалось сменить иконку',
     showWeekChart: 'Показывать график недели',
-    showWeekChartBody: 'В какие дни ты был активен в чатах и ленте, в профиле.',
+    showWeekChartBody: 'В какие дни ты отправлял сообщения и исправления, в профиле.',
     voiceCredits: 'Голоса и лицензии',
     voiceCreditsBody:
       'Сообщения читают вслух голосовые модели с открытым исходным кодом. Большинство ничего от нас не требует; те, что ниже, лицензированы при условии, что мы укажем тех, кто их записал.',
@@ -2118,7 +2113,7 @@ export const ru: Localized<EnMessages> = {
     lockedAccessibility: '{title}, закрыто',
     lockedStreak: '{current} из {threshold} дней',
     lockedNeeds: 'Сначала купи {title}',
-    lockedFeed: '{current} из {threshold} в ленте',
+    lockedCorrections: '{current} из {threshold} исправлений',
     frameKind: 'Рамка профиля',
     stickerKind: 'Набор стикеров',
     titleKind: 'Титул',
@@ -2195,7 +2190,7 @@ export const ru: Localized<EnMessages> = {
       many: '{count} активности',
       other: '{count} активности',
     },
-    todayBreakdown: '{messages} сообщений, {feed} в ленте, {partners} собеседников.',
+    todayBreakdown: '{messages} сообщений, {corrections} исправлений, {partners} собеседников.',
     poolParticipants: {
       one: '{n} активный в тот день',
       few: '{n} активных в тот день',
@@ -2329,7 +2324,7 @@ export const ru: Localized<EnMessages> = {
     earned: 'Получено · {month}',
     earnedLabel: 'Получено',
     locked: 'Закрыто',
-    firstFeed: 'Впервые в ленте',
+    firstCorrection: 'Первое исправление',
     streakDays: {
       one: '{formatted} день',
       few: '{formatted} дня',
@@ -2354,11 +2349,11 @@ export const ru: Localized<EnMessages> = {
       many: '{formatted} дней в LangX',
       other: '{formatted} дня в LangX',
     },
-    feed: {
-      one: '{formatted} в ленте',
-      few: '{formatted} в ленте',
-      many: '{formatted} в ленте',
-      other: '{formatted} в ленте',
+    corrections: {
+      one: '{formatted} исправление',
+      few: '{formatted} исправления',
+      many: '{formatted} исправлений',
+      other: '{formatted} исправления',
     },
     earlyAdopter: 'Первопроходец',
     earnedOf: 'Получено {earned} из {total}',
@@ -2679,7 +2674,7 @@ export const ru: Localized<EnMessages> = {
 
   weekly: {
     messages: 'Сообщения',
-    summary: 'На этой неделе: {messages} и {feed}.',
+    summary: 'На этой неделе: {messages} и {corrections}.',
   },
 
   watch: {
@@ -2746,11 +2741,11 @@ export const ru: Localized<EnMessages> = {
       many: '{count} сообщений',
       other: '{count} сообщения',
     },
-    feed: {
-      one: '{count} в ленте',
-      few: '{count} в ленте',
-      many: '{count} в ленте',
-      other: '{count} в ленте',
+    corrections: {
+      one: '{count} исправление',
+      few: '{count} исправления',
+      many: '{count} исправлений',
+      other: '{count} исправления',
     },
     echoReviews: {
       one: '{count} карточка Echo повторена',

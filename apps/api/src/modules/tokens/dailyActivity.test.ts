@@ -193,7 +193,7 @@ describe('the local day a bar actually holds', () => {
 
     const week = await readActivityWeek(handle.db, userId, at, 'America/Vancouver')
 
-    expect(week.at(-1)).toEqual({ day: '2026-09-20', messages: 1, corrections: 0, posts: 0 })
+    expect(week.at(-1)).toEqual({ day: '2026-09-20', messages: 1, corrections: 0 })
   })
 
   it('splits one UTC day into the two local days it covers', async () => {
@@ -252,7 +252,7 @@ describe('the local day a bar actually holds', () => {
     expect(doc?.perLocalDay?.['2026-09-21']).toEqual({ messages: 1, corrections: 0 })
 
     const week = await readActivityWeek(handle.db, userId, at, 'Asia/Kolkata')
-    expect(week.at(-1)).toEqual({ day: '2026-09-21', messages: 1, corrections: 0, posts: 0 })
+    expect(week.at(-1)).toEqual({ day: '2026-09-21', messages: 1, corrections: 0 })
   })
 
   it('reaches the documents on both sides of the window', async () => {
@@ -270,15 +270,10 @@ describe('the local day a bar actually holds', () => {
     await recordActivity(handle.db, { userId, kind: 'message', at: behind, timeZone: 'Etc/GMT+12' })
 
     const kiritimati = await readActivityWeek(handle.db, userId, behind, 'Pacific/Kiritimati')
-    expect(kiritimati[0]).toEqual({ day: '2026-09-15', messages: 1, corrections: 0, posts: 0 })
+    expect(kiritimati[0]).toEqual({ day: '2026-09-15', messages: 1, corrections: 0 })
 
     const westOfEverything = await readActivityWeek(handle.db, userId, behind, 'Etc/GMT+12')
-    expect(westOfEverything.at(-1)).toEqual({
-      day: '2026-09-20',
-      messages: 1,
-      corrections: 0,
-      posts: 0,
-    })
+    expect(westOfEverything.at(-1)).toEqual({ day: '2026-09-20', messages: 1, corrections: 0 })
   })
 
   it('files a correction under its local day, fully shaped', async () => {
@@ -298,7 +293,7 @@ describe('the local day a bar actually holds', () => {
     expect(doc?.perLocalDay?.['2026-09-20']).toEqual({ messages: 0, corrections: 1 })
 
     const week = await readActivityWeek(handle.db, userId, at, 'America/Vancouver')
-    expect(week.at(-1)).toEqual({ day: '2026-09-20', messages: 0, corrections: 1, posts: 0 })
+    expect(week.at(-1)).toEqual({ day: '2026-09-20', messages: 0, corrections: 1 })
   })
 
   it('writes no local day for a mutual, and does not move the chart', async () => {
@@ -325,7 +320,7 @@ describe('the local day a bar actually holds', () => {
     expect(doc?.perLocalDay?.['2026-09-21']).toEqual({ messages: 1, corrections: 0 })
 
     const week = await readActivityWeek(handle.db, userId, at)
-    expect(week.at(-1)).toEqual({ day: '2026-09-21', messages: 1, corrections: 0, posts: 0 })
+    expect(week.at(-1)).toEqual({ day: '2026-09-21', messages: 1, corrections: 0 })
   })
 
   it('draws a document written across the deploy once and entirely', async () => {

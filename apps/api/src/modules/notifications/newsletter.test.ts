@@ -192,12 +192,6 @@ describe('the monthly recap', () => {
       { userId, day: '2026-09-30', messages: 2, corrections: 0 },
       { userId, day: '2026-10-01', messages: 99, corrections: 99 },
     ] as never[])
-    // One post in the month and one after it: the feed is posts plus
-    // corrections, over the same month.
-    await handle.db.collection(COLLECTIONS.posts).insertMany([
-      { authorId: userId, createdAt: new Date('2026-09-15T12:00:00Z') },
-      { authorId: userId, createdAt: new Date('2026-10-01T00:00:00Z') },
-    ] as never[])
     await handle.db
       .collection(COLLECTIONS.tokenAggregates)
       .insertOne({ _id: `${userId}:month:2026-09`, tokens: 40 } as never)
@@ -209,9 +203,7 @@ describe('the monthly recap', () => {
     expect(await recapForMonth(handle.db, userId, '2026-09')).toEqual({
       month: '2026-09',
       messages: 5,
-      feed: 2,
-      // The same number, under the name installed builds read.
-      corrections: 2,
+      corrections: 1,
       tokens: 40,
       echoReviews: 25,
       // Today's streak: nothing records what it was at the end of September.

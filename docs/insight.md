@@ -22,12 +22,12 @@ route, the module and this file are named for it in the singular. Do not
 
 ## The line
 
-| On the page                                              | Never on the page                                       |
-| -------------------------------------------------------- | ------------------------------------------------------- |
-| Members, messages, feed (posts + corrections), languages | Revenue, subscriptions, plan mix                        |
-| New members / messages / feed per day, last 30 days      | Conversion, retention, funnel steps, churn              |
-| The most-learned and most-spoken languages               | Channels, campaigns, where installs come from           |
-| Longest streak ever, how many members are on one today   | Anything keyed to a person: handles, ids, cities, dates |
+| On the page                                                | Never on the page                                       |
+| ---------------------------------------------------------- | ------------------------------------------------------- |
+| Members, messages, corrections, languages                  | Revenue, subscriptions, plan mix                        |
+| New members / messages / corrections per day, last 30 days | Conversion, retention, funnel steps, churn              |
+| The most-learned and most-spoken languages                 | Channels, campaigns, where installs come from           |
+| Longest streak ever, how many members are on one today     | Anything keyed to a person: handles, ids, cities, dates |
 
 The right-hand column is not a backlog. Publishing it hands pricing and channel
 strategy to anyone who asks, permanently — a share link can be switched off,

@@ -111,8 +111,13 @@ export function openBadges(handle: string, from: string): void {
   push(`/(app)/badges?handle=${encodeURIComponent(handle)}&from=${encodeURIComponent(from)}`)
 }
 
-export function openPostCorrections(handle: string, from: string): void {
+/** `tab` picks which of the two lists it opens on: the Feed tile opens posts. */
+export function openPostCorrections(
+  handle: string,
+  from: string,
+  tab: 'posts' | 'corrections' = 'corrections',
+): void {
   push(
-    `/(app)/post-corrections?handle=${encodeURIComponent(handle)}&from=${encodeURIComponent(from)}`,
+    `/(app)/post-corrections?handle=${encodeURIComponent(handle)}&tab=${tab}&from=${encodeURIComponent(from)}`,
   )
 }

@@ -253,11 +253,11 @@ export const ru: Localized<ServerMessages> = {
     newsletterEverybody: 'Месяц всех',
 
     newsletterQuiet:
-      'В этом месяце вы молчали — ни сообщений, ни записей в ленте. Те, кто ниже, — нет, и они всё ещё здесь.',
+      'В этом месяце вы молчали — ни сообщений, ни исправлений. Те, кто ниже, — нет, и они всё ещё здесь.',
 
     newsletterMessages: 'Отправлено сообщений',
 
-    newsletterFeed: 'Лента',
+    newsletterCorrections: 'Сделано исправлений',
 
     newsletterTokens: 'Заработано токенов',
 
@@ -266,6 +266,8 @@ export const ru: Localized<ServerMessages> = {
     newsletterNewMembers: 'Новых участников',
 
     newsletterMessagesSent: 'Отправлено сообщений',
+
+    newsletterCorrectionsMade: 'Сделано исправлений',
 
     newsletterButton: 'Открыть LangX',
 

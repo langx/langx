@@ -6280,31 +6280,17 @@ are refused, each with its own reason, and so is every other refusal
 (`GIFT_CODE_REJECTED` with `reason`), because "used up" and "you already used
 it" are different sentences.
 
-## A person's record counts the feed, not corrections
+## Corrections and the feed are two numbers
 
-Every per-person and community count that used to be "corrections" is now the
-**feed**: posts plus corrections. The profile and Me tiles, the badge ladder,
-the Aurora frame's 5,000, the weekly chart's green series, the pool screen's
-"today" line, the monthly recap and letter, the insight page and the operator
-panel all read it. Counting only corrections undersold everybody who mostly
-asks — a post that asks for help is half of the exchange a correction answers.
+For a day, "feed" — posts plus corrections — replaced the correction count
+everywhere a person's record was shown: the badge ladder, the Aurora frame's
+5,000, the weekly chart, the pool screen, the recap, insight and the operator
+panel. It was reverted the same day. A single sum said neither how much
+somebody teaches nor how much they ask, and it moved thresholds that name
+one act (a badge called "100 corrections", a frame earned by teaching) onto
+a number that also counts the other.
 
-What did not change, and why:
-
-- **The pool's weights.** `TOKEN_RULES.pool.weights` is a published formula;
-  posts are not a `dailyActivity` counter and do not enter the score. The chart
-  and the pool screen read posts from the posts collection instead of from a
-  counter, precisely so that nothing written through `recordActivity` moves.
-- **Per-post counts.** "3 corrections" under a post counts what that post
-  received, which the feed has no bearing on.
-- **Identities.** The badge kind is still `correction` and the ids are still
-  `correction.N`, so nobody's earned badges, inbox rows or `notifiedBadgeIds`
-  change. Only the wording says "in the feed".
-- **Installed builds.** The recap response carries `corrections` beside `feed`,
-  with the same number, because older builds read that name. `/public/stats`
-  renamed the field outright: its only readers ship with the API.
-
-The feed count can go down, which corrections could not: a deleted or hidden
-post leaves it. The badge summary is derived, not stored, so a deletion can
-take the top rung of the ladder back. That is accepted — the alternative is a
-counter that four code paths keep in step.
+What stayed is the split: the profile and the Me tab show **Corrections** and
+**Feed** as two tiles. Corrections is `countCorrectionsWritten`, unchanged;
+Feed is `countPostsByAuthor`, posts not hidden. Each tile opens its own tab of
+the same list screen. Everything else counts corrections as it did before.
