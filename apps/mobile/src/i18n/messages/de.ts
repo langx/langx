@@ -2306,10 +2306,9 @@ export const de: Localized<EnMessages> = {
     welcomePackBody: 'Profilrahmen, Titel und zwei Serien-Freezes zum Start.',
     advancedFilters: 'Erweiterte Filter',
     boostedProfile: 'Hervorgehobenes Profil',
-    boostedProfileBody:
-      'Du erscheinst in der Leiste über der Entdecken-Liste, für alle, deren Sprachen zu deinen passen. Standardmäßig an; in den Einstellungen abschaltbar.',
+    boostedProfileBody: 'Über der Entdecken-Liste, für alle, deren Sprachen zu deinen passen.',
     sendTranslation: 'In ihrer Sprache senden',
-    sendTranslationBody: 'Schreib in deiner; beides geht raus, also lesen sie dich ohne zu raten.',
+    sendTranslationBody: 'Schreib in deiner; sie bekommen es auch in ihrer.',
     deckExport: 'Nimm deine Wendungen mit',
     deckExportBody:
       'Exportiere die gespeicherten Wendungen eines Chats — oder alle, die du gespeichert hast — als Datei. Sie öffnet sich in Anki.',
@@ -2324,7 +2323,7 @@ export const de: Localized<EnMessages> = {
     incognitoBody: 'Sieh dir Profile an, ohne Spuren zu hinterlassen.',
     nearby: 'In der Nähe',
     nearbyBody:
-      'Sortiere Entdecken nach Entfernung. Braucht deinen ungefähren Standort — vor dem Speichern gerundet und für andere nur als grobe Entfernung sichtbar.',
+      'Sortiere nach Entfernung. Dein Standort wird gerundet; andere sehen nur eine grobe Entfernung.',
     copilot: 'KI-Copilot',
     copilotBody: 'Hilft beim Formulieren und Verstehen von Nachrichten, während du schreibst.',
     quotaNotice:

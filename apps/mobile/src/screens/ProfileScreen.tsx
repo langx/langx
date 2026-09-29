@@ -26,6 +26,7 @@ import { OfficialMark } from '../components/OfficialMark'
 import { PhotoGallery } from '../components/PhotoGallery'
 import { PhotoViewer } from '../components/PhotoViewer'
 import { PresenceLine } from '../components/PresenceLine'
+import { ProMark } from '../components/ProMark'
 import { WeeklyChart } from '../components/WeeklyChart'
 import { BadgeStrip } from '../components/BadgeStrip'
 import { StatTile } from '../components/ui/StatTile'
@@ -297,9 +298,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
               accessible
               accessibilityLabel={t('profile.proBadge')}
             >
-              <View style={styles.proBadge}>
-                <Text style={styles.proBadgeText}>{badge}</Text>
-              </View>
+              <ProMark style={styles.proBadge} />
             </View>
           ) : null}
         </View>
@@ -642,15 +641,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // Straddles the avatar's lower edge; the ring in the ground's colour cuts it
   // out of the photo the way the online dot is cut out.
   proBadgeRow: { alignItems: 'center', bottom: -8, left: 0, position: 'absolute', right: 0 },
-  proBadge: {
-    backgroundColor: colors.pro,
-    borderColor: colors.bg,
-    borderRadius: radius.pill,
-    borderWidth: 2,
-    paddingHorizontal: 8,
-    paddingVertical: 1,
-  },
-  proBadgeText: { color: colors.textInverse, fontSize: 11, fontWeight: '800', letterSpacing: 1 },
+  proBadge: { borderColor: colors.bg, borderWidth: 2 },
   heroText: { flex: 1, gap: spacing.xs, minWidth: 0 },
   nameRow: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   name: { ...font.heading, color: colors.text, fontSize: 26 },

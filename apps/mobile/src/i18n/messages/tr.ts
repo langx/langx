@@ -2259,10 +2259,9 @@ export const tr: Localized<EnMessages> = {
     welcomePackBody: 'Başlangıç için profil çerçeveleri, unvanlar ve iki seri dondurma.',
     advancedFilters: 'Gelişmiş filtreler',
     boostedProfile: 'Öne çıkan profil',
-    boostedProfileBody:
-      'Keşfet listesinin üstündeki öne çıkanlar şeridinde, dilleri seninkilerle eşleşen herkese görünürsün. Varsayılan olarak açık; Ayarlar’dan kapatabilirsin.',
+    boostedProfileBody: 'Keşfet listesinin üstünde, dilleri seninkiyle eşleşenlere gösterilirsin.',
     sendTranslation: 'Onun dilinde gönder',
-    sendTranslationBody: 'Sen kendi dilinde yaz; ikisi birden gitsin, o tahmin etmeden okusun.',
+    sendTranslationBody: 'Sen kendi dilinde yaz; o kendi dilinde de alsın.',
     deckExport: 'İfadelerini yanında götür',
     deckExportBody:
       'Bir sohbetin kaydedilmiş ifadelerini ya da kaydettiğin bütün kartları dosya olarak dışa aktar. Anki’de açılır.',
@@ -2277,7 +2276,7 @@ export const tr: Localized<EnMessages> = {
     incognitoBody: 'Profillere iz bırakmadan bak.',
     nearby: 'Yakında',
     nearbyBody:
-      'Keşfet’i mesafeye göre sırala. Kendi yaklaşık konumunu ister — saklanmadan önce yuvarlanır ve başkalarına yalnızca kabaca bir mesafe olarak gösterilir.',
+      'Kişileri mesafeye göre sırala. Konumun yuvarlanır; başkaları yalnızca kaba bir mesafe görür.',
     copilot: 'Yapay zekâ yardımcısı',
     copilotBody: 'Yazarken mesajları kurmana ve anlamana yardım eder.',
     quotaNotice:

@@ -2284,9 +2284,9 @@ export const fr: Localized<EnMessages> = {
     advancedFilters: 'Filtres avancés',
     boostedProfile: 'Profil mis en avant',
     boostedProfileBody:
-      'Tu apparais dans le bandeau au-dessus de la liste Découvrir, pour toutes les personnes dont les langues correspondent aux tiennes. Actif par défaut ; désactivable dans les réglages.',
+      'Tu apparais au-dessus de la liste Découvrir pour ceux dont les langues correspondent aux tiennes.',
     sendTranslation: 'Envoyer dans leur langue',
-    sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
+    sendTranslationBody: 'Écris dans la tienne ; on le reçoit aussi dans la sienne.',
     deckExport: 'Emporte tes expressions',
     deckExportBody:
       'Exporte les expressions enregistrées d’une conversation, ou toutes celles que tu as gardées, dans un fichier. Il s’ouvre dans Anki.',
@@ -2302,7 +2302,7 @@ export const fr: Localized<EnMessages> = {
     incognitoBody: 'Regarde des profils sans laisser de trace.',
     nearby: 'À proximité',
     nearbyBody:
-      'Trie Découvrir par distance. Nécessite ta position approximative — arrondie avant d’être stockée, et montrée aux autres seulement comme une distance approximative.',
+      'Trie par distance. Ta position est arrondie ; les autres ne voient qu’une distance approximative.',
     copilot: 'Copilote IA',
     copilotBody: 'T’aide à formuler et à comprendre les messages pendant que tu écris.',
     quotaNotice:

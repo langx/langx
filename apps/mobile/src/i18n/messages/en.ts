@@ -2478,10 +2478,9 @@ export const en = {
     welcomePackBody: 'Profile frames, titles and two streak freezes to start with.',
     advancedFilters: 'Advanced filters',
     boostedProfile: 'Boosted profile',
-    boostedProfileBody:
-      'Shown in the Boosted strip above the Discover list, to everyone whose languages match yours. On by default; switch it off in Settings.',
+    boostedProfileBody: 'Shown above the Discover list to people whose languages match yours.',
     sendTranslation: 'Send in their language',
-    sendTranslationBody: 'Write in yours; both go, so they read you without guessing.',
+    sendTranslationBody: 'Write in yours; they get it in theirs too.',
     deckExport: 'Take your phrases with you',
     deckExportBody:
       'Export one conversation’s saved phrases, or every card you have saved, as a file. It opens in Anki.',
@@ -2496,7 +2495,7 @@ export const en = {
     incognitoBody: 'Look at profiles without leaving a trace.',
     nearby: 'Nearby',
     nearbyBody:
-      'Sort discovery by distance. Needs your own approximate location — rounded before it is stored, and shown to others only as a rough distance.',
+      'Sort people by distance. Your location is rounded; others see only a rough distance.',
     copilot: 'AI copilot',
     copilotBody: 'Help composing and understanding messages as you write them.',
     quotaNotice:

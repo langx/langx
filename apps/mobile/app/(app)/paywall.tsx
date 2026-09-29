@@ -10,7 +10,6 @@ import {
   type PlanChange,
   type PlanFeature,
   type ProBenefit,
-  TIER_BADGES,
   TIER_NAMES,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -27,6 +26,7 @@ import {
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { GiftCodeEntry } from '../../src/components/GiftCodeEntry'
 import { PlanOption } from '../../src/components/paywall/PlanOption'
+import { ProMark } from '../../src/components/ProMark'
 import { Reveal } from '../../src/components/paywall/Reveal'
 import { TrialTimeline, type TrialStep } from '../../src/components/paywall/TrialTimeline'
 import { Button } from '../../src/components/ui/Button'
@@ -45,7 +45,7 @@ import {
   restorePurchases,
   type PurchaseOffer,
 } from '../../src/lib/purchases'
-import { DISPLAY_FONT, makeStyles, useTheme } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { APPLE_EULA_URL, PRIVACY_URL, TERMS_URL } from '../../src/lib/externalLinks'
 import { useLocale, useT, type MessageKey } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -217,7 +217,7 @@ const HIGHLIGHTS: readonly ProBenefit[] = [
   'unlimitedInitiations',
   'profileViewerIdentities',
   'advancedFilters',
-  'sendTranslation',
+  'nearby',
 ]
 
 function highlightsFor(refused: PlanFeature | null): readonly ProBenefit[] {
@@ -563,12 +563,7 @@ export default function PaywallScreen() {
       <ScrollView style={styles.body} contentContainerStyle={styles.content}>
         <View style={styles.column}>
           <Reveal index={0} ready={ready} style={styles.hero}>
-            {TIER_BADGES.pro ? (
-              <View style={styles.proMark}>
-                <Feather name="star" size={12} color={colors.bg} />
-                <Text style={styles.proMarkText}>{TIER_BADGES.pro}</Text>
-              </View>
-            ) : null}
+            <ProMark />
             <Text style={styles.headline} accessibilityRole="header">
               {headline}
             </Text>
@@ -884,24 +879,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   column: { gap: 20, maxWidth: COLUMN, paddingBottom: spacing.lg, width: '100%' },
 
   hero: { alignItems: 'flex-start', gap: spacing.md },
-  proMark: {
-    alignItems: 'center',
-    backgroundColor: colors.pro,
-    borderRadius: radius.sm,
-    flexDirection: 'row',
-    gap: spacing.xs,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  // The ground's colour on the plan's: white on violet in light, near-black on
-  // the lifted violet of dark, where white would sit under 3:1.
-  proMarkText: {
-    color: colors.bg,
-    fontFamily: DISPLAY_FONT,
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 0.6,
-  },
   headline: { ...font.title, color: colors.text, letterSpacing: -0.3, lineHeight: 36 },
   lead: { color: colors.textMuted, fontSize: 15, lineHeight: 22 },
 
