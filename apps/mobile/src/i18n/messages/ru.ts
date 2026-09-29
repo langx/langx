@@ -1030,6 +1030,7 @@ export const ru: Localized<EnMessages> = {
     mute: 'Без звука',
     unmute: 'Включить звук',
     muted: 'Звук выключен',
+    awaitingReply: 'Ждёт вашего ответа',
     unrepliedEmptyTitle: 'Никто не ждёт ответа',
     unrepliedEmptyBody: 'Вы ответили в каждом чате.',
     archivedEmptyTitle: 'В архиве пусто',

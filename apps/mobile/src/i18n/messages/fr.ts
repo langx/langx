@@ -969,6 +969,7 @@ export const fr: Localized<EnMessages> = {
     mute: 'Mettre en sourdine',
     unmute: 'Réactiver le son',
     muted: 'En sourdine',
+    awaitingReply: 'Attend ta réponse',
     unrepliedEmptyTitle: 'Rien ne t’attend',
     unrepliedEmptyBody: 'Tu as répondu à chaque discussion.',
     archivedEmptyTitle: 'Aucune discussion archivée',

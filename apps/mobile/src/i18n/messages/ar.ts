@@ -1038,6 +1038,7 @@ export const ar: Localized<EnMessages> = {
     mute: 'كتم',
     unmute: 'إلغاء الكتم',
     muted: 'مكتومة',
+    awaitingReply: 'بانتظار ردّك',
     unrepliedEmptyTitle: 'لا شيء بانتظارك',
     unrepliedEmptyBody: 'لقد رددت على كل محادثة.',
     archivedEmptyTitle: 'لا محادثات مؤرشفة',

@@ -35,6 +35,7 @@ import { useTwoPane } from '../../../src/hooks/useTwoPane'
 import { TwoPane } from '../../../src/components/TwoPane'
 import { ChatScreen } from '../../../src/screens/ChatScreen'
 import { OfficialMark } from '../../../src/components/OfficialMark'
+import { acceptsSends } from '../../../src/lib/conversationPicker'
 
 /** The design draws chat avatars at 56, the same size as Discover's rows. */
 const AVATAR_SIZE = 56
@@ -261,6 +262,22 @@ export default function ChatsScreen() {
             const partner = partners[partnerId]
             const unread = item.unread
             const mine = item.lastMessage.senderId === me.data?._id
+            /*
+             * "Your turn", for the thread that was read and not answered. An
+             * unread thread is always unreplied, so its badge already says it;
+             * the arrow takes the badge's place once opening the thread has
+             * cleared it. Not on the Unreplied tab, where every row would carry
+             * it, and not on a thread nobody can write to — the arrow could
+             * never be crossed off, which is why the server keeps those off
+             * that tab too.
+             */
+            const rowPartner = item.partner ?? partner
+            const awaitsReply =
+              item.unreplied &&
+              unread === 0 &&
+              filter !== 'unreplied' &&
+              rowPartner !== undefined &&
+              acceptsSends(rowPartner)
 
             const pin = {
               id: 'pin',
@@ -395,6 +412,13 @@ export default function ChatsScreen() {
                           <View style={styles.badge}>
                             <Text style={styles.badgeText}>{unread}</Text>
                           </View>
+                        ) : awaitsReply ? (
+                          <Feather
+                            name="corner-up-left"
+                            size={16}
+                            color={colors.accent}
+                            accessibilityLabel={t('chats.awaitingReply')}
+                          />
                         ) : null}
                       </View>
                     </View>
