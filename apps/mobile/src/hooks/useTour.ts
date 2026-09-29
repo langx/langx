@@ -1,6 +1,7 @@
 import { useFocusEffect } from 'expo-router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { track } from '../lib/analytics'
+import { isLaunchOver, subscribeToLaunchOver } from '../lib/launchOver'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../lib/localFlags'
 import {
   hasTourTarget,
@@ -80,14 +81,20 @@ interface DiscoveryTourOptions {
  */
 export function useDiscoveryTour({ ready, guest, onFinished }: DiscoveryTourOptions): boolean {
   const open = useTourOpen()
+  /*
+   * Not while the launch is still on screen: the tour is a Modal, which
+   * paints above the splash, so it opened its first card over the film. The
+   * third argument is for the web's static prerender, as in `useAppReady`.
+   */
+  const launchOver = useSyncExternalStore(subscribeToLaunchOver, isLaunchOver, isLaunchOver)
   const wasOpen = useRef(false)
   const finished = useRef(onFinished)
   finished.current = onFinished
 
   useFocusEffect(
     useCallback(() => {
-      if (ready) void startTourOnce({ guest })
-    }, [guest, ready]),
+      if (ready && launchOver) void startTourOnce({ guest })
+    }, [guest, ready, launchOver]),
   )
 
   useEffect(() => {

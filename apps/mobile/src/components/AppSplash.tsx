@@ -23,6 +23,7 @@ import { useT } from '../i18n'
 import { useAppReady } from '../hooks/useAppReady'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { markAppReady } from '../lib/appReady'
+import { markLaunchOver } from '../lib/launchOver'
 import { forgetAudioMode } from '../lib/audioSession'
 import { SPLASH_TIMING, canExit, msUntilExitAllowed } from '../lib/splashTiming'
 import { OVERLAY_LAYER } from '../lib/overlayLayers'
@@ -167,6 +168,7 @@ export function AppSplash() {
       // The film's player has had the audio session; see forgetAudioMode.
       forgetAudioMode()
       setVisible(false)
+      markLaunchOver()
     }
 
     if (!reduceMotion) {
