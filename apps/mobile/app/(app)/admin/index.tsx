@@ -154,7 +154,11 @@ export default function AdminHomeScreen() {
             <View style={styles.tiles}>
               <StatTile value={count(audience?.profiles)} label={ADMIN.home.profiles} />
               <StatTile value={count(audience?.messages)} label={ADMIN.home.messages} />
-              <StatTile value={count(shared?.totals.feed)} label={ADMIN.home.feed} tone="success" />
+              <StatTile
+                value={count(shared?.totals.corrections)}
+                label={ADMIN.home.corrections}
+                tone="success"
+              />
               <StatTile value={count(shared?.totals.languages)} label={ADMIN.home.languageCount} />
             </View>
 
@@ -164,16 +168,16 @@ export default function AdminHomeScreen() {
               points={daily.map((day) => ({ key: day.day, value: day.messages }))}
             />
             {/*
-             * Green, because the feed — posts and corrections — is the green
-             * series in this app, as on a profile's week chart. It is a separate chart rather than a
+             * Green, because a correction is always the green pair in this app
+             * — see the palette's note. It is a separate chart rather than a
              * second series over the messages above it for the reason at the
              * top of this file.
              */}
             <Chart
-              title={ADMIN.home.charts.feedDaily}
+              title={ADMIN.home.charts.correctionsDaily}
               caption={ADMIN.home.charts.lastDays(daily.length || 30)}
               color={colors.success}
-              points={daily.map((day) => ({ key: day.day, value: day.feed }))}
+              points={daily.map((day) => ({ key: day.day, value: day.corrections }))}
             />
 
             <View style={styles.tiles}>

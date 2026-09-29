@@ -236,11 +236,11 @@ export const ptBR: Localized<ServerMessages> = {
     newsletterEverybody: 'O mês de todos',
 
     newsletterQuiet:
-      'Você ficou quieto este mês — nenhuma mensagem, nada no feed. As pessoas abaixo não ficaram, e continuam aqui.',
+      'Você ficou quieto este mês — nenhuma mensagem, nenhuma correção. As pessoas abaixo não ficaram, e continuam aqui.',
 
     newsletterMessages: 'Mensagens enviadas',
 
-    newsletterFeed: 'Feed',
+    newsletterCorrections: 'Correções feitas',
 
     newsletterTokens: 'Tokens ganhos',
 
@@ -249,6 +249,8 @@ export const ptBR: Localized<ServerMessages> = {
     newsletterNewMembers: 'Novos membros',
 
     newsletterMessagesSent: 'Mensagens enviadas',
+
+    newsletterCorrectionsMade: 'Correções feitas',
 
     newsletterButton: 'Abrir o LangX',
 

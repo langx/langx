@@ -1942,23 +1942,6 @@ describe('community feed', () => {
       expect(own.json<{ lifetime: { posts: number } }>().lifetime.posts).toBe(2)
     })
 
-    it('counts a post as feed: the badge ladder, the week chart and today', async () => {
-      const author = await newUser('feed-count-author@example.com')
-      await post(author, 'Only a post, no corrections.')
-
-      const badges = (
-        await app.inject({ method: 'GET', url: '/me/badges', headers: { cookie: author.cookie } })
-      ).json<{ badges: { id: string; earned: boolean }[] }>()
-      // The first rung of the feed ladder, earned by a post alone.
-      expect(badges.badges.find((badge) => badge.id === 'correction.1')?.earned).toBe(true)
-
-      const own = (
-        await app.inject({ method: 'GET', url: '/me/tokens', headers: { cookie: author.cookie } })
-      ).json<{ today: { posts: number }; week: { posts: number }[] }>()
-      expect(own.today.posts).toBe(1)
-      expect(own.week.at(-1)?.posts).toBe(1)
-    })
-
     it('is absent to somebody the author blocked', async () => {
       const author = await newUser('theirs-block-author@example.com', {
         handle: 'theirsblocker',

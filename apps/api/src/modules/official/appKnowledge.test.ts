@@ -30,7 +30,7 @@ const ROWS = [
   'Edit profile',
   'Wallet',
   'Badges',
-  'Feed',
+  'Corrections',
   'Invite a friend',
   'Scan a code',
   'Preview my profile',

@@ -89,7 +89,7 @@ export default function StoreScreen() {
     t,
     balance,
     longestStreak: xp.data?.streak.longest ?? 0,
-    lifetimeCorrections: (xp.data?.lifetime.corrections ?? 0) + (xp.data?.lifetime.posts ?? 0),
+    lifetimeCorrections: xp.data?.lifetime.corrections ?? 0,
     owned,
     streakFreezes: wallet.data?.streakFreezes ?? 0,
     ...(activity.data

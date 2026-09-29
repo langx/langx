@@ -31,21 +31,17 @@ export async function getTokenSummary(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
-  const [tokens, activity, week, corrections, posts, postsToday, activeToday, lastPayout] =
-    await Promise.all([
-      readAggregates(db, userId, at),
-      readActivity(db, userId, at),
-      // The subject's zone, not the reader's: the chart is a statement about
-      // their week, so its day letters have to match the days they lived.
-      readActivityWeek(db, userId, at, profile.timezone ?? 'UTC'),
-      countCorrectionsWritten(db, userId),
-      countPostsByAuthor(db, userId),
-      // Today's half of the feed line on the pool screen, on the same UTC day
-      // as the counters beside it.
-      countPostsByAuthor(db, userId, new Date(`${utcDayKey(at)}T00:00:00Z`)),
-      countActiveToday(db, at),
-      readLastPoolPayout(db, userId),
-    ])
+  const [tokens, activity, week, corrections, posts, activeToday, lastPayout] = await Promise.all([
+    readAggregates(db, userId, at),
+    readActivity(db, userId, at),
+    // The subject's zone, not the reader's: the chart is a statement about
+    // their week, so its day letters have to match the days they lived.
+    readActivityWeek(db, userId, at, profile.timezone ?? 'UTC'),
+    countCorrectionsWritten(db, userId),
+    countPostsByAuthor(db, userId),
+    countActiveToday(db, at),
+    readLastPoolPayout(db, userId),
+  ])
   const counters = countersOf(activity)
 
   return {
@@ -61,7 +57,6 @@ export async function getTokenSummary(
       day: utcDayKey(at),
       messages: counters.messages,
       corrections: counters.corrections,
-      posts: postsToday,
       mutualConversations: counters.mutualConversations,
       distinctPartners: counters.distinctPartners,
       activityScore: scoreOf(activity),

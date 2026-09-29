@@ -248,11 +248,11 @@ export const en = {
     newsletterEverybody: 'Everybody’s month',
 
     newsletterQuiet:
-      'You were quiet this month — no messages, nothing in the feed. The people below were not, and they are still here.',
+      'You were quiet this month — no messages, no corrections. The people below were not, and they are still here.',
 
     newsletterMessages: 'Messages sent',
 
-    newsletterFeed: 'Feed',
+    newsletterCorrections: 'Corrections given',
 
     newsletterTokens: 'Tokens earned',
 
@@ -261,6 +261,8 @@ export const en = {
     newsletterNewMembers: 'New members',
 
     newsletterMessagesSent: 'Messages sent',
+
+    newsletterCorrectionsMade: 'Corrections made',
 
     newsletterButton: 'Open LangX',
 

@@ -25,7 +25,7 @@ import {
   streakHeadDay,
   type StreakDay,
 } from './streakDays'
-import { countFeedWritten } from './corrections'
+import { countCorrectionsWritten } from './corrections'
 import { readAggregates, type TokenLedgerEntry } from './ledger'
 
 export function walletOf(profile: Profile, earned: number): Wallet {
@@ -95,14 +95,16 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
    * it: a pre-check that throws, mirrored where it can be inside the atomic
    * filter below.
    *
-   * `streak.longest` lives on the profile and is re-checked atomically. The
-   * feed count — posts and corrections — is counted and cannot be. It can
-   * fall when a post is deleted, so a value read a moment ago may be a moment
-   * stale in either direction; for a frame that is the price of not keeping a
-   * counter that four code paths would have to maintain.
+   * `streak.longest` lives on the profile and is re-checked atomically.
+   * Corrections are counted from the ledger and cannot be — but both numbers
+   * only ever grow, so a value read a moment ago can only be an *under*
+   * estimate. The check can refuse a purchase that would now succeed; it can
+   * never let one through that should not.
    */
   if (cosmetic?.requires) {
-    const corrections = cosmetic.requires.corrections ? await countFeedWritten(db, userId) : 0
+    const corrections = cosmetic.requires.corrections
+      ? await countCorrectionsWritten(db, userId)
+      : 0
     const progress = { longestStreak: profile.streak?.longest ?? 0, corrections }
     if (!meetsRequirement(cosmetic.requires, progress)) {
       throw new ApiError(

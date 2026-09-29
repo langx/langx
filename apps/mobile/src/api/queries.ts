@@ -1066,7 +1066,7 @@ export interface PublicSummaryDto {
   tokens: number
   /** Where they stand on this week's token board, or `null` when they are off it. */
   rank: { percentile: number } | null
-  week?: { day: string; messages: number; corrections: number; posts?: number }[]
+  week?: { day: string; messages: number; corrections: number }[]
 }
 
 export function usePublicActivity(handle: string, from: string, to: string) {
@@ -2976,9 +2976,9 @@ export interface AdminStatsDto {
   public: {
     generatedAt: string
     days: number
-    totals: { members: number; messages: number; feed: number; languages: number }
+    totals: { members: number; messages: number; corrections: number; languages: number }
     streaks: { longest: number; active: number }
-    daily: { day: string; members: number; messages: number; feed: number }[]
+    daily: { day: string; members: number; messages: number; corrections: number }[]
     learning: { code: string; name: string; count: number }[]
     native: { code: string; name: string; count: number }[]
   }

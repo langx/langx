@@ -68,7 +68,7 @@ export interface PublicSummary {
    */
   rank: { percentile: number } | null
   /** Their days, not the reader's — the window follows the profile's zone. */
-  week?: { day: string; messages: number; corrections: number; posts: number }[]
+  week?: { day: string; messages: number; corrections: number }[]
 }
 
 /** `null` when there is no such profile; the route has already checked. */
