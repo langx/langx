@@ -22,6 +22,7 @@ import {
 import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
 import { objectExtension } from '../modules/media/objectExtension'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
+import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -59,7 +60,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       )
 
       const profile = await setAvatarUrl(app.mongo.db, request.userId, request.body.avatarUrl)
-      return reply.send(profile)
+      return reply.send(toOwnProfileWire(profile))
     },
   )
 
@@ -90,7 +91,9 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
         `photos/${request.userId}/`,
         'Photo',
       )
-      return reply.send(await addPhoto(app.mongo.db, request.userId, request.body.url))
+      return reply.send(
+        toOwnProfileWire(await addPhoto(app.mongo.db, request.userId, request.body.url)),
+      )
     },
   )
 
@@ -231,7 +234,9 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     '/me/photos',
     { preHandler: requireMember, schema: { body: photoRemoveSchema } },
     async (request, reply) => {
-      return reply.send(await removePhoto(app.mongo.db, request.userId, request.body.url))
+      return reply.send(
+        toOwnProfileWire(await removePhoto(app.mongo.db, request.userId, request.body.url)),
+      )
     },
   )
 }

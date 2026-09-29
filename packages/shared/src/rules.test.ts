@@ -12,12 +12,11 @@ import { translateRequestSchema } from './translation'
 import { DISCOVERY_BOOSTED_TIERS } from './discovery'
 import { PACKAGES, packageDefinition, tierFromEntitlementIds } from './billing'
 import {
-  PLAN_FEATURES,
   PLAN_LIMITS,
   PLAN_TIERS,
   PRO_FEATURES,
-  PRO_PLUS_FEATURES,
   effectivePlanTier,
+  normalizePlanTier,
   hasFeature,
   isPaidTier,
   languageCapAllows,
@@ -70,13 +69,6 @@ describe('age gate', () => {
   })
 })
 
-/** `null` is unlimited and beats any number; otherwise more is better. */
-function atLeastAsGood(candidate: number | null, baseline: number | null): boolean {
-  if (candidate === null) return true
-  if (baseline === null) return false
-  return candidate >= baseline
-}
-
 describe('plan limits', () => {
   it('gives free users 5 initiations per rolling 24h and pro unlimited', () => {
     expect(quotaLimit('free', 'initiations')).toBe(5)
@@ -121,84 +113,32 @@ describe('plan limits', () => {
     }
   })
 
-  it('gates every Pro+ capability behind Pro+ — Pro does not get them', () => {
-    expect(PRO_PLUS_FEATURES.length).toBeGreaterThan(0)
-    for (const feature of PRO_PLUS_FEATURES) {
-      expect(hasFeature('free', feature)).toBe(false)
-      expect(hasFeature('pro', feature)).toBe(false)
-      expect(hasFeature('pro_plus', feature)).toBe(true)
-    }
-  })
-
   /**
-   * The packaging promise, asserted rather than trusted: Pro+ is Pro plus two
-   * flags. Written as a comparison of the real rows so that giving Pro+ a
-   * *worse* value than Pro anywhere — the easy mistake when hand-copying a
-   * table — fails here instead of shipping.
+   * Media and photos are a fair-use ceiling, not something a plan sells: the
+   * refusal is a plain alert. The same number on every row is what keeps it so.
    */
-  /**
-   * Written as "at least as good", not "equal".
-   *
-   * The equality version passed only while every quota happened to be
-   * identical between the two paid tiers. It broke the moment Polyglot got a
-   * larger translation allowance than Fluent — which is an *improvement*, and a
-   * test that fails on an improvement is testing the wrong thing. This one is
-   * also strictly stronger: it still catches Polyglot being given *less*.
-   */
-  it('makes Pro+ at least as good as Pro, everywhere', () => {
-    for (const feature of PRO_FEATURES) {
-      expect(hasFeature('pro_plus', feature)).toBe(true)
+  it('gives every tier the same media and photo ceilings', () => {
+    for (const tier of PLAN_TIERS) {
+      expect(PLAN_LIMITS[tier].mediaPer24h, tier).toBe(500)
+      expect(PLAN_LIMITS[tier].maxPhotos, tier).toBe(10)
     }
-    const numeric = [
-      'initiationsPer24h',
-      'translationsPer24h',
-      'mediaPer24h',
-      'transcriptsPerDay',
-      'maxLearningLanguages',
-      'maxNativeLanguages',
-    ] as const
-    for (const key of numeric) {
-      expect(
-        atLeastAsGood(PLAN_LIMITS.pro_plus[key], PLAN_LIMITS.pro[key]),
-        `pro_plus.${key} is worse than pro's`,
-      ).toBe(true)
-    }
-  })
-
-  /**
-   * The photo allowance was uniform once, and two call sites read the free row
-   * for every tier on the strength of it. It is a ladder now, so what is
-   * pinned here is the shape of the ladder — including that free keeps a real
-   * gallery, which is the part a pricing decision could quietly take away.
-   */
-  it('sells a bigger gallery without taking the free one away', () => {
-    expect(PLAN_LIMITS.free.maxPhotos).toBeGreaterThanOrEqual(3)
-    expect(PLAN_LIMITS.pro.maxPhotos).toBeGreaterThan(PLAN_LIMITS.free.maxPhotos)
-    // Polyglot is a strict superset of Fluent, and a gallery is not where the
-    // two are meant to differ.
-    expect(PLAN_LIMITS.pro_plus.maxPhotos).toBe(PLAN_LIMITS.pro.maxPhotos)
   })
 
   it('counts every tier but free as paid', () => {
     expect(isPaidTier('free')).toBe(false)
     expect(isPaidTier('pro')).toBe(true)
-    expect(isPaidTier('pro_plus')).toBe(true)
   })
 })
 
 /**
- * Pro+ products deliberately grant `pro` as well as `pro_plus`, so almost
- * every real payload names both and something has to pick.
+ * `pro_plus` is Polyglot's entitlement id; it cannot be renamed, so it keeps
+ * arriving after the merge, and it means Pro.
  */
 describe('tierFromEntitlementIds', () => {
-  it('prefers Pro+ when a subscriber holds both', () => {
-    expect(tierFromEntitlementIds(['pro', 'pro_plus'])).toBe('pro_plus')
-    expect(tierFromEntitlementIds(['pro_plus', 'pro'])).toBe('pro_plus')
-  })
-
-  it('reads a lone entitlement', () => {
+  it('reads either entitlement as Pro', () => {
     expect(tierFromEntitlementIds(['pro'])).toBe('pro')
-    expect(tierFromEntitlementIds(['pro_plus'])).toBe('pro_plus')
+    expect(tierFromEntitlementIds(['pro_plus'])).toBe('pro')
+    expect(tierFromEntitlementIds(['pro_plus', 'pro'])).toBe('pro')
   })
 
   /** Absent, empty and null all mean "this event tells us nothing". */
@@ -212,6 +152,7 @@ describe('tierFromEntitlementIds', () => {
    *  leave the user where they are, not throw the webhook into a retry loop. */
   it('ignores entitlements it does not sell', () => {
     expect(tierFromEntitlementIds(['something_new'])).toBeNull()
+    expect(tierFromEntitlementIds(['toString'])).toBeNull()
     expect(tierFromEntitlementIds(['something_new', 'pro'])).toBe('pro')
   })
 })
@@ -228,22 +169,15 @@ describe('PACKAGES', () => {
   })
 
   it('matches the dashboard identifiers this project configured', () => {
-    // The three reserved ids came with the project; Pro+ needed custom ones
-    // because a reserved id can be used once per offering. Renaming a package
-    // in the dashboard must come here too, or it stops rendering on the
-    // paywall (deliberately — see getOffers).
-    expect(Object.keys(PACKAGES).sort()).toEqual([
-      '$rc_annual',
-      '$rc_lifetime',
-      '$rc_monthly',
-      'pro_plus_monthly',
-      'pro_plus_yearly',
-    ])
+    // The offering still holds `pro_plus_*` for apps released before the
+    // single plan; leaving them out of this map is how current code ignores
+    // them (see getOffers).
+    expect(Object.keys(PACKAGES).sort()).toEqual(['$rc_annual', '$rc_lifetime', '$rc_monthly'])
   })
 
   it('resolves known ids and rejects unknown ones', () => {
     expect(packageDefinition('$rc_monthly')).toEqual({ tier: 'pro', period: 'monthly' })
-    expect(packageDefinition('pro_plus_yearly')).toEqual({ tier: 'pro_plus', period: 'yearly' })
+    expect(packageDefinition('pro_plus_yearly')).toBeNull()
     expect(packageDefinition('$rc_six_month')).toBeNull()
   })
 })
@@ -283,27 +217,30 @@ describe('effectivePlanTier', () => {
     expect(effectivePlanTier('pro', 'not-a-date')).toBe('pro')
   })
 
-  /**
-   * The regression this guard was rewritten for. The original read
-   * `tier !== 'pro'` and returned early, which with a third tier meant an
-   * expired Pro+ subscription **never dropped at all** — the one failure mode
-   * the whole function exists to prevent, reappearing on the new tier.
-   */
-  it('drops an expired Pro+ to free, exactly like Pro', () => {
+  /** Stored rows may still say Polyglot until the merge script has run. */
+  it('reads the retired pro_plus as Pro, and drops it on expiry like Pro', () => {
+    expect(effectivePlanTier('pro_plus')).toBe('pro')
+    expect(effectivePlanTier('pro_plus', new Date(Date.now() + hour))).toBe('pro')
     expect(effectivePlanTier('pro_plus', new Date(Date.now() - hour))).toBe('free')
-    expect(effectivePlanTier('pro_plus', new Date(Date.now() - hour).toISOString())).toBe('free')
   })
 
-  it('keeps Pro+ while it still has time on it', () => {
-    expect(effectivePlanTier('pro_plus')).toBe('pro_plus')
-    expect(effectivePlanTier('pro_plus', null)).toBe('pro_plus')
-    expect(effectivePlanTier('pro_plus', new Date(Date.now() + hour))).toBe('pro_plus')
+  /** `PLAN_LIMITS[unknown]` is `undefined` and every guard after it a 500. */
+  it('reads a tier it does not know as free, never as undefined', () => {
+    expect(effectivePlanTier('platinum')).toBe('free')
+    expect(effectivePlanTier(undefined)).toBe('free')
+    expect(effectivePlanTier(null)).toBe('free')
   })
+})
 
-  /** Downgrade is to `free`, never to the tier below — an expired subscription
-   *  is not a cheaper subscription. */
-  it('drops an expired Pro+ all the way to free, not to Pro', () => {
-    expect(effectivePlanTier('pro_plus', new Date(Date.now() - hour))).not.toBe('pro')
+describe('normalizePlanTier', () => {
+  it('maps every stored spelling onto a row that exists', () => {
+    expect(normalizePlanTier('free')).toBe('free')
+    expect(normalizePlanTier('pro')).toBe('pro')
+    expect(normalizePlanTier('pro_plus')).toBe('pro')
+    expect(normalizePlanTier('PRO')).toBe('free')
+    for (const stored of ['free', 'pro', 'pro_plus', 'x', undefined, null]) {
+      expect(PLAN_LIMITS[normalizePlanTier(stored)]).toBeDefined()
+    }
   })
 })
 
@@ -460,14 +397,13 @@ describe('language allowances', () => {
     for (const key of KEYS) {
       expect(PLAN_LIMITS.free[key]).toBeGreaterThanOrEqual(1)
       expect(PLAN_LIMITS.pro[key]).toBeGreaterThan(PLAN_LIMITS.free[key])
-      expect(PLAN_LIMITS.pro_plus[key]).toBeGreaterThan(PLAN_LIMITS.pro[key])
     }
   })
 
   /** Nothing may read one tier's language allowance off another's row. */
   it('is not uniform across tiers', () => {
     for (const key of KEYS) {
-      expect(PLAN_LIMITS.free[key]).not.toBe(PLAN_LIMITS.pro_plus[key])
+      expect(PLAN_LIMITS.free[key]).not.toBe(PLAN_LIMITS.pro[key])
     }
   })
 
@@ -504,23 +440,6 @@ describe('translation is never sold as unlimited', () => {
 
   it('rises with the tier', () => {
     expect(PLAN_LIMITS.pro.translationsPer24h).toBeGreaterThan(PLAN_LIMITS.free.translationsPer24h)
-    expect(PLAN_LIMITS.pro_plus.translationsPer24h).toBeGreaterThan(
-      PLAN_LIMITS.pro.translationsPer24h,
-    )
-  })
-})
-
-describe('the two feature lists', () => {
-  /**
-   * True by construction today. Asserted so that a future "just append it to
-   * both" — which would make a Fluent subscriber's refused request look like a
-   * bug in the guard rather than the tier boundary working — cannot pass.
-   */
-  it('are disjoint, and together are every gated capability', () => {
-    for (const feature of PRO_FEATURES) {
-      expect(PRO_PLUS_FEATURES as readonly string[]).not.toContain(feature)
-    }
-    expect([...PLAN_FEATURES].sort()).toEqual([...PRO_FEATURES, ...PRO_PLUS_FEATURES].sort())
   })
 })
 
@@ -534,10 +453,5 @@ describe('the boosted strip', () => {
   it('lists exactly the tiers whose plan includes it', () => {
     const entitled = PLAN_TIERS.filter((tier) => PLAN_LIMITS[tier].boostedProfile)
     expect([...DISCOVERY_BOOSTED_TIERS].sort()).toEqual([...entitled].sort())
-  })
-
-  /** Most expensive first — the whole reason it is an array and not a set. */
-  it('leads with Polyglot', () => {
-    expect(DISCOVERY_BOOSTED_TIERS[0]).toBe('pro_plus')
   })
 })

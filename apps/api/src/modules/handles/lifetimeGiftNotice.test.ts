@@ -147,10 +147,10 @@ describe('telling somebody the v1 lifetime gift landed', () => {
       expect(text).toContain('11,579')
       expect(text).toContain('115')
       expect(text).toContain('615')
-      expect(text).toContain('Fluent')
+      expect(text).toContain('Pro')
     }
     expect(push.sent[0]?.body).toContain('11,579')
-    expect(email.messages[0]?.subject).toContain('Fluent')
+    expect(email.messages[0]?.subject).toContain('Pro')
   })
 
   it('says it once, however many times it is asked', async () => {
@@ -211,7 +211,7 @@ describe('telling somebody the v1 lifetime gift landed', () => {
     const userId = await returner({ locale: 'tr' })
     await notifyLifetimeGift(db, senders(), { userId, tier: 'pro' }, warn)
 
-    expect(email.messages[0]?.subject).toBe('Fluent, ömür boyu')
+    expect(email.messages[0]?.subject).toBe('Pro, ömür boyu')
     expect(String((await db.collection(COLLECTIONS.messages).findOne({}))?.body)).toContain(
       'Tebrikler',
     )

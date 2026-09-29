@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { TIER_NAMES, tierUnlocking } from '@langx/shared'
+import { TIER_NAMES } from '@langx/shared'
 import { BlurView } from 'expo-blur'
 import {
   ActivityIndicator,
@@ -63,9 +63,8 @@ export default function ViewersScreen() {
       return { ...v, _id: `${v.userId}:${day}` }
     }),
   )
-  // Named from the plan that actually has the feature, like the Me tab's line,
-  // so a renamed or re-tiered plan cannot leave this card promising the wrong one.
-  const plan = TIER_NAMES[tierUnlocking('profileViewerIdentities') ?? 'pro']
+  // The plan's name from the shared table, like the Me tab's line.
+  const plan = TIER_NAMES.pro
 
   /*
    * Behind the paywall every row is a button.

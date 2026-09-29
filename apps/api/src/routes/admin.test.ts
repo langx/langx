@@ -30,6 +30,7 @@ import {
   type AdminPulse,
 } from '../modules/admin/pulse'
 import { forgetAdminStats, readAdminStats, type AdminStats } from '../modules/admin/stats'
+import { resetPublicStatsCache } from '../modules/insight/publicStats'
 import type { Message } from '../modules/chat/conversations'
 import type { Profile } from '../modules/profiles/profiles'
 import { ensureOfficialAccounts } from '../modules/official/accounts'
@@ -269,8 +270,9 @@ describe('the operator panel', () => {
 
       // The plan mix adds up, which is the only thing that can be asserted
       // about it without pinning the tier of every fixture in the file.
-      const { total, pro, proPlus, free } = stats.money.tiers
-      expect(pro + proPlus + free).toBe(total)
+      const { total, pro, gifted, free } = stats.money.tiers
+      expect(pro + free).toBe(total)
+      expect(gifted).toBeLessThanOrEqual(pro)
 
       // Read from the public module rather than recomputed beside it.
       expect(stats.public.totals.members).toBeGreaterThan(0)
@@ -279,77 +281,59 @@ describe('the operator panel', () => {
 
   describe('the day the dashboard is cut in', () => {
     /*
-     * The panel is read in Toronto, where a UTC day turns over at 20:00. The
-     * screenshot that started this was taken at 21:47 on Monday the 21st —
-     * 01:47 UTC on Tuesday the 22nd — and every strip said Tuesday, with
-     * today's column a two-hour stub under tomorrow's date.
+     * UTC, whoever reads it. The case is a Toronto evening on purpose: 21:47
+     * on Monday the 21st there is 01:47 on Tuesday the 22nd in UTC, the hour
+     * when a panel cut in the reader's zone and one cut in UTC disagree about
+     * what "today" is.
      *
      * Through `readAdminStats` rather than the route, because the clock is the
      * subject: the function takes `now`, so the case can be that evening
      * exactly instead of whenever the suite happens to run.
      */
-    const TORONTO = 'America/Toronto'
     const THAT_EVENING = new Date('2026-09-22T01:47:00.000Z')
 
-    it('ends the strips on the operator’s day, not on a UTC day they have not reached', async () => {
-      const stats = await readAdminStats(handle.db, THAT_EVENING, TORONTO)
-
-      expect(stats.timeZone).toBe(TORONTO)
-      // Monday the 21st in Toronto, which is where the reader is.
-      expect(stats.audience.daily.at(-1)?.day).toBe('2026-09-21')
-      expect(stats.money.tokensDaily.at(-1)?.day).toBe('2026-09-21')
-      // A full window either way, and in order.
-      expect(stats.money.tokensDaily).toHaveLength(30)
-      expect(stats.money.tokensDaily.at(0)?.day).toBe('2026-08-23')
-      expect(stats.audience.daily.at(0)?.day).toBe('2026-08-23')
-
-      /*
-       * The one strip that cannot move, and the reason it is labelled UTC on
-       * the screen rather than relabelled: `dailyActivity` is one document per
-       * user per UTC day, with no sub-day grain to re-cut.
-       */
-      expect(stats.audience.activeDaily.at(-1)?.day).toBe('2026-09-22')
-    })
-
-    it('is UTC for an operator whose profile has no zone, exactly as before', async () => {
+    it('ends every strip on the UTC day', async () => {
       forgetAdminStats()
+      resetPublicStatsCache()
       const stats = await readAdminStats(handle.db, THAT_EVENING)
 
-      expect(stats.timeZone).toBe('UTC')
-      expect(stats.audience.daily.at(-1)?.day).toBe('2026-09-22')
-      expect(stats.money.tokensDaily.at(-1)?.day).toBe('2026-09-22')
+      for (const strip of [
+        stats.audience.activeDaily,
+        stats.money.tokensDaily,
+        stats.public.daily,
+      ]) {
+        expect(strip).toHaveLength(30)
+        expect(strip.at(0)?.day).toBe('2026-08-24')
+        expect(strip.at(-1)?.day).toBe('2026-09-22')
+      }
     })
 
-    it('counts a sign-up into the day it happened where the reader is', async () => {
-      const membersOn = async (zone: string, day: string): Promise<number> => {
+    it('starts "joined today" at midnight UTC', async () => {
+      const joinedToday = async (): Promise<number> => {
         forgetAdminStats()
-        const stats = await readAdminStats(handle.db, THAT_EVENING, zone)
-        return stats.audience.daily.find((row) => row.day === day)?.members ?? 0
+        return (await readAdminStats(handle.db, THAT_EVENING)).audience.joinedToday
       }
 
       /*
        * A delta rather than an absolute: the suite's own fixtures join at
-       * whatever time it runs, and if that is a Toronto evening they land in
-       * these same buckets. What is asserted is where *this* account goes.
+       * whatever time it runs, and all of them are after this midnight.
        */
-      const before = {
-        torontoMonday: await membersOn(TORONTO, '2026-09-21'),
-        utcMonday: await membersOn('UTC', '2026-09-21'),
-        utcTuesday: await membersOn('UTC', '2026-09-22'),
-      }
+      const before = await joinedToday()
 
-      // 21:30 in Toronto on the Monday — a quarter of an hour before the
-      // screenshot, and already Tuesday in UTC. This is the sign-up the old
-      // dashboard drew under a date the reader had not reached.
-      const joined = await newUser()
+      // 19:30 in Toronto on the Monday, but the Monday in UTC too: not today.
+      const monday = await newUser()
       await profiles().updateOne(
-        { _id: joined.userId },
+        { _id: monday.userId },
+        { $set: { createdAt: new Date('2026-09-21T23:30:00.000Z') } },
+      )
+      // Still the Monday evening in Toronto, and already Tuesday in UTC: today.
+      const tuesday = await newUser()
+      await profiles().updateOne(
+        { _id: tuesday.userId },
         { $set: { createdAt: new Date('2026-09-22T01:30:00.000Z') } },
       )
 
-      expect(await membersOn(TORONTO, '2026-09-21')).toBe(before.torontoMonday + 1)
-      expect(await membersOn('UTC', '2026-09-21')).toBe(before.utcMonday)
-      expect(await membersOn('UTC', '2026-09-22')).toBe(before.utcTuesday + 1)
+      expect(await joinedToday()).toBe(before + 1)
     })
   })
 
@@ -517,33 +501,48 @@ describe('the operator panel', () => {
       )
       await profiles().updateOne(
         { _id: other.userId },
-        { $set: { entitlement: { tier: 'pro_plus', updatedAt: new Date() } } },
+        // A v1 lifetime gift from while there were two plans, not merged yet.
+        {
+          $set: {
+            entitlement: { tier: 'pro_plus', store: 'promotional', updatedAt: new Date() },
+          },
+        },
       )
 
       type Page = {
-        items: { userId: string; willRenew: boolean | null }[]
+        items: { userId: string; tier: string; gift: boolean; willRenew: boolean | null }[]
         nextCursor: string | null
       }
       const pro = (await get(admin, '/admin/members?tier=pro')).json<Page>()
-      expect(pro.items.map((row) => row.userId)).toEqual([newer.userId, current.userId])
-      expect(pro.items[0]!.willRenew).toBe(true)
+      expect(pro.items.map((row) => row.userId)).toEqual([
+        other.userId,
+        newer.userId,
+        current.userId,
+      ])
+      // One tier on the wire, and the gift told apart from the paid.
+      expect(pro.items.map((row) => row.tier)).toEqual(['pro', 'pro', 'pro'])
+      expect(pro.items.map((row) => row.gift)).toEqual([true, false, false])
+      expect(pro.items[1]!.willRenew).toBe(true)
       expect(pro.nextCursor).toBeNull()
 
       // The tile and the list are the same filter.
       const stats = (await get(admin, '/admin/stats')).json<AdminStats>()
       expect(stats.money.tiers.pro).toBe(pro.items.length)
+      expect(stats.money.tiers.gifted).toBe(1)
 
-      const first = (await get(admin, '/admin/members?tier=pro&limit=1')).json<Page>()
-      expect(first.items.map((row) => row.userId)).toEqual([newer.userId])
+      const first = (await get(admin, '/admin/members?tier=pro&limit=2')).json<Page>()
+      expect(first.items.map((row) => row.userId)).toEqual([other.userId, newer.userId])
       expect(first.nextCursor).not.toBeNull()
       const rest = (
-        await get(admin, `/admin/members?tier=pro&limit=1&cursor=${first.nextCursor}`)
+        await get(admin, `/admin/members?tier=pro&limit=2&cursor=${first.nextCursor}`)
       ).json<Page>()
       expect(rest.items.map((row) => row.userId)).toEqual([current.userId])
       expect(rest.nextCursor).toBeNull()
 
-      const proPlus = (await get(admin, '/admin/members?tier=pro_plus')).json<Page>()
-      expect(proPlus.items.map((row) => row.userId)).toEqual([other.userId])
+      // A panel built before the single plan still asks for `pro_plus`; it
+      // gets the one list there is rather than a validation error.
+      const old = (await get(admin, '/admin/members?tier=pro_plus')).json<Page>()
+      expect(old.items).toHaveLength(3)
 
       expect((await get(null, '/admin/members?tier=pro')).statusCode).toBe(401)
     })

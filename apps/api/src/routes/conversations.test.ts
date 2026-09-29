@@ -379,7 +379,8 @@ describe('Faz 4 — starting a conversation', () => {
         .inject({ method: 'GET', url: '/me/quota', headers: { cookie: pro.cookie } })
         .then((r) => r.json<Record<string, { limit: number | null }>>())
 
-      expect(proBody.media).toMatchObject({ limit: null, remaining: null })
+      // The same fair-use ceiling on every tier since the single plan.
+      expect(proBody.media).toMatchObject({ limit: PLAN_LIMITS.pro.mediaPer24h })
     })
   })
 

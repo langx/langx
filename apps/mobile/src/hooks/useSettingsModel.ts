@@ -1,10 +1,4 @@
-import {
-  hasFeature,
-  TIER_BADGES,
-  TIER_NAMES,
-  resolveNotificationPrefs,
-  tierUnlocking,
-} from '@langx/shared'
+import { hasFeature, TIER_BADGES, TIER_NAMES, resolveNotificationPrefs } from '@langx/shared'
 import { router, useFocusEffect } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { Linking, Platform } from 'react-native'
@@ -138,10 +132,9 @@ export function useSettingsModel() {
    */
   const emailVerified = authClient.useSession().data?.user.emailVerified === true
   /*
-   * The incognito row asks about *incognito*, not "any paid plan". They agreed
-   * while every privacy flag was Fluent's; now that this one is Polyglot's,
-   * `useIsPro()` here would offer a Fluent subscriber a toggle the server
-   * refuses — a switch that flips and does nothing.
+   * The incognito row asks about *incognito*, not "any paid plan" — the
+   * capability rather than the plan, so the toggle offered is always one the
+   * server accepts.
    */
   const canIncognito = useHasFeature('incognito')
   /*
@@ -201,15 +194,13 @@ export function useSettingsModel() {
   // No row without a key: a switch that changes nothing is worse than none,
   // and a self-hosted build with no PostHog project has nothing to switch.
   const analyticsRow = isAnalyticsAvailable()
-  // The tag names the plan that unlocks the incognito row. It reads the real
-  // table through `tierUnlocking`, so moving it between tiers moves the tag.
-  const incognitoBadge = TIER_BADGES[tierUnlocking('incognito') ?? 'free']
-  // Reads FLUENT today, and would follow the capability if it ever moved.
-  const boostBadge = TIER_BADGES[tierUnlocking('boostedProfile') ?? 'free']
-  // Same idiom for the cross-conversation deck: the row is drawn either way
-  // and says which plan opens it.
+  // The tag on a locked row: the one paid plan's mark, from the shared table.
+  const incognitoBadge = TIER_BADGES.pro
+  const boostBadge = TIER_BADGES.pro
+  // The cross-conversation deck row is drawn either way and says which plan
+  // opens it.
   const canDeckExport = hasFeature(tier, 'deckExport')
-  const deckExportBadge = TIER_BADGES[tierUnlocking('deckExport') ?? 'free']
+  const deckExportBadge = TIER_BADGES.pro
   const shareLocation = useShareLocation()
   const stopSharingLocation = useStopSharingLocation()
 

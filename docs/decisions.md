@@ -1623,7 +1623,8 @@ about its contents.
 
 ## A third tier, and the four things two tiers were hiding
 
-> **Superseded in part — see _The plans are Fluent and Polyglot_ below.** The
+> **Superseded — see _One plan: Pro_ at the end of this file**, and before
+> that in part by _The plans are Fluent and Polyglot_ below. The
 > tier identifiers are unchanged and everything about the shape of the table
 > still holds. What is no longer true is the sentence after this one: the two
 > tiers no longer share quotas or capability flags.
@@ -1677,6 +1678,10 @@ under an anonymous RevenueCat id is real on the store and invisible here, and
 no later `logIn` moves it.
 
 ## Pro+ products grant the `pro` entitlement too
+
+> **Superseded — see _One plan: Pro_ at the end of this file.** Fluent and
+> Polyglot were merged into one plan on 28 September 2026; what follows is the
+> record of the two-plan design.
 
 Two entitlements, `pro` and `pro_plus`, and every Pro+ product is attached to
 both. It falls out of the packaging — a Pro+ subscriber _is_ a Pro subscriber —
@@ -2159,6 +2164,10 @@ deletion purge able to find a person's uploads by prefix. _(Written as intent;
 the purge only began sweeping `posts/{userId}/` on 27 September 2026.)_
 
 ## The plans are Fluent and Polyglot, and three things moved
+
+> **Superseded — see _One plan: Pro_ at the end of this file.** Fluent and
+> Polyglot were merged into one plan on 28 September 2026; what follows is the
+> record of the two-plan design.
 
 `pro` and `pro_plus` are what the code calls them and what RevenueCat calls
 them; **Fluent** and **Polyglot** are what a person sees. The two are separate
@@ -3795,6 +3804,10 @@ lead somewhere, and the sheet cannot promise that.
 
 ## Fluent to Polyglot: the store swaps the plan, the paywall says what will happen
 
+> **Superseded — see _One plan: Pro_ at the end of this file.** Fluent and
+> Polyglot were merged into one plan on 28 September 2026; what follows is the
+> record of the two-plan design.
+
 Until 5 September 2026 the paywall disabled the tier held and nothing else.
 A Fluent subscriber tapping Polyglot ran the ordinary first-purchase call on
 every store, and a Polyglot subscriber could buy Fluent underneath. On iOS
@@ -5390,6 +5403,9 @@ at all until a build carrying it ships. This is the same constraint
 
 ## A yearly price is a `.99` month times twelve, plus 0.11
 
+> **Still in force** under the single plan (_One plan: Pro_): Pro is sold at
+> the Fluent prices this section set, and the yearly-price rule is unchanged.
+
 On 24 September 2026 the prices went up — Fluent $9.99 a month or $83.99 a
 year, Polyglot $16.99 or $131.99 — and every figure on the paywall has to end in
 `.99`, the per-month headline of a yearly plan included. The old rule could not
@@ -6038,3 +6054,131 @@ change to the pool, not to this award.
 message corrected before the deploy can pay its corrector once more. No
 backfill this time: that is one payment per pair that already existed, once,
 and not worth a second in-place rewrite of a ledger whose rule is append-only.
+
+## "Why are you leaving?" is asked, kept without a name, and never in the way
+
+_28 September 2026._ The delete-account screen now opens on one question — a
+single choice from `ACCOUNT_DELETION_REASONS` and an optional note of up to
+`ACCOUNT_DELETION_NOTE_MAX` characters — before the handle step, which is
+unchanged.
+
+**Optional, all the way down.** "Continue" needs nothing picked, "Skip" sits
+right under it, the request carries nothing when it is skipped, and both routes accept a body
+without either field — every build already in people's hands sends exactly
+that. Deletion is a right the stores require to be reachable; a question that
+had to be answered first would be a toll on it, and an answer given to get
+past a form is worth less than none.
+
+**Anonymous, and anonymous at the moment it matters.** The row in
+`accountDeletionFeedback` has no user id, handle, email, country or language:
+the reason, the note, the plan, whole 30-day months of account age, and the
+_day_ it was written — a day, not an instant, because `analyticsDeletions` is
+written in the same purge keyed by the user id, and a shared millisecond is a
+join. The screen asks people to leave names out of the note, and says their
+answer is kept with nothing linking it back to them.
+
+**Held on the profile until the purge, not written at the request.** During
+the 30 days the answer is `profiles.deletionFeedback`, one more field of an
+account that still exists, and `cancelDeletion` removes it with `deletedAt`.
+Written straight away, it would count people who changed their mind as people
+who left, and for a month its date would match `deletedAt` on a profile that
+was still there. The purge writes the anonymous row in the same `Promise.all`
+that deletes the profile. The cost is that the panel's numbers run a grace
+period behind: "last 30 days" means purged in the last 30 days. The plan is
+the one exception taken at request time, because a subscription can lapse
+during the grace period and "a paying member left" is the fact worth keeping.
+On the emailed path the answer rides on the `deletionTokens` row, since the
+page the link opens belongs to the API and nothing else carries it there; the
+row is gone once spent or expired.
+
+**It never blocks the deletion.** `recordDeletionFeedback` swallows its own
+failure and logs it without an id. Losing an opinion is a shame; stranding the
+purge it rides in is a broken promise.
+
+The operator panel's system screen counts rows per reason over 30 and 90 days,
+every reason listed with its zeroes. Notes are not shown there; reading them is
+a database query, which is where it should stay until there are enough to need
+more.
+
+## One plan: Pro
+
+Two paid plans confused people: Fluent (`pro`) and Polyglot (`pro_plus`) read
+as two products to choose between, and every large competitor sells one. On
+28 September 2026 they became one plan, **Pro**, holding everything Polyglot
+held, at Fluent's price — $9.99 a month or $83.99 a year in the US, with a free
+week on both. Nobody's price went up; Polyglot's came down. The `.99 × 12 +
+0.11` yearly rule above still holds.
+
+**`pro_plus` cannot be deleted, so it is read, not trusted.** A RevenueCat
+entitlement id cannot be renamed or retired while anyone holds it, so
+`pro_plus` keeps arriving from renewing Polyglot subscriptions and from the v1
+lifetime gifts granted as Polyglot. `ENTITLEMENT_TIERS` maps it to `pro`. And
+nothing ever validated a stored tier: `PLAN_LIMITS[tier]` on an unknown tier
+is `undefined` and the request a 500. So stored fields are typed
+`StoredPlanTier` and read through `normalizePlanTier` / `effectivePlanTier`
+(`pro_plus` → `pro`, anything unknown → `free`), and
+`scripts/merge-pro-tiers.ts` rewrites the rows once the API is live
+everywhere. Mongo queries accept both spellings until then.
+
+**The entitlement kept is the one that ends last.** `getEntitlement` used to
+try `pro_plus` before `pro`. With one plan behind both ids that is wrong: a
+cancelled Polyglot week beside a fresh Pro year stored the week, and the
+account fell to free with a paid year left. Now a lifetime beats any date, the
+later date beats the earlier, and on a tie the paid one beats a grant.
+
+**A timed promotional grant is reported as the store `gift`.** Every paywall
+already released reads `promotional` as "for life", and would tell somebody
+given a month that it was theirs forever. `promotional` is kept for lifetimes
+only; a gift has no period and does not renew, and `planChangeFor` lets it be
+subscribed on top of.
+
+**Old apps are told `pro_plus`.** Apps up to 2.8 — and 2.7/2.8 until an update
+lands — unlock features off their **own** profile's `entitlement.tier`, and to
+them `pro` is Fluent: a Pro subscriber would see half the plan locked behind
+"Upgrade to Polyglot". They also write any profile-shaped response into their
+`me` cache. So every route that returns the caller's own profile goes through
+`toOwnProfileWire`, which writes `pro_plus` for any paid tier and for
+`restoredFromV1.lifetimeGranted`; a route test walks all of them. Everything
+else — public profiles, discovery, admin — carries the canonical `pro`. No
+header negotiation: a new app has to accept `pro_plus` anyway, from its own
+persisted cache. **Removal:** when `stats.appVersion` shows no build older than
+the first one with this JS (probably 2.9), raise `minVersion` past them and
+delete `toOwnProfileWire`.
+
+**The Boosted strip lost its tier band and its chip.** Polyglot used to lead
+Fluent in every order; now the readiness band and the rotation decide. The
+card's FLUENT/POLYGLOT chip is gone rather than turned into PRO — the ring
+already marks the card — and the name carries the age instead, through a key
+because Arabic's comma is not ours. The server keeps sending `tier` (always
+`pro`) because old apps draw their chip from it.
+
+**Media and photos are fair use, the assistant is flat.** 500 attachments a day
+and ten photos on every tier; the refusal is a plain alert, never the paywall.
+The @langx assistant's per-tier allowance (5/10/15) was priced against two paid
+plans and is now `OFFICIAL_ASSISTANT.maxRepliesPerDay` for everybody.
+
+**The referral top-up waits for money.** It was paid on any free → paid edge
+and on every `INITIAL_PURCHASE`, and both include a free week cancelled on day
+six and a promotional grant nobody paid for. Now it is paid when the
+entitlement is a paid tier in a real store with `periodType: 'normal'`
+(`isPaidPurchase`), from both the webhook and `/billing/refresh`, idempotently —
+so the `RENEWAL` that turns a trial into a charged month is what pays.
+
+**The yearly card says "N months free", computed.** `floor(12 − yearly ÷
+monthly)` from the store's two prices, never written down; every storefront is
+3.3–3.6 today, so it reads "3 months free", and below one month it falls back
+to the percentage. The trial reads in weeks when it is whole weeks.
+
+**The welcome pack is Polyglot's.** `welcomePackAt` keeps both keys and either
+means "given" — rewriting them would hand an ex-Polyglot the pack and two
+freezes again. An ex-Fluent subscriber is given the missing cosmetics once, by
+the merge script, without freezes.
+
+**The loyalty ladder is one rung.** The p99 v1 wallets were given lifetime
+Polyglot, the p90 lifetime Fluent; both are lifetime Pro now, so the table is
+one rung at 9,136.
+
+This supersedes _A third tier, and the four things two tiers were hiding_,
+_Pro+ products grant the `pro` entitlement too_, _The plans are Fluent and
+Polyglot, and three things moved_ and _Fluent to Polyglot: the store swaps the
+plan, the paywall says what will happen_.

@@ -82,26 +82,17 @@ describe('grantWelcomePack', () => {
     expect(profile?.streakFreezes).toBe(PRO_WELCOME_PACKS.pro.streakFreezes)
   })
 
-  it('grants only the difference when a pro subscriber upgrades', async () => {
-    const id = await seed()
-    await grantWelcomePack(handle.db, id, 'pro')
-    const upgrade = await grantWelcomePack(handle.db, id, 'pro_plus')
-
-    expect(upgrade.granted).toBe(true)
-    // The bronze frame was already theirs and is not handed over twice.
-    expect(upgrade.cosmetics).not.toContain('frame.bronze')
-    const profile = await read(id)
-    expect(new Set(profile?.cosmetics)).toEqual(new Set(PRO_WELCOME_PACKS.pro_plus.cosmetics))
-  })
-
-  it('gives nothing back to a pro_plus subscriber who drops to pro', async () => {
-    const id = await seed()
-    await grantWelcomePack(handle.db, id, 'pro_plus')
-    const downgrade = await grantWelcomePack(handle.db, id, 'pro')
-
-    expect(downgrade.granted).toBe(false)
-    const profile = await read(id)
-    expect(profile?.streakFreezes).toBe(PRO_WELCOME_PACKS.pro_plus.streakFreezes)
+  /**
+   * Neither key is migrated by the merge: an ex-Polyglot's `pro_plus` latch
+   * must keep the pack and its two freezes from being handed over again, and
+   * an ex-Fluent's `pro` latch leaves their difference to the merge script.
+   */
+  it('reads either latch as the pack already given', async () => {
+    for (const key of ['pro', 'pro_plus'] as const) {
+      const id = await seed({ welcomePackAt: { [key]: new Date() }, streakFreezes: 1 })
+      expect((await grantWelcomePack(handle.db, id, 'pro')).granted, key).toBe(false)
+      expect((await read(id))?.streakFreezes, key).toBe(1)
+    }
   })
 
   /**
@@ -128,7 +119,7 @@ describe('grantWelcomePack', () => {
    */
   it('writes no ledger row and no aggregate, so paying buys no rank', async () => {
     const id = await seed()
-    await grantWelcomePack(handle.db, id, 'pro_plus')
+    await grantWelcomePack(handle.db, id, 'pro')
 
     expect(await handle.db.collection(COLLECTIONS.tokenLedger).countDocuments({ userId: id })).toBe(
       0,

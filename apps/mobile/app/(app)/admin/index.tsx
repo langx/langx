@@ -56,12 +56,9 @@ export default function AdminHomeScreen() {
   const audience = stats.data?.audience
   const money = stats.data?.money
   const shared = stats.data?.public
-  /*
-   * The charts' own series, cut in the operator's zone rather than in UTC —
-   * `shared` keeps the totals, the streaks and the languages, which are
-   * counts over everything and have no day in them.
-   */
-  const daily = audience?.daily ?? []
+  // The three per-day charts are the public page's own series, in UTC like
+  // everything else on this screen.
+  const daily = shared?.daily ?? []
 
   const refresh = (): void => {
     void stats.refetch()
@@ -129,13 +126,8 @@ export default function AdminHomeScreen() {
             </View>
 
             <Heading>{ADMIN.home.sections.audience}</Heading>
-            {/*
-             * Where the days on this screen turn over. One line, once: the
-             * strips below are the reader's own days except where a caption
-             * or a label says UTC, and which zone that is cannot be guessed
-             * from the numbers.
-             */}
-            <Text style={styles.muted}>{ADMIN.home.daysIn(stats.data?.timeZone ?? '')}</Text>
+            {/* Where the days on this screen turn over. One line, once. */}
+            <Text style={styles.muted}>{ADMIN.home.allUtc}</Text>
             <View style={styles.tiles}>
               <StatTile value={count(audience?.joinedToday)} label={ADMIN.home.joinedToday} />
               <StatTile value={count(audience?.joinedLastMonth)} label={ADMIN.home.joinedMonth} />
@@ -143,15 +135,9 @@ export default function AdminHomeScreen() {
               <StatTile value={count(audience?.seenLastMonth)} label={ADMIN.home.seenMonth} />
             </View>
 
-            {/*
-             * The one strip on this screen that is not the reader's own day,
-             * and it says so in its caption. `dailyActivity` is bucketed per
-             * UTC day with no sub-day grain to re-cut — see the note at the
-             * top of `modules/admin/stats.ts`.
-             */}
             <Chart
               title={ADMIN.home.charts.activeDaily}
-              caption={`${ADMIN.home.charts.lastDays(audience?.activeDaily.length || 30)} · ${ADMIN.home.charts.activeDailyNote}`}
+              caption={ADMIN.home.charts.lastDays(audience?.activeDaily.length || 30)}
               points={(audience?.activeDaily ?? []).map(dayPoint)}
             />
             <Chart
@@ -229,11 +215,7 @@ export default function AdminHomeScreen() {
                 label={ADMIN.home.pro}
                 onPress={() => router.push('/(app)/admin/members?tier=pro')}
               />
-              <StatTile
-                value={count(money?.tiers.proPlus)}
-                label={ADMIN.home.proPlus}
-                onPress={() => router.push('/(app)/admin/members?tier=pro_plus')}
-              />
+              <StatTile value={count(money?.tiers.gifted)} label={ADMIN.home.gifted} />
               <StatTile value={count(money?.tiers.free)} label={ADMIN.home.free} />
               <StatTile value={count(money?.tiers.total)} label={ADMIN.home.totalMembers} />
             </View>
@@ -394,20 +376,22 @@ function Funnel({ window }: { window: AdminFunnelWindow }) {
   return <BarList rows={rows} scale={top} empty={ADMIN.home.funnel.none} />
 }
 
-/** What share of the members on a plan are paying for one. */
+/**
+ * What share of the members are paying for Pro — a gift or a lifetime grant is
+ * Pro that nobody pays for, so it is taken out.
+ */
 function PaidShare({ tiers }: { tiers: AdminStatsDto['money']['tiers'] }) {
   const styles = useStyles()
-  const paid = tiers.pro + tiers.proPlus
+  const paid = tiers.pro - tiers.gifted
   const fraction = tiers.total > 0 ? paid / tiers.total : 0
   const label = ADMIN.home.paidShare(paid, tiers.total)
 
   return (
     <View style={styles.meter}>
       {/*
-       * A meter rather than a stacked bar of the three tiers. Free is most of
-       * the ground here, so the two paid segments would be slivers a reader
-       * could not compare — and the question this answers is one number, not
-       * three.
+       * A meter rather than a stacked bar. Free is most of the ground here,
+       * so the paid segment would be a sliver — and the question this answers
+       * is one number.
        */}
       <ProgressBar value={fraction} height={6} accessibilityLabel={label} />
       <Text style={styles.muted}>{label}</Text>

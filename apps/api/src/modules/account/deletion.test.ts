@@ -10,6 +10,7 @@ import type { LegacyProfile } from '../handles/legacyProfiles'
 import type { Profile } from '../profiles/profiles'
 import type { StorageProvider, UploadUrl } from '../../storage/StorageProvider'
 import { cancelDeletion, purgeAtFor, purgeExpiredAccounts, requestDeletion } from './deletion'
+import { countDeletionReasons, type AccountDeletionFeedback } from './deletionFeedback'
 import {
   burnDeletionToken,
   DELETION_TOKEN_TTL_MS,
@@ -77,6 +78,7 @@ describe('deleting an account', () => {
     await handle.db.collection(COLLECTIONS.legacyMessages).deleteMany({})
     await handle.db.collection(COLLECTIONS.legacyRooms).deleteMany({})
     await handle.db.collection(COLLECTIONS.handleReservations).deleteMany({})
+    await handle.db.collection(COLLECTIONS.accountDeletionFeedback).deleteMany({})
   })
 
   describe('the emailed token', () => {
@@ -84,11 +86,11 @@ describe('deleting an account', () => {
       const token = await mintDeletionToken(handle.db, 'ada')
       expect(await verifyDeletionToken(handle.db, token)).toBe('ada')
 
-      expect(await burnDeletionToken(handle.db, token)).toBe(true)
+      expect(await burnDeletionToken(handle.db, token)).not.toBeNull()
       // A forwarded mail, or a mailbox somebody else reads later, must not be
       // able to delete the account a second time.
       expect(await verifyDeletionToken(handle.db, token)).toBeNull()
-      expect(await burnDeletionToken(handle.db, token)).toBe(false)
+      expect(await burnDeletionToken(handle.db, token)).toBeNull()
     })
 
     it('refuses an expired one even before the TTL monitor has swept it', async () => {
@@ -441,6 +443,125 @@ describe('deleting an account', () => {
       expect(
         await handle.db.collection<Profile>(COLLECTIONS.profiles).countDocuments({ _id: plain }),
       ).toBe(0)
+    })
+  })
+
+  /**
+   * "Why are you leaving?" — optional, held while the account can still come
+   * back, and kept afterwards with nothing that says whose it was.
+   */
+  describe('the reason for leaving', () => {
+    const feedback = () =>
+      handle.db.collection<AccountDeletionFeedback>(COLLECTIONS.accountDeletionFeedback)
+    const DAY = 24 * 60 * 60 * 1000
+
+    it('is held on the profile, with the plan, until the purge', async () => {
+      const ga = userId('a2')
+      await seed(ga)
+      await requestDeletion(handle.db, ga, { reason: 'taking_a_break', note: 'Exams.' })
+
+      const profile = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: ga })
+      expect(profile?.deletionFeedback).toEqual({
+        reason: 'taking_a_break',
+        note: 'Exams.',
+        tier: 'free',
+      })
+      // Nothing is counted yet: the account can still come back.
+      expect(await feedback().countDocuments()).toBe(0)
+    })
+
+    it('is dropped by signing back in — a change of mind is not a departure', async () => {
+      const gb = userId('b2')
+      await seed(gb)
+      await requestDeletion(handle.db, gb, { reason: 'bugs_or_problems' })
+      await cancelDeletion(handle.db, gb)
+
+      const profile = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: gb })
+      expect(profile?.deletionFeedback).toBeUndefined()
+    })
+
+    it('becomes a row at the purge that carries nothing linking it to the account', async () => {
+      const gc = userId('c2')
+      const deletedAt = new Date(Date.now() - (ACCOUNT_DELETION_GRACE_DAYS + 1) * DAY)
+      await seed(gc, {
+        handle: 'leaver',
+        createdAt: new Date(deletedAt.getTime() - 75 * DAY),
+        deletedAt,
+        deletionFeedback: { reason: 'not_enough_partners', note: 'Nobody near B1.', tier: 'pro' },
+      })
+
+      await purgeExpiredAccounts(handle.db)
+
+      const rows = await feedback().find().toArray()
+      expect(rows).toHaveLength(1)
+      const row = rows[0]!
+      expect(Object.keys(row).sort()).toEqual(
+        ['_id', 'accountAgeMonths', 'createdAt', 'note', 'reason', 'tier'].sort(),
+      )
+      expect(row).toMatchObject({
+        reason: 'not_enough_partners',
+        note: 'Nobody near B1.',
+        tier: 'pro',
+        accountAgeMonths: 2,
+      })
+      // A day, not an instant — see `AccountDeletionFeedback`.
+      expect(row.createdAt.getUTCHours() + row.createdAt.getUTCMinutes()).toBe(0)
+      const serialised = JSON.stringify(row)
+      expect(serialised).not.toContain(gc)
+      expect(serialised).not.toContain('leaver')
+    })
+
+    it('counts a note with no reason picked as `other`', async () => {
+      const gd = userId('d2')
+      await seed(gd, {
+        deletedAt: new Date(Date.now() - (ACCOUNT_DELETION_GRACE_DAYS + 1) * DAY),
+        deletionFeedback: { note: 'Too quiet here.', tier: 'free' },
+      })
+
+      await purgeExpiredAccounts(handle.db)
+
+      expect((await feedback().findOne())?.reason).toBe('other')
+    })
+
+    it('writes nothing for an account that did not answer', async () => {
+      const ge = userId('e2')
+      await seed(ge, { deletedAt: new Date(Date.now() - (ACCOUNT_DELETION_GRACE_DAYS + 1) * DAY) })
+
+      const result = await purgeExpiredAccounts(handle.db)
+
+      expect(result.purged).toBe(1)
+      expect(await feedback().countDocuments()).toBe(0)
+    })
+
+    it('is counted per reason over 30 and 90 days, zeroes included', async () => {
+      const now = new Date('2026-09-28T12:00:00.000Z')
+      const row = (reason: AccountDeletionFeedback['reason'], daysAgo: number) => ({
+        reason,
+        tier: 'free' as const,
+        accountAgeMonths: 0,
+        createdAt: new Date(now.getTime() - daysAgo * DAY),
+      })
+      await feedback().insertMany([
+        row('taking_a_break', 2),
+        row('taking_a_break', 45),
+        row('privacy_concerns', 10),
+        // Outside both windows.
+        row('taking_a_break', 120),
+      ])
+
+      const counts = await countDeletionReasons(handle.db, now)
+
+      expect(counts.find((c) => c.reason === 'taking_a_break')).toEqual({
+        reason: 'taking_a_break',
+        last30: 1,
+        last90: 2,
+      })
+      expect(counts.find((c) => c.reason === 'privacy_concerns')).toMatchObject({
+        last30: 1,
+        last90: 1,
+      })
+      expect(counts.find((c) => c.reason === 'other')).toMatchObject({ last30: 0, last90: 0 })
+      expect(counts.at(-1)?.reason).toBe('other')
     })
   })
 })

@@ -55,19 +55,19 @@ export const ADMIN = {
     },
     joinedToday: 'Joined today',
     joinedMonth: 'Joined in 30 days',
-    activeToday: 'Active today (UTC)',
+    activeToday: 'Active today',
     seenMonth: 'Seen in 30 days',
     profiles: 'Profiles',
     messages: 'Messages',
     corrections: 'Corrections',
     languageCount: 'Languages',
     pro: 'Pro',
-    proPlus: 'Pro+',
+    gifted: 'Gifted',
     free: 'Free',
     totalMembers: 'Total',
     paidShare: (paid: number, total: number) =>
       `${paid} of ${total} members are paying · ${adminPercent(paid, total)}`,
-    poolYesterday: 'Yesterday’s pool (UTC)',
+    poolYesterday: 'Yesterday’s pool',
     poolPaid: 'paid',
     poolDistributed: 'distributed',
     poolNone: 'No pool has run yet.',
@@ -89,21 +89,14 @@ export const ADMIN = {
     },
 
     /**
-     * Which clock the days on this screen turn over on.
-     *
-     * Printed rather than assumed: most of the strips are cut in the
-     * operator's own zone and three of them cannot be — `Active each day`,
-     * the assistant's calls and the pool are UTC by construction, and the
-     * note at the top of `modules/admin/stats.ts` says why. An unmarked UTC
-     * column under a local date is the bug this pair of strings exists to
-     * stop: read in Toronto, it put today's numbers under tomorrow's label.
+     * Which clock the days on this screen turn over on. Printed rather than
+     * assumed: read at 21:00 in Toronto, "today" here is already tomorrow.
      */
-    daysIn: (zone: string) => `Days turn over in ${zone}`,
+    allUtc: 'All days and times are UTC',
 
     /** Charts. Each is a single series, so each says what it plots. */
     charts: {
       activeDaily: 'Active each day',
-      activeDailyNote: 'UTC days',
       newMembers: 'Joined each day',
       messagesDaily: 'Messages each day',
       correctionsDaily: 'Corrections each day',
@@ -320,12 +313,12 @@ export const ADMIN = {
 
   members: {
     title: 'Subscribers',
-    tabs: { pro: 'Pro', proPlus: 'Pro+' },
     empty: 'Nobody is on this plan.',
     renews: 'renews',
     ends: 'ends',
     forever: 'no expiry',
     trial: 'trial',
+    gift: 'gift',
     since: 'since',
   },
 
@@ -357,6 +350,8 @@ export const ADMIN = {
     purge: 'Waiting to be purged',
     purgeAccounts: 'accounts',
     purgeAnalytics: 'analytics rows',
+    leaving: 'Why people left (purged, 30d · 90d)',
+    leavingNone: 'Nobody who left gave a reason in the last 90 days.',
     assistant: 'Copilot calls today (UTC)',
     campaigns: 'Email campaigns',
     config: 'Config',

@@ -851,10 +851,11 @@ export const ptBR: Localized<EnMessages> = {
     tabCorrections: 'Correções',
     tabPosts: 'Publicações',
     forName: 'Para {name}',
-    publicTitle: 'Correções',
     publicNote: 'Correções escritas em publicações. O que foi corrigido em uma conversa fica nela.',
     publicEmptyTitle: 'Ainda sem correções em publicações',
     publicEmptyBody: '@{handle} ainda não corrigiu nenhuma publicação aqui.',
+    publicPostsEmptyTitle: 'Ainda sem publicações',
+    publicPostsEmptyBody: '@{handle} ainda não publicou nada aqui.',
   },
   myPosts: {
     emptyTitle: 'Nada publicado ainda',
@@ -868,8 +869,9 @@ export const ptBR: Localized<EnMessages> = {
     boostedWhat: 'O que é isso?',
     boostedExplainTitle: 'Perfis em destaque',
     boostedExplainBody:
-      'Aqui aparecem quem tem Fluent e Polyglot, Polyglot primeiro. A ordem gira ao longo do dia, então todo mundo passa pela frente — o que te leva pra lá é uma foto, algumas palavras sobre você e ter entrado há pouco. São combinados por idioma igual à lista abaixo — nada muda na combinação, e dá para desligar nos Ajustes.',
+      'Aqui aparecem as pessoas com Pro. A ordem gira ao longo do dia, então todo mundo passa pela frente — uma foto, algumas palavras sobre você e uma visita recente são o que te colocam lá. Elas combinam com seus idiomas exatamente como a lista abaixo — nada muda no pareamento, e qualquer pessoa pode desativar isso nos Ajustes.',
     boostedSeePlans: 'Ver os planos',
+    nameAge: '{name}, {age}',
     languagesA11y: 'Escolha com quais dos seus idiomas buscar',
     searchHandles: 'Buscar por nome ou nome de usuário',
     searchPlaceholder: 'Nome ou nome de usuário',
@@ -1118,7 +1120,8 @@ export const ptBR: Localized<EnMessages> = {
     transcriptLimit: 'Você usou as transcrições de hoje. Elas voltam em 24 horas.',
     copied: 'Copiado',
     couldNotSend: 'Não deu para enviar',
-    mediaQuota: 'Você atingiu o limite de hoje para fotos, vídeos e mensagens de voz.',
+    mediaQuota:
+      'Você atingiu o limite de hoje para fotos, vídeos e mensagens de voz. É um limite de uso justo, igual para todos, e ele vai sendo liberado ao longo do dia.',
     attachmentFailed: 'Esse anexo não pôde ser enviado. Tente de novo.',
     photosTitle: 'Fotos',
     dropToAttach: 'Solte para anexar',
@@ -1490,10 +1493,7 @@ export const ptBR: Localized<EnMessages> = {
     viewersCount: { one: '{count} pessoa', other: '{count} pessoas' },
     proTitle: '✦ Vá além',
     proBody:
-      'Conversas novas ilimitadas, filtros avançados, tradução e dois idiomas ao mesmo tempo.',
-    polyglotTitle: '✦ Mude para {plan}',
-    polyglotBody:
-      'Veja quem viu você, navegue anonimamente, ordene por distância e mande mensagens no idioma da pessoa.',
+      'Conversas novas ilimitadas, filtros avançados, quem viu seu perfil, navegação anônima, pessoas por perto e mais.',
     newChatsLeft: 'Conversas novas restantes hoje:',
     editProfile: 'Editar perfil',
     settings: 'Configurações',
@@ -1646,7 +1646,10 @@ export const ptBR: Localized<EnMessages> = {
       one: 'Seu plano comporta {count} idioma.',
       other: 'Seu plano comporta {count} idiomas.',
     },
-    capUpgrade: '{fluent} comporta {fluentMax}; {polyglot}, {polyglotMax}.',
+    capUpgrade: {
+      one: '{plan} comporta {count} idioma.',
+      other: '{plan} comporta {count} idiomas.',
+    },
     capOverGrandfathered:
       'Você já tem mais do que o seu plano comporta. Dá para trocar ou remover, mas não adicionar outro.',
     changeHint: 'Toque em um idioma para trocá-lo.',
@@ -1812,7 +1815,7 @@ export const ptBR: Localized<EnMessages> = {
       'Desligue e ninguém te encontra — nem no Descobrir, nem buscando seu nome de usuário.',
     boost: 'Destacar meu perfil',
     boostBody:
-      'Mostre-me na faixa de perfis em destaque no topo de Descobrir, para quem tem idiomas compatíveis com os meus. Ativo com Fluent e Polyglot.',
+      'Mostre-me na faixa de perfis em destaque no topo de Descobrir, para quem tem idiomas compatíveis com os meus. Ativo com Pro.',
     incognito: 'Navegar anonimamente',
     incognitoBody: 'Você não vai aparecer entre os visitantes.',
     hideOnline: 'Esconder quando eu estiver on-line',
@@ -1869,7 +1872,6 @@ export const ptBR: Localized<EnMessages> = {
     plan: 'Plano',
     manageSubscription: 'Gerenciar ou cancelar',
     upgrade: 'Ver os planos',
-    upgradeTo: 'Mudar para {plan}',
     notificationsSection: 'Notificações',
     pushThisDevice: 'Notificações neste dispositivo',
     pushThisDeviceBody: 'Desative aqui e seus outros dispositivos continuam recebendo.',
@@ -1900,6 +1902,20 @@ export const ptBR: Localized<EnMessages> = {
     },
     untilThen: 'Até lá ninguém pode te encontrar nem ver seu perfil.',
     keepIt: 'Manter',
+    whyTitle: 'Por que você está saindo?',
+    whyBody:
+      'Opcional. Depois que sua conta for excluída, sua resposta fica guardada sem nada que a ligue a você — ela só nos diz o que consertar.',
+    whyNote: 'Quer acrescentar algo? (opcional)',
+    whyNotePlaceholder: 'Por favor, não inclua nomes nem contatos.',
+    whySkip: 'Pular',
+    reasonNotEnoughPartners: 'Poucos parceiros de idioma',
+    reasonUnwantedMessages: 'Mensagens indesejadas ou inadequadas',
+    reasonFoundPartnerElsewhere: 'Encontrei um parceiro ou outro app',
+    reasonTooManyNotifications: 'Notificações demais',
+    reasonPrivacyConcerns: 'Preocupações com privacidade',
+    reasonBugsOrProblems: 'Bugs ou problemas técnicos',
+    reasonTakingABreak: 'Vou dar uma pausa',
+    reasonOther: 'Outro motivo',
     keeping: 'Espera…',
   },
 
@@ -2235,20 +2251,16 @@ export const ptBR: Localized<EnMessages> = {
 
   paywall: {
     screenTitle: 'Planos',
-    everythingInPro: 'Tudo do {plan}',
     restorePurchases: 'Restaurar compras',
     partOf: 'faz parte do',
     unlimitedChats: 'Conversas novas ilimitadas',
     unlimitedChatsBody: '{count} por dia no plano gratuito.',
     welcomePack: 'Um pacote de boas-vindas',
-    welcomePackBody:
-      'Uma moldura de perfil e dois congelamentos de sequência para começar. O {plan} traz o conjunto completo.',
+    welcomePackBody: 'Molduras de perfil, títulos e dois congelamentos de sequência para começar.',
     advancedFilters: 'Filtros avançados',
     boostedProfile: 'Perfil em destaque',
     boostedProfileBody:
       'Você aparece na faixa acima da lista de Descobrir, para todo mundo com idiomas compatíveis com os seus. Ativo por padrão; dá para desligar nos Ajustes.',
-    boostedProfileFirst: 'Destaque na frente',
-    boostedProfileFirstBody: 'Perfis Polyglot abrem a faixa, à frente dos Fluent.',
     sendTranslation: 'Envie no idioma dela',
     sendTranslationBody: 'Escreva no seu; os dois vão, então te leem sem adivinhar.',
     deckExport: 'Leve suas expressões',
@@ -2272,19 +2284,8 @@ export const ptBR: Localized<EnMessages> = {
       'Você usou suas {count} conversas novas de hoje. Ainda pode responder a tudo que receber, sem limite.',
     manageNotice: 'Você está no {plan}. Gerencie ou cancele na sua conta da loja.',
     lifetimeNotice: 'Você tem {plan} para sempre. Nada renova e nada é cobrado.',
-    lifetimeKept: '{plan} para sempre continua seu. Se {plus} acabar um dia, você volta para ele.',
     includedIn: 'Incluído no {plan}',
-    upgradeNotice:
-      'Mudando do {plan}: a loja cobra só a diferença pelo resto do período atual, e o {plan} termina.',
-    upgradeWeb:
-      'Seu plano {plan} foi comprado na web. Mude no portal de cobrança; o tempo não usado é reembolsado.',
-    changePlan: 'Mudar de plano',
     currentPlan: 'Seu plano atual',
-    upgradeElsewhere:
-      'Seu plano {plan} foi comprado pela {store}. Mude por lá, para não ser cobrado duas vezes.',
-    storeIos: 'App Store',
-    storeAndroid: 'Google Play',
-    storeWeb: 'web',
     purchaseFailed: 'Essa compra não foi concluída. Nada foi cobrado.',
     purchaseUnavailable: 'Compras não estão disponíveis neste aparelho.',
     nothingToRestore: 'Não há nada para restaurar neste aparelho.',
@@ -2295,6 +2296,10 @@ export const ptBR: Localized<EnMessages> = {
     trialTerms: {
       one: '{count} dia grátis, depois {price} {period}',
       other: '{count} dias grátis, depois {price} {period}',
+    },
+    trialWeeks: {
+      one: '{count} semana grátis, depois {price} {period}',
+      other: '{count} semanas grátis, depois {price} {period}',
     },
     perMonth: 'por mês',
     perYear: 'por ano',
@@ -2308,10 +2313,26 @@ export const ptBR: Localized<EnMessages> = {
     headlineBody:
       'Correções e respostas continuam ilimitadas em todos os planos. Pagar remove os outros limites.',
     yearlySaving: 'Anual · economize {percent}%',
+    yearlyFreeMonths: {
+      one: 'Anual · {count} mês grátis',
+      other: 'Anual · {count} meses grátis',
+    },
     savePercent: 'Economize {percent}%',
+    freeMonths: {
+      one: '{count} mês grátis',
+      other: '{count} meses grátis',
+    },
     savingA11y: '{price} por mês no plano mensal. O anual economiza {percent}%.',
+    freeMonthsA11y: {
+      one: '{price} por mês no plano mensal. O anual te dá {count} mês grátis.',
+      other: '{price} por mês no plano mensal. O anual te dá {count} meses grátis.',
+    },
     billingPeriod: 'Período de cobrança',
     start: 'Começar com {plan}',
+    startTrial: {
+      one: 'Começar minha semana grátis',
+      other: 'Começar minhas {count} semanas grátis',
+    },
     continueFree: 'Continuar de graça',
     perMonthBilledYearly: 'por mês · cobrado anualmente',
   },

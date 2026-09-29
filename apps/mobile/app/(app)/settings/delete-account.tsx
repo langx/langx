@@ -1,17 +1,26 @@
-import { ACCOUNT_DELETION_GRACE_DAYS, handlesMatch } from '@langx/shared'
+import {
+  ACCOUNT_DELETION_GRACE_DAYS,
+  ACCOUNT_DELETION_NOTE_MAX,
+  ACCOUNT_DELETION_REASONS,
+  handlesMatch,
+  type AccountDeletionReason,
+} from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native'
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { api } from '../../../src/api/client'
 import { useMe } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { FormField } from '../../../src/components/ui/FormField'
+import { Radio } from '../../../src/components/ui/Radio'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useT } from '../../../src/i18n'
+import { deletionReasonLabel } from '../../../src/i18n/labels'
 import { showAlert } from '../../../src/lib/alert'
 import { authClient } from '../../../src/lib/auth-client'
 import { authLandingHref } from '../../../src/lib/authLanding'
+import { deletionFeedbackPayload } from '../../../src/lib/deletionFeedback'
 import { syncIconBadge } from '../../../src/lib/iconBadge'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
@@ -35,6 +44,12 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * **The link starts the existing 30-day grace period rather than wiping
  * anything**, so `DeletionBanner`, "Keep it" and the purge scheduler all still
  * apply and the promise in `docs/legal/promise-change.md` stays true.
+ *
+ * In front of both, one optional question: why. A step of its own rather than
+ * more rows above the handle, so the page that ends an account stays exactly
+ * the page it was. Nothing has to be picked to continue, and "Skip" sits right
+ * under "Continue" — an answer given to get past a form is worth less than
+ * none.
  */
 export default function DeleteAccountScreen() {
   useScreenInteractive()
@@ -47,6 +62,9 @@ export default function DeleteAccountScreen() {
   const [typed, setTyped] = useState('')
   const [busy, setBusy] = useState(false)
   const [sentTo, setSentTo] = useState<string | null>(null)
+  const [step, setStep] = useState<'why' | 'confirm'>('why')
+  const [reason, setReason] = useState<AccountDeletionReason | null>(null)
+  const [note, setNote] = useState('')
   const matches = handlesMatch(typed, handle)
   const back = () => goBackTo('/(app)/settings')
 
@@ -59,7 +77,7 @@ export default function DeleteAccountScreen() {
    * which case it is (`deliverable`), rather than the client guessing.
    */
   async function deleteWithoutEmail(): Promise<void> {
-    await api.post('/me/delete', { confirm: 'DELETE' })
+    await api.post('/me/delete', { confirm: 'DELETE', ...deletionFeedbackPayload(reason, note) })
     await syncIconBadge(0)
     await authClient.signOut()
     router.replace(authLandingHref())
@@ -71,6 +89,7 @@ export default function DeleteAccountScreen() {
     try {
       const result = await api.post<{ sent: boolean; deliverable: boolean }>('/me/delete/request', {
         handle: typed,
+        ...deletionFeedbackPayload(reason, note),
       })
       if (result.sent) {
         // The session's address, not the profile's: the profile has never
@@ -87,6 +106,69 @@ export default function DeleteAccountScreen() {
     } finally {
       setBusy(false)
     }
+  }
+
+  function skip(): void {
+    setReason(null)
+    setNote('')
+    setStep('confirm')
+  }
+
+  if (step === 'why') {
+    return (
+      <Screen style={styles.screen}>
+        <ScreenHeader title={t('settings.deleteConfirmTitle')} onBack={back} />
+        <ScrollView
+          contentContainerStyle={styles.why}
+          keyboardShouldPersistTaps="handled"
+          // The note is the last field, right where the keyboard lands.
+          automaticallyAdjustKeyboardInsets
+        >
+          <Text style={styles.whyTitle}>{t('deletion.whyTitle')}</Text>
+          <Text style={styles.body}>{t('deletion.whyBody')}</Text>
+
+          <View>
+            {ACCOUNT_DELETION_REASONS.map((value) => {
+              const selected = reason === value
+              const label = deletionReasonLabel(t, value)
+              return (
+                <Pressable
+                  key={value}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected }}
+                  accessibilityLabel={label}
+                  onPress={() => setReason(value)}
+                  style={({ pressed }) => [styles.reason, pressed && styles.pressed]}
+                >
+                  <Text style={styles.reasonText}>{label}</Text>
+                  <Radio selected={selected} />
+                </Pressable>
+              )
+            })}
+          </View>
+
+          <FormField
+            label={t('deletion.whyNote')}
+            value={note}
+            onChangeText={setNote}
+            placeholder={t('deletion.whyNotePlaceholder')}
+            maxLength={ACCOUNT_DELETION_NOTE_MAX}
+            multiline
+            style={styles.note}
+            accessibilityLabel={t('deletion.whyNote')}
+          />
+
+          <Button label={t('common.continue')} onPress={() => setStep('confirm')} />
+          <Pressable
+            accessibilityRole="button"
+            onPress={skip}
+            style={({ pressed }) => [styles.keep, pressed && styles.pressed]}
+          >
+            <Text style={styles.keepText}>{t('deletion.whySkip')}</Text>
+          </Pressable>
+        </ScrollView>
+      </Screen>
+    )
   }
 
   return (
@@ -177,4 +259,18 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   keep: { alignItems: 'center', height: 44, justifyContent: 'center' },
   pressed: { opacity: 0.6 },
   keepText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  why: { gap: 18, paddingBottom: spacing.xl, paddingTop: spacing.sm },
+  whyTitle: { color: colors.text, fontSize: 20, fontWeight: '700' },
+  /** The same row the report screen draws, for the same kind of choice. */
+  reason: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.lg,
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+  },
+  reasonText: { color: colors.text, flex: 1, fontSize: 16 },
+  note: { height: 110, textAlignVertical: 'top' },
 }))

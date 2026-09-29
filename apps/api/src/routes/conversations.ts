@@ -112,13 +112,9 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
       const profile = await getProfile(app.mongo.db, request.userId)
       if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
       if (!hasFeature(effectiveTier(profile), 'deckExport')) {
-        throw new ApiError(
-          ERROR_CODES.UPGRADE_REQUIRED,
-          'Exporting every deck is a Polyglot feature',
-          {
-            feature: 'deckExport',
-          },
-        )
+        throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Exporting every deck is a Pro feature', {
+          feature: 'deckExport',
+        })
       }
       const items = await listAllPhraseCards(
         app.mongo.db,

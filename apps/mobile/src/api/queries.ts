@@ -1,4 +1,5 @@
 import {
+  type AccountDeletionReason,
   type FeedbackInput,
   type LinkPreviewResponse,
   type SharedProfile,
@@ -12,9 +13,10 @@ import {
   isPaidTier,
   type Gender,
   type LanguageLevel,
-  type PaidPlanTier,
   type PlanFeature,
   type PlanTier,
+  type StoredPaidPlanTier,
+  type StoredPlanTier,
   type CheckInResult,
   type MediaKind,
   type MediaTab,
@@ -614,7 +616,12 @@ export interface MeProfile {
   location?: { type: 'Point'; coordinates: [number, number] }
   locationUpdatedAt?: string
   entitlement: {
-    tier: PlanTier
+    /**
+     * `pro_plus` for any paid tier: the server says so for apps released
+     * before the single plan (`toOwnProfileWire`). Read it through
+     * `useEffectiveTier`, never raw.
+     */
+    tier: StoredPlanTier
     expiresAt?: string
     /**
      * Both have been on the wire since billing shipped and neither was
@@ -657,7 +664,8 @@ export interface MeProfile {
     tokensCredited: number
     frozenStreak: number
     conversationsImported: number
-    lifetimeGranted?: PaidPlanTier | null
+    /** `pro_plus` on the wire for the same reason as `entitlement.tier`. */
+    lifetimeGranted?: StoredPaidPlanTier | null
     acknowledgedAt?: string
   }
 }
@@ -681,9 +689,9 @@ export function useEffectiveTier(): PlanTier {
 /**
  * Whether the *client* should show a paid interface.
  *
- * `isPaidTier`, not `=== 'pro'`. With two paid tiers the equality check would
- * have told every Pro+ subscriber they were on the free plan — the exact
- * failure this hook was written to prevent, reintroduced from the other side.
+ * `isPaidTier`, not `=== 'pro'`: the tier comes through `effectivePlanTier`,
+ * and a question about "paid" should not depend on how the one paid tier is
+ * spelled.
  */
 export function useIsPro(): boolean {
   return isPaidTier(useEffectiveTier())
@@ -996,6 +1004,11 @@ export interface PublicActivityDto {
 export interface PublicSummaryDto {
   streak: { current: number; longest: number }
   corrections: number
+  /**
+   * Added after `corrections`, so an older API leaves it out; the feed tile
+   * reads a missing one as zero rather than drawing `NaN`.
+   */
+  posts?: number
   /** The newest badge of each kind, for the strip above the bio. */
   topBadges: ProfileBadge[]
   tokens: number
@@ -1042,6 +1055,20 @@ export function useAuthoredCorrections(handle: string) {
     queryFn: ({ pageParam }) =>
       api.get<AuthoredCorrectionsPage>(
         `/profiles/${handle}/corrections${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled: handle.length > 0,
+  })
+}
+
+/** Somebody's posts, newest first — the other half of their feed tile. */
+export function useAuthoredPosts(handle: string) {
+  return useInfiniteQuery({
+    queryKey: ['profilePosts', handle] as const,
+    queryFn: ({ pageParam }) =>
+      api.get<FeedPage>(
+        `/profiles/${handle}/posts${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
@@ -2482,7 +2509,7 @@ export interface CrossPhraseCardDto extends PhraseCardDto {
 /**
  * Every saved phrase, across every conversation.
  *
- * `enabled` rather than an unconditional fetch: `/me/phrases` is Polyglot on
+ * `enabled` rather than an unconditional fetch: `/me/phrases` is Pro on
  * the *server*, so for a free reader the request is a 403 asked for on
  * purpose. The caller passes what it already knows about the tier, and the
  * screen shows the paywall instead of an error state.
@@ -2834,30 +2861,23 @@ export function useRevokeOtherSessions() {
  * would be a second place to update every time a diagnosis gains a line.
  */
 
+/** Every day in here is a UTC day — see the note at the top of `modules/admin/stats.ts`. */
 export interface AdminStatsDto {
   generatedAt: string
-  /**
-   * The zone the day-grained numbers are cut in — the operator's own, or `UTC`
-   * when their profile carries none. The panel prints it, because a screen
-   * whose days turn over somewhere has to say where.
-   */
-  timeZone: string
   queue: { reports: number; appeals: number; feedback: number }
   audience: {
     profiles: number
     messages: number
-    /** UTC days, both — see the note at the top of `modules/admin/stats.ts`. */
     activeToday: number
     activeDaily: { day: string; count: number }[]
     seenLastMonth: number
     joinedToday: number
     joinedLastMonth: number
-    /** New members, messages and corrections per day of `timeZone`. */
-    daily: { day: string; members: number; messages: number; corrections: number }[]
     builds: { platform: string; version: string; count: number }[]
   }
   money: {
-    tiers: { total: number; pro: number; proPlus: number; free: number }
+    /** `gifted` is the part of `pro` nobody pays for: lifetime grants and gifts. */
+    tiers: { total: number; pro: number; gifted: number; free: number }
     pool: { day: string; paid: number; distributed: number; active: number } | null
     tokensDaily: { day: string; count: number }[]
   }
@@ -2872,6 +2892,8 @@ export interface AdminStatsDto {
     }[]
     suppressions: { total: number; unsubscribed: number; bounced: number; complained: number }
     purge: { accounts: number; analytics: number }
+    /** Every reason, zeroes included, counted when the purge wrote the row. */
+    leaving: { reason: AccountDeletionReason; last30: number; last90: number }[]
     assistantCallsToday: number
     campaigns: { id: string; status: string; sent: number; total: number }[]
     /*
@@ -3332,6 +3354,8 @@ export interface AdminMemberDto {
   handle: string
   displayName: string
   tier: string
+  /** A lifetime grant or a gift rather than a subscription. */
+  gift: boolean
   since: string
   expiresAt: string | null
   willRenew: boolean | null
@@ -3340,7 +3364,7 @@ export interface AdminMemberDto {
   lastActiveAt: string | null
 }
 
-/** Everybody on one paid tier — the list behind the Pro and Pro+ tiles. */
+/** Everybody on Pro — the list behind the Pro tile. */
 export function useAdminMembers(tier: string) {
   return useQuery({
     queryKey: keys.adminMembers(tier),

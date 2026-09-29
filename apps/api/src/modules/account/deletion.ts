@@ -3,6 +3,7 @@ import {
   ERROR_CODES,
   asksOf,
   attachmentsOf,
+  type AccountDeletionReason,
   type AccountDeletionStatus,
   type DataExport,
   type Media,
@@ -11,6 +12,7 @@ import { randomUUID } from 'node:crypto'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { recordAnalyticsDeletion } from './analyticsDeletions'
+import { recordDeletionFeedback } from './deletionFeedback'
 import { ApiError } from '../../lib/ApiError'
 import { authId } from '../../lib/authId'
 import type { StorageProvider } from '../../storage/StorageProvider'
@@ -26,6 +28,7 @@ import { purgeCommentsBy } from '../feed/comments'
 import type { LegacyMessage } from '../handles/legacyConversations'
 import type { LegacyProfile } from '../handles/legacyProfiles'
 import type { Profile } from '../profiles/profiles'
+import { effectiveTier } from '../profiles/entitlement'
 import type { Post } from '../feed/documents'
 import { deletePostCascade } from '../feed/feed'
 
@@ -42,21 +45,33 @@ export function purgeAtFor(deletedAt: Date): Date {
  * asked for and what the stores require to be possible in-app — while the data
  * survives the grace period so a change of mind is recoverable. An immediate
  * irreversible wipe would turn one angry tap into permanent loss.
+ *
+ * `feedback` is the optional "why are you leaving?". It is held on the profile
+ * until the purge turns it into an anonymous row; see `deletionFeedback.ts`.
  */
 export async function requestDeletion(
   db: Db,
   userId: string,
-  reason?: string,
+  feedback?: { reason?: AccountDeletionReason; note?: string },
 ): Promise<AccountDeletionStatus> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const now = new Date()
 
   const updated = await profiles.findOneAndUpdate(
     { _id: userId },
-    { $set: { deletedAt: now, ...(reason !== undefined ? { deletionReason: reason } : {}) } },
+    { $set: { deletedAt: now } },
     { returnDocument: 'after' },
   )
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+  // A second write rather than part of the first, because the tier is read off
+  // the profile the first one returned. Only when there is an answer: asking
+  // twice without one must not erase the one given the first time.
+  if (feedback) {
+    await profiles.updateOne(
+      { _id: userId },
+      { $set: { deletionFeedback: { ...feedback, tier: effectiveTier(updated) } } },
+    )
+  }
 
   // Every live session goes; the account must stop being usable at once.
   // `authId` because Better Auth stores ids as ObjectId — a string here
@@ -74,13 +89,13 @@ export async function requestDeletion(
 
 /** Signing back in during the grace period is the cancel gesture. */
 export async function cancelDeletion(db: Db, userId: string): Promise<AccountDeletionStatus> {
-  const updated = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .findOneAndUpdate(
-      { _id: userId },
-      { $unset: { deletedAt: '', deletionReason: '' } },
-      { returnDocument: 'after' },
-    )
+  const updated = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
+    { _id: userId },
+    // The reason goes with it: somebody who came back has not left, and must
+    // not be counted as if they had.
+    { $unset: { deletedAt: '', deletionFeedback: '' } },
+    { returnDocument: 'after' },
+  )
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
   return { pending: false, deletedAt: null, purgeAt: null }
 }
@@ -115,6 +130,8 @@ export interface PurgeResult {
  *   nowhere else. That keeps an audit trail of the economy (totals still
  *   reconcile) while making the rows genuinely anonymous. The *aggregates* are
  *   deleted, which is what removes the account from every leaderboard.
+ * - The answer to "why are you leaving?", if one was given, becomes an
+ *   anonymous row in `accountDeletionFeedback` — see `deletionFeedback.ts`.
  * - Everything else — profile, devices, views, blocks, subscriptions, share
  *   cards, auth rows, the v1 staging record behind a restored account, and the
  *   images in the bucket — goes completely.
@@ -536,6 +553,9 @@ export async function purgeExpiredAccounts(
       // notice we still owe PostHog a deletion. `analyticsDeletions` says why
       // it is written whether or not a key is configured.
       recordAnalyticsDeletion(db, userId, now),
+      // Their answer to "why are you leaving?", if they gave one, stripped of
+      // everything that says whose. Swallows its own failure — see there.
+      recordDeletionFeedback(db, profile, now),
     ])
 
     userIds.push(userId)

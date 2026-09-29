@@ -1,6 +1,7 @@
 import {
   accountAge,
   lastSeen,
+  type AccountDeletionReason,
   INTEREST_SUGGESTIONS,
   type BadgeKind,
   type EchoPack,
@@ -78,6 +79,12 @@ export function levelShortLabel(t: TranslateFn, level: LanguageLevel): string {
 export function reportReasonLabel(t: TranslateFn, reason: ReportReason): string {
   const key = reason.replace(/_(.)/g, (_, c: string) => c.toUpperCase())
   return t(`report.${key}` as MessageKey)
+}
+
+/** A reason for leaving, the same camel-casing `reportReasonLabel` does. */
+export function deletionReasonLabel(t: TranslateFn, reason: AccountDeletionReason): string {
+  const key = reason.replace(/(^|_)(.)/g, (_, _sep: string, c: string) => c.toUpperCase())
+  return t(`deletion.reason${key}` as MessageKey)
 }
 
 export function periodLabel(t: TranslateFn, period: PeriodType): string {

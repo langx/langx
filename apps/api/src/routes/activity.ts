@@ -1,6 +1,7 @@
 import {
   activityRangeSchema,
   ERROR_CODES,
+  listMyPostsQuerySchema,
   listPostCorrectionsQuerySchema,
   localDayKey,
   repairDaySchema,
@@ -13,7 +14,7 @@ import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
 import { findProfileByHandleOrId, getProfile } from '../modules/profiles/profiles'
 import { blockedUserIds } from '../modules/moderation/blocks'
-import { listCorrectionsByAuthor } from '../modules/feed/feed'
+import { listCorrectionsByAuthor, listPostsByAuthor } from '../modules/feed/feed'
 import { getPublicBadges } from '../modules/tokens/badges'
 import { getPublicSummary } from '../modules/tokens/publicSummary'
 import { listStreakDays, repairsInMonth } from '../modules/tokens/streakDays'
@@ -221,6 +222,25 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
 
       return reply.send(
         await listCorrectionsByAuthor(app.mongo.db, request.userId, target._id, request.query),
+      )
+    },
+  )
+
+  // The other half of what the feed tile opens: their posts, newest first,
+  // behind the same guard as the corrections above.
+  app.get(
+    '/profiles/:handle/posts',
+    { preHandler: requireAuth, schema: { querystring: listMyPostsQuerySchema } },
+    async (request, reply) => {
+      const { handle } = request.params as { handle: string }
+      const target = await findProfileByHandleOrId(app.mongo.db, handle)
+      const hidden = await blockedUserIds(app.mongo.db, request.userId)
+      if (!target || hidden.includes(target._id)) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+      }
+
+      return reply.send(
+        await listPostsByAuthor(app.mongo.db, request.userId, target._id, request.query),
       )
     },
   )

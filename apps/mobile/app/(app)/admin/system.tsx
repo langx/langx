@@ -114,6 +114,24 @@ export default function AdminSystemScreen() {
               {ADMIN.system.purgeAnalytics}
             </Text>
 
+            {/*
+              Counted at the purge, not at the request — a reason from someone
+              who came back is not a departure. So the newest rows are from
+              people who asked a month ago, which the heading says.
+            */}
+            <Text style={styles.heading}>{ADMIN.system.leaving}</Text>
+            {system.leaving.every((row) => row.last90 === 0) ? (
+              <Text style={styles.muted}>{ADMIN.system.leavingNone}</Text>
+            ) : (
+              <Card>
+                {system.leaving.map((row) => (
+                  <Text key={row.reason} style={styles.row}>
+                    {row.reason} · {row.last30} · {row.last90}
+                  </Text>
+                ))}
+              </Card>
+            )}
+
             <Text style={styles.heading}>{ADMIN.system.assistant}</Text>
             <Text style={styles.row}>{system.assistantCallsToday}</Text>
 

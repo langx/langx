@@ -1159,6 +1159,91 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     })
 
     /**
+     * Apps released before the single plan unlock features off their own
+     * profile's tier and write every one of these responses into their `me`
+     * cache, and to them `pro` is Fluent. So every route that answers with the
+     * caller's own profile says `pro_plus` for a paid tier — one missed would
+     * lock a Pro subscriber out of half the plan until the next refetch. This
+     * walks all of them; `toOwnProfileWire` says why.
+     */
+    it('answers every own-profile route with pro_plus for a paid tier, and stores pro', async () => {
+      const user = await newUser('own-wire@example.com')
+      const created = await configuredApp.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: 'ownwire' }),
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      // Free stays free on the way out: only a paid tier is rewritten.
+      expect(created.json()).toMatchObject({ entitlement: { tier: 'free' } })
+
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+      await profiles.updateOne(
+        { _id: user.userId },
+        {
+          $set: {
+            entitlement: { tier: 'pro', store: 'app_store', updatedAt: new Date() },
+            restoredFromV1: {
+              at: new Date(),
+              tokensCredited: 0,
+              frozenStreak: 0,
+              conversationsImported: 0,
+              lifetimeGranted: 'pro',
+            },
+          },
+        },
+      )
+
+      const cdn = 'https://cdn.example.com'
+      const photo = `${cdn}/photos/${user.userId}/one.png`
+      const calls: {
+        method: 'GET' | 'POST' | 'PATCH' | 'DELETE'
+        url: string
+        payload?: object
+      }[] = [
+        { method: 'GET', url: '/profiles/me' },
+        { method: 'PATCH', url: '/profiles/me', payload: { bio: 'hello' } },
+        {
+          method: 'PATCH',
+          url: '/profiles/me/country',
+          payload: { country: 'TR', source: 'location' },
+        },
+        { method: 'POST', url: '/profiles/me/gender', payload: { gender: 'female' } },
+        { method: 'POST', url: '/profiles/me/handle', payload: { handle: 'ownwiretwo' } },
+        { method: 'POST', url: '/profiles/me/location', payload: { lat: 41.01, lng: 28.98 } },
+        { method: 'DELETE', url: '/profiles/me/location' },
+        {
+          method: 'POST',
+          url: '/me/avatar/confirm',
+          payload: { avatarUrl: `${cdn}/avatars/${user.userId}/a.png` },
+        },
+        { method: 'POST', url: '/me/photos', payload: { url: photo } },
+        { method: 'DELETE', url: '/me/photos', payload: { url: photo } },
+      ]
+
+      for (const call of calls) {
+        const response = await configuredApp.inject({
+          method: call.method,
+          url: call.url,
+          headers: { cookie: user.cookie },
+          ...(call.payload ? { payload: call.payload } : {}),
+        })
+        const label = `${call.method} ${call.url}`
+        expect(response.statusCode, `${label}: ${response.body}`).toBe(200)
+        expect(response.json(), label).toMatchObject({
+          entitlement: { tier: 'pro_plus' },
+          restoredFromV1: { lifetimeGranted: 'pro_plus' },
+        })
+      }
+
+      // The wire only: what is stored, and what everybody else is told, is `pro`.
+      const stored = await profiles.findOne({ _id: user.userId })
+      expect(stored?.entitlement.tier).toBe('pro')
+      expect(stored?.restoredFromV1?.lifetimeGranted).toBe('pro')
+    })
+
+    /**
      * `assertOwnBucket` answers "is this our bucket", which is not the same
      * question as "is this yours". Every avatar URL is public on the profile
      * it belongs to, so pointing your own at somebody else's object takes only

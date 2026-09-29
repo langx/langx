@@ -2,8 +2,7 @@ import { createHash } from 'node:crypto'
 import {
   DISCOVERY_BOOSTED_FRESH_MS,
   DISCOVERY_BOOSTED_ROTATION_MS,
-  DISCOVERY_BOOSTED_TIERS,
-  type PlanTier,
+  type StoredPlanTier,
 } from '@langx/shared'
 
 /**
@@ -14,7 +13,7 @@ import {
  */
 export interface BoostedCandidate {
   _id: string
-  entitlement: { tier: PlanTier }
+  entitlement: { tier: StoredPlanTier }
   stats: { lastActiveAt: Date }
   avatarUrl?: string
   bio?: string
@@ -59,12 +58,11 @@ function readyToLead(candidate: BoostedCandidate, freshFrom: number): boolean {
 /**
  * The strip's presentation order, for one viewer at one moment.
  *
- * Three bands, outermost first:
+ * Two bands, outermost first. There was a third above them — Polyglot above
+ * Fluent — until the two plans became one; every candidate is Pro now, and a
+ * row the merge script has not reached yet (`pro_plus`) is no different.
  *
- * 1. **Tier.** Polyglot above Fluent, always. The paywall sells that sentence
- *    and `rules.test.ts` pins the list it comes from, so it is a hard band and
- *    nothing below it may cross one.
- * 2. **Ready to lead, or not** — a photo, something written, and a visit
+ * 1. **Ready to lead, or not** — a photo, something written, and a visit
  *    inside `DISCOVERY_BOOSTED_FRESH_MS`. All three, in one band rather than
  *    three, and that is the load-bearing decision here. Mutual language fit
  *    leaves a viewer one to four candidates, so every extra band halves the
@@ -83,7 +81,7 @@ function readyToLead(candidate: BoostedCandidate, freshFrom: number): boolean {
  *    Truthiness, not a minimum length: a one-character bio would technically
  *    pass, and the fix for that is a threshold in `packages/shared` on the day
  *    somebody actually does it, not one invented now for a problem nobody has.
- * 3. **Rotation**, seeded on the viewer, the profile and the hour. The viewer
+ * 2. **Rotation**, seeded on the viewer, the profile and the hour. The viewer
  *    is in the seed for the reason that matters at this size: one person sees
  *    very few hours in a day, so if the seed were time alone the exposure
  *    would only even out over a week. With the viewer in it, a subscriber is
@@ -109,8 +107,6 @@ export function orderBoosted<T extends BoostedCandidate>(
   // would hash O(n log n) times for an answer that cannot change.
   const ranked = candidates.map((candidate) => ({
     candidate,
-    // `-1` is unreachable: the pipeline's `$match` admits these tiers only.
-    tier: DISCOVERY_BOOSTED_TIERS.findIndex((tier) => tier === candidate.entitlement.tier),
     behind: readyToLead(candidate, freshFrom) ? 0 : 1,
     rotation: rotationOf(viewerId, candidate._id, bucket),
   }))
@@ -118,7 +114,6 @@ export function orderBoosted<T extends BoostedCandidate>(
   return ranked
     .toSorted(
       (a, b) =>
-        a.tier - b.tier ||
         a.behind - b.behind ||
         a.rotation - b.rotation ||
         (a.candidate._id < b.candidate._id ? -1 : a.candidate._id > b.candidate._id ? 1 : 0),

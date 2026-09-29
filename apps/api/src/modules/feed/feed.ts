@@ -292,24 +292,29 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
 }
 
 /**
- * Everything you have posted, newest first.
+ * Everything one person has posted, newest first — your own under `/me/posts`,
+ * somebody else's behind the feed tile on their profile.
  *
  * Separate from `listFeed` rather than a filter on it, because almost nothing
  * they do is shared. There is no queue to drain here — the count-led sort that
- * puts unanswered sentences first is the wrong order for looking back at your
- * own — no section to pick, and no audience to stitch two queries around.
- * Blocks do not apply either: these are your posts, and you cannot be hidden
- * from yourself. What is left is a plain keyset over `{ authorId, createdAt }`,
- * which is the `author` index this collection has always carried.
+ * puts unanswered sentences first is the wrong order for looking back at
+ * somebody's posts — no section to pick, and no audience to stitch two queries
+ * around. What is left is a plain keyset over `{ authorId, createdAt }`, which
+ * is the `author` index this collection has always carried.
+ *
+ * Blocks are the caller's to check, and there is only one to check: every row
+ * here has the same author. Your own list needs none — you cannot be hidden
+ * from yourself — and the profile route refuses a blocked profile outright.
  */
-export async function listMyPosts(
+export async function listPostsByAuthor(
   db: Db,
-  userId: string,
+  viewerId: string,
+  authorId: string,
   query: ListMyPostsQuery,
 ): Promise<FeedPage> {
   // Hidden posts are absent here too. Hiding is a silent decision, so the one
   // list that would still show it is the one place the silence would break.
-  const filter: Document = { authorId: userId, ...notHidden() }
+  const filter: Document = { authorId, ...notHidden() }
   if (query.cursor) {
     const { date, id } = decodeDateIdCursor(query.cursor)
     filter.$or = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
@@ -328,11 +333,20 @@ export async function listMyPosts(
   const last = items.at(-1)
 
   return {
-    // Both, because the list mixes the sections: a sentence you asked to have
-    // corrected and a word you asked to hear said sit next to each other here.
-    items: await hydratePosts(db, userId, items, { corrections: true, answers: true }),
+    // Both, because the list mixes the sections: a sentence asked to have
+    // corrected and a word asked to hear said sit next to each other here.
+    items: await hydratePosts(db, viewerId, items, { corrections: true, answers: true }),
     nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
   }
+}
+
+/**
+ * How many posts `listPostsByAuthor` would page through: the same filter, so
+ * the tile's number and the list it opens cannot disagree. On the `author`
+ * index.
+ */
+export async function countPostsByAuthor(db: Db, authorId: string): Promise<number> {
+  return db.collection<Post>(COLLECTIONS.posts).countDocuments({ authorId, ...notHidden() })
 }
 
 export const EMPTY_CORRECTION_SUMMARY = {

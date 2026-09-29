@@ -62,7 +62,7 @@ describe('canExit', () => {
   })
 })
 
-describe('the film', () => {
+describe('the films', () => {
   /**
    * `INTRO_MS` is what the stall guard is measured from, and it is written by
    * hand. A re-render that changes the film's length without it leaves the
@@ -72,8 +72,8 @@ describe('the film', () => {
    * An MP4's `mvhd` box carries the timescale and the duration; version 0
    * stores both as 32-bit numbers, version 1 the duration as 64-bit.
    */
-  it('is as long as the timing says it is', () => {
-    const file = readFileSync(path.join(__dirname, '..', '..', 'assets', 'splash', 'intro.mp4'))
+  it.each(['intro.mp4', 'intro-dark.mp4'])('%s is as long as the timing says it is', (name) => {
+    const file = readFileSync(path.join(__dirname, '..', '..', 'assets', 'splash', name))
     const at = file.indexOf('mvhd')
     expect(at).toBeGreaterThan(0)
     const version = file.readUInt8(at + 4)

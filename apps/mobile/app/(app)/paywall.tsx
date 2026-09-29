@@ -1,27 +1,20 @@
 import Feather from '@expo/vector-icons/Feather'
 import {
-  PAID_PLAN_TIERS,
   PLAN_FEATURES,
   PLAN_LIMITS,
   PRO_BENEFITS,
-  PRO_PLUS_BENEFITS,
-  firstOfferableTier,
   planChangeFor,
   platformOfStore,
-  tierUnlocking,
   type BillingPeriod,
-  type BillingPlatform,
   type HeldPlan,
-  type PaidPlanTier,
   type PlanChange,
   type PlanFeature,
   type ProBenefit,
-  type ProPlusBenefit,
   TIER_NAMES,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
-import { AppState, Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native'
+import { Linking, Pressable, ScrollView, Text, View } from 'react-native'
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
@@ -30,15 +23,13 @@ import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { track } from '../../src/lib/analytics'
 import { PAYWALL_SOURCES, type PaywallSource } from '../../src/lib/analyticsEvents'
 import { goBackTo } from '../../src/lib/navigation'
-import { isFakePurchasesEnabled } from '../../src/lib/fakePurchases'
 import { perMonthPriceString } from '../../src/lib/perMonthPrice'
-import { yearlySavingPercent } from '../../src/lib/planSaving'
+import { yearlyFreeMonths, yearlySavingPercent } from '../../src/lib/planSaving'
 import {
   getOffers,
   isPurchasesAvailable,
   purchaseOffer,
   restorePurchases,
-  storeManagementUrl,
   type PurchaseOffer,
 } from '../../src/lib/purchases'
 import { makeStyles, useTheme } from '../../src/lib/theme'
@@ -58,17 +49,6 @@ const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
  * store ever returns one.
  */
 const PERIOD_ORDER: readonly BillingPeriod[] = ['yearly', 'monthly', 'lifetime']
-
-/** Where a plan bought elsewhere has to be changed, as the sentence names it. */
-const STORE_NAME: Record<BillingPlatform, MessageKey> = {
-  ios: 'paywall.storeIos',
-  android: 'paywall.storeAndroid',
-  web: 'paywall.storeWeb',
-}
-
-/** This build's store, in `planChangeFor`'s vocabulary. */
-const PLATFORM: BillingPlatform =
-  Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'web'
 
 /**
  * The period as it reads after a price — "a year", not "Yearly" — for the
@@ -90,20 +70,27 @@ const PERIOD_PHRASE: Record<BillingPeriod, MessageKey> = {
  * way to advertise something the list does not contain. The three definitions
  * of "what Pro is" — the shared list, the rules test and this screen — used to
  * be independent, so the first one to change made the other two lie.
+ *
+ * `shipped` exists because a plan can be sold before one of its features
+ * lands, but a screen that describes it in the present tense while it does
+ * nothing is selling something that does not exist. Making it a required
+ * field means a feature cannot ship quietly half-true: someone has to come
+ * back and flip it, which is what happened to `nearby` and has not yet
+ * happened to `copilot`.
  */
 interface BenefitCopy {
   title: MessageKey
   body: MessageKey
   /**
-   * Interpolated into `body`. Free-tier numbers come from `PLAN_LIMITS` rather
-   * than being typed out, because a paywall quoting a limit the server no
-   * longer enforces is the worst kind of wrong; plan names come from
-   * `TIER_NAMES` for the same reason, one rename later.
+   * Interpolated into `body`. Numbers come from `PLAN_LIMITS` rather than
+   * being typed out, because a paywall quoting a limit the server no longer
+   * enforces is the worst kind of wrong.
    *
-   * A bag rather than a bare `count` because a benefit can need both, and a
+   * A bag rather than a bare `count` because a benefit can need several, and a
    * second optional field per placeholder is how the two drift apart.
    */
   vars?: Record<string, string | number>
+  shipped: boolean
 }
 
 const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
@@ -111,52 +98,33 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     title: 'paywall.unlimitedChats',
     body: 'paywall.unlimitedChatsBody',
     vars: { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 },
+    shipped: true,
   },
   advancedFilters: {
     title: 'paywall.advancedFilters',
     body: 'paywall.advancedFiltersBody',
-  },
-  /*
-   * Both of these are the *paid tier's* number, not the free one — unlike the
-   * chat allowance above, which sells by naming the limit you are hitting.
-   * Translation is no longer unlimited anywhere, so the honest pitch is how
-   * much more you get, and that differs per column.
-   */
-  translationQuota: {
-    title: 'paywall.translationQuota',
-    body: 'paywall.translationQuotaBody',
-    vars: { count: PLAN_LIMITS.pro.translationsPer24h },
-  },
-  learningLanguages: {
-    title: 'paywall.learningLanguages',
-    body: 'paywall.learningLanguagesBody',
-    vars: { count: PLAN_LIMITS.pro.maxLearningLanguages },
+    shipped: true,
   },
   boostedProfile: {
     title: 'paywall.boostedProfile',
     body: 'paywall.boostedProfileBody',
+    shipped: true,
   },
-  welcomePack: {
-    title: 'paywall.welcomePack',
-    body: 'paywall.welcomePackBody',
-    vars: { plan: TIER_NAMES.pro_plus },
-  },
-}
-
-/**
- * The same contract for Pro+, plus one field the Pro list does not need.
- *
- * `shipped` exists because neither of these was built when the tier went on
- * sale. A tier can be sold before its features land, but a screen that
- * describes them in the present tense while they do nothing is selling
- * something that does not exist. Making it a required field means a feature
- * cannot ship quietly half-true: someone has to come back and flip it, which
- * is what happened to `nearby` and has not yet happened to `copilot`.
- */
-const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boolean }> = {
   profileViewerIdentities: {
     title: 'paywall.whoViewed',
     body: 'paywall.whoViewedBody',
+    shipped: true,
+  },
+  incognito: {
+    title: 'paywall.incognito',
+    body: 'paywall.incognitoBody',
+    shipped: true,
+  },
+  nearby: {
+    // The body says what it does *and* what it costs the reader, because the
+    // second half is the part they would otherwise find out after paying.
+    title: 'paywall.nearby',
+    body: 'paywall.nearbyBody',
     shipped: true,
   },
   sendTranslation: {
@@ -169,46 +137,33 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
     body: 'paywall.deckExportBody',
     shipped: true,
   },
-  incognito: {
-    title: 'paywall.incognito',
-    body: 'paywall.incognitoBody',
-    shipped: true,
-  },
-  // The same two benefits as the Fluent column, at the higher number. See the
-  // note on `PRO_PLUS_BENEFITS` for why they are repeated rather than implied.
+  /*
+   * Both of these are the paid number, not the free one — unlike the chat
+   * allowance above, which sells by naming the limit you are hitting.
+   * Translation is not unlimited anywhere, so the honest pitch is how much
+   * more you get.
+   */
   translationQuota: {
     title: 'paywall.translationQuota',
     body: 'paywall.translationQuotaBody',
-    vars: { count: PLAN_LIMITS.pro_plus.translationsPer24h },
+    vars: { count: PLAN_LIMITS.pro.translationsPer24h },
     shipped: true,
   },
   learningLanguages: {
     title: 'paywall.learningLanguages',
     body: 'paywall.learningLanguagesBody',
-    vars: { count: PLAN_LIMITS.pro_plus.maxLearningLanguages },
-    shipped: true,
-  },
-  /*
-   * Not the Fluent line repeated: Fluent buys a place in the strip and
-   * Polyglot buys the front of it, so this column says the thing that is
-   * actually different.
-   */
-  boostedProfile: {
-    title: 'paywall.boostedProfileFirst',
-    body: 'paywall.boostedProfileFirstBody',
-    shipped: true,
-  },
-  nearby: {
-    // The body says what it does *and* what it costs the reader, because the
-    // second half is the part they would otherwise find out after paying.
-    title: 'paywall.nearby',
-    body: 'paywall.nearbyBody',
+    vars: { count: PLAN_LIMITS.pro.maxLearningLanguages },
     shipped: true,
   },
   copilot: {
     title: 'paywall.copilot',
     body: 'paywall.copilotBody',
     shipped: false,
+  },
+  welcomePack: {
+    title: 'paywall.welcomePack',
+    body: 'paywall.welcomePackBody',
+    shipped: true,
   },
 }
 
@@ -217,18 +172,18 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
  * retyped — the paywall must not call a capability one thing in its list and
  * another in the sentence explaining why the screen opened.
  *
- * `Record<PlanFeature, string>` is the enforcement: a capability added to
- * either feature list without a name here stops this file compiling.
+ * `Record<PlanFeature, string>` is the enforcement: a capability added to the
+ * feature list without a name here stops this file compiling.
  */
 const FEATURE_TITLE: Record<PlanFeature, MessageKey> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
   boostedProfile: BENEFIT_COPY.boostedProfile.title,
-  sendTranslation: PRO_PLUS_BENEFIT_COPY.sendTranslation.title,
-  deckExport: PRO_PLUS_BENEFIT_COPY.deckExport.title,
-  profileViewerIdentities: PRO_PLUS_BENEFIT_COPY.profileViewerIdentities.title,
-  incognito: PRO_PLUS_BENEFIT_COPY.incognito.title,
-  nearby: PRO_PLUS_BENEFIT_COPY.nearby.title,
-  copilot: PRO_PLUS_BENEFIT_COPY.copilot.title,
+  sendTranslation: BENEFIT_COPY.sendTranslation.title,
+  deckExport: BENEFIT_COPY.deckExport.title,
+  profileViewerIdentities: BENEFIT_COPY.profileViewerIdentities.title,
+  incognito: BENEFIT_COPY.incognito.title,
+  nearby: BENEFIT_COPY.nearby.title,
+  copilot: BENEFIT_COPY.copilot.title,
 }
 
 /** A route param is a string from anywhere — a deep link, a stale URL — so it is checked against the real list before being trusted as one. */
@@ -267,19 +222,18 @@ export default function PaywallScreen() {
   const refresh = useRefreshEntitlement()
   const tier = useEffectiveTier()
   const me = useMe()
-  // The store beside the tier: the same tier is a swap, a second purchase or
-  // a dead end depending on who sold it, and `planChangeFor` decides which.
-  const held: HeldPlan = { tier, store: tier === 'free' ? null : me.data?.entitlement?.store }
-  // Which tier the context line points at, read off `PLAN_LIMITS` rather than
-  // assumed: move a capability between tiers and the sentence follows it.
-  // Nothing when the plan held already has it — a Polyglot member sent here
-  // from the Boosted strip was told "Boosted profile is part of Fluent" and
-  // opened on a Fluent column they could not buy.
-  const unlockingTier = feature ? tierUnlocking(feature) : null
-  const highlightTier =
-    unlockingTier && planChangeFor(held, unlockingTier, PLATFORM) !== 'covered'
-      ? unlockingTier
-      : null
+  // The store and the end date beside the tier: a gift that runs out can be
+  // subscribed on top of, a subscription or a lifetime cannot, and
+  // `planChangeFor` is the one place that is decided.
+  const held: HeldPlan = {
+    tier,
+    store: tier === 'free' ? null : me.data?.entitlement?.store,
+    expiresAt: me.data?.entitlement?.expiresAt ?? null,
+  }
+  const change = planChangeFor(held)
+  // The context line only for somebody who can still buy what they were
+  // refused — a subscriber sent here from the Boosted strip already has it.
+  const refused = feature !== null && change === 'buy' ? feature : null
   const remaining = quota.data?.initiations.remaining
 
   // `null` while the store is still being asked. Distinguishing that from "the
@@ -289,16 +243,9 @@ export default function PaywallScreen() {
   const [busyOfferId, setBusyOfferId] = useState<string | null>(null)
   const [restoring, setRestoring] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
-  // One plan and one period at a time, where the screen used to list every
-  // offer of both tiers. Both are picked rather than seeded: what to open on
-  // depends on the entitlement, and `useEffectiveTier` answers `free` while
-  // the `me` query is still in flight. A seeded initial state would freeze a
-  // Fluent subscriber onto Fluent on any cold load of this route — a reload,
-  // a shared link — which is the very thing the tier below fixes.
-  const [pickedPlan, setPickedPlan] = useState<PaidPlanTier | null>(null)
+  // One period at a time. Picked rather than seeded, so the screen opens on
+  // whatever the store actually sells first.
   const [pickedPeriod, setPickedPeriod] = useState<BillingPeriod | null>(null)
-  // Armed when someone leaves for the web portal, spent when they come back.
-  const portalOpened = useRef(false)
 
   useEffect(() => {
     let cancelled = false
@@ -309,28 +256,6 @@ export default function PaywallScreen() {
       cancelled = true
     }
   }, [])
-
-  /*
-   * Coming back is the only signal that anything happened in the portal.
-   * `Linking.openURL` is `window.open(url, '_blank')` on the web, so it
-   * resolves the moment the tab opens and knows nothing about what was done
-   * there; the plan change reaches us as a webhook, on the server. So the
-   * return to this tab is what asks the server to re-read the entitlement —
-   * the same reconcile a purchase and a restore already run.
-   *
-   * Only for someone who actually left, and only once. If the browser blocked
-   * the popup nobody left, the ref stays armed, and the next hide-and-return
-   * spends it on a request that is idempotent. `refresh.mutate` rather than
-   * `refresh`: the callback is stable, the result object is not.
-   */
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', (state) => {
-      if (state !== 'active' || !portalOpened.current) return
-      portalOpened.current = false
-      refresh.mutate()
-    })
-    return () => subscription.remove()
-  }, [refresh.mutate])
 
   // Once per opening, with what sent them here. The paywall is the end of the
   // funnel, and which capability people hit it from is the question. Mount
@@ -381,7 +306,7 @@ export default function PaywallScreen() {
       change,
     }
     track({ name: 'purchase_started', properties: sale })
-    const outcome = await purchaseOffer(offerId, change)
+    const outcome = await purchaseOffer(offerId)
     track({ name: 'purchase_finished', properties: { ...sale, outcome } })
     setBusyOfferId(null)
 
@@ -399,28 +324,6 @@ export default function PaywallScreen() {
     if (outcome === 'unavailable') setNotice(t('paywall.purchaseUnavailable'))
   }
 
-  /**
-   * A web upgrade happens in RevenueCat's portal, not in a checkout: the
-   * portal swaps the plan and refunds the unused time, which the SDK's
-   * `purchase` cannot do — it would open a second subscription beside the
-   * first. So the button goes there, and the tier follows on the next refresh.
-   */
-  async function changePlanInPortal(): Promise<void> {
-    setNotice(null)
-    const url = await storeManagementUrl()
-    if (!url) {
-      setNotice(t('paywall.purchaseUnavailable'))
-      return
-    }
-    track({
-      name: 'purchase_started',
-      properties: { offer: 'portal', tier: plan, period: null, change: 'portal' },
-    })
-    await Linking.openURL(url)
-    // After the open, not before: a rejected `openURL` never left the page.
-    portalOpened.current = true
-  }
-
   async function restore(): Promise<void> {
     setNotice(null)
     setRestoring(true)
@@ -432,26 +335,22 @@ export default function PaywallScreen() {
     if (!ok) setNotice(t('paywall.nothingToRestore'))
   }
 
-  /*
-   * The tier the screen is on: what the caller was refused, else the first
-   * tier there is anything to sell. Opening on Fluent for everybody left a
-   * Fluent subscriber reading "Included in Fluent" over a disabled button,
-   * with no hint that a higher plan existed. A tap wins from then on.
-   */
-  const plan = pickedPlan ?? highlightTier ?? firstOfferableTier(held, PLATFORM)
-  const tierOffers = offers?.filter((offer) => offer.tier === plan) ?? []
+  const tierOffers = offers?.filter((offer) => offer.tier === 'pro') ?? []
   const periods = PERIOD_ORDER.filter((candidate) =>
     tierOffers.some((offer) => offer.period === candidate),
   )
-  // Falls back to the first period this tier is sold in when the picked one is
-  // not — a Polyglot without a monthly must not leave the price row empty.
+  // Falls back to the first period sold when the picked one is not — a store
+  // without a monthly must not leave the price row empty.
   const period = pickedPeriod !== null && periods.includes(pickedPeriod) ? pickedPeriod : periods[0]
   const offer = tierOffers.find((candidate) => candidate.period === period)
   // What the yearly saving is measured against. Taken from the offers the store
   // just returned rather than from a constant — `planSaving.ts` says why.
   const yearly = tierOffers.find((candidate) => candidate.period === 'yearly')
   const monthly = tierOffers.find((candidate) => candidate.period === 'monthly')
-  const saving = yearly ? yearlySavingPercent(yearly, monthly) : null
+  // Months first — "3 months free" — and the percentage only when a year gives
+  // away less than one whole month.
+  const freeMonths = yearly ? yearlyFreeMonths(yearly, monthly) : null
+  const saving = yearly && freeMonths === null ? yearlySavingPercent(yearly, monthly) : null
   // A yearly plan's headline: truncated so the `.99` the price was chosen for
   // survives, with the store's rounded text only as a fallback.
   const perMonth =
@@ -459,44 +358,21 @@ export default function PaywallScreen() {
       ? (perMonthPriceString(offer.priceString, offer.price) ?? offer.perMonthPriceString)
       : undefined
 
-  /*
-   * Was `currentTier === tier`, which disabled the plan held and nothing
-   * else: a Polyglot subscriber could buy Fluent underneath it, and a Fluent
-   * subscriber tapping Polyglot opened a second subscription beside the first
-   * on Play and on the web. What a tap means depends on the tier *and* the
-   * store that sold it, and `planChangeFor` is the one place that is decided.
-   */
-  const change = planChangeFor(held, plan, PLATFORM)
-  const heldName = held.tier === 'free' ? '' : TIER_NAMES[held.tier]
   const boughtOn = platformOfStore(held.store)
-  const isCurrent = change === 'covered' || change === 'elsewhere'
-  // The web's upgrade is a portal, not a checkout — see `changePlanInPortal`.
-  // Not under the harness, which has no portal and answers `PRODUCT_CHANGE`
-  // to a second purchase the way a store would.
-  const viaPortal = change === 'upgrade' && PLATFORM === 'web' && !isFakePurchasesEnabled()
-  // The higher tier's ticks take the brand purple; the first tier's stay blue.
-  const tint = plan === 'pro_plus' ? colors.pro : colors.accent
-
+  const isCurrent = change === 'covered'
+  const tint = colors.pro
   /*
-   * What the button below will do to the plan already held, said before the
-   * tap rather than discovered on the receipt. App Review 3.1.2 wants the
-   * terms beside the offer; a second subscription nobody meant to start is
-   * the failure the other sentences prevent.
+   * A trial said in weeks when it is whole weeks — "1 week free", as the stores
+   * sell it — and in days otherwise. `null` over a plan already held, and when
+   * the store did not offer one (`ineligibleForTrial` leaves it out for
+   * somebody who has had it).
    */
-  // A covered tier says so on its button instead, so it has no line here.
-  const changeNotice =
-    change === 'upgrade' && !viaPortal
-      ? t('paywall.upgradeNotice', { plan: heldName })
-      : viaPortal
-        ? t('paywall.upgradeWeb', { plan: heldName })
-        : change === 'elsewhere' && boughtOn
-          ? t('paywall.upgradeElsewhere', { plan: heldName, store: t(STORE_NAME[boughtOn]) })
-          : change === 'buy' && held.store === 'promotional'
-            ? t('paywall.lifetimeKept', { plan: heldName, plus: TIER_NAMES[plan] })
-            : null
+  const trialWeeks =
+    offer?.freeTrialDays && !isCurrent && offer.freeTrialDays % 7 === 0
+      ? offer.freeTrialDays / 7
+      : null
 
-  const hasTopLines =
-    (feature !== null && highlightTier !== null) || remaining === 0 || tier !== 'free'
+  const hasTopLines = refused !== null || remaining === 0 || tier !== 'free'
 
   return (
     <Screen fluid style={styles.screen}>
@@ -541,10 +417,10 @@ export default function PaywallScreen() {
         */}
         {hasTopLines ? (
           <View style={styles.context}>
-            {feature && highlightTier ? (
+            {refused ? (
               <Text style={styles.contextText}>
-                <Text style={styles.contextFeature}>{t(FEATURE_TITLE[feature])}</Text>{' '}
-                {t('paywall.partOf')} {TIER_NAMES[highlightTier]}.
+                <Text style={styles.contextFeature}>{t(FEATURE_TITLE[refused])}</Text>{' '}
+                {t('paywall.partOf')} {TIER_NAMES.pro}.
               </Text>
             ) : null}
             {remaining === 0 ? (
@@ -573,25 +449,17 @@ export default function PaywallScreen() {
 
         {notice ? <Text style={styles.notice}>{notice}</Text> : null}
 
-        <SegmentedControl
-          options={PAID_PLAN_TIERS.map((paidTier) => ({
-            value: paidTier,
-            label: TIER_NAMES[paidTier],
-          }))}
-          selected={[plan]}
-          onToggle={setPickedPlan}
-          accessibilityLabel={t('paywall.screenTitle')}
-        />
-
         {/* One period is no choice, so the control only appears with two. */}
         {periods.length > 1 ? (
           <SegmentedControl
             options={periods.map((candidate) => ({
               value: candidate,
               label:
-                candidate === 'yearly' && saving !== null
-                  ? t('paywall.yearlySaving', { percent: saving })
-                  : t(PERIOD_LABEL[candidate]),
+                candidate === 'yearly' && freeMonths !== null
+                  ? t('paywall.yearlyFreeMonths', { count: freeMonths })
+                  : candidate === 'yearly' && saving !== null
+                    ? t('paywall.yearlySaving', { percent: saving })
+                    : t(PERIOD_LABEL[candidate]),
             }))}
             selected={period ? [period] : []}
             onToggle={setPickedPeriod}
@@ -634,18 +502,24 @@ export default function PaywallScreen() {
               it there: the monthly price struck through under the yearly one
               is what makes the discount a number someone can check.
             */}
-            {offer.period === 'yearly' && saving !== null && monthly ? (
+            {offer.period === 'yearly' && (freeMonths !== null || saving !== null) && monthly ? (
               <View
                 accessible
-                accessibilityLabel={t('paywall.savingA11y', {
-                  percent: saving,
-                  price: monthly.priceString,
-                })}
+                accessibilityLabel={
+                  freeMonths !== null
+                    ? t('paywall.freeMonthsA11y', {
+                        count: freeMonths,
+                        price: monthly.priceString,
+                      })
+                    : t('paywall.savingA11y', { percent: saving ?? 0, price: monthly.priceString })
+                }
                 style={styles.savingRow}
               >
                 <Text style={styles.wasPrice}>{monthly.priceString}</Text>
                 <Text style={[styles.savingTag, { color: tint }]}>
-                  {t('paywall.savePercent', { percent: saving })}
+                  {freeMonths !== null
+                    ? t('paywall.freeMonths', { count: freeMonths })
+                    : t('paywall.savePercent', { percent: saving ?? 0 })}
                 </Text>
               </View>
             ) : null}
@@ -658,14 +532,19 @@ export default function PaywallScreen() {
             */}
             {offer.freeTrialDays !== null && !isCurrent ? (
               <Text style={styles.trial}>
-                {t('paywall.trialTerms', {
-                  count: offer.freeTrialDays,
-                  price: offer.priceString,
-                  period: t(PERIOD_PHRASE[offer.period]),
-                })}
+                {trialWeeks !== null
+                  ? t('paywall.trialWeeks', {
+                      count: trialWeeks,
+                      price: offer.priceString,
+                      period: t(PERIOD_PHRASE[offer.period]),
+                    })
+                  : t('paywall.trialTerms', {
+                      count: offer.freeTrialDays,
+                      price: offer.priceString,
+                      period: t(PERIOD_PHRASE[offer.period]),
+                    })}
               </Text>
             ) : null}
-            {changeNotice ? <Text style={styles.changeNotice}>{changeNotice}</Text> : null}
           </View>
         ) : (
           <Text style={styles.unavailable}>
@@ -674,25 +553,10 @@ export default function PaywallScreen() {
         )}
 
         <View style={styles.features}>
-          {plan === 'pro'
-            ? PRO_BENEFITS.map((benefit) => (
-                <FeatureRow key={benefit} copy={BENEFIT_COPY[benefit]} tint={tint} />
-              ))
-            : PRO_PLUS_BENEFITS.map((benefit) => {
-                const copy = PRO_PLUS_BENEFIT_COPY[benefit]
-                return <FeatureRow key={benefit} copy={copy} tint={tint} soon={!copy.shipped} />
-              })}
-          {/* The superset relationship, as the last row rather than a tagline. */}
-          {plan === 'pro_plus' ? (
-            <View style={styles.feature}>
-              <Feather name="check" size={18} color={tint} />
-              <View style={styles.featureText}>
-                <Text style={styles.featureTitle}>
-                  {t('paywall.everythingInPro', { plan: TIER_NAMES.pro })}
-                </Text>
-              </View>
-            </View>
-          ) : null}
+          {PRO_BENEFITS.map((benefit) => {
+            const copy = BENEFIT_COPY[benefit]
+            return <FeatureRow key={benefit} copy={copy} tint={tint} soon={!copy.shipped} />
+          })}
         </View>
 
         <View style={styles.footnote}>
@@ -712,23 +576,17 @@ export default function PaywallScreen() {
       <View style={styles.footer}>
         <Button
           label={
-            // The tier held, said plainly, where the disabled button used to
-            // read "Start Fluent" at a Fluent subscriber. A lower tier is
-            // covered too, and its button says by what — "Start Fluent",
-            // greyed out, read to a Polyglot member as an offer that was broken.
-            change === 'covered' && held.tier === plan
+            // The plan held, said plainly, rather than a greyed-out "Start".
+            // A free week says so on the button, which is what the tap starts.
+            isCurrent
               ? t('paywall.currentPlan')
-              : change === 'covered'
-                ? t('paywall.includedIn', { plan: heldName })
-                : viaPortal
-                  ? t('paywall.changePlan')
-                  : t('paywall.start', { plan: TIER_NAMES[plan] })
+              : trialWeeks !== null
+                ? t('paywall.startTrial', { count: trialWeeks })
+                : t('paywall.start', { plan: TIER_NAMES.pro })
           }
           loading={offers === null || busyOfferId !== null}
           disabled={isCurrent || offer === undefined}
-          onPress={() =>
-            viaPortal ? changePlanInPortal() : offer ? buy(offer.id, change) : undefined
-          }
+          onPress={() => (offer ? buy(offer.id, change) : undefined)}
         />
         {/*
           Only the onboarding exposure, and named rather than deflected: "No
@@ -809,7 +667,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   wasPrice: { color: colors.textMuted, fontSize: 15, textDecorationLine: 'line-through' },
   savingTag: { fontSize: 15, fontWeight: '700' },
   trial: { color: colors.accent, fontSize: 13, fontWeight: '700' },
-  changeNotice: { color: colors.textMuted, fontSize: 13, lineHeight: 20 },
   unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22, paddingTop: 6 },
 
   features: { borderTopColor: colors.border, borderTopWidth: 1 },

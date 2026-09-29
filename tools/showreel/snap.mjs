@@ -61,6 +61,7 @@ export async function openReel({
   tc = true,
   format = 'wide',
   page: name = 'index',
+  theme = 'light',
 }) {
   const chromium = await loadChromium()
   const browser = await chromium.launch({ channel: process.env.REEL_CHANNEL ?? 'chrome' })
@@ -71,7 +72,7 @@ export async function openReel({
       logs.push(`${msg.type()}: ${msg.text()}`)
   })
   page.on('pageerror', (error) => logs.push(`pageerror: ${error.message}`))
-  await page.goto(`${pageUrl(name)}?capture&format=${format}${tc ? '&tc' : ''}`, {
+  await page.goto(`${pageUrl(name)}?capture&format=${format}&theme=${theme}${tc ? '&tc' : ''}`, {
     waitUntil: 'load',
   })
   await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', null, {
@@ -93,7 +94,14 @@ async function main() {
   const width = full ? W : W / 2
   const height = full ? H : H / 2
   const pageName = typeof a.page === 'string' ? a.page : 'index'
-  const { browser, page, logs, info } = await openReel({ width, height, format, page: pageName })
+  const theme = a.theme === 'dark' ? 'dark' : 'light'
+  const { browser, page, logs, info } = await openReel({
+    width,
+    height,
+    format,
+    page: pageName,
+    theme,
+  })
   const FRAME = 1 / 60
 
   let times = []

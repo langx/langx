@@ -119,8 +119,8 @@ export default function DiscoverScreen() {
   const [nearbyBlocked, setNearbyBlocked] = useState<LocationFailure | null>(null)
 
   /*
-   * `advancedFilters`, not "any paid plan". Correct by accident while every
-   * gated filter was Fluent's; correct by construction now. On discover it is
+   * `advancedFilters`, not "any paid plan" — a question about the capability,
+   * so it stays right whatever the plans are called. On discover it is
    * load-bearing: this decides whether to strip Pro filters before asking, and
    * if it disagrees with the server the reader gets a 403 instead of a list.
    */

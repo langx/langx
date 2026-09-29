@@ -1223,7 +1223,7 @@ describe('Faz 3 — discovery aggregation', () => {
    * location is free, sorting by it is not — so these fixtures give candidates
    * a location without giving them a subscription.
    */
-  describe('sort=nearby (Pro+)', () => {
+  describe('sort=nearby (Pro)', () => {
     /** Istanbul. Every distance below is measured from here. */
     const VIEWER = { lat: 41.0082, lng: 28.9784 }
     const NEXT_DOOR = { lat: 41.02, lng: 28.99 } //     ~1.5 km
@@ -1250,14 +1250,14 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(response.json()).toMatchObject({ code: 'UPGRADE_REQUIRED', feature: 'nearby' })
     })
 
-    it('refuses a Pro account too — this is the whole difference between the two paid tiers', async () => {
+    /** It used to be Polyglot's alone; the single plan includes it. */
+    it('lets a Pro account sort by distance', async () => {
       const viewer = await newUser('nearby-pro@example.com')
       await setTier(viewer.userId, 'pro')
       await share(viewer, VIEWER)
 
       const response = await discover(viewer, 'sort=nearby')
-      expect(response.statusCode).toBe(403)
-      expect(response.json()).toMatchObject({ code: 'UPGRADE_REQUIRED', feature: 'nearby' })
+      expect(response.statusCode).toBe(200)
     })
 
     it('tells a Pro+ user who has shared nothing to share something, rather than returning an empty list', async () => {
@@ -1550,12 +1550,12 @@ describe('Faz 3 — discovery aggregation', () => {
     }
 
     /**
-     * Within a tier the order rotates — see `boostedOrder.ts` — so this asserts
-     * the band, not the sequence. The band is the part somebody paid for:
-     * `en.ts` promises Polyglot leads the strip, and nothing the rotation does
-     * may cross that line.
+     * The order rotates — see `boostedOrder.ts` — so this asserts membership,
+     * not the sequence. A row still stored as the retired `pro_plus` is Pro
+     * and in the strip, and every card goes out as `pro`: the old apps that
+     * read `tier` draw a chip from it, and the new ones draw none.
      */
-    it('leads with Polyglot and never lets Fluent above it', async () => {
+    it('holds every Pro member, whichever spelling the row has, and nobody free', async () => {
       const viewer = await viewerFor('boost-order-viewer@example.com')
       const plusOne = await candidateFor('boost-plus-stale@example.com')
       const plusTwo = await candidateFor('boost-plus-fresh@example.com')
@@ -1574,7 +1574,7 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(items.map((item) => item.handle).toSorted()).toEqual(
         [plusOne, plusTwo, proOne, proTwo].map((c) => c.handle).toSorted(),
       )
-      expect(items.map((item) => item.tier)).toEqual(['pro_plus', 'pro_plus', 'pro', 'pro'])
+      expect(items.map((item) => item.tier)).toEqual(['pro', 'pro', 'pro', 'pro'])
       expect(items.map((item) => item.handle)).not.toContain(free.handle)
     })
 
@@ -1767,11 +1767,10 @@ describe('Faz 3 — discovery aggregation', () => {
     /**
      * Its own pair (`ne` / `si`), and no `setShowcase` anywhere: under Active
      * the strip is ordered by the clock, so the photo-and-bio band that leads
-     * the default feed must not get a say. The Fluent member is the most
-     * recently seen of the three and still comes last — the tier band is the
-     * one term that does not vary by section.
+     * the default feed must not get a say. There is no tier band any more: a
+     * row still stored as `pro_plus` gets no place ahead of a `pro` one.
      */
-    it('orders by last active under sort=active, inside the tier band', async () => {
+    it('orders by last active under sort=active', async () => {
       const viewer = await newUser('boost-active-viewer@example.com', {
         nativeLanguages: [{ code: 'ne' }],
         learning: [{ code: 'si', level: 'intermediate', priority: 1 }],
@@ -1794,18 +1793,17 @@ describe('Faz 3 — discovery aggregation', () => {
       await setLastActiveAt(proNewest.userId, new Date(now))
 
       expect(handlesOf(await boosted(viewer, 'sort=active'))).toEqual([
+        proNewest.handle,
         plusRecent.handle,
         plusDormant.handle,
-        proNewest.handle,
       ])
     })
 
     /**
-     * Its own pair (`km` / `lo`). The Fluent member is next door and the
-     * Polyglot ones are 1.5 km and 91 km out: distance decides between the two
-     * Polyglots and nothing decides across the band.
+     * Its own pair (`km` / `lo`). Distance alone decides, whatever spelling
+     * of Pro each row still has.
      */
-    it('orders by distance under sort=nearby, inside the tier band', async () => {
+    it('orders by distance under sort=nearby', async () => {
       const viewer = await newUser('boost-nearby-viewer@example.com', {
         nativeLanguages: [{ code: 'km' }],
         learning: [{ code: 'lo', level: 'intermediate', priority: 1 }],
@@ -1831,9 +1829,9 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(response.statusCode).toBe(200)
       const items = response.json<BoostedProfilesPage>().items
       expect(items.map((item) => item.handle)).toEqual([
+        proNearest.handle,
         plusClose.handle,
         plusFar.handle,
-        proNearest.handle,
       ])
       // Bucketed on the way out, exactly as the list reports it.
       for (const item of items) expect(DISTANCE_BUCKETS_KM).toContain(item.distanceKm)

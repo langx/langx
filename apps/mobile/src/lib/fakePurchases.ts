@@ -43,24 +43,20 @@ export function isFakePurchasesEnabled(): boolean {
  * these numbers, so a string and a number that could disagree would let the
  * harness advertise a discount its own prices do not contain.
  *
- * The yearly amounts end in `.90` for the reason the real ones do: divided by
- * twelve they have to read as a price somebody chose rather than as a
- * remainder, and `.90` is the ending that survives the division — see
- * `planSaving.test.ts`. A harness that rendered `TEST $3.33` would be exercising
- * a shape the paywall no longer has.
+ * The amounts are Pro's US prices, so the harness shows the screen that ships:
+ * a yearly price that is twelve `.99` months plus 0.11 (`planSaving.test.ts`
+ * says why) and reads "3 months free" against the monthly one.
  */
 const TEST_AMOUNTS: Record<keyof typeof PACKAGES, number> = {
-  $rc_monthly: 4.99,
-  $rc_annual: 47.9,
-  $rc_lifetime: 99.99,
-  pro_plus_monthly: 9.99,
-  pro_plus_yearly: 83.9,
+  $rc_monthly: 9.99,
+  $rc_annual: 83.99,
+  $rc_lifetime: 199.99,
 }
 
 /**
- * Both yearly packages carry a seven-day free trial in App Store Connect, so
- * the harness carries one too. A screen exercised without the trial row is not
- * the screen that ships.
+ * Monthly and yearly both carry a one-week free trial in the stores, so the
+ * harness carries one too. A screen exercised without the trial row is not the
+ * screen that ships.
  */
 const TEST_FREE_TRIAL_DAYS = 7
 
@@ -82,14 +78,17 @@ export function fakeOffers(): PurchaseOffer[] {
     id,
     tier: PACKAGES[id].tier,
     priceString: `TEST $${TEST_AMOUNTS[id].toFixed(2)}`,
-    // The harness stands in for the store's own rounded per-month text, the
-    // paywall's fallback — labelled TEST like everything else it says.
+    // The harness stands in for the store's own per-month text, the paywall's
+    // fallback — truncated as the paywall truncates, and labelled TEST like
+    // everything else it says.
     ...(PACKAGES[id].period === 'yearly'
-      ? { perMonthPriceString: `TEST $${(TEST_AMOUNTS[id] / 12).toFixed(2)}` }
+      ? {
+          perMonthPriceString: `TEST $${(Math.floor((TEST_AMOUNTS[id] / 12) * 100) / 100).toFixed(2)}`,
+        }
       : {}),
     period: PACKAGES[id].period,
     price: TEST_AMOUNTS[id],
-    freeTrialDays: PACKAGES[id].period === 'yearly' ? TEST_FREE_TRIAL_DAYS : null,
+    freeTrialDays: PACKAGES[id].period === 'lifetime' ? null : TEST_FREE_TRIAL_DAYS,
   }))
 }
 

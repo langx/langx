@@ -257,7 +257,8 @@ describe('processRevenueCatWebhook', () => {
 
       const profile = await getProfile(userId)
       expect(profile?.entitlement.tier).toBe('free')
-      expect(profile?.churnedFrom).toMatchObject({ tier: 'pro_plus' })
+      // Stored as Polyglot, fell from Pro.
+      expect(profile?.churnedFrom).toMatchObject({ tier: 'pro' })
       expect(mailbox).toHaveLength(0)
     })
 
@@ -308,18 +309,16 @@ describe('processRevenueCatWebhook', () => {
   })
 
   /**
-   * The v1 loyalty gift, as RevenueCat actually delivers it: two promotional
-   * grants, two `NON_RENEWING_PURCHASE` events, the second carrying only
-   * `pro`. Written from the events alone the second one downgraded the
-   * account — `hi@langx.io` sat on Fluent for three minutes on 4 September
-   * 2026 until a paywall visit happened to refresh it. With a client the
-   * handler asks RevenueCat instead, and RevenueCat holds both.
+   * The v1 loyalty gift as it was delivered while there were two plans: two
+   * promotional grants, two `NON_RENEWING_PURCHASE` events. A grant event
+   * says what arrived, not what is held, so with a client the handler asks
+   * RevenueCat instead — and either id is Pro.
    */
   describe('a grant event with a client reconciles against the subscriber record', () => {
     const lifetimePlus: RevenueCatClient = {
       getEntitlement: () =>
         Promise.resolve({
-          tier: 'pro_plus',
+          tier: 'pro',
           expiresAt: null,
           productId: 'rc_promo_pro_plus_lifetime',
           store: 'promotional',
@@ -329,7 +328,7 @@ describe('processRevenueCatWebhook', () => {
       grantLifetimeEntitlement: () => Promise.resolve(),
     }
 
-    it('keeps Pro+ when the trailing pro-only grant event arrives', async () => {
+    it('stays on the lifetime when the trailing grant event arrives', async () => {
       await insertProfile(minimalProfile('gift-user'))
 
       await processRevenueCatWebhook(
@@ -344,7 +343,7 @@ describe('processRevenueCatWebhook', () => {
         },
         lifetimePlus,
       )
-      expect((await getProfile('gift-user'))?.entitlement.tier).toBe('pro_plus')
+      expect((await getProfile('gift-user'))?.entitlement.tier).toBe('pro')
 
       await processRevenueCatWebhook(
         handle.db,
@@ -361,7 +360,7 @@ describe('processRevenueCatWebhook', () => {
 
       const profile = await getProfile('gift-user')
       expect(profile?.entitlement).toMatchObject({
-        tier: 'pro_plus',
+        tier: 'pro',
         willRenew: false,
         store: 'promotional',
       })
@@ -386,7 +385,7 @@ describe('processRevenueCatWebhook', () => {
         lifetimePlus,
       )
 
-      expect((await getProfile('gift-user-bare'))?.entitlement.tier).toBe('pro_plus')
+      expect((await getProfile('gift-user-bare'))?.entitlement.tier).toBe('pro')
     })
 
     it('falls back to the event when RevenueCat cannot be asked', async () => {

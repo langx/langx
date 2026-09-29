@@ -611,7 +611,7 @@ export function ChatScreen({
    * the other way — their first native language with a written form.
    * `undefined` means there is none, and the row is not offered.
    */
-  /** Reading a translation is free; sending one is Polyglot. See `PLAN_LIMITS`. */
+  /** Reading a translation is free; sending one is Pro. See `PLAN_LIMITS`. */
   const canSendTranslation = hasFeature(useEffectiveTier(), 'sendTranslation')
   const translateInto = partner
     ? translateTargetFor({ nativeLanguages: partner.nativeLanguages })
@@ -1348,16 +1348,17 @@ export function ChatScreen({
       const code = errorCodeOf(error)
       recheckPartner(error)
       if (code === 'QUOTA_EXCEEDED') {
+        // A plain alert and nothing to buy: the ceiling is the same on every
+        // plan since the single one, so the paywall would sell nothing.
         setPending((list) => removePending(list, clientId))
         await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
-        openPaywall(undefined, `/(app)/chat/${conversationId}`)
         return
       }
       // Logged before it is generalised: "could not be sent" once covered an
       // unsupported HEIC for a whole test cycle, and nothing anywhere said so.
       console.warn('attachment failed', code ?? error)
-      // The quota refusal above returns before this: it is a paywall moment,
-      // already counted as one, and not a failure of the send path.
+      // The quota refusal above returns before this: it is a fair-use
+      // ceiling, not a failure of the send path.
       track({ name: 'message_send_failed', properties: { kind: 'media', reason: code ?? null } })
       const reason =
         code === 'UNSUPPORTED_MEDIA_TYPE'

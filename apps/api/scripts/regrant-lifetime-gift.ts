@@ -18,8 +18,8 @@
  * explicit extra flag.
  *
  * The rung comes from the staged v1 balance, as it did at restore. `--tier
- * pro_plus` (or `pro`) grants that rung instead, for the case where the
- * staged record is missing or the balance is not the whole story.
+ * pro` grants the rung regardless, for the case where the staged record is
+ * missing or the balance is not the whole story.
  */
 import { LOYALTY_LIFETIME_GRANTS, lifetimeGrantFor, type PaidPlanTier } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
@@ -37,7 +37,7 @@ function arg(name: string): string | undefined {
 }
 
 const handle = arg('handle')
-if (!handle) throw new Error('usage: --handle <handle> [--tier pro_plus|pro] [--apply]')
+if (!handle) throw new Error('usage: --handle <handle> [--tier pro] [--apply]')
 const apply = process.argv.includes('--apply')
 const tierOverride = arg('tier')
 if (tierOverride && !LOYALTY_LIFETIME_GRANTS.some((r) => r.tier === tierOverride)) {
@@ -101,8 +101,7 @@ try {
     console.log(`\nRe-run with --apply to grant ${rung.tier} for life and refresh the stored tier.`)
   } else {
     // The same order as `tryGrantLifetime`: the primary entitlement decides
-    // the tier, the rest mirror what the products grant (Pro+ also holds
-    // `pro`). A promotional grant is an upsert on RevenueCat's side, so this
+    // the tier, any rest mirror what the products grant. A promotional grant is an upsert on RevenueCat's side, so this
     // is safe to run against an account that already holds one.
     for (const entitlement of rung.entitlements) {
       await client.grantLifetimeEntitlement(profile._id, entitlement)

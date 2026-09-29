@@ -7,7 +7,7 @@ import { authId } from '../../lib/authId'
 import { lifetimeWinBackAudience } from './lifetimeWinBack'
 import { suppressEmail } from './suppressions'
 
-/** Either side of the Fluent rung (9,136) and over the Polyglot one (37,821). */
+/** Over the lifetime rung (9,136), once below and once above the old Polyglot one (37,821). */
 const FLUENT = 11_579
 const POLYGLOT = 41_203
 const BELOW = 9_000
@@ -97,8 +97,9 @@ describe('who is owed a lifetime tier and has not come back for it', () => {
       name: 'Gerard',
       email: fluent.email,
     })
+    // The old Polyglot balance earns the same single plan.
     expect(contacts.find((c) => c.userId === polyglot.userId)).toMatchObject({
-      tier: 'pro_plus',
+      tier: 'pro',
       legacyTokens: POLYGLOT,
     })
   })
