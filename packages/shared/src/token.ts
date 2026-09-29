@@ -689,7 +689,15 @@ export const tokenSummarySchema = z.object({
    * of a number written from several code paths is a drift generator, and the
    * `{userId, kind}` index prefix already makes the count a single scan.
    */
-  lifetime: z.object({ corrections: z.number().int() }),
+  lifetime: z.object({
+    corrections: z.number().int(),
+    /**
+     * Posts up, not hidden — the other half of the Me tab's feed tile. Kept
+     * apart from `corrections`, which badges read as a count of teaching.
+     * Optional because an API older than it leaves it out.
+     */
+    posts: z.number().int().optional(),
+  }),
   /**
    * The seven days ending on the reader's own today, oldest first, for the
    * profile chart — their calendar on both counts: which days, and what each

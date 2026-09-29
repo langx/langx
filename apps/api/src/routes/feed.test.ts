@@ -1932,6 +1932,14 @@ describe('community feed', () => {
       // The tile's number and the list it opens are one filter, not two.
       const summary = (await summaryOf(viewer, 'theirsauthor')).json<{ posts: number }>()
       expect(summary.posts).toBe(2)
+
+      // And the owner's Me tab counts them the same way.
+      const own = await app.inject({
+        method: 'GET',
+        url: '/me/tokens',
+        headers: { cookie: author.cookie },
+      })
+      expect(own.json<{ lifetime: { posts: number } }>().lifetime.posts).toBe(2)
     })
 
     it('is absent to somebody the author blocked', async () => {
