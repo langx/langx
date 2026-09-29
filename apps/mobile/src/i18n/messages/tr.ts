@@ -2400,4 +2400,34 @@ export const tr: Localized<EnMessages> = {
     exchangeStartsIn: 'Başlamasına',
     exchangeEndsIn: 'Bitmesine',
   },
+  recap: {
+    meTitle: '{month} özetin',
+    meBody: 'LangX’teki ayın, paylaşmaya hazır.',
+    title: '{month} ayın',
+    messages: {
+      one: '{count} mesaj',
+      other: '{count} mesaj',
+    },
+    corrections: {
+      one: '{count} düzeltme',
+      other: '{count} düzeltme',
+    },
+    echoReviews: {
+      one: '{count} Echo kartı tekrar edildi',
+      other: '{count} Echo kartı tekrar edildi',
+    },
+    tokens: {
+      one: '{count} token kazanıldı',
+      other: '{count} token kazanıldı',
+    },
+    currentStreak: {
+      one: 'Bugünkü seri: {count} gün',
+      other: 'Bugünkü seri: {count} gün',
+    },
+    quiet: 'Sakin bir aydı. Yenisi çoktan başladı.',
+    share: 'Ayımı paylaş',
+    cardCaption: 'LangX’teki ayım',
+    shareMessage: 'LangX’te {month}: {messages}, {reviews}. Benimle pratik yap: {url}',
+    failed: 'Özet yüklenemedi.',
+  },
 }

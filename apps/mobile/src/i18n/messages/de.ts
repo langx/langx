@@ -2447,4 +2447,34 @@ export const de: Localized<EnMessages> = {
     exchangeStartsIn: 'Beginnt in',
     exchangeEndsIn: 'Endet in',
   },
+  recap: {
+    meTitle: 'Dein {month}-Rückblick',
+    meBody: 'Dein Monat auf LangX, bereit zum Teilen.',
+    title: 'Dein {month}',
+    messages: {
+      one: '{count} Nachricht',
+      other: '{count} Nachrichten',
+    },
+    corrections: {
+      one: '{count} Korrektur',
+      other: '{count} Korrekturen',
+    },
+    echoReviews: {
+      one: '{count} Echo-Karte wiederholt',
+      other: '{count} Echo-Karten wiederholt',
+    },
+    tokens: {
+      one: '{count} Token verdient',
+      other: '{count} Token verdient',
+    },
+    currentStreak: {
+      one: 'Aktuelle Serie: {count} Tag',
+      other: 'Aktuelle Serie: {count} Tage',
+    },
+    quiet: 'Ein ruhiger Monat. Der nächste hat schon begonnen.',
+    share: 'Meinen Monat teilen',
+    cardCaption: 'mein Monat auf LangX',
+    shareMessage: 'Mein {month} auf LangX: {messages}, {reviews}. Übe mit mir: {url}',
+    failed: 'Der Rückblick konnte nicht geladen werden.',
+  },
 }

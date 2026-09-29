@@ -2403,4 +2403,34 @@ export const es: Localized<EnMessages> = {
     exchangeStartsIn: 'Empieza en',
     exchangeEndsIn: 'Termina en',
   },
+  recap: {
+    meTitle: 'Tu resumen de {month}',
+    meBody: 'Tu mes en LangX, listo para compartir.',
+    title: 'Tu {month}',
+    messages: {
+      one: '{count} mensaje',
+      other: '{count} mensajes',
+    },
+    corrections: {
+      one: '{count} corrección',
+      other: '{count} correcciones',
+    },
+    echoReviews: {
+      one: '{count} tarjeta de Echo repasada',
+      other: '{count} tarjetas de Echo repasadas',
+    },
+    tokens: {
+      one: '{count} token ganado',
+      other: '{count} tokens ganados',
+    },
+    currentStreak: {
+      one: 'Racha actual: {count} día',
+      other: 'Racha actual: {count} días',
+    },
+    quiet: 'Un mes tranquilo. El siguiente ya ha empezado.',
+    share: 'Compartir mi mes',
+    cardCaption: 'mi mes en LangX',
+    shareMessage: 'Mi {month} en LangX: {messages}, {reviews}. Practica conmigo: {url}',
+    failed: 'No se pudo cargar el resumen.',
+  },
 }

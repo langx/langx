@@ -60,6 +60,7 @@ import {
   type PublicBadges,
   type ReportInput,
   type UpcomingMeeting,
+  type MonthlyRecapDto,
   CONVERSATION_SEARCH_MIN_LENGTH,
 } from '@langx/shared'
 import type {
@@ -293,6 +294,7 @@ export const keys = {
   contributors: ['contributors'] as const,
   streakLeaderboard: (metric: string) => ['leaderboard', 'streak', metric] as const,
   echoLeaderboard: (period: PeriodType) => ['leaderboard', 'echo', period] as const,
+  recap: (month: string) => ['recap', month] as const,
   blocks: ['blocks'] as const,
   /*
    * The operator panel, all of it under one prefix so a decision can
@@ -1924,6 +1926,17 @@ export function useEchoLeaderboard(period: PeriodType, limit = 50) {
   return useQuery({
     queryKey: keys.echoLeaderboard(period),
     queryFn: () => api.get<EchoLeaderboard>(`/echo/leaderboard?period=${period}&limit=${limit}`),
+  })
+}
+
+/** One finished month's numbers, computed server-side from the ledger rows. */
+export function useMonthlyRecap(month: string) {
+  return useQuery({
+    queryKey: keys.recap(month),
+    queryFn: () => api.get<MonthlyRecapDto>(`/me/recap?month=${month}`),
+    enabled: /^\d{4}-\d{2}$/.test(month),
+    // A finished month does not change under you.
+    staleTime: 60 * 60 * 1000,
   })
 }
 
