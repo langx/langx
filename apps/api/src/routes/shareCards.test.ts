@@ -10,12 +10,30 @@ import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import { cardElement } from '../modules/cards/design'
+import { recapCardContent } from '../modules/cards/recapCard'
+import { recapCardElement } from '../modules/cards/recapDesign'
 import { renderCard } from '../modules/cards/render'
 import type { StorageProviderWithPut, UploadUrl } from '../storage/StorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn } from '../testSupport/authFlow'
 
 const PASSWORD = 'correct horse battery staple'
+
+/** What the app sends beside a recap card: words only, never the numbers. */
+const RECAP_WORDS = {
+  locale: 'en',
+  kicker: 'My month',
+  labels: {
+    messages: 'messages sent',
+    corrections: 'sentences corrected',
+    echoReviews: 'Echo cards reviewed',
+    activeDays: 'days active',
+    currentStreak: 'day streak, still going',
+    tokens: 'tokens earned',
+  },
+  people: 'in two languages, with 12 people',
+  languages: 'Spanish → learning Turkish',
+} as const
 
 /** Holds the bytes instead of talking to B2, and answers with a public URL. */
 class MemoryStorage implements StorageProviderWithPut {
@@ -305,6 +323,80 @@ describe('share cards', () => {
     })
     expect(page.statusCode, page.body).toBe(200)
     expect(page.json<{ kind: string }>().kind).toBe('recap')
+
+    // With its wording, a recap is the poster — and still a 201 without a face.
+    const poster = await make({
+      kind: 'recap',
+      shape: 'square',
+      headline: 'August',
+      caption: 'my month on LangX',
+      recap: { ...RECAP_WORDS, month: '2026-08' },
+    })
+    expect(poster.statusCode, poster.body).toBe(201)
+  }, 60_000)
+
+  it('puts the ledger’s numbers on a recap poster, never the client’s', async () => {
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ handle: 'cardhaver' })
+    const userId = profile!._id
+    await handle.db.collection(COLLECTIONS.dailyActivity).insertMany([
+      { userId, day: '2026-06-03', messages: 1200, corrections: 0 },
+      { userId, day: '2026-06-04', messages: 34, corrections: 5 },
+    ] as never[])
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: userId }, { $set: { 'streak.current': 0 } })
+
+    const content = await recapCardContent(handle.db, {
+      userId,
+      handle: '@cardhaver',
+      monthName: 'juin',
+      recap: { ...RECAP_WORDS, month: '2026-06', locale: 'fr' },
+      storagePublicBaseUrl: undefined,
+    })
+    // French groups with a narrow no-break space, and capitalises the month.
+    expect(content.month).toBe('Juin')
+    // No Echo row and no streak: the next numbers in line take their tiles.
+    expect(content.stats.map((each) => [each.stat, each.value])).toEqual([
+      ['messages', '1\u202f234'],
+      ['corrections', '5'],
+      ['activeDays', '2'],
+    ])
+    // Nobody messaged by id this month, so the "with N people" line goes.
+    expect(content.people).toBeUndefined()
+    expect(content.languages).toBe('Spanish → learning Turkish')
+  })
+
+  it('draws the recap poster at the size every shape claims', async () => {
+    for (const [shape, expected] of [
+      ['story', [1080, 1920]],
+      ['square', [1080, 1080]],
+      ['wide', [1200, 675]],
+    ] as const) {
+      const png = await renderCard(
+        recapCardElement(
+          {
+            month: 'سبتمبر',
+            year: '2026',
+            kicker: 'شهري',
+            people: 'بلغتين، مع 12 شخصًا',
+            stats: [
+              { stat: 'messages', value: '248', label: 'رسالة مرسلة' },
+              { stat: 'corrections', value: '37', label: 'جملة مصحّحة' },
+              { stat: 'echoReviews', value: '1,204', label: 'بطاقات صدى' },
+            ],
+            handle: '@cardhaver',
+            languages: 'الإسبانية ← أتعلّم التركية',
+            locale: 'ar',
+          },
+          shape,
+        ),
+        shape,
+      )
+      const view = new DataView(png.buffer, png.byteOffset, png.byteLength)
+      expect([view.getUint32(16), view.getUint32(20)]).toEqual([...expected])
+    }
   }, 60_000)
 
   it('draws every shape at the size it claims', async () => {

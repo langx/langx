@@ -26,6 +26,7 @@ describe('card assets reach the runtime image', () => {
       'badge.png',
       'fonts/Nunito_800ExtraBold.ttf',
       'fonts/Nunito_600SemiBold.ttf',
+      'fonts/Nunito_900Black.ttf',
     ]) {
       const bytes = await readFile(join(REPO_ROOT, 'apps/api/assets', asset))
       expect(bytes.byteLength).toBeGreaterThan(0)
