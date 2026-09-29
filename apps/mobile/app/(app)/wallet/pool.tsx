@@ -146,7 +146,7 @@ export default function PoolScreen() {
           <Text style={styles.body}>
             {t('tokens.todayBreakdown', {
               messages: today.messages,
-              corrections: today.corrections,
+              feed: today.corrections + (today.posts ?? 0),
               partners: today.distinctPartners,
             })}{' '}
             {t('tokens.poolCap', { cap: shareCap })}

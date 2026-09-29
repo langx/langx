@@ -102,7 +102,7 @@ export interface BadgeDefinition {
 }
 
 /**
- * Correction milestones. Unlike the streak ones these have no payout to be read
+ * Feed milestones — posts plus corrections. Unlike the streak ones these have no payout to be read
  * off, so they are written here — chosen as one, then roughly a decade apart, so
  * the next badge is always visible without ever being close.
  */
@@ -128,8 +128,15 @@ const TOKEN_THRESHOLDS = [10_000, 50_000, 250_000] as const
  */
 const VETERAN_THRESHOLDS = [365, 730, 1095] as const
 
+/**
+ * The `correction` ladder counts the feed — posts and corrections — and is
+ * worded that way. The kind and the `correction.N` ids keep their old name so
+ * that nobody's earned badges or notification history change identity.
+ */
 function correctionLabel(threshold: number): string {
-  return threshold === 1 ? 'First correction' : `${threshold.toLocaleString('en-US')} corrections`
+  return threshold === 1
+    ? 'First time in the feed'
+    : `${threshold.toLocaleString('en-US')} in the feed`
 }
 
 /**

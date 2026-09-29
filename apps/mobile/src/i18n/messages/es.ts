@@ -453,6 +453,7 @@ export const es: Localized<EnMessages> = {
     days: { one: '{count} día', other: '{count} días' },
     messages: { one: '{count} mensaje', other: '{count} mensajes' },
     corrections: { one: '{count} corrección', other: '{count} correcciones' },
+    feed: { one: '{count} en el muro', other: '{count} en el muro' },
     accountAgeToday: 'hoy',
     accountAgeDays: { one: 'hace {count} día', other: 'hace {count} días' },
     accountAgeMonths: { one: 'hace {count} mes', other: 'hace {count} meses' },
@@ -1505,7 +1506,6 @@ export const es: Localized<EnMessages> = {
     editProfile: 'Editar perfil',
     settings: 'Ajustes',
     scan: 'Escanear un código',
-    corrections: 'Correcciones',
     wallet: 'Cartera',
     previewProfile: 'Ver mi perfil',
     previewProfileBody: 'Mira tu perfil como lo ven los demás',
@@ -1807,7 +1807,7 @@ export const es: Localized<EnMessages> = {
     appIconChanged: 'Icono cambiado.',
     appIconFailed: 'No se pudo cambiar el icono',
     showWeekChart: 'Mostrar el gráfico de la semana',
-    showWeekChartBody: 'Qué días enviaste mensajes y correcciones, en tu perfil.',
+    showWeekChartBody: 'Qué días estuviste activo en chats y en el muro, en tu perfil.',
     voiceCredits: 'Voces y licencias',
     voiceCreditsBody:
       'Los mensajes se leen en voz alta con modelos de voz de código abierto. La mayoría no nos pide nada; los de abajo tienen licencia a condición de que acreditemos a quienes los grabaron.',
@@ -1931,7 +1931,7 @@ export const es: Localized<EnMessages> = {
     lockedAccessibility: '{title}, bloqueado',
     lockedStreak: '{current} de {threshold} días',
     lockedNeeds: 'Compra antes {title}',
-    lockedCorrections: '{current} de {threshold} correcciones',
+    lockedFeed: '{current} de {threshold} en el muro',
     frameKind: 'Marco de perfil',
     stickerKind: 'Pack de stickers',
     titleKind: 'Título',
@@ -1999,7 +1999,7 @@ export const es: Localized<EnMessages> = {
     shareForDay: 'Tu parte del {day}',
     todaySoFar: 'Hoy hasta ahora',
     activityScore: { one: '{count} de actividad', other: '{count} de actividad' },
-    todayBreakdown: '{messages} mensajes, {corrections} correcciones, {partners} personas.',
+    todayBreakdown: '{messages} mensajes, {feed} en el muro, {partners} personas.',
     poolParticipants: { one: '{n} activo ese día', other: '{n} activos ese día' },
     poolShareOfPool: '{percent} del bote diario',
     poolActiveToday: { one: '{n} activo hoy', other: '{n} activos hoy' },
@@ -2112,12 +2112,12 @@ export const es: Localized<EnMessages> = {
     earned: 'Conseguida · {month}',
     earnedLabel: 'Conseguida',
     locked: 'Bloqueada',
-    firstCorrection: 'Primera corrección',
+    firstFeed: 'Primera vez en el muro',
     streakDays: { one: '{formatted} día', other: '{formatted} días' },
     messagesSent: { one: '{formatted} mensaje', other: '{formatted} mensajes' },
     tokensEarned: { one: '{formatted} ficha ganada', other: '{formatted} fichas ganadas' },
     memberDays: { one: '{formatted} día como miembro', other: '{formatted} días como miembro' },
-    corrections: { one: '{formatted} corrección', other: '{formatted} correcciones' },
+    feed: { one: '{formatted} en el muro', other: '{formatted} en el muro' },
     earlyAdopter: 'Usuario pionero',
     earnedOf: '{earned} de {total} conseguidas',
     emptyTitle: 'Aún no hay insignias',
@@ -2411,7 +2411,7 @@ export const es: Localized<EnMessages> = {
 
   weekly: {
     messages: 'Mensajes',
-    summary: 'Esta semana: {messages} y {corrections}.',
+    summary: 'Esta semana: {messages} y {feed}.',
   },
 
   watch: {
@@ -2476,10 +2476,7 @@ export const es: Localized<EnMessages> = {
       one: '{count} mensaje',
       other: '{count} mensajes',
     },
-    corrections: {
-      one: '{count} corrección',
-      other: '{count} correcciones',
-    },
+    feed: { one: '{count} en el muro', other: '{count} en el muro' },
     echoReviews: {
       one: '{count} tarjeta de Echo repasada',
       other: '{count} tarjetas de Echo repasadas',

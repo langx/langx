@@ -222,11 +222,11 @@ export const tr: Localized<ServerMessages> = {
     newsletterEverybody: 'Herkesin ayı',
 
     newsletterQuiet:
-      'Bu ay sessizdin — mesaj yok, düzeltme yok. Aşağıdakiler sessiz değildi ve hâlâ buradalar.',
+      'Bu ay sessizdin — mesaj yok, akışta bir şey yok. Aşağıdakiler sessiz değildi ve hâlâ buradalar.',
 
     newsletterMessages: 'Gönderilen mesaj',
 
-    newsletterCorrections: 'Yapılan düzeltme',
+    newsletterFeed: 'Akış',
 
     newsletterTokens: 'Kazanılan token',
 
@@ -235,8 +235,6 @@ export const tr: Localized<ServerMessages> = {
     newsletterNewMembers: 'Yeni üye',
 
     newsletterMessagesSent: 'Gönderilen mesaj',
-
-    newsletterCorrectionsMade: 'Yapılan düzeltme',
 
     newsletterButton: 'LangX’i aç',
 

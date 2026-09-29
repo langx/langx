@@ -552,6 +552,7 @@ export const en = {
     days: { one: '{count} day', other: '{count} days' },
     messages: { one: '{count} message', other: '{count} messages' },
     corrections: { one: '{count} correction', other: '{count} corrections' },
+    feed: { one: '{count} in the feed', other: '{count} in the feed' },
     accountAgeToday: 'today',
     accountAgeDays: { one: '{count} day ago', other: '{count} days ago' },
     accountAgeMonths: { one: '{count} month ago', other: '{count} months ago' },
@@ -1692,7 +1693,6 @@ export const en = {
     editProfile: 'Edit profile',
     settings: 'Settings',
     scan: 'Scan a code',
-    corrections: 'Corrections',
     wallet: 'Wallet',
     previewProfile: 'Preview my profile',
     previewProfileBody: 'See your profile the way other people do',
@@ -2007,7 +2007,7 @@ export const en = {
     appIconChanged: 'Icon changed.',
     appIconFailed: 'Could not change the icon',
     showWeekChart: 'Show this week’s chart',
-    showWeekChartBody: 'Which days you sent messages and corrections, on your profile.',
+    showWeekChartBody: 'Which days you were active in chats and the feed, on your profile.',
     voiceCredits: 'Voices and licences',
     voiceCreditsBody:
       'Messages are read aloud by open-source voice models. Most ask nothing of us; the ones below are licensed on the condition that we credit the people who recorded them.',
@@ -2131,7 +2131,7 @@ export const en = {
     lockedAccessibility: '{title}, locked',
     lockedStreak: '{current} of {threshold} days',
     lockedNeeds: 'Buy {title} first',
-    lockedCorrections: '{current} of {threshold} corrections',
+    lockedFeed: '{current} of {threshold} in the feed',
     frameKind: 'Profile frame',
     stickerKind: 'Sticker pack',
     titleKind: 'Title',
@@ -2199,7 +2199,7 @@ export const en = {
     shareForDay: 'Your share for {day}',
     todaySoFar: 'Today so far',
     activityScore: { one: '{count} activity', other: '{count} activity' },
-    todayBreakdown: '{messages} messages, {corrections} corrections, {partners} people.',
+    todayBreakdown: '{messages} messages, {feed} in the feed, {partners} people.',
     poolParticipants: { one: '{n} active that day', other: '{n} active that day' },
     poolShareOfPool: '{percent} of the daily pool',
     poolActiveToday: { one: '{n} active today', other: '{n} active today' },
@@ -2314,12 +2314,12 @@ export const en = {
     earned: 'Earned · {month}',
     earnedLabel: 'Earned',
     locked: 'Locked',
-    firstCorrection: 'First correction',
+    firstFeed: 'First time in the feed',
     streakDays: { one: '{formatted} day', other: '{formatted} days' },
     messagesSent: { one: '{formatted} message', other: '{formatted} messages' },
     tokensEarned: { one: '{formatted} token earned', other: '{formatted} tokens earned' },
     memberDays: { one: '{formatted} day a member', other: '{formatted} days a member' },
-    corrections: { one: '{formatted} correction', other: '{formatted} corrections' },
+    feed: { one: '{formatted} in the feed', other: '{formatted} in the feed' },
     /**
      * The only badge whose wording ignores `threshold` — there is no number in
      * it. `origin.v1` is the only member of its kind, so this names it rather
@@ -2632,7 +2632,7 @@ export const en = {
 
   weekly: {
     messages: 'Messages',
-    summary: 'This week: {messages} and {corrections}.',
+    summary: 'This week: {messages} and {feed}.',
   },
 
   /*
@@ -2710,10 +2710,7 @@ export const en = {
       one: '{count} message',
       other: '{count} messages',
     },
-    corrections: {
-      one: '{count} correction',
-      other: '{count} corrections',
-    },
+    feed: { one: '{count} in the feed', other: '{count} in the feed' },
     echoReviews: {
       one: '{count} Echo card reviewed',
       other: '{count} Echo cards reviewed',

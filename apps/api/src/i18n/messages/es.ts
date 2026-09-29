@@ -239,11 +239,11 @@ export const es: Localized<ServerMessages> = {
     newsletterEverybody: 'El mes de todos',
 
     newsletterQuiet:
-      'Este mes estuviste en silencio: ni mensajes ni correcciones. La gente de abajo no lo estuvo, y sigue aquí.',
+      'Este mes estuviste en silencio: ni mensajes ni nada en el muro. La gente de abajo no lo estuvo, y sigue aquí.',
 
     newsletterMessages: 'Mensajes enviados',
 
-    newsletterCorrections: 'Correcciones hechas',
+    newsletterFeed: 'Muro',
 
     newsletterTokens: 'Tokens ganados',
 
@@ -252,8 +252,6 @@ export const es: Localized<ServerMessages> = {
     newsletterNewMembers: 'Nuevos miembros',
 
     newsletterMessagesSent: 'Mensajes enviados',
-
-    newsletterCorrectionsMade: 'Correcciones hechas',
 
     newsletterButton: 'Abrir LangX',
 

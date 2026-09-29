@@ -13,7 +13,7 @@ import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { ApiError } from '../../lib/ApiError'
 import { cameFromV1 } from '../handles/legacyPrecreate'
-import { countCorrectionsWritten } from './corrections'
+import { countFeedWritten } from './corrections'
 import { readAggregates, type TokenLedgerEntry } from './ledger'
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -62,8 +62,8 @@ export async function getBadgeSummary(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError('NOT_FOUND', 'Complete onboarding first')
 
-  const [corrections, milestoneDates, aggregates, fromV1] = await Promise.all([
-    countCorrectionsWritten(db, userId),
+  const [feed, milestoneDates, aggregates, fromV1] = await Promise.all([
+    countFeedWritten(db, userId),
     streakMilestoneDates(db, userId),
     readAggregates(db, userId),
     // A point read on `user._id`, and inside the same `Promise.all` as the
@@ -93,7 +93,9 @@ export async function getBadgeSummary(
    */
   const progress: Record<BadgeKind, number> = {
     streak: profile.streak.longest,
-    correction: corrections,
+    // The feed count — posts and corrections — under the kind's old name, so
+    // the `correction.N` ids everybody already holds stay theirs.
+    correction: feed,
     messages: profile.stats?.messagesSent ?? 0,
     tokens: aggregates.all,
     veteran: memberDays,

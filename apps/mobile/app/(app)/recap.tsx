@@ -37,7 +37,7 @@ export default function RecapScreen() {
   const name = month ? monthName(month, locale) : ''
 
   const data = recap.data
-  const quiet = data ? data.messages + data.corrections + data.echoReviews === 0 : false
+  const quiet = data ? data.messages + data.feed + data.echoReviews === 0 : false
 
   return (
     <Screen scroll>
@@ -57,7 +57,7 @@ export default function RecapScreen() {
         <>
           <View style={styles.list}>
             <Text style={styles.line}>{t('recap.messages', { count: data.messages })}</Text>
-            <Text style={styles.line}>{t('recap.corrections', { count: data.corrections })}</Text>
+            <Text style={styles.line}>{t('recap.feed', { count: data.feed })}</Text>
             <Text style={styles.line}>{t('recap.echoReviews', { count: data.echoReviews })}</Text>
             <Text style={styles.line}>{t('recap.tokens', { count: data.tokens })}</Text>
             <Text style={styles.muted}>

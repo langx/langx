@@ -59,7 +59,7 @@ export function StoreRow({
    * only says "Locked" and leaves the instruction to the line.
    */
   const gateText = offer.requirement
-    ? t(offer.requirement.kind === 'streak' ? 'store.lockedStreak' : 'store.lockedCorrections', {
+    ? t(offer.requirement.kind === 'streak' ? 'store.lockedStreak' : 'store.lockedFeed', {
         count: offer.requirement.threshold,
         current: offer.requirement.current.toLocaleString(locale),
         threshold: offer.requirement.threshold.toLocaleString(locale),

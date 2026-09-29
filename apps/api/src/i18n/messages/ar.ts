@@ -244,11 +244,11 @@ export const ar: Localized<ServerMessages> = {
     newsletterEverybody: 'شهر الجميع',
 
     newsletterQuiet:
-      'كنت هادئاً هذا الشهر — لا رسائل ولا تصحيحات. من في الأسفل لم يكونوا كذلك، وما زالوا هنا.',
+      'كنت هادئاً هذا الشهر — لا رسائل ولا شيء في الأخبار. من في الأسفل لم يكونوا كذلك، وما زالوا هنا.',
 
     newsletterMessages: 'الرسائل المُرسَلة',
 
-    newsletterCorrections: 'التصحيحات المُقدَّمة',
+    newsletterFeed: 'الأخبار',
 
     newsletterTokens: 'الرموز المكتسبة',
 
@@ -257,8 +257,6 @@ export const ar: Localized<ServerMessages> = {
     newsletterNewMembers: 'أعضاء جدد',
 
     newsletterMessagesSent: 'الرسائل المُرسَلة',
-
-    newsletterCorrectionsMade: 'التصحيحات المُنجَزة',
 
     newsletterButton: 'افتح LangX',
 

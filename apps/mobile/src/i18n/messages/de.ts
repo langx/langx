@@ -455,6 +455,7 @@ export const de: Localized<EnMessages> = {
     days: { one: '{count} Tag', other: '{count} Tage' },
     messages: { one: '{count} Nachricht', other: '{count} Nachrichten' },
     corrections: { one: '{count} Korrektur', other: '{count} Korrekturen' },
+    feed: { one: '{count} im Feed', other: '{count} im Feed' },
     accountAgeToday: 'heute',
     accountAgeDays: { one: 'vor {count} Tag', other: 'vor {count} Tagen' },
     accountAgeMonths: { one: 'vor {count} Monat', other: 'vor {count} Monaten' },
@@ -1537,7 +1538,6 @@ export const de: Localized<EnMessages> = {
     editProfile: 'Profil bearbeiten',
     settings: 'Einstellungen',
     scan: 'Code scannen',
-    corrections: 'Korrekturen',
     wallet: 'Geldbörse',
     previewProfile: 'Mein Profil ansehen',
     previewProfileBody: 'Sieh dein Profil so, wie andere es sehen',
@@ -1846,8 +1846,7 @@ export const de: Localized<EnMessages> = {
     appIconChanged: 'Symbol geändert.',
     appIconFailed: 'Symbol konnte nicht geändert werden',
     showWeekChart: 'Wochendiagramm zeigen',
-    showWeekChartBody:
-      'An welchen Tagen du Nachrichten und Korrekturen geschickt hast, auf deinem Profil.',
+    showWeekChartBody: 'An welchen Tagen du in Chats und im Feed aktiv warst, auf deinem Profil.',
     voiceCredits: 'Stimmen und Lizenzen',
     voiceCreditsBody:
       'Nachrichten werden von quelloffenen Sprachmodellen vorgelesen. Die meisten verlangen nichts von uns; die unten stehenden sind unter der Bedingung lizenziert, dass wir die Menschen nennen, die sie aufgenommen haben.',
@@ -1972,7 +1971,7 @@ export const de: Localized<EnMessages> = {
     lockedAccessibility: '{title}, gesperrt',
     lockedStreak: '{current} von {threshold} Tagen',
     lockedNeeds: 'Erst {title} kaufen',
-    lockedCorrections: '{current} von {threshold} Korrekturen',
+    lockedFeed: '{current} von {threshold} im Feed',
     frameKind: 'Profilrahmen',
     stickerKind: 'Stickerpaket',
     titleKind: 'Titel',
@@ -2040,7 +2039,7 @@ export const de: Localized<EnMessages> = {
     shareForDay: 'Dein Anteil für {day}',
     todaySoFar: 'Heute bisher',
     activityScore: { one: '{count} Aktivität', other: '{count} Aktivität' },
-    todayBreakdown: '{messages} Nachrichten, {corrections} Korrekturen, {partners} Personen.',
+    todayBreakdown: '{messages} Nachrichten, {feed} im Feed, {partners} Personen.',
     poolParticipants: { one: '{n} aktiv an dem Tag', other: '{n} aktiv an dem Tag' },
     poolShareOfPool: '{percent} des täglichen Pools',
     poolActiveToday: { one: '{n} heute aktiv', other: '{n} heute aktiv' },
@@ -2155,12 +2154,12 @@ export const de: Localized<EnMessages> = {
     earned: 'Erhalten · {month}',
     earnedLabel: 'Erhalten',
     locked: 'Gesperrt',
-    firstCorrection: 'Erste Korrektur',
+    firstFeed: 'Zum ersten Mal im Feed',
     streakDays: { one: '{formatted} Tag', other: '{formatted} Tage' },
     messagesSent: { one: '{formatted} Nachricht', other: '{formatted} Nachrichten' },
     tokensEarned: { one: '{formatted} Token verdient', other: '{formatted} Token verdient' },
     memberDays: { one: '{formatted} Tag dabei', other: '{formatted} Tage dabei' },
-    corrections: { one: '{formatted} Korrektur', other: '{formatted} Korrekturen' },
+    feed: { one: '{formatted} im Feed', other: '{formatted} im Feed' },
     earlyAdopter: 'Nutzer der ersten Stunde',
     earnedOf: '{earned} von {total} verdient',
     emptyTitle: 'Noch keine Abzeichen',
@@ -2456,7 +2455,7 @@ export const de: Localized<EnMessages> = {
 
   weekly: {
     messages: 'Nachrichten',
-    summary: 'Diese Woche: {messages} und {corrections}.',
+    summary: 'Diese Woche: {messages} und {feed}.',
   },
 
   watch: {
@@ -2521,10 +2520,7 @@ export const de: Localized<EnMessages> = {
       one: '{count} Nachricht',
       other: '{count} Nachrichten',
     },
-    corrections: {
-      one: '{count} Korrektur',
-      other: '{count} Korrekturen',
-    },
+    feed: { one: '{count} im Feed', other: '{count} im Feed' },
     echoReviews: {
       one: '{count} Echo-Karte wiederholt',
       other: '{count} Echo-Karten wiederholt',

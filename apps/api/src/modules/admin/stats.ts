@@ -16,7 +16,7 @@ import type { Profile } from '../profiles/profiles'
  * **Separate from `insight/publicStats.ts` on purpose, and nothing here may
  * move there.** That module is served unauthenticated from `/public/stats` to
  * anybody who asks, and `docs/insight.md` draws the line it lives behind:
- * members, messages, corrections, languages and streaks are publishable;
+ * members, messages, the feed, languages and streaks are publishable;
  * revenue, subscriptions, plan mix, conversion and retention are not. This is
  * the private half. It *reads* the public one rather than recomputing it —
  * that function already caches for ten minutes and already runs the three
