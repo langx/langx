@@ -270,8 +270,9 @@ describe('the operator panel', () => {
 
       // The plan mix adds up, which is the only thing that can be asserted
       // about it without pinning the tier of every fixture in the file.
-      const { total, pro, proPlus, free } = stats.money.tiers
-      expect(pro + proPlus + free).toBe(total)
+      const { total, pro, gifted, free } = stats.money.tiers
+      expect(pro + free).toBe(total)
+      expect(gifted).toBeLessThanOrEqual(pro)
 
       // Read from the public module rather than recomputed beside it.
       expect(stats.public.totals.members).toBeGreaterThan(0)
@@ -500,33 +501,48 @@ describe('the operator panel', () => {
       )
       await profiles().updateOne(
         { _id: other.userId },
-        { $set: { entitlement: { tier: 'pro_plus', updatedAt: new Date() } } },
+        // A v1 lifetime gift from while there were two plans, not merged yet.
+        {
+          $set: {
+            entitlement: { tier: 'pro_plus', store: 'promotional', updatedAt: new Date() },
+          },
+        },
       )
 
       type Page = {
-        items: { userId: string; willRenew: boolean | null }[]
+        items: { userId: string; tier: string; gift: boolean; willRenew: boolean | null }[]
         nextCursor: string | null
       }
       const pro = (await get(admin, '/admin/members?tier=pro')).json<Page>()
-      expect(pro.items.map((row) => row.userId)).toEqual([newer.userId, current.userId])
-      expect(pro.items[0]!.willRenew).toBe(true)
+      expect(pro.items.map((row) => row.userId)).toEqual([
+        other.userId,
+        newer.userId,
+        current.userId,
+      ])
+      // One tier on the wire, and the gift told apart from the paid.
+      expect(pro.items.map((row) => row.tier)).toEqual(['pro', 'pro', 'pro'])
+      expect(pro.items.map((row) => row.gift)).toEqual([true, false, false])
+      expect(pro.items[1]!.willRenew).toBe(true)
       expect(pro.nextCursor).toBeNull()
 
       // The tile and the list are the same filter.
       const stats = (await get(admin, '/admin/stats')).json<AdminStats>()
       expect(stats.money.tiers.pro).toBe(pro.items.length)
+      expect(stats.money.tiers.gifted).toBe(1)
 
-      const first = (await get(admin, '/admin/members?tier=pro&limit=1')).json<Page>()
-      expect(first.items.map((row) => row.userId)).toEqual([newer.userId])
+      const first = (await get(admin, '/admin/members?tier=pro&limit=2')).json<Page>()
+      expect(first.items.map((row) => row.userId)).toEqual([other.userId, newer.userId])
       expect(first.nextCursor).not.toBeNull()
       const rest = (
-        await get(admin, `/admin/members?tier=pro&limit=1&cursor=${first.nextCursor}`)
+        await get(admin, `/admin/members?tier=pro&limit=2&cursor=${first.nextCursor}`)
       ).json<Page>()
       expect(rest.items.map((row) => row.userId)).toEqual([current.userId])
       expect(rest.nextCursor).toBeNull()
 
-      const proPlus = (await get(admin, '/admin/members?tier=pro_plus')).json<Page>()
-      expect(proPlus.items.map((row) => row.userId)).toEqual([other.userId])
+      // A panel built before the single plan still asks for `pro_plus`; it
+      // gets the one list there is rather than a validation error.
+      const old = (await get(admin, '/admin/members?tier=pro_plus')).json<Page>()
+      expect(old.items).toHaveLength(3)
 
       expect((await get(null, '/admin/members?tier=pro')).statusCode).toBe(401)
     })

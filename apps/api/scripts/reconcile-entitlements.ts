@@ -26,7 +26,7 @@
  * a restored profile with no `lifetimeGranted` whose staged v1 balance clears
  * a rung. Re-granting those is a decision, not a flag.
  */
-import { lifetimeGrantFor } from '@langx/shared'
+import { lifetimeGrantFor, normalizePlanTier } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { COLLECTIONS } from '../src/db/collections'
 import { loadEnv } from '../src/env'
@@ -50,7 +50,13 @@ try {
     })
     .toArray()
 
-  const wrong = gifted.filter((p) => p.entitlement.tier !== p.restoredFromV1?.lifetimeGranted)
+  // Normalized on both sides: a Polyglot gift stored as `pro` after the
+  // single plan is not a disagreement.
+  const wrong = gifted.filter(
+    (p) =>
+      normalizePlanTier(p.entitlement.tier) !==
+      normalizePlanTier(p.restoredFromV1?.lifetimeGranted),
+  )
 
   console.log(`db                       ${env.MONGODB_DB}`)
   console.log(`gifted a lifetime tier   ${gifted.length}`)
@@ -67,7 +73,7 @@ try {
     for (const p of wrong) {
       const next = await refreshEntitlement(db, client, p._id)
       console.log(`  @${p.handle.padEnd(20)} → ${next.tier}`)
-      if (next.tier === p.restoredFromV1?.lifetimeGranted) repaired += 1
+      if (next.tier === normalizePlanTier(p.restoredFromV1?.lifetimeGranted)) repaired += 1
     }
     console.log(`repaired                 ${repaired} / ${wrong.length}`)
   } else if (wrong.length > 0) {

@@ -202,7 +202,7 @@ export async function restoreByHash(
 }
 
 /**
- * The v1 loyalty gift — lifetime Pro+ or Pro, by v1 token balance
+ * The v1 loyalty gift — lifetime Pro, by v1 token balance
  * (`LOYALTY_LIFETIME_GRANTS`).
  *
  * Failure is swallowed for the same reason the conversation import's is —
@@ -213,10 +213,10 @@ export async function restoreByHash(
  * either way, so nothing is lost but the automation.
  *
  * The first entitlement is the one that decides the tier, so it is awaited
- * alone: if it fails there is no gift to report. The rest are belt-and-braces
- * (Pro+ also grants `pro`, mirroring the products) and a failure among them
- * leaves a recipient who is still correctly Pro+ by precedence — worth
- * logging, not worth withholding the news over.
+ * alone: if it fails there is no gift to report. Any others (there are none
+ * since the single plan; there were while Polyglot granted both ids) are
+ * belt-and-braces, and a failure among them is worth logging, not worth
+ * withholding the news over.
  *
  * Safe to replay: a promotional grant is an upsert on RevenueCat's side, and
  * `markRestored` already makes a second restore for the same account a no-op.
@@ -263,7 +263,7 @@ async function tryGrantLifetime(
  * authority. But nothing else on the restore path reads it back: the
  * webhooks arrive when they arrive, and the app calls `/billing/refresh` only
  * from the paywall. Between the two, someone who has just been told
- * "Polyglot, for life" opens Settings and sees "Free". One read closes that.
+ * "Pro, for life" opens Settings and sees "Free". One read closes that.
  *
  * Swallowed like every other optional step here, and safe to be: `refreshEntitlement`
  * is idempotent and the next webhook or refresh writes the same answer.

@@ -881,8 +881,9 @@ export const de: Localized<EnMessages> = {
     boostedWhat: 'Was ist das?',
     boostedExplainTitle: 'Hervorgehobene Profile',
     boostedExplainBody:
-      'Hier erscheinen Fluent- und Polyglot-Mitglieder, Polyglot zuerst. Die Reihenfolge wechselt im Lauf des Tages, damit alle einmal vorn stehen — nach vorn bringen dich ein Foto, ein paar Worte über dich und ein kürzlicher Besuch. Sie werden genauso nach Sprachen zugeordnet wie die Liste darunter — an der Zuordnung ändert sich nichts, und abschalten lässt es sich in den Einstellungen.',
+      'Hier erscheinen Menschen mit Pro. Die Reihenfolge wechselt im Laufe des Tages, sodass alle einmal vorne stehen — ein Foto, ein paar Worte über dich und ein kürzlicher Besuch bringen dich dorthin. Sie werden genau wie die Liste darunter nach deinen Sprachen ausgewählt — an der Zuordnung ändert sich nichts, und alle können es in den Einstellungen ausschalten.',
     boostedSeePlans: 'Zu den Plänen',
+    nameAge: '{name}, {age}',
     languagesA11y: 'Wähle, mit welchen deiner Sprachen gesucht wird',
     searchHandles: 'Nach Name oder Benutzername suchen',
     searchPlaceholder: 'Name oder Benutzername',
@@ -1150,7 +1151,8 @@ export const de: Localized<EnMessages> = {
       'Du hast die Abschriften für heute verbraucht. In 24 Stunden gibt es wieder neue.',
     copied: 'Kopiert',
     couldNotSend: 'Konnte nicht gesendet werden',
-    mediaQuota: 'Du hast das heutige Limit für Fotos, Videos und Sprachnachrichten erreicht.',
+    mediaQuota:
+      'Du hast das heutige Limit für Fotos, Videos und Sprachnachrichten erreicht. Das ist ein Fair-Use-Limit, für alle gleich, und es wird im Laufe des Tages wieder frei.',
     attachmentFailed: 'Dieser Anhang konnte nicht gesendet werden. Versuch es noch einmal.',
     photosTitle: 'Fotos',
     dropToAttach: 'Zum Anhängen loslassen',
@@ -1527,10 +1529,7 @@ export const de: Localized<EnMessages> = {
     viewersCount: { one: '{count} Person', other: '{count} Leute' },
     proTitle: '✦ Mehr erreichen',
     proBody:
-      'Unbegrenzt neue Chats, erweiterte Filter, Übersetzung und zwei Sprachen gleichzeitig.',
-    polyglotTitle: '✦ Auf {plan} wechseln',
-    polyglotBody:
-      'Sieh, wer dich angesehen hat, surf inkognito, sortier nach Entfernung und schreib in der Sprache des anderen.',
+      'Unbegrenzt neue Chats, erweiterte Filter, wer dich angesehen hat, Inkognito, in der Nähe und mehr.',
     newChatsLeft: 'Heute noch neue Chats:',
     editProfile: 'Profil bearbeiten',
     settings: 'Einstellungen',
@@ -1687,7 +1686,10 @@ export const de: Localized<EnMessages> = {
       one: 'Dein Tarif fasst {count} Sprache.',
       other: 'Dein Tarif fasst {count} Sprachen.',
     },
-    capUpgrade: '{fluent} fasst {fluentMax}, {polyglot} fasst {polyglotMax}.',
+    capUpgrade: {
+      one: '{plan} fasst {count} Sprache.',
+      other: '{plan} fasst {count} Sprachen.',
+    },
     capOverGrandfathered:
       'Du hast bereits mehr, als dein Tarif fasst. Du kannst sie ändern oder entfernen, aber keine weitere hinzufügen.',
     changeHint: 'Tippe eine Sprache an, um sie zu ändern.',
@@ -1855,7 +1857,7 @@ export const de: Localized<EnMessages> = {
       'Schalte das aus und niemand findet dich — weder in Entdecken noch über deinen Benutzernamen.',
     boost: 'Mein Profil hervorheben',
     boostBody:
-      'Zeig mich in der Leiste mit hervorgehobenen Profilen oben in Entdecken — Leuten, deren Sprachen zu meinen passen. Mit Fluent und Polyglot aktiv.',
+      'Zeig mich in der Leiste mit hervorgehobenen Profilen oben in Entdecken — Leuten, deren Sprachen zu meinen passen. Mit Pro aktiv.',
     incognito: 'Inkognito surfen',
     incognitoBody: 'Du erscheinst nicht in ihren Besuchern.',
     hideOnline: 'Verbergen, wenn ich online bin',
@@ -1912,7 +1914,6 @@ export const de: Localized<EnMessages> = {
     plan: 'Tarif',
     manageSubscription: 'Verwalten oder kündigen',
     upgrade: 'Tarife ansehen',
-    upgradeTo: 'Auf {plan} wechseln',
     notificationsSection: 'Mitteilungen',
     pushThisDevice: 'Mitteilungen auf diesem Gerät',
     pushThisDeviceBody: 'Hier ausschalten — deine anderen Geräte bekommen sie weiterhin.',
@@ -2293,20 +2294,16 @@ export const de: Localized<EnMessages> = {
 
   paywall: {
     screenTitle: 'Tarife',
-    everythingInPro: 'Alles aus {plan}',
     restorePurchases: 'Käufe wiederherstellen',
     partOf: 'gehört zu',
     unlimitedChats: 'Unbegrenzt neue Chats',
     unlimitedChatsBody: '{count} am Tag im kostenlosen Tarif.',
     welcomePack: 'Ein Willkommenspaket',
-    welcomePackBody:
-      'Ein Profilrahmen und zwei Serien-Freezes zum Start. {plan} bringt das ganze Set.',
+    welcomePackBody: 'Profilrahmen, Titel und zwei Serien-Freezes zum Start.',
     advancedFilters: 'Erweiterte Filter',
     boostedProfile: 'Hervorgehobenes Profil',
     boostedProfileBody:
       'Du erscheinst in der Leiste über der Entdecken-Liste, für alle, deren Sprachen zu deinen passen. Standardmäßig an; in den Einstellungen abschaltbar.',
-    boostedProfileFirst: 'Ganz nach vorn',
-    boostedProfileFirstBody: 'Polyglot-Profile stehen in der Leiste vor Fluent.',
     sendTranslation: 'In ihrer Sprache senden',
     sendTranslationBody: 'Schreib in deiner; beides geht raus, also lesen sie dich ohne zu raten.',
     deckExport: 'Nimm deine Wendungen mit',
@@ -2330,20 +2327,8 @@ export const de: Localized<EnMessages> = {
       'Du hast deine {count} neuen Chats für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
     manageNotice: 'Du hast {plan}. Verwalte oder kündige es in deinem Store-Konto.',
     lifetimeNotice: 'Du hast {plan} auf Lebenszeit. Nichts verlängert sich, nichts wird berechnet.',
-    lifetimeKept:
-      '{plan} auf Lebenszeit bleibt dir. Sollte {plus} je enden, fällst du darauf zurück.',
     includedIn: 'In {plan} enthalten',
-    upgradeNotice:
-      'Wechsel von {plan}: Der Store berechnet für den Rest des laufenden Zeitraums nur die Differenz, und {plan} endet.',
-    upgradeWeb:
-      'Dein {plan}-Abo wurde im Web gekauft. Ändere es im Abrechnungsportal – ungenutzte Zeit wird erstattet.',
-    changePlan: 'Plan ändern',
     currentPlan: 'Dein aktueller Tarif',
-    upgradeElsewhere:
-      'Dein {plan}-Abo wurde über {store} gekauft. Ändere es dort, damit du nicht doppelt zahlst.',
-    storeIos: 'den App Store',
-    storeAndroid: 'Google Play',
-    storeWeb: 'das Web',
     purchaseFailed: 'Dieser Kauf ist nicht durchgegangen. Es wurde nichts abgebucht.',
     purchaseUnavailable: 'Käufe sind auf diesem Gerät nicht verfügbar.',
     nothingToRestore: 'Auf diesem Gerät gibt es nichts wiederherzustellen.',
@@ -2354,6 +2339,10 @@ export const de: Localized<EnMessages> = {
     trialTerms: {
       one: '{count} Tag gratis, danach {price} {period}',
       other: '{count} Tage gratis, danach {price} {period}',
+    },
+    trialWeeks: {
+      one: '{count} Woche gratis, danach {price} {period}',
+      other: '{count} Wochen gratis, danach {price} {period}',
     },
     perMonth: 'pro Monat',
     perYear: 'pro Jahr',
@@ -2367,10 +2356,26 @@ export const de: Localized<EnMessages> = {
     headlineBody:
       'Korrekturen und Antworten bleiben in jedem Plan unbegrenzt. Mit einem Abo fallen die anderen Grenzen weg.',
     yearlySaving: 'Jährlich · {percent}% sparen',
+    yearlyFreeMonths: {
+      one: 'Jährlich · {count} Monat gratis',
+      other: 'Jährlich · {count} Monate gratis',
+    },
     savePercent: '{percent}% sparen',
+    freeMonths: {
+      one: '{count} Monat gratis',
+      other: '{count} Monate gratis',
+    },
     savingA11y: '{price} pro Monat im Monatsabo. Mit dem Jahresabo sparst du {percent}%.',
+    freeMonthsA11y: {
+      one: '{price} pro Monat im Monatsabo. Mit dem Jahresabo bekommst du {count} Monat gratis.',
+      other: '{price} pro Monat im Monatsabo. Mit dem Jahresabo bekommst du {count} Monate gratis.',
+    },
     billingPeriod: 'Abrechnungszeitraum',
     start: 'Mit {plan} starten',
+    startTrial: {
+      one: 'Kostenlose Woche starten',
+      other: '{count} kostenlose Wochen starten',
+    },
     continueFree: 'Kostenlos weitermachen',
     perMonthBilledYearly: 'pro Monat · jährlich abgerechnet',
   },

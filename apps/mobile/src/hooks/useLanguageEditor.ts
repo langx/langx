@@ -85,12 +85,7 @@ export function useLanguageEditor(): {
       t('languages.capReached', { count: refusal.max }),
       over
         ? t('languages.capOverGrandfathered')
-        : t('languages.capUpgrade', {
-            fluent: TIER_NAMES.pro,
-            fluentMax: PLAN_LIMITS.pro[key],
-            polyglot: TIER_NAMES.pro_plus,
-            polyglotMax: PLAN_LIMITS.pro_plus[key],
-          }),
+        : t('languages.capUpgrade', { plan: TIER_NAMES.pro, count: PLAN_LIMITS.pro[key] }),
     )
     if (!over) openPaywall(undefined, '/(app)/languages')
   }

@@ -158,23 +158,29 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
     expect(response.statusCode).toBe(400)
   })
 
+  /**
+   * The route answers with the caller's own entitlement, so it goes out as
+   * `pro_plus` for apps released before the single plan (`toOwnProfileWire`);
+   * `/billing/refresh` answers with the stored one.
+   */
   it('writes the bought tier onto the profile', async () => {
     const user = await newUser('buys-pro@example.com')
     const response = await testEvent(user, { action: 'purchase', packageId: '$rc_monthly' })
 
     expect(response.statusCode, response.body).toBe(200)
     expect(response.json<TestEventResponse>().entitlement).toMatchObject({
-      tier: 'pro',
+      tier: 'pro_plus',
       willRenew: true,
       store: 'fake_store',
     })
+    expect((await refresh(user)).json()).toMatchObject({ tier: 'pro' })
   })
 
-  it('writes pro_plus for a Pro+ package, not the tier a bare grant would default to', async () => {
+  /** The offering keeps Polyglot's packages for old apps; this code sells neither. */
+  it('refuses the retired Polyglot packages', async () => {
     const user = await newUser('buys-plus@example.com')
     const response = await testEvent(user, { action: 'purchase', packageId: 'pro_plus_yearly' })
-
-    expect(response.json<TestEventResponse>().entitlement).toMatchObject({ tier: 'pro_plus' })
+    expect(response.statusCode).toBe(400)
   })
 
   /**
@@ -185,11 +191,11 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
    */
   it('survives the reconcile the paywall runs after a purchase', async () => {
     const user = await newUser('refresh-after-buy@example.com')
-    await testEvent(user, { action: 'purchase', packageId: 'pro_plus_monthly' })
+    await testEvent(user, { action: 'purchase', packageId: '$rc_annual' })
 
     const response = await refresh(user)
     expect(response.statusCode, response.body).toBe(200)
-    expect(response.json()).toMatchObject({ tier: 'pro_plus' })
+    expect(response.json()).toMatchObject({ tier: 'pro' })
   })
 
   it('keeps access after a cancellation and only stops the renewal', async () => {
@@ -199,7 +205,7 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
     const response = await testEvent(user, { action: 'cancel' })
     expect(response.statusCode, response.body).toBe(200)
     expect(response.json<TestEventResponse>().entitlement).toMatchObject({
-      tier: 'pro',
+      tier: 'pro_plus',
       willRenew: false,
     })
   })
@@ -215,22 +221,16 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
   })
 
   /**
-   * Fluent → Polyglot through the same route a first purchase takes. The
-   * store sends `PRODUCT_CHANGE` for it, and until 4 September 2026 that event
-   * downgraded every Pro+ who touched it; this is the harness's proof that a
-   * real upgrade lands on the tier that was upgraded *to*.
+   * Monthly → yearly through the same route a first purchase takes. The store
+   * sends `PRODUCT_CHANGE` for it, and the webhook treats it as a grant.
    */
-  it('upgrades a running Fluent to Polyglot', async () => {
+  it('changes a running monthly to yearly', async () => {
     const user = await newUser('upgrades@example.com')
     await testEvent(user, { action: 'purchase', packageId: '$rc_monthly' })
 
-    const response = await testEvent(user, { action: 'purchase', packageId: 'pro_plus_yearly' })
+    const response = await testEvent(user, { action: 'purchase', packageId: '$rc_annual' })
     expect(response.statusCode, response.body).toBe(200)
-    expect(response.json<TestEventResponse>().entitlement).toMatchObject({
-      tier: 'pro_plus',
-      willRenew: true,
-    })
-    expect((await refresh(user)).json()).toMatchObject({ tier: 'pro_plus' })
+    expect((await refresh(user)).json()).toMatchObject({ tier: 'pro', willRenew: true })
 
     const recorded = await handle.db
       .collection<{ type: string }>('subscriptions')
@@ -242,29 +242,26 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
 
   /**
    * The v1 loyalty gift, then a purchase on top of it, then the purchase
-   * ending. Fluent for life is the promise; a lapsed Polyglot that left the
+   * ending. Pro for life is the promise; a lapsed purchase that left the
    * account on free would break it — and it is the one case the fake store
    * used to be unable to rehearse, because a purchase overwrote the grant.
    */
-  it('returns a gifted Fluent to Fluent, not free, when the Polyglot bought on top expires', async () => {
+  it('keeps a gifted lifetime when a subscription bought on top expires', async () => {
     const user = await newUser('gifted-upgrader@example.com')
     await fakeStore.grantLifetimeEntitlement(user.userId, 'pro')
     expect((await refresh(user)).json()).toMatchObject({ tier: 'pro', store: 'promotional' })
 
-    const bought = await testEvent(user, { action: 'purchase', packageId: 'pro_plus_monthly' })
-    expect(bought.json<TestEventResponse>().entitlement).toMatchObject({
-      tier: 'pro_plus',
-      store: 'fake_store',
-    })
+    await testEvent(user, { action: 'purchase', packageId: '$rc_monthly' })
+    // The lifetime outlasts the subscription, so it is what is stored.
+    expect((await refresh(user)).json()).toMatchObject({ tier: 'pro', store: 'promotional' })
 
     const expired = await testEvent(user, { action: 'expire' })
     expect(expired.statusCode, expired.body).toBe(200)
-    expect(expired.json<TestEventResponse>().entitlement).toMatchObject({
+    expect((await refresh(user)).json()).toMatchObject({
       tier: 'pro',
       store: 'promotional',
       willRenew: false,
     })
-    expect((await refresh(user)).json()).toMatchObject({ tier: 'pro' })
   })
 
   it('refuses to cancel something that was never bought', async () => {

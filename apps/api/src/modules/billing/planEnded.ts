@@ -34,7 +34,7 @@ export const PLAN_ENDED_MAX_AGE_MS = 24 * 60 * 60 * 1000
  * Transactional, like everything in `notify.ts`: no preference is consulted,
  * because "do not tell me my plan ended" is not a setting worth offering.
  * What is consulted is whether it actually ended — `entitlement.tier` is read
- * now, not when the event arrived, so a Pro+ that lapsed onto a running Pro,
+ * now, not when the event arrived, so a subscription that lapsed onto a running gift,
  * an account that resubscribed, and a renewal that simply took its time all
  * fall out of this query rather than needing a rule each.
  *

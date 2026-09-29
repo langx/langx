@@ -21,7 +21,7 @@
  * before the script path — the overlay is what makes touching production an
  * explicit extra flag.
  */
-import { TIER_NAMES, type PaidPlanTier } from '@langx/shared'
+import { TIER_NAMES, normalizePlanTier, type PaidPlanTier } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { COLLECTIONS } from '../src/db/collections'
 import { createEmailSender } from '../src/email/sender'
@@ -63,8 +63,9 @@ try {
 
   const pending: { profile: Profile; tier: PaidPlanTier }[] = []
   for (const profile of gifted) {
-    const tier = profile.restoredFromV1?.lifetimeGranted
-    if (!tier) continue
+    // `pro_plus` on gifts made while there were two plans; it is Pro.
+    const tier = normalizePlanTier(profile.restoredFromV1?.lifetimeGranted)
+    if (tier === 'free') continue
     if (await alreadyClaimed(db, 'lifetimeGift', profile._id, 'once')) {
       console.log(`  @${profile.handle.padEnd(20)} already told`)
       continue

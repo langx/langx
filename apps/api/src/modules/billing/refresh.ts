@@ -2,7 +2,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient'
-import { creditReferrerForSubscription } from '../referrals/settle'
+import { creditReferrerForSubscription, isPaidPurchase } from '../referrals/settle'
 import { grantWelcomePack } from './welcomePack'
 
 /**
@@ -12,8 +12,8 @@ import { grantWelcomePack } from './welcomePack'
  * RevenueCat's REST API." Reconciles straight from RevenueCat's own subscriber record,
  * never from anything the client asserts about its own purchase state.
  *
- * Also the answer to the one case webhooks cannot express: when a Pro+
- * subscription lapses while a separate Pro one is still running, the
+ * Also the answer to the one case webhooks cannot express: when one
+ * subscription lapses while another (or a gift) is still running, the
  * `EXPIRATION` event says only that something ended. Asking RevenueCat what
  * the subscriber holds *now* is the only way to land on `pro` rather than
  * `free`, which is why `processRevenueCatWebhook` calls this path too.
@@ -80,20 +80,20 @@ async function applyEntitlement(
     )
 
   /*
-   * The transition, not the state. A renewal's pre-image is already paid, so
-   * it cannot fire here — which is the point, since this path cannot see the
-   * event type at all. It exists because a webhook that never arrives (a
-   * RevenueCat outage, a misconfigured dashboard secret) would otherwise mean
-   * the top-up is never paid, and this fallback is documented above as being
-   * for exactly that case.
+   * The transition, not the state: somebody who was not paying a moment ago
+   * and is now — a first purchase, or a free week that has just turned into a
+   * charged month. A trial and a promotional grant are not paying, so neither
+   * edge pays the referrer (`isPaidPurchase`); the renewal after them does.
    *
-   * A lapse and re-subscribe reaches this edge a second time and pays nothing,
-   * because `refId` is the invitee: the pair is capped whatever calls this.
-   * Swallowed for the same reason `grantWelcomePack` is.
+   * It exists because a webhook that never arrives (a RevenueCat outage, a
+   * misconfigured dashboard secret) would otherwise mean the top-up is never
+   * paid. A lapse and re-subscribe reaches this edge a second time and pays
+   * nothing, because `refId` is the invitee: the pair is capped whatever
+   * calls this. Swallowed for the same reason `grantWelcomePack` is.
    */
-  if (before?.entitlement.tier === 'free' && next.tier !== 'free') {
+  if (!isPaidPurchase(before?.entitlement) && isPaidPurchase(next)) {
     try {
-      await creditReferrerForSubscription(db, userId, next.tier, now)
+      await creditReferrerForSubscription(db, userId, next, now)
     } catch {
       // Intentionally ignored; see above.
     }
@@ -112,7 +112,7 @@ async function applyEntitlement(
    */
   if (next.tier !== 'free') {
     try {
-      await grantWelcomePack(db, userId, next.tier)
+      await grantWelcomePack(db, userId, 'pro')
     } catch {
       // Intentionally ignored; see above.
     }

@@ -343,7 +343,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
-  /** The list behind the Pro and Pro+ tiles on the dashboard. */
+  /** The list behind the Pro tile on the dashboard. */
   app.get(
     '/admin/members',
     { preHandler: requireAdmin, schema: { querystring: adminMemberListQuerySchema } },

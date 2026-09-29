@@ -7,6 +7,7 @@ import { asFakeRevenueCat } from '../modules/billing/fakeRevenueCat'
 import { refreshEntitlement } from '../modules/billing/refresh'
 import { processRevenueCatWebhook } from '../modules/billing/webhook'
 import { getProfile } from '../modules/profiles/profiles'
+import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
 
 /**
  * What the local harness can make the fake store do. Not "every RevenueCat
@@ -116,7 +117,7 @@ function registerTestStoreRoute(app: Parameters<FastifyPluginAsyncZod>[0]): void
       const profile = await getProfile(app.mongo.db, userId)
       return reply.send({
         event: { id: event.id, type: event.type },
-        entitlement: profile?.entitlement,
+        entitlement: profile ? toOwnProfileWire(profile).entitlement : undefined,
       })
     },
   )

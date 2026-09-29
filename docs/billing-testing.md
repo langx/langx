@@ -71,7 +71,7 @@ goes wrong in billing:
 ```bash
 # cookies from a signed-in session; --user is never taken from the body
 curl -X POST localhost:4000/billing/test-event -H 'content-type: application/json' \
-  -b "$COOKIE" -d '{"action":"purchase","packageId":"pro_plus_monthly"}'
+  -b "$COOKIE" -d '{"action":"purchase","packageId":"$rc_monthly"}'
 curl ... -d '{"action":"cancel"}'   # access continues, willRenew flips
 curl ... -d '{"action":"expire"}'   # access ends, tier drops to free
 ```
@@ -80,15 +80,19 @@ Purchases live in memory and are lost when the API restarts. Persisting them
 would mean a collection and an index that exist only for a harness; re-buying
 after a restart is the cheaper trade.
 
-**Upgrading is a second purchase.** Buy `$rc_monthly` and then
-`pro_plus_monthly` and the fake store answers the second with
-`PRODUCT_CHANGE`, the event a store sends when a running subscription is
-swapped, rather than another `INITIAL_PURCHASE` — which is what the paywall's
-upgrade path produces on iOS and Play, and what the webhook has to land on
-`pro_plus` (until 4 September 2026 it landed on `pro`). The paywall under the
-harness takes the same route: a Fluent tap on Polyglot is an `upgrade` and
-goes straight to `/billing/test-event`, where a real web build would leave for
-RevenueCat's portal instead.
+**A second purchase is a product change.** Buy `$rc_monthly` and then
+`$rc_annual` and the fake store answers the second with `PRODUCT_CHANGE`, the
+event a store sends when a running subscription is swapped, rather than another
+`INITIAL_PURCHASE`. There is no upgrade any more — one paid plan — and the
+retired `pro_plus_*` packages are refused, as `PACKAGES` no longer lists them.
+
+**The harness prices are Pro's US prices** — `TEST $9.99` a month, `TEST
+$83.99` a year — with a one-week trial on both, so the paywall under the
+harness reads "3 months free" and "1 week free" the way the shipped one does.
+
+**A referral top-up needs a paid period.** The fake store's events carry no
+`period_type`, so a harness purchase pays a referrer nothing; replay one with
+`scripts/revenuecat-webhook.ts` and a `NORMAL` period to see the payout.
 
 **The v1 loyalty gift survives a purchase.** A promotional grant is held
 beside the store subscription, not inside it, so `grantLifetimeEntitlement`
@@ -142,7 +146,7 @@ also how a real event gets replayed:
 ```bash
 REVENUECAT_WEBHOOK_AUTH_HEADER=dev-secret \
   pnpm --filter @langx/api exec tsx scripts/revenuecat-webhook.ts \
-  --user <userId> --type INITIAL_PURCHASE --package pro_plus_monthly
+  --user <userId> --type INITIAL_PURCHASE --package $rc_monthly
 ```
 
 `--user` is the Better Auth user id, because that is what the app sets as

@@ -1,12 +1,6 @@
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { queryFailed } from '../../../src/lib/listState'
-import {
-  badgeStripMarks,
-  wornCosmetic,
-  TIER_BADGES,
-  TIER_NAMES,
-  tierUnlocking,
-} from '@langx/shared'
+import { badgeStripMarks, wornCosmetic, TIER_BADGES, TIER_NAMES } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
@@ -448,7 +442,7 @@ export default function MeScreen() {
           viewerPage?.locked
             ? t('me.viewersLocked', {
                 count: viewerPage.total,
-                plan: TIER_NAMES[tierUnlocking('profileViewerIdentities') ?? 'pro'],
+                plan: TIER_NAMES.pro,
               })
             : t('me.viewersCount', { count: viewerPage?.total ?? 0 })
         }
@@ -479,33 +473,24 @@ export default function MeScreen() {
         last
       />
 
-      {tier !== 'pro_plus' ? (
+      {tier === 'free' ? (
         <Pressable
           accessibilityRole="button"
           style={({ pressed }) => [styles.proCard, pressed && styles.pressed]}
           onPress={() => openPaywall(undefined, undefined, 'me')}
         >
           {/*
-            Two cards in one shape. A free account is being sold the first
-            plan and the quota line is the argument — it is the limit they are
-            living inside. A Fluent subscriber has no such limit, so the line
-            would read as reassurance on a card asking for money; what is left
-            to sell them is the one tier above.
+            The quota line is the argument — it is the limit a free account is
+            living inside. There used to be a second card for a Fluent
+            subscriber, selling Polyglot; with one plan a subscriber has
+            nothing left to be sold, so they get no card.
           */}
-          <Text style={styles.proTitle}>
-            {tier === 'free'
-              ? t('me.proTitle')
-              : t('me.polyglotTitle', { plan: TIER_NAMES.pro_plus })}
+          <Text style={styles.proTitle}>{t('me.proTitle')}</Text>
+          <Text style={styles.proBody}>{t('me.proBody')}</Text>
+          <Text style={styles.quota}>
+            {t('me.newChatsLeft')} {quota.data?.initiations.remaining ?? '—'} /{' '}
+            {quota.data?.initiations.limit ?? '∞'}
           </Text>
-          <Text style={styles.proBody}>
-            {tier === 'free' ? t('me.proBody') : t('me.polyglotBody')}
-          </Text>
-          {tier === 'free' ? (
-            <Text style={styles.quota}>
-              {t('me.newChatsLeft')} {quota.data?.initiations.remaining ?? '—'} /{' '}
-              {quota.data?.initiations.limit ?? '∞'}
-            </Text>
-          ) : null}
         </Pressable>
       ) : null}
 

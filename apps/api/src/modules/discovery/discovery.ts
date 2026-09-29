@@ -5,7 +5,9 @@ import {
   bucketDistanceKm,
   DISCOVERY_BOOSTED_CANDIDATE_MAX,
   DISCOVERY_BOOSTED_LIMIT,
-  DISCOVERY_BOOSTED_TIERS,
+  STORED_PLAN_TIERS,
+  normalizePlanTier,
+  PLAN_LIMITS,
   DISCOVERY_CROSS_MATCH_FALLBACK,
   DISCOVERY_PRO_FILTER_KEYS,
   ERROR_CODES,
@@ -339,7 +341,7 @@ export async function discoverProfiles(
 
   if (query.sort === 'nearby') {
     if (!hasFeature(tier, 'nearby')) {
-      throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Nearby requires Pro+', {
+      throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Nearby requires Pro', {
         feature: 'nearby',
       })
     }
@@ -493,7 +495,7 @@ export async function discoverProfiles(
      * re-sorting costs a blocking stage and throws that guarantee away.
      *
      * A chip used to be able to put online-first ahead of distance here. It is
-     * gone rather than made unconditional — this sort is what Pro+ buys to
+     * gone rather than made unconditional — this sort is what Pro buys to
      * answer "who is near me", and bucketing first puts someone online 90 km
      * away ahead of someone offline in the next street.
      */
@@ -556,8 +558,17 @@ export async function discoverProfiles(
 }
 
 /**
- * The strip above the discovery list: paying members, most expensive plan
- * first, inside exactly the same scope the list uses.
+ * Every stored tier that buys a place in the strip — `pro`, and the retired
+ * `pro_plus` until `scripts/merge-pro-tiers.ts` has rewritten those rows.
+ * Derived from the plan table rather than listed, so it moves with
+ * `boostedProfile`.
+ */
+const BOOSTED_STORED_TIERS = STORED_PLAN_TIERS.filter(
+  (tier) => PLAN_LIMITS[normalizePlanTier(tier)].boostedProfile,
+)
+
+/**
+ * The strip above the discovery list: paying members, inside exactly the same scope the list uses.
  *
  * Not a sort of the list and not a page of it. Boosted people appear in both,
  * deliberately — the strip is a second chance to be seen, not a promotion out
@@ -571,12 +582,10 @@ export async function discoverProfiles(
  * first, under Nearby nearest first, and only under the default feed does it
  * turn on its own — one order per viewer per hour, see `orderBoosted`.
  *
- * What does not vary is the tier band. Polyglot above Fluent is what the
- * paywall sells and what `rules.test.ts` pins, so it stays the outermost term
- * of all three orders and the section's own criterion breaks ties inside it.
- * Twelve cards is a small enough strip that the nearest Fluent member is
- * still on screen.
+ * There used to be a tier band outside all three orders — Polyglot above
+ * Fluent. With one paid plan there is nothing to band.
  */
+
 export async function boostedProfiles(
   db: Db,
   viewerId: string,
@@ -598,7 +607,7 @@ export async function boostedProfiles(
    * neither can shadow the other.
    */
   const boostedConditions: Document = {
-    'entitlement.tier': { $in: [...DISCOVERY_BOOSTED_TIERS] },
+    'entitlement.tier': { $in: [...BOOSTED_STORED_TIERS] },
     /*
      * Absent means on. The flag is only ever written when somebody flips the
      * toggle, so a first-time subscriber is boosted the moment the
@@ -626,7 +635,7 @@ export async function boostedProfiles(
    *
    * The entitlement check is not ceremony copied from the list: `distanceKm`
    * rides back on every item `$geoNear` produces, so answering a free
-   * account's `sort=nearby` here would hand it the one thing Pro+ buys. A
+   * account's `sort=nearby` here would hand it something only Pro buys. A
    * viewer with no point of their own has nothing to measure from.
    *
    * Neither case throws the way the list does. The list is the answer to the
@@ -644,10 +653,8 @@ export async function boostedProfiles(
    *
    * The default feed is still the exception, because `orderBoosted` hashes the
    * viewer, the profile and the hour together and MQL has no string hash. There
-   * the sort below decides only the truncation: tier first, so a Polyglot can
-   * never be dropped in favour of a Fluent, then recency, because a ceiling has
-   * to cut somewhere and cutting by natural order could drop the person who
-   * paid the most.
+   * the sort below decides only the truncation: recency, because a ceiling has
+   * to cut somewhere and cutting by natural order would be arbitrary.
    */
   const rotates = !byDistance && query.sort !== 'active'
 
@@ -678,23 +685,15 @@ export async function boostedProfiles(
             },
           }
         : { $match: eligible },
-      {
-        $addFields: {
-          boostedRank: { $indexOfArray: [[...DISCOVERY_BOOSTED_TIERS], '$entitlement.tier'] },
-        },
-      },
       /*
-       * A computed field, so the sort is in-memory and cannot be indexed. The
-       * match above is still served by `discovery_native_active` /
+       * The match above is still served by `discovery_native_active` /
        * `discovery_learning_active` — or by `location_2dsphere` on the nearby
        * branch — and what reaches it is the paying members inside one language
        * fit: a handful of documents, not a collection. That is why there is no
        * new index for this.
        */
       {
-        $sort: byDistance
-          ? { boostedRank: 1, distanceMeters: 1, _id: 1 }
-          : { boostedRank: 1, 'stats.lastActiveAt': -1, _id: 1 },
+        $sort: byDistance ? { distanceMeters: 1, _id: 1 } : { 'stats.lastActiveAt': -1, _id: 1 },
       },
       { $limit: rotates ? DISCOVERY_BOOSTED_CANDIDATE_MAX : DISCOVERY_BOOSTED_LIMIT },
     ])
@@ -707,8 +706,10 @@ export async function boostedProfiles(
   return {
     items: ordered.map((doc) => ({
       ...toDiscoveryItem(doc, now),
-      // Narrowed by the match above, which the driver's types cannot see.
-      tier: doc.entitlement.tier as BoostedProfile['tier'],
+      // Always `pro` on the wire, whichever spelling the row still has. Sent
+      // only for apps released before the single plan, which draw a chip
+      // from it; `boostedProfileSchema` says why.
+      tier: 'pro' satisfies BoostedProfile['tier'],
     })),
   }
 }

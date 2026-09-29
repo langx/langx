@@ -24,7 +24,7 @@ import { makeStyles } from '../../src/lib/theme'
  * "what have I kept", which is the question somebody asks when they want the
  * file rather than the list.
  *
- * Polyglot end to end, unlike the per-conversation deck: there the gate is on
+ * Pro end to end, unlike the per-conversation deck: there the gate is on
  * the *file*, because the rows themselves are already on screen for free. Here
  * the read exists only to be exported, so `/me/phrases` refuses a free account
  * outright and this screen never asks. A reader who arrives anyway — a deep

@@ -41,12 +41,12 @@ function arg(name: string): string | undefined {
 const email = arg('email')
 const password = arg('password')
 const handle = arg('handle') ?? 'langx_review'
-const tier = (arg('tier') ?? 'pro_plus') as PlanTier
+const tier = (arg('tier') ?? 'pro') as PlanTier
 const displayName = arg('name') ?? 'App Review'
 
 if (!email || !password) {
   throw new Error(
-    'usage: --email <address> --password <secret> [--handle h] [--tier pro_plus] [--confirm]',
+    'usage: --email <address> --password <secret> [--handle h] [--tier pro|free] [--confirm]',
   )
 }
 
@@ -166,8 +166,7 @@ try {
    *
    * So the tier is granted promotionally as well, exactly as the v1 loyalty
    * gift is (`legacyRestore.ts`): lifetime, tier-defining entitlement first,
-   * and visible and revocable in the dashboard afterwards. The Pro+ rung hands
-   * out `pro` too, because that is how the Pro+ products are configured.
+   * and visible and revocable in the dashboard afterwards.
    */
   if (tier !== 'free') {
     if (env.REVENUECAT_SECRET_API_KEY) {

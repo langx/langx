@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Ionicons } from '@expo/vector-icons'
-import { TIER_NAMES, splitSentences, tierUnlocking } from '@langx/shared'
+import { TIER_NAMES, splitSentences } from '@langx/shared'
 import { useState, type ComponentProps } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { Button } from '../../src/components/ui/Button'
@@ -130,10 +130,9 @@ const GUIDELINES_URL = LEGAL_LINKS.find((link) => link.labelKey === 'legal.commu
 
 /*
  * Handed to every paragraph; only "Write in their language" has a `{plan}`.
- * Read from the plan table, like the Me tab's viewer row, so a feature that
- * moves between plans cannot leave this page naming the old one.
+ * The plan's name from the shared table, like the Me tab's viewer row.
  */
-const PARAMS = { plan: TIER_NAMES[tierUnlocking('sendTranslation') ?? 'pro_plus'] }
+const PARAMS = { plan: TIER_NAMES.pro }
 
 /**
  * The learning rows of the composer's + menu, in its order. Photos, voice and

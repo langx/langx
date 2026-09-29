@@ -12,6 +12,7 @@ import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import type { Referral } from '../modules/referrals/referrals'
+import { isPaidPurchase } from '../modules/referrals/settle'
 import { readAggregates, type TokenLedgerEntry } from '../modules/tokens/ledger'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
@@ -358,7 +359,10 @@ describe('referrals', () => {
       return { a, b }
     }
 
-    it('pays on an initial purchase, once the invitee is activated', async () => {
+    /** What a paid purchase looks like: a real store, past any free week. */
+    const PAID = { store: 'APP_STORE', period_type: 'NORMAL' } as const
+
+    it('pays on a paid initial purchase, once the invitee is activated', async () => {
       const { a, b } = await pair()
       await earn(b.userId)
 
@@ -366,7 +370,7 @@ describe('referrals', () => {
         id: `evt-${b.userId}`,
         type: 'INITIAL_PURCHASE',
         app_user_id: b.userId,
-        store: 'app_store',
+        ...PAID,
         expiration_at_ms: Date.now() + 1_000_000,
       })
       expect(response.statusCode, response.body).toBe(200)
@@ -377,31 +381,87 @@ describe('referrals', () => {
       expect(await ledgerOf(a.userId, 'referralSubscription')).toHaveLength(1)
     })
 
-    it('pays nothing on a renewal', async () => {
+    /**
+     * A trial starts with `INITIAL_PURCHASE` too, and used to pay in full —
+     * four thousand tokens for a free week cancelled on day six. It pays when
+     * the week turns into a charged month, which arrives as a `RENEWAL`.
+     */
+    it('pays nothing for a free week, and pays when it turns into a paid month', async () => {
       const { a, b } = await pair()
       await earn(b.userId)
-      await webhook({ id: `evt-init-${b.userId}`, type: 'INITIAL_PURCHASE', app_user_id: b.userId })
+      await webhook({
+        id: `evt-trial-${b.userId}`,
+        type: 'INITIAL_PURCHASE',
+        app_user_id: b.userId,
+        store: 'APP_STORE',
+        period_type: 'TRIAL',
+        expiration_at_ms: Date.now() + 1_000_000,
+      })
+      expect(await ledgerOf(a.userId, 'referralSubscription')).toHaveLength(0)
+      expect((await rowOf(b.userId))?.subscribedAt).toBeUndefined()
+
+      await webhook({
+        id: `evt-converted-${b.userId}`,
+        type: 'RENEWAL',
+        app_user_id: b.userId,
+        ...PAID,
+        expiration_at_ms: Date.now() + 2_000_000,
+      })
+      expect(await ledgerOf(a.userId, 'referralSubscription')).toHaveLength(1)
+    })
+
+    it('pays nothing for a grant nobody paid for', async () => {
+      const { a, b } = await pair()
+      await earn(b.userId)
+      await webhook({
+        id: `evt-promo-${b.userId}`,
+        type: 'NON_RENEWING_PURCHASE',
+        app_user_id: b.userId,
+        store: 'PROMOTIONAL',
+        period_type: 'NORMAL',
+      })
+      expect(await ledgerOf(a.userId, 'referralSubscription')).toHaveLength(0)
+    })
+
+    /** Nothing said which period it was in; absence is not "paying". */
+    it('pays nothing when the event does not say it is paid', async () => {
+      const { a, b } = await pair()
+      await earn(b.userId)
+      await webhook({ id: `evt-bare-${b.userId}`, type: 'INITIAL_PURCHASE', app_user_id: b.userId })
+      expect(await ledgerOf(a.userId, 'referralSubscription')).toHaveLength(0)
+    })
+
+    it('pays once across renewals', async () => {
+      const { a, b } = await pair()
+      await earn(b.userId)
+      await webhook({
+        id: `evt-init-${b.userId}`,
+        type: 'INITIAL_PURCHASE',
+        app_user_id: b.userId,
+        ...PAID,
+      })
       const afterInitial = (await readAggregates(handle.db, a.userId)).all
 
-      await webhook({ id: `evt-renew-${b.userId}`, type: 'RENEWAL', app_user_id: b.userId })
-      expect((await readAggregates(handle.db, a.userId)).all).toBe(afterInitial)
-
-      // And an invitee whose only event is a renewal pays nothing at all.
-      const other = await pair()
-      await earn(other.b.userId)
       await webhook({
-        id: `evt-only-${other.b.userId}`,
+        id: `evt-renew-${b.userId}`,
         type: 'RENEWAL',
-        app_user_id: other.b.userId,
+        app_user_id: b.userId,
+        ...PAID,
       })
-      expect(await ledgerOf(other.a.userId, 'referralSubscription')).toHaveLength(0)
+      expect((await readAggregates(handle.db, a.userId)).all).toBe(afterInitial)
+      expect(await ledgerOf(a.userId, 'referralSubscription')).toHaveLength(1)
     })
 
     /** Two different guards, so both are asserted. */
     it('pays nothing for a redelivered event, or a second event of the same type', async () => {
       const { a, b } = await pair()
       await earn(b.userId)
-      await webhook({ id: `evt-dup-${b.userId}`, type: 'INITIAL_PURCHASE', app_user_id: b.userId })
+      await webhook({
+        id: `evt-dup-${b.userId}`,
+        type: 'INITIAL_PURCHASE',
+        app_user_id: b.userId,
+        ...PAID,
+      })
       const once = (await readAggregates(handle.db, a.userId)).all
 
       // Same event id: refused by `subscriptions.event_id_unique`.
@@ -409,11 +469,17 @@ describe('referrals', () => {
         id: `evt-dup-${b.userId}`,
         type: 'INITIAL_PURCHASE',
         app_user_id: b.userId,
+        ...PAID,
       })
       expect(replay.json()).toMatchObject({ processed: false })
 
       // Distinct event id: refused by the ledger's refId.
-      await webhook({ id: `evt-dup2-${b.userId}`, type: 'INITIAL_PURCHASE', app_user_id: b.userId })
+      await webhook({
+        id: `evt-dup2-${b.userId}`,
+        type: 'INITIAL_PURCHASE',
+        app_user_id: b.userId,
+        ...PAID,
+      })
       expect((await readAggregates(handle.db, a.userId)).all).toBe(once)
       expect(await ledgerOf(a.userId, 'referralSubscription')).toHaveLength(1)
     })
@@ -429,6 +495,7 @@ describe('referrals', () => {
         id: `evt-early-${b.userId}`,
         type: 'INITIAL_PURCHASE',
         app_user_id: b.userId,
+        ...PAID,
       })
 
       expect(await ledgerOf(a.userId, 'referral')).toHaveLength(0)
@@ -439,6 +506,35 @@ describe('referrals', () => {
       expect((await readAggregates(handle.db, a.userId)).all).toBe(
         TOKEN_RULES.signupBonus + RULES.maxPerInvitee,
       )
+    })
+  })
+
+  describe('isPaidPurchase', () => {
+    const future = new Date(Date.now() + 1_000_000)
+
+    it('is a paid tier in a real store, past its free week', () => {
+      expect(isPaidPurchase({ tier: 'pro', store: 'play_store', periodType: 'normal' })).toBe(true)
+      expect(isPaidPurchase({ tier: 'pro_plus', store: 'APP_STORE', periodType: 'normal' })).toBe(
+        true,
+      )
+    })
+
+    it('is not a trial, a grant, an unknown period or free', () => {
+      expect(isPaidPurchase({ tier: 'pro', store: 'app_store', periodType: 'trial' })).toBe(false)
+      expect(isPaidPurchase({ tier: 'pro', store: 'promotional', periodType: 'normal' })).toBe(
+        false,
+      )
+      expect(isPaidPurchase({ tier: 'pro', store: 'gift', expiresAt: future })).toBe(false)
+      expect(isPaidPurchase({ tier: 'pro', store: 'app_store' })).toBe(false)
+      expect(isPaidPurchase({ tier: 'free', store: 'app_store', periodType: 'normal' })).toBe(false)
+      expect(isPaidPurchase(null)).toBe(false)
+    })
+
+    it('is not a subscription that has run out', () => {
+      const past = new Date(Date.now() - 1_000)
+      expect(
+        isPaidPurchase({ tier: 'pro', store: 'app_store', periodType: 'normal', expiresAt: past }),
+      ).toBe(false)
     })
   })
 

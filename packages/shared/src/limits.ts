@@ -11,13 +11,41 @@ import { z } from 'zod'
  * table stops being the single source of truth and the ordering becomes a
  * second one that can disagree with it.
  */
-export const PLAN_TIERS = ['free', 'pro', 'pro_plus'] as const
+export const PLAN_TIERS = ['free', 'pro'] as const
 export type PlanTier = (typeof PLAN_TIERS)[number]
 export const planTierSchema = z.enum(PLAN_TIERS)
 
-/** The tiers that can actually be bought — what a paywall has columns for. */
-export const PAID_PLAN_TIERS = ['pro', 'pro_plus'] as const
+/**
+ * Every tier a stored document may still carry.
+ *
+ * There used to be two paid plans, Fluent (`pro`) and Polyglot (`pro_plus`),
+ * and they were merged into one. `pro_plus` survives in two places the merge
+ * cannot reach at once: rows written before `scripts/merge-pro-tiers.ts` ran,
+ * and the wire to apps released before the merge, which unlock features off
+ * their own profile's tier and would lock half of Pro behind "Upgrade to
+ * Polyglot" if they were told `pro` (`toOwnProfileWire`). So a stored tier is
+ * read through `normalizePlanTier` — never indexed into `PLAN_LIMITS` raw,
+ * where an unknown key is `undefined` and the request a 500.
+ */
+export const STORED_PLAN_TIERS = ['free', 'pro', 'pro_plus'] as const
+export type StoredPlanTier = (typeof STORED_PLAN_TIERS)[number]
+export const storedPlanTierSchema = z.enum(STORED_PLAN_TIERS)
+
+/**
+ * The tier a stored value means today: `pro_plus` is `pro`, and anything this
+ * code does not know — a typo, a tier from a future or past schema — is
+ * `free`, because a missing row in `PLAN_LIMITS` would otherwise throw.
+ */
+export function normalizePlanTier(stored: string | null | undefined): PlanTier {
+  if (stored === 'pro' || stored === 'pro_plus') return 'pro'
+  return 'free'
+}
+
+/** The tiers that can actually be bought. One since the Fluent/Polyglot merge. */
+export const PAID_PLAN_TIERS = ['pro'] as const
 export type PaidPlanTier = (typeof PAID_PLAN_TIERS)[number]
+/** A paid tier as a stored document may still spell it. */
+export type StoredPaidPlanTier = Exclude<StoredPlanTier, 'free'>
 
 /** `null` means unlimited. */
 export type Limit = number | null
@@ -134,17 +162,14 @@ export interface PlanLimits {
    * paid narrows *who* rather than *how well they fit*.
    *
    * This used to say "distance" as well, and still must not. Distance is a
-   * Pro+ *sort* (`nearby` below), not a Pro filter, and the two are bought
-   * separately — since the paywall copy is derived from this list, naming
-   * distance here would sell a Pro subscriber something their tier does not
-   * include.
+   * *sort* (`nearby` below), not a filter; the paywall copy is derived from
+   * these lists and each names one thing.
    */
   advancedFilters: boolean
   /**
    * Appearing in the Boosted strip above the discovery list.
    *
-   * Fluent and Polyglot, with Polyglot ahead of Fluent inside the strip —
-   * `DISCOVERY_BOOSTED_TIERS` holds that order and `rules.test.ts` pins it to
+   * Pro, which `DISCOVERY_BOOSTED_TIERS` names and `rules.test.ts` pins to
    * this flag. The switch on the profile is `settings.boosted`, and an absent
    * one means on: a first-time subscriber is boosted the moment the
    * entitlement lands, with no billing-side hook to write a default.
@@ -158,7 +183,7 @@ export interface PlanLimits {
    * Sending your own message with a translation under it, rather than tapping
    * one you received to read it.
    *
-   * Polyglot, beside the copilot, because the two are the same kind of thing:
+   * Paid, beside the copilot, because the two are the same kind of thing:
    * the only capabilities in this file with a real per-request cost. Reading
    * is occasional and metered at `translationsPer24h`; *sending* translated is
    * per message, so somebody writing a hundred messages a day bills roughly a
@@ -176,7 +201,7 @@ export interface PlanLimits {
    * Exporting a conversation's saved phrases as a file — CSV, and the same
    * file imports into Anki.
    *
-   * Polyglot, and the rare paid feature that takes nothing from anyone: the
+   * Paid, and the rare paid feature that takes nothing from anyone: the
    * deck itself, and saving to it, are free on every tier. This sells getting
    * it *out*, which is what somebody studying seriously wants and nobody else
    * misses. Costs nothing per request, so it is not here for the reason
@@ -187,15 +212,13 @@ export interface PlanLimits {
   /**
    * See *who* viewed the profile, not just how many.
    *
-   * Polyglot, not Fluent. Fluent sells what makes the app work better for you
-   * — unlimited conversations, the filters, more languages. This one is about
-   * other people, which is what the higher tier is for.
+   * Paid, and one half of a pair with `incognito` below.
    */
   profileViewerIdentities: boolean
   /**
    * Browse without leaving a profileViews record.
    *
-   * Polyglot, for the same reason as `profileViewerIdentities`: the two are a
+   * Paid, for the same reason as `profileViewerIdentities`: the two are a
    * pair — one is seeing who looked, the other is not being seen looking — and
    * splitting them across tiers would sell half a promise.
    */
@@ -212,13 +235,12 @@ export interface PlanLimits {
    * have just started making is not defensible. Same argument as level, age and
    * country going back to the free tier above.
    *
-   * Do not re-add it as a uniform `true`: `hasFeature` and `tierUnlocking`
-   * would then keep answering a question that has no paid answer.
+   * Do not re-add it as a uniform `true`: `hasFeature` would then keep answering a question that has no paid answer.
    */
   /**
    * Distance-sorted discovery (`sort=nearby`).
    *
-   * Pro+ only, and gates the *sort* alone. Sharing a location is free and
+   * Paid, and gates the *sort* alone. Sharing a location is free and
    * always was: a paid-only pool would have nobody in it on the day it
    * shipped, and the people worth finding nearby are mostly not the people
    * paying to look.
@@ -228,8 +250,7 @@ export interface PlanLimits {
    * The AI language copilot — the one paid feature v1 ever promised publicly
    * (`architecture.md:425`).
    *
-   * Pro+ only, and the actual justification for the price gap: unlike nearby,
-   * a copilot call has a real per-request cost. **Still unimplemented** — the
+   * Paid: unlike nearby, a copilot call has a real per-request cost. **Still unimplemented** — the
    * flag exists so the entitlement, the paywall copy and the eventual guard
    * read one definition instead of three.
    */
@@ -237,10 +258,9 @@ export interface PlanLimits {
   /**
    * Photos on a profile, avatar excluded.
    *
-   * A ladder, and it was not always one: every tier had six until the gallery
-   * became something a subscription buys. Free still gets five, which is a
-   * real gallery — enough to show you are a person rather than a throwaway
-   * account, which is the thing the product cannot afford to gate.
+   * The same ten on every tier since the single Pro plan. It was a ladder for
+   * a while (free had five), and apps from then still enforce five for a free
+   * account on their own side — harmless, and nothing lowers it here.
    *
    * Read it off the **viewer's** tier, always. While it was uniform two call
    * sites read `PLAN_LIMITS.free` directly and were correct by accident; both
@@ -265,23 +285,6 @@ export interface PlanLimits {
    * bilingual a second native language is an identity fact, not a feature.
    */
   maxNativeLanguages: number
-  /**
-   * Replies the @langx assistant will give this account in any twenty-four
-   * hours.
-   *
-   * Per tier because the assistant is the one limit here with a real marginal
-   * cost — every reply is a paid model call — and a flat number would have
-   * meant an account paying nothing and an account paying for a year getting
-   * the same allowance. Worked from the price list: the ceiling for a tier is
-   * kept under what that tier brings in, in the script that costs most to
-   * write. See `OFFICIAL_ASSISTANT` for the arithmetic.
-   *
-   * It gates the assistant, never the thing behind it. Reporting somebody from
-   * their profile, sending feedback from Settings and writing to the support
-   * address are unlimited on every tier, including free — what a tier buys is
-   * the convenience of doing it in a conversation.
-   */
-  assistantRepliesPerDay: number
 }
 
 export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
@@ -289,7 +292,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     initiationsPer24h: 5,
     translationsPer24h: 20,
     correctionsPer24h: null,
-    mediaPer24h: 50,
+    mediaPer24h: 500,
     echoNewCardsPerDay: null,
     echoCapturesPerDay: 250,
     echoReviewsPerDay: null,
@@ -304,46 +307,20 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     incognito: false,
     nearby: false,
     copilot: false,
-    maxPhotos: 5,
+    maxPhotos: 10,
     maxLearningLanguages: 1,
     maxNativeLanguages: 1,
-    assistantRepliesPerDay: 5,
-  },
-  pro: {
-    initiationsPer24h: null,
-    translationsPer24h: 300,
-    correctionsPer24h: null,
-    mediaPer24h: null,
-    echoNewCardsPerDay: null,
-    echoCapturesPerDay: 250,
-    echoReviewsPerDay: null,
-    echoVoicesPerDay: 200,
-    chatVoicesPerDay: 300,
-    transcriptsPerDay: 150,
-    advancedFilters: true,
-    boostedProfile: true,
-    sendTranslation: false,
-    deckExport: false,
-    profileViewerIdentities: false,
-    incognito: false,
-    nearby: false,
-    copilot: false,
-    maxPhotos: 10,
-    maxLearningLanguages: 2,
-    maxNativeLanguages: 2,
-    assistantRepliesPerDay: 10,
   },
   /**
-   * A strict superset of `pro` — every value here is pro's, with `nearby` and
-   * `copilot` flipped on. That is the whole difference, and it is why the
-   * RevenueCat Pro+ products grant both the `pro_plus` **and** the `pro`
-   * entitlement: a subscriber who is one is always also the other.
+   * What Polyglot was, under Fluent's price. Media and photos are the same
+   * number on both rows: they are a fair-use ceiling, not something a plan
+   * sells, and refusing either shows a plain alert rather than the paywall.
    */
-  pro_plus: {
+  pro: {
     initiationsPer24h: null,
     translationsPer24h: 1000,
     correctionsPer24h: null,
-    mediaPer24h: null,
+    mediaPer24h: 500,
     echoNewCardsPerDay: null,
     echoCapturesPerDay: 250,
     echoReviewsPerDay: null,
@@ -361,7 +338,6 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     maxPhotos: 10,
     maxLearningLanguages: 5,
     maxNativeLanguages: 5,
-    assistantRepliesPerDay: 15,
   },
 }
 
@@ -380,8 +356,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
  */
 export const TIER_NAMES: Record<PlanTier, string> = {
   free: 'Free',
-  pro: 'Fluent',
-  pro_plus: 'Polyglot',
+  pro: 'Pro',
 }
 
 /**
@@ -392,8 +367,7 @@ export const TIER_NAMES: Record<PlanTier, string> = {
  */
 export const TIER_BADGES: Record<PlanTier, string | null> = {
   free: null,
-  pro: 'FLUENT',
-  pro_plus: 'POLYGLOT',
+  pro: 'PRO',
 }
 
 /** Quota buckets that are enforced with a rolling 24h timestamp array. */
@@ -455,17 +429,9 @@ export function languageCapAllows(next: number, was: number, max: number): boole
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = ['advancedFilters', 'boostedProfile'] as const
-export type ProFeature = (typeof PRO_FEATURES)[number]
-
-/**
- * Capabilities only `pro_plus` unlocks. Split from `PRO_FEATURES` rather than
- * appended to it because the rules test asserts every `PRO_FEATURES` entry is
- * true on `pro` — merging the two lists would have made that assertion false
- * and, worse, made a Pro subscriber's refused nearby request look like a bug
- * in the guard rather than the tier boundary working.
- */
-export const PRO_PLUS_FEATURES = [
+export const PRO_FEATURES = [
+  'advancedFilters',
+  'boostedProfile',
   'profileViewerIdentities',
   'incognito',
   'nearby',
@@ -473,76 +439,45 @@ export const PRO_PLUS_FEATURES = [
   'sendTranslation',
   'deckExport',
 ] as const
-export type ProPlusFeature = (typeof PRO_PLUS_FEATURES)[number]
+export type ProFeature = (typeof PRO_FEATURES)[number]
 
-/** Every gated capability, whichever tier unlocks it. */
-export const PLAN_FEATURES = [...PRO_FEATURES, ...PRO_PLUS_FEATURES] as const
-export type PlanFeature = ProFeature | ProPlusFeature
+/** Every gated capability. One list since there is one paid tier. */
+export const PLAN_FEATURES = PRO_FEATURES
+export type PlanFeature = ProFeature
 
 /**
  * Everything Pro gives you, which is deliberately **wider** than
- * `PRO_FEATURES`: two of these are not capability flags at all but quotas that
- * stop applying, and a paywall that listed only the booleans would undersell
- * the plan by leaving out the limit most people actually hit.
+ * `PRO_FEATURES`: some of these are not capability flags at all but quotas
+ * that stop applying or grow, and a paywall that listed only the booleans
+ * would undersell the plan by leaving out the limit most people actually hit.
  *
  * The paywall keys its copy off this list, so adding a benefit here without
  * writing the copy is a compile error, and describing a benefit on the paywall
- * that does not exist here is impossible. That is the whole point: the feature
- * list had drifted into three separate places — here, the rules test and the
- * paywall screen — and the first one to change would have made the other two
- * quietly lie.
+ * that does not exist here is impossible.
  */
 export const PRO_BENEFITS = [
   'unlimitedInitiations',
   'advancedFilters',
-  /**
-   * In *both* benefit lists, for the same reason `translationQuota` is: both
-   * paid plans get it, and Polyglot gets more of it — a place at the front of
-   * the strip — which "everything in Fluent" would otherwise hide.
-   */
   'boostedProfile',
+  'profileViewerIdentities',
+  'incognito',
+  'nearby',
+  'sendTranslation',
+  'deckExport',
   'translationQuota',
   'learningLanguages',
+  'copilot',
   /**
    * A one-off welcome pack — cosmetics and streak freezes, never token. See
    * `PRO_WELCOME_PACKS`, and the note there on why granting token for money is
    * the one thing this economy cannot do.
    *
-   * Last in the list on purpose: it is a nice-to-have beside five capabilities,
-   * and leading with it would sell the subscription on a gift.
+   * Last in the list on purpose: it is a nice-to-have beside real
+   * capabilities, and leading with it would sell the subscription on a gift.
    */
   'welcomePack',
 ] as const
 export type ProBenefit = (typeof PRO_BENEFITS)[number]
-
-/**
- * What Pro+ adds **on top of** Pro — not a replacement list. The paywall
- * renders `PRO_BENEFITS` for the Pro column and these two extra rows for the
- * Pro+ one, so the superset relationship is visible in the copy instead of
- * being re-typed and left to drift.
- */
-/**
- * What Polyglot adds **on top of** Fluent — not a replacement list.
- *
- * `translationQuota` and `learningLanguages` appear in *both* lists on purpose:
- * the paywall renders Fluent's benefits, then these plus "everything in
- * Fluent", and Polyglot genuinely raises both of those *numbers* again.
- * Omitting them would let "everything in Fluent" imply the same allowance,
- * which is the quiet kind of mis-sell the `shipped` flag on the copy table
- * exists to prevent.
- */
-export const PRO_PLUS_BENEFITS = [
-  'profileViewerIdentities',
-  'boostedProfile',
-  'incognito',
-  'nearby',
-  'copilot',
-  'sendTranslation',
-  'deckExport',
-  'translationQuota',
-  'learningLanguages',
-] as const
-export type ProPlusBenefit = (typeof PRO_PLUS_BENEFITS)[number]
 
 export function hasFeature(tier: PlanTier, feature: PlanFeature): boolean {
   return PLAN_LIMITS[tier][feature]
@@ -551,24 +486,6 @@ export function hasFeature(tier: PlanTier, feature: PlanFeature): boolean {
 /** Any tier that is not `free`. Not an ordering — see `PLAN_TIERS`. */
 export function isPaidTier(tier: PlanTier): boolean {
   return tier !== 'free'
-}
-
-/**
- * The cheapest tier that unlocks a capability, for a paywall that has been
- * told *why* it was opened and has to point at the right column.
- *
- * This is the one place that leans on `PAID_PLAN_TIERS` being listed
- * cheapest-first, and it is a presentation concern rather than the tier
- * ordering ruled out on `PLAN_TIERS`: no guard calls it, and getting it wrong
- * upsells someone to a plan they did not need instead of letting them past a
- * gate. It still reads the real `PLAN_LIMITS` rows, so a capability moved
- * between tiers moves the answer with it.
- */
-export function tierUnlocking(feature: PlanFeature): PaidPlanTier | null {
-  for (const tier of PAID_PLAN_TIERS) {
-    if (PLAN_LIMITS[tier][feature]) return tier
-  }
-  return null
 }
 
 export const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000
@@ -587,12 +504,15 @@ export const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000
  * now one — and it takes `expiresAt` as a `Date` or an ISO string, because the
  * server holds the first and JSON gives the client the second.
  *
- * The guard below reads `tier === 'free'` rather than `tier !== 'pro'`. With
- * only two tiers those were the same test; with three, the second one lets a
- * **Pro+ subscription expire without ever dropping** — it would return early
- * and hand back `pro_plus` forever.
+ * It also normalizes: the stored tier may still be the retired `pro_plus`, or
+ * something this code has never heard of, and every caller wants a row that
+ * exists in `PLAN_LIMITS`. See `normalizePlanTier`.
  */
-export function effectivePlanTier(tier: PlanTier, expiresAt?: Date | string | null): PlanTier {
+export function effectivePlanTier(
+  stored: string | null | undefined,
+  expiresAt?: Date | string | null,
+): PlanTier {
+  const tier = normalizePlanTier(stored)
   if (tier === 'free' || !expiresAt) return tier
   const at = expiresAt instanceof Date ? expiresAt.getTime() : Date.parse(expiresAt)
   // An unparseable date is not evidence of expiry — treat it as no expiry

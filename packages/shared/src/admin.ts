@@ -48,14 +48,21 @@ export const adminFeedbackListQuerySchema = adminListQuerySchema.extend({
 export type AdminFeedbackListQuery = z.infer<typeof adminFeedbackListQuerySchema>
 
 /**
- * Who is on a paid plan. Only the two paid tiers: the free list is everybody
- * else, and a list of everybody is a search box, which the panel already has.
+ * Who is on a paid plan. Only the paid tier: the free list is everybody else,
+ * and a list of everybody is a search box, which the panel already has.
+ *
+ * `pro_plus` is still accepted from a panel built before the single plan and
+ * read as `pro`, so an old tab asks for the one list there is rather than
+ * failing validation.
  */
-export const ADMIN_MEMBER_TIERS = ['pro', 'pro_plus'] as const
+export const ADMIN_MEMBER_TIERS = ['pro'] as const
 export type AdminMemberTier = (typeof ADMIN_MEMBER_TIERS)[number]
 
 export const adminMemberListQuerySchema = adminListQuerySchema.extend({
-  tier: z.enum(ADMIN_MEMBER_TIERS).default('pro'),
+  tier: z
+    .enum(['pro', 'pro_plus'])
+    .default('pro')
+    .transform((): AdminMemberTier => 'pro'),
 })
 export type AdminMemberListQuery = z.infer<typeof adminMemberListQuerySchema>
 
