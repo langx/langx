@@ -294,6 +294,15 @@ export const echoSummarySchema = z.object({
   /** A rolling seven days, as `reviewedToday` is a rolling twenty-four hours. */
   reviewedThisWeek: z.number().int().nonnegative(),
   /**
+   * Every card ever answered — the `all` row of `echoAggregates`, the number
+   * the Me tab's Echo tile shows. `reviewedThisWeek` stays beside it because
+   * builds released before this field read that one on the same tile.
+   *
+   * Optional for the reason `nextDue` is: an app newer than its API has to
+   * keep parsing the summary.
+   */
+  reviewedAllTime: z.number().int().nonnegative().optional(),
+  /**
    * When the soonest card that is not yet due comes back, so a tab with
    * nothing to do can say when there will be something. Null when every card
    * is already due, and when there are no cards at all.

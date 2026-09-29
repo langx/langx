@@ -292,11 +292,11 @@ export default function MeScreen() {
       </Pressable>
 
       {/*
-        Three across, and all three about the week the chart under them draws.
+        Three across: the streak, then two running totals.
         There were four, plus a fifth — the Echo count — alone on a row of its
         own because five would not fit, which left three quarters of that row
         empty. The badge count became the shelf below, and the balance became
-        the wallet row, so the ones left are the ones the chart explains.
+        the wallet row.
       */}
       <View style={styles.tiles}>
         {/* Same affordance as the rows below: a number nobody can act on
@@ -317,11 +317,12 @@ export default function MeScreen() {
           valueSize={26}
           onPress={() => router.push('/(app)/corrections')}
         />
-        {/* The day's number is already the first thing the Echo tab itself
-            says, so the one worth putting here is whether the week counted. */}
+        {/* Every card ever answered, under the tab's own name like the feed
+            tile beside it. It was the week's count, which the Echo tab itself
+            already shows; a profile is the place for what has added up. */}
         <StatTile
-          label={`${t('me.echoWeek')} ›`}
-          value={compactCount(echo.data?.reviewedThisWeek ?? 0, locale)}
+          label={`${t('tabs.echo')} ›`}
+          value={compactCount(echo.data?.reviewedAllTime ?? 0, locale)}
           valueSize={26}
           onPress={() => router.push('/(app)/(tabs)/echo')}
         />
