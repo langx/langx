@@ -2298,6 +2298,8 @@ export const es: Localized<EnMessages> = {
     notSetUp: 'Las compras todavía no están configuradas en esta plataforma.',
     legal:
       'Las suscripciones se renuevan automáticamente hasta que se cancelan. Puedes cancelar cuando quieras desde tu cuenta de Apple o Google: la cancelación detiene la siguiente renovación y mantiene el acceso hasta el final del periodo en curso.',
+    legalWeb:
+      'Las suscripciones se renuevan automáticamente hasta que se cancelan. Puedes cancelar cuando quieras en Ajustes → Suscripción → Gestionar o cancelar: la cancelación detiene la siguiente renovación y mantiene el acceso hasta el final del periodo en curso.',
     trialTerms: {
       one: '{count} día gratis, después {price} {period}',
       other: '{count} días gratis, después {price} {period}',
@@ -2314,32 +2316,49 @@ export const es: Localized<EnMessages> = {
     monthly: 'Mensual',
     yearly: 'Anual',
     lifetime: 'Pago único',
-    headline: 'Ve más allá',
+    headline: 'Ve más allá con {plan}',
     headlineBody:
       'Las correcciones y las respuestas siguen siendo ilimitadas en todos los planes. Pagar elimina los demás límites.',
-    yearlySaving: 'Anual · ahorra un {percent}%',
-    yearlyFreeMonths: {
-      one: 'Anual · {count} mes gratis',
-      other: 'Anual · {count} meses gratis',
-    },
     savePercent: 'Ahorra un {percent}%',
     freeMonths: {
       one: '{count} mes gratis',
       other: '{count} meses gratis',
     },
-    savingA11y: '{price} al mes con el plan mensual. El anual ahorra un {percent}%.',
-    freeMonthsA11y: {
-      one: '{price} al mes con el plan mensual. El anual te da {count} mes gratis.',
-      other: '{price} al mes con el plan mensual. El anual te da {count} meses gratis.',
-    },
     billingPeriod: 'Periodo de facturación',
-    start: 'Empieza con {plan}',
     startTrial: {
       one: 'Empieza tu semana gratis',
       other: 'Empieza tus {count} semanas gratis',
     },
     continueFree: 'Seguir gratis',
-    perMonthBilledYearly: 'al mes · facturado anualmente',
+    ownedHeadline: 'Todo {plan} es tuyo',
+    trialHeadlineWeeks: {
+      one: 'Prueba {plan} gratis una semana',
+      other: 'Prueba {plan} gratis {count} semanas',
+    },
+    trialHeadlineDays: {
+      one: 'Prueba {plan} gratis {count} día',
+      other: 'Prueba {plan} gratis {count} días',
+    },
+    andMore: {
+      one: 'Y {count} más',
+      other: 'Y {count} más',
+    },
+    showLess: 'Mostrar menos',
+    billedYearly: '{price} facturado al año',
+    billedMonthly: 'Facturado cada mes',
+    lifetimeDetail: 'Un solo pago, sin renovaciones',
+    timelineTitle: 'Cómo funciona tu prueba gratis',
+    timelineToday: 'Hoy: acceso completo',
+    timelineTodayBody: 'Todo lo de {plan} se desbloquea. Hoy no pagas nada.',
+    timelineCancel: 'Cancela cuando quieras',
+    timelineCancelBody: 'Cancela al menos un día antes del {date} y no se te cobrará nada.',
+    timelineStarts: '{date}: empieza tu plan',
+    timelineStartsBody: 'Desde entonces, {price} {period}, hasta que canceles.',
+    cancelAnytime: 'Cancela cuando quieras',
+    renewsSummary: '{price} {period}. Cancela cuando quieras.',
+    subscribe: 'Suscribirme',
+    startFreeTrial: 'Empezar la prueba gratis',
+    eula: 'Términos de uso (EULA)',
   },
 
   proWelcome: {

@@ -2297,6 +2297,8 @@ export const ptBR: Localized<EnMessages> = {
     notSetUp: 'As compras ainda não foram configuradas nesta plataforma.',
     legal:
       'As assinaturas se renovam automaticamente até serem canceladas. Você pode cancelar quando quiser na sua conta da Apple ou do Google — o cancelamento interrompe a próxima renovação e mantém o acesso até o fim do período atual.',
+    legalWeb:
+      'As assinaturas se renovam automaticamente até serem canceladas. Você pode cancelar quando quiser em Configurações → Assinatura → Gerenciar ou cancelar — o cancelamento interrompe a próxima renovação e mantém o acesso até o fim do período atual.',
     trialTerms: {
       one: '{count} dia grátis, depois {price} {period}',
       other: '{count} dias grátis, depois {price} {period}',
@@ -2313,32 +2315,49 @@ export const ptBR: Localized<EnMessages> = {
     monthly: 'Mensal',
     yearly: 'Anual',
     lifetime: 'Pagamento único',
-    headline: 'Vá mais longe',
+    headline: 'Vá mais longe com o {plan}',
     headlineBody:
       'Correções e respostas continuam ilimitadas em todos os planos. Pagar remove os outros limites.',
-    yearlySaving: 'Anual · economize {percent}%',
-    yearlyFreeMonths: {
-      one: 'Anual · {count} mês grátis',
-      other: 'Anual · {count} meses grátis',
-    },
     savePercent: 'Economize {percent}%',
     freeMonths: {
       one: '{count} mês grátis',
       other: '{count} meses grátis',
     },
-    savingA11y: '{price} por mês no plano mensal. O anual economiza {percent}%.',
-    freeMonthsA11y: {
-      one: '{price} por mês no plano mensal. O anual te dá {count} mês grátis.',
-      other: '{price} por mês no plano mensal. O anual te dá {count} meses grátis.',
-    },
     billingPeriod: 'Período de cobrança',
-    start: 'Começar com {plan}',
     startTrial: {
       one: 'Começar minha semana grátis',
       other: 'Começar minhas {count} semanas grátis',
     },
     continueFree: 'Continuar de graça',
-    perMonthBilledYearly: 'por mês · cobrado anualmente',
+    ownedHeadline: 'Todo o {plan} é seu',
+    trialHeadlineWeeks: {
+      one: 'Teste o {plan} grátis por uma semana',
+      other: 'Teste o {plan} grátis por {count} semanas',
+    },
+    trialHeadlineDays: {
+      one: 'Teste o {plan} grátis por {count} dia',
+      other: 'Teste o {plan} grátis por {count} dias',
+    },
+    andMore: {
+      one: 'E mais {count}',
+      other: 'E mais {count}',
+    },
+    showLess: 'Mostrar menos',
+    billedYearly: '{price} cobrado por ano',
+    billedMonthly: 'Cobrado todo mês',
+    lifetimeDetail: 'Um pagamento só, sem renovação',
+    timelineTitle: 'Como funciona seu teste grátis',
+    timelineToday: 'Hoje: acesso completo',
+    timelineTodayBody: 'Tudo do {plan} é liberado. Nada a pagar hoje.',
+    timelineCancel: 'Cancele quando quiser',
+    timelineCancelBody: 'Cancele pelo menos um dia antes de {date} e você não será cobrado.',
+    timelineStarts: '{date}: seu plano começa',
+    timelineStartsBody: 'A partir daí, {price} {period}, até você cancelar.',
+    cancelAnytime: 'Cancele quando quiser',
+    renewsSummary: '{price} {period}. Cancele quando quiser.',
+    subscribe: 'Assinar',
+    startFreeTrial: 'Começar o teste grátis',
+    eula: 'Termos de uso (EULA)',
   },
 
   proWelcome: {

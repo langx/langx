@@ -2295,6 +2295,8 @@ export const tr: Localized<EnMessages> = {
     notSetUp: 'Bu platformda satın alma henüz ayarlanmadı.',
     legal:
       'Abonelikler iptal edilene kadar otomatik yenilenir. Apple ya da Google hesabından istediğin zaman iptal edebilirsin — iptal sonraki yenilemeyi durdurur, mevcut dönem sonuna kadar erişimin sürer.',
+    legalWeb:
+      'Abonelikler iptal edilene kadar otomatik yenilenir. Ayarlar → Abonelik → Yönet veya iptal et bölümünden istediğin zaman iptal edebilirsin — iptal sonraki yenilemeyi durdurur, mevcut dönem sonuna kadar erişimin sürer.',
     trialTerms: {
       one: '{count} gün ücretsiz, sonra {period} {price}',
       other: '{count} gün ücretsiz, sonra {period} {price}',
@@ -2311,32 +2313,49 @@ export const tr: Localized<EnMessages> = {
     monthly: 'Aylık',
     yearly: 'Yıllık',
     lifetime: 'Tek seferlik',
-    headline: 'Daha ileri git',
+    headline: '{plan} ile daha ileri git',
     headlineBody:
       'Düzeltmeler ve yanıtlar her planda sınırsız kalır. Ödeme yapmak diğer sınırları kaldırır.',
-    yearlySaving: 'Yıllık · %{percent} indirim',
-    yearlyFreeMonths: {
-      one: 'Yıllık · {count} ay bedava',
-      other: 'Yıllık · {count} ay bedava',
-    },
     savePercent: '%{percent} indirim',
     freeMonths: {
       one: '{count} ay bedava',
       other: '{count} ay bedava',
     },
-    savingA11y: 'Aylık planda ayda {price}. Yıllık ödemede %{percent} indirim.',
-    freeMonthsA11y: {
-      one: 'Aylık planda ayda {price}. Yıllık planda {count} ay bedava.',
-      other: 'Aylık planda ayda {price}. Yıllık planda {count} ay bedava.',
-    },
     billingPeriod: 'Ödeme dönemi',
-    start: '{plan} ile başla',
     startTrial: {
       one: 'Ücretsiz haftanı başlat',
       other: '{count} ücretsiz haftanı başlat',
     },
     continueFree: 'Ücretsiz devam et',
-    perMonthBilledYearly: 'aylık · yıllık faturalandırılır',
+    ownedHeadline: 'Tüm {plan} özellikleri senin',
+    trialHeadlineWeeks: {
+      one: 'Bir hafta ücretsiz {plan}',
+      other: '{count} hafta ücretsiz {plan}',
+    },
+    trialHeadlineDays: {
+      one: '{count} gün ücretsiz {plan}',
+      other: '{count} gün ücretsiz {plan}',
+    },
+    andMore: {
+      one: 'Ve {count} özellik daha',
+      other: 'Ve {count} özellik daha',
+    },
+    showLess: 'Daha az göster',
+    billedYearly: 'Yılda bir {price} faturalandırılır',
+    billedMonthly: 'Her ay faturalandırılır',
+    lifetimeDetail: 'Tek ödeme, yenilenmez',
+    timelineTitle: 'Ücretsiz deneme nasıl işler',
+    timelineToday: 'Bugün: tam erişim',
+    timelineTodayBody: '{plan} özelliklerinin hepsi açılır. Bugün hiçbir şey ödemezsin.',
+    timelineCancel: 'İstediğin zaman iptal et',
+    timelineCancelBody: '{date} tarihinden en az bir gün önce iptal edersen hiç ücret alınmaz.',
+    timelineStarts: '{date}: planın başlar',
+    timelineStartsBody: 'O günden sonra {period} {price}, sen iptal edene kadar.',
+    cancelAnytime: 'İstediğin zaman iptal et',
+    renewsSummary: '{period} {price}. İstediğin zaman iptal et.',
+    subscribe: 'Abone ol',
+    startFreeTrial: 'Ücretsiz denemeyi başlat',
+    eula: 'Kullanım Koşulları (EULA)',
   },
 
   proWelcome: {

@@ -2541,6 +2541,8 @@ export const ru: Localized<EnMessages> = {
     notSetUp: 'Покупки на этой платформе ещё не настроены.',
     legal:
       'Подписки продлеваются автоматически, пока их не отменят. Отменить можно в любой момент в аккаунте Apple или Google — отмена останавливает следующее продление и сохраняет доступ до конца текущего периода.',
+    legalWeb:
+      'Подписки продлеваются автоматически, пока их не отменят. Отменить можно в любой момент: Настройки → Подписка → Управлять или отменить — отмена останавливает следующее продление и сохраняет доступ до конца текущего периода.',
     trialTerms: {
       one: '{count} день бесплатно, затем {price} {period}',
       few: '{count} дня бесплатно, затем {price} {period}',
@@ -2561,16 +2563,9 @@ export const ru: Localized<EnMessages> = {
     monthly: 'Ежемесячно',
     yearly: 'Ежегодно',
     lifetime: 'Разовый платёж',
-    headline: 'Иди дальше',
+    headline: 'Иди дальше с {plan}',
     headlineBody:
       'Исправления и ответы остаются безлимитными на любом плане. Оплата снимает остальные ограничения.',
-    yearlySaving: 'Ежегодно · экономия {percent}%',
-    yearlyFreeMonths: {
-      one: 'Ежегодно · {count} месяц бесплатно',
-      few: 'Ежегодно · {count} месяца бесплатно',
-      many: 'Ежегодно · {count} месяцев бесплатно',
-      other: 'Ежегодно · {count} месяца бесплатно',
-    },
     savePercent: 'Экономия {percent}%',
     freeMonths: {
       one: '{count} месяц бесплатно',
@@ -2578,15 +2573,7 @@ export const ru: Localized<EnMessages> = {
       many: '{count} месяцев бесплатно',
       other: '{count} месяца бесплатно',
     },
-    savingA11y: '{price} в месяц на месячном плане. Годовой план экономит {percent}%.',
-    freeMonthsA11y: {
-      one: '{price} в месяц на месячном плане. Годовой план даёт {count} месяц бесплатно.',
-      few: '{price} в месяц на месячном плане. Годовой план даёт {count} месяца бесплатно.',
-      many: '{price} в месяц на месячном плане. Годовой план даёт {count} месяцев бесплатно.',
-      other: '{price} в месяц на месячном плане. Годовой план даёт {count} месяца бесплатно.',
-    },
     billingPeriod: 'Период оплаты',
-    start: 'Начать с {plan}',
     startTrial: {
       one: 'Начать бесплатную неделю',
       few: 'Начать {count} бесплатные недели',
@@ -2594,7 +2581,41 @@ export const ru: Localized<EnMessages> = {
       other: 'Начать {count} бесплатной недели',
     },
     continueFree: 'Продолжить бесплатно',
-    perMonthBilledYearly: 'в месяц · оплата раз в год',
+    ownedHeadline: 'Всё из {plan} — твоё',
+    trialHeadlineWeeks: {
+      one: 'Попробуй {plan} бесплатно {count} неделю',
+      few: 'Попробуй {plan} бесплатно {count} недели',
+      many: 'Попробуй {plan} бесплатно {count} недель',
+      other: 'Попробуй {plan} бесплатно {count} недели',
+    },
+    trialHeadlineDays: {
+      one: 'Попробуй {plan} бесплатно {count} день',
+      few: 'Попробуй {plan} бесплатно {count} дня',
+      many: 'Попробуй {plan} бесплатно {count} дней',
+      other: 'Попробуй {plan} бесплатно {count} дня',
+    },
+    andMore: {
+      one: 'И ещё {count}',
+      few: 'И ещё {count}',
+      many: 'И ещё {count}',
+      other: 'И ещё {count}',
+    },
+    showLess: 'Свернуть',
+    billedYearly: '{price} раз в год',
+    billedMonthly: 'Оплата каждый месяц',
+    lifetimeDetail: 'Один платёж, без продлений',
+    timelineTitle: 'Как работает пробный период',
+    timelineToday: 'Сегодня: полный доступ',
+    timelineTodayBody: 'Всё из {plan} открывается. Сегодня платить ничего не нужно.',
+    timelineCancel: 'Отмена в любой момент',
+    timelineCancelBody: 'Отмени хотя бы за день до {date} — и с тебя ничего не спишут.',
+    timelineStarts: '{date}: начинается подписка',
+    timelineStartsBody: 'Дальше {price} {period}, пока не отменишь.',
+    cancelAnytime: 'Отмена в любой момент',
+    renewsSummary: '{price} {period}. Отмена в любой момент.',
+    subscribe: 'Оформить подписку',
+    startFreeTrial: 'Начать бесплатный период',
+    eula: 'Условия использования (EULA)',
   },
 
   proWelcome: {

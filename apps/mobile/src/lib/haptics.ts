@@ -40,3 +40,17 @@ export async function notification(type: NotificationType = 'success'): Promise<
     // Same as above.
   }
 }
+
+/**
+ * A choice moving from one option to another — the paywall's plan cards.
+ * Lighter than `impact`, because nothing has been committed yet.
+ */
+export async function selection(): Promise<void> {
+  if (Platform.OS === 'web') return
+  try {
+    const Haptics = await import('expo-haptics')
+    await Haptics.selectionAsync()
+  } catch {
+    // Same as above.
+  }
+}

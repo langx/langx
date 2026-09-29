@@ -2513,6 +2513,9 @@ export const en = {
     notSetUp: 'Purchasing is not set up on this platform yet.',
     legal:
       'Subscriptions renew automatically until cancelled. Cancel any time from your Apple or Google account — cancelling stops the next renewal and keeps access until the current period ends.',
+    /** The same promise for a purchase made on the web, which no Apple or Google account holds. */
+    legalWeb:
+      'Subscriptions renew automatically until cancelled. Cancel any time in Settings → Subscription → Manage or cancel — cancelling stops the next renewal and keeps access until the current period ends.',
     trialTerms: {
       one: '{count} day free, then {price} {period}',
       other: '{count} days free, then {price} {period}',
@@ -2529,32 +2532,49 @@ export const en = {
     monthly: 'Monthly',
     yearly: 'Yearly',
     lifetime: 'One-off',
-    headline: 'Go further',
+    headline: 'Go further with {plan}',
     headlineBody:
       'Corrections and replies stay unlimited on every plan. Paying removes the other limits.',
-    yearlySaving: 'Yearly · save {percent}%',
-    yearlyFreeMonths: {
-      one: 'Yearly · {count} month free',
-      other: 'Yearly · {count} months free',
-    },
     savePercent: 'Save {percent}%',
     freeMonths: {
       one: '{count} month free',
       other: '{count} months free',
     },
-    savingA11y: '{price} a month on the monthly plan. Yearly saves {percent}%.',
-    freeMonthsA11y: {
-      one: '{price} a month on the monthly plan. Yearly gives you {count} month free.',
-      other: '{price} a month on the monthly plan. Yearly gives you {count} months free.',
-    },
     billingPeriod: 'Billing period',
-    start: 'Start {plan}',
     startTrial: {
       one: 'Start your free week',
       other: 'Start your {count} free weeks',
     },
     continueFree: 'Continue free',
-    perMonthBilledYearly: 'a month · billed yearly',
+    ownedHeadline: 'Everything in {plan} is yours',
+    trialHeadlineWeeks: {
+      one: 'Try {plan} free for a week',
+      other: 'Try {plan} free for {count} weeks',
+    },
+    trialHeadlineDays: {
+      one: 'Try {plan} free for {count} day',
+      other: 'Try {plan} free for {count} days',
+    },
+    andMore: {
+      one: 'And {count} more',
+      other: 'And {count} more',
+    },
+    showLess: 'Show less',
+    billedYearly: '{price} billed yearly',
+    billedMonthly: 'Billed monthly',
+    lifetimeDetail: 'One payment, nothing renews',
+    timelineTitle: 'How your free trial works',
+    timelineToday: 'Today: full access',
+    timelineTodayBody: 'Everything in {plan} unlocks. Nothing to pay today.',
+    timelineCancel: 'Cancel anytime',
+    timelineCancelBody: 'Cancel at least a day before {date} and you won’t be charged.',
+    timelineStarts: '{date}: your plan starts',
+    timelineStartsBody: '{price} {period} from then on, until you cancel.',
+    cancelAnytime: 'Cancel anytime',
+    renewsSummary: '{price} {period}. Cancel anytime.',
+    subscribe: 'Subscribe',
+    startFreeTrial: 'Start your free trial',
+    eula: 'Terms of Use (EULA)',
   },
 
   proWelcome: {
