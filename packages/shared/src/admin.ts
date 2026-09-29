@@ -98,14 +98,15 @@ export const adminMessageSchema = z.object({
 export type AdminMessageInput = z.infer<typeof adminMessageSchema>
 
 /**
- * Raising the "a new version is out" banner for one platform.
+ * Setting one platform's entry in `latestVersion` or `minVersion`.
  *
- * The only part of `AppConfig` the panel may write, and the line is drawn by
- * blast radius rather than by convenience. `latestVersion` can do one thing:
- * show a dismissible banner to people on something older. `minVersion`,
- * `maintenance` and the flags each stop something from working, and a typo in
- * any of them is an outage — those stay in `scripts/maintenance.ts`, which
- * talks to Mongo directly and so still works when the API does not.
+ * `latestVersion` shows a dismissible banner to people on something older;
+ * `minVersion` puts the "update to continue" screen in front of them. The panel
+ * writes both — `maintenance` and the flags stay in `scripts/maintenance.ts`,
+ * which talks to Mongo directly and so still works when the API does not.
+ * `minVersion` crossed that line because it is raised the day a breaking store
+ * release goes live, not in an incident; the route refuses a minimum above the
+ * platform's `latestVersion`, which is what keeps a typo from being an outage.
  *
  * The platform comes from `minVersionSchema`'s own keys for the reason the
  * script checks it the same way: the value becomes a property name, and a typo
@@ -116,6 +117,10 @@ export const adminLatestVersionSchema = z.object({
   version: z.string().trim().refine(isVersion, 'Use a version like 2.3 or 2.3.0'),
 })
 export type AdminLatestVersionInput = z.infer<typeof adminLatestVersionSchema>
+
+/** The same body, for the minimum — see above. */
+export const adminMinVersionSchema = adminLatestVersionSchema
+export type AdminMinVersionInput = AdminLatestVersionInput
 
 /**
  * Every mutating thing the panel can do, as the audit log names it.
@@ -133,6 +138,10 @@ export const ADMIN_ACTIONS = [
   'user.unfreeze',
   'user.signOut',
   'user.message',
+  'user.giftPro',
+  'giftCode.create',
+  'giftCode.activate',
+  'giftCode.deactivate',
   'post.hide',
   'post.unhide',
   'feedback.update',
@@ -146,6 +155,7 @@ export const ADMIN_ACTIONS = [
   'broadcast.resume',
   'broadcast.delete',
   'appConfig.latestVersion',
+  'appConfig.minVersion',
 ] as const
 export type AdminActionName = (typeof ADMIN_ACTIONS)[number]
 

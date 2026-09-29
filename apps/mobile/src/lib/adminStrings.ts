@@ -43,6 +43,7 @@ export const ADMIN = {
     feedback: 'Bug reports & ideas',
     broadcast: 'Broadcast',
     users: 'Find someone',
+    giftCodes: 'Gift codes',
     system: 'System',
     waiting: 'waiting',
     sections: {
@@ -260,6 +261,8 @@ export const ADMIN = {
     progress: (sent: number, total: number) => `${sent} of ${total}`,
     failed: (n: number) => `${n} failed`,
     stoppedNote: 'Stopped. What has already gone cannot be recalled.',
+    pollAnswers: (n: number) => `Answers (${n})`,
+    pollOption: (label: string, n: number) => `${label} · ${n}`,
   },
 
   users: {
@@ -293,6 +296,25 @@ export const ADMIN = {
     blockedBy: 'blocked by',
     history: 'What we have done',
     noHistory: 'Nothing yet.',
+    gift: {
+      title: 'Give Pro',
+      hint: 'A RevenueCat grant with an end date. They get a message from @langx, a push and a mail in their language.',
+      months: (n: number) => `${n} month${n === 1 ? '' : 's'}`,
+      note: 'Why (for the log — they never see it)',
+      preview: (date: string) =>
+        `Pro until ${date}, counted from the end of any gift they already have.`,
+      subscribed:
+        'They pay for a subscription. A gift does not stop that billing — it only carries Pro on until the date above if the subscription ends. Their message says so too.',
+      lifetime: 'They hold Pro for life. There is nothing to add to that.',
+      give: 'Give Pro',
+      confirm: (who: string, span: string) => `Give ${who} ${span} of Pro?`,
+      given: 'Pro given.',
+      pending: 'Saved — RevenueCat did not answer, so the scheduler will retry it.',
+      already: 'That gift was already given today.',
+      list: 'Gifts',
+      row: (months: number, detail: string) => `${months} mo · ${detail}`,
+      until: (date: string) => `until ${date}`,
+    },
   },
 
   online: {
@@ -357,16 +379,68 @@ export const ADMIN = {
     maintenanceOn: 'ON',
     maintenanceOff: 'off',
     readOnly:
-      'Everything else is read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
+      'Maintenance and the flags are read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
     minVersion: 'Minimum version',
     flags: 'Flags',
     latestVersion: 'Latest version',
     raiseBanner: 'Raise the update banner',
     raiseBannerHint:
-      'The version now live in the stores. Everyone on an older build gets a dismissible banner offering the store. Nothing is blocked — that is Minimum version, and it is still a script.',
+      'The version now live in the stores. Everyone on an older build gets a dismissible banner offering the store. Nothing is blocked — that is Minimum version, below.',
     versionPlaceholder: 'e.g. 2.3',
     set: 'Set',
     setDone: (platform: string, version: string) => `Latest ${platform} version is now ${version}`,
+    forceUpdate: 'Force an update',
+    forceUpdateHint:
+      'After a breaking release. Anyone below this version sees "update to continue" on their next launch or return to the app, signed in or not, and cannot go on until they update. It cannot be above the latest version for the platform — set that first. Set 0.0.0 to lift it.',
+    forceAboveLatest: (platform: string, latest: string) =>
+      `Above the latest ${platform} version (${latest}). Raise that first.`,
+    confirmForce: (platform: string, version: string) =>
+      `Block every ${platform} build below ${version} until it updates?`,
+    minDone: (platform: string, version: string) => `Minimum ${platform} version is now ${version}`,
+  },
+
+  /**
+   * Codes worth months of Pro to anybody who types one into the paywall.
+   * Time, never money off — the word "discount" does not belong here.
+   */
+  giftCodes: {
+    title: 'Gift codes',
+    hint: 'Anyone can redeem a code once from the paywall’s “Have a gift code?” link. It becomes a gift of Pro: a RevenueCat grant with an end date, and a message from @langx.',
+    newTitle: 'New code',
+    code: 'Code',
+    codeHint:
+      '3 to 32 letters, digits or dashes. Stored in capitals; people can type it in any case.',
+    months: 'Months of Pro',
+    monthsHint: 'Between 1 and 12.',
+    maxRedemptions: 'Redemptions allowed',
+    maxRedemptionsHint: 'Empty means no limit.',
+    expiresAt: 'Last day (YYYY-MM-DD, UTC)',
+    expiresAtHint: 'Empty means it never expires. It stops working at the end of that day.',
+    note: 'Why (for the log — nobody redeeming it sees it)',
+    create: 'Create code',
+    created: 'Code created.',
+    taken: 'That code already exists.',
+    list: 'Codes',
+    empty: 'No codes yet.',
+    used: (used: number, max: number | null) =>
+      max === null ? `${used} used · no limit` : `${used} of ${max} used`,
+    monthsShort: (n: number) => `${n} mo`,
+    until: (date: string) => `until ${date}`,
+    noExpiry: 'no expiry',
+    /** Whether it works right now: switched off wins over past its day. */
+    state: (active: boolean, expired: boolean) =>
+      !active ? 'Off' : expired ? 'Expired' : 'Active',
+    deactivate: 'Switch off',
+    activate: 'Switch on',
+    confirmDeactivate: (code: string) =>
+      `Switch ${code} off? Nobody can redeem it until it is switched on again. Nothing already given is taken back.`,
+    switchedOff: 'Switched off.',
+    switchedOn: 'Switched on.',
+    redemptions: 'Who redeemed it',
+    noRedemptions: 'Nobody yet.',
+    deletedAccount: 'deleted account',
+    createdOn: (date: string) => `Created ${date}`,
+    notFound: 'No such code.',
   },
 
   common: {

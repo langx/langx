@@ -207,6 +207,42 @@ And nothing at all is said about a **sandbox or TestFlight** event: those move
 the entitlement so a tester can see the paid app, and write no `churnedFrom`,
 send no mail and no push. None of it is anybody's money.
 
+### Gifts of Pro — a record, then information
+
+`modules/billing/proGifts.ts`, on the half-hourly timer (`runProGiftPass`) and
+straight from the operator's button. One `proGifts` row per gift, and the
+stamps that stop a repeat live on the row, not in the ledger — a twelve-month
+gift reminds eleven months after the ledger would have forgotten it.
+
+| Message                       | Fires on                                                   | Channels                        | Once because                           |
+| ----------------------------- | ---------------------------------------------------------- | ------------------------------- | -------------------------------------- |
+| **A gift of Pro**             | a gift is granted (operator, streak, referrals, gift code) | @langx message + push + email   | `sender_client_id_unique` + row status |
+| **Your Pro gift ends {date}** | 7 days before the end                                      | @langx message + email, no push | `remindedAt.week` on the row           |
+| **…ends tomorrow**            | 1 day before the end                                       | @langx message + push           | `remindedAt.day` on the row            |
+| **Your Pro gift has ended**   | the end, if the refresh leaves the account free            | @langx message, no push         | `endedNotifiedAt` on the row           |
+
+The letter is three short paragraphs. The first line says who gave it — an
+operator ("🎁 N months of LangX Pro, on us. Thanks for being here!"), a
+100/365-day streak, three invitees who became real users, or a gift code
+("🎟️ Code {CODE} worked: N months of LangX Pro are yours.", the code in
+capitals as it is stored) — and doubles as the push preview. Then four things
+Pro opens, one emoji-led line each, with "…and more." under them, and the end
+date. A code's gift is granted the moment it is redeemed, from
+`POST /me/gift-code`, not on the next pass. Somebody with a running store
+subscription is told it carries on as usual, and that Pro stays until the
+gift's end if it ever stops.
+
+The reminders are **information, not an offer**: when it ends and where the
+plan screen is. A "subscribe now" would be marketing and would need the consent
+these never ask for. None is sent when a later gift has moved the end, or when
+a subscription or a lifetime carries Pro past it anyway. The pushes go through
+`fanOutMessage`, so a muted @langx thread and the message switch silence them;
+the mails go only to a verified address that `isUserSuppressed` does not list.
+
+The EXPIRATION RevenueCat sends for a promotional grant (`store: PROMOTIONAL`)
+writes no `churnedFrom`, so neither "your plan has ended" nor the win-back
+offer goes out about a plan nobody paid for.
+
 ---
 
 ## 2. Notifications — a switch each, two very different channels

@@ -542,6 +542,10 @@ export const ru: Localized<ServerMessages> = {
     suspensionUpdatedText: 'Блокировка вашего аккаунта LangX изменена. {detail}',
     lifetimeGiftSubject: '{plan} — навсегда',
     lifetimeGiftButton: 'Посмотреть тариф',
+    proGiftSubject: '🎁 LangX Pro в подарок',
+    proGiftButton: 'Открыть LangX',
+    proGiftEndingSubject: '⏳ Твой подарок Pro заканчивается {date}',
+    proGiftEndingButton: 'Посмотреть тариф',
   },
 
   lifetimeGift: {
@@ -560,6 +564,44 @@ export const ru: Localized<ServerMessages> = {
       other:
         'Старый баланс перенесён из расчёта сто токенов v1 к одному, так что {carried} из них уже в новом кошельке. Сегодня в нём {balance} токена.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      one: '🎁 {count} месяц LangX Pro в подарок. Спасибо, что ты с нами!',
+      few: '🎁 {count} месяца LangX Pro в подарок. Спасибо, что ты с нами!',
+      many: '🎁 {count} месяцев LangX Pro в подарок. Спасибо, что ты с нами!',
+      other: '🎁 {count} месяца LangX Pro в подарок. Спасибо, что ты с нами!',
+    },
+    introReferral: {
+      one: '🎉 {friends} друга по твоему приглашению уже общаются в LangX. {count} месяц Pro — твой!',
+      few: '🎉 {friends} друга по твоему приглашению уже общаются в LangX. {count} месяца Pro — твои!',
+      many: '🎉 {friends} друга по твоему приглашению уже общаются в LangX. {count} месяцев Pro — твои!',
+      other:
+        '🎉 {friends} друга по твоему приглашению уже общаются в LangX. {count} месяца Pro — твои!',
+    },
+    introStreak: {
+      one: '🔥 {days} дней подряд! Вот {count} месяц Pro, чтобы не сбавлять темп.',
+      few: '🔥 {days} дней подряд! Вот {count} месяца Pro, чтобы не сбавлять темп.',
+      many: '🔥 {days} дней подряд! Вот {count} месяцев Pro, чтобы не сбавлять темп.',
+      other: '🔥 {days} дней подряд! Вот {count} месяца Pro, чтобы не сбавлять темп.',
+    },
+    introCode: {
+      one: '🎟️ Код {code} сработал: {count} месяц LangX Pro — твой.',
+      few: '🎟️ Код {code} сработал: {count} месяца LangX Pro — твои.',
+      many: '🎟️ Код {code} сработал: {count} месяцев LangX Pro — твои.',
+      other: '🎟️ Код {code} сработал: {count} месяца LangX Pro — твои.',
+    },
+    perks:
+      'Теперь ты можешь:\n💬 начинать сколько угодно новых разговоров\n🌍 переводить гораздо больше каждый день\n👀 видеть, кто смотрел твой профиль, и заходить незаметно\n✨ выделяться в «Поиске» и фильтровать по полу и городу',
+    andMore: '…и не только.',
+    until: 'До {date} Pro твой — пользуйся с удовольствием! 💛',
+    untilPaying:
+      'Твоя подписка продолжается как обычно. А если она когда-нибудь закончится, до {date} у тебя всё равно будет Pro.',
+    reminderWeek:
+      '⏳ Напоминаем: {date} твой подарок Pro заканчивается. Варианты тарифа — в разделе Настройки → Подписка.',
+    reminderDay: '⏳ Завтра, {date}, твой подарок Pro заканчивается.',
+    ended:
+      'Твой подарок Pro закончился. Спасибо, что практикуешься с нами, — до встречи в чатах! 💛',
   },
   reportReason: {
     spam: 'Спам',

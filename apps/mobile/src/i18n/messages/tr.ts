@@ -1017,6 +1017,7 @@ export const tr: Localized<EnMessages> = {
     phraseCard: 'İfade',
     meetingCard: 'Önerilen saat',
     quizCard: 'Soru',
+    pollThanks: 'Teşekkürler!',
     stickers: 'Stickerlar',
     stickerBuy: '{price} token ile aç',
     quizAddOption: 'Seçenek ekle',
@@ -1455,6 +1456,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Pro üye',
     official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',
@@ -1510,7 +1512,6 @@ export const tr: Localized<EnMessages> = {
     shareProfile: 'Profilimi paylaş',
     shareMessage: "LangX'te benimle dil pratiği yap: {url}",
     badges: 'Rozetler',
-    echoWeek: 'Bu hafta Echo',
     invite: 'Arkadaşını davet et',
     inviteBody: 'LangX’i kullanmaya başlayınca token kazan',
     dayStreak: 'Günlük seri',
@@ -1869,6 +1870,7 @@ export const tr: Localized<EnMessages> = {
     currentPlan: 'Mevcut plan',
     renewsOn: 'Yenilenme',
     endsOn: 'Bitiş',
+    giftUntil: 'Hediye · {date} tarihine kadar',
     lifetime: 'Ömür boyu',
     plan: 'Plan',
     manageSubscription: 'Yönet veya iptal et',
@@ -2281,6 +2283,8 @@ export const tr: Localized<EnMessages> = {
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
     lifetimeNotice: '{plan} ömür boyu senin. Yenilenen ya da ödenen bir şey yok.',
+    giftNotice:
+      '{plan} sende {date} tarihine kadar hediye. Sonrasında da sürmesi için abone olabilirsin — sen seçmeden hiçbir ücret alınmaz.',
     includedIn: '{plan} planına dahil',
     currentPlan: 'Mevcut planın',
     purchaseFailed: 'Bu satın alma tamamlanmadı. Hiçbir ücret alınmadı.',
@@ -2290,6 +2294,8 @@ export const tr: Localized<EnMessages> = {
     notSetUp: 'Bu platformda satın alma henüz ayarlanmadı.',
     legal:
       'Abonelikler iptal edilene kadar otomatik yenilenir. Apple ya da Google hesabından istediğin zaman iptal edebilirsin — iptal sonraki yenilemeyi durdurur, mevcut dönem sonuna kadar erişimin sürer.',
+    legalWeb:
+      'Abonelikler iptal edilene kadar otomatik yenilenir. Ayarlar → Abonelik → Yönet veya iptal et bölümünden istediğin zaman iptal edebilirsin — iptal sonraki yenilemeyi durdurur, mevcut dönem sonuna kadar erişimin sürer.',
     trialTerms: {
       one: '{count} gün ücretsiz, sonra {period} {price}',
       other: '{count} gün ücretsiz, sonra {period} {price}',
@@ -2306,32 +2312,92 @@ export const tr: Localized<EnMessages> = {
     monthly: 'Aylık',
     yearly: 'Yıllık',
     lifetime: 'Tek seferlik',
-    headline: 'Daha ileri git',
+    headline: '{plan} ile daha ileri git',
     headlineBody:
       'Düzeltmeler ve yanıtlar her planda sınırsız kalır. Ödeme yapmak diğer sınırları kaldırır.',
-    yearlySaving: 'Yıllık · %{percent} indirim',
-    yearlyFreeMonths: {
-      one: 'Yıllık · {count} ay bedava',
-      other: 'Yıllık · {count} ay bedava',
-    },
     savePercent: '%{percent} indirim',
     freeMonths: {
       one: '{count} ay bedava',
       other: '{count} ay bedava',
     },
-    savingA11y: 'Aylık planda ayda {price}. Yıllık ödemede %{percent} indirim.',
-    freeMonthsA11y: {
-      one: 'Aylık planda ayda {price}. Yıllık planda {count} ay bedava.',
-      other: 'Aylık planda ayda {price}. Yıllık planda {count} ay bedava.',
-    },
     billingPeriod: 'Ödeme dönemi',
-    start: '{plan} ile başla',
     startTrial: {
       one: 'Ücretsiz haftanı başlat',
       other: '{count} ücretsiz haftanı başlat',
     },
     continueFree: 'Ücretsiz devam et',
-    perMonthBilledYearly: 'aylık · yıllık faturalandırılır',
+    ownedHeadline: 'Tüm {plan} özellikleri senin',
+    trialHeadlineWeeks: {
+      one: 'Bir hafta ücretsiz {plan}',
+      other: '{count} hafta ücretsiz {plan}',
+    },
+    trialHeadlineDays: {
+      one: '{count} gün ücretsiz {plan}',
+      other: '{count} gün ücretsiz {plan}',
+    },
+    andMore: {
+      one: 'Ve {count} özellik daha',
+      other: 'Ve {count} özellik daha',
+    },
+    showLess: 'Daha az göster',
+    billedYearly: 'Yılda bir {price} faturalandırılır',
+    billedMonthly: 'Her ay faturalandırılır',
+    lifetimeDetail: 'Tek ödeme, yenilenmez',
+    timelineTitle: 'Ücretsiz deneme nasıl işler',
+    timelineToday: 'Bugün: tam erişim',
+    timelineTodayBody: '{plan} özelliklerinin hepsi açılır. Bugün hiçbir şey ödemezsin.',
+    timelineCancel: 'İstediğin zaman iptal et',
+    timelineCancelBody: '{date} tarihinden en az bir gün önce iptal edersen hiç ücret alınmaz.',
+    timelineStarts: '{date}: planın başlar',
+    timelineStartsBody: 'O günden sonra {period} {price}, sen iptal edene kadar.',
+    cancelAnytime: 'İstediğin zaman iptal et',
+    renewsSummary: '{period} {price}. İstediğin zaman iptal et.',
+    subscribe: 'Abone ol',
+    startFreeTrial: 'Ücretsiz denemeyi başlat',
+    eula: 'Kullanım Koşulları (EULA)',
+  },
+
+  proWelcome: {
+    titlePurchase: 'Artık Pro’sun',
+    titleTrial: 'Ücretsiz Pro haftan başladı',
+    titleGift: {
+      one: '{count} ay Pro, bizden 🎁',
+      other: '{count} ay Pro, bizden 🎁',
+    },
+    titleGiftOpen: 'Pro, bizden 🎁',
+    titleReferral: {
+      one: 'Davetlerin sana {count} ay Pro kazandırdı',
+      other: 'Davetlerin sana {count} ay Pro kazandırdı',
+    },
+    titleStreak: {
+      one: 'Serin sana {count} ay Pro kazandırdı',
+      other: 'Serin sana {count} ay Pro kazandırdı',
+    },
+    titleMerge: 'Fluent ve Polyglot artık tek plan: Pro',
+    body: 'Her şeyin kilidi açıldı. Önce bunları dene:',
+    bodyMerge: 'Hangisi sende olursa olsun, artık hepsi sende. Önce bunları dene:',
+    andMore: 've daha fazlası',
+    start: 'Keşfetmeye başla',
+  },
+
+  giftCode: {
+    link: 'Hediye kodun var mı?',
+    title: 'Hediye kodunu kullan',
+    body: 'Hediye kodu sana aylarca LangX Pro verir. Kodu aldığın gibi yaz — büyük küçük harf fark etmez.',
+    label: 'Hediye kodu',
+    redeem: 'Kullan',
+    close: 'Kapat',
+    pending: 'Kodun işe yaradı. Pro birkaç dakika içinde açılacak.',
+    unknown: 'Bu kodu bulamadık. Yazımını kontrol edip tekrar dene.',
+    inactive: 'Bu kod artık geçerli değil.',
+    expired: 'Bu kodun süresi dolmuş.',
+    exhausted: 'Bu kodun kullanım hakkı bitti.',
+    used: 'Bu kodu zaten kullandın.',
+    lifetime: 'Zaten ömür boyu Pro’n var, eklenecek bir şey yok.',
+    official: 'Bu hesap hediye kodu kullanamaz.',
+    unavailable: 'Hediye kodları şu anda kullanılamıyor.',
+    rateLimited: 'Çok fazla deneme. Biraz bekleyip tekrar dene.',
+    failed: 'Bir şeyler ters gitti. Lütfen tekrar dene.',
   },
 
   pickers: {
@@ -2398,5 +2464,96 @@ export const tr: Localized<EnMessages> = {
     glanceDetail: 'Kilit ekranı ve StandBy için seri ve okunmamışlar.',
     exchangeStartsIn: 'Başlamasına',
     exchangeEndsIn: 'Bitmesine',
+  },
+  recap: {
+    meTitle: '{month} özetin',
+    meBody: 'LangX’teki ayın, paylaşmaya hazır.',
+    messages: {
+      one: '{count} mesaj',
+      other: '{count} mesaj',
+    },
+    echoReviews: {
+      one: '{count} Echo kartı tekrar edildi',
+      other: '{count} Echo kartı tekrar edildi',
+    },
+    quiet: 'Sakin bir aydı. Yenisi çoktan başladı.',
+    share: 'Ayımı paylaş',
+    cardCaption: 'LangX’teki ayım',
+    shareMessage: 'LangX’te {month}: {messages}, {reviews}. Benimle pratik yap: {url}',
+    failed: 'Özet yüklenemedi.',
+    story: {
+      close: 'Kapat',
+      next: 'Sonraki',
+      previous: 'Önceki',
+      slideOf: '{index}/{total}',
+      introKicker: 'Ayın',
+      introLine: 'İki dilde geçen bir ay. İşte seninki.',
+      introHint: 'Devam etmek için dokun',
+      messagesKicker: 'Konuştun',
+      messagesLine: {
+        one: 'mesaj, dil değişimlerinde',
+        other: 'mesaj, dil değişimlerinde',
+      },
+      people: {
+        one: '{count} kişiyle',
+        other: '{count} kişiyle',
+      },
+      correctionsKicker: 'Sen de katkı verdin',
+      correctionsLine: {
+        one: 'cümleyi, senin dilini öğrenen biri için düzelttin',
+        other: 'cümleyi, senin dilini öğrenenler için düzelttin',
+      },
+      echoKicker: 'Hatırladın',
+      echoLine: {
+        one: 'Echo kartı tekrar ettin; bu kelime artık senin',
+        other: 'Echo kartı tekrar ettin; bu kelimeler artık senin',
+      },
+      streakKicker: 'Gelmeye devam ettin',
+      streakLine: {
+        one: 'günlük seri, hâlâ sürüyor.',
+        other: 'günlük seri, hâlâ sürüyor.',
+      },
+      activeDaysLine: {
+        one: 'Bu ay {count} gün aktiftin.',
+        other: 'Bu ay {count} gün aktiftin.',
+      },
+      activeDaysOnlyLine: {
+        one: 'gün, bu ay pratik yaptın.',
+        other: 'gün, bu ay pratik yaptın.',
+      },
+      justLink: 'Sadece bağlantıyı gönder',
+    },
+    card: {
+      kicker: 'Ayım',
+      people: {
+        one: 'iki dilde, {count} kişiyle',
+        other: 'iki dilde, {count} kişiyle',
+      },
+      languages: '{native} → {learning} öğreniyor',
+      messages: {
+        one: 'mesaj gönderildi',
+        other: 'mesaj gönderildi',
+      },
+      corrections: {
+        one: 'cümle düzeltildi',
+        other: 'cümle düzeltildi',
+      },
+      echoReviews: {
+        one: 'Echo kartı tekrar edildi',
+        other: 'Echo kartı tekrar edildi',
+      },
+      activeDays: {
+        one: 'aktif gün',
+        other: 'aktif gün',
+      },
+      currentStreak: {
+        one: 'günlük seri, sürüyor',
+        other: 'günlük seri, sürüyor',
+      },
+      tokens: {
+        one: 'token kazanıldı',
+        other: 'token kazanıldı',
+      },
+    },
   },
 }

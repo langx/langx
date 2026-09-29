@@ -525,6 +525,10 @@ export const de: Localized<ServerMessages> = {
     suspensionUpdatedText: 'Deine LangX-Sperre wurde aktualisiert. {detail}',
     lifetimeGiftSubject: '{plan}, auf Lebenszeit',
     lifetimeGiftButton: 'Meinen Tarif ansehen',
+    proGiftSubject: '🎁 LangX Pro, von uns geschenkt',
+    proGiftButton: 'LangX öffnen',
+    proGiftEndingSubject: '⏳ Dein Pro-Geschenk endet am {date}',
+    proGiftEndingButton: 'Meinen Tarif ansehen',
   },
 
   lifetimeGift: {
@@ -539,6 +543,36 @@ export const de: Localized<ServerMessages> = {
       other:
         'Dein altes Guthaben kam im Verhältnis hundert v1-Token zu eins herüber, also liegen {carried} davon in deiner neuen Brieftasche. Heute hält sie {balance} Token.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      one: '🎁 {count} Monat LangX Pro, von uns geschenkt. Danke, dass du dabei bist!',
+      other: '🎁 {count} Monate LangX Pro, von uns geschenkt. Danke, dass du dabei bist!',
+    },
+    introReferral: {
+      one: '🎉 {friends} Freunde, die du eingeladen hast, unterhalten sich jetzt auf LangX. {count} Monat Pro gehört dir!',
+      other:
+        '🎉 {friends} Freunde, die du eingeladen hast, unterhalten sich jetzt auf LangX. {count} Monate Pro gehören dir!',
+    },
+    introStreak: {
+      one: '🔥 {days} Tage am Stück! Hier ist {count} Monat Pro, damit es so weitergeht.',
+      other: '🔥 {days} Tage am Stück! Hier sind {count} Monate Pro, damit es so weitergeht.',
+    },
+    introCode: {
+      one: '🎟️ Code {code} hat geklappt: {count} Monat LangX Pro gehört dir.',
+      other: '🎟️ Code {code} hat geklappt: {count} Monate LangX Pro gehören dir.',
+    },
+    perks:
+      'Jetzt für dich freigeschaltet:\n💬 unbegrenzt neue Unterhaltungen\n🌍 viel mehr Übersetzungen pro Tag\n👀 sehen, wer dich angesehen hat, und unsichtbar stöbern\n✨ in Entdecken hervorstechen, nach Geschlecht und Stadt filtern',
+    andMore: '…und mehr.',
+    until: 'Viel Spaß damit bis zum {date}. 💛',
+    untilPaying:
+      'Dein Abo läuft ganz normal weiter – und falls es einmal endet, bleibt Pro bis zum {date}.',
+    reminderWeek:
+      '⏳ Kurzer Hinweis: Dein Pro-Geschenk endet am {date}. Deine Tarifoptionen findest du unter Einstellungen → Abo.',
+    reminderDay: '⏳ Dein Pro-Geschenk endet morgen, am {date}.',
+    ended:
+      'Dein Pro-Geschenk ist abgelaufen. Danke fürs Üben mit uns – wir sehen uns in den Chats! 💛',
   },
   reportReason: {
     spam: 'Spam',

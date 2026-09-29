@@ -2,6 +2,7 @@ import { Stack } from 'expo-router'
 import { View } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
 import { OfflineBanner } from '../../src/components/OfflineBanner'
+import { ProWelcomeHost } from '../../src/components/ProWelcomeHost'
 import { UpdateBanner } from '../../src/components/UpdateBanner'
 import { useTheme } from '../../src/lib/theme'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
@@ -126,7 +127,23 @@ export default function AppLayout() {
               : {}),
           })}
         />
+        {/*
+          The recap is a story: it rises from the bottom because a swipe down
+          is how it leaves, and the edge-back gesture is off because a swipe
+          across is how its slides step.
+        */}
+        <Stack.Screen
+          name="recap"
+          options={{ animation: 'slide_from_bottom', gestureEnabled: false }}
+        />
       </Stack>
+      {/*
+        "You're Pro now". Here, at the root of the signed-in area, because the
+        edge into Pro can happen anywhere — the paywall, a gift, a reward — and
+        the screen belongs to none of them. A Modal, so its place in the tree
+        says nothing about what it paints over.
+      */}
+      <ProWelcomeHost enabled={!isGuest} />
     </View>
   )
 }

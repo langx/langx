@@ -40,6 +40,7 @@ import {
   ActivityIndicator,
   Animated,
   FlatList,
+  Linking,
   Platform,
   Pressable,
   StyleSheet,
@@ -165,6 +166,7 @@ import {
 } from '../lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../lib/messageGroups'
 import { useDisplayNames, useLocale, useT } from '../i18n'
+import { openStoreReview } from '../lib/storeListing'
 import { planJump } from '../lib/messageJump'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
@@ -829,6 +831,42 @@ export function ChatScreen({
     }
   }
 
+  /**
+   * Picks an option of a poll under a broadcast. Offered in a read-only
+   * channel too — @langx accepts no messages, but an answer is not one. The
+   * tick arrives as a `message:updated`, so nothing is patched here.
+   */
+  async function answerPoll(message: MessageDto, optionId: string): Promise<void> {
+    try {
+      const socket = await getSocket()
+      await emitWithAck(socket, 'poll:answer', { conversationId, messageId: message._id, optionId })
+      if (message.interactive?.kind === 'poll') {
+        track({
+          name: 'langx_poll_answered',
+          properties: { poll_id: message.interactive.pollId, option_id: optionId },
+        })
+      }
+    } catch (caught) {
+      void caught
+      void showAlert(t('chat.couldNotSend'))
+    }
+  }
+
+  /** The button on a card under a broadcast. */
+  function cardAction(message: MessageDto): void {
+    if (message.interactive?.kind !== 'card') return
+    const action = message.interactive.button.action
+    track({ name: 'langx_card_tapped', properties: { action: action.type } })
+    if (action.type === 'storeReview') void openStoreReview()
+    else if (action.type === 'openUrl') void Linking.openURL(action.url).catch(() => undefined)
+    // A card's own route may point at the paywall without saying why it's
+    // there — `openPaywall` is what stamps `paywall_viewed.source` instead of
+    // letting `parseSource` fall back to the generic `gate`.
+    else if (action.route === '/paywall' || action.route.startsWith('/paywall?')) {
+      openPaywall(undefined, undefined, 'langx')
+    } else router.push(action.route)
+  }
+
   /** Accepts, declines or withdraws. The server decides who may do which. */
   async function respondMeeting(
     message: MessageDto,
@@ -1324,6 +1362,7 @@ export function ChatScreen({
       if (code === 'QUOTA_EXCEEDED') {
         // A plain alert and nothing to buy: the ceiling is the same on every
         // plan since the single one, so the paywall would sell nothing.
+        track({ name: 'fair_use_limit_hit', properties: { kind: 'media' } })
         setPending((list) => removePending(list, clientId))
         await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
         return
@@ -2806,6 +2845,8 @@ export function ChatScreen({
                       onAnswerAsk={answerAsk}
                       onRespondMeeting={(message, status) => void respondMeeting(message, status)}
                       onAnswerQuiz={(message, index) => void answerQuiz(message, index)}
+                      onAnswerPoll={(message, optionId) => void answerPoll(message, optionId)}
+                      onCardAction={cardAction}
                       onAddToCalendar={(message) => void addToCalendar(message)}
                       meetingWhen={meetingWhenFor(row.message)}
                       meetingLength={meetingLengthFor(row.message)}

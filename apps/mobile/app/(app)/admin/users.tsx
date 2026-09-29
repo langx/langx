@@ -1,7 +1,13 @@
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
-import { REPORT_REASONS, SUSPENSION_MAX_DAYS } from '@langx/shared'
+import {
+  PRO_GIFT_MONTHS,
+  REPORT_REASONS,
+  SUSPENSION_MAX_DAYS,
+  addMonthsUtc,
+  type ProGiftMonths,
+} from '@langx/shared'
 import {
   useAdminDecision,
   useAdminUser,
@@ -89,9 +95,52 @@ function Found({ data }: { data: AdminUserDto }) {
   const decide = useAdminDecision()
   const [message, setMessage] = useState('')
   const [days, setDays] = useState('7')
+  const [giftMonths, setGiftMonths] = useState<ProGiftMonths>(1)
+  const [giftNote, setGiftNote] = useState('')
 
   const user = data.user
   const who = `@${user.handle}`
+
+  /*
+   * The end the server will decide, shown before the button: stacked on the
+   * latest end of any gift still running, as `proGifts.ts` stacks it. A
+   * preview, not a promise — the server's own arithmetic is what lands.
+   */
+  const now = new Date()
+  const stackedOn = user.gifts
+    .filter((gift) => gift.endsAt && gift.status !== 'failed' && gift.status !== 'skipped')
+    .map((gift) => new Date(gift.endsAt as string))
+    .filter((end) => end > now)
+    .reduce((latest, end) => (end > latest ? end : latest), now)
+  const giftEnds = addMonthsUtc(stackedOn, giftMonths).toISOString().slice(0, 10)
+
+  async function givePro() {
+    const ok = await confirmAlert({
+      title: ADMIN.users.gift.confirm(who, ADMIN.users.gift.months(giftMonths)),
+      message: user.plan.subscribed
+        ? `${ADMIN.users.gift.preview(giftEnds)}\n\n${ADMIN.users.gift.subscribed}`
+        : ADMIN.users.gift.preview(giftEnds),
+      confirmLabel: ADMIN.users.gift.give,
+    })
+    if (!ok) return
+    try {
+      const result = (await action.mutateAsync({
+        userId: user.userId,
+        action: 'gift',
+        body: { months: giftMonths, ...(giftNote.trim() ? { note: giftNote.trim() } : {}) },
+      })) as { created: boolean; gift: { status: string } }
+      showToast(
+        !result.created
+          ? ADMIN.users.gift.already
+          : result.gift.status === 'granted'
+            ? ADMIN.users.gift.given
+            : ADMIN.users.gift.pending,
+      )
+      setGiftNote('')
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
 
   async function suspend() {
     const reason = await chooseAlert(
@@ -279,6 +328,54 @@ function Found({ data }: { data: AdminUserDto }) {
         />
       </View>
 
+      {/* ── Pro as a gift ── */}
+      <Text style={styles.heading}>{ADMIN.users.gift.title}</Text>
+      {user.plan.lifetime ? (
+        <Text style={styles.muted}>{ADMIN.users.gift.lifetime}</Text>
+      ) : (
+        <>
+          <Text style={styles.hint}>{ADMIN.users.gift.hint}</Text>
+          <View style={styles.months}>
+            {PRO_GIFT_MONTHS.map((months) => (
+              <Button
+                key={months}
+                label={ADMIN.users.gift.months(months)}
+                size="small"
+                variant={months === giftMonths ? 'primary' : 'secondary'}
+                onPress={() => setGiftMonths(months)}
+              />
+            ))}
+          </View>
+          <FormField label={ADMIN.users.gift.note} value={giftNote} onChangeText={setGiftNote} />
+          <Text style={styles.muted}>{ADMIN.users.gift.preview(giftEnds)}</Text>
+          {user.plan.subscribed ? (
+            <Callout tone="warning">
+              <Text style={styles.calloutBody}>{ADMIN.users.gift.subscribed}</Text>
+            </Callout>
+          ) : null}
+          <Button label={ADMIN.users.gift.give} variant="secondary" onPress={givePro} />
+        </>
+      )}
+      {user.gifts.length > 0 ? (
+        <>
+          <Text style={styles.hint}>{ADMIN.users.gift.list}</Text>
+          <Card>
+            {user.gifts.map((gift) => (
+              <Text key={gift._id} style={styles.row}>
+                {ADMIN.users.gift.row(
+                  gift.months,
+                  [
+                    gift.source,
+                    gift.status,
+                    ...(gift.endsAt ? [ADMIN.users.gift.until(gift.endsAt.slice(0, 10))] : []),
+                  ].join(' · '),
+                )}
+              </Text>
+            ))}
+          </Card>
+        </>
+      ) : null}
+
       <Text style={styles.heading}>{ADMIN.users.history}</Text>
       {user.actions.length === 0 ? (
         <Text style={styles.muted}>{ADMIN.users.noHistory}</Text>
@@ -312,4 +409,5 @@ const useStyles = makeStyles((theme) => ({
   hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 8 },
   row: { fontSize: 14, color: theme.colors.text, lineHeight: 22 },
   actions: { gap: 12, marginTop: 12 },
+  months: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
 }))

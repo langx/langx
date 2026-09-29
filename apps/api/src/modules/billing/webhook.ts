@@ -12,6 +12,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { creditReferrerForSubscription } from '../referrals/settle'
 import type { Profile } from '../profiles/profiles'
 import { refreshEntitlement, refreshEntitlementIfHeld } from './refresh'
+import { welcomeIfBecamePro } from './proWelcome'
 import type { RevenueCatClient } from './revenueCatClient'
 import { notifyBilling, type BillingNotifier } from './notify'
 
@@ -159,7 +160,22 @@ export async function processRevenueCatWebhook(
       ...(periodType ? { periodType } : {}),
     }
     if (record.expiresAt) entitlement.expiresAt = record.expiresAt
-    await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
+    /*
+     * With the pre-image, for the welcome: this is the path a purchase takes
+     * when RevenueCat cannot be asked, and the reconciled branch above has
+     * its own edge inside `refreshEntitlement`. Swallowed like the credit
+     * below, and for the same reason.
+     */
+    const before = await profiles.findOneAndUpdate(
+      { _id: userId },
+      { $set: { entitlement, updatedAt: now } },
+      { returnDocument: 'before', projection: { entitlement: 1 } },
+    )
+    try {
+      await welcomeIfBecamePro(db, userId, before?.entitlement, entitlement, now)
+    } catch (error) {
+      console.error('[billing] pro welcome failed', { userId, error })
+    }
 
     /*
      * Any grant event, once the entitlement it wrote is one somebody pays
@@ -208,7 +224,15 @@ export async function processRevenueCatWebhook(
      * and find the account still free. Saying it now is how somebody who
      * never lost anything gets told their plan ended.
      */
-    if (previousTier !== 'free') {
+    /*
+     * Not for a promotional grant running out. A gift of months ending is
+     * not somebody leaving a plan they paid for: "your subscription has
+     * ended" and the win-back offer a week later would both be about a
+     * subscription that never existed. `runProGiftPass` says the one thing
+     * worth saying about it, once.
+     */
+    const promotional = record.store.toUpperCase() === 'PROMOTIONAL'
+    if (previousTier !== 'free' && !promotional) {
       await profiles.updateOne(
         { _id: userId },
         // Normalized: a Polyglot row not yet merged fell from Pro.

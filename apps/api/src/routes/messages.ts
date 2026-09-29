@@ -1,4 +1,5 @@
 import {
+  answerPollSchema,
   conversationFlagsSchema,
   conversationSearchQuerySchema,
   ERROR_CODES,
@@ -33,10 +34,11 @@ import {
   listStarredMessages,
   setConversationFlag,
 } from '../modules/chat/mutations'
+import { answerPoll } from '../modules/chat/polls'
 import { romanizeMessage } from '../modules/chat/romanize'
 import { speakMessage } from '../modules/chat/speak'
 import { transcribeMessage } from '../modules/chat/transcript'
-import { fanOutMessage } from '../ws/fanOut'
+import { fanOutMessage, fanOutMessageUpdate } from '../ws/fanOut'
 import { sendTraySync } from '../ws/traySync'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -213,6 +215,36 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
    * limit here is looser than `/speak`'s because a reading takes milliseconds
    * rather than seconds of synthesis.
    */
+  /*
+   * Answering a poll under a message. The same `answerPoll` as the socket's
+   * `poll:answer`, so the one-answer rule is the database's, not a
+   * transport's. Only the answerer's devices hear about it: the other side is
+   * `@langx`, and nobody is signed in there.
+   */
+  app.post(
+    '/conversations/:id/messages/:messageId/poll-answer',
+    {
+      preHandler: requireAuth,
+      schema: {
+        params: z.object({
+          id: z.string().trim().min(1),
+          messageId: z.string().trim().min(1),
+        }),
+        body: answerPollSchema.pick({ optionId: true }),
+      },
+      config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const { message, conversation } = await answerPoll(app.mongo.db, request.userId, {
+        conversationId: request.params.id,
+        messageId: request.params.messageId,
+        optionId: request.body.optionId,
+      })
+      fanOutMessageUpdate(app.io, conversation, message, 'actor', request.userId)
+      return reply.send(toMessageView(message, request.userId))
+    },
+  )
+
   app.post(
     '/conversations/:id/messages/:messageId/romanize',
     {

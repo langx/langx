@@ -49,6 +49,7 @@ import { assertOwnObject } from '../../lib/assertOwnBucket'
 import { markReservationClaimed, reservationVerdict } from '../handles/handleReservations'
 import type { PendingDeletionFeedback } from '../account/deletionFeedback'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
+import type { ProWelcome } from '../billing/proWelcome'
 import { cameFromV1 } from '../handles/legacyPrecreate'
 import { isUserSuppressed } from '../notifications/suppressions'
 import { restoreByHash } from '../handles/legacyRestore'
@@ -245,6 +246,25 @@ export interface Profile {
    * `/billing/refresh` moves that.
    */
   churnedFrom?: { tier: StoredPlanTier; at: Date }
+  /**
+   * A "You're Pro now" screen still waiting to be seen. Written on the edge
+   * into Pro (`modules/billing/proWelcome.ts`) and cleared by the app's
+   * acknowledgement of this exact `at`, so one welcome is shown once, on
+   * whichever device gets there first.
+   */
+  proWelcome?: ProWelcome
+  /**
+   * When the one-off "Fluent and Polyglot are now Pro" welcome was written by
+   * `scripts/merge-pro-tiers.ts`. A latch, not a display field: `proWelcome` is
+   * cleared on acknowledgement, and without this a re-run would show it again.
+   */
+  proMergeWelcomedAt?: Date
+  /**
+   * The streak milestones (in days) already given a gift of Pro for — see
+   * `queueStreakGifts`. Only a shortcut: the `proGifts` row's key is what
+   * makes each one once in a lifetime.
+   */
+  proGiftStreaks?: number[]
   /**
    * `echoCaptures` is optional where the other three are not: it arrived after
    * every existing profile was written, and `consumeQuota` reads the array

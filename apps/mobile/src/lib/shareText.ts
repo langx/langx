@@ -98,6 +98,29 @@ export function streakShareText(
 }
 
 /**
+ * The month in two counts that read as progress, not the full list: a
+ * sentence with five numbers in it is a spreadsheet, not a post.
+ */
+export function recapShareText(
+  t: TranslateFn,
+  {
+    month,
+    messages,
+    reviews,
+    handle,
+  }: { month: string; messages: number; reviews: number; handle: string },
+): ShareContent {
+  const url = inviteUrl(handle)
+  const message = t('recap.shareMessage', {
+    month,
+    messages: t('recap.messages', { count: messages }),
+    reviews: t('recap.echoReviews', { count: reviews }),
+    url,
+  })
+  return { message, url }
+}
+
+/**
  * One whole sentence per period rather than `periodLabel` dropped into a
  * template: "This week" cannot be bent into "on this week's leaderboard" in
  * English, let alone in seven other languages. Same reasoning as

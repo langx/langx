@@ -7,7 +7,7 @@ import { ensureIndexes } from '../../db/indexes'
 import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
-import { lastMonthKey, runNewsletterPass } from './newsletter'
+import { lastMonthKey, recapForMonth, runNewsletterPass } from './newsletter'
 
 const SECRET = 'n'.repeat(40)
 /** The first of October at noon UTC: the recap is about September. */
@@ -40,6 +40,7 @@ describe('the monthly recap', () => {
       COLLECTIONS.tokenAggregates,
       COLLECTIONS.messages,
       COLLECTIONS.postCorrections,
+      COLLECTIONS.echoAggregates,
     ]) {
       await handle.db.collection(name).deleteMany({})
     }
@@ -182,5 +183,43 @@ describe('the monthly recap', () => {
   it('goes to everybody except the people who turned promotional mail off', async () => {
     await newProfile({ optedIn: false })
     expect(await runNewsletterPass(handle.db, ctx, FIRST)).toEqual({ sent: 0 })
+  })
+
+  it('gives the in-app recap the letter’s numbers plus the month’s Echo row', async () => {
+    const userId = await newProfile({ streak: 12 })
+    await handle.db.collection(COLLECTIONS.dailyActivity).insertMany([
+      { userId, day: '2026-09-02', messages: 3, corrections: 1, partners: ['a', 'b'] },
+      // A correction-only day has no `partners` field at all.
+      { userId, day: '2026-09-11', messages: 0, corrections: 2 },
+      // The partner's side of a mutual bonus: a row, but not an active day.
+      { userId, day: '2026-09-20', messages: 0, corrections: 0, mutualConversations: 1 },
+      { userId, day: '2026-09-30', messages: 2, corrections: 0, partners: ['b', 'c'] },
+      { userId, day: '2026-10-01', messages: 99, corrections: 99, partners: ['z'] },
+    ] as never[])
+    await handle.db
+      .collection(COLLECTIONS.tokenAggregates)
+      .insertOne({ _id: `${userId}:month:2026-09`, tokens: 40 } as never)
+    await handle.db.collection(COLLECTIONS.echoAggregates).insertMany([
+      { _id: `${userId}:month:2026-09`, userId, reviews: 25 },
+      { _id: `${userId}:month:2026-08`, userId, reviews: 7 },
+    ] as never[])
+
+    expect(await recapForMonth(handle.db, userId, '2026-09')).toEqual({
+      month: '2026-09',
+      messages: 5,
+      corrections: 3,
+      tokens: 40,
+      echoReviews: 25,
+      // Today's streak: nothing records what it was at the end of September.
+      currentStreak: 12,
+      // a, b and c — b on two days is still one person.
+      partners: 3,
+      activeDays: 3,
+      activeDates: [2, 11, 30],
+    })
+    expect(await recapForMonth(handle.db, userId, '2026-07')).toMatchObject({
+      messages: 0,
+      echoReviews: 0,
+    })
   })
 })

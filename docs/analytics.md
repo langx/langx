@@ -54,38 +54,51 @@ reached a screen of ours.
 
 **Events.** The closed union in `analyticsEvents.ts`:
 
-| Event                       | Properties                                                                                                   | Fired                                                                                    |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| `welcome_chosen`            | `choice` (browse, create, sign_in)                                                                           | One of the welcome screen's three actions                                                |
-| `signup_submitted`          | `method` (email, google, apple), `from_guest`                                                                | The sign-up request leaves the device. Not that it succeeded                             |
-| `signup_verified`           | `method`                                                                                                     | The mailed link was opened and spent by the app. Email only                              |
-| `guest_gate_hit`            | `action` (message, like, follow, post, other)                                                                | A guest was refused a write and sent to sign-up                                          |
-| `onboarding_step_completed` | `step`, `guest`, `resumed`                                                                                   | One wizard step was finished — what `$screen` cannot say                                 |
-| `onboarding_completed`      | `referred`, `native_languages`, `learning_languages`, `method`, `from_guest`, `seconds_since_install`        | The profile is created                                                                   |
-| `message_sent`              | `kind` (text, correction, image, audio), `reply`                                                             | The server acknowledged a send. Never the body                                           |
-| `paywall_viewed`            | `feature` (what sent them there, or null), `tier`, `source`                                                  | The paywall opens                                                                        |
-| `paywall_dismissed`         | `source`, `seconds_open`                                                                                     | It was closed without a purchase — the X, or "Continue free"                             |
-| `purchase_started`          | `offer`, `tier`, `period`, `change` (`buy`; `upgrade`/`portal` only before the single plan)                  | A buy button is tapped                                                                   |
-| `purchase_finished`         | the same, plus `outcome`                                                                                     | The store sheet closes: purchased, cancelled, failed or unavailable                      |
-| `review_prompted`           | `trigger` (streakMilestone or correction)                                                                    | The OS review sheet was requested; whether it showed is unknowable                       |
-| `boosted_strip_shown`       | `count` (1–12)                                                                                               | Discover is focused with a non-empty Boosted strip                                       |
-| `boosted_strip_tapped`      | `slot` (0-based); `tier` only on events from before the single plan                                          | A Boosted card is tapped                                                                 |
-| `discovery_card_tapped`     | `slot` (0-based)                                                                                             | A row in the discovery list below the strip is tapped                                    |
-| `message_received`          | `kind` (any `MessageType`)                                                                                   | A message from somebody else arrives over the socket                                     |
-| `message_send_failed`       | `kind` (text, media), `reason` (error code or null)                                                          | A send did not land. A media quota refusal is a fair-use alert, not a failure            |
-| `notification_opened`       | `kind` (any `PushKind`, or unknown), `cold_start`                                                            | A push was tapped. Counts taps, never sends                                              |
-| `filters_applied`           | `count`, `pro`                                                                                               | The discovery filter sheet is applied. How many, never which                             |
-| `tokens_spent`              | `sku`, `kind` (cosmetic kind or consumable), `amount`                                                        | A wallet purchase the server accepted. Spending only, never earning                      |
-| `echo_card_captured`        | `source` (chat, post, phrase, manual)                                                                        | A sentence was kept as a card. Only one that was created                                 |
-| `echo_session_started`      | `cards`, `offline`                                                                                           | A review deck was opened and had cards in it                                             |
-| `echo_card_graded`          | `grade` (again, hard, good, easy), `producing`, `seconds`                                                    | One card was answered. Never the card's text                                             |
-| `echo_session_finished`     | `reviewed`, `remembered`, `offline`                                                                          | The last card of the deck was graded. Leaving early sends nothing                        |
-| `echo_pack_started`         | `lang`, `level`, `count`                                                                                     | A pack handed over its next batch of cards                                               |
-| `echo_ask_opened`           | `kind` (the preselected ask — always pronunciation since "Post to the feed"), `entry` (session, card, cards) | "Post to the feed" opened the composer from a card. Counts opens, not posts              |
-| `post_created`              | `asks` (none, correction, pronunciation, both), `media` (file count), `hasText`, `from` (feed, echo)         | A post was written. `asks: none` is a moment                                             |
-| `feed_card_opened`          | `position` (0-based among loaded cards), `asks`                                                              | A timeline card was opened — the input for tuning the ranking weights                    |
-| `live_activity_started`     | `minutes_ahead`                                                                                              | A Live Activity was put on the Lock Screen for an agreed call — once per call per launch |
-| `companion_opened`          | `source` (live_activity, widget), `target` (chat, me, chats, echo)                                           | The app was opened from the Live Activity or a Home Screen widget — phase 7's measure    |
+| Event                       | Properties                                                                                                                                                                                 | Fired                                                                                        |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `welcome_chosen`            | `choice` (browse, create, sign_in)                                                                                                                                                         | One of the welcome screen's three actions                                                    |
+| `signup_submitted`          | `method` (email, google, apple, facebook, discord), `from_guest`                                                                                                                           | The sign-up request leaves the device. Not that it succeeded                                 |
+| `signup_verified`           | `method`                                                                                                                                                                                   | The mailed link was opened and spent by the app. Email only                                  |
+| `guest_gate_hit`            | `action` (message, like, follow, post, echo, other)                                                                                                                                        | A guest was refused a write and sent to sign-up                                              |
+| `onboarding_step_completed` | `step`, `guest`, `resumed`                                                                                                                                                                 | One wizard step was finished — what `$screen` cannot say                                     |
+| `onboarding_completed`      | `referred`, `native_languages`, `learning_languages`, `method`, `from_guest`, `seconds_since_install`                                                                                      | The profile is created                                                                       |
+| `message_sent`              | `kind` (text, correction, image, audio, video), `reply`                                                                                                                                    | The server acknowledged a send. Never the body                                               |
+| `paywall_viewed`            | `feature` (what sent them there, or null), `tier` (the viewer's own plan), `source` (onboarding, gate, me, deeplink, first_reply, langx, gift_code), `gift` (opened over a gift of months) | The paywall opens                                                                            |
+| `paywall_dismissed`         | `source`, `seconds_open`                                                                                                                                                                   | It was closed without a purchase — the X, or "Continue free"                                 |
+| `purchase_started`          | `offer`, `tier`, `period`, `change` (`buy` only now — `upgrade`/`portal` are history), `trial_days` (null: no trial, or not eligible)                                                      | A buy button is tapped                                                                       |
+| `purchase_finished`         | the same, plus `outcome`                                                                                                                                                                   | The store sheet closes: purchased, cancelled, failed or unavailable                          |
+| `gift_code_redeemed`        | `outcome` (granted, invalid, used, expired, exhausted, rate_limited), `months` (granted only, else null)                                                                                   | The server answered a gift code from the paywall's "Have a gift code?" sheet. Never the code |
+| `review_prompted`           | `trigger` (streakMilestone or correction)                                                                                                                                                  | The OS review sheet was requested; whether it showed is unknowable                           |
+| `boosted_strip_shown`       | `count` (1–12)                                                                                                                                                                             | Discover is focused with a non-empty Boosted strip                                           |
+| `boosted_strip_tapped`      | `slot` (0-based); `tier` only from builds without the single-plan JS                                                                                                                       | A Boosted card is tapped                                                                     |
+| `discovery_card_tapped`     | `slot` (0-based)                                                                                                                                                                           | A row in the discovery list below the strip is tapped                                        |
+| `message_received`          | `kind` (any `MessageType`)                                                                                                                                                                 | A message from somebody else arrives over the socket                                         |
+| `message_send_failed`       | `kind` (text, media), `reason` (error code or null)                                                                                                                                        | A send did not land. A media quota refusal is a fair-use alert, not a failure                |
+| `notification_opened`       | `kind` (any `PushKind`, or unknown), `cold_start`                                                                                                                                          | A push was tapped. Counts taps, never sends                                                  |
+| `push_registration_failed`  | `step` (token, register), `reason`                                                                                                                                                         | This phone has permission and could not register a push token                                |
+| `filters_applied`           | `count`, `pro`                                                                                                                                                                             | The discovery filter sheet is applied. How many, never which                                 |
+| `tokens_spent`              | `sku`, `kind` (cosmetic kind or consumable), `amount`                                                                                                                                      | A wallet purchase the server accepted. Spending only, never earning                          |
+| `recap_story_viewed`        | `slides_seen`, `completed`                                                                                                                                                                 | The monthly recap story was left; how far it got, and whether that was the share slide       |
+| `tour_started`              | `is_guest`                                                                                                                                                                                 | The first-run tour opened. Once per install                                                  |
+| `tour_step_viewed`          | `step`, `index`                                                                                                                                                                            | One tour step was drawn against a measured element                                           |
+| `tour_skipped`              | `step`, `index`                                                                                                                                                                            | The tour was left part-way, by Skip or the back button                                       |
+| `tour_completed`            | `is_guest`                                                                                                                                                                                 | The tour's last step was passed                                                              |
+| `echo_card_captured`        | `source` (chat, post, phrase, manual)                                                                                                                                                      | A sentence was kept as a card. Only one that was created                                     |
+| `echo_session_started`      | `cards`, `offline`                                                                                                                                                                         | A review deck was opened and had cards in it                                                 |
+| `echo_card_graded`          | `grade` (again, hard, good, easy), `producing`, `seconds`                                                                                                                                  | One card was answered. Never the card's text                                                 |
+| `echo_session_finished`     | `reviewed`, `remembered`, `offline`                                                                                                                                                        | The last card of the deck was graded. Leaving early sends nothing                            |
+| `echo_pack_started`         | `lang`, `level`, `count`                                                                                                                                                                   | A pack handed over its next batch of cards                                                   |
+| `echo_ask_opened`           | `kind` (the preselected ask — always pronunciation since "Post to the feed"), `entry` (session, card, cards)                                                                               | "Post to the feed" opened the composer from a card. Counts opens, not posts                  |
+| `post_created`              | `asks` (none, correction, pronunciation, both), `media` (file count), `hasText`, `from` (feed, echo)                                                                                       | A post was written. `asks: none` is a moment                                                 |
+| `feed_card_opened`          | `position` (0-based among loaded cards), `asks`                                                                                                                                            | A timeline card was opened — the input for tuning the ranking weights                        |
+| `live_activity_started`     | `minutes_ahead`                                                                                                                                                                            | A Live Activity was put on the Lock Screen for an agreed call — once per call per launch     |
+| `companion_opened`          | `source` (live_activity, widget), `target` (chat, me, chats, echo)                                                                                                                         | The app was opened from the Live Activity or a Home Screen widget — phase 7's measure        |
+| `pro_welcome_shown`         | `source` (the `ProWelcomeSource`), `months` (or null)                                                                                                                                      | "You're Pro now" was put on screen                                                           |
+| `pro_welcome_closed`        | `source`, `action` (start, close)                                                                                                                                                          | The welcome was dismissed — `start` goes on to Discover, `close` does not                    |
+| `langx_poll_answered`       | `poll_id`, `option_id` — both operator slugs, never a person's own words                                                                                                                   | A poll under an `@langx` broadcast was answered and the server acknowledged it               |
+| `langx_card_tapped`         | `action` (storeReview, openUrl, openRoute)                                                                                                                                                 | The button on a card under an `@langx` broadcast was tapped. Never the URL or route          |
+| `share_card_created`        | `kind` (streak, badge, rank, recap), `shape` (or null for the link row), `link_only`, `failed`                                                                                             | A share sheet for a card was acted on                                                        |
+| `fair_use_limit_hit`        | `kind` (media)                                                                                                                                                                             | A fair-use ceiling was hit — a plain alert, not a paywall                                    |
 
 Some of these carry a number that needs a caveat rather than a footnote:
 
@@ -133,14 +146,28 @@ Some of these carry a number that needs a caveat rather than a footnote:
   start's fetch. What it honestly measures is conversations that were live
   while somebody was looking — which is the thing `message_sent` cannot say.
 - **`message_send_failed`** does not fire for the media quota refusal. That one
-  returns to a paywall and is counted as one; treating it as a failure would
-  put a pricing decision in the same number as a broken upload.
+  is a fair-use alert, not a failure of the send path — since the single plan
+  there is nothing to sell there, so it is a plain alert rather than a
+  paywall — and it is counted by `fair_use_limit_hit`, not by this event.
+- **`tier`**, wherever it appears (`paywall_viewed`, `purchase_started`,
+  `purchase_finished`), reads "Pro" as `pro` **and** the retired `pro_plus`,
+  which still arrives — on Polyglot subscriptions that are still renewing, and
+  on gifts granted before the merge — and still means Pro. `paywall_viewed.tier`
+  is the _viewer's own_ plan, not what the pitch is for. `offer` on the
+  purchase events carries the same history: `pro_plus_monthly` and
+  `pro_plus_yearly` alongside today's
+  `$rc_monthly`/`$rc_annual`/`$rc_lifetime`.
 - **`notification_opened`** counts taps. A push that was delivered and ignored
   leaves no trace on the device, so the denominator for an open rate has to
   come from the server's own send log rather than from here.
 - **`tokens_spent`** cannot be summed into a balance. Earning happens in cron
   jobs and gifts the device never sees, so this is one side of a ledger whose
   other side exists only on the server.
+- **`recap_story_viewed`** fires as the story goes away, so a story still on
+  screen when the app is killed is never counted. `slides_seen` varies with
+  the month — a month without corrections has no corrections slide — so read
+  `completed` for "reached the share", not `slides_seen` against a constant.
+  The share itself is `share_card_created` with `kind: recap`.
 - **Echo's six** are read as one funnel and not one at a time: capture
   (`echo_card_captured` + `echo_pack_started`) → `echo_session_started` →
   `echo_card_graded` → `echo_session_finished`. Two of them need a caveat.
@@ -253,7 +280,9 @@ Set up once, in dashboards, not in code:
   RevenueCat's own hosted paywalls, which this app does not use. Events land
   under the `app_user_id` — the Better Auth user id (`purchases.ts`), the same
   id the app identifies with — so a Play subscriber and a Stripe subscriber
-  are one person in one funnel.
+  are one person in one funnel. As set up, no `rc_*` event has ever arrived in
+  the project — the configuration above is what should produce them, and why
+  it does not is not yet diagnosed.
 - **The store forms**, before the first build with a key ships: the answers
   in [`store/privacy-forms-checklist.md`](store/privacy-forms-checklist.md) §5.
 

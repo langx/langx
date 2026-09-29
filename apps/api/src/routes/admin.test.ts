@@ -131,6 +131,9 @@ describe('the operator panel', () => {
       // Only the public base: it is what `assertOwnBucket` compares against,
       // and nothing in here uploads anything.
       STORAGE_PUBLIC_BASE_URL: MEDIA_BASE,
+      // The gift of Pro needs something to grant through; the fake store is
+      // that, in memory, and refused under production by `loadEnv`.
+      REVENUECAT_FAKE_STORE: 'true',
     })
     await ensureIndexes(handle.db)
     emailSender = new CapturingEmailSender()
@@ -1268,6 +1271,211 @@ describe('the operator panel', () => {
     })
   })
 
+  describe('giving Pro', () => {
+    it('grants the months at once, writes the letter and records who gave it', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+
+      const response = await post(admin, `/admin/users/${member.userId}/gift`, {
+        months: 3,
+        note: 'Wrote three bug reports',
+      })
+      expect(response.statusCode).toBe(200)
+      const body = response.json<{ created: boolean; gift: { status: string; endsAt: string } }>()
+      expect(body.created).toBe(true)
+      expect(body.gift.status).toBe('granted')
+
+      const profile = await profiles().findOne({ _id: member.userId })
+      expect(profile?.entitlement).toMatchObject({ tier: 'pro', store: 'gift' })
+
+      const message = await handle.db
+        .collection<Message>(COLLECTIONS.messages)
+        .findOne({ clientId: { $regex: `^proGift:admin:${member.userId}:` } })
+      expect(message).not.toBeNull()
+
+      const action = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .findOne({ action: 'user.giftPro', subjectUserId: member.userId })
+      expect(action).toMatchObject({
+        adminId: admin.userId,
+        payload: { months: 3, note: 'Wrote three bug reports', status: 'granted' },
+      })
+
+      // The panel's view of the person lists it.
+      const view = await get(admin, `/admin/users/${member.userId}`)
+      const detail = view.json<{ user: { gifts: { months: number; status: string }[] } }>()
+      expect(detail.user.gifts).toMatchObject([{ months: 3, status: 'granted' }])
+    })
+
+    it('answers a double click with the gift it already gave', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+
+      const [first, second] = await Promise.all([
+        post(admin, `/admin/users/${member.userId}/gift`, { months: 1 }),
+        post(admin, `/admin/users/${member.userId}/gift`, { months: 1 }),
+      ])
+      expect([first.statusCode, second.statusCode]).toEqual([200, 200])
+      const created = [first, second].map((r) => r.json<{ created: boolean }>().created)
+      expect(created.sort()).toEqual([false, true])
+      expect(
+        await handle.db.collection(COLLECTIONS.proGifts).countDocuments({ userId: member.userId }),
+      ).toBe(1)
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.adminActions)
+          .countDocuments({ action: 'user.giftPro', subjectUserId: member.userId }),
+      ).toBe(1)
+    })
+
+    it('refuses somebody who holds Pro for life, and any other length', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+      await profiles().updateOne(
+        { _id: member.userId },
+        {
+          $set: {
+            entitlement: { tier: 'pro', store: 'promotional', updatedAt: new Date() },
+          },
+        },
+      )
+
+      const lifetime = await post(admin, `/admin/users/${member.userId}/gift`, { months: 1 })
+      expect(lifetime.statusCode).toBe(400)
+      const odd = await post(admin, `/admin/users/${member.userId}/gift`, { months: 2 })
+      expect(odd.statusCode).toBe(400)
+      expect(
+        await handle.db.collection(COLLECTIONS.proGifts).countDocuments({ userId: member.userId }),
+      ).toBe(0)
+    })
+
+    it('is the operator’s alone', async () => {
+      const member = await newUser()
+      const other = await newUser()
+      const refused = await post(member, `/admin/users/${other.userId}/gift`, { months: 1 })
+      expect(refused.statusCode).toBe(403)
+    })
+  })
+
+  describe('gift codes', () => {
+    it('makes a code, lists it, and records who made it', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      const created = await post(admin, '/admin/gift-codes', {
+        code: 'spring-launch',
+        months: 2,
+        maxRedemptions: 50,
+        note: 'Poster at the Uni fair',
+      })
+      expect(created.statusCode).toBe(201)
+      const code = created.json<{ _id: string; code: string; active: boolean }>()
+      expect(code).toMatchObject({ code: 'SPRING-LAUNCH', active: true })
+
+      // One spelling per code, whatever case it was typed in.
+      const twice = await post(admin, '/admin/gift-codes', { code: 'Spring-Launch', months: 1 })
+      expect(twice.statusCode).toBe(400)
+
+      const list = await get(admin, '/admin/gift-codes')
+      const items = list.json<{ items: { code: string; redemptions: number }[] }>().items
+      expect(items.find((item) => item.code === 'SPRING-LAUNCH')).toMatchObject({
+        redemptions: 0,
+      })
+
+      const action = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .findOne({ action: 'giftCode.create', refId: code._id })
+      expect(action).toMatchObject({
+        adminId: admin.userId,
+        payload: { code: 'SPRING-LAUNCH', months: 2, maxRedemptions: 50 },
+      })
+    })
+
+    it('redeems from the paywall, grants at once, and shows up in the detail', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+      const created = await post(admin, '/admin/gift-codes', { code: 'FAIRDAY', months: 3 })
+      const code = created.json<{ _id: string }>()
+
+      const redeemed = await post(member, '/me/gift-code', { code: 'fairday' })
+      expect(redeemed.statusCode).toBe(200)
+      expect(redeemed.json<{ months: number; status: string; endsAt: string }>()).toMatchObject({
+        months: 3,
+        status: 'granted',
+      })
+      const profile = await profiles().findOne({ _id: member.userId })
+      expect(profile?.entitlement).toMatchObject({ tier: 'pro', store: 'gift' })
+
+      // Once per person: a clear reason, not a second gift.
+      const again = await post(member, '/me/gift-code', { code: 'FAIRDAY' })
+      expect(again.statusCode).toBe(409)
+      expect(again.json()).toMatchObject({ code: ERROR_CODES.GIFT_CODE_REJECTED, reason: 'used' })
+
+      const detail = await get(admin, `/admin/gift-codes/${code._id}`)
+      const body = detail.json<{
+        code: { redemptions: number }
+        redemptions: { userId: string; giftStatus: string }[]
+      }>()
+      expect(body.code.redemptions).toBe(1)
+      expect(body.redemptions).toMatchObject([{ userId: member.userId, giftStatus: 'granted' }])
+    })
+
+    it('stops a code when it is switched off, and starts it again', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+      const code = (await post(admin, '/admin/gift-codes', { code: 'STOPME', months: 1 })).json<{
+        _id: string
+      }>()
+
+      const off = await patch(admin, `/admin/gift-codes/${code._id}`, { active: false })
+      expect(off.statusCode).toBe(200)
+      expect(off.json<{ active: boolean }>().active).toBe(false)
+      const refused = await post(member, '/me/gift-code', { code: 'STOPME' })
+      expect(refused.json()).toMatchObject({ reason: 'inactive' })
+
+      await patch(admin, `/admin/gift-codes/${code._id}`, { active: true })
+      expect((await post(member, '/me/gift-code', { code: 'STOPME' })).statusCode).toBe(200)
+
+      const actions = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .find({ refId: code._id, action: { $in: ['giftCode.activate', 'giftCode.deactivate'] } })
+        .toArray()
+      expect(actions.map((row) => row.action as string).sort()).toEqual([
+        'giftCode.activate',
+        'giftCode.deactivate',
+      ])
+    })
+
+    it('answers an unknown code with its own reason, and a guest not at all', async () => {
+      const member = await newUser()
+      const unknown = await post(member, '/me/gift-code', { code: 'NO-SUCH-CODE' })
+      expect(unknown.statusCode).toBe(409)
+      expect(unknown.json()).toMatchObject({
+        code: ERROR_CODES.GIFT_CODE_REJECTED,
+        reason: 'unknown',
+      })
+      const anonymous = await app.inject({
+        method: 'POST',
+        url: '/me/gift-code',
+        payload: { code: 'X' },
+      })
+      expect(anonymous.statusCode).toBe(401)
+    })
+
+    it('is the operator’s alone to make and to read', async () => {
+      const member = await newUser()
+      expect(
+        (await post(member, '/admin/gift-codes', { code: 'MINE', months: 1 })).statusCode,
+      ).toBe(403)
+      expect((await get(member, '/admin/gift-codes')).statusCode).toBe(403)
+    })
+  })
+
   describe('the update banner', () => {
     it('raises it for one platform and leaves the others where they were', async () => {
       const admin = await newUser()
@@ -1382,6 +1590,84 @@ describe('the operator panel', () => {
         .collection(COLLECTIONS.adminActions)
         .findOne({ action: 'appConfig.latestVersion', adminId: admin.userId })
       expect(row?.payload).toEqual({ platform: 'web', version: '2.3' })
+    })
+  })
+
+  describe('POST /admin/app-config/min-version', () => {
+    it('forces an update on a build below it, once the store has that build', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/latest-version', { platform: 'android', version: '2.8' })
+
+      const response = await post(admin, '/admin/app-config/min-version', {
+        platform: 'android',
+        version: '2.8',
+      })
+      expect(response.statusCode).toBe(200)
+      expect(response.json<AppConfig>().minVersion.android).toBe('2.8')
+
+      const old = await app.inject({
+        method: 'GET',
+        url: '/app-config',
+        headers: { [APP_VERSION_HEADER]: '2.7', [APP_PLATFORM_HEADER]: 'android' },
+      })
+      expect(old.json<AppConfigResponse>().updateRequired).toBe(true)
+
+      const current = await app.inject({
+        method: 'GET',
+        url: '/app-config',
+        headers: { [APP_VERSION_HEADER]: '2.8', [APP_PLATFORM_HEADER]: 'android' },
+      })
+      expect(current.json<AppConfigResponse>().updateRequired).toBe(false)
+
+      // Put back, so the tests after this one are not gated.
+      await post(admin, '/admin/app-config/min-version', { platform: 'android', version: '0.0.0' })
+    })
+
+    it('refuses a minimum above the latest version, which nobody could install', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/latest-version', { platform: 'ios', version: '2.8' })
+
+      const response = await post(admin, '/admin/app-config/min-version', {
+        platform: 'ios',
+        version: '2.9',
+      })
+      expect(response.statusCode).toBe(400)
+      expect(
+        (await get(admin, '/admin/stats')).json<AdminStats>().system.config.minVersion.ios,
+      ).not.toBe('2.9')
+    })
+
+    it('refuses something that is not a version', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const response = await post(admin, '/admin/app-config/min-version', {
+        platform: 'ios',
+        version: 'latest',
+      })
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('is not something an ordinary member can do', async () => {
+      const member = await newUser()
+      const response = await post(member, '/admin/app-config/min-version', {
+        platform: 'ios',
+        version: '0.0.1',
+      })
+      expect(response.statusCode).toBe(403)
+    })
+
+    it('leaves a trace in the audit log', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/latest-version', { platform: 'web', version: '2.8' })
+      await post(admin, '/admin/app-config/min-version', { platform: 'web', version: '0.0.0' })
+
+      const row = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .findOne({ action: 'appConfig.minVersion', adminId: admin.userId })
+      expect(row?.payload).toEqual({ platform: 'web', version: '0.0.0' })
     })
   })
 })

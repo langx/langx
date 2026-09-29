@@ -59,6 +59,7 @@ const ROUTE_RESERVED = [
   'pro',
   'profile',
   'quiz',
+  'recap',
   'settings',
   'starred',
   'stickers',

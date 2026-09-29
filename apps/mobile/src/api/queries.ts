@@ -1,5 +1,6 @@
 import {
   type AccountDeletionReason,
+  type GiftCodeRedeemResult,
   type FeedbackInput,
   type LinkPreviewResponse,
   type SharedProfile,
@@ -16,6 +17,7 @@ import {
   type PlanFeature,
   type PlanTier,
   type StoredPaidPlanTier,
+  type ProWelcomeSource,
   type StoredPlanTier,
   type CheckInResult,
   type MediaKind,
@@ -23,6 +25,9 @@ import {
   type PhraseScope,
   type MeetingStatus,
   type MessageAsk,
+  type BroadcastInteractive,
+  type MessageInteractive,
+  type PollResults,
   type MessageTranslation,
   type MessageType,
   type SharedLocationPrecision,
@@ -46,6 +51,7 @@ import {
   NOTIFICATIONS_PAGE_SIZE_MAX,
   type ShareCardResult,
   type AdminLatestVersionInput,
+  type AdminMinVersionInput,
   type AppConfig,
   ERROR_CODES,
   type MessageSpeech,
@@ -57,6 +63,7 @@ import {
   type PublicBadges,
   type ReportInput,
   type UpcomingMeeting,
+  type MonthlyRecapDto,
   CONVERSATION_SEARCH_MIN_LENGTH,
 } from '@langx/shared'
 import type {
@@ -290,6 +297,7 @@ export const keys = {
   contributors: ['contributors'] as const,
   streakLeaderboard: (metric: string) => ['leaderboard', 'streak', metric] as const,
   echoLeaderboard: (period: PeriodType) => ['leaderboard', 'echo', period] as const,
+  recap: (month: string) => ['recap', month] as const,
   blocks: ['blocks'] as const,
   /*
    * The operator panel, all of it under one prefix so a decision can
@@ -306,6 +314,8 @@ export const keys = {
   adminAppeals: ['admin', 'appeals'] as const,
   adminFeedback: (status: string) => ['admin', 'feedback', status] as const,
   adminFeedbackItem: (id: string) => ['admin', 'feedback', 'one', id] as const,
+  adminGiftCodes: ['admin', 'giftCodes'] as const,
+  adminGiftCode: (id: string) => ['admin', 'giftCodes', id] as const,
   adminBroadcasts: ['admin', 'broadcasts'] as const,
   adminBroadcast: (id: string) => ['admin', 'broadcasts', id] as const,
   adminUser: (q: string) => ['admin', 'user', q] as const,
@@ -665,6 +675,14 @@ export interface MeProfile {
     lifetimeGranted?: StoredPaidPlanTier | null
     acknowledgedAt?: string
   }
+  /**
+   * A "You're Pro now" screen waiting to be seen, written by the server on
+   * the edge into Pro and cleared by `useAckProWelcome`. `months` is there
+   * for a grant of a fixed length. `source` is typed as today's list, but a
+   * newer server may send one this build does not know — `proWelcomeCopy`
+   * falls back rather than trusting it.
+   */
+  proWelcome?: { at: string; source: ProWelcomeSource; months?: number }
 }
 
 /**
@@ -719,6 +737,43 @@ export function useRefreshEntitlement() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: keys.me })
     },
+  })
+}
+
+/**
+ * Dismisses the "You're Pro now" screen, by the `at` it showed.
+ *
+ * The cache is cleared before the request, and only of that welcome: the
+ * screen must not open a second time while the POST is in flight, and a newer
+ * welcome that arrived meanwhile has a different `at` and stays. A failed
+ * request is not retried — the server still holds it, and the next launch
+ * shows it again, which is the right way for a dismissal to fail.
+ */
+export function useAckProWelcome() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (at: string) => api.post('/me/pro-welcome/ack', { at }),
+    onMutate: (at) => {
+      queryClient.setQueryData<MeProfile>(keys.me, (current) => {
+        if (current?.proWelcome?.at !== at) return current
+        const { proWelcome: _shown, ...rest } = current
+        return rest
+      })
+    },
+  })
+}
+
+/**
+ * Redeems a gift code for months of Pro.
+ *
+ * `me` is not refetched here but by the caller, once its own sheet has gone:
+ * the grant leaves a `proWelcome` on the profile, the refetch is what opens
+ * the celebration, and on iOS a second modal presented while the first is
+ * still up is silently never shown. See `GiftCodeEntry`.
+ */
+export function useRedeemGiftCode() {
+  return useMutation({
+    mutationFn: (code: string) => api.post<GiftCodeRedeemResult>('/me/gift-code', { code }),
   })
 }
 
@@ -880,6 +935,8 @@ export interface MessageDto {
   replyTo?: { messageId: string; senderId: string; preview: string }
   /** What the sender asked for back — a correction, or to hear it said. */
   ask?: MessageAsk
+  /** A poll or a one-button card under a broadcast's text. */
+  interactive?: MessageInteractive
   /** The sender's own words in the reader's language, sent with the message. */
   translation?: MessageTranslation
   /** A copy of a message from another of the sender's threads. */
@@ -1919,6 +1976,17 @@ export function useEchoLeaderboard(period: PeriodType, limit = 50) {
   return useQuery({
     queryKey: keys.echoLeaderboard(period),
     queryFn: () => api.get<EchoLeaderboard>(`/echo/leaderboard?period=${period}&limit=${limit}`),
+  })
+}
+
+/** One finished month's numbers, computed server-side from the ledger rows. */
+export function useMonthlyRecap(month: string) {
+  return useQuery({
+    queryKey: keys.recap(month),
+    queryFn: () => api.get<MonthlyRecapDto>(`/me/recap?month=${month}`),
+    enabled: /^\d{4}-\d{2}$/.test(month),
+    // A finished month does not change under you.
+    staleTime: 60 * 60 * 1000,
   })
 }
 
@@ -3007,6 +3075,10 @@ export interface AdminBroadcastDto {
   finishedAt?: string
   /** Set by a test send, and what the API requires before it will arm one. */
   testedAt?: string
+  /** A poll or card under every copy, authored in files. */
+  interactive?: BroadcastInteractive
+  /** Per-option counts, when `interactive` is a poll. */
+  pollResults?: PollResults
 }
 
 export interface AdminUserDto {
@@ -3021,6 +3093,22 @@ export interface AdminUserDto {
     lastActiveAt: string | null
     build: { version: string; platform: string } | null
     tier: string
+    plan: {
+      store: string | null
+      expiresAt: string | null
+      willRenew: boolean
+      lifetime: boolean
+      subscribed: boolean
+    }
+    gifts: {
+      _id: string
+      months: number
+      source: string
+      status: string
+      endsAt: string | null
+      createdAt: string
+      note?: string
+    }[]
     admin: boolean
     email: string | null
     emailVerified: boolean
@@ -3149,6 +3237,18 @@ export function useAdminSetLatestVersion() {
   })
 }
 
+/** Raising the forced-update floor for one platform — same shape as the banner. */
+export function useAdminSetMinVersion() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: AdminMinVersionInput) =>
+      api.post<AppConfig>('/admin/app-config/min-version', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
 export function useAdminReports(status: string) {
   return useQuery({
     queryKey: keys.adminReports(status),
@@ -3244,6 +3344,73 @@ export function useAdminCloseFeedback() {
       }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export interface AdminGiftCodeDto {
+  _id: string
+  code: string
+  months: number
+  maxRedemptions: number | null
+  redemptions: number
+  expiresAt: string | null
+  active: boolean
+  createdBy: string
+  createdAt: string
+  note?: string
+}
+
+export interface AdminGiftCodeDetailDto {
+  code: AdminGiftCodeDto
+  redemptions: {
+    userId: string
+    handle: string | null
+    displayName: string | null
+    at: string
+    giftStatus: string | null
+  }[]
+}
+
+export function useAdminGiftCodes() {
+  return useQuery({
+    queryKey: keys.adminGiftCodes,
+    queryFn: () => api.get<{ items: AdminGiftCodeDto[] }>('/admin/gift-codes'),
+  })
+}
+
+export function useAdminGiftCode(id: string) {
+  return useQuery({
+    queryKey: keys.adminGiftCode(id),
+    queryFn: () => api.get<AdminGiftCodeDetailDto>(`/admin/gift-codes/${id}`),
+    enabled: id.length > 0,
+  })
+}
+
+export function useAdminCreateGiftCode() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: {
+      code: string
+      months: number
+      maxRedemptions: number | null
+      expiresAt: string | null
+      note?: string
+    }) => api.post<AdminGiftCodeDto>('/admin/gift-codes', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.adminGiftCodes })
+    },
+  })
+}
+
+export function useAdminSetGiftCodeActive() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; active: boolean }) =>
+      api.patch<AdminGiftCodeDto>(`/admin/gift-codes/${input.id}`, { active: input.active }),
+    // The whole tree: the list shows the switch, and so does the detail.
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.adminGiftCodes })
     },
   })
 }

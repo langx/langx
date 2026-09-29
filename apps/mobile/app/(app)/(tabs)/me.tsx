@@ -39,6 +39,7 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { badgeLabel, interestLabel, useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { compactCount } from '../../../src/lib/format'
+import { monthName, recapMonthFor } from '../../../src/lib/recapMonth'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { useChangeAvatar } from '../../../src/hooks/useChangeAvatar'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
@@ -64,6 +65,7 @@ export default function MeScreen() {
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
+  const recapMonth = recapMonthFor(new Date())
   const names = useDisplayNames()
 
   const me = useMe()
@@ -290,11 +292,14 @@ export default function MeScreen() {
       </Pressable>
 
       {/*
-        Three across, and all three about the week the chart under them draws.
+        Four across: the streak, then three running totals. Corrections and
+        the feed are two tiles, not one sum: teaching and asking are different
+        things to have done, and a number that folded them together said
+        neither.
         There were four, plus a fifth — the Echo count — alone on a row of its
         own because five would not fit, which left three quarters of that row
         empty. The badge count became the shelf below, and the balance became
-        the wallet row, so the ones left are the ones the chart explains.
+        the wallet row.
       */}
       <View style={styles.tiles}>
         {/* Same affordance as the rows below: a number nobody can act on
@@ -306,20 +311,29 @@ export default function MeScreen() {
           valueSize={26}
           onPress={() => router.push('/(app)/streak')}
         />
-        {/* Corrections written and posts up, for life — the two tabs of the
-            screen behind it, and the same sum a visitor's feed tile shows. */}
+        {/* "Corrections I wrote, chat and posts, for life" — the list behind
+            it, so the tile and the screen cannot disagree about what they
+            are counting. */}
         <StatTile
           tone="success"
-          label={`${t('tabs.feed')} ›`}
-          value={String((summary?.lifetime.corrections ?? 0) + (summary?.lifetime.posts ?? 0))}
+          label={`${t('me.corrections')} ›`}
+          value={String(summary?.lifetime.corrections ?? 0)}
           valueSize={26}
           onPress={() => router.push('/(app)/corrections')}
         />
-        {/* The day's number is already the first thing the Echo tab itself
-            says, so the one worth putting here is whether the week counted. */}
+        {/* Posts up, the other tab of the same screen. */}
         <StatTile
-          label={`${t('me.echoWeek')} ›`}
-          value={compactCount(echo.data?.reviewedThisWeek ?? 0, locale)}
+          label={`${t('tabs.feed')} ›`}
+          value={String(summary?.lifetime.posts ?? 0)}
+          valueSize={26}
+          onPress={() => router.push('/(app)/corrections?tab=posts')}
+        />
+        {/* Every card ever answered, under the tab's own name like the feed
+            tile beside it. It was the week's count, which the Echo tab itself
+            already shows; a profile is the place for what has added up. */}
+        <StatTile
+          label={`${t('tabs.echo')} ›`}
+          value={compactCount(echo.data?.reviewedAllTime ?? 0, locale)}
           valueSize={26}
           onPress={() => router.push('/(app)/(tabs)/echo')}
         />
@@ -425,6 +439,15 @@ export default function MeScreen() {
       {/* The balance is the way into the wallet, which has nowhere else to be
           reached from — a row with the number on it, now that the tiles above
           are the week's. */}
+      {/* Last month's recap, for the first week of this one only. */}
+      {recapMonth ? (
+        <ListRow
+          title={t('recap.meTitle', { month: monthName(recapMonth, locale) })}
+          subtitle={t('recap.meBody')}
+          onPress={() => router.push({ pathname: '/(app)/recap', params: { month: recapMonth } })}
+        />
+      ) : null}
+
       <ListRow
         title={t('me.wallet')}
         value={compactCount(balance, locale)}

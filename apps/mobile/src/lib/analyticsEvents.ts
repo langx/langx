@@ -1,5 +1,7 @@
 import type {
   BillingPeriod,
+  CardKind,
+  CardShape,
   CosmeticKind,
   EchoGrade,
   EchoSourceKind,
@@ -10,6 +12,7 @@ import type {
   PlanFeature,
   PlanTier,
   PostKind,
+  ProWelcomeSource,
   PushKind,
 } from '@langx/shared'
 import type { OnboardingStep } from './onboardingStep'
@@ -23,6 +26,10 @@ export type SignUpMethod = 'email' | 'google' | 'apple' | 'facebook' | 'discord'
 /** What a guest was trying to do when the account gate stopped them. */
 export type GuestGateAction = 'message' | 'like' | 'follow' | 'post' | 'echo' | 'other'
 
+/** What became of a gift code redemption, as `gift_code_redeemed` reports it. */
+export type GiftCodeOutcome =
+  'granted' | 'invalid' | 'used' | 'expired' | 'exhausted' | 'rate_limited'
+
 /**
  * Which exposure a paywall view is.
  *
@@ -31,7 +38,15 @@ export type GuestGateAction = 'message' | 'like' | 'follow' | 'post' | 'echo' | 
  * person just asked. Keeping them apart is the whole point — mixed together,
  * a conversion rate says nothing about either.
  */
-export const PAYWALL_SOURCES = ['onboarding', 'gate', 'me', 'deeplink', 'first_reply'] as const
+export const PAYWALL_SOURCES = [
+  'onboarding',
+  'gate',
+  'me',
+  'deeplink',
+  'first_reply',
+  'langx',
+  'gift_code',
+] as const
 export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
 
 /**
@@ -119,7 +134,13 @@ export type AnalyticsEvent =
     }
   | {
       name: 'paywall_viewed'
-      properties: { feature: PlanFeature | null; tier: PlanTier; source: PaywallSource }
+      properties: {
+        feature: PlanFeature | null
+        tier: PlanTier
+        source: PaywallSource
+        /** Opened over a gift of months, which can be subscribed on top of. */
+        gift: boolean
+      }
     }
   | {
       /** The paywall was closed without a purchase — the X, back, or "Continue free". */
@@ -138,6 +159,12 @@ export type AnalyticsEvent =
          * in the history are from before the single plan.
          */
         change: PlanChange
+        /**
+         * The free trial the tapped package carried, in days — `null` when it
+         * had none or this account is no longer eligible for one. What
+         * separates "started a free week" from "paid on the spot".
+         */
+        trial_days: number | null
       }
     }
   | {
@@ -147,8 +174,21 @@ export type AnalyticsEvent =
         tier: PaidPlanTier | null
         period: BillingPeriod | null
         change: PlanChange
+        trial_days: number | null
         outcome: PurchaseOutcome
       }
+    }
+  | {
+      /**
+       * A gift code was sent from the paywall's "Have a gift code?" sheet and
+       * the server answered. Never the code itself: a code is a thing worth
+       * money to whoever reads it off a dashboard. `invalid` is every refusal
+       * that is not one of the named ones — unknown, switched off, a lifetime
+       * holder, an official account. A request that never reached the
+       * server is not an outcome and is not sent.
+       */
+      name: 'gift_code_redeemed'
+      properties: { outcome: GiftCodeOutcome; months: number | null }
     }
   | {
       /**
@@ -306,6 +346,16 @@ export type AnalyticsEvent =
        */
       name: 'tokens_spent'
       properties: { sku: string; kind: CosmeticKind | 'consumable'; amount: number }
+    }
+  | {
+      /**
+       * The monthly recap story was left — closed, swiped away or navigated
+       * from. `slides_seen` is how far it got (the intro is 1), `completed`
+       * whether that was the last slide, the one with the share on it. Sent
+       * once per viewing, as it goes; which numbers were on it never leaves.
+       */
+      name: 'recap_story_viewed'
+      properties: { slides_seen: number; completed: boolean }
     }
   | {
       /** The first-run tour opened. Once per install, so this counts installs toured. */
@@ -487,6 +537,62 @@ export type AnalyticsEvent =
       properties:
         | { source: 'live_activity'; target: 'chat' }
         | { source: 'widget'; target: 'me' | 'chats' | 'echo' }
+    }
+  | {
+      /**
+       * "You're Pro now" was put on screen for a welcome the server left on
+       * the profile. `source` is why (`ProWelcomeCopy` reads the same field),
+       * and `months` is the length of a timed grant, `null` for one with none
+       * — a lifetime grant, a purchase, or a build too old to have carried it.
+       */
+      name: 'pro_welcome_shown'
+      properties: { source: ProWelcomeSource; months: number | null }
+    }
+  | {
+      /**
+       * The welcome was closed, by its own button or by the backdrop. `action`
+       * is which: `start` goes on to Discover, `close` does not.
+       */
+      name: 'pro_welcome_closed'
+      properties: { source: ProWelcomeSource; action: 'start' | 'close' }
+    }
+  | {
+      /**
+       * A poll under an `@langx` broadcast was answered and the server
+       * acknowledged it. Both ids are the operator's own slugs, chosen when
+       * the broadcast was written — never a person's choice in their own
+       * words — so they carry no more than a button's label would.
+       */
+      name: 'langx_poll_answered'
+      properties: { poll_id: string; option_id: string }
+    }
+  | {
+      /**
+       * The button on a card under an `@langx` broadcast was tapped. `action`
+       * is which kind of button it was, never the URL or route it opened —
+       * that travels only as far as the device.
+       */
+      name: 'langx_card_tapped'
+      properties: { action: 'storeReview' | 'openUrl' | 'openRoute' }
+    }
+  | {
+      /**
+       * A share sheet for a card — streak, badge, rank or a recap — was acted
+       * on. `link_only` is the "Just the link" row, which never picks a
+       * `shape`; `failed` is the render or share falling back to the plain
+       * link rather than the picture.
+       */
+      name: 'share_card_created'
+      properties: { kind: CardKind; shape: CardShape | null; link_only: boolean; failed: boolean }
+    }
+  | {
+      /**
+       * A fair-use ceiling was hit — today, the media quota on a chat send.
+       * It is a plain alert with nothing to buy, not a paywall, which is why
+       * it is its own event rather than a `paywall_viewed` source.
+       */
+      name: 'fair_use_limit_hit'
+      properties: { kind: 'media' }
     }
 
 export type AnalyticsEventName = AnalyticsEvent['name']

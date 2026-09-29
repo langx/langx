@@ -8,6 +8,7 @@ import {
   updateProfileSchema,
   ERROR_CODES,
   guestProfileSchema,
+  proWelcomeAckSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -41,6 +42,7 @@ import { sendWelcome } from '../modules/profiles/welcome'
 import { isEmailVerified } from '../modules/profiles/emailVerified'
 import { getSharedProfile } from '../modules/profiles/sharedProfile'
 import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
+import { acknowledgeProWelcome } from '../modules/billing/proWelcome'
 import { readFollowState } from '../modules/social/follows'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -210,6 +212,23 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
     if (!profile) throw new ApiError('NOT_FOUND', 'Profile not found')
     return reply.send(toOwnProfileWire(profile))
   })
+
+  /**
+   * Dismisses the "You're Pro now" screen the app has just shown.
+   *
+   * Carries the `at` of the welcome it showed, and clears only that one: a
+   * newer welcome — a gift landing while the first is on screen — survives
+   * to be shown next. 204 whether or not anything matched, because a second
+   * device dismissing the same welcome has nothing to be told.
+   */
+  app.post(
+    '/me/pro-welcome/ack',
+    { preHandler: requireMember, schema: { body: proWelcomeAckSchema } },
+    async (request, reply) => {
+      await acknowledgeProWelcome(app.mongo.db, request.userId, new Date(request.body.at))
+      return reply.code(204).send()
+    },
+  )
 
   // Deliberately after `/profiles/me` so the literal route wins over the
   // parameterised one — Fastify would otherwise treat "me" as a handle.

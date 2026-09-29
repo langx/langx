@@ -1160,6 +1160,7 @@ export const en = {
     phraseCard: 'Phrase',
     meetingCard: 'Proposed time',
     quizCard: 'Quiz',
+    pollThanks: 'Thanks!',
     stickers: 'Stickers',
     stickerBuy: 'Unlock for {price} tokens',
     quizAddOption: 'Add an option',
@@ -1632,6 +1633,7 @@ export const en = {
   },
 
   profile: {
+    proBadge: 'Pro member',
     /** Screen-reader label for the tick beside @langx and @copilot. */
     official: 'Official account',
     suspendedTag: 'Suspended',
@@ -1697,7 +1699,6 @@ export const en = {
     shareProfile: 'Share my profile',
     shareMessage: 'Practise languages with me on LangX: {url}',
     badges: 'Badges',
-    echoWeek: 'Echo this week',
     invite: 'Invite a friend',
     inviteBody: 'Earn tokens when they start using LangX',
     dayStreak: 'Day streak',
@@ -2069,6 +2070,7 @@ export const en = {
     currentPlan: 'Current plan',
     renewsOn: 'Renews on',
     endsOn: 'Ends on',
+    giftUntil: 'Gift · until {date}',
     lifetime: 'Lifetime',
     plan: 'Plan',
     manageSubscription: 'Manage or cancel',
@@ -2499,6 +2501,8 @@ export const en = {
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
     lifetimeNotice: 'You have {plan} for life. Nothing renews and nothing is charged.',
+    giftNotice:
+      'You have {plan} as a gift until {date}. Subscribe to keep it after that — nothing is charged before you choose to.',
     includedIn: 'Included in {plan}',
     currentPlan: 'Your current plan',
     purchaseFailed: 'That purchase did not go through. Nothing was charged.',
@@ -2508,6 +2512,9 @@ export const en = {
     notSetUp: 'Purchasing is not set up on this platform yet.',
     legal:
       'Subscriptions renew automatically until cancelled. Cancel any time from your Apple or Google account — cancelling stops the next renewal and keeps access until the current period ends.',
+    /** The same promise for a purchase made on the web, which no Apple or Google account holds. */
+    legalWeb:
+      'Subscriptions renew automatically until cancelled. Cancel any time in Settings → Subscription → Manage or cancel — cancelling stops the next renewal and keeps access until the current period ends.',
     trialTerms: {
       one: '{count} day free, then {price} {period}',
       other: '{count} days free, then {price} {period}',
@@ -2524,32 +2531,97 @@ export const en = {
     monthly: 'Monthly',
     yearly: 'Yearly',
     lifetime: 'One-off',
-    headline: 'Go further',
+    headline: 'Go further with {plan}',
     headlineBody:
       'Corrections and replies stay unlimited on every plan. Paying removes the other limits.',
-    yearlySaving: 'Yearly · save {percent}%',
-    yearlyFreeMonths: {
-      one: 'Yearly · {count} month free',
-      other: 'Yearly · {count} months free',
-    },
     savePercent: 'Save {percent}%',
     freeMonths: {
       one: '{count} month free',
       other: '{count} months free',
     },
-    savingA11y: '{price} a month on the monthly plan. Yearly saves {percent}%.',
-    freeMonthsA11y: {
-      one: '{price} a month on the monthly plan. Yearly gives you {count} month free.',
-      other: '{price} a month on the monthly plan. Yearly gives you {count} months free.',
-    },
     billingPeriod: 'Billing period',
-    start: 'Start {plan}',
     startTrial: {
       one: 'Start your free week',
       other: 'Start your {count} free weeks',
     },
     continueFree: 'Continue free',
-    perMonthBilledYearly: 'a month · billed yearly',
+    ownedHeadline: 'Everything in {plan} is yours',
+    trialHeadlineWeeks: {
+      one: 'Try {plan} free for a week',
+      other: 'Try {plan} free for {count} weeks',
+    },
+    trialHeadlineDays: {
+      one: 'Try {plan} free for {count} day',
+      other: 'Try {plan} free for {count} days',
+    },
+    andMore: {
+      one: 'And {count} more',
+      other: 'And {count} more',
+    },
+    showLess: 'Show less',
+    billedYearly: '{price} billed yearly',
+    billedMonthly: 'Billed monthly',
+    lifetimeDetail: 'One payment, nothing renews',
+    timelineTitle: 'How your free trial works',
+    timelineToday: 'Today: full access',
+    timelineTodayBody: 'Everything in {plan} unlocks. Nothing to pay today.',
+    timelineCancel: 'Cancel anytime',
+    timelineCancelBody: 'Cancel at least a day before {date} and you won’t be charged.',
+    timelineStarts: '{date}: your plan starts',
+    timelineStartsBody: '{price} {period} from then on, until you cancel.',
+    cancelAnytime: 'Cancel anytime',
+    renewsSummary: '{price} {period}. Cancel anytime.',
+    subscribe: 'Subscribe',
+    startFreeTrial: 'Start your free trial',
+    eula: 'Terms of Use (EULA)',
+  },
+
+  proWelcome: {
+    titlePurchase: 'You’re Pro now',
+    titleTrial: 'Your free Pro week has started',
+    titleGift: {
+      one: '{count} month of Pro, on us 🎁',
+      other: '{count} months of Pro, on us 🎁',
+    },
+    titleGiftOpen: 'Pro, on us 🎁',
+    titleReferral: {
+      one: 'Your invites earned you {count} month of Pro',
+      other: 'Your invites earned you {count} months of Pro',
+    },
+    titleStreak: {
+      one: 'Your streak earned you {count} month of Pro',
+      other: 'Your streak earned you {count} months of Pro',
+    },
+    titleMerge: 'Fluent and Polyglot are now one plan: Pro',
+    body: 'Everything is unlocked. A few things to try first:',
+    bodyMerge: 'Whichever you had, you now have all of it. A few things to try first:',
+    andMore: 'and more',
+    start: 'Start exploring',
+  },
+
+  /**
+   * "Have a gift code?" under the paywall's button, and the small sheet it
+   * opens. A code gives months of Pro — time, never money off, so none of
+   * this says "discount". The errors answer the API's `reason` one to one.
+   */
+  giftCode: {
+    link: 'Have a gift code?',
+    title: 'Redeem a gift code',
+    body: 'A gift code gives you months of LangX Pro. Type it as you got it — capitals don’t matter.',
+    label: 'Gift code',
+    redeem: 'Redeem',
+    close: 'Close',
+    pending: 'Your code worked. Pro will switch on in a few minutes.',
+    unknown: 'We couldn’t find that code. Check the spelling and try again.',
+    inactive: 'That code isn’t active any more.',
+    expired: 'That code has expired.',
+    exhausted: 'That code has been used up.',
+    used: 'You’ve already used this code.',
+    lifetime: 'You already have Pro for life, so there’s nothing to add.',
+    official: 'This account can’t redeem gift codes.',
+    unavailable: 'Gift codes aren’t available right now.',
+    rateLimited: 'Too many tries. Wait a while, then try again.',
+    failed: 'Something went wrong. Please try again.',
   },
 
   pickers: {
@@ -2629,6 +2701,106 @@ export const en = {
     glanceDetail: 'Streak and unread, for the Lock Screen and StandBy.',
     exchangeStartsIn: 'Starts in',
     exchangeEndsIn: 'Ends in',
+  },
+  recap: {
+    meTitle: 'Your {month} recap',
+    meBody: 'Your month on LangX, ready to share.',
+    messages: {
+      one: '{count} message',
+      other: '{count} messages',
+    },
+    echoReviews: {
+      one: '{count} Echo card reviewed',
+      other: '{count} Echo cards reviewed',
+    },
+    quiet: 'A quiet month. The next one has already started.',
+    share: 'Share my month',
+    cardCaption: 'my month on LangX',
+    shareMessage: 'My {month} on LangX: {messages}, {reviews}. Practise with me: {url}',
+    failed: 'Could not load the recap.',
+    /**
+     * The full-screen story `recap.tsx` plays, one number per slide. A slide's
+     * line follows its big numeral, so each is the rest of that sentence.
+     */
+    story: {
+      close: 'Close',
+      next: 'Next',
+      previous: 'Previous',
+      slideOf: '{index} of {total}',
+      introKicker: 'Your month',
+      introLine: 'A month of two languages. Here’s yours.',
+      introHint: 'Tap to go on',
+      messagesKicker: 'You talked',
+      messagesLine: {
+        one: 'message in your language exchanges',
+        other: 'messages in your language exchanges',
+      },
+      people: {
+        one: 'with {count} person',
+        other: 'with {count} people',
+      },
+      correctionsKicker: 'You gave back',
+      correctionsLine: {
+        one: 'sentence you corrected for someone learning your language',
+        other: 'sentences you corrected for people learning your language',
+      },
+      echoKicker: 'You remembered',
+      echoLine: {
+        one: 'Echo card reviewed — a word that’s yours now',
+        other: 'Echo cards reviewed — words that are yours now',
+      },
+      streakKicker: 'You kept showing up',
+      streakLine: {
+        one: 'day streak, and it’s still going.',
+        other: 'day streak, and it’s still going.',
+      },
+      activeDaysLine: {
+        one: '{count} active day this month.',
+        other: '{count} active days this month.',
+      },
+      activeDaysOnlyLine: {
+        one: 'day you practised this month.',
+        other: 'days you practised this month.',
+      },
+      justLink: 'Just send the link',
+    },
+    /**
+     * The words on the recap share card and on the story's last slide, which
+     * shows the same numbers. The server draws the card, so in Arabic these
+     * carry no Latin word: satori reverses one inside a right-to-left line.
+     */
+    card: {
+      kicker: 'My month',
+      people: {
+        one: 'in two languages, with {count} person',
+        other: 'in two languages, with {count} people',
+      },
+      languages: '{native} → learning {learning}',
+      messages: {
+        one: 'message sent',
+        other: 'messages sent',
+      },
+      corrections: {
+        one: 'sentence corrected',
+        other: 'sentences corrected',
+      },
+      echoReviews: {
+        one: 'Echo card reviewed',
+        other: 'Echo cards reviewed',
+      },
+      activeDays: {
+        one: 'day active',
+        other: 'days active',
+      },
+      currentStreak: {
+        one: 'day streak, still going',
+        other: 'day streak, still going',
+      },
+      tokens: {
+        one: 'token earned',
+        other: 'tokens earned',
+      },
+    },
   },
 } as const
 

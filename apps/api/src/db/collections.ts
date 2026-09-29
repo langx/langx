@@ -208,6 +208,30 @@ export const COLLECTIONS = {
 
   // billing
   subscriptions: 'subscriptions',
+  /**
+   * Months of Pro given rather than bought — by an operator, for a streak, or
+   * for invitees. `_id` is what the gift is for (`streak:100:<user>`), which
+   * is the whole of its idempotency; see `modules/billing/proGifts.ts`.
+   */
+  proGifts: 'proGifts',
+  /**
+   * Codes an operator hands out, each worth months of Pro to anybody who
+   * types it once. `code` is stored upper case and unique; `redemptions` is
+   * the running count the cap is checked against. See
+   * `modules/billing/giftCodes.ts`.
+   */
+  giftCodes: 'giftCodes',
+  /**
+   * Who redeemed which code, and when. Unique on `{codeId, userId}` — that
+   * index, not a check in a handler, is what makes "once per person" true.
+   */
+  giftCodeRedemptions: 'giftCodeRedemptions',
+  /**
+   * Every redemption attempt, right or wrong, kept for an hour: the rolling
+   * window `GIFT_CODE_RULES.attemptsPerHour` is counted in. A TTL rather than
+   * a sweep, because the window is all these rows are for.
+   */
+  giftCodeAttempts: 'giftCodeAttempts',
 
   /**
    * Who invited whom. `_id` is the **invitee**, so "one referrer per person,
@@ -240,6 +264,12 @@ export const COLLECTIONS = {
    * See `modules/admin/broadcast.ts`.
    */
   broadcastQueue: 'broadcastQueue',
+  /**
+   * One row per person per poll a broadcast asked. The unique `{pollId,
+   * userId}` is the one-answer rule, and the rows are what the panel counts.
+   * See `modules/chat/polls.ts`.
+   */
+  pollAnswers: 'pollAnswers',
   jobRuns: 'jobRuns',
   /**
    * One document per scheduled pass, holding its last run. A record, not a

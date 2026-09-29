@@ -24,10 +24,11 @@ export const CARD_PIXELS: Record<CardShape, { width: number; height: number }> =
 
 const loadAsset = (relative: string): Promise<Buffer> => readAsset(relative, 'Card asset')
 
-let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800; style: 'normal' }[] | null = null
+let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800 | 900; style: 'normal' }[] | null =
+  null
 
 /**
- * Read once and kept: the three faces are ~450KB and every render needs them.
+ * Read once and kept: the four faces are ~590KB and every render needs them.
  *
  * Nunito has no Arabic in it, so anything Arabic — a handle, a caption, the
  * labels on the Echo chart — came out as a row of empty boxes until Noto Sans
@@ -38,12 +39,15 @@ let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800; style: 'normal
  */
 async function loadFonts(): Promise<NonNullable<typeof fonts>> {
   if (fonts) return fonts
-  const [extraBold, semiBold, arabic] = await Promise.all([
+  const [black, extraBold, semiBold, arabic] = await Promise.all([
+    loadAsset('fonts/Nunito_900Black.ttf'),
     loadAsset('fonts/Nunito_800ExtraBold.ttf'),
     loadAsset('fonts/Nunito_600SemiBold.ttf'),
     loadAsset('fonts/NotoSansArabic_600SemiBold.ttf'),
   ])
   fonts = [
+    // The recap's numerals and month name: the poster's one heavier weight.
+    { name: 'Nunito', data: black, weight: 900, style: 'normal' },
     { name: 'Nunito', data: extraBold, weight: 800, style: 'normal' },
     { name: 'Nunito', data: semiBold, weight: 600, style: 'normal' },
     { name: 'Noto Sans Arabic', data: arabic, weight: 600, style: 'normal' },

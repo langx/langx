@@ -856,6 +856,25 @@ typo is a 400 rather than a fourth platform key or a string that sorts below
 every build. The write is recorded in the audit log like every other panel
 action: a banner nobody remembers raising is a mystery a week later.
 
+### And, since 2.8, the minimum
+
+`minVersion` followed it onto the panel, through
+`POST /admin/app-config/min-version`, and it does block — that is its job. The
+line above was drawn at "can this refuse somebody service", and this crosses
+it knowingly, for the reason `latestVersion` did: it is raised the day a
+breaking store release goes live, which is a release-day chore and not an
+incident, and a chore that needs a machine that can reach Mongo is a chore that
+gets skipped.
+
+What keeps its blast radius bounded is one rule on the way in: the route
+refuses a minimum above the platform's `latestVersion`. Without that, one typo
+(`2.9` for `2.8`) sends every user of a platform to a store listing that cannot
+satisfy it — and on the web, where the served bundle is already the newest,
+with nowhere to go at all. With it, the worst mistake is a floor the store can
+already meet, undone by typing a lower number into the same field; the panel
+asks before raising and not before lowering. Maintenance and the flags, which
+can stop the app for everybody whatever version they run, stay in the script.
+
 ## Maintenance — two switches on purpose
 
 The database-backed flag is the everyday one: a single write, no redeploy. The
@@ -6182,3 +6201,96 @@ This supersedes _A third tier, and the four things two tiers were hiding_,
 _Pro+ products grant the `pro` entitlement too_, _The plans are Fluent and
 Polyglot, and three things moved_ and _Fluent to Polyglot: the store swaps the
 plan, the paywall says what will happen_.
+
+## The paywall sells the free week
+
+With one plan the paywall has one question left — yearly or monthly — so the
+page was rebuilt around the thing that actually lowers the bar: a week free.
+When the store offers the trial, the headline is "Try Pro free for a week", the
+button is "Start your free week", and a three-step timeline says what happens
+after the tap. When it does not (`ineligibleForTrial`, a plan already had), all
+trial wording disappears and the button reads "Subscribe".
+
+**The timeline has no reminder step.** The pattern everybody copies is "Today →
+Day 5: we remind you → Day 7: billing". The only reminder this app sends is
+promotion nudge 5, which reaches people who switched marketing mail on _and_
+already cancelled, so "we'll remind you" would be the one sentence on the page
+that is false for most readers. The middle step says instead that cancelling at
+least a day before the charge costs nothing — true on both stores, which want
+the cancellation a day ahead. If a transactional trial-ending reminder ever
+exists, it earns the step back.
+
+**Dates, not day numbers.** "5 October: your plan starts" is checked against
+the reader's calendar; "Day 7" leaves them to count, and to wonder whether
+today was day 0 or day 1.
+
+**Two cards, not a segmented control.** Both quote a month on the right —
+`$6.99` beside `$9.99` is the whole argument for the year — with the actual
+charge underneath in the store's words, and "3 months free" on the yearly card.
+That replaces the struck-through monthly price under the yearly one (_A yearly
+price is a `.99` month times twelve_): the monthly card itself is now the
+comparison. Yearly is picked on open.
+
+**Four benefits, then "And N more".** Twelve rows of equal weight pushed the
+price below the fold and nobody read to the end. The four lead rows are what a
+free account runs into; opened from a locked feature, that feature takes the
+first row. The full list is one tap away, since it is where `nearby` says what
+it costs and `copilot` says it is not shipped yet.
+
+**The trial terms sit on the button.** One line directly above it — "1 week
+free, then $83.99 a year · Cancel anytime", or the renewal price without a
+trial — so guideline 3.1.2's "terms next to the purchase" does not depend on
+anybody scrolling to the small print. On iOS the footer also links Apple's
+standard EULA, which is what App Store subscriptions here are sold under.
+
+**Motion is one entrance and one spring.** The blocks fade and rise 8pt,
+staggered 60ms, once the store has answered (at most a second), so the page
+never arrives with one headline and swaps to another. The picked card's radio
+dot springs, with a selection haptic; nothing else moves, and with reduced
+motion nothing moves at all. No native module was added, so it ships over the
+air.
+
+## Gift codes give time, not discounts
+
+An operator can hand out a code — `UBER` on a partner's newsletter, a word on
+a poster — and anybody can type it once under the paywall's button, "Have a
+gift code?", for months of Pro. It is never a percentage off a price.
+
+**Because one of the three stores cannot do the other thing.** Google Play has
+no percent-off code for a subscription; App Store offer codes and a web coupon
+would each work in their own store and nowhere else, so a code printed once
+would mean three different things depending on the phone that read it. Months
+of Pro granted by us work identically everywhere, need nothing from any store,
+and are the gift mechanism the operator panel, the streak and the referral
+rewards already use: a redemption becomes one `proGifts` row
+(`code:<codeId>:<userId>`, `source: 'code'`), with the same stacking, the same
+letter — whose first line names the code — and the same reminders before it
+ends.
+
+**Once per person is an index, the cap is a conditional increment.** The
+redemption row is written first against a unique `{codeId, userId}`; then one
+redemption is taken with `$inc` on a code whose filter still says one is left.
+A claim that loses the last one removes only its own row, so a race on the
+final redemption can never overshoot the cap or disturb anybody else's.
+
+**Guessing is slow on purpose.** Ten attempts per person per rolling hour,
+right or wrong, counted in a TTL'd `giftCodeAttempts`; the eleventh is refused
+without the code being looked at. A lifetime holder and an official account
+are refused, each with its own reason, and so is every other refusal
+(`GIFT_CODE_REJECTED` with `reason`), because "used up" and "you already used
+it" are different sentences.
+
+## Corrections and the feed are two numbers
+
+For a day, "feed" — posts plus corrections — replaced the correction count
+everywhere a person's record was shown: the badge ladder, the Aurora frame's
+5,000, the weekly chart, the pool screen, the recap, insight and the operator
+panel. It was reverted the same day. A single sum said neither how much
+somebody teaches nor how much they ask, and it moved thresholds that name
+one act (a badge called "100 corrections", a frame earned by teaching) onto
+a number that also counts the other.
+
+What stayed is the split: the profile and the Me tab show **Corrections** and
+**Feed** as two tiles. Corrections is `countCorrectionsWritten`, unchanged;
+Feed is `countPostsByAuthor`, posts not hidden. Each tile opens its own tab of
+the same list screen. Everything else counts corrections as it did before.

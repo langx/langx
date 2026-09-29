@@ -72,11 +72,20 @@ describe('every event survives the sanitizer', () => {
       },
     },
     { name: 'message_sent', properties: { kind: 'text', reply: false } },
-    { name: 'paywall_viewed', properties: { feature: null, tier: 'free', source: 'onboarding' } },
+    {
+      name: 'paywall_viewed',
+      properties: { feature: null, tier: 'free', source: 'onboarding', gift: false },
+    },
     { name: 'paywall_dismissed', properties: { source: 'onboarding', seconds_open: 4 } },
     {
       name: 'purchase_started',
-      properties: { offer: 'langx_fluent_yearly', tier: 'pro', period: 'yearly', change: 'buy' },
+      properties: {
+        offer: 'langx_fluent_yearly',
+        tier: 'pro',
+        period: 'yearly',
+        change: 'buy',
+        trial_days: 7,
+      },
     },
     {
       name: 'purchase_finished',
@@ -85,9 +94,12 @@ describe('every event survives the sanitizer', () => {
         tier: 'pro',
         period: 'yearly',
         change: 'buy',
+        trial_days: 7,
         outcome: 'purchased',
       },
     },
+    { name: 'gift_code_redeemed', properties: { outcome: 'granted', months: 3 } },
+    { name: 'gift_code_redeemed', properties: { outcome: 'rate_limited', months: null } },
     { name: 'review_prompted', properties: { trigger: 'correction' } },
     { name: 'boosted_strip_shown', properties: { count: 4 } },
     { name: 'boosted_strip_tapped', properties: { slot: 0 } },
@@ -98,12 +110,26 @@ describe('every event survives the sanitizer', () => {
     { name: 'push_registration_failed', properties: { step: 'token', reason: 'Error' } },
     { name: 'filters_applied', properties: { count: 3, pro: true } },
     { name: 'tokens_spent', properties: { sku: 'frame_gold', kind: 'frame', amount: 250 } },
+    { name: 'recap_story_viewed', properties: { slides_seen: 4, completed: false } },
     { name: 'echo_ask_opened', properties: { kind: 'pronunciation', entry: 'cards' } },
     {
       name: 'post_created',
       properties: { asks: 'none', media: 2, hasText: false, from: 'feed' },
     },
     { name: 'feed_card_opened', properties: { position: 4, asks: 'both' } },
+    { name: 'pro_welcome_shown', properties: { source: 'gift', months: 3 } },
+    { name: 'pro_welcome_closed', properties: { source: 'trial', action: 'start' } },
+    { name: 'langx_poll_answered', properties: { poll_id: 'launch-poll', option_id: 'yes' } },
+    { name: 'langx_card_tapped', properties: { action: 'openRoute' } },
+    {
+      name: 'share_card_created',
+      properties: { kind: 'streak', shape: 'story', link_only: false, failed: false },
+    },
+    {
+      name: 'share_card_created',
+      properties: { kind: 'badge', shape: null, link_only: true, failed: false },
+    },
+    { name: 'fair_use_limit_hit', properties: { kind: 'media' } },
   ]
 
   for (const event of events) {

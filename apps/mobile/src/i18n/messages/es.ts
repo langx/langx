@@ -1019,6 +1019,7 @@ export const es: Localized<EnMessages> = {
     phraseCard: 'Expresión',
     meetingCard: 'Hora propuesta',
     quizCard: 'Pregunta',
+    pollThanks: '¡Gracias!',
     stickers: 'Stickers',
     stickerBuy: 'Desbloquear por {price} tokens',
     quizAddOption: 'Añadir una opción',
@@ -1456,6 +1457,7 @@ export const es: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Miembro Pro',
     official: 'Cuenta oficial',
     suspendedTag: 'Suspendida',
     deletedTag: 'Cuenta eliminada',
@@ -1510,7 +1512,6 @@ export const es: Localized<EnMessages> = {
     shareProfile: 'Compartir mi perfil',
     shareMessage: 'Practica idiomas conmigo en LangX: {url}',
     badges: 'Insignias',
-    echoWeek: 'Echo esta semana',
     invite: 'Invitar a alguien',
     inviteBody: 'Gana tokens cuando empiece a usar LangX',
     dayStreak: 'Racha diaria',
@@ -1870,6 +1871,7 @@ export const es: Localized<EnMessages> = {
     currentPlan: 'Plan actual',
     renewsOn: 'Se renueva el',
     endsOn: 'Termina el',
+    giftUntil: 'Regalo · hasta el {date}',
     lifetime: 'De por vida',
     plan: 'Plan',
     manageSubscription: 'Gestionar o cancelar',
@@ -2284,6 +2286,8 @@ export const es: Localized<EnMessages> = {
       'Has usado los {count} chats nuevos de hoy. Puedes seguir respondiendo a todo lo que recibas, sin límite.',
     manageNotice: 'Tienes {plan}. Gestiónalo o cancélalo desde tu cuenta de la tienda.',
     lifetimeNotice: 'Tienes {plan} de por vida. Nada se renueva ni se cobra.',
+    giftNotice:
+      'Tienes {plan} de regalo hasta el {date}. Suscríbete para conservarlo después; no se cobra nada hasta que lo decidas.',
     includedIn: 'Incluido en {plan}',
     currentPlan: 'Tu plan actual',
     purchaseFailed: 'Esa compra no se completó. No se ha cobrado nada.',
@@ -2293,6 +2297,8 @@ export const es: Localized<EnMessages> = {
     notSetUp: 'Las compras todavía no están configuradas en esta plataforma.',
     legal:
       'Las suscripciones se renuevan automáticamente hasta que se cancelan. Puedes cancelar cuando quieras desde tu cuenta de Apple o Google: la cancelación detiene la siguiente renovación y mantiene el acceso hasta el final del periodo en curso.',
+    legalWeb:
+      'Las suscripciones se renuevan automáticamente hasta que se cancelan. Puedes cancelar cuando quieras en Ajustes → Suscripción → Gestionar o cancelar: la cancelación detiene la siguiente renovación y mantiene el acceso hasta el final del periodo en curso.',
     trialTerms: {
       one: '{count} día gratis, después {price} {period}',
       other: '{count} días gratis, después {price} {period}',
@@ -2309,32 +2315,92 @@ export const es: Localized<EnMessages> = {
     monthly: 'Mensual',
     yearly: 'Anual',
     lifetime: 'Pago único',
-    headline: 'Ve más allá',
+    headline: 'Ve más allá con {plan}',
     headlineBody:
       'Las correcciones y las respuestas siguen siendo ilimitadas en todos los planes. Pagar elimina los demás límites.',
-    yearlySaving: 'Anual · ahorra un {percent}%',
-    yearlyFreeMonths: {
-      one: 'Anual · {count} mes gratis',
-      other: 'Anual · {count} meses gratis',
-    },
     savePercent: 'Ahorra un {percent}%',
     freeMonths: {
       one: '{count} mes gratis',
       other: '{count} meses gratis',
     },
-    savingA11y: '{price} al mes con el plan mensual. El anual ahorra un {percent}%.',
-    freeMonthsA11y: {
-      one: '{price} al mes con el plan mensual. El anual te da {count} mes gratis.',
-      other: '{price} al mes con el plan mensual. El anual te da {count} meses gratis.',
-    },
     billingPeriod: 'Periodo de facturación',
-    start: 'Empieza con {plan}',
     startTrial: {
       one: 'Empieza tu semana gratis',
       other: 'Empieza tus {count} semanas gratis',
     },
     continueFree: 'Seguir gratis',
-    perMonthBilledYearly: 'al mes · facturado anualmente',
+    ownedHeadline: 'Todo {plan} es tuyo',
+    trialHeadlineWeeks: {
+      one: 'Prueba {plan} gratis una semana',
+      other: 'Prueba {plan} gratis {count} semanas',
+    },
+    trialHeadlineDays: {
+      one: 'Prueba {plan} gratis {count} día',
+      other: 'Prueba {plan} gratis {count} días',
+    },
+    andMore: {
+      one: 'Y {count} más',
+      other: 'Y {count} más',
+    },
+    showLess: 'Mostrar menos',
+    billedYearly: '{price} facturado al año',
+    billedMonthly: 'Facturado cada mes',
+    lifetimeDetail: 'Un solo pago, sin renovaciones',
+    timelineTitle: 'Cómo funciona tu prueba gratis',
+    timelineToday: 'Hoy: acceso completo',
+    timelineTodayBody: 'Todo lo de {plan} se desbloquea. Hoy no pagas nada.',
+    timelineCancel: 'Cancela cuando quieras',
+    timelineCancelBody: 'Cancela al menos un día antes del {date} y no se te cobrará nada.',
+    timelineStarts: '{date}: empieza tu plan',
+    timelineStartsBody: 'Desde entonces, {price} {period}, hasta que canceles.',
+    cancelAnytime: 'Cancela cuando quieras',
+    renewsSummary: '{price} {period}. Cancela cuando quieras.',
+    subscribe: 'Suscribirme',
+    startFreeTrial: 'Empezar la prueba gratis',
+    eula: 'Términos de uso (EULA)',
+  },
+
+  proWelcome: {
+    titlePurchase: 'Ya eres Pro',
+    titleTrial: 'Tu semana gratis de Pro ha empezado',
+    titleGift: {
+      one: '{count} mes de Pro, de regalo 🎁',
+      other: '{count} meses de Pro, de regalo 🎁',
+    },
+    titleGiftOpen: 'Pro, de regalo 🎁',
+    titleReferral: {
+      one: 'Tus invitaciones te han dado {count} mes de Pro',
+      other: 'Tus invitaciones te han dado {count} meses de Pro',
+    },
+    titleStreak: {
+      one: 'Tu racha te ha dado {count} mes de Pro',
+      other: 'Tu racha te ha dado {count} meses de Pro',
+    },
+    titleMerge: 'Fluent y Polyglot ahora son un solo plan: Pro',
+    body: 'Todo está desbloqueado. Algunas cosas para probar primero:',
+    bodyMerge: 'Tuvieras el que tuvieras, ahora lo tienes todo. Algunas cosas para probar primero:',
+    andMore: 'y mucho más',
+    start: 'Empezar a explorar',
+  },
+
+  giftCode: {
+    link: '¿Tienes un código de regalo?',
+    title: 'Canjear un código de regalo',
+    body: 'Un código de regalo te da meses de LangX Pro. Escríbelo tal como lo recibiste; da igual si usas mayúsculas o minúsculas.',
+    label: 'Código de regalo',
+    redeem: 'Canjear',
+    close: 'Cerrar',
+    pending: 'Tu código funcionó. Pro se activará en unos minutos.',
+    unknown: 'No encontramos ese código. Revisa cómo está escrito y vuelve a intentarlo.',
+    inactive: 'Ese código ya no está activo.',
+    expired: 'Ese código ha caducado.',
+    exhausted: 'Ese código ya se ha agotado.',
+    used: 'Ya has usado este código.',
+    lifetime: 'Ya tienes Pro de por vida, así que no hay nada que añadir.',
+    official: 'Esta cuenta no puede canjear códigos de regalo.',
+    unavailable: 'Los códigos de regalo no están disponibles ahora mismo.',
+    rateLimited: 'Demasiados intentos. Espera un rato y vuelve a intentarlo.',
+    failed: 'Algo salió mal. Inténtalo de nuevo.',
   },
 
   pickers: {
@@ -2401,5 +2467,96 @@ export const es: Localized<EnMessages> = {
     glanceDetail: 'Racha y no leídos, para la pantalla bloqueada y StandBy.',
     exchangeStartsIn: 'Empieza en',
     exchangeEndsIn: 'Termina en',
+  },
+  recap: {
+    meTitle: 'Tu resumen de {month}',
+    meBody: 'Tu mes en LangX, listo para compartir.',
+    messages: {
+      one: '{count} mensaje',
+      other: '{count} mensajes',
+    },
+    echoReviews: {
+      one: '{count} tarjeta de Echo repasada',
+      other: '{count} tarjetas de Echo repasadas',
+    },
+    quiet: 'Un mes tranquilo. El siguiente ya ha empezado.',
+    share: 'Compartir mi mes',
+    cardCaption: 'mi mes en LangX',
+    shareMessage: 'Mi {month} en LangX: {messages}, {reviews}. Practica conmigo: {url}',
+    failed: 'No se pudo cargar el resumen.',
+    story: {
+      close: 'Cerrar',
+      next: 'Siguiente',
+      previous: 'Anterior',
+      slideOf: '{index} de {total}',
+      introKicker: 'Tu mes',
+      introLine: 'Un mes de dos idiomas. Aquí está el tuyo.',
+      introHint: 'Toca para seguir',
+      messagesKicker: 'Hablaste',
+      messagesLine: {
+        one: 'mensaje en tus intercambios de idiomas',
+        other: 'mensajes en tus intercambios de idiomas',
+      },
+      people: {
+        one: 'con {count} persona',
+        other: 'con {count} personas',
+      },
+      correctionsKicker: 'Devolviste el favor',
+      correctionsLine: {
+        one: 'frase que corregiste a alguien que aprende tu idioma',
+        other: 'frases que corregiste a gente que aprende tu idioma',
+      },
+      echoKicker: 'Recordaste',
+      echoLine: {
+        one: 'tarjeta de Echo repasada: una palabra que ya es tuya',
+        other: 'tarjetas de Echo repasadas: palabras que ya son tuyas',
+      },
+      streakKicker: 'Seguiste viniendo',
+      streakLine: {
+        one: 'día de racha, y sigue.',
+        other: 'días de racha, y sigue.',
+      },
+      activeDaysLine: {
+        one: '{count} día activo este mes.',
+        other: '{count} días activos este mes.',
+      },
+      activeDaysOnlyLine: {
+        one: 'día que practicaste este mes.',
+        other: 'días que practicaste este mes.',
+      },
+      justLink: 'Enviar solo el enlace',
+    },
+    card: {
+      kicker: 'Mi mes',
+      people: {
+        one: 'en dos idiomas, con {count} persona',
+        other: 'en dos idiomas, con {count} personas',
+      },
+      languages: '{native} → aprendiendo {learning}',
+      messages: {
+        one: 'mensaje enviado',
+        other: 'mensajes enviados',
+      },
+      corrections: {
+        one: 'frase corregida',
+        other: 'frases corregidas',
+      },
+      echoReviews: {
+        one: 'tarjeta de Echo repasada',
+        other: 'tarjetas de Echo repasadas',
+      },
+      activeDays: {
+        one: 'día activo',
+        other: 'días activos',
+      },
+      currentStreak: {
+        one: 'día de racha, y sigue',
+        other: 'días de racha, y sigue',
+      },
+      tokens: {
+        one: 'token ganado',
+        other: 'tokens ganados',
+      },
+    },
   },
 }

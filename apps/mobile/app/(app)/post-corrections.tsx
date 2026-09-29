@@ -19,15 +19,15 @@ import { makeStyles } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
- * What opens from the feed tile on somebody's profile: their posts, and the
- * corrections they have written on other people's. Two tabs for the two halves
- * of the tile's number, as on your own "Your writing" screen — and for the
- * same reason not one merged list: a post and a correction of somebody else's
- * post are different things, and interleaving them makes every next row a
- * surprise.
+ * What opens from the Corrections and Feed tiles on somebody's profile: the
+ * corrections they have written on other people's posts, and their own posts.
+ * One screen with a tab for each, opened on the tab of the tile that was
+ * pressed, as on your own "Your writing" screen — and for the same reason not
+ * one merged list: a post and a correction of somebody else's post are
+ * different things, and interleaving them makes every next row a surprise.
  *
- * The corrections tab is post corrections only, which is less than its half of
- * the tile: that counts chat corrections and pronunciation recordings too, and
+ * The corrections tab is post corrections only, which is less than the
+ * Corrections tile: that counts chat corrections and pronunciation recordings too, and
  * both of those happen somewhere a stranger has no business reading. The note
  * over that tab is the whole reason it is honest — `/me/corrections` made the
  * same choice for the same reason, and said so in the same place.
@@ -41,9 +41,13 @@ export default function PostCorrectionsScreen() {
   useScreenInteractive()
   const t = useT()
   const styles = useStyles()
-  const { handle, from } = useLocalSearchParams<{ handle: string; from?: string }>()
-  // Posts first: the tile says "Feed", and a post is what that word names.
-  const [tab, setTab] = useState<'posts' | 'corrections'>('posts')
+  const params = useLocalSearchParams<{ handle: string; from?: string; tab?: string }>()
+  const { handle, from } = params
+  // The tab of the tile that opened it; a link without one is a corrections
+  // link, which is all this screen used to be.
+  const [tab, setTab] = useState<'posts' | 'corrections'>(
+    params.tab === 'posts' ? 'posts' : 'corrections',
+  )
 
   // Both mount, so switching tabs does not stall on a request that could have
   // been made while the first was being read.
@@ -70,7 +74,10 @@ export default function PostCorrectionsScreen() {
 
   return (
     <Screen fluid>
-      <ScreenHeader title={t('tabs.feed')} onBack={() => goBackTo('/(app)/(tabs)/me', from)} />
+      <ScreenHeader
+        title={t(tab === 'posts' ? 'tabs.feed' : 'me.corrections')}
+        onBack={() => goBackTo('/(app)/(tabs)/me', from)}
+      />
 
       <SegmentedControl
         options={[

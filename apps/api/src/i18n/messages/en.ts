@@ -552,6 +552,15 @@ export const en = {
      */
     lifetimeGiftSubject: '{plan}, for life',
     lifetimeGiftButton: 'See your plan',
+    /*
+     * A gift of months of Pro, and the note a week before it ends. Only the
+     * envelopes — the letters are `proGift` below, which @langx says word for
+     * word. `{date}` arrives already written out in the reader's language.
+     */
+    proGiftSubject: '🎁 LangX Pro, on us',
+    proGiftButton: 'Open LangX',
+    proGiftEndingSubject: '⏳ Your Pro gift ends on {date}',
+    proGiftEndingButton: 'See your plan',
   },
 
   /**
@@ -586,6 +595,57 @@ export const en = {
       other:
         'Your old balance came across at a hundred v1 tokens to one, so {carried} of them are in your new wallet. It holds {balance} tokens today.',
     },
+  },
+
+  /**
+   * Months of Pro, given — by us, for a streak, or for friends who came.
+   *
+   * One letter in three short paragraphs: why (`intro*`, by who gave it),
+   * what Pro opens with `andMore` on the line under the list, and until when.
+   * @langx writes it and the mail repeats it; the intro is the first line, so
+   * it is also the push preview and has to stand on its own. `count` is the
+   * number of months and selects the plural; `{date}` is already formatted in
+   * the reader's language and timezone.
+   *
+   * `perks` names what Pro opens without a number: the limits are config, and
+   * a figure written here would go stale the day one changes.
+   *
+   * `introReferral` names `{friends}` as a number — the configured count of
+   * invitees per gift, three today — and is written for that number.
+   *
+   * The reminders are information, not an offer: they say when it ends and
+   * where the plan screen is, and never "subscribe now". A sales letter is
+   * marketing and would need a consent these do not ask for.
+   */
+  proGift: {
+    introAdmin: {
+      one: '🎁 {count} month of LangX Pro, on us. Thanks for being here!',
+      other: '🎁 {count} months of LangX Pro, on us. Thanks for being here!',
+    },
+    introReferral: {
+      one: '🎉 {friends} friends you invited are talking on LangX. {count} month of Pro is yours!',
+      other:
+        '🎉 {friends} friends you invited are talking on LangX. {count} months of Pro are yours!',
+    },
+    introStreak: {
+      one: '🔥 {days} days in a row! Here’s {count} month of Pro to keep it going.',
+      other: '🔥 {days} days in a row! Here’s {count} months of Pro to keep it going.',
+    },
+    /** A gift code typed into the paywall; `{code}` is the code as stored, upper case. */
+    introCode: {
+      one: '🎟️ Code {code} worked: {count} month of LangX Pro is yours.',
+      other: '🎟️ Code {code} worked: {count} months of LangX Pro are yours.',
+    },
+    perks:
+      'Now open for you:\n💬 unlimited new conversations\n🌍 far more translations every day\n👀 who viewed you, and browsing unseen\n✨ standing out in Discover, gender and city filters',
+    andMore: '…and more.',
+    until: 'Enjoy it until {date}. 💛',
+    untilPaying:
+      'Your subscription carries on as usual — and if it ever ends, Pro stays until {date}.',
+    reminderWeek:
+      '⏳ Heads-up: your Pro gift ends on {date}. Your plan options are in Settings → Subscription.',
+    reminderDay: '⏳ Your Pro gift ends tomorrow, {date}.',
+    ended: 'Your Pro gift has ended. Thanks for practising with us — see you in the chats! 💛',
   },
 
   /**

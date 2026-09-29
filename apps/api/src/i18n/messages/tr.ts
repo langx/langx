@@ -507,6 +507,10 @@ export const tr: Localized<ServerMessages> = {
     suspensionUpdatedText: 'LangX askıya alma durumun güncellendi. {detail}',
     lifetimeGiftSubject: '{plan}, ömür boyu',
     lifetimeGiftButton: 'Planımı gör',
+    proGiftSubject: '🎁 LangX Pro bizden',
+    proGiftButton: "LangX'i aç",
+    proGiftEndingSubject: '⏳ Pro hediyen {date} tarihinde bitiyor',
+    proGiftEndingButton: 'Planımı gör',
   },
 
   lifetimeGift: {
@@ -521,6 +525,36 @@ export const tr: Localized<ServerMessages> = {
       other:
         'Eski bakiyen yüz v1 jetonu bire gelecek şekilde aktarıldı, yani {carried} tanesi yeni cüzdanında. Bugün {balance} jeton tutuyor.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      one: '🎁 Sana {count} ay LangX Pro hediye! LangX’te olduğun için teşekkürler.',
+      other: '🎁 Sana {count} ay LangX Pro hediye! LangX’te olduğun için teşekkürler.',
+    },
+    introReferral: {
+      one: '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
+      other:
+        '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
+    },
+    introStreak: {
+      one: '🔥 {days} gün üst üste! Seriyi sürdürmen için {count} ay Pro bizden.',
+      other: '🔥 {days} gün üst üste! Seriyi sürdürmen için {count} ay Pro bizden.',
+    },
+    introCode: {
+      one: '🎟️ {code} kodu işe yaradı: {count} ay LangX Pro senin.',
+      other: '🎟️ {code} kodu işe yaradı: {count} ay LangX Pro senin.',
+    },
+    perks:
+      'Artık senin için açık:\n💬 sınırsız yeni sohbet\n🌍 her gün çok daha fazla çeviri\n👀 profiline kimin baktığı ve görünmeden gezinme\n✨ Keşfet’te öne çıkma, cinsiyet ve şehir filtreleri',
+    andMore: '…ve daha fazlası.',
+    until: '{date} tarihine kadar keyfini çıkar. 💛',
+    untilPaying:
+      'Aboneliğin her zamanki gibi devam ediyor; bir gün biterse Pro {date} tarihine kadar sürer.',
+    reminderWeek:
+      '⏳ Hatırlatma: Pro hediyen {date} tarihinde bitiyor. Plan seçeneklerin Ayarlar → Abonelik’te.',
+    reminderDay: '⏳ Pro hediyen yarın, {date} tarihinde bitiyor.',
+    ended:
+      'Pro hediyen sona erdi. Bizimle pratik yaptığın için teşekkürler, sohbetlerde görüşmek üzere! 💛',
   },
   reportReason: {
     spam: 'Spam',

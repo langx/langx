@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { profileUrl, wornCosmetic } from '@langx/shared'
+import { profileUrl, TIER_BADGES, wornCosmetic } from '@langx/shared'
 import { router, useIsFocused } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
@@ -132,6 +132,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
 
   const user = profile.data
   const isSelf = user?._id === me.data?._id
+  const badge = user.official ? null : TIER_BADGES[user.tier]
   const following = user.follow.viewerFollows
   /*
    * Old clients and old caches send no `accountStatus`, and the honest
@@ -255,12 +256,23 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
           Without the URL there is no button, and a screen reader is not told
           there is one.
         */}
-        {user.avatarUrl ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('photo.open')}
-            onPress={() => setAvatarOpen(true)}
-          >
+        <View style={styles.avatarWrap}>
+          {user.avatarUrl ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('photo.open')}
+              onPress={() => setAvatarOpen(true)}
+            >
+              <Avatar
+                url={user.avatarUrl}
+                name={user.displayName}
+                seed={user._id}
+                size={96}
+                frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
+                online={user.isOnline}
+              />
+            </Pressable>
+          ) : (
             <Avatar
               url={user.avatarUrl}
               name={user.displayName}
@@ -269,17 +281,28 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
               frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
               online={user.isOnline}
             />
-          </Pressable>
-        ) : (
-          <Avatar
-            url={user.avatarUrl}
-            name={user.displayName}
-            seed={user._id}
-            size={96}
-            frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
-            online={user.isOnline}
-          />
-        )}
+          )}
+          {/*
+            On the lower edge of the avatar, where a frame's ring would be, so
+            it reads as part of the picture rather than a fact beside the name.
+            Not on an official account: a program's plan is nobody's business,
+            and a PRO beside the tick would read as a second kind of
+            verification. `tier` is already the effective one — a lapsed plan
+            shows nothing.
+          */}
+          {badge ? (
+            <View
+              pointerEvents="none"
+              style={styles.proBadgeRow}
+              accessible
+              accessibilityLabel={t('profile.proBadge')}
+            >
+              <View style={styles.proBadge}>
+                <Text style={styles.proBadgeText}>{badge}</Text>
+              </View>
+            </View>
+          ) : null}
+        </View>
         <View style={styles.heroText}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{user.displayName}</Text>
@@ -404,7 +427,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
 
       {/*
         The numbers: the quickest read of whether this person is here to
-        teach. The streak has moved up beside the name, and all three of these
+        teach. The streak has moved up beside the name, and every one of these
         are the way into what they count — the "›" is the hint that it opens.
 
         Pressable at zero too, the way the follower tile always has been. A
@@ -414,14 +437,20 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
       {summary.data && !user.official ? (
         <View style={styles.stats}>
           {/*
-            Their posts and their corrections as one number, under the name of
-            the tab both live in; the screen it opens has a tab for each.
+            Corrections and posts as two numbers, each opening its own tab of
+            the same screen. One sum of the two said neither how much somebody
+            teaches nor how much they ask.
           */}
           <StatTile
             tone="success"
+            label={`${t('me.corrections')} ›`}
+            value={String(summary.data.corrections)}
+            onPress={() => openPostCorrections(user.handle, here, 'corrections')}
+          />
+          <StatTile
             label={`${t('tabs.feed')} ›`}
-            value={String(summary.data.corrections + (summary.data.posts ?? 0))}
-            onPress={() => openPostCorrections(user.handle, here)}
+            value={String(summary.data.posts ?? 0)}
+            onPress={() => openPostCorrections(user.handle, here, 'posts')}
           />
           {/*
             Where the badge tile was. The strip below says what they have
@@ -609,6 +638,19 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   previewNote: { marginBottom: spacing.lg },
   previewNoteText: { color: colors.text, fontSize: 14, lineHeight: 20 },
   hero: { alignItems: 'center', flexDirection: 'row', gap: 20 },
+  avatarWrap: { position: 'relative' },
+  // Straddles the avatar's lower edge; the ring in the ground's colour cuts it
+  // out of the photo the way the online dot is cut out.
+  proBadgeRow: { alignItems: 'center', bottom: -8, left: 0, position: 'absolute', right: 0 },
+  proBadge: {
+    backgroundColor: colors.pro,
+    borderColor: colors.bg,
+    borderRadius: radius.pill,
+    borderWidth: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 1,
+  },
+  proBadgeText: { color: colors.textInverse, fontSize: 11, fontWeight: '800', letterSpacing: 1 },
   heroText: { flex: 1, gap: spacing.xs, minWidth: 0 },
   nameRow: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   name: { ...font.heading, color: colors.text, fontSize: 26 },

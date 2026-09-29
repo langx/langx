@@ -1276,7 +1276,7 @@ real system before letting anyone else back in.
 
 Operated from a script rather than an admin endpoint, because this is the
 control you reach for when something is wrong and it should not depend on the
-API being healthy enough to authenticate you — `latestVersion` is the one
+API being healthy enough to authenticate you — the two version fields are the
 exception, and _Saying so before the gate does_ below says why:
 
 ```bash
@@ -1313,14 +1313,16 @@ The point is that nobody's first news of a version problem should be a screen
 they cannot leave — by the time `minVersion` passes a build, its user has been
 offered the update for weeks and chosen to wait.
 
-It is also the only part of the config the operator panel can write, through
-`POST /admin/app-config/latest-version` and the field on the system screen. The
+It and `minVersion` are the parts of the config the operator panel can write,
+through `POST /admin/app-config/latest-version` and `…/min-version` on the
+system screen; the minimum is refused above `latestVersion` (see
+`docs/decisions.md`). For `latestVersion` the
 exception is about _when_ it is needed rather than convenience: this is set the
 moment a store release goes live, which is the review queue's decision and not
 reliably a moment anybody is at a machine that can reach Mongo. The reason it
 can cross the line the maintenance switch cannot is that it blocks nothing — a
-wrong value here shows a dismissible banner, or shows none. Everything that can
-stop the app working stays in the script.
+wrong value here shows a dismissible banner, or shows none. Maintenance and the
+flags stay in the script.
 
 Dismissal is stored per version on the device, so saying no to 2.2.0 says
 nothing about 2.3.0. Both defaults are `0.0.0`, which means a fresh or

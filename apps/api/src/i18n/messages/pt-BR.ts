@@ -521,6 +521,10 @@ export const ptBR: Localized<ServerMessages> = {
     suspensionUpdatedText: 'Sua suspensão no LangX foi atualizada. {detail}',
     lifetimeGiftSubject: '{plan}, para sempre',
     lifetimeGiftButton: 'Ver meu plano',
+    proGiftSubject: '🎁 LangX Pro, por nossa conta',
+    proGiftButton: 'Abrir o LangX',
+    proGiftEndingSubject: '⏳ Seu presente Pro termina em {date}',
+    proGiftEndingButton: 'Ver meu plano',
   },
 
   lifetimeGift: {
@@ -535,6 +539,35 @@ export const ptBR: Localized<ServerMessages> = {
       other:
         'Seu saldo antigo veio na proporção de cem fichas do v1 para uma, então {carried} delas estão na sua nova carteira. Hoje ela tem {balance} fichas.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      one: '🎁 {count} mês de LangX Pro, por nossa conta. Obrigado por estar aqui!',
+      other: '🎁 {count} meses de LangX Pro, por nossa conta. Obrigado por estar aqui!',
+    },
+    introReferral: {
+      one: '🎉 {friends} amigos que você convidou já estão conversando no LangX. {count} mês de Pro é seu!',
+      other:
+        '🎉 {friends} amigos que você convidou já estão conversando no LangX. {count} meses de Pro são seus!',
+    },
+    introStreak: {
+      one: '🔥 {days} dias seguidos! Aqui está {count} mês de Pro para continuar assim.',
+      other: '🔥 {days} dias seguidos! Aqui estão {count} meses de Pro para continuar assim.',
+    },
+    introCode: {
+      one: '🎟️ O código {code} funcionou: {count} mês de LangX Pro é seu.',
+      other: '🎟️ O código {code} funcionou: {count} meses de LangX Pro são seus.',
+    },
+    perks:
+      'Agora você pode:\n💬 começar conversas novas sem limite\n🌍 traduzir muito mais todo dia\n👀 ver quem visitou seu perfil e navegar sem ser visto\n✨ se destacar em Descobrir e filtrar por gênero e cidade',
+    andMore: '…e mais.',
+    until: 'Aproveite até {date}. 💛',
+    untilPaying:
+      'Sua assinatura continua normalmente — e, se um dia terminar, o Pro fica até {date}.',
+    reminderWeek:
+      '⏳ Aviso: seu presente Pro termina em {date}. As opções de plano estão em Configurações → Assinatura.',
+    reminderDay: '⏳ Seu presente Pro termina amanhã, {date}.',
+    ended: 'Seu presente Pro terminou. Obrigado por praticar com a gente — até mais nos chats! 💛',
   },
   reportReason: {
     spam: 'Spam',

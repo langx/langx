@@ -46,6 +46,10 @@ class RecordingBilling implements RevenueCatClient {
     this.grants.push({ appUserId, entitlementId })
     return Promise.resolve()
   }
+
+  grantPromotionalEntitlement(): Promise<void> {
+    return Promise.resolve()
+  }
 }
 
 const [PRO_RUNG] = LOYALTY_LIFETIME_GRANTS

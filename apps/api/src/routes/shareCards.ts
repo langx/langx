@@ -1,4 +1,10 @@
-import { createShareCardSchema, publicShareCardSchema, webUrl } from '@langx/shared'
+import {
+  createShareCardSchema,
+  monthlyRecapQuerySchema,
+  monthlyRecapSchema,
+  publicShareCardSchema,
+  webUrl,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ERROR_CODES } from '@langx/shared'
@@ -7,6 +13,7 @@ import { requireMember } from '../middleware/requireAuth'
 import { createShareCard, readShareCard } from '../modules/cards/shareCards'
 import { COLLECTIONS } from '../db/collections'
 import type { Profile } from '../modules/profiles/profiles'
+import { lastMonthKey, recapForMonth } from '../modules/notifications/newsletter'
 
 /**
  * Making a share card, and reading one back.
@@ -49,8 +56,29 @@ export const shareCardRoutes: FastifyPluginAsyncZod = async (app) => {
           handle: `@${profile.handle}`,
         },
         webBaseUrl: webUrl('').replace(/\/$/, ''),
+        ...(request.body.recap ? { recap: request.body.recap } : {}),
+        ...(app.env.STORAGE_PUBLIC_BASE_URL
+          ? { storagePublicBaseUrl: app.env.STORAGE_PUBLIC_BASE_URL }
+          : {}),
       })
       return reply.code(201).send(result)
+    },
+  )
+
+  /**
+   * The numbers behind a recap card. Computed here rather than on the device
+   * so the card cannot claim more than the ledger holds; only the wording
+   * around them comes from the client, as with every other card.
+   */
+  app.get(
+    '/me/recap',
+    {
+      preHandler: requireMember,
+      schema: { querystring: monthlyRecapQuerySchema, response: { 200: monthlyRecapSchema } },
+    },
+    async (request, reply) => {
+      const month = request.query.month ?? lastMonthKey(new Date())
+      return reply.send(await recapForMonth(app.mongo.db, request.userId, month))
     },
   )
 

@@ -526,6 +526,10 @@ export const es: Localized<ServerMessages> = {
     suspensionUpdatedText: 'Tu suspensión de LangX se ha actualizado. {detail}',
     lifetimeGiftSubject: '{plan}, de por vida',
     lifetimeGiftButton: 'Ver mi plan',
+    proGiftSubject: '🎁 LangX Pro, de regalo',
+    proGiftButton: 'Abrir LangX',
+    proGiftEndingSubject: '⏳ Tu regalo Pro termina el {date}',
+    proGiftEndingButton: 'Ver mi plan',
   },
 
   lifetimeGift: {
@@ -540,6 +544,36 @@ export const es: Localized<ServerMessages> = {
       other:
         'Tu saldo antiguo se convirtió a razón de cien fichas de v1 por una, así que {carried} de ellas están en tu nueva cartera. Hoy tiene {balance} fichas.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      one: '🎁 {count} mes de LangX Pro, de regalo. ¡Gracias por estar aquí!',
+      other: '🎁 {count} meses de LangX Pro, de regalo. ¡Gracias por estar aquí!',
+    },
+    introReferral: {
+      one: '🎉 {friends} amigos que invitaste ya hablan en LangX. ¡{count} mes de Pro es tuyo!',
+      other:
+        '🎉 {friends} amigos que invitaste ya hablan en LangX. ¡{count} meses de Pro son tuyos!',
+    },
+    introStreak: {
+      one: '🔥 ¡{days} días seguidos! Aquí tienes {count} mes de Pro para seguir así.',
+      other: '🔥 ¡{days} días seguidos! Aquí tienes {count} meses de Pro para seguir así.',
+    },
+    introCode: {
+      one: '🎟️ El código {code} funcionó: {count} mes de LangX Pro es tuyo.',
+      other: '🎟️ El código {code} funcionó: {count} meses de LangX Pro son tuyos.',
+    },
+    perks:
+      'Ahora puedes:\n💬 empezar conversaciones nuevas sin límite\n🌍 traducir mucho más cada día\n👀 ver quién visitó tu perfil y navegar sin que te vean\n✨ destacar en Descubrir y filtrar por género y ciudad',
+    andMore: '…y más.',
+    until: 'Disfrútalo hasta el {date}. 💛',
+    untilPaying:
+      'Tu suscripción sigue como siempre, y si algún día termina, Pro se queda hasta el {date}.',
+    reminderWeek:
+      '⏳ Aviso: tu regalo Pro termina el {date}. Tus opciones de plan están en Ajustes → Suscripción.',
+    reminderDay: '⏳ Tu regalo Pro termina mañana, el {date}.',
+    ended:
+      'Tu regalo Pro ha terminado. Gracias por practicar con nosotros. ¡Nos vemos en los chats! 💛',
   },
   reportReason: {
     spam: 'Spam',

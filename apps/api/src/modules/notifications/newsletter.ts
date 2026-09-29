@@ -1,4 +1,10 @@
-import { PROMOTION_LOCAL_HOUR, localDayKey, notificationsAllowed } from '@langx/shared'
+import {
+  PROMOTION_LOCAL_HOUR,
+  aggregateId,
+  localDayKey,
+  notificationsAllowed,
+  type MonthlyRecapDto,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
@@ -12,7 +18,18 @@ import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
 /** What a month looked like for one person, and for everybody. */
 export interface MonthlyRecap {
   month: string
-  personal: { messages: number; corrections: number; tokens: number; streak: number }
+  personal: {
+    messages: number
+    corrections: number
+    tokens: number
+    streak: number
+    /** Different people messaged — the union of each day's `partners`. */
+    partners: number
+    /** Days with at least one message or correction. */
+    activeDays: number
+    /** Those days, as days of the month. */
+    activeDates: number[]
+  }
   community: { members: number; messages: number; corrections: number }
   /** True when the personal half is all zeroes — a different letter. */
   quiet: boolean
@@ -62,7 +79,9 @@ export async function personalMonth(
   month: string,
 ): Promise<MonthlyRecap['personal']> {
   const days = await db
-    .collection<{ messages?: number; corrections?: number }>(COLLECTIONS.dailyActivity)
+    .collection<{ day: string; messages?: number; corrections?: number; partners?: string[] }>(
+      COLLECTIONS.dailyActivity,
+    )
     .find({ userId, day: { $gte: `${month}-01`, $lte: `${month}-31` } })
     .toArray()
   const tokens =
@@ -74,11 +93,53 @@ export async function personalMonth(
   const profile = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: userId }, { projection: { streak: 1 } })
+  // `partners` is absent on a day whose only activity was a correction — see
+  // `countersOf` — so it is read with a default, never assumed.
+  const partners = new Set(days.flatMap((day) => day.partners ?? []))
+  // A row can exist with both counters at zero: the mutual-conversation
+  // bonus writes one for the partner, who did nothing that day.
+  const active = days
+    .filter((day) => (day.messages ?? 0) + (day.corrections ?? 0) > 0)
+    .map((day) => Number(day.day.slice(8, 10)))
+    .sort((a, b) => a - b)
   return {
     messages: days.reduce((total, day) => total + (day.messages ?? 0), 0),
     corrections: days.reduce((total, day) => total + (day.corrections ?? 0), 0),
     tokens,
     streak: profile?.streak?.current ?? 0,
+    partners: partners.size,
+    activeDays: active.length,
+    activeDates: active,
+  }
+}
+
+/**
+ * The in-app recap: the email's personal half plus the month's Echo row.
+ *
+ * Same source as the letter on purpose, so the card someone shares and the
+ * mail they got the same week cannot show two different numbers.
+ */
+export async function recapForMonth(
+  db: Db,
+  userId: string,
+  month: string,
+): Promise<MonthlyRecapDto> {
+  const [personal, echo] = await Promise.all([
+    personalMonth(db, userId, month),
+    db
+      .collection<{ _id: string; reviews: number }>(COLLECTIONS.echoAggregates)
+      .findOne({ _id: aggregateId(userId, 'month', month) }),
+  ])
+  return {
+    month,
+    messages: personal.messages,
+    corrections: personal.corrections,
+    tokens: personal.tokens,
+    echoReviews: echo?.reviews ?? 0,
+    currentStreak: personal.streak,
+    partners: personal.partners,
+    activeDays: personal.activeDays,
+    activeDates: personal.activeDates,
   }
 }
 

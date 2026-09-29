@@ -535,6 +535,10 @@ export const ar: Localized<ServerMessages> = {
     suspensionUpdatedText: 'تم تحديث تعليق حسابك في LangX. {detail}',
     lifetimeGiftSubject: '{plan}، مدى الحياة',
     lifetimeGiftButton: 'عرض خطتي',
+    proGiftSubject: '🎁 LangX Pro هدية منّا',
+    proGiftButton: 'افتح LangX',
+    proGiftEndingSubject: '⏳ تنتهي هدية Pro في {date}',
+    proGiftEndingButton: 'عرض خطتي',
   },
 
   lifetimeGift: {
@@ -557,6 +561,48 @@ export const ar: Localized<ServerMessages> = {
       other:
         'انتقل رصيدك القديم بمعدل مئة رمز من v1 مقابل واحد، فصار {carried} منها في محفظتك الجديدة. تحتوي اليوم على {balance} رمز.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      zero: '🎁 {count} شهر من LangX Pro هدية منّا. شكرًا لوجودك معنا!',
+      one: '🎁 شهر من LangX Pro هدية منّا. شكرًا لوجودك معنا!',
+      two: '🎁 شهران من LangX Pro هدية منّا. شكرًا لوجودك معنا!',
+      few: '🎁 {count} أشهر من LangX Pro هدية منّا. شكرًا لوجودك معنا!',
+      many: '🎁 {count} شهرًا من LangX Pro هدية منّا. شكرًا لوجودك معنا!',
+      other: '🎁 {count} شهر من LangX Pro هدية منّا. شكرًا لوجودك معنا!',
+    },
+    introReferral: {
+      zero: '🎉 {friends} من الأصدقاء الذين دعوتهم يتحدثون الآن على LangX. {count} شهر من Pro لك!',
+      one: '🎉 {friends} من الأصدقاء الذين دعوتهم يتحدثون الآن على LangX. شهر من Pro لك!',
+      two: '🎉 {friends} من الأصدقاء الذين دعوتهم يتحدثون الآن على LangX. شهران من Pro لك!',
+      few: '🎉 {friends} من الأصدقاء الذين دعوتهم يتحدثون الآن على LangX. {count} أشهر من Pro لك!',
+      many: '🎉 {friends} من الأصدقاء الذين دعوتهم يتحدثون الآن على LangX. {count} شهرًا من Pro لك!',
+      other: '🎉 {friends} من الأصدقاء الذين دعوتهم يتحدثون الآن على LangX. {count} شهر من Pro لك!',
+    },
+    introStreak: {
+      zero: '🔥 {days} يومًا على التوالي! {count} شهر من Pro هدية منّا لتواصل السلسلة.',
+      one: '🔥 {days} يومًا على التوالي! شهر من Pro هدية منّا لتواصل السلسلة.',
+      two: '🔥 {days} يومًا على التوالي! شهران من Pro هدية منّا لتواصل السلسلة.',
+      few: '🔥 {days} يومًا على التوالي! {count} أشهر من Pro هدية منّا لتواصل السلسلة.',
+      many: '🔥 {days} يومًا على التوالي! {count} شهرًا من Pro هدية منّا لتواصل السلسلة.',
+      other: '🔥 {days} يومًا على التوالي! {count} شهر من Pro هدية منّا لتواصل السلسلة.',
+    },
+    introCode: {
+      zero: '🎟️ نجح الرمز {code}: {count} شهر من LangX Pro لك.',
+      one: '🎟️ نجح الرمز {code}: شهر من LangX Pro لك.',
+      two: '🎟️ نجح الرمز {code}: شهران من LangX Pro لك.',
+      few: '🎟️ نجح الرمز {code}: {count} أشهر من LangX Pro لك.',
+      many: '🎟️ نجح الرمز {code}: {count} شهرًا من LangX Pro لك.',
+      other: '🎟️ نجح الرمز {code}: {count} شهر من LangX Pro لك.',
+    },
+    perks:
+      'صار متاحًا لك الآن:\n💬 محادثات جديدة بلا حدود\n🌍 ترجمات أكثر بكثير كل يوم\n👀 معرفة من زار ملفك، والتصفح دون أن يراك أحد\n✨ التميّز في «استكشاف»، وفلاتر الجنس والمدينة',
+    andMore: '…والمزيد.',
+    until: 'استمتع به حتى {date}. 💛',
+    untilPaying: 'يستمر اشتراكك كالمعتاد، وإذا انتهى يومًا ما يبقى Pro حتى {date}.',
+    reminderWeek: '⏳ للعلم: تنتهي هدية Pro في {date}. خيارات خطتك في الإعدادات ← الاشتراك.',
+    reminderDay: '⏳ تنتهي هدية Pro غدًا، في {date}.',
+    ended: 'انتهت هدية Pro. شكرًا لتدرّبك معنا، نراك في المحادثات! 💛',
   },
   reportReason: {
     spam: 'رسائل مزعجة',

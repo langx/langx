@@ -2,17 +2,23 @@ import {
   ERROR_CODES,
   adminLatestVersionSchema,
   adminListQuerySchema,
+  adminMinVersionSchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
   adminReportListQuerySchema,
   adminFeedbackListQuerySchema,
+  adminGiftCodeCreateSchema,
+  adminGiftCodeUpdateSchema,
+  adminGiftProSchema,
   adminSuspendSchema,
   adminUserSearchSchema,
   bountyAwardSchema,
   broadcastCreateSchema,
   broadcastImageSchema,
   broadcastUpdateSchema,
+  compareVersions,
   reviewDecisionSchema,
+  versionForPlatform,
   withPlatformVersion,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -23,6 +29,19 @@ import { assertOwnObject } from '../lib/assertOwnBucket'
 import { authId } from '../lib/authId'
 import { requireAdmin } from '../middleware/requireAuth'
 import { recordAdminAction } from '../modules/admin/auditLog'
+import {
+  grantProGiftNow,
+  holdsLifetime,
+  proGiftKey,
+  queueProGift,
+} from '../modules/billing/proGifts'
+import {
+  createGiftCode,
+  getGiftCode,
+  listGiftCodeRedemptions,
+  listGiftCodes,
+  setGiftCodeActive,
+} from '../modules/billing/giftCodes'
 import {
   countBroadcastAudience,
   createBroadcast,
@@ -36,6 +55,7 @@ import {
   updateBroadcastBodies,
 } from '../modules/admin/broadcast'
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
+import { pollResults } from '../modules/chat/polls'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
 import { listOnline, readAdminPulse } from '../modules/admin/pulse'
@@ -150,12 +170,13 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
   /**
    * Telling everyone on an older build that a new one is in the stores.
    *
-   * The one piece of `AppConfig` the panel writes, and the exception is about
-   * *when* it is needed rather than about convenience. This is set the moment a
-   * store release goes live — a moment decided by Apple's review queue, not by
-   * whether anybody is sitting at a machine that can reach Mongo. Everything
-   * else in the config stays in `scripts/maintenance.ts`; see
-   * `adminLatestVersionSchema` for where the line is and why it is there.
+   * One of the two pieces of `AppConfig` the panel writes, with `minVersion`
+   * below, and the exception is about *when* it is needed rather than about
+   * convenience. This is set the moment a store release goes live — a moment
+   * decided by Apple's review queue, not by whether anybody is sitting at a
+   * machine that can reach Mongo. Maintenance and the flags stay in
+   * `scripts/maintenance.ts`; see `adminLatestVersionSchema` for where the line
+   * is and why it is there.
    *
    * Read-modify-write rather than a `$set` on the nested key, which is what the
    * script does too: one operator holds this flag, so the race the atomic
@@ -192,6 +213,53 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       await recordAdminAction(app.mongo.db, request.log, {
         adminId: request.userId,
         action: 'appConfig.latestVersion',
+        payload: { platform, version },
+      })
+      return reply.send(config)
+    },
+  )
+
+  /**
+   * Forcing everyone below a version to update before they can go on.
+   *
+   * The day a breaking store release goes live, not in an incident — which is
+   * why it sits beside the banner rather than with the kill switch in
+   * `scripts/maintenance.ts`. Every client already reads it: `AppGate` blocks on
+   * `updateRequired` at launch and on every return to the foreground, signed in
+   * or not.
+   *
+   * Refused above the platform's `latestVersion`. A minimum nobody can install
+   * sends every user to a store listing that cannot satisfy it — the whole
+   * platform locked out by one typo, and on the web, where the served bundle
+   * *is* the latest, with nowhere at all to go. Publishing the build and
+   * raising the banner first is the order anyway; this makes it the only one.
+   * Lowering is always allowed, so a mistake is undone from the same field.
+   */
+  app.post(
+    '/admin/app-config/min-version',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminMinVersionSchema },
+      config: { rateLimit: limit(20, '1 minute') },
+    },
+    async (request, reply) => {
+      const { platform, version } = request.body
+      const current = await getAppConfig(app.mongo.db)
+      const latest = versionForPlatform(current.latestVersion, platform)
+      if (compareVersions(version, latest) > 0) {
+        throw new ApiError(
+          ERROR_CODES.VALIDATION_FAILED,
+          `Minimum ${version} is above the latest ${platform} version (${latest}); raise that first`,
+        )
+      }
+      const config = await updateAppConfig(app.mongo.db, {
+        minVersion: withPlatformVersion(current.minVersion, platform, version),
+      })
+      forgetAdminStats()
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'appConfig.minVersion',
         payload: { platform, version },
       })
       return reply.send(config)
@@ -493,6 +561,164 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
+  /**
+   * Gives somebody months of Pro, as a RevenueCat promotional grant with an
+   * end date.
+   *
+   * The row is written first and keyed by person, day and length, so a
+   * double click is the same gift rather than two; then it is granted at once
+   * rather than on the next scheduler tick, so the panel can say it landed.
+   * A grant that fails here stays pending and the pass retries it — the
+   * answer says which happened.
+   *
+   * Refused for a lifetime holder: months on top of forever change nothing,
+   * and the letter would read as a mistake. Allowed for a subscriber — the
+   * panel warns, and the letter says so too — because a gift does not stop
+   * their billing, it carries Pro on if the subscription ends.
+   */
+  app.post(
+    '/admin/users/:userId/gift',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ userId: z.string() }), body: adminGiftProSchema },
+      config: { rateLimit: limit(30, '1 minute') },
+    },
+    async (request, reply) => {
+      const db = app.mongo.db
+      if (!app.env.REVENUECAT_SECRET_API_KEY && !app.env.REVENUECAT_FAKE_STORE) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Billing is not configured here')
+      }
+      const profile = await getProfile(db, request.params.userId)
+      if (!profile || profile.deletedAt)
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
+      if (profile.official) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'An official account is not given Pro')
+      }
+      if (holdsLifetime(profile.entitlement)) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'They already hold Pro for life')
+      }
+
+      const now = new Date()
+      const { months, note } = request.body
+      const { gift, created } = await queueProGift(
+        db,
+        {
+          _id: proGiftKey.admin(profile._id, now, months),
+          userId: profile._id,
+          months,
+          source: 'admin',
+          grantedBy: request.userId,
+          ...(note ? { note } : {}),
+        },
+        now,
+      )
+      if (!created) return reply.send({ created: false, gift })
+
+      const granted =
+        (await grantProGiftNow(
+          db,
+          {
+            revenueCat: app.revenueCat,
+            email: app.email,
+            fanOut: (delivery, { push }) =>
+              fanOutMessage(app, app.io, delivery.conversation, delivery.message, {
+                pushWhenAway: push,
+              }),
+            warn: (error, message) => request.log.warn({ err: error }, message),
+          },
+          gift._id,
+          now,
+        )) ?? gift
+
+      await recordAdminAction(db, request.log, {
+        adminId: request.userId,
+        action: 'user.giftPro',
+        subjectUserId: profile._id,
+        refId: gift._id,
+        payload: {
+          months,
+          ...(note ? { note } : {}),
+          status: granted.status,
+          ...(granted.endsAt ? { endsAt: granted.endsAt.toISOString() } : {}),
+        },
+      })
+      return reply.send({ created: true, gift: granted })
+    },
+  )
+
+  // ── gift codes ───────────────────────────────────────────────────────────
+
+  /**
+   * Codes worth months of Pro to anybody who types one into the paywall —
+   * see `modules/billing/giftCodes.ts`. Made, listed, switched off and on
+   * here; never deleted, because a redemption names the code it came from
+   * and the count on it is a record of what was given.
+   */
+  app.get('/admin/gift-codes', { preHandler: requireAdmin }, async (_request, reply) => {
+    return reply.send({ items: await listGiftCodes(app.mongo.db) })
+  })
+
+  app.post(
+    '/admin/gift-codes',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminGiftCodeCreateSchema },
+      config: { rateLimit: limit(30, '1 hour') },
+    },
+    async (request, reply) => {
+      const code = await createGiftCode(app.mongo.db, request.body, request.userId)
+      if (!code) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That code already exists')
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'giftCode.create',
+        refId: code._id,
+        payload: {
+          code: code.code,
+          months: code.months,
+          maxRedemptions: code.maxRedemptions,
+          expiresAt: code.expiresAt ? code.expiresAt.toISOString() : null,
+          ...(code.note ? { note: code.note } : {}),
+        },
+      })
+      return reply.code(201).send(code)
+    },
+  )
+
+  app.get(
+    '/admin/gift-codes/:id',
+    { preHandler: requireAdmin, schema: { params: z.object({ id: z.string() }) } },
+    async (request, reply) => {
+      const code = await getGiftCode(app.mongo.db, request.params.id)
+      if (!code) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such code')
+      return reply.send({
+        code,
+        redemptions: await listGiftCodeRedemptions(app.mongo.db, code._id),
+      })
+    },
+  )
+
+  app.patch(
+    '/admin/gift-codes/:id',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: adminGiftCodeUpdateSchema },
+      config: { rateLimit: limit(60, '1 minute') },
+    },
+    async (request, reply) => {
+      const code = await setGiftCodeActive(app.mongo.db, request.params.id, request.body.active)
+      if (!code) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such code')
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: code.active ? 'giftCode.activate' : 'giftCode.deactivate',
+        refId: code._id,
+        payload: { code: code.code },
+      })
+      return reply.send(code)
+    },
+  )
+
   // ── bug reports and ideas ────────────────────────────────────────────────
 
   app.get(
@@ -692,7 +918,16 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const job = await getBroadcast(app.mongo.db, request.params.id)
       if (!job) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such broadcast')
-      return reply.send(job)
+      // A poll's answers, per option, beside the job that asked it.
+      const poll = job.interactive?.kind === 'poll' ? job.interactive : null
+      const pollResultsView = poll
+        ? await pollResults(
+            app.mongo.db,
+            poll.pollId,
+            poll.options.map((option) => option.id),
+          )
+        : undefined
+      return reply.send({ ...job, ...(pollResultsView ? { pollResults: pollResultsView } : {}) })
     },
   )
 

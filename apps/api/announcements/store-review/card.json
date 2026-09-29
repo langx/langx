@@ -1,0 +1,28 @@
+{
+  "kind": "card",
+  "title": {
+    "en": "No ads, ever",
+    "tr": "Hiç reklam yok",
+    "es": "Sin anuncios, nunca",
+    "ru": "Без рекламы. Навсегда",
+    "ar": "بلا إعلانات، أبدًا",
+    "fr": "Zéro pub, pour toujours",
+    "de": "Keine Werbung, niemals",
+    "pt-BR": "Sem anúncios, nunca"
+  },
+  "button": {
+    "label": {
+      "en": "⭐ Rate LangX",
+      "tr": "⭐ Değerlendir",
+      "es": "⭐ Valorar LangX",
+      "ru": "⭐ Оценить LangX",
+      "ar": "⭐ قيّم LangX",
+      "fr": "⭐ Noter LangX",
+      "de": "⭐ LangX bewerten",
+      "pt-BR": "⭐ Avaliar o LangX"
+    },
+    "action": {
+      "type": "storeReview"
+    }
+  }
+}

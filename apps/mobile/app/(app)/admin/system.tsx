@@ -1,7 +1,11 @@
-import { isVersion, type MinVersion } from '@langx/shared'
+import { compareVersions, isVersion, versionForPlatform, type MinVersion } from '@langx/shared'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
-import { useAdminSetLatestVersion, useAdminStats } from '../../../src/api/queries'
+import {
+  useAdminSetLatestVersion,
+  useAdminSetMinVersion,
+  useAdminStats,
+} from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
 import { Button } from '../../../src/components/ui/Button'
 import { Callout } from '../../../src/components/ui/Callout'
@@ -13,6 +17,7 @@ import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../src/lib/adminStrings'
+import { confirmAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
@@ -32,8 +37,8 @@ const PLATFORMS: readonly { value: keyof MinVersion; label: string }[] = [
  * why their streak reminders had stopped. `jobHealth` records every pass now,
  * and this is what reads it.
  *
- * Everything here is read only bar one field, and the exception is drawn
- * narrowly. `scripts/maintenance.ts` explains why the kill switch is a script:
+ * Everything here is read only bar the two version fields, and the exception
+ * is drawn narrowly. `scripts/maintenance.ts` explains why the kill switch is a script:
  * it is the control you reach for when something is wrong, and it must not
  * depend on the API being healthy enough to authenticate you. A panel served
  * *by* that API cannot be the thing that turns it off.
@@ -42,8 +47,13 @@ const PLATFORMS: readonly { value: keyof MinVersion; label: string }[] = [
  * can do is show a dismissible banner, or show none — it blocks nobody. And it
  * is needed at a moment nobody chooses: when a store release goes live, which
  * is Apple's review queue's decision rather than a time anybody is sitting at a
- * machine that can reach Mongo. So that one field is here, and everything that
- * can stop the app working is still in the script.
+ * machine that can reach Mongo. So that field is here.
+ *
+ * `minVersion` does block — it is the "update to continue" screen — and it is
+ * here anyway because it is raised on a release day, not in an incident, and
+ * the server refuses it above `latestVersion`, so the worst typo is a floor
+ * the store can already satisfy. Maintenance and the flags, the controls that
+ * can stop the app for everybody, are still in the script.
  */
 export default function AdminSystemScreen() {
   useScreenInteractive()
@@ -54,6 +64,10 @@ export default function AdminSystemScreen() {
   const [platform, setPlatform] = useState<keyof MinVersion>('ios')
   const [version, setVersion] = useState('')
   const raise = useAdminSetLatestVersion()
+
+  const [minPlatform, setMinPlatform] = useState<keyof MinVersion>('ios')
+  const [minVersion, setMinVersion] = useState('')
+  const force = useAdminSetMinVersion()
 
   /*
    * Checked here as well as on the server, against the same function, because
@@ -70,6 +84,41 @@ export default function AdminSystemScreen() {
         onSuccess: () => {
           setVersion('')
           showToast(ADMIN.system.setDone(platform, typed))
+        },
+        onError: () => showToast(ADMIN.common.failed),
+      },
+    )
+  }
+
+  const minTyped = minVersion.trim()
+  const minReady = isVersion(minTyped)
+
+  async function submitMin(): Promise<void> {
+    if (!system) return
+    // Checked here too so the refusal can say which number is in the way; the
+    // server's 400 is the rule, this is only its explanation.
+    const latest = versionForPlatform(system.config.latestVersion, minPlatform)
+    if (compareVersions(minTyped, latest) > 0) {
+      showToast(ADMIN.system.forceAboveLatest(minPlatform, latest))
+      return
+    }
+    // Only raising blocks anyone, so only raising asks. Lowering — including
+    // back to 0.0.0 — is the undo, and should not stand behind a dialog.
+    const current = versionForPlatform(system.config.minVersion, minPlatform)
+    if (compareVersions(minTyped, current) > 0) {
+      const ok = await confirmAlert({
+        title: ADMIN.system.confirmForce(minPlatform, minTyped),
+        confirmLabel: ADMIN.system.set,
+        destructive: true,
+      })
+      if (!ok) return
+    }
+    force.mutate(
+      { platform: minPlatform, version: minTyped },
+      {
+        onSuccess: () => {
+          setMinVersion('')
+          showToast(ADMIN.system.minDone(minPlatform, minTyped))
         },
         onError: () => showToast(ADMIN.common.failed),
       },
@@ -195,6 +244,35 @@ export default function AdminSystemScreen() {
                   onPress={submit}
                   disabled={!ready}
                   loading={raise.isPending}
+                />
+              </View>
+            </Card>
+
+            <Text style={styles.heading}>{ADMIN.system.forceUpdate}</Text>
+            <Card>
+              <Text style={styles.muted}>{ADMIN.system.forceUpdateHint}</Text>
+              <View style={styles.editor}>
+                <SegmentedControl
+                  options={PLATFORMS}
+                  selected={[minPlatform]}
+                  onToggle={setMinPlatform}
+                  accessibilityLabel={ADMIN.system.forceUpdate}
+                />
+                <FormField
+                  value={minVersion}
+                  onChangeText={setMinVersion}
+                  placeholder={ADMIN.system.versionPlaceholder}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="numbers-and-punctuation"
+                  accessibilityLabel={ADMIN.system.minVersion}
+                />
+                <Button
+                  label={ADMIN.system.set}
+                  variant="danger"
+                  onPress={() => void submitMin()}
+                  disabled={!minReady}
+                  loading={force.isPending}
                 />
               </View>
             </Card>

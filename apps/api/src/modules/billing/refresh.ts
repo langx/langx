@@ -4,6 +4,7 @@ import type { Profile } from '../profiles/profiles'
 import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient'
 import { creditReferrerForSubscription, isPaidPurchase } from '../referrals/settle'
 import { grantWelcomePack } from './welcomePack'
+import { welcomeIfBecamePro } from './proWelcome'
 
 /**
  * The client-triggered fallback for a webhook that's late or never arrives
@@ -66,10 +67,11 @@ async function applyEntitlement(
   if (entitlement?.expiresAt) next.expiresAt = entitlement.expiresAt
 
   /*
-   * The pre-image, for one reason: a referral top-up is a function of an
-   * *event*, and this is the only edge in this file that is one.
-   * `grantWelcomePack` below is a function of the tier and is safely re-run on
-   * every refresh; paying somebody again on every refresh would not be.
+   * The pre-image, because the two things below are functions of an *event*
+   * — the referral top-up and the Pro welcome — and this write is the only
+   * edge in this file. `grantWelcomePack` below is a function of the tier and
+   * is safely re-run on every refresh; paying or welcoming somebody again on
+   * every refresh would not be.
    */
   const before = await db
     .collection<Profile>(COLLECTIONS.profiles)
@@ -97,6 +99,18 @@ async function applyEntitlement(
     } catch {
       // Intentionally ignored; see above.
     }
+  }
+
+  /*
+   * The same pre-image, for the other edge that is an event: not Pro a moment
+   * ago, Pro now — a first purchase, a free week starting, a gift. It leaves
+   * the app a "You're Pro now" to show. Swallowed for the reason the referral
+   * top-up is: the entitlement is what matters and it is already written.
+   */
+  try {
+    await welcomeIfBecamePro(db, userId, before?.entitlement, next, now)
+  } catch {
+    // Intentionally ignored; see above.
   }
 
   /*

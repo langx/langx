@@ -591,6 +591,48 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1, createdAt: -1 }, name: 'user_created' },
   ],
 
+  [COLLECTIONS.proGifts]: [
+    /*
+     * No unique index: the key that says what a gift is for is the `_id`,
+     * so "one gift per milestone, per referral slot, per operator click" is
+     * the primary key and cannot be dropped. These are the three reads.
+     *
+     * The lease: "the oldest pending row nobody holds", asked every tick by
+     * both machines.
+     */
+    { key: { status: 1, lockedUntil: 1, createdAt: 1 }, name: 'status_locked' },
+    // One person's gifts by end — the stack a new gift goes on top of, and
+    // the operator panel's list.
+    { key: { userId: 1, endsAt: -1 }, name: 'user_ends' },
+    // Granted gifts about to end, or ended: the reminders and the goodbye.
+    { key: { status: 1, endsAt: 1 }, name: 'status_ends' },
+  ],
+
+  [COLLECTIONS.giftCodes]: [
+    // The lookup, and the invariant: two codes with one spelling would make
+    // "which one did they redeem" a coin toss. Stored normalised, so the
+    // uniqueness is case-blind without a collation.
+    { key: { code: 1 }, name: 'code_unique', unique: true },
+    // The panel's list, newest first.
+    { key: { createdAt: -1 }, name: 'created' },
+  ],
+
+  [COLLECTIONS.giftCodeRedemptions]: [
+    // Once per person per code. Written before the count is taken, so a
+    // double tap lands on this rather than on a second month.
+    { key: { codeId: 1, userId: 1 }, name: 'code_user_unique', unique: true },
+    // The panel's detail: who, newest first.
+    { key: { codeId: 1, at: -1 }, name: 'code_at' },
+    // Account deletion.
+    { key: { userId: 1 }, name: 'user' },
+  ],
+
+  [COLLECTIONS.giftCodeAttempts]: [
+    // The rolling hour one person's attempts are counted in.
+    { key: { userId: 1, at: -1 }, name: 'user_at' },
+    { key: { at: 1 }, name: 'ttl_1h', expireAfterSeconds: 60 * 60 },
+  ],
+
   [COLLECTIONS.tokenLedger]: [
     // The single most important index here: the same message cannot be awarded
     // twice, whether it arrived over REST or the socket, and a re-run cron
@@ -977,6 +1019,18 @@ export const INDEXES: Partial<IndexSpec> = {
      * needs no index of its own.
      */
     { key: { status: 1, createdAt: 1 }, name: 'status_created' },
+  ],
+
+  [COLLECTIONS.pollAnswers]: [
+    /*
+     * One answer per person per poll. An invariant, not an optimisation: two
+     * taps, two devices or a REST call racing a socket event all reach the
+     * insert, and this is what refuses the second one. It also serves the
+     * panel's per-option count, which filters on `pollId` first.
+     */
+    { key: { pollId: 1, userId: 1 }, name: 'poll_user_unique', unique: true },
+    // The account purge.
+    { key: { userId: 1 }, name: 'poll_answer_owner' },
   ],
 
   [COLLECTIONS.feedback]: [
