@@ -1699,7 +1699,6 @@ export const en = {
     shareProfile: 'Share my profile',
     shareMessage: 'Practise languages with me on LangX: {url}',
     badges: 'Badges',
-    echoWeek: 'Echo this week',
     invite: 'Invite a friend',
     inviteBody: 'Earn tokens when they start using LangX',
     dayStreak: 'Day streak',
