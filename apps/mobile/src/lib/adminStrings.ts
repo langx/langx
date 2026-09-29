@@ -63,6 +63,7 @@ export const ADMIN = {
     corrections: 'Corrections',
     languageCount: 'Languages',
     pro: 'Pro',
+    paid: 'Paid',
     gifted: 'Gifted',
     free: 'Free',
     totalMembers: 'Total',
