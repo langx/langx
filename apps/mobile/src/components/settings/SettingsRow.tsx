@@ -158,8 +158,9 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
     }
     case 'plan.upgrade':
       // "See the plans" is the free tier's row. A subscriber holds the one
-      // paid plan and has nothing left to be sold.
-      return model.tier !== 'free' ? null : (
+      // paid plan and has nothing left to be sold — but a gift runs out, and
+      // subscribing on top of one is how Pro carries on after it.
+      return model.tier !== 'free' && !model.gift ? null : (
         <ListRow
           title={t('settings.upgrade')}
           last={last}

@@ -16,6 +16,12 @@ import { effectiveTier } from '../profiles/entitlement'
 import type { Device } from '../push/devices'
 import type { EmailSuppression } from '../notifications/suppressions'
 import { emailFor } from '../profiles/emailFor'
+import {
+  holdsLifetime,
+  holdsStoreSubscription,
+  listProGifts,
+  type ProGift,
+} from '../billing/proGifts'
 import { findProfileByHandleOrId, type Profile } from '../profiles/profiles'
 
 /**
@@ -48,6 +54,22 @@ export interface AdminUserView {
   lastActiveAt: string | null
   build: { version: string; platform: string } | null
   tier: PlanTier
+  /**
+   * What the Pro, if any, stands on — the gift form needs it: a lifetime is
+   * refused and a running subscription is warned about.
+   */
+  plan: {
+    store: string | null
+    expiresAt: string | null
+    willRenew: boolean
+    lifetime: boolean
+    subscribed: boolean
+  }
+  /** Gifts of Pro, newest first — without the operator's lease bookkeeping. */
+  gifts: Pick<
+    ProGift,
+    '_id' | 'months' | 'source' | 'status' | 'endsAt' | 'createdAt' | 'note' | 'grantedBy'
+  >[]
   official: boolean
   admin: boolean
   guest: boolean
@@ -188,12 +210,13 @@ export async function getAdminUser(db: Db, profile: Profile): Promise<AdminUserD
 }
 
 async function toAdminUserView(db: Db, profile: Profile): Promise<AdminUserView> {
-  const [address, reportsAgainst, reportsFiled, blockedBy, actions] = await Promise.all([
+  const [address, reportsAgainst, reportsFiled, blockedBy, actions, gifts] = await Promise.all([
     emailFor(db, profile._id),
     db.collection(COLLECTIONS.reports).countDocuments({ reportedId: profile._id }),
     db.collection(COLLECTIONS.reports).countDocuments({ reporterId: profile._id }),
     db.collection(COLLECTIONS.blocks).countDocuments({ blockedId: profile._id }),
     readAdminActions(db, profile._id),
+    listProGifts(db, profile._id),
   ])
 
   return {
@@ -215,6 +238,25 @@ async function toAdminUserView(db: Db, profile: Profile): Promise<AdminUserView>
       ? { version: profile.stats.appVersion, platform: profile.stats.appPlatform ?? 'unknown' }
       : null,
     tier: effectiveTier(profile),
+    plan: {
+      store: profile.entitlement.store ?? null,
+      expiresAt: profile.entitlement.expiresAt
+        ? new Date(profile.entitlement.expiresAt).toISOString()
+        : null,
+      willRenew: profile.entitlement.willRenew === true,
+      lifetime: holdsLifetime(profile.entitlement),
+      subscribed: holdsStoreSubscription(profile.entitlement),
+    },
+    gifts: gifts.map((gift) => ({
+      _id: gift._id,
+      months: gift.months,
+      source: gift.source,
+      status: gift.status,
+      endsAt: gift.endsAt,
+      createdAt: gift.createdAt,
+      ...(gift.note ? { note: gift.note } : {}),
+      ...(gift.grantedBy ? { grantedBy: gift.grantedBy } : {}),
+    })),
     official: profile.official === true,
     admin: profile.admin === true,
     guest: profile.guest === true,

@@ -3076,6 +3076,22 @@ export interface AdminUserDto {
     lastActiveAt: string | null
     build: { version: string; platform: string } | null
     tier: string
+    plan: {
+      store: string | null
+      expiresAt: string | null
+      willRenew: boolean
+      lifetime: boolean
+      subscribed: boolean
+    }
+    gifts: {
+      _id: string
+      months: number
+      source: string
+      status: string
+      endsAt: string | null
+      createdAt: string
+      note?: string
+    }[]
     admin: boolean
     email: string | null
     emailVerified: boolean

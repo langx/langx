@@ -1869,6 +1869,7 @@ export const ptBR: Localized<EnMessages> = {
     currentPlan: 'Plano atual',
     renewsOn: 'Renova em',
     endsOn: 'Termina em',
+    giftUntil: 'Presente · até {date}',
     lifetime: 'Para sempre',
     plan: 'Plano',
     manageSubscription: 'Gerenciar ou cancelar',
@@ -2285,6 +2286,8 @@ export const ptBR: Localized<EnMessages> = {
       'Você usou suas {count} conversas novas de hoje. Ainda pode responder a tudo que receber, sem limite.',
     manageNotice: 'Você está no {plan}. Gerencie ou cancele na sua conta da loja.',
     lifetimeNotice: 'Você tem {plan} para sempre. Nada renova e nada é cobrado.',
+    giftNotice:
+      'Você tem o {plan} de presente até {date}. Assine para continuar com ele depois — nada é cobrado antes de você escolher.',
     includedIn: 'Incluído no {plan}',
     currentPlan: 'Seu plano atual',
     purchaseFailed: 'Essa compra não foi concluída. Nada foi cobrado.',

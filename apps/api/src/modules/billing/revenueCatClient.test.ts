@@ -237,6 +237,45 @@ describe('createRevenueCatClient', () => {
     expect(fetchMock.mock.calls[2]?.[0]).toContain('/entitlements/pro_plus/promotional')
   })
 
+  it('posts a dated promotional grant with its end in milliseconds', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('{}') })
+    vi.stubGlobal('fetch', fetchMock)
+    const endsAt = new Date('2026-12-28T12:00:00Z')
+
+    await createRevenueCatClient('sk_test').grantPromotionalEntitlement('user 1', 'pro', endsAt)
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.revenuecat.com/v1/subscribers/user%201/entitlements/pro/promotional',
+      {
+        method: 'POST',
+        headers: { authorization: 'Bearer sk_test', 'content-type': 'application/json' },
+        body: JSON.stringify({ end_time_ms: endsAt.getTime() }),
+      },
+    )
+  })
+
+  /** The same wall as the lifetime grant, crossed the same way. */
+  it('creates the subscriber and retries a dated grant too', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 404, text: () => Promise.resolve('7259') })
+      .mockResolvedValueOnce({ ok: true, status: 201, text: () => Promise.resolve('{}') })
+      .mockResolvedValueOnce({ ok: true, status: 201, text: () => Promise.resolve('{}') })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await createRevenueCatClient('sk').grantPromotionalEntitlement('newcomer', 'pro', new Date())
+
+    expect(fetchMock).toHaveBeenCalledTimes(3)
+    expect(fetchMock.mock.calls[1]?.[0]).toBe('https://api.revenuecat.com/v1/subscribers/newcomer')
+    expect(fetchMock.mock.calls[2]?.[0]).toContain('/entitlements/pro/promotional')
+  })
+
+  /** Nothing in this client may ever take a promotional grant away — see the interface. */
+  it('has no way to revoke promotionals', () => {
+    const client = createRevenueCatClient('sk') as unknown as Record<string, unknown>
+    expect(Object.keys(client).some((key) => /revoke/i.test(key))).toBe(false)
+  })
+
   /** One retry, not a loop: a 404 that survives the create is a real refusal. */
   it('throws when a grant is refused, so the caller can report no gift', async () => {
     vi.stubGlobal(

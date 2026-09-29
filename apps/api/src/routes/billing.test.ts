@@ -39,6 +39,10 @@ class FakeRevenueCatClient implements RevenueCatClient {
     this.grants.push({ appUserId, entitlementId })
     return Promise.resolve()
   }
+
+  grantPromotionalEntitlement(): Promise<void> {
+    return Promise.resolve()
+  }
 }
 
 function onboardingBody(overrides: Record<string, unknown> = {}) {

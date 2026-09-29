@@ -24,6 +24,7 @@ import { startScheduledMessageScheduler } from './modules/chat/scheduledSender'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
 import { startNotificationScheduler } from './modules/notifications/scheduler'
 import { startDailyPoolScheduler } from './modules/tokens/poolScheduler'
+import { fanOutMessage } from './ws/fanOut'
 
 async function main(): Promise<void> {
   const env = loadEnv()
@@ -141,6 +142,20 @@ async function main(): Promise<void> {
       resendVerification: async (email) => {
         await auth.api.sendVerificationEmail({ body: { email } })
       },
+      // Only with something to grant through — see the option. The fan-out
+      // is the app's, so a gift's message paints live and knocks the way any
+      // other message from @langx does.
+      ...(env.REVENUECAT_SECRET_API_KEY || env.REVENUECAT_FAKE_STORE
+        ? {
+            proGifts: {
+              revenueCat,
+              fanOut: (delivery, { push: knock }) =>
+                fanOutMessage(app, app.io, delivery.conversation, delivery.message, {
+                  pushWhenAway: knock,
+                }),
+            },
+          }
+        : {}),
     }),
   ]
 

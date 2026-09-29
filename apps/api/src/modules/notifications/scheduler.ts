@@ -3,6 +3,7 @@ import type { NotificationEmailContext } from '../../email/notify'
 import type { PushSender } from '../push/devices'
 import { runBroadcastQueuePass } from '../admin/broadcastQueue'
 import { runPlanEndedPass } from '../billing/planEnded'
+import { runProGiftPass, type ProGiftDeps } from '../billing/proGifts'
 import { withJobHealth } from '../admin/jobHealth'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
@@ -55,6 +56,13 @@ export function startNotificationScheduler(
      * unaffected.
      */
     resendVerification?: (email: string) => Promise<void>
+    /**
+     * Grants the pending gifts of Pro and says when they end. Left out when
+     * billing is not configured — every step asks RevenueCat something, and a
+     * pass that could only fail would fill the log and burn each row's
+     * retries. The rows wait; nothing is lost.
+     */
+    proGifts?: Pick<ProGiftDeps, 'revenueCat' | 'fanOut'>
   } = {},
 ): { stop: () => void } {
   const intervalMs = options.intervalMs ?? NOTIFICATION_INTERVAL_MS
@@ -107,6 +115,22 @@ export function startNotificationScheduler(
           run('billing plan ended', () =>
             runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
           ),
+        ...(options.proGifts
+          ? [
+              () =>
+                run('pro gifts', () =>
+                  runProGiftPass(
+                    db,
+                    {
+                      ...(options.proGifts as Pick<ProGiftDeps, 'revenueCat' | 'fanOut'>),
+                      email: senders.email.sender,
+                      warn: (error, message) => logger.warn({ err: error }, message),
+                    },
+                    now,
+                  ),
+                ),
+            ]
+          : []),
         () => run('pool payout', () => runPoolPayoutPass(db, senders.push, now)),
         () => run('gift ready', () => runGiftReadyPass(db, senders.push, now)),
         () => run('likes round-up', () => runLikesRoundUpPass(db, senders.push, now)),

@@ -9,6 +9,7 @@ import {
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { queueStreakGifts } from '../billing/proGiftRewards'
 import type { Profile } from '../profiles/profiles'
 import { awardTokens } from './ledger'
 import { recordCheckInDay, recordStreakDay } from './streakDays'
@@ -245,6 +246,12 @@ async function advance(
       milestoneXp = award.amount
       current = claimed.streak.current
       longest = claimed.streak.longest
+      /*
+       * The gift of Pro at 100 and 365 days, on the same once-a-day claim —
+       * "at least", so a streak already past a milestone earns it on its
+       * next real action. Only a row is written; the scheduler grants it.
+       */
+      await queueStreakGifts(db, claimed, at)
     }
   }
 

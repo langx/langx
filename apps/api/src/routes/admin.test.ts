@@ -131,6 +131,9 @@ describe('the operator panel', () => {
       // Only the public base: it is what `assertOwnBucket` compares against,
       // and nothing in here uploads anything.
       STORAGE_PUBLIC_BASE_URL: MEDIA_BASE,
+      // The gift of Pro needs something to grant through; the fake store is
+      // that, in memory, and refused under production by `loadEnv`.
+      REVENUECAT_FAKE_STORE: 'true',
     })
     await ensureIndexes(handle.db)
     emailSender = new CapturingEmailSender()
@@ -1265,6 +1268,95 @@ describe('the operator panel', () => {
         bodies: { tr: 'Sadece Türkçe' },
       })
       expect(created.statusCode).toBe(400)
+    })
+  })
+
+  describe('giving Pro', () => {
+    it('grants the months at once, writes the letter and records who gave it', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+
+      const response = await post(admin, `/admin/users/${member.userId}/gift`, {
+        months: 3,
+        note: 'Wrote three bug reports',
+      })
+      expect(response.statusCode).toBe(200)
+      const body = response.json<{ created: boolean; gift: { status: string; endsAt: string } }>()
+      expect(body.created).toBe(true)
+      expect(body.gift.status).toBe('granted')
+
+      const profile = await profiles().findOne({ _id: member.userId })
+      expect(profile?.entitlement).toMatchObject({ tier: 'pro', store: 'gift' })
+
+      const message = await handle.db
+        .collection<Message>(COLLECTIONS.messages)
+        .findOne({ clientId: { $regex: `^proGift:admin:${member.userId}:` } })
+      expect(message).not.toBeNull()
+
+      const action = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .findOne({ action: 'user.giftPro', subjectUserId: member.userId })
+      expect(action).toMatchObject({
+        adminId: admin.userId,
+        payload: { months: 3, note: 'Wrote three bug reports', status: 'granted' },
+      })
+
+      // The panel's view of the person lists it.
+      const view = await get(admin, `/admin/users/${member.userId}`)
+      const detail = view.json<{ user: { gifts: { months: number; status: string }[] } }>()
+      expect(detail.user.gifts).toMatchObject([{ months: 3, status: 'granted' }])
+    })
+
+    it('answers a double click with the gift it already gave', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+
+      const [first, second] = await Promise.all([
+        post(admin, `/admin/users/${member.userId}/gift`, { months: 1 }),
+        post(admin, `/admin/users/${member.userId}/gift`, { months: 1 }),
+      ])
+      expect([first.statusCode, second.statusCode]).toEqual([200, 200])
+      const created = [first, second].map((r) => r.json<{ created: boolean }>().created)
+      expect(created.sort()).toEqual([false, true])
+      expect(
+        await handle.db.collection(COLLECTIONS.proGifts).countDocuments({ userId: member.userId }),
+      ).toBe(1)
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.adminActions)
+          .countDocuments({ action: 'user.giftPro', subjectUserId: member.userId }),
+      ).toBe(1)
+    })
+
+    it('refuses somebody who holds Pro for life, and any other length', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+      await profiles().updateOne(
+        { _id: member.userId },
+        {
+          $set: {
+            entitlement: { tier: 'pro', store: 'promotional', updatedAt: new Date() },
+          },
+        },
+      )
+
+      const lifetime = await post(admin, `/admin/users/${member.userId}/gift`, { months: 1 })
+      expect(lifetime.statusCode).toBe(400)
+      const odd = await post(admin, `/admin/users/${member.userId}/gift`, { months: 2 })
+      expect(odd.statusCode).toBe(400)
+      expect(
+        await handle.db.collection(COLLECTIONS.proGifts).countDocuments({ userId: member.userId }),
+      ).toBe(0)
+    })
+
+    it('is the operator’s alone', async () => {
+      const member = await newUser()
+      const other = await newUser()
+      const refused = await post(member, `/admin/users/${other.userId}/gift`, { months: 1 })
+      expect(refused.statusCode).toBe(403)
     })
   })
 

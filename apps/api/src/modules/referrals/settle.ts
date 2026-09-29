@@ -4,6 +4,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { isEmailVerified } from '../profiles/emailVerified'
 import type { Profile } from '../profiles/profiles'
+import { queueReferralGifts } from '../billing/proGiftRewards'
 import { awardTokens, type AwardTokensInput, type TokenLedgerEntry } from '../tokens/ledger'
 import { markInviteeSubscribed, readReferral, type Referral } from './referrals'
 
@@ -130,11 +131,21 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
       refId: inviteeId,
       at,
     })
+    /*
+     * Every few activations in a year also earn the referrer a month of Pro
+     * — before the latch, like the awards above, so a crash here is healed
+     * by the next settle rather than lost behind a written `activatedAt`.
+     * Not for a frozen referrer, for the reason their award is zero.
+     */
+    if (!frozen) await queueReferralGifts(db, referral.referrerId, inviteeId, at)
     await latch(db, inviteeId, {
       activatedAt: at,
       activationAward: award,
       inviteeAward: welcome,
     })
+    // Once more now that this activation is on the record: two invitees
+    // settling at the same moment each counted the other as not yet in.
+    if (!frozen) await queueReferralGifts(db, referral.referrerId, inviteeId, at)
   }
 
   if (referral.subscribedAt && !subscriptionDone) {

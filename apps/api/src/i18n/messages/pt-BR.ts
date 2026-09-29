@@ -521,6 +521,10 @@ export const ptBR: Localized<ServerMessages> = {
     suspensionUpdatedText: 'Sua suspensão no LangX foi atualizada. {detail}',
     lifetimeGiftSubject: '{plan}, para sempre',
     lifetimeGiftButton: 'Ver meu plano',
+    proGiftSubject: 'Um presente para você: LangX Pro',
+    proGiftButton: 'Abrir o LangX',
+    proGiftEndingSubject: 'Seu presente Pro termina em {date}',
+    proGiftEndingButton: 'Ver meu plano',
   },
 
   lifetimeGift: {
@@ -535,6 +539,33 @@ export const ptBR: Localized<ServerMessages> = {
       other:
         'Seu saldo antigo veio na proporção de cem fichas do v1 para uma, então {carried} delas estão na sua nova carteira. Hoje ela tem {balance} fichas.',
     },
+  },
+  proGift: {
+    introAdmin: {
+      one: 'Parabéns! Estamos te dando {count} mês de LangX Pro. O LangX é totalmente open source, e quisemos agradecer por você fazer parte dele.',
+      other:
+        'Parabéns! Estamos te dando {count} meses de LangX Pro. O LangX é totalmente open source, e quisemos agradecer por você fazer parte dele.',
+    },
+    introReferral: {
+      one: '{friends} amigos que você convidou começaram a conversar no LangX — {count} mês de Pro é seu!',
+      other:
+        '{friends} amigos que você convidou começaram a conversar no LangX — {count} meses de Pro são seus!',
+    },
+    introStreak: {
+      one: 'Uma sequência de {days} dias! {count} mês de Pro, por nossa conta.',
+      other: 'Uma sequência de {days} dias! {count} meses de Pro, por nossa conta.',
+    },
+    perks:
+      'Com o Pro você pode:\n• começar quantas conversas quiser\n• traduzir muito mais todo dia\n• ver quem visitou seu perfil e navegar sem ser visto\n• se destacar em Descobrir e filtrar por gênero e cidade',
+    andMore: '…e muito mais.',
+    until: 'Seu Pro vale até {date}.',
+    untilPaying:
+      'Isso não pausa nem muda a cobrança da sua assinatura — mas se a sua assinatura terminar um dia, o Pro continua até {date}.',
+    reminderWeek:
+      'Só para avisar: seu presente Pro termina em {date}. Se quiser continuar com o Pro depois, as opções estão no app, em Configurações → Assinatura.',
+    reminderDay: 'Seu presente Pro termina em um dia, em {date}.',
+    ended:
+      'Seu presente Pro terminou. Obrigado por passar esse tempo com a gente — esperamos que tenha ajudado na sua prática. 💛',
   },
   reportReason: {
     spam: 'Spam',

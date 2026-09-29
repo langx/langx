@@ -260,6 +260,12 @@ export interface Profile {
    */
   proMergeWelcomedAt?: Date
   /**
+   * The streak milestones (in days) already given a gift of Pro for — see
+   * `queueStreakGifts`. Only a shortcut: the `proGifts` row's key is what
+   * makes each one once in a lifetime.
+   */
+  proGiftStreaks?: number[]
+  /**
    * `echoCaptures` is optional where the other three are not: it arrived after
    * every existing profile was written, and `consumeQuota` reads the array
    * through `$ifNull` rather than a migration filling it in.

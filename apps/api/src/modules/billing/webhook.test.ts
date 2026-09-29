@@ -263,6 +263,33 @@ describe('processRevenueCatWebhook', () => {
     })
 
     /**
+     * A gift of months running out is not a subscriber leaving: no churn
+     * record, so neither the "your plan has ended" letter nor the win-back
+     * offer that reads it goes out about a plan nobody paid for.
+     */
+    it('a PROMOTIONAL expiry moves the tier but records no churn', async () => {
+      const { userId, mailbox, notify } = await subscriber('pro')
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-expire-gift',
+          type: 'EXPIRATION',
+          app_user_id: userId,
+          store: 'PROMOTIONAL',
+          environment: 'PRODUCTION',
+        },
+        undefined,
+        notify,
+      )
+
+      const profile = await getProfile(userId)
+      expect(profile?.entitlement.tier).toBe('free')
+      expect(profile?.churnedFrom).toBeUndefined()
+      expect(mailbox).toHaveLength(0)
+    })
+
+    /**
      * A sandbox purchase moves the entitlement and nothing else. Learned the
      * hard way: a sandbox renewal that ran late mailed and pushed a payment
      * failure about a card that has never been charged.
@@ -326,6 +353,7 @@ describe('processRevenueCatWebhook', () => {
           periodType: null,
         }),
       grantLifetimeEntitlement: () => Promise.resolve(),
+      grantPromotionalEntitlement: () => Promise.resolve(),
     }
 
     it('stays on the lifetime when the trailing grant event arrives', async () => {
@@ -396,6 +424,7 @@ describe('processRevenueCatWebhook', () => {
       const down: RevenueCatClient = {
         getEntitlement: () => Promise.reject(new Error('RevenueCat is down')),
         grantLifetimeEntitlement: () => Promise.resolve(),
+        grantPromotionalEntitlement: () => Promise.resolve(),
       }
 
       const result = await processRevenueCatWebhook(
@@ -536,6 +565,7 @@ describe('processRevenueCatWebhook', () => {
             periodType: 'trial',
           }),
         grantLifetimeEntitlement: () => Promise.resolve(),
+        grantPromotionalEntitlement: () => Promise.resolve(),
       }
 
       await processRevenueCatWebhook(

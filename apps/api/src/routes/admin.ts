@@ -7,6 +7,7 @@ import {
   adminMessageSchema,
   adminReportListQuerySchema,
   adminFeedbackListQuerySchema,
+  adminGiftProSchema,
   adminSuspendSchema,
   adminUserSearchSchema,
   bountyAwardSchema,
@@ -26,6 +27,12 @@ import { assertOwnObject } from '../lib/assertOwnBucket'
 import { authId } from '../lib/authId'
 import { requireAdmin } from '../middleware/requireAuth'
 import { recordAdminAction } from '../modules/admin/auditLog'
+import {
+  grantProGiftNow,
+  holdsLifetime,
+  proGiftKey,
+  queueProGift,
+} from '../modules/billing/proGifts'
 import {
   countBroadcastAudience,
   createBroadcast,
@@ -542,6 +549,91 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         payload: { sessions: deletedCount },
       })
       return reply.send({ sessions: deletedCount })
+    },
+  )
+
+  /**
+   * Gives somebody months of Pro, as a RevenueCat promotional grant with an
+   * end date.
+   *
+   * The row is written first and keyed by person, day and length, so a
+   * double click is the same gift rather than two; then it is granted at once
+   * rather than on the next scheduler tick, so the panel can say it landed.
+   * A grant that fails here stays pending and the pass retries it — the
+   * answer says which happened.
+   *
+   * Refused for a lifetime holder: months on top of forever change nothing,
+   * and the letter would read as a mistake. Allowed for a subscriber — the
+   * panel warns, and the letter says so too — because a gift does not stop
+   * their billing, it carries Pro on if the subscription ends.
+   */
+  app.post(
+    '/admin/users/:userId/gift',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ userId: z.string() }), body: adminGiftProSchema },
+      config: { rateLimit: limit(30, '1 minute') },
+    },
+    async (request, reply) => {
+      const db = app.mongo.db
+      if (!app.env.REVENUECAT_SECRET_API_KEY && !app.env.REVENUECAT_FAKE_STORE) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Billing is not configured here')
+      }
+      const profile = await getProfile(db, request.params.userId)
+      if (!profile || profile.deletedAt)
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
+      if (profile.official) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'An official account is not given Pro')
+      }
+      if (holdsLifetime(profile.entitlement)) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'They already hold Pro for life')
+      }
+
+      const now = new Date()
+      const { months, note } = request.body
+      const { gift, created } = await queueProGift(
+        db,
+        {
+          _id: proGiftKey.admin(profile._id, now, months),
+          userId: profile._id,
+          months,
+          source: 'admin',
+          grantedBy: request.userId,
+          ...(note ? { note } : {}),
+        },
+        now,
+      )
+      if (!created) return reply.send({ created: false, gift })
+
+      const granted =
+        (await grantProGiftNow(
+          db,
+          {
+            revenueCat: app.revenueCat,
+            email: app.email,
+            fanOut: (delivery, { push }) =>
+              fanOutMessage(app, app.io, delivery.conversation, delivery.message, {
+                pushWhenAway: push,
+              }),
+            warn: (error, message) => request.log.warn({ err: error }, message),
+          },
+          gift._id,
+          now,
+        )) ?? gift
+
+      await recordAdminAction(db, request.log, {
+        adminId: request.userId,
+        action: 'user.giftPro',
+        subjectUserId: profile._id,
+        refId: gift._id,
+        payload: {
+          months,
+          ...(note ? { note } : {}),
+          status: granted.status,
+          ...(granted.endsAt ? { endsAt: granted.endsAt.toISOString() } : {}),
+        },
+      })
+      return reply.send({ created: true, gift: granted })
     },
   )
 

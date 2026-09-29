@@ -552,6 +552,15 @@ export const en = {
      */
     lifetimeGiftSubject: '{plan}, for life',
     lifetimeGiftButton: 'See your plan',
+    /*
+     * A gift of months of Pro, and the note a week before it ends. Only the
+     * envelopes — the letters are `proGift` below, which @langx says word for
+     * word. `{date}` arrives already written out in the reader's language.
+     */
+    proGiftSubject: 'A gift for you: LangX Pro',
+    proGiftButton: 'Open LangX',
+    proGiftEndingSubject: 'Your Pro gift ends on {date}',
+    proGiftEndingButton: 'See your plan',
   },
 
   /**
@@ -586,6 +595,49 @@ export const en = {
       other:
         'Your old balance came across at a hundred v1 tokens to one, so {carried} of them are in your new wallet. It holds {balance} tokens today.',
     },
+  },
+
+  /**
+   * Months of Pro, given — by us, for a streak, or for friends who came.
+   *
+   * One letter in four paragraphs: why (`intro*`, by who gave it), what Pro
+   * opens, "and more", and until when. @langx writes it and the mail repeats
+   * it. `count` is the number of months and selects the plural; `{date}` is
+   * already formatted in the reader's language and timezone.
+   *
+   * `introReferral` names `{friends}` as a number — the configured count of
+   * invitees per gift, three today — and is written for that number.
+   *
+   * The reminders are information, not an offer: they say when it ends and
+   * where the plan screen is, and never "subscribe now". A sales letter is
+   * marketing and would need a consent these do not ask for.
+   */
+  proGift: {
+    introAdmin: {
+      one: 'Congratulations! We’re giving you {count} month of LangX Pro. LangX is completely open source, and we wanted to thank you for being part of it.',
+      other:
+        'Congratulations! We’re giving you {count} months of LangX Pro. LangX is completely open source, and we wanted to thank you for being part of it.',
+    },
+    introReferral: {
+      one: '{friends} friends you invited have started talking on LangX — {count} month of Pro is yours!',
+      other:
+        '{friends} friends you invited have started talking on LangX — {count} months of Pro are yours!',
+    },
+    introStreak: {
+      one: 'A {days}-day streak! {count} month of Pro, from us.',
+      other: 'A {days}-day streak! {count} months of Pro, from us.',
+    },
+    perks:
+      'With Pro you can:\n• start as many conversations as you like\n• translate far more every day\n• see who viewed your profile, and browse without being seen\n• stand out in Discover, and filter by gender and city',
+    andMore: '…and much more.',
+    until: 'Your Pro runs until {date}.',
+    untilPaying:
+      'It doesn’t pause or change your subscription’s billing — but if your subscription ever ends, Pro carries on until {date}.',
+    reminderWeek:
+      'A heads-up: your Pro gift ends on {date}. If you’d like to keep Pro after that, Settings → Subscription in the app has the options.',
+    reminderDay: 'Your Pro gift ends in a day, on {date}.',
+    ended:
+      'Your Pro gift has ended. Thank you for spending it with us — we hope it helped your practice. 💛',
   },
 
   /**

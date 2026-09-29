@@ -1913,6 +1913,7 @@ export const de: Localized<EnMessages> = {
     currentPlan: 'Aktueller Tarif',
     renewsOn: 'Verlängert am',
     endsOn: 'Endet am',
+    giftUntil: 'Geschenk · bis {date}',
     lifetime: 'Lebenslang',
     plan: 'Tarif',
     manageSubscription: 'Verwalten oder kündigen',
@@ -2330,6 +2331,8 @@ export const de: Localized<EnMessages> = {
       'Du hast deine {count} neuen Chats für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
     manageNotice: 'Du hast {plan}. Verwalte oder kündige es in deinem Store-Konto.',
     lifetimeNotice: 'Du hast {plan} auf Lebenszeit. Nichts verlängert sich, nichts wird berechnet.',
+    giftNotice:
+      'Du hast {plan} als Geschenk bis {date}. Abonniere, um es danach zu behalten – vorher wird nichts abgebucht.',
     includedIn: 'In {plan} enthalten',
     currentPlan: 'Dein aktueller Tarif',
     purchaseFailed: 'Dieser Kauf ist nicht durchgegangen. Es wurde nichts abgebucht.',

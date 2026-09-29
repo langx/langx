@@ -224,7 +224,15 @@ export async function processRevenueCatWebhook(
      * and find the account still free. Saying it now is how somebody who
      * never lost anything gets told their plan ended.
      */
-    if (previousTier !== 'free') {
+    /*
+     * Not for a promotional grant running out. A gift of months ending is
+     * not somebody leaving a plan they paid for: "your subscription has
+     * ended" and the win-back offer a week later would both be about a
+     * subscription that never existed. `runProGiftPass` says the one thing
+     * worth saying about it, once.
+     */
+    const promotional = record.store.toUpperCase() === 'PROMOTIONAL'
+    if (previousTier !== 'free' && !promotional) {
       await profiles.updateOne(
         { _id: userId },
         // Normalized: a Polyglot row not yet merged fell from Pro.

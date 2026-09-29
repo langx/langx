@@ -105,6 +105,58 @@ describe('createFakeRevenueCat', () => {
   })
 
   /**
+   * A gift of months: dated, reported as `gift` rather than `promotional`
+   * (every released paywall reads `promotional` as "for life"), and ended by
+   * its own date or by the EXPIRATION RevenueCat sends for it.
+   */
+  describe('a dated promotional grant', () => {
+    const inAMonth = () => new Date(Date.now() + 30 * 86_400_000)
+
+    it('is a gift that ends on its date and does not renew', async () => {
+      const store = createFakeRevenueCat()
+      const endsAt = inAMonth()
+      await store.grantPromotionalEntitlement(USER, 'pro', endsAt)
+
+      expect(await store.getEntitlement(USER)).toMatchObject({
+        tier: 'pro',
+        store: 'gift',
+        expiresAt: endsAt,
+        willRenew: false,
+      })
+    })
+
+    it('keeps one grant when the same end is asked for twice', async () => {
+      const store = createFakeRevenueCat()
+      const endsAt = inAMonth()
+      await store.grantPromotionalEntitlement(USER, 'pro', endsAt)
+      await store.grantPromotionalEntitlement(USER, 'pro', endsAt)
+
+      const event = store.expireGift(USER)
+      expect(event).toMatchObject({ type: 'EXPIRATION', store: 'PROMOTIONAL' })
+      expect(await store.getEntitlement(USER)).toBeNull()
+    })
+
+    it('grants nothing once its date has passed', async () => {
+      const store = createFakeRevenueCat()
+      await store.grantPromotionalEntitlement(USER, 'pro', new Date(Date.now() - 1000))
+      expect(await store.getEntitlement(USER)).toBeNull()
+    })
+
+    it('leaves a lifetime grant alone when it expires', async () => {
+      const store = createFakeRevenueCat()
+      await store.grantLifetimeEntitlement(USER, 'pro')
+      await store.grantPromotionalEntitlement(USER, 'pro', inAMonth())
+      store.expireGift(USER)
+
+      expect(await store.getEntitlement(USER)).toMatchObject({ store: 'promotional' })
+    })
+
+    it('has no EXPIRATION to send when nothing was given', () => {
+      expect(createFakeRevenueCat().expireGift(USER)).toBeNull()
+    })
+  })
+
+  /**
    * Buying again while a subscription runs, the way a store swaps one product
    * for another (monthly to yearly): the running subscription is replaced and
    * the event says so.

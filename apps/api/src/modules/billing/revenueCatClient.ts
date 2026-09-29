@@ -63,6 +63,22 @@ export interface RevenueCatClient {
    * expires" — `duration: 'lifetime'` is the only way to express it.
    */
   grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void>
+
+  /**
+   * The same promotional grant, ending at `endsAt` — a gift of some months of
+   * Pro. RevenueCat lists it under a synthetic `rc_promo_…` product with a
+   * real expiry, which `getEntitlement` reports as store `gift`.
+   *
+   * Safe to repeat with the same `endsAt`: RevenueCat treats a grant whose end
+   * lands within two hours of the current one as a duplicate, which is what
+   * lets a retry after a timeout ask again rather than wonder.
+   *
+   * There is deliberately no revoke beside it. RevenueCat's
+   * `revoke_promotionals` removes *every* promotional grant on the
+   * entitlement, and the v1 lifetime gift is one of those — cancelling a month
+   * would take somebody's lifetime with it. A gift is ended by its date.
+   */
+  grantPromotionalEntitlement(appUserId: string, entitlementId: string, endsAt: Date): Promise<void>
 }
 
 /**
@@ -225,53 +241,78 @@ export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
       return pickEntitlement(candidates)
     },
 
-    async grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {
-      const grant = (): Promise<Response> =>
-        fetch(
-          `https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(appUserId)}/entitlements/${encodeURIComponent(entitlementId)}/promotional`,
-          {
-            method: 'POST',
-            headers: {
-              authorization: `Bearer ${secretApiKey}`,
-              'content-type': 'application/json',
-            },
-            body: JSON.stringify({ duration: 'lifetime' }),
-          },
-        )
-
-      let response = await grant()
-      /**
-       * RevenueCat refuses to grant to a subscriber it has never heard of, and
-       * that is the *ordinary* case for the one caller this exists for. The v1
-       * loyalty gift is handed out the moment an email is verified — a link
-       * often opened on a laptop, before the phone has ever launched the app
-       * and told RevenueCat who this is. So the subscriber does not exist yet,
-       * the grant answers `404 {"code":7259,"message":"The subscriber was not
-       * found."}`, and `tryGrantLifetime` swallows it as a failed gift.
-       *
-       * Measured against the live project on 3 September 2026, which is also
-       * where the fix comes from: a plain `GET /subscribers/{id}` answers 201
-       * and creates the record, after which the same grant succeeds. It is a
-       * "make sure this exists" call, not a read — nothing is done with the
-       * body.
-       *
-       * Only on the 404, not before every grant: every other path reaches an
-       * id the SDK has already registered, and should not pay for a round trip
-       * to learn that.
-       */
-      if (response.status === 404) {
-        await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(appUserId)}`, {
-          headers: { authorization: `Bearer ${secretApiKey}` },
-        })
-        response = await grant()
-      }
-
-      if (!response.ok) {
-        throw new Error(
-          `RevenueCat promotional grant failed (${response.status}): ${await response.text()}`,
-        )
-      }
+    grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {
+      return grantPromotional(secretApiKey, appUserId, entitlementId, { duration: 'lifetime' })
     },
+
+    grantPromotionalEntitlement(
+      appUserId: string,
+      entitlementId: string,
+      endsAt: Date,
+    ): Promise<void> {
+      return grantPromotional(secretApiKey, appUserId, entitlementId, {
+        end_time_ms: endsAt.getTime(),
+      })
+    },
+  }
+}
+
+/**
+ * One promotional grant, lifetime or dated — the body is the only difference,
+ * and the subscriber-not-found dance below is the part neither may lose.
+ */
+async function grantPromotional(
+  secretApiKey: string,
+  appUserId: string,
+  entitlementId: string,
+  body: { duration: 'lifetime' } | { end_time_ms: number },
+): Promise<void> {
+  const grant = (): Promise<Response> =>
+    fetch(
+      `https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(appUserId)}/entitlements/${encodeURIComponent(entitlementId)}/promotional`,
+      {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${secretApiKey}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      },
+    )
+
+  let response = await grant()
+  /**
+   * RevenueCat refuses to grant to a subscriber it has never heard of, and
+   * that is the *ordinary* case for the caller this was written for. The v1
+   * loyalty gift is handed out the moment an email is verified — a link
+   * often opened on a laptop, before the phone has ever launched the app
+   * and told RevenueCat who this is. So the subscriber does not exist yet,
+   * the grant answers `404 {"code":7259,"message":"The subscriber was not
+   * found."}`, and `tryGrantLifetime` swallows it as a failed gift.
+   *
+   * Measured against the live project on 3 September 2026, which is also
+   * where the fix comes from: a plain `GET /subscribers/{id}` answers 201
+   * and creates the record, after which the same grant succeeds. It is a
+   * "make sure this exists" call, not a read — nothing is done with the
+   * body.
+   *
+   * Only on the 404, not before every grant: every other path reaches an
+   * id the SDK has already registered, and should not pay for a round trip
+   * to learn that. A gift of months meets the same wall — an operator can
+   * give one to somebody whose app has never told RevenueCat who they are —
+   * so both grants share it.
+   */
+  if (response.status === 404) {
+    await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(appUserId)}`, {
+      headers: { authorization: `Bearer ${secretApiKey}` },
+    })
+    response = await grant()
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      `RevenueCat promotional grant failed (${response.status}): ${await response.text()}`,
+    )
   }
 }
 
@@ -282,6 +323,9 @@ export function createNotConfiguredRevenueCatClient(): RevenueCatClient {
       return Promise.reject(new Error(NOT_CONFIGURED))
     },
     grantLifetimeEntitlement(): Promise<void> {
+      return Promise.reject(new Error(NOT_CONFIGURED))
+    },
+    grantPromotionalEntitlement(): Promise<void> {
       return Promise.reject(new Error(NOT_CONFIGURED))
     },
   }

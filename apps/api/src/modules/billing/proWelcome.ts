@@ -2,12 +2,14 @@ import {
   effectivePlanTier,
   normalizePlanTier,
   type BillingPeriodType,
+  type ProGiftSource,
   type ProWelcomeSource,
   type StoredPlanTier,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
+import type { ProGift } from './proGifts'
 
 /**
  * A "You're Pro now" screen waiting to be seen: when the edge happened, why,
@@ -101,13 +103,31 @@ export async function welcomeFor(
  * What a grant says about itself: an operator's gift, an invite reward or a
  * streak reward, and for how many months.
  *
- * Grants have no row of their own yet — every promotional entitlement today
- * is a v1 lifetime gift or one given by hand in RevenueCat — so every grant is
- * a plain `gift` with no length. When grants get a record, this is the one
- * place that reads it; everything above already routes through here.
+ * Read off the newest granted `proGifts` row — `grantProGift` flips the row
+ * to `granted` before it refreshes the entitlement, so the edge that refresh
+ * crosses already finds the gift that caused it. A grant with no row (the v1
+ * lifetime gift, or one given by hand in RevenueCat) is a plain `gift` with
+ * no length.
  */
-export function giftWelcomeFor(_db: Db, _userId: string): Promise<ProWelcomeDetails> {
-  return Promise.resolve({ source: 'gift' })
+export async function giftWelcomeFor(db: Db, userId: string): Promise<ProWelcomeDetails> {
+  const latest = await db
+    .collection<ProGift>(COLLECTIONS.proGifts)
+    .find({ userId, status: 'granted' }, { projection: { source: 1, months: 1 } })
+    .sort({ grantedAt: -1, _id: -1 })
+    .limit(1)
+    .next()
+  if (!latest) return { source: 'gift' }
+  return { source: GIFT_WELCOME_SOURCE[latest.source], months: latest.months }
+}
+
+/**
+ * How each kind of gift titles its welcome. A `Record` over every source, so
+ * a new way to be given Pro cannot ship without deciding what it says.
+ */
+export const GIFT_WELCOME_SOURCE: Record<ProGiftSource, ProWelcomeSource> = {
+  admin: 'gift',
+  referral: 'referral',
+  streak: 'streak',
 }
 
 /**
