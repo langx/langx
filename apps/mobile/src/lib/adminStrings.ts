@@ -63,6 +63,7 @@ export const ADMIN = {
     feed: 'Feed',
     languageCount: 'Languages',
     pro: 'Pro',
+    paid: 'Paid',
     gifted: 'Gifted',
     free: 'Free',
     totalMembers: 'Total',

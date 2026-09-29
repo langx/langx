@@ -215,6 +215,10 @@ export default function AdminHomeScreen() {
                 label={ADMIN.home.pro}
                 onPress={() => router.push('/(app)/admin/members?tier=pro')}
               />
+              <StatTile
+                value={count(money ? money.tiers.pro - money.tiers.gifted : undefined)}
+                label={ADMIN.home.paid}
+              />
               <StatTile value={count(money?.tiers.gifted)} label={ADMIN.home.gifted} />
               <StatTile value={count(money?.tiers.free)} label={ADMIN.home.free} />
               <StatTile value={count(money?.tiers.total)} label={ADMIN.home.totalMembers} />
