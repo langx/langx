@@ -2068,6 +2068,75 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     })
   })
 
+  describe('POST /me/pro-welcome/ack', () => {
+    async function welcomed(email: string, userHandle: string, at: Date): Promise<SignedUpUser> {
+      const user = await newUser(email)
+      const created = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: userHandle }),
+      })
+      if (created.statusCode !== 201) throw new Error(`onboarding failed: ${created.body}`)
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: user.userId },
+        {
+          $set: {
+            entitlement: { tier: 'pro', updatedAt: at },
+            proWelcome: { at, source: 'gift', months: 1 },
+          },
+        },
+      )
+      return user
+    }
+
+    const ack = (user: SignedUpUser | null, payload: unknown) =>
+      app.inject({
+        method: 'POST',
+        url: '/me/pro-welcome/ack',
+        headers: user ? { cookie: user.cookie } : {},
+        payload: payload as Record<string, unknown>,
+      })
+
+    const me = async (user: SignedUpUser) =>
+      (
+        await app.inject({ method: 'GET', url: '/profiles/me', headers: { cookie: user.cookie } })
+      ).json<{ proWelcome?: { at: string; source: string; months?: number } }>()
+
+    it('refuses a caller with no session', async () => {
+      const response = await ack(null, { at: new Date().toISOString() })
+      expect(response.statusCode).toBe(401)
+    })
+
+    it('refuses a body that names no welcome', async () => {
+      const user = await welcomed('ack-bad@example.com', 'ackbad', new Date())
+      expect((await ack(user, {})).statusCode).toBe(400)
+      expect((await ack(user, { at: 'yesterday' })).statusCode).toBe(400)
+    })
+
+    it('clears the welcome the app showed', async () => {
+      const user = await welcomed('ack-match@example.com', 'ackmatch', new Date())
+      const shown = (await me(user)).proWelcome
+      expect(shown).toMatchObject({ source: 'gift', months: 1 })
+
+      const response = await ack(user, { at: shown?.at })
+      expect(response.statusCode).toBe(204)
+      expect((await me(user)).proWelcome).toBeUndefined()
+
+      // Dismissed again from a second device: nothing left, still a 204.
+      expect((await ack(user, { at: shown?.at })).statusCode).toBe(204)
+    })
+
+    it('keeps a newer welcome than the one dismissed', async () => {
+      const newer = new Date()
+      const user = await welcomed('ack-newer@example.com', 'acknewer', newer)
+      const older = new Date(newer.getTime() - 60_000)
+
+      expect((await ack(user, { at: older.toISOString() })).statusCode).toBe(204)
+      expect((await me(user)).proWelcome?.at).toBe(newer.toISOString())
+    })
+  })
+
   describe('hiding your online status', () => {
     async function onboarded(email: string, userHandle: string): Promise<SignedUpUser> {
       const user = await newUser(email)
