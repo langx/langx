@@ -165,7 +165,7 @@ describe('gift codes', () => {
       translator('tr')('proGift.introCode', { count: 1, code: 'UBER' }),
     )
     expect(translator('en')('proGift.introCode', { count: 1, code: 'UBER' })).toBe(
-      'Your code UBER unlocked 1 month of LangX Pro!',
+      '🎟️ Code UBER worked: 1 month of LangX Pro is yours.',
     )
     expect(fanned).toHaveLength(1)
   })

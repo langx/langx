@@ -557,9 +557,9 @@ export const en = {
      * envelopes — the letters are `proGift` below, which @langx says word for
      * word. `{date}` arrives already written out in the reader's language.
      */
-    proGiftSubject: 'A gift for you: LangX Pro',
+    proGiftSubject: '🎁 LangX Pro, on us',
     proGiftButton: 'Open LangX',
-    proGiftEndingSubject: 'Your Pro gift ends on {date}',
+    proGiftEndingSubject: '⏳ Your Pro gift ends on {date}',
     proGiftEndingButton: 'See your plan',
   },
 
@@ -600,10 +600,15 @@ export const en = {
   /**
    * Months of Pro, given — by us, for a streak, or for friends who came.
    *
-   * One letter in four paragraphs: why (`intro*`, by who gave it), what Pro
-   * opens, "and more", and until when. @langx writes it and the mail repeats
-   * it. `count` is the number of months and selects the plural; `{date}` is
-   * already formatted in the reader's language and timezone.
+   * One letter in three short paragraphs: why (`intro*`, by who gave it),
+   * what Pro opens with `andMore` on the line under the list, and until when.
+   * @langx writes it and the mail repeats it; the intro is the first line, so
+   * it is also the push preview and has to stand on its own. `count` is the
+   * number of months and selects the plural; `{date}` is already formatted in
+   * the reader's language and timezone.
+   *
+   * `perks` names what Pro opens without a number: the limits are config, and
+   * a figure written here would go stale the day one changes.
    *
    * `introReferral` names `{friends}` as a number — the configured count of
    * invitees per gift, three today — and is written for that number.
@@ -614,35 +619,33 @@ export const en = {
    */
   proGift: {
     introAdmin: {
-      one: 'Congratulations! We’re giving you {count} month of LangX Pro. LangX is completely open source, and we wanted to thank you for being part of it.',
-      other:
-        'Congratulations! We’re giving you {count} months of LangX Pro. LangX is completely open source, and we wanted to thank you for being part of it.',
+      one: '🎁 {count} month of LangX Pro, on us. Thanks for being here!',
+      other: '🎁 {count} months of LangX Pro, on us. Thanks for being here!',
     },
     introReferral: {
-      one: '{friends} friends you invited have started talking on LangX — {count} month of Pro is yours!',
+      one: '🎉 {friends} friends you invited are talking on LangX. {count} month of Pro is yours!',
       other:
-        '{friends} friends you invited have started talking on LangX — {count} months of Pro are yours!',
+        '🎉 {friends} friends you invited are talking on LangX. {count} months of Pro are yours!',
     },
     introStreak: {
-      one: 'A {days}-day streak! {count} month of Pro, from us.',
-      other: 'A {days}-day streak! {count} months of Pro, from us.',
+      one: '🔥 {days} days in a row! Here’s {count} month of Pro to keep it going.',
+      other: '🔥 {days} days in a row! Here’s {count} months of Pro to keep it going.',
     },
     /** A gift code typed into the paywall; `{code}` is the code as stored, upper case. */
     introCode: {
-      one: 'Your code {code} unlocked {count} month of LangX Pro!',
-      other: 'Your code {code} unlocked {count} months of LangX Pro!',
+      one: '🎟️ Code {code} worked: {count} month of LangX Pro is yours.',
+      other: '🎟️ Code {code} worked: {count} months of LangX Pro are yours.',
     },
     perks:
-      'With Pro you can:\n• start as many conversations as you like\n• translate far more every day\n• see who viewed your profile, and browse without being seen\n• stand out in Discover, and filter by gender and city',
-    andMore: '…and much more.',
-    until: 'Your Pro runs until {date}.',
+      'Now open for you:\n💬 unlimited new conversations\n🌍 far more translations every day\n👀 who viewed you, and browsing unseen\n✨ standing out in Discover, gender and city filters',
+    andMore: '…and more.',
+    until: 'Enjoy it until {date}. 💛',
     untilPaying:
-      'It doesn’t pause or change your subscription’s billing — but if your subscription ever ends, Pro carries on until {date}.',
+      'Your subscription carries on as usual — and if it ever ends, Pro stays until {date}.',
     reminderWeek:
-      'A heads-up: your Pro gift ends on {date}. If you’d like to keep Pro after that, Settings → Subscription in the app has the options.',
-    reminderDay: 'Your Pro gift ends in a day, on {date}.',
-    ended:
-      'Your Pro gift has ended. Thank you for spending it with us — we hope it helped your practice. 💛',
+      '⏳ Heads-up: your Pro gift ends on {date}. Your plan options are in Settings → Subscription.',
+    reminderDay: '⏳ Your Pro gift ends tomorrow, {date}.',
+    ended: 'Your Pro gift has ended. Thanks for practising with us — see you in the chats! 💛',
   },
 
   /**

@@ -507,9 +507,9 @@ export const tr: Localized<ServerMessages> = {
     suspensionUpdatedText: 'LangX askıya alma durumun güncellendi. {detail}',
     lifetimeGiftSubject: '{plan}, ömür boyu',
     lifetimeGiftButton: 'Planımı gör',
-    proGiftSubject: 'Sana bir hediye: LangX Pro',
+    proGiftSubject: '🎁 LangX Pro bizden',
     proGiftButton: "LangX'i aç",
-    proGiftEndingSubject: 'Pro hediyen {date} tarihinde bitiyor',
+    proGiftEndingSubject: '⏳ Pro hediyen {date} tarihinde bitiyor',
     proGiftEndingButton: 'Planımı gör',
   },
 
@@ -528,33 +528,33 @@ export const tr: Localized<ServerMessages> = {
   },
   proGift: {
     introAdmin: {
-      one: 'Tebrikler! Sana {count} ay LangX Pro hediye ediyoruz. LangX tamamen açık kaynak; bizimle olduğun için teşekkür etmek istedik.',
-      other:
-        'Tebrikler! Sana {count} ay LangX Pro hediye ediyoruz. LangX tamamen açık kaynak; bizimle olduğun için teşekkür etmek istedik.',
+      one: '🎁 Sana {count} ay LangX Pro hediye! LangX’te olduğun için teşekkürler.',
+      other: '🎁 Sana {count} ay LangX Pro hediye! LangX’te olduğun için teşekkürler.',
     },
     introReferral: {
-      one: "Davet ettiğin {friends} arkadaşın LangX'te konuşmaya başladı — {count} ay Pro senin!",
-      other: "Davet ettiğin {friends} arkadaşın LangX'te konuşmaya başladı — {count} ay Pro senin!",
+      one: '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
+      other:
+        '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
     },
     introStreak: {
-      one: '{days} günlük seri! {count} ay Pro bizden.',
-      other: '{days} günlük seri! {count} ay Pro bizden.',
+      one: '🔥 {days} gün üst üste! Seriyi sürdürmen için {count} ay Pro bizden.',
+      other: '🔥 {days} gün üst üste! Seriyi sürdürmen için {count} ay Pro bizden.',
     },
     introCode: {
-      one: '{code} kodun {count} ay LangX Pro açtı!',
-      other: '{code} kodun {count} ay LangX Pro açtı!',
+      one: '🎟️ {code} kodu işe yaradı: {count} ay LangX Pro senin.',
+      other: '🎟️ {code} kodu işe yaradı: {count} ay LangX Pro senin.',
     },
     perks:
-      "Pro ile:\n• istediğin kadar sohbet başlatabilirsin\n• her gün çok daha fazlasını çevirebilirsin\n• profiline kimin baktığını görebilir, görünmeden gezinebilirsin\n• Keşfet'te öne çıkabilir, cinsiyete ve şehre göre filtreleyebilirsin",
-    andMore: '…ve çok daha fazlası.',
-    until: "Pro'n {date} tarihine kadar sürüyor.",
+      'Artık senin için açık:\n💬 sınırsız yeni sohbet\n🌍 her gün çok daha fazla çeviri\n👀 profiline kimin baktığı ve görünmeden gezinme\n✨ Keşfet’te öne çıkma, cinsiyet ve şehir filtreleri',
+    andMore: '…ve daha fazlası.',
+    until: '{date} tarihine kadar keyfini çıkar. 💛',
     untilPaying:
-      'Aboneliğinin faturalandırmasını durdurmaz ya da değiştirmez — ama aboneliğin bir gün biterse Pro {date} tarihine kadar devam eder.',
+      'Aboneliğin her zamanki gibi devam ediyor; bir gün biterse Pro {date} tarihine kadar sürer.',
     reminderWeek:
-      "Bilgin olsun: Pro hediyen {date} tarihinde bitiyor. Sonrasında da Pro'yu sürdürmek istersen seçenekler uygulamada Ayarlar → Abonelik bölümünde.",
-    reminderDay: 'Pro hediyen bir gün sonra, {date} tarihinde bitiyor.',
+      '⏳ Hatırlatma: Pro hediyen {date} tarihinde bitiyor. Plan seçeneklerin Ayarlar → Abonelik’te.',
+    reminderDay: '⏳ Pro hediyen yarın, {date} tarihinde bitiyor.',
     ended:
-      'Pro hediyen sona erdi. Onu bizimle geçirdiğin için teşekkürler — umarız pratiğine iyi gelmiştir. 💛',
+      'Pro hediyen sona erdi. Bizimle pratik yaptığın için teşekkürler, sohbetlerde görüşmek üzere! 💛',
   },
   reportReason: {
     spam: 'Spam',

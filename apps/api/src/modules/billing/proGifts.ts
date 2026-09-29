@@ -487,10 +487,11 @@ async function notifyProGift(
     gift.userId,
     {
       clientId: `proGift:${gift._id}`,
+      // Three paragraphs. "…and more" closes the list on its own line rather
+      // than standing apart as a paragraph of two words.
       paragraphs: [
         intro,
-        t('proGift.perks'),
-        t('proGift.andMore'),
+        `${t('proGift.perks')}\n${t('proGift.andMore')}`,
         paying ? t('proGift.untilPaying', { date }) : t('proGift.until', { date }),
       ],
       push: true,
