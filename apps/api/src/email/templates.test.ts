@@ -63,7 +63,7 @@ describe('lifetimeGiftEmail', () => {
   /** `@gerard`'s real numbers: the v1 total, a hundredth of it, and a bigger wallet. */
   const mail = (locale: Parameters<typeof lifetimeGiftEmail>[0] = 'en') =>
     lifetimeGiftEmail(locale, {
-      plan: 'Fluent',
+      plan: 'Pro',
       legacyTokens: 11_579,
       legacyTokensText: '11,579',
       carriedText: '115',
@@ -74,7 +74,7 @@ describe('lifetimeGiftEmail', () => {
 
   it('names the plan in the subject and all three numbers in both bodies', () => {
     const built = mail()
-    expect(built.subject).toBe('Fluent, for life')
+    expect(built.subject).toBe('Pro, for life')
     for (const body of [built.html, built.text]) {
       expect(body).toContain('11,579')
       expect(body).toContain('115')
@@ -95,7 +95,7 @@ describe('lifetimeGiftEmail', () => {
   })
 
   it('is written in the reader’s language', () => {
-    expect(mail('tr').subject).toBe('Fluent, ömür boyu')
+    expect(mail('tr').subject).toBe('Pro, ömür boyu')
     expect(mail('tr').text).toContain('Tebrikler')
   })
 })

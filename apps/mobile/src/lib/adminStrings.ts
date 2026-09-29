@@ -62,7 +62,7 @@ export const ADMIN = {
     corrections: 'Corrections',
     languageCount: 'Languages',
     pro: 'Pro',
-    proPlus: 'Pro+',
+    gifted: 'Gifted',
     free: 'Free',
     totalMembers: 'Total',
     paidShare: (paid: number, total: number) =>
@@ -318,12 +318,12 @@ export const ADMIN = {
 
   members: {
     title: 'Subscribers',
-    tabs: { pro: 'Pro', proPlus: 'Pro+' },
     empty: 'Nobody is on this plan.',
     renews: 'renews',
     ends: 'ends',
     forever: 'no expiry',
     trial: 'trial',
+    gift: 'gift',
     since: 'since',
   },
 

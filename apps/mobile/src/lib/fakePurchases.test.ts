@@ -17,12 +17,15 @@ describe('fakeOffers', () => {
     }
   })
 
-  /**
-   * The paywall groups its columns by tier, so a harness that produced only
-   * one tier's packages would leave half the screen untested.
-   */
-  it('covers both paid tiers', () => {
-    expect(new Set(fakeOffers().map((offer) => offer.tier))).toEqual(new Set(['pro', 'pro_plus']))
+  it('sells the one paid tier', () => {
+    expect(new Set(fakeOffers().map((offer) => offer.tier))).toEqual(new Set(['pro']))
+  })
+
+  /** Monthly and yearly both start with a free week in the stores. */
+  it('gives both subscriptions a one-week trial, and the lifetime none', () => {
+    for (const offer of fakeOffers()) {
+      expect(offer.freeTrialDays).toBe(offer.period === 'lifetime' ? null : 7)
+    }
   })
 
   /**

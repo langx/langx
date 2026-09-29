@@ -26,7 +26,7 @@ export default function PhrasesScreen() {
   const t = useT()
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()
   const deck = usePhraseCards(conversationId)
-  /** Saving to the deck is free on every tier; taking it out is Polyglot. */
+  /** Saving to the deck is free on every tier; taking it out is Pro. */
   const canExport = hasFeature(useEffectiveTier(), 'deckExport')
   const cards = deck.data?.items ?? []
 

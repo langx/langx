@@ -1,9 +1,4 @@
-import {
-  ENTITLEMENT_PRECEDENCE,
-  ENTITLEMENT_TIERS,
-  LOYALTY_LIFETIME_GRANTS,
-  lifetimeGrantFor,
-} from '@langx/shared'
+import { ENTITLEMENT_TIERS, LOYALTY_LIFETIME_GRANTS, lifetimeGrantFor } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { COLLECTIONS } from '../../db/collections'
@@ -28,13 +23,13 @@ class RecordingBilling implements RevenueCatClient {
   failing = false
 
   /**
-   * Answers from what it was asked to grant, highest precedence first — the
-   * way the real subscriber record does once the promotional grants land. The
-   * restore reads this straight back into `profiles.entitlement`.
+   * Answers from what it was asked to grant — the way the real subscriber
+   * record does once the promotional grant lands. The restore reads this
+   * straight back into `profiles.entitlement`.
    */
   getEntitlement(appUserId: string): Promise<SubscriberEntitlement | null> {
-    const held = this.grants.filter((g) => g.appUserId === appUserId).map((g) => g.entitlementId)
-    const id = ENTITLEMENT_PRECEDENCE.find((candidate) => held.includes(candidate))
+    const id = this.grants.find((g) => g.appUserId === appUserId)?.entitlementId as
+      keyof typeof ENTITLEMENT_TIERS | undefined
     if (!id) return Promise.resolve(null)
     return Promise.resolve({
       tier: ENTITLEMENT_TIERS[id],
@@ -53,9 +48,10 @@ class RecordingBilling implements RevenueCatClient {
   }
 }
 
-const [PLUS_RUNG, PRO_RUNG] = LOYALTY_LIFETIME_GRANTS
-const PLUS_MIN = PLUS_RUNG.minLegacyTokenBalance
+const [PRO_RUNG] = LOYALTY_LIFETIME_GRANTS
 const PRO_MIN = PRO_RUNG.minLegacyTokenBalance
+/** What was the Polyglot rung while there were two plans; it gives Pro now. */
+const OLD_PLUS_MIN = 37_821
 
 describe('v1 loyalty lifetime grant', () => {
   let replSet: MongoMemoryReplSet
@@ -102,19 +98,6 @@ describe('v1 loyalty lifetime grant', () => {
     await replSet?.stop()
   })
 
-  it('grants lifetime Pro+ at the p99 rung, including the pro entitlement', async () => {
-    const hash = await stageLegacy(PLUS_MIN)
-    const result = await restoreByHash(handle.db, 'user-p99', hash, billing)
-
-    expect(result).toMatchObject({ kind: 'restored', lifetimeGranted: 'pro_plus' })
-    // Both ids, in that order — a gifted Pro+ should be indistinguishable from
-    // a bought one, and the Pro+ products grant `pro` too.
-    expect(billing.grants).toEqual([
-      { appUserId: 'user-p99', entitlementId: 'pro_plus' },
-      { appUserId: 'user-p99', entitlementId: 'pro' },
-    ])
-  })
-
   it('grants lifetime Pro at the p90 rung', async () => {
     const hash = await stageLegacy(PRO_MIN)
     const result = await restoreByHash(handle.db, 'user-p90', hash, billing)
@@ -123,17 +106,12 @@ describe('v1 loyalty lifetime grant', () => {
     expect(billing.grants).toEqual([{ appUserId: 'user-p90', entitlementId: 'pro' }])
   })
 
-  /** Highest rung first: a p99 balance also clears p90 and must not land on Pro. */
-  it('gives the top rung to someone who clears both', async () => {
-    const hash = await stageLegacy(PLUS_MIN * 10)
+  /** The old Polyglot rung is folded into the one: the same plan either way. */
+  it('gives the old p99 balances the same lifetime Pro', async () => {
+    const hash = await stageLegacy(OLD_PLUS_MIN * 10)
     const result = await restoreByHash(handle.db, 'user-whale', hash, billing)
-    expect(result).toMatchObject({ lifetimeGranted: 'pro_plus' })
-  })
-
-  it('drops to Pro one token below the Pro+ rung', async () => {
-    const hash = await stageLegacy(PLUS_MIN - 1)
-    const result = await restoreByHash(handle.db, 'user-just-under-plus', hash, billing)
     expect(result).toMatchObject({ lifetimeGranted: 'pro' })
+    expect(billing.grants).toEqual([{ appUserId: 'user-whale', entitlementId: 'pro' }])
   })
 
   it('grants nothing one token below the Pro rung', async () => {
@@ -178,7 +156,7 @@ describe('v1 loyalty lifetime grant', () => {
    */
   it('still restores the account when the grant fails', async () => {
     billing.failing = true
-    const hash = await stageLegacy(PLUS_MIN * 2)
+    const hash = await stageLegacy(OLD_PLUS_MIN * 2)
     const result = await restoreByHash(handle.db, 'user-billing-down', hash, billing)
 
     expect(result).toMatchObject({ kind: 'restored', lifetimeGranted: null })
@@ -189,7 +167,7 @@ describe('v1 loyalty lifetime grant', () => {
 
   /** No billing client wired at all behaves exactly like no key configured. */
   it('restores normally when no billing client is supplied', async () => {
-    const hash = await stageLegacy(PLUS_MIN * 10)
+    const hash = await stageLegacy(OLD_PLUS_MIN * 10)
     const result = await restoreByHash(handle.db, 'user-no-client', hash)
     expect(result).toMatchObject({ kind: 'restored', lifetimeGranted: null })
   })
@@ -214,15 +192,15 @@ describe('v1 loyalty lifetime grant', () => {
    * read it straight back: the stored tier is what RevenueCat says, which is
    * why the stub answers from its own grants. Before this the tier stayed
    * `free` until a webhook or a paywall visit — and the welcome-back screen
-   * had already said "Polyglot, for life".
+   * had already said "Pro, for life".
    */
   it('reads the granted tier back from RevenueCat rather than writing it', async () => {
-    const hash = await stageLegacy(PLUS_MIN)
+    const hash = await stageLegacy(PRO_MIN)
     await restoreByHash(handle.db, 'user-authority', hash, billing)
 
     const stored = await profile('user-authority')
     expect(stored?.entitlement).toMatchObject({
-      tier: 'pro_plus',
+      tier: 'pro',
       willRenew: false,
       store: 'promotional',
     })

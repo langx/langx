@@ -139,13 +139,13 @@ export interface DiscoveryResult {
 /**
  * `GET /discovery/boosted` — a card in the strip above the list.
  *
- * The same shape as a discovery row plus the plan that put it there, which
- * the chip on the card reads. No cursor: the strip is a row somebody flicks
- * through, capped server-side at `DISCOVERY_BOOSTED_LIMIT`.
+ * The same shape as a discovery row. The server also sends `tier`, for apps
+ * released before the single plan that draw a plan chip from it; this app
+ * draws none — the ring marks the card — so it does not read it. No cursor:
+ * the strip is a row somebody flicks through, capped server-side at
+ * `DISCOVERY_BOOSTED_LIMIT`.
  */
-export interface BoostedProfile extends DiscoveryItem {
-  tier: Extract<PlanTier, 'pro' | 'pro_plus'>
-}
+export type BoostedProfile = DiscoveryItem
 
 export interface BoostedProfilesPage {
   items: BoostedProfile[]

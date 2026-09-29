@@ -53,7 +53,7 @@ try {
     settings: { discoverable: false, notifications: true },
     privacy: { incognito: false },
     entitlement: { tier: 'free', willRenew: false, updatedAt: now },
-    churnedFrom: { tier: 'pro_plus', at: new Date(now.getTime() - 10 * 60 * 1000) },
+    churnedFrom: { tier: 'pro', at: new Date(now.getTime() - 10 * 60 * 1000) },
     quota: { initiations: [], translations: [], media: [] },
     streak: { current: 0, longest: 0, lastQualifiedDay: null },
     stats: { lastActiveAt: now, messagesSent: 0 },

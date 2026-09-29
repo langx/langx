@@ -3,12 +3,13 @@ import {
   notificationsAllowed,
   type AdminMemberListQuery,
   type NotificationType,
+  normalizePlanTier,
   type PlanTier,
 } from '@langx/shared'
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { readAdminActions, type AdminAction } from './auditLog'
-import { onPaidTier } from './stats'
+import { GIFT_STORES, onPaidTier } from './stats'
 import { blockedUserIds } from '../moderation/blocks'
 import { resolveDiscoveryScope } from '../discovery/discovery'
 import { effectiveTier } from '../profiles/entitlement'
@@ -110,6 +111,8 @@ export interface AdminMemberRow {
   handle: string
   displayName: string
   tier: PlanTier
+  /** Held as a lifetime grant or a gift rather than paid for. */
+  gift: boolean
   /** When the current entitlement was last written — a purchase, a renewal, a grant. */
   since: string
   expiresAt: string | null
@@ -135,7 +138,7 @@ export async function listMembers(
   const rows = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .find({
-      ...onPaidTier(query.tier, now),
+      ...onPaidTier(now),
       ...(query.cursor ? { 'entitlement.updatedAt': { $lt: new Date(query.cursor) } } : {}),
     })
     .sort({ 'entitlement.updatedAt': -1 })
@@ -148,7 +151,8 @@ export async function listMembers(
       userId: profile._id,
       handle: profile.handle,
       displayName: profile.displayName,
-      tier: profile.entitlement.tier,
+      tier: normalizePlanTier(profile.entitlement.tier),
+      gift: (GIFT_STORES as readonly string[]).includes(profile.entitlement.store ?? ''),
       since: profile.entitlement.updatedAt.toISOString(),
       expiresAt: profile.entitlement.expiresAt?.toISOString() ?? null,
       willRenew: profile.entitlement.willRenew ?? null,

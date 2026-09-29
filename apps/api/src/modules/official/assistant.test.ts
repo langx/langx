@@ -2,12 +2,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import {
-  MAX_MESSAGE_LENGTH,
-  OFFICIAL_ASSISTANT,
-  OFFICIAL_WRITABLE,
-  PLAN_LIMITS,
-} from '@langx/shared'
+import { MAX_MESSAGE_LENGTH, OFFICIAL_ASSISTANT, OFFICIAL_WRITABLE } from '@langx/shared'
 import { assistantCallsToday } from './assistantBudget'
 import { deliverOfficialMessage } from './deliver'
 import { connectToDatabase, type DbHandle } from '../../db/client'
@@ -289,7 +284,7 @@ describe('answering as an official account', () => {
     assistant.requests = []
 
     // What the announcement script sends, into the same thread.
-    for (let i = 0; i < PLAN_LIMITS.free.assistantRepliesPerDay; i += 1) {
+    for (let i = 0; i < OFFICIAL_ASSISTANT.maxRepliesPerDay; i += 1) {
       await deliverOfficialMessage(handle.db, {
         fromHandle: 'langx',
         toUserId: ADA,
@@ -307,21 +302,19 @@ describe('answering as an official account', () => {
   })
 
   /**
-   * The allowance is the sender's tier, not a flat number: every reply is a
-   * paid model call, and an account paying nothing and an account paying for a
-   * year should not get the same one.
+   * One allowance for everybody since the single plan: a paying account is
+   * refused at the same count as a free one.
    */
-  it('gives a paying account more replies than a free one', async () => {
+  it('gives a paying account the same allowance as a free one', async () => {
     const langxId = officialIds().get('copilot')!
     await handle.db
       .collection<Profile>(COLLECTIONS.profiles)
       .updateOne({ _id: ADA }, { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } })
     const conversation = await write(ADA, langxId, 'first')
 
-    // Everything a free account would be allowed, and then one more.
     const now = new Date()
     await handle.db.collection<Message>(COLLECTIONS.messages).insertMany(
-      Array.from({ length: PLAN_LIMITS.free.assistantRepliesPerDay }, () => ({
+      Array.from({ length: OFFICIAL_ASSISTANT.maxRepliesPerDay }, () => ({
         _id: new ObjectId(),
         conversationId: conversation._id,
         senderId: langxId,
@@ -335,11 +328,7 @@ describe('answering as an official account', () => {
     const { conversation: same, message } = await sendAgain(ADA, langxId, 'one more')
     await respondAsOfficial(appStub(), same, message)
 
-    // A free account would have been refused here; this one is on Fluent.
-    expect(PLAN_LIMITS.pro.assistantRepliesPerDay).toBeGreaterThan(
-      PLAN_LIMITS.free.assistantRepliesPerDay,
-    )
-    expect(assistant.requests).toHaveLength(1)
+    expect(assistant.requests).toHaveLength(0)
   })
 
   /**
@@ -386,7 +375,7 @@ describe('answering as an official account', () => {
     // prove that would be thirty fake replies for the same assertion.
     const now = new Date()
     await handle.db.collection<Message>(COLLECTIONS.messages).insertMany(
-      Array.from({ length: PLAN_LIMITS.free.assistantRepliesPerDay }, () => ({
+      Array.from({ length: OFFICIAL_ASSISTANT.maxRepliesPerDay }, () => ({
         _id: new ObjectId(),
         conversationId: conversation._id,
         senderId: langxId,

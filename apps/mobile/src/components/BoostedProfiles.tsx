@@ -1,4 +1,3 @@
-import { TIER_BADGES } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
@@ -16,7 +15,7 @@ import { Avatar } from './ui/Avatar'
 const FROM = '/(app)/(tabs)/discover'
 
 /**
- * The paying members above the discovery list — Polyglot first, then Fluent.
+ * The paying members above the discovery list.
  *
  * A component rather than JSX in the screen because of one rule: when nobody
  * qualifies there is no strip, no title and no gap where one was. The server
@@ -115,7 +114,7 @@ export function BoostedProfiles({ params }: { params: Record<string, string> }) 
             onPress={() => {
               track({
                 name: 'boosted_strip_tapped',
-                properties: { slot: index, tier: item.tier },
+                properties: { slot: index },
               })
               openProfile(item.handle, FROM)
             }}
@@ -135,19 +134,18 @@ export function BoostedProfiles({ params }: { params: Record<string, string> }) 
             <View style={styles.cardText}>
               {/* The first name only: two words do not fit 132pt, and an
                   ellipsis through somebody's surname reads worse than
-                  leaving it for the profile. */}
+                  leaving it for the profile. The age beside it through a
+                  key, not a comma in code — Arabic's comma is not ours. */}
               <Text style={styles.name} numberOfLines={1}>
-                {item.displayName.trim().split(/\s+/)[0]}
+                {t('discover.nameAge', {
+                  name: item.displayName.trim().split(/\s+/)[0] ?? '',
+                  age: item.age,
+                })}
               </Text>
               <Text style={styles.pair} numberOfLines={1}>
                 {pairOf(item)}
               </Text>
             </View>
-            {/* A brand mark, so it is `TIER_BADGES` rather than a translated
-                string — the same word in every locale, as on `me`. */}
-            <Text style={styles.plan} numberOfLines={1}>
-              {TIER_BADGES[item.tier]}
-            </Text>
           </Pressable>
         ))}
       </ScrollView>
@@ -189,16 +187,5 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   cardText: { gap: 3, width: '100%' },
   name: { ...font.heading, color: colors.text, fontSize: 15, textAlign: 'center' },
   pair: { color: colors.accent, fontSize: 12, fontWeight: '600', textAlign: 'center' },
-  plan: {
-    backgroundColor: colors.accentBg,
-    borderRadius: radius.pill,
-    color: colors.pro,
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.6,
-    overflow: 'hidden',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
   pressed: { opacity: 0.7 },
 }))

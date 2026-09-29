@@ -1,5 +1,4 @@
 import {
-  ENTITLEMENT_PRECEDENCE,
   ENTITLEMENT_TIERS,
   TIER_ENTITLEMENTS,
   packageDefinition,
@@ -9,7 +8,11 @@ import {
   type RevenueCatEvent,
 } from '@langx/shared'
 import { randomUUID } from 'node:crypto'
-import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient'
+import {
+  pickEntitlement,
+  type RevenueCatClient,
+  type SubscriberEntitlement,
+} from './revenueCatClient'
 
 /**
  * RevenueCat, replaced by a Map — so that a purchase can be driven from end to
@@ -33,8 +36,8 @@ import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient
  * A subscriber holds two things separately, as they do at RevenueCat: at most
  * one **store subscription**, and any **promotional grants**. They used to
  * share one record, which meant buying anything destroyed the v1 loyalty gift
- * underneath it — the one coexistence `ENTITLEMENT_PRECEDENCE` exists to
- * resolve, and the one the harness could not rehearse.
+ * underneath it — the one coexistence `pickEntitlement` exists to resolve,
+ * and the one the harness could not rehearse.
  *
  * Guarded twice over: `loadEnv` refuses `REVENUECAT_FAKE_STORE` under
  * `NODE_ENV=production`, and the routes that drive it are only registered when
@@ -57,7 +60,7 @@ export interface FakeRevenueCat extends RevenueCatClient {
   /**
    * Ends the store subscription now — an `EXPIRATION`, the event the webhook
    * reconciles on. A promotional grant survives it, exactly as it does at
-   * RevenueCat, so a gifted Fluent whose Polyglot lapses lands on Fluent.
+   * RevenueCat, so a gifted lifetime outlives a bought subscription that lapses.
    */
   expire(appUserId: string): RevenueCatEvent | null
 }
@@ -209,35 +212,34 @@ export function createFakeRevenueCat(): FakeRevenueCat {
       const subscription =
         record.subscription && isActive(record.subscription, now) ? record.subscription : null
 
-      // Walked in the shared precedence order across both holdings, as the
-      // real client walks RevenueCat's entitlement map: a Pro+ subscriber
-      // holds both ids here exactly as they do there, and a gifted Fluent
-      // under a bought Polyglot is found again the moment the purchase ends.
-      for (const id of ENTITLEMENT_PRECEDENCE) {
-        if (subscription?.entitlementIds.includes(id)) {
-          return Promise.resolve({
+      // Both holdings are offered to the same `pickEntitlement` the real
+      // client uses, so a gifted lifetime under a bought subscription is
+      // resolved here exactly as it is there.
+      const candidates: SubscriberEntitlement[] = []
+      if (subscription) {
+        const id = subscription.entitlementIds[0]
+        if (id) {
+          candidates.push({
             tier: ENTITLEMENT_TIERS[id],
             expiresAt: subscription.expiresAt,
             productId: subscription.productId,
             store: FAKE_STORE,
-            // The harness has tracked this since it was written; it simply was
-            // not reported, because `refreshEntitlement` overwrote it with `true`.
             willRenew: subscription.willRenew,
             periodType: null,
           })
         }
-        if (record.promotional.includes(id)) {
-          return Promise.resolve({
-            tier: ENTITLEMENT_TIERS[id],
-            expiresAt: null,
-            productId: promoProductId(id),
-            store: 'promotional',
-            willRenew: false,
-            periodType: null,
-          })
-        }
       }
-      return Promise.resolve(null)
+      for (const id of record.promotional) {
+        candidates.push({
+          tier: ENTITLEMENT_TIERS[id],
+          expiresAt: null,
+          productId: promoProductId(id),
+          store: 'promotional',
+          willRenew: false,
+          periodType: null,
+        })
+      }
+      return Promise.resolve(pickEntitlement(candidates))
     },
 
     grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {

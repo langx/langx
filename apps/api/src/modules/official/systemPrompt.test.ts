@@ -18,11 +18,12 @@ describe('what @langx is told about LangX', () => {
   it('calls the plans by the names the app shows', () => {
     expect(prompt).toContain(TIER_NAMES.free)
     expect(prompt).toContain(TIER_NAMES.pro)
-    expect(prompt).toContain(TIER_NAMES.pro_plus)
-    // The names this app has never used, and which an assistant would
-    // otherwise reach for because every other app uses them.
-    expect(prompt).toContain('never called Pro or Pro+')
-    expect(prompt).not.toMatch(/\bPro\+? (?:plan|tier|subscription)\b/)
+    expect(prompt).toContain('two plans')
+    // The old names, so somebody who says "my Polyglot" is not told there is
+    // no such thing — and no third tier an assistant would reach for.
+    expect(prompt).toContain('Fluent and Polyglot were the old paid plans')
+    expect(prompt).not.toContain('Pro+')
+    expect(prompt).not.toContain('never called Pro')
   })
 
   it('takes the age from config rather than repeating it', () => {
@@ -39,7 +40,7 @@ describe('what @langx is told about LangX', () => {
   it('names the plans without reciting what is in them', () => {
     expect(prompt).not.toContain('translations a day')
     expect(prompt).not.toContain('for a correction')
-    expect(prompt).toContain('You do not know what they cost or exactly what each includes')
+    expect(prompt).toContain('You do not know what Pro costs or exactly what it includes')
   })
 
   it('knows its job is to hand somebody to a person, and to collect ideas', () => {

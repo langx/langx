@@ -1,4 +1,4 @@
-import type { PlanTier } from '@langx/shared'
+import { TIER_NAMES, normalizePlanTier, type StoredPlanTier } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { billingEmail } from '../../email/templates'
 import type { EmailSender } from '../../email/sender'
@@ -35,7 +35,7 @@ export async function notifyBilling(
   senders: BillingNotifier,
   userId: string,
   event: BillingEvent,
-  tier: PlanTier,
+  tier: StoredPlanTier,
 ): Promise<void> {
   try {
     const address = await emailFor(db, userId)
@@ -43,7 +43,9 @@ export async function notifyBilling(
       const locale = await localeFor(db, userId)
       await senders.email.send({
         to: address.email,
-        ...billingEmail(locale, event, { tier }),
+        // The plan's name, not its id — the mail used to print `pro_plus`
+        // at people — and the retired Polyglot read as Pro.
+        ...billingEmail(locale, event, { tier: TIER_NAMES[normalizePlanTier(tier)] }),
       })
     }
   } catch (error) {

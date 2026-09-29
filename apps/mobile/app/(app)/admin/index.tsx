@@ -229,11 +229,7 @@ export default function AdminHomeScreen() {
                 label={ADMIN.home.pro}
                 onPress={() => router.push('/(app)/admin/members?tier=pro')}
               />
-              <StatTile
-                value={count(money?.tiers.proPlus)}
-                label={ADMIN.home.proPlus}
-                onPress={() => router.push('/(app)/admin/members?tier=pro_plus')}
-              />
+              <StatTile value={count(money?.tiers.gifted)} label={ADMIN.home.gifted} />
               <StatTile value={count(money?.tiers.free)} label={ADMIN.home.free} />
               <StatTile value={count(money?.tiers.total)} label={ADMIN.home.totalMembers} />
             </View>
@@ -394,20 +390,22 @@ function Funnel({ window }: { window: AdminFunnelWindow }) {
   return <BarList rows={rows} scale={top} empty={ADMIN.home.funnel.none} />
 }
 
-/** What share of the members on a plan are paying for one. */
+/**
+ * What share of the members are paying for Pro — a gift or a lifetime grant is
+ * Pro that nobody pays for, so it is taken out.
+ */
 function PaidShare({ tiers }: { tiers: AdminStatsDto['money']['tiers'] }) {
   const styles = useStyles()
-  const paid = tiers.pro + tiers.proPlus
+  const paid = tiers.pro - tiers.gifted
   const fraction = tiers.total > 0 ? paid / tiers.total : 0
   const label = ADMIN.home.paidShare(paid, tiers.total)
 
   return (
     <View style={styles.meter}>
       {/*
-       * A meter rather than a stacked bar of the three tiers. Free is most of
-       * the ground here, so the two paid segments would be slivers a reader
-       * could not compare — and the question this answers is one number, not
-       * three.
+       * A meter rather than a stacked bar. Free is most of the ground here,
+       * so the paid segment would be a sliver — and the question this answers
+       * is one number.
        */}
       <ProgressBar value={fraction} height={6} accessibilityLabel={label} />
       <Text style={styles.muted}>{label}</Text>
