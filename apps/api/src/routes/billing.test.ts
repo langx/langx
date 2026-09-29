@@ -53,6 +53,12 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
   }
 }
 
+/**
+ * What `/profiles/me` says a paid tier is: `pro_plus`, for the apps released
+ * before the single plan — see `toOwnProfileWire`. Stored, it is `pro`.
+ */
+const OWN_PAID = 'pro_plus'
+
 describe('Faz 7 — billing', () => {
   let replSet: MongoMemoryReplSet
   let handle: DbHandle
@@ -195,7 +201,7 @@ describe('Faz 7 — billing', () => {
         url: '/profiles/me',
         headers: { cookie: user.cookie },
       })
-      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: OWN_PAID } })
     })
 
     it('says nothing when the plan ends, and writes half an hour later', async () => {
@@ -249,8 +255,9 @@ describe('Faz 7 — billing', () => {
 
       const mail = emailSender.messages.at(-1)
       expect(mail?.subject).toContain('sona erdi')
-      // From `churnedFrom`, so it names what was lost rather than "free".
-      expect(mail?.html).toContain('pro')
+      // From `churnedFrom`, so it names what was lost rather than "free" —
+      // by its name, not its id.
+      expect(mail?.html).toContain('Plan: Pro')
     })
 
     it('grants Pro to the matching profile with the correct secret', async () => {
@@ -278,7 +285,7 @@ describe('Faz 7 — billing', () => {
         url: '/profiles/me',
         headers: { cookie: user.cookie },
       })
-      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: OWN_PAID } })
     })
 
     /**
@@ -309,11 +316,11 @@ describe('Faz 7 — billing', () => {
         url: '/profiles/me',
         headers: { cookie: user.cookie },
       })
-      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: OWN_PAID } })
     })
 
-    /** Pro+ products grant `pro` too, so both ids arrive and precedence decides. */
-    it('grants Pro+ when the event names both entitlements', async () => {
+    /** Polyglot's products still renew and name both ids; either is Pro. */
+    it('grants Pro when the event names the retired pro_plus too', async () => {
       const user = await newUser('webhook-proplus@example.com')
 
       await app.inject({
@@ -337,15 +344,15 @@ describe('Faz 7 — billing', () => {
         url: '/profiles/me',
         headers: { cookie: user.cookie },
       })
-      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro_plus' } })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: OWN_PAID } })
     })
 
     /**
-     * The bug this branch exists for: an EXPIRATION says something ended, never
-     * what is left. Written naively it drops a subscriber whose Pro+ lapsed —
-     * but whose Pro is still running — all the way to free.
+     * An EXPIRATION says something ended, never what is left. Written naively
+     * it drops a subscriber whose old Polyglot lapsed — but whose Pro is still
+     * running — all the way to free.
      */
-    it('lands on Pro, not free, when Pro+ expires over a still-active Pro', async () => {
+    it('lands on Pro, not free, when one subscription expires over another', async () => {
       const user = await newUser('webhook-expire-partial@example.com')
       fakeRevenueCat.unavailable = false
       fakeRevenueCat.next = {
@@ -376,7 +383,7 @@ describe('Faz 7 — billing', () => {
         url: '/profiles/me',
         headers: { cookie: user.cookie },
       })
-      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: OWN_PAID } })
     })
 
     /**
@@ -389,7 +396,7 @@ describe('Faz 7 — billing', () => {
       const user = await newUser('webhook-transfer@example.com')
       fakeRevenueCat.unavailable = false
       fakeRevenueCat.next = {
-        tier: 'pro_plus',
+        tier: 'pro',
         expiresAt: new Date(Date.now() + 1_000_000),
         productId: 'pro_plus_monthly',
         store: 'app_store',
@@ -419,7 +426,7 @@ describe('Faz 7 — billing', () => {
         url: '/profiles/me',
         headers: { cookie: user.cookie },
       })
-      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro_plus' } })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: OWN_PAID } })
     })
 
     /** With RevenueCat unreachable, a transfer still grants — the safe direction. */
@@ -447,7 +454,7 @@ describe('Faz 7 — billing', () => {
         url: '/profiles/me',
         headers: { cookie: user.cookie },
       })
-      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: OWN_PAID } })
     })
 
     /** Nobody named at all: recorded for audit, acked, nothing granted. */
@@ -538,11 +545,11 @@ describe('Faz 7 — billing', () => {
       expect(response.json()).toMatchObject({ tier: 'pro', store: 'play_store' })
     })
 
-    it('reconciles to Pro+ when RevenueCat reports the higher entitlement', async () => {
+    it('reconciles to Pro when RevenueCat reports the retired Polyglot entitlement', async () => {
       const user = await newUser('refresh-proplus@example.com')
       fakeRevenueCat.unavailable = false
       fakeRevenueCat.next = {
-        tier: 'pro_plus',
+        tier: 'pro',
         expiresAt: new Date(Date.now() + 1_000_000),
         productId: 'pro_plus_yearly',
         store: 'play_store',
@@ -556,7 +563,7 @@ describe('Faz 7 — billing', () => {
         headers: { cookie: user.cookie },
       })
       expect(response.statusCode, response.body).toBe(200)
-      expect(response.json()).toMatchObject({ tier: 'pro_plus' })
+      expect(response.json()).toMatchObject({ tier: 'pro' })
     })
 
     /**

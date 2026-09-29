@@ -411,10 +411,11 @@ const config: ExpoConfig = {
     ['expo-notifications', { enableBackgroundRemoteNotifications: true }],
     /*
      * The static splash the OS draws before any JS exists: the brand yellow
-     * and nothing else, in both schemes. It is the first frame of the launch
+     * and nothing else, or the app's dark ground in dark mode (a full yellow
+     * screen at night was a glare). It is the first frame of the launch
      * film (`AppSplash`, `assets/splash/intro.mp4`), so the film starts on it
      * without a cut — the opening is one piece rather than a logo that gives
-     * way to another opening. `FILM_GROUND` in `AppSplash.tsx` is this hex.
+     * way to another opening. `LAUNCH` in `AppSplash.tsx` holds both hexes.
      *
      * The image is a transparent square, not left out: Android 12+ draws the
      * splash through the platform SplashScreen API, which puts the launcher
@@ -428,7 +429,7 @@ const config: ExpoConfig = {
         imageWidth: 160,
         resizeMode: 'contain',
         backgroundColor: '#ffc409',
-        dark: { image: './assets/splash/blank.png', backgroundColor: '#ffc409' },
+        dark: { image: './assets/splash/blank.png', backgroundColor: '#1c1f24' },
       },
     ],
     /**

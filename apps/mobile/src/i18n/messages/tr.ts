@@ -855,10 +855,11 @@ export const tr: Localized<EnMessages> = {
     tabCorrections: 'Düzeltmeler',
     tabPosts: 'Gönderiler',
     forName: '{name} için',
-    publicTitle: 'Düzeltmeler',
     publicNote: 'Gönderilere yazılan düzeltmeler. Sohbette düzeltilen, o sohbette kalır.',
     publicEmptyTitle: 'Henüz gönderi düzeltmesi yok',
     publicEmptyBody: '@{handle} burada henüz bir gönderi düzeltmedi.',
+    publicPostsEmptyTitle: 'Henüz gönderi yok',
+    publicPostsEmptyBody: '@{handle} burada henüz bir şey paylaşmadı.',
   },
   myPosts: {
     emptyTitle: 'Henüz bir şey paylaşmadın',
@@ -871,8 +872,9 @@ export const tr: Localized<EnMessages> = {
     boostedWhat: 'Bu ne?',
     boostedExplainTitle: 'Öne çıkan profiller',
     boostedExplainBody:
-      'Fluent ve Polyglot kullanıcıları burada gösterilir, önce Polyglot. Sıra gün içinde döner, böylece herkes sırayla öne geçer — öne geçiren şey bir fotoğraf, kendinle ilgili birkaç kelime ve yakın zamanda uğramış olmak. Aşağıdaki listeyle tamamen aynı şekilde dillerine göre eşleştirilirler — eşleşmede hiçbir şey değişmez, ve isteyen Ayarlar’dan kapatabilir.',
+      'Burada Pro üyeler görünür. Sıra gün içinde döner, böylece herkes sırayla öne çıkar — seni oraya taşıyan bir fotoğraf, kendin hakkında birkaç söz ve yakın zamanda bir ziyarettir. Aşağıdaki listeyle tamamen aynı şekilde dillerine göre eşleşirler — eşleşmede hiçbir şey değişmez ve herkes bunu Ayarlar’dan kapatabilir.',
     boostedSeePlans: 'Planlara bak',
+    nameAge: '{name}, {age}',
     languagesA11y: 'Aramada hangi dillerinin kullanılacağını seç',
     searchHandles: 'İsim veya kullanıcı adıyla ara',
     searchPlaceholder: 'İsim veya kullanıcı adı',
@@ -1119,7 +1121,8 @@ export const tr: Localized<EnMessages> = {
     transcriptLimit: 'Bugünkü metin haklarını kullandın. 24 saat içinde yenilenir.',
     copied: 'Kopyalandı',
     couldNotSend: 'Gönderilemedi',
-    mediaQuota: 'Bugünkü fotoğraf, video ve sesli mesaj sınırına ulaştın.',
+    mediaQuota:
+      'Bugünkü fotoğraf, video ve sesli mesaj sınırına ulaştın. Bu herkes için aynı olan bir adil kullanım sınırı ve gün içinde yeniden açılıyor.',
     attachmentFailed: 'Bu ek gönderilemedi. Tekrar dene.',
     photosTitle: 'Fotoğraflar',
     dropToAttach: 'Eklemek için bırak',
@@ -1494,10 +1497,8 @@ export const tr: Localized<EnMessages> = {
     },
     viewersCount: { one: '{count} kişi', other: '{count} kişi' },
     proTitle: '✦ Daha ileri git',
-    proBody: 'Sınırsız yeni sohbet, gelişmiş filtreler, çeviri ve aynı anda iki dil.',
-    polyglotTitle: '✦ {plan} planına geç',
-    polyglotBody:
-      'Sana kim baktı gör, gizli gezin, mesafeye göre sırala ve mesajlarını karşındakinin dilinde gönder.',
+    proBody:
+      'Sınırsız yeni sohbet, gelişmiş filtreler, seni kimin görüntülediği, gizli gezinme, yakındakiler ve daha fazlası.',
     newChatsLeft: 'Bugün kalan yeni sohbet:',
     editProfile: 'Profili düzenle',
     settings: 'Ayarlar',
@@ -1647,7 +1648,10 @@ export const tr: Localized<EnMessages> = {
       one: 'Planın {count} dil tutuyor.',
       other: 'Planın {count} dil tutuyor.',
     },
-    capUpgrade: '{fluent} {fluentMax}, {polyglot} {polyglotMax} tutuyor.',
+    capUpgrade: {
+      one: '{plan} {count} dil tutuyor.',
+      other: '{plan} {count} dil tutuyor.',
+    },
     capOverGrandfathered:
       'Zaten planının tuttuğundan fazlası var. Bunları değiştirebilir ya da kaldırabilirsin ama yenisini ekleyemezsin.',
     changeHint: 'Değiştirmek için bir dile dokun.',
@@ -1813,7 +1817,7 @@ export const tr: Localized<EnMessages> = {
       'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne de kullanıcı adınla arayarak.',
     boost: 'Profilimi öne çıkar',
     boostBody:
-      'Keşfet’in üstündeki öne çıkanlar şeridinde, dilleri benimkilerle eşleşen kişilere görün. Fluent ve Polyglot ile açık.',
+      'Keşfet’in üstündeki öne çıkanlar şeridinde, dilleri benimkilerle eşleşen kişilere görün. Pro ile açık.',
     incognito: 'Gizli gezin',
     incognitoBody: 'Ziyaretçilerinde görünmezsin.',
     hideOnline: 'Çevrimiçiyken gizlen',
@@ -1869,7 +1873,6 @@ export const tr: Localized<EnMessages> = {
     plan: 'Plan',
     manageSubscription: 'Yönet veya iptal et',
     upgrade: 'Planlara bak',
-    upgradeTo: '{plan} planına geç',
     notificationsSection: 'Bildirimler',
     pushThisDevice: 'Bu cihazda bildirimler',
     pushThisDeviceBody: 'Burada kapatırsan diğer cihazlarına gelmeye devam eder.',
@@ -1901,6 +1904,20 @@ export const tr: Localized<EnMessages> = {
     },
     untilThen: 'O zamana kadar kimse seni bulamaz, profilini göremez.',
     keepIt: 'Vazgeçtim',
+    whyTitle: 'Neden ayrılıyorsun?',
+    whyBody:
+      'İsteğe bağlı. Hesabın silindikten sonra cevabın, seninle bağlantı kuracak hiçbir bilgi olmadan saklanır — yalnızca neyi düzeltmemiz gerektiğini söyler.',
+    whyNote: 'Eklemek istediğin bir şey var mı? (isteğe bağlı)',
+    whyNotePlaceholder: 'Lütfen isim ve iletişim bilgisi yazma.',
+    whySkip: 'Atla',
+    reasonNotEnoughPartners: 'Yeterince dil partneri yok',
+    reasonUnwantedMessages: 'İstenmeyen veya uygunsuz mesajlar',
+    reasonFoundPartnerElsewhere: 'Başka bir yerde partner ya da uygulama buldum',
+    reasonTooManyNotifications: 'Çok fazla bildirim',
+    reasonPrivacyConcerns: 'Gizlilik endişeleri',
+    reasonBugsOrProblems: 'Hatalar veya teknik sorunlar',
+    reasonTakingABreak: 'Ara veriyorum',
+    reasonOther: 'Başka bir sebep',
     keeping: 'Bekle…',
   },
 
@@ -2231,20 +2248,16 @@ export const tr: Localized<EnMessages> = {
 
   paywall: {
     screenTitle: 'Planlar',
-    everythingInPro: '{plan} planındaki her şey',
     restorePurchases: 'Satın alımları geri yükle',
     partOf: 'şunun parçası:',
     unlimitedChats: 'Sınırsız yeni sohbet',
     unlimitedChatsBody: 'Ücretsiz planda günde {count} tane.',
     welcomePack: 'Hoş geldin paketi',
-    welcomePackBody:
-      'Başlangıç için bir profil çerçevesi ve iki seri dondurma. {plan} setin tamamını getirir.',
+    welcomePackBody: 'Başlangıç için profil çerçeveleri, unvanlar ve iki seri dondurma.',
     advancedFilters: 'Gelişmiş filtreler',
     boostedProfile: 'Öne çıkan profil',
     boostedProfileBody:
       'Keşfet listesinin üstündeki öne çıkanlar şeridinde, dilleri seninkilerle eşleşen herkese görünürsün. Varsayılan olarak açık; Ayarlar’dan kapatabilirsin.',
-    boostedProfileFirst: 'Şeridin en başında',
-    boostedProfileFirstBody: 'Polyglot profilleri, Fluent’in önünde şeridin başında yer alır.',
     sendTranslation: 'Onun dilinde gönder',
     sendTranslationBody: 'Sen kendi dilinde yaz; ikisi birden gitsin, o tahmin etmeden okusun.',
     deckExport: 'İfadelerini yanında götür',
@@ -2268,19 +2281,8 @@ export const tr: Localized<EnMessages> = {
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
     lifetimeNotice: '{plan} ömür boyu senin. Yenilenen ya da ödenen bir şey yok.',
-    lifetimeKept: 'Ömür boyu {plan} sende kalır. {plus} bir gün biterse ona geri dönersin.',
     includedIn: '{plan} planına dahil',
-    upgradeNotice:
-      '{plan} planından geçiş: mağaza mevcut dönemin kalanı için yalnızca aradaki farkı alır ve {plan} sona erer.',
-    upgradeWeb:
-      '{plan} planın web üzerinden alınmış. Fatura portalından değiştir; kullanılmayan süre iade edilir.',
-    changePlan: 'Planı değiştir',
     currentPlan: 'Mevcut planın',
-    upgradeElsewhere:
-      '{plan} planın {store} üzerinden alınmış. İki kez ücretlendirilmemek için orada değiştir.',
-    storeIos: 'App Store',
-    storeAndroid: 'Google Play',
-    storeWeb: 'web',
     purchaseFailed: 'Bu satın alma tamamlanmadı. Hiçbir ücret alınmadı.',
     purchaseUnavailable: 'Bu cihazda satın alma kullanılamıyor.',
     nothingToRestore: 'Bu cihazda geri yüklenecek bir şey yok.',
@@ -2291,6 +2293,10 @@ export const tr: Localized<EnMessages> = {
     trialTerms: {
       one: '{count} gün ücretsiz, sonra {period} {price}',
       other: '{count} gün ücretsiz, sonra {period} {price}',
+    },
+    trialWeeks: {
+      one: '{count} hafta ücretsiz, sonra {period} {price}',
+      other: '{count} hafta ücretsiz, sonra {period} {price}',
     },
     perMonth: 'ayda',
     perYear: 'yılda',
@@ -2304,10 +2310,26 @@ export const tr: Localized<EnMessages> = {
     headlineBody:
       'Düzeltmeler ve yanıtlar her planda sınırsız kalır. Ödeme yapmak diğer sınırları kaldırır.',
     yearlySaving: 'Yıllık · %{percent} indirim',
+    yearlyFreeMonths: {
+      one: 'Yıllık · {count} ay bedava',
+      other: 'Yıllık · {count} ay bedava',
+    },
     savePercent: '%{percent} indirim',
+    freeMonths: {
+      one: '{count} ay bedava',
+      other: '{count} ay bedava',
+    },
     savingA11y: 'Aylık planda ayda {price}. Yıllık ödemede %{percent} indirim.',
+    freeMonthsA11y: {
+      one: 'Aylık planda ayda {price}. Yıllık planda {count} ay bedava.',
+      other: 'Aylık planda ayda {price}. Yıllık planda {count} ay bedava.',
+    },
     billingPeriod: 'Ödeme dönemi',
     start: '{plan} ile başla',
+    startTrial: {
+      one: 'Ücretsiz haftanı başlat',
+      other: '{count} ücretsiz haftanı başlat',
+    },
     continueFree: 'Ücretsiz devam et',
     perMonthBilledYearly: 'aylık · yıllık faturalandırılır',
   },

@@ -29,11 +29,8 @@ export const revenueCatEventSchema = z.object({
   /**
    * Which entitlements the event is about.
    *
-   * Absent from this schema until Pro+ existed, and the omission was a real
-   * bug rather than a gap: with no way to tell which entitlement had been
-   * bought, the handler wrote `tier: 'pro'` on all eight grant events. With
-   * two paid tiers that turns `PRODUCT_CHANGE` — the upgrade/downgrade event —
-   * into one that silently downgrades every Pro+ subscriber who touches it.
+   * Read so that an event for an entitlement this code does not sell leaves
+   * the profile alone rather than granting Pro.
    *
    * Nullable because RevenueCat sends `null` for events that belong to no
    * entitlement, and optional because a webhook from before this field
@@ -77,33 +74,29 @@ export type RevenueCatWebhookBody = z.infer<typeof revenueCatWebhookBodySchema>
 
 /**
  * RevenueCat entitlement identifier → the tier it grants. These strings are
- * configured in the RevenueCat dashboard and must match it exactly; the names
- * were chosen to equal the `PlanTier` values, but the mapping is written out
- * rather than assumed so that renaming one side is a compile error instead of
- * a silent downgrade to free.
+ * configured in the RevenueCat dashboard and must match it exactly.
+ *
+ * Both map to `pro`. `pro_plus` was Polyglot's entitlement before the two paid
+ * plans became one; an entitlement id cannot be renamed or retired while
+ * anyone holds it, so it keeps arriving — on Polyglot subscriptions that are
+ * still renewing, and on the v1 lifetime gifts that were granted as Polyglot —
+ * and it means Pro. Every paid product also grants `pro` itself.
  */
 export const ENTITLEMENT_TIERS = {
   pro: 'pro',
-  pro_plus: 'pro_plus',
+  pro_plus: 'pro',
 } as const satisfies Record<string, PlanTier>
 
 export type EntitlementId = keyof typeof ENTITLEMENT_TIERS
 
 /**
  * The entitlement ids a paid tier hands out — the mirror image of
- * `tierFromEntitlementIds`.
- *
- * Pro+ lists `pro` as well because that is how the Pro+ *products* are
- * configured in the dashboard: a Pro+ subscriber genuinely holds both ids, and
- * `ENTITLEMENT_PRECEDENCE` exists to resolve exactly that overlap. Written
- * down once here so that everything which has to reproduce a purchase — the
- * loyalty gift below, the fake store the local harness buys from — says it the
- * same way. Two independent spellings of "Pro+ also grants Pro" is how one of
- * them quietly stops being true.
+ * `tierFromEntitlementIds`. Written down once so that everything which has to
+ * reproduce a purchase — the loyalty gift below, the fake store the local
+ * harness buys from — says it the same way.
  */
 export const TIER_ENTITLEMENTS = {
   pro: ['pro'],
-  pro_plus: ['pro_plus', 'pro'],
 } as const satisfies Record<PaidPlanTier, readonly EntitlementId[]>
 
 /** How often a package bills. Not a duration — only what the paywall labels it. */
@@ -119,42 +112,22 @@ export interface PackageDefinition {
  *
  * A sibling of `ENTITLEMENT_TIERS` and configured in the same dashboard, but a
  * genuinely different thing: entitlements are what a subscriber *has*,
- * packages are what the paywall *offers*. Pro's three keep RevenueCat's
- * reserved identifiers because they were created with the project; Pro+ had to
- * use custom ones, since a reserved identifier can be used only once per
- * offering.
+ * packages are what the paywall *offers*.
  *
- * `period` is carried here rather than read off the SDK's `packageType`
- * precisely *because* of that split: a custom identifier reports
- * `packageType: 'CUSTOM'`, so the SDK can describe Pro's cadence and not
- * Pro+'s. Deriving both from one table is the only way the two columns get
- * labelled by the same rule.
- *
- * The paywall groups its columns off this map, so a package added in the
- * dashboard and not here simply does not render — visibly missing, rather than
- * silently landing in the wrong column at the wrong price.
+ * The offering still carries `pro_plus_monthly` and `pro_plus_yearly`, for the
+ * apps released before the single plan — they draw a Polyglot column from
+ * them, now at Pro's price. They are left out here on purpose: a package not
+ * in this map does not render, which is how this code ignores them.
  */
 export const PACKAGES = {
   $rc_monthly: { tier: 'pro', period: 'monthly' },
   $rc_annual: { tier: 'pro', period: 'yearly' },
   $rc_lifetime: { tier: 'pro', period: 'lifetime' },
-  pro_plus_monthly: { tier: 'pro_plus', period: 'monthly' },
-  pro_plus_yearly: { tier: 'pro_plus', period: 'yearly' },
 } as const satisfies Record<string, PackageDefinition>
 
 export function packageDefinition(id: string): PackageDefinition | null {
   return (PACKAGES as Record<string, PackageDefinition | undefined>)[id] ?? null
 }
-
-/**
- * Which tier wins when a subscriber holds more than one entitlement at once.
- *
- * This is **not** a general ordering of `PlanTier` — see the note there. It is
- * a resolution rule for one specific situation: Pro+ products deliberately
- * grant `pro` as well as `pro_plus`, so every Pro+ subscriber holds both, and
- * something has to say which one to store.
- */
-export const ENTITLEMENT_PRECEDENCE = ['pro_plus', 'pro'] as const
 
 /**
  * The tier a set of active entitlement ids amounts to, or `null` when none of
@@ -164,11 +137,10 @@ export const ENTITLEMENT_PRECEDENCE = ['pro_plus', 'pro'] as const
  * loop.
  */
 export function tierFromEntitlementIds(ids: readonly string[] | null | undefined): PlanTier | null {
-  if (!ids?.length) return null
-  for (const candidate of ENTITLEMENT_PRECEDENCE) {
-    if (ids.includes(candidate)) return ENTITLEMENT_TIERS[candidate]
-  }
-  return null
+  const known = ids?.find((id): id is EntitlementId =>
+    Object.prototype.hasOwnProperty.call(ENTITLEMENT_TIERS, id),
+  )
+  return known ? ENTITLEMENT_TIERS[known] : null
 }
 
 export interface LifetimeGrantRung {
@@ -176,15 +148,7 @@ export interface LifetimeGrantRung {
   minLegacyTokenBalance: number
   /** The tier the recipient ends up on. */
   tier: PaidPlanTier
-  /**
-   * Every entitlement to grant, the tier-defining one first.
-   *
-   * Pro+ lists `pro` as well, mirroring how the Pro+ *products* are configured:
-   * a bought Pro+ subscriber holds both ids, and a gifted one should be
-   * indistinguishable from them. Precedence would resolve `pro_plus` alone
-   * correctly today, so this is insurance rather than necessity — but the day
-   * something asks only about `pro`, the gift keeps working.
-   */
+  /** Every entitlement to grant. */
   entitlements: readonly EntitlementId[]
 }
 
@@ -192,18 +156,10 @@ export interface LifetimeGrantRung {
  * Lifetime access, given to the v1 accounts that genuinely earned in the old
  * economy — a thank-you, not a promotion.
  *
- * Two rungs, cut at v1's measured percentiles (`v1-reference.md`, 1403
- * wallets: median 20, p90 9,136, p99 37,821, max 2.28M):
- *
- * | rung | v1 balance | gift          | roughly |
- * | ---- | ---------- | ------------- | ------- |
- * | p99  | ≥ 37,821   | lifetime Pro+ | 14      |
- * | p90  | ≥ 9,136    | lifetime Pro  | 140     |
- *
- * Ordered **highest first**, and `lifetimeGrantFor` takes the first match, so
- * a p99 balance gets Pro+ rather than also matching the p90 rung below it.
- * The median wallet holds 20 tokens, so either cut separates cleanly; nobody
- * lands here by accident.
+ * One rung, cut at v1's measured p90 (`v1-reference.md`, 1403 wallets: median
+ * 20, p90 9,136, p99 37,821, max 2.28M) — roughly 150 people. There were two
+ * while there were two paid plans (p99 got Polyglot); with one plan both rungs
+ * give the same thing, so they are one.
  *
  * **This is granted through RevenueCat, never by writing `profiles.entitlement`
  * directly.** The server treats RevenueCat as the only authority on
@@ -212,11 +168,6 @@ export interface LifetimeGrantRung {
  * `/billing/refresh` the app makes.
  */
 export const LOYALTY_LIFETIME_GRANTS = [
-  {
-    minLegacyTokenBalance: 37_821,
-    tier: 'pro_plus',
-    entitlements: TIER_ENTITLEMENTS.pro_plus,
-  },
   { minLegacyTokenBalance: 9_136, tier: 'pro', entitlements: TIER_ENTITLEMENTS.pro },
 ] as const satisfies readonly LifetimeGrantRung[]
 

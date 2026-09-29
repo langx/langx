@@ -40,6 +40,7 @@ import { notifyLifetimeGift } from '../modules/handles/lifetimeGiftNotice'
 import { sendWelcome } from '../modules/profiles/welcome'
 import { isEmailVerified } from '../modules/profiles/emailVerified'
 import { getSharedProfile } from '../modules/profiles/sharedProfile'
+import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
 import { readFollowState } from '../modules/social/follows'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -117,11 +118,11 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         void notifyLifetimeGift(
           app.mongo.db,
           { email: app.email, push: app.push },
-          { userId: request.userId, tier: profile.restoredFromV1.lifetimeGranted },
+          { userId: request.userId, tier: 'pro' },
           (error, message) => request.log.error({ err: error }, message),
         )
       }
-      return reply.code(201).send(profile)
+      return reply.code(201).send(toOwnProfileWire(profile))
     },
   )
 
@@ -154,7 +155,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         request.userId,
         request.body.country,
       )
-      return reply.send(profile)
+      return reply.send(toOwnProfileWire(profile))
     },
   )
 
@@ -173,7 +174,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireMember, schema: { body: setGenderSchema } },
     async (request, reply) => {
       const profile = await setGender(app.mongo.db, request.userId, request.body.gender)
-      return reply.send(profile)
+      return reply.send(toOwnProfileWire(profile))
     },
   )
 
@@ -200,14 +201,14 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         legacyEmailHash,
         request.body,
       )
-      return reply.send(profile)
+      return reply.send(toOwnProfileWire(profile))
     },
   )
 
   app.get('/profiles/me', { preHandler: requireAuth }, async (request, reply) => {
     const profile = await getProfile(app.mongo.db, request.userId)
     if (!profile) throw new ApiError('NOT_FOUND', 'Profile not found')
-    return reply.send(profile)
+    return reply.send(toOwnProfileWire(profile))
   })
 
   // Deliberately after `/profiles/me` so the literal route wins over the
@@ -302,7 +303,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         request.body,
         countryFromHeaders(request.headers, app.env.EDGE_SECRET),
       )
-      return reply.code(201).send(profile)
+      return reply.code(201).send(toOwnProfileWire(profile))
     },
   )
 
@@ -333,7 +334,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireMember, schema: { body: updateProfileSchema } },
     async (request, reply) => {
       const profile = await updateProfile(app.mongo.db, request.userId, request.body)
-      return reply.send(profile)
+      return reply.send(toOwnProfileWire(profile))
     },
   )
 
@@ -353,12 +354,12 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireMember, schema: { body: locationInputSchema } },
     async (request, reply) => {
       const profile = await setLocation(app.mongo.db, request.userId, request.body)
-      return reply.send(profile)
+      return reply.send(toOwnProfileWire(profile))
     },
   )
 
   app.delete('/profiles/me/location', { preHandler: requireMember }, async (request, reply) => {
     const profile = await clearLocation(app.mongo.db, request.userId)
-    return reply.send(profile)
+    return reply.send(toOwnProfileWire(profile))
   })
 }

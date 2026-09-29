@@ -185,26 +185,21 @@ describe('the profile-visit round-up', () => {
       expect(message?.text).toContain('Upgrade')
     })
 
-    /** Polyglot, not Fluent: `profileViewerIdentities` is the higher tier's. */
     it('names them for an account allowed to see who', async () => {
-      const me = await newProfile({ tier: 'pro_plus' })
+      const me = await newProfile({ tier: 'pro' })
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
 
       await runDailyDigestPass(handle.db, email, mondayEvening)
       expect(sender.messages[0]?.html).toContain('Ada Lovelace')
     })
 
-    /**
-     * Fluent buys unlimited conversations and the filters; seeing who looked
-     * at you is Polyglot's. An email that named them would sell the wrong tier
-     * — and would do it in writing, to somebody who paid for the other one.
-     */
-    it('still withholds the names from the middle tier', async () => {
-      const me = await newProfile({ tier: 'pro' })
+    /** A Polyglot row not merged yet is Pro, and sees who looked. */
+    it('names them for a row still stored as pro_plus', async () => {
+      const me = await newProfile({ tier: 'pro_plus' })
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
 
       await runDailyDigestPass(handle.db, email, mondayEvening)
-      expect(sender.messages[0]?.html).not.toContain('Ada Lovelace')
+      expect(sender.messages[0]?.html).toContain('Ada Lovelace')
     })
 
     it('only goes out on the reader’s own Monday', async () => {

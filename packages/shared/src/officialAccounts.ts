@@ -61,16 +61,16 @@ export function isOfficialHandle(handle: string): handle is OfficialHandle {
  */
 export const OFFICIAL_ASSISTANT = {
   /**
-   * Kept only so a caller can ask for the ceiling without a tier in hand;
-   * **what a given account gets is `PLAN_LIMITS[tier].assistantRepliesPerDay`**,
-   * which is the table every other per-tier number in this app lives in.
+   * Replies the @langx assistant gives one account in any twenty-four hours —
+   * the same for every account.
    *
-   * The numbers there come from the price list rather than from a feeling
-   * about fair use. A reply costs at most 1.64 cents — in Arabic, which is the
-   * script that costs most, and see `historyCharsPerMessage` for why that
-   * qualifier is load-bearing. So five a day is $2.46 a month, ten is $4.93
-   * and fifteen is $7.40, and each sits under what its tier brings in. A flat
-   * thirty put every account, paying or not, at $13.89.
+   * It was per tier while there were two paid plans (5 / 10 / 15), priced so
+   * each tier's ceiling sat under what it brought in. With one plan there is
+   * nothing left to ladder, and the ceiling is this number for everybody. A
+   * reply costs at most 1.64 cents — in Arabic, which is the script that costs
+   * most, and see `historyCharsPerMessage` for why that qualifier is
+   * load-bearing — so fifteen a day is $7.40 a month at worst, and the
+   * all-accounts ceiling below is what actually bounds the bill.
    *
    * Rolling, not a calendar day: the allowance comes back through the morning
    * rather than all at once at a midnight in somebody else's timezone.

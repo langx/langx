@@ -14,7 +14,7 @@
  *
  *   REVENUECAT_WEBHOOK_AUTH_HEADER=dev-secret \
  *     pnpm --filter @langx/api exec tsx scripts/revenuecat-webhook.ts \
- *     --user <userId> --type INITIAL_PURCHASE --package pro_plus_monthly
+ *     --user <userId> --type INITIAL_PURCHASE --package $rc_monthly
  *
  *   ... --type CANCELLATION --package $rc_monthly
  *   ... --type EXPIRATION --package $rc_monthly --expires-in-days -1

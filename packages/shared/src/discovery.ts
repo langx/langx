@@ -134,12 +134,7 @@ const languageListSchema = z
     z
       .array(languageCodeSchema)
       .min(1)
-      .max(
-        Math.max(
-          PLAN_LIMITS.pro_plus.maxLearningLanguages,
-          PLAN_LIMITS.pro_plus.maxNativeLanguages,
-        ),
-      ),
+      .max(Math.max(PLAN_LIMITS.pro.maxLearningLanguages, PLAN_LIMITS.pro.maxNativeLanguages)),
   )
 
 export const discoveryQuerySchema = z
@@ -308,15 +303,16 @@ export const handleSearchPageSchema = z.object({ items: z.array(handleSearchResu
 export type HandleSearchPage = z.infer<typeof handleSearchPageSchema>
 
 /**
- * The strip above the discovery list, most expensive plan first.
- *
- * A presentation order like `tierUnlocking`, not a guard — see the note on
- * `PLAN_TIERS` for why no guard may compare tiers. Which tiers belong here is
+ * The tiers in the strip above the discovery list. Which tiers belong here is
  * decided by `PLAN_LIMITS[tier].boostedProfile`, and `rules.test.ts` pins the
  * two together so a capability moved between tiers cannot leave this list
  * behind.
+ *
+ * The query still matches the retired `pro_plus` until
+ * `scripts/merge-pro-tiers.ts` has run — see `BOOSTED_STORED_TIERS` in the
+ * API — but what goes out on the wire is always one of these.
  */
-export const DISCOVERY_BOOSTED_TIERS = ['pro_plus', 'pro'] as const
+export const DISCOVERY_BOOSTED_TIERS = ['pro'] as const
 
 /**
  * How many cards the strip holds. It is a horizontal row somebody flicks
@@ -366,6 +362,11 @@ export const DISCOVERY_BOOSTED_ROTATION_MS = 60 * 60 * 1000
  */
 export const DISCOVERY_BOOSTED_CANDIDATE_MAX = 200
 
+/**
+ * `tier` is sent for the apps released before the single plan, which draw a
+ * plan chip from it. Current apps draw no chip — the ring marks the card — and
+ * do not read it.
+ */
 export const boostedProfileSchema = discoveryItemSchema.extend({
   tier: z.enum(DISCOVERY_BOOSTED_TIERS),
 })

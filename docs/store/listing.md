@@ -12,6 +12,14 @@ The listing may advertise them.
 
 The listings must also declare in-app purchases. v1 had none.
 
+**There is one paid plan, LangX Pro** (since 28 September 2026; Fluent and
+Polyglot were merged into it — `decisions.md` → _One plan: Pro_). Every
+language's Pro line below says the same four things: one plan, what it holds,
+that translation is 1,000 a day rather than "unlimited", and the free week.
+The in-app purchase display names and descriptions read "LangX Pro" in all
+eight languages; they go through Apple's IAP review on their own, without an
+app version.
+
 **The App Store description must end with a working Terms of Use link.**
 App Review rejected 2.0.0 on 6 September 2026 under Guideline 3.1.2
 (Business: Payments – Subscriptions): an app that sells auto-renewable
@@ -53,7 +61,7 @@ included. Both are written out below, per language.
 >
 > **Free to use, always.** Reply to every message you receive with no limits, and correct as many as you like. On the free plan you can start 5 new conversations a day.
 >
-> **LangX Pro** adds unlimited new conversations, filters by gender, country, age and level, unlimited translation, who viewed your profile, and incognito browsing.
+> **LangX Pro** is one plan with everything: unlimited new conversations, gender and city filters, 1,000 translations a day, who viewed your profile, incognito browsing and Nearby. The first week is free.
 >
 > LangX is open source (BSD-3) and can be self-hosted.
 >
@@ -91,7 +99,7 @@ included. Both are written out below, per language.
 >
 > **Kullanımı her zaman ücretsiz.** Sana gelen tüm mesajlara sınırsız cevap verebilir, istediğin kadar düzeltme yapabilirsin. Ücretsiz planda günde 5 yeni sohbet başlatabilirsin.
 >
-> **LangX Pro** sınırsız yeni sohbet, cinsiyet/ülke/yaş/seviye filtreleri, sınırsız çeviri, profilini kimin görüntülediği ve gizli gezinme ekler.
+> **LangX Pro** her şeyi içeren tek plan: sınırsız yeni sohbet, cinsiyet ve şehir filtreleri, günde 1.000 çeviri, profilini kimin görüntülediği, gizli gezinme ve Yakındakiler. İlk hafta ücretsiz.
 >
 > LangX açık kaynaktır (BSD-3) ve kendi sunucunda barındırılabilir.
 >
@@ -129,7 +137,7 @@ included. Both are written out below, per language.
 >
 > **Gratis siempre.** Responde sin límite a todos los mensajes que recibas y corrige tantos como quieras. En el plan gratuito puedes iniciar 5 conversaciones nuevas al día.
 >
-> **LangX Pro** añade conversaciones nuevas ilimitadas, filtros por género, país, edad y nivel, traducción ilimitada, quién ha visto tu perfil y navegación de incógnito.
+> **LangX Pro** es un solo plan con todo: conversaciones nuevas ilimitadas, filtros por género y ciudad, 1.000 traducciones al día, quién ha visto tu perfil, navegación de incógnito y Cerca de ti. La primera semana es gratis.
 >
 > LangX es de código abierto (BSD-3) y se puede autoalojar.
 >
@@ -167,7 +175,7 @@ included. Both are written out below, per language.
 >
 > **Всегда бесплатно.** Отвечай без ограничений на все полученные сообщения и исправляй сколько хочешь. На бесплатном тарифе можно начинать 5 новых разговоров в день.
 >
-> **LangX Pro** добавляет безлимитные новые разговоры, фильтры по полу, стране, возрасту и уровню, безлимитный перевод, просмотр тех, кто заходил в твой профиль, и невидимый режим.
+> **LangX Pro** — один тариф со всем сразу: безлимитные новые разговоры, фильтры по полу и городу, 1000 переводов в день, кто заходил в твой профиль, невидимый режим и «Рядом». Первая неделя бесплатно.
 >
 > LangX — открытый исходный код (BSD-3), можно развернуть на своём сервере.
 >
@@ -205,7 +213,7 @@ included. Both are written out below, per language.
 >
 > **مجاني دائمًا.** ردّ بلا حدود على كل رسالة تصلك، وصحّح ما شئت. في الخطة المجانية يمكنك بدء 5 محادثات جديدة يوميًا.
 >
-> **LangX Pro** يضيف محادثات جديدة بلا حدود، وفلاتر حسب الجنس والبلد والعمر والمستوى، وترجمة بلا حدود، ومعرفة من زار ملفك، والتصفّح المخفي.
+> **LangX Pro** خطة واحدة فيها كل شيء: محادثات جديدة بلا حدود، وفلاتر حسب الجنس والمدينة، و1000 ترجمة يوميًا، ومعرفة من زار ملفك، والتصفّح المخفي، و«بالقرب منك». الأسبوع الأول مجاني.
 >
 > LangX مفتوح المصدر (BSD-3) ويمكن استضافته ذاتيًا.
 >
@@ -243,7 +251,7 @@ included. Both are written out below, per language.
 >
 > **Gratuit, toujours.** Répondez sans limite à tous les messages que vous recevez et corrigez-en autant que vous voulez. La formule gratuite permet de démarrer 5 nouvelles conversations par jour.
 >
-> **LangX Pro** ajoute les nouvelles conversations illimitées, les filtres par genre, pays, âge et niveau, la traduction illimitée, les visiteurs de votre profil et la navigation en incognito.
+> **LangX Pro** est une seule offre qui contient tout : les nouvelles conversations illimitées, les filtres par genre et par ville, 1 000 traductions par jour, les visiteurs de votre profil, la navigation en incognito et « À proximité ». La première semaine est offerte.
 >
 > LangX est open source (BSD-3) et peut être auto-hébergé.
 >
@@ -281,7 +289,7 @@ included. Both are written out below, per language.
 >
 > **Immer kostenlos.** Antworte unbegrenzt auf jede Nachricht, die du bekommst, und korrigiere so viel du willst. Im kostenlosen Tarif kannst du 5 neue Gespräche pro Tag beginnen.
 >
-> **LangX Pro** ergänzt unbegrenzte neue Gespräche, Filter nach Geschlecht, Land, Alter und Niveau, unbegrenzte Übersetzung, wer dein Profil besucht hat, und das Surfen im Inkognito-Modus.
+> **LangX Pro** ist ein Tarif mit allem: unbegrenzte neue Gespräche, Filter nach Geschlecht und Stadt, 1.000 Übersetzungen am Tag, wer dein Profil besucht hat, Surfen im Inkognito-Modus und „In der Nähe“. Die erste Woche ist gratis.
 >
 > LangX ist Open Source (BSD-3) und lässt sich selbst hosten.
 >
@@ -319,7 +327,7 @@ included. Both are written out below, per language.
 >
 > **Grátis, sempre.** Responda sem limite a todas as mensagens que receber e corrija quantas quiser. No plano gratuito, você pode iniciar 5 conversas novas por dia.
 >
-> **O LangX Pro** acrescenta conversas novas ilimitadas, filtros por gênero, país, idade e nível, tradução ilimitada, quem visitou seu perfil e navegação anônima.
+> **O LangX Pro** é um plano só, com tudo: conversas novas ilimitadas, filtros por gênero e cidade, 1.000 traduções por dia, quem visitou seu perfil, navegação anônima e Por perto. A primeira semana é grátis.
 >
 > O LangX é de código aberto (BSD-3) e pode ser hospedado por você mesmo.
 >

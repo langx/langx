@@ -49,7 +49,7 @@ const PAGE_TITLES: Readonly<Record<string, MessageKey>> = {
   '/link-device': 'linkDevice.title',
   '/paywall': 'paywall.screenTitle',
   '/phrases': 'chat.phraseDeck',
-  '/post-corrections': 'corrections.publicTitle',
+  '/post-corrections': 'tabs.feed',
   '/scan': 'scan.title',
   '/share-profile': 'shareProfile.title',
   '/starred': 'starred.title',

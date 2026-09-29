@@ -3,7 +3,6 @@ import {
   GENDER_CHANGE_COOLDOWN_DAYS,
   MINIMUM_AGE,
   OFFICIAL_ASSISTANT,
-  PLAN_LIMITS,
   OFFICIAL_WRITABLE,
   TIER_NAMES,
   attachmentsOf,
@@ -19,8 +18,6 @@ import { fanOutMessage } from '../../ws/fanOut'
 import type { Message } from '../chat/conversations'
 import { previewFor } from '../chat/messages'
 import { submitFeedback } from '../feedback/submit'
-import type { Profile } from '../profiles/profiles'
-import { effectiveTier } from '../profiles/entitlement'
 import { localeFor } from '../profiles/localeFor'
 import { officialHandleOf, officialIds } from './accounts'
 import { claimAssistantCall } from './assistantBudget'
@@ -120,7 +117,7 @@ export function assistantSystemPrompt(supportEmail: string, store: RatingStore |
     '- The Feed is one timeline of what people share: a photo, a video or a sentence. When posting, somebody can tick “Correction needed” or “Pronunciation needed” to ask for help — both are optional, and a post may ask for neither. Anyone can like and comment on a post, and comments can be replied to.',
     '- The app is in eight languages: English, Turkish, Spanish, Russian, Arabic, French, German and Brazilian Portuguese.',
     `- You must be ${String(MINIMUM_AGE)} or older to use it.`,
-    `- The plans are called ${TIER_NAMES.free}, ${TIER_NAMES.pro} and ${TIER_NAMES.pro_plus}. They are never called Pro or Pro+. You do not know what they cost or exactly what each includes — prices differ by country and store — so send people to the Plans screen in the app.`,
+    `- There are two plans, ${TIER_NAMES.free} and ${TIER_NAMES.pro}. Fluent and Polyglot were the old paid plans and are now both ${TIER_NAMES.pro}; somebody who had either has everything. You do not know what ${TIER_NAMES.pro} costs or exactly what it includes — prices differ by country and store — so send people to the Plans screen in the app.`,
     '',
     'Where things are in the app — say the path and stop there:',
     '- The Me tab is where somebody’s own things live: their token balance, and rows for Wallet, Badges, Corrections, Day streak, Followers and following, Scan a code, Invite a friend, Preview my profile, Share my profile, Edit profile and Settings.',
@@ -339,18 +336,13 @@ export async function respondAsOfficial(
       if (!officialId) return
 
       /*
-       * The sender's own allowance, from the tier they are on. Free accounts
-       * get fewer than paying ones because every reply is a paid model call
-       * and a free account brings in nothing to pay for it — the only limit
-       * here with a real marginal cost behind it.
-       *
-       * The read is one document, and it is the same one `startConversation`
-       * already reads on the other side of this conversation.
+       * The same allowance for everybody. It was per tier while there were two
+       * paid plans to price it against; with one it is the flat ceiling in
+       * `OFFICIAL_ASSISTANT`, which is also where the arithmetic lives.
+       * Reporting, feedback and the support address are unlimited whatever it
+       * says — this only gates doing them in a conversation.
        */
-      const sender = await app.mongo.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .findOne({ _id: senderId }, { projection: { entitlement: 1 } })
-      const allowance = PLAN_LIMITS[sender ? effectiveTier(sender) : 'free'].assistantRepliesPerDay
+      const allowance = OFFICIAL_ASSISTANT.maxRepliesPerDay
 
       if ((await repliesToday(app, conversation, officialId)) >= allowance) {
         await say(app, handle, senderId, t('official.assistantLimit', { email }))

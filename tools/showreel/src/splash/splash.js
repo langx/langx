@@ -26,6 +26,16 @@ REEL.scene('splash', (ctx) => {
   const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v)
   const f3 = (v) => Math.round(v * 1000) / 1000
 
+  /*
+   * The night cut (`?theme=dark`), for a phone in dark mode: a full yellow
+   * screen at night is a glare. The ground is the app's dark `bg`, the black
+   * arc and its Latin rail turn yellow (black on it would vanish), and the
+   * hard shadow is black instead of the ground's shade.
+   */
+  const DARK = new URLSearchParams(location.search).get('theme') === 'dark'
+  const INK_A = DARK ? C.yellow : '#000000'
+  const SHADE = DARK ? '#000000' : C.yellowShade
+
   const [nx, ny] = CUT.n
   const [ux, uy] = CUT.dUp
   /* The rails run along 147° in canvas units, which the 180° start turns into dUp on stage. */
@@ -78,7 +88,7 @@ REEL.scene('splash', (ctx) => {
     { lag: 1 / 60, alpha: 0.3 },
   ].map((spec) => {
     const g = ctx.svg('g', { opacity: spec.alpha, visibility: 'hidden' }, layer)
-    ctx.svg('path', Object.assign({ d: inkBlackD }, strokeAttrs('#000000')), g)
+    ctx.svg('path', Object.assign({ d: inkBlackD }, strokeAttrs(INK_A)), g)
     ctx.svg('path', Object.assign({ d: inkWhiteD }, strokeAttrs('#ffffff')), g)
     return Object.assign({ g }, spec)
   })
@@ -192,7 +202,7 @@ REEL.scene('splash', (ctx) => {
     )
 
   // Latin in black, as in 08. Ends on 'Hello', which is therefore the first word in.
-  const textB = railText('#000000', 'black')
+  const textB = railText(INK_A, 'black')
   const tpB = ctx.svg('textPath', { href: '#sp-rail-black' }, textB)
   const BLACK_RUN = 'Merhaba · Hola · Hallo · Bonjour · Привет · Olá · Ciao · Hello · '
   tpB.textContent = BLACK_RUN.repeat(3)
@@ -225,11 +235,12 @@ REEL.scene('splash', (ctx) => {
   const OFF_W = LEN
 
   // Ink-in: butt-capped strokes as wide as the band, drawn along each rail's stream.
-  const inkB = ctx.svg('path', Object.assign({ d: inkBlackD }, strokeAttrs('#000000')), turn)
+  const inkB = ctx.svg('path', Object.assign({ d: inkBlackD }, strokeAttrs(INK_A)), turn)
   const inkW = ctx.svg('path', Object.assign({ d: inkWhiteD }, strokeAttrs('#ffffff')), turn)
 
   // The mark itself, which replaces the turn group on the lock frame.
-  const m = ctx.mark(layer, { x: ctx.CX, y: ctx.CY, size: 1024 * END_S, shade: C.yellowShade })
+  const m = ctx.mark(layer, { x: ctx.CX, y: ctx.CY, size: 1024 * END_S, shade: SHADE })
+  m.black.setAttribute('fill', INK_A)
 
   /* ------------------------------------------------------ the state of it */
 

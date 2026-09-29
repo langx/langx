@@ -85,8 +85,8 @@ v2 breaks both:
 1. **Things that were free become paid.** v1's `community/filters.page` offers
    gender + country + level (CEFR) + min/max age filters, and
    `settings/visitors.page` offers "who viewed me", both **free**. In v2 the gender and
-   city filters are Fluent and "who viewed me" is Polyglot; country, age and
-   level went back to free.
+   city filters and "who viewed me" are Pro; country, age and level went back
+   to free.
 2. **The token stays, but everything it implied goes.** v1's homepage sells a
    "Learn to Earn" token and the litepaper describes something tradable,
    staked and eventually listed. v2 keeps the **name** and drops all of that:
@@ -129,14 +129,13 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction' \| 'answer'`) — never on a person, and it opens no channel |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                                         |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                             |
-| Fluent bundle       | Unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                                    |
-| Polyglot bundle     | Everything in Fluent · first in the boosted strip · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                            |
-| Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                                                                                                     |
+| Pro bundle          | One paid plan since 28 September 2026 (Fluent and Polyglot merged): unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                  |
+| Pricing             | Monthly + yearly, one free week on both, regional pricing; the yearly plan is sold as "N months free", computed from the store's prices                                                                                                                                                                                                                                                                             |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                             |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                                                                                                   |
 | Gamification        | **In the MVP**: streak + token + daily pool + 4 leaderboards. Non-transferable token                                                                                                                                                                                                                                                                                                                                |
 | **Token**           | **Kept, not retired** (reversed 2026-08-27) — the name stays and v1 balances migrate at 1:100. What does not come across: the wallet/checkout UI, the `/token` leaderboard, and the on-chain roadmap                                                                                                                                                                                                                |
-| **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Polyglot: unlimited within fair use                                                                                                                                                                                                                                                             |
+| **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Pro: unlimited within fair use                                                                                                                                                                                                                                                                  |
 | **Profile photos**  | One avatar is not enough — v1 parity means a **multi-photo gallery** (avatar + extras, capped by `PLAN_LIMITS.maxPhotos`); an account with none gets a face generated by `GET /public/avatar/:id`                                                                                                                                                                                                                   |
 | Token sinks         | **Only** streak freeze, filling in a missed day, and cosmetics (frame/title). Tokens can never buy a paid feature                                                                                                                                                                                                                                                                                                   |
 | Streak condition    | Opening the app holds the day. A **meaningful action** (send a message, write a correction, or answer a pronunciation request) is what pays the milestone bonus for it                                                                                                                                                                                                                                              |
@@ -323,29 +322,38 @@ back door around authorisation, quota or token.
 
 ## Monetization
 
-### Free vs Fluent vs Polyglot
+### Free vs Pro
 
-The tiers are `free | pro | pro_plus` in code and **Free**, **Fluent** and
-**Polyglot** on screen. The two are deliberately separate: a RevenueCat
-entitlement identifier cannot be renamed after creation, so the display names
-live in `TIER_NAMES` and the identifiers never move.
+The tiers are `free | pro` in code and **Free** and **Pro** on screen. There
+were three until 28 September 2026 — Fluent (`pro`) and Polyglot (`pro_plus`) —
+and they were merged into one plan with Polyglot's contents at Fluent's price
+(`decisions.md` → _One plan: Pro_). `pro_plus` survives only where it cannot be
+retired: as a RevenueCat entitlement id that keeps arriving, in rows the merge
+script has not reached, and on the wire to apps released before the merge. A
+stored tier is always read through `normalizePlanTier` / `effectivePlanTier`.
 
-|                             | Free                                         | Fluent         | Polyglot       |
-| --------------------------- | -------------------------------------------- | -------------- | -------------- |
-| Starting new conversations  | **5** per rolling 24h                        | Unlimited      | Unlimited      |
-| Replying                    | **Unlimited**                                | Unlimited      | Unlimited      |
-| Filters                     | Language, country, age, CEFR, only-my-gender | + gender, city | same as Fluent |
-| Sort by distance (Nearby)   | —                                            | —              | **Yes**        |
-| Boosted profile on Discover | —                                            | **Yes**        | **First**      |
-| Translation                 | **20** per rolling 24h                       | **300**        | **1000**       |
-| Voice notes shown as text   | **50** per rolling 24h                       | **150**        | **400**        |
-| Languages you are learning  | **1**                                        | **2**          | **5**          |
-| Languages you speak         | **1**                                        | **2**          | **5**          |
-| **Message correction**      | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
-| Who viewed me               | Count only                                   | Count only     | **Identities** |
-| Incognito                   | —                                            | —              | **Yes**        |
-| Hiding that you are online  | **Yes**                                      | **Yes**        | **Yes**        |
-| AI copilot                  | —                                            | —              | **Not built**  |
+|                                     | Free                                         | Pro                  |
+| ----------------------------------- | -------------------------------------------- | -------------------- |
+| Starting new conversations          | **5** per rolling 24h                        | Unlimited            |
+| Replying                            | **Unlimited**                                | Unlimited            |
+| Filters                             | Language, country, age, CEFR, only-my-gender | + gender, city       |
+| Sort by distance (Nearby)           | —                                            | **Yes**              |
+| Boosted profile on Discover         | —                                            | **Yes**              |
+| Translation                         | **20** per rolling 24h                       | **1000**             |
+| Read aloud / Echo voice / notes     | **100 / 50 / 50** per rolling 24h            | **1000 / 500 / 400** |
+| Photo, video and voice messages     | **500** per rolling 24h (fair use)           | **500** (fair use)   |
+| Profile photos                      | **10**                                       | **10**               |
+| Languages you are learning          | **1**                                        | **5**                |
+| Languages you speak                 | **1**                                        | **5**                |
+| **Message correction**              | **Unlimited**                                | **Unlimited**        |
+| Who viewed me                       | Count only                                   | **Identities**       |
+| Incognito                           | —                                            | **Yes**              |
+| Send in their language, deck export | —                                            | **Yes**              |
+| Hiding that you are online          | **Yes**                                      | **Yes**              |
+| AI copilot                          | —                                            | **Not built**        |
+
+The @langx assistant answers everybody the same number of times a day,
+`OFFICIAL_ASSISTANT.maxRepliesPerDay`; it is no longer a plan row.
 
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.
@@ -375,16 +383,17 @@ than your plan allows _and_ more than you already had". Without the second
 half, every migrated v1 user with five languages could never edit a level or
 even remove one.
 
-**Polyglot is a superset of Fluent**, which is why its RevenueCat products
-grant both entitlements. It adds who-viewed-you, incognito, Nearby and the
-copilot, and raises both numbers again.
+**Media and photos are fair use, not a plan.** The same 500 attachments a day
+and ten photos on every tier; hitting the ceiling shows a plain alert and never
+the paywall. Apps released before the single plan still hold a free account
+to five photos on their own side, which is harmless and nothing lowers.
 
 **Distance is a sort; the radius beside it is a filter.** Nearby re-orders the
 same list by distance — nearest first, outwards, no wall — and "within X km"
 sits next to gender and country as something a searcher may ask for rather than
 something the sort does to them. It was the other way round until it was clear
 what a silent 500 km cut-off looks like from inside a quiet city: an empty app.
-Sharing a location is free on every tier — a Polyglot-only pool would have been
+Sharing a location is free on every tier — a paid-only pool would have been
 empty on the day it shipped.
 
 **Correction quota was deliberately dropped:** writing a correction is a favour
@@ -665,7 +674,7 @@ indistinguishable from an unread one and the queue could only grow.
 
 ### Copilot
 
-The only paid feature ever promised publicly. The plan keeps it as a **P1 Polyglot
+The only paid feature ever promised publicly. The plan keeps it as a **P1 Pro
 feature**. For the integrity of that promise it should land close to the v2
 launch; it does not block the MVP, but it is what the monetization story ought
 to be built around.
@@ -674,7 +683,7 @@ Verified live in v1: the chat screen header has a robot-icon toggle that checks
 what you are typing for grammar and phrasing errors in real time and suggests a
 correction ("I have a apple" → "I have an apple", with a short reason). v2
 rebuilds the same function under the name **Copilot**, as part of the chat
-module. Quota: free 5 uses a day, Polyglot unlimited within fair use.
+module. Quota: free 5 uses a day, Pro unlimited within fair use.
 
 The **account** exists already, and the feature does not. `@copilot` is created
 at boot alongside `@langx` so the handle cannot be claimed by somebody else in
@@ -885,7 +894,7 @@ The language list and CEFR levels are constants in `packages/shared`.
 $match:    discoverable, !deleted, !blocked (either direction),
            nativeLanguages.code ∈ my learning,      ← mutual fit …
            learning.code ∈ my nativeLanguages       … but see below
-           country / age / CEFR / only-my-gender (free), [if Fluent] gender / city
+           country / age / CEFR / only-my-gender (free), [if Pro] gender / city
 $addFields onlineBucket = active in the last 5 min AND not hiding it → 1/0
 $addFields score = language fit + shared interests + activity recency
 $sort:     onlineBucket desc, score desc, lastActiveAt desc  → cursor pagination
@@ -945,18 +954,16 @@ absent flag means on, so a first subscription boosts without a billing-side
 hook. Boosted people stay in the vertical list too: it is a second chance to
 be seen, not a promotion out of the feed.
 
-**Tier is the outermost term of all three orders.**
-`DISCOVERY_BOOSTED_TIERS`, Polyglot above Fluent, a hard band because the
-paywall sells that sentence and `rules.test.ts` pins the list it comes from.
-Under `active` and `nearby` the section's own criterion breaks ties inside it
-and nothing else does — no rotation, no photo-and-bio band, because the reader
-asked for the clock or for distance and those are the answers. Twelve cards is
-a small enough strip that the nearest Fluent member is still on screen. Both
+**There is no tier band any more.** Until the single plan, Polyglot led
+Fluent in all three orders. Now every card is Pro — a row still stored as the
+retired `pro_plus` included — and under `active` and `nearby` the section's
+own criterion is the whole order: no rotation, no photo-and-bio band, because
+the reader asked for the clock or for distance and those are the answers. Both
 are plain `$sort` stages, so the pipeline's `$limit` is simply the strip's
 size; only `recommended` needs the candidate ceiling below.
 
-**Under `recommended` the order is three bands, not one sort** —
-`orderBoosted`. Tier first, as above. Then one coarse cut — ready to lead, or not: a photo, something written,
+**Under `recommended` the order is two bands, not one sort** —
+`orderBoosted`. One coarse cut — ready to lead, or not: a photo, something written,
 and a visit within `DISCOVERY_BOOSTED_FRESH_MS`. Then a rotation seeded on the
 viewer, the profile and the hour (`DISCOVERY_BOOSTED_ROTATION_MS`), with `_id`
 as the last tiebreak.
@@ -991,8 +998,7 @@ with time alone a subscriber would wait a week to lead once.
 It is not a `$sort` stage because the rotation hashes three strings together
 and MQL has no string hash. So the ordering runs in Node, and on this sort
 alone the pipeline's `$sort` and `$limit` change jobs: they become the
-**truncation rule**, tier first so a ceiling can never drop a Polyglot for a
-Fluent, limiting to `DISCOVERY_BOOSTED_CANDIDATE_MAX` — everyone who could win
+**truncation rule**, by recency, limiting to `DISCOVERY_BOOSTED_CANDIDATE_MAX` — everyone who could win
 a slot — with the strip sliced to `DISCOVERY_BOOSTED_LIMIT` after ordering.
 There is deliberately no "online now" band: the strip's `isOnline` already has
 to respect `hidesOnlineStatus`, and a third band would mean a second copy of
@@ -1006,13 +1012,13 @@ because a 2dsphere index is sparse, leaves out boosted members who share no
 location. They paid, and it is still right: the list underneath leaves them
 out for the same reason, and an order made of distances has no honest place
 for somebody with no distance. They are in the strip on both other sorts.
-Neither the Pro+ entitlement nor a missing viewer point throws here the way
+Neither a missing entitlement nor a missing viewer point throws here the way
 the list throws `UPGRADE_REQUIRED` / `LOCATION_REQUIRED`; the strip falls back
 to the rotation instead. That is not only politeness above a screen already
 showing the reason — `$geoNear` is what puts `distanceKm` on an item, so not
-running it is also what keeps a Pro+ measurement behind the Pro+ wall.
+running it is also what keeps a Pro measurement behind the Pro wall.
 
-**`sort=nearby` (Polyglot)** replaces that leading `$match` with a single
+**`sort=nearby` (Pro)** replaces that leading `$match` with a single
 `$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot
 share the position. The match above is handed to it as its `query` argument
 instead, so both still apply; what changes is that the 2dsphere index drives
@@ -1354,6 +1360,12 @@ creates accounts; GDPR additionally requires access and portability.
   ledger and aggregates. Messages the user _sent_ stay in place with their
   content cleared — they are part of a conversation the other person is also a
   party to.
+- Before the handle step the screen asks, optionally, why — one reason from
+  `ACCOUNT_DELETION_REASONS` and a short note. It is held on the profile as
+  `deletionFeedback` until the purge, which writes it to
+  `accountDeletionFeedback` with no user id, handle or email and a day-granular
+  date; signing back in discards it. It never blocks deletion. See
+  `docs/decisions.md` → _"Why are you leaving?"_.
 - A user with an active subscription is shown the cancellation path first; a
   store subscription cannot be cancelled from our side.
 - `GET /me/export` → one JSON document with everything we hold.

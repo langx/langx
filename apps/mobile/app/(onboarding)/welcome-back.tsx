@@ -1,4 +1,4 @@
-import { TIER_NAMES, TOKEN_RULES, handleChangeFreeAt } from '@langx/shared'
+import { TIER_NAMES, TOKEN_RULES, handleChangeFreeAt, normalizePlanTier } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { useQueryClient } from '@tanstack/react-query'
 import { Redirect, router, type Href } from 'expo-router'
@@ -213,7 +213,9 @@ export default function WelcomeBackScreen() {
           {lifetimeGranted ? (
             <Line
               icon="award"
-              title={t('welcomeBack.tierForLife', { plan: TIER_NAMES[lifetimeGranted] })}
+              title={t('welcomeBack.tierForLife', {
+                plan: TIER_NAMES[normalizePlanTier(lifetimeGranted)],
+              })}
               body={t('welcomeBack.proBody')}
             />
           ) : null}

@@ -985,10 +985,11 @@ export const en = {
      * note says so, rather than leaving a list that quietly disagrees with the
      * number that led to it.
      */
-    publicTitle: 'Corrections',
     publicNote: 'Corrections written on posts. What was corrected in a chat stays in that chat.',
     publicEmptyTitle: 'No post corrections yet',
     publicEmptyBody: '@{handle} has not corrected a post here yet.',
+    publicPostsEmptyTitle: 'No posts yet',
+    publicPostsEmptyBody: '@{handle} has not posted here yet.',
   },
   myPosts: {
     emptyTitle: 'Nothing posted yet',
@@ -1001,8 +1002,9 @@ export const en = {
     boostedWhat: 'What is this?',
     boostedExplainTitle: 'Boosted profiles',
     boostedExplainBody:
-      'People on Fluent and Polyglot are shown here, Polyglot first. The order turns through the day, so everyone takes a turn at the front — a photo, a few words about you, and a recent visit are what put you there. They are matched to your languages exactly as the list below is — nothing about the pairing changes, and anyone can switch it off in Settings.',
+      'People on Pro are shown here. The order turns through the day, so everyone takes a turn at the front — a photo, a few words about you, and a recent visit are what put you there. They are matched to your languages exactly as the list below is — nothing about the pairing changes, and anyone can switch it off in Settings.',
     boostedSeePlans: 'See the plans',
+    nameAge: '{name}, {age}',
     languagesA11y: 'Choose which of your languages to search with',
     searchHandles: 'Search by name or username',
     searchPlaceholder: 'Name or username',
@@ -1264,7 +1266,8 @@ export const en = {
     transcriptLimit: 'You’ve used today’s transcripts. They reset in 24 hours.',
     copied: 'Copied',
     couldNotSend: 'Could not send',
-    mediaQuota: 'You’ve reached today’s limit for photos, videos and voice messages.',
+    mediaQuota:
+      'You’ve reached today’s limit for photos, videos and voice messages. It is a fair-use limit, the same for everyone, and it frees up again through the day.',
     attachmentFailed: 'That attachment could not be sent. Try again.',
     photosTitle: 'Photos',
     dropToAttach: 'Drop to attach',
@@ -1682,10 +1685,7 @@ export const en = {
     },
     viewersCount: { one: '{count} person', other: '{count} people' },
     proTitle: '✦ Go further',
-    proBody: 'Unlimited new chats, advanced filters, translation, and two languages at once.',
-    polyglotTitle: '✦ Upgrade to {plan}',
-    polyglotBody:
-      'See who viewed you, browse incognito, sort by distance, and send messages in their language.',
+    proBody: 'Unlimited new chats, advanced filters, who viewed you, incognito, nearby and more.',
     newChatsLeft: 'New chats left today:',
     editProfile: 'Edit profile',
     settings: 'Settings',
@@ -1848,7 +1848,10 @@ export const en = {
       one: 'Your plan holds {count} language.',
       other: 'Your plan holds {count} languages.',
     },
-    capUpgrade: '{fluent} holds {fluentMax}, {polyglot} holds {polyglotMax}.',
+    capUpgrade: {
+      one: '{plan} holds {count} language.',
+      other: '{plan} holds {count} languages.',
+    },
     capOverGrandfathered:
       'You already have more than your plan holds. You can change these or remove them, but not add another.',
     changeHint: 'Tap a language to change it.',
@@ -2015,7 +2018,7 @@ export const en = {
       'Turn this off and nobody will find you — not in Discover, and not by searching your username.',
     boost: 'Boost my profile',
     boostBody:
-      'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Fluent and Polyglot.',
+      'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Pro.',
     incognito: 'Browse incognito',
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',
@@ -2070,7 +2073,6 @@ export const en = {
     plan: 'Plan',
     manageSubscription: 'Manage or cancel',
     upgrade: 'See the plans',
-    upgradeTo: 'Upgrade to {plan}',
     notificationsSection: 'Notifications',
     pushThisDevice: 'Notifications on this device',
     pushThisDeviceBody: 'Turn these off here and your other devices keep receiving them.',
@@ -2102,6 +2104,20 @@ export const en = {
     },
     untilThen: 'Until then nobody can find you or see your profile.',
     keepIt: 'Keep it',
+    whyTitle: 'Why are you leaving?',
+    whyBody:
+      'Optional. Once your account is deleted, your answer is kept with nothing that links it back to you — it only tells us what to fix.',
+    whyNote: 'Anything to add? (optional)',
+    whyNotePlaceholder: 'Please leave out names and contact details.',
+    whySkip: 'Skip',
+    reasonNotEnoughPartners: 'Not enough language partners',
+    reasonUnwantedMessages: 'Unwanted or inappropriate messages',
+    reasonFoundPartnerElsewhere: 'I found a partner or another app',
+    reasonTooManyNotifications: 'Too many notifications',
+    reasonPrivacyConcerns: 'Privacy concerns',
+    reasonBugsOrProblems: 'Bugs or technical problems',
+    reasonTakingABreak: 'Taking a break',
+    reasonOther: 'Something else',
     keeping: 'Wait…',
   },
 
@@ -2450,20 +2466,16 @@ export const en = {
 
   paywall: {
     screenTitle: 'Plans',
-    everythingInPro: 'Everything in {plan}',
     restorePurchases: 'Restore purchases',
     partOf: 'is part of',
     unlimitedChats: 'Unlimited new chats',
     unlimitedChatsBody: '{count} a day on the free plan.',
     welcomePack: 'A welcome pack',
-    welcomePackBody:
-      'A profile frame and two streak freezes to start with. {plan} brings the full set.',
+    welcomePackBody: 'Profile frames, titles and two streak freezes to start with.',
     advancedFilters: 'Advanced filters',
     boostedProfile: 'Boosted profile',
     boostedProfileBody:
       'Shown in the Boosted strip above the Discover list, to everyone whose languages match yours. On by default; switch it off in Settings.',
-    boostedProfileFirst: 'Boosted to the front',
-    boostedProfileFirstBody: 'Polyglot profiles lead the Boosted strip, ahead of Fluent.',
     sendTranslation: 'Send in their language',
     sendTranslationBody: 'Write in yours; both go, so they read you without guessing.',
     deckExport: 'Take your phrases with you',
@@ -2487,19 +2499,8 @@ export const en = {
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
     lifetimeNotice: 'You have {plan} for life. Nothing renews and nothing is charged.',
-    lifetimeKept: '{plan} for life stays yours. If {plus} ever ends, you go back to it.',
     includedIn: 'Included in {plan}',
-    upgradeNotice:
-      'Upgrading from {plan}: the store charges only the difference for the rest of your current period, and {plan} ends.',
-    upgradeWeb:
-      'Your {plan} plan was bought on the web. Change it in the billing portal — unused time is refunded.',
-    changePlan: 'Change plan',
     currentPlan: 'Your current plan',
-    upgradeElsewhere:
-      'Your {plan} plan was bought through {store}. Change it there, so you are not charged twice.',
-    storeIos: 'the App Store',
-    storeAndroid: 'Google Play',
-    storeWeb: 'the web',
     purchaseFailed: 'That purchase did not go through. Nothing was charged.',
     purchaseUnavailable: 'Purchasing is unavailable on this device.',
     nothingToRestore: 'Nothing to restore on this device.',
@@ -2510,6 +2511,10 @@ export const en = {
     trialTerms: {
       one: '{count} day free, then {price} {period}',
       other: '{count} days free, then {price} {period}',
+    },
+    trialWeeks: {
+      one: '{count} week free, then {price} {period}',
+      other: '{count} weeks free, then {price} {period}',
     },
     perMonth: 'a month',
     perYear: 'a year',
@@ -2523,10 +2528,26 @@ export const en = {
     headlineBody:
       'Corrections and replies stay unlimited on every plan. Paying removes the other limits.',
     yearlySaving: 'Yearly · save {percent}%',
+    yearlyFreeMonths: {
+      one: 'Yearly · {count} month free',
+      other: 'Yearly · {count} months free',
+    },
     savePercent: 'Save {percent}%',
+    freeMonths: {
+      one: '{count} month free',
+      other: '{count} months free',
+    },
     savingA11y: '{price} a month on the monthly plan. Yearly saves {percent}%.',
+    freeMonthsA11y: {
+      one: '{price} a month on the monthly plan. Yearly gives you {count} month free.',
+      other: '{price} a month on the monthly plan. Yearly gives you {count} months free.',
+    },
     billingPeriod: 'Billing period',
     start: 'Start {plan}',
+    startTrial: {
+      one: 'Start your free week',
+      other: 'Start your {count} free weeks',
+    },
     continueFree: 'Continue free',
     perMonthBilledYearly: 'a month · billed yearly',
   },

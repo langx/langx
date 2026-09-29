@@ -413,10 +413,14 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
       */}
       {summary.data && !user.official ? (
         <View style={styles.stats}>
+          {/*
+            Their posts and their corrections as one number, under the name of
+            the tab both live in; the screen it opens has a tab for each.
+          */}
           <StatTile
             tone="success"
-            label={`${t('me.corrections')} ›`}
-            value={String(summary.data.corrections)}
+            label={`${t('tabs.feed')} ›`}
+            value={String(summary.data.corrections + (summary.data.posts ?? 0))}
             onPress={() => openPostCorrections(user.handle, here)}
           />
           {/*

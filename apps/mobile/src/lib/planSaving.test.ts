@@ -1,15 +1,60 @@
 import { describe, expect, it } from 'vitest'
 import { perMonthPriceString } from './perMonthPrice'
-import { yearlySavingPercent } from './planSaving'
+import { yearlyFreeMonths, yearlySavingPercent } from './planSaving'
 
 const monthly = (price: number) => ({ period: 'monthly' as const, price })
 const yearly = (price: number) => ({ period: 'yearly' as const, price })
 
-/** The two prices on sale in the storefront the others are converted from. */
+/** The price on sale in the storefront the others are converted from. */
 const US_PRICES = [
-  { name: 'Fluent', yearly: 83.99, monthly: 9.99, perMonth: '6.99', saving: 30 },
-  { name: 'Polyglot', yearly: 131.99, monthly: 16.99, perMonth: '10.99', saving: 35 },
+  { name: 'Pro', yearly: 83.99, monthly: 9.99, perMonth: '6.99', saving: 30 },
 ] as const
+
+/**
+ * Pro in each storefront the plan names (`docs/decisions.md` → "One plan:
+ * Pro"). Every one of them is 3.3–3.6 months short of twelve, so every one
+ * reads "3 months free" — computed, never typed on the paywall.
+ */
+const STOREFRONTS = [
+  { name: 'US', yearly: 83.99, monthly: 9.99 },
+  { name: 'Euro', yearly: 95.99, monthly: 10.99 },
+  { name: 'UK', yearly: 83.99, monthly: 9.99 },
+  { name: 'Canada / Australia', yearly: 119.99, monthly: 13.99 },
+  { name: 'Turkey', yearly: 1799.99, monthly: 214.99 },
+] as const
+
+describe('yearlyFreeMonths', () => {
+  it.each(STOREFRONTS.map((p) => [p.name, yearly(p.yearly), monthly(p.monthly)] as const))(
+    'reads 3 months free off the %s prices',
+    (_name, year, month) => {
+      expect(yearlyFreeMonths(year, month)).toBe(3)
+    },
+  )
+
+  /** Floored, never rounded: 3.6 is three months, not four. */
+  it('never rounds up', () => {
+    expect(yearlyFreeMonths(yearly(84), monthly(10))).toBe(3)
+    expect(yearlyFreeMonths(yearly(80), monthly(10))).toBe(4)
+  })
+
+  /** Below a whole month there is nothing to say in months; the percentage takes over. */
+  it('says nothing under one month, so the paywall falls back to the percentage', () => {
+    expect(yearlyFreeMonths(yearly(115), monthly(10))).toBeNull()
+    expect(yearlySavingPercent(yearly(110), monthly(10))).toBe(8)
+    expect(yearlyFreeMonths(yearly(110), monthly(10))).toBe(1)
+  })
+
+  it('says nothing without a monthly price, or for a free year', () => {
+    expect(yearlyFreeMonths(yearly(83.99), undefined)).toBeNull()
+    expect(yearlyFreeMonths(yearly(83.99), monthly(0))).toBeNull()
+    expect(yearlyFreeMonths(yearly(0), monthly(9.99))).toBeNull()
+    expect(yearlyFreeMonths(monthly(9.99), monthly(9.99))).toBeNull()
+  })
+
+  it('says nothing when the year costs more than twelve months', () => {
+    expect(yearlyFreeMonths(yearly(130), monthly(10))).toBeNull()
+  })
+})
 
 describe('yearlySavingPercent', () => {
   /**

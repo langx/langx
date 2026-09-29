@@ -28,16 +28,22 @@ const live = {
   ],
 }
 
+// `pro_plus` is the retired Polyglot spelling; after `merge-pro-tiers.ts
+// --apply` it should read 0 and stay there.
 const [total, pro, proPlus, proWithIncognito] = await Promise.all([
   profiles.countDocuments({}),
   profiles.countDocuments({ 'entitlement.tier': 'pro', ...live }),
   profiles.countDocuments({ 'entitlement.tier': 'pro_plus', ...live }),
-  profiles.countDocuments({ 'entitlement.tier': 'pro', 'privacy.incognito': true, ...live }),
+  profiles.countDocuments({
+    'entitlement.tier': { $in: ['pro', 'pro_plus'] },
+    'privacy.incognito': true,
+    ...live,
+  }),
 ])
 
 console.log(`db                        ${dbName}`)
 console.log(`profiles                  ${total}`)
-console.log(`live Fluent (pro)         ${pro}`)
-console.log(`live Polyglot (pro_plus)  ${proPlus}`)
-console.log(`  of Fluent, incognito on ${proWithIncognito}`)
+console.log(`live Pro (pro)            ${pro}`)
+console.log(`live unmerged (pro_plus)  ${proPlus}`)
+console.log(`  of Pro, incognito on    ${proWithIncognito}`)
 await handle.client.close()

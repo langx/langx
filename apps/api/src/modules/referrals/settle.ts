@@ -1,5 +1,5 @@
-import { TOKEN_RULES, isPaidTier } from '@langx/shared'
-import type { PaidPlanTier, PlanTier } from '@langx/shared'
+import { TOKEN_RULES, effectivePlanTier } from '@langx/shared'
+import type { BillingPeriodType, StoredPlanTier } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { isEmailVerified } from '../profiles/emailVerified'
@@ -184,6 +184,48 @@ async function isActivated(db: Db, inviteeId: string): Promise<boolean> {
 }
 
 /**
+ * The stores somebody actually pays in, as RevenueCat spells them — in lower
+ * case on the subscriber record and upper case on a webhook, so compared
+ * lower-cased. `fake_store` is the local harness (refused in production), and
+ * is here so the harness can rehearse the payout. `promotional` and `gift` are
+ * absent on purpose: nobody paid for them.
+ */
+const PAYING_STORES = new Set([
+  'app_store',
+  'mac_app_store',
+  'play_store',
+  'amazon',
+  'stripe',
+  'rc_billing',
+  'fake_store',
+])
+
+export interface HeldEntitlement {
+  tier: StoredPlanTier
+  store?: string | null | undefined
+  periodType?: BillingPeriodType | null | undefined
+  expiresAt?: Date | null | undefined
+}
+
+/**
+ * Whether an entitlement is money changing hands: a paid tier, bought in a
+ * real store, past its free week.
+ *
+ * The referral top-up used to be paid on any free → paid edge and on every
+ * `INITIAL_PURCHASE`, and both of those include a trial somebody cancels on
+ * day six and a promotional grant nobody paid for. Four thousand tokens for
+ * starting a free week is the cheapest farm in the economy. `periodType` is
+ * what separates them, and only a positive `normal` counts — absence means
+ * "not known", which is not the same as "paying".
+ */
+export function isPaidPurchase(entitlement: HeldEntitlement | null | undefined): boolean {
+  if (!entitlement) return false
+  if (effectivePlanTier(entitlement.tier, entitlement.expiresAt) === 'free') return false
+  if (!PAYING_STORES.has((entitlement.store ?? '').toLowerCase())) return false
+  return entitlement.periodType === 'normal'
+}
+
+/**
  * The billing half: this person now pays, so their referrer may be owed the
  * top-up.
  *
@@ -195,14 +237,20 @@ async function isActivated(db: Db, inviteeId: string): Promise<boolean> {
  * `subscribedAt` until their first real message, and both awards land in one
  * call. That ordering is what stops a stolen card on a throwaway account being
  * worth four thousand tokens for no human effort.
+ *
+ * Called from both billing paths — the webhook and `/billing/refresh` — with
+ * whatever entitlement they just wrote, and a no-op unless `isPaidPurchase`.
+ * Safe to call twice: the mark is filtered and the settle latched, which is
+ * how a trial turning into a paid month (a `RENEWAL`, or a refresh that sees
+ * `trial` become `normal`) is caught by whichever path gets there first.
  */
 export async function creditReferrerForSubscription(
   db: Db,
   inviteeId: string,
-  tier: PlanTier,
+  entitlement: HeldEntitlement,
   at: Date,
 ): Promise<void> {
-  if (!isPaidTier(tier)) return
-  await markInviteeSubscribed(db, inviteeId, tier as PaidPlanTier, at)
+  if (!isPaidPurchase(entitlement)) return
+  await markInviteeSubscribed(db, inviteeId, 'pro', at)
   await settleReferral(db, inviteeId, at)
 }

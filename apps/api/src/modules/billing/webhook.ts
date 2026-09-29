@@ -3,6 +3,7 @@ import {
   ENTITLEMENT_CANCEL_EVENTS,
   ENTITLEMENT_GRANT_EVENTS,
   ENTITLEMENT_REVOKE_EVENTS,
+  normalizePlanTier,
   tierFromEntitlementIds,
   type RevenueCatEvent,
 } from '@langx/shared'
@@ -110,19 +111,14 @@ export async function processRevenueCatWebhook(
   if (GRANT_SET.has(event.type)) {
     /*
      * A grant event says what just *arrived*, never what the subscriber now
-     * holds, and the two differ. Pro+ products grant `pro` as well as
-     * `pro_plus`, and the v1 loyalty gift hands the two out as separate
-     * promotional grants — so a second `NON_RENEWING_PURCHASE` carrying only
-     * `pro` follows the one that carried `pro_plus`. Written from the event
-     * alone, that second one downgraded every Polyglot to Fluent (observed on
-     * `hi@langx.io`, 4 September 2026: `pro_plus` at 04:58:40.710, `pro` at
-     * 04:58:40.992). So the subscriber record is asked instead, which resolves
-     * the overlap by `ENTITLEMENT_PRECEDENCE` — the same thing `EXPIRATION`
-     * and `TRANSFER` already did, now for every grant. The event-derived
+     * holds, and the two differ: a subscriber can hold a gift, a lifetime and
+     * a subscription at once, and an event names only one of them. So the
+     * subscriber record is asked instead, which resolves the overlap by
+     * `pickEntitlement` — the same thing `EXPIRATION` and `TRANSFER` do. The event-derived
      * write below stays as the fallback for when RevenueCat cannot be asked.
      *
-     * The `INITIAL_PURCHASE` referral credit is not lost on this path:
-     * `refreshEntitlement` pays it on the free → paid transition itself.
+     * The referral credit is not lost on this path: `refreshEntitlement`
+     * pays it on the not-paying → paying transition itself.
      *
      * A record that holds *nothing* is not believed on a grant: the event
      * says something was just bought or given, so an empty answer is a record
@@ -155,8 +151,6 @@ export async function processRevenueCatWebhook(
     // whose `entitlement_ids` we cannot read still means the user bought
     // something; defaulting to free would revoke access on a malformed
     // payload, which is the one direction that is never safe to guess in.
-    // This is also what makes `PRODUCT_CHANGE` — the upgrade/downgrade event —
-    // land on the tier that was actually changed *to* when there is no client.
     const entitlement: Profile['entitlement'] = {
       tier: tier ?? 'pro',
       willRenew: true,
@@ -168,30 +162,28 @@ export async function processRevenueCatWebhook(
     await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
 
     /*
-     * `INITIAL_PURCHASE` and nothing else, and this is the only place in the
-     * system where that distinction exists — the client's `POST
-     * /billing/refresh` fallback sees a tier, never an event.
-     * `ENTITLEMENT_GRANT_EVENTS` also contains RENEWAL, PRODUCT_CHANGE,
-     * UNCANCELLATION and four more; every one of them is a grant and none of
-     * them is somebody starting to pay for the first time.
+     * Any grant event, once the entitlement it wrote is one somebody pays
+     * for — a first purchase, or the `RENEWAL` that turns a free week into a
+     * charged month. It used to be `INITIAL_PURCHASE` alone, which is also
+     * the event for starting a trial, so a free week somebody cancelled on
+     * day six paid their referrer in full. `creditReferrerForSubscription`
+     * checks `isPaidPurchase` and is idempotent, so a redelivery or the
+     * client's refresh racing this pays once.
      *
      * Failure is swallowed for the reason `grantWelcomePack`'s is: the
      * subscription is what the user paid for and it is already recorded above,
      * and losing a referral top-up to a transient write is not worth failing
-     * the webhook RevenueCat is waiting on. `settleReferral` is idempotent, so
-     * the client's refresh picks it up.
+     * the webhook RevenueCat is waiting on.
      */
-    if (event.type === 'INITIAL_PURCHASE') {
-      try {
-        await creditReferrerForSubscription(db, userId, entitlement.tier, now)
-      } catch (error) {
-        console.error('[referral] subscription credit failed', { userId, error })
-      }
+    try {
+      await creditReferrerForSubscription(db, userId, entitlement, now)
+    } catch (error) {
+      console.error('[referral] subscription credit failed', { userId, error })
     }
   } else if (REVOKE_SET.has(event.type)) {
     // An EXPIRATION says something ended — never what is left. A subscriber
-    // whose Pro+ lapses while a separate Pro subscription runs on must land on
-    // `pro`, and no field on this event can tell us that. So ask RevenueCat
+    // whose subscription lapses while a gift or a second one runs on must
+    // land on `pro`, and no field on this event can tell us that. So ask RevenueCat
     // what they hold *now*; only if that is impossible (no secret key, or the
     // API is down) do we fall back to the event's own pessimistic reading.
     if (!client || !(await reconciled(db, client, userId))) {
@@ -219,7 +211,8 @@ export async function processRevenueCatWebhook(
     if (previousTier !== 'free') {
       await profiles.updateOne(
         { _id: userId },
-        { $set: { churnedFrom: { tier: previousTier, at: now } } },
+        // Normalized: a Polyglot row not yet merged fell from Pro.
+        { $set: { churnedFrom: { tier: normalizePlanTier(previousTier), at: now } } },
       )
     }
   } else if (CANCEL_SET.has(event.type)) {

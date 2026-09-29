@@ -221,14 +221,15 @@ export const emailRoutes: FastifyPluginAsyncZod = async (app) => {
       // Spent before the account is touched, and only once: a token that
       // survived its own use would delete an account a second time for anyone
       // the mail was later forwarded to.
-      if (!userId || !token || !(await burnDeletionToken(app.mongo.db, token))) {
+      const spent = userId && token ? await burnDeletionToken(app.mongo.db, token) : null
+      if (!userId || !spent) {
         return reply
           .code(400)
           .type('text/html; charset=utf-8')
           .send(page(locale, 'LangX', `<p>${escapeHtml(t('email.deleteInvalid'))}</p>`))
       }
 
-      const status = await requestDeletion(app.mongo.db, userId)
+      const status = await requestDeletion(app.mongo.db, userId, spent.feedback)
       return reply.type('text/html; charset=utf-8').send(
         page(
           locale,

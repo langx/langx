@@ -6,7 +6,6 @@ import {
   levelRank,
   NEARBY_RADIUS_OPTIONS_KM,
   TIER_BADGES,
-  tierUnlocking,
   type Gender,
   type LanguageLevel,
 } from '@langx/shared'
@@ -51,10 +50,8 @@ type GenderChoice = 'any' | Gender
  */
 function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
   const styles = useStyles()
-  // Names the plan that actually unlocks this row rather than a fixed word, so
-  // moving a filter between tiers moves the tag with it. `tierUnlocking` reads
-  // the real table, which is why it can be trusted to stay right.
-  const badge = TIER_BADGES[tierUnlocking('advancedFilters') ?? 'free']
+  // The one paid plan's mark, from the shared table rather than a typed word.
+  const badge = TIER_BADGES.pro
 
   return (
     <View style={styles.sectionHead}>
@@ -75,8 +72,8 @@ export default function FiltersScreen() {
   const params = useLocalSearchParams<Record<string, string>>()
   const me = useMe()
   /*
-   * `advancedFilters`, not "any paid plan". Correct by accident while every
-   * gated filter was Fluent's; correct by construction now. On discover it is
+   * `advancedFilters`, not "any paid plan" — a question about the capability,
+   * so it stays right whatever the plans are called. On discover it is
    * load-bearing: this decides whether to strip Pro filters before asking, and
    * if it disagrees with the server the reader gets a 403 instead of a list.
    */
@@ -351,7 +348,7 @@ export default function FiltersScreen() {
           nearest-first for as far as there are people.
 
           Free, and not because it is cheap: it is a parameter of a sort that
-          is already Polyglot's, so charging for it would be a second gate on
+          is already Pro's, so charging for it would be a second gate on
           one feature. The hint says which sort it reaches rather than the
           screen hiding it, for the same reason the locked sections are shown.
         */}

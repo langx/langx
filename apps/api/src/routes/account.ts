@@ -26,6 +26,7 @@ import { deleteAccountEmail } from '../email/templates'
 import { localeFromHeader } from '../i18n'
 import { emailFor } from '../modules/profiles/emailFor'
 import { deletionConfirmUrl, mintDeletionToken } from '../modules/account/deletionTokens'
+import { feedbackFrom } from '../modules/account/deletionFeedback'
 import { nativeLocaleFor } from '../modules/profiles/localeFor'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -34,7 +35,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
     '/me/delete',
     { preHandler: requireMember, schema: { body: deleteAccountSchema } },
     async (request, reply) => {
-      const status = await requestDeletion(app.mongo.db, request.userId, request.body.reason)
+      const status = await requestDeletion(app.mongo.db, request.userId, feedbackFrom(request.body))
       return reply.send(status)
     },
   )
@@ -218,7 +219,12 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
         return reply.send({ sent: false, deliverable: false })
       }
 
-      const token = await mintDeletionToken(app.mongo.db, request.userId)
+      const token = await mintDeletionToken(
+        app.mongo.db,
+        request.userId,
+        new Date(),
+        feedbackFrom(request.body),
+      )
       // The one mail sent while signed in, so the request can say what the
       // account cannot: native language first, then the language the app is
       // being read in, and English only when neither answers — the same

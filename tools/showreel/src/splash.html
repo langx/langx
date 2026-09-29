@@ -248,7 +248,16 @@
   Its length is in beats at 120 BPM, so 5.4 is 2.7 s.
 -->
 <script>
-  window.REEL_PLAN = [{ id: 'splash', title: 'Launch', start: 0, dur: 5.4, ground: '#ffc409' }]
+  // `?theme=dark` is the night cut: the app's dark ground instead of the yellow.
+  window.REEL_PLAN = [
+    {
+      id: 'splash',
+      title: 'Launch',
+      start: 0,
+      dur: 5.4,
+      ground: new URLSearchParams(location.search).get('theme') === 'dark' ? '#1c1f24' : '#ffc409',
+    },
+  ]
 </script>
 <script src="core.js"></script>
 <script src="splash/splash.js"></script>
