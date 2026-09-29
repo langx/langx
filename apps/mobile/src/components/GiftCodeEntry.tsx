@@ -5,6 +5,8 @@ import { KeyboardAvoidingView, Modal, Platform, Pressable, Text, View } from 're
 import { ApiRequestError } from '../api/client'
 import { keys, useRedeemGiftCode } from '../api/queries'
 import { useT, type MessageKey } from '../i18n'
+import { track } from '../lib/analytics'
+import type { GiftCodeOutcome } from '../lib/analyticsEvents'
 import { makeStyles } from '../lib/theme'
 import { KeyboardResizeHost } from './KeyboardResizeHost'
 import { Button } from './ui/Button'
@@ -35,6 +37,24 @@ function errorKey(error: unknown): MessageKey {
     if (error.code === ERROR_CODES.RATE_LIMITED) return 'giftCode.rateLimited'
   }
   return 'giftCode.failed'
+}
+
+/**
+ * The funnel's word for a refusal, or `null` when the server never answered
+ * one — a dropped connection is not an outcome of the code.
+ */
+function outcomeOf(error: unknown): GiftCodeOutcome | null {
+  if (!(error instanceof ApiRequestError)) return null
+  if (error.code === ERROR_CODES.RATE_LIMITED) return 'rate_limited'
+  if (error.code !== ERROR_CODES.GIFT_CODE_REJECTED) return null
+  switch (error.reason) {
+    case 'used':
+    case 'expired':
+    case 'exhausted':
+      return error.reason
+    default:
+      return 'invalid'
+  }
 }
 
 /**
@@ -88,10 +108,16 @@ export function GiftCodeEntry() {
     setError(null)
     try {
       const redeemed = await redeem.mutateAsync(code)
+      track({
+        name: 'gift_code_redeemed',
+        properties: { outcome: 'granted', months: redeemed.months },
+      })
       owed.current = true
       if (redeemed.status === 'granted') close()
       else setPending(true)
     } catch (caught) {
+      const outcome = outcomeOf(caught)
+      if (outcome) track({ name: 'gift_code_redeemed', properties: { outcome, months: null } })
       setError(errorKey(caught))
     }
   }

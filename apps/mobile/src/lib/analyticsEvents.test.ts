@@ -98,6 +98,8 @@ describe('every event survives the sanitizer', () => {
         outcome: 'purchased',
       },
     },
+    { name: 'gift_code_redeemed', properties: { outcome: 'granted', months: 3 } },
+    { name: 'gift_code_redeemed', properties: { outcome: 'rate_limited', months: null } },
     { name: 'review_prompted', properties: { trigger: 'correction' } },
     { name: 'boosted_strip_shown', properties: { count: 4 } },
     { name: 'boosted_strip_tapped', properties: { slot: 0 } },
