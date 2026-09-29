@@ -295,6 +295,25 @@ export const ADMIN = {
     blockedBy: 'blocked by',
     history: 'What we have done',
     noHistory: 'Nothing yet.',
+    gift: {
+      title: 'Give Pro',
+      hint: 'A RevenueCat grant with an end date. They get a message from @langx, a push and a mail in their language.',
+      months: (n: number) => `${n} month${n === 1 ? '' : 's'}`,
+      note: 'Why (for the log — they never see it)',
+      preview: (date: string) =>
+        `Pro until ${date}, counted from the end of any gift they already have.`,
+      subscribed:
+        'They pay for a subscription. A gift does not stop that billing — it only carries Pro on until the date above if the subscription ends. Their message says so too.',
+      lifetime: 'They hold Pro for life. There is nothing to add to that.',
+      give: 'Give Pro',
+      confirm: (who: string, span: string) => `Give ${who} ${span} of Pro?`,
+      given: 'Pro given.',
+      pending: 'Saved — RevenueCat did not answer, so the scheduler will retry it.',
+      already: 'That gift was already given today.',
+      list: 'Gifts',
+      row: (months: number, detail: string) => `${months} mo · ${detail}`,
+      until: (date: string) => `until ${date}`,
+    },
   },
 
   online: {
