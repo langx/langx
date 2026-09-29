@@ -163,8 +163,15 @@ describe('gifts of Pro', () => {
 
       const [message] = await messagesTo(`proGift:${row._id}`)
       // The reader is a Turkish speaker; the letter is in their language.
-      expect(message?.body).toContain(translator('tr')('proGift.introAdmin', { count: 3 }))
-      expect(message?.body).toContain(translator('tr')('proGift.andMore'))
+      // Three paragraphs: why, what Pro opens with "and more" under the list,
+      // and until when. The intro leads, because it is also the push preview.
+      const t = translator('tr')
+      const paragraphs = message?.body.split('\n\n') ?? []
+      expect(paragraphs).toHaveLength(3)
+      expect(paragraphs[0]).toBe(t('proGift.introAdmin', { count: 3 }))
+      expect(paragraphs[1]).toBe(`${t('proGift.perks')}\n${t('proGift.andMore')}`)
+      const [, afterDate] = t('proGift.until', { date: '§' }).split('§')
+      expect(paragraphs[2]?.endsWith(afterDate ?? '§')).toBe(true)
       expect(fanned).toHaveLength(1)
       expect(fanned[0]?.push).toBe(true)
       expect(email.messages).toHaveLength(1)

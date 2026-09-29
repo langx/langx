@@ -218,16 +218,19 @@ gift reminds eleven months after the ledger would have forgotten it.
 | ----------------------------- | ---------------------------------------------------------- | ------------------------------- | -------------------------------------- |
 | **A gift of Pro**             | a gift is granted (operator, streak, referrals, gift code) | @langx message + push + email   | `sender_client_id_unique` + row status |
 | **Your Pro gift ends {date}** | 7 days before the end                                      | @langx message + email, no push | `remindedAt.week` on the row           |
-| **…ends in a day**            | 1 day before the end                                       | @langx message + push           | `remindedAt.day` on the row            |
+| **…ends tomorrow**            | 1 day before the end                                       | @langx message + push           | `remindedAt.day` on the row            |
 | **Your Pro gift has ended**   | the end, if the refresh leaves the account free            | @langx message, no push         | `endedNotifiedAt` on the row           |
 
-The first line of the gift says who gave it — an operator, a 100/365-day
-streak, three invitees who became real users, or a gift code ("Your code
-{CODE} unlocked N months of LangX Pro!", the code in capitals as it is
-stored) — then four things Pro opens, "and more", and the end date. A code's
-gift is granted the moment it is redeemed, from `POST /me/gift-code`, not on
-the next pass. Somebody with a running store subscription is
-told the gift does not pause its billing, only carries Pro on if it ends.
+The letter is three short paragraphs. The first line says who gave it — an
+operator ("🎁 N months of LangX Pro, on us. Thanks for being here!"), a
+100/365-day streak, three invitees who became real users, or a gift code
+("🎟️ Code {CODE} worked: N months of LangX Pro are yours.", the code in
+capitals as it is stored) — and doubles as the push preview. Then four things
+Pro opens, one emoji-led line each, with "…and more." under them, and the end
+date. A code's gift is granted the moment it is redeemed, from
+`POST /me/gift-code`, not on the next pass. Somebody with a running store
+subscription is told it carries on as usual, and that Pro stays until the
+gift's end if it ever stops.
 
 The reminders are **information, not an offer**: when it ends and where the
 plan screen is. A "subscribe now" would be marketing and would need the consent

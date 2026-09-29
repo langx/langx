@@ -524,9 +524,9 @@ export const es: Localized<ServerMessages> = {
     suspensionUpdatedText: 'Tu suspensión de LangX se ha actualizado. {detail}',
     lifetimeGiftSubject: '{plan}, de por vida',
     lifetimeGiftButton: 'Ver mi plan',
-    proGiftSubject: 'Un regalo para ti: LangX Pro',
+    proGiftSubject: '🎁 LangX Pro, de regalo',
     proGiftButton: 'Abrir LangX',
-    proGiftEndingSubject: 'Tu regalo Pro termina el {date}',
+    proGiftEndingSubject: '⏳ Tu regalo Pro termina el {date}',
     proGiftEndingButton: 'Ver mi plan',
   },
 
@@ -545,34 +545,33 @@ export const es: Localized<ServerMessages> = {
   },
   proGift: {
     introAdmin: {
-      one: '¡Enhorabuena! Te regalamos {count} mes de LangX Pro. LangX es completamente de código abierto y queríamos darte las gracias por formar parte de él.',
-      other:
-        '¡Enhorabuena! Te regalamos {count} meses de LangX Pro. LangX es completamente de código abierto y queríamos darte las gracias por formar parte de él.',
+      one: '🎁 {count} mes de LangX Pro, de regalo. ¡Gracias por estar aquí!',
+      other: '🎁 {count} meses de LangX Pro, de regalo. ¡Gracias por estar aquí!',
     },
     introReferral: {
-      one: '{friends} amigos que invitaste ya están hablando en LangX: ¡{count} mes de Pro es tuyo!',
+      one: '🎉 {friends} amigos que invitaste ya hablan en LangX. ¡{count} mes de Pro es tuyo!',
       other:
-        '{friends} amigos que invitaste ya están hablando en LangX: ¡{count} meses de Pro son tuyos!',
+        '🎉 {friends} amigos que invitaste ya hablan en LangX. ¡{count} meses de Pro son tuyos!',
     },
     introStreak: {
-      one: '¡Una racha de {days} días! {count} mes de Pro, de nuestra parte.',
-      other: '¡Una racha de {days} días! {count} meses de Pro, de nuestra parte.',
+      one: '🔥 ¡{days} días seguidos! Aquí tienes {count} mes de Pro para seguir así.',
+      other: '🔥 ¡{days} días seguidos! Aquí tienes {count} meses de Pro para seguir así.',
     },
     introCode: {
-      one: '¡Tu código {code} desbloqueó {count} mes de LangX Pro!',
-      other: '¡Tu código {code} desbloqueó {count} meses de LangX Pro!',
+      one: '🎟️ El código {code} funcionó: {count} mes de LangX Pro es tuyo.',
+      other: '🎟️ El código {code} funcionó: {count} meses de LangX Pro son tuyos.',
     },
     perks:
-      'Con Pro puedes:\n• empezar tantas conversaciones como quieras\n• traducir mucho más cada día\n• ver quién visitó tu perfil y navegar sin que te vean\n• destacar en Descubrir y filtrar por género y ciudad',
-    andMore: '…y mucho más.',
-    until: 'Tu Pro dura hasta el {date}.',
+      'Ahora puedes:\n💬 empezar conversaciones nuevas sin límite\n🌍 traducir mucho más cada día\n👀 ver quién visitó tu perfil y navegar sin que te vean\n✨ destacar en Descubrir y filtrar por género y ciudad',
+    andMore: '…y más.',
+    until: 'Disfrútalo hasta el {date}. 💛',
     untilPaying:
-      'No pausa ni cambia la facturación de tu suscripción, pero si tu suscripción termina algún día, Pro sigue hasta el {date}.',
+      'Tu suscripción sigue como siempre, y si algún día termina, Pro se queda hasta el {date}.',
     reminderWeek:
-      'Para que lo sepas: tu regalo Pro termina el {date}. Si quieres seguir con Pro después, en la app tienes las opciones en Ajustes → Suscripción.',
-    reminderDay: 'Tu regalo Pro termina en un día, el {date}.',
+      '⏳ Aviso: tu regalo Pro termina el {date}. Tus opciones de plan están en Ajustes → Suscripción.',
+    reminderDay: '⏳ Tu regalo Pro termina mañana, el {date}.',
     ended:
-      'Tu regalo Pro ha terminado. Gracias por pasarlo con nosotros; esperamos que te haya ayudado a practicar. 💛',
+      'Tu regalo Pro ha terminado. Gracias por practicar con nosotros. ¡Nos vemos en los chats! 💛',
   },
   reportReason: {
     spam: 'Spam',
