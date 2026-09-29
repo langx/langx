@@ -2384,6 +2384,26 @@ export const es: Localized<EnMessages> = {
     start: 'Empezar a explorar',
   },
 
+  giftCode: {
+    link: '¿Tienes un código de regalo?',
+    title: 'Canjear un código de regalo',
+    body: 'Un código de regalo te da meses de LangX Pro. Escríbelo tal como lo recibiste; da igual si usas mayúsculas o minúsculas.',
+    label: 'Código de regalo',
+    redeem: 'Canjear',
+    close: 'Cerrar',
+    pending: 'Tu código funcionó. Pro se activará en unos minutos.',
+    unknown: 'No encontramos ese código. Revisa cómo está escrito y vuelve a intentarlo.',
+    inactive: 'Ese código ya no está activo.',
+    expired: 'Ese código ha caducado.',
+    exhausted: 'Ese código ya se ha agotado.',
+    used: 'Ya has usado este código.',
+    lifetime: 'Ya tienes Pro de por vida, así que no hay nada que añadir.',
+    official: 'Esta cuenta no puede canjear códigos de regalo.',
+    unavailable: 'Los códigos de regalo no están disponibles ahora mismo.',
+    rateLimited: 'Demasiados intentos. Espera un rato y vuelve a intentarlo.',
+    failed: 'Algo salió mal. Inténtalo de nuevo.',
+  },
+
   pickers: {
     searchCountries: 'Buscar países',
     noCountryMatch: 'Ningún país coincide con «{query}»',

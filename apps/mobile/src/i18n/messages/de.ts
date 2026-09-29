@@ -2428,6 +2428,27 @@ export const de: Localized<EnMessages> = {
     start: 'Jetzt entdecken',
   },
 
+  giftCode: {
+    link: 'Hast du einen Geschenkcode?',
+    title: 'Geschenkcode einlösen',
+    body: 'Ein Geschenkcode schenkt dir Monate LangX Pro. Gib ihn so ein, wie du ihn bekommen hast — Groß- und Kleinschreibung ist egal.',
+    label: 'Geschenkcode',
+    redeem: 'Einlösen',
+    close: 'Schließen',
+    pending: 'Dein Code hat funktioniert. Pro wird in ein paar Minuten freigeschaltet.',
+    unknown:
+      'Diesen Code haben wir nicht gefunden. Prüfe die Schreibweise und versuch es noch einmal.',
+    inactive: 'Dieser Code ist nicht mehr aktiv.',
+    expired: 'Dieser Code ist abgelaufen.',
+    exhausted: 'Dieser Code ist bereits aufgebraucht.',
+    used: 'Du hast diesen Code schon eingelöst.',
+    lifetime: 'Du hast Pro schon auf Lebenszeit, da gibt es nichts hinzuzufügen.',
+    official: 'Dieses Konto kann keine Geschenkcodes einlösen.',
+    unavailable: 'Geschenkcodes sind gerade nicht verfügbar.',
+    rateLimited: 'Zu viele Versuche. Warte eine Weile und versuch es dann noch einmal.',
+    failed: 'Etwas ist schiefgelaufen. Bitte versuch es noch einmal.',
+  },
+
   pickers: {
     searchCountries: 'Länder suchen',
     noCountryMatch: 'Kein Land passt zu „{query}“',

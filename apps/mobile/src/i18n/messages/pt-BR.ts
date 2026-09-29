@@ -2384,6 +2384,26 @@ export const ptBR: Localized<EnMessages> = {
     start: 'Começar a explorar',
   },
 
+  giftCode: {
+    link: 'Tem um código de presente?',
+    title: 'Resgatar um código de presente',
+    body: 'Um código de presente dá a você meses de LangX Pro. Digite como você recebeu — maiúsculas e minúsculas não importam.',
+    label: 'Código de presente',
+    redeem: 'Resgatar',
+    close: 'Fechar',
+    pending: 'Seu código funcionou. O Pro será ativado em alguns minutos.',
+    unknown: 'Não encontramos esse código. Confira a grafia e tente de novo.',
+    inactive: 'Esse código não está mais ativo.',
+    expired: 'Esse código expirou.',
+    exhausted: 'Esse código já se esgotou.',
+    used: 'Você já usou este código.',
+    lifetime: 'Você já tem Pro vitalício, então não há nada a acrescentar.',
+    official: 'Esta conta não pode resgatar códigos de presente.',
+    unavailable: 'Os códigos de presente não estão disponíveis agora.',
+    rateLimited: 'Tentativas demais. Espere um pouco e tente de novo.',
+    failed: 'Algo deu errado. Tente de novo.',
+  },
+
   pickers: {
     searchCountries: 'Buscar países',
     noCountryMatch: 'Nenhum país corresponde a “{query}”',

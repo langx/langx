@@ -2381,6 +2381,26 @@ export const tr: Localized<EnMessages> = {
     start: 'Keşfetmeye başla',
   },
 
+  giftCode: {
+    link: 'Hediye kodun var mı?',
+    title: 'Hediye kodunu kullan',
+    body: 'Hediye kodu sana aylarca LangX Pro verir. Kodu aldığın gibi yaz — büyük küçük harf fark etmez.',
+    label: 'Hediye kodu',
+    redeem: 'Kullan',
+    close: 'Kapat',
+    pending: 'Kodun işe yaradı. Pro birkaç dakika içinde açılacak.',
+    unknown: 'Bu kodu bulamadık. Yazımını kontrol edip tekrar dene.',
+    inactive: 'Bu kod artık geçerli değil.',
+    expired: 'Bu kodun süresi dolmuş.',
+    exhausted: 'Bu kodun kullanım hakkı bitti.',
+    used: 'Bu kodu zaten kullandın.',
+    lifetime: 'Zaten ömür boyu Pro’n var, eklenecek bir şey yok.',
+    official: 'Bu hesap hediye kodu kullanamaz.',
+    unavailable: 'Hediye kodları şu anda kullanılamıyor.',
+    rateLimited: 'Çok fazla deneme. Biraz bekleyip tekrar dene.',
+    failed: 'Bir şeyler ters gitti. Lütfen tekrar dene.',
+  },
+
   pickers: {
     searchCountries: 'Ülke ara',
     noCountryMatch: '“{query}” ile eşleşen ülke yok',

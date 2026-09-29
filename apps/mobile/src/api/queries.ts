@@ -1,5 +1,6 @@
 import {
   type AccountDeletionReason,
+  type GiftCodeRedeemResult,
   type FeedbackInput,
   type LinkPreviewResponse,
   type SharedProfile,
@@ -759,6 +760,20 @@ export function useAckProWelcome() {
         return rest
       })
     },
+  })
+}
+
+/**
+ * Redeems a gift code for months of Pro.
+ *
+ * `me` is not refetched here but by the caller, once its own sheet has gone:
+ * the grant leaves a `proWelcome` on the profile, the refetch is what opens
+ * the celebration, and on iOS a second modal presented while the first is
+ * still up is silently never shown. See `GiftCodeEntry`.
+ */
+export function useRedeemGiftCode() {
+  return useMutation({
+    mutationFn: (code: string) => api.post<GiftCodeRedeemResult>('/me/gift-code', { code }),
   })
 }
 
