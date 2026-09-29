@@ -1384,4 +1384,82 @@ describe('the operator panel', () => {
       expect(row?.payload).toEqual({ platform: 'web', version: '2.3' })
     })
   })
+
+  describe('POST /admin/app-config/min-version', () => {
+    it('forces an update on a build below it, once the store has that build', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/latest-version', { platform: 'android', version: '2.8' })
+
+      const response = await post(admin, '/admin/app-config/min-version', {
+        platform: 'android',
+        version: '2.8',
+      })
+      expect(response.statusCode).toBe(200)
+      expect(response.json<AppConfig>().minVersion.android).toBe('2.8')
+
+      const old = await app.inject({
+        method: 'GET',
+        url: '/app-config',
+        headers: { [APP_VERSION_HEADER]: '2.7', [APP_PLATFORM_HEADER]: 'android' },
+      })
+      expect(old.json<AppConfigResponse>().updateRequired).toBe(true)
+
+      const current = await app.inject({
+        method: 'GET',
+        url: '/app-config',
+        headers: { [APP_VERSION_HEADER]: '2.8', [APP_PLATFORM_HEADER]: 'android' },
+      })
+      expect(current.json<AppConfigResponse>().updateRequired).toBe(false)
+
+      // Put back, so the tests after this one are not gated.
+      await post(admin, '/admin/app-config/min-version', { platform: 'android', version: '0.0.0' })
+    })
+
+    it('refuses a minimum above the latest version, which nobody could install', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/latest-version', { platform: 'ios', version: '2.8' })
+
+      const response = await post(admin, '/admin/app-config/min-version', {
+        platform: 'ios',
+        version: '2.9',
+      })
+      expect(response.statusCode).toBe(400)
+      expect(
+        (await get(admin, '/admin/stats')).json<AdminStats>().system.config.minVersion.ios,
+      ).not.toBe('2.9')
+    })
+
+    it('refuses something that is not a version', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const response = await post(admin, '/admin/app-config/min-version', {
+        platform: 'ios',
+        version: 'latest',
+      })
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('is not something an ordinary member can do', async () => {
+      const member = await newUser()
+      const response = await post(member, '/admin/app-config/min-version', {
+        platform: 'ios',
+        version: '0.0.1',
+      })
+      expect(response.statusCode).toBe(403)
+    })
+
+    it('leaves a trace in the audit log', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/latest-version', { platform: 'web', version: '2.8' })
+      await post(admin, '/admin/app-config/min-version', { platform: 'web', version: '0.0.0' })
+
+      const row = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .findOne({ action: 'appConfig.minVersion', adminId: admin.userId })
+      expect(row?.payload).toEqual({ platform: 'web', version: '0.0.0' })
+    })
+  })
 })

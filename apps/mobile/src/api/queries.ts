@@ -50,6 +50,7 @@ import {
   NOTIFICATIONS_PAGE_SIZE_MAX,
   type ShareCardResult,
   type AdminLatestVersionInput,
+  type AdminMinVersionInput,
   type AppConfig,
   ERROR_CODES,
   type MessageSpeech,
@@ -3197,6 +3198,18 @@ export function useAdminSetLatestVersion() {
   return useMutation({
     mutationFn: (input: AdminLatestVersionInput) =>
       api.post<AppConfig>('/admin/app-config/latest-version', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+/** Raising the forced-update floor for one platform — same shape as the banner. */
+export function useAdminSetMinVersion() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: AdminMinVersionInput) =>
+      api.post<AppConfig>('/admin/app-config/min-version', input),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },
