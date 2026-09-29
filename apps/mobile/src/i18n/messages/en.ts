@@ -1098,6 +1098,8 @@ export const en = {
     unmute: 'Unmute',
     /** Read aloud for the bell-off mark on a muted row. */
     muted: 'Muted',
+    /** Read aloud for the reply arrow on a thread that was read and not answered. */
+    awaitingReply: 'Waiting for your reply',
     unrepliedEmptyTitle: 'Nothing waiting on you',
     unrepliedEmptyBody: 'Every chat has had your reply.',
     archivedEmptyTitle: 'No archived chats',

@@ -958,6 +958,7 @@ export const ptBR: Localized<EnMessages> = {
     mute: 'Silenciar',
     unmute: 'Ativar som',
     muted: 'Silenciada',
+    awaitingReply: 'Aguardando sua resposta',
     unrepliedEmptyTitle: 'Nada esperando por você',
     unrepliedEmptyBody: 'Você respondeu a todas as conversas.',
     archivedEmptyTitle: 'Nenhuma conversa arquivada',

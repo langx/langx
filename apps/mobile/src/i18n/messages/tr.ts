@@ -959,6 +959,7 @@ export const tr: Localized<EnMessages> = {
     mute: 'Sessize al',
     unmute: 'Sesi aç',
     muted: 'Sessize alındı',
+    awaitingReply: 'Cevabını bekliyor',
     unrepliedEmptyTitle: 'Sıra sende olan yok',
     unrepliedEmptyBody: 'Her sohbete cevap vermişsin.',
     archivedEmptyTitle: 'Arşivde sohbet yok',

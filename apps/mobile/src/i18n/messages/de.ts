@@ -971,6 +971,7 @@ export const de: Localized<EnMessages> = {
     mute: 'Stummschalten',
     unmute: 'Ton an',
     muted: 'Stummgeschaltet',
+    awaitingReply: 'Wartet auf deine Antwort',
     unrepliedEmptyTitle: 'Nichts wartet auf dich',
     unrepliedEmptyBody: 'Auf jeden Chat hast du geantwortet.',
     archivedEmptyTitle: 'Kein archivierter Chat',
