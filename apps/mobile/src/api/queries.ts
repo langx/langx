@@ -313,6 +313,8 @@ export const keys = {
   adminAppeals: ['admin', 'appeals'] as const,
   adminFeedback: (status: string) => ['admin', 'feedback', status] as const,
   adminFeedbackItem: (id: string) => ['admin', 'feedback', 'one', id] as const,
+  adminGiftCodes: ['admin', 'giftCodes'] as const,
+  adminGiftCode: (id: string) => ['admin', 'giftCodes', id] as const,
   adminBroadcasts: ['admin', 'broadcasts'] as const,
   adminBroadcast: (id: string) => ['admin', 'broadcasts', id] as const,
   adminUser: (q: string) => ['admin', 'user', q] as const,
@@ -3327,6 +3329,73 @@ export function useAdminCloseFeedback() {
       }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export interface AdminGiftCodeDto {
+  _id: string
+  code: string
+  months: number
+  maxRedemptions: number | null
+  redemptions: number
+  expiresAt: string | null
+  active: boolean
+  createdBy: string
+  createdAt: string
+  note?: string
+}
+
+export interface AdminGiftCodeDetailDto {
+  code: AdminGiftCodeDto
+  redemptions: {
+    userId: string
+    handle: string | null
+    displayName: string | null
+    at: string
+    giftStatus: string | null
+  }[]
+}
+
+export function useAdminGiftCodes() {
+  return useQuery({
+    queryKey: keys.adminGiftCodes,
+    queryFn: () => api.get<{ items: AdminGiftCodeDto[] }>('/admin/gift-codes'),
+  })
+}
+
+export function useAdminGiftCode(id: string) {
+  return useQuery({
+    queryKey: keys.adminGiftCode(id),
+    queryFn: () => api.get<AdminGiftCodeDetailDto>(`/admin/gift-codes/${id}`),
+    enabled: id.length > 0,
+  })
+}
+
+export function useAdminCreateGiftCode() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: {
+      code: string
+      months: number
+      maxRedemptions: number | null
+      expiresAt: string | null
+      note?: string
+    }) => api.post<AdminGiftCodeDto>('/admin/gift-codes', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.adminGiftCodes })
+    },
+  })
+}
+
+export function useAdminSetGiftCodeActive() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; active: boolean }) =>
+      api.patch<AdminGiftCodeDto>(`/admin/gift-codes/${input.id}`, { active: input.active }),
+    // The whole tree: the list shows the switch, and so does the detail.
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.adminGiftCodes })
     },
   })
 }
