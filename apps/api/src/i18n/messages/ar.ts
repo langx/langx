@@ -588,6 +588,14 @@ export const ar: Localized<ServerMessages> = {
       many: 'سلسلة من {days} يومًا! {count} شهرًا من Pro هدية منّا.',
       other: 'سلسلة من {days} يومًا! {count} شهر من Pro هدية منّا.',
     },
+    introCode: {
+      zero: 'فتح رمزك {code} {count} شهر من LangX Pro!',
+      one: 'فتح رمزك {code} شهرًا واحدًا من LangX Pro!',
+      two: 'فتح رمزك {code} شهرين من LangX Pro!',
+      few: 'فتح رمزك {code} {count} أشهر من LangX Pro!',
+      many: 'فتح رمزك {code} {count} شهرًا من LangX Pro!',
+      other: 'فتح رمزك {code} {count} شهر من LangX Pro!',
+    },
     perks:
       'مع Pro يمكنك:\n• بدء أي عدد تريده من المحادثات\n• ترجمة المزيد بكثير كل يوم\n• معرفة من زار ملفك الشخصي، والتصفح دون أن يراك أحد\n• الظهور بشكل مميز في «استكشاف» والتصفية حسب الجنس والمدينة',
     andMore: '…والمزيد بكثير.',

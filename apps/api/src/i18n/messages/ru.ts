@@ -586,6 +586,12 @@ export const ru: Localized<ServerMessages> = {
       many: 'Серия {days} дней! {count} месяцев Pro от нас.',
       other: 'Серия {days} дней! {count} месяца Pro от нас.',
     },
+    introCode: {
+      one: 'Твой код {code} открыл {count} месяц LangX Pro!',
+      few: 'Твой код {code} открыл {count} месяца LangX Pro!',
+      many: 'Твой код {code} открыл {count} месяцев LangX Pro!',
+      other: 'Твой код {code} открыл {count} месяца LangX Pro!',
+    },
     perks:
       'С Pro ты можешь:\n• начинать сколько угодно разговоров\n• переводить гораздо больше каждый день\n• видеть, кто смотрел твой профиль, и заходить незаметно\n• выделяться в «Поиске» и фильтровать по полу и городу',
     andMore: '…и многое другое.',

@@ -24,8 +24,8 @@ import { refreshEntitlement } from './refresh'
 import type { RevenueCatClient } from './revenueCatClient'
 
 /**
- * Months of Pro, given rather than bought — by an operator, for a streak, or
- * for invitees who became real users.
+ * Months of Pro, given rather than bought — by an operator, for a streak,
+ * for invitees who became real users, or for a gift code (`giftCodes.ts`).
  *
  * **A row first, RevenueCat second.** Every door writes a `proGifts` row with
  * a key that says what it is for — `streak:100:<user>`, `referral:<user>:2026:2`,
@@ -62,6 +62,11 @@ export interface ProGift {
   grantedBy?: string
   /** The operator's reason. Never shown to the recipient. */
   note?: string
+  /**
+   * The gift code this came from, as it is spelled in `giftCodes` — the
+   * letter names it back to the person who typed it.
+   */
+  code?: string
   status: ProGiftStatus
   /** `null` until the first attempt decides it; fixed from then on. */
   endsAt: Date | null
@@ -92,6 +97,8 @@ export const proGiftKey = {
   streak: (days: number, userId: string): string => `streak:${days}:${userId}`,
   referral: (userId: string, year: number, slot: number): string =>
     `referral:${userId}:${year}:${slot}`,
+  /** One per person per code; the redemption's own unique index says the same. */
+  code: (codeId: string, userId: string): string => `code:${codeId}:${userId}`,
 }
 
 /** The one entitlement Pro is granted under. */
@@ -138,7 +145,7 @@ export function holdsStoreSubscription(entitlement: Profile['entitlement'] | und
  */
 export async function queueProGift(
   db: Db,
-  input: Pick<ProGift, '_id' | 'userId' | 'months' | 'source' | 'grantedBy' | 'note'>,
+  input: Pick<ProGift, '_id' | 'userId' | 'months' | 'source' | 'grantedBy' | 'note' | 'code'>,
   now: Date = new Date(),
 ): Promise<{ gift: ProGift; created: boolean }> {
   const row: ProGift = {
@@ -148,6 +155,7 @@ export async function queueProGift(
     source: input.source,
     ...(input.grantedBy ? { grantedBy: input.grantedBy } : {}),
     ...(input.note ? { note: input.note } : {}),
+    ...(input.code ? { code: input.code } : {}),
     status: 'pending',
     endsAt: null,
     lockedUntil: now,
@@ -512,6 +520,8 @@ function introFor(gift: ProGift, t: ReturnType<typeof translator>, count: number
       })
     case 'streak':
       return t('proGift.introStreak', { count, days: streakDaysOf(gift._id) })
+    case 'code':
+      return t('proGift.introCode', { count, code: gift.code ?? '' })
   }
 }
 

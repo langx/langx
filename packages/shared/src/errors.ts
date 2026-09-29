@@ -142,6 +142,16 @@ export const ERROR_CODES = {
    */
   LOCATION_REQUIRED: 'LOCATION_REQUIRED',
 
+  // billing
+  /**
+   * A gift code that could not be redeemed. One code with a `reason` from
+   * `GIFT_CODE_REJECTIONS` rather than eight codes, because the client's
+   * answer is the same shape every time — a sentence under the field — and
+   * only the sentence differs. 409: the request was well-formed; the conflict
+   * is with the code's state or the account's.
+   */
+  GIFT_CODE_REJECTED: 'GIFT_CODE_REJECTED',
+
   // generic
   NOT_FOUND: 'NOT_FOUND',
   VALIDATION_FAILED: 'VALIDATION_FAILED',
@@ -218,6 +228,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   CONVERSATION_EXISTS: 409,
   GENDER_CHANGE_TOO_SOON: 409,
   LOCATION_REQUIRED: 409,
+  GIFT_CODE_REJECTED: 409,
   NOT_FOUND: 404,
   VALIDATION_FAILED: 400,
   RATE_LIMITED: 429,

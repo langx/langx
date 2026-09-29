@@ -7,6 +7,8 @@ import {
   adminMessageSchema,
   adminReportListQuerySchema,
   adminFeedbackListQuerySchema,
+  adminGiftCodeCreateSchema,
+  adminGiftCodeUpdateSchema,
   adminGiftProSchema,
   adminSuspendSchema,
   adminUserSearchSchema,
@@ -33,6 +35,13 @@ import {
   proGiftKey,
   queueProGift,
 } from '../modules/billing/proGifts'
+import {
+  createGiftCode,
+  getGiftCode,
+  listGiftCodeRedemptions,
+  listGiftCodes,
+  setGiftCodeActive,
+} from '../modules/billing/giftCodes'
 import {
   countBroadcastAudience,
   createBroadcast,
@@ -634,6 +643,79 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         },
       })
       return reply.send({ created: true, gift: granted })
+    },
+  )
+
+  // ── gift codes ───────────────────────────────────────────────────────────
+
+  /**
+   * Codes worth months of Pro to anybody who types one into the paywall —
+   * see `modules/billing/giftCodes.ts`. Made, listed, switched off and on
+   * here; never deleted, because a redemption names the code it came from
+   * and the count on it is a record of what was given.
+   */
+  app.get('/admin/gift-codes', { preHandler: requireAdmin }, async (_request, reply) => {
+    return reply.send({ items: await listGiftCodes(app.mongo.db) })
+  })
+
+  app.post(
+    '/admin/gift-codes',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminGiftCodeCreateSchema },
+      config: { rateLimit: limit(30, '1 hour') },
+    },
+    async (request, reply) => {
+      const code = await createGiftCode(app.mongo.db, request.body, request.userId)
+      if (!code) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That code already exists')
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'giftCode.create',
+        refId: code._id,
+        payload: {
+          code: code.code,
+          months: code.months,
+          maxRedemptions: code.maxRedemptions,
+          expiresAt: code.expiresAt ? code.expiresAt.toISOString() : null,
+          ...(code.note ? { note: code.note } : {}),
+        },
+      })
+      return reply.code(201).send(code)
+    },
+  )
+
+  app.get(
+    '/admin/gift-codes/:id',
+    { preHandler: requireAdmin, schema: { params: z.object({ id: z.string() }) } },
+    async (request, reply) => {
+      const code = await getGiftCode(app.mongo.db, request.params.id)
+      if (!code) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such code')
+      return reply.send({
+        code,
+        redemptions: await listGiftCodeRedemptions(app.mongo.db, code._id),
+      })
+    },
+  )
+
+  app.patch(
+    '/admin/gift-codes/:id',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: adminGiftCodeUpdateSchema },
+      config: { rateLimit: limit(60, '1 minute') },
+    },
+    async (request, reply) => {
+      const code = await setGiftCodeActive(app.mongo.db, request.params.id, request.body.active)
+      if (!code) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such code')
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: code.active ? 'giftCode.activate' : 'giftCode.deactivate',
+        refId: code._id,
+        payload: { code: code.code },
+      })
+      return reply.send(code)
     },
   )
 
