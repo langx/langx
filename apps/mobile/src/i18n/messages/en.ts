@@ -985,10 +985,11 @@ export const en = {
      * note says so, rather than leaving a list that quietly disagrees with the
      * number that led to it.
      */
-    publicTitle: 'Corrections',
     publicNote: 'Corrections written on posts. What was corrected in a chat stays in that chat.',
     publicEmptyTitle: 'No post corrections yet',
     publicEmptyBody: '@{handle} has not corrected a post here yet.',
+    publicPostsEmptyTitle: 'No posts yet',
+    publicPostsEmptyBody: '@{handle} has not posted here yet.',
   },
   myPosts: {
     emptyTitle: 'Nothing posted yet',

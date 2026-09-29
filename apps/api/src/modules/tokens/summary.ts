@@ -12,6 +12,7 @@ import {
   scoreOf,
 } from './dailyActivity'
 import { countCorrectionsWritten } from './corrections'
+import { countPostsByAuthor } from '../feed/feed'
 import { readAggregates } from './ledger'
 import { readLastPoolPayout } from './pool'
 import { walletOf } from './wallet'
@@ -30,13 +31,14 @@ export async function getTokenSummary(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
-  const [tokens, activity, week, corrections, activeToday, lastPayout] = await Promise.all([
+  const [tokens, activity, week, corrections, posts, activeToday, lastPayout] = await Promise.all([
     readAggregates(db, userId, at),
     readActivity(db, userId, at),
     // The subject's zone, not the reader's: the chart is a statement about
     // their week, so its day letters have to match the days they lived.
     readActivityWeek(db, userId, at, profile.timezone ?? 'UTC'),
     countCorrectionsWritten(db, userId),
+    countPostsByAuthor(db, userId),
     countActiveToday(db, at),
     readLastPoolPayout(db, userId),
   ])
@@ -60,7 +62,7 @@ export async function getTokenSummary(
       activityScore: scoreOf(activity),
     },
     pool: { activeToday, lastPayout },
-    lifetime: { corrections },
+    lifetime: { corrections, posts },
     week,
   }
 }

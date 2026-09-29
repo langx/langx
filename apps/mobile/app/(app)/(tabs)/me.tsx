@@ -306,13 +306,12 @@ export default function MeScreen() {
           valueSize={26}
           onPress={() => router.push('/(app)/streak')}
         />
-        {/* The number was already "corrections I wrote, chat and posts, for
-            life" — exactly the list behind it, so the tile and the screen
-            cannot disagree about what they are counting. */}
+        {/* Corrections written and posts up, for life — the two tabs of the
+            screen behind it, and the same sum a visitor's feed tile shows. */}
         <StatTile
           tone="success"
-          label={`${t('me.corrections')} ›`}
-          value={String(summary?.lifetime.corrections ?? 0)}
+          label={`${t('tabs.feed')} ›`}
+          value={String((summary?.lifetime.corrections ?? 0) + (summary?.lifetime.posts ?? 0))}
           valueSize={26}
           onPress={() => router.push('/(app)/corrections')}
         />

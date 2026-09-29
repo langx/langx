@@ -940,10 +940,11 @@ export const ar: Localized<EnMessages> = {
     tabCorrections: 'التصحيحات',
     tabPosts: 'المنشورات',
     forName: 'لـ {name}',
-    publicTitle: 'التصحيحات',
     publicNote: 'التصحيحات المكتوبة على المنشورات. ما صُحِّح في محادثة يبقى في تلك المحادثة.',
     publicEmptyTitle: 'لا تصحيحات على المنشورات بعد',
     publicEmptyBody: 'لم يصحّح @{handle} أي منشور هنا بعد.',
+    publicPostsEmptyTitle: 'لا منشورات بعد',
+    publicPostsEmptyBody: 'لم ينشر @{handle} شيئًا هنا بعد.',
   },
   myPosts: {
     emptyTitle: 'لم تنشر شيئًا بعد',

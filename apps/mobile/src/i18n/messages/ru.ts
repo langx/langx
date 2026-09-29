@@ -923,11 +923,12 @@ export const ru: Localized<EnMessages> = {
     tabCorrections: 'Исправления',
     tabPosts: 'Публикации',
     forName: 'Для {name}',
-    publicTitle: 'Исправления',
     publicNote:
       'Исправления, написанные к публикациям. Исправленное в переписке остаётся в переписке.',
     publicEmptyTitle: 'Исправлений к публикациям пока нет',
     publicEmptyBody: '@{handle} здесь ещё не исправлял(а) ни одной публикации.',
+    publicPostsEmptyTitle: 'Публикаций пока нет',
+    publicPostsEmptyBody: '@{handle} здесь пока ничего не публиковал(а).',
   },
   myPosts: {
     emptyTitle: 'Вы пока ничего не опубликовали',

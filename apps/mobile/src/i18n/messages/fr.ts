@@ -861,11 +861,12 @@ export const fr: Localized<EnMessages> = {
     tabCorrections: 'Corrections',
     tabPosts: 'Publications',
     forName: 'Pour {name}',
-    publicTitle: 'Corrections',
     publicNote:
       'Corrections écrites sur des publications. Ce qui est corrigé dans une discussion y reste.',
     publicEmptyTitle: 'Pas encore de corrections sur des publications',
     publicEmptyBody: '@{handle} n’a pas encore corrigé de publication ici.',
+    publicPostsEmptyTitle: 'Pas encore de publications',
+    publicPostsEmptyBody: '@{handle} n’a encore rien publié ici.',
   },
   myPosts: {
     emptyTitle: 'Rien publié pour l’instant',

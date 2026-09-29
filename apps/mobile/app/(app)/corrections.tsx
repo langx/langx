@@ -1,5 +1,3 @@
-import Feather from '@expo/vector-icons/Feather'
-import { Image } from 'expo-image'
 import { useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native'
 import { router } from 'expo-router'
@@ -10,9 +8,9 @@ import {
   useMyPosts,
   type MessageDto,
 } from '../../src/api/queries'
-import type { FeedPost } from '../../src/api/types'
-import { attachmentsOf, isImageContentType, type AuthoredCorrection } from '@langx/shared'
+import type { AuthoredCorrection } from '@langx/shared'
 import { LoadFailed } from '../../src/components/LoadFailed'
+import { PostListRow } from '../../src/components/PostListRow'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
@@ -25,8 +23,7 @@ import { relativeTime } from '../../src/lib/format'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { goBackTo, openPost } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
-import { asksOf } from '../../src/lib/postAsks'
-import { makeStyles, useTheme } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -205,7 +202,7 @@ export default function WritingScreen() {
           ListFooterComponent={
             posts.isFetchingNextPage ? <ActivityIndicator style={styles.loading} /> : null
           }
-          renderItem={({ item }) => <PostRow post={item} styles={styles} />}
+          renderItem={({ item }) => <PostListRow post={item} from="/(app)/corrections" />}
         />
       )}
     </Screen>
@@ -246,71 +243,6 @@ function PostCorrectionRow({
       </View>
       <Text style={styles.original}>{correction.original}</Text>
       <Text style={styles.corrected}>{correction.corrected}</Text>
-    </Pressable>
-  )
-}
-
-/**
- * A compact row rather than the feed's card. The card carries a composer, a
- * like button and a correction panel — affordances for acting on *somebody
- * else's* sentence, none of which belong on a list whose whole job is to get
- * you back to your own. Tapping opens the post, where all of it is.
- */
-function PostRow({ post, styles }: { post: FeedPost; styles: ReturnType<typeof useStyles> }) {
-  const t = useT()
-  const { locale } = useLocale()
-  const names = useDisplayNames()
-
-  const { colors } = useTheme()
-
-  /*
-   * Which numbers a row shows follow the post's own asks, not a screen-wide
-   * flag — this is the one list where every kind of post sits side by side.
-   * A count per ask; a moment, which asks for nothing, shows its comments.
-   */
-  const asks = asksOf(post)
-  const counts = [
-    ...(asks.includes('correction')
-      ? [
-          post.correctionCount > 0
-            ? t('feed.corrections', { count: post.correctionCount })
-            : t('feed.noCorrections'),
-        ]
-      : []),
-    ...(asks.includes('pronunciation')
-      ? [
-          (post.answerCount ?? 0) > 0
-            ? t('feed.answers', { count: post.answerCount ?? 0 })
-            : t('feed.noAnswers'),
-        ]
-      : []),
-    ...(asks.length === 0 ? [t('feed.comments', { count: post.commentCount })] : []),
-  ]
-  // A post with no words is its picture, so the row shows that instead.
-  const first = post.body.trim() ? undefined : attachmentsOf(post)[0]
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      onPress={() => openPost(post._id, '/(app)/corrections')}
-      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
-    >
-      <View style={styles.top}>
-        <Text style={styles.language}>{names.language(post.language)}</Text>
-        <Text style={styles.when}>{relativeTime(post.createdAt, { t, locale })}</Text>
-      </View>
-      {first ? (
-        <View style={styles.thumb}>
-          {isImageContentType(first.contentType) ? (
-            <Image source={{ uri: first.url }} style={styles.thumbFill} contentFit="cover" />
-          ) : (
-            <Feather name="video" size={20} color={colors.textMuted} />
-          )}
-        </View>
-      ) : (
-        <Text style={styles.postBody}>{post.body}</Text>
-      )}
-      <Text style={styles.count}>{counts.join(' · ')}</Text>
     </Pressable>
   )
 }
@@ -370,7 +302,7 @@ function Row({
 
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
 
-const useStyles = makeStyles(({ colors, radius, spacing }) => ({
+const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { paddingVertical: spacing.lg },
   list: { paddingTop: spacing.sm },
   row: {
@@ -395,16 +327,4 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   },
   corrected: { color: colors.text, fontSize: 16, fontWeight: '600', lineHeight: 23 },
   language: { color: colors.accent, fontSize: 13, fontWeight: '700' },
-  postBody: { color: colors.text, fontSize: 17, lineHeight: 25 },
-  thumb: {
-    alignItems: 'center',
-    backgroundColor: colors.fill,
-    borderRadius: radius.md,
-    height: 72,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    width: 72,
-  },
-  thumbFill: { height: '100%', width: '100%' },
-  count: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
 }))
