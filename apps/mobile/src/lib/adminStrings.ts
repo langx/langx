@@ -43,6 +43,7 @@ export const ADMIN = {
     feedback: 'Bug reports & ideas',
     broadcast: 'Broadcast',
     users: 'Find someone',
+    giftCodes: 'Gift codes',
     system: 'System',
     waiting: 'waiting',
     sections: {
@@ -396,6 +397,50 @@ export const ADMIN = {
     confirmForce: (platform: string, version: string) =>
       `Block every ${platform} build below ${version} until it updates?`,
     minDone: (platform: string, version: string) => `Minimum ${platform} version is now ${version}`,
+  },
+
+  /**
+   * Codes worth months of Pro to anybody who types one into the paywall.
+   * Time, never money off — the word "discount" does not belong here.
+   */
+  giftCodes: {
+    title: 'Gift codes',
+    hint: 'Anyone can redeem a code once from the paywall’s “Have a gift code?” link. It becomes a gift of Pro: a RevenueCat grant with an end date, and a message from @langx.',
+    newTitle: 'New code',
+    code: 'Code',
+    codeHint:
+      '3 to 32 letters, digits or dashes. Stored in capitals; people can type it in any case.',
+    months: 'Months of Pro',
+    monthsHint: 'Between 1 and 12.',
+    maxRedemptions: 'Redemptions allowed',
+    maxRedemptionsHint: 'Empty means no limit.',
+    expiresAt: 'Last day (YYYY-MM-DD, UTC)',
+    expiresAtHint: 'Empty means it never expires. It stops working at the end of that day.',
+    note: 'Why (for the log — nobody redeeming it sees it)',
+    create: 'Create code',
+    created: 'Code created.',
+    taken: 'That code already exists.',
+    list: 'Codes',
+    empty: 'No codes yet.',
+    used: (used: number, max: number | null) =>
+      max === null ? `${used} used · no limit` : `${used} of ${max} used`,
+    monthsShort: (n: number) => `${n} mo`,
+    until: (date: string) => `until ${date}`,
+    noExpiry: 'no expiry',
+    /** Whether it works right now: switched off wins over past its day. */
+    state: (active: boolean, expired: boolean) =>
+      !active ? 'Off' : expired ? 'Expired' : 'Active',
+    deactivate: 'Switch off',
+    activate: 'Switch on',
+    confirmDeactivate: (code: string) =>
+      `Switch ${code} off? Nobody can redeem it until it is switched on again. Nothing already given is taken back.`,
+    switchedOff: 'Switched off.',
+    switchedOn: 'Switched on.',
+    redemptions: 'Who redeemed it',
+    noRedemptions: 'Nobody yet.',
+    deletedAccount: 'deleted account',
+    createdOn: (date: string) => `Created ${date}`,
+    notFound: 'No such code.',
   },
 
   common: {

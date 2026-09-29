@@ -538,6 +538,10 @@ export const tr: Localized<ServerMessages> = {
       one: '{days} günlük seri! {count} ay Pro bizden.',
       other: '{days} günlük seri! {count} ay Pro bizden.',
     },
+    introCode: {
+      one: '{code} kodun {count} ay LangX Pro açtı!',
+      other: '{code} kodun {count} ay LangX Pro açtı!',
+    },
     perks:
       "Pro ile:\n• istediğin kadar sohbet başlatabilirsin\n• her gün çok daha fazlasını çevirebilirsin\n• profiline kimin baktığını görebilir, görünmeden gezinebilirsin\n• Keşfet'te öne çıkabilir, cinsiyete ve şehre göre filtreleyebilirsin",
     andMore: '…ve çok daha fazlası.',

@@ -23,6 +23,10 @@ export type SignUpMethod = 'email' | 'google' | 'apple' | 'facebook' | 'discord'
 /** What a guest was trying to do when the account gate stopped them. */
 export type GuestGateAction = 'message' | 'like' | 'follow' | 'post' | 'echo' | 'other'
 
+/** What became of a gift code redemption, as `gift_code_redeemed` reports it. */
+export type GiftCodeOutcome =
+  'granted' | 'invalid' | 'used' | 'expired' | 'exhausted' | 'rate_limited'
+
 /**
  * Which exposure a paywall view is.
  *
@@ -162,6 +166,18 @@ export type AnalyticsEvent =
         trial_days: number | null
         outcome: PurchaseOutcome
       }
+    }
+  | {
+      /**
+       * A gift code was sent from the paywall's "Have a gift code?" sheet and
+       * the server answered. Never the code itself: a code is a thing worth
+       * money to whoever reads it off a dashboard. `invalid` is every refusal
+       * that is not one of the named ones — unknown, switched off, a lifetime
+       * holder, an official account. A request that never reached the
+       * server is not an outcome and is not sent.
+       */
+      name: 'gift_code_redeemed'
+      properties: { outcome: GiftCodeOutcome; months: number | null }
     }
   | {
       /**

@@ -1,4 +1,5 @@
 import {
+  aggregateId,
   asksOf,
   attachmentsOf,
   ECHO_AUDIO_MAX,
@@ -22,6 +23,7 @@ import {
   type LinkEchoAskInput,
   type ListEchoCardsQuery,
   newCardSrs,
+  periodKeys,
   sourceKeyOf,
   SRS_RULES,
   translatableLanguageSchema,
@@ -50,7 +52,7 @@ import { blockedUserIds } from '../moderation/blocks'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
 import { lookupTranslation, rememberTranslation } from '../translation/translate'
-import { toEchoCard, type EchoCardDoc } from './documents'
+import { toEchoCard, type EchoAggregate, type EchoCardDoc } from './documents'
 
 /**
  * What a capture needs from outside the database.
@@ -1024,7 +1026,7 @@ export async function summary(
   // wrong, and the Monday reset would be the half nobody expects.
   const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
-  const [byLanguage, reviewedToday, reviewedThisWeek, next] = await Promise.all([
+  const [byLanguage, reviewedToday, reviewedThisWeek, next, allTime] = await Promise.all([
     cards
       .aggregate<{ _id: string; total: number; due: number }>([
         // Archived cards count nowhere: the badge on the tab and the totals
@@ -1050,6 +1052,16 @@ export async function summary(
       { userId, archivedAt: { $exists: false }, 'srs.due': { $gt: now } },
       { sort: { 'srs.due': 1 }, projection: { 'srs.due': 1 } },
     ),
+    // Every card ever answered, off the review board's `all` counter — one
+    // read by `_id` — rather than a count of this person's `echoReviews`,
+    // which only ever grows. The same number the board's "All time" tab
+    // ranks by, so the two cannot disagree.
+    db
+      .collection<EchoAggregate>(COLLECTIONS.echoAggregates)
+      .findOne(
+        { _id: aggregateId(userId, 'all', periodKeys(now).all) },
+        { projection: { reviews: 1 } },
+      ),
   ])
 
   const languages = byLanguage.map((row) => ({ lang: row._id, total: row.total, due: row.due }))
@@ -1059,6 +1071,7 @@ export async function summary(
     languages,
     reviewedToday,
     reviewedThisWeek,
+    reviewedAllTime: allTime?.reviews ?? 0,
     nextDue: next ? next.srs.due.toISOString() : null,
   }
 }

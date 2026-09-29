@@ -1699,7 +1699,6 @@ export const en = {
     shareProfile: 'Share my profile',
     shareMessage: 'Practise languages with me on LangX: {url}',
     badges: 'Badges',
-    echoWeek: 'Echo this week',
     invite: 'Invite a friend',
     inviteBody: 'Earn tokens when they start using LangX',
     dayStreak: 'Day streak',
@@ -2598,6 +2597,31 @@ export const en = {
     bodyMerge: 'Whichever you had, you now have all of it. A few things to try first:',
     andMore: 'and more',
     start: 'Start exploring',
+  },
+
+  /**
+   * "Have a gift code?" under the paywall's button, and the small sheet it
+   * opens. A code gives months of Pro — time, never money off, so none of
+   * this says "discount". The errors answer the API's `reason` one to one.
+   */
+  giftCode: {
+    link: 'Have a gift code?',
+    title: 'Redeem a gift code',
+    body: 'A gift code gives you months of LangX Pro. Type it as you got it — capitals don’t matter.',
+    label: 'Gift code',
+    redeem: 'Redeem',
+    close: 'Close',
+    pending: 'Your code worked. Pro will switch on in a few minutes.',
+    unknown: 'We couldn’t find that code. Check the spelling and try again.',
+    inactive: 'That code isn’t active any more.',
+    expired: 'That code has expired.',
+    exhausted: 'That code has been used up.',
+    used: 'You’ve already used this code.',
+    lifetime: 'You already have Pro for life, so there’s nothing to add.',
+    official: 'This account can’t redeem gift codes.',
+    unavailable: 'Gift codes aren’t available right now.',
+    rateLimited: 'Too many tries. Wait a while, then try again.',
+    failed: 'Something went wrong. Please try again.',
   },
 
   pickers: {

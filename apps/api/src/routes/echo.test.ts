@@ -431,6 +431,7 @@ describe('echo', () => {
       due: 1,
       total: 1,
       languages: [{ lang: 'fr', total: 1, due: 1 }],
+      reviewedAllTime: 0,
     })
   })
 
@@ -482,6 +483,50 @@ describe('echo', () => {
     })
     expect(response.statusCode).toBe(200)
     expect(response.json()).toMatchObject({ reviewedToday: 1, reviewedThisWeek: 2 })
+  })
+
+  it('counts every card ever answered on the summary, once each and only its own', async () => {
+    const [a, b] = await newPair('alltime')
+    const conversation = await startConversation(a, b.userId)
+    const cardId = (
+      await captureMessage(b, conversation._id, await firstMessageId(conversation._id))
+    ).json<{ card: { _id: string } }>().card._id
+
+    const batch = {
+      reviews: [
+        { reviewId: 'r-alltime-1', cardId, grade: 'good', durationMs: 900 },
+        { reviewId: 'r-alltime-2', cardId, grade: 'good', durationMs: 900 },
+        { reviewId: 'r-alltime-3', cardId, grade: 'good', durationMs: 900 },
+      ],
+    }
+    const submit = () =>
+      app.inject({
+        method: 'POST',
+        url: '/echo/reviews',
+        headers: { cookie: b.cookie },
+        payload: batch,
+      })
+    expect((await submit()).statusCode).toBe(200)
+    // The retry a dropped network makes: every row is a duplicate, so the
+    // counter must not move.
+    expect((await submit()).statusCode).toBe(200)
+
+    // A year old is outside every window but this one.
+    await handle.db
+      .collection(COLLECTIONS.echoReviews)
+      .updateOne(
+        { userId: b.userId, reviewId: 'r-alltime-1' },
+        { $set: { at: new Date(Date.now() - 400 * 24 * 60 * 60 * 1000) } },
+      )
+
+    const summary = (cookie: string) =>
+      app.inject({ method: 'GET', url: '/echo/summary', headers: { cookie } })
+    const own = await summary(b.cookie)
+    expect(own.statusCode).toBe(200)
+    expect(own.json()).toMatchObject({ reviewedThisWeek: 2, reviewedAllTime: 3 })
+
+    // The partner answered nothing; somebody else's counter is not theirs.
+    expect((await summary(a.cookie)).json()).toMatchObject({ reviewedAllTime: 0 })
   })
 
   it('refuses a message type with no sentence on it', async () => {

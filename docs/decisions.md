@@ -6250,6 +6250,36 @@ dot springs, with a selection haptic; nothing else moves, and with reduced
 motion nothing moves at all. No native module was added, so it ships over the
 air.
 
+## Gift codes give time, not discounts
+
+An operator can hand out a code — `UBER` on a partner's newsletter, a word on
+a poster — and anybody can type it once under the paywall's button, "Have a
+gift code?", for months of Pro. It is never a percentage off a price.
+
+**Because one of the three stores cannot do the other thing.** Google Play has
+no percent-off code for a subscription; App Store offer codes and a web coupon
+would each work in their own store and nowhere else, so a code printed once
+would mean three different things depending on the phone that read it. Months
+of Pro granted by us work identically everywhere, need nothing from any store,
+and are the gift mechanism the operator panel, the streak and the referral
+rewards already use: a redemption becomes one `proGifts` row
+(`code:<codeId>:<userId>`, `source: 'code'`), with the same stacking, the same
+letter — whose first line names the code — and the same reminders before it
+ends.
+
+**Once per person is an index, the cap is a conditional increment.** The
+redemption row is written first against a unique `{codeId, userId}`; then one
+redemption is taken with `$inc` on a code whose filter still says one is left.
+A claim that loses the last one removes only its own row, so a race on the
+final redemption can never overshoot the cap or disturb anybody else's.
+
+**Guessing is slow on purpose.** Ten attempts per person per rolling hour,
+right or wrong, counted in a TTL'd `giftCodeAttempts`; the eleventh is refused
+without the code being looked at. A lifetime holder and an official account
+are refused, each with its own reason, and so is every other refusal
+(`GIFT_CODE_REJECTED` with `reason`), because "used up" and "you already used
+it" are different sentences.
+
 ## A person's record counts the feed, not corrections
 
 Every per-person and community count that used to be "corrections" is now the

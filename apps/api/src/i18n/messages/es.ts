@@ -558,6 +558,10 @@ export const es: Localized<ServerMessages> = {
       one: '¡Una racha de {days} días! {count} mes de Pro, de nuestra parte.',
       other: '¡Una racha de {days} días! {count} meses de Pro, de nuestra parte.',
     },
+    introCode: {
+      one: '¡Tu código {code} desbloqueó {count} mes de LangX Pro!',
+      other: '¡Tu código {code} desbloqueó {count} meses de LangX Pro!',
+    },
     perks:
       'Con Pro puedes:\n• empezar tantas conversaciones como quieras\n• traducir mucho más cada día\n• ver quién visitó tu perfil y navegar sin que te vean\n• destacar en Descubrir y filtrar por género y ciudad',
     andMore: '…y mucho más.',

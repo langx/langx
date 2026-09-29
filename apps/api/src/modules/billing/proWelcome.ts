@@ -128,6 +128,8 @@ export const GIFT_WELCOME_SOURCE: Record<ProGiftSource, ProWelcomeSource> = {
   admin: 'gift',
   referral: 'referral',
   streak: 'streak',
+  // Somebody else's generosity, like the operator's: the gift title.
+  code: 'gift',
 }
 
 /**

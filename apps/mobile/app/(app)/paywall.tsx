@@ -25,6 +25,7 @@ import {
   View,
 } from 'react-native'
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
+import { GiftCodeEntry } from '../../src/components/GiftCodeEntry'
 import { PlanOption } from '../../src/components/paywall/PlanOption'
 import { Reveal } from '../../src/components/paywall/Reveal'
 import { TrialTimeline, type TrialStep } from '../../src/components/paywall/TrialTimeline'
@@ -770,9 +771,11 @@ export default function PaywallScreen() {
             <Button variant="secondary" label={t('paywall.continueFree')} onPress={dismiss} />
           ) : null}
           {/*
-            Reserved: the "Have a gift code?" link goes here, under the button
-            and above nothing, so it never competes with the purchase itself.
+            The "Have a gift code?" link: under the button and above nothing, so
+            it never competes with the purchase itself. Not for a lifetime
+            holder, whom the server would refuse — there is nothing to add.
           */}
+          {tier !== 'free' && held.store === 'promotional' ? null : <GiftCodeEntry />}
         </View>
       </View>
     </Screen>
