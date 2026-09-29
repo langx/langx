@@ -36,7 +36,15 @@ export type GiftCodeOutcome =
  * person just asked. Keeping them apart is the whole point — mixed together,
  * a conversion rate says nothing about either.
  */
-export const PAYWALL_SOURCES = ['onboarding', 'gate', 'me', 'deeplink', 'first_reply'] as const
+export const PAYWALL_SOURCES = [
+  'onboarding',
+  'gate',
+  'me',
+  'deeplink',
+  'first_reply',
+  'langx',
+  'gift_code',
+] as const
 export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
 
 /**
@@ -535,6 +543,25 @@ export type AnalyticsEvent =
        */
       name: 'pro_welcome_closed'
       properties: { source: ProWelcomeSource; action: 'start' | 'close' }
+    }
+  | {
+      /**
+       * A poll under an `@langx` broadcast was answered and the server
+       * acknowledged it. Both ids are the operator's own slugs, chosen when
+       * the broadcast was written — never a person's choice in their own
+       * words — so they carry no more than a button's label would.
+       */
+      name: 'langx_poll_answered'
+      properties: { poll_id: string; option_id: string }
+    }
+  | {
+      /**
+       * The button on a card under an `@langx` broadcast was tapped. `action`
+       * is which kind of button it was, never the URL or route it opened —
+       * that travels only as far as the device.
+       */
+      name: 'langx_card_tapped'
+      properties: { action: 'storeReview' | 'openUrl' | 'openRoute' }
     }
 
 export type AnalyticsEventName = AnalyticsEvent['name']

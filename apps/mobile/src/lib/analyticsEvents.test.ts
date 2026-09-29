@@ -118,6 +118,8 @@ describe('every event survives the sanitizer', () => {
     { name: 'feed_card_opened', properties: { position: 4, asks: 'both' } },
     { name: 'pro_welcome_shown', properties: { source: 'gift', months: 3 } },
     { name: 'pro_welcome_closed', properties: { source: 'trial', action: 'start' } },
+    { name: 'langx_poll_answered', properties: { poll_id: 'launch-poll', option_id: 'yes' } },
+    { name: 'langx_card_tapped', properties: { action: 'openRoute' } },
   ]
 
   for (const event of events) {
