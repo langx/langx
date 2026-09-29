@@ -1,6 +1,6 @@
 import {
-  ENTITLEMENT_PRECEDENCE,
   ENTITLEMENT_TIERS,
+  type EntitlementId,
   periodTypeOf,
   type BillingPeriodType,
   type PlanTier,
@@ -41,10 +41,9 @@ export interface SubscriberEntitlement {
 
 export interface RevenueCatClient {
   /**
-   * The highest tier this subscriber currently holds, or `null` when they hold
-   * none. "Highest" is `ENTITLEMENT_PRECEDENCE`: Pro+ products grant `pro` as
-   * well as `pro_plus`, so every Pro+ subscriber matches both and one of them
-   * has to win.
+   * The entitlement this subscriber holds that lasts longest, or `null` when
+   * they hold none. See `pickEntitlement` for why "longest" and not a fixed
+   * order of ids.
    */
   getEntitlement(appUserId: string): Promise<SubscriberEntitlement | null>
 
@@ -144,6 +143,46 @@ function isPromotionalLifetime(productId: string): boolean {
   return productId.startsWith('rc_promo_') && productId.endsWith('_lifetime')
 }
 
+/**
+ * A promotional grant with an end date — a gift of some months of Pro.
+ *
+ * Reported with the store `gift`, not RevenueCat's `promotional`, because
+ * every paywall already released reads `promotional` as "lifetime" and would
+ * tell somebody given a month that it is theirs forever. Nothing renews it and
+ * nobody is paying for it.
+ */
+function isPromotionalTimed(productId: string): boolean {
+  return productId.startsWith('rc_promo_') && !productId.endsWith('_lifetime')
+}
+
+/**
+ * Which of several active entitlements to store: the one that ends last, a
+ * lifetime beating any date, and on a tie the one somebody pays for.
+ *
+ * It used to be a fixed order — `pro_plus` before `pro` — which was right
+ * while the two ids were two plans. With one plan behind both it is wrong: a
+ * cancelled Polyglot subscription still running for a week, beside a new Pro
+ * one renewing for a year, would store the week, and the account would drop
+ * to free when it ran out with a paid year left.
+ */
+export function pickEntitlement(
+  candidates: readonly SubscriberEntitlement[],
+): SubscriberEntitlement | null {
+  let best: SubscriberEntitlement | null = null
+  for (const candidate of candidates) {
+    if (!best) {
+      best = candidate
+      continue
+    }
+    const a = candidate.expiresAt?.getTime() ?? Number.POSITIVE_INFINITY
+    const b = best.expiresAt?.getTime() ?? Number.POSITIVE_INFINITY
+    const paid = (e: SubscriberEntitlement): boolean =>
+      e.store !== 'promotional' && e.store !== 'gift'
+    if (a > b || (a === b && paid(candidate) && !paid(best))) best = candidate
+  }
+  return best
+}
+
 export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
   return {
     async getEntitlement(appUserId: string): Promise<SubscriberEntitlement | null> {
@@ -161,30 +200,29 @@ export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
 
       // RevenueCat returns every entitlement the subscriber has ever held, so
       // presence proves nothing — each candidate is checked for expiry before
-      // it can win, and precedence order means Pro+ is tried before Pro.
-      for (const id of ENTITLEMENT_PRECEDENCE) {
-        const entitlement = body.subscriber.entitlements[id]
-        if (!entitlement) continue
-        const lifetime = isPromotionalLifetime(entitlement.product_identifier)
+      // it can be picked.
+      const candidates: SubscriberEntitlement[] = []
+      for (const [id, entitlement] of Object.entries(body.subscriber.entitlements)) {
+        if (!Object.prototype.hasOwnProperty.call(ENTITLEMENT_TIERS, id)) continue
+        const productId = entitlement.product_identifier
+        const lifetime = isPromotionalLifetime(productId)
+        const gift = isPromotionalTimed(productId)
         const expiresAt =
           !lifetime && entitlement.expires_date ? new Date(entitlement.expires_date) : null
         if (!isActive(expiresAt)) continue
-        return {
-          tier: ENTITLEMENT_TIERS[id],
+        candidates.push({
+          tier: ENTITLEMENT_TIERS[id as EntitlementId],
           expiresAt,
-          productId: entitlement.product_identifier,
-          store: storeForProduct(body.subscriber, entitlement.product_identifier),
-          willRenew: lifetime
-            ? false
-            : willRenewProduct(body.subscriber, entitlement.product_identifier),
-          periodType: lifetime
-            ? null
-            : periodTypeOf(
-                body.subscriber.subscriptions?.[entitlement.product_identifier]?.period_type,
-              ),
-        }
+          productId,
+          store: gift ? 'gift' : storeForProduct(body.subscriber, productId),
+          willRenew: lifetime || gift ? false : willRenewProduct(body.subscriber, productId),
+          periodType:
+            lifetime || gift
+              ? null
+              : periodTypeOf(body.subscriber.subscriptions?.[productId]?.period_type),
+        })
       }
-      return null
+      return pickEntitlement(candidates)
     },
 
     async grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {

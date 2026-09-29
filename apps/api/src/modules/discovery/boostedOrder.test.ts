@@ -59,27 +59,24 @@ function leader(candidates: BoostedCandidate[], viewerId: string, at: Date): str
 
 describe('orderBoosted', () => {
   /**
-   * The paywall sells this sentence — "Polyglot profiles lead the Boosted
-   * strip, ahead of Fluent" — so it has to survive every roll of the rotation,
-   * including the worst case where the Fluent profile is the active one. This
-   * is the test that catches a reordered comparator.
+   * There used to be a tier band — Polyglot always ahead of Fluent. With one
+   * plan a row still stored as `pro_plus` is the same Pro, and the band that
+   * decides is readiness: the one who is here leads the one who is not.
    */
-  it('never lets a Fluent profile outrank a Polyglot one, however the rotation falls', () => {
+  it('gives a row still stored as pro_plus no place ahead of pro', () => {
     for (let bucket = BUCKET; bucket < BUCKET + 200; bucket++) {
       const at = new Date(bucket * HOUR)
-      const fluentAndHere = candidate('fluent', 'pro', 0, at)
-      const polyglotAndGone = candidate('polyglot', 'pro_plus', 365 * DAY, at)
-      expect(leader([fluentAndHere, polyglotAndGone], 'viewer', at), `bucket ${bucket}`).toBe(
-        'polyglot',
-      )
+      const proAndHere = candidate('pro', 'pro', 0, at)
+      const oldAndGone = candidate('old', 'pro_plus', 365 * DAY, at)
+      expect(leader([proAndHere, oldAndGone], 'viewer', at), `bucket ${bucket}`).toBe('pro')
     }
   })
 
   it('leaves a subscriber who has not been here this week behind one who has', () => {
     for (let bucket = BUCKET; bucket < BUCKET + 200; bucket++) {
       const at = new Date(bucket * HOUR)
-      const here = candidate('here', 'pro_plus', DAY, at)
-      const dormant = candidate('dormant', 'pro_plus', 30 * DAY, at)
+      const here = candidate('here', 'pro', DAY, at)
+      const dormant = candidate('dormant', 'pro', 30 * DAY, at)
       expect(leader([here, dormant], 'viewer', at), `bucket ${bucket}`).toBe('here')
     }
   })
@@ -90,8 +87,8 @@ describe('orderBoosted', () => {
    * the two bands are otherwise symmetrical.
    */
   it('counts the last moment of the week as here, and the one after it as too long ago', () => {
-    const inside = candidate('inside', 'pro_plus', DISCOVERY_BOOSTED_FRESH_MS - 1)
-    const outside = candidate('outside', 'pro_plus', DISCOVERY_BOOSTED_FRESH_MS + 1)
+    const inside = candidate('inside', 'pro', DISCOVERY_BOOSTED_FRESH_MS - 1)
+    const outside = candidate('outside', 'pro', DISCOVERY_BOOSTED_FRESH_MS + 1)
     expect(leader([outside, inside], 'viewer', AT)).toBe('inside')
   })
 
@@ -105,16 +102,16 @@ describe('orderBoosted', () => {
       // Rebuilt per bucket: a candidate fixed at one instant drifts out of the
       // week as the loop walks forward, and would fail the wrong assertion.
       const at = new Date(bucket * HOUR)
-      const withPhoto = candidate('with-photo', 'pro_plus', HOUR, at)
-      const noPhoto = withoutPhoto(candidate('no-photo', 'pro_plus', HOUR, at))
+      const withPhoto = candidate('with-photo', 'pro', HOUR, at)
+      const noPhoto = withoutPhoto(candidate('no-photo', 'pro', HOUR, at))
       expect(leader([noPhoto, withPhoto], 'viewer', at), `bucket ${bucket}`).toBe('with-photo')
     }
   })
 
   /** The card gets the tap; the bio is what the tap lands on. */
   it('leaves a subscriber with nothing written behind one who wrote something', () => {
-    const written = candidate('written', 'pro_plus', HOUR)
-    const blank = withoutBio(candidate('blank', 'pro_plus', HOUR))
+    const written = candidate('written', 'pro', HOUR)
+    const blank = withoutBio(candidate('blank', 'pro', HOUR))
     expect(leader([blank, written], 'viewer', AT)).toBe('written')
   })
 
@@ -123,8 +120,8 @@ describe('orderBoosted', () => {
    * the field, and whitespace survives that. Truthiness alone would be fooled.
    */
   it('does not count a blank bio as something written', () => {
-    const written = candidate('written', 'pro_plus', HOUR)
-    const spaces = { ...candidate('spaces', 'pro_plus', HOUR), bio: '   ' }
+    const written = candidate('written', 'pro', HOUR)
+    const spaces = { ...candidate('spaces', 'pro', HOUR), bio: '   ' }
     expect(leader([spaces, written], 'viewer', AT)).toBe('written')
   })
 
@@ -139,8 +136,8 @@ describe('orderBoosted', () => {
     const leaders = new Set<string>()
     for (let bucket = BUCKET; bucket < BUCKET + 24; bucket++) {
       const at = new Date(bucket * HOUR)
-      const noPhoto = withoutPhoto(candidate('no-photo', 'pro_plus', HOUR, at))
-      const noBio = withoutBio(candidate('no-bio', 'pro_plus', HOUR, at))
+      const noPhoto = withoutPhoto(candidate('no-photo', 'pro', HOUR, at))
+      const noBio = withoutBio(candidate('no-bio', 'pro', HOUR, at))
       leaders.add(leader([noPhoto, noBio], 'viewer', at))
     }
     expect(leaders.size).toBe(2)
@@ -153,9 +150,9 @@ describe('orderBoosted', () => {
    */
   it('gives one viewer the same order for every instant inside a rotation window', () => {
     const people = [
-      candidate('a', 'pro_plus', HOUR),
-      candidate('b', 'pro_plus', HOUR),
-      candidate('c', 'pro_plus', HOUR),
+      candidate('a', 'pro', HOUR),
+      candidate('b', 'pro', HOUR),
+      candidate('c', 'pro', HOUR),
     ]
     const start = orderBoosted(people, 'viewer', AT).map((p) => p._id)
 
@@ -172,7 +169,7 @@ describe('orderBoosted', () => {
   })
 
   it('moves every candidate through the lead across a day of rotations', () => {
-    const people = ['a', 'b', 'c', 'd'].map((id) => candidate(id, 'pro_plus', HOUR))
+    const people = ['a', 'b', 'c', 'd'].map((id) => candidate(id, 'pro', HOUR))
     const leaders = new Set<string>()
     for (let bucket = BUCKET; bucket < BUCKET + 24; bucket++) {
       leaders.add(leader(people, 'viewer', new Date(bucket * HOUR)))
@@ -187,7 +184,7 @@ describe('orderBoosted', () => {
    * what makes somebody's strip lead them *today*.
    */
   it('spreads the lead across viewers inside a single rotation window', () => {
-    const people = ['a', 'b', 'c', 'd'].map((id) => candidate(id, 'pro_plus', HOUR))
+    const people = ['a', 'b', 'c', 'd'].map((id) => candidate(id, 'pro', HOUR))
     const led = new Map<string, number>()
     const viewers = 200
     for (let i = 0; i < viewers; i++) {
@@ -202,7 +199,7 @@ describe('orderBoosted', () => {
   })
 
   it('returns the candidates it was given, and leaves the array it was handed alone', () => {
-    const people = ['a', 'b', 'c'].map((id) => candidate(id, 'pro_plus', HOUR))
+    const people = ['a', 'b', 'c'].map((id) => candidate(id, 'pro', HOUR))
     const asHanded = [...people]
 
     const ordered = orderBoosted(people, 'viewer', AT)

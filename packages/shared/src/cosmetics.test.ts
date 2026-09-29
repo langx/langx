@@ -197,14 +197,11 @@ describe('PRO_WELCOME_PACKS', () => {
     }
   })
 
-  it('makes Pro+ a superset of Pro, so upgrading never takes something away', () => {
-    const pro = new Set(PRO_WELCOME_PACKS.pro.cosmetics)
-    for (const id of pro) {
-      expect(PRO_WELCOME_PACKS.pro_plus.cosmetics, id).toContain(id)
+  /** Polyglot's old pack, so nobody who had it is given less by the merge. */
+  it('keeps the old Fluent frames inside the single pack', () => {
+    for (const id of ['frame.slate', 'frame.bronze']) {
+      expect(PRO_WELCOME_PACKS.pro.cosmetics, id).toContain(id)
     }
-    expect(PRO_WELCOME_PACKS.pro_plus.streakFreezes).toBeGreaterThanOrEqual(
-      PRO_WELCOME_PACKS.pro.streakFreezes,
-    )
   })
 
   /**
@@ -251,8 +248,18 @@ describe('welcomePackDelta', () => {
     expect(welcomePackDelta('pro', [])).toEqual([...PRO_WELCOME_PACKS.pro.cosmetics])
   })
 
+  /** What `merge-pro-tiers.ts` hands an ex-Fluent subscriber. */
+  it('is the difference for somebody who had the old Fluent pack', () => {
+    expect(welcomePackDelta('pro', ['frame.slate', 'frame.bronze'])).toEqual([
+      'frame.sky',
+      'frame.silver',
+      'title.beginner',
+      'title.learner',
+    ])
+  })
+
   it('is empty once everything in it is owned', () => {
-    expect(welcomePackDelta('pro_plus', [...PRO_WELCOME_PACKS.pro_plus.cosmetics])).toEqual([])
+    expect(welcomePackDelta('pro', [...PRO_WELCOME_PACKS.pro.cosmetics])).toEqual([])
   })
 
   /**

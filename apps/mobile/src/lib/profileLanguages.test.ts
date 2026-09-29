@@ -9,7 +9,7 @@ import {
 } from './profileLanguages'
 
 const FREE = PLAN_LIMITS.free
-const POLYGLOT = PLAN_LIMITS.pro_plus
+const PRO = PLAN_LIMITS.pro
 
 function lists(native: string[], learning: [string, string, number][]): LanguageLists {
   return {
@@ -145,7 +145,7 @@ describe('refusing a language edit', () => {
 
   it('refuses a language already on this one', () => {
     expect(
-      refuseLanguageEdit(many, { kind: 'replaceLearning', from: 'de', to: 'fr' }, POLYGLOT),
+      refuseLanguageEdit(many, { kind: 'replaceLearning', from: 'de', to: 'fr' }, PRO),
     ).toEqual({ kind: 'duplicate', code: 'fr' })
   })
 
@@ -198,8 +198,8 @@ describe('refusing a language edit', () => {
         refuseLanguageEdit(free, { kind: 'replaceNative', from: 'tr', to: 'en' }, FREE)?.kind ===
         'overlap',
       duplicate:
-        refuseLanguageEdit(many, { kind: 'replaceLearning', from: 'de', to: 'fr' }, POLYGLOT)
-          ?.kind === 'duplicate',
+        refuseLanguageEdit(many, { kind: 'replaceLearning', from: 'de', to: 'fr' }, PRO)?.kind ===
+        'duplicate',
       last: refuseLanguageEdit(free, { kind: 'removeNative', code: 'tr' }, FREE)?.kind === 'last',
       noop:
         refuseLanguageEdit(many, { kind: 'moveLearning', code: 'en', to: 0 }, FREE)?.kind ===

@@ -503,11 +503,10 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
     })
 
     /**
-     * The new tier boundary, pinned. Seeing who looked moved from Fluent to
-     * Polyglot, and a Fluent subscriber getting identities would be the guard
-     * silently not applying rather than the boundary working.
+     * Seeing who looked was Polyglot's; with one paid plan it is Pro's, and a
+     * `pro` row — an ex-Fluent — must be given the names.
      */
-    it('gives a Fluent subscriber the count but not the identities', async () => {
+    it('gives a Pro subscriber the identities', async () => {
       const viewer = await newUser()
       const viewed = await newUser()
       await handle.db
@@ -532,21 +531,11 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       const body = response.json<{
         total: number
         locked: boolean
-        viewers: { userId: string; handle?: string; displayName?: string; viewCount: number }[]
+        viewers: { userId: string; handle?: string; viewCount: number }[]
       }>()
-      // The count is the paywall's argument, so it is still real.
       expect(body.total).toBe(1)
-      expect(body.locked).toBe(true)
-      /*
-       * The row is returned so the list can be drawn and blurred; the identity
-       * is not in it. This is the assertion that keeps the paid feature out of
-       * the response body — blurring on the client would leave it readable to
-       * anyone who opens the JSON.
-       */
-      expect(body.viewers).toHaveLength(1)
-      expect(body.viewers[0]?.handle).toBeUndefined()
-      expect(body.viewers[0]?.displayName).toBeUndefined()
-      expect(body.viewers[0]?.viewCount).toBe(1)
+      expect(body.locked).toBe(false)
+      expect(body.viewers[0]?.handle).toBeDefined()
     })
 
     it('counts a returning viewer as one row per day, and a burst of views as one visit', async () => {

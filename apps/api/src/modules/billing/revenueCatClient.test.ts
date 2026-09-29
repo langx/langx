@@ -48,29 +48,44 @@ describe('createRevenueCatClient', () => {
     expect(await createRevenueCatClient('sk').getEntitlement('u1')).toBeNull()
   })
 
-  it('prefers pro_plus when both entitlements are active', async () => {
+  /**
+   * The case a fixed "pro_plus first" order got wrong once both ids meant the
+   * same plan: a cancelled Polyglot week beside a fresh Pro year stored the
+   * week, and the account fell to free with a paid year left.
+   */
+  it('keeps the entitlement that ends last, whichever id it is under', async () => {
+    const WEEK = new Date(Date.now() + 7 * 86_400_000).toISOString()
+    const YEAR = new Date(Date.now() + 365 * 86_400_000).toISOString()
     mockSubscriber({
       entitlements: {
-        pro: { expires_date: FUTURE, product_identifier: 'monthly' },
-        pro_plus: { expires_date: FUTURE, product_identifier: 'pro_plus_monthly' },
+        pro_plus: { expires_date: WEEK, product_identifier: 'pro_plus_monthly' },
+        pro: { expires_date: YEAR, product_identifier: 'yearly' },
       },
       subscriptions: {
-        monthly: { store: 'app_store' },
         pro_plus_monthly: { store: 'play_store' },
+        yearly: { store: 'app_store' },
       },
     })
 
     const result = await createRevenueCatClient('sk').getEntitlement('u1')
-    expect(result).toMatchObject({
-      tier: 'pro_plus',
-      productId: 'pro_plus_monthly',
-      // From the winning entitlement's own purchase — not pro's.
+    expect(result).toMatchObject({ tier: 'pro', productId: 'yearly', store: 'app_store' })
+    expect(result?.expiresAt?.toISOString()).toBe(new Date(YEAR).toISOString())
+  })
+
+  /** `pro_plus` cannot be renamed and keeps arriving; it means Pro. */
+  it('reads a lone pro_plus entitlement as Pro', async () => {
+    mockSubscriber({
+      entitlements: { pro_plus: { expires_date: FUTURE, product_identifier: 'pro_plus_monthly' } },
+      subscriptions: { pro_plus_monthly: { store: 'play_store' } },
+    })
+    expect(await createRevenueCatClient('sk').getEntitlement('u1')).toMatchObject({
+      tier: 'pro',
       store: 'play_store',
     })
   })
 
   /** RevenueCat returns every entitlement ever held; presence proves nothing. */
-  it('falls through an expired pro_plus to a still-active pro', async () => {
+  it('falls through an expired entitlement to a still-active one', async () => {
     mockSubscriber({
       entitlements: {
         pro: { expires_date: FUTURE, product_identifier: 'monthly' },
@@ -81,6 +96,70 @@ describe('createRevenueCatClient', () => {
 
     const result = await createRevenueCatClient('sk').getEntitlement('u1')
     expect(result).toMatchObject({ tier: 'pro', store: 'app_store' })
+  })
+
+  /** A lifetime outlasts any date, including a subscription somebody pays for. */
+  it('prefers a lifetime grant over a renewing subscription', async () => {
+    mockSubscriber({
+      entitlements: {
+        pro: { expires_date: FUTURE, product_identifier: 'monthly' },
+        pro_plus: {
+          expires_date: '2226-07-18T04:58:40Z',
+          product_identifier: 'rc_promo_pro_plus_lifetime',
+        },
+      },
+      subscriptions: {
+        monthly: { store: 'app_store' },
+        rc_promo_pro_plus_lifetime: { store: 'promotional' },
+      },
+    })
+    expect(await createRevenueCatClient('sk').getEntitlement('u1')).toMatchObject({
+      expiresAt: null,
+      store: 'promotional',
+    })
+  })
+
+  it('prefers the paid entitlement when two end at the same moment', async () => {
+    mockSubscriber({
+      entitlements: {
+        pro_plus: { expires_date: FUTURE, product_identifier: 'rc_promo_pro_plus_monthly' },
+        pro: { expires_date: FUTURE, product_identifier: 'monthly' },
+      },
+      subscriptions: {
+        rc_promo_pro_plus_monthly: { store: 'promotional' },
+        monthly: { store: 'app_store' },
+      },
+    })
+    expect(await createRevenueCatClient('sk').getEntitlement('u1')).toMatchObject({
+      productId: 'monthly',
+      store: 'app_store',
+    })
+  })
+
+  /**
+   * A timed promotional grant — a gift of some months. `promotional` would
+   * read as "lifetime" on every paywall already released, so it is `gift`.
+   */
+  it('reports a timed promotional grant as a gift that does not renew', async () => {
+    mockSubscriber({
+      entitlements: { pro: { expires_date: FUTURE, product_identifier: 'rc_promo_pro_monthly' } },
+      subscriptions: { rc_promo_pro_monthly: { store: 'promotional' } },
+    })
+    expect(await createRevenueCatClient('sk').getEntitlement('u1')).toEqual({
+      tier: 'pro',
+      expiresAt: new Date(FUTURE),
+      productId: 'rc_promo_pro_monthly',
+      store: 'gift',
+      periodType: null,
+      willRenew: false,
+    })
+  })
+
+  it('ignores entitlement ids it does not sell', async () => {
+    mockSubscriber({
+      entitlements: { copilot_beta: { expires_date: FUTURE, product_identifier: 'x' } },
+    })
+    expect(await createRevenueCatClient('sk').getEntitlement('u1')).toBeNull()
   })
 
   it('returns null when everything has expired', async () => {
@@ -189,8 +268,9 @@ describe('createRevenueCatClient', () => {
       },
     })
 
+    // Both are lifetimes, so both "end" at the same never; the first wins.
     expect(await createRevenueCatClient('sk').getEntitlement('u1')).toEqual({
-      tier: 'pro_plus',
+      tier: 'pro',
       expiresAt: null,
       productId: 'rc_promo_pro_plus_lifetime',
       store: 'promotional',

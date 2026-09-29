@@ -1,5 +1,4 @@
-import { router, useLocalSearchParams } from 'expo-router'
-import { useState } from 'react'
+import { router } from 'expo-router'
 import { FlatList, View } from 'react-native'
 import { useAdminMembers, type AdminMemberDto } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
@@ -7,22 +6,18 @@ import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
-import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../src/lib/adminStrings'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
 
-type Tier = 'pro' | 'pro_plus'
-
-const TABS: readonly { value: Tier; label: string }[] = [
-  { value: 'pro', label: ADMIN.members.tabs.pro },
-  { value: 'pro_plus', label: ADMIN.members.tabs.proPlus },
-]
-
 /**
- * The people behind the Pro and Pro+ numbers on the dashboard, newest first.
+ * The people behind the Pro number on the dashboard, newest first — paid and
+ * gifted in one list, the gifts marked.
+ *
+ * There were two tabs while there were two paid plans; the server still takes
+ * `tier=pro_plus` from an old tab and answers with this same list.
  *
  * One page only. The server pages by cursor, but the whole list fits on a
  * screen many times over at today's scale, and "load more" is for the day
@@ -31,23 +26,12 @@ const TABS: readonly { value: Tier; label: string }[] = [
 export default function AdminMembersScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const params = useLocalSearchParams<{ tier?: string }>()
-  const [tier, setTier] = useState<Tier>(params.tier === 'pro_plus' ? 'pro_plus' : 'pro')
-  const members = useAdminMembers(tier)
+  const members = useAdminMembers('pro')
 
   return (
     <AdminGate>
       <Screen fluid>
         <ScreenHeader title={ADMIN.members.title} onBack={() => goBackTo('/(app)/admin')} />
-
-        <View style={styles.tabs}>
-          <SegmentedControl
-            options={TABS}
-            selected={[tier]}
-            onToggle={setTier}
-            accessibilityLabel={ADMIN.members.title}
-          />
-        </View>
 
         {members.isPending ? (
           <View style={styles.loading}>
@@ -87,10 +71,10 @@ function subtitle(row: AdminMemberDto): string {
     parts.push(ADMIN.members.forever)
   }
   if (row.periodType === 'trial') parts.push(ADMIN.members.trial)
+  if (row.gift) parts.push(ADMIN.members.gift)
   return parts.join(' · ')
 }
 
 const useStyles = makeStyles(() => ({
-  tabs: { marginVertical: 12 },
-  loading: { gap: 12 },
+  loading: { gap: 12, marginTop: 12 },
 }))

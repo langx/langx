@@ -33,8 +33,9 @@ import {
   type NotificationType,
   type StoredNotificationPrefs,
   type OnboardingProfileInput,
-  type PaidPlanTier,
   type PlanTier,
+  type StoredPaidPlanTier,
+  type StoredPlanTier,
   type UpdateProfileInput,
 } from '@langx/shared'
 import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mongodb'
@@ -218,7 +219,8 @@ export interface Profile {
     hideCity?: boolean
   }
   entitlement: {
-    tier: PlanTier
+    /** May still be the retired `pro_plus` — read it through `effectivePlanTier`. */
+    tier: StoredPlanTier
     expiresAt?: Date
     willRenew?: boolean
     store?: string
@@ -242,7 +244,7 @@ export interface Profile {
    * cause. `entitlement.updatedAt` cannot answer it: a plain
    * `/billing/refresh` moves that.
    */
-  churnedFrom?: { tier: PlanTier; at: Date }
+  churnedFrom?: { tier: StoredPlanTier; at: Date }
   /**
    * `echoCaptures` is optional where the other three are not: it arrived after
    * every existing profile was written, and `consumeQuota` reads the array
@@ -304,11 +306,12 @@ export interface Profile {
    */
   equipped?: Equipped
   /**
-   * When each paid tier's welcome pack was handed over.
+   * When a welcome pack was handed over, keyed by the tier it was for.
    *
-   * Per tier, not a single flag: upgrading pro → pro_plus grants the
-   * difference, and a single boolean could not tell "already had pro's" from
-   * "already had pro_plus's".
+   * `pro_plus` is Polyglot's pack from before the single plan. Neither key is
+   * migrated: either one means the pack has been given, and rewriting them
+   * would hand an ex-Polyglot the pack and two freezes again. The ex-Fluent
+   * difference is `scripts/merge-pro-tiers.ts`'s to give.
    */
   welcomePackAt?: Partial<Record<'pro' | 'pro_plus', Date>>
   /** Set when token earning is suspended pending review (report/block). Clears by unsetting. */
@@ -418,7 +421,7 @@ export interface Profile {
     frozenStreak: number
     conversationsImported: number
     /** Lifetime tier handed out through RevenueCat for a top-percentile v1 balance; `null` for everyone else. */
-    lifetimeGranted?: PaidPlanTier | null
+    lifetimeGranted?: StoredPaidPlanTier | null
     acknowledgedAt?: Date
   }
   /**

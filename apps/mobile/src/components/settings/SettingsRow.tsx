@@ -5,13 +5,10 @@ import {
   LOCALE_NAMES,
   NOTIFICATION_CHANNELS,
   PRO_BENEFITS,
-  PRO_PLUS_BENEFITS,
   profileUrl,
-  TIER_NAMES,
   translateTargetFor,
   translateTargetOptions,
   type ProBenefit,
-  type ProPlusBenefit,
 } from '@langx/shared'
 import { router } from 'expo-router'
 import { Image, Platform, Pressable, Text, View } from 'react-native'
@@ -45,7 +42,7 @@ const THEME_LABELS: Record<ThemePreference, MessageKey> = {
  * enforcement the paywall uses. The keys are the paywall's own, so the plan
  * page cannot call a benefit one thing and the paywall another.
  */
-const BENEFIT_TITLE: Record<ProBenefit | ProPlusBenefit, MessageKey> = {
+const BENEFIT_TITLE: Record<ProBenefit, MessageKey> = {
   unlimitedInitiations: 'paywall.unlimitedChats',
   advancedFilters: 'paywall.advancedFilters',
   boostedProfile: 'paywall.boostedProfile',
@@ -67,7 +64,7 @@ const BENEFIT_TITLE: Record<ProBenefit | ProPlusBenefit, MessageKey> = {
  * mis-sell that flag exists to prevent. One table for both screens is the
  * fix; until then the two must be changed together.
  */
-const PENDING_BENEFITS: ReadonlySet<ProBenefit | ProPlusBenefit> = new Set(['copilot'])
+const PENDING_BENEFITS: ReadonlySet<ProBenefit> = new Set(['copilot'])
 
 /**
  * Imported statically, because Metro resolves an image at build time: a path
@@ -118,8 +115,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
 
   switch (id) {
     case 'plan.current':
-      // The plan as a tag rather than a value: it is a brand mark, and the
-      // page sells the next one two rows down.
+      // The plan as a tag rather than a value: it is a brand mark.
       return (
         <ListRow
           title={t('settings.currentPlan')}
@@ -134,9 +130,8 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
     case 'plan.features': {
       // The same lists the paywall sells from. Free has no list in `shared`
       // — nothing was bought, so there is nothing to itemise.
-      const benefits: readonly (ProBenefit | ProPlusBenefit)[] | null =
-        model.tier === 'pro' ? PRO_BENEFITS : model.tier === 'pro_plus' ? PRO_PLUS_BENEFITS : null
-      if (!benefits) return null
+      if (model.tier === 'free') return null
+      const benefits = PRO_BENEFITS
       return (
         <View style={[styles.features, !last && styles.divided]}>
           <Text style={styles.featuresKicker}>{t('settings.whatYouHave')}</Text>
@@ -162,16 +157,11 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       )
     }
     case 'plan.upgrade':
-      // "See the plans" is the free tier's row. A Fluent subscriber is not
-      // shopping — there is exactly one plan above them, and naming it is the
-      // whole offer.
-      return model.tier === 'pro_plus' ? null : (
+      // "See the plans" is the free tier's row. A subscriber holds the one
+      // paid plan and has nothing left to be sold.
+      return model.tier !== 'free' ? null : (
         <ListRow
-          title={
-            model.tier === 'pro'
-              ? t('settings.upgradeTo', { plan: TIER_NAMES.pro_plus })
-              : t('settings.upgrade')
-          }
+          title={t('settings.upgrade')}
           last={last}
           onPress={() => openPaywall(undefined, '/(app)/settings', 'me')}
         />
@@ -575,7 +565,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
      * that is missing teaches nothing.
      *
      * The gate is here rather than on the screen's export button because
-     * `/me/phrases` is Polyglot on the server — a free reader who reached the
+     * `/me/phrases` is Pro on the server — a free reader who reached the
      * screen would find an empty list and no way to learn why.
      */
     case 'account.allPhrases':

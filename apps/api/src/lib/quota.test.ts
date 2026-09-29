@@ -153,9 +153,9 @@ describe('a quota bucket the profile has never had', () => {
   it('charges the paid tiers the same, because the ceiling is not a paywall', async () => {
     const userId = await profileWithoutEchoQuota()
     for (let index = 0; index < FREE_CAPTURES; index++) {
-      await consumeQuota(handle.db, userId, 'pro_plus', 'echoCaptures')
+      await consumeQuota(handle.db, userId, 'pro', 'echoCaptures')
     }
-    expect(await consumeQuota(handle.db, userId, 'pro_plus', 'echoCaptures')).toMatchObject({
+    expect(await consumeQuota(handle.db, userId, 'pro', 'echoCaptures')).toMatchObject({
       consumed: false,
     })
   })

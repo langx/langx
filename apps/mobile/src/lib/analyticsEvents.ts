@@ -133,11 +133,11 @@ export type AnalyticsEvent =
         tier: PaidPlanTier | null
         period: BillingPeriod | null
         /**
-         * What the tap meant for the plan already held — a first purchase or
-         * an upgrade — and `portal` for the web, where an upgrade leaves for
-         * RevenueCat's portal and no `purchase_finished` follows.
+         * What the tap meant for the plan already held — `buy`, now that there
+         * is one paid plan and nothing to upgrade to. `upgrade` and `portal`
+         * in the history are from before the single plan.
          */
-        change: PlanChange | 'portal'
+        change: PlanChange
       }
     }
   | {
@@ -180,8 +180,9 @@ export type AnalyticsEvent =
        * click-through rate at slot *i* is this over `boosted_strip_shown`
        * where `count > i`.
        *
-       * Carries no identifier for the person in the card, and `tier` is the
-       * only thing it says about them. That is not squeamishness: an id of
+       * Carries no identifier for the person in the card, and nothing else
+       * about them either — it used to say their plan, and with one plan that
+       * says nothing. That is not squeamishness: an id of
        * theirs sitting in thousands of other people's events would outlive
        * their own account deletion, which `purgeExpiredAccounts` cannot reach.
        * The price is that this measures placement, never one subscriber's
@@ -189,7 +190,7 @@ export type AnalyticsEvent =
        * analytics opt-out.
        */
       name: 'boosted_strip_tapped'
-      properties: { slot: number; tier: PaidPlanTier }
+      properties: { slot: number }
     }
   | {
       /**

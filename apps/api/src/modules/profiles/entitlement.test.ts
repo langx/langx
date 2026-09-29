@@ -1,9 +1,9 @@
-import type { PlanTier } from '@langx/shared'
+import type { StoredPlanTier } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { effectiveTier } from './entitlement'
 
-function entitlement(overrides: Partial<{ tier: PlanTier; expiresAt: Date }> = {}) {
-  return { entitlement: { tier: 'free' as PlanTier, updatedAt: new Date(), ...overrides } }
+function entitlement(overrides: Partial<{ tier: StoredPlanTier; expiresAt: Date }> = {}) {
+  return { entitlement: { tier: 'free' as StoredPlanTier, updatedAt: new Date(), ...overrides } }
 }
 
 describe('effectiveTier', () => {
@@ -25,13 +25,12 @@ describe('effectiveTier', () => {
     expect(effectiveTier(entitlement({ tier: 'pro', expiresAt: past }))).toBe('free')
   })
 
-  it('pro_plus with a future expiresAt stays pro_plus', () => {
+  /** A Polyglot row the merge script has not reached yet is Pro. */
+  it('pro_plus with a future expiresAt is pro', () => {
     const future = new Date(Date.now() + 60_000)
-    expect(effectiveTier(entitlement({ tier: 'pro_plus', expiresAt: future }))).toBe('pro_plus')
+    expect(effectiveTier(entitlement({ tier: 'pro_plus', expiresAt: future }))).toBe('pro')
   })
 
-  /** The third tier's version of the case above — and the one an earlier
-   *  `tier !== 'pro'` guard would have let through untouched. */
   it('pro_plus with a past expiresAt is downgraded to free', () => {
     const past = new Date(Date.now() - 60_000)
     expect(effectiveTier(entitlement({ tier: 'pro_plus', expiresAt: past }))).toBe('free')

@@ -42,7 +42,7 @@ HelloTalk, Tandem and Hilokal.
 
 ## 2. Play Data Safety — the new location answers
 
-Nearby (Polyglot) added the app's first location permission, so two answers
+Nearby (Pro, then Polyglot) added the app's first location permission, so two answers
 that were "no" are now "yes".
 
 - [x] **Location → Approximate location: collected.**

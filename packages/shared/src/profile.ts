@@ -62,8 +62,8 @@ function learningDoesNotOverlapNative(data: {
  * `PLAN_LIMITS`. Zod only enforces these — the per-tier limit needs the stored
  * profile and the viewer's tier, neither of which a boot-time schema has.
  */
-export const MAX_LEARNING_LANGUAGES = PLAN_LIMITS.pro_plus.maxLearningLanguages
-export const MAX_NATIVE_LANGUAGES = PLAN_LIMITS.pro_plus.maxNativeLanguages
+export const MAX_LEARNING_LANGUAGES = PLAN_LIMITS.pro.maxLearningLanguages
+export const MAX_NATIVE_LANGUAGES = PLAN_LIMITS.pro.maxNativeLanguages
 export const MAX_INTERESTS = 10
 
 /**

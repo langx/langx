@@ -879,8 +879,9 @@ export const fr: Localized<EnMessages> = {
     boostedWhat: 'Qu’est-ce que c’est ?',
     boostedExplainTitle: 'Profils mis en avant',
     boostedExplainBody:
-      'Les membres Fluent et Polyglot apparaissent ici, Polyglot en premier. L’ordre tourne au fil de la journée, pour que chacun passe en tête — ce qui t’y met, c’est une photo, quelques mots sur toi et un passage récent. Ils sont associés à tes langues exactement comme la liste ci-dessous — rien ne change dans l’appariement, et chacun peut le désactiver dans les réglages.',
+      'Les membres Pro apparaissent ici. L’ordre tourne au fil de la journée, pour que chacun passe en tête à son tour — une photo, quelques mots sur toi et une visite récente, c’est ce qui t’y place. Ils sont choisis selon tes langues exactement comme la liste en dessous — rien ne change dans l’appariement, et chacun peut le désactiver dans les Réglages.',
     boostedSeePlans: 'Voir les formules',
+    nameAge: '{name}, {age}',
     languagesA11y: 'Choisir avec quelles langues chercher',
     searchHandles: 'Rechercher par nom ou nom d’utilisateur',
     searchPlaceholder: 'Nom ou nom d’utilisateur',
@@ -1129,7 +1130,8 @@ export const fr: Localized<EnMessages> = {
       'Tu as utilisé les transcriptions du jour. Elles se renouvellent sous 24 heures.',
     copied: 'Copié',
     couldNotSend: 'Envoi impossible',
-    mediaQuota: 'Vous avez atteint la limite du jour pour les photos, vidéos et messages vocaux.',
+    mediaQuota:
+      'Vous avez atteint la limite du jour pour les photos, vidéos et messages vocaux. C’est une limite d’usage raisonnable, la même pour tous, qui se libère au fil de la journée.',
     attachmentFailed: 'Cette pièce jointe n’a pas pu être envoyée. Réessaie.',
     photosTitle: 'Photos',
     dropToAttach: 'Déposez pour joindre',
@@ -1504,10 +1506,7 @@ export const fr: Localized<EnMessages> = {
     viewersCount: { one: '{count} personne', other: '{count} personnes' },
     proTitle: '✦ Aller plus loin',
     proBody:
-      'Discussions nouvelles illimitées, filtres avancés, traduction et deux langues à la fois.',
-    polyglotTitle: '✦ Passe à {plan}',
-    polyglotBody:
-      'Vois qui t’a vu, navigue en incognito, trie par distance et écris dans la langue de l’autre.',
+      'Discussions nouvelles illimitées, filtres avancés, qui a vu ton profil, navigation incognito, à proximité et plus encore.',
     newChatsLeft: 'Nouvelles discussions restantes aujourd’hui :',
     editProfile: 'Modifier le profil',
     settings: 'Réglages',
@@ -1666,7 +1665,10 @@ export const fr: Localized<EnMessages> = {
       one: 'Ton offre contient {count} langue.',
       other: 'Ton offre contient {count} langues.',
     },
-    capUpgrade: '{fluent} en contient {fluentMax}, {polyglot} {polyglotMax}.',
+    capUpgrade: {
+      one: '{plan} contient {count} langue.',
+      other: '{plan} contient {count} langues.',
+    },
     capOverGrandfathered:
       'Tu en as déjà plus que ton offre n’en contient. Tu peux les changer ou les retirer, mais pas en ajouter.',
     changeHint: 'Touche une langue pour la changer.',
@@ -1833,7 +1835,7 @@ export const fr: Localized<EnMessages> = {
       'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni en cherchant ton nom d’utilisateur.',
     boost: 'Mettre mon profil en avant',
     boostBody:
-      'Affiche-moi dans le bandeau des profils mis en avant, en haut de Découvrir, aux personnes dont les langues correspondent aux miennes. Actif avec Fluent et Polyglot.',
+      'Affiche-moi dans le bandeau des profils mis en avant, en haut de Découvrir, aux personnes dont les langues correspondent aux miennes. Actif avec Pro.',
     incognito: 'Navigation incognito',
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',
@@ -1889,7 +1891,6 @@ export const fr: Localized<EnMessages> = {
     plan: 'Formule',
     manageSubscription: 'Gérer ou résilier',
     upgrade: 'Voir les formules',
-    upgradeTo: 'Passer à {plan}',
     notificationsSection: 'Notifications',
     pushThisDevice: 'Notifications sur cet appareil',
     pushThisDeviceBody: 'Désactivez-les ici et vos autres appareils continueront de les recevoir.',
@@ -2270,20 +2271,16 @@ export const fr: Localized<EnMessages> = {
 
   paywall: {
     screenTitle: 'Formules',
-    everythingInPro: 'Tout ce que {plan} inclut',
     restorePurchases: 'Restaurer les achats',
     partOf: 'fait partie de',
     unlimitedChats: 'Discussions nouvelles illimitées',
     unlimitedChatsBody: '{count} par jour sur le forfait gratuit.',
     welcomePack: 'Un pack de bienvenue',
-    welcomePackBody:
-      'Un cadre de profil et deux gels de série pour commencer. {plan} apporte la panoplie complète.',
+    welcomePackBody: 'Des cadres de profil, des titres et deux gels de série pour commencer.',
     advancedFilters: 'Filtres avancés',
     boostedProfile: 'Profil mis en avant',
     boostedProfileBody:
       'Tu apparais dans le bandeau au-dessus de la liste Découvrir, pour toutes les personnes dont les langues correspondent aux tiennes. Actif par défaut ; désactivable dans les réglages.',
-    boostedProfileFirst: 'En tête du bandeau',
-    boostedProfileFirstBody: 'Les profils Polyglot ouvrent le bandeau, devant Fluent.',
     sendTranslation: 'Envoyer dans leur langue',
     sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
     deckExport: 'Emporte tes expressions',
@@ -2308,19 +2305,8 @@ export const fr: Localized<EnMessages> = {
       'Tu as utilisé tes {count} nouvelles discussions du jour. Tu peux toujours répondre à tout ce que tu reçois, sans limite.',
     manageNotice: 'Tu es sur {plan}. Gère-le ou annule-le depuis ton compte du store.',
     lifetimeNotice: 'Tu as {plan} à vie. Rien ne se renouvelle, rien n’est facturé.',
-    lifetimeKept: '{plan} à vie reste à toi. Si {plus} prend fin un jour, tu y reviens.',
     includedIn: 'Inclus dans {plan}',
-    upgradeNotice:
-      'Passage depuis {plan} : le store ne facture que la différence pour le reste de la période en cours, et {plan} prend fin.',
-    upgradeWeb:
-      'Ton abonnement {plan} a été acheté sur le web. Change-le dans le portail de facturation ; le temps non utilisé est remboursé.',
-    changePlan: 'Changer de formule',
     currentPlan: 'Ta formule actuelle',
-    upgradeElsewhere:
-      'Ton abonnement {plan} a été acheté via {store}. Change-le là-bas pour ne pas être facturé deux fois.',
-    storeIos: 'l’App Store',
-    storeAndroid: 'Google Play',
-    storeWeb: 'le web',
     purchaseFailed: 'Cet achat n’a pas abouti. Rien n’a été débité.',
     purchaseUnavailable: 'Les achats ne sont pas disponibles sur cet appareil.',
     nothingToRestore: 'Rien à restaurer sur cet appareil.',
@@ -2331,6 +2317,10 @@ export const fr: Localized<EnMessages> = {
     trialTerms: {
       one: '{count} jour offert, puis {price} {period}',
       other: '{count} jours offerts, puis {price} {period}',
+    },
+    trialWeeks: {
+      one: '{count} semaine offerte, puis {price} {period}',
+      other: '{count} semaines offertes, puis {price} {period}',
     },
     perMonth: 'par mois',
     perYear: 'par an',
@@ -2344,10 +2334,26 @@ export const fr: Localized<EnMessages> = {
     headlineBody:
       'Les corrections et les réponses restent illimitées avec chaque formule. Payer supprime les autres limites.',
     yearlySaving: 'Annuel · {percent}% d’économie',
+    yearlyFreeMonths: {
+      one: 'Annuel · {count} mois offert',
+      other: 'Annuel · {count} mois offerts',
+    },
     savePercent: '{percent}% d’économie',
+    freeMonths: {
+      one: '{count} mois offert',
+      other: '{count} mois offerts',
+    },
     savingA11y: '{price} par mois avec l’abonnement mensuel. L’annuel fait économiser {percent}%.',
+    freeMonthsA11y: {
+      one: '{price} par mois avec l’abonnement mensuel. L’annuel t’offre {count} mois.',
+      other: '{price} par mois avec l’abonnement mensuel. L’annuel t’offre {count} mois.',
+    },
     billingPeriod: 'Période de facturation',
     start: 'Commencer avec {plan}',
+    startTrial: {
+      one: 'Commencer ta semaine offerte',
+      other: 'Commencer tes {count} semaines offertes',
+    },
     continueFree: 'Continuer gratuitement',
     perMonthBilledYearly: 'par mois · facturé à l’année',
   },

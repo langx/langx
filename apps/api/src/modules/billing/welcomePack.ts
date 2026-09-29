@@ -24,8 +24,7 @@ import type { Profile } from '../profiles/profiles'
  * does not already own, so even a lost latch cannot hand out a second copy —
  * the worst case is a streak freeze, which is capped separately below.
  *
- * Upgrading pro → pro_plus grants the difference. Lapsing and re-subscribing
- * grants nothing, because the items are still owned. Cosmetics are **not**
+ * Lapsing and re-subscribing grants nothing, because the items are still owned. Cosmetics are **not**
  * taken back when a subscription ends: revoking them would change how somebody
  * looks at the moment they stop paying, which is a support ticket rather than
  * an incentive.
@@ -42,10 +41,11 @@ export async function grantWelcomePack(
   )
   if (!profile) return { granted: false, cosmetics: [] }
 
-  // Already given for this tier, or for the higher one — pro_plus first means
-  // a downgrade does not re-trigger pro's pack.
+  // Already given — under either key. `pro_plus` is Polyglot's pack from
+  // before the single plan, and it is the same pack; an ex-Fluent's missing
+  // items are handed over once by `scripts/merge-pro-tiers.ts`, not here.
   const given = profile.welcomePackAt
-  if (given?.pro_plus || (given?.pro && tier === 'pro')) {
+  if (given?.pro || given?.pro_plus) {
     return { granted: false, cosmetics: [] }
   }
 

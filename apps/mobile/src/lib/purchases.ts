@@ -1,10 +1,4 @@
-import {
-  packageDefinition,
-  replaceableProductId,
-  type BillingPeriod,
-  type PaidPlanTier,
-  type PlanChange,
-} from '@langx/shared'
+import { packageDefinition, type BillingPeriod, type PaidPlanTier } from '@langx/shared'
 import { Platform } from 'react-native'
 import { fakeOffers, fakePurchase, isFakePurchasesEnabled } from './fakePurchases'
 import { trialDays } from './trialDays'
@@ -150,7 +144,7 @@ function freeTrialDays(intro: PurchasesSdk.PurchasesIntroPrice | null): number |
  *
  * `introPrice` above describes the **product**, not the customer, and the App
  * Store gives one introductory offer per subscription group per Apple ID. So
- * a Fluent subscriber tapping Polyglot — same group — was being promised
+ * somebody who once had a free week — same group — was being promised
  * seven free days the store was never going to grant, which is a false price
  * and exactly what App Review 3.1.2 asks to be accurate.
  *
@@ -315,62 +309,28 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
 /**
  * Buys one package.
  *
- * `change` says what the paywall worked out the tap means (`planChangeFor`).
- * An `upgrade` is the same call on iOS — both tiers sit in one subscription
- * group there, ranked, and StoreKit swaps and prorates on its own — but Play
- * has to be told which subscription is being replaced and how to charge for
- * it, or it opens a second one beside the first. The web has no in-SDK
- * change at all: RevenueCat's portal does it, so the paywall never reaches
- * here for a web upgrade and the answer if it does is "cannot".
+ * A plain purchase, always. There used to be an `upgrade` path — Play had to
+ * be told which subscription a Fluent → Polyglot move replaced — and with one
+ * paid plan there is nothing to move between.
  *
  * A user tapping "cancel" in the store sheet arrives here as a thrown error
  * with `userCancelled` set, which is not a failure and must not be reported as
  * one — showing an error toast for a deliberate cancellation is how a paywall
  * teaches people it is broken.
  */
-export async function purchaseOffer(
-  offerId: string,
-  change: PlanChange = 'buy',
-): Promise<PurchaseOutcome> {
+export async function purchaseOffer(offerId: string): Promise<PurchaseOutcome> {
   if (isFakePurchasesEnabled()) return fakePurchase(offerId)
-  if (isWebPlatform) return change === 'upgrade' ? 'unavailable' : purchaseWebBillingOffer(offerId)
+  if (isWebPlatform) return purchaseWebBillingOffer(offerId)
   const sdk = await loadSdk()
   const pkg = packagesById.get(offerId)
   if (!sdk || !pkg) return 'unavailable'
 
   try {
-    const productChange =
-      change === 'upgrade' && Platform.OS === 'android' ? await playProductChange(sdk) : null
-    await sdk.default.purchasePackage(
-      pkg as Parameters<typeof sdk.default.purchasePackage>[0],
-      null,
-      productChange,
-    )
+    await sdk.default.purchasePackage(pkg as Parameters<typeof sdk.default.purchasePackage>[0])
     return 'purchased'
   } catch (error) {
     if (isUserCancelled(error)) return 'cancelled'
     return 'failed'
-  }
-}
-
-/**
- * What Play needs to replace the running subscription rather than add one:
- * the product being left and the charging rule. `CHARGE_PRORATED_PRICE` is
- * "pay the difference for the rest of this period" — the same outcome Apple
- * produces on its own, so the paywall can describe the upgrade in one
- * sentence on both. `null` when RevenueCat lists nothing replaceable (a
- * promotional grant is not a Play subscription), which makes it a plain
- * purchase — correct, since there is nothing to prorate against.
- */
-async function playProductChange(
-  sdk: PurchasesModule,
-): Promise<PurchasesSdk.StoreProductChangeInfo | null> {
-  const info = await sdk.default.getCustomerInfo()
-  const oldProductIdentifier = replaceableProductId(info.activeSubscriptions)
-  if (!oldProductIdentifier) return null
-  return {
-    oldProductIdentifier,
-    replacementMode: sdk.default.STORE_REPLACEMENT_MODE.CHARGE_PRORATED_PRICE,
   }
 }
 

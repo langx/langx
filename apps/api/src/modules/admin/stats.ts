@@ -1,11 +1,4 @@
-import {
-  localDayKey,
-  localDayStart,
-  shiftDayKey,
-  utcDayKey,
-  type AppConfig,
-  type PlanTier,
-} from '@langx/shared'
+import { localDayKey, localDayStart, shiftDayKey, utcDayKey, type AppConfig } from '@langx/shared'
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { getAppConfig } from '../appConfig/appConfig'
@@ -125,7 +118,8 @@ export interface AdminStats {
     builds: { platform: string; version: string; count: number }[]
   }
   money: {
-    tiers: { total: number; pro: number; proPlus: number; free: number }
+    /** `gifted` is the part of `pro` nobody pays for: lifetime grants and gifts. */
+    tiers: { total: number; pro: number; gifted: number; free: number }
     pool: PoolResult | null
     tokensDaily: DayCount[]
   }
@@ -283,13 +277,16 @@ async function computeAdminStats(db: Db, now: Date, timeZone: string): Promise<A
  */
 async function countTiers(db: Db, now: Date): Promise<AdminStats['money']['tiers']> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
-  const [total, pro, proPlus] = await Promise.all([
+  const [total, pro, gifted] = await Promise.all([
     profiles.countDocuments(MEMBER_FILTER),
-    profiles.countDocuments(onPaidTier('pro', now)),
-    profiles.countDocuments(onPaidTier('pro_plus', now)),
+    profiles.countDocuments(onPaidTier(now)),
+    profiles.countDocuments({ ...onPaidTier(now), 'entitlement.store': { $in: [...GIFT_STORES] } }),
   ])
-  return { total, pro, proPlus, free: total - pro - proPlus }
+  return { total, pro, gifted, free: total - pro }
 }
+
+/** Where an entitlement nobody pays for is recorded — see `revenueCatClient`. */
+export const GIFT_STORES = ['promotional', 'gift'] as const
 
 /** Accounts a person can be behind: not a guest, not deleted. */
 const MEMBER_FILTER: Document = { guest: { $exists: false }, deletedAt: { $exists: false } }
@@ -298,10 +295,12 @@ const MEMBER_FILTER: Document = { guest: { $exists: false }, deletedAt: { $exist
  * The members currently on a paid tier — shared with the list behind the
  * tile, so what the tile says and what the list shows cannot disagree.
  */
-export function onPaidTier(tier: PlanTier, now: Date): Document {
+export function onPaidTier(now: Date): Document {
   return {
     ...MEMBER_FILTER,
-    'entitlement.tier': tier,
+    // Both spellings until `scripts/merge-pro-tiers.ts` has run: `pro_plus`
+    // is the retired Polyglot, and it is Pro.
+    'entitlement.tier': { $in: ['pro', 'pro_plus'] },
     $or: [
       { 'entitlement.expiresAt': { $exists: false } },
       { 'entitlement.expiresAt': { $gt: now } },

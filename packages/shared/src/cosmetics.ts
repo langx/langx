@@ -350,8 +350,12 @@ export interface WelcomePack {
  * buy the rungs under a gift would turn a gift into a bill.
  */
 export const PRO_WELCOME_PACKS: Readonly<Record<PaidPlanTier, WelcomePack>> = {
-  pro: { cosmetics: ['frame.slate', 'frame.bronze'], streakFreezes: 2 },
-  pro_plus: {
+  /**
+   * What Polyglot's pack was. Fluent's was the first two frames; an ex-Fluent
+   * subscriber is handed the difference once by `scripts/merge-pro-tiers.ts`,
+   * with no freezes, since they already had those.
+   */
+  pro: {
     cosmetics: [
       'frame.slate',
       'frame.bronze',
@@ -367,9 +371,9 @@ export const PRO_WELCOME_PACKS: Readonly<Record<PaidPlanTier, WelcomePack>> = {
 /**
  * What a tier's pack adds on top of one already granted.
  *
- * Upgrading pro → pro_plus should hand over the difference, not the whole
- * thing again; downgrading and re-subscribing should hand over nothing. Both
- * fall out of "grant what this tier includes and you do not already own",
+ * Somebody who had the old, smaller Fluent pack should be handed the
+ * difference, not the whole thing again; re-subscribing should hand over
+ * nothing. Both fall out of "grant what this tier includes and you do not already own",
  * which is also why the caller can be idempotent without a second latch per
  * item.
  */

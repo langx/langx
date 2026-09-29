@@ -182,10 +182,10 @@ account is noise.
 
 `modules/billing/notify.ts`, fired from the RevenueCat webhook.
 
-| Message                             | Fires on                                                                   | Note                                                                  |
-| ----------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| **Your payment did not go through** | `BILLING_ISSUE`, unless the period is already over                         | Access is untouched; the store will retry                             |
-| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts` | An expiry on a Pro+ subscription whose plain Pro runs on ends nothing |
+| Message                             | Fires on                                                                   | Note                                                                      |
+| ----------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Your payment did not go through** | `BILLING_ISSUE`, unless the period is already over                         | Access is untouched; the store will retry                                 |
+| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts` | An expiry under a gift or a second subscription that runs on ends nothing |
 
 A renewal that succeeds says nothing — the store already mails a receipt.
 
@@ -197,8 +197,8 @@ when an account was told twice that it had lost a subscription it still had:
   then, minutes later, the `RENEWAL` that undoes it — seven minutes, that day.
   So the webhook records `churnedFrom` and says nothing; `runPlanEndedPass`, on
   the half-hourly timer, looks again and writes only to accounts still free.
-  That is also what keeps the Pro+-lapsing-onto-Pro case quiet, without a rule
-  of its own.
+  That is also what keeps a subscription lapsing onto a running one quiet,
+  without a rule of its own.
 - **A `BILLING_ISSUE` whose period has already ended says nothing.** A store
   that has given up sends both events together — twenty-four milliseconds
   apart, that day — and "the store will retry" is then simply false.

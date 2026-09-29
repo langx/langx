@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import type { EmailMessage, EmailSender } from '../../email/sender'
-import type { PlanTier } from '@langx/shared'
+import type { StoredPlanTier } from '@langx/shared'
 import type { Profile } from '../profiles/profiles'
 import { runPlanEndedPass, PLAN_ENDED_DELAY_MS, PLAN_ENDED_MAX_AGE_MS } from './planEnded'
 import type { BillingNotifier } from './notify'
@@ -69,7 +69,7 @@ describe('the letter that waits for the renewal that never came', () => {
 
   /** A verified address, since that is the only kind `notifyBilling` writes to. */
   async function churnedUser(
-    opts: { agoMs: number; tier?: PlanTier; nowTier?: PlanTier } = { agoMs: 0 },
+    opts: { agoMs: number; tier?: StoredPlanTier; nowTier?: StoredPlanTier } = { agoMs: 0 },
   ): Promise<string> {
     const _id = new ObjectId()
     const userId = _id.toHexString()
@@ -114,6 +114,10 @@ describe('the letter that waits for the renewal that never came', () => {
     expect(await runPlanEndedPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
     expect(sent).toHaveLength(1)
     expect(sent[0]?.to).toBe(`${userId}@example.com`)
+    // A row from before the single plan still says `pro_plus`; the letter
+    // names the plan, and the plan is Pro.
+    expect(sent[0]?.html).toContain('Plan: Pro')
+    expect(sent[0]?.html).not.toContain('pro_plus')
 
     // The ledger claim is keyed on the fall, not on the day, so a second tick
     // twenty-nine minutes later must find it already spent.
