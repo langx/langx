@@ -6201,3 +6201,51 @@ This supersedes _A third tier, and the four things two tiers were hiding_,
 _Pro+ products grant the `pro` entitlement too_, _The plans are Fluent and
 Polyglot, and three things moved_ and _Fluent to Polyglot: the store swaps the
 plan, the paywall says what will happen_.
+
+## The paywall sells the free week
+
+With one plan the paywall has one question left — yearly or monthly — so the
+page was rebuilt around the thing that actually lowers the bar: a week free.
+When the store offers the trial, the headline is "Try Pro free for a week", the
+button is "Start your free week", and a three-step timeline says what happens
+after the tap. When it does not (`ineligibleForTrial`, a plan already had), all
+trial wording disappears and the button reads "Subscribe".
+
+**The timeline has no reminder step.** The pattern everybody copies is "Today →
+Day 5: we remind you → Day 7: billing". The only reminder this app sends is
+promotion nudge 5, which reaches people who switched marketing mail on _and_
+already cancelled, so "we'll remind you" would be the one sentence on the page
+that is false for most readers. The middle step says instead that cancelling at
+least a day before the charge costs nothing — true on both stores, which want
+the cancellation a day ahead. If a transactional trial-ending reminder ever
+exists, it earns the step back.
+
+**Dates, not day numbers.** "5 October: your plan starts" is checked against
+the reader's calendar; "Day 7" leaves them to count, and to wonder whether
+today was day 0 or day 1.
+
+**Two cards, not a segmented control.** Both quote a month on the right —
+`$6.99` beside `$9.99` is the whole argument for the year — with the actual
+charge underneath in the store's words, and "3 months free" on the yearly card.
+That replaces the struck-through monthly price under the yearly one (_A yearly
+price is a `.99` month times twelve_): the monthly card itself is now the
+comparison. Yearly is picked on open.
+
+**Four benefits, then "And N more".** Twelve rows of equal weight pushed the
+price below the fold and nobody read to the end. The four lead rows are what a
+free account runs into; opened from a locked feature, that feature takes the
+first row. The full list is one tap away, since it is where `nearby` says what
+it costs and `copilot` says it is not shipped yet.
+
+**The trial terms sit on the button.** One line directly above it — "1 week
+free, then $83.99 a year · Cancel anytime", or the renewal price without a
+trial — so guideline 3.1.2's "terms next to the purchase" does not depend on
+anybody scrolling to the small print. On iOS the footer also links Apple's
+standard EULA, which is what App Store subscriptions here are sold under.
+
+**Motion is one entrance and one spring.** The blocks fade and rise 8pt,
+staggered 60ms, once the store has answered (at most a second), so the page
+never arrives with one headline and swaps to another. The picked card's radio
+dot springs, with a selection haptic; nothing else moves, and with reduced
+motion nothing moves at all. No native module was added, so it ships over the
+air.
