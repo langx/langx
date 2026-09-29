@@ -119,7 +119,13 @@ export type AnalyticsEvent =
     }
   | {
       name: 'paywall_viewed'
-      properties: { feature: PlanFeature | null; tier: PlanTier; source: PaywallSource }
+      properties: {
+        feature: PlanFeature | null
+        tier: PlanTier
+        source: PaywallSource
+        /** Opened over a gift of months, which can be subscribed on top of. */
+        gift: boolean
+      }
     }
   | {
       /** The paywall was closed without a purchase — the X, back, or "Continue free". */
@@ -138,6 +144,12 @@ export type AnalyticsEvent =
          * in the history are from before the single plan.
          */
         change: PlanChange
+        /**
+         * The free trial the tapped package carried, in days — `null` when it
+         * had none or this account is no longer eligible for one. What
+         * separates "started a free week" from "paid on the spot".
+         */
+        trial_days: number | null
       }
     }
   | {
@@ -147,6 +159,7 @@ export type AnalyticsEvent =
         tier: PaidPlanTier | null
         period: BillingPeriod | null
         change: PlanChange
+        trial_days: number | null
         outcome: PurchaseOutcome
       }
     }

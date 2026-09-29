@@ -336,7 +336,7 @@ export default function PaywallScreen() {
   // funnel, and which capability people hit it from is the question. Mount
   // only: the tier changing after a purchase is not a second viewing.
   useEffect(() => {
-    track({ name: 'paywall_viewed', properties: { feature: feature ?? null, tier, source } })
+    track({ name: 'paywall_viewed', properties: { feature: feature ?? null, tier, source, gift } })
   }, [])
 
   /**
@@ -379,6 +379,9 @@ export default function PaywallScreen() {
       tier: chosen?.tier ?? null,
       period: chosen?.period ?? null,
       change,
+      // `null` for an ineligible account too: `getOffers` already leaves the
+      // trial off a package this person cannot have one on.
+      trial_days: chosen?.freeTrialDays ?? null,
     }
     track({ name: 'purchase_started', properties: sale })
     const outcome = await purchaseOffer(offerId)

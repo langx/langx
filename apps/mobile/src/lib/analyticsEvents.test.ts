@@ -72,11 +72,20 @@ describe('every event survives the sanitizer', () => {
       },
     },
     { name: 'message_sent', properties: { kind: 'text', reply: false } },
-    { name: 'paywall_viewed', properties: { feature: null, tier: 'free', source: 'onboarding' } },
+    {
+      name: 'paywall_viewed',
+      properties: { feature: null, tier: 'free', source: 'onboarding', gift: false },
+    },
     { name: 'paywall_dismissed', properties: { source: 'onboarding', seconds_open: 4 } },
     {
       name: 'purchase_started',
-      properties: { offer: 'langx_fluent_yearly', tier: 'pro', period: 'yearly', change: 'buy' },
+      properties: {
+        offer: 'langx_fluent_yearly',
+        tier: 'pro',
+        period: 'yearly',
+        change: 'buy',
+        trial_days: 7,
+      },
     },
     {
       name: 'purchase_finished',
@@ -85,6 +94,7 @@ describe('every event survives the sanitizer', () => {
         tier: 'pro',
         period: 'yearly',
         change: 'buy',
+        trial_days: 7,
         outcome: 'purchased',
       },
     },
