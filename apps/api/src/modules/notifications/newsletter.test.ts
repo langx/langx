@@ -188,9 +188,13 @@ describe('the monthly recap', () => {
   it('gives the in-app recap the letter’s numbers plus the month’s Echo row', async () => {
     const userId = await newProfile({ streak: 12 })
     await handle.db.collection(COLLECTIONS.dailyActivity).insertMany([
-      { userId, day: '2026-09-02', messages: 3, corrections: 1 },
-      { userId, day: '2026-09-30', messages: 2, corrections: 0 },
-      { userId, day: '2026-10-01', messages: 99, corrections: 99 },
+      { userId, day: '2026-09-02', messages: 3, corrections: 1, partners: ['a', 'b'] },
+      // A correction-only day has no `partners` field at all.
+      { userId, day: '2026-09-11', messages: 0, corrections: 2 },
+      // The partner's side of a mutual bonus: a row, but not an active day.
+      { userId, day: '2026-09-20', messages: 0, corrections: 0, mutualConversations: 1 },
+      { userId, day: '2026-09-30', messages: 2, corrections: 0, partners: ['b', 'c'] },
+      { userId, day: '2026-10-01', messages: 99, corrections: 99, partners: ['z'] },
     ] as never[])
     await handle.db
       .collection(COLLECTIONS.tokenAggregates)
@@ -203,11 +207,15 @@ describe('the monthly recap', () => {
     expect(await recapForMonth(handle.db, userId, '2026-09')).toEqual({
       month: '2026-09',
       messages: 5,
-      corrections: 1,
+      corrections: 3,
       tokens: 40,
       echoReviews: 25,
       // Today's streak: nothing records what it was at the end of September.
       currentStreak: 12,
+      // a, b and c — b on two days is still one person.
+      partners: 3,
+      activeDays: 3,
+      activeDates: [2, 11, 30],
     })
     expect(await recapForMonth(handle.db, userId, '2026-07')).toMatchObject({
       messages: 0,

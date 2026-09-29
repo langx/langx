@@ -6,11 +6,13 @@ import { COLLECTIONS } from '../../db/collections'
 import { ERROR_CODES } from '@langx/shared'
 import { ApiError } from '../../lib/ApiError'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
-import type { CardKind, CardShape } from '@langx/shared'
+import type { CardKind, CardShape, RecapCardInput } from '@langx/shared'
 import { notSuspended } from '../moderation/suspension'
 import type { Profile } from '../profiles/profiles'
 import { cardElement, type CardCopy } from './design'
-import { renderCard } from './render'
+import { recapCardContent } from './recapCard'
+import { recapCardElement } from './recapDesign'
+import { renderCard, type CardNode } from './render'
 
 export interface ShareCard {
   /** Short and URL-safe: it is the whole of `app.langx.io/s/<id>`. */
@@ -57,16 +59,18 @@ export async function createShareCard(
     shape: CardShape
     copy: CardCopy
     webBaseUrl: string
+    /** Only read for `kind: 'recap'`; without it a recap is the plain card. */
+    recap?: RecapCardInput
+    /** Where an owner's photo may be fetched from for the recap's face. */
+    storagePublicBaseUrl?: string
   },
 ): Promise<ShareCardResult> {
   if (!supportsPut(storage)) {
     throw new ApiError(ERROR_CODES.INTERNAL, 'Storage is not configured for share cards')
   }
 
-  const png = await renderCard(
-    await cardElement(input.kind, input.copy, input.shape, await profileQr(input.copy.handle)),
-    input.shape,
-  )
+  const qr = await profileQr(input.copy.handle)
+  const png = await renderCard(await elementFor(db, input, qr), input.shape)
 
   const id = randomUUID().replaceAll('-', '').slice(0, 22)
   // Under the owner's own prefix, like every other object they own. What the
@@ -88,6 +92,32 @@ export async function createShareCard(
   await db.collection<ShareCard>(COLLECTIONS.shareCards).insertOne(card)
 
   return { id, imageUrl, shareUrl: `${input.webBaseUrl}/s/${id}` }
+}
+
+/**
+ * The poster for a recap that came with its wording, the badge card for
+ * everything else.
+ *
+ * A month with nothing in it falls back to the badge card too: the app does
+ * not offer to share one, and a poster with an empty grid is worse than the
+ * month's name on a panel.
+ */
+async function elementFor(
+  db: Db,
+  input: Parameters<typeof createShareCard>[2],
+  qr: string | undefined,
+): Promise<CardNode> {
+  if (input.kind === 'recap' && input.recap) {
+    const content = await recapCardContent(db, {
+      userId: input.userId,
+      handle: input.copy.handle,
+      monthName: input.copy.headline,
+      recap: input.recap,
+      storagePublicBaseUrl: input.storagePublicBaseUrl,
+    })
+    if (content.stats.length > 0) return recapCardElement(content, input.shape, qr)
+  }
+  return cardElement(input.kind, input.copy, input.shape, qr)
 }
 
 /**

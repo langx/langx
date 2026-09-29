@@ -110,6 +110,7 @@ describe('every event survives the sanitizer', () => {
     { name: 'push_registration_failed', properties: { step: 'token', reason: 'Error' } },
     { name: 'filters_applied', properties: { count: 3, pro: true } },
     { name: 'tokens_spent', properties: { sku: 'frame_gold', kind: 'frame', amount: 250 } },
+    { name: 'recap_story_viewed', properties: { slides_seen: 4, completed: false } },
     { name: 'echo_ask_opened', properties: { kind: 'pronunciation', entry: 'cards' } },
     {
       name: 'post_created',

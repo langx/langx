@@ -78,6 +78,7 @@ reached a screen of ours.
 | `push_registration_failed`  | `step` (token, register), `reason`                                                                                                                                                         | This phone has permission and could not register a push token                                |
 | `filters_applied`           | `count`, `pro`                                                                                                                                                                             | The discovery filter sheet is applied. How many, never which                                 |
 | `tokens_spent`              | `sku`, `kind` (cosmetic kind or consumable), `amount`                                                                                                                                      | A wallet purchase the server accepted. Spending only, never earning                          |
+| `recap_story_viewed`        | `slides_seen`, `completed`                                                                                                                                                                 | The monthly recap story was left; how far it got, and whether that was the share slide       |
 | `tour_started`              | `is_guest`                                                                                                                                                                                 | The first-run tour opened. Once per install                                                  |
 | `tour_step_viewed`          | `step`, `index`                                                                                                                                                                            | One tour step was drawn against a measured element                                           |
 | `tour_skipped`              | `step`, `index`                                                                                                                                                                            | The tour was left part-way, by Skip or the back button                                       |
@@ -162,6 +163,11 @@ Some of these carry a number that needs a caveat rather than a footnote:
 - **`tokens_spent`** cannot be summed into a balance. Earning happens in cron
   jobs and gifts the device never sees, so this is one side of a ledger whose
   other side exists only on the server.
+- **`recap_story_viewed`** fires as the story goes away, so a story still on
+  screen when the app is killed is never counted. `slides_seen` varies with
+  the month — a month without corrections has no corrections slide — so read
+  `completed` for "reached the share", not `slides_seen` against a constant.
+  The share itself is `share_card_created` with `kind: recap`.
 - **Echo's six** are read as one funnel and not one at a time: capture
   (`echo_card_captured` + `echo_pack_started`) → `echo_session_started` →
   `echo_card_graded` → `echo_session_finished`. Two of them need a caveat.

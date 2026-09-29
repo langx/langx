@@ -18,7 +18,18 @@ import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
 /** What a month looked like for one person, and for everybody. */
 export interface MonthlyRecap {
   month: string
-  personal: { messages: number; corrections: number; tokens: number; streak: number }
+  personal: {
+    messages: number
+    corrections: number
+    tokens: number
+    streak: number
+    /** Different people messaged — the union of each day's `partners`. */
+    partners: number
+    /** Days with at least one message or correction. */
+    activeDays: number
+    /** Those days, as days of the month. */
+    activeDates: number[]
+  }
   community: { members: number; messages: number; corrections: number }
   /** True when the personal half is all zeroes — a different letter. */
   quiet: boolean
@@ -68,7 +79,9 @@ export async function personalMonth(
   month: string,
 ): Promise<MonthlyRecap['personal']> {
   const days = await db
-    .collection<{ messages?: number; corrections?: number }>(COLLECTIONS.dailyActivity)
+    .collection<{ day: string; messages?: number; corrections?: number; partners?: string[] }>(
+      COLLECTIONS.dailyActivity,
+    )
     .find({ userId, day: { $gte: `${month}-01`, $lte: `${month}-31` } })
     .toArray()
   const tokens =
@@ -80,11 +93,23 @@ export async function personalMonth(
   const profile = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: userId }, { projection: { streak: 1 } })
+  // `partners` is absent on a day whose only activity was a correction — see
+  // `countersOf` — so it is read with a default, never assumed.
+  const partners = new Set(days.flatMap((day) => day.partners ?? []))
+  // A row can exist with both counters at zero: the mutual-conversation
+  // bonus writes one for the partner, who did nothing that day.
+  const active = days
+    .filter((day) => (day.messages ?? 0) + (day.corrections ?? 0) > 0)
+    .map((day) => Number(day.day.slice(8, 10)))
+    .sort((a, b) => a - b)
   return {
     messages: days.reduce((total, day) => total + (day.messages ?? 0), 0),
     corrections: days.reduce((total, day) => total + (day.corrections ?? 0), 0),
     tokens,
     streak: profile?.streak?.current ?? 0,
+    partners: partners.size,
+    activeDays: active.length,
+    activeDates: active,
   }
 }
 
@@ -112,6 +137,9 @@ export async function recapForMonth(
     tokens: personal.tokens,
     echoReviews: echo?.reviews ?? 0,
     currentStreak: personal.streak,
+    partners: personal.partners,
+    activeDays: personal.activeDays,
+    activeDates: personal.activeDates,
   }
 }
 
