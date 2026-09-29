@@ -2830,26 +2830,18 @@ export function useRevokeOtherSessions() {
  * would be a second place to update every time a diagnosis gains a line.
  */
 
+/** Every day in here is a UTC day — see the note at the top of `modules/admin/stats.ts`. */
 export interface AdminStatsDto {
   generatedAt: string
-  /**
-   * The zone the day-grained numbers are cut in — the operator's own, or `UTC`
-   * when their profile carries none. The panel prints it, because a screen
-   * whose days turn over somewhere has to say where.
-   */
-  timeZone: string
   queue: { reports: number; appeals: number; feedback: number }
   audience: {
     profiles: number
     messages: number
-    /** UTC days, both — see the note at the top of `modules/admin/stats.ts`. */
     activeToday: number
     activeDaily: { day: string; count: number }[]
     seenLastMonth: number
     joinedToday: number
     joinedLastMonth: number
-    /** New members, messages and corrections per day of `timeZone`. */
-    daily: { day: string; members: number; messages: number; corrections: number }[]
     builds: { platform: string; version: string; count: number }[]
   }
   money: {

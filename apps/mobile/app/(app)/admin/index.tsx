@@ -56,12 +56,9 @@ export default function AdminHomeScreen() {
   const audience = stats.data?.audience
   const money = stats.data?.money
   const shared = stats.data?.public
-  /*
-   * The charts' own series, cut in the operator's zone rather than in UTC —
-   * `shared` keeps the totals, the streaks and the languages, which are
-   * counts over everything and have no day in them.
-   */
-  const daily = audience?.daily ?? []
+  // The three per-day charts are the public page's own series, in UTC like
+  // everything else on this screen.
+  const daily = shared?.daily ?? []
 
   const refresh = (): void => {
     void stats.refetch()
@@ -129,13 +126,8 @@ export default function AdminHomeScreen() {
             </View>
 
             <Heading>{ADMIN.home.sections.audience}</Heading>
-            {/*
-             * Where the days on this screen turn over. One line, once: the
-             * strips below are the reader's own days except where a caption
-             * or a label says UTC, and which zone that is cannot be guessed
-             * from the numbers.
-             */}
-            <Text style={styles.muted}>{ADMIN.home.daysIn(stats.data?.timeZone ?? '')}</Text>
+            {/* Where the days on this screen turn over. One line, once. */}
+            <Text style={styles.muted}>{ADMIN.home.allUtc}</Text>
             <View style={styles.tiles}>
               <StatTile value={count(audience?.joinedToday)} label={ADMIN.home.joinedToday} />
               <StatTile value={count(audience?.joinedLastMonth)} label={ADMIN.home.joinedMonth} />
@@ -143,15 +135,9 @@ export default function AdminHomeScreen() {
               <StatTile value={count(audience?.seenLastMonth)} label={ADMIN.home.seenMonth} />
             </View>
 
-            {/*
-             * The one strip on this screen that is not the reader's own day,
-             * and it says so in its caption. `dailyActivity` is bucketed per
-             * UTC day with no sub-day grain to re-cut — see the note at the
-             * top of `modules/admin/stats.ts`.
-             */}
             <Chart
               title={ADMIN.home.charts.activeDaily}
-              caption={`${ADMIN.home.charts.lastDays(audience?.activeDaily.length || 30)} · ${ADMIN.home.charts.activeDailyNote}`}
+              caption={ADMIN.home.charts.lastDays(audience?.activeDaily.length || 30)}
               points={(audience?.activeDaily ?? []).map(dayPoint)}
             />
             <Chart
