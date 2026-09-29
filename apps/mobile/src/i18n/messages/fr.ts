@@ -2358,6 +2358,30 @@ export const fr: Localized<EnMessages> = {
     perMonthBilledYearly: 'par mois · facturé à l’année',
   },
 
+  proWelcome: {
+    titlePurchase: 'Tu es Pro',
+    titleTrial: 'Ta semaine Pro gratuite a commencé',
+    titleGift: {
+      one: '{count} mois de Pro, offert 🎁',
+      other: '{count} mois de Pro, offerts 🎁',
+    },
+    titleGiftOpen: 'Pro, offert 🎁',
+    titleReferral: {
+      one: 'Tes invitations t’ont rapporté {count} mois de Pro',
+      other: 'Tes invitations t’ont rapporté {count} mois de Pro',
+    },
+    titleStreak: {
+      one: 'Ta série t’a rapporté {count} mois de Pro',
+      other: 'Ta série t’a rapporté {count} mois de Pro',
+    },
+    titleMerge: 'Fluent et Polyglot ne font plus qu’un : Pro',
+    body: 'Tout est débloqué. Quelques idées pour commencer :',
+    bodyMerge:
+      'Quel que soit celui que tu avais, tu as maintenant tout. Quelques idées pour commencer :',
+    andMore: 'et bien plus',
+    start: 'Commencer à explorer',
+  },
+
   pickers: {
     searchCountries: 'Rechercher un pays',
     noCountryMatch: 'Aucun pays ne correspond à « {query} »',
