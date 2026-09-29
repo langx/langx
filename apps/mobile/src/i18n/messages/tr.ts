@@ -1454,6 +1454,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Pro üye',
     official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',

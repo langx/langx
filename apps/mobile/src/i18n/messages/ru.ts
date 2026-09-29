@@ -1599,6 +1599,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Участник Pro',
     official: 'Официальный аккаунт',
     suspendedTag: 'Заблокирован',
     deletedTag: 'Аккаунт удалён',

@@ -1463,6 +1463,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Membre Pro',
     official: 'Compte officiel',
     suspendedTag: 'Suspendu',
     deletedTag: 'Compte supprimé',

@@ -1653,6 +1653,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'عضو Pro',
     official: 'حساب رسمي',
     suspendedTag: 'معلّق',
     deletedTag: 'حساب محذوف',

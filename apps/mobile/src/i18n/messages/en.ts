@@ -1631,6 +1631,7 @@ export const en = {
   },
 
   profile: {
+    proBadge: 'Pro member',
     /** Screen-reader label for the tick beside @langx and @copilot. */
     official: 'Official account',
     suspendedTag: 'Suspended',

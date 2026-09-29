@@ -1448,6 +1448,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Membro Pro',
     official: 'Conta oficial',
     suspendedTag: 'Suspensa',
     deletedTag: 'Conta excluída',

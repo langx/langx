@@ -1486,6 +1486,7 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Pro-Mitglied',
     official: 'Offizielles Konto',
     suspendedTag: 'Gesperrt',
     deletedTag: 'Konto gelöscht',

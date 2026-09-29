@@ -1455,6 +1455,7 @@ export const es: Localized<EnMessages> = {
   },
 
   profile: {
+    proBadge: 'Miembro Pro',
     official: 'Cuenta oficial',
     suspendedTag: 'Suspendida',
     deletedTag: 'Cuenta eliminada',
