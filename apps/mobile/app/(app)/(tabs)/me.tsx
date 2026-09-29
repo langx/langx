@@ -22,6 +22,7 @@ import { BadgeStrip } from '../../../src/components/BadgeStrip'
 import { DebugQuotaPanel } from '../../../src/components/DebugQuotaPanel'
 import { HiddenFromOthers } from '../../../src/components/HiddenFromOthers'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
+import { ProMark } from '../../../src/components/ProMark'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { Avatar } from '../../../src/components/ui/Avatar'
@@ -148,16 +149,7 @@ export default function MeScreen() {
    * used to happen and read as the location having been lost.
    */
   const cityHidden = Boolean(profile.privacy.hideCity && profile.cityName)
-  // The same mark TierBadge draws in its chip, folded into the meta line the
-  // way v3 writes it — read from the shared table rather than re-typed, which
-  // is how this line and the chip came to disagree about a renamed plan.
-  const meta = [
-    `@${profile.handle}`,
-    TIER_BADGES[tier],
-    placeLabel({ city: profile.cityName, country: profile.country }, names.country) ?? null,
-  ]
-    .filter(Boolean)
-    .join(' · ')
+  const place = placeLabel({ city: profile.cityName, country: profile.country }, names.country)
 
   return (
     <Screen scroll tabbed {...pull}>
@@ -205,9 +197,22 @@ export default function MeScreen() {
             <GenderMark gender={profile.gender} />
             <CosmeticTitle cosmetic={wornTitle} />
           </View>
-          <Text style={styles.meta} numberOfLines={1}>
-            {meta}
-          </Text>
+          {/*
+            The plan is the paywall's chip, not a word in the line: as plain
+            text it read as one more fact, and the mark people paid for looked
+            different on the screen that sold it and the one that shows it.
+          */}
+          <View style={styles.metaRow}>
+            <Text style={styles.meta} numberOfLines={1}>
+              @{profile.handle}
+            </Text>
+            {TIER_BADGES[tier] ? <ProMark /> : null}
+            {place ? (
+              <Text style={styles.meta} numberOfLines={1}>
+                {place}
+              </Text>
+            ) : null}
+          </View>
           {/* Where the other profile screens put them: on the name's lines, not among the facts. */}
           {profile.pronouns ? (
             <Text style={styles.pronouns} numberOfLines={1}>
@@ -569,7 +574,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   pronouns: { color: colors.textFaint, fontSize: 13 },
   name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 24 },
-  meta: { color: colors.textMuted, fontSize: 14 },
+  metaRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  meta: { color: colors.textMuted, flexShrink: 1, fontSize: 14 },
   heroHidden: { marginTop: 2 },
   languages: { paddingVertical: 20 },
   // No hairline of its own: the chart under it draws the one this row sits on.
