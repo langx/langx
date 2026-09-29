@@ -627,6 +627,11 @@ export const en = {
       one: 'A {days}-day streak! {count} month of Pro, from us.',
       other: 'A {days}-day streak! {count} months of Pro, from us.',
     },
+    /** A gift code typed into the paywall; `{code}` is the code as stored, upper case. */
+    introCode: {
+      one: 'Your code {code} unlocked {count} month of LangX Pro!',
+      other: 'Your code {code} unlocked {count} months of LangX Pro!',
+    },
     perks:
       'With Pro you can:\n• start as many conversations as you like\n• translate far more every day\n• see who viewed your profile, and browse without being seen\n• stand out in Discover, and filter by gender and city',
     andMore: '…and much more.',

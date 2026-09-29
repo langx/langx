@@ -608,6 +608,31 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { status: 1, endsAt: 1 }, name: 'status_ends' },
   ],
 
+  [COLLECTIONS.giftCodes]: [
+    // The lookup, and the invariant: two codes with one spelling would make
+    // "which one did they redeem" a coin toss. Stored normalised, so the
+    // uniqueness is case-blind without a collation.
+    { key: { code: 1 }, name: 'code_unique', unique: true },
+    // The panel's list, newest first.
+    { key: { createdAt: -1 }, name: 'created' },
+  ],
+
+  [COLLECTIONS.giftCodeRedemptions]: [
+    // Once per person per code. Written before the count is taken, so a
+    // double tap lands on this rather than on a second month.
+    { key: { codeId: 1, userId: 1 }, name: 'code_user_unique', unique: true },
+    // The panel's detail: who, newest first.
+    { key: { codeId: 1, at: -1 }, name: 'code_at' },
+    // Account deletion.
+    { key: { userId: 1 }, name: 'user' },
+  ],
+
+  [COLLECTIONS.giftCodeAttempts]: [
+    // The rolling hour one person's attempts are counted in.
+    { key: { userId: 1, at: -1 }, name: 'user_at' },
+    { key: { at: 1 }, name: 'ttl_1h', expireAfterSeconds: 60 * 60 },
+  ],
+
   [COLLECTIONS.tokenLedger]: [
     // The single most important index here: the same message cannot be awarded
     // twice, whether it arrived over REST or the socket, and a re-run cron

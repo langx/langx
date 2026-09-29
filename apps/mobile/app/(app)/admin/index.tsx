@@ -119,6 +119,10 @@ export default function AdminHomeScreen() {
               />
               <ListRow title={ADMIN.home.users} onPress={() => router.push('/(app)/admin/users')} />
               <ListRow
+                title={ADMIN.home.giftCodes}
+                onPress={() => router.push('/(app)/admin/gift-codes')}
+              />
+              <ListRow
                 title={ADMIN.home.system}
                 onPress={() => router.push('/(app)/admin/system')}
                 last

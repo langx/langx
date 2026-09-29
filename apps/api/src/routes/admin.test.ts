@@ -1360,6 +1360,122 @@ describe('the operator panel', () => {
     })
   })
 
+  describe('gift codes', () => {
+    it('makes a code, lists it, and records who made it', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      const created = await post(admin, '/admin/gift-codes', {
+        code: 'spring-launch',
+        months: 2,
+        maxRedemptions: 50,
+        note: 'Poster at the Uni fair',
+      })
+      expect(created.statusCode).toBe(201)
+      const code = created.json<{ _id: string; code: string; active: boolean }>()
+      expect(code).toMatchObject({ code: 'SPRING-LAUNCH', active: true })
+
+      // One spelling per code, whatever case it was typed in.
+      const twice = await post(admin, '/admin/gift-codes', { code: 'Spring-Launch', months: 1 })
+      expect(twice.statusCode).toBe(400)
+
+      const list = await get(admin, '/admin/gift-codes')
+      const items = list.json<{ items: { code: string; redemptions: number }[] }>().items
+      expect(items.find((item) => item.code === 'SPRING-LAUNCH')).toMatchObject({
+        redemptions: 0,
+      })
+
+      const action = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .findOne({ action: 'giftCode.create', refId: code._id })
+      expect(action).toMatchObject({
+        adminId: admin.userId,
+        payload: { code: 'SPRING-LAUNCH', months: 2, maxRedemptions: 50 },
+      })
+    })
+
+    it('redeems from the paywall, grants at once, and shows up in the detail', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+      const created = await post(admin, '/admin/gift-codes', { code: 'FAIRDAY', months: 3 })
+      const code = created.json<{ _id: string }>()
+
+      const redeemed = await post(member, '/me/gift-code', { code: 'fairday' })
+      expect(redeemed.statusCode).toBe(200)
+      expect(redeemed.json<{ months: number; status: string; endsAt: string }>()).toMatchObject({
+        months: 3,
+        status: 'granted',
+      })
+      const profile = await profiles().findOne({ _id: member.userId })
+      expect(profile?.entitlement).toMatchObject({ tier: 'pro', store: 'gift' })
+
+      // Once per person: a clear reason, not a second gift.
+      const again = await post(member, '/me/gift-code', { code: 'FAIRDAY' })
+      expect(again.statusCode).toBe(409)
+      expect(again.json()).toMatchObject({ code: ERROR_CODES.GIFT_CODE_REJECTED, reason: 'used' })
+
+      const detail = await get(admin, `/admin/gift-codes/${code._id}`)
+      const body = detail.json<{
+        code: { redemptions: number }
+        redemptions: { userId: string; giftStatus: string }[]
+      }>()
+      expect(body.code.redemptions).toBe(1)
+      expect(body.redemptions).toMatchObject([{ userId: member.userId, giftStatus: 'granted' }])
+    })
+
+    it('stops a code when it is switched off, and starts it again', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const member = await newUser()
+      const code = (await post(admin, '/admin/gift-codes', { code: 'STOPME', months: 1 })).json<{
+        _id: string
+      }>()
+
+      const off = await patch(admin, `/admin/gift-codes/${code._id}`, { active: false })
+      expect(off.statusCode).toBe(200)
+      expect(off.json<{ active: boolean }>().active).toBe(false)
+      const refused = await post(member, '/me/gift-code', { code: 'STOPME' })
+      expect(refused.json()).toMatchObject({ reason: 'inactive' })
+
+      await patch(admin, `/admin/gift-codes/${code._id}`, { active: true })
+      expect((await post(member, '/me/gift-code', { code: 'STOPME' })).statusCode).toBe(200)
+
+      const actions = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .find({ refId: code._id, action: { $in: ['giftCode.activate', 'giftCode.deactivate'] } })
+        .toArray()
+      expect(actions.map((row) => row.action as string).sort()).toEqual([
+        'giftCode.activate',
+        'giftCode.deactivate',
+      ])
+    })
+
+    it('answers an unknown code with its own reason, and a guest not at all', async () => {
+      const member = await newUser()
+      const unknown = await post(member, '/me/gift-code', { code: 'NO-SUCH-CODE' })
+      expect(unknown.statusCode).toBe(409)
+      expect(unknown.json()).toMatchObject({
+        code: ERROR_CODES.GIFT_CODE_REJECTED,
+        reason: 'unknown',
+      })
+      const anonymous = await app.inject({
+        method: 'POST',
+        url: '/me/gift-code',
+        payload: { code: 'X' },
+      })
+      expect(anonymous.statusCode).toBe(401)
+    })
+
+    it('is the operator’s alone to make and to read', async () => {
+      const member = await newUser()
+      expect(
+        (await post(member, '/admin/gift-codes', { code: 'MINE', months: 1 })).statusCode,
+      ).toBe(403)
+      expect((await get(member, '/admin/gift-codes')).statusCode).toBe(403)
+    })
+  })
+
   describe('the update banner', () => {
     it('raises it for one platform and leaves the others where they were', async () => {
       const admin = await newUser()

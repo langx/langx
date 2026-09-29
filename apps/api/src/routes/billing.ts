@@ -1,13 +1,21 @@
-import { ERROR_CODES, revenueCatWebhookBodySchema } from '@langx/shared'
+import {
+  ERROR_CODES,
+  giftCodeRedeemSchema,
+  revenueCatWebhookBodySchema,
+  type GiftCodeRedeemResult,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { requireMember } from '../middleware/requireAuth'
 import { asFakeRevenueCat } from '../modules/billing/fakeRevenueCat'
+import { redeemGiftCode } from '../modules/billing/giftCodes'
+import { grantProGiftNow } from '../modules/billing/proGifts'
 import { refreshEntitlement } from '../modules/billing/refresh'
 import { processRevenueCatWebhook } from '../modules/billing/webhook'
 import { getProfile } from '../modules/profiles/profiles'
 import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
+import { fanOutMessage } from '../ws/fanOut'
 
 /**
  * What the local harness can make the fake store do. Not "every RevenueCat
@@ -58,6 +66,66 @@ export const billingRoutes: FastifyPluginAsyncZod = async (app) => {
     const entitlement = await refreshEntitlement(app.mongo.db, app.revenueCat, request.userId)
     return reply.send(entitlement)
   })
+
+  /**
+   * Redeems a gift code for months of Pro — see `modules/billing/giftCodes.ts`.
+   *
+   * Refused before anything is counted when billing is not configured: the
+   * gift would be a row nothing ever grants. Otherwise every attempt counts
+   * against the hour, right or wrong, and a redemption is granted at once,
+   * as the operator's button does, so the paywall can celebrate straight
+   * away. A grant RevenueCat did not answer stays pending for the scheduler,
+   * and the answer says so.
+   *
+   * REST only: there is no socket event for this, so there is no second door
+   * to guard.
+   */
+  app.post(
+    '/me/gift-code',
+    { preHandler: requireMember, schema: { body: giftCodeRedeemSchema } },
+    async (request, reply) => {
+      const db = app.mongo.db
+      if (!app.env.REVENUECAT_SECRET_API_KEY && !app.env.REVENUECAT_FAKE_STORE) {
+        throw new ApiError(ERROR_CODES.GIFT_CODE_REJECTED, 'Gift codes are not available here', {
+          reason: 'unavailable',
+        })
+      }
+
+      const outcome = await redeemGiftCode(db, { userId: request.userId, code: request.body.code })
+      if (outcome.kind === 'throttled') {
+        throw new ApiError(ERROR_CODES.RATE_LIMITED, 'Too many attempts — try again later', {
+          retryAt: outcome.retryAt.toISOString(),
+        })
+      }
+      if (outcome.kind === 'rejected') {
+        throw new ApiError(ERROR_CODES.GIFT_CODE_REJECTED, 'That code cannot be redeemed', {
+          reason: outcome.reason,
+        })
+      }
+
+      const granted =
+        (await grantProGiftNow(
+          db,
+          {
+            revenueCat: app.revenueCat,
+            email: app.email,
+            fanOut: (delivery, { push }) =>
+              fanOutMessage(app, app.io, delivery.conversation, delivery.message, {
+                pushWhenAway: push,
+              }),
+            warn: (error, message) => request.log.warn({ err: error }, message),
+          },
+          outcome.gift._id,
+        )) ?? outcome.gift
+
+      const result: GiftCodeRedeemResult = {
+        months: granted.months,
+        endsAt: granted.endsAt ? granted.endsAt.toISOString() : null,
+        status: granted.status === 'granted' ? 'granted' : 'pending',
+      }
+      return reply.send(result)
+    },
+  )
 
   if (app.env.REVENUECAT_FAKE_STORE) registerTestStoreRoute(app)
 }

@@ -520,6 +520,10 @@ export async function purgeExpiredAccounts(
       // Gifts of Pro, with the operator's note about why. A gift still
       // pending for a deleted account would only ever be skipped.
       db.collection(COLLECTIONS.proGifts).deleteMany({ userId }),
+      // Which gift codes they redeemed and how often they tried. The codes'
+      // own counts stay: they count what was given, not who is still here.
+      db.collection(COLLECTIONS.giftCodeRedemptions).deleteMany({ userId }),
+      db.collection(COLLECTIONS.giftCodeAttempts).deleteMany({ userId }),
       // The rows behind the images deleted above. A card's `_id` is a public
       // `/s/<id>` page about a person, so leaving it is leaving a profile
       // fragment up after the profile is gone.

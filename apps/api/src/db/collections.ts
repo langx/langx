@@ -214,6 +214,24 @@ export const COLLECTIONS = {
    * is the whole of its idempotency; see `modules/billing/proGifts.ts`.
    */
   proGifts: 'proGifts',
+  /**
+   * Codes an operator hands out, each worth months of Pro to anybody who
+   * types it once. `code` is stored upper case and unique; `redemptions` is
+   * the running count the cap is checked against. See
+   * `modules/billing/giftCodes.ts`.
+   */
+  giftCodes: 'giftCodes',
+  /**
+   * Who redeemed which code, and when. Unique on `{codeId, userId}` — that
+   * index, not a check in a handler, is what makes "once per person" true.
+   */
+  giftCodeRedemptions: 'giftCodeRedemptions',
+  /**
+   * Every redemption attempt, right or wrong, kept for an hour: the rolling
+   * window `GIFT_CODE_RULES.attemptsPerHour` is counted in. A TTL rather than
+   * a sweep, because the window is all these rows are for.
+   */
+  giftCodeAttempts: 'giftCodeAttempts',
 
   /**
    * Who invited whom. `_id` is the **invitee**, so "one referrer per person,
