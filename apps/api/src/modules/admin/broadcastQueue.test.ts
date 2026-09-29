@@ -119,6 +119,44 @@ describe('the in-app broadcast queue', () => {
     expect((await broadcasts(db).findOne({ _id: 'hello' }))?.status).toBe('done')
   })
 
+  it("puts a poll under each copy, in the reader's own language", async () => {
+    await Promise.all([member('ayse', { nativeLanguages: [{ code: 'tr' }] }), member('ben')])
+    await createBroadcast(db, {
+      id: 'heard-from',
+      bodies: { en: 'Where did you hear about us?', tr: 'Bizi nereden duydun?' },
+      interactive: {
+        kind: 'poll',
+        pollId: 'heard-from',
+        options: [
+          { id: 'friend', labels: { en: 'A friend', tr: 'Bir arkadaş' } },
+          { id: 'other', labels: { en: 'Somewhere else' } },
+        ],
+      },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+    await arm(db, 'heard-from')
+    await runBroadcastQueuePass(db, push, NOON)
+
+    const rows = await db
+      .collection(COLLECTIONS.messages)
+      .find({ clientId: /^broadcast:heard-from:/ })
+      .toArray()
+    const byBody = Object.fromEntries(rows.map((row) => [row.body as string, row.interactive]))
+    expect(byBody['Bizi nereden duydun?']).toEqual({
+      kind: 'poll',
+      pollId: 'heard-from',
+      options: [
+        { id: 'friend', label: 'Bir arkadaş' },
+        // No Turkish label: English, the same fallback the body uses.
+        { id: 'other', label: 'Somewhere else' },
+      ],
+    })
+    expect(byBody['Where did you hear about us?']).toMatchObject({
+      options: [{ label: 'A friend' }, { label: 'Somewhere else' }],
+    })
+  })
+
   it('is exactly once even when a batch is replayed from the start', async () => {
     await Promise.all([member('dora'), member('emil')])
     await createBroadcast(db, {

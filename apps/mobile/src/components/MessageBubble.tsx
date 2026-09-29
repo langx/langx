@@ -45,6 +45,7 @@ import { LinkPreviewCard } from './LinkPreviewCard'
 import { ProfileLinkCard } from './ProfileLinkCard'
 import { MediaGallery } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
+import { MessageInteractive } from './MessageInteractive'
 import { Image } from 'expo-image'
 import { stickerAsset } from '../lib/stickerAssets'
 import { coordinatesText, mapsUrl } from '../lib/sharedLocation'
@@ -125,6 +126,10 @@ export interface MessageBubbleProps {
   onRespondMeeting: (message: MessageDto, status: 'accepted' | 'declined' | 'cancelled') => void
   /** Answers a quiz. Once, and never your own. */
   onAnswerQuiz: (message: MessageDto, index: number) => void
+  /** Picks an option of a poll under a broadcast. The server keeps the first. */
+  onAnswerPoll: (message: MessageDto, optionId: string) => void
+  /** The button on a card under a broadcast. */
+  onCardAction: (message: MessageDto) => void
   /** Hands an agreed meeting to the reader's calendar, as an `.ics`. */
   onAddToCalendar: (message: MessageDto) => void
   /**
@@ -210,6 +215,8 @@ export const MessageBubble = memo(function MessageBubble({
   onAnswerAsk,
   onRespondMeeting,
   onAnswerQuiz,
+  onAnswerPoll,
+  onCardAction,
   onAddToCalendar,
   meetingWhen = '',
   meetingLength = '',
@@ -933,6 +940,14 @@ export const MessageBubble = memo(function MessageBubble({
             </Pressable>
           ) : null}
         </View>
+      ) : null}
+      {message.interactive ? (
+        <MessageInteractive
+          interactive={message.interactive}
+          mine={mine}
+          onAnswerPoll={(optionId) => onAnswerPoll(message, optionId)}
+          onCardAction={() => onCardAction(message)}
+        />
       ) : null}
       {badge}
       {/*

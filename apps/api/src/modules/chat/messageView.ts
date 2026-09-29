@@ -2,6 +2,7 @@ import {
   attachmentsOf,
   type MeetingStatus,
   type MessageAsk,
+  type MessageInteractive,
   type MessageTranslation,
   type MessageType,
 } from '@langx/shared'
@@ -42,6 +43,8 @@ export interface MessageView {
   replyTo?: { messageId: string; senderId: string; preview: string }
   /** What the sender asked for back. See `Message.ask`. */
   ask?: MessageAsk
+  /** A poll or a card under the text. See `Message.interactive`. */
+  interactive?: MessageInteractive
   /** Sent with the message by its author. See `Message.translation`. */
   translation?: MessageTranslation
   /** A copy from another thread. See `Message.forwarded`. */
@@ -158,6 +161,7 @@ export function toMessageView(
   if (!deleted && echoedMessageIds?.has(message._id.toHexString())) view.echoed = true
   // A tombstone asks for nothing: the sentence it was about is gone.
   if (!deleted && message.ask) view.ask = message.ask
+  if (!deleted && message.interactive) view.interactive = message.interactive
   if (!deleted && message.translation) view.translation = message.translation
   if (!deleted && message.forwarded) view.forwarded = true
   if (!deleted && message.phrase) view.phrase = message.phrase

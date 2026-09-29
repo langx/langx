@@ -979,6 +979,18 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { status: 1, createdAt: 1 }, name: 'status_created' },
   ],
 
+  [COLLECTIONS.pollAnswers]: [
+    /*
+     * One answer per person per poll. An invariant, not an optimisation: two
+     * taps, two devices or a REST call racing a socket event all reach the
+     * insert, and this is what refuses the second one. It also serves the
+     * panel's per-option count, which filters on `pollId` first.
+     */
+    { key: { pollId: 1, userId: 1 }, name: 'poll_user_unique', unique: true },
+    // The account purge.
+    { key: { userId: 1 }, name: 'poll_answer_owner' },
+  ],
+
   [COLLECTIONS.feedback]: [
     /*
      * The triage queue, and **ascending** — the opposite of every other list

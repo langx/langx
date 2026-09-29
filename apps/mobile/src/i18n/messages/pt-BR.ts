@@ -1013,6 +1013,7 @@ export const ptBR: Localized<EnMessages> = {
     phraseCard: 'Expressão',
     meetingCard: 'Horário proposto',
     quizCard: 'Quiz',
+    pollThanks: 'Obrigado!',
     stickers: 'Stickers',
     stickerBuy: 'Desbloquear por {price} tokens',
     quizAddOption: 'Adicionar uma opção',

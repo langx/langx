@@ -23,6 +23,9 @@ import {
   type PhraseScope,
   type MeetingStatus,
   type MessageAsk,
+  type BroadcastInteractive,
+  type MessageInteractive,
+  type PollResults,
   type MessageTranslation,
   type MessageType,
   type SharedLocationPrecision,
@@ -880,6 +883,8 @@ export interface MessageDto {
   replyTo?: { messageId: string; senderId: string; preview: string }
   /** What the sender asked for back — a correction, or to hear it said. */
   ask?: MessageAsk
+  /** A poll or a one-button card under a broadcast's text. */
+  interactive?: MessageInteractive
   /** The sender's own words in the reader's language, sent with the message. */
   translation?: MessageTranslation
   /** A copy of a message from another of the sender's threads. */
@@ -3007,6 +3012,10 @@ export interface AdminBroadcastDto {
   finishedAt?: string
   /** Set by a test send, and what the API requires before it will arm one. */
   testedAt?: string
+  /** A poll or card under every copy, authored in files. */
+  interactive?: BroadcastInteractive
+  /** Per-option counts, when `interactive` is a poll. */
+  pollResults?: PollResults
 }
 
 export interface AdminUserDto {
