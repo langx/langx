@@ -116,6 +116,8 @@ describe('every event survives the sanitizer', () => {
       properties: { asks: 'none', media: 2, hasText: false, from: 'feed' },
     },
     { name: 'feed_card_opened', properties: { position: 4, asks: 'both' } },
+    { name: 'pro_welcome_shown', properties: { source: 'gift', months: 3 } },
+    { name: 'pro_welcome_closed', properties: { source: 'trial', action: 'start' } },
   ]
 
   for (const event of events) {

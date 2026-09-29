@@ -10,6 +10,7 @@ import type {
   PlanFeature,
   PlanTier,
   PostKind,
+  ProWelcomeSource,
   PushKind,
 } from '@langx/shared'
 import type { OnboardingStep } from './onboardingStep'
@@ -516,6 +517,24 @@ export type AnalyticsEvent =
       properties:
         | { source: 'live_activity'; target: 'chat' }
         | { source: 'widget'; target: 'me' | 'chats' | 'echo' }
+    }
+  | {
+      /**
+       * "You're Pro now" was put on screen for a welcome the server left on
+       * the profile. `source` is why (`ProWelcomeCopy` reads the same field),
+       * and `months` is the length of a timed grant, `null` for one with none
+       * — a lifetime grant, a purchase, or a build too old to have carried it.
+       */
+      name: 'pro_welcome_shown'
+      properties: { source: ProWelcomeSource; months: number | null }
+    }
+  | {
+      /**
+       * The welcome was closed, by its own button or by the backdrop. `action`
+       * is which: `start` goes on to Discover, `close` does not.
+       */
+      name: 'pro_welcome_closed'
+      properties: { source: ProWelcomeSource; action: 'start' | 'close' }
     }
 
 export type AnalyticsEventName = AnalyticsEvent['name']

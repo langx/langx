@@ -15,6 +15,7 @@ import { useAckProWelcome, useMe, type MeProfile } from '../api/queries'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useTourOpen } from '../hooks/useTour'
 import { useT } from '../i18n'
+import { track } from '../lib/analytics'
 import { notification } from '../lib/haptics'
 import { isLaunchOver, subscribeToLaunchOver } from '../lib/launchOver'
 import { PRO_WELCOME_HIGHLIGHTS, proWelcomeCopy, setProWelcomeOpen } from '../lib/proWelcome'
@@ -85,6 +86,10 @@ export function ProWelcomeHost({ enabled }: { enabled: boolean }) {
     // be half-way through its own start and reads this to stand aside.
     setProWelcomeOpen(true)
     setShown(welcome)
+    track({
+      name: 'pro_welcome_shown',
+      properties: { source: welcome.source, months: welcome.months ?? null },
+    })
   }, [enabled, fresh, welcome, shown, isPro, launchOver, tourOpen, acknowledge])
 
   useEffect(() => () => setProWelcomeOpen(false), [])
@@ -93,6 +98,10 @@ export function ProWelcomeHost({ enabled }: { enabled: boolean }) {
 
   function close(explore: boolean): void {
     if (!shown) return
+    track({
+      name: 'pro_welcome_closed',
+      properties: { source: shown.source, action: explore ? 'start' : 'close' },
+    })
     acknowledge(shown.at)
     setShown(null)
     setProWelcomeOpen(false)
