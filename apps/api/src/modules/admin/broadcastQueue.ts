@@ -5,6 +5,7 @@ import {
   bodyFor,
   broadcastAudience,
   broadcasts,
+  interactiveFor,
   mediaFor,
   revOf,
   type BroadcastJob,
@@ -128,11 +129,13 @@ async function deliver(
   const locale = await localeFor(db, userId)
   const body = bodyFor(job, locale)
   const attachment = mediaFor(job, locale)
+  const interactive = interactiveFor(job, locale)
   const delivered = await deliverOfficialMessage(db, {
     fromHandle: 'langx',
     toUserId: userId,
     body,
     ...(attachment ? { attachment } : {}),
+    ...(interactive ? { interactive } : {}),
     clientId: `broadcast:${job._id}:${userId}`,
   })
   if (!delivered) return false
@@ -204,11 +207,13 @@ export async function sendBroadcastTest(
   const locale = await localeFor(db, toUserId)
   const body = bodyFor(job, locale)
   const attachment = mediaFor(job, locale)
+  const interactive = interactiveFor(job, locale)
   const delivered = await deliverOfficialMessage(db, {
     fromHandle: 'langx',
     toUserId,
     body,
     ...(attachment ? { attachment } : {}),
+    ...(interactive ? { interactive } : {}),
     clientId: `broadcast:${job._id}:test:${job.createdAt.getTime()}:${revOf(job)}:${toUserId}`,
   })
   if (!delivered) return false

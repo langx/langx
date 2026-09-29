@@ -260,6 +260,8 @@ export const ADMIN = {
     progress: (sent: number, total: number) => `${sent} of ${total}`,
     failed: (n: number) => `${n} failed`,
     stoppedNote: 'Stopped. What has already gone cannot be recalled.',
+    pollAnswers: (n: number) => `Answers (${n})`,
+    pollOption: (label: string, n: number) => `${label} · ${n}`,
   },
 
   users: {

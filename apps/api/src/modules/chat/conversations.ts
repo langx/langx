@@ -2,6 +2,7 @@ import {
   ERROR_CODES,
   type MeetingStatus,
   type MessageAsk,
+  type MessageInteractive,
   type MessageTranslation,
   type MessageMedia,
   type MessageType,
@@ -127,6 +128,13 @@ export interface Message {
    * does not draw the badge.
    */
   ask?: MessageAsk
+  /**
+   * A poll or a one-button card under the text, from a broadcast. Like `ask`
+   * it is a note on a `text` message, not a kind of message: the body always
+   * says the whole thing, so every older reader still gets a sentence. See
+   * `@langx/shared`'s `interactive.ts`.
+   */
+  interactive?: MessageInteractive
   /**
    * Who answered the `ask` above, and when.
    *

@@ -230,6 +230,33 @@ export default function AdminBroadcastDetailScreen() {
               </Callout>
             ) : null}
 
+            {/*
+             * The poll's answers, per option, labelled in English — the panel
+             * is read by us. Every option is listed, at 0 if nobody picked it.
+             */}
+            {data.interactive?.kind === 'poll' && data.pollResults ? (
+              <>
+                <Text style={styles.heading}>
+                  {ADMIN.broadcast.pollAnswers(data.pollResults.total)}
+                </Text>
+                {data.interactive.options.map((option) => {
+                  const count = data.pollResults?.counts[option.id] ?? 0
+                  const total = data.pollResults?.total ?? 0
+                  return (
+                    <View key={option.id}>
+                      <Text style={styles.hint}>
+                        {ADMIN.broadcast.pollOption(option.labels.en ?? option.id, count)}
+                      </Text>
+                      <ProgressBar
+                        value={total > 0 ? count / total : 0}
+                        accessibilityLabel={ADMIN.broadcast.progress(count, total)}
+                      />
+                    </View>
+                  )
+                })}
+              </>
+            ) : null}
+
             {data.status === 'draft' && editing === null ? (
               <>
                 {translated ? (

@@ -1,5 +1,10 @@
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
-import { mediaKindOfContentType, type MessageMedia, type OfficialHandle } from '@langx/shared'
+import {
+  mediaKindOfContentType,
+  type MessageInteractive,
+  type MessageMedia,
+  type OfficialHandle,
+} from '@langx/shared'
 import { COLLECTIONS } from '../../db/collections'
 import {
   findConversationBetween,
@@ -43,6 +48,11 @@ export interface DeliverInput {
    * no quota to charge a program against.
    */
   attachment?: MessageMedia
+  /**
+   * A poll or a card under the text, already in the reader's language. Only
+   * on a plain text message: a picture's caption is not where chips go.
+   */
+  interactive?: MessageInteractive
 }
 
 /**
@@ -95,6 +105,7 @@ export async function deliverOfficialMessage(
     body: input.body,
     ...(attachment ? { attachments: [attachment], media: attachment } : {}),
     ...(input.clientId ? { clientId: input.clientId } : {}),
+    ...(input.interactive && !kind ? { interactive: input.interactive } : {}),
     createdAt: now,
   }
 

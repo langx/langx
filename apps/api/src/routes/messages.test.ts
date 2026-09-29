@@ -21,6 +21,7 @@ import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import type { Profile } from '../modules/profiles/profiles'
 import type { Message } from '../modules/chat/conversations'
+import { pollResults } from '../modules/chat/polls'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -3744,6 +3745,103 @@ describe('Faz 5 — conversation/message history REST', () => {
         .collection(COLLECTIONS.messages)
         .countDocuments({ conversationId: new ObjectId(conversationId), body: 'sent once' })
       expect(count).toBe(1)
+    })
+  })
+
+  /*
+   * A poll under a broadcast. The row is written straight into the thread
+   * rather than through the queue — what is under test is the answer, which
+   * is the same function whether it came over REST or the socket.
+   */
+  describe('answering a poll', () => {
+    async function pollIn(prefix: string, pollId: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const conversationId = (await startConversation(a, b.userId, 'hey'))._id
+      const messageId = new ObjectId()
+      await handle.db.collection<Message>(COLLECTIONS.messages).insertOne({
+        _id: messageId,
+        conversationId: new ObjectId(conversationId),
+        senderId: a.userId,
+        type: 'text',
+        body: 'Where did you hear about us?',
+        interactive: {
+          kind: 'poll',
+          pollId,
+          options: [
+            { id: 'friend', label: 'A friend' },
+            { id: 'reddit', label: 'Reddit' },
+          ],
+        },
+        createdAt: new Date(),
+      })
+      return { a, b, conversationId, messageId: messageId.toHexString() }
+    }
+
+    function answer(
+      user: SignedUpUser,
+      conversationId: string,
+      messageId: string,
+      optionId: string,
+    ) {
+      return app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages/${messageId}/poll-answer`,
+        headers: { cookie: user.cookie },
+        payload: { optionId },
+      })
+    }
+
+    it("records the pick once and writes it onto the reader's message", async () => {
+      const { b, conversationId, messageId } = await pollIn('poll-once', 'poll-once')
+
+      const first = await answer(b, conversationId, messageId, 'reddit')
+      expect(first.statusCode).toBe(200)
+      expect(first.json<{ interactive: { answer?: string } }>().interactive.answer).toBe('reddit')
+
+      // A second tap, on a different chip, keeps the first answer.
+      const second = await answer(b, conversationId, messageId, 'friend')
+      expect(second.statusCode).toBe(200)
+      expect(second.json<{ interactive: { answer?: string } }>().interactive.answer).toBe('reddit')
+
+      const rows = await handle.db
+        .collection(COLLECTIONS.pollAnswers)
+        .find({ pollId: 'poll-once' })
+        .toArray()
+      expect(rows).toHaveLength(1)
+      expect(rows[0]).toMatchObject({ userId: b.userId, optionId: 'reddit' })
+
+      const stored = await handle.db
+        .collection<Message>(COLLECTIONS.messages)
+        .findOne({ _id: new ObjectId(messageId) })
+      expect(stored?.interactive).toMatchObject({ kind: 'poll', answer: 'reddit' })
+    })
+
+    it('refuses the sender, an outsider and an option the poll does not have', async () => {
+      const { a, b, conversationId, messageId } = await pollIn('poll-guards', 'poll-guards')
+      const outsider = await newUser('poll-guards-c@example.com')
+
+      expect((await answer(a, conversationId, messageId, 'friend')).statusCode).toBe(403)
+      expect((await answer(outsider, conversationId, messageId, 'friend')).statusCode).toBe(404)
+      expect((await answer(b, conversationId, messageId, 'tiktok')).statusCode).toBe(400)
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.pollAnswers)
+          .countDocuments({ pollId: 'poll-guards' }),
+      ).toBe(0)
+    })
+
+    it('counts answers per option for the panel', async () => {
+      const one = await pollIn('poll-count-1', 'poll-count')
+      const two = await pollIn('poll-count-2', 'poll-count')
+      await answer(one.b, one.conversationId, one.messageId, 'friend')
+      await answer(two.b, two.conversationId, two.messageId, 'friend')
+
+      expect(await pollResults(handle.db, 'poll-count', ['friend', 'reddit'])).toEqual({
+        pollId: 'poll-count',
+        total: 2,
+        counts: { friend: 2, reddit: 0 },
+      })
     })
   })
 })

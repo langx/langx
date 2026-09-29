@@ -296,6 +296,8 @@ export default function NewChatScreen() {
                 onAnswerAsk={ignore}
                 onRespondMeeting={ignore}
                 onAnswerQuiz={ignore}
+                onAnswerPoll={ignore}
+                onCardAction={ignore}
                 onAddToCalendar={ignore}
                 onJumpTo={ignore}
                 onOpenMedia={ignore}

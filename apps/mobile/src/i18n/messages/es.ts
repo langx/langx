@@ -1019,6 +1019,7 @@ export const es: Localized<EnMessages> = {
     phraseCard: 'Expresión',
     meetingCard: 'Hora propuesta',
     quizCard: 'Pregunta',
+    pollThanks: '¡Gracias!',
     stickers: 'Stickers',
     stickerBuy: 'Desbloquear por {price} tokens',
     quizAddOption: 'Añadir una opción',

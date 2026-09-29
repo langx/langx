@@ -1128,6 +1128,7 @@ export const ar: Localized<EnMessages> = {
     phraseCard: 'عبارة',
     meetingCard: 'وقت مقترح',
     quizCard: 'سؤال',
+    pollThanks: 'شكرًا!',
     stickers: 'ملصقات',
     stickerBuy: 'افتحها بـ{price} توكن',
     quizAddOption: 'أضف خيارًا',

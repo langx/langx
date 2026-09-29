@@ -1160,6 +1160,7 @@ export const en = {
     phraseCard: 'Phrase',
     meetingCard: 'Proposed time',
     quizCard: 'Quiz',
+    pollThanks: 'Thanks!',
     stickers: 'Stickers',
     stickerBuy: 'Unlock for {price} tokens',
     quizAddOption: 'Add an option',
