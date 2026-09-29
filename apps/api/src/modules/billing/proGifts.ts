@@ -471,15 +471,7 @@ async function notifyProGift(
   const date = formatGiftDate(gift.endsAt, reader.locale, reader.timezone)
   const count = gift.months
 
-  const intro =
-    gift.source === 'admin'
-      ? t('proGift.introAdmin', { count })
-      : gift.source === 'referral'
-        ? t('proGift.introReferral', {
-            count,
-            friends: PRO_GIFT_RULES.referral.activationsPerGift,
-          })
-        : t('proGift.introStreak', { count, days: streakDaysOf(gift._id) })
+  const intro = introFor(gift, t, count)
 
   await sayFromLangx(
     db,
@@ -502,6 +494,25 @@ async function notifyProGift(
     },
     reader.locale,
   )
+}
+
+/**
+ * The first sentence, by who gave it. A switch with no default, so a new
+ * `ProGiftSource` does not compile until it has a sentence of its own —
+ * rather than quietly borrowing the streak's.
+ */
+function introFor(gift: ProGift, t: ReturnType<typeof translator>, count: number): string {
+  switch (gift.source) {
+    case 'admin':
+      return t('proGift.introAdmin', { count })
+    case 'referral':
+      return t('proGift.introReferral', {
+        count,
+        friends: PRO_GIFT_RULES.referral.activationsPerGift,
+      })
+    case 'streak':
+      return t('proGift.introStreak', { count, days: streakDaysOf(gift._id) })
+  }
 }
 
 /** The milestone a streak gift is for, read back off its key. */
