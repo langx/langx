@@ -17,13 +17,15 @@ import type { Href } from 'expo-router'
  */
 export function notificationRoute(data: unknown): Href | null {
   if (typeof data !== 'object' || data === null) return null
-  const { kind, conversationId, postId, handle, commentId } = data as {
+  const { kind, conversationId, postId, handle, commentId, testimonialId } = data as {
     kind?: unknown
     conversationId?: unknown
     postId?: unknown
     handle?: unknown
     /** A comment reply: which comment, so the post opens at its thread. */
     commentId?: unknown
+    /** A review on the reader's profile. */
+    testimonialId?: unknown
   }
   if (typeof kind !== 'string' || !(PUSH_KINDS as readonly string[]).includes(kind)) return null
 
@@ -70,6 +72,11 @@ export function notificationRoute(data: unknown): Href | null {
           : `/post/${postId}`
       }
       if (typeof handle === 'string' && handle.length > 0) return `/${handle}`
+      // A review lands on the reader's own reviews, where it can be read and
+      // hidden; the id only says which kind of social push this is.
+      if (typeof testimonialId === 'string' && testimonialId.length > 0) {
+        return '/(app)/testimonials'
+      }
       // Neither survived, so the push cannot name what it is about — but the
       // notification centre can, because the row it came from is the first
       // thing in it. The feed used to be the fallback, which was the right

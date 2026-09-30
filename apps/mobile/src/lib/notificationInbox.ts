@@ -101,6 +101,9 @@ export function notificationCopy(
   switch (item.kind) {
     case 'follow':
       return { key: 'inbox.follow', params: { name } }
+    // One row per review, never folded: each names a different person.
+    case 'testimonial':
+      return { key: 'inbox.testimonial', params: { name } }
     /*
      * The four that collapse. `count` is how many **other** people did the
      * same thing to the same post, so it is never zero when it is there.
@@ -161,6 +164,10 @@ export function notificationHref(item: InboxItem, from: string): string | null {
       return '/(app)/wallet/pool'
     case 'profileVisits':
       return '/(app)/viewers'
+    // The reader's own reviews, where the new one is and can be hidden —
+    // not the author's profile, which does not show it.
+    case 'testimonial':
+      return '/(app)/testimonials'
     default:
       return unknownKind(item.kind, null)
   }

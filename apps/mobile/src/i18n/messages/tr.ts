@@ -1292,6 +1292,7 @@ export const tr: Localized<EnMessages> = {
     profileSent: 'Bildirim gönderildi. İnceleyeceğiz.',
     failed: 'Bildirilemedi',
     commentQuestion: 'Bu yorumu neden bildiriyorsun?',
+    testimonialQuestion: 'Bu profil yorumunu neden bildiriyorsun?',
   },
 
   inbox: {
@@ -1328,6 +1329,7 @@ export const tr: Localized<EnMessages> = {
       one: '{name} ve {count} kişi daha yorumuna yanıt verdi',
       other: '{name} ve {count} kişi daha yorumuna yanıt verdi',
     },
+    testimonial: '{name} profiline bir yorum yazdı',
     badgeEarned: 'Yeni bir rozet kazandın',
     walletPool: {
       one: 'Dünkü havuz sana {count} jeton ödedi',
@@ -2238,6 +2240,57 @@ export const tr: Localized<EnMessages> = {
     unlockBody: 'İsimler ve profiller, ayrıca senin için gizli gezinme.',
     weekPeople: { one: 'Son bir haftada {count} kişi.', other: 'Son bir haftada {count} kişi.' },
     repeat: '×{count}',
+  },
+
+  testimonials: {
+    title: 'Yorumlar',
+    sectionTitle: { one: 'Yorumlar · {count}', other: 'Yorumlar · {count}' },
+    seeAll: 'Tümünü gör ›',
+    write: 'Yorum yaz',
+    editMine: 'Yorumunu düzenle',
+    yours: 'Senin yorumun',
+    edited: 'düzenlendi',
+    more: 'Diğer seçenekler',
+    sheetTitle: '{name} için yorum',
+    sheetBody: 'Profilinde herkese açık görünür.',
+    placeholder: 'Birlikte pratik yapmak nasıl?',
+    minHint: {
+      one: 'En az {count} karakter',
+      other: 'En az {count} karakter',
+    },
+    tooShort: {
+      one: 'En az {count} karakter yaz',
+      other: 'En az {count} karakter yaz',
+    },
+    guidelines: 'Topluluk kuralları geçerlidir. Yorumunu sonra düzenleyebilir ya da silebilirsin.',
+    publish: 'Yayınla',
+    delete: 'Yorumu sil',
+    deleteConfirmTitle: 'Yorumun silinsin mi?',
+    deleteConfirmBody: 'Profilinden hemen kaldırılır.',
+    published: 'Yorumun profilde görünüyor.',
+    saved: 'Yorum güncellendi.',
+    deleted: 'Yorum silindi.',
+    failed: 'Yorum kaydedilemedi. Tekrar dene.',
+    removedError: 'Bu yorum moderatörler tarafından kaldırıldı, artık düzenlenemez.',
+    cardTitle: '{name} için yorum yaz',
+    cardBody: 'Onunla pratik nasıl gidiyor? Yorumun profilinde herkese açık görünür.',
+    cardDismiss: 'Kapat',
+    cardDone: 'Yorumun profilde görünüyor',
+    received: 'Gelenler',
+    written: 'Yazdıkların',
+    hiddenTag: 'Gizli',
+    hide: 'Profilde gizle',
+    show: 'Profilde göster',
+    hiddenToast: 'Profilinden gizlendi. Artık yalnızca sen görüyorsun.',
+    shownToast: 'Yeniden profilinde.',
+    removedTag: 'Moderatörler kaldırdı',
+    receivedEmptyTitle: 'Yorumların burada görünecek',
+    receivedEmptyBody:
+      'Pratik yaptığın kişiler profiline birkaç söz bırakabilir. Sohbetlere devam et.',
+    writtenEmptyTitle: 'Teşekkürünü yazıya dök',
+    writtenEmptyBody:
+      'Harika bir pratik partnerin mi var? Profiline bırakacağın kısa bir yorum, başkalarının da onu bulmasına yardım eder.',
+    meRowBody: 'Partnerlerinin senin için yazdıkları ve senin yazdıkların',
   },
 
   blocked: {

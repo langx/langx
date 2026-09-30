@@ -47,6 +47,7 @@ describe('notificationRoute', () => {
     // Neither id: the notification centre, not the feed. The row this push
     // came from is the first thing in it, and the feed mentions it nowhere.
     expect(notificationRoute({ kind: 'social' })).toBe('/notifications')
+    expect(notificationRoute({ kind: 'social', testimonialId: 't1' })).toBe('/(app)/testimonials')
   })
 
   it('sends token news to the wallet', () => {

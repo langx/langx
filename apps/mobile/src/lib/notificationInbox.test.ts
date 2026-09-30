@@ -47,6 +47,12 @@ describe('notificationHref', () => {
     expect(notificationHref(row({ kind: 'profileVisits' }), HERE)).toBe('/(app)/viewers')
   })
 
+  it('lands a review on the reader’s own reviews, not the author’s profile', () => {
+    expect(notificationHref(row({ kind: 'testimonial', actor: SOFIA }), HERE)).toBe(
+      '/(app)/testimonials',
+    )
+  })
+
   /**
    * An older build against a newer server, or a post deleted between the list
    * being fetched and the tap. The row renders disabled — a button that opens

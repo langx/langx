@@ -79,6 +79,13 @@ describe('which shade notifications a read clears', () => {
       expect(belongsTo({ kind: 'social', postId: 'p1' }, { row })).toBe(false)
     })
 
+    it('clears every review push, and nothing else social', () => {
+      const row = { kind: 'testimonial' as const, actor }
+      expect(belongsTo({ kind: 'social', testimonialId: 't1' }, { row })).toBe(true)
+      expect(belongsTo({ kind: 'social', handle: 'sofia' }, { row })).toBe(false)
+      expect(belongsTo({ kind: 'social', postId: 'p1' }, { row })).toBe(false)
+    })
+
     it('clears every push about the post a reply or a like row is about', () => {
       for (const kind of [
         'postComment',

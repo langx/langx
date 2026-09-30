@@ -37,14 +37,17 @@ export default function ReportScreen() {
   const t = useT()
   const report = useReportUser()
 
-  const { userId, conversationId, messageId, postId, commentId } = useLocalSearchParams<{
-    userId: string
-    conversationId?: string
-    messageId?: string
-    postId?: string
-    /** With `postId`: a comment on that post, reported rather than the post. */
-    commentId?: string
-  }>()
+  const { userId, conversationId, messageId, postId, commentId, testimonialId } =
+    useLocalSearchParams<{
+      userId: string
+      conversationId?: string
+      messageId?: string
+      postId?: string
+      /** With `postId`: a comment on that post, reported rather than the post. */
+      commentId?: string
+      /** A review on a profile; `userId` is then its author. */
+      testimonialId?: string
+    }>()
 
   const [reason, setReason] = useState<ReportReason | undefined>(undefined)
   const [details, setDetails] = useState('')
@@ -56,13 +59,15 @@ export default function ReportScreen() {
     : conversationId
       ? `/(app)/chat/${conversationId}`
       : '/(app)/(tabs)/discover'
-  const question = commentId
-    ? t('report.commentQuestion')
-    : postId
-      ? t('report.postQuestion')
-      : messageId
-        ? t('report.messageQuestion')
-        : t('report.profileQuestion')
+  const question = testimonialId
+    ? t('report.testimonialQuestion')
+    : commentId
+      ? t('report.commentQuestion')
+      : postId
+        ? t('report.postQuestion')
+        : messageId
+          ? t('report.messageQuestion')
+          : t('report.profileQuestion')
 
   function submit(): void {
     if (!reason || report.isPending) return
@@ -79,6 +84,7 @@ export default function ReportScreen() {
         // somebody who was never reported for one.
         ...(postId && !commentId ? { postId } : {}),
         ...(commentId ? { commentId } : {}),
+        ...(testimonialId ? { testimonialId } : {}),
       },
       {
         onSuccess: () => {
@@ -88,7 +94,9 @@ export default function ReportScreen() {
           // cold start there is no screen behind this one, and `back()` then
           // does nothing — so the fallback is the thing that was reported.
           goBackTo(backTo)
-          showToast(t((postId ?? messageId) ? 'report.messageSent' : 'report.profileSent'))
+          showToast(
+            t((postId ?? messageId ?? testimonialId) ? 'report.messageSent' : 'report.profileSent'),
+          )
         },
         onError: () => showToast(t('report.failed')),
       },

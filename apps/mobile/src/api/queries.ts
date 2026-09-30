@@ -3143,6 +3143,22 @@ export interface AdminReportDto {
     isReply: boolean
     hiddenAt: string | null
   } | null
+  /** Raised from a review on somebody's profile. Absent from an API older than reviews. */
+  aboutTestimonial?: boolean
+  /**
+   * The reported review, on the detail read. Its author is the reported
+   * person; `subject` is whose profile it sits on. The owner's hide is theirs
+   * to undo, the moderator's is not.
+   */
+  testimonial?: {
+    id: string
+    body: string
+    subject: AdminPartyDto
+    createdAt: string
+    editedAt: string | null
+    ownerHiddenAt: string | null
+    moderatorHiddenAt: string | null
+  } | null
   suspension?: { until: string; permanent: boolean; reason: string } | null
   otherOpenReports?: number
   /** What the reporter was thanked with. Only on the detail read, like the three above. */

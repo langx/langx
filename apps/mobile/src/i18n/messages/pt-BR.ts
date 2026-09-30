@@ -1285,6 +1285,7 @@ export const ptBR: Localized<EnMessages> = {
     profileSent: 'Denúncia enviada. Vamos verificar.',
     failed: 'Não foi possível denunciar',
     commentQuestion: 'Por que você está denunciando este comentário?',
+    testimonialQuestion: 'Por que você está denunciando esta avaliação?',
   },
 
   inbox: {
@@ -1321,6 +1322,7 @@ export const ptBR: Localized<EnMessages> = {
       one: '{name} e mais {count} pessoa responderam ao seu comentário',
       other: '{name} e mais {count} pessoas responderam ao seu comentário',
     },
+    testimonial: '{name} escreveu uma avaliação no seu perfil',
     badgeEarned: 'Você ganhou uma nova insígnia',
     walletPool: {
       one: 'O bolo de ontem pagou {count} ficha a você',
@@ -2240,6 +2242,58 @@ export const ptBR: Localized<EnMessages> = {
       other: '{count} pessoas na última semana.',
     },
     repeat: '×{count}',
+  },
+
+  testimonials: {
+    title: 'Avaliações',
+    sectionTitle: { one: 'Avaliações · {count}', other: 'Avaliações · {count}' },
+    seeAll: 'Ver todas ›',
+    write: 'Escrever uma avaliação',
+    editMine: 'Editar sua avaliação',
+    yours: 'Sua avaliação',
+    edited: 'editada',
+    more: 'Mais opções',
+    sheetTitle: 'Avaliação para {name}',
+    sheetBody: 'Aparece no perfil da pessoa, para todo mundo no app.',
+    placeholder: 'Como é praticar juntos?',
+    minHint: {
+      one: 'Pelo menos {count} caractere',
+      other: 'Pelo menos {count} caracteres',
+    },
+    tooShort: {
+      one: 'Escreva pelo menos {count} caractere',
+      other: 'Escreva pelo menos {count} caracteres',
+    },
+    guidelines:
+      'As diretrizes da comunidade se aplicam. Você pode editar ou apagar sua avaliação depois.',
+    publish: 'Publicar',
+    delete: 'Apagar avaliação',
+    deleteConfirmTitle: 'Apagar sua avaliação?',
+    deleteConfirmBody: 'Ela sai do perfil na hora.',
+    published: 'Sua avaliação está no perfil.',
+    saved: 'Avaliação atualizada.',
+    deleted: 'Avaliação apagada.',
+    failed: 'Não foi possível salvar sua avaliação. Tente de novo.',
+    removedError: 'A moderação removeu esta avaliação, então ela não pode mais ser editada.',
+    cardTitle: 'Avalie {name}',
+    cardBody: 'Como vai a prática? Sua avaliação aparece no perfil da pessoa.',
+    cardDismiss: 'Fechar',
+    cardDone: 'Sua avaliação está no perfil',
+    received: 'Recebidas',
+    written: 'Escritas',
+    hiddenTag: 'Oculta',
+    hide: 'Ocultar do perfil',
+    show: 'Mostrar no perfil',
+    hiddenToast: 'Oculta do seu perfil. Agora só você vê.',
+    shownToast: 'De volta ao seu perfil.',
+    removedTag: 'Removida pela moderação',
+    receivedEmptyTitle: 'Suas avaliações vão aparecer aqui',
+    receivedEmptyBody:
+      'Quem pratica com você pode deixar algumas palavras no seu perfil. Continue conversando.',
+    writtenEmptyTitle: 'Agradeça por escrito',
+    writtenEmptyBody:
+      'Tem um ótimo parceiro de prática? Uma avaliação curta no perfil ajuda outras pessoas a encontrá-lo.',
+    meRowBody: 'O que dizem sobre você e o que você escreveu',
   },
 
   blocked: {

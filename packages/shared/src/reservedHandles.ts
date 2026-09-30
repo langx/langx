@@ -67,6 +67,7 @@ const ROUTE_RESERVED = [
   'suspended',
   'gift',
   'store',
+  'testimonials',
   'tokens',
   'viewers',
   'welcome',
