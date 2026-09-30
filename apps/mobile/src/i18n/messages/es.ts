@@ -2285,7 +2285,7 @@ export const es: Localized<EnMessages> = {
     hiddenTag: 'Oculta',
     hide: 'Ocultar del perfil',
     show: 'Mostrar en el perfil',
-    hiddenToast: 'Oculta en tu perfil. Ahora solo la ves tú.',
+    hiddenToast: 'Oculta en tu perfil. Quien lo visite ya no la ve.',
     shownToast: 'De vuelta en tu perfil.',
     removedTag: 'Retirada por moderación',
     receivedEmptyTitle: 'Aquí vivirán tus reseñas',

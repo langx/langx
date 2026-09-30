@@ -2281,7 +2281,7 @@ export const tr: Localized<EnMessages> = {
     hiddenTag: 'Gizli',
     hide: 'Profilde gizle',
     show: 'Profilde göster',
-    hiddenToast: 'Profilinden gizlendi. Artık yalnızca sen görüyorsun.',
+    hiddenToast: 'Profilinden gizlendi. Profiline bakanlar artık görmüyor.',
     shownToast: 'Yeniden profilinde.',
     removedTag: 'Moderatörler kaldırdı',
     receivedEmptyTitle: 'Yorumların burada görünecek',

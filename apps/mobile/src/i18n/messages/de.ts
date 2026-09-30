@@ -2330,7 +2330,7 @@ export const de: Localized<EnMessages> = {
     hiddenTag: 'Ausgeblendet',
     hide: 'Im Profil ausblenden',
     show: 'Im Profil zeigen',
-    hiddenToast: 'Im Profil ausgeblendet. Nur du siehst sie jetzt.',
+    hiddenToast: 'Im Profil ausgeblendet. Besucher sehen sie nicht mehr.',
     shownToast: 'Wieder in deinem Profil.',
     removedTag: 'Von der Moderation entfernt',
     receivedEmptyTitle: 'Hier landen deine Bewertungen',

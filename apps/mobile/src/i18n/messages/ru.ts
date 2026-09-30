@@ -2536,7 +2536,7 @@ export const ru: Localized<EnMessages> = {
     hiddenTag: 'Скрыт',
     hide: 'Скрыть из профиля',
     show: 'Показать в профиле',
-    hiddenToast: 'Скрыт из профиля. Теперь его видишь только ты.',
+    hiddenToast: 'Скрыт из профиля. Посетители его больше не видят.',
     shownToast: 'Снова в профиле.',
     removedTag: 'Удалён модераторами',
     receivedEmptyTitle: 'Здесь будут твои отзывы',

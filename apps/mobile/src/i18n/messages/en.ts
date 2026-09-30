@@ -2506,7 +2506,7 @@ export const en = {
     hiddenTag: 'Hidden',
     hide: 'Hide from profile',
     show: 'Show on profile',
-    hiddenToast: 'Hidden from your profile. Only you can see it now.',
+    hiddenToast: 'Hidden from your profile. Nobody visiting it sees it now.',
     shownToast: 'Back on your profile.',
     removedTag: 'Removed by moderators',
     receivedEmptyTitle: 'Your reviews will live here',

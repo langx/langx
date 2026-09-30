@@ -2646,7 +2646,7 @@ export const ar: Localized<EnMessages> = {
     hiddenTag: 'مخفية',
     hide: 'إخفاء من الملف',
     show: 'إظهار في الملف',
-    hiddenToast: 'أُخفيت من ملفك الشخصي. أنت وحدك تراها الآن.',
+    hiddenToast: 'أُخفيت من ملفك الشخصي. لن يراها زوّاره بعد الآن.',
     shownToast: 'عادت إلى ملفك الشخصي.',
     removedTag: 'أزالها المشرفون',
     receivedEmptyTitle: 'ستظهر مراجعاتك هنا',

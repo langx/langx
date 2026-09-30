@@ -2306,7 +2306,7 @@ export const fr: Localized<EnMessages> = {
     hiddenTag: 'Masqué',
     hide: 'Masquer du profil',
     show: 'Afficher sur le profil',
-    hiddenToast: 'Masqué de ton profil. Toi seul·e le vois désormais.',
+    hiddenToast: 'Masqué de ton profil. Les visiteurs ne le voient plus.',
     shownToast: 'De retour sur ton profil.',
     removedTag: 'Retiré par la modération',
     receivedEmptyTitle: 'Tes avis s’afficheront ici',
