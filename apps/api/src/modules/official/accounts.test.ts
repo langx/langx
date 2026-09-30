@@ -144,11 +144,20 @@ describe('the official accounts', () => {
     await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne({
       ...person('langx'),
       official: true,
+      gender: 'male',
+      genderChangedAt: now,
+      birthDate: '1991-04-02',
       interests: ['animals'],
       photos: [{ url: 'https://media.langx.test/cat.jpg', createdAt: now }],
       country: 'CA',
       pronouns: 'they/them',
       cityName: 'Toronto',
+      timezone: 'America/Toronto',
+      entitlement: { tier: 'pro_plus', updatedAt: now },
+      streak: { current: 12, longest: 40, lastQualifiedDay: '2026-09-01' },
+      cosmetics: ['frame-gold'],
+      tokenSpent: 300,
+      privacy: { incognito: true },
     })
 
     await ensureOfficialAccounts(handle.db, API_URL)
@@ -161,6 +170,18 @@ describe('the official accounts', () => {
     expect(profile?.country).toBeUndefined()
     expect(profile?.pronouns).toBeUndefined()
     expect(profile?.cityName).toBeUndefined()
+    expect(profile?.timezone).toBeUndefined()
+    // What the person answered at onboarding, back to a created account's.
+    expect(profile?.gender).toBe('undisclosed')
+    expect(profile?.genderChangedAt).toBeUndefined()
+    expect(profile?.birthDate).toBe('1900-01-01')
+    expect(profile?.nativeLanguages).toEqual([])
+    expect(profile?.learning).toEqual([])
+    expect(profile?.entitlement.tier).toBe('free')
+    expect(profile?.streak).toEqual({ current: 0, longest: 0, lastQualifiedDay: null })
+    expect(profile?.cosmetics).toBeUndefined()
+    expect(profile?.tokenSpent).toBeUndefined()
+    expect(profile?.privacy.incognito).toBe(false)
     expect(profile?.settings.discoverable).toBe(false)
     expect(profile?.privacy.activityMapVisible).toBe(false)
 
