@@ -241,6 +241,7 @@ export const ptBR: Localized<ServerMessages> = {
     newsletterMessages: 'Mensagens enviadas',
 
     newsletterCorrections: 'Correções feitas',
+    newsletterPosts: 'Publicações feitas',
 
     newsletterTokens: 'Tokens ganhos',
 

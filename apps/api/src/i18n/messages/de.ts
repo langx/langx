@@ -242,6 +242,7 @@ export const de: Localized<ServerMessages> = {
     newsletterMessages: 'Gesendete Nachrichten',
 
     newsletterCorrections: 'Gegebene Korrekturen',
+    newsletterPosts: 'Geteilte Beiträge',
 
     newsletterTokens: 'Verdiente Token',
 

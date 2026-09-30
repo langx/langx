@@ -1,4 +1,5 @@
 import type { Locale } from '@langx/shared'
+import { note as note202609 } from './2026-09'
 
 /**
  * The editorial half of the monthly recap: what shipped, in the writer's own
@@ -24,7 +25,9 @@ export interface NewsletterNote {
 export type LocalizedNote = Partial<Record<Locale, NewsletterNote>> & { en: NewsletterNote }
 
 /** Every month that has a note. Add the import and the entry together. */
-const NOTES: Record<string, LocalizedNote> = {}
+const NOTES: Record<string, LocalizedNote> = {
+  '2026-09': note202609,
+}
 
 /**
  * The note for a month in the reader's language, falling back to English —

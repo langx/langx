@@ -581,6 +581,7 @@ export function newsletterEmail(
         ${[
           stat(t('email.newsletterMessages'), recap.personal.messages),
           stat(t('email.newsletterCorrections'), recap.personal.corrections),
+          stat(t('email.newsletterPosts'), recap.personal.posts),
           stat(t('email.newsletterTokens'), recap.personal.tokens),
           stat(t('email.newsletterStreak'), recap.personal.streak),
         ].join('\n        ')}
@@ -591,6 +592,7 @@ export function newsletterEmail(
           stat(t('email.newsletterNewMembers'), recap.community.members),
           stat(t('email.newsletterMessagesSent'), recap.community.messages),
           stat(t('email.newsletterCorrectionsMade'), recap.community.corrections),
+          stat(t('email.newsletterPosts'), recap.community.posts),
         ].join('\n        ')}
       </table>`
 
@@ -631,6 +633,7 @@ export function newsletterEmail(
           : [
               `${t('email.newsletterMessages')}: ${recap.personal.messages}`,
               `${t('email.newsletterCorrections')}: ${recap.personal.corrections}`,
+              `${t('email.newsletterPosts')}: ${recap.personal.posts}`,
               `${t('email.newsletterTokens')}: ${recap.personal.tokens}`,
               `${t('email.newsletterStreak')}: ${recap.personal.streak}`,
             ]),
@@ -639,6 +642,7 @@ export function newsletterEmail(
         `${t('email.newsletterNewMembers')}: ${recap.community.members}`,
         `${t('email.newsletterMessagesSent')}: ${recap.community.messages}`,
         `${t('email.newsletterCorrectionsMade')}: ${recap.community.corrections}`,
+        `${t('email.newsletterPosts')}: ${recap.community.posts}`,
         ...(note
           ? [
               '',
