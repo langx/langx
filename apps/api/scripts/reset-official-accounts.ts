@@ -3,16 +3,18 @@
  *
  * `ensureOfficialAccounts` heals the *profile* on every boot — name, bio,
  * photos, city — but an adopted account also arrives with the rows its
- * previous life left in other collections: people it followed and was
- * followed by, corrections it wrote, tokens it earned, a streak, a wallet,
+ * previous life left in other collections: people it followed,
+ * corrections it wrote, tokens it earned, a streak, a wallet,
  * and every message the person sent from it. None of that is reachable from
  * the profile document, so the boot cannot clear it, and an announcement
- * channel with 40 followers, a 12-day streak and a year of somebody's chats
+ * channel following 40 people, a 12-day streak and a year of somebody's chats
  * reads like a person wearing a tick.
  *
  * What goes, per official account:
  *
- * - The follow graph, both directions; likes and comments it left.
+ * - Everyone it follows; likes and comments it left. Its **followers**
+ *   stay: following a channel is how somebody subscribes to it, and a
+ *   reset that emptied them would unsubscribe everybody who asked.
  * - Every correction it wrote — feed corrections and recorded answers. A
  *   request's `answerCount` comes down with its answers, as the account
  *   purge does it. Chat corrections go with the messages below.
@@ -85,7 +87,7 @@ function sweepsFor(userId: string): Sweep[] {
     $or: [{ [a]: userId }, { [b]: userId }],
   })
   return [
-    { collection: COLLECTIONS.follows, filter: both('followerId', 'followeeId') },
+    { collection: COLLECTIONS.follows, filter: { followerId: userId } },
     { collection: COLLECTIONS.likes, filter: { userId } },
     { collection: COLLECTIONS.postComments, filter: { authorId: userId } },
     { collection: COLLECTIONS.postCorrections, filter: { authorId: userId } },
