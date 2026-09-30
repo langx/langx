@@ -144,6 +144,7 @@ describe('the official accounts', () => {
     await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne({
       ...person('langx'),
       official: true,
+      gender: 'male',
       interests: ['animals'],
       photos: [{ url: 'https://media.langx.test/cat.jpg', createdAt: now }],
       country: 'CA',
@@ -161,6 +162,7 @@ describe('the official accounts', () => {
     expect(profile?.country).toBeUndefined()
     expect(profile?.pronouns).toBeUndefined()
     expect(profile?.cityName).toBeUndefined()
+    expect(profile?.gender).toBe('undisclosed')
     expect(profile?.settings.discoverable).toBe(false)
     expect(profile?.privacy.activityMapVisible).toBe(false)
 

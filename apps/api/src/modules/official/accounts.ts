@@ -158,6 +158,9 @@ async function ensureOne(
           'privacy.hideOnlineStatus': true,
           'privacy.activityMapVisible': false,
           'privacy.weekChartVisible': false,
+          // Not `other`: an account that is a process has no gender to state,
+          // and `undisclosed` is what a created one carries.
+          gender: 'undisclosed',
           tokenFrozenAt: now,
           updatedAt: now,
         },
