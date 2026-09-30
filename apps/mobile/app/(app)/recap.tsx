@@ -12,7 +12,7 @@ import { ShareCardSheet, type ShareCardRequest } from '../../src/components/Shar
 import { useDisplayNames, useLocale, useT } from '../../src/i18n'
 import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
-import { monthName } from '../../src/lib/recapMonth'
+import { monthName, recapMonthParam } from '../../src/lib/recapMonth'
 import { isQuietRecap, recapCardInput } from '../../src/lib/recapStory'
 import { shareLink } from '../../src/lib/share'
 import { recapShareText } from '../../src/lib/shareText'
@@ -36,7 +36,7 @@ export default function RecapScreen() {
   const { locale } = useLocale()
   const names = useDisplayNames()
   const params = useLocalSearchParams<{ month: string }>()
-  const month = typeof params.month === 'string' ? params.month : ''
+  const month = recapMonthParam(params.month, new Date())
   const recap = useMonthlyRecap(month)
   const me = useMe()
   const [card, setCard] = useState<ShareCardRequest | null>(null)
