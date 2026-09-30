@@ -92,3 +92,25 @@ export function notificationRoute(data: unknown): Href | null {
       return '/settings/password'
   }
 }
+
+/**
+ * Lets each tapped notification navigate once.
+ *
+ * One tap reaches `useNotificationRouting` more than once: the live listener
+ * and `getLastNotificationResponseAsync` can both hand over the same response,
+ * and the latter returns it again whenever the effect re-runs, because the last
+ * response is remembered for the whole session. Each arrival used to
+ * `router.push`, which left the profile on the stack twice — the back gesture
+ * then opened it again instead of leaving.
+ *
+ * Only the latest key is kept. A response is a single event, so a newer tap
+ * always carries a different key, and nothing needs to remember older ones.
+ */
+export function createTapGate(): (key: string) => boolean {
+  let last: string | undefined
+  return (key) => {
+    if (key === last) return false
+    last = key
+    return true
+  }
+}

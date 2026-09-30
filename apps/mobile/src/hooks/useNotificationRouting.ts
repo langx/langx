@@ -10,7 +10,7 @@ import { presentationFor } from '../lib/foregroundPush'
 import { previewOf, showMessageBanner } from '../lib/inAppNotifications'
 import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
 import { configureNotifications, sweepTray } from '../lib/notifications'
-import { notificationRoute } from '../lib/notificationRoute'
+import { createTapGate, notificationRoute } from '../lib/notificationRoute'
 
 /**
  * What the payload called itself, for the analytics event only.
@@ -21,6 +21,18 @@ import { notificationRoute } from '../lib/notificationRoute'
  * as `unknown` rather than being dropped — a kind the app has not learned yet
  * is exactly the thing worth seeing in the list.
  */
+/**
+ * Module scope, not inside the effect: the effect re-runs (`enabled`, the query
+ * client) and a gate created there would forget the tap it had already opened.
+ */
+const firstArrival = createTapGate()
+
+function tapKey(response: {
+  notification: { date: number; request: { identifier: string } }
+}): string {
+  return `${response.notification.request.identifier}:${response.notification.date}`
+}
+
 function openedKind(data: unknown): PushKind | 'unknown' {
   const kind = (data as { kind?: unknown } | null)?.kind
   return PUSH_KINDS.includes(kind as PushKind) ? (kind as PushKind) : 'unknown'
@@ -80,6 +92,7 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
            * notification the person deliberately did not tap.
            */
           if (response.actionIdentifier === PUSH_ACTION_REPLY) return
+          if (!firstArrival(tapKey(response))) return
 
           track({
             name: 'notification_opened',
@@ -138,6 +151,7 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
         // for the reason above — reading it as one is how a reply to a closed
         // app used to open a thread nobody could see and send nothing.
         if (cancelled || !initial || initial.actionIdentifier === PUSH_ACTION_REPLY) return
+        if (!firstArrival(tapKey(initial))) return
         const data = initial.notification.request.content.data
         // The tap that launched the app, rather than one it was already
         // running for. Different amounts of interruption, so they are counted
