@@ -158,9 +158,20 @@ async function ensureOne(
           'privacy.hideOnlineStatus': true,
           'privacy.activityMapVisible': false,
           'privacy.weekChartVisible': false,
-          // Not `other`: an account that is a process has no gender to state,
-          // and `undisclosed` is what a created one carries.
+          'privacy.incognito': false,
+          /*
+           * The person-era answers, put back to what a created account holds.
+           * @langx kept its owner's gender, languages and birth date through
+           * adoption, and a gender mark beside the tick is the owner showing
+           * through. Not `other`: a process has no gender to state.
+           */
           gender: 'undisclosed',
+          birthDate: '1900-01-01',
+          nativeLanguages: [],
+          learning: [],
+          entitlement: { tier: 'free', updatedAt: now },
+          quota: { initiations: [], translations: [], media: [] },
+          streak: { current: 0, longest: 0, lastQualifiedDay: null },
           tokenFrozenAt: now,
           updatedAt: now,
         },
@@ -185,6 +196,29 @@ async function ensureOne(
           cityCountryCode: '',
           location: '',
           locationUpdatedAt: '',
+          timezone: '',
+          timezoneUpdatedAt: '',
+          genderChangedAt: '',
+          promotionsConsent: '',
+          restoredFromV1: '',
+          referredBy: '',
+          // The wallet and the plan history, which `reset-official-accounts`
+          // cleared once; here so they cannot come back.
+          cosmetics: '',
+          equipped: '',
+          streakFreezes: '',
+          tokenSpent: '',
+          welcomePackAt: '',
+          lastGiftAt: '',
+          churnedFrom: '',
+          proWelcome: '',
+          proMergeWelcomedAt: '',
+          proGiftStreaks: '',
+          quotaRefusals: '',
+          'stats.notifiedBadgeIds': '',
+          'stats.digestBadges': '',
+          'stats.appVersion': '',
+          'stats.appPlatform': '',
           // A discovery boost on an undiscoverable account does nothing, and a
           // stats switch from somebody's own profile is not ours to keep. Not
           // on `Profile` at all, which is why they are cleared by name here
