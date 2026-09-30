@@ -31,10 +31,10 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "catalog:",
-    "eslint": "^10.10.0",
-    "prettier": "^3.6.2",
+    "eslint": "^10.11.0",
+    "prettier": "^3.9.9",
     "typescript": "catalog:",
-    "typescript-eslint": "^8.69.0"
+    "typescript-eslint": "^8.70.1"
   },
   "pnpm": {
     "overrides": {
