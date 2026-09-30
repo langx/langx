@@ -6,6 +6,8 @@ import {
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
+import { recordNotification } from '../modules/notifications/inbox'
+import { notifyTestimonial } from '../modules/notifications/social'
 import {
   deleteTestimonial,
   listProfileTestimonials,
@@ -67,7 +69,34 @@ export const testimonialRoutes: FastifyPluginAsyncZod = async (app) => {
         request.params.userId,
         request.body.body,
       )
-      // The "someone wrote you a testimonial" notification is sent from here, when `result.created`.
+      /*
+       * Only a first review is news; an edit is the same words reworded, and
+       * a push each time somebody fixes a typo is how `social` gets switched
+       * off. Not awaited, like a follow's: the review is written, and a push
+       * service having a bad minute must not turn it into a 500.
+       */
+      if (result.created) {
+        const testimonialId = result.testimonial._id
+        void notifyTestimonial(
+          app.mongo.db,
+          { push: app.push, logger: app.log },
+          { authorId: request.userId, subjectId: request.params.userId, testimonialId },
+        ).catch((error: unknown) => {
+          request.log.error({ err: error }, 'testimonial push failed')
+        })
+        // The row is ungated, as every row is: `social` push off asked not to
+        // be buzzed, not to be kept from finding out.
+        void recordNotification(
+          app.mongo.db,
+          {
+            userId: request.params.userId,
+            kind: 'testimonial',
+            refId: testimonialId,
+            actorId: request.userId,
+          },
+          { io: app.io, logger: app.log },
+        )
+      }
       return reply.send(result)
     },
   )

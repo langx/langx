@@ -9,7 +9,7 @@ import {
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 import type { FastifyInstance } from 'fastify'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
@@ -19,6 +19,7 @@ import { loadEnv } from '../env'
 import { encodeDateIdCursor } from '../lib/dateIdCursor'
 import { pairKeyFor } from '../modules/chat/conversations'
 import { ensureOfficialAccounts, officialIds } from '../modules/official/accounts'
+import { LoggingPushSender } from '../modules/push/devices'
 import {
   purgeTestimonialsOf,
   setTestimonialModeratorHidden,
@@ -50,6 +51,7 @@ describe('testimonials', () => {
   let handle: DbHandle
   let app: FastifyInstance
   let emailSender: CapturingEmailSender
+  let pushSender: LoggingPushSender
   let counter = 0
 
   async function newUser() {
@@ -170,6 +172,7 @@ describe('testimonials', () => {
     await ensureIndexes(handle.db)
 
     emailSender = new CapturingEmailSender()
+    pushSender = new LoggingPushSender()
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
     app = await buildApp({
       env,
@@ -180,6 +183,7 @@ describe('testimonials', () => {
       translation: createTranslationProvider(env),
       revenueCat: createRevenueCatClientFromEnv(env),
       email: emailSender,
+      push: pushSender,
     })
     await app.ready()
     // `index.ts` does this at boot; `buildApp` does not, and the official
@@ -346,6 +350,81 @@ describe('testimonials', () => {
       expect(onProfile.viewer).toBe('written')
       // The owner cannot undo a moderator's removal.
       expect((await setHidden(b, id, false)).statusCode).toBe(404)
+    })
+  })
+
+  describe('telling the subject', () => {
+    async function withDevice(user: SignedUpUser) {
+      await handle.db.collection(COLLECTIONS.devices).insertOne({
+        userId: user.userId,
+        pushToken: `ExponentPushToken[${user.userId.slice(-12)}]`,
+        platform: 'ios',
+        locale: 'en',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    }
+
+    function rowsFor(user: SignedUpUser) {
+      return handle.db
+        .collection(COLLECTIONS.notifications)
+        .find({ userId: user.userId, kind: 'testimonial' })
+        .toArray()
+    }
+
+    function pushesTo(user: SignedUpUser) {
+      const token = `ExponentPushToken[${user.userId.slice(-12)}]`
+      // Social only: the thread `talk` opens sends a message push of its own.
+      return pushSender.sent.filter(
+        (push) => push.data.kind === 'social' && push.to.includes(token),
+      )
+    }
+
+    it('writes one row and one push for a first review, and nothing for an edit', async () => {
+      const [author, subject] = [await newUser(), await newUser()]
+      await withDevice(subject)
+      await talk(author, subject)
+
+      const first = await write(author, subject.userId)
+      expect(first.statusCode).toBe(200)
+      const { testimonial } = first.json<TestimonialWriteResult>()
+      await vi.waitFor(async () => {
+        expect(await rowsFor(subject)).toHaveLength(1)
+        expect(pushesTo(subject)).toHaveLength(1)
+      })
+      const [row] = await rowsFor(subject)
+      expect(row).toMatchObject({ actorId: author.userId, refId: testimonial._id })
+      expect(pushesTo(subject)[0]?.data).toEqual({ kind: 'social', testimonialId: testimonial._id })
+
+      // An edit never calls the senders, so there is nothing to wait for.
+      expect((await write(author, subject.userId, `${BODY} Still true.`)).statusCode).toBe(200)
+      expect(await rowsFor(subject)).toHaveLength(1)
+      expect(pushesTo(subject)).toHaveLength(1)
+    })
+
+    it('still records the row when social push is off', async () => {
+      const [author, subject] = [await newUser(), await newUser()]
+      await withDevice(subject)
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: subject.userId as never },
+          { $set: { 'settings.notifications.social': { push: false, email: false } } },
+        )
+      await talk(author, subject)
+
+      expect((await write(author, subject.userId)).statusCode).toBe(200)
+      await vi.waitFor(async () => {
+        expect(await rowsFor(subject)).toHaveLength(1)
+        // The push path claims its ledger row before it reads the switch.
+        expect(
+          await handle.db.collection(COLLECTIONS.notificationLedger).countDocuments({
+            _id: `social.testimonial:${subject.userId}:${author.userId}` as never,
+          }),
+        ).toBe(1)
+      })
+      await new Promise((resolve) => setTimeout(resolve, 100))
+      expect(pushesTo(subject)).toHaveLength(0)
     })
   })
 
