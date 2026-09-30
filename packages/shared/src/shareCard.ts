@@ -100,6 +100,30 @@ export const monthlyRecapSchema = z.object({
 })
 export type MonthlyRecapDto = z.infer<typeof monthlyRecapSchema>
 
+/** `?year=YYYY`; omitted means the year before the current UTC one. */
+export const yearlyRecapQuerySchema = z.object({
+  year: z
+    .string()
+    .regex(/^\d{4}$/)
+    .optional(),
+})
+
+/**
+ * One person's year: the month's numbers summed over twelve of them, from the
+ * same rows, so December's recap and the year's cannot disagree about December.
+ *
+ * `activeDates` has no place in a year — 365 squares is not a picture on a
+ * phone — so the calendar is a month per square instead: how many active days
+ * each month had, January first.
+ */
+export const yearlyRecapSchema = monthlyRecapSchema
+  .omit({ month: true, activeDates: true })
+  .extend({
+    year: z.string(),
+    activeMonths: z.array(z.number().int().min(0).max(31)).length(12),
+  })
+export type YearlyRecapDto = z.infer<typeof yearlyRecapSchema>
+
 /**
  * The recap's numbers that can lead a tile, in the order they lead.
  *
@@ -129,7 +153,7 @@ export type RecapStat = (typeof RECAP_STATS)[number]
  * Shared because the story's last slide and the card drawn from it have to
  * show the same four, and the server is the one that draws the card.
  */
-export function recapHighlights(recap: MonthlyRecapDto, max = 4): RecapStat[] {
+export function recapHighlights(recap: Pick<MonthlyRecapDto, RecapStat>, max = 4): RecapStat[] {
   return RECAP_STATS.filter((stat) => recap[stat] > 0).slice(0, max)
 }
 
@@ -146,7 +170,8 @@ const recapLabel = z.string().trim().min(1).max(40)
  * labels are already in it.
  */
 export const recapCardInputSchema = z.object({
-  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+  /** `YYYY-MM` for a month's card, `YYYY` for a year's. */
+  month: z.string().regex(/^\d{4}(-(0[1-9]|1[0-2]))?$/),
   locale: localeSchema,
   /** The line above the month: "My month on LangX". */
   kicker: z.string().trim().min(1).max(40),

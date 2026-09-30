@@ -2485,6 +2485,24 @@ export const ptBR: Localized<EnMessages> = {
     cardCaption: 'meu mês no LangX',
     shareMessage: 'Meu {month} no LangX: {messages}, {reviews}. Pratique comigo: {url}',
     failed: 'Não foi possível carregar o resumo.',
+    year: {
+      meTitle: 'Seu resumo de {year}',
+      meBody: 'Seu ano no LangX, pronto para compartilhar.',
+      quiet: 'Um ano tranquilo. O próximo começa com uma mensagem.',
+      share: 'Compartilhar meu ano',
+      cardCaption: 'meu ano no LangX',
+      introKicker: 'Seu ano',
+      introLine: 'Um ano em dois idiomas. Aqui está o seu.',
+      activeDaysLine: {
+        one: '{count} dia ativo neste ano.',
+        other: '{count} dias ativos neste ano.',
+      },
+      activeDaysOnlyLine: {
+        one: 'dia de prática neste ano.',
+        other: 'dias de prática neste ano.',
+      },
+      cardKicker: 'Meu ano',
+    },
     story: {
       close: 'Fechar',
       next: 'Próximo',

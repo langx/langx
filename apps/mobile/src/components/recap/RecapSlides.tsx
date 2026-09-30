@@ -1,8 +1,16 @@
 import Feather from '@expo/vector-icons/Feather'
-import { recapHighlights, type MonthlyRecapDto } from '@langx/shared'
+import { recapHighlights } from '@langx/shared'
 import { Text, View, type TextStyle } from 'react-native'
 import type { TranslateFn } from '../../i18n'
-import { numeralSize, recapCalendar, recapLabel, type RecapSlide } from '../../lib/recapStory'
+import {
+  isYearRecap,
+  numeralSize,
+  recapCalendar,
+  recapLabel,
+  yearCalendar,
+  type RecapSlide,
+  type StoryRecap,
+} from '../../lib/recapStory'
 import { palettes, type ColorScheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
 import { CountUp, Disc, Pop, RISE_DELAYS, Rise } from './motion'
@@ -115,7 +123,7 @@ export function slideLook(slide: RecapSlide, scheme: ColorScheme): SlideLook {
 
 /** What every slide needs to lay itself out. */
 export interface SlideProps {
-  recap: MonthlyRecapDto
+  recap: StoryRecap
   look: SlideLook
   t: TranslateFn
   locale: string
@@ -128,7 +136,9 @@ export interface SlideProps {
   /** Nunito Black once it has loaded, the display face until then. */
   black: string
   display: string
+  /** The headline: the month's name, or on a year's story the year. */
   month: string
+  /** Beside the kicker; empty on a year's story, where it is the headline. */
   year: string
 }
 
@@ -227,7 +237,14 @@ function IntroSlide(props: SlideProps) {
         style={{ bottom: 170 * k, start: -60 * k }}
       />
       <View style={{ marginTop: 'auto' }}>
-        <Kicker props={props} text={`${t('recap.story.introKicker')} · ${props.year}`} />
+        <Kicker
+          props={props}
+          text={
+            isYearRecap(props.recap)
+              ? t('recap.year.introKicker')
+              : `${t('recap.story.introKicker')} · ${props.year}`
+          }
+        />
       </View>
       <Rise delay={RISE_DELAYS[1]} reduce={props.reduce} style={{ marginTop: 12 * k }}>
         <Text
@@ -252,7 +269,7 @@ function IntroSlide(props: SlideProps) {
             maxWidth: 280 * k,
           }}
         >
-          {t('recap.story.introLine')}
+          {isYearRecap(props.recap) ? t('recap.year.introLine') : t('recap.story.introLine')}
         </Text>
       </Rise>
       <Rise delay={RISE_DELAYS[3]} reduce={props.reduce} style={{ marginTop: 18 * k }}>
@@ -395,19 +412,29 @@ function EchoSlide(props: SlideProps & { scheme: ColorScheme }) {
 
 function StreakSlide(props: SlideProps) {
   const { recap, t, k } = props
-  const days = recapCalendar(recap)
+  const yearly = isYearRecap(recap)
   const streaking = recap.currentStreak > 0
-  const cell = Math.floor((Math.min(300 * k, props.width) - 6 * 7 * k) / 7)
+  // A month is a week-wide calendar of days; a year, two rows of six months.
+  const columns = yearly ? 6 : 7
+  const cell = Math.floor((Math.min(300 * k, props.width) - 6 * columns * k) / columns)
   const fill = {
     streak: light.primaryText,
     active: 'rgba(32, 25, 0, 0.32)',
     idle: 'rgba(32, 25, 0, 0.1)',
   } as const
+  // A month's square is as dark as the share of its days that were active.
+  const squares = yearly
+    ? yearCalendar(recap).map((share) =>
+        share > 0 ? `rgba(32, 25, 0, ${(0.25 + 0.75 * share).toFixed(2)})` : fill.idle,
+      )
+    : recapCalendar(recap).map((state) => fill[state])
+  const activeLine = yearly ? 'recap.year.activeDaysLine' : 'recap.story.activeDaysLine'
+  const onlyLine = yearly ? 'recap.year.activeDaysOnlyLine' : 'recap.story.activeDaysOnlyLine'
   const line = streaking
     ? `${t('recap.story.streakLine', { count: recap.currentStreak })} ${
-        recap.activeDays > 0 ? t('recap.story.activeDaysLine', { count: recap.activeDays }) : ''
+        recap.activeDays > 0 ? t(activeLine, { count: recap.activeDays }) : ''
       }`.trim()
-    : t('recap.story.activeDaysOnlyLine', { count: recap.activeDays })
+    : t(onlyLine, { count: recap.activeDays })
   return (
     <>
       <Kicker props={props} text={t('recap.story.streakKicker')} />
@@ -419,14 +446,15 @@ function StreakSlide(props: SlideProps) {
           flexWrap: 'wrap',
           gap: 6 * k,
           marginTop: 34 * k,
-          width: cell * 7 + 6 * 6 * k,
+          width: cell * columns + 6 * (columns - 1) * k,
         }}
       >
-        {days.map((state, index) => (
+        {squares.map((color, index) => (
           <View
-            // The day of the month: a calendar square has nothing else to it.
+            // The day of the month, or the month of the year: a calendar
+            // square has nothing else to it.
             key={index + 1}
-            style={{ backgroundColor: fill[state], borderRadius: 8 * k, height: cell, width: cell }}
+            style={{ backgroundColor: color, borderRadius: 8 * k, height: cell, width: cell }}
           />
         ))}
       </Rise>

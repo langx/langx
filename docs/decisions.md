@@ -6294,3 +6294,19 @@ What stayed is the split: the profile and the Me tab show **Corrections** and
 **Feed** as two tiles. Corrections is `countCorrectionsWritten`, unchanged;
 Feed is `countPostsByAuthor`, posts not hidden. Each tile opens its own tab of
 the same list screen. Everything else counts corrections as it did before.
+
+## "Your Year" is the month's story over twelve months
+
+The yearly recap is not a second feature. It is `GET /me/recap/year`, which
+sums the same `dailyActivity` rows `recapForMonth` reads and takes tokens and
+Echo reviews from the `year` rows those two ledgers already keep, played
+through the same `RecapStory` and drawn on the same poster. The card asks for
+`month: '2026'`: four digits mean a year, so the server reads the year's
+numbers and the year becomes the headline instead of sitting beside the
+kicker as well.
+
+Only the calendar differs. 365 squares is no picture on a phone, so the
+streak slide shows a square per month, shaded by the share of its days that
+were active. The Me tab offers it from 20 December (the year so far, when
+people look back) through 7 January (the year just ended, the same week as
+December's recap). Any other day `/recap?year=YYYY` still opens it.

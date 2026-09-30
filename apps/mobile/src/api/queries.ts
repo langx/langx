@@ -64,6 +64,7 @@ import {
   type ReportInput,
   type UpcomingMeeting,
   type MonthlyRecapDto,
+  type YearlyRecapDto,
   CONVERSATION_SEARCH_MIN_LENGTH,
 } from '@langx/shared'
 import type {
@@ -298,6 +299,7 @@ export const keys = {
   streakLeaderboard: (metric: string) => ['leaderboard', 'streak', metric] as const,
   echoLeaderboard: (period: PeriodType) => ['leaderboard', 'echo', period] as const,
   recap: (month: string) => ['recap', month] as const,
+  yearRecap: (year: string) => ['recap', 'year', year] as const,
   blocks: ['blocks'] as const,
   /*
    * The operator panel, all of it under one prefix so a decision can
@@ -1986,6 +1988,16 @@ export function useMonthlyRecap(month: string) {
     queryFn: () => api.get<MonthlyRecapDto>(`/me/recap?month=${month}`),
     enabled: /^\d{4}-\d{2}$/.test(month),
     // A finished month does not change under you.
+    staleTime: 60 * 60 * 1000,
+  })
+}
+
+/** A year's numbers — the year so far, when it is this one. */
+export function useYearlyRecap(year: string) {
+  return useQuery({
+    queryKey: keys.yearRecap(year),
+    queryFn: () => api.get<YearlyRecapDto>(`/me/recap/year?year=${year}`),
+    enabled: /^\d{4}$/.test(year),
     staleTime: 60 * 60 * 1000,
   })
 }

@@ -28,6 +28,23 @@ export function recapMonthParam(param: unknown, now: Date): string {
     : previousMonth(now)
 }
 
+/**
+ * Which year the Me tab offers "Your Year" of, if any: the year so far from
+ * the 20th of December, when people look back, and the year just ended in the
+ * first week of January — the month's own week, so the two rows come and go
+ * together.
+ */
+export function recapYearFor(now: Date): string | null {
+  if (now.getMonth() === 11 && now.getDate() >= 20) return String(now.getFullYear())
+  if (now.getMonth() === 0 && now.getDate() <= 7) return String(now.getFullYear() - 1)
+  return null
+}
+
+/** The `?year=` of a recap link, when it is one; otherwise the screen is a month's. */
+export function recapYearParam(param: unknown): string | null {
+  return typeof param === 'string' && /^\d{4}$/.test(param) ? param : null
+}
+
 /** `2026-09` → "September" in the reader's language. */
 export function monthName(month: string, locale: string): string {
   const [year, index] = month.split('-').map(Number)

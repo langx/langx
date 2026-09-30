@@ -2510,6 +2510,24 @@ export const fr: Localized<EnMessages> = {
     shareMessage:
       'Mon mois de {month} sur LangX : {messages}, {reviews}. Pratique avec moi : {url}',
     failed: 'Impossible de charger le bilan.',
+    year: {
+      meTitle: 'Ton bilan {year}',
+      meBody: 'Ton année sur LangX, prête à partager.',
+      quiet: 'Une année calme. La suivante commence par un message.',
+      share: 'Partager mon année',
+      cardCaption: 'mon année sur LangX',
+      introKicker: 'Ton année',
+      introLine: 'Une année en deux langues. Voici la tienne.',
+      activeDaysLine: {
+        one: '{count} jour actif cette année.',
+        other: '{count} jours actifs cette année.',
+      },
+      activeDaysOnlyLine: {
+        one: 'jour de pratique cette année.',
+        other: 'jours de pratique cette année.',
+      },
+      cardKicker: 'Mon année',
+    },
     story: {
       close: 'Fermer',
       next: 'Suivant',

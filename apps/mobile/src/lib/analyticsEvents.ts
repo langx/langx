@@ -355,7 +355,7 @@ export type AnalyticsEvent =
        * once per viewing, as it goes; which numbers were on it never leaves.
        */
       name: 'recap_story_viewed'
-      properties: { slides_seen: number; completed: boolean }
+      properties: { slides_seen: number; completed: boolean; period: 'month' | 'year' }
     }
   | {
       /** The first-run tour opened. Once per install, so this counts installs toured. */

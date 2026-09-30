@@ -4,6 +4,7 @@ import {
   type MonthlyRecapDto,
   type RecapCardInput,
   type RecapStat,
+  type YearlyRecapDto,
 } from '@langx/shared'
 import type { MessageKey, TranslateFn } from '../i18n/runtime'
 
@@ -18,12 +19,24 @@ import type { MessageKey, TranslateFn } from '../i18n/runtime'
 
 export type RecapSlide = 'intro' | 'messages' | 'corrections' | 'echo' | 'streak' | 'summary'
 
+/** What the story plays: a month, or — "Your Year" — twelve of them. */
+export type StoryRecap = MonthlyRecapDto | YearlyRecapDto
+
+export function isYearRecap(recap: StoryRecap): recap is YearlyRecapDto {
+  return 'activeMonths' in recap
+}
+
+/** `2026-09` for a month, `2026` for a year: what the API and the card are asked for. */
+export function recapKey(recap: StoryRecap): string {
+  return isYearRecap(recap) ? recap.year : recap.month
+}
+
 /**
  * A month with nothing sent and nothing reviewed. The story is not played for
  * one — six slides of zeroes is a worse thing to be shown than one sentence —
  * and there is nothing to share, the same rule the streak card follows.
  */
-export function isQuietRecap(recap: MonthlyRecapDto): boolean {
+export function isQuietRecap(recap: StoryRecap): boolean {
   return recap.messages + recap.corrections + recap.echoReviews === 0
 }
 
@@ -31,7 +44,7 @@ export function isQuietRecap(recap: MonthlyRecapDto): boolean {
  * The slides a month earns, in order. A number that is zero does not get a
  * slide of its own: "You gave back 0" is not a thing to be congratulated on.
  */
-export function recapSlides(recap: MonthlyRecapDto): RecapSlide[] {
+export function recapSlides(recap: StoryRecap): RecapSlide[] {
   const slides: RecapSlide[] = ['intro']
   if (recap.messages > 0) slides.push('messages')
   if (recap.corrections > 0) slides.push('corrections')
@@ -76,6 +89,19 @@ export function recapCalendar(recap: MonthlyRecapDto): CalendarDay[] {
     if (day >= streakFrom) return 'streak'
     return active.has(day) ? 'active' : 'idle'
   })
+}
+
+/**
+ * One square per month for a year's streak slide, each the share of that
+ * month's days that were active (0–1), January first.
+ *
+ * A year has no "streak" squares: the one streak the server records is at
+ * most a few weeks of the last square, and a shade says the year better.
+ */
+export function yearCalendar(recap: YearlyRecapDto): number[] {
+  return recap.activeMonths.map((days, index) =>
+    Math.min(1, days / daysInMonth(`${recap.year}-${String(index + 1).padStart(2, '0')}`)),
+  )
 }
 
 /**
@@ -139,7 +165,7 @@ export function recapLabel(t: TranslateFn, stat: RecapStat, count: number): stri
  */
 export function recapCardInput(
   t: TranslateFn,
-  recap: MonthlyRecapDto,
+  recap: StoryRecap,
   locale: Locale,
   languages?: { native: string; learning: string },
 ): RecapCardInput {
@@ -147,9 +173,9 @@ export function recapCardInput(
     RECAP_STATS.map((stat) => [stat, recapLabel(t, stat, recap[stat])]),
   ) as RecapCardInput['labels']
   return {
-    month: recap.month,
+    month: recapKey(recap),
     locale,
-    kicker: t('recap.card.kicker'),
+    kicker: isYearRecap(recap) ? t('recap.year.cardKicker') : t('recap.card.kicker'),
     labels,
     ...(recap.partners > 0 ? { people: t('recap.card.people', { count: recap.partners }) } : {}),
     ...(languages ? { languages: t('recap.card.languages', languages) } : {}),
