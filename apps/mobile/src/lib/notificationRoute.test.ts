@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { notificationRoute } from './notificationRoute'
+import { createTapGate, notificationRoute } from './notificationRoute'
 
 describe('notificationRoute', () => {
   it('opens the conversation a message notification is about', () => {
@@ -51,5 +51,22 @@ describe('notificationRoute', () => {
 
   it('sends token news to the wallet', () => {
     expect(notificationRoute({ kind: 'wallet' })).toBe('/wallet')
+  })
+})
+
+describe('createTapGate', () => {
+  it('lets a tap through once, however many times it arrives', () => {
+    // The listener and the launch lookup can both deliver the same response,
+    // and the lookup repeats it on every effect re-run.
+    const gate = createTapGate()
+    expect(gate('a:1')).toBe(true)
+    expect(gate('a:1')).toBe(false)
+    expect(gate('a:1')).toBe(false)
+  })
+
+  it('lets a later tap through', () => {
+    const gate = createTapGate()
+    expect(gate('a:1')).toBe(true)
+    expect(gate('b:2')).toBe(true)
   })
 })
