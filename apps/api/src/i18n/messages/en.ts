@@ -253,6 +253,7 @@ export const en = {
     newsletterMessages: 'Messages sent',
 
     newsletterCorrections: 'Corrections given',
+    newsletterPosts: 'Posts shared',
 
     newsletterTokens: 'Tokens earned',
 

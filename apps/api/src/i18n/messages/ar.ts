@@ -249,6 +249,7 @@ export const ar: Localized<ServerMessages> = {
     newsletterMessages: 'الرسائل المُرسَلة',
 
     newsletterCorrections: 'التصحيحات المُقدَّمة',
+    newsletterPosts: 'المنشورات المُشارَكة',
 
     newsletterTokens: 'الرموز المكتسبة',
 

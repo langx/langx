@@ -227,6 +227,7 @@ export const tr: Localized<ServerMessages> = {
     newsletterMessages: 'Gönderilen mesaj',
 
     newsletterCorrections: 'Yapılan düzeltme',
+    newsletterPosts: 'Paylaşılan gönderi',
 
     newsletterTokens: 'Kazanılan token',
 

@@ -119,6 +119,29 @@ describe('the monthly recap', () => {
     expect(html).toContain('640')
   })
 
+  it('counts the month’s posts, the reader’s and everybody’s', async () => {
+    const userId = await newProfile()
+    const other = await newProfile()
+    await handle.db.collection(COLLECTIONS.posts).insertMany([
+      { authorId: userId, createdAt: new Date('2026-09-03T10:00:00Z') },
+      { authorId: userId, createdAt: new Date('2026-09-20T10:00:00Z') },
+      { authorId: userId, createdAt: new Date('2026-09-21T10:00:00Z') },
+      // Hidden: gone from the reader's own count, as from their profile.
+      { authorId: userId, createdAt: new Date('2026-09-22T10:00:00Z'), hiddenAt: FIRST },
+      // October: outside the month being summed.
+      { authorId: userId, createdAt: new Date('2026-10-01T01:00:00Z') },
+      { authorId: other, createdAt: new Date('2026-09-10T10:00:00Z') },
+    ] as never[])
+
+    await runNewsletterPass(handle.db, ctx, FIRST)
+    const mine = sender.messages.find((message) => message.to === `${userId}@example.com`)
+    // Their three posts, and posts alone are enough not to be a quiet month.
+    expect(mine?.text).toContain('Posts shared: 3')
+    expect(mine?.text).not.toContain('You were quiet this month')
+    // Everybody's five in September, hidden one included — how much happened.
+    expect(mine?.text).toMatch(/Posts shared: 5\b/)
+  })
+
   /** Three zeroes at somebody is not a summary; one sentence is. */
   it('writes a different letter for a month somebody sat out', async () => {
     await newProfile()

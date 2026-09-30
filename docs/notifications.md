@@ -405,10 +405,10 @@ Monthly rather than weekly, and the numbers are the reason: a week of a
 language exchange is three conversations and a correction, which reads as an
 accusation rather than a summary.
 
-- **Your month** — messages, corrections, tokens, streak. A month somebody
-  sat out swaps all four for one sentence.
-- **Everybody's month** — new members, messages, corrections. Computed once
-  per tick.
+- **Your month** — messages, corrections, posts, tokens, streak. A month
+  somebody sat out swaps all five for one sentence.
+- **Everybody's month** — new members, messages, corrections, posts.
+  Computed once per tick.
 - **What shipped** — optional, from `apps/api/src/email/newsletters/YYYY-MM.ts`,
   drafted by a scheduled routine, approved by **merging its pull request**.
   No note, no block; the recap still goes.

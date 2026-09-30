@@ -249,6 +249,7 @@ export const fr: Localized<ServerMessages> = {
     newsletterMessages: 'Messages envoyés',
 
     newsletterCorrections: 'Corrections données',
+    newsletterPosts: 'Publications partagées',
 
     newsletterTokens: 'Jetons gagnés',
 

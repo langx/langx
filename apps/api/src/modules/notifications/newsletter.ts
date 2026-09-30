@@ -12,6 +12,7 @@ import { newsletterEmail } from '../../email/templates'
 import { noteFor } from '../../email/newsletters'
 import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
+import { notHidden } from '../feed/documents'
 import { alreadyClaimed, claimOnce } from './ledger'
 import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
 
@@ -21,6 +22,8 @@ export interface MonthlyRecap {
   personal: {
     messages: number
     corrections: number
+    /** Posts put up that month, hidden ones left out, as on the profile's Feed tile. */
+    posts: number
     tokens: number
     streak: number
     /** Different people messaged — the union of each day's `partners`. */
@@ -30,7 +33,7 @@ export interface MonthlyRecap {
     /** Those days, as days of the month. */
     activeDates: number[]
   }
-  community: { members: number; messages: number; corrections: number }
+  community: { members: number; messages: number; corrections: number; posts: number }
   /** True when the personal half is all zeroes — a different letter. */
   quiet: boolean
 }
@@ -45,23 +48,24 @@ export function lastMonthKey(now: Date): string {
 /**
  * The community numbers, computed once per tick rather than once per reader.
  *
- * Three counts over a month of rows. On a database this size that is
+ * Four counts over a month of rows. On a database this size that is
  * milliseconds; if it ever is not, the answer is a `jobRuns` row holding the
  * month's totals rather than a cache here, since every instance would want
- * the same three numbers.
+ * the same four numbers.
  */
 export async function communityMonth(db: Db, month: string): Promise<MonthlyRecap['community']> {
   const from = new Date(`${month}-01T00:00:00.000Z`)
   const to = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1))
   const range = { $gte: from, $lt: to }
-  const [members, messages, corrections] = await Promise.all([
+  const [members, messages, corrections, posts] = await Promise.all([
     db
       .collection(COLLECTIONS.profiles)
       .countDocuments({ createdAt: range, guest: { $exists: false } }),
     db.collection(COLLECTIONS.messages).countDocuments({ createdAt: range }),
     db.collection(COLLECTIONS.postCorrections).countDocuments({ createdAt: range }),
+    db.collection(COLLECTIONS.posts).countDocuments({ createdAt: range }),
   ])
-  return { members, messages, corrections }
+  return { members, messages, corrections, posts }
 }
 
 /**
@@ -78,12 +82,21 @@ export async function personalMonth(
   userId: string,
   month: string,
 ): Promise<MonthlyRecap['personal']> {
-  const days = await db
-    .collection<{ day: string; messages?: number; corrections?: number; partners?: string[] }>(
-      COLLECTIONS.dailyActivity,
-    )
-    .find({ userId, day: { $gte: `${month}-01`, $lte: `${month}-31` } })
-    .toArray()
+  const from = new Date(`${month}-01T00:00:00.000Z`)
+  const to = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1))
+  const [days, posts] = await Promise.all([
+    db
+      .collection<{ day: string; messages?: number; corrections?: number; partners?: string[] }>(
+        COLLECTIONS.dailyActivity,
+      )
+      .find({ userId, day: { $gte: `${month}-01`, $lte: `${month}-31` } })
+      .toArray(),
+    // Posts are not a `dailyActivity` counter, so they are counted where they
+    // are, over the same UTC month and on the `author` index.
+    db
+      .collection(COLLECTIONS.posts)
+      .countDocuments({ authorId: userId, createdAt: { $gte: from, $lt: to }, ...notHidden() }),
+  ])
   const tokens =
     (
       await db
@@ -105,6 +118,7 @@ export async function personalMonth(
   return {
     messages: days.reduce((total, day) => total + (day.messages ?? 0), 0),
     corrections: days.reduce((total, day) => total + (day.corrections ?? 0), 0),
+    posts,
     tokens,
     streak: profile?.streak?.current ?? 0,
     partners: partners.size,
@@ -202,7 +216,11 @@ export async function runNewsletterPass(
       month,
       personal,
       community,
-      quiet: personal.messages === 0 && personal.corrections === 0 && personal.tokens === 0,
+      quiet:
+        personal.messages === 0 &&
+        personal.corrections === 0 &&
+        personal.posts === 0 &&
+        personal.tokens === 0,
     }
 
     if (!(await claimOnce(db, 'promo.newsletter', profile._id, month))) continue

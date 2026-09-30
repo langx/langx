@@ -258,6 +258,7 @@ export const ru: Localized<ServerMessages> = {
     newsletterMessages: 'Отправлено сообщений',
 
     newsletterCorrections: 'Сделано исправлений',
+    newsletterPosts: 'Сделано публикаций',
 
     newsletterTokens: 'Заработано токенов',
 
