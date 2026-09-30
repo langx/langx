@@ -9,7 +9,13 @@ import type { LegacyMessage } from '../handles/legacyConversations'
 import type { LegacyProfile } from '../handles/legacyProfiles'
 import type { Profile } from '../profiles/profiles'
 import type { StorageProvider, UploadUrl } from '../../storage/StorageProvider'
-import { cancelDeletion, purgeAtFor, purgeExpiredAccounts, requestDeletion } from './deletion'
+import {
+  cancelDeletion,
+  exportUserData,
+  purgeAtFor,
+  purgeExpiredAccounts,
+  requestDeletion,
+} from './deletion'
 import { countDeletionReasons, type AccountDeletionFeedback } from './deletionFeedback'
 import {
   burnDeletionToken,
@@ -443,6 +449,77 @@ describe('deleting an account', () => {
       expect(
         await handle.db.collection<Profile>(COLLECTIONS.profiles).countDocuments({ _id: plain }),
       ).toBe(0)
+    })
+  })
+
+  /**
+   * Reviews are deleted in both directions, unlike messages, which are only
+   * blanked: each is public text about a named person, so one left behind is
+   * either a deleted account's words on show or praise for nobody.
+   */
+  describe('reviews', () => {
+    const testimonials = () => handle.db.collection(COLLECTIONS.testimonials)
+
+    async function write(authorId: string, subjectId: string): Promise<void> {
+      await testimonials().insertOne({
+        authorId,
+        subjectId,
+        conversationId: new ObjectId(),
+        body: `What ${authorId} thinks of ${subjectId}, at some length.`,
+        createdAt: new Date(),
+      })
+    }
+
+    beforeEach(async () => {
+      await testimonials().deleteMany({})
+    })
+
+    it('purges the ones the account wrote and the ones written about it', async () => {
+      const leaving = userId('e1')
+      const friend = userId('e2')
+      const other = userId('e3')
+      await seed(leaving, {
+        deletedAt: new Date(Date.now() - (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+      })
+      await seed(friend)
+      await seed(other)
+      await write(leaving, friend)
+      await write(friend, leaving)
+      await write(friend, other)
+
+      await purgeExpiredAccounts(handle.db)
+
+      expect(
+        await testimonials().countDocuments({
+          $or: [{ authorId: leaving }, { subjectId: leaving }],
+        }),
+      ).toBe(0)
+      // Somebody else's pair is untouched.
+      expect(await testimonials().countDocuments({ authorId: friend, subjectId: other })).toBe(1)
+    })
+
+    it('are in the data export, both directions, hidden ones included', async () => {
+      const me = userId('f1')
+      const friend = userId('f2')
+      await seed(me)
+      await seed(friend)
+      await write(me, friend)
+      await write(friend, me)
+      await testimonials().updateOne(
+        { authorId: friend, subjectId: me },
+        { $set: { ownerHiddenAt: new Date() } },
+      )
+
+      const exported = await exportUserData(handle.db, me)
+
+      expect(exported.testimonials.written).toHaveLength(1)
+      expect(exported.testimonials.written[0]).toMatchObject({ authorId: me, subjectId: friend })
+      expect(exported.testimonials.received).toHaveLength(1)
+      expect(exported.testimonials.received[0]).toMatchObject({
+        authorId: friend,
+        subjectId: me,
+        hiddenByOwner: true,
+      })
     })
   })
 
