@@ -7,8 +7,25 @@
  */
 export function recapMonthFor(now: Date): string | null {
   if (now.getDate() > 7) return null
+  return previousMonth(now)
+}
+
+/** The month before `now`'s, as `YYYY-MM`, on the device's calendar. */
+export function previousMonth(now: Date): string {
   const previous = new Date(now.getFullYear(), now.getMonth() - 1, 1)
   return `${previous.getFullYear()}-${String(previous.getMonth() + 1).padStart(2, '0')}`
+}
+
+/**
+ * The month a recap screen shows: the one in its link, or — for `/recap` with
+ * no `?month=`, which is what a reload or a typed address gives on the web —
+ * the last finished one, as the API does. Without the fallback the query never
+ * starts and the screen waits on it forever.
+ */
+export function recapMonthParam(param: unknown, now: Date): string {
+  return typeof param === 'string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(param)
+    ? param
+    : previousMonth(now)
 }
 
 /** `2026-09` → "September" in the reader's language. */
