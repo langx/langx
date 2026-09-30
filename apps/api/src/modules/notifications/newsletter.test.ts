@@ -163,6 +163,22 @@ describe('the monthly recap', () => {
     for (const message of sender.messages) expect(message.html).toContain('>2<')
   })
 
+  /** Grants never reach the month aggregates, so the total has to come from the ledger. */
+  it('counts every token given out, grants and the pool included, spends not', async () => {
+    await newProfile()
+    await handle.db.collection(COLLECTIONS.tokenLedger).insertMany([
+      { userId: 'a', kind: 'dailyPool', amount: 400, day: '2026-09-12' },
+      { userId: 'b', kind: 'signupBonus', amount: 250, day: '2026-09-30' },
+      { userId: 'a', kind: 'message', amount: 7, day: '2026-09-01' },
+      { userId: 'a', kind: 'spend', amount: -300, day: '2026-09-15' },
+      // October: outside the month being summed.
+      { userId: 'a', kind: 'dailyPool', amount: 999, day: '2026-10-01' },
+    ] as never[])
+
+    await runNewsletterPass(handle.db, ctx, FIRST)
+    expect(sender.messages[0]?.text).toMatch(/Tokens given out: 657\b/)
+  })
+
   it('goes once a month, whatever the tick', async () => {
     await newProfile()
     expect(await runNewsletterPass(handle.db, ctx, FIRST)).toEqual({ sent: 1 })

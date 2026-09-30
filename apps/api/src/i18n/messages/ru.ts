@@ -270,6 +270,8 @@ export const ru: Localized<ServerMessages> = {
 
     newsletterCorrectionsMade: 'Сделано исправлений',
 
+    newsletterTokensGiven: 'Роздано токенов',
+
     newsletterButton: 'Открыть LangX',
 
     /** The day's replies to somebody's posts, in one letter. */

@@ -549,7 +549,7 @@ export function billingEmail(
 }
 
 /**
- * "Your month on LangX": four numbers that are yours, three that are
+ * "Your month on LangX": the numbers that are yours, the ones that are
  * everybody's, and whatever shipped.
  *
  * The two halves are deliberate. A personal recap alone is thin in a quiet
@@ -593,6 +593,7 @@ export function newsletterEmail(
           stat(t('email.newsletterMessagesSent'), recap.community.messages),
           stat(t('email.newsletterCorrectionsMade'), recap.community.corrections),
           stat(t('email.newsletterPosts'), recap.community.posts),
+          stat(t('email.newsletterTokensGiven'), recap.community.tokens),
         ].join('\n        ')}
       </table>`
 
@@ -643,6 +644,7 @@ export function newsletterEmail(
         `${t('email.newsletterMessagesSent')}: ${recap.community.messages}`,
         `${t('email.newsletterCorrectionsMade')}: ${recap.community.corrections}`,
         `${t('email.newsletterPosts')}: ${recap.community.posts}`,
+        `${t('email.newsletterTokensGiven')}: ${recap.community.tokens}`,
         ...(note
           ? [
               '',

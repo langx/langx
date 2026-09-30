@@ -253,6 +253,8 @@ export const ptBR: Localized<ServerMessages> = {
 
     newsletterCorrectionsMade: 'Correções feitas',
 
+    newsletterTokensGiven: 'Tokens distribuídos',
+
     newsletterButton: 'Abrir o LangX',
 
     /** The day's replies to somebody's posts, in one letter. */

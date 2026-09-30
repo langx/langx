@@ -239,6 +239,8 @@ export const tr: Localized<ServerMessages> = {
 
     newsletterCorrectionsMade: 'Yapılan düzeltme',
 
+    newsletterTokensGiven: 'Dağıtılan token',
+
     newsletterButton: 'LangX’i aç',
 
     /** The day's replies to somebody's posts, in one letter. */

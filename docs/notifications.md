@@ -407,7 +407,8 @@ accusation rather than a summary.
 
 - **Your month** — messages, corrections, posts, tokens, streak. A month
   somebody sat out swaps all five for one sentence.
-- **Everybody's month** — new members, messages, corrections, posts.
+- **Everybody's month** — new members, messages, corrections, posts, and every
+  token given out that month (grants and the daily pool included, spends not).
   Computed once per tick.
 - **What shipped** — optional, from `apps/api/src/email/newsletters/YYYY-MM.ts`,
   drafted by a scheduled routine, approved by **merging its pull request**.

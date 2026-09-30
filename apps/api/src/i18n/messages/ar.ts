@@ -261,6 +261,8 @@ export const ar: Localized<ServerMessages> = {
 
     newsletterCorrectionsMade: 'التصحيحات المُنجَزة',
 
+    newsletterTokensGiven: 'الرموز الموزَّعة',
+
     newsletterButton: 'افتح LangX',
 
     /** The day's replies to somebody's posts, in one letter. */
