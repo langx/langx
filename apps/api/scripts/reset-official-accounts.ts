@@ -67,7 +67,8 @@ import { supportsPut, type StorageProvider } from '../src/storage/StorageProvide
  * list is not a silent no-op, it is a reset deleting that message as if a
  * person had typed it.
  */
-const OFFICIAL_CLIENT_ID = /^(welcome|welcomeback|broadcast|lifetime|admin):/
+const OFFICIAL_CLIENT_ID =
+  /^(welcome|welcomeback|broadcast|lifetime|admin|bounty|reportReward|proGift|proGiftReminder|proGiftEnded):/
 
 function personSentFilter(userId: string): Filter<Message> {
   // `$nor` rather than `$not`, so a row with no `clientId` at all matches too.
