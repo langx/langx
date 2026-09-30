@@ -261,6 +261,8 @@ export const fr: Localized<ServerMessages> = {
 
     newsletterCorrectionsMade: 'Corrections faites',
 
+    newsletterTokensGiven: 'Jetons distribués',
+
     newsletterButton: 'Ouvrir LangX',
 
     /** The day's replies to somebody's posts, in one letter. */

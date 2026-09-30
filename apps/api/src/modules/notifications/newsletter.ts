@@ -33,7 +33,14 @@ export interface MonthlyRecap {
     /** Those days, as days of the month. */
     activeDates: number[]
   }
-  community: { members: number; messages: number; corrections: number; posts: number }
+  community: {
+    members: number
+    messages: number
+    corrections: number
+    posts: number
+    /** Every token that went out that month, grants and the daily pool included. */
+    tokens: number
+  }
   /** True when the personal half is all zeroes — a different letter. */
   quiet: boolean
 }
@@ -48,24 +55,38 @@ export function lastMonthKey(now: Date): string {
 /**
  * The community numbers, computed once per tick rather than once per reader.
  *
- * Four counts over a month of rows. On a database this size that is
- * milliseconds; if it ever is not, the answer is a `jobRuns` row holding the
- * month's totals rather than a cache here, since every instance would want
- * the same four numbers.
+ * Four counts and a sum over a month of rows. On a database this size that
+ * is milliseconds; if it ever is not, the answer is a `jobRuns` row holding
+ * the month's totals rather than a cache here, since every instance would want
+ * the same five numbers.
+ *
+ * The token total is read from the ledger, not `tokenAggregates`: grants —
+ * signup bonuses, gifts, v1 conversions — never reach the month buckets, and
+ * "given out" has to include them. `spend` is the only negative kind and is
+ * not tokens given out. By `day` rather than `month` because `day` is the
+ * ledger's index.
  */
 export async function communityMonth(db: Db, month: string): Promise<MonthlyRecap['community']> {
   const from = new Date(`${month}-01T00:00:00.000Z`)
   const to = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1))
   const range = { $gte: from, $lt: to }
-  const [members, messages, corrections, posts] = await Promise.all([
+  const [members, messages, corrections, posts, tokens] = await Promise.all([
     db
       .collection(COLLECTIONS.profiles)
       .countDocuments({ createdAt: range, guest: { $exists: false } }),
     db.collection(COLLECTIONS.messages).countDocuments({ createdAt: range }),
     db.collection(COLLECTIONS.postCorrections).countDocuments({ createdAt: range }),
     db.collection(COLLECTIONS.posts).countDocuments({ createdAt: range }),
+    db
+      .collection(COLLECTIONS.tokenLedger)
+      .aggregate<{ total: number }>([
+        { $match: { day: { $gte: `${month}-01`, $lte: `${month}-31` }, kind: { $ne: 'spend' } } },
+        { $group: { _id: null, total: { $sum: '$amount' } } },
+      ])
+      .next()
+      .then((row) => row?.total ?? 0),
   ])
-  return { members, messages, corrections, posts }
+  return { members, messages, corrections, posts, tokens }
 }
 
 /**

@@ -265,6 +265,8 @@ export const en = {
 
     newsletterCorrectionsMade: 'Corrections made',
 
+    newsletterTokensGiven: 'Tokens given out',
+
     newsletterButton: 'Open LangX',
 
     /** The day's replies to somebody's posts, in one letter. */
