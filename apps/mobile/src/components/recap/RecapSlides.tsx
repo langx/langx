@@ -551,7 +551,9 @@ function SummarySlide(
                   fontVariant: ['tabular-nums'],
                   writingDirection: props.rtl ? 'rtl' : 'ltr',
                   letterSpacing: props.rtl ? 0 : -0.05 * tileNumber,
-                  lineHeight: tileNumber,
+                  // Nunito Black's digits stand taller than its em: a line the
+                  // size of the font clipped their tops on iOS.
+                  lineHeight: tileNumber * 1.2,
                 }}
               >
                 {value}
