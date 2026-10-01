@@ -2778,6 +2778,28 @@ export const en = {
     shareMessage: 'My {month} on LangX: {messages}, {reviews}. Practise with me: {url}',
     failed: 'Could not load the recap.',
     /**
+     * "Your Year": the same story over twelve months, where a month's words
+     * would be wrong. Everything not here is shared with the month.
+     */
+    year: {
+      meTitle: 'Your {year} recap',
+      meBody: 'Your year on LangX, ready to share.',
+      quiet: 'A quiet year. The next one starts with one message.',
+      share: 'Share my year',
+      cardCaption: 'my year on LangX',
+      introKicker: 'Your year',
+      introLine: 'A year of two languages. Here’s yours.',
+      activeDaysLine: {
+        one: '{count} active day this year.',
+        other: '{count} active days this year.',
+      },
+      activeDaysOnlyLine: {
+        one: 'day you practised this year.',
+        other: 'days you practised this year.',
+      },
+      cardKicker: 'My year',
+    },
+    /**
      * The full-screen story `recap.tsx` plays, one number per slide. A slide's
      * line follows its big numeral, so each is the rest of that sentence.
      */

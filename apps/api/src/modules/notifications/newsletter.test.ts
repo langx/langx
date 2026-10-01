@@ -7,7 +7,13 @@ import { ensureIndexes } from '../../db/indexes'
 import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
-import { lastMonthKey, recapForMonth, runNewsletterPass } from './newsletter'
+import {
+  lastMonthKey,
+  lastYearKey,
+  recapForMonth,
+  recapForYear,
+  runNewsletterPass,
+} from './newsletter'
 
 const SECRET = 'n'.repeat(40)
 /** The first of October at noon UTC: the recap is about September. */
@@ -259,6 +265,40 @@ describe('the monthly recap', () => {
     expect(await recapForMonth(handle.db, userId, '2026-07')).toMatchObject({
       messages: 0,
       echoReviews: 0,
+    })
+  })
+
+  it('sums a year from the same rows, a square per month', async () => {
+    expect(lastYearKey(FIRST)).toBe('2025')
+    const userId = await newProfile({ streak: 5 })
+    await handle.db.collection(COLLECTIONS.dailyActivity).insertMany([
+      { userId, day: '2026-01-05', messages: 4, corrections: 0, partners: ['a'] },
+      { userId, day: '2026-01-06', messages: 0, corrections: 2 },
+      { userId, day: '2026-09-30', messages: 6, corrections: 1, partners: ['a', 'b'] },
+      // Somebody else's mutual bonus: a row, not an active day.
+      { userId, day: '2026-03-01', messages: 0, corrections: 0, mutualConversations: 1 },
+      // The neighbouring years stay out.
+      { userId, day: '2025-12-31', messages: 99, corrections: 99, partners: ['z'] },
+      { userId, day: '2027-01-01', messages: 99, corrections: 99, partners: ['z'] },
+    ] as never[])
+    await handle.db.collection(COLLECTIONS.tokenAggregates).insertMany([
+      { _id: `${userId}:year:2026`, tokens: 300 },
+      { _id: `${userId}:month:2026-09`, tokens: 40 },
+    ] as never[])
+    await handle.db
+      .collection(COLLECTIONS.echoAggregates)
+      .insertOne({ _id: `${userId}:year:2026`, userId, reviews: 80 } as never)
+
+    expect(await recapForYear(handle.db, userId, '2026')).toEqual({
+      year: '2026',
+      messages: 10,
+      corrections: 3,
+      tokens: 300,
+      echoReviews: 80,
+      currentStreak: 5,
+      partners: 2,
+      activeDays: 3,
+      activeMonths: [2, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
     })
   })
 })

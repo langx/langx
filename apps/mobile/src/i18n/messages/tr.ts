@@ -2534,6 +2534,24 @@ export const tr: Localized<EnMessages> = {
     cardCaption: 'LangX’teki ayım',
     shareMessage: 'LangX’te {month}: {messages}, {reviews}. Benimle pratik yap: {url}',
     failed: 'Özet yüklenemedi.',
+    year: {
+      meTitle: '{year} özetin',
+      meBody: 'LangX’teki yılın, paylaşmaya hazır.',
+      quiet: 'Sakin bir yıldı. Yenisi tek bir mesajla başlar.',
+      share: 'Yılımı paylaş',
+      cardCaption: 'LangX’teki yılım',
+      introKicker: 'Yılın',
+      introLine: 'İki dilde geçen bir yıl. İşte seninki.',
+      activeDaysLine: {
+        one: 'Bu yıl {count} gün aktiftin.',
+        other: 'Bu yıl {count} gün aktiftin.',
+      },
+      activeDaysOnlyLine: {
+        one: 'gün, bu yıl pratik yaptın.',
+        other: 'gün, bu yıl pratik yaptın.',
+      },
+      cardKicker: 'Yılım',
+    },
     story: {
       close: 'Kapat',
       next: 'Sonraki',

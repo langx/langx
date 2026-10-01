@@ -4,6 +4,8 @@ import {
   monthlyRecapSchema,
   publicShareCardSchema,
   webUrl,
+  yearlyRecapQuerySchema,
+  yearlyRecapSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -13,7 +15,12 @@ import { requireMember } from '../middleware/requireAuth'
 import { createShareCard, readShareCard } from '../modules/cards/shareCards'
 import { COLLECTIONS } from '../db/collections'
 import type { Profile } from '../modules/profiles/profiles'
-import { lastMonthKey, recapForMonth } from '../modules/notifications/newsletter'
+import {
+  lastMonthKey,
+  lastYearKey,
+  recapForMonth,
+  recapForYear,
+} from '../modules/notifications/newsletter'
 
 /**
  * Making a share card, and reading one back.
@@ -79,6 +86,19 @@ export const shareCardRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const month = request.query.month ?? lastMonthKey(new Date())
       return reply.send(await recapForMonth(app.mongo.db, request.userId, month))
+    },
+  )
+
+  /** The same, over a year: "Your Year". */
+  app.get(
+    '/me/recap/year',
+    {
+      preHandler: requireMember,
+      schema: { querystring: yearlyRecapQuerySchema, response: { 200: yearlyRecapSchema } },
+    },
+    async (request, reply) => {
+      const year = request.query.year ?? lastYearKey(new Date())
+      return reply.send(await recapForYear(app.mongo.db, request.userId, year))
     },
   )
 

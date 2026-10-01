@@ -2813,6 +2813,28 @@ export const ru: Localized<EnMessages> = {
     cardCaption: 'мой месяц в LangX',
     shareMessage: 'Мой месяц в LangX ({month}): {messages}, {reviews}. Практикуйся со мной: {url}',
     failed: 'Не удалось загрузить итоги.',
+    year: {
+      meTitle: 'Итоги года: {year}',
+      meBody: 'Твой год в LangX — можно поделиться.',
+      quiet: 'Спокойный год. Следующий начинается с одного сообщения.',
+      share: 'Поделиться годом',
+      cardCaption: 'мой год в LangX',
+      introKicker: 'Твой год',
+      introLine: 'Год на двух языках. Вот твой.',
+      activeDaysLine: {
+        one: '{count} активный день в этом году.',
+        few: '{count} активных дня в этом году.',
+        many: '{count} активных дней в этом году.',
+        other: '{count} активного дня в этом году.',
+      },
+      activeDaysOnlyLine: {
+        one: 'день практики в этом году.',
+        few: 'дня практики в этом году.',
+        many: 'дней практики в этом году.',
+        other: 'дня практики в этом году.',
+      },
+      cardKicker: 'Мой год',
+    },
     story: {
       close: 'Закрыть',
       next: 'Дальше',
