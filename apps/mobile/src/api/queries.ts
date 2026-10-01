@@ -3175,6 +3175,12 @@ export interface AdminReportDto {
   otherOpenReports?: number
   /** What the reporter was thanked with. Only on the detail read, like the three above. */
   reward?: { amount: number; at: string } | null
+  /** Whether @langx warned the account over this report. Absent from an older API. */
+  warned?: boolean
+  /** When it was warned, on the detail read. */
+  warning?: { at: string } | null
+  /** Warnings over the same account's other reports, newest first. Detail read only. */
+  earlierWarnings?: { at: string; reason: string }[]
 }
 
 export interface AdminAppealDto {
@@ -3447,6 +3453,17 @@ export function useAdminRewardReporter() {
       api.post<{ awarded: boolean; amount: number }>(`/admin/reports/${input.id}/reward`, {
         amount: input.amount,
       }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export function useAdminWarnReported() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; body: string }) =>
+      api.post<{ warned: boolean }>(`/admin/reports/${input.id}/warn`, { body: input.body }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },

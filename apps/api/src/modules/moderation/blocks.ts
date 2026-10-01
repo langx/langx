@@ -51,6 +51,12 @@ export interface Report {
    * "already paid" without a ledger read.
    */
   reward?: { amount: number; at: Date; by: string }
+  /**
+   * The warning the reported account was sent from @langx over this report —
+   * the rung before a suspension. Written once, by `warnReported`, so the
+   * panel can say "already warned" here and on the next report against them.
+   */
+  warning?: { at: Date; by: string; messageId?: ObjectId }
 }
 
 function isDuplicateKeyError(error: unknown, indexName: string): boolean {

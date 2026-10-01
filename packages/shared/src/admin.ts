@@ -132,6 +132,7 @@ export type AdminMinVersionInput = AdminLatestVersionInput
 export const ADMIN_ACTIONS = [
   'report.decide',
   'report.reward',
+  'report.warn',
   'appeal.decide',
   'user.suspend',
   'user.lift',

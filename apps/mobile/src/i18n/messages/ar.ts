@@ -1412,6 +1412,7 @@ export const ar: Localized<EnMessages> = {
     profileQuestion: 'لماذا تبلّغ عن هذا الملف الشخصي؟',
     postQuestion: 'لماذا تبلّغ عن هذا المنشور؟',
     spam: 'رسائل مزعجة',
+    scam: 'احتيال أو طلب مال',
     harassment: 'مضايقة',
     hateSpeech: 'خطاب كراهية',
     hateSpeechHint: 'هجوم على شخص بسبب هويته، بما في ذلك الميل الجنسي والهوية الجندرية',

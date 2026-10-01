@@ -580,6 +580,7 @@ export const ptBR: Localized<ServerMessages> = {
   },
   reportReason: {
     spam: 'Spam',
+    scam: 'Golpe ou pedido de dinheiro',
     harassment: 'Assédio',
     hateSpeech: 'Discurso de ódio',
     inappropriateContent: 'Conteúdo inadequado',

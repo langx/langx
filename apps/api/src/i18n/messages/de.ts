@@ -585,6 +585,7 @@ export const de: Localized<ServerMessages> = {
   },
   reportReason: {
     spam: 'Spam',
+    scam: 'Betrug oder Bitte um Geld',
     harassment: 'Belästigung',
     hateSpeech: 'Hassrede',
     inappropriateContent: 'Unangemessener Inhalt',

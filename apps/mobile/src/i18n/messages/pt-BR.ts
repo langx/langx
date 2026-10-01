@@ -1271,6 +1271,7 @@ export const ptBR: Localized<EnMessages> = {
     profileQuestion: 'Por que você está denunciando este perfil?',
     postQuestion: 'Por que você está denunciando esta publicação?',
     spam: 'Spam',
+    scam: 'Golpe ou pedido de dinheiro',
     harassment: 'Assédio',
     hateSpeech: 'Discurso de ódio',
     hateSpeechHint: 'Ataques a quem a pessoa é, incluindo orientação sexual e identidade de gênero',

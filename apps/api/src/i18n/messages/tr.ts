@@ -567,6 +567,7 @@ export const tr: Localized<ServerMessages> = {
   },
   reportReason: {
     spam: 'Spam',
+    scam: 'Dolandırıcılık veya para isteme',
     harassment: 'Taciz',
     hateSpeech: 'Nefret söylemi',
     inappropriateContent: 'Uygunsuz içerik',

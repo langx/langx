@@ -1429,6 +1429,7 @@ export const en = {
     profileQuestion: 'Why are you reporting this profile?',
     postQuestion: 'Why are you reporting this post?',
     spam: 'Spam',
+    scam: 'Scam or asking for money',
     harassment: 'Harassment',
     hateSpeech: 'Hate speech',
     hateSpeechHint:

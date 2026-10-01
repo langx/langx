@@ -668,6 +668,7 @@ export const en = {
    */
   reportReason: {
     spam: 'Spam',
+    scam: 'Scam or asking for money',
     harassment: 'Harassment',
     hateSpeech: 'Hate speech',
     inappropriateContent: 'Inappropriate content',

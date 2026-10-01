@@ -21,6 +21,8 @@
  *
  * If you are here to "finish the translations": this is finished.
  */
+import type { ReportReason } from '@langx/shared'
+
 /**
  * One decimal, and an em dash rather than a `0%` when there is nothing to take
  * a share of. Here rather than in a screen because the sentences that carry a
@@ -29,6 +31,41 @@
  */
 export function adminPercent(part: number, whole: number): string {
   return whole > 0 ? `${Math.round((part / whole) * 1000) / 10}%` : '—'
+}
+
+/**
+ * The first warning for a reported account, in the shape the hand-written
+ * ones of 28 Sept took. @langx is one way, so it names where a reply goes.
+ */
+function warning(what: string): string {
+  return `Hi, this is the LangX Team.
+
+We've received a report that your account ${what}. This goes against our community rules, so this is a warning.
+
+Please review our Terms: https://langx.io/terms-conditions
+
+If it happens again, your account may be suspended. Questions: hi@langx.io`
+}
+
+/**
+ * One warning per report reason, which the report screen fills in from the
+ * report and the search-box screen offers as buttons. In English whatever the
+ * reader's language, like everything typed into the panel. Keyed by the
+ * reason, so a reason added to `REPORT_REASONS` does not compile without one.
+ */
+export const WARNINGS: Record<ReportReason, string> = {
+  spam: warning('has been sending spam or unwanted promotion'),
+  scam: warning('has been asking other users for money'),
+  harassment: warning('has been harassing other users'),
+  hate_speech: warning('has been attacking people for who they are'),
+  inappropriate_content: warning('has been sharing inappropriate content'),
+  fake_profile: warning('is using a fake or misleading profile'),
+  underage: `Hi, this is the LangX Team.
+
+We've received a report that you may be under 16. LangX is only for people aged 16 and over.
+
+If this is a mistake, please write to hi@langx.io. Otherwise your account may be suspended.`,
+  other: warning('has broken our community rules'),
 }
 
 export const ADMIN = {
@@ -180,6 +217,21 @@ export const ADMIN = {
       `Give ${who} ${amount} tokens? They get a push and a message from @langx. This cannot be undone.`,
     rewarded: (amount: number) => `Thanked with ${amount} tokens.`,
     alreadyRewarded: 'This report has already been rewarded.',
+    /*
+     * The ladder: warn, then suspend for some days, then for good. The
+     * warning is the first rung, so it sits above the suspensions.
+     */
+    warn: 'Warn first',
+    warnHint:
+      'From @langx, filled in for this reason — edit it if you like. It closes the report and stays on it, and on every later report against them.',
+    sendWarning: 'Send the warning',
+    confirmWarn: (who: string) => `Warn ${who} from @langx? This closes the report.`,
+    warned: (date: string) => `Warned on ${date}. Next step: suspend for some days.`,
+    alreadyWarned: 'This report has already been warned about.',
+    warnedBefore: (n: number) =>
+      `Already warned ${n} time${n === 1 ? '' : 's'} — suspend rather than warn again:`,
+    warnedRow: (date: string, reason: string) => `${date} · ${reason}`,
+    warnedTag: 'Warned',
   },
 
   appeals: {
@@ -293,6 +345,7 @@ export const ADMIN = {
     signedOut: (n: number) => `${n} session${n === 1 ? '' : 's'} ended.`,
     message: 'Message from @langx',
     messageHint: 'One way — they cannot reply. Say where a reply should go.',
+    presetsHint: 'Ready to send — tap one to fill the box, then edit if needed.',
     send: 'Send',
     sent: 'Sent.',
     suspend: 'Suspend',

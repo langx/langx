@@ -1277,6 +1277,7 @@ export const tr: Localized<EnMessages> = {
     profileQuestion: 'Bu profili neden bildiriyorsun?',
     postQuestion: 'Bu gönderiyi neden bildiriyorsun?',
     spam: 'Spam',
+    scam: 'Dolandırıcılık veya para isteme',
     harassment: 'Taciz',
     hateSpeech: 'Nefret söylemi',
     hateSpeechHint:

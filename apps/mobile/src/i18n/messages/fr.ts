@@ -1284,6 +1284,7 @@ export const fr: Localized<EnMessages> = {
     profileQuestion: 'Pourquoi signalez-vous ce profil ?',
     postQuestion: 'Pourquoi signalez-vous cette publication ?',
     spam: 'Spam',
+    scam: 'Arnaque ou demande d’argent',
     harassment: 'Harcèlement',
     hateSpeech: 'Discours haineux',
     hateSpeechHint:

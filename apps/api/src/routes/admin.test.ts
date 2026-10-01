@@ -732,6 +732,68 @@ describe('the operator panel', () => {
         ).statusCode,
       ).toBe(404)
     })
+
+    it('warns once, and the next report against them says so', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+      const first = await newUser()
+      const second = await newUser()
+      await post(first, '/reports', { userId: target.userId, reason: 'scam' })
+
+      const open = () =>
+        get(admin, '/admin/reports?status=open').then((response) =>
+          response.json<{ items: { id: string; reported: { userId: string } }[] }>(),
+        )
+      const firstId = (await open()).items.find(
+        (item) => item.reported.userId === target.userId,
+      )!.id
+
+      const body = 'Asking for money is against our rules. Questions: hi@langx.io'
+      const warned = await post(admin, `/admin/reports/${firstId}/warn`, { body })
+      expect(warned.json()).toEqual({ warned: true })
+      // A second press sends nothing and says it did not warn.
+      const again = await post(admin, `/admin/reports/${firstId}/warn`, { body })
+      expect(again.json()).toEqual({ warned: false })
+
+      const sent = await handle.db
+        .collection<Message>(COLLECTIONS.messages)
+        .find({ clientId: `reportWarning:${firstId}` })
+        .toArray()
+      expect(sent).toHaveLength(1)
+      expect(sent[0]?.body).toBe(body)
+
+      // Warning decided the report, and the report remembers it.
+      const detail = (await get(admin, `/admin/reports/${firstId}`)).json<{
+        status: string
+        warned: boolean
+        warning: { at: string } | null
+      }>()
+      expect(detail).toMatchObject({ status: 'actioned', warned: true })
+      expect(detail.warning).not.toBeNull()
+
+      // The next report against the same account arrives already knowing.
+      await post(second, '/reports', { userId: target.userId, reason: 'spam' })
+      const secondId = (await open()).items.find(
+        (item) => item.reported.userId === target.userId,
+      )!.id
+      const next = (await get(admin, `/admin/reports/${secondId}`)).json<{
+        warning: unknown
+        earlierWarnings: { reason: string }[]
+      }>()
+      expect(next.warning).toBeNull()
+      expect(next.earlierWarnings).toEqual([expect.objectContaining({ reason: 'scam' })])
+
+      const audit = (await get(admin, `/admin/users/${target.userId}`)).json<{
+        user: { actions: { action: string }[] }
+      }>()
+      expect(audit.user.actions.filter((entry) => entry.action === 'report.warn')).toHaveLength(1)
+
+      expect(
+        (await post(admin, `/admin/reports/${new ObjectId().toHexString()}/warn`, { body }))
+          .statusCode,
+      ).toBe(404)
+    })
   })
 
   describe('appeals', () => {

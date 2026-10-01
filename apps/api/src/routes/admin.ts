@@ -67,6 +67,7 @@ import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/r
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
 import { rewardReporter } from '../modules/moderation/reward'
+import { warnReported } from '../modules/moderation/warn'
 import { deliverOfficialMessage } from '../modules/official/deliver'
 import { getProfile, type Profile } from '../modules/profiles/profiles'
 import { fanOutMessage } from '../ws/fanOut'
@@ -357,6 +358,41 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         })
       }
       return reply.send({ awarded: result.awarded, amount: result.amount })
+    },
+  )
+
+  /**
+   * Warning the reported account from @langx, before any suspension.
+   *
+   * The words are the operator's — the panel fills them in from the report's
+   * reason and they can be edited — so the body is the same shape as a message
+   * from the search box. What differs is that the report remembers it: see
+   * `warnReported`.
+   */
+  app.post(
+    '/admin/reports/:id/warn',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: adminMessageSchema },
+      config: { rateLimit: limit(60, '1 minute') },
+    },
+    async (request, reply) => {
+      const result = await warnReported(app, {
+        reportId: request.params.id,
+        body: request.body.body,
+        byAdminId: request.userId,
+      })
+      if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+
+      if (result.warned) {
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action: 'report.warn',
+          subjectUserId: result.reportedId,
+          refId: request.params.id,
+        })
+      }
+      return reply.send({ warned: result.warned })
     },
   )
 

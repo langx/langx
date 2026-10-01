@@ -22,7 +22,7 @@ import { FormField } from '../../../src/components/ui/FormField'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
-import { ADMIN } from '../../../src/lib/adminStrings'
+import { ADMIN, WARNINGS } from '../../../src/lib/adminStrings'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
@@ -295,6 +295,18 @@ function Found({ data }: { data: AdminUserDto }) {
       {/* ── what can be done ── */}
       <Text style={styles.heading}>{ADMIN.users.message}</Text>
       <Text style={styles.hint}>{ADMIN.users.messageHint}</Text>
+      <Text style={styles.hint}>{ADMIN.users.presetsHint}</Text>
+      <View style={styles.months}>
+        {REPORT_REASONS.map((reason) => (
+          <Button
+            key={reason}
+            label={reason.replace(/_/g, ' ')}
+            size="small"
+            variant={message === WARNINGS[reason] ? 'primary' : 'secondary'}
+            onPress={() => setMessage(WARNINGS[reason])}
+          />
+        ))}
+      </View>
       <FormField value={message} onChangeText={setMessage} multiline numberOfLines={4} />
       <Button
         label={ADMIN.users.send}

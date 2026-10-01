@@ -615,6 +615,7 @@ export const ar: Localized<ServerMessages> = {
   },
   reportReason: {
     spam: 'رسائل مزعجة',
+    scam: 'احتيال أو طلب مال',
     harassment: 'مضايقة',
     hateSpeech: 'خطاب كراهية',
     inappropriateContent: 'محتوى غير لائق',
