@@ -184,7 +184,9 @@ function BigNumber({ props, value, color }: { props: SlideProps; value: number; 
           // Tight tracking pulls the last digit past the end of its box; right to
           // left that end is the clipped one, so the numeral is left as drawn.
           letterSpacing: props.rtl ? 0 : -0.06 * size,
-          lineHeight: size * 0.95,
+          // Room above the digits: Nunito Black's stand taller than its em,
+          // and a tighter line clipped their tops on iOS, as on the tiles.
+          lineHeight: size * 1.2,
         }}
       />
     </Rise>
