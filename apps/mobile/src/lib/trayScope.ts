@@ -39,11 +39,12 @@ const WALLET_KINDS: readonly string[] = ['wallet', 'bountyPaid']
 
 export function belongsTo(data: unknown, scope: TrayScope): boolean {
   if (typeof data !== 'object' || data === null) return false
-  const { kind, conversationId, postId, handle } = data as {
+  const { kind, conversationId, postId, handle, testimonialId } = data as {
     kind?: unknown
     conversationId?: unknown
     postId?: unknown
     handle?: unknown
+    testimonialId?: unknown
   }
   if (typeof kind !== 'string') return false
   if (scope === 'inbox') return INBOX_KINDS.includes(kind)
@@ -57,6 +58,12 @@ export function belongsTo(data: unknown, scope: TrayScope): boolean {
     // A follow push names the follower, and nothing else identifies it.
     case 'follow':
       return kind === 'social' && row.actor !== undefined && handle === row.actor.handle
+    /*
+     A review push carries the review's id and the row does not, so every
+     review push goes: the tap opens the list of all of them.
+    */
+    case 'testimonial':
+      return kind === 'social' && typeof testimonialId === 'string'
     /*
      The rest of the social rows are about a post, and so are their pushes —
      but a push does not say whether it was a like or a comment. Every push

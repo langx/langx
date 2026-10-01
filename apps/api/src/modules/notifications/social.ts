@@ -37,7 +37,7 @@ async function pushSocial(
   senders: SocialNotifier,
   userId: string,
   build: (t: ReturnType<typeof translator>) => { title: string; body: string },
-  data: { postId?: string; handle?: string; commentId?: string },
+  data: { postId?: string; handle?: string; commentId?: string; testimonialId?: string },
 ): Promise<void> {
   try {
     const profile = await db
@@ -81,6 +81,45 @@ export async function notifyFollowed(
     input.followeeId,
     (t) => ({ title: t('push.social.followTitle', { name }), body: t('push.social.followBody') }),
     { handle: follower.handle },
+  )
+}
+
+/**
+ * "Sofia wrote a review on your profile." Only for a first review: the route
+ * never calls this for an edit, which is the same review reworded.
+ *
+ * Claimed per author, ever, exactly as a follow is — deleting a review and
+ * writing it again is a way to buzz somebody twice, not news. The in-app row
+ * is the route's, keyed on the review itself.
+ *
+ * The data carries `testimonialId` and no `handle`: the tap opens the
+ * reader's own reviews, where the review is, not the author's profile, where
+ * it is not. A build that predates reviews finds neither id it knows and
+ * falls back to the notification centre.
+ */
+export async function notifyTestimonial(
+  db: Db,
+  senders: SocialNotifier,
+  input: { authorId: string; subjectId: string; testimonialId: string },
+): Promise<void> {
+  if (input.authorId === input.subjectId) return
+  if (!(await claimOnce(db, 'social.testimonial', input.subjectId, input.authorId))) return
+
+  const author = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: input.authorId }, { projection: { displayName: 1, handle: 1 } })
+  if (!author) return
+  const name = author.displayName || author.handle
+
+  await pushSocial(
+    db,
+    senders,
+    input.subjectId,
+    (t) => ({
+      title: t('push.social.testimonialTitle', { name }),
+      body: t('push.social.testimonialBody'),
+    }),
+    { testimonialId: input.testimonialId },
   )
 }
 

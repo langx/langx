@@ -31,6 +31,7 @@ import type { Profile } from '../profiles/profiles'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Post } from '../feed/documents'
 import { deletePostCascade } from '../feed/feed'
+import { purgeTestimonialsOf, testimonialsForExport } from '../testimonials/testimonials'
 
 const GRACE_MS = ACCOUNT_DELETION_GRACE_DAYS * 24 * 60 * 60 * 1000
 
@@ -465,6 +466,10 @@ export async function purgeExpiredAccounts(
       // posts and corrections do: deleting one would rewrite somebody else's
       // answered request.
       purgeCommentsBy(db, userId),
+      // Reviews go in both directions, unlike messages, which are blanked:
+      // a review is public text about a named person, not a turn in somebody
+      // else's conversation. See `purgeTestimonialsOf`.
+      purgeTestimonialsOf(db, userId),
       // Both directions. Leaving the incoming edges would keep a deleted
       // account sitting in other people's follower lists, drawn as a name
       // whose profile no longer exists.
@@ -594,6 +599,7 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     pronunciationAnswers,
     likes,
     follows,
+    testimonials,
   ] = await Promise.all([
     db.collection(COLLECTIONS.profiles).findOne({ _id: userId as unknown as never }),
     db.collection<Conversation>(COLLECTIONS.conversations).find({ participants: userId }).toArray(),
@@ -609,6 +615,7 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     db.collection(COLLECTIONS.pronunciationAnswers).find({ authorId: userId }).toArray(),
     db.collection(COLLECTIONS.likes).find({ userId }).toArray(),
     db.collection(COLLECTIONS.follows).find({ followerId: userId }).toArray(),
+    testimonialsForExport(db, userId),
   ])
 
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
@@ -629,5 +636,6 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     pronunciationAnswers,
     likes,
     follows,
+    testimonials,
   }
 }

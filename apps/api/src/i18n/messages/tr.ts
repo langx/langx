@@ -75,6 +75,10 @@ export const tr: Localized<ServerMessages> = {
 
       commentReplyBody: 'Yanıtı okumak için dokun.',
 
+      testimonialTitle: '{name} profiline bir yorum yazdı',
+
+      testimonialBody: 'Okumak için dokun.',
+
       likesTitle: { one: 'Gönderin 1 beğeni aldı', other: 'Gönderin {count} beğeni aldı' },
 
       likesBody: 'Gönderini beğendiler.',
@@ -238,6 +242,8 @@ export const tr: Localized<ServerMessages> = {
     newsletterMessagesSent: 'Gönderilen mesaj',
 
     newsletterCorrectionsMade: 'Yapılan düzeltme',
+
+    newsletterTokensGiven: 'Dağıtılan token',
 
     newsletterButton: 'LangX’i aç',
 

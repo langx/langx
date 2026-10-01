@@ -242,6 +242,14 @@ export const FLAG_KEYS = {
    * phone's own recent-emoji row is; `emojiPicker.ts` caps and sanitises it.
    */
   recentReactions: 'recentReactions',
+  /**
+   * JSON: the conversation ids whose "write a review" card was closed here.
+   *
+   * Device-level like the tips: closing a card is a fact about having seen it
+   * on this phone. The thread's menu still offers the review afterwards, so
+   * losing this list costs one card shown again, never the way to write one.
+   */
+  testimonialCardsDismissed: 'testimonialCardsDismissed',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

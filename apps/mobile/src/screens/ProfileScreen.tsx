@@ -26,6 +26,7 @@ import { OfficialMark } from '../components/OfficialMark'
 import { PhotoGallery } from '../components/PhotoGallery'
 import { PhotoViewer } from '../components/PhotoViewer'
 import { PresenceLine } from '../components/PresenceLine'
+import { ProfileTestimonials } from '../components/testimonials/ProfileTestimonials'
 import { ProMark } from '../components/ProMark'
 import { WeeklyChart } from '../components/WeeklyChart'
 import { BadgeStrip } from '../components/BadgeStrip'
@@ -509,6 +510,12 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
           </View>
         </View>
       ) : null}
+
+      <ProfileTestimonials
+        handle={user.handle}
+        subject={{ _id: user._id, displayName: user.displayName, avatarUrl: user.avatarUrl }}
+        here={here}
+      />
 
       {/* Read-only, and drawn from the same component as your own — a second
           implementation of a grid is a second grid to keep in step. */}

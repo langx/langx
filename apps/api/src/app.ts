@@ -35,6 +35,7 @@ import { handleRoutes } from './routes/handles'
 import { healthRoutes } from './routes/health'
 import { mediaRoutes } from './routes/media'
 import { activityRoutes } from './routes/activity'
+import { testimonialRoutes } from './routes/testimonials'
 import { messageRoutes } from './routes/messages'
 import { scheduledMessageRoutes } from './routes/scheduledMessages'
 import { notificationRoutes } from './routes/notifications'
@@ -380,6 +381,7 @@ export async function buildApp({
   await app.register(xpRoutes)
   await app.register(referralRoutes)
   await app.register(activityRoutes)
+  await app.register(testimonialRoutes)
   await app.register(leaderboardRoutes)
   await app.register(moderationRoutes)
   await app.register(adminRoutes)

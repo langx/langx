@@ -1,3 +1,4 @@
+import type { ThreadTestimonialState } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
 import type { MessageDto } from '../api/queries'
 
@@ -11,6 +12,8 @@ export interface MessagePageDto {
   pinned: { messageId: string; byUserId: string; at: string } | null
   /** How many more messages before an attachment is allowed here, or 0. */
   mediaLockedFor: number
+  /** Only on the newest page: can the viewer write about the other person, and have they. */
+  testimonial?: ThreadTestimonialState
   /** Only a jump window has one — the message it was opened on. */
   anchorId?: string
 }

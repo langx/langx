@@ -39,6 +39,8 @@ const KIND_ICONS: Record<InAppNotificationKind, keyof typeof Feather.glyphMap> =
   walletPool: 'gift',
   profileVisits: 'eye',
   commentReply: 'corner-down-right',
+  // Feather has no quotation mark; a written note is the nearest it draws.
+  testimonial: 'message-square',
 }
 
 /**

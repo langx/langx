@@ -1293,6 +1293,7 @@ export const es: Localized<EnMessages> = {
     profileSent: 'Denuncia enviada. Lo revisaremos.',
     failed: 'No se pudo denunciar',
     commentQuestion: '¿Por qué denuncias este comentario?',
+    testimonialQuestion: '¿Por qué denuncias esta reseña?',
   },
 
   inbox: {
@@ -1329,6 +1330,7 @@ export const es: Localized<EnMessages> = {
       one: '{name} y {count} persona más respondieron a tu comentario',
       other: '{name} y {count} personas más respondieron a tu comentario',
     },
+    testimonial: '{name} escribió una reseña en tu perfil',
     badgeEarned: 'Ganaste una insignia nueva',
     walletPool: {
       one: 'El bote de ayer te pagó {count} ficha',
@@ -2241,6 +2243,58 @@ export const es: Localized<EnMessages> = {
       other: '{count} personas en la última semana.',
     },
     repeat: '×{count}',
+  },
+
+  testimonials: {
+    title: 'Reseñas',
+    sectionTitle: { one: 'Reseñas · {count}', other: 'Reseñas · {count}' },
+    seeAll: 'Ver todas ›',
+    write: 'Escribir una reseña',
+    editMine: 'Editar tu reseña',
+    yours: 'Tu reseña',
+    edited: 'editada',
+    more: 'Más opciones',
+    sheetTitle: 'Reseña para {name}',
+    sheetBody: 'Aparece en su perfil, a la vista de todos en la app.',
+    placeholder: '¿Qué tal es practicar juntos?',
+    minHint: {
+      one: 'Al menos {count} carácter',
+      other: 'Al menos {count} caracteres',
+    },
+    tooShort: {
+      one: 'Escribe al menos {count} carácter',
+      other: 'Escribe al menos {count} caracteres',
+    },
+    guidelines:
+      'Se aplican las normas de la comunidad. Puedes editar o borrar tu reseña más adelante.',
+    publish: 'Publicar',
+    delete: 'Borrar reseña',
+    deleteConfirmTitle: '¿Borrar tu reseña?',
+    deleteConfirmBody: 'Desaparece de su perfil al instante.',
+    published: 'Tu reseña ya está en su perfil.',
+    saved: 'Reseña actualizada.',
+    deleted: 'Reseña borrada.',
+    failed: 'No se pudo guardar tu reseña. Inténtalo de nuevo.',
+    removedError: 'La moderación retiró esta reseña, así que ya no se puede editar.',
+    cardTitle: 'Escribe una reseña de {name}',
+    cardBody: '¿Qué tal va la práctica? Tu reseña aparecerá en su perfil.',
+    cardDismiss: 'Cerrar',
+    cardDone: 'Tu reseña está en su perfil',
+    received: 'Recibidas',
+    written: 'Escritas',
+    hiddenTag: 'Oculta',
+    hide: 'Ocultar del perfil',
+    show: 'Mostrar en el perfil',
+    hiddenToast: 'Oculta en tu perfil. Quien lo visite ya no la ve.',
+    shownToast: 'De vuelta en tu perfil.',
+    removedTag: 'Retirada por moderación',
+    receivedEmptyTitle: 'Aquí vivirán tus reseñas',
+    receivedEmptyBody:
+      'Las personas con las que practicas pueden dejar unas palabras en tu perfil. Sigue conversando.',
+    writtenEmptyTitle: 'Da las gracias por escrito',
+    writtenEmptyBody:
+      '¿Tienes un gran compañero de práctica? Una reseña breve en su perfil ayuda a que otros lo encuentren.',
+    meRowBody: 'Lo que dicen de ti y lo que has escrito tú',
   },
 
   blocked: {

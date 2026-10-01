@@ -1320,6 +1320,7 @@ export const de: Localized<EnMessages> = {
     profileSent: 'Meldung gesendet. Wir schauen uns das an.',
     failed: 'Melden fehlgeschlagen',
     commentQuestion: 'Warum meldest du diesen Kommentar?',
+    testimonialQuestion: 'Warum meldest du diese Bewertung?',
   },
 
   inbox: {
@@ -1356,6 +1357,7 @@ export const de: Localized<EnMessages> = {
       one: '{name} und {count} weitere Person haben auf deinen Kommentar geantwortet',
       other: '{name} und {count} weitere Personen haben auf deinen Kommentar geantwortet',
     },
+    testimonial: '{name} hat eine Bewertung in deinem Profil hinterlassen',
     badgeEarned: 'Du hast ein neues Abzeichen erhalten',
     walletPool: {
       one: 'Der gestrige Pool hat dir {count} Token ausgezahlt',
@@ -2285,6 +2287,59 @@ export const de: Localized<EnMessages> = {
       other: '{count} Personen in der letzten Woche.',
     },
     repeat: '×{count}',
+  },
+
+  testimonials: {
+    title: 'Bewertungen',
+    sectionTitle: { one: 'Bewertungen · {count}', other: 'Bewertungen · {count}' },
+    seeAll: 'Alle ansehen ›',
+    write: 'Bewertung schreiben',
+    editMine: 'Deine Bewertung bearbeiten',
+    yours: 'Deine Bewertung',
+    edited: 'bearbeitet',
+    more: 'Weitere Optionen',
+    sheetTitle: 'Bewertung für {name}',
+    sheetBody: 'Erscheint auf dem Profil, sichtbar für alle in der App.',
+    placeholder: 'Wie ist es, zusammen zu üben?',
+    minHint: {
+      one: 'Mindestens {count} Zeichen',
+      other: 'Mindestens {count} Zeichen',
+    },
+    tooShort: {
+      one: 'Schreib mindestens {count} Zeichen',
+      other: 'Schreib mindestens {count} Zeichen',
+    },
+    guidelines:
+      'Es gelten die Community-Richtlinien. Du kannst deine Bewertung später bearbeiten oder löschen.',
+    publish: 'Veröffentlichen',
+    delete: 'Bewertung löschen',
+    deleteConfirmTitle: 'Bewertung löschen?',
+    deleteConfirmBody: 'Sie verschwindet sofort vom Profil.',
+    published: 'Deine Bewertung steht jetzt auf dem Profil.',
+    saved: 'Bewertung aktualisiert.',
+    deleted: 'Bewertung gelöscht.',
+    failed: 'Deine Bewertung konnte nicht gespeichert werden. Versuch es noch mal.',
+    removedError:
+      'Die Moderation hat diese Bewertung entfernt, sie kann nicht mehr bearbeitet werden.',
+    cardTitle: 'Bewerte {name}',
+    cardBody: 'Wie läuft das Üben? Deine Bewertung erscheint auf dem Profil.',
+    cardDismiss: 'Schließen',
+    cardDone: 'Deine Bewertung steht auf dem Profil',
+    received: 'Erhalten',
+    written: 'Geschrieben',
+    hiddenTag: 'Ausgeblendet',
+    hide: 'Im Profil ausblenden',
+    show: 'Im Profil zeigen',
+    hiddenToast: 'Im Profil ausgeblendet. Besucher sehen sie nicht mehr.',
+    shownToast: 'Wieder in deinem Profil.',
+    removedTag: 'Von der Moderation entfernt',
+    receivedEmptyTitle: 'Hier landen deine Bewertungen',
+    receivedEmptyBody:
+      'Wer mit dir übt, kann ein paar Worte in deinem Profil hinterlassen. Bleib im Gespräch.',
+    writtenEmptyTitle: 'Sag Danke in Worten',
+    writtenEmptyBody:
+      'Tolle Übungspartnerin oder toller Übungspartner? Eine kurze Bewertung im Profil hilft anderen, sie zu finden.',
+    meRowBody: 'Was andere über dich schreiben und was du geschrieben hast',
   },
 
   blocked: {

@@ -26,6 +26,8 @@ export type NotificationJob =
   | 'social.postReply'
   | 'social.commentReply'
   | 'social.likes'
+  /** A review on your profile: one per author ever, like a follow. */
+  | 'social.testimonial'
   /** Tokens arriving: the pool once a day, the gift once a day. */
   | 'wallet.pool'
   | 'wallet.gift'

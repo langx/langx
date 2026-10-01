@@ -108,6 +108,10 @@ export default function AdminCaseScreen() {
   const shown = isAppeal ? `@${subject}` : subject ? `@${subject}` : ''
   const reporter = report.data?.reporter
   const reporterShown = reporter?.handle ? `@${reporter.handle}` : (reporter?.userId ?? '')
+  const onProfileOf = report.data?.testimonial?.subject
+  const onProfileOfShown = onProfileOf?.handle
+    ? `@${onProfileOf.handle}`
+    : (onProfileOf?.userId ?? '')
 
   return (
     <AdminGate>
@@ -277,6 +281,50 @@ export default function AdminCaseScreen() {
                           ? ADMIN.reports.unhide
                           : ADMIN.reports.hideComment,
                       })
+                    }
+                  />
+                </View>
+              </>
+            ) : null}
+
+            {/* A review report names neither a post nor a comment, so it too
+                sits where the post would have. Its author is the reported
+                account; whose profile it is on is said in the heading. The
+                owner's own hide is shown but is not this screen's to undo. */}
+            {report.data.testimonial ? (
+              <>
+                <Text style={styles.heading}>{ADMIN.reports.testimonial(onProfileOfShown)}</Text>
+                <Card>
+                  <Text style={styles.quote}>{report.data.testimonial.body}</Text>
+                </Card>
+                {report.data.testimonial.moderatorHiddenAt ? (
+                  <Callout tone="warning">
+                    <Text style={styles.calloutBody}>{ADMIN.reports.testimonialRemoved}</Text>
+                  </Callout>
+                ) : report.data.testimonial.ownerHiddenAt ? (
+                  <Text style={styles.muted}>
+                    {ADMIN.reports.testimonialOwnerHidden(onProfileOfShown)}
+                  </Text>
+                ) : null}
+                <View style={styles.actions}>
+                  <Button
+                    label={
+                      report.data.testimonial.moderatorHiddenAt
+                        ? ADMIN.reports.unhide
+                        : ADMIN.reports.hideTestimonial
+                    }
+                    variant="secondary"
+                    onPress={() =>
+                      run(
+                        report.data?.testimonial?.moderatorHiddenAt
+                          ? 'unhide_testimonial'
+                          : 'hide_testimonial',
+                        {
+                          confirm: report.data?.testimonial?.moderatorHiddenAt
+                            ? ADMIN.reports.unhide
+                            : ADMIN.reports.hideTestimonial,
+                        },
+                      )
                     }
                   />
                 </View>

@@ -141,6 +141,7 @@ export const ADMIN = {
     reportedBy: 'reported by',
     aboutPost: 'About a post',
     aboutComment: 'About a comment',
+    aboutTestimonial: 'About a review',
     otherReports: (n: number) => `${n} other report${n === 1 ? '' : 's'} against this account`,
     details: 'What they wrote',
     noDetails: 'No details were given.',
@@ -157,6 +158,12 @@ export const ADMIN = {
     commentRemoved: 'Its author has since removed the words; the replies to it remain.',
     commentHidden: 'Hidden. Nobody can see it, its author included.',
     hideComment: 'Hide this comment',
+    testimonial: (subject: string) => `The review, on ${subject}'s profile`,
+    testimonialOwnerHidden: (subject: string) =>
+      `${subject} has hidden it from their profile; they can show it again.`,
+    testimonialRemoved:
+      'Removed. Nobody sees it on the profile, and neither side can bring it back.',
+    hideTestimonial: 'Remove this review',
     suspendDays: 'Suspend for N days',
     suspendPermanent: 'Suspend permanently',
     dismiss: 'Dismiss the report',

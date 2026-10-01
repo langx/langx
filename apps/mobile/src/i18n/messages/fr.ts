@@ -1299,6 +1299,7 @@ export const fr: Localized<EnMessages> = {
     profileSent: 'Signalement envoyé. Nous allons regarder.',
     failed: 'Signalement impossible',
     commentQuestion: 'Pourquoi signalez-vous ce commentaire ?',
+    testimonialQuestion: 'Pourquoi signalez-vous cet avis ?',
   },
 
   inbox: {
@@ -1335,6 +1336,7 @@ export const fr: Localized<EnMessages> = {
       one: '{name} et {count} autre personne ont répondu à votre commentaire',
       other: '{name} et {count} autres personnes ont répondu à votre commentaire',
     },
+    testimonial: '{name} a laissé un avis sur ton profil',
     badgeEarned: 'Vous avez obtenu un nouveau badge',
     walletPool: {
       one: 'La cagnotte d’hier vous a versé {count} jeton',
@@ -2262,6 +2264,58 @@ export const fr: Localized<EnMessages> = {
       other: '{count} personnes la semaine dernière.',
     },
     repeat: '×{count}',
+  },
+
+  testimonials: {
+    title: 'Avis',
+    sectionTitle: { one: 'Avis · {count}', other: 'Avis · {count}' },
+    seeAll: 'Tout voir ›',
+    write: 'Écrire un avis',
+    editMine: 'Modifier ton avis',
+    yours: 'Ton avis',
+    edited: 'modifié',
+    more: 'Plus d’options',
+    sheetTitle: 'Avis sur {name}',
+    sheetBody: 'Visible sur son profil par tout le monde dans l’app.',
+    placeholder: 'Comment se passe la pratique ensemble ?',
+    minHint: {
+      one: 'Au moins {count} caractère',
+      other: 'Au moins {count} caractères',
+    },
+    tooShort: {
+      one: 'Écris au moins {count} caractère',
+      other: 'Écris au moins {count} caractères',
+    },
+    guidelines:
+      'Les règles de la communauté s’appliquent. Tu pourras modifier ou supprimer ton avis plus tard.',
+    publish: 'Publier',
+    delete: 'Supprimer l’avis',
+    deleteConfirmTitle: 'Supprimer ton avis ?',
+    deleteConfirmBody: 'Il disparaît aussitôt de son profil.',
+    published: 'Ton avis est sur son profil.',
+    saved: 'Avis mis à jour.',
+    deleted: 'Avis supprimé.',
+    failed: 'Impossible d’enregistrer ton avis. Réessaie.',
+    removedError: 'La modération a retiré cet avis, il ne peut plus être modifié.',
+    cardTitle: 'Laisse un avis à {name}',
+    cardBody: 'Comment se passe la pratique ? Ton avis apparaîtra sur son profil.',
+    cardDismiss: 'Fermer',
+    cardDone: 'Ton avis est sur son profil',
+    received: 'Reçus',
+    written: 'Écrits',
+    hiddenTag: 'Masqué',
+    hide: 'Masquer du profil',
+    show: 'Afficher sur le profil',
+    hiddenToast: 'Masqué de ton profil. Les visiteurs ne le voient plus.',
+    shownToast: 'De retour sur ton profil.',
+    removedTag: 'Retiré par la modération',
+    receivedEmptyTitle: 'Tes avis s’afficheront ici',
+    receivedEmptyBody:
+      'Les personnes avec qui tu pratiques peuvent laisser quelques mots sur ton profil. Continue à échanger.',
+    writtenEmptyTitle: 'Dis merci par écrit',
+    writtenEmptyBody:
+      'Un super partenaire de pratique ? Un petit avis sur son profil aide les autres à le trouver.',
+    meRowBody: 'Ce que tes partenaires disent de toi, et ce que tu as écrit',
   },
 
   blocked: {

@@ -81,6 +81,10 @@ export const ptBR: Localized<ServerMessages> = {
 
       commentReplyBody: 'Toque para ler a resposta.',
 
+      testimonialTitle: '{name} escreveu uma avaliação no seu perfil',
+
+      testimonialBody: 'Toque para ler.',
+
       likesTitle: {
         one: 'Sua publicação recebeu 1 curtida',
         other: 'Sua publicação recebeu {count} curtidas',
@@ -252,6 +256,8 @@ export const ptBR: Localized<ServerMessages> = {
     newsletterMessagesSent: 'Mensagens enviadas',
 
     newsletterCorrectionsMade: 'Correções feitas',
+
+    newsletterTokensGiven: 'Tokens distribuídos',
 
     newsletterButton: 'Abrir o LangX',
 

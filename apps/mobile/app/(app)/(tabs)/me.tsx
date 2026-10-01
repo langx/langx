@@ -487,6 +487,11 @@ export default function MeScreen() {
         onPress={() => router.push('/(app)/viewers')}
       />
       <ListRow
+        title={t('testimonials.title')}
+        subtitle={t('testimonials.meRowBody')}
+        onPress={() => router.push('/(app)/testimonials')}
+      />
+      <ListRow
         title={t('me.followsTitle')}
         subtitle={
           follows

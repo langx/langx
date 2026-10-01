@@ -105,6 +105,11 @@ import type {
   TimelinePage,
   TokenHistory,
   TokenSummary,
+  MyTestimonialTab,
+  ReceivedTestimonialsPage,
+  TestimonialPage,
+  TestimonialWriteResult,
+  WrittenTestimonialsPage,
 } from './types'
 import {
   keepPreviousData,
@@ -301,6 +306,15 @@ export const keys = {
   recap: (month: string) => ['recap', month] as const,
   yearRecap: (year: string) => ['recap', 'year', year] as const,
   blocks: ['blocks'] as const,
+  /*
+   * Everything testimonial under one prefix, so any write can refresh every
+   * list it might have changed — the profile's, the owner's and the author's
+   * — with one invalidation. Nothing patches this prefix with
+   * `setQueriesData`.
+   */
+  testimonials: ['testimonials'] as const,
+  profileTestimonials: (handle: string) => ['testimonials', 'profile', handle] as const,
+  myTestimonials: (tab: MyTestimonialTab) => ['testimonials', 'mine', tab] as const,
   /*
    * The operator panel, all of it under one prefix so a decision can
    * invalidate every queue it might have changed with a single call. Nothing
@@ -1113,6 +1127,104 @@ export function useAuthoredCorrections(handle: string) {
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     enabled: handle.length > 0,
+  })
+}
+
+/**
+ * The testimonials on somebody's profile, newest first. Every page carries
+ * `viewer` and `mine`, so the composer can read them off whichever page is
+ * cached.
+ */
+export function useTestimonials(handle: string) {
+  return useInfiniteQuery({
+    queryKey: keys.profileTestimonials(handle),
+    queryFn: ({ pageParam }) =>
+      api.get<TestimonialPage>(
+        `/profiles/${handle}/testimonials${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled: handle.length > 0,
+  })
+}
+
+type MyTestimonialsPage<T extends MyTestimonialTab> = T extends 'written'
+  ? WrittenTestimonialsPage
+  : ReceivedTestimonialsPage
+
+/** The viewer's own lists: on their profile (hidden ones marked), or written by them. */
+export function useMyTestimonials<T extends MyTestimonialTab>(tab: T) {
+  return useInfiniteQuery({
+    queryKey: keys.myTestimonials(tab),
+    queryFn: ({ pageParam }) =>
+      api.get<MyTestimonialsPage<T>>(
+        `/me/testimonials?tab=${tab}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last: MyTestimonialsPage<T>) => last.nextCursor ?? undefined,
+  })
+}
+
+/**
+ * Flips the thread's `written` flag on its newest page, when the write came
+ * from inside a thread. A patch rather than an invalidation: refetching a
+ * whole message history to change one boolean is the expensive way round.
+ */
+function patchThreadWritten(
+  queryClient: ReturnType<typeof useQueryClient>,
+  conversationId: string | undefined,
+  written: boolean,
+) {
+  if (!conversationId) return
+  queryClient.setQueryData<InfiniteData<MessagePageDto>>(keys.messages(conversationId), (data) => {
+    const first = data?.pages[0]
+    if (!data || !first?.testimonial) return data
+    return {
+      ...data,
+      pages: [{ ...first, testimonial: { ...first.testimonial, written } }, ...data.pages.slice(1)],
+    }
+  })
+}
+
+/** Write or edit the viewer's testimonial about `userId`. */
+export function useUpsertTestimonial() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { userId: string; body: string; conversationId?: string }) =>
+      // `api` has no `put` helper; this is the only PUT the app sends.
+      api.request<TestimonialWriteResult>(`/testimonials/${input.userId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ body: input.body }),
+      }),
+    onSuccess: (_result, input) => {
+      void queryClient.invalidateQueries({ queryKey: keys.testimonials })
+      patchThreadWritten(queryClient, input.conversationId, true)
+    },
+  })
+}
+
+/** Take the viewer's testimonial about `userId` back. */
+export function useDeleteTestimonial() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { userId: string; conversationId?: string }) =>
+      api.delete(`/testimonials/${input.userId}`),
+    onSuccess: (_result, input) => {
+      void queryClient.invalidateQueries({ queryKey: keys.testimonials })
+      patchThreadWritten(queryClient, input.conversationId, false)
+    },
+  })
+}
+
+/** The owner hides a testimonial on their own profile, or puts it back. */
+export function useSetTestimonialHidden() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; hidden: boolean }) =>
+      api.post(`/me/testimonials/${input.id}/${input.hidden ? 'hide' : 'unhide'}`),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: keys.testimonials })
+    },
   })
 }
 
@@ -3042,6 +3154,22 @@ export interface AdminReportDto {
     postBody: string | null
     isReply: boolean
     hiddenAt: string | null
+  } | null
+  /** Raised from a review on somebody's profile. Absent from an API older than reviews. */
+  aboutTestimonial?: boolean
+  /**
+   * The reported review, on the detail read. Its author is the reported
+   * person; `subject` is whose profile it sits on. The owner's hide is theirs
+   * to undo, the moderator's is not.
+   */
+  testimonial?: {
+    id: string
+    body: string
+    subject: AdminPartyDto
+    createdAt: string
+    editedAt: string | null
+    ownerHiddenAt: string | null
+    moderatorHiddenAt: string | null
   } | null
   suspension?: { until: string; permanent: boolean; reason: string } | null
   otherOpenReports?: number

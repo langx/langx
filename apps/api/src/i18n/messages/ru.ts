@@ -97,6 +97,10 @@ export const ru: Localized<ServerMessages> = {
 
       commentReplyBody: 'Нажмите, чтобы прочитать ответ.',
 
+      testimonialTitle: 'Новый отзыв в вашем профиле от {name}',
+
+      testimonialBody: 'Нажмите, чтобы прочитать.',
+
       likesTitle: { one: 'Ваш пост получил 1 лайк', other: 'Ваш пост получил {count} лайков' },
 
       likesBody: 'Кому-то понравился ваш пост.',
@@ -269,6 +273,8 @@ export const ru: Localized<ServerMessages> = {
     newsletterMessagesSent: 'Отправлено сообщений',
 
     newsletterCorrectionsMade: 'Сделано исправлений',
+
+    newsletterTokensGiven: 'Роздано токенов',
 
     newsletterButton: 'Открыть LangX',
 
