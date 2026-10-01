@@ -23,7 +23,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import markArcs from '../../../assets/brand/mark-arcs.png'
 import markTile from '../../../assets/brand/logo-rounded.png'
-import { scheduleOnRN } from 'react-native-worklets'
+import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale, useT } from '../../i18n'
 import { impact } from '../../lib/haptics'
@@ -138,20 +138,54 @@ export function RecapStory(props: RecapStoryProps) {
     [step],
   )
 
+  // Moves on only from the slide whose timer ran out. A timer that finishes
+  // just as the reader taps elsewhere would otherwise carry them one further.
+  const advanceFrom = useCallback(
+    (from: number) => {
+      setIndex((current) => (current === from ? Math.min(slides.length - 1, current + 1) : current))
+    },
+    [slides.length],
+  )
+
   const progress = useSharedValue(0)
-  // From wherever the fill is now: a resume after a hold carries on, it does
-  // not start the slide again.
-  const run = useCallback(() => {
-    const remaining = (1 - progress.value) * SLIDE_MS
-    progress.value = withTiming(1, { duration: remaining, easing: Easing.linear }, (finished) => {
-      if (finished) scheduleOnRN(step, 'next')
-    })
-  }, [progress, step])
+  /*
+   * The fill is read and written on the UI thread only. Read from React it
+   * was the last value React had seen, not the bar on screen: back from the
+   * share slide that was its full bar, so the slide before it got a timer of
+   * no length and was skipped straight back to the end.
+   *
+   * `restart` starts the slide's fill from empty; without it a resume after a
+   * hold carries on from where the fill stopped.
+   */
+  const run = useCallback(
+    (from: number, restart: boolean) => {
+      scheduleOnUI(() => {
+        'worklet'
+        cancelAnimation(progress)
+        if (restart) progress.value = 0
+        const remaining = (1 - progress.value) * SLIDE_MS
+        progress.value = withTiming(
+          1,
+          { duration: remaining, easing: Easing.linear },
+          (finished) => {
+            if (finished) scheduleOnRN(advanceFrom, from)
+          },
+        )
+      })
+    },
+    [progress, advanceFrom],
+  )
 
   useEffect(() => {
-    cancelAnimation(progress)
-    progress.value = last || !autoplay ? 1 : 0
-    if (!last && autoplay) run()
+    if (!last && autoplay) {
+      run(index, true)
+      return
+    }
+    scheduleOnUI(() => {
+      'worklet'
+      cancelAnimation(progress)
+      progress.value = 1
+    })
   }, [index, last, autoplay, progress, run])
 
   // Only a hold that began resumes: `onFinalize` also fires for a press that
@@ -159,13 +193,16 @@ export function RecapStory(props: RecapStoryProps) {
   const held = useRef(false)
   const pause = useCallback(() => {
     held.current = true
-    cancelAnimation(progress)
+    scheduleOnUI(() => {
+      'worklet'
+      cancelAnimation(progress)
+    })
   }, [progress])
   const resume = useCallback(() => {
     if (!held.current) return
     held.current = false
-    if (!last && autoplay) run()
-  }, [last, autoplay, run])
+    if (!last && autoplay) run(index, false)
+  }, [index, last, autoplay, run])
 
   // The ground cross-fades rather than cuts: 500ms, as designed.
   const ground = useSharedValue(look.ground)
