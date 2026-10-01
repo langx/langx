@@ -1278,6 +1278,7 @@ export const es: Localized<EnMessages> = {
     profileQuestion: '¿Por qué denuncias este perfil?',
     postQuestion: '¿Por qué denuncias esta publicación?',
     spam: 'Spam',
+    scam: 'Estafa o petición de dinero',
     harassment: 'Acoso',
     hateSpeech: 'Discurso de odio',
     hateSpeechHint:

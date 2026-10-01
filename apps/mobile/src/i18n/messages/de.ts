@@ -1305,6 +1305,7 @@ export const de: Localized<EnMessages> = {
     profileQuestion: 'Warum meldest du dieses Profil?',
     postQuestion: 'Warum meldest du diesen Beitrag?',
     spam: 'Spam',
+    scam: 'Betrug oder Bitte um Geld',
     harassment: 'Belästigung',
     hateSpeech: 'Hassrede',
     hateSpeechHint:

@@ -1383,6 +1383,7 @@ export const ru: Localized<EnMessages> = {
     profileQuestion: 'Почему вы жалуетесь на этот профиль?',
     postQuestion: 'Почему вы жалуетесь на эту запись?',
     spam: 'Спам',
+    scam: 'Мошенничество или просьбы о деньгах',
     harassment: 'Домогательства',
     hateSpeech: 'Язык вражды',
     hateSpeechHint:

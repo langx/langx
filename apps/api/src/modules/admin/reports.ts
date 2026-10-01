@@ -43,6 +43,8 @@ export interface AdminReportRow {
   aboutPost: boolean
   /** The same, for a report raised from a comment. */
   aboutComment: boolean
+  /** Whether @langx warned the account over this report. */
+  warned: boolean
 }
 
 /**
@@ -89,6 +91,14 @@ export interface AdminReportDetail extends AdminReportRow {
   otherOpenReports: number
   /** What the reporter was thanked with, or `null` while they have not been. */
   reward: { amount: number; at: string } | null
+  /** When @langx warned the account over this report, or `null`. */
+  warning: { at: string } | null
+  /**
+   * Warnings the same account was sent over its other reports, newest first —
+   * the panel's "already warned", so a second report reaches for the next
+   * rung rather than the first one again.
+   */
+  earlierWarnings: { at: string; reason: string }[]
 }
 
 export interface AdminAppealRow {
@@ -186,7 +196,7 @@ export async function getReport(
   const report = await db.collection<Report>(COLLECTIONS.reports).findOne({ _id: reportId })
   if (!report) return null
 
-  const [parties, post, reported, otherOpenReports] = await Promise.all([
+  const [parties, post, reported, otherOpenReports, earlierWarnings] = await Promise.all([
     partiesFor(db, [report.reportedId, report.reporterId], now),
     report.postId
       ? db.collection<Post>(COLLECTIONS.posts).findOne({ _id: report.postId })
@@ -197,6 +207,15 @@ export async function getReport(
       status: { $in: ['open', 'reviewing'] },
       _id: { $ne: reportId },
     }),
+    db
+      .collection<Report>(COLLECTIONS.reports)
+      .find(
+        { reportedId: report.reportedId, warning: { $exists: true }, _id: { $ne: reportId } },
+        { projection: { reason: 1, warning: 1 } },
+      )
+      .sort({ 'warning.at': -1 })
+      .limit(10)
+      .toArray(),
   ])
 
   return {
@@ -217,6 +236,10 @@ export async function getReport(
     reward: report.reward
       ? { amount: report.reward.amount, at: report.reward.at.toISOString() }
       : null,
+    warning: report.warning ? { at: report.warning.at.toISOString() } : null,
+    earlierWarnings: earlierWarnings.flatMap((row) =>
+      row.warning ? [{ at: row.warning.at.toISOString(), reason: row.reason }] : [],
+    ),
   }
 }
 
@@ -291,6 +314,7 @@ function toRow(report: Report, parties: Map<string, AdminParty>): AdminReportRow
     reporter: parties.get(report.reporterId) ?? unknown(report.reporterId),
     aboutPost: report.postId !== undefined,
     aboutComment: report.commentId !== undefined,
+    warned: report.warning !== undefined,
   }
 }
 

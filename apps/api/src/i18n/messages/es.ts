@@ -580,6 +580,7 @@ export const es: Localized<ServerMessages> = {
   },
   reportReason: {
     spam: 'Spam',
+    scam: 'Estafa o petición de dinero',
     harassment: 'Acoso',
     hateSpeech: 'Discurso de odio',
     inappropriateContent: 'Contenido inapropiado',

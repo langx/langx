@@ -608,6 +608,7 @@ export const ru: Localized<ServerMessages> = {
   },
   reportReason: {
     spam: 'Спам',
+    scam: 'Мошенничество или просьбы о деньгах',
     harassment: 'Домогательства',
     hateSpeech: 'Язык вражды',
     inappropriateContent: 'Неприемлемый контент',

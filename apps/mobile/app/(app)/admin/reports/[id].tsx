@@ -1,12 +1,13 @@
-import { BOUNTY_MAX, BOUNTY_MIN } from '@langx/shared'
+import { BOUNTY_MAX, BOUNTY_MIN, REPORT_REASONS, type ReportReason } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import {
   useAdminAppeals,
   useAdminDecision,
   useAdminReport,
   useAdminRewardReporter,
+  useAdminWarnReported,
   type AdminAppealDto,
 } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
@@ -20,7 +21,7 @@ import { Screen } from '../../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../../src/hooks/useScreenInteractive'
-import { ADMIN } from '../../../../src/lib/adminStrings'
+import { ADMIN, WARNINGS } from '../../../../src/lib/adminStrings'
 import { confirmAlert } from '../../../../src/lib/alert'
 import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles } from '../../../../src/lib/theme'
@@ -57,6 +58,20 @@ export default function AdminCaseScreen() {
   const [amount, setAmount] = useState(String(BOUNTY_MIN))
   const [viewing, setViewing] = useState<number | null>(null)
   const tokens = Math.min(BOUNTY_MAX, Math.max(BOUNTY_MIN, Number.parseInt(amount, 10) || 0))
+  const warn = useAdminWarnReported()
+  const [warning, setWarning] = useState('')
+
+  // Filled in once the report says what it was for. A reason this build does
+  // not know (a newer API) gets the general one rather than an empty box.
+  const reason = report.data?.reason
+  useEffect(() => {
+    if (!reason) return
+    setWarning(
+      WARNINGS[
+        (REPORT_REASONS as readonly string[]).includes(reason) ? (reason as ReportReason) : 'other'
+      ],
+    )
+  }, [reason])
 
   async function run(
     action: string,
@@ -96,6 +111,21 @@ export default function AdminCaseScreen() {
       showToast(
         result.awarded ? ADMIN.reports.rewarded(result.amount) : ADMIN.reports.alreadyRewarded,
       )
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
+  async function onWarn(who: string) {
+    const ok = await confirmAlert({
+      title: ADMIN.reports.confirmWarn(who),
+      message: warning.trim(),
+      confirmLabel: ADMIN.reports.sendWarning,
+    })
+    if (!ok) return
+    try {
+      const result = await warn.mutateAsync({ id, body: warning.trim() })
+      showToast(result.warned ? ADMIN.users.sent : ADMIN.reports.alreadyWarned)
     } catch {
       showToast(ADMIN.common.failed)
     }
@@ -188,6 +218,21 @@ export default function AdminCaseScreen() {
             {report.data.suspension ? (
               <Callout tone="warning">
                 <Text style={styles.calloutBody}>{ADMIN.reports.inForce}</Text>
+              </Callout>
+            ) : null}
+            {report.data.earlierWarnings?.length ? (
+              <Callout tone="warning">
+                <Text style={styles.calloutBody}>
+                  {ADMIN.reports.warnedBefore(report.data.earlierWarnings.length)}
+                </Text>
+                {report.data.earlierWarnings.map((earlier) => (
+                  <Text key={earlier.at} style={styles.calloutBody}>
+                    {ADMIN.reports.warnedRow(
+                      earlier.at.slice(0, 10),
+                      earlier.reason.replace(/_/g, ' '),
+                    )}
+                  </Text>
+                ))}
               </Callout>
             ) : null}
 
@@ -314,6 +359,28 @@ export default function AdminCaseScreen() {
             {/* The account, and the heading is what keeps it from reading as
                 more of the post's buttons. */}
             <Text style={styles.heading}>{ADMIN.reports.account}</Text>
+            <Text style={styles.subheading}>{ADMIN.reports.warn}</Text>
+            {report.data.warning ? (
+              <Callout tone="info">
+                <Text style={styles.calloutBody}>
+                  {ADMIN.reports.warned(report.data.warning.at.slice(0, 10))}
+                </Text>
+              </Callout>
+            ) : (
+              <>
+                <Text style={styles.hint}>{ADMIN.reports.warnHint}</Text>
+                <FormField value={warning} onChangeText={setWarning} multiline numberOfLines={6} />
+                <View style={styles.actions}>
+                  <Button
+                    label={ADMIN.reports.sendWarning}
+                    variant="secondary"
+                    disabled={warning.trim().length === 0}
+                    loading={warn.isPending}
+                    onPress={() => void onWarn(shown)}
+                  />
+                </View>
+              </>
+            )}
             <FormField
               label={ADMIN.reports.days}
               value={days}
@@ -373,6 +440,8 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'uppercase',
   },
   quote: { fontSize: 15, color: theme.colors.text, lineHeight: 22 },
+  subheading: { fontSize: 15, fontWeight: '700', color: theme.colors.text, marginBottom: 4 },
+  hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 8 },
   rewarded: { fontSize: 15, fontWeight: '700', color: theme.colors.text },
   actions: { gap: 12, marginTop: 16 },
   media: { marginTop: 12 },

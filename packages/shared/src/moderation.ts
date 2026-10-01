@@ -19,9 +19,14 @@ export type BlockInput = z.infer<typeof blockSchema>
  * separating them out is the point: somebody reporting an attack on who they
  * are should not have to file it under a word that describes the volume rather
  * than the reason. What we can count, we can eventually act on.
+ *
+ * `scam` sits next to `spam` for the same reason. Asking for money was the
+ * report we actually received, and it arrived as `other` with "fraud" typed
+ * into the details — a reason nobody could count.
  */
 export const REPORT_REASONS = [
   'spam',
+  'scam',
   'harassment',
   'hate_speech',
   'inappropriate_content',

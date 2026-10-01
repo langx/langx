@@ -22,7 +22,7 @@ import { FormField } from '../../../src/components/ui/FormField'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
-import { ADMIN } from '../../../src/lib/adminStrings'
+import { ADMIN, WARNINGS } from '../../../src/lib/adminStrings'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
@@ -297,13 +297,13 @@ function Found({ data }: { data: AdminUserDto }) {
       <Text style={styles.hint}>{ADMIN.users.messageHint}</Text>
       <Text style={styles.hint}>{ADMIN.users.presetsHint}</Text>
       <View style={styles.months}>
-        {ADMIN.users.presets.map((preset) => (
+        {REPORT_REASONS.map((reason) => (
           <Button
-            key={preset.label}
-            label={preset.label}
+            key={reason}
+            label={reason.replace(/_/g, ' ')}
             size="small"
-            variant={message === preset.body ? 'primary' : 'secondary'}
-            onPress={() => setMessage(preset.body)}
+            variant={message === WARNINGS[reason] ? 'primary' : 'secondary'}
+            onPress={() => setMessage(WARNINGS[reason])}
           />
         ))}
       </View>
