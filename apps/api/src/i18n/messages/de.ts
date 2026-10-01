@@ -81,6 +81,10 @@ export const de: Localized<ServerMessages> = {
 
       commentReplyBody: 'Tippe, um die Antwort zu lesen.',
 
+      testimonialTitle: '{name} hat eine Bewertung auf deinem Profil hinterlassen',
+
+      testimonialBody: 'Tippe, um sie zu lesen.',
+
       likesTitle: { one: 'Dein Beitrag hat 1 Like', other: 'Dein Beitrag hat {count} Likes' },
 
       likesBody: 'Jemandem gefällt dein Beitrag.',

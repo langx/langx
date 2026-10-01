@@ -890,6 +890,18 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { followeeId: 1, createdAt: -1, _id: -1 }, name: 'followee_recent' },
   ],
 
+  [COLLECTIONS.testimonials]: [
+    // The invariant: one testimonial per direction. A second submission is an
+    // edit, and two taps that race cannot make two rows — `upsertTestimonial`
+    // leans on this rather than a read-then-write. Its `authorId` prefix also
+    // serves the author's own list and the account purge by author.
+    { key: { authorId: 1, subjectId: 1 }, name: 'author_subject_unique', unique: true },
+    // A profile's list and its owner's list, newest first, and the purge by
+    // subject. The `_id` tiebreak is in the key from the start, for the reason
+    // `follower_recent` gives.
+    { key: { subjectId: 1, createdAt: -1, _id: -1 }, name: 'subject_recent' },
+  ],
+
   [COLLECTIONS.likes]: [
     // One like per person per thing. A unique index rather than a check, for
     // the same reason `post_author_unique` is one: two taps that race would

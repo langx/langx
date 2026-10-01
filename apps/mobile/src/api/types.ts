@@ -50,6 +50,16 @@ export type {
   TokenHistoryDay,
   TimelinePage,
   TokenSummary,
+  MyTestimonialTab,
+  ReceivedTestimonial,
+  ReceivedTestimonialsPage,
+  TestimonialPage,
+  TestimonialView,
+  TestimonialViewerState,
+  TestimonialWriteResult,
+  ThreadTestimonialState,
+  WrittenTestimonial,
+  WrittenTestimonialsPage,
 } from '@langx/shared'
 
 // Re-exported above for consumers; imported here because a `export ... from`

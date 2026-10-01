@@ -508,6 +508,15 @@ export const IN_APP_NOTIFICATION_KINDS = [
    * client which says it can draw it — see `INBOX_KINDS_V2_7` below.
    */
   'commentReply',
+  /**
+   * Somebody wrote a review on your profile — the first time only; an edit is
+   * the same review reworded, not news. Under the `social` switch, like a
+   * follow: it is a person doing something to your profile.
+   *
+   * Gated on the client's declaration like `commentReply`: a build that has
+   * no reviews screen cannot draw the row, and is never sent it.
+   */
+  'testimonial',
 ] as const
 export type InAppNotificationKind = (typeof IN_APP_NOTIFICATION_KINDS)[number]
 

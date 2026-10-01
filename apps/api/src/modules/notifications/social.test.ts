@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { LoggingPushSender } from '../push/devices'
-import { notifyFollowed, notifyPostReply, runLikesRoundUpPass } from './social'
+import { notifyFollowed, notifyPostReply, notifyTestimonial, runLikesRoundUpPass } from './social'
 
 const NOW = new Date('2026-09-14T12:00:00Z')
 const DAY = 24 * 60 * 60 * 1000
@@ -92,6 +92,42 @@ describe('the feed reacting to somebody', () => {
       const follower = await newProfile()
       await notifyFollowed(handle.db, senders, { followerId: follower, followeeId: quiet })
       expect(push.sent).toHaveLength(0)
+    })
+  })
+
+  describe('a review on your profile', () => {
+    it('names the author, opens the reviews, and buzzes once per author ever', async () => {
+      const subject = await newProfile()
+      const author = await newProfile({ name: 'Ada Lovelace' })
+      const testimonialId = new ObjectId().toHexString()
+
+      await notifyTestimonial(handle.db, senders, {
+        authorId: author,
+        subjectId: subject,
+        testimonialId,
+      })
+      expect(push.sent).toHaveLength(1)
+      expect(push.sent[0]?.title).toBe('Ada Lovelace wrote a review on your profile')
+      expect(push.sent[0]?.data).toEqual({ kind: 'social', testimonialId })
+
+      // Deleted and written again is a new review, but not a second buzz.
+      await notifyTestimonial(handle.db, senders, {
+        authorId: author,
+        subjectId: subject,
+        testimonialId: new ObjectId().toHexString(),
+      })
+      expect(push.sent).toHaveLength(1)
+    })
+
+    it('says nothing to somebody who switched social push off', async () => {
+      const quiet = await newProfile({ notifications: { social: { push: false } } })
+      await notifyTestimonial(handle.db, senders, {
+        authorId: await newProfile(),
+        subjectId: quiet,
+        testimonialId: new ObjectId().toHexString(),
+      })
+      expect(push.sent).toHaveLength(0)
+      expect(errors).toHaveLength(0)
     })
   })
 

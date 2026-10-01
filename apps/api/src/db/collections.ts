@@ -54,6 +54,13 @@ export const COLLECTIONS = {
    * "Following" tab contains.
    */
   follows: 'follows',
+  /**
+   * What one person wrote about another on their profile — "reviews" on
+   * screen. A collection rather than a field on `profiles` or
+   * `conversations`: it is listed and paged on its own, and one-per-direction
+   * is a unique index, which only a collection of its own can carry.
+   */
+  testimonials: 'testimonials',
   reports: 'reports',
   /**
    * Bug reports and feature requests, as the queue the operator panel works

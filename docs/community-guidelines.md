@@ -47,9 +47,15 @@ person you blocked is not told, and your profile returns "not found" to them
 rather than "blocked" — which would be the same as telling them. You can undo
 it in Settings → Blocked.
 
-**Report.** From a profile, a message, or a post. Pick the reason that fits and
-add anything that helps us understand; the person you report is never told who
-reported them.
+**Report.** From a profile, a message, a post, or a review. Pick the reason that
+fits and add anything that helps us understand; the person you report is never
+told who reported them.
+
+**Hide a review.** Once you and somebody have talked for a while, each of you
+can write a short review on the other's profile. Every review on your profile is
+yours to hide, and to show again later, from Me → Reviews. The person who wrote
+it is not told. A review is public and signed with its author's name, so the
+rules above apply to it the same as to anything else you write.
 
 Blocking and reporting are separate on purpose. Blocking is for you and works
 instantly. Reporting is for us and takes longer.

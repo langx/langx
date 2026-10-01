@@ -95,6 +95,10 @@ export const ar: Localized<ServerMessages> = {
 
       commentReplyBody: 'انقر لقراءة الرد.',
 
+      testimonialTitle: 'مراجعة جديدة على ملفك الشخصي من {name}',
+
+      testimonialBody: 'انقر لقراءتها.',
+
       likesTitle: { one: 'حصل منشورك على إعجاب واحد', other: 'حصل منشورك على {count} إعجاباً' },
 
       likesBody: 'أعجب أحدهم بمنشورك.',

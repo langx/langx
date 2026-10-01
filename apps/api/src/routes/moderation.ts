@@ -34,6 +34,7 @@ import {
 import { getViewers } from '../modules/moderation/profileViews'
 import { submitAppeal, suspensionStatus } from '../modules/moderation/suspension'
 import { getProfile, type Profile } from '../modules/profiles/profiles'
+import { findTestimonialById, type TestimonialDoc } from '../modules/testimonials/testimonials'
 import { escapeHtml, html, page, submitButton, who } from './operatorPage'
 
 /** As much of somebody as the report email can show; a profile may be missing. */
@@ -160,6 +161,49 @@ function commentSection(
 }
 
 /**
+ * A reported review, read unfiltered — the one reader that must still find one
+ * a moderator already hid — with the handle of whose profile it sits on.
+ * `null` when the report named no review or it went with a purged account.
+ */
+async function readReportedTestimonial(
+  db: Db,
+  testimonialId: ObjectId | undefined,
+): Promise<{ testimonial: TestimonialDoc; subject: string } | null> {
+  if (!testimonialId) return null
+  const testimonial = await findTestimonialById(db, testimonialId)
+  if (!testimonial) return null
+  const subject = await getProfile(db, testimonial.subjectId)
+  return { testimonial, subject: who(subject?.handle, testimonial.subjectId) }
+}
+
+/**
+ * The reported review, before the decisions about its author, as
+ * `commentSection` does for a comment. The owner having hidden it is said
+ * too: a moderator deciding whether it should come down wants to know it is
+ * already off the profile, though the owner can put it back.
+ */
+function testimonialSection(
+  token: string,
+  reported: { testimonial: TestimonialDoc; subject: string } | null,
+): string {
+  if (!reported) return ''
+  const { testimonial, subject } = reported
+  return `<p style="margin:24px 0 8px;"><strong>The review</strong> <span style="color:#888;">on ${escapeHtml(subject)}'s profile</span></p>
+          <blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 12px;padding:0 0 0 12px;color:#333;">${escapeHtml(testimonial.body)}</blockquote>
+          ${
+            testimonial.ownerHiddenAt && !testimonial.moderatorHiddenAt
+              ? `<p style="color:#888;">${escapeHtml(subject)} has hidden it from their profile; they can show it again.</p>`
+              : ''
+          }
+          ${
+            testimonial.moderatorHiddenAt
+              ? `<p style="background:#fff3cd;padding:12px;border-radius:8px;">Removed since <strong>${escapeHtml(testimonial.moderatorHiddenAt.toISOString())}</strong>. Nobody sees it on the profile, and neither side can bring it back.</p>
+                 ${actionForm(token, 'unhide_testimonial', 'Show it again')}`
+              : actionForm(token, 'hide_testimonial', 'Remove this review')
+          }`
+}
+
+/**
  * What the post carried, shown rather than counted.
  *
  * A photo is most of what a photo post says, and a report about one cannot be
@@ -189,6 +233,8 @@ const REFUSALS: Record<ReviewRefusal, [number, string]> = {
   post_gone: [404, 'That post no longer exists.'],
   not_a_comment: [400, 'That report is not about a comment.'],
   comment_gone: [404, 'That comment no longer exists.'],
+  not_a_testimonial: [400, 'That report is not about a review.'],
+  testimonial_gone: [404, 'That review no longer exists.'],
 }
 
 /** What was decided, in the one sentence this page answers with. */
@@ -202,6 +248,10 @@ function decided(outcome: ReviewOutcome, name: string): string {
       return `<p>Hidden. Nobody can see the comment, ${name} included${outcome.changed ? '' : ' — it already was'}.</p>`
     case 'unhide_comment':
       return `<p>The comment is back${outcome.changed ? '' : ' — it was never hidden'}.</p>`
+    case 'hide_testimonial':
+      return `<p>Removed. The review is off the profile${outcome.changed ? '' : ' — it already was'}.</p>`
+    case 'unhide_testimonial':
+      return `<p>The review is back${outcome.changed ? '' : ' — it was never removed'}.</p>`
     case 'dismiss':
       return `<p>Dismissed. Nothing changes on ${name}.</p>`
     case 'keep':
@@ -427,6 +477,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
             details?: string
             postId?: ObjectId
             commentId?: ObjectId
+            testimonialId?: ObjectId
           }>({
             _id: reportId,
           })
@@ -441,6 +492,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
         ? await app.mongo.db.collection<Post>(COLLECTIONS.posts).findOne({ _id: report.postId })
         : null
       const reportedComment = await readReportedComment(app.mongo.db, report?.commentId)
+      const reportedTestimonial = await readReportedTestimonial(app.mongo.db, report?.testimonialId)
 
       return html(
         reply,
@@ -452,12 +504,13 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
          ${report?.details ? `<blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 20px;padding:0 0 0 12px;color:#333;">${escapeHtml(report.details)}</blockquote>` : '<p style="color:#888;">No details were given.</p>'}
          ${postSection(token, post)}
          ${commentSection(token, reportedComment)}
+         ${testimonialSection(token, reportedTestimonial)}
          ${
            /* Two groups of buttons now, and "hide this sentence" and "suspend
               this person forever" are not things to mistake for each other. A
               heading is what keeps the second from reading as more of the
               first — but only when there is a first. */
-           post || reportedComment
+           post || reportedComment || reportedTestimonial
              ? '<p style="margin:24px 0 8px;"><strong>The account</strong></p>'
              : ''
          }
