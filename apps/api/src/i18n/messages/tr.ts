@@ -247,6 +247,8 @@ export const tr: Localized<ServerMessages> = {
 
     newsletterButton: 'LangX’i aç',
 
+    newsletterSeeMonth: 'Ayını gör',
+
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {

@@ -608,7 +608,11 @@ export function newsletterEmail(
        ${note.note ? `<p style="margin:16px 0 0; color:#62676d;">${escapeHtml(note.note)}</p>` : ''}`
     : ''
 
-  const cta = { url: webUrl('/discover'), label: t('email.newsletterButton') }
+  // The month's own story when there is one to tell; a quiet month has
+  // nothing behind that link but one sentence, so it opens the app instead.
+  const cta = recap.quiet
+    ? { url: webUrl('/discover'), label: t('email.newsletterButton') }
+    : { url: webUrl(`/recap?month=${recap.month}`), label: t('email.newsletterSeeMonth') }
   return {
     subject,
     html: notificationEmail(locale, {

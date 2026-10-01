@@ -273,6 +273,8 @@ export const en = {
 
     newsletterButton: 'Open LangX',
 
+    newsletterSeeMonth: 'See your month',
+
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {

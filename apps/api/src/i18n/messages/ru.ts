@@ -278,6 +278,8 @@ export const ru: Localized<ServerMessages> = {
 
     newsletterButton: 'Открыть LangX',
 
+    newsletterSeeMonth: 'Посмотреть ваш месяц',
+
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
