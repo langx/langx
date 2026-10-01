@@ -12,6 +12,7 @@ import type { Report } from '../moderation/blocks'
 import type { PostCommentDoc } from '../feed/documents'
 import type { Post } from '../feed/feed'
 import type { Profile } from '../profiles/profiles'
+import { findTestimonialById } from '../testimonials/testimonials'
 
 /**
  * The two queues the panel works through: reports, and appeals against what
@@ -43,6 +44,8 @@ export interface AdminReportRow {
   aboutPost: boolean
   /** The same, for a report raised from a comment. */
   aboutComment: boolean
+  /** The same, for a report raised from a review on somebody's profile. */
+  aboutTestimonial: boolean
   /** Whether @langx warned the account over this report. */
   warned: boolean
 }
@@ -61,6 +64,23 @@ export interface AdminReportedComment {
   /** Whether it is a reply in a thread rather than a comment on the post. */
   isReply: boolean
   hiddenAt: string | null
+}
+
+/**
+ * A reported review ("testimonial"). Its author is always the reported person
+ * — `reportUser` checks — so only the profile it sits on is named here. Both
+ * hidden states, because they mean different things: the owner's is theirs to
+ * undo, the moderator's is not.
+ */
+export interface AdminReportedTestimonial {
+  id: string
+  body: string
+  /** Whose profile it is on. */
+  subject: AdminParty
+  createdAt: string
+  editedAt: string | null
+  ownerHiddenAt: string | null
+  moderatorHiddenAt: string | null
 }
 
 export interface AdminReportDetail extends AdminReportRow {
@@ -85,6 +105,8 @@ export interface AdminReportDetail extends AdminReportRow {
   } | null
   /** The comment, when the report named one. Never beside `post` — see `Report.commentId`. */
   comment: AdminReportedComment | null
+  /** The review, when the report named one. Never beside `post` or `comment`. */
+  testimonial: AdminReportedTestimonial | null
   /** What is in force on the reported account right now. */
   suspension: Profile['suspension'] | null
   /** Other reports against the same account still waiting, this one excluded. */
@@ -221,6 +243,7 @@ export async function getReport(
   return {
     ...toRow(report, parties),
     comment: await readComment(db, report.commentId),
+    testimonial: await readTestimonial(db, report.testimonialId, now),
     post: post
       ? {
           id: post._id.toHexString(),
@@ -314,6 +337,7 @@ function toRow(report: Report, parties: Map<string, AdminParty>): AdminReportRow
     reporter: parties.get(report.reporterId) ?? unknown(report.reporterId),
     aboutPost: report.postId !== undefined,
     aboutComment: report.commentId !== undefined,
+    aboutTestimonial: report.testimonialId !== undefined,
     warned: report.warning !== undefined,
   }
 }
@@ -337,6 +361,29 @@ async function readComment(
     postBody: post?.body ?? null,
     isReply: comment.parentId !== undefined,
     hiddenAt: comment.hiddenAt ? comment.hiddenAt.toISOString() : null,
+  }
+}
+
+/** Read unfiltered: the panel must still find one a moderator already hid. */
+async function readTestimonial(
+  db: Db,
+  testimonialId: ObjectId | undefined,
+  now: Date,
+): Promise<AdminReportedTestimonial | null> {
+  if (!testimonialId) return null
+  const testimonial = await findTestimonialById(db, testimonialId)
+  if (!testimonial) return null
+  const parties = await partiesFor(db, [testimonial.subjectId], now)
+  return {
+    id: testimonial._id.toHexString(),
+    body: testimonial.body,
+    subject: parties.get(testimonial.subjectId) ?? party(testimonial.subjectId, null, now),
+    createdAt: testimonial.createdAt.toISOString(),
+    editedAt: testimonial.editedAt ? testimonial.editedAt.toISOString() : null,
+    ownerHiddenAt: testimonial.ownerHiddenAt ? testimonial.ownerHiddenAt.toISOString() : null,
+    moderatorHiddenAt: testimonial.moderatorHiddenAt
+      ? testimonial.moderatorHiddenAt.toISOString()
+      : null,
   }
 }
 

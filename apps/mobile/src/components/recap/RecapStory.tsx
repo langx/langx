@@ -1,5 +1,4 @@
 import Feather from '@expo/vector-icons/Feather'
-import type { MonthlyRecapDto } from '@langx/shared'
 import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
@@ -28,7 +27,13 @@ import { scheduleOnRN } from 'react-native-worklets'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale, useT } from '../../i18n'
 import { impact } from '../../lib/haptics'
-import { recapSlides, swipeIntent, tapDirection } from '../../lib/recapStory'
+import {
+  isYearRecap,
+  recapSlides,
+  swipeIntent,
+  tapDirection,
+  type StoryRecap,
+} from '../../lib/recapStory'
 import { DISPLAY_FONT, useTheme } from '../../lib/theme'
 import { Button } from '../ui/Button'
 import { RISE_DELAYS, Rise } from './motion'
@@ -47,9 +52,10 @@ const MAX_WIDTH = 480
 const MARK = { arcs: markArcs, tile: markTile }
 
 export interface RecapStoryProps {
-  recap: MonthlyRecapDto
-  /** Capitalised, in the reader's language. */
+  recap: StoryRecap
+  /** Capitalised, in the reader's language — or, for a year, the year. */
   month: string
+  /** Empty for a year, whose headline already is one. */
   year: string
   me: { handle: string; displayName: string; avatarUrl?: string; _id: string } | undefined
   /** "Spanish → learning Turkish", or nothing. */
@@ -344,7 +350,10 @@ export function RecapStory(props: RecapStoryProps) {
             }}
           >
             <Rise delay={RISE_DELAYS[3]} reduce={reduce} style={{ gap: 10 }}>
-              <Button label={t('recap.share')} onPress={props.onShare} />
+              <Button
+                label={isYearRecap(recap) ? t('recap.year.share') : t('recap.share')}
+                onPress={props.onShare}
+              />
               <Pressable
                 accessibilityRole="button"
                 onPress={props.onJustLink}

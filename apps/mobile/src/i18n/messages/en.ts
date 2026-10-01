@@ -1445,6 +1445,7 @@ export const en = {
     profileSent: 'Report sent. We will look into it.',
     failed: 'Could not report',
     commentQuestion: 'Why are you reporting this comment?',
+    testimonialQuestion: 'Why are you reporting this review?',
   },
 
   /**
@@ -1486,6 +1487,7 @@ export const en = {
       one: '{name} and {count} other replied to your comment',
       other: '{name} and {count} others replied to your comment',
     },
+    testimonial: '{name} wrote a review on your profile',
     badgeEarned: 'You earned a new badge',
     walletPool: {
       one: "Yesterday's pool paid you {count} token",
@@ -2461,6 +2463,62 @@ export const en = {
     repeat: '×{count}',
   },
 
+  /**
+   * Reviews one person leaves on another's profile. The code says
+   * "testimonial" and the screens say "review" — see `packages/shared`'s
+   * `testimonials.ts`. Nothing here names how a pair unlocks them.
+   */
+  testimonials: {
+    title: 'Reviews',
+    sectionTitle: { one: 'Reviews · {count}', other: 'Reviews · {count}' },
+    seeAll: 'See all ›',
+    write: 'Write a review',
+    editMine: 'Edit your review',
+    yours: 'Your review',
+    edited: 'edited',
+    more: 'More options',
+    sheetTitle: 'Review for {name}',
+    sheetBody: 'Shows on their profile for everyone in the app.',
+    placeholder: 'What is practising together like?',
+    minHint: {
+      one: 'At least {count} character',
+      other: 'At least {count} characters',
+    },
+    tooShort: {
+      one: 'Write at least {count} character',
+      other: 'Write at least {count} characters',
+    },
+    guidelines: 'Community guidelines apply. You can edit or delete your review later.',
+    publish: 'Publish',
+    delete: 'Delete review',
+    deleteConfirmTitle: 'Delete your review?',
+    deleteConfirmBody: 'It comes off their profile straight away.',
+    published: 'Your review is on their profile.',
+    saved: 'Review updated.',
+    deleted: 'Review deleted.',
+    failed: 'Could not save your review. Try again.',
+    removedError: 'Moderators removed this review, so it can no longer be edited.',
+    cardTitle: 'Review {name}',
+    cardBody: 'How’s practice going? Your review shows on their profile.',
+    cardDismiss: 'Close',
+    cardDone: 'Your review is on their profile',
+    received: 'Received',
+    written: 'Written',
+    hiddenTag: 'Hidden',
+    hide: 'Hide from profile',
+    show: 'Show on profile',
+    hiddenToast: 'Hidden from your profile. Nobody visiting it sees it now.',
+    shownToast: 'Back on your profile.',
+    removedTag: 'Removed by moderators',
+    receivedEmptyTitle: 'Your reviews will live here',
+    receivedEmptyBody:
+      'Partners you practise with can leave a few words on your profile. Keep the conversations going.',
+    writtenEmptyTitle: 'Say thanks in writing',
+    writtenEmptyBody:
+      'Had a great practice partner? A short review on their profile helps others find them.',
+    meRowBody: 'What partners say about you, and what you wrote',
+  },
+
   blocked: {
     title: 'Blocked people',
     unblock: 'Unblock',
@@ -2720,6 +2778,28 @@ export const en = {
     cardCaption: 'my month on LangX',
     shareMessage: 'My {month} on LangX: {messages}, {reviews}. Practise with me: {url}',
     failed: 'Could not load the recap.',
+    /**
+     * "Your Year": the same story over twelve months, where a month's words
+     * would be wrong. Everything not here is shared with the month.
+     */
+    year: {
+      meTitle: 'Your {year} recap',
+      meBody: 'Your year on LangX, ready to share.',
+      quiet: 'A quiet year. The next one starts with one message.',
+      share: 'Share my year',
+      cardCaption: 'my year on LangX',
+      introKicker: 'Your year',
+      introLine: 'A year of two languages. Here’s yours.',
+      activeDaysLine: {
+        one: '{count} active day this year.',
+        other: '{count} active days this year.',
+      },
+      activeDaysOnlyLine: {
+        one: 'day you practised this year.',
+        other: 'days you practised this year.',
+      },
+      cardKicker: 'My year',
+    },
     /**
      * The full-screen story `recap.tsx` plays, one number per slide. A slide's
      * line follows its big numeral, so each is the rest of that sentence.

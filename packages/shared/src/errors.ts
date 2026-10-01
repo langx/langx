@@ -115,6 +115,28 @@ export const ERROR_CODES = {
    */
   MEDIA_TOO_LONG: 'MEDIA_TOO_LONG',
 
+  // testimonials
+  /**
+   * A testimonial about somebody this pair has not earned the right to write
+   * about yet — not enough messages from each side, the thread too new, no
+   * thread at all, or an official account on either end.
+   *
+   * One code for all of those on purpose: the client says one thing ("keep
+   * talking") and never how far along the pair is, because a progress bar on
+   * praise is an invitation to farm it. 409 because the request is fine and
+   * the conflict is with the state of the conversation.
+   */
+  TESTIMONIAL_LOCKED: 'TESTIMONIAL_LOCKED',
+  /**
+   * An edit to a testimonial a moderator removed.
+   *
+   * Its own code rather than `NOT_FOUND`, because the author's own list still
+   * shows the row marked removed, and "not found" about a thing on screen is
+   * a lie. Rewriting it is refused rather than allowed to bring it back: the
+   * decision was about the words, and an edit is how they would return.
+   */
+  TESTIMONIAL_REMOVED: 'TESTIMONIAL_REMOVED',
+
   // profiles
   /**
    * A gender change inside `GENDER_CHANGE_COOLDOWN_DAYS` of the last one.
@@ -229,6 +251,8 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   GENDER_CHANGE_TOO_SOON: 409,
   LOCATION_REQUIRED: 409,
   GIFT_CODE_REJECTED: 409,
+  TESTIMONIAL_LOCKED: 409,
+  TESTIMONIAL_REMOVED: 409,
   NOT_FOUND: 404,
   VALIDATION_FAILED: 400,
   RATE_LIMITED: 429,

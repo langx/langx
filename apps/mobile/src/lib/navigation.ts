@@ -121,3 +121,15 @@ export function openPostCorrections(
     `/(app)/post-corrections?handle=${encodeURIComponent(handle)}&tab=${tab}&from=${encodeURIComponent(from)}`,
   )
 }
+
+/** Every review on somebody's profile — flat by handle, like `openBadges`. */
+export function openProfileTestimonials(handle: string, from: string): void {
+  push(
+    `/(app)/profile-testimonials?handle=${encodeURIComponent(handle)}&from=${encodeURIComponent(from)}`,
+  )
+}
+
+/** The report form for one review, filed against the person who wrote it. */
+export function openTestimonialReport(authorId: string, testimonialId: string): void {
+  router.push({ pathname: '/(app)/report', params: { userId: authorId, testimonialId } })
+}

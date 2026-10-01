@@ -22,6 +22,7 @@ import {
   type SendTextMessageInput,
   type ForwardMessageInput,
   isForwardableType,
+  type ThreadTestimonialState,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -42,6 +43,7 @@ import type { Conversation, Message } from './conversations'
 import { conversationPartners, getProfile, type Profile } from '../profiles/profiles'
 import { effectiveTier } from '../profiles/entitlement'
 import { mediaLockedFor, toConversationView, type ConversationView } from './conversationView'
+import { openingThreadTestimonialState, threadTestimonialState } from '../testimonials/testimonials'
 
 export interface SendResult {
   message: Message
@@ -1091,6 +1093,13 @@ export interface MessagePage {
    * conversation document on its own.
    */
   mediaLockedFor: number
+  /**
+   * Whether the viewer may write a testimonial about the other person, and
+   * whether they already have. First page only — the newest one, asked for
+   * with neither cursor — because that is the page the thread opens on, and
+   * paging back into history changes neither answer.
+   */
+  testimonial?: ThreadTestimonialState
   /** Set only by `listMessagesAround`, so a client knows what to scroll to. */
   anchorId?: string
 }
@@ -1123,6 +1132,7 @@ export function openingPage(
     participants: conversation.participants,
     pinned: null,
     mediaLockedFor: mediaLockedFor(conversation, viewerId),
+    testimonial: openingThreadTestimonialState(conversation),
   }
 }
 
@@ -1176,12 +1186,16 @@ export async function listMessages(
    * document the way `starred` does — this is the feed's `readLikeSummary`
    * shape, applied to a thread.
    */
-  const echoed = await readEchoedMessageIds(
-    db,
-    userId,
-    items.map((message) => message._id),
-  )
+  const [echoed, testimonial] = await Promise.all([
+    readEchoedMessageIds(
+      db,
+      userId,
+      items.map((message) => message._id),
+    ),
+    boundary ? Promise.resolve(undefined) : threadTestimonialState(db, conversation, userId),
+  ])
   return {
+    ...(testimonial ? { testimonial } : {}),
     items: items.map((message) => toMessageView(message, userId, echoed)),
     // Only the direction actually being paged reports more: the caller already
     // holds everything on the side it came from, and claiming otherwise would

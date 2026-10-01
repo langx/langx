@@ -10,6 +10,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import type { PostCommentDoc } from '../feed/documents'
+import { findTestimonialById } from '../testimonials/testimonials'
 
 export interface Block {
   _id: ObjectId
@@ -36,6 +37,12 @@ export interface Report {
    * reported.
    */
   commentId?: ObjectId
+  /**
+   * The review ("testimonial"), when the report was raised from one. Never
+   * beside `postId` or `commentId`, for the reason `commentId` drops `postId`.
+   * Its author is always `reportedId` — `reportUser` checks.
+   */
+  testimonialId?: ObjectId
   status: 'open' | 'reviewing' | 'actioned' | 'dismissed'
   createdAt: Date
   /**
@@ -198,7 +205,22 @@ export async function reportUser(
       throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed message id')
     }
   }
-  if (input.commentId !== undefined) {
+  if (input.testimonialId !== undefined) {
+    /*
+     * Checked before the comment and the post and stored instead of both: a
+     * review report is about the review. Its author has to be the reported
+     * person, for the reason a comment's does — the profile it sits on is
+     * somebody else's, and naming them would be reporting the wrong account.
+     * Unfiltered, so one a moderator already hid can be reported again.
+     */
+    const testimonial = ObjectId.isValid(input.testimonialId)
+      ? await findTestimonialById(db, new ObjectId(input.testimonialId))
+      : null
+    if (!testimonial || testimonial.authorId !== input.userId) {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Testimonial not found')
+    }
+    report.testimonialId = testimonial._id
+  } else if (input.commentId !== undefined) {
     /*
      * The comment has to be the reported person's own. A report is about an
      * account, and one that names somebody else's comment would put a stranger's

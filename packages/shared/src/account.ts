@@ -136,6 +136,15 @@ export const dataExportSchema = z.object({
   likes: z.array(z.unknown()),
   /** Who this user follows; not who follows them, which is other people's data. */
   follows: z.array(z.unknown()),
+  /**
+   * Reviews ("testimonials" in code) in both directions. Received ones are
+   * included although another person wrote them — unlike messages — because
+   * each is a public statement about this user, shown on their profile.
+   */
+  testimonials: z.object({
+    written: z.array(z.unknown()),
+    received: z.array(z.unknown()),
+  }),
 })
 export type DataExport = z.infer<typeof dataExportSchema>
 

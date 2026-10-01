@@ -97,6 +97,10 @@ export const ru: Localized<ServerMessages> = {
 
       commentReplyBody: 'Нажмите, чтобы прочитать ответ.',
 
+      testimonialTitle: 'Новый отзыв в вашем профиле от {name}',
+
+      testimonialBody: 'Нажмите, чтобы прочитать.',
+
       likesTitle: { one: 'Ваш пост получил 1 лайк', other: 'Ваш пост получил {count} лайков' },
 
       likesBody: 'Кому-то понравился ваш пост.',
@@ -273,6 +277,8 @@ export const ru: Localized<ServerMessages> = {
     newsletterTokensGiven: 'Роздано токенов',
 
     newsletterButton: 'Открыть LangX',
+
+    newsletterSeeMonth: 'Посмотреть ваш месяц',
 
     /** The day's replies to somebody's posts, in one letter. */
 

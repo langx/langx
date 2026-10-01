@@ -137,6 +137,14 @@ the store forms and the GitBook copy still need them.
   kinds are on because the app was installed, and marketing never reaches a
   phone unless somebody switches it on.
 
+A fourth arrived on 30 September 2026 and is covered in `website/` by
+langx/website#246:
+
+- **Profile reviews.** Somebody you have talked with at length can write a
+  short review on your profile, shown inside the app with their name and
+  photo. You can hide any of them; they are deleted with either account and
+  appear in both people's export.
+
 One more that is a promise rather than a disclosure: **passwords are 6 to 64
 characters, with no composition rule**. Anything published that describes the
 old requirement should say this instead.

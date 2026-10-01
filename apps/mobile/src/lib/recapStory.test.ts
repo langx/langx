@@ -1,4 +1,4 @@
-import type { MonthlyRecapDto } from '@langx/shared'
+import type { MonthlyRecapDto, YearlyRecapDto } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from '../i18n/runtime'
 import {
@@ -10,6 +10,7 @@ import {
   recapSlides,
   swipeIntent,
   tapDirection,
+  yearCalendar,
 } from './recapStory'
 
 const SEPTEMBER: MonthlyRecapDto = {
@@ -22,6 +23,18 @@ const SEPTEMBER: MonthlyRecapDto = {
   partners: 12,
   activeDays: 5,
   activeDates: [2, 3, 20, 29, 30],
+}
+
+const YEAR: YearlyRecapDto = {
+  year: '2026',
+  messages: 1900,
+  corrections: 210,
+  echoReviews: 400,
+  tokens: 5200,
+  currentStreak: 3,
+  partners: 40,
+  activeDays: 49,
+  activeMonths: [31, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
 }
 
 describe('recapSlides', () => {
@@ -114,5 +127,35 @@ describe('recapCardInput', () => {
     expect(input.languages).toBeUndefined()
     // Russian takes the genitive plural after 248.
     expect(input.labels.messages).toBe('сообщений')
+  })
+})
+
+describe('Your Year', () => {
+  it('plays the month’s slides, from the year’s numbers', () => {
+    expect(recapSlides(YEAR)).toEqual([
+      'intro',
+      'messages',
+      'corrections',
+      'echo',
+      'streak',
+      'summary',
+    ])
+    expect(isQuietRecap({ ...YEAR, messages: 0, corrections: 0, echoReviews: 0 })).toBe(true)
+  })
+
+  it('shades a square per month by how much of it was active', () => {
+    const shares = yearCalendar(YEAR)
+    expect(shares).toHaveLength(12)
+    expect(shares[0]).toBe(1)
+    // February 2026 has 28 days.
+    expect(shares[1]).toBe(0.5)
+    expect(shares[2]).toBe(0)
+    expect(shares[11]).toBeCloseTo(4 / 31)
+  })
+
+  it('asks the server for the year’s card, under the year’s kicker', () => {
+    const input = recapCardInput(createTranslate('tr'), YEAR, 'tr')
+    expect(input.month).toBe('2026')
+    expect(input.kicker).toBe('Yılım')
   })
 })

@@ -84,6 +84,10 @@ export const fr: Localized<ServerMessages> = {
 
       commentReplyBody: 'Touchez pour lire la réponse.',
 
+      testimonialTitle: '{name} a écrit un avis sur votre profil',
+
+      testimonialBody: 'Touchez pour le lire.',
+
       likesTitle: {
         one: 'Votre publication a 1 j’aime',
         other: 'Votre publication a {count} j’aime',
@@ -264,6 +268,8 @@ export const fr: Localized<ServerMessages> = {
     newsletterTokensGiven: 'Jetons distribués',
 
     newsletterButton: 'Ouvrir LangX',
+
+    newsletterSeeMonth: 'Voir votre mois',
 
     /** The day's replies to somebody's posts, in one letter. */
 

@@ -253,20 +253,21 @@ every one claims a row in `notificationLedger` before it sends.
 
 **Push, the moment it happens:**
 
-| Message                                          | Kind            | When           | Period key                                        |
-| ------------------------------------------------ | --------------- | -------------- | ------------------------------------------------- |
-| A message arrived                                | `messages`      | on the message | — (fan-out)                                       |
-| Streak reminder — only while still savable today | `streak`        | 20:00 local    | local day                                         |
-| Badge round-up                                   | `badges`        | 18:00 local    | badge ids                                         |
-| Profile visits                                   | `profileVisits` | 12:00 local    | local day                                         |
-| Meeting reminder                                 | `meetings`      | an hour before | message id                                        |
-| **Somebody followed you**                        | `social`        | on the follow  | one per follower, **ever**                        |
-| **A correction, answer or comment on your post** | `social`        | on the reply   | one per post per **hour**                         |
-| **A reply to your comment**                      | `social`        | on the reply   | one per **thread** per hour                       |
-| **Your posts' likes**                            | `social`        | daily batch    | UTC day, and not if the bell's rows are read      |
-| **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local    | pool day, and not if the bell's row is read       |
-| **Your hourly gift is ready**                    | `wallet`        | waking hours   | UTC day, and only if they have taken one before   |
-| **Cards are due in Echo**                        | `echo`          | 19:00 local    | local day, and only if nothing was reviewed today |
+| Message                                          | Kind            | When               | Period key                                        |
+| ------------------------------------------------ | --------------- | ------------------ | ------------------------------------------------- |
+| A message arrived                                | `messages`      | on the message     | — (fan-out)                                       |
+| Streak reminder — only while still savable today | `streak`        | 20:00 local        | local day                                         |
+| Badge round-up                                   | `badges`        | 18:00 local        | badge ids                                         |
+| Profile visits                                   | `profileVisits` | 12:00 local        | local day                                         |
+| Meeting reminder                                 | `meetings`      | an hour before     | message id                                        |
+| **Somebody followed you**                        | `social`        | on the follow      | one per follower, **ever**                        |
+| **A correction, answer or comment on your post** | `social`        | on the reply       | one per post per **hour**                         |
+| **A reply to your comment**                      | `social`        | on the reply       | one per **thread** per hour                       |
+| **Somebody wrote a review on your profile**      | `social`        | on the first write | one per author, **ever**; an edit never           |
+| **Your posts' likes**                            | `social`        | daily batch        | UTC day, and not if the bell's rows are read      |
+| **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local        | pool day, and not if the bell's row is read       |
+| **Your hourly gift is ready**                    | `wallet`        | waking hours       | UTC day, and only if they have taken one before   |
+| **Cards are due in Echo**                        | `echo`          | 19:00 local        | local day, and only if nothing was reviewed today |
 
 **Email, all of it in one letter at 19:00 local.** The order is the order in
 the mail, and the first section that survives gives the letter its subject —
@@ -353,6 +354,10 @@ badge push was for the people who had already come back.
   anybody can do here.
 - **One follow notice per follower, ever.** Unfollowing and following again
   is not news.
+- **One review notice per author, ever.** Only the first write of a review
+  tells anybody — an edit is the same review reworded — and deleting it and
+  writing it again buzzes nobody twice. Its data carries `testimonialId` and
+  no `handle`, so the tap opens the reader's own reviews.
 - **One mail per local day, and one section per its own period.** The letter
   is daily; almost nothing in it is. An absence produces one unread section
   however many evenings it spans, visitors stay weekly, and a reply landing
@@ -413,6 +418,10 @@ accusation rather than a summary.
 - **What shipped** — optional, from `apps/api/src/email/newsletters/YYYY-MM.ts`,
   drafted by a scheduled routine, approved by **merging its pull request**.
   No note, no block; the recap still goes.
+
+The button is **See your month**, to `/recap?month=YYYY-MM` — the same story
+the Me tab offers that week. A quiet month gets **Open LangX** to `/discover`
+instead: its story would be one sentence.
 
 ### Campaigns
 
@@ -491,15 +500,16 @@ learning what it said.
 The `notifications` collection is the other half: a row per thing that
 happened, read by a bell in the Me header and a screen behind it.
 
-| Kind                                                     | Written where                      | `refId` — what makes it arrive once |
-| -------------------------------------------------------- | ---------------------------------- | ----------------------------------- |
-| `follow`                                                 | `routes/follows.ts`                | the follower's id                   |
-| `postComment` / `postCorrection` / `pronunciationAnswer` | `routes/feed.ts` → `tellTheAuthor` | the reply's own id                  |
-| `commentReply` — only to a client that declares it       | `routes/feed.ts` → `tellTheThread` | the reply's own id                  |
-| `like`                                                   | `routes/likes.ts`                  | `<targetType>:<targetId>:<actorId>` |
-| `badgeEarned`                                            | `notifications/badges.ts`          | the badge id                        |
-| `walletPool`                                             | `tokens/pool.ts`, at the payout    | the pool day                        |
-| `profileVisits`                                          | `notifications/profileVisits.ts`   | the local day                       |
+| Kind                                                     | Written where                              | `refId` — what makes it arrive once |
+| -------------------------------------------------------- | ------------------------------------------ | ----------------------------------- |
+| `follow`                                                 | `routes/follows.ts`                        | the follower's id                   |
+| `postComment` / `postCorrection` / `pronunciationAnswer` | `routes/feed.ts` → `tellTheAuthor`         | the reply's own id                  |
+| `commentReply` — only to a client that declares it       | `routes/feed.ts` → `tellTheThread`         | the reply's own id                  |
+| `testimonial` — only to a client that declares it        | `routes/testimonials.ts`, first write only | the review's own id                 |
+| `like`                                                   | `routes/likes.ts`                          | `<targetType>:<targetId>:<actorId>` |
+| `badgeEarned`                                            | `notifications/badges.ts`                  | the badge id                        |
+| `walletPool`                                             | `tokens/pool.ts`, at the payout            | the pool day                        |
+| `profileVisits`                                          | `notifications/profileVisits.ts`           | the local day                       |
 
 ### Which kinds a client is sent
 
@@ -623,18 +633,18 @@ appears at noon the next day.
 
 `apps/mobile/src/lib/notificationRoute.ts`.
 
-| Kind                         | Opens                                     |
-| ---------------------------- | ----------------------------------------- |
-| `message`, `meetingReminder` | the conversation, or `/chats`             |
-| `streakReminder`             | `/chats`                                  |
-| `badgeEarned`                | `/me`                                     |
-| `profileVisits`              | `/viewers`                                |
-| `social`                     | the post, the person, or `/notifications` |
-| `wallet`, `bountyPaid`       | `/wallet`                                 |
-| `billing`                    | `/settings/plan`                          |
-| `security`                   | `/settings/password`                      |
-| `echo`                       | `/echo`                                   |
-| `promotion`                  | `/discover`                               |
+| Kind                         | Opens                                                   |
+| ---------------------------- | ------------------------------------------------------- |
+| `message`, `meetingReminder` | the conversation, or `/chats`                           |
+| `streakReminder`             | `/chats`                                                |
+| `badgeEarned`                | `/me`                                                   |
+| `profileVisits`              | `/viewers`                                              |
+| `social`                     | the post, the person, your reviews, or `/notifications` |
+| `wallet`, `bountyPaid`       | `/wallet`                                               |
+| `billing`                    | `/settings/plan`                                        |
+| `security`                   | `/settings/password`                                    |
+| `echo`                       | `/echo`                                                 |
+| `promotion`                  | `/discover`                                             |
 
 ## What a read clears from the shade
 
@@ -653,8 +663,9 @@ lock screen in the morning.
   `wallet`.
 - **Tapping a row** clears the pushes behind it, read or not. A push carries no
   notification id, so the match is on its `data`: a follow by the follower's
-  `handle`, a reply or like row by `postId` (every push about that post), and
-  the repeating kinds by kind.
+  `handle`, a reply or like row by `postId` (every push about that post), a
+  review row by `testimonialId` (every review push, since the tap opens them
+  all), and the repeating kinds by kind.
 
 Only a device with the app running can clear its own shade. So the rules above
 miss everything dealt with while this device was not looking: read on another

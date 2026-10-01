@@ -878,6 +878,12 @@ any single restore. `messages.legacyId` is a sparse unique index, which is what
 makes a replayed import write nothing twice.
 **`profileViews`** — unique `{viewerId, viewedId}` (upsert), 90-day TTL. No row
 is written at all for an incognito viewer.
+**`testimonials`** — profile reviews (the UI's word; see `decisions.md` →
+_Profile reviews are references, not ratings_). Unique `{authorId, subjectId}`,
+so one per direction and a second write is an edit; `{subjectId, createdAt}`
+for the profile list. `ownerHiddenAt` and `moderatorHiddenAt` are separate
+fields: the owner can undo their own, never the moderator's. Deleted with
+either account.
 **`translationCache`** — unique `{sourceHash, targetLang}`, TTL.
 **`blocks`**, **`reports`**, **`devices`**, **`streakReminders`**,
 ~~`appwriteIdMap`~~ — removed. It had a collection, a unique index and a purge
@@ -1361,7 +1367,9 @@ creates accounts; GDPR additionally requires access and portability.
   `user`/`session`/`account`, `blocks`, `devices`, `profileViews`, the token
   ledger and aggregates. Messages the user _sent_ stay in place with their
   content cleared — they are part of a conversation the other person is also a
-  party to.
+  party to. Profile reviews are the opposite case and go in both directions:
+  the ones the user wrote and the ones written about them. A review is public
+  text about one named person, not a turn in somebody else's conversation.
 - Before the handle step the screen asks, optionally, why — one reason from
   `ACCOUNT_DELETION_REASONS` and a short note. It is held on the profile as
   `deletionFeedback` until the purge, which writes it to

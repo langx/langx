@@ -66,6 +66,14 @@ export const reportSchema = z.object({
    * "Hide this post" on somebody who was never reported.
    */
   commentId: z.string().trim().min(1).optional(),
+  /**
+   * Optional pointer to one review ("testimonial" in code) on somebody's
+   * profile. The reported person is its author, which the server checks, and
+   * no `postId` or `commentId` is kept beside it for the reason `commentId`
+   * drops its `postId`: a review report is about the review, and a stray
+   * pointer would offer a moderator an action on something never reported.
+   */
+  testimonialId: z.string().trim().min(1).optional(),
 })
 export type ReportInput = z.infer<typeof reportSchema>
 
@@ -177,6 +185,11 @@ export type ReviewKind = (typeof REVIEW_KINDS)[number]
  * `hide_comment` and `unhide_comment` are the same pair one level down, for a
  * report that names a comment, and for the same reasons: one remark is the
  * problem, and hiding it is undone by the next click.
+ *
+ * `hide_testimonial` and `unhide_testimonial` do the same for a review left on
+ * a profile, offered only when the report names one. Hiding sets the review's
+ * own moderator flag rather than the owner's, so the profile's owner cannot
+ * undo it and the author cannot edit it back.
  */
 export const REPORT_REVIEW_ACTIONS = [
   'suspend',
@@ -186,6 +199,8 @@ export const REPORT_REVIEW_ACTIONS = [
   'unhide_post',
   'hide_comment',
   'unhide_comment',
+  'hide_testimonial',
+  'unhide_testimonial',
 ] as const
 export const APPEAL_REVIEW_ACTIONS = ['shorten', 'lift', 'keep'] as const
 export const REVIEW_ACTIONS = [...REPORT_REVIEW_ACTIONS, ...APPEAL_REVIEW_ACTIONS] as const

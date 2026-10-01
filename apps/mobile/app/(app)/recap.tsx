@@ -6,13 +6,13 @@ import { StatusBar } from 'expo-status-bar'
 import { useState, type ReactNode } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useMe, useMonthlyRecap } from '../../src/api/queries'
+import { useMe, useMonthlyRecap, useYearlyRecap } from '../../src/api/queries'
 import { RecapStory } from '../../src/components/recap/RecapStory'
 import { ShareCardSheet, type ShareCardRequest } from '../../src/components/ShareCardSheet'
 import { useDisplayNames, useLocale, useT } from '../../src/i18n'
 import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
-import { monthName, recapMonthParam } from '../../src/lib/recapMonth'
+import { monthName, recapMonthParam, recapYearParam } from '../../src/lib/recapMonth'
 import { isQuietRecap, recapCardInput } from '../../src/lib/recapStory'
 import { shareLink } from '../../src/lib/share'
 import { recapShareText } from '../../src/lib/shareText'
@@ -20,7 +20,8 @@ import { DISPLAY_FONT, palettes } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
- * A finished month, told as a story: "Your Month".
+ * A finished month, told as a story: "Your Month" — or, with `?year=`, the
+ * same story over twelve of them: "Your Year".
  *
  * Every figure comes from `GET /me/recap`; nothing is summed on the device, so
  * the story, the card and the monthly email agree. The streak is labelled as
@@ -35,9 +36,15 @@ export default function RecapScreen() {
   const t = useT()
   const { locale } = useLocale()
   const names = useDisplayNames()
-  const params = useLocalSearchParams<{ month: string }>()
-  const month = recapMonthParam(params.month, new Date())
-  const recap = useMonthlyRecap(month)
+  const params = useLocalSearchParams<{ month: string; year: string }>()
+  // `?year=2026` is "Your Year"; anything else is a month's recap. Both
+  // queries are always declared — hooks cannot be conditional — and the one
+  // not asked for is disabled by the empty key it is given.
+  const yearKey = recapYearParam(params.year)
+  const month = yearKey ? '' : recapMonthParam(params.month, new Date())
+  const monthly = useMonthlyRecap(month)
+  const yearly = useYearlyRecap(yearKey ?? '')
+  const recap = yearKey ? yearly : monthly
   const me = useMe()
   const [card, setCard] = useState<ShareCardRequest | null>(null)
   // Only the story's numerals and month name want the heaviest weight, so it
@@ -46,8 +53,15 @@ export default function RecapScreen() {
   const [blackLoaded] = useFonts({ Nunito_900Black })
   useScreenInteractive(!recap.isPending)
 
-  const name = month ? capitalise(monthName(month, locale), locale) : ''
-  const year = month ? Number(month.slice(0, 4)).toLocaleString(locale, { useGrouping: false }) : ''
+  // A year's headline is the year itself, so it is not said again beside it.
+  const headlineYear = (key: string): string =>
+    Number(key.slice(0, 4)).toLocaleString(locale, { useGrouping: false })
+  const name = yearKey
+    ? headlineYear(yearKey)
+    : month
+      ? capitalise(monthName(month, locale), locale)
+      : ''
+  const year = !yearKey && month ? headlineYear(month) : ''
   const close = (): void => goBackTo('/(app)/(tabs)/me')
 
   const profile = me.data
@@ -77,7 +91,7 @@ export default function RecapScreen() {
     return (
       <Plain onClose={close} closeLabel={t('recap.story.close')}>
         <Text style={[plainText, { fontSize: 44, lineHeight: 48 }]}>{name}</Text>
-        <Text style={plainText}>{t('recap.quiet')}</Text>
+        <Text style={plainText}>{yearKey ? t('recap.year.quiet') : t('recap.quiet')}</Text>
       </Plain>
     )
   }
@@ -106,7 +120,7 @@ export default function RecapScreen() {
           setCard({
             kind: 'recap',
             headline: name,
-            caption: t('recap.cardCaption'),
+            caption: yearKey ? t('recap.year.cardCaption') : t('recap.cardCaption'),
             fallback,
             recap: recapCardInput(t, data, locale, languages),
           })
@@ -115,7 +129,10 @@ export default function RecapScreen() {
           if (fallback) void shareLink(fallback)
         }}
         onViewed={({ slides, completed }) =>
-          track({ name: 'recap_story_viewed', properties: { slides_seen: slides, completed } })
+          track({
+            name: 'recap_story_viewed',
+            properties: { slides_seen: slides, completed, period: yearKey ? 'year' : 'month' },
+          })
         }
       />
       <ShareCardSheet request={card} onClose={() => setCard(null)} />

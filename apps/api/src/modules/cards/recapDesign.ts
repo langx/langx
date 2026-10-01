@@ -14,11 +14,11 @@ import { CARD_PIXELS, type CardNode } from './render'
  */
 
 export interface RecapCardContent {
-  /** The month's name in the reader's language, capitalised: "September". */
+  /** The month's name in the reader's language, capitalised: "September" — or, on a year's card, the year. */
   month: string
-  /** `2026`, as the reader writes it. */
-  year: string
-  /** "My month", set in capitals above the month. */
+  /** `2026`, as the reader writes it; absent on a year's card, where it is the headline. */
+  year?: string
+  /** "My month" or "My year", set in capitals above the month. */
   kicker: string
   /** "in two languages, with 12 people", count already filled in; or nothing. */
   people?: string
@@ -424,8 +424,12 @@ function headline(content: RecapCardContent, width: number, m: Metrics, rtl: boo
       },
       children: [
         textLine(kicker, kickerStyle, rtl),
-        el('div', { style: { ...kickerStyle, display: 'flex' }, children: '·' }),
-        el('div', { style: { ...kickerStyle, display: 'flex' }, children: content.year }),
+        ...(content.year
+          ? [
+              el('div', { style: { ...kickerStyle, display: 'flex' }, children: '·' }),
+              el('div', { style: { ...kickerStyle, display: 'flex' }, children: content.year }),
+            ]
+          : []),
       ],
     }),
     el('div', {

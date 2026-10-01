@@ -40,7 +40,7 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { badgeLabel, interestLabel, useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { compactCount } from '../../../src/lib/format'
-import { monthName, recapMonthFor } from '../../../src/lib/recapMonth'
+import { monthName, recapMonthFor, recapYearFor } from '../../../src/lib/recapMonth'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { useChangeAvatar } from '../../../src/hooks/useChangeAvatar'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
@@ -67,6 +67,7 @@ export default function MeScreen() {
   const t = useT()
   const { locale } = useLocale()
   const recapMonth = recapMonthFor(new Date())
+  const recapYear = recapYearFor(new Date())
   const names = useDisplayNames()
 
   const me = useMe()
@@ -452,6 +453,16 @@ export default function MeScreen() {
           onPress={() => router.push({ pathname: '/(app)/recap', params: { month: recapMonth } })}
         />
       ) : null}
+      {/* "Your Year", from late December to the first week of January. */}
+      {recapYear ? (
+        <ListRow
+          title={t('recap.year.meTitle', {
+            year: Number(recapYear).toLocaleString(locale, { useGrouping: false }),
+          })}
+          subtitle={t('recap.year.meBody')}
+          onPress={() => router.push({ pathname: '/(app)/recap', params: { year: recapYear } })}
+        />
+      ) : null}
 
       <ListRow
         title={t('me.wallet')}
@@ -474,6 +485,11 @@ export default function MeScreen() {
             : t('me.viewersCount', { count: viewerPage?.total ?? 0 })
         }
         onPress={() => router.push('/(app)/viewers')}
+      />
+      <ListRow
+        title={t('testimonials.title')}
+        subtitle={t('testimonials.meRowBody')}
+        onPress={() => router.push('/(app)/testimonials')}
       />
       <ListRow
         title={t('me.followsTitle')}

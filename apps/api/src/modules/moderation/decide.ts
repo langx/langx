@@ -13,6 +13,7 @@ import { setPostHidden } from '../feed/feed'
 import { emailFor } from '../profiles/emailFor'
 import { localeFor } from '../profiles/localeFor'
 import { getProfile } from '../profiles/profiles'
+import { findTestimonialById, setTestimonialModeratorHidden } from '../testimonials/testimonials'
 import {
   actionReport,
   closeAppeal,
@@ -40,6 +41,7 @@ import {
 export type ReviewOutcome =
   | { action: 'hide_post' | 'unhide_post'; hidden: boolean; changed: boolean }
   | { action: 'hide_comment' | 'unhide_comment'; hidden: boolean; changed: boolean }
+  | { action: 'hide_testimonial' | 'unhide_testimonial'; hidden: boolean; changed: boolean }
   | { action: 'dismiss' }
   | { action: 'keep' }
   | { action: 'suspend' | 'permanent'; until: Date; permanent: boolean; reason: string }
@@ -57,6 +59,8 @@ export type ReviewRefusal =
   | 'post_gone'
   | 'not_a_comment'
   | 'comment_gone'
+  | 'not_a_testimonial'
+  | 'testimonial_gone'
 
 export type ReviewDecisionResult =
   | { ok: false; refusal: ReviewRefusal }
@@ -151,6 +155,30 @@ export async function applyReviewDecision(
       handle,
       outcome: { action, hidden, changed: Boolean(before.hiddenAt) !== hidden },
     }
+  }
+
+  /*
+   * And for a review on somebody's profile. The moderator's own flag, not the
+   * owner's: the owner must not be able to undo it, nor the author edit it
+   * back. Looked up first because the setter only says whether anything
+   * changed, and "already hidden" and "purged with an account" are different
+   * answers to give.
+   */
+  if (action === 'hide_testimonial' || action === 'unhide_testimonial') {
+    const report = reportId
+      ? await app.mongo.db
+          .collection(COLLECTIONS.reports)
+          .findOne<{ testimonialId?: ObjectId }>({ _id: reportId })
+      : null
+    if (!report?.testimonialId) return { ok: false, refusal: 'not_a_testimonial' }
+    if (!(await findTestimonialById(app.mongo.db, report.testimonialId))) {
+      return { ok: false, refusal: 'testimonial_gone' }
+    }
+
+    const hidden = action === 'hide_testimonial'
+    const changed = await setTestimonialModeratorHidden(app.mongo.db, report.testimonialId, hidden)
+    if (hidden && reportId) await actionReport(app.mongo.db, reportId)
+    return { ok: true, handle, outcome: { action, hidden, changed } }
   }
 
   /**

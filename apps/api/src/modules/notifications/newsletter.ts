@@ -4,6 +4,7 @@ import {
   localDayKey,
   notificationsAllowed,
   type MonthlyRecapDto,
+  type YearlyRecapDto,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -175,6 +176,59 @@ export async function recapForMonth(
     partners: personal.partners,
     activeDays: personal.activeDays,
     activeDates: personal.activeDates,
+  }
+}
+
+/** The year before the one `now` is in, as `YYYY`. */
+export function lastYearKey(now: Date): string {
+  return String(now.getUTCFullYear() - 1)
+}
+
+/**
+ * "Your Year": the in-app recap over twelve months.
+ *
+ * The same rows `recapForMonth` reads, a year of them — a few hundred
+ * `dailyActivity` rows at most — plus the `year` row the token ledger and
+ * Echo already keep beside the month's. Asked for the current year it is the
+ * year so far, which is what a recap opened in late December wants.
+ */
+export async function recapForYear(db: Db, userId: string, year: string): Promise<YearlyRecapDto> {
+  const [days, tokens, echo, profile] = await Promise.all([
+    db
+      .collection<{ day: string; messages?: number; corrections?: number; partners?: string[] }>(
+        COLLECTIONS.dailyActivity,
+      )
+      .find({ userId, day: { $gte: `${year}-01-01`, $lte: `${year}-12-31` } })
+      .toArray(),
+    db
+      .collection<{ _id: string; tokens: number }>(COLLECTIONS.tokenAggregates)
+      .findOne({ _id: aggregateId(userId, 'year', year) }),
+    db
+      .collection<{ _id: string; reviews: number }>(COLLECTIONS.echoAggregates)
+      .findOne({ _id: aggregateId(userId, 'year', year) }),
+    db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: userId }, { projection: { streak: 1 } }),
+  ])
+  // The same two rules as `personalMonth`: `partners` may be absent, and a
+  // row with both counters at zero is somebody else's mutual bonus.
+  const partners = new Set(days.flatMap((day) => day.partners ?? []))
+  const active = days.filter((day) => (day.messages ?? 0) + (day.corrections ?? 0) > 0)
+  const activeMonths = Array.from({ length: 12 }, () => 0)
+  for (const day of active) {
+    const index = Number(day.day.slice(5, 7)) - 1
+    activeMonths[index] = (activeMonths[index] ?? 0) + 1
+  }
+  return {
+    year,
+    messages: days.reduce((total, day) => total + (day.messages ?? 0), 0),
+    corrections: days.reduce((total, day) => total + (day.corrections ?? 0), 0),
+    tokens: tokens?.tokens ?? 0,
+    echoReviews: echo?.reviews ?? 0,
+    currentStreak: profile?.streak?.current ?? 0,
+    partners: partners.size,
+    activeDays: active.length,
+    activeMonths,
   }
 }
 

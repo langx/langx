@@ -3,7 +3,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { isOwnBucketUrl } from '../../lib/assertOwnBucket'
 import { sniffImageType } from '../../lib/sniffImageType'
-import { recapForMonth } from '../notifications/newsletter'
+import { recapForMonth, recapForYear } from '../notifications/newsletter'
 import type { Profile } from '../profiles/profiles'
 import type { RecapCardContent } from './recapDesign'
 
@@ -59,15 +59,17 @@ export async function recapCardContent(
   input: {
     userId: string
     handle: string
-    /** The card's headline: the month's name, in the reader's language. */
+    /** The card's headline: the month's name, or the year, in the reader's language. */
     monthName: string
     recap: RecapCardInput
     storagePublicBaseUrl: string | undefined
   },
 ): Promise<RecapCardContent> {
   const { recap, userId } = input
+  // Four digits is a year's card, whose headline is the year itself.
+  const yearly = recap.month.length === 4
   const [numbers, profile] = await Promise.all([
-    recapForMonth(db, userId, recap.month),
+    yearly ? recapForYear(db, userId, recap.month) : recapForMonth(db, userId, recap.month),
     db
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ _id: userId }, { projection: { avatarUrl: 1 } }),
@@ -76,9 +78,13 @@ export async function recapCardContent(
   const avatar = await fetchCardAvatar(profile?.avatarUrl, input.storagePublicBaseUrl)
   return {
     month: capitalise(input.monthName, recap.locale),
-    year: new Intl.NumberFormat(recap.locale, { useGrouping: false }).format(
-      Number(recap.month.slice(0, 4)),
-    ),
+    ...(yearly
+      ? {}
+      : {
+          year: new Intl.NumberFormat(recap.locale, { useGrouping: false }).format(
+            Number(recap.month.slice(0, 4)),
+          ),
+        }),
     kicker: recap.kicker,
     ...(recap.people && numbers.partners > 0 ? { people: recap.people } : {}),
     ...(recap.languages ? { languages: recap.languages } : {}),

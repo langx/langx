@@ -81,6 +81,10 @@ export const es: Localized<ServerMessages> = {
 
       commentReplyBody: 'Toca para leer la respuesta.',
 
+      testimonialTitle: '{name} escribió una reseña en tu perfil',
+
+      testimonialBody: 'Toca para leerla.',
+
       likesTitle: {
         one: 'Tu publicación tiene 1 me gusta',
         other: 'Tu publicación tiene {count} me gusta',
@@ -259,6 +263,8 @@ export const es: Localized<ServerMessages> = {
     newsletterTokensGiven: 'Tokens repartidos',
 
     newsletterButton: 'Abrir LangX',
+
+    newsletterSeeMonth: 'Ver tu mes',
 
     /** The day's replies to somebody's posts, in one letter. */
 

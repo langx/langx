@@ -6294,3 +6294,72 @@ What stayed is the split: the profile and the Me tab show **Corrections** and
 **Feed** as two tiles. Corrections is `countCorrectionsWritten`, unchanged;
 Feed is `countPostsByAuthor`, posts not hidden. Each tile opens its own tab of
 the same list screen. Everything else counts corrections as it did before.
+
+## Profile reviews are references, not ratings
+
+Two people who have talked long enough can each write a short review on the
+other's profile — text only, 30 to 500 characters — and the person it is about
+can hide any of them. In the code they are `testimonials`: "review" already
+names three other things here (a moderation review link, an Echo card that is
+due, the store's rating sheet), and a fourth would make every search for the
+word ambiguous.
+
+**No stars, because the owner can hide.** An average over a set that its
+subject curates only ever goes up; a score next to a hide button is a number
+that means nothing and looks like it means something. What a profile shows is
+the references its owner chose to keep, and it is presented as exactly that:
+no score, and no count of the hidden ones.
+
+**Each side has written fifty, and three days have passed.** The request was
+"the 100th message", a total. A total is the hole the media lock closed on
+4 September 2026 — one person can clear it alone — and here what it would open
+is a public sentence about somebody who never answered. Counting each side
+makes it take two. The three days slow the other shortcut: a hundred messages
+in an hour between two accounts that want to praise each other. On
+30 September 2026 this let 3 pairs, 5 people, write one. That empty start was
+chosen with the numbers in front of us, and it is invisible: a profile with no
+reviews draws no section at all. Both numbers are config in `packages/shared`.
+
+**The lock is never shown.** The chat shows a card once it opens — "Review
+Sofia" — and nothing before that: no countdown, no "12 more messages". A
+counter turns a conversation into a grind towards it, and the threshold is the
+app's business, not the reader's. The server does not even send the remaining
+count.
+
+**Hiding is not telling.** A hidden review disappears for everyone except its
+author, who still sees their own as they wrote it. It is the blocking rule: the
+person acted upon is not told, because telling them is what the act exists to
+avoid. A moderator's removal is a separate field the owner cannot undo, and an
+edit clears neither — otherwise editing would be the way to put a hidden review
+back.
+
+**Blocking hides reviews, it does not delete them.** They are filtered at read
+time through `blockedUserIds`, in both directions, like every other list, and
+unblocking brings them back.
+
+**In the app only.** The signed-out `/<handle>` page leaves reviews out. A
+review is signed with its author's name, and an indexable page would publish
+the author further than they agreed to when they wrote it.
+
+**No tokens.** Paying for praise makes praise the thing to farm.
+
+**Names never take a suffix in Turkish.** "Sofia için yorum yaz", not
+"Sofia'yı değerlendir": the case ending follows the name's last vowel, so a
+template with one suffix is wrong for half the names it meets. The Turkish
+strings are built around postpositions and pronouns for that reason.
+
+## "Your Year" is the month's story over twelve months
+
+The yearly recap is not a second feature. It is `GET /me/recap/year`, which
+sums the same `dailyActivity` rows `recapForMonth` reads and takes tokens and
+Echo reviews from the `year` rows those two ledgers already keep, played
+through the same `RecapStory` and drawn on the same poster. The card asks for
+`month: '2026'`: four digits mean a year, so the server reads the year's
+numbers and the year becomes the headline instead of sitting beside the
+kicker as well.
+
+Only the calendar differs. 365 squares is no picture on a phone, so the
+streak slide shows a square per month, shaded by the share of its days that
+were active. The Me tab offers it from 20 December (the year so far, when
+people look back) through 7 January (the year just ended, the same week as
+December's recap). Any other day `/recap?year=YYYY` still opens it.

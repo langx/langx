@@ -64,6 +64,7 @@ import {
   useSpeakMessage,
   useRomanizeMessage,
   useTranscribeMessage,
+  useTestimonials,
   type ClearedUnread,
   type ConversationDto,
   type MessageDto,
@@ -139,6 +140,8 @@ import {
   useScheduledMessages,
 } from '../components/ScheduledMessages'
 import { ScheduleTimeSheet } from '../components/ScheduleTimeSheet'
+import { TestimonialSheet } from '../components/testimonials/TestimonialSheet'
+import { ThreadTestimonialCard } from '../components/testimonials/ThreadTestimonialCard'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
   addPending,
@@ -604,6 +607,19 @@ export function ChatScreen({
   const suspended = partner?.accountStatus === 'suspended'
   /** Nothing sent from here would arrive. The one fact the four places below read. */
   const readOnly = channel || suspended
+  /**
+   * Whether this pair may review each other, off the thread's first page —
+   * two booleans and never the counts behind them. Until `unlocked` nothing
+   * in this screen so much as hints that reviews exist.
+   */
+  const testimonial = messages.data?.pages[0]?.testimonial
+  const reviewOpen = testimonial?.unlocked === true && !!partner && !readOnly
+  const [reviewing, setReviewing] = useState(false)
+  /** Published from this screen: the card becomes a confirmation, not a gap. */
+  const [reviewedHere, setReviewedHere] = useState(false)
+  // Only fetched once there is something to edit, for the text to open on.
+  const partnerReviews = useTestimonials(reviewOpen && testimonial.written ? partner.handle : '')
+  const myReview = partnerReviews.data?.pages[0]?.mine?.body ?? null
   /**
    * Which language to send a translation in: the reader's, not the writer's.
    *
@@ -2397,6 +2413,16 @@ export function ChatScreen({
       // Here as well as on the list, because the thread that is too loud is
       // usually the one somebody is looking at when they decide so.
       { label: muted ? t('chats.unmute') : t('chats.mute'), value: 'mute' },
+      // The way back to the review after the card was closed. Absent, not
+      // disabled, before unlock: the menu says nothing about a gate.
+      ...(reviewOpen
+        ? [
+            {
+              label: t(testimonial.written ? 'testimonials.editMine' : 'testimonials.write'),
+              value: 'review' as const,
+            },
+          ]
+        : []),
       { label: t('common.block'), value: 'block', destructive: true },
     ])
     if (choice === 'profile') {
@@ -2413,6 +2439,8 @@ export function ChatScreen({
       flags.mutate({ conversationId, pinned: !pinned })
     } else if (choice === 'mute') {
       flags.mutate({ conversationId, muted: !muted })
+    } else if (choice === 'review') {
+      setReviewing(true)
     } else if (choice === 'block') {
       // The same question the profile asks, so the two places agree.
       const yes = await confirmAlert({
@@ -2760,6 +2788,16 @@ export function ChatScreen({
                     the newest thing in it.
                   */}
                     {partnerTyping ? <TypingIndicator /> : null}
+                    {/* Last of all, nearest the composer — and not a message. */}
+                    {reviewOpen && (!testimonial.written || reviewedHere) ? (
+                      <ThreadTestimonialCard
+                        conversationId={conversationId}
+                        name={partner.displayName}
+                        done={testimonial.written && reviewedHere}
+                        onWrite={() => setReviewing(true)}
+                        onEdit={() => setReviewing(true)}
+                      />
+                    ) : null}
                   </>
                 }
                 /**
@@ -3055,6 +3093,19 @@ export function ChatScreen({
           onClose={() => setPickingSendTime(false)}
           onConfirm={(at) => void scheduleDraft({ sendAt: at.toISOString() })}
         />
+        {partner ? (
+          <TestimonialSheet
+            visible={reviewing}
+            subject={partner}
+            existing={testimonial?.written ? myReview : null}
+            conversationId={conversationId}
+            onClose={() => setReviewing(false)}
+            onSaved={(created) => {
+              if (created) setReviewedHere(true)
+            }}
+            onDeleted={() => setReviewedHere(false)}
+          />
+        ) : null}
         {searching ? (
           <ChatSearch
             conversationId={conversationId}

@@ -11,6 +11,7 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import type { Profile } from '../modules/profiles/profiles'
 import { cardElement } from '../modules/cards/design'
 import { recapCardContent } from '../modules/cards/recapCard'
+import { recapForYear } from '../modules/notifications/newsletter'
 import { recapCardElement } from '../modules/cards/recapDesign'
 import { renderCard } from '../modules/cards/render'
 import type { StorageProviderWithPut, UploadUrl } from '../storage/StorageProvider'
@@ -310,6 +311,20 @@ describe('share cards', () => {
     const anon = await app.inject({ method: 'GET', url: '/me/recap' })
     expect(anon.statusCode).toBe(401)
 
+    const year = await app.inject({
+      method: 'GET',
+      url: '/me/recap/year?year=2026',
+      headers: { cookie },
+    })
+    expect(year.statusCode, year.body).toBe(200)
+    expect(year.json()).toMatchObject({ year: '2026', messages: 60, corrections: 53 })
+    const badYear = await app.inject({
+      method: 'GET',
+      url: '/me/recap/year?year=26',
+      headers: { cookie },
+    })
+    expect(badYear.statusCode).toBe(400)
+
     const created = await make({
       kind: 'recap',
       shape: 'story',
@@ -367,6 +382,29 @@ describe('share cards', () => {
     // Nobody messaged by id this month, so the "with N people" line goes.
     expect(content.people).toBeUndefined()
     expect(content.languages).toBe('Spanish → learning Turkish')
+
+    // A four-digit key is the year's card: the whole year's numbers, and the
+    // year is the headline rather than a second time beside the kicker.
+    await handle.db
+      .collection(COLLECTIONS.dailyActivity)
+      .insertOne({ userId, day: '2026-02-10', messages: 6, corrections: 0 })
+    const year = await recapCardContent(handle.db, {
+      userId,
+      handle: '@cardhaver',
+      monthName: '2026',
+      recap: { ...RECAP_WORDS, month: '2026', locale: 'fr' },
+      storagePublicBaseUrl: undefined,
+    })
+    expect(year.month).toBe('2026')
+    expect(year.year).toBeUndefined()
+    // February's six on top of June's 1,234 — and whatever earlier tests left
+    // in this year, which is why the expected number is read, not written.
+    const { messages } = await recapForYear(handle.db, userId, '2026')
+    expect(messages).toBeGreaterThanOrEqual(1240)
+    expect(year.stats[0]).toMatchObject({
+      stat: 'messages',
+      value: new Intl.NumberFormat('fr').format(messages).replace(/\u202f/g, '\u00a0'),
+    })
   })
 
   it('draws the recap poster at the size every shape claims', async () => {
