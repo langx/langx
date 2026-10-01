@@ -31,6 +31,20 @@ export function adminPercent(part: number, whole: number): string {
   return whole > 0 ? `${Math.round((part / whole) * 1000) / 10}%` : '—'
 }
 
+/**
+ * The first warning for a reported account, in the shape the hand-written
+ * ones of 28 Sept took. @langx is one way, so it names where a reply goes.
+ */
+function warning(what: string): string {
+  return `Hi, this is the LangX Team.
+
+We've received a report that your account ${what}. This goes against our community rules, so this is a warning.
+
+Please review our Terms: https://langx.io/terms-conditions
+
+If it happens again, your account may be suspended. Questions: hi@langx.io`
+}
+
 export const ADMIN = {
   entryRow: 'Operator panel',
 
@@ -286,6 +300,28 @@ export const ADMIN = {
     signedOut: (n: number) => `${n} session${n === 1 ? '' : 's'} ended.`,
     message: 'Message from @langx',
     messageHint: 'One way — they cannot reply. Say where a reply should go.',
+    presetsHint: 'Ready to send — tap one to fill the box, then edit if needed.',
+    /*
+     * One warning per report reason, plus "money", which has no reason of its
+     * own and is the scam we actually see. In English whatever the reader's
+     * language, like everything typed into the box above.
+     */
+    presets: [
+      { label: 'Money', body: warning('has been asking other users for money') },
+      { label: 'Spam', body: warning('has been sending spam or unwanted promotion') },
+      { label: 'Harassment', body: warning('has been harassing other users') },
+      { label: 'Hate speech', body: warning('has been attacking people for who they are') },
+      { label: 'Inappropriate', body: warning('has been sharing inappropriate content') },
+      { label: 'Fake profile', body: warning('is using a fake or misleading profile') },
+      {
+        label: 'Underage',
+        body: `Hi, this is the LangX Team.
+
+We've received a report that you may be under 16. LangX is only for people aged 16 and over.
+
+If this is a mistake, please write to hi@langx.io. Otherwise your account may be suspended.`,
+      },
+    ],
     send: 'Send',
     sent: 'Sent.',
     suspend: 'Suspend',

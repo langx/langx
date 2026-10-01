@@ -295,6 +295,18 @@ function Found({ data }: { data: AdminUserDto }) {
       {/* ── what can be done ── */}
       <Text style={styles.heading}>{ADMIN.users.message}</Text>
       <Text style={styles.hint}>{ADMIN.users.messageHint}</Text>
+      <Text style={styles.hint}>{ADMIN.users.presetsHint}</Text>
+      <View style={styles.months}>
+        {ADMIN.users.presets.map((preset) => (
+          <Button
+            key={preset.label}
+            label={preset.label}
+            size="small"
+            variant={message === preset.body ? 'primary' : 'secondary'}
+            onPress={() => setMessage(preset.body)}
+          />
+        ))}
+      </View>
       <FormField value={message} onChangeText={setMessage} multiline numberOfLines={4} />
       <Button
         label={ADMIN.users.send}
