@@ -269,6 +269,8 @@ export const fr: Localized<ServerMessages> = {
 
     newsletterButton: 'Ouvrir LangX',
 
+    newsletterSeeMonth: 'Voir votre mois',
+
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {

@@ -123,6 +123,9 @@ describe('the monthly recap', () => {
     expect(html).toContain('>20<')
     expect(html).toContain('>4<')
     expect(html).toContain('640')
+    // The button opens the month's story, the same one the Me tab offers.
+    expect(html).toContain('/recap?month=2026-09')
+    expect(html).toContain('See your month')
   })
 
   it('counts the month’s posts, the reader’s and everybody’s', async () => {
@@ -153,6 +156,9 @@ describe('the monthly recap', () => {
     await newProfile()
     await runNewsletterPass(handle.db, ctx, FIRST)
     expect(sender.messages[0]?.html).toContain('You were quiet this month')
+    // A story of zeroes is not worth a button; the app is.
+    expect(sender.messages[0]?.html).not.toContain('/recap?month=')
+    expect(sender.messages[0]?.html).toContain('/discover')
   })
 
   it('counts the community once and tells everybody the same numbers', async () => {

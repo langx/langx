@@ -419,6 +419,10 @@ accusation rather than a summary.
   drafted by a scheduled routine, approved by **merging its pull request**.
   No note, no block; the recap still goes.
 
+The button is **See your month**, to `/recap?month=YYYY-MM` — the same story
+the Me tab offers that week. A quiet month gets **Open LangX** to `/discover`
+instead: its story would be one sentence.
+
 ### Campaigns
 
 `scripts/send-campaign.ts` **queues**; the API drips. See

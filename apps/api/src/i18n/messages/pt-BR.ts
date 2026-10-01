@@ -261,6 +261,8 @@ export const ptBR: Localized<ServerMessages> = {
 
     newsletterButton: 'Abrir o LangX',
 
+    newsletterSeeMonth: 'Ver seu mês',
+
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
