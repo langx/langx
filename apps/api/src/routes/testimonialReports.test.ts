@@ -241,7 +241,14 @@ describe('reporting a review', () => {
       moderatorHiddenAt: null,
     })
 
-    const path = reviewPathFrom(reportMails().at(-1)?.text ?? '')
+    // The mail quotes the review itself, so most reports can be judged
+    // without opening the link.
+    const mail = reportMails().at(-1)
+    expect(mail?.text).toContain('The review (on ')
+    expect(mail?.text).toContain(BODY)
+    expect(mail?.html).toContain('<strong>The review</strong>')
+
+    const path = reviewPathFrom(mail?.text ?? '')
     const page = await app.inject({ method: 'GET', url: path })
     expect(page.body).toContain('Rude and dismissive')
     expect(page.body).toContain('Remove this review')

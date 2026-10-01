@@ -1350,6 +1350,13 @@ export function reportEmail(input: {
    * the post it sits under. Optional so every other caller is unchanged.
    */
   comment?: { postId: string; body: string | null; postBody: string | null } | null
+  /**
+   * The reported profile review, when the report names one: its words, and
+   * whose profile it is on. Quoted for the comment's reason — most can be
+   * judged from the text — and because the review page is the only other
+   * place it can be read: a hidden one is on nobody's profile.
+   */
+  testimonial?: { body: string; subject: ReportedParty } | null
   reportId: string
   reason: ReportReason
   details: string | null
@@ -1445,6 +1452,13 @@ export function reportEmail(input: {
       }`
     : ''
 
+  const testimonial = input.testimonial
+  const testimonialQuoted = testimonial
+    ? `<p style="margin:16px 0 8px;"><strong>The review</strong> on ${escapeHtml(
+        partyName(testimonial.subject),
+      )}'s profile</p><blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 16px;padding:0 0 0 12px;color:#333;">${escapeHtml(testimonial.body)}</blockquote>`
+    : ''
+
   return {
     subject,
     html: `<!doctype html>
@@ -1456,6 +1470,7 @@ export function reportEmail(input: {
     ${details}
     ${quoted}
     ${commentQuoted}
+    ${testimonialQuoted}
     ${partyHtml('Reported', input.reported)}
     ${partyHtml('Reporter', input.reporter)}
     ${pointers.length ? `<p><strong>Raised from</strong></p><ul>${pointers.join('')}</ul>` : ''}
@@ -1492,6 +1507,9 @@ export function reportEmail(input: {
             comment.body ?? '(its author has since removed the words)',
             '',
           ]
+        : []),
+      ...(testimonial
+        ? [`The review (on ${partyName(testimonial.subject)}'s profile):`, testimonial.body, '']
         : []),
       ...partyText('Reported', input.reported),
       ...partyText('Reporter', input.reporter),
