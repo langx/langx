@@ -357,6 +357,12 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
           : null,
       ])
       const reportedComment = await readReportedComment(app.mongo.db, result.report.commentId)
+      const reportedTestimonial = result.report.testimonialId
+        ? await findTestimonialById(app.mongo.db, result.report.testimonialId)
+        : null
+      const testimonialSubject = reportedTestimonial
+        ? await getProfile(app.mongo.db, reportedTestimonial.subjectId)
+        : null
       try {
         await app.email.send({
           to: app.env.SUPPORT_EMAIL,
@@ -368,6 +374,12 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
                     ? null
                     : (reportedComment.comment.body ?? null),
                   postBody: reportedComment.postBody,
+                }
+              : null,
+            testimonial: reportedTestimonial
+              ? {
+                  body: reportedTestimonial.body,
+                  subject: party(reportedTestimonial.subjectId, testimonialSubject),
                 }
               : null,
             reportId: result.report._id.toHexString(),
