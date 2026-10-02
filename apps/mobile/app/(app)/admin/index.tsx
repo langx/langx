@@ -56,10 +56,9 @@ export default function AdminHomeScreen() {
   const audience = stats.data?.audience
   const money = stats.data?.money
   const shared = stats.data?.public
-  // Four columns a day over thirty days, cut on the UTC clock like everything
-  // else on this screen — `SLOT_HOURS` and `WINDOW_DAYS` on the API.
-  const slots = stats.data?.slots ?? []
-  const slotCaption = ADMIN.home.charts.lastDaysIn(30, 6)
+  // The three per-day charts are the public page's own series, in UTC like
+  // everything else on this screen.
+  const daily = shared?.daily ?? []
 
   const refresh = (): void => {
     void stats.refetch()
@@ -147,9 +146,8 @@ export default function AdminHomeScreen() {
             />
             <Chart
               title={ADMIN.home.charts.newMembers}
-              caption={slotCaption}
-              points={slots.map((slot) => ({ key: slot.at, value: slot.members }))}
-              gap={1}
+              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
+              points={daily.map((day) => ({ key: day.day, value: day.members }))}
             />
 
             <Heading>{ADMIN.home.sections.talking}</Heading>
@@ -165,10 +163,9 @@ export default function AdminHomeScreen() {
             </View>
 
             <Chart
-              title={ADMIN.home.charts.messages}
-              caption={slotCaption}
-              points={slots.map((slot) => ({ key: slot.at, value: slot.messages }))}
-              gap={1}
+              title={ADMIN.home.charts.messagesDaily}
+              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
+              points={daily.map((day) => ({ key: day.day, value: day.messages }))}
             />
             {/*
              * Green, because a correction is always the green pair in this app
@@ -177,11 +174,10 @@ export default function AdminHomeScreen() {
              * top of this file.
              */}
             <Chart
-              title={ADMIN.home.charts.corrections}
-              caption={slotCaption}
+              title={ADMIN.home.charts.correctionsDaily}
+              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
               color={colors.success}
-              points={slots.map((slot) => ({ key: slot.at, value: slot.corrections }))}
-              gap={1}
+              points={daily.map((day) => ({ key: day.day, value: day.corrections }))}
             />
 
             <View style={styles.tiles}>
@@ -234,11 +230,10 @@ export default function AdminHomeScreen() {
             {money ? <PaidShare tiers={money.tiers} /> : null}
 
             <Chart
-              title={ADMIN.home.charts.tokens}
-              caption={slotCaption}
+              title={ADMIN.home.charts.tokensDaily}
+              caption={ADMIN.home.charts.lastDays(money?.tokensDaily.length || 30)}
               color={colors.primary}
-              points={slots.map((slot) => ({ key: slot.at, value: slot.tokens }))}
-              gap={1}
+              points={(money?.tokensDaily ?? []).map(dayPoint)}
             />
 
             <Heading>{ADMIN.home.poolYesterday}</Heading>
@@ -419,13 +414,11 @@ function Chart({
   caption,
   points,
   color,
-  gap,
 }: {
   title: string
   caption: string
   points: ColumnPoint[]
   color?: string
-  gap?: number
 }) {
   const styles = useStyles()
   /*
@@ -442,7 +435,6 @@ function Chart({
       <Columns
         points={points}
         {...(color ? { color } : {})}
-        {...(gap ? { gap } : {})}
         accessibilityLabel={`${title}, ${caption}`}
       />
     </View>

@@ -3068,14 +3068,6 @@ export interface AdminStatsDto {
     pool: { day: string; paid: number; distributed: number; active: number } | null
     tokensDaily: { day: string; count: number }[]
   }
-  /** Six-hour columns over the same thirty days, oldest first; `at` is a column's start. */
-  slots: {
-    at: string
-    members: number
-    messages: number
-    corrections: number
-    tokens: number
-  }[]
   system: {
     jobs: {
       _id: string

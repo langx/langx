@@ -136,13 +136,11 @@ export const ADMIN = {
     /** Charts. Each is a single series, so each says what it plots. */
     charts: {
       activeDaily: 'Active each day',
-      newMembers: 'Joined',
-      messages: 'Messages',
-      corrections: 'Corrections',
-      tokens: 'Tokens awarded',
+      newMembers: 'Joined each day',
+      messagesDaily: 'Messages each day',
+      correctionsDaily: 'Corrections each day',
+      tokensDaily: 'Tokens awarded each day',
       lastDays: (days: number) => `last ${days} days`,
-      /** The six-hour charts: the window and how wide one column is. */
-      lastDaysIn: (days: number, hours: number) => `last ${days} days · ${hours} h a column`,
     },
 
     streaks: {
