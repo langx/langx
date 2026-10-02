@@ -5,7 +5,7 @@ import type { Profile } from '../profiles/profiles'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 
 /**
- * How many people are in the app right now, and the shape of the last hour.
+ * How many people are in the app right now, and the shape of the last day.
  *
  * Separate from `stats.ts` because it answers a different question at a
  * different rate: that module is a minute-cached snapshot of everything, this
@@ -21,7 +21,7 @@ import type { SchedulerLogger } from '../tokens/poolScheduler'
  * load balancer would draw alternating samples from two of them as if they
  * were one series. So each instance writes into a shared minute bucket keyed
  * by its own timestamp, `$setOnInsert` makes the second writer a no-op, and
- * every reader sees the same hour however many machines wrote it.
+ * every reader sees the same day however many machines wrote it.
  *
  * The count itself is cluster-wide for free: presence is `stats.lastActiveAt`
  * on a profile (`presence/touchPresence`), written by whichever machine holds
@@ -31,14 +31,23 @@ import type { SchedulerLogger } from '../tokens/poolScheduler'
 /** One sample per minute. Finer than the five-minute window it measures would be noise. */
 export const PULSE_BUCKET_MS = 60 * 1000
 
-/** How many buckets the chart draws: an hour at a minute each. */
-export const PULSE_POINTS = 60
+/**
+ * How wide one column of the chart is: half an hour.
+ *
+ * Coarser than the samples, because a day of minutes is 1,440 columns and a
+ * phone has room for about fifty — at a minute each the bars would be thinner
+ * than the 2px gaps between them.
+ */
+export const PULSE_SLOT_MS = 30 * 60 * 1000
+
+/** How many columns the chart draws: a day at half an hour each. */
+export const PULSE_POINTS = 48
 
 /**
- * Long enough that a reader always has the full hour behind them, short enough
- * that the collection is a few dozen documents forever.
+ * Long enough that a reader always has the full day behind them, short enough
+ * that the collection stays a day and a half of minutes at most.
  */
-export const PULSE_RETENTION_SECONDS = 2 * 60 * 60
+export const PULSE_RETENTION_SECONDS = 25 * 60 * 60
 
 /** How often an instance samples. One bucket, so every bucket gets a writer. */
 export const PULSE_SAMPLE_INTERVAL_MS = PULSE_BUCKET_MS
@@ -56,6 +65,7 @@ export interface AdminPulse {
   online: number
   /** The definition behind `online`, so the panel can say what it means. */
   windowMs: number
+  /** The width of one slot in `history` — a column, not a sample. */
   bucketMs: number
   /** `PULSE_POINTS` slots, oldest first, evenly spaced by `bucketMs`. */
   history: PulsePoint[]
@@ -68,9 +78,9 @@ interface PresenceSample {
   online: number
 }
 
-/** The start of the minute `at` falls in. */
-function bucketOf(at: Date): Date {
-  return new Date(Math.floor(at.getTime() / PULSE_BUCKET_MS) * PULSE_BUCKET_MS)
+/** The start of the `size`-wide bucket `at` falls in. */
+function bucketOf(at: Date, size: number = PULSE_BUCKET_MS): Date {
+  return new Date(Math.floor(at.getTime() / size) * size)
 }
 
 /**
@@ -155,16 +165,18 @@ export async function recordPresenceSample(db: Db, now: Date = new Date()): Prom
 }
 
 /**
- * The live number and the hour behind it.
+ * The live number and the day behind it.
  *
  * A read, and only a read — the sampler below is what fills the collection.
- * A minute with no row comes back as `null` rather than as a zero: the two
- * would draw the same empty column, and "nobody was here" is a very different
- * claim from "nothing was recorded".
+ * Each slot is the busiest minute inside it, not the average: the card's
+ * "peak" is the tallest column, and an average would flatten a spike to a
+ * number nobody was ever actually there for. A slot with no row comes back as
+ * `null` rather than as a zero: the two would draw the same empty column, and
+ * "nobody was here" is a very different claim from "nothing was recorded".
  */
 export async function readAdminPulse(db: Db, now: Date = new Date()): Promise<AdminPulse> {
-  const newest = bucketOf(now)
-  const oldest = new Date(newest.getTime() - (PULSE_POINTS - 1) * PULSE_BUCKET_MS)
+  const newest = bucketOf(now, PULSE_SLOT_MS)
+  const oldest = new Date(newest.getTime() - (PULSE_POINTS - 1) * PULSE_SLOT_MS)
 
   const [online, rows] = await Promise.all([
     countOnline(db, now),
@@ -172,21 +184,25 @@ export async function readAdminPulse(db: Db, now: Date = new Date()): Promise<Ad
       .collection<PresenceSample>(COLLECTIONS.presenceSamples)
       .find({ at: { $gte: oldest } })
       .sort({ at: 1 })
-      .limit(PULSE_POINTS)
+      .limit((PULSE_POINTS * PULSE_SLOT_MS) / PULSE_BUCKET_MS)
       .toArray(),
   ])
 
-  const byBucket = new Map(rows.map((row) => [row.at.getTime(), row.online]))
+  const bySlot = new Map<number, number>()
+  for (const row of rows) {
+    const slot = bucketOf(row.at, PULSE_SLOT_MS).getTime()
+    bySlot.set(slot, Math.max(bySlot.get(slot) ?? 0, row.online))
+  }
   const history = Array.from({ length: PULSE_POINTS }, (_, i) => {
-    const at = oldest.getTime() + i * PULSE_BUCKET_MS
-    return { at: new Date(at).toISOString(), online: byBucket.get(at) ?? null }
+    const at = oldest.getTime() + i * PULSE_SLOT_MS
+    return { at: new Date(at).toISOString(), online: bySlot.get(at) ?? null }
   })
 
   return {
     at: now.toISOString(),
     online,
     windowMs: ONLINE_WINDOW_MS,
-    bucketMs: PULSE_BUCKET_MS,
+    bucketMs: PULSE_SLOT_MS,
     history,
   }
 }

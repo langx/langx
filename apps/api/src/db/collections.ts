@@ -294,10 +294,17 @@ export const COLLECTIONS = {
    * `$setOnInsert` is a no-op. That is the whole reason this is a collection
    * and not a ring buffer in process memory — a buffer per machine would give
    * a dashboard polling through the load balancer two interleaved histories
-   * drawn as one line. Bounded by the TTL in `indexes.ts` to the couple of
-   * hours the panel's chart reads. See `modules/admin/pulse.ts`.
+   * drawn as one line. Bounded by the TTL in `indexes.ts` to the day the
+   * panel's chart reads. See `modules/admin/pulse.ts`.
+   *
+   * Stored as `presenceMinutes` since the chart grew from an hour to a day.
+   * The retention lives in a TTL index, and changing `expireAfterSeconds` on
+   * a live index is an `IndexOptionsConflict` at boot — under either the old
+   * name or a new one on the same key. A fresh collection gets the new TTL
+   * cleanly; the old one empties itself under its own two-hour TTL and costs
+   * nothing but its name in `listCollections`.
    */
-  presenceSamples: 'presenceSamples',
+  presenceSamples: 'presenceMinutes',
   /**
    * Socket.io's bus between API instances. Every emit is written here and
    * every instance tails it with a change stream, which is how a message sent
