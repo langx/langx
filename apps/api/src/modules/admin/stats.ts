@@ -1,5 +1,5 @@
 import { shiftDayKey, utcDayKey, type AppConfig } from '@langx/shared'
-import { ObjectId, type Db, type Document } from 'mongodb'
+import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { getAppConfig } from '../appConfig/appConfig'
 import { readJobHealth, type JobHealth } from './jobHealth'
@@ -61,26 +61,6 @@ export interface DayCount {
   count: number
 }
 
-/**
- * The grain of the panel's busier charts: four columns a day over the same
- * thirty days, so a day's own rhythm shows inside the month's trend.
- *
- * Not for "active each day": `dailyActivity` stores one row per person per
- * day, and there is nothing finer in it to cut.
- */
-export const SLOT_HOURS = 6
-const SLOT_MS = SLOT_HOURS * 60 * 60 * 1000
-export const SLOT_COUNT = (WINDOW_DAYS * 24) / SLOT_HOURS
-
-/** One six-hour column. `at` is its start, on a 00/06/12/18 UTC boundary. */
-export interface SlotCount {
-  at: string
-  members: number
-  messages: number
-  corrections: number
-  tokens: number
-}
-
 export interface AdminStats {
   generatedAt: string
   queue: {
@@ -105,8 +85,6 @@ export interface AdminStats {
     pool: PoolResult | null
     tokensDaily: DayCount[]
   }
-  /** `SLOT_COUNT` columns, oldest first, ending with the one `now` is in. Zeros included. */
-  slots: SlotCount[]
   system: {
     jobs: JobHealth[]
     suppressions: { total: number; unsubscribed: number; bounced: number; complained: number }
@@ -168,7 +146,6 @@ async function computeAdminStats(db: Db, now: Date): Promise<AdminStats> {
     campaigns,
     config,
     publicStats,
-    slots,
   ] = await Promise.all([
     db.collection(COLLECTIONS.reports).countDocuments({ status: { $in: ['open', 'reviewing'] } }),
     profiles.countDocuments({
@@ -200,7 +177,6 @@ async function computeAdminStats(db: Db, now: Date): Promise<AdminStats> {
     listCampaignProgress(db),
     getAppConfig(db),
     readPublicStats(db, now),
-    countSlots(db, now, days),
   ])
 
   return {
@@ -217,7 +193,6 @@ async function computeAdminStats(db: Db, now: Date): Promise<AdminStats> {
       builds,
     },
     money: { tiers, pool, tokensDaily },
-    slots,
     system: {
       jobs,
       suppressions,
@@ -312,61 +287,6 @@ async function lastPool(db: Db, today: string): Promise<PoolResult | null> {
     if (run?.result) return run.result
   }
   return null
-}
-
-/**
- * The four six-hour series behind the busier charts.
- *
- * Messages, corrections and ledger rows are bounded by `_id` as well as by
- * `createdAt`: an ObjectId starts with its creation second, so the range is
- * served by the `_id` index and reads the month rather than scanning the
- * collection — none of the three has a bare `createdAt` index (see the note
- * at the top of this file). `createdAt` still decides the column; the `_id`
- * bound only narrows what is read. Profiles have string ids, but the
- * collection is one row per person and `joinedLastMonth` already reads it so.
- */
-async function countSlots(db: Db, now: Date, days: string[]): Promise<SlotCount[]> {
-  const newest = Math.floor(now.getTime() / SLOT_MS) * SLOT_MS
-  const since = new Date(newest - (SLOT_COUNT - 1) * SLOT_MS)
-  const sinceId = { _id: { $gte: ObjectId.createFromTime(Math.floor(since.getTime() / 1000)) } }
-
-  const [members, messages, corrections, tokens] = await Promise.all([
-    perSlot(db, COLLECTIONS.profiles, since, MEMBER_FILTER),
-    perSlot(db, COLLECTIONS.messages, since, sinceId),
-    perSlot(db, COLLECTIONS.postCorrections, since, sinceId),
-    // `day` too, for the ledger's bare `day` index; the window's days cover every slot.
-    perSlot(db, COLLECTIONS.tokenLedger, since, { ...sinceId, day: { $in: days } }, '$amount'),
-  ])
-
-  return Array.from({ length: SLOT_COUNT }, (_, i) => {
-    const at = since.getTime() + i * SLOT_MS
-    return {
-      at: new Date(at).toISOString(),
-      members: members.get(at) ?? 0,
-      messages: messages.get(at) ?? 0,
-      corrections: corrections.get(at) ?? 0,
-      tokens: tokens.get(at) ?? 0,
-    }
-  })
-}
-
-/** Rows (or a field's sum) per six-hour slot, keyed by the slot's start in ms. */
-async function perSlot(
-  db: Db,
-  collection: string,
-  since: Date,
-  match: Document,
-  sum: 1 | string = 1,
-): Promise<Map<number, number>> {
-  const ms = { $toLong: '$createdAt' }
-  const rows = await db
-    .collection(collection)
-    .aggregate<{ _id: number; n: number }>([
-      { $match: { ...match, createdAt: { $gte: since } } },
-      { $group: { _id: { $subtract: [ms, { $mod: [ms, SLOT_MS] }] }, n: { $sum: sum } } },
-    ])
-    .toArray()
-  return new Map(rows.map((row) => [Number(row._id), row.n]))
 }
 
 /**

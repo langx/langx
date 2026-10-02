@@ -31,12 +31,7 @@ import {
   recordPresenceSample,
   type AdminPulse,
 } from '../modules/admin/pulse'
-import {
-  SLOT_COUNT,
-  forgetAdminStats,
-  readAdminStats,
-  type AdminStats,
-} from '../modules/admin/stats'
+import { forgetAdminStats, readAdminStats, type AdminStats } from '../modules/admin/stats'
 import { resetPublicStatsCache } from '../modules/insight/publicStats'
 import type { Message } from '../modules/chat/conversations'
 import type { Profile } from '../modules/profiles/profiles'
@@ -315,47 +310,6 @@ describe('the operator panel', () => {
         expect(strip).toHaveLength(30)
         expect(strip.at(0)?.day).toBe('2026-08-24')
         expect(strip.at(-1)?.day).toBe('2026-09-22')
-      }
-    })
-
-    it('cuts the busier charts into six-hour columns on the UTC clock', async () => {
-      // Each row's id carries its own creation second, as a real insert's would.
-      const at = (iso: string) => ({
-        _id: ObjectId.createFromTime(Date.parse(iso) / 1000),
-        createdAt: new Date(iso),
-      })
-      const messages = [
-        at('2026-09-21T19:00:00.000Z'),
-        at('2026-09-21T23:59:59.000Z'),
-        // Before the oldest column: thirty days of columns, not thirty and a bit.
-        at('2026-08-23T05:59:59.000Z'),
-      ]
-      const correction = at('2026-09-21T18:00:00.000Z')
-      const award = { ...at('2026-09-22T01:00:00.000Z'), day: '2026-09-22', amount: 5 }
-      await handle.db.collection(COLLECTIONS.messages).insertMany(messages)
-      await handle.db.collection(COLLECTIONS.postCorrections).insertOne(correction)
-      await handle.db.collection(COLLECTIONS.tokenLedger).insertOne(award)
-
-      try {
-        forgetAdminStats()
-        const { slots } = await readAdminStats(handle.db, THAT_EVENING)
-
-        expect(slots).toHaveLength(SLOT_COUNT)
-        expect(slots[0]!.at).toBe('2026-08-23T06:00:00.000Z')
-        // The column 01:47 falls in, and nothing after it.
-        expect(slots.at(-1)!.at).toBe('2026-09-22T00:00:00.000Z')
-        expect(slots.at(-1)!.tokens).toBe(5)
-
-        const evening = slots.find((slot) => slot.at === '2026-09-21T18:00:00.000Z')!
-        expect(evening.messages).toBe(2)
-        expect(evening.corrections).toBe(1)
-        expect(slots.reduce((sum, slot) => sum + slot.messages, 0)).toBe(2)
-      } finally {
-        await handle.db
-          .collection(COLLECTIONS.messages)
-          .deleteMany({ _id: { $in: messages.map((row) => row._id) } })
-        await handle.db.collection(COLLECTIONS.postCorrections).deleteOne({ _id: correction._id })
-        await handle.db.collection(COLLECTIONS.tokenLedger).deleteOne({ _id: award._id })
       }
     })
 
