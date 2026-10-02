@@ -280,7 +280,7 @@ const FUNNEL_WINDOWS: readonly { value: AdminFunnelWindow; label: string }[] = [
 /**
  * How many people are in the app at this moment, and the day behind them.
  *
- * The number is counted fresh on every poll; the columns are half an hour each,
+ * The number is counted fresh on every poll; the columns are a quarter hour each,
  * recorded server-side so the chart has a past the moment this opens rather
  * than drawing itself while somebody watches. A minute nobody sampled is a gap
  * and not a zero — see `modules/admin/pulse.ts`.
@@ -334,6 +334,7 @@ function LiveCard() {
               points={history.map((point) => ({ key: point.at, value: point.online }))}
               color={colors.success}
               height={56}
+              gap={1}
               accessibilityLabel={`${ADMIN.home.live.online}, ${ADMIN.home.live.peak(peak)}`}
             />
             <View style={styles.axis}>

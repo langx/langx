@@ -16,6 +16,11 @@ interface ColumnsProps {
   color?: string
   /** The bar area, above the labels. */
   height?: number
+  /**
+   * Ground between bars. 2 by default; a day of quarter hours needs 1, since
+   * at 2 the 95 gaps would take more width than the 96 bars between them.
+   */
+  gap?: number
   accessibilityLabel: string
 }
 
@@ -33,7 +38,7 @@ interface ColumnsProps {
  * the same hairline trace `WeekBars` uses. The two must not look alike: one
  * says nobody was counted, the other says nobody was there.
  */
-export function Columns({ points, color, height = 72, accessibilityLabel }: ColumnsProps) {
+export function Columns({ points, color, height = 72, gap = 2, accessibilityLabel }: ColumnsProps) {
   const { colors } = useTheme()
   const styles = useStyles()
 
@@ -43,7 +48,7 @@ export function Columns({ points, color, height = 72, accessibilityLabel }: Colu
 
   return (
     <View accessibilityRole="image" accessibilityLabel={accessibilityLabel}>
-      <View style={[styles.plot, { height }]}>
+      <View style={[styles.plot, { height, gap }]}>
         {points.map((point) => (
           <View key={point.key} style={styles.column}>
             {point.value === null ? null : (
@@ -65,7 +70,7 @@ export function Columns({ points, color, height = 72, accessibilityLabel }: Colu
       {/* The hairline the columns stand on — the only axis this chart has. */}
       <View style={styles.baseline} />
       {points.some((point) => point.label) ? (
-        <View style={styles.labels}>
+        <View style={[styles.labels, { gap }]}>
           {points.map((point, index) => (
             <View key={point.key} style={styles.column}>
               <Text

@@ -3114,7 +3114,7 @@ export interface AdminPulseDto {
   online: number
   /** The window `online` counts over, so the panel can say what it means. */
   windowMs: number
-  /** The width of one slot in `history`: half an hour, each its busiest minute. */
+  /** The width of one slot in `history`: a quarter hour, each its newest minute. */
   bucketMs: number
   /** Evenly spaced slots, oldest first. `null` is a slot nobody recorded. */
   history: { at: string; online: number | null }[]
@@ -3295,7 +3295,7 @@ export function useAdminStats(enabled = true) {
  * is a minute-cached snapshot of nine queries and this is one indexed count.
  * Fifteen seconds is well inside the five-minute window the number is defined
  * over, so the headline never drifts far from the chart under it, and the
- * chart's own grain is half an hour whatever this is set to.
+ * chart's own grain is a quarter hour whatever this is set to.
  */
 export function useAdminPulse(enabled = true) {
   return useQuery({

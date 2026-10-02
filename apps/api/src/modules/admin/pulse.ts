@@ -32,16 +32,16 @@ import type { SchedulerLogger } from '../tokens/poolScheduler'
 export const PULSE_BUCKET_MS = 60 * 1000
 
 /**
- * How wide one column of the chart is: half an hour.
+ * How wide one column of the chart is: a quarter of an hour.
  *
  * Coarser than the samples, because a day of minutes is 1,440 columns and a
- * phone has room for about fifty — at a minute each the bars would be thinner
- * than the 2px gaps between them.
+ * phone has room for about a hundred at a 1px gap — at a minute each the bars
+ * would be thinner than the gaps between them.
  */
-export const PULSE_SLOT_MS = 30 * 60 * 1000
+export const PULSE_SLOT_MS = 15 * 60 * 1000
 
-/** How many columns the chart draws: a day at half an hour each. */
-export const PULSE_POINTS = 48
+/** How many columns the chart draws: a day at a quarter of an hour each. */
+export const PULSE_POINTS = 96
 
 /**
  * Long enough that a reader always has the full day behind them, short enough
@@ -168,11 +168,14 @@ export async function recordPresenceSample(db: Db, now: Date = new Date()): Prom
  * The live number and the day behind it.
  *
  * A read, and only a read — the sampler below is what fills the collection.
- * Each slot is the busiest minute inside it, not the average: the card's
- * "peak" is the tallest column, and an average would flatten a spike to a
- * number nobody was ever actually there for. A slot with no row comes back as
- * `null` rather than as a zero: the two would draw the same empty column, and
- * "nobody was here" is a very different claim from "nothing was recorded".
+ * Each slot is the newest minute recorded inside it — a reading, not a summary:
+ * a column says how many people were in the app at that moment, the same
+ * question the headline answers now, and the newest column follows the
+ * headline minute by minute while its quarter hour is still open. Neither a
+ * maximum nor an average is a number the headline ever showed. A slot with no
+ * row comes back as `null` rather than as a zero: the two would draw the same
+ * empty column, and "nobody was here" is a very different claim from "nothing
+ * was recorded".
  */
 export async function readAdminPulse(db: Db, now: Date = new Date()): Promise<AdminPulse> {
   const newest = bucketOf(now, PULSE_SLOT_MS)
@@ -191,7 +194,8 @@ export async function readAdminPulse(db: Db, now: Date = new Date()): Promise<Ad
   const bySlot = new Map<number, number>()
   for (const row of rows) {
     const slot = bucketOf(row.at, PULSE_SLOT_MS).getTime()
-    bySlot.set(slot, Math.max(bySlot.get(slot) ?? 0, row.online))
+    // Rows arrive oldest first, so the last write per slot is its newest minute.
+    bySlot.set(slot, row.online)
   }
   const history = Array.from({ length: PULSE_POINTS }, (_, i) => {
     const at = oldest.getTime() + i * PULSE_SLOT_MS
