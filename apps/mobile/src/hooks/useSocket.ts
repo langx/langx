@@ -72,6 +72,17 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
      */
     const resync = (): void => {
       void invalidateMissedEvents(queryClient)
+      /*
+       * And read the thread that is on screen, which nothing else will. The
+       * messages that arrived during the gap were never a `message:new`, so
+       * the in-thread `markRead` below never saw them, and the chat screen
+       * posts its read on focus — which a return from the background is not.
+       * The refetch above draws them in front of the user and the server went
+       * on counting them unread: answered threads sat in the list with a badge
+       * until somebody left them and came back.
+       */
+      const open = getActiveConversation()
+      if (open && AppState.currentState === 'active') void markConversationRead(open, queryClient)
     }
     let lastAppState = AppState.currentState
     const appStateSubscription = AppState.addEventListener('change', (next) => {
