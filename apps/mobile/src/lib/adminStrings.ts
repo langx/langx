@@ -119,7 +119,7 @@ export const ADMIN = {
       online: 'in the app now',
       window: (minutes: number) => `Anyone seen in the last ${minutes} minutes`,
       peak: (n: number) => `peak ${n}`,
-      hourAgo: '60 min ago',
+      dayAgo: '24 h ago',
       now: 'now',
       /** Before the first minute has been sampled, and after a restart. */
       warmingUp: 'The first minute is still being recorded.',

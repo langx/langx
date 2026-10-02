@@ -1070,10 +1070,14 @@ export const INDEXES: Partial<IndexSpec> = {
   ],
   [COLLECTIONS.presenceSamples]: [
     /*
-     * The read is "the last hour, oldest first", and the TTL is the retention:
-     * the operator panel's live chart draws sixty minutes, so a row two hours
-     * old is behind the left edge of the only chart that reads it. Nothing
-     * else stops this collection growing a row a minute forever.
+     * The read is "the last day, oldest first", and the TTL is the retention:
+     * the operator panel's live chart draws twenty-four hours, so a row a day
+     * and an hour old is behind the left edge of the only chart that reads it.
+     * Nothing else stops this collection growing a row a minute forever.
+     *
+     * The collection was renamed when the chart grew from an hour to a day
+     * (see `presenceSamples` in `collections.ts`): a new `expireAfterSeconds`
+     * under the same name and key is an `IndexOptionsConflict` at boot.
      *
      * No unique index on the minute, because the minute *is* `_id` — which is
      * what makes the second machine's sample a no-op rather than a second row.

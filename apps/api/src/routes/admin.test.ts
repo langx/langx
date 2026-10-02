@@ -24,8 +24,10 @@ import { verifyBountyToken } from '../email/bountyToken'
 import { signReviewToken } from '../email/reviewToken'
 import {
   PULSE_POINTS,
+  PULSE_SLOT_MS,
   countOnline,
   listOnline,
+  readAdminPulse,
   recordPresenceSample,
   type AdminPulse,
 } from '../modules/admin/pulse'
@@ -427,6 +429,38 @@ describe('the operator panel', () => {
       await recordPresenceSample(handle.db)
 
       expect(await samples.countDocuments({})).toBe(1)
+    })
+
+    it('draws the day as quarter hours, each its busiest minute', async () => {
+      const samples = handle.db.collection<{ _id: string; at: Date; online: number }>(
+        COLLECTIONS.presenceSamples,
+      )
+      await samples.deleteMany({})
+
+      const now = new Date('2026-10-02T14:03:30Z')
+      const minute = (iso: string, online: number) => ({
+        _id: new Date(iso).toISOString(),
+        at: new Date(iso),
+        online,
+      })
+      await samples.insertMany([
+        // Three minutes in the current quarter hour: the column is the busiest,
+        // so the card's "peak" is a number somebody was actually there for.
+        minute('2026-10-02T14:00:00Z', 3),
+        minute('2026-10-02T14:01:00Z', 9),
+        minute('2026-10-02T14:02:00Z', 5),
+        // The oldest slot on the chart, twenty-three and three quarter hours back.
+        minute('2026-10-01T14:16:00Z', 4),
+        // Just behind the left edge: a day ago is not in a day's chart.
+        minute('2026-10-01T14:14:00Z', 50),
+      ])
+
+      const { history, bucketMs } = await readAdminPulse(handle.db, now)
+      expect(bucketMs).toBe(PULSE_SLOT_MS)
+      expect(history).toHaveLength(PULSE_POINTS)
+      expect(history.at(-1)).toEqual({ at: '2026-10-02T14:00:00.000Z', online: 9 })
+      expect(history[0]).toEqual({ at: '2026-10-01T14:15:00.000Z', online: 4 })
+      expect(history.filter((point) => point.online !== null)).toHaveLength(2)
     })
   })
 

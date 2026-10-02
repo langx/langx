@@ -122,7 +122,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
   })
 
   /**
-   * How many people are in the app right now, and the hour behind it.
+   * How many people are in the app right now, and the day behind it.
    *
    * Its own route rather than a field on `/admin/stats` because the two are
    * read at different rates: the dashboard polls this every few seconds, and
