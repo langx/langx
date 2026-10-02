@@ -168,14 +168,12 @@ export async function recordPresenceSample(db: Db, now: Date = new Date()): Prom
  * The live number and the day behind it.
  *
  * A read, and only a read — the sampler below is what fills the collection.
- * Each slot is the newest minute recorded inside it — a reading, not a summary:
- * a column says how many people were in the app at that moment, the same
- * question the headline answers now, and the newest column follows the
- * headline minute by minute while its quarter hour is still open. Neither a
- * maximum nor an average is a number the headline ever showed. A slot with no
- * row comes back as `null` rather than as a zero: the two would draw the same
- * empty column, and "nobody was here" is a very different claim from "nothing
- * was recorded".
+ * Each slot is the busiest minute inside it, not the average: the card's
+ * "peak" is the tallest column, so it is the day's real peak only if no column
+ * hides a busier minute, and an average would flatten a spike to a number
+ * nobody was ever actually there for. A slot with no row comes back as `null`
+ * rather than as a zero: the two would draw the same empty column, and "nobody
+ * was here" is a very different claim from "nothing was recorded".
  */
 export async function readAdminPulse(db: Db, now: Date = new Date()): Promise<AdminPulse> {
   const newest = bucketOf(now, PULSE_SLOT_MS)
@@ -194,8 +192,7 @@ export async function readAdminPulse(db: Db, now: Date = new Date()): Promise<Ad
   const bySlot = new Map<number, number>()
   for (const row of rows) {
     const slot = bucketOf(row.at, PULSE_SLOT_MS).getTime()
-    // Rows arrive oldest first, so the last write per slot is its newest minute.
-    bySlot.set(slot, row.online)
+    bySlot.set(slot, Math.max(bySlot.get(slot) ?? 0, row.online))
   }
   const history = Array.from({ length: PULSE_POINTS }, (_, i) => {
     const at = oldest.getTime() + i * PULSE_SLOT_MS

@@ -431,7 +431,7 @@ describe('the operator panel', () => {
       expect(await samples.countDocuments({})).toBe(1)
     })
 
-    it('draws the day as quarter hours, each its newest minute', async () => {
+    it('draws the day as quarter hours, each its busiest minute', async () => {
       const samples = handle.db.collection<{ _id: string; at: Date; online: number }>(
         COLLECTIONS.presenceSamples,
       )
@@ -444,8 +444,8 @@ describe('the operator panel', () => {
         online,
       })
       await samples.insertMany([
-        // Three minutes in the current quarter hour: the column is the newest
-        // one, a reading of that moment rather than the busiest or an average.
+        // Three minutes in the current quarter hour: the column is the busiest,
+        // so the card's "peak" is a number somebody was actually there for.
         minute('2026-10-02T14:00:00Z', 3),
         minute('2026-10-02T14:01:00Z', 9),
         minute('2026-10-02T14:02:00Z', 5),
@@ -458,7 +458,7 @@ describe('the operator panel', () => {
       const { history, bucketMs } = await readAdminPulse(handle.db, now)
       expect(bucketMs).toBe(PULSE_SLOT_MS)
       expect(history).toHaveLength(PULSE_POINTS)
-      expect(history.at(-1)).toEqual({ at: '2026-10-02T14:00:00.000Z', online: 5 })
+      expect(history.at(-1)).toEqual({ at: '2026-10-02T14:00:00.000Z', online: 9 })
       expect(history[0]).toEqual({ at: '2026-10-01T14:15:00.000Z', online: 4 })
       expect(history.filter((point) => point.online !== null)).toHaveLength(2)
     })

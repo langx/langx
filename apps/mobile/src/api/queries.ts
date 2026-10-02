@@ -3114,7 +3114,7 @@ export interface AdminPulseDto {
   online: number
   /** The window `online` counts over, so the panel can say what it means. */
   windowMs: number
-  /** The width of one slot in `history`: a quarter hour, each its newest minute. */
+  /** The width of one slot in `history`: a quarter hour, each its busiest minute. */
   bucketMs: number
   /** Evenly spaced slots, oldest first. `null` is a slot nobody recorded. */
   history: { at: string; online: number | null }[]
