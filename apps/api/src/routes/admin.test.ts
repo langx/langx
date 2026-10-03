@@ -1367,6 +1367,57 @@ describe('the operator panel', () => {
     })
   })
 
+  describe('taking down an avatar', () => {
+    it('removes it, records who did, and says so when there was nothing to remove', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+      await profiles().updateOne(
+        { _id: target.userId },
+        { $set: { avatarUrl: `${MEDIA_BASE}/avatars/${target.userId}/a.jpg` } },
+      )
+
+      const removed = await post(admin, `/admin/users/${target.userId}/remove-avatar`)
+      expect(removed.statusCode).toBe(200)
+      expect(removed.json()).toEqual({ removed: true })
+      expect((await profiles().findOne({ _id: target.userId }))?.avatarUrl).toBeUndefined()
+
+      const detail = (await get(admin, `/admin/users/${target.userId}`)).json<{
+        user: { actions: { action: string; adminId: string }[] }
+      }>()
+      expect(detail.user.actions[0]).toMatchObject({
+        action: 'user.removeAvatar',
+        adminId: admin.userId,
+      })
+
+      const again = await post(admin, `/admin/users/${target.userId}/remove-avatar`)
+      expect(again.json()).toEqual({ removed: false })
+    })
+
+    it('leaves an official account alone, because its avatar comes from code', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const official = await profiles().findOne({ handle: 'langx' })
+      const refused = await post(admin, `/admin/users/${official!._id}/remove-avatar`)
+      expect(refused.statusCode).toBe(400)
+      expect((await profiles().findOne({ _id: official!._id }))?.avatarUrl).toBe(
+        official!.avatarUrl,
+      )
+    })
+
+    it('is the operator’s alone', async () => {
+      const member = await newUser()
+      const other = await newUser()
+      await profiles().updateOne(
+        { _id: other.userId },
+        { $set: { avatarUrl: `${MEDIA_BASE}/avatars/${other.userId}/a.jpg` } },
+      )
+      const refused = await post(member, `/admin/users/${other.userId}/remove-avatar`)
+      expect(refused.statusCode).toBe(403)
+      expect((await profiles().findOne({ _id: other.userId }))?.avatarUrl).toBeDefined()
+    })
+  })
+
   describe('giving Pro', () => {
     it('grants the months at once, writes the letter and records who gave it', async () => {
       const admin = await newUser()

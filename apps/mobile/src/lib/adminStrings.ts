@@ -343,6 +343,10 @@ export const ADMIN = {
     signOut: 'Sign out everywhere',
     confirmSignOut: (who: string) => `Sign ${who} out of every device?`,
     signedOut: (n: number) => `${n} session${n === 1 ? '' : 's'} ended.`,
+    removeAvatar: 'Remove profile photo',
+    confirmRemoveAvatar: (who: string) =>
+      `Remove ${who}'s profile photo? The file is deleted and cannot be restored.`,
+    avatarRemoved: 'Profile photo removed.',
     message: 'Message from @langx',
     messageHint: 'One way — they cannot reply. Say where a reply should go.',
     presetsHint: 'Ready to send — tap one to fill the box, then edit if needed.',

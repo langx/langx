@@ -1446,6 +1446,26 @@ export async function setAvatarUrl(db: Db, userId: string, avatarUrl: string): P
   return result
 }
 
+/**
+ * Takes the avatar off a profile, for an operator removing one that breaks the
+ * community guidelines. Returns the URL that was there, or null when there was
+ * none, so the caller can delete the file as well.
+ *
+ * `returnDocument: 'before'` because the URL is the point: the account purge
+ * finds an avatar's file through `avatarUrl`, so once the field is gone the
+ * file is only reachable through what this returns.
+ */
+export async function removeAvatar(db: Db, userId: string): Promise<string | null> {
+  const before = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOneAndUpdate(
+      { _id: userId, avatarUrl: { $exists: true } },
+      { $unset: { avatarUrl: '' }, $set: { updatedAt: new Date() } },
+      { returnDocument: 'before', projection: { avatarUrl: 1 } },
+    )
+  return before?.avatarUrl ?? null
+}
+
 export interface PublicProfile {
   _id: string
   handle: string

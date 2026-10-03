@@ -178,6 +178,21 @@ function Found({ data }: { data: AdminUserDto }) {
     })
   }
 
+  async function removeAvatar() {
+    const ok = await confirmAlert({
+      title: ADMIN.users.confirmRemoveAvatar(who),
+      confirmLabel: ADMIN.users.removeAvatar,
+      destructive: true,
+    })
+    if (!ok) return
+    try {
+      await action.mutateAsync({ userId: user.userId, action: 'remove-avatar' })
+      showToast(ADMIN.users.avatarRemoved)
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
   async function run(name: string, confirm?: string, body?: unknown) {
     if (confirm) {
       const ok = await confirmAlert({
@@ -332,6 +347,9 @@ function Found({ data }: { data: AdminUserDto }) {
             variant="secondary"
             onPress={() => run('unfreeze-tokens')}
           />
+        ) : null}
+        {user.avatarUrl ? (
+          <Button label={ADMIN.users.removeAvatar} variant="danger" onPress={removeAvatar} />
         ) : null}
         <Button
           label={ADMIN.users.signOut}
