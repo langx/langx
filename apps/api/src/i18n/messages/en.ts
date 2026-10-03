@@ -555,6 +555,15 @@ export const en = {
     suspensionUpdatedText: 'Your LangX suspension has been updated. {detail}',
 
     /*
+     * A note an operator wrote to one person, from the panel, put in their
+     * inbox as well as their @langx thread. Only the envelope is here — the
+     * words are the operator's, in whatever language they wrote them.
+     */
+    officialNoteSubject: 'A message from LangX',
+    officialNotePreheader: 'A note from the LangX team',
+    officialNoteInApp: 'The same message is in your @langx chat in the app.',
+
+    /*
      * The v1 loyalty gift. Only the envelope is here — the letter itself is
      * `lifetimeGift` below, which the @langx message uses word for word. One
      * piece of news, told once, in whichever place the reader opens first.

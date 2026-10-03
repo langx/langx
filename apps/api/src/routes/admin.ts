@@ -5,6 +5,7 @@ import {
   adminMinVersionSchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
+  adminUserMessageSchema,
   adminReportListQuerySchema,
   adminFeedbackListQuerySchema,
   adminGiftCodeCreateSchema,
@@ -70,6 +71,7 @@ import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/d
 import { rewardReporter } from '../modules/moderation/reward'
 import { warnReported } from '../modules/moderation/warn'
 import { deliverOfficialMessage } from '../modules/official/deliver'
+import { emailOfficialNote } from '../modules/official/noteEmail'
 import { getProfile, removeAvatar, type Profile } from '../modules/profiles/profiles'
 import { fanOutMessage } from '../ws/fanOut'
 import { userRoom } from '../ws/types'
@@ -911,7 +913,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     '/admin/users/:userId/message',
     {
       preHandler: requireAdmin,
-      schema: { params: z.object({ userId: z.string() }), body: adminMessageSchema },
+      schema: { params: z.object({ userId: z.string() }), body: adminUserMessageSchema },
       config: { rateLimit: limit(60, '1 minute') },
     },
     async (request, reply) => {
@@ -941,6 +943,27 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         pushWhenAway: true,
       })
 
+      /*
+       * And in their inbox, when asked. The thread is the record, but a
+       * suspended account cannot open it and a push is gone once dismissed —
+       * which is exactly when a note matters most. A mail that fails is
+       * logged, not thrown: the message is already delivered, and a 500 here
+       * would invite sending it twice.
+       */
+      let emailed = false
+      if (request.body.email) {
+        try {
+          emailed =
+            (await emailOfficialNote(app.mongo.db, app.email, {
+              userId: recipient._id,
+              messageId: delivered.message._id.toHexString(),
+              body: request.body.body,
+            })) === 'sent'
+        } catch (error) {
+          request.log.warn({ err: error, userId: recipient._id }, 'note email failed')
+        }
+      }
+
       await recordAdminAction(app.mongo.db, request.log, {
         adminId: request.userId,
         action: 'user.message',
@@ -950,7 +973,9 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         // copy of everything anybody was told.
         refId: delivered.message._id.toHexString(),
       })
-      return reply.code(201).send({ conversationId: delivered.conversation._id.toHexString() })
+      return reply
+        .code(201)
+        .send({ conversationId: delivered.conversation._id.toHexString(), emailed })
     },
   )
 

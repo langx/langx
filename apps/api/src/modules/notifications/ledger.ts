@@ -47,6 +47,12 @@ export type NotificationJob =
    * the chat message was refused as a duplicate.
    */
   | 'lifetimeGift'
+  /**
+   * An operator's @langx note, mailed as well — period key is the message id.
+   * The panel and `scripts/email-suspension-notes.ts` both claim it, so a note
+   * the panel already mailed is never mailed again by the backfill.
+   */
+  | 'officialNoteEmail'
   /** Once per fall, keyed by `churnedFrom.at` rather than by a day. */
   | 'billing.planEnded'
   /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */
