@@ -30,7 +30,7 @@ function Blocked({
   const styles = useStyles()
 
   return (
-    <Screen>
+    <Screen style={styles.screen}>
       <View style={styles.root}>
         <View style={styles.icon}>
           <Feather name={icon} size={48} color={colors.textMuted} />
@@ -159,6 +159,10 @@ export function AppGate({ children }: { children: ReactNode }) {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
+  // `Screen`'s column is only as tall as what is in it, so without this the
+  // notice sat at the top of an otherwise empty screen. Nothing else is on it,
+  // so it belongs in the middle.
+  screen: { flex: 1, justifyContent: 'center' },
   root: { alignItems: 'center', paddingHorizontal: spacing.xl },
   icon: { marginBottom: spacing.lg },
   title: { ...font.title, color: colors.text, marginBottom: spacing.sm, textAlign: 'center' },
