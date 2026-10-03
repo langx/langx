@@ -539,6 +539,9 @@ export const fr: Localized<ServerMessages> = {
     suspensionUpdatedLifted:
       'Nous avons lu ton appel. Ta suspension est levée — tu peux réutiliser LangX.',
     suspensionUpdatedText: 'Ta suspension LangX a été mise à jour. {detail}',
+    officialNoteSubject: 'Un message de LangX',
+    officialNotePreheader: 'Un mot de l’équipe LangX',
+    officialNoteInApp: 'Le même message se trouve dans ton chat @langx dans l’app.',
     lifetimeGiftSubject: '{plan}, à vie',
     lifetimeGiftButton: 'Voir ma formule',
     proGiftSubject: '🎁 LangX Pro, offert',

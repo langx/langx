@@ -1104,6 +1104,34 @@ describe('the operator panel', () => {
       expect(sent.statusCode).toBe(201)
     })
 
+    /*
+     * The thread is the one place a suspended account cannot open, so the
+     * panel can put the same words in the inbox — and only when asked.
+     */
+    it('mails the note too when asked, and only then', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const recipient = await newUser()
+      // By the words rather than a count: sign-up's welcome mail lands
+      // whenever it lands, and is not what this is about.
+      const mailed = (words: string) =>
+        emailSender.messages.filter((m) => m.to === recipient.email && m.text.includes(words))
+
+      const quiet = await post(admin, `/admin/users/${recipient.userId}/message`, {
+        body: 'Only in the app.',
+      })
+      expect(quiet.json()).toMatchObject({ emailed: false })
+      expect(mailed('Only in the app.')).toHaveLength(0)
+
+      const loud = await post(admin, `/admin/users/${recipient.userId}/message`, {
+        body: 'Your account is suspended.\n\nReplies go to hi@langx.io.',
+        email: true,
+      })
+      expect(loud.statusCode).toBe(201)
+      expect(loud.json()).toMatchObject({ emailed: true })
+      expect(mailed('Replies go to hi@langx.io.')).toHaveLength(1)
+    })
+
     it('delivers one message, which the person cannot reply to', async () => {
       const admin = await newUser()
       await makeAdmin(admin)

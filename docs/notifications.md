@@ -468,6 +468,10 @@ Four mechanisms, and each is in the database rather than in a caller's care.
   own clock, for everything promotional.
 - **An unverified address.** Nothing is ever sent to one — it may belong to
   somebody else.
+- **A suspension in force.** The evening letter skips the account: every
+  button in it lands on the suspension screen, and "you have unread messages"
+  to somebody just shut out reads as the app carrying on regardless. The
+  suspension notice is their one letter.
 - **Having read it already.** `alreadySeenInApp` — the four digest sections
   and the two delayed pushes whose news also has a row in the notification
   centre. It stops a mail from being _sent_, never a paragraph from being
@@ -733,19 +737,28 @@ Written down so the next person does not have to re-derive them.
 ## Messages sent by hand
 
 Two of them, both from `@langx`, both landing in the same chat thread the
-welcome did — not an email and not a push-only broadcast, so they are still
+welcome did — never only an email and not a push-only broadcast, so they are still
 there next week.
 
 | Message                  | Sent from                                             | Once because                                                      |
 | ------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------- |
 | **A broadcast**          | the operator panel, or `scripts/send-announcement.ts` | `messages.sender_client_id_unique` on `broadcast:<slug>:<userId>` |
 | **A note to one person** | the operator panel's user screen                      | nothing — the same words twice are two messages here              |
+| …mailed as well          | **Send + email** on that screen                       | ledger `officialNoteEmail:<userId>:<messageId>`                   |
 
 A broadcast is a row in `broadcastQueue` that the notification scheduler works
 through, 500 recipients a tick inside 07–21 UTC. That ceiling is **not** a
 deliverability ramp like `campaignDayBudget` — an in-app message has no domain
 reputation to warm up; it bounds the Expo relay, the write rate, and how much
 of a broadcast is already gone by the time somebody presses stop.
+
+**Send + email** puts the same words in the person's inbox, to a verified
+address only (`modules/official/noteEmail.ts`). The thread is still the
+record; the mail is for whoever cannot open it — a suspended account is
+refused everything but the suspension screen, and the push the note made is
+gone once dismissed. `scripts/email-suspension-notes.ts` was the one-off
+backfill for notes sent to accounts suspended before the button existed; it
+claims the same ledger row, so neither path mails a note twice.
 
 Neither can be replied to: `@langx` is a channel, `OFFICIAL_WRITABLE.langx` is
 false, and the chat screen draws no composer on that thread. So a note to one

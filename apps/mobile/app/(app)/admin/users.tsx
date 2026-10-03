@@ -193,7 +193,7 @@ function Found({ data }: { data: AdminUserDto }) {
     }
   }
 
-  async function run(name: string, confirm?: string, body?: unknown) {
+  async function run(name: string, confirm?: string) {
     if (confirm) {
       const ok = await confirmAlert({
         title: confirm,
@@ -203,9 +203,32 @@ function Found({ data }: { data: AdminUserDto }) {
       if (!ok) return
     }
     try {
-      await action.mutateAsync({ userId: user.userId, action: name, ...(body ? { body } : {}) })
-      showToast(name === 'message' ? ADMIN.users.sent : ADMIN.users.unfrozen)
-      if (name === 'message') setMessage('')
+      const result = (await action.mutateAsync({ userId: user.userId, action: name })) as {
+        sessions?: number
+      }
+      showToast(
+        name === 'sign-out' ? ADMIN.users.signedOut(result.sessions ?? 0) : ADMIN.users.unfrozen,
+      )
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
+  async function sendMessage(email: boolean) {
+    try {
+      const result = (await action.mutateAsync({
+        userId: user.userId,
+        action: 'message',
+        body: { body: message.trim(), email },
+      })) as { emailed?: boolean }
+      showToast(
+        !email
+          ? ADMIN.users.sent
+          : result.emailed
+            ? ADMIN.users.sentAndEmailed
+            : ADMIN.users.sentNotEmailed,
+      )
+      setMessage('')
     } catch {
       showToast(ADMIN.common.failed)
     }
@@ -323,12 +346,21 @@ function Found({ data }: { data: AdminUserDto }) {
         ))}
       </View>
       <FormField value={message} onChangeText={setMessage} multiline numberOfLines={4} />
-      <Button
-        label={ADMIN.users.send}
-        variant="secondary"
-        disabled={message.trim().length === 0}
-        onPress={() => run('message', undefined, { body: message.trim() })}
-      />
+      <View style={styles.actions}>
+        <Button
+          label={ADMIN.users.send}
+          variant="secondary"
+          disabled={message.trim().length === 0}
+          onPress={() => sendMessage(false)}
+        />
+        <Button
+          label={ADMIN.users.sendAndEmail}
+          variant="secondary"
+          disabled={message.trim().length === 0 || !user.email || !user.emailVerified}
+          onPress={() => sendMessage(true)}
+        />
+      </View>
+      <Text style={styles.hint}>{ADMIN.users.sendAndEmailHint}</Text>
 
       <FormField
         label={ADMIN.reports.days}

@@ -514,6 +514,9 @@ export const tr: Localized<ServerMessages> = {
     suspensionUpdatedLifted:
       'İtirazını okuduk. Askıya alma kaldırıldı — LangX’i yeniden kullanabilirsin.',
     suspensionUpdatedText: 'LangX askıya alma durumun güncellendi. {detail}',
+    officialNoteSubject: 'LangX’ten bir mesaj',
+    officialNotePreheader: 'LangX ekibinden bir not',
+    officialNoteInApp: 'Aynı mesaj uygulamadaki @langx sohbetinde de var.',
     lifetimeGiftSubject: '{plan}, ömür boyu',
     lifetimeGiftButton: 'Planımı gör',
     proGiftSubject: '🎁 LangX Pro bizden',

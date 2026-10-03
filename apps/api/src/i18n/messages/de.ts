@@ -532,6 +532,9 @@ export const de: Localized<ServerMessages> = {
     suspensionUpdatedLifted:
       'Wir haben deinen Einspruch gelesen. Die Sperre ist aufgehoben — du kannst LangX wieder nutzen.',
     suspensionUpdatedText: 'Deine LangX-Sperre wurde aktualisiert. {detail}',
+    officialNoteSubject: 'Eine Nachricht von LangX',
+    officialNotePreheader: 'Eine Nachricht vom LangX-Team',
+    officialNoteInApp: 'Dieselbe Nachricht findest du auch in deinem @langx-Chat in der App.',
     lifetimeGiftSubject: '{plan}, auf Lebenszeit',
     lifetimeGiftButton: 'Meinen Tarif ansehen',
     proGiftSubject: '🎁 LangX Pro, von uns geschenkt',

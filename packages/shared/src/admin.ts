@@ -98,6 +98,14 @@ export const adminMessageSchema = z.object({
 export type AdminMessageInput = z.infer<typeof adminMessageSchema>
 
 /**
+ * The same, from the user screen, which can also mail it. A report's warning
+ * cannot: it goes to somebody who can still open the app and read it there.
+ */
+export const adminUserMessageSchema = adminMessageSchema.extend({
+  email: z.boolean().optional(),
+})
+
+/**
  * Setting one platform's entry in `latestVersion` or `minVersion`.
  *
  * `latestVersion` shows a dismissible banner to people on something older;

@@ -351,7 +351,12 @@ export const ADMIN = {
     messageHint: 'One way — they cannot reply. Say where a reply should go.',
     presetsHint: 'Ready to send — tap one to fill the box, then edit if needed.',
     send: 'Send',
+    sendAndEmail: 'Send + email',
+    sendAndEmailHint:
+      'Also mails the same words to their verified address — for somebody who cannot open the app, such as a suspended account.',
     sent: 'Sent.',
+    sentAndEmailed: 'Sent, and emailed.',
+    sentNotEmailed: 'Sent in the app. Not emailed — no verified address.',
     suspend: 'Suspend',
     lift: 'Lift suspension',
     reason: 'Reason',

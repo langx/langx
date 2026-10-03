@@ -549,6 +549,9 @@ export const ru: Localized<ServerMessages> = {
     suspensionUpdatedLifted:
       'Мы прочитали вашу апелляцию. Блокировка снята — вы снова можете пользоваться LangX.',
     suspensionUpdatedText: 'Блокировка вашего аккаунта LangX изменена. {detail}',
+    officialNoteSubject: 'Сообщение от LangX',
+    officialNotePreheader: 'Письмо от команды LangX',
+    officialNoteInApp: 'Это же сообщение есть в вашем чате с @langx в приложении.',
     lifetimeGiftSubject: '{plan} — навсегда',
     lifetimeGiftButton: 'Посмотреть тариф',
     proGiftSubject: '🎁 LangX Pro в подарок',

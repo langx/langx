@@ -1589,6 +1589,36 @@ export function suspensionUpdatedEmail(locale: Locale, input: { until: Date | nu
 }
 
 /**
+ * A note an operator wrote from `@langx`, in the person's inbox too.
+ *
+ * The words are the operator's, word for word, so they are escaped and their
+ * line breaks kept — and they are the reader's only explanation, so nothing
+ * is added around them but where else the same note can be found.
+ *
+ * `shell` with an empty footer rather than `wrap`: "you can ignore this if
+ * you did not ask for it" is wrong under something we chose to send.
+ */
+export function officialNoteEmail(locale: Locale, input: { body: string }): Email {
+  const t = translator(locale)
+  const inApp = t('email.officialNoteInApp')
+  const html = input.body
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\n/g, '<br />')}</p>`)
+    .join('\n       ')
+  return {
+    subject: t('email.officialNoteSubject'),
+    html: shell(
+      locale,
+      escapeHtml(t('email.officialNotePreheader')),
+      `${html}
+       <p style="color:#62676d;">${escapeHtml(inApp)}</p>`,
+      '',
+    ),
+    text: `${input.body}\n\n${inApp}`,
+  }
+}
+
+/**
  * The operator's copy of an appeal — English, like every other mail in this
  * file that is read by us rather than about us.
  */

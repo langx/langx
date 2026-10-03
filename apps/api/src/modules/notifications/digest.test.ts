@@ -154,6 +154,24 @@ describe('the one notification email of the day', () => {
     expect(sender.messages).toHaveLength(1)
   })
 
+  it('writes nothing to a suspended account, and resumes once it ends', async () => {
+    const reader = await newProfile()
+    await unreadThread(reader, await newProfile())
+    const suspend = (until: Date) =>
+      handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: reader as never },
+          { $set: { suspension: { at: EVENING, until, permanent: false, reason: 'spam' } } },
+        )
+
+    await suspend(new Date(EVENING.getTime() + 30 * DAY))
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 0 })
+
+    await suspend(new Date(EVENING.getTime() - HOUR))
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
+  })
+
   it('carries every kind that has something to say in one mail', async () => {
     const reader = await newProfile()
     await unreadThread(reader, await newProfile({ name: 'Ada Lovelace' }))

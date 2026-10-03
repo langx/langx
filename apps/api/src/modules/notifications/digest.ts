@@ -8,6 +8,7 @@ import {
 import type { Db } from 'mongodb'
 import { sendDigestEmail, type NotificationEmailContext } from '../../email/notify'
 import { dailyDigestEmail, type DigestSection } from '../../email/templates'
+import { notSuspended } from '../moderation/suspension'
 import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
 import { tokensByLocale } from '../push/devices'
@@ -84,6 +85,13 @@ export async function runDailyDigestPass(
     // Bounds the scan only; `notificationsAllowed` decides per section. Two
     // of the three stored shapes are objects this cannot read into.
     'settings.notifications': { $ne: false },
+    /*
+     * A suspended account cannot open anything this mail points at — every
+     * button lands on the suspension screen — and "you have unread messages"
+     * to somebody we have just shut out reads as the app carrying on as if
+     * nothing happened. Their one letter is the suspension notice.
+     */
+    ...notSuspended(now),
   })
   if (readers.length === 0) return { sent: 0, failed: 0 }
 
