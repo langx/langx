@@ -64,12 +64,13 @@ import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users
 import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
 import { payBounty } from '../modules/feedback/awardBounty'
 import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
+import { deleteObjects } from '../modules/feed/attachments'
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
 import { rewardReporter } from '../modules/moderation/reward'
 import { warnReported } from '../modules/moderation/warn'
 import { deliverOfficialMessage } from '../modules/official/deliver'
-import { getProfile, type Profile } from '../modules/profiles/profiles'
+import { getProfile, removeAvatar, type Profile } from '../modules/profiles/profiles'
 import { fanOutMessage } from '../ws/fanOut'
 import { userRoom } from '../ws/types'
 
@@ -596,6 +597,44 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         payload: { sessions: deletedCount },
       })
       return reply.send({ sessions: deletedCount })
+    },
+  )
+
+  /**
+   * Takes down an avatar that breaks the community guidelines.
+   *
+   * The file goes too, not only the field. The account purge finds an avatar
+   * through `avatarUrl`, so a file left behind here would outlive the account
+   * and stay publicly fetchable at its URL — the removed photo, still online.
+   *
+   * An official account is refused: its avatar is written from code at every
+   * boot, so removing it here would be undone by the next deploy.
+   */
+  app.post(
+    '/admin/users/:userId/remove-avatar',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ userId: z.string() }) },
+      config: { rateLimit: limit(30, '1 minute') },
+    },
+    async (request, reply) => {
+      const profile = await getProfile(app.mongo.db, request.params.userId)
+      if (!profile || profile.deletedAt)
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
+      if (profile.official) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'An official account keeps its avatar')
+      }
+
+      const removed = await removeAvatar(app.mongo.db, profile._id)
+      if (removed) {
+        await deleteObjects(app.storage, [removed])
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action: 'user.removeAvatar',
+          subjectUserId: profile._id,
+        })
+      }
+      return reply.send({ removed: removed !== null })
     },
   )
 

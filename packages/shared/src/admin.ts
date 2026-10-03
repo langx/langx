@@ -138,6 +138,7 @@ export const ADMIN_ACTIONS = [
   'user.lift',
   'user.unfreeze',
   'user.signOut',
+  'user.removeAvatar',
   'user.message',
   'user.giftPro',
   'giftCode.create',
