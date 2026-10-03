@@ -203,8 +203,12 @@ function Found({ data }: { data: AdminUserDto }) {
       if (!ok) return
     }
     try {
-      await action.mutateAsync({ userId: user.userId, action: name })
-      showToast(ADMIN.users.unfrozen)
+      const result = (await action.mutateAsync({ userId: user.userId, action: name })) as {
+        sessions?: number
+      }
+      showToast(
+        name === 'sign-out' ? ADMIN.users.signedOut(result.sessions ?? 0) : ADMIN.users.unfrozen,
+      )
     } catch {
       showToast(ADMIN.common.failed)
     }
