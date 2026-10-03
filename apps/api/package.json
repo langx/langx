@@ -14,7 +14,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.125.0",
+    "@anthropic-ai/sdk": "^0.128.0",
     "@aws-sdk/client-s3": "catalog:",
     "@aws-sdk/s3-request-presigner": "catalog:",
     "@better-auth/expo": "catalog:",
@@ -37,7 +37,7 @@
     "pino": "catalog:",
     "qrcode": "^1.5.4",
     "resend": "catalog:",
-    "satori": "^0.33.4",
+    "satori": "^0.33.5",
     "socket.io": "catalog:",
     "zod": "catalog:"
   },

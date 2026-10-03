@@ -25,13 +25,13 @@ catalog:
   '@types/node': ^24.3.0
   typescript: ~6.0.3
   vitest: ^4.1.11
-  tsx: ^4.23.13
+  tsx: ^4.23.15
 
   # shared runtime
-  zod: ^4.5.4
+  zod: ^4.6.5
 
   # api
-  fastify: ^5.12.3
+  fastify: ^5.12.5
   '@fastify/cors': ^11.3.0
   '@fastify/helmet': ^13.1.1
   '@fastify/rate-limit': ^11.2.0
@@ -39,25 +39,25 @@ catalog:
   mongodb: ^7.6.0
   pino: ^10.3.1
   pino-pretty: ^13.1.2
-  'mongodb-memory-server': ^11.2.0
+  'mongodb-memory-server': ^11.3.0
   esbuild: ^0.28.2
-  better-auth: ^1.7.2
-  '@better-auth/expo': ^1.7.2
-  resend: ^6.26.0
-  jose: ^6.2.11
-  '@aws-sdk/client-s3': ^3.1127.0
-  '@aws-sdk/s3-request-presigner': ^3.1127.0
+  better-auth: ^1.7.6
+  '@better-auth/expo': ^1.7.6
+  resend: ^6.30.0
+  jose: ^6.2.12
+  '@aws-sdk/client-s3': ^3.1141.0
+  '@aws-sdk/s3-request-presigner': ^3.1141.0
   'node-appwrite': ^28.0.0
-  'socket.io': ^4.8.3
-  'socket.io-client': ^4.8.3
+  'socket.io': ^4.8.4
+  'socket.io-client': ^4.8.4
   '@socket.io/mongo-adapter': ^0.4.0
 
   # mobile client. The three TanStack lines move together: the two persist
   # packages are released for every react-query version and peer-depend on
   # exactly that one, so they are pinned to it rather than given a caret.
-  '@tanstack/react-query': ^5.102.8
-  '@tanstack/react-query-persist-client': 5.102.8
-  '@tanstack/query-async-storage-persister': 5.102.8
+  '@tanstack/react-query': ^5.104.0
+  '@tanstack/react-query-persist-client': 5.104.0
+  '@tanstack/query-async-storage-persister': 5.104.0
   'idb-keyval': ^6.3.0
 
   # observability
