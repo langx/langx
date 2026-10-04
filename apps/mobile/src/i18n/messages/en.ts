@@ -2525,7 +2525,10 @@ export const en = {
     micNeeded: 'LangX needs your microphone for calls. Allow it, then try again.',
     cameraNeeded:
       'LangX needs your camera for video calls. Allow it, or answer without the camera.',
+    cameraBlocked: 'LangX can’t use your camera. Allow it, then try again.',
+    callNow: 'Call now',
     callBack: 'Call back',
+    callAgain: 'Call again',
     row: {
       outgoingVoice: 'Outgoing voice call',
       outgoingVideo: 'Outgoing video call',

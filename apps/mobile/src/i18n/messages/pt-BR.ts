@@ -2295,7 +2295,10 @@ export const ptBR: Localized<EnMessages> = {
     micNeeded: 'O LangX precisa do microfone para chamadas. Permita o acesso e tente de novo.',
     cameraNeeded:
       'O LangX precisa da câmera para chamadas de vídeo. Permita o acesso ou atenda sem câmera.',
+    cameraBlocked: 'O LangX não consegue usar a câmera. Permita o acesso e tente de novo.',
+    callNow: 'Ligar agora',
     callBack: 'Ligar de volta',
+    callAgain: 'Ligar de novo',
     row: {
       outgoingVoice: 'Chamada de voz realizada',
       outgoingVideo: 'Chamada de vídeo realizada',

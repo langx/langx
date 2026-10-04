@@ -2319,7 +2319,10 @@ export const fr: Localized<EnMessages> = {
     micNeeded: 'LangX a besoin de ton micro pour les appels. Autorise-le, puis réessaie.',
     cameraNeeded:
       'LangX a besoin de ta caméra pour les appels vidéo. Autorise-la, ou réponds sans caméra.',
+    cameraBlocked: 'LangX ne peut pas utiliser ta caméra. Autorise-la, puis réessaie.',
+    callNow: 'Appeler maintenant',
     callBack: 'Rappeler',
+    callAgain: 'Appeler de nouveau',
     row: {
       outgoingVoice: 'Appel vocal sortant',
       outgoingVideo: 'Appel vidéo sortant',

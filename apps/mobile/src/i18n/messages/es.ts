@@ -2296,7 +2296,10 @@ export const es: Localized<EnMessages> = {
     micNeeded: 'LangX necesita tu micrófono para las llamadas. Permítelo y vuelve a intentarlo.',
     cameraNeeded:
       'LangX necesita tu cámara para las videollamadas. Permítela o responde sin cámara.',
+    cameraBlocked: 'LangX no puede usar tu cámara. Permítela y vuelve a intentarlo.',
+    callNow: 'Llamar ahora',
     callBack: 'Devolver la llamada',
+    callAgain: 'Volver a llamar',
     row: {
       outgoingVoice: 'Llamada de voz saliente',
       outgoingVideo: 'Videollamada saliente',

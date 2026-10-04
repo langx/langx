@@ -75,6 +75,8 @@ interface IncomingDecision {
     type: string
     deleted?: boolean
     hidden?: boolean
+    /** Set on the row a call leaves; `senderId` is then who placed it. */
+    call?: { outcome: string }
   }
   meId: string | undefined
   activeConversationId: string | null
@@ -122,6 +124,20 @@ export function shouldShowIncomingBanner({
   if (!meId) return 'ignore'
   if (message.senderId === meId) return 'ignore'
   if (message.deleted || message.hidden) return 'ignore'
+
+  /*
+   * The row a call leaves is never a banner: the call itself was on this
+   * screen a moment ago, ringing, and a strip saying it happened is the same
+   * news twice. It is still *read* when its thread is the one open — but only
+   * the two outcomes the server counted as unread, or every finished call
+   * would post a read for nothing.
+   */
+  if (message.call) {
+    const unread = message.call.outcome === 'missed' || message.call.outcome === 'busy'
+    return unread && activeConversationId === message.conversationId && appActive
+      ? 'markRead'
+      : 'ignore'
+  }
 
   // Reading the thread it arrived in *is* the read receipt, which the chat
   // screen only posts on focus — so a message arriving while it sits open

@@ -1,7 +1,13 @@
 import { CALL_END_REASONS, CALL_MEDIA, CALL_OUTCOMES, SUPPORTED_LOCALES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from '../../i18n/runtime'
-import { callRowLabel, closingLine, formatCallDuration } from './callLabels'
+import {
+  callRowIcon,
+  callRowLabel,
+  callStatusKey,
+  closingLine,
+  formatCallDuration,
+} from './callLabels'
 
 describe('callRowLabel', () => {
   it('reads the same call differently from each side', () => {
@@ -123,5 +129,75 @@ describe('closingLine', () => {
     expect(closingLine({ kind: 'ended', reason: 'declined' })).toBe(
       closingLine({ kind: 'ended', reason: 'timeout' }),
     )
+  })
+})
+
+describe('callRowIcon', () => {
+  it('is the camera for every video call, whichever way it went', () => {
+    for (const outcome of CALL_OUTCOMES) {
+      expect(callRowIcon({ media: 'video', outcome }, true)).toBe('video')
+      expect(callRowIcon({ media: 'video', outcome }, false)).toBe('video')
+    }
+  })
+
+  it('points a voice call the way it went', () => {
+    expect(callRowIcon({ media: 'audio', outcome: 'completed' }, true)).toBe('phone-outgoing')
+    expect(callRowIcon({ media: 'audio', outcome: 'completed' }, false)).toBe('phone-incoming')
+    expect(callRowIcon({ media: 'audio', outcome: 'declined' }, false)).toBe('phone-incoming')
+  })
+
+  /** Missed is the callee's word. The caller's own unanswered call is still an outgoing one. */
+  it('crosses the arrow only for the person who missed it', () => {
+    expect(callRowIcon({ media: 'audio', outcome: 'missed' }, false)).toBe('phone-missed')
+    expect(callRowIcon({ media: 'audio', outcome: 'busy' }, false)).toBe('phone-missed')
+    expect(callRowIcon({ media: 'audio', outcome: 'missed' }, true)).toBe('phone-outgoing')
+  })
+})
+
+describe('callStatusKey', () => {
+  const base = {
+    media: 'audio',
+    remoteRinging: false,
+    reconnecting: false,
+    closing: null,
+  } as const
+
+  it('names the kind of call that is coming in', () => {
+    expect(callStatusKey({ ...base, phase: 'incoming' })).toBe('calls.incomingVoice')
+    expect(callStatusKey({ ...base, phase: 'incoming', media: 'video' })).toBe(
+      'calls.incomingVideo',
+    )
+  })
+
+  /** "Ringing" is a claim about the other phone; it waits for that phone to make it. */
+  it('says ringing only once their device said so', () => {
+    expect(callStatusKey({ ...base, phase: 'outgoing' })).toBe('calls.calling')
+    expect(callStatusKey({ ...base, phase: 'outgoing', remoteRinging: true })).toBe('calls.ringing')
+  })
+
+  it('hands the line to the clock once the call is up', () => {
+    expect(callStatusKey({ ...base, phase: 'active' })).toBeNull()
+    expect(callStatusKey({ ...base, phase: 'active', reconnecting: true })).toBe(
+      'calls.reconnecting',
+    )
+  })
+
+  it('keeps saying connecting while the first path is still being found', () => {
+    expect(callStatusKey({ ...base, phase: 'connecting', reconnecting: true })).toBe(
+      'calls.connecting',
+    )
+  })
+
+  it('closes with the line for why it ended', () => {
+    expect(
+      callStatusKey({ ...base, phase: 'ended', closing: { kind: 'ended', reason: 'timeout' } }),
+    ).toBe('calls.noAnswer')
+    expect(
+      callStatusKey({
+        ...base,
+        phase: 'ended',
+        closing: { kind: 'refused', code: 'CALL_COOLDOWN' },
+      }),
+    ).toBe('calls.cooldown')
   })
 })

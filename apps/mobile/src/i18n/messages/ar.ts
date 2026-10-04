@@ -2644,7 +2644,10 @@ export const ar: Localized<EnMessages> = {
     },
     micNeeded: 'يحتاج LangX إلى الميكروفون لإجراء المكالمات. اسمح بذلك ثم حاول مرة أخرى.',
     cameraNeeded: 'يحتاج LangX إلى الكاميرا لمكالمات الفيديو. اسمح بذلك أو ردّ بدون كاميرا.',
+    cameraBlocked: 'لا يستطيع LangX استخدام الكاميرا. اسمح بذلك ثم حاول مرة أخرى.',
+    callNow: 'اتصل الآن',
     callBack: 'معاودة الاتصال',
+    callAgain: 'اتصل مرة أخرى',
     row: {
       outgoingVoice: 'مكالمة صوتية صادرة',
       outgoingVideo: 'مكالمة فيديو صادرة',

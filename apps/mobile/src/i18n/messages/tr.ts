@@ -2292,7 +2292,10 @@ export const tr: Localized<EnMessages> = {
     micNeeded: 'Aramalar için LangX’in mikrofona ihtiyacı var. İzin verip tekrar dene.',
     cameraNeeded:
       'Görüntülü aramalar için LangX’in kameraya ihtiyacı var. İzin ver ya da kamerasız cevapla.',
+    cameraBlocked: 'LangX kamerayı kullanamıyor. İzin verip tekrar dene.',
+    callNow: 'Şimdi ara',
     callBack: 'Geri ara',
+    callAgain: 'Tekrar ara',
     row: {
       outgoingVoice: 'Giden sesli arama',
       outgoingVideo: 'Giden görüntülü arama',

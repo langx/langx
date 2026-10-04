@@ -29,11 +29,22 @@ export function applyIncomingMessage(
     createdAt: string
     /** Whose unread count to bump — the signed-in user. */
     forUserId: string
+    /** The row is a call's: `senderId` is then who placed it. */
+    call?: NonNullable<ConversationDto['lastMessage']['call']>
   },
 ): Pages {
   if (!isPagedList(data)) return data
   const found = findConversation(data, input.conversationId)
   if (!found) return undefined
+
+  const theirs = input.senderId !== input.forUserId
+  /*
+   * A call's row is unread only when it records a call that happened without
+   * the person it was for — the server's `leavesUnread`, mirrored. One they
+   * were on, or turned down themselves, is not news to them.
+   */
+  const countsUnread =
+    theirs && (!input.call || input.call.outcome === 'missed' || input.call.outcome === 'busy')
 
   const patched: ConversationDto = {
     ...found.conversation,
@@ -41,15 +52,14 @@ export function applyIncomingMessage(
       body: input.body,
       senderId: input.senderId,
       createdAt: input.createdAt,
+      ...(input.call ? { call: input.call } : {}),
     },
     // A number now, not the map it is stored in — `toConversationView`
     // resolves it server-side, so the other person's count never arrives here.
-    unread:
-      input.senderId === input.forUserId
-        ? found.conversation.unread
-        : found.conversation.unread + 1,
-    // The next move is theirs if they sent it, mine if I did.
-    unreplied: input.senderId !== input.forUserId,
+    unread: countsUnread ? found.conversation.unread + 1 : found.conversation.unread,
+    // The next move is theirs if they sent it, mine if I did — and nobody's
+    // after a call both were on, where `senderId` only says who rang.
+    unreplied: theirs && input.call?.outcome !== 'completed',
     // `bothSpoke` is deliberately left alone. It means "both participants
     // have sent at least one message ever", which one socket event cannot
     // establish — the sender may well have spoken before. Guessing it here

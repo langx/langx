@@ -2343,7 +2343,11 @@ export const de: Localized<EnMessages> = {
       'LangX braucht für Anrufe dein Mikrofon. Erlaube den Zugriff und versuch es noch einmal.',
     cameraNeeded:
       'LangX braucht für Videoanrufe deine Kamera. Erlaube den Zugriff oder nimm ohne Kamera an.',
+    cameraBlocked:
+      'LangX kann deine Kamera nicht verwenden. Erlaube den Zugriff und versuch es noch einmal.',
+    callNow: 'Jetzt anrufen',
     callBack: 'Zurückrufen',
+    callAgain: 'Erneut anrufen',
     row: {
       outgoingVoice: 'Ausgehender Sprachanruf',
       outgoingVideo: 'Ausgehender Videoanruf',

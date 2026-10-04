@@ -1,6 +1,6 @@
 import type { CallEndReason, CallMedia, CallOutcome, MessageCall } from '@langx/shared'
 import type { MessageKey } from '../../i18n/runtime'
-import type { CallClosing } from './machine'
+import type { CallClosing, CallState } from './machine'
 
 /**
  * How a call reads, to the person reading.
@@ -57,6 +57,25 @@ export function callRowLabel(
   }
 }
 
+/**
+ * The glyph beside a call's words. Feather's names, kept as plain strings so
+ * this file stays free of the icon library and a test can read it.
+ *
+ * A video call is always the camera — which way it went is in the words. A
+ * voice call has the room to say it in the glyph too, and a missed one gets
+ * the crossed arrow that every phone has taught people to look for.
+ */
+export type CallRowIcon = 'video' | 'phone-missed' | 'phone-outgoing' | 'phone-incoming'
+
+export function callRowIcon(
+  call: Pick<MessageCall, 'media' | 'outcome'>,
+  mine: boolean,
+): CallRowIcon {
+  if (call.media === 'video') return 'video'
+  if (mine) return 'phone-outgoing'
+  return call.outcome === 'missed' || call.outcome === 'busy' ? 'phone-missed' : 'phone-incoming'
+}
+
 function detailFor(outcome: CallOutcome, mine: boolean): MessageKey | null {
   if (outcome === 'failed') return 'calls.row.failed'
   if (outcome === 'completed') return null
@@ -106,7 +125,9 @@ const REFUSAL_LINES: Record<string, MessageKey> = {
   BLOCKED: 'calls.unavailableThem',
   RATE_LIMITED: 'calls.tooMany',
   MIC_DENIED: 'calls.micNeeded',
-  CAMERA_DENIED: 'calls.cameraNeeded',
+  // The caller's sentence. Somebody *answering* is offered the call without
+  // a camera instead, and the call screen says that one itself.
+  CAMERA_DENIED: 'calls.cameraBlocked',
 }
 
 /**
@@ -123,4 +144,29 @@ export function closingLine(closing: CallClosing): MessageKey {
     return closing.reason === 'you' ? 'calls.refusedYou' : 'calls.refusedThem'
   }
   return REFUSAL_LINES[closing.code] ?? 'calls.failed'
+}
+
+/**
+ * The line under the name on the call screen — or `null`, which means the
+ * call is up and the line is its clock.
+ *
+ * `reconnecting` only speaks once the call has been up: while it is still
+ * connecting for the first time, "Connecting…" is already the whole truth.
+ */
+export function callStatusKey(
+  call: Pick<CallState, 'phase' | 'media' | 'remoteRinging' | 'reconnecting' | 'closing'>,
+): MessageKey | null {
+  switch (call.phase) {
+    case 'incoming':
+      return call.media === 'video' ? 'calls.incomingVideo' : 'calls.incomingVoice'
+    case 'outgoing':
+      // "Ringing" is a claim about their phone, made only once it said so.
+      return call.remoteRinging ? 'calls.ringing' : 'calls.calling'
+    case 'connecting':
+      return 'calls.connecting'
+    case 'active':
+      return call.reconnecting ? 'calls.reconnecting' : null
+    case 'ended':
+      return call.closing ? closingLine(call.closing) : 'calls.ended'
+  }
 }

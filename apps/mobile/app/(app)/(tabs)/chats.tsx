@@ -36,6 +36,7 @@ import { TwoPane } from '../../../src/components/TwoPane'
 import { ChatScreen } from '../../../src/screens/ChatScreen'
 import { OfficialMark } from '../../../src/components/OfficialMark'
 import { acceptsSends } from '../../../src/lib/conversationPicker'
+import { callRowIcon, callRowLabel } from '../../../src/lib/calls/callLabels'
 
 /** The design draws chat avatars at 56, the same size as Discover's rows. */
 const AVATAR_SIZE = 56
@@ -263,6 +264,13 @@ export default function ChatsScreen() {
             const unread = item.unread
             const mine = item.lastMessage.senderId === me.data?._id
             /*
+             * A call's row is worded for whoever is reading it — "missed" to
+             * one of them, "no answer" to the other — so the server's line,
+             * which is one English sentence for both, is not what is drawn.
+             */
+            const lastCall = item.lastMessage.call
+            const callLabel = lastCall ? callRowLabel(lastCall, mine) : null
+            /*
              * "Your turn", for the thread that was read and not answered. An
              * unread thread is always unreplied, so its badge already says it;
              * the arrow takes the badge's place once opening the thread has
@@ -404,10 +412,26 @@ export default function ChatsScreen() {
                         </Text>
                       </View>
                       <View style={styles.bottom}>
-                        <Text style={styles.preview} numberOfLines={1}>
-                          {mine ? `${t('chats.youPrefix')} ` : ''}
-                          {item.lastMessage.body}
-                        </Text>
+                        {lastCall && callLabel ? (
+                          <View style={styles.callPreview}>
+                            <Feather
+                              name={callRowIcon(lastCall, mine)}
+                              size={14}
+                              color={callLabel.missed ? colors.danger : colors.textMuted}
+                            />
+                            <Text
+                              style={[styles.preview, callLabel.missed && styles.previewMissed]}
+                              numberOfLines={1}
+                            >
+                              {t(callLabel.title)}
+                            </Text>
+                          </View>
+                        ) : (
+                          <Text style={styles.preview} numberOfLines={1}>
+                            {mine ? `${t('chats.youPrefix')} ` : ''}
+                            {item.lastMessage.body}
+                          </Text>
+                        )}
                         {unread > 0 ? (
                           <View style={styles.badge}>
                             <Text style={styles.badgeText}>{unread}</Text>
@@ -514,6 +538,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   name: { ...font.heading, color: colors.text, flex: 1, fontSize: 17 },
   time: { color: colors.textFaint, fontSize: 13 },
   preview: { color: colors.textMuted, flex: 1, fontSize: 15 },
+  callPreview: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: 6 },
+  previewMissed: { color: colors.danger },
   badge: {
     alignItems: 'center',
     backgroundColor: colors.accent,

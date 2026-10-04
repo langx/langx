@@ -104,6 +104,59 @@ describe('applyIncomingMessage', () => {
   })
 })
 
+/**
+ * A call's row arrives like a message and is not one. `senderId` says who
+ * rang, the outcome says what became of it, and the list has to read both.
+ */
+describe('the row a call leaves', () => {
+  const call = (outcome: 'completed' | 'missed' | 'declined' | 'busy' | 'failed') => ({
+    ...incoming,
+    body: '',
+    call: { media: 'audio' as const, outcome },
+  })
+
+  it('keeps the call on the last message, for the list to word', () => {
+    const next = applyIncomingMessage(pages([[conversation('c3')]]), call('missed'))
+    expect(next?.pages[0]?.items[0]?.lastMessage.call).toEqual({
+      media: 'audio',
+      outcome: 'missed',
+    })
+  })
+
+  it.each(['missed', 'busy'] as const)('counts a %s call as unread for who was rung', (outcome) => {
+    const next = applyIncomingMessage(pages([[conversation('c3', 1)]]), call(outcome))
+    expect(next?.pages[0]?.items[0]?.unread).toBe(2)
+  })
+
+  /** They were on it, or turned it down themselves: it is not news to them. */
+  it.each(['completed', 'declined', 'failed'] as const)(
+    'does not count a %s call as unread',
+    (outcome) => {
+      const next = applyIncomingMessage(pages([[conversation('c3', 1)]]), call(outcome))
+      expect(next?.pages[0]?.items[0]?.unread).toBe(1)
+    },
+  )
+
+  it('never counts a call as unread for the one who placed it', () => {
+    const next = applyIncomingMessage(pages([[conversation('c3', 1)]]), {
+      ...call('missed'),
+      senderId: ME,
+    })
+    expect(next?.pages[0]?.items[0]?.unread).toBe(1)
+  })
+
+  /** `senderId` is only who rang; after a call both were on, it is nobody's turn. */
+  it('leaves no turn behind a call both of them were on', () => {
+    const next = applyIncomingMessage(pages([[conversation('c3')]]), call('completed'))
+    expect(next?.pages[0]?.items[0]?.unreplied).toBe(false)
+  })
+
+  it('leaves the next move with whoever was rung and did not answer', () => {
+    const next = applyIncomingMessage(pages([[conversation('c3')]]), call('missed'))
+    expect(next?.pages[0]?.items[0]?.unreplied).toBe(true)
+  })
+})
+
 describe('pinned threads', () => {
   /**
    * The regression this exists to stop. `moveToHead` was unconditional, so a
