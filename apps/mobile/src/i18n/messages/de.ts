@@ -1870,6 +1870,9 @@ export const de: Localized<EnMessages> = {
     hideOnline: 'Verbergen, wenn ich online bin',
     hideOnlineBody:
       'Verbirgt deinen grünen Punkt und wann du zuletzt hier warst. Du siehst ihren weiterhin.',
+    allowCalls: 'Anrufe erlauben',
+    allowCallsBody:
+      'Sprach- und Videoanrufe mit Leuten, mit denen du schreibst. Ausgeschaltet kann dich niemand anrufen – und du niemanden.',
     hideCity: 'Meine Stadt verbergen',
     hideCityBody:
       'Deine Stadt und Zeitzone werden aus deinem Standort ermittelt. Das hält beide von deinem Profil fern; Entfernung und Land bleiben unberührt.',
@@ -2289,6 +2292,69 @@ export const de: Localized<EnMessages> = {
       other: '{count} Personen in der letzten Woche.',
     },
     repeat: '×{count}',
+  },
+
+  calls: {
+    voiceCall: 'Sprachanruf',
+    videoCall: 'Videoanruf',
+    incomingVoice: 'Eingehender Sprachanruf',
+    incomingVideo: 'Eingehender Videoanruf',
+    calling: 'Wird angerufen…',
+    ringing: 'Es klingelt…',
+    connecting: 'Verbindung wird aufgebaut…',
+    reconnecting: 'Verbindung wird wiederhergestellt…',
+    answer: 'Annehmen',
+    answerNoCamera: 'Ohne Kamera annehmen',
+    decline: 'Ablehnen',
+    cancel: 'Abbrechen',
+    hangUp: 'Auflegen',
+    mute: 'Stumm schalten',
+    unmute: 'Stummschaltung aufheben',
+    cameraOn: 'Kamera einschalten',
+    cameraOff: 'Kamera ausschalten',
+    flipCamera: 'Kamera wechseln',
+    minimize: 'Anruf ausblenden',
+    returnToCall: 'Zurück zum Anruf',
+    peerMuted: '{name} ist stumm geschaltet',
+    peerCameraOff: 'Kamera aus',
+    ended: 'Anruf beendet',
+    noAnswer: 'Keine Antwort',
+    busy: '{name} kann gerade keinen Anruf annehmen',
+    unreachable: '{name} ist gerade nicht erreichbar. Dein Anruf wird im Chat angezeigt.',
+    failed: 'Der Anruf konnte nicht verbunden werden',
+    connectionLost: 'Die Verbindung wurde unterbrochen',
+    maxDuration: 'Der Anruf hat die Höchstdauer erreicht',
+    cooldown:
+      '{name} hat nicht geantwortet. Du kannst wieder anrufen, sobald du eine Nachricht oder einen Rückruf bekommst.',
+    inProgress: 'Du bist bereits in einem Anruf',
+    unavailable: 'Anrufe sind gerade nicht verfügbar',
+    unavailableThem: '{name} kann nicht angerufen werden',
+    tooMany: 'Zu viele Anrufe. Versuch es später noch einmal.',
+    refusedThem: '{name} hat Anrufe ausgeschaltet',
+    refusedYou:
+      'Du hast Anrufe ausgeschaltet. Unter Einstellungen → Privatsphäre kannst du sie einschalten.',
+    lockedShort: 'Anrufe sind hier noch nicht freigeschaltet',
+    locked: {
+      one: 'Anrufe werden nach einer weiteren Nachricht von der anderen Person freigeschaltet.',
+      other:
+        'Anrufe werden nach {count} weiteren Nachrichten von der anderen Person freigeschaltet.',
+    },
+    micNeeded:
+      'LangX braucht für Anrufe dein Mikrofon. Erlaube den Zugriff und versuch es noch einmal.',
+    cameraNeeded:
+      'LangX braucht für Videoanrufe deine Kamera. Erlaube den Zugriff oder nimm ohne Kamera an.',
+    callBack: 'Zurückrufen',
+    row: {
+      outgoingVoice: 'Ausgehender Sprachanruf',
+      outgoingVideo: 'Ausgehender Videoanruf',
+      incomingVoice: 'Eingehender Sprachanruf',
+      incomingVideo: 'Eingehender Videoanruf',
+      missedVoice: 'Verpasster Sprachanruf',
+      missedVideo: 'Verpasster Videoanruf',
+      noAnswer: 'Keine Antwort',
+      declined: 'Abgelehnt',
+      failed: 'Keine Verbindung',
+    },
   },
 
   testimonials: {
