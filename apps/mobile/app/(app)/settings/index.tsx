@@ -36,7 +36,11 @@ export default function SettingsScreen() {
   const model = useSettingsModel()
   const [query, setQuery] = useState('')
 
-  const matches = matchSettings(SETTINGS_SECTIONS, query, t)
+  const matches = matchSettings(SETTINGS_SECTIONS, query, t).filter(
+    // A deployment with no call service draws no "Allow calls" row, and a
+    // search hit that opens a page without the thing it named is a dead end.
+    ({ item }) => item.id !== 'privacy.allowCalls' || model.callsRow,
+  )
   const searching = query.trim().length >= 2
 
   return (
