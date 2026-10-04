@@ -136,6 +136,13 @@ export const appConfigResponseSchema = appConfigSchema.extend({
    * fields so the app asks the question it means.
    */
   transcriptService: z.boolean(),
+  /**
+   * Whether a call can be placed here at all — a relay is configured and
+   * `flags.callsEnabled` is on. One answer rather than two for the client to
+   * combine, for `voiceService`'s reason: a button that cannot work should
+   * not be drawn, and the app does not need to know which half said no.
+   */
+  callService: z.boolean(),
 })
 export type AppConfigResponse = z.infer<typeof appConfigResponseSchema>
 

@@ -31,6 +31,7 @@ import {
   type ReviewOutcome,
   type ReviewRefusal,
 } from '../modules/moderation/decide'
+import { endCallsBetween } from '../modules/calls/service'
 import { getViewers } from '../modules/moderation/profileViews'
 import { submitAppeal, suspensionStatus } from '../modules/moderation/suspension'
 import { getProfile, type Profile } from '../modules/profiles/profiles'
@@ -309,6 +310,16 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireMember, schema: { body: blockSchema } },
     async (request, reply) => {
       const block = await blockUser(app.mongo.db, request.userId, request.body.userId)
+      /*
+       * A block cuts off everything between two people from the moment it is
+       * written, because every request re-checks it. A call in progress makes
+       * no requests, so it has to be ended here or it would simply carry on.
+       * Never fatal to the answer: the block is written, and a call that
+       * failed to end here still ends when its lease does.
+       */
+      await endCallsBetween(app, request.userId, request.body.userId, 'blocked').catch(
+        (error: unknown) => request.log.warn({ err: error }, 'ending a call on block failed'),
+      )
       return reply.code(201).send(block)
     },
   )

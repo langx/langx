@@ -1,3 +1,4 @@
+import { iceConfigSchema } from '@langx/shared'
 import { z } from 'zod'
 
 function emptyToUndefined<T extends z.ZodTypeAny>(schema: T) {
@@ -225,6 +226,63 @@ const envSchema = z.object({
    */
   TTS_URL: emptyToUndefined(z.url().optional()),
   TTS_SECRET: emptyToUndefined(z.string().optional()),
+
+  /*
+   * Calls. The API carries no media: what it needs is a relay for the two
+   * devices to meet through, and — to ring an iPhone whose app is not running
+   * — a key to send Apple a VoIP push with. Both are optional services like
+   * everything else here.
+   *
+   * The relay is Cloudflare's TURN service: a key id and its API token, from
+   * the Realtime section of the dashboard. `modules/calls/ice.ts` says why
+   * production offers no calls at all without one rather than calls that
+   * reveal each person's address to the other.
+   */
+  CLOUDFLARE_TURN_KEY_ID: emptyToUndefined(z.string().optional()),
+  CLOUDFLARE_TURN_KEY_API_TOKEN: emptyToUndefined(z.string().optional()),
+  /**
+   * A relay of your own instead — a JSON array in the browser's `iceServers`
+   * shape, e.g. `[{"urls":"turn:turn.example.com:3478","username":"u","credential":"p"}]`.
+   * For a self-hosted coturn. Ignored when the Cloudflare pair is set.
+   *
+   * Parsed here so a typo fails the boot with the variable's name on it
+   * rather than failing the first call with a JSON error.
+   */
+  ICE_SERVERS_JSON: emptyToUndefined(
+    z
+      .string()
+      .transform((raw, context) => {
+        try {
+          return JSON.parse(raw) as unknown
+        } catch {
+          context.addIssue({ code: 'custom', message: 'ICE_SERVERS_JSON is not valid JSON' })
+          return z.NEVER
+        }
+      })
+      .pipe(iceConfigSchema.shape.iceServers)
+      .optional(),
+  ),
+  /**
+   * Apple's push service, spoken to directly, for the one push Expo's relay
+   * cannot carry: the VoIP push that makes an iPhone show its incoming-call
+   * screen while the app is not running. An APNs auth key (`.p8`) and its id;
+   * the same PEM convention as `APPLE_PRIVATE_KEY`. Every other notification
+   * still goes through Expo.
+   *
+   * Unset, an iPhone is rung with an ordinary notification instead and has to
+   * be opened to answer — calls still work, they just ring less like a phone.
+   * `APNS_TEAM_ID` and `APNS_BUNDLE_ID` default to this app's own, and exist
+   * for a fork that ships under a different identity.
+   */
+  APNS_KEY_ID: emptyToUndefined(z.string().optional()),
+  APNS_PRIVATE_KEY: emptyToUndefined(
+    z
+      .string()
+      .transform((pem) => pem.replace(/\\n/g, '\n'))
+      .optional(),
+  ),
+  APNS_TEAM_ID: emptyToUndefined(z.string().optional()),
+  APNS_BUNDLE_ID: emptyToUndefined(z.string().optional()),
 
   // Faz 6: translation. Left unset, `/translate` returns a clear
   // TRANSLATION_NOT_CONFIGURED-style error; every other route still works.

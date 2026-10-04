@@ -48,6 +48,9 @@ export const appConfigRoutes: FastifyPluginAsyncZod = async (app) => {
       },
       voiceService: !(app.tts instanceof NotConfiguredTtsProvider),
       transcriptService: !(app.stt instanceof NotConfiguredSttProvider),
+      // A relay to carry calls, and the operator's switch left on. The config
+      // is the one already read above, so this costs nothing.
+      callService: app.ice.configured && config.flags.callsEnabled,
     }
     // Short cache: long enough to absorb a launch stampede, short enough that
     // turning maintenance on is not stuck behind a CDN.

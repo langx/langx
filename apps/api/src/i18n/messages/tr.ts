@@ -17,6 +17,8 @@ export const tr: Localized<ServerMessages> = {
     badgeBody: 'Güzel iş. Böyle devam.',
     meetingTitle: 'Dil değişiminize bir saat kaldı',
     meetingBody: 'Sohbeti açmak için dokun.',
+    callIncomingVoice: 'Gelen sesli arama',
+    callIncomingVideo: 'Gelen görüntülü arama',
     bountyTitle: {
       one: 'Bildirimin için {count} jeton 🎉',
       other: 'Bildirimin için {count} jeton 🎉',

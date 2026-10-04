@@ -23,6 +23,8 @@ export const fr: Localized<ServerMessages> = {
     badgeBody: 'Beau travail. Continuez.',
     meetingTitle: 'Ton échange linguistique est dans une heure',
     meetingBody: 'Touche pour ouvrir la conversation.',
+    callIncomingVoice: 'Appel vocal entrant',
+    callIncomingVideo: 'Appel vidéo entrant',
     bountyTitle: {
       one: '{count} jeton pour ton signalement 🎉',
       other: '{count} jetons pour ton signalement 🎉',

@@ -80,6 +80,9 @@ export async function requestDeletion(
   await db.collection(COLLECTIONS.session).deleteMany({ userId: authId(userId) })
   // Stop pushing to a device whose owner just left.
   await db.collection(COLLECTIONS.devices).deleteMany({ userId })
+  // And stop ringing one. A PushKit token outlives every session, so without
+  // this a deleted account's phone would still light up for a call.
+  await db.collection(COLLECTIONS.callEndpoints).deleteMany({ userId })
 
   return {
     pending: true,
@@ -430,6 +433,16 @@ export async function purgeExpiredAccounts(
     await Promise.all([
       db.collection(COLLECTIONS.profiles).deleteOne({ _id: userId as unknown as never }),
       db.collection(COLLECTIONS.devices).deleteMany({ userId }),
+      db.collection(COLLECTIONS.callEndpoints).deleteMany({ userId }),
+      /*
+       * The record of every call they placed or received. It names both
+       * people, so it goes whichever of them leaves — unlike the row in the
+       * thread, which stays as the other person's history with the caller's
+       * side blanked like any message of theirs.
+       */
+      db
+        .collection(COLLECTIONS.calls)
+        .deleteMany({ $or: [{ callerId: userId }, { calleeId: userId }] }),
       db.collection(COLLECTIONS.profileViews).deleteMany({
         $or: [{ viewerId: userId }, { viewedId: userId }],
       }),
@@ -600,6 +613,8 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     likes,
     follows,
     testimonials,
+    calls,
+    callEndpoints,
   ] = await Promise.all([
     db.collection(COLLECTIONS.profiles).findOne({ _id: userId as unknown as never }),
     db.collection<Conversation>(COLLECTIONS.conversations).find({ participants: userId }).toArray(),
@@ -616,6 +631,24 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     db.collection(COLLECTIONS.likes).find({ userId }).toArray(),
     db.collection(COLLECTIONS.follows).find({ followerId: userId }).toArray(),
     testimonialsForExport(db, userId),
+    /*
+     * Calls they placed and calls they received: unlike a message, a call is
+     * not one person's words, so both directions are this person's data.
+     * Which device each side used is left out: half of it is the other
+     * person's, and the rest is a key, not information about anybody.
+     */
+    db
+      .collection(COLLECTIONS.calls)
+      .find(
+        { $or: [{ callerId: userId }, { calleeId: userId }] },
+        { projection: { caller: 0, callee: 0 } },
+      )
+      .toArray(),
+    // Which phones can be rung, without the token that rings them.
+    db
+      .collection(COLLECTIONS.callEndpoints)
+      .find({ userId }, { projection: { 'voip.token': 0 } })
+      .toArray(),
   ])
 
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
@@ -637,5 +670,7 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     likes,
     follows,
     testimonials,
+    calls,
+    callEndpoints,
   }
 }

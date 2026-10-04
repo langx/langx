@@ -8,6 +8,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ObjectId } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { suspendedEmail, suspensionUpdatedEmail } from '../../email/templates'
+import { endCallsOf } from '../calls/service'
 import { setCommentHidden } from '../feed/comments'
 import { setPostHidden } from '../feed/feed'
 import { emailFor } from '../profiles/emailFor'
@@ -229,6 +230,16 @@ export async function applyReviewDecision(
       ...(reportId ? { reportId } : {}),
       ...(byAdminId ? { byAdminId } : {}),
     })
+    /*
+     * Whatever call they are in ends with the account's access. The socket's
+     * own re-check would cut their signalling within half a minute, but the
+     * media travels between two devices and asks this server for nothing —
+     * so the call is ended by name, and the other person's screen is told.
+     * Never fatal to the decision, for the reason `tell` below is not.
+     */
+    await endCallsOf(app, userId, 'suspended').catch((error: unknown) =>
+      app.log.warn({ err: error, userId }, 'ending a call on suspension failed'),
+    )
     if (address?.verified) {
       await tell(() =>
         app.email.send({

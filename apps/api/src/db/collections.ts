@@ -428,6 +428,25 @@ export const COLLECTIONS = {
    * whether the link has gone out.
    */
   instagramLeads: 'instagramLeads',
+  /**
+   * One document per call, from the first ring to ninety days after the last
+   * word. It is the whole of a call's state — who, in what stage, until when —
+   * and the only thing every API machine agrees on: sockets come and go with
+   * deploys, and a timer dies with its process, but this row is still there.
+   * The `_id` is the UUID the caller's device minted, which is also what the
+   * phone's own call screen keys the call on. See `modules/calls/calls.ts`.
+   */
+  calls: 'calls',
+  /**
+   * The phones that can be rung while their app is not running: an iPhone's
+   * PushKit token, or an Android installation that has the native ringer.
+   *
+   * Not `devices`, though both are "a phone of this account". A row there
+   * exists only once notifications were allowed and is keyed on a push token
+   * it cannot be without; an iPhone that refused notifications still has a
+   * PushKit token, and should still ring. See `modules/calls/endpoints.ts`.
+   */
+  callEndpoints: 'callEndpoints',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]

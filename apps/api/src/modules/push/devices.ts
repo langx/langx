@@ -9,6 +9,8 @@ import {
   type Locale,
   type PushKind,
   type PushPlatform,
+  type CallCancelData,
+  type CallRingData,
   type RegisterDeviceInput,
   type TraySync,
 } from '@langx/shared'
@@ -173,6 +175,26 @@ export interface PushMessage {
    * what it did before. Nothing here has to know which build it is talking to.
    */
   categoryId?: string
+  /**
+   * How long the push is worth delivering, in seconds. Absent means the
+   * provider's own weeks, which is right for everything except a notification
+   * about something happening *now*: "Sofia is calling" delivered an hour
+   * late is worse than not delivered.
+   */
+  ttlSeconds?: number
+  /** Only the call fallback sets it. Absent leaves each platform its default. */
+  priority?: 'high'
+}
+
+/**
+ * A push that tells a phone's native code to start or stop ringing — see
+ * `CALL_PUSH_KINDS`. Data only, so Android hands it to the app instead of
+ * drawing it.
+ */
+export interface CallSignalPush {
+  to: string[]
+  data: CallRingData | CallCancelData
+  ttlSeconds: number
 }
 
 /**
@@ -193,6 +215,8 @@ export interface PushSender {
   send: (message: PushMessage) => Promise<PushResult>
   /** Optional, so a sender that cannot wake an app in the background need not pretend to. */
   sendSilent?: (message: SilentPushMessage) => Promise<PushResult>
+  /** Optional for the same reason: a sender that cannot ring a phone says so by lacking it. */
+  sendCallSignal?: (message: CallSignalPush) => Promise<PushResult>
 }
 
 /**
@@ -203,6 +227,7 @@ export interface PushSender {
 export class LoggingPushSender implements PushSender {
   readonly sent: PushMessage[] = []
   readonly silent: SilentPushMessage[] = []
+  readonly callSignals: CallSignalPush[] = []
 
   send(message: PushMessage): Promise<PushResult> {
     this.sent.push(message)
@@ -211,6 +236,11 @@ export class LoggingPushSender implements PushSender {
 
   sendSilent(message: SilentPushMessage): Promise<PushResult> {
     this.silent.push(message)
+    return Promise.resolve({ invalidTokens: [] })
+  }
+
+  sendCallSignal(message: CallSignalPush): Promise<PushResult> {
+    this.callSignals.push(message)
     return Promise.resolve({ invalidTokens: [] })
   }
 }
@@ -269,7 +299,30 @@ export class ExpoPushSender implements PushSender {
         mutableContent: true,
         ...(message.badge !== undefined ? { badge: message.badge } : {}),
         ...(message.categoryId !== undefined ? { categoryId: message.categoryId } : {}),
+        ...(message.ttlSeconds !== undefined ? { ttl: message.ttlSeconds } : {}),
+        ...(message.priority !== undefined ? { priority: message.priority } : {}),
       }),
+      message.data.kind,
+    )
+  }
+
+  /**
+   * The push that rings an Android phone, and the one that stops it.
+   *
+   * No title and no body, which is what makes Expo send it as an FCM *data*
+   * message: the phone's own code receives it and decides what to show —
+   * the system's incoming-call screen — rather than Android drawing a
+   * notification nobody can answer. `high` is what lets it through Doze and
+   * start the app's process; the lifetime is the ring's, so a phone that was
+   * offline does not start ringing for a call that ended.
+   *
+   * Android only. An iPhone is rung by `modules/calls/voipPush.ts`, and the
+   * caller of this never puts an iOS token in `to`.
+   */
+  sendCallSignal(message: CallSignalPush): Promise<PushResult> {
+    return this.#deliver(
+      message.to,
+      (token) => ({ to: token, data: message.data, priority: 'high', ttl: message.ttlSeconds }),
       message.data.kind,
     )
   }
@@ -397,6 +450,22 @@ export async function sendPush(
   message: PushMessage,
 ): Promise<PushResult> {
   const result = await sender.send(message)
+  if (result.invalidTokens.length > 0) {
+    await db
+      .collection<Device>(COLLECTIONS.devices)
+      .deleteMany({ pushToken: { $in: result.invalidTokens } })
+  }
+  return result
+}
+
+/** `sendPush`'s twin for the push that rings a phone, pruning the same way. */
+export async function sendCallSignalPush(
+  db: Db,
+  sender: PushSender,
+  message: CallSignalPush,
+): Promise<PushResult> {
+  if (!sender.sendCallSignal || message.to.length === 0) return { invalidTokens: [] }
+  const result = await sender.sendCallSignal(message)
   if (result.invalidTokens.length > 0) {
     await db
       .collection<Device>(COLLECTIONS.devices)

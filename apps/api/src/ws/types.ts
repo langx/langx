@@ -18,6 +18,13 @@ export interface SocketData {
    * reaches a build that would crash drawing it.
    */
   inboxKinds: readonly InAppNotificationKind[]
+  /**
+   * The call protocol this connection's client speaks, from `auth.calls` —
+   * absent for a build that has no calling, which is every build that said
+   * nothing. Only a socket with one joins `callsRoom`, so only such a socket
+   * is ever told a call is coming in.
+   */
+  callProtocol?: number
   /** Per-connection token buckets; see ws/rateLimit.ts. */
   limiter: SocketRateLimiter
   /** Per-connection floor on presence writes; see modules/presence. */
@@ -52,4 +59,29 @@ export function userRoom(userId: string): string {
  */
 export function inboxRoom(userId: string, kind: InAppNotificationKind): string {
   return `inbox:${userId}:${kind}`
+}
+
+/**
+ * The sockets of one account that can take a call.
+ *
+ * A room for `inboxRoom`'s reason: a ring crosses machines, and a room is what
+ * the adapter can address. `userRoom` would reach every build on every
+ * device, and a build with no call screen that was told somebody is calling
+ * can do nothing with it but ignore it — while the server counts it as rung.
+ */
+export function callsRoom(userId: string): string {
+  return `calls:${userId}`
+}
+
+/**
+ * The two sockets actually in one call, and nobody else.
+ *
+ * Joined in exactly three places, each behind a check: the caller's socket
+ * when it starts the call, the socket that wins the answer, and a socket that
+ * comes back with the right resume key. Membership is then the whole of the
+ * authorisation for relaying — a signal is passed on if and only if its
+ * sender is in the room — which is what lets a relay cost no database read.
+ */
+export function callRoom(callId: string): string {
+  return `call:${callId}`
 }

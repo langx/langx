@@ -219,6 +219,75 @@ describe('ExpoPushSender', () => {
     ])
   })
 
+  /**
+   * The push that rings an Android phone. No title and no body is what makes
+   * Expo send it as an FCM *data* message — the phone's own code gets it and
+   * shows the call screen — and a notification Android drew by itself would be
+   * one nobody could answer.
+   */
+  it('rings a phone with a data push that expires with the ring', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(ticketsFor(['ok', 'DeviceNotRegistered']))
+    vi.stubGlobal('fetch', fetchMock)
+    const data = {
+      kind: 'callRing' as const,
+      callId: '6f1c2a34-9b7e-4c1d-8a2f-0e5d3b7a9c11',
+      conversationId: 'c1',
+      media: 'audio' as const,
+      callerId: 'u1',
+      callerName: 'Sofia',
+      callerHandle: 'sofia',
+      ringSeconds: 45,
+      callToken: 'ticket',
+    }
+
+    const result = await new ExpoPushSender().sendCallSignal({
+      to: ['phone', 'gone'],
+      data,
+      ttlSeconds: 45,
+    })
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    const sent = JSON.parse(init.body as string) as Record<string, unknown>[]
+    expect(sent).toEqual([
+      { to: 'phone', data, priority: 'high', ttl: 45 },
+      { to: 'gone', data, priority: 'high', ttl: 45 },
+    ])
+    for (const message of sent) {
+      expect(message).not.toHaveProperty('title')
+      expect(message).not.toHaveProperty('body')
+      expect(message).not.toHaveProperty('sound')
+    }
+    // Pruned like any other push: a phone that is gone stops being rung.
+    expect(result.invalidTokens).toEqual(['gone'])
+  })
+
+  it('lets a notification say how long it is worth delivering', async () => {
+    // A fresh response each time: a body can only be read once.
+    const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(ticketsFor(['ok'])))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await new ExpoPushSender().send({
+      to: ['t'],
+      title: 'Sofia',
+      body: 'Incoming voice call',
+      data: { kind: 'call', conversationId: 'c1' },
+      ttlSeconds: 45,
+      priority: 'high',
+    })
+    const [, timed] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect((JSON.parse(timed.body as string) as unknown[])[0]).toMatchObject({
+      ttl: 45,
+      priority: 'high',
+    })
+
+    // And every other push is exactly what it was: no lifetime, no priority.
+    await new ExpoPushSender().send({ to: ['t'], title: 'a', body: 'b', data: { kind: 'message' } })
+    const [, plain] = fetchMock.mock.calls[1] as [string, RequestInit]
+    const message = (JSON.parse(plain.body as string) as Record<string, unknown>[])[0]
+    expect(message).not.toHaveProperty('ttl')
+    expect(message).not.toHaveProperty('priority')
+  })
+
   it('does not read a body Expo did not accept', async () => {
     // A 4xx has no ticket array; parsing it as one would throw inside the
     // notification path and take down the message that triggered it.

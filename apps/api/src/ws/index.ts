@@ -21,7 +21,13 @@ import type { FastifyInstance } from 'fastify'
 import { createAdapter } from '@socket.io/mongo-adapter'
 import { Server as SocketIOServer } from 'socket.io'
 import { z, ZodError } from 'zod'
-import { acceptedInboxKinds, ERROR_CODES, INBOX_KINDS_AUTH_KEY } from '@langx/shared'
+import {
+  acceptedCallProtocol,
+  acceptedInboxKinds,
+  CALLS_AUTH_KEY,
+  ERROR_CODES,
+  INBOX_KINDS_AUTH_KEY,
+} from '@langx/shared'
 import { ApiError } from '../lib/ApiError'
 import { consumeQuota } from '../lib/quota'
 import { effectiveTier } from '../modules/profiles/entitlement'
@@ -57,8 +63,9 @@ import { answerPoll } from '../modules/chat/polls'
 import { fanOutConversationPinned, fanOutMessage, fanOutMessageUpdate } from './fanOut'
 import { sendTraySync } from './traySync'
 import { PresenceThrottle, clientBuildOf, touchPresence } from '../modules/presence/presence'
+import { registerCallHandlers } from './calls'
 import { SocketRateLimiter } from './rateLimit'
-import { inboxRoom, userRoom, type AppServer, type AppSocket } from './types'
+import { callsRoom, inboxRoom, userRoom, type AppServer, type AppSocket } from './types'
 
 type AckResponse =
   { ok: true; data?: unknown } | { ok: false; error: { code: string; message: string } }
@@ -241,6 +248,15 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         socket.data.inboxKinds = acceptedInboxKinds(
           (socket.handshake.auth as Record<string, unknown> | undefined)?.[INBOX_KINDS_AUTH_KEY],
         )
+        /*
+         * Whether this client can take a call, from the same `auth` object and
+         * for the same reason: a declaration, not a version. Nothing said is a
+         * build with no calling in it, which is never rung.
+         */
+        const callProtocol = acceptedCallProtocol(
+          (socket.handshake.auth as Record<string, unknown> | undefined)?.[CALLS_AUTH_KEY],
+        )
+        if (callProtocol !== null) socket.data.callProtocol = callProtocol
         next()
       },
       (error: unknown) => next(error instanceof Error ? error : new Error('UNAUTHENTICATED')),
@@ -254,6 +270,8 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     void socket.join([
       userRoom(userId),
       ...socket.data.inboxKinds.map((kind) => inboxRoom(userId, kind)),
+      // Only a client that said it can draw a call hears that one is coming.
+      ...(socket.data.callProtocol !== undefined ? [callsRoom(userId)] : []),
     ])
 
     /*
@@ -349,6 +367,10 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       })
       return false
     }
+
+    // Calls: their own file, the same chokepoints. Every event below it and
+    // every one in there passes the access re-check and a named bucket.
+    registerCallHandlers({ app, socket, userId, limited })
 
     socket.on('message:send', (payload: unknown, ack: Ack) => {
       if (!limited('message:send', ack)) return

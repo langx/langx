@@ -16,6 +16,9 @@ import { createAnthropicProvider } from './modules/official/assistantProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
 import { startPresenceSampler } from './modules/admin/pulse'
+import { createIceProvider } from './modules/calls/ice'
+import { startCallSweeper } from './modules/calls/sweeper'
+import { createVoipSender } from './modules/calls/voipPush'
 import { ExpoPushSender } from './modules/push/devices'
 import type { NotificationEmailContext } from './email/notify'
 import { startLegacyImportScheduler } from './modules/handles/legacyImportScheduler'
@@ -67,6 +70,13 @@ async function main(): Promise<void> {
   // not the model's — and a message to it is answered with the offline line.
   const assistant = createAnthropicProvider(env)
 
+  // The not-configured one in production without a relay, and then the app is
+  // told there is no call service and draws no button for it.
+  const ice = createIceProvider(env)
+  // The stand-in without an APNs key: iPhones are rung by an ordinary
+  // notification, and everything else about a call is unchanged.
+  const voip = createVoipSender(env, console)
+
   /**
    * What every notification sender needs: an outbox, the secret its
    * unsubscribe links are signed with, and the address those links point back
@@ -91,6 +101,8 @@ async function main(): Promise<void> {
     tts,
     stt,
     push,
+    ice,
+    voip,
     email: emailSender,
     assistant,
   })
@@ -124,6 +136,9 @@ async function main(): Promise<void> {
     // The app rather than the db: a scheduled message is sent through the same
     // fan-out as a live one, and that needs the socket server.
     startScheduledMessageScheduler(app),
+    // The app, for the same reason: a call that time ends is told to sockets
+    // and written to its thread.
+    startCallSweeper(app),
     startLegacyImportScheduler(db, app.log),
     /*
      * Not a scheduled *job* — it writes no ledger and claims no period. Every
