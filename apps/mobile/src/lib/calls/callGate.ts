@@ -1,3 +1,5 @@
+import { CALL_LIMITS } from '@langx/shared'
+
 /**
  * Whether the chat header offers a call, and what happens when it is pressed.
  *
@@ -37,4 +39,22 @@ export function callAvailability(input: CallGateInput): CallAvailability {
   if (input.readOnly || !input.partnerKnown) return 'hidden'
   if (!input.partnerAcceptsCalls || input.viewerRefusesCalls) return 'hidden'
   return input.lockedFor > 0 ? 'locked' : 'ready'
+}
+
+/**
+ * Whether an agreed time to talk is close enough to offer "Call now" on its
+ * card: from `meetingCallLeadMinutes` before it starts until it was meant to
+ * end. Only an accepted one — a proposal nobody said yes to is not a plan to
+ * call, and a cancelled one is not a plan at all.
+ */
+export function meetingCallOpen(
+  meeting: { startsAt: string; durationMinutes: number; status: string } | undefined,
+  now: number,
+): boolean {
+  if (meeting?.status !== 'accepted') return false
+  const startsAt = Date.parse(meeting.startsAt)
+  if (Number.isNaN(startsAt)) return false
+  const opens = startsAt - CALL_LIMITS.meetingCallLeadMinutes * 60_000
+  const ends = startsAt + meeting.durationMinutes * 60_000
+  return now >= opens && now <= ends
 }

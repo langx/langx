@@ -25,6 +25,8 @@ import { AlertHost } from '../src/components/AlertHost'
 import { MessageMenuHost } from '../src/components/MessageMenuHost'
 import { AppGate } from '../src/components/AppGate'
 import { AppSplash, SplashFill } from '../src/components/AppSplash'
+import { CallHost } from '../src/components/calls/CallHost'
+import { CallBar } from '../src/components/calls/CallBar'
 import { KeyboardResizeHost } from '../src/components/KeyboardResizeHost'
 import { Button } from '../src/components/ui/Button'
 import { MessageBannerHost } from '../src/components/MessageBannerHost'
@@ -427,6 +429,18 @@ function RootShell() {
                 replays it navigates while the run is being set up.
               */}
               <TourHost />
+              {/*
+                The call screen, with the other windows of its own. It draws
+                nothing until there is a call, and a call can only start once
+                `(app)` has mounted `useCalls` — so nothing rings over the
+                sign-in form.
+              */}
+              <CallHost />
+              {/*
+                In the flow, just above the navigator, so a call that was put
+                away pushes the screens down rather than covering their headers.
+              */}
+              <CallBar />
               <Stack screenOptions={{ headerShown: false }}>
                 {/*
                   Outside both guards, because it *is* the guard: `index` is the

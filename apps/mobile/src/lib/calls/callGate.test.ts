@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { callAvailability, type CallGateInput } from './callGate'
+import { callAvailability, meetingCallOpen, type CallGateInput } from './callGate'
 
 const open: CallGateInput = {
   callService: true,
@@ -39,5 +39,31 @@ describe('callAvailability', () => {
   it('hides rather than locks when both apply', () => {
     // "Three more messages" is a promise the app could not keep here.
     expect(callAvailability({ ...open, lockedFor: 3, partnerAcceptsCalls: false })).toBe('hidden')
+  })
+})
+
+describe('meetingCallOpen', () => {
+  const at = Date.parse('2026-10-04T18:00:00.000Z')
+  const meeting = (status: string) => ({
+    startsAt: '2026-10-04T18:00:00.000Z',
+    durationMinutes: 30,
+    status,
+  })
+  const minutes = (n: number) => at + n * 60_000
+
+  it('opens ten minutes before an agreed time, and closes when it was meant to end', () => {
+    expect(meetingCallOpen(meeting('accepted'), minutes(-11))).toBe(false)
+    expect(meetingCallOpen(meeting('accepted'), minutes(-10))).toBe(true)
+    expect(meetingCallOpen(meeting('accepted'), minutes(0))).toBe(true)
+    expect(meetingCallOpen(meeting('accepted'), minutes(30))).toBe(true)
+    expect(meetingCallOpen(meeting('accepted'), minutes(31))).toBe(false)
+  })
+
+  /** A proposal is a question, and a cancelled time is not a plan. */
+  it('is never open for a time nobody agreed to', () => {
+    for (const status of ['proposed', 'declined', 'cancelled']) {
+      expect(meetingCallOpen(meeting(status), minutes(0))).toBe(false)
+    }
+    expect(meetingCallOpen(undefined, minutes(0))).toBe(false)
   })
 })

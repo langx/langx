@@ -19,6 +19,7 @@ import {
   webUrl,
   messageTranslationSchema,
   romanizationFor,
+  type CallMedia,
   type MessageAsk,
   type MessageTranslation,
   TYPING_IDLE_MS,
@@ -117,6 +118,9 @@ import { errorCodeOf } from '../lib/errors'
 import { listState } from '../lib/listState'
 import { startersDue } from '../lib/conversationStarters'
 import { messageActionsFor, unsentActionsFor } from '../lib/messageActions'
+import { callAvailability, meetingCallOpen } from '../lib/calls/callGate'
+import { callRowLabel, closingLine } from '../lib/calls/callLabels'
+import { CallRefusal, engineSupported, placeCall } from '../lib/calls/session'
 import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
 import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../lib/messageMenu'
@@ -505,6 +509,17 @@ export function ChatScreen({
     [unreadAtOpen, conversationId, viewerId],
   )
   const rows = useMemo(() => messageRows(threadItems, unreadMark), [threadItems, unreadMark])
+  /*
+   * The newest call's row, which alone offers to call again. Every row
+   * offering it turned a thread of six calls into six identical links, and
+   * the newest is the only one anybody means.
+   */
+  const newestCallId = useMemo(() => {
+    for (const row of rows) {
+      if (row.kind === 'message' && row.message.type === 'call') return row.message._id
+    }
+    return null
+  }, [rows])
 
   /**
    * A send whose ack was lost still left an unsent row, and the message may
@@ -607,6 +622,23 @@ export function ChatScreen({
   const suspended = partner?.accountStatus === 'suspended'
   /** Nothing sent from here would arrive. The one fact the four places below read. */
   const readOnly = channel || suspended
+  /**
+   * Whether this thread offers a call, and whether pressing the button places
+   * one or explains the gate — see `callAvailability`. The gate is the photo
+   * gate's own number: the same messages unlock both.
+   */
+  const callService = useAppConfig().data?.callService === true
+  const callGate = callAvailability({
+    callService,
+    engineSupported: engineSupported(),
+    readOnly: readOnly || partner?.accountStatus === 'deleted',
+    // The thread's first page as well as the profile: until it is in, the
+    // gate's number reads 0, and a locked thread would draw as an open one.
+    partnerKnown: partner !== undefined && messages.data !== undefined,
+    partnerAcceptsCalls: partner?.acceptsCalls !== false,
+    viewerRefusesCalls: me.data?.privacy.refuseCalls === true,
+    lockedFor: mediaLockedFor,
+  })
   /**
    * Whether this pair may review each other, off the thread's first page —
    * two booleans and never the counts behind them. Until `unlocked` nothing
@@ -1993,7 +2025,10 @@ export function ChatScreen({
     })
 
     const picked = await openMessageMenu({
-      preview: stripFormatting(message.body) || t(messagePreviewKey(message.type)),
+      preview: message.call
+        ? // Worded for whoever is reading, as the row itself is.
+          t(callRowLabel(message.call, isMine(message)).title)
+        : stripFormatting(message.body) || t(messagePreviewKey(message.type)),
       mine: isMine(message),
       // So the menu lifts the picture out of the thread rather than the word
       // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
@@ -2009,7 +2044,8 @@ export function ChatScreen({
       // A withdrawn message cannot carry a reaction, so it gets no strip. Nor
       // does anything in a channel: a reaction is addressed to whoever wrote
       // the message, and `@langx` is a process that will never read one.
-      ...(message.deleted || readOnly
+      // Nor does the row a call leaves, which is not something anybody said.
+      ...(message.deleted || readOnly || message.type === 'call'
         ? {}
         : { reactions: MESSAGE_REACTIONS, myReaction: message.myReaction }),
     })
@@ -2377,6 +2413,71 @@ export function ChatScreen({
     void addEchoRef.current(message)
   }, [])
 
+  /**
+   * Places a call from this thread.
+   *
+   * The two refusals that come back here are the ones that happen before
+   * anything rings — a microphone or camera that could not be had, a call
+   * already in progress — and they are an alert over the thread. Everything
+   * the *server* refuses is said by the call screen itself, as the line it
+   * closes with.
+   */
+  async function startCall(media: CallMedia, source: 'header' | 'row' | 'meeting'): Promise<void> {
+    if (!partner || callGate === 'hidden') return
+    if (callGate === 'locked') {
+      void showAlert(t('chat.mediaLockedTitle'), t('calls.locked', { count: mediaLockedFor }))
+      return
+    }
+    try {
+      await placeCall({
+        conversationId,
+        peer: {
+          _id: partner._id,
+          handle: partner.handle,
+          displayName: partner.displayName,
+          ...(partner.avatarUrl ? { avatarUrl: partner.avatarUrl } : {}),
+        },
+        media,
+        source,
+      })
+    } catch (error) {
+      if (!(error instanceof CallRefusal)) return
+      void showAlert(
+        t(media === 'video' ? 'calls.videoCall' : 'calls.voiceCall'),
+        t(closingLine({ kind: 'refused', code: error.code }), { name: partner.displayName }),
+      )
+    }
+  }
+
+  /** "Call back" on a call's row, stabilised for `MessageBubble`'s memo like the rest. */
+  const startCallRef = useRef(startCall)
+  useEffect(() => {
+    startCallRef.current = startCall
+  })
+  const onCallBack = useCallback((message: MessageDto) => {
+    if (message.call) void startCallRef.current(message.call.media, 'row')
+  }, [])
+  /** "Call now" on an agreed time's card. A voice call: the card never said which. */
+  const onMeetingCall = useCallback(() => {
+    void startCallRef.current('audio', 'meeting')
+  }, [])
+  /*
+   * The clock the meeting cards' "Call now" is decided against, moved on every
+   * half minute — but only while there is an agreed time in the thread to
+   * decide about, so a thread without one never re-renders for it.
+   */
+  const hasAgreedTime = useMemo(
+    () => rows.some((row) => row.kind === 'message' && row.message.meeting?.status === 'accepted'),
+    [rows],
+  )
+  const [meetingNow, setMeetingNow] = useState(() => Date.now())
+  useEffect(() => {
+    if (!hasAgreedTime || callGate === 'hidden') return
+    setMeetingNow(Date.now())
+    const timer = setInterval(() => setMeetingNow(Date.now()), 30_000)
+    return () => clearInterval(timer)
+  }, [hasAgreedTime, callGate])
+
   function reportMessage(message: MessageDto): void {
     if (!partnerId) return
     router.push({
@@ -2609,15 +2710,52 @@ export function ChatScreen({
               )}
             </View>
           </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('messageMenu.more')}
-            hitSlop={8}
-            onPress={() => void openThreadMenu()}
-            style={styles.more}
-          >
-            <Feather name="more-horizontal" size={22} color={colors.text} />
-          </Pressable>
+          {/*
+            Drawn faint while the consent gate is closed, and still pressable:
+            the press is what says how many more messages it takes. Not drawn
+            at all where a call could never happen — see `callAvailability`.
+          */}
+          <View style={styles.headerActions}>
+            {callGate !== 'hidden' ? (
+              <>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('calls.voiceCall')}
+                  hitSlop={4}
+                  onPress={() => void startCall('audio', 'header')}
+                  style={styles.more}
+                >
+                  <Feather
+                    name="phone"
+                    size={20}
+                    color={callGate === 'locked' ? colors.textFaint : colors.text}
+                  />
+                </Pressable>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('calls.videoCall')}
+                  hitSlop={4}
+                  onPress={() => void startCall('video', 'header')}
+                  style={styles.more}
+                >
+                  <Feather
+                    name="video"
+                    size={21}
+                    color={callGate === 'locked' ? colors.textFaint : colors.text}
+                  />
+                </Pressable>
+              </>
+            ) : null}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('messageMenu.more')}
+              hitSlop={8}
+              onPress={() => void openThreadMenu()}
+              style={styles.more}
+            >
+              <Feather name="more-horizontal" size={22} color={colors.text} />
+            </Pressable>
+          </View>
         </View>
 
         {/*
@@ -2901,7 +3039,19 @@ export function ChatScreen({
                        * withdrawn message and to an official channel, so offering
                        * the gesture there would end in an alert.
                        */
-                      canReact={!readOnly && !row.message.deleted}
+                      canReact={!readOnly && !row.message.deleted && row.message.type !== 'call'}
+                      // Only on the newest call, and not where a call cannot be
+                      // placed from here at all: then a row is only a record.
+                      onCallBack={
+                        callGate !== 'hidden' && row.message._id === newestCallId
+                          ? onCallBack
+                          : undefined
+                      }
+                      onMeetingCall={
+                        callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
+                          ? onMeetingCall
+                          : undefined
+                      }
                       onJumpTo={onJumpTo}
                       onOpenMedia={onOpenMedia}
                     />
@@ -3252,6 +3402,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   // The accent, like Online: somebody typing is as live as the status line gets.
   typing: { ...font.caption, color: colors.accent, fontSize: 13 },
   more: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
+  // One group, tighter than the header's own gap: with the two call buttons
+  // beside it, three controls spaced like three header items would squeeze a
+  // name off a narrow phone.
+  headerActions: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   presence: { ...font.caption, color: colors.success, fontSize: 13, fontWeight: '600' },
   /** Under the newest message, above the composer. */
   unsentBlock: { gap: spacing.xs, paddingTop: spacing.xs },

@@ -1,8 +1,15 @@
-import { APP_SCHEME, INBOX_KINDS_AUTH_KEY, SOCKET_ACK_TIMEOUT_MS } from '@langx/shared'
+import {
+  APP_SCHEME,
+  CALL_PROTOCOL_VERSION,
+  CALLS_AUTH_KEY,
+  INBOX_KINDS_AUTH_KEY,
+  SOCKET_ACK_TIMEOUT_MS,
+} from '@langx/shared'
 import { Platform } from 'react-native'
 import { io, type Socket } from 'socket.io-client'
 import { API_URL } from './apiUrl'
 import { authClient } from './auth-client'
+import { engine } from './calls/rtc'
 import { deviceId } from './deviceId'
 import { DRAWABLE_INBOX_KINDS } from './notificationInbox'
 
@@ -59,6 +66,13 @@ export async function getSocket(): Promise<Socket> {
    * as the 2.7 build and never tells it about a kind added since.
    */
   auth[INBOX_KINDS_AUTH_KEY] = DRAWABLE_INBOX_KINDS
+  /*
+   * "This connection can take a call" — said only by a build that has a media
+   * engine. The server rings the sockets that said it and no others, so a
+   * phone without the native module is never handed a call it could only
+   * watch ring. See `calls/rtc.ts`.
+   */
+  if (engine.supported()) auth[CALLS_AUTH_KEY] = String(CALL_PROTOCOL_VERSION)
 
   socket ??= io(API_URL, {
     auth,

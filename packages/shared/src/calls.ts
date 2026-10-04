@@ -120,6 +120,12 @@ export const CALL_LIMITS = {
    * be a dozen writes where two will do.
    */
   candidateBatchMs: 200,
+  /**
+   * How early an agreed time to talk offers "Call now" on its card. Ten
+   * minutes, so somebody who is ready early can start — and not the hour the
+   * reminder buzzes, when a call is a surprise rather than the plan.
+   */
+  meetingCallLeadMinutes: 10,
 } as const
 
 /**

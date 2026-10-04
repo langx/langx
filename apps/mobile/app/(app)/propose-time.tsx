@@ -46,9 +46,11 @@ const SLOT_WIDTH = 78
 /**
  * Proposing a time to talk.
  *
- * **It arranges; it does not dial.** There is no calling in this app, and a
- * card that looked like it could start one would be a promise the app cannot
- * keep — so nothing here says "call" and the thread's card has no join button.
+ * **It arranges; it does not dial.** The call itself starts from the thread —
+ * its header, or the agreed card's "Call now" once the time is close, on a
+ * build that can carry one. Nothing here says "call", because a proposal is a
+ * question about when, and a build without calling still has to be able to
+ * ask it.
  *
  * The picker writes a `Date`, which carries the device's zone, and the server
  * stores the instant. Each reader's card is then drawn in *their* profile's

@@ -142,6 +142,12 @@ const lightColors = {
   scrimStrong: 'rgba(0, 0, 0, 0.94)',
   /** Chrome drawn on a scrim — always white, because a scrim is always dark. */
   onScrim: '#ffffff',
+  /**
+   * The ground of the call screen: opaque, and the same near-black in both
+   * schemes. A scrim lets the thread show through behind a face, which on a
+   * call reads as a screen that did not finish opening.
+   */
+  stage: '#0d0f12',
 } as const
 
 export type ThemeColors = { readonly [K in keyof typeof lightColors]: string }
@@ -195,6 +201,7 @@ const darkColors: ThemeColors = {
   scrim: 'rgba(0, 0, 0, 0.45)',
   scrimStrong: 'rgba(0, 0, 0, 0.94)',
   onScrim: '#ffffff',
+  stage: '#0d0f12',
 }
 
 /**
