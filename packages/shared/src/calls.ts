@@ -476,5 +476,5 @@ export const callCancelDataSchema = z.object({
 })
 export type CallCancelData = z.infer<typeof callCancelDataSchema>
 
-/** The header a `callToken` travels in, for the request native code makes. */
+/** The header a `callToken` travels in, on the one route that takes it: `POST /calls/:id/decline`. */
 export const CALL_TOKEN_HEADER = 'x-call-token'

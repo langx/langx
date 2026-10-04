@@ -229,7 +229,7 @@ end in a call reported to the system and stops delivering them to an app that
 breaks the rule, so there is no VoIP push that means "never mind".
 
 The ring carries a ticket that can decline that one call (`callToken.ts`,
-`POST /calls/:id/end`), because "Decline" on a lock screen runs with no
+`POST /calls/:id/decline`), because "Decline" on a lock screen runs with no
 session in reach. It expires a minute after the ring.
 
 A device silenced with its own switch (`devices.pushEnabled: false`) is not

@@ -12,8 +12,9 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
  *
  * So the ticket is narrow on every axis. It names one call and the one person
  * who is being rung by it; it expires a minute after the ring does; and the
- * only route that accepts it only ends that call. Stolen, it is worth one
- * declined call that was about to be missed anyway.
+ * only route that accepts it (`POST /calls/:id/decline`) can only turn that
+ * call down while it is still ringing. Stolen, it is worth one declined call
+ * that was about to be missed anyway.
  *
  * Signed with the auth secret under its own label. Rotating that secret
  * invalidates the tickets of calls ringing at that instant and nothing else —

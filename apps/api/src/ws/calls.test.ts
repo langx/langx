@@ -1206,15 +1206,27 @@ describe('calls over Socket.io', () => {
       // "Decline" on the lock screen, with no session anywhere in reach.
       const forged = await app.inject({
         method: 'POST',
-        url: `/calls/${callId}/end`,
+        url: `/calls/${callId}/decline`,
         headers: { [CALL_TOKEN_HEADER]: `${Math.floor(Date.now() / 1000) + 60}.AAAA` },
         payload: {},
       })
       expect(forged.statusCode).toBe(404)
 
-      const declined = await app.inject({
+      // No ticket at all reads the same as a wrong one.
+      const bare = await app.inject({ method: 'POST', url: `/calls/${callId}/decline` })
+      expect(bare.statusCode).toBe(404)
+      // And a ticket is not a session: the signed-in route does not take one.
+      const wrongDoor = await app.inject({
         method: 'POST',
         url: `/calls/${callId}/end`,
+        headers: { [CALL_TOKEN_HEADER]: data.callToken },
+        payload: {},
+      })
+      expect(wrongDoor.statusCode).toBe(401)
+
+      const declined = await app.inject({
+        method: 'POST',
+        url: `/calls/${callId}/decline`,
         headers: { [CALL_TOKEN_HEADER]: data.callToken },
         payload: {},
       })
@@ -1248,7 +1260,7 @@ describe('calls over Socket.io', () => {
 
       const late = await app.inject({
         method: 'POST',
-        url: `/calls/${callId}/end`,
+        url: `/calls/${callId}/decline`,
         headers: { [CALL_TOKEN_HEADER]: callToken },
         payload: {},
       })

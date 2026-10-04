@@ -19,13 +19,14 @@ const endBodySchema = endCallSchema.omit({ callId: true })
  * The part of calling that does not happen on a socket.
  *
  * A call is placed, answered and carried over the socket — `ws/calls.ts` — and
- * nothing here can do any of that. These are the four things that have to work
- * when there is no socket to do them on: a phone registering that it can be
- * rung, an app that has just come forward asking what it missed, and a call
- * being ended by something that has no socket at all.
+ * nothing here can do any of that. These are the things that have to work when
+ * there is no socket to do them on: a phone registering that it can be rung,
+ * an app that has just come forward asking what it missed, and a call being
+ * ended by something that has no socket at all.
  *
- * Verified email throughout, which is what the socket's handshake requires:
- * the two transports refuse the same people.
+ * Verified email on every route but one, which is what the socket's handshake
+ * requires: the two transports refuse the same people. The one is the decline
+ * a lock screen sends, which has a ticket instead of a session.
  */
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const callRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -57,56 +58,65 @@ export const callRoutes: FastifyPluginAsyncZod = async (app) => {
    * of them hanging up.
    *
    * The REST twin of `call:end`, and it goes through the same function. It is
-   * here for two callers the socket cannot serve.
-   *
-   * The first is **native code with no session in reach** — "Decline" on a
-   * lock screen. It sends the ticket that arrived in the ring (`callToken.ts`)
-   * instead of a cookie, and that ticket is checked against the call's own
-   * record of who was being rung: it never gets to say who it is for. What it
-   * can do is exactly what the person it names could do from a device that is
-   * not in the call — decline while it rings — and nothing once it is
-   * answered.
-   *
-   * The second is an app whose socket is the thing that broke, hanging up the
-   * call that was on it. That one is signed in, and proves it is the device in
-   * the call with the key it was handed.
+   * here for an app whose socket is the thing that broke, hanging up the call
+   * that was on it — which is why, once a call is answered, it has to prove it
+   * is the device in the call with the key it was handed.
    */
   app.post(
     '/calls/:callId/end',
     {
+      preHandler: requireVerifiedEmail,
       schema: { params: callRefSchema, body: endBodySchema },
+      config: { rateLimit: limit(30, '1 minute') },
+    },
+    async (request, reply) => {
+      const ended = await endCallByParty(
+        app,
+        request.userId,
+        { callId: request.params.callId, ...request.body },
+        // Never in the room: this request did not arrive on a socket.
+        { inRoom: false },
+      )
+      return reply.send(ended)
+    },
+  )
+
+  /**
+   * "Decline", from native code with no session in reach — the button on a
+   * lock screen.
+   *
+   * Its own route rather than a second way into the one above, so that which
+   * credential a request is judged by is decided by the path it was sent to
+   * and never by what the request chose to carry. This one takes the ticket
+   * that arrived in the ring (`callToken.ts`) and nothing else. The ticket is
+   * checked against the call's own record of who was being rung: it never
+   * gets to say who it is for.
+   *
+   * What it can do is exactly what the person it names could do from a device
+   * that is not in the call — turn it down while it rings — and nothing once
+   * it is answered, which `endCallByParty` refuses for anything that cannot
+   * prove it is in the call.
+   */
+  app.post(
+    '/calls/:callId/decline',
+    {
+      schema: { params: callRefSchema },
       config: { rateLimit: limit(30, '1 minute') },
     },
     async (request, reply) => {
       const { callId } = request.params
       const ticket = request.headers[CALL_TOKEN_HEADER]
-
-      let userId: string
-      if (typeof ticket === 'string' && ticket.length > 0) {
-        const call = await findCall(app.mongo.db, callId)
-        // One answer for "no such call" and "not your ticket": a ticket that
-        // could tell the two apart would confirm which call ids are real.
-        if (
-          !call ||
-          !verifyCallToken(app.env.BETTER_AUTH_SECRET, ticket, { callId, userId: call.calleeId })
-        ) {
-          throw new ApiError(ERROR_CODES.NOT_FOUND, 'Call not found')
-        }
-        userId = call.calleeId
-      } else {
-        await requireVerifiedEmail(request, reply)
-        if (reply.sent) return reply
-        userId = request.userId
+      const call = await findCall(app.mongo.db, callId)
+      // One answer for "no such call", "no ticket" and "not your ticket": a
+      // route that told them apart would confirm which call ids are real.
+      if (
+        !call ||
+        typeof ticket !== 'string' ||
+        !verifyCallToken(app.env.BETTER_AUTH_SECRET, ticket, { callId, userId: call.calleeId })
+      ) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'Call not found')
       }
-
-      const ended = await endCallByParty(
-        app,
-        userId,
-        { callId, ...request.body },
-        // Never in the room: this request did not arrive on a socket.
-        { inRoom: false },
-      )
-      return reply.send(ended)
+      return reply.send(await endCallByParty(app, call.calleeId, { callId }, { inRoom: false }))
     },
   )
 
