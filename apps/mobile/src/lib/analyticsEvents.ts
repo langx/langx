@@ -1,5 +1,6 @@
 import type {
   BillingPeriod,
+  CallMedia,
   CardKind,
   CardShape,
   CosmeticKind,
@@ -593,6 +594,55 @@ export type AnalyticsEvent =
        */
       name: 'fair_use_limit_hit'
       properties: { kind: 'media' }
+    }
+  | {
+      /**
+       * A call button was pressed and the microphone was had: the call is on
+       * its way to the server. `source` is where the button was — the thread's
+       * header, "Call back" on a call's own row, or an agreed call's card.
+       */
+      name: 'call_started'
+      properties: { media: CallMedia; source: 'header' | 'row' | 'meeting' }
+    }
+  | {
+      /**
+       * A call did not get as far as ringing. `code` is the server's error
+       * code, or `MIC_DENIED` / `CAMERA_DENIED` for the two refusals that are
+       * the device's own. This is the measure of the consent gate and the
+       * cooldown: how many calls they stop, against how many get through.
+       */
+      name: 'call_refused'
+      properties: { code: string }
+    }
+  | {
+      /** A ringing call was answered. `with_camera` is false for "answer without camera". */
+      name: 'call_answered'
+      properties: { media: CallMedia; with_camera: boolean }
+    }
+  | {
+      /**
+       * Media flowed between the two devices for the first time.
+       * `setup_seconds` is from the answer to that moment — the number the
+       * relay and the signalling are judged by.
+       */
+      name: 'call_connected'
+      properties: { media: CallMedia; role: 'caller' | 'callee'; setup_seconds: number }
+    }
+  | {
+      /**
+       * A call left this device's screen. `reason` is a `CallEndReason`, or
+       * the error code for a call that was refused; `connected` is whether
+       * the two ever heard each other, and `seconds` is for how long. Never
+       * who the call was with.
+       */
+      name: 'call_ended'
+      properties: {
+        media: CallMedia
+        role: 'caller' | 'callee'
+        reason: string
+        connected: boolean
+        seconds: number
+      }
     }
 
 export type AnalyticsEventName = AnalyticsEvent['name']

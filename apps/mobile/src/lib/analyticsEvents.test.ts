@@ -133,6 +133,20 @@ describe('every event survives the sanitizer', () => {
       properties: { kind: 'badge', shape: null, link_only: true, failed: false },
     },
     { name: 'fair_use_limit_hit', properties: { kind: 'media' } },
+    { name: 'call_started', properties: { media: 'video', source: 'header' } },
+    { name: 'call_refused', properties: { code: 'CALLS_LOCKED' } },
+    { name: 'call_answered', properties: { media: 'video', with_camera: false } },
+    { name: 'call_connected', properties: { media: 'audio', role: 'callee', setup_seconds: 2 } },
+    {
+      name: 'call_ended',
+      properties: {
+        media: 'audio',
+        role: 'caller',
+        reason: 'hangup',
+        connected: true,
+        seconds: 312,
+      },
+    },
   ]
 
   for (const event of events) {
