@@ -179,12 +179,20 @@ async function computePublicStats(db: Db, now: Date): Promise<PublicStats> {
     native,
   ] = await Promise.all([
     db.collection(COLLECTIONS.profiles).countDocuments(LIVE_MEMBERS),
-    db.collection(COLLECTIONS.messages).countDocuments({}),
+    /*
+     * Messages, which a call's row is not. Subtracted rather than filtered:
+     * the first count needs no predicate, and the second is answered by
+     * `call_id_unique`, which holds nothing but those rows.
+     */
+    Promise.all([
+      db.collection(COLLECTIONS.messages).countDocuments({}),
+      db.collection(COLLECTIONS.messages).countDocuments({ 'call.callId': { $exists: true } }),
+    ]).then(([all, callRows]) => Math.max(0, all - callRows)),
     db.collection(COLLECTIONS.postCorrections).countDocuments({}),
     distinctLearning(db),
     streakTotals(db),
     perDay(db, COLLECTIONS.profiles, since, LIVE_MEMBERS),
-    perDay(db, COLLECTIONS.messages, since, {}),
+    perDay(db, COLLECTIONS.messages, since, { type: { $ne: 'call' } }),
     perDay(db, COLLECTIONS.postCorrections, since, {}),
     topLanguages(db, 'learning'),
     topLanguages(db, 'nativeLanguages'),

@@ -19,7 +19,7 @@ import type { ConversationPartner } from '../profiles/profiles'
 export interface ConversationView {
   _id: string
   participants: [string, string]
-  lastMessage: { body: string; senderId: string; createdAt: Date; deleted?: boolean }
+  lastMessage: Conversation['lastMessage']
   /** This viewer's count, as a number — never the map it is stored in. */
   unread: number
   pinned: boolean
@@ -85,7 +85,11 @@ export function toConversationView(conversation: Conversation, viewerId: string)
      * exactly for the threads somebody read and meant to come back to — which
      * are the ones this is for.
      */
-    unreplied: conversation.lastMessage.senderId !== viewerId,
+    unreplied:
+      conversation.lastMessage.senderId !== viewerId &&
+      // A call both of them were on is nobody's turn. `senderId` there is only
+      // who placed it, which is not the same thing as who spoke last.
+      conversation.lastMessage.call?.outcome !== 'completed',
     bothSpoke: conversation.bothSpoke,
     mediaLockedFor: mediaLockedFor(conversation, viewerId),
     updatedAt: conversation.updatedAt,

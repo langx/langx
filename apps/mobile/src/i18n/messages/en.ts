@@ -478,6 +478,7 @@ export const en = {
     phrase: 'Phrase',
     meeting: 'Meeting',
     quiz: 'Quiz',
+    call: 'Call',
     correction: 'Correction',
     forwarded: 'Forwarded',
   },

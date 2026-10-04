@@ -53,6 +53,20 @@ describe('notificationRoute', () => {
   it('sends token news to the wallet', () => {
     expect(notificationRoute({ kind: 'wallet' })).toBe('/wallet')
   })
+
+  it('opens the thread a call notification came from', () => {
+    // Where the app rings for itself if the call is still live, and where the
+    // row that says it ended is if it is not.
+    expect(notificationRoute({ kind: 'call', conversationId: 'abc123' })).toBe('/chat/abc123')
+    expect(notificationRoute({ kind: 'call' })).toBe('/chats')
+  })
+
+  it('does not route the pushes that only ring a phone', () => {
+    // `callRing` and `callCancel` are instructions to native code, not
+    // notifications: nothing is ever tapped, so nothing has a destination.
+    expect(notificationRoute({ kind: 'callRing', conversationId: 'abc123' })).toBeNull()
+    expect(notificationRoute({ kind: 'callCancel' })).toBeNull()
+  })
 })
 
 describe('createTapGate', () => {

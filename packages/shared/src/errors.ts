@@ -115,6 +115,67 @@ export const ERROR_CODES = {
    */
   MEDIA_TOO_LONG: 'MEDIA_TOO_LONG',
 
+  // calls
+  /**
+   * A call to somebody who has not yet sent you
+   * `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES` messages.
+   *
+   * The media gate's rule and the media gate's number, under its own code
+   * because the sentence is different: `MEDIA_LOCKED` is worded about photos
+   * and voice notes, and a client that reused it would tell somebody their
+   * call needed a photo to unlock. `max` rides along, as it does there.
+   */
+  CALLS_LOCKED: 'CALLS_LOCKED',
+  /**
+   * One of the two has calls switched off. `reason` says which — `you` or
+   * `them` — because the answers differ: one is a setting to change, the
+   * other is somebody's choice to respect.
+   */
+  CALLS_REFUSED: 'CALLS_REFUSED',
+  /**
+   * They are on another call. Worded to the caller as "can't take a call
+   * right now", never as "is on a call": who somebody is talking to, or that
+   * they are talking at all, is theirs.
+   */
+  CALL_BUSY: 'CALL_BUSY',
+  /**
+   * The caller is already in a call — on this device or another one signed in
+   * to the same account. One account, one live call: it is an index, and this
+   * is what the index says when it refuses.
+   */
+  CALL_IN_PROGRESS: 'CALL_IN_PROGRESS',
+  /**
+   * The two called each other at once. The call that got there first is
+   * already ringing on this device, so the client answers that one instead of
+   * starting a second.
+   */
+  CALL_GLARE: 'CALL_GLARE',
+  /**
+   * Something was asked of a call that is already over — an answer after the
+   * caller gave up, a rejoin after the lease ran out. Its own code rather
+   * than `NOT_FOUND` because the screen's answer is "the call ended", which
+   * is not what a missing thing says.
+   */
+  CALL_ENDED: 'CALL_ENDED',
+  /**
+   * Too many unanswered calls to this person today. `retryAt` says when the
+   * oldest of them stops counting; the person writing or calling back clears
+   * it sooner.
+   */
+  CALL_COOLDOWN: 'CALL_COOLDOWN',
+  /**
+   * Nothing of theirs could be rung: no phone registered for calls and no
+   * open app that can take one. The thread still records that somebody
+   * tried, which is the part the other person can act on.
+   */
+  CALL_UNREACHABLE: 'CALL_UNREACHABLE',
+  /**
+   * This deployment cannot place calls — no relay is configured, or calling
+   * has been switched off. The client normally never sees it: `/app-config`
+   * says so first and no button is drawn.
+   */
+  CALLS_UNAVAILABLE: 'CALLS_UNAVAILABLE',
+
   // testimonials
   /**
    * A testimonial about somebody this pair has not earned the right to write
@@ -251,6 +312,15 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   GENDER_CHANGE_TOO_SOON: 409,
   LOCATION_REQUIRED: 409,
   GIFT_CODE_REJECTED: 409,
+  CALLS_LOCKED: 409,
+  CALLS_REFUSED: 403,
+  CALL_BUSY: 409,
+  CALL_IN_PROGRESS: 409,
+  CALL_GLARE: 409,
+  CALL_ENDED: 409,
+  CALL_COOLDOWN: 429,
+  CALL_UNREACHABLE: 409,
+  CALLS_UNAVAILABLE: 503,
   TESTIMONIAL_LOCKED: 409,
   TESTIMONIAL_REMOVED: 409,
   NOT_FOUND: 404,

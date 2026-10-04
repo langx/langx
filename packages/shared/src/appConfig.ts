@@ -59,6 +59,12 @@ export const appConfigSchema = z.object({
     translationEnabled: z.boolean(),
     discoveryEnabled: z.boolean(),
     signupsEnabled: z.boolean(),
+    /**
+     * Calling, for everybody at once. The switch to reach for when the relay
+     * is down or being abused: off, no call can be started and no client
+     * draws a button. Calls already running are left to finish.
+     */
+    callsEnabled: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -73,7 +79,12 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
   // version nobody has published, so a deployment that never sets this never
   // nags anyone.
   latestVersion: { ios: '0.0.0', android: '0.0.0', web: '0.0.0' },
-  flags: { translationEnabled: true, discoveryEnabled: true, signupsEnabled: true },
+  flags: {
+    translationEnabled: true,
+    discoveryEnabled: true,
+    signupsEnabled: true,
+    callsEnabled: true,
+  },
 }
 
 /**

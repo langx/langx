@@ -21,7 +21,9 @@ import {
   stripFormatting,
   type SendTextMessageInput,
   type ForwardMessageInput,
+  isCallRecord,
   isForwardableType,
+  type MessageCall,
   type ThreadTestimonialState,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Document } from 'mongodb'
@@ -68,7 +70,20 @@ export interface SendResult {
  * known and cannot be. Localising it would mean either storing it per reader
  * or re-deriving the list's preview on every read.
  */
-export function previewFor(type: Message['type'], count = 1): string {
+export function previewFor(
+  type: Message['type'],
+  count = 1,
+  /** A call's row, when there is one in hand, so the line can say which kind. */
+  call?: Pick<MessageCall, 'media'>,
+): string {
+  /*
+   * Neutral on purpose: "Voice call", never "Missed voice call". This line is
+   * stored once on the conversation and read by both people, and whether a
+   * call was missed depends on which of them is reading. A build that knows
+   * about calls words it per reader from `lastMessage.call`; this is for the
+   * ones that do not, and for anything that only has the type.
+   */
+  if (type === 'call') return call?.media === 'video' ? '📹 Video call' : '📞 Voice call'
   if (type === 'image') return count > 1 ? `📷 ${count} photos` : '📷 Photo'
   if (type === 'video') return count > 1 ? `🎬 ${count} videos` : '🎬 Video'
   if (type === 'audio') return '🎤 Voice message'
@@ -83,6 +98,17 @@ export function previewFor(type: Message['type'], count = 1): string {
   // and a lock screen is not where somebody's whereabouts should be read out.
   if (type === 'location') return '📍 Location'
   return ''
+}
+
+/**
+ * The line a push carries for a call nobody picked up.
+ *
+ * Its own function because it is the one place the server *can* word a call
+ * from one side: this notification goes to the person who was called and to
+ * nobody else, so "missed" is simply true.
+ */
+export function missedCallPreview(call: Pick<MessageCall, 'media'>): string {
+  return call.media === 'video' ? '📹 Missed video call' : '📞 Missed voice call'
 }
 
 /**
@@ -116,6 +142,10 @@ async function resolveReplyTo(
     .findOne({ _id: targetId, conversationId: conversation._id })
   if (!target) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Reply target not found in this conversation')
+  }
+  // There is no sentence in a call's row to answer. See `isCallRecord`.
+  if (isCallRecord(target)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A call cannot be replied to')
   }
 
   // Refused rather than dropped: the preview is what the other person reads
@@ -532,8 +562,8 @@ export async function upcomingMeetingsFor(
 /**
  * A proposed time to talk.
  *
- * It arranges and nothing else — there is no calling in this app, and the card
- * must not look like it could start one.
+ * It arranges and nothing else. A call is started through `modules/calls`,
+ * with its own gates, whether or not a time was ever agreed here.
  */
 export async function sendMeeting(
   db: Db,
@@ -832,6 +862,15 @@ export async function sendCorrection(
     .findOne({ _id: targetId, conversationId: conversation._id })
   if (!target) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Target message not found in this conversation')
+  }
+  /*
+   * A call's row has no sentence in it, and it is the other person's row
+   * whenever they were the one who rang — which the own-message rule below
+   * would let through. A correction pays, once per target, so without this
+   * every call somebody placed would be ten tokens for whoever received it.
+   */
+  if (isCallRecord(target)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A call cannot be corrected')
   }
 
   // Correcting your own sentence is not teaching, and it would pay for it —
@@ -1517,7 +1556,12 @@ export async function listConversations(
   base[`deletedBy.${userId}`] = { $ne: true }
 
   // "They spoke last." See `toConversationView` for why this is not `unread`.
-  if (filter === 'unreplied') base['lastMessage.senderId'] = { $ne: userId }
+  if (filter === 'unreplied') {
+    base['lastMessage.senderId'] = { $ne: userId }
+    // A call they placed and both of them took is not something left
+    // unanswered. The same clause `toConversationView` applies per row.
+    base['lastMessage.call.outcome'] = { $ne: 'completed' }
+  }
 
   const pinnedPath = `pinnedBy.${userId}`
 

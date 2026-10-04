@@ -389,6 +389,7 @@ export const es: Localized<EnMessages> = {
     phrase: 'Expresión',
     meeting: 'Reunión',
     quiz: 'Pregunta',
+    call: 'Llamada',
     correction: 'Corrección',
     forwarded: 'Reenviado',
   },

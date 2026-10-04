@@ -415,6 +415,7 @@ export const ru: Localized<EnMessages> = {
     phrase: 'Выражение',
     meeting: 'Встреча',
     quiz: 'Викторина',
+    call: 'Звонок',
     correction: 'Исправление',
     forwarded: 'Переслано',
   },

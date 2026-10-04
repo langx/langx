@@ -66,6 +66,26 @@ describe('toMessageView', () => {
     expect(toMessageView(withdrawn, ME).ask).toBeUndefined()
   })
 
+  /**
+   * A call's row is a fact about two people, not something one of them wrote —
+   * so it is the same for both, and it survives what blanks a message.
+   */
+  it('carries a call to both readers, and keeps it when the caller’s account is purged', () => {
+    const call = {
+      callId: '6f1c2a34-9b7e-4c1d-8a2f-0e5d3b7a9c11',
+      media: 'video' as const,
+      outcome: 'completed' as const,
+      durationSeconds: 192,
+    }
+    const row = message({ type: 'call', body: '', call })
+    expect(toMessageView(row, ME).call).toEqual(call)
+    expect(toMessageView(row, THEM).call).toEqual(call)
+    expect(toMessageView(message(), ME).call).toBeUndefined()
+
+    const purged = message({ type: 'call', body: '', call, deletedWithAccount: true })
+    expect(toMessageView(purged, ME).call).toEqual(call)
+  })
+
   it('carries a translation the sender sent, to both of them', () => {
     const doc = message({
       senderId: THEM,
