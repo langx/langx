@@ -6363,3 +6363,131 @@ streak slide shows a square per month, shaded by the share of its days that
 were active. The Me tab offers it from 20 December (the year so far, when
 people look back) through 7 January (the year just ended, the same week as
 December's recap). Any other day `/recap?year=YYYY` still opens it.
+
+## Calls: two devices, a relay, and a server that only keeps the state
+
+Two people in a thread can call each other — voice, or voice with the camera —
+from the chat header. This reverses a decision. On 23 September 2026 the
+watch-and-car plan recorded calling as "not built, and this is the decision,
+not a deferral", and set a condition for reopening it: agreed meetings becoming
+a weekly habit. That measurement is not what reopened it. On 3 October 2026 it
+was decided as a product: practising a language is speaking it, and people who
+had agreed a time to talk were being sent to another app to do the talking.
+Everything the earlier note listed as the cost — a media path, an abuse story,
+store questions — still had to be paid, and what follows is how each was.
+
+**The media never touches us.** A call is WebRTC between the two devices,
+encrypted end to end by the protocol itself. There is no media server of ours
+in the path, so nothing is recorded, nothing can be, and there is no content to
+moderate — which is why the whole safety story is about who may ring whom, and
+not about listening. A media server (an SFU) exists to mix more than two
+people; a one-to-one call needs none, and a calling SDK would have put one in
+anyway, along with a per-minute bill and signalling that never passes our own
+guards.
+
+**Relay only, and no calls at all without one.** The two devices meet through
+a TURN relay (Cloudflare's; a self-hosted coturn by config), and production
+tells them to use _nothing but_ the relay. WebRTC's default is to try a direct
+path first, which works by each device telling the other its address — fine
+between friends, and not something to do between two people who met in an app
+last week. The relay sees ciphertext and two IP addresses; neither person sees
+the other's. The cost is a hop and a bandwidth bill, and the consequence is
+deliberate: with no relay configured, production reports `callService: false`
+and draws no button, rather than offering calls that work by handing strangers
+each other's IP. Anywhere but production an empty server list is allowed, which
+is what lets two browsers on one machine be the test.
+
+**Who may call whom is the media gate, with the media gate's number.** A call
+is the most intrusive thing one account can do to another — it makes a phone
+ring — so it is gated exactly as a photo is: you can call somebody once they
+have sent you `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES` messages, on every plan,
+with no way to buy past it. On top of that is one switch, `privacy.refuseCalls`,
+and it cuts both ways: somebody who takes no calls places none, because a
+switch that only blocked incoming calls would let a person ring people who
+cannot ring back. Official accounts, guests, a blocked pair and a suspended
+account are refused before any of that. Calling is free; `CALL_LIMITS` in
+`packages/shared` holds every number, and none of them is a plan limit.
+
+**One live call per person is an index, not a check.** `calls.parties` is the
+two people, and a unique index over it — partial, on `live: true` — means a
+second live call naming either of them cannot be inserted, by any machine,
+under any race. That is "busy", and it is also what stops one account ringing
+two people from two phones. There is no lock collection to keep in step with
+the call: ending a call unsets `live`, the document leaves the index, and there
+is nothing left to release.
+
+**The server owns the state, and a dropped socket is not a hang-up.** A call
+is `ringing → connecting → active → ended`, and every step is a conditional
+write that exactly one caller wins; only the winner tells anybody. Each state
+has a deadline on the document — 45 seconds to answer, 30 to connect, then a
+90-second lease the two devices renew every 30 — and a sweeper on every machine
+ends whatever is past it. So a call survives its socket dying under it (a
+tunnel, a network change, a blue-green deploy moving both people to new
+machines) and comes back with the key each device was handed when it joined,
+while a call whose devices have really gone ends by itself a lease later.
+Nothing is ended on `disconnect`. The timers each machine also keeps are an
+optimisation: a ring that ends on the second rather than a sweep later.
+
+**Signalling is relayed without a read.** The frames two devices exchange to
+set up the media path go through the socket, and the only question asked of
+each is whether its sender is in the call's room — a room joined in exactly
+three guarded places. The realtime bus between machines is a Mongo collection
+(_Two machines, one socket bus_), so every relayed frame is already one write;
+it must not also be a read. Clients batch their candidates for the same reason.
+
+**A call's row is not a message.** A finished call leaves a row in the thread
+(`type: 'call'`), and it is written by `recordCallLog`, not `recordMessage`,
+because of everything that function does that a call must not: no
+`messageCountBy` (the counter the gate above reads — a call must not be a way
+to ring past the rule that decides whether you may call), no `bothSpoke`, no
+tokens, no streak day, no share of the pool. Two accounts holding a line open
+is the cheapest thing in the app to do and would be the easiest to farm. The
+row stores what happened — completed, missed, declined, busy, failed — and
+each reader words it from where they stand: "missed" is the callee's word and
+"no answer" the caller's. Only a call that happened without the person being
+called (missed, busy) counts as unread and sends a push, and that push is an
+ordinary message push, under the `messages` switch and a thread's mute. A row
+cannot be replied to, reacted to, starred, pinned, corrected or withdrawn —
+correcting one would have paid ten tokens per call received.
+
+**Three unanswered calls, and then it is the other person's move.** After
+three calls in a row that nobody picked up, the caller waits — not for a day,
+but for the person: a message from them or a call back clears it at once. That
+is the difference between a rate limit and a rule about consent; this one is
+released by whoever it protects.
+
+**A ring goes only to what said it can ring.** A client declares that it can
+take a call when its socket connects (`auth.calls`), the way it declares the
+inbox kinds it can draw, and for the same reason: a version header names a
+binary, not the JavaScript running in it or whether that JavaScript has a
+media engine. A build that says nothing is never rung. When nothing of
+somebody's can be rung at all, the caller is told at once and the thread still
+records a missed call — an older build draws it as its "update the app" card,
+which is the honest thing for it to say.
+
+**An iPhone is rung by Apple directly: the one push that does not go through
+Expo.** _Push stays on Expo's relay_ stands for every notification. A VoIP
+push is not one — it is its own APNs push type, to its own token, and the only
+push iOS will start a killed app for and let it put the system's call screen
+on a locked phone. Expo's service does not carry it, so the API sends it
+(`modules/calls/voipPush.ts`: HTTP/2, a token signed with an APNs key, no
+SDK). It is only ever sent to ring, because iOS requires every VoIP push to
+end in a reported call and cuts off an app that breaks the rule. Without a key
+— or where the system call screen is not allowed — an iPhone gets an ordinary
+notification instead and has to be opened to answer. Android is rung through
+Expo with a data push the phone's own code turns into the system call screen.
+The ring carries a ticket (`callToken.ts`) that can decline that one call and
+do nothing else, because "Decline" on a lock screen runs with no session in
+reach.
+
+**Kept a month.** The `calls` document — who, when, which device, why it
+ended — expires thirty days after the call. The thread's row stays as long as
+the thread does. Nothing was ever said to us, so there is nothing else to keep.
+
+**What this does not yet include.** The server and the contract come first,
+and by themselves ring nobody: no client declares the capability yet. The
+clients follow in the order their constraints allow — the browser first,
+because it needs no native code, and the phones with a store round, because
+the media engine, CallKit and PushKit, and Android's Telecom integration are a
+native module and change the build fingerprint. Until a build declares that it
+can take a call, it is simply never rung.

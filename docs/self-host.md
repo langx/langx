@@ -279,6 +279,54 @@ few seconds more. The machine is `shared-cpu-4x` with 3 GB, which its
 `fly.toml` explains from a measurement; if notes routinely take too long, a
 larger CPU is a `fly.toml` change, not a code change.
 
+## Calls
+
+Calling needs one thing this API cannot be: a **TURN relay**. The two devices
+in a call send their media to each other, not through the API, and production
+makes them do it by way of a relay so that neither learns the other's address
+(`docs/decisions.md` → _Calls: two devices, a relay, and a server that only
+keeps the state_). Without one, `GET /app-config` answers `callService: false`
+under `NODE_ENV=production` and no client draws a call button. Everything else
+is unaffected.
+
+Two ways to give it one:
+
+- **Cloudflare's TURN service** — `CLOUDFLARE_TURN_KEY_ID` and
+  `CLOUDFLARE_TURN_KEY_API_TOKEN`. Nothing to run. Billed per gigabyte relayed
+  after a free allowance; a voice call is tens of megabytes an hour, a video
+  call a few hundred.
+- **Your own coturn** — `ICE_SERVERS_JSON`, a JSON array in the browser's
+  `iceServers` shape. coturn needs a public address and UDP, which is why it is
+  not something this repo's own `fly.toml` runs. A list with a `turn:` or
+  `turns:` entry is used relay-only; a list with only `stun:` is not, because
+  there would be nothing to relay through.
+
+Outside production an unset relay still works on one network — an empty
+server list, no restriction — which is what local development and the test
+suite use.
+
+`flags.callsEnabled` in the runtime config is the switch for turning calling
+off without a deploy:
+
+```bash
+pnpm --filter @langx/api exec tsx scripts/maintenance.ts flag callsEnabled false
+```
+
+Calls in progress finish; no new one can start, and within the config cache's
+ten seconds no client offers one.
+
+**Ringing a phone whose app is closed** is the other half, and it is optional
+twice over. An Android phone is rung through Expo's push relay like every
+other notification here, so it needs nothing new. An iPhone needs a VoIP push,
+which only Apple's own service carries: set `APNS_KEY_ID` and
+`APNS_PRIVATE_KEY` from an APNs auth key. Without them an iPhone gets an
+ordinary notification that somebody is calling, and answers by opening the
+app. A fork shipping under its own bundle id also sets `APNS_BUNDLE_ID` and
+`APNS_TEAM_ID`.
+
+The API holds nothing of a call but its record — who, when, how it ended —
+and that expires after thirty days.
+
 ## Storage: B2 or R2
 
 `StorageProvider` is one interface over `@aws-sdk/client-s3`, so B2 and R2 are
