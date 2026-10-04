@@ -27,6 +27,13 @@ export const en = {
     badgeBody: 'Nice work. Keep it going.',
     meetingTitle: 'Your language exchange is in an hour',
     meetingBody: 'Tap to open the conversation.',
+    /*
+     * The fallback ring: an ordinary notification, for a phone that cannot show
+     * the system's call screen. The title is the caller's name, so these are
+     * the whole of the sentence under it.
+     */
+    callIncomingVoice: 'Incoming voice call',
+    callIncomingVideo: 'Incoming video call',
     bountyTitle: {
       one: '{count} token for your report 🎉',
       other: '{count} tokens for your report 🎉',

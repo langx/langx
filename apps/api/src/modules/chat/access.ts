@@ -69,9 +69,17 @@ export async function messagesReceivedFrom(
   const other = conversation.participants.find((id) => id !== userId)
   if (!other) return 0
   if (conversation.messageCountBy) return conversation.messageCountBy[other] ?? 0
+  /*
+   * A call's row is not a message they sent. It carries the caller as its
+   * `senderId`, and counting it would let somebody unlock photos — and calls
+   * themselves — by ringing a thread that predates the map: five unanswered
+   * calls would read as five messages received by the person who ignored
+   * them. The map never has this problem, because `recordCallLog` does not
+   * increment it.
+   */
   return db
     .collection<Message>(COLLECTIONS.messages)
-    .countDocuments({ conversationId: conversation._id, senderId: other })
+    .countDocuments({ conversationId: conversation._id, senderId: other, type: { $ne: 'call' } })
 }
 
 /**

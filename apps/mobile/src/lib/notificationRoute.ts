@@ -54,6 +54,13 @@ export function notificationRoute(data: unknown): Href | null {
       return typeof conversationId === 'string' && conversationId.length > 0
         ? `/chat/${conversationId}`
         : '/chats'
+    case 'call':
+      // The thread, like a message from the same person: if the call is still
+      // ringing the app picks it up there, and if it is over the row that
+      // says so is the last thing in it.
+      return typeof conversationId === 'string' && conversationId.length > 0
+        ? `/chat/${conversationId}`
+        : '/chats'
     case 'bountyPaid':
       // Tokens landed, so the screen that shows them is the answer — the
       // wallet, not the report they were paid for, which nothing here can open.

@@ -394,6 +394,20 @@ export const updateProfileSchema = z
          * place they live.
          */
         hideCity: z.boolean(),
+        /**
+         * Nobody can call this account, and this account calls nobody.
+         *
+         * Absent means calls are allowed, like every switch here that was
+         * added after accounts existed — nothing had to be backfilled, and
+         * the consent gate (`CALLS_LOCKED`) already keeps strangers out.
+         *
+         * Both directions on purpose. A switch that only stopped incoming
+         * calls would let somebody ring people who then cannot ring back,
+         * which is the one-sidedness the rest of the gate exists to prevent.
+         * Free on every plan, for `hideOnlineStatus`'s reason: a way to be
+         * left alone is not something to charge for.
+         */
+        refuseCalls: z.boolean(),
       })
       .partial(),
   })

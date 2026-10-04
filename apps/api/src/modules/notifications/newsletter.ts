@@ -75,7 +75,9 @@ export async function communityMonth(db: Db, month: string): Promise<MonthlyReca
     db
       .collection(COLLECTIONS.profiles)
       .countDocuments({ createdAt: range, guest: { $exists: false } }),
-    db.collection(COLLECTIONS.messages).countDocuments({ createdAt: range }),
+    // What people wrote to each other. A call leaves a row too, and it is
+    // not a message anybody sent.
+    db.collection(COLLECTIONS.messages).countDocuments({ createdAt: range, type: { $ne: 'call' } }),
     db.collection(COLLECTIONS.postCorrections).countDocuments({ createdAt: range }),
     db.collection(COLLECTIONS.posts).countDocuments({ createdAt: range }),
     db

@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ObjectId } from 'mongodb'
 import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
-import { countUnread, markDelivered, previewFor } from '../modules/chat/messages'
+import { countUnread, markDelivered, missedCallPreview, previewFor } from '../modules/chat/messages'
 import {
   attachmentsOf,
   notificationsAllowed,
@@ -187,7 +187,12 @@ async function deliver(
       // no more reason to be blank than the list does.
       // Stripped before the cut, for the reason `resolveReplyTo` gives.
       body: stripFormatting(
-        message.body || previewFor(message.type, attachmentsOf(message).length),
+        // A call's row is only ever pushed when nobody picked up, and only to
+        // the person who was called — the one reader for whom "missed" is
+        // simply true. See `missedCallPreview`.
+        message.type === 'call' && message.call
+          ? missedCallPreview(message.call)
+          : message.body || previewFor(message.type, attachmentsOf(message).length),
       ).slice(0, 120),
       data: {
         kind: 'message',

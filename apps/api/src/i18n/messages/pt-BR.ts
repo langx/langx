@@ -23,6 +23,8 @@ export const ptBR: Localized<ServerMessages> = {
     badgeBody: 'Mandou bem. Continue assim.',
     meetingTitle: 'Seu intercâmbio de idiomas é daqui a uma hora',
     meetingBody: 'Toque para abrir a conversa.',
+    callIncomingVoice: 'Chamada de voz recebida',
+    callIncomingVideo: 'Chamada de vídeo recebida',
     bountyTitle: {
       one: '{count} ficha pelo seu aviso 🎉',
       other: '{count} fichas pelo seu aviso 🎉',

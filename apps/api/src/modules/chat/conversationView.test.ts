@@ -27,4 +27,31 @@ describe('toConversationView', () => {
   it('leaves a message with nothing to format as it was written', () => {
     expect(toConversationView(conversation('2*3*4 = 24'), 'b').lastMessage.body).toBe('2*3*4 = 24')
   })
+
+  /**
+   * `unreplied` reads who wrote last, and a call's row is "written" by
+   * whoever placed it — which says nothing about whose turn it is.
+   */
+  it('does not leave a call both people took waiting for an answer', () => {
+    const withCall = (outcome: 'completed' | 'missed' | 'declined'): Conversation => {
+      const thread = conversation('📞 Voice call')
+      thread.lastMessage.call = { media: 'audio', outcome }
+      return thread
+    }
+    // `a` placed it; `b` is the one who was called.
+    expect(toConversationView(withCall('completed'), 'b').unreplied).toBe(false)
+    // A call they missed is theirs to return, like a message they have not answered.
+    expect(toConversationView(withCall('missed'), 'b').unreplied).toBe(true)
+    expect(toConversationView(withCall('missed'), 'a').unreplied).toBe(false)
+  })
+
+  it('carries what the call was, so each reader can word it for themselves', () => {
+    const thread = conversation('📹 Video call')
+    thread.lastMessage.call = { media: 'video', outcome: 'completed', durationSeconds: 192 }
+    expect(toConversationView(thread, 'b').lastMessage.call).toEqual({
+      media: 'video',
+      outcome: 'completed',
+      durationSeconds: 192,
+    })
+  })
 })

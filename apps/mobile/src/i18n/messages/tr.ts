@@ -398,6 +398,7 @@ export const tr: Localized<EnMessages> = {
     phrase: 'İfade',
     meeting: 'Toplantı',
     quiz: 'Soru',
+    call: 'Arama',
     correction: 'Düzeltme',
     forwarded: 'Yönlendirildi',
   },

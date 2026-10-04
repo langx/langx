@@ -4,6 +4,7 @@ import {
   MAX_PINNED_CONVERSATIONS,
   canEditMessage,
   ERROR_CODES,
+  isCallRecord,
   type DeleteMessageInput,
   type EditMessageInput,
   type PinMessageInput,
@@ -69,6 +70,20 @@ export async function loadMutableMessage(
 }
 
 /**
+ * Refuses the things a call's row cannot have done to it — a reaction, a star,
+ * a pin. `isCallRecord` says why; the menu in the app reads the same function,
+ * so this is for the client that predates it and the one that is not ours.
+ *
+ * Not in `loadMutableMessage`, because one mutation is still allowed: hiding
+ * the row from your own copy of the thread.
+ */
+function assertNotCallRecord(message: Message): void {
+  if (isCallRecord(message)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That cannot be done to a call')
+  }
+}
+
+/**
  * One reaction per person: tapping the same emoji clears it, tapping a
  * different one moves it.
  *
@@ -99,6 +114,7 @@ export async function reactToMessage(
   if (message.deletedAt) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That message was deleted')
   }
+  assertNotCallRecord(message)
 
   /*
    * The same rule `recordMessage` applies to a message, for the same reason: a
@@ -393,6 +409,9 @@ export async function starMessage(
     input.conversationId,
     input.messageId,
   )
+  // Unstarring is always allowed: nothing should be able to leave a mark on a
+  // row that its owner cannot take off again.
+  if (input.starred) assertNotCallRecord(message)
 
   const updated = await db
     .collection<Message>(COLLECTIONS.messages)
@@ -444,6 +463,7 @@ export async function pinMessage(
   if (message.deletedAt) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That message was deleted')
   }
+  assertNotCallRecord(message)
 
   // Replaced, not appended: `MAX_PINNED_PER_CONVERSATION` is one, and a second
   // pin would need an order and a way to see the list.

@@ -35,6 +35,8 @@ export const ru: Localized<ServerMessages> = {
     badgeBody: 'Отличная работа. Так держать.',
     meetingTitle: 'Языковой обмен через час',
     meetingBody: 'Нажми, чтобы открыть беседу.',
+    callIncomingVoice: 'Входящий аудиозвонок',
+    callIncomingVideo: 'Входящий видеозвонок',
     bountyTitle: {
       one: '{count} жетон за твоё сообщение 🎉',
       few: '{count} жетона за твоё сообщение 🎉',

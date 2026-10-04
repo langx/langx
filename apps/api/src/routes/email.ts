@@ -7,6 +7,7 @@ import { removeDeletedContact } from '../modules/notifications/v1DeletedContacts
 import { emailFor } from '../modules/profiles/emailFor'
 import { setEmailNotifications } from '../modules/profiles/profiles'
 import { requestDeletion } from '../modules/account/deletion'
+import { endCallsOf } from '../modules/calls/service'
 import { burnDeletionToken, verifyDeletionToken } from '../modules/account/deletionTokens'
 import {
   signUnsubscribeToken,
@@ -230,6 +231,10 @@ export const emailRoutes: FastifyPluginAsyncZod = async (app) => {
       }
 
       const status = await requestDeletion(app.mongo.db, userId, spent.feedback)
+      // The same as the in-app route: a call in progress ends with the account.
+      await endCallsOf(app, userId, 'deleted').catch((error: unknown) =>
+        request.log.warn({ err: error }, 'ending a call on deletion failed'),
+      )
       return reply.type('text/html; charset=utf-8').send(
         page(
           locale,

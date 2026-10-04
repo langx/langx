@@ -387,6 +387,7 @@ export const ptBR: Localized<EnMessages> = {
     phrase: 'Expressão',
     meeting: 'Reunião',
     quiz: 'Quiz',
+    call: 'Chamada',
     correction: 'Correção',
     forwarded: 'Encaminhada',
   },

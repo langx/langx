@@ -33,7 +33,10 @@ function toDto(doc: AppConfigDoc | null): AppConfig {
     // one thing that must never fail — an undefined here would reach the
     // client as a missing key and fail its schema.
     latestVersion: doc.latestVersion ?? DEFAULT_APP_CONFIG.latestVersion,
-    flags: doc.flags,
+    // Over the defaults, for the same reason: `flags` was written whole before
+    // `callsEnabled` existed, so a stored document carries three of the four.
+    // A switch nobody has thrown is on.
+    flags: { ...DEFAULT_APP_CONFIG.flags, ...doc.flags },
     updatedAt: doc.updatedAt.toISOString(),
   }
 }

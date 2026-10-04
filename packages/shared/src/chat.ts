@@ -106,8 +106,31 @@ export const MESSAGE_TYPES = [
   'quiz',
   'sticker',
   'location',
+  /**
+   * The row a finished call leaves in the thread — see `calls.ts`. Written by
+   * the server when a call ends and never sent by a client, so it is the one
+   * type here with no `send*Schema` beside it.
+   */
+  'call',
 ] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
+
+/**
+ * A call's row is a record of something that happened to both people, not a
+ * thing one of them said.
+ *
+ * That is why nearly everything a message can have done to it is refused for
+ * one: there is no sentence to react to, quote, star, pin or correct, and the
+ * caller cannot withdraw it from the other person's thread any more than they
+ * can un-ring a phone. Hiding it from your own copy is the one thing left,
+ * because tidying your side has never needed anybody's permission.
+ *
+ * Shared so the menu and the server agree — a client that offers a row the
+ * server refuses produces an error nobody can act on.
+ */
+export function isCallRecord(message: { type: string }): boolean {
+  return message.type === 'call'
+}
 
 /**
  * How much of the quoted message a reply carries.
@@ -218,8 +241,12 @@ export type SendPhraseInput = z.infer<typeof sendPhraseSchema>
 /**
  * A time the two of them agreed to talk.
  *
- * It arranges; it does not dial. There is no calling in this app, and a card
- * that looked like it could start one would be a promise the app cannot keep.
+ * It arranges; it does not dial. The card held that line for as long as the
+ * app had no calling, because a card that looked like it could start a call
+ * would have been a promise nothing kept. Calls exist now (`calls.ts`), and an
+ * agreed time that has arrived may offer one — but the meeting is still only
+ * the agreement, and starting the call goes through every gate a call started
+ * from the header does.
  *
  * Both people are in different time zones by definition — that is the whole
  * premise of the product — so the card is drawn in each reader's own, from the
@@ -612,12 +639,21 @@ export type DeleteMessageInput = z.infer<typeof deleteMessageSchema>
  * act on, and one that hides it early takes away something they still have.
  */
 export function canDeleteForEveryone(
-  message: { senderId: string; createdAt: string | Date; deletedAt?: string | Date | null },
+  message: {
+    senderId: string
+    createdAt: string | Date
+    deletedAt?: string | Date | null
+    /** Optional so a caller that predates call rows still compiles; see `isCallRecord`. */
+    type?: string
+  },
   userId: string,
   now: Date,
 ): boolean {
   if (message.senderId !== userId) return false
   if (message.deletedAt) return false
+  // The caller is the row's `senderId`, and that does not make it theirs to
+  // take out of somebody else's thread.
+  if (message.type === 'call') return false
   const sent = new Date(message.createdAt).getTime()
   if (Number.isNaN(sent)) return false
   return now.getTime() - sent <= MESSAGE_DELETE_WINDOW_MS

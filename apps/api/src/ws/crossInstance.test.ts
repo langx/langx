@@ -1,3 +1,13 @@
+import {
+  CALL_EVENTS,
+  MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
+  type CallEnded,
+  type CallIncoming,
+  type CallSession,
+  type CallSignal,
+} from '@langx/shared'
+import { randomUUID } from 'node:crypto'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { type AddressInfo } from 'node:net'
@@ -7,7 +17,9 @@ import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { ensureIndexes } from '../db/indexes'
+import { COLLECTIONS } from '../db/collections'
 import { loadEnv } from '../env'
+import { StaticIceProvider } from '../modules/calls/ice'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
@@ -78,11 +90,16 @@ describe('realtime across two API instances', () => {
     return response.json<{ _id: string }>()
   }
 
-  function connectSocket(baseUrl: string, cookie: string, deviceId: string): Promise<ClientSocket> {
+  function connectSocket(
+    baseUrl: string,
+    cookie: string,
+    deviceId: string,
+    extraAuth: Record<string, string> = {},
+  ): Promise<ClientSocket> {
     return new Promise((resolve, reject) => {
       const socket = ioClient(baseUrl, {
         transports: ['websocket'],
-        auth: { cookie, deviceId },
+        auth: { cookie, deviceId, ...extraAuth },
         forceNew: true,
         reconnection: false,
       })
@@ -141,6 +158,8 @@ describe('realtime across two API instances', () => {
       translation: createTranslationProvider(env),
       revenueCat: createRevenueCatClientFromEnv(env),
       email: emailSender,
+      // Only the call test below needs it; no relay, as on a developer's machine.
+      ice: new StaticIceProvider({ iceServers: [], iceTransportPolicy: 'all' }),
     })
     await app.listen({ port: 0, host: '127.0.0.1' })
     const address = app.server.address() as AddressInfo
@@ -256,5 +275,104 @@ describe('realtime across two API instances', () => {
     bobSocket.emit('conversation:read', { conversationId: conversation._id })
 
     await expect(read).resolves.toMatchObject({ readBy: bob.userId })
+  })
+
+  /**
+   * A call is the one feature here whose *whole* exchange crosses machines:
+   * the ring, the answer, every frame of signalling, the hang-up. Each device
+   * is in the call's room on its own machine, so a relay is an emit to a room
+   * that has exactly one member anywhere this process can see — and it only
+   * arrives because the adapter carries it to the other.
+   *
+   * The last third is the case a deploy makes ordinary: a socket drops and its
+   * owner reconnects to *the other* machine, which has never heard of the
+   * call. The document has, and the key the device was handed is what lets it
+   * back in.
+   */
+  it('carries a whole call between two machines, and lets a device rejoin on the other one', async () => {
+    const alice = await newUser('cross-call-alice@example.com')
+    const bob = await newUser('cross-call-bob@example.com')
+    const conversation = await startConversation(alice, bob.userId, 'hi bob')
+    await handle.db.collection(COLLECTIONS.conversations).updateOne(
+      { _id: new ObjectId(conversation._id) },
+      {
+        $set: {
+          messageCountBy: {
+            [alice.userId]: MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
+            [bob.userId]: MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
+          },
+        },
+      },
+    )
+
+    const capable = { calls: '1' }
+    const aliceSocket = await connectSocket(urlA, alice.cookie, 'device-alice', capable)
+    const bobSocket = await connectSocket(urlB, bob.cookie, 'device-bob', capable)
+    const ask = <T>(socket: ClientSocket, event: string, payload: unknown): Promise<T> =>
+      new Promise((resolve, reject) => {
+        socket.emit(
+          event,
+          payload,
+          (response: { ok: true; data: T } | { ok: false; error: { code: string } }) => {
+            if (response.ok) resolve(response.data)
+            else reject(new Error(`${event} refused: ${response.error.code}`))
+          },
+        )
+      })
+    const callId = randomUUID()
+    const forThisCall = (payload: { callId?: string }): boolean => payload.callId === callId
+
+    // The ring crosses.
+    const incoming = waitForEvent<CallIncoming>(
+      bobSocket,
+      CALL_EVENTS.incoming,
+      (event) => event.call.callId === callId,
+    )
+    await ask<CallSession>(aliceSocket, CALL_EVENTS.start, {
+      callId,
+      conversationId: conversation._id,
+      media: 'audio',
+    })
+    await expect(incoming).resolves.toMatchObject({ caller: { _id: alice.userId } })
+
+    // The answer crosses back.
+    const accepted = waitForEvent<{ callId: string }>(
+      aliceSocket,
+      CALL_EVENTS.accepted,
+      forThisCall,
+    )
+    const answer = await ask<CallSession>(bobSocket, CALL_EVENTS.accept, { callId })
+    await accepted
+
+    // Signalling, both ways.
+    const offer: CallSignal = { callId, description: { type: 'offer', sdp: 'v=0 offer' } }
+    const offered = waitForEvent<CallSignal>(bobSocket, CALL_EVENTS.signal, forThisCall)
+    await ask(aliceSocket, CALL_EVENTS.signal, offer)
+    await expect(offered).resolves.toEqual(offer)
+
+    const reply: CallSignal = { callId, description: { type: 'answer', sdp: 'v=0 answer' } }
+    const answered = waitForEvent<CallSignal>(aliceSocket, CALL_EVENTS.signal, forThisCall)
+    await ask(bobSocket, CALL_EVENTS.signal, reply)
+    await expect(answered).resolves.toEqual(reply)
+    await ask(bobSocket, CALL_EVENTS.connected, { callId })
+
+    // Bob's machine is replaced under him. He comes back on Alice's.
+    bobSocket.disconnect()
+    const bobAgain = await connectSocket(urlA, bob.cookie, 'device-bob', capable)
+    await ask(bobAgain, CALL_EVENTS.resume, { callId, resumeKey: answer.resumeKey })
+
+    const restart = waitForEvent<CallSignal>(aliceSocket, CALL_EVENTS.signal, forThisCall)
+    await ask(bobAgain, CALL_EVENTS.signal, { callId, restart: true })
+    await expect(restart).resolves.toEqual({ callId, restart: true })
+
+    // And the hang-up reaches him there.
+    const ended = waitForEvent<CallEnded>(bobAgain, CALL_EVENTS.ended, forThisCall)
+    await ask(aliceSocket, CALL_EVENTS.end, { callId })
+    await expect(ended).resolves.toMatchObject({ reason: 'hangup', outcome: 'completed' })
+
+    // One call, one row — whichever machine wrote it.
+    expect(
+      await handle.db.collection(COLLECTIONS.messages).countDocuments({ 'call.callId': callId }),
+    ).toBe(1)
   })
 })

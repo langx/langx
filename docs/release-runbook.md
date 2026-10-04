@@ -904,6 +904,49 @@ Per store:
 `src/lib/planSaving.test.ts` asserts the division for the US prices, so a
 dashboard edit that breaks the rule fails a test rather than shipping.
 
+## Calling is off until it is given a relay
+
+The API half of calling deploys dormant: with no relay configured,
+`GET /app-config` answers `callService: false` and nothing draws a call button.
+Turning it on is configuration, in this order, and each step is something only
+the account owner can do. `docs/self-host.md` → _Calls_ has the detail.
+
+- [ ] **A TURN key.** Cloudflare dashboard → Realtime → TURN → create a key,
+      and set its two values on `langx-api` (first command below). The restart
+      is automatic, and from that moment browsers can call browsers. Add a
+      usage alert: the first terabyte a month is free, and relayed video is a
+      few hundred megabytes an hour.
+- [ ] **An APNs auth key**, for ringing an iPhone whose app is closed. Apple
+      Developer → Keys → a key with _Apple Push Notifications service_, set
+      with the second command. Only useful once a build with the native call
+      module is in the stores; until then no iPhone registers a PushKit token
+      and this key rings nobody.
+- [ ] **The native half ships with a store round**, never over the air: the
+      media engine and the system call screens are native code, so they change
+      the build fingerprint. That round carries its own store paperwork —
+      Play's foreground-service and full-screen-intent declarations, and App
+      Review notes with two demo accounts on a thread that is already
+      unlocked, since a reviewer cannot exchange five messages with themselves.
+- [ ] **Check whether the app is offered in mainland China.** Apple does not
+      accept CallKit there; the app registers such a phone as one that may not
+      use the system call screen, and it is rung by an ordinary notification
+      instead.
+
+```bash
+fly secrets set -a langx-api \
+  CLOUDFLARE_TURN_KEY_ID=… \
+  CLOUDFLARE_TURN_KEY_API_TOKEN=…
+
+# The key's content on one line, newlines written as \n — the convention
+# APPLE_PRIVATE_KEY already uses.
+fly secrets set -a langx-api \
+  APNS_KEY_ID=… \
+  APNS_PRIVATE_KEY="$(awk 'NF { printf "%s\\n", $0 }' AuthKey_XXXXXXXXXX.p8)"
+```
+
+The switch for turning calling off again without touching a secret is
+`scripts/maintenance.ts flag callsEnabled false`.
+
 ## Prerequisites that are business process, not code
 
 None of these can be done from this repo, and Faz 7's subscription work cannot

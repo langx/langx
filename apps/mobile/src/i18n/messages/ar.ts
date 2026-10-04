@@ -417,6 +417,7 @@ export const ar: Localized<EnMessages> = {
     phrase: 'عبارة',
     meeting: 'اجتماع',
     quiz: 'سؤال',
+    call: 'مكالمة',
     correction: 'تصحيح',
     forwarded: 'مُعاد توجيهها',
   },

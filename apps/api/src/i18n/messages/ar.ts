@@ -29,6 +29,8 @@ export const ar: Localized<ServerMessages> = {
     badgeBody: 'عمل رائع. واصل.',
     meetingTitle: 'تبادلك اللغوي بعد ساعة',
     meetingBody: 'اضغط لفتح المحادثة.',
+    callIncomingVoice: 'مكالمة صوتية واردة',
+    callIncomingVideo: 'مكالمة فيديو واردة',
     bountyTitle: {
       zero: '{count} رمز مقابل بلاغك 🎉',
       one: 'رمز واحد مقابل بلاغك 🎉',

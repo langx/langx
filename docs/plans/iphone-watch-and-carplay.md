@@ -827,7 +827,8 @@ is not, which is why its paperwork starts on day one.
    the phase.
 
 8. CallKit — **decided 23 September: not built.** Parked with its reason and
-   what would reopen it, the way phase 9's two are.
+   what would reopen it, the way phase 9's two are. **Reopened 3 October, as
+   its own plan** — see the phase.
 
 9. The two that undo something: an independent watch app, and Echo as a
    CarPlay audio app. Neither starts without a decision that says so.
@@ -1073,6 +1074,15 @@ an event — the `meetings` collection already says how many are accepted each
 week, so no new measuring is needed to ask. When a meaningful share of active
 pairs book one most weeks, the people using LangX are leaving it to talk, and
 that is the moment calling earns a plan of its own.
+
+**Reopened on 3 October 2026, as a plan of its own.** Not by the measurement
+above: calling was decided as a product, and it is being built outside this
+plan, as the paragraph before said it would have to be. The media path, the
+abuse story and the push that rings a locked iPhone are in `docs/decisions.md`
+→ _Calls: two devices, a relay, and a server that only keeps the state_. What
+is left for _this_ plan is the last item in the list above: once CallKit
+reports a call, it appears in a car's system call UI without a CarPlay
+category of ours, which is the one thing this phase would have added.
 
 ### Phase 9 — the two contradictions
 

@@ -431,6 +431,101 @@ export const INDEXES: Partial<IndexSpec> = {
        */
       partialFilterExpression: { clientId: { $exists: true } },
     },
+    /**
+     * One row per call, whoever writes it.
+     *
+     * A call can be ended from four places — either device, the sweeper on
+     * either machine, a block — and the end transition is claimed by exactly
+     * one of them. This is the second lock behind that one: the thread's row
+     * is written after the transition, so a process that dies in between
+     * leaves it for the sweeper to write, and a writer that was only slow may
+     * then arrive as well. The insert losing here *is* "already written".
+     *
+     * Partial for `sender_client_id_unique`'s reason: only a call's row
+     * carries `call`, and a unique index over the absence would allow one
+     * ordinary message in the whole collection.
+     */
+    {
+      key: { 'call.callId': 1 },
+      name: 'call_id_unique',
+      unique: true,
+      partialFilterExpression: { 'call.callId': { $exists: true } },
+    },
+  ],
+
+  [COLLECTIONS.calls]: [
+    /**
+     * **One live call per person**, as a constraint rather than a check.
+     *
+     * `parties` is the two people in the call, and the index is multikey over
+     * it and unique among the documents still marked `live` — so a second
+     * live call that names either of them cannot be inserted, whichever of
+     * the two it names and whichever machine tries. That is "busy", and it is
+     * also what stops one account ringing two people at once from two phones.
+     *
+     * A read-then-insert cannot give this: two calls to the same person
+     * arriving together would both read "free". And a separate lock
+     * collection would need both rows taken together and released together,
+     * which is a transaction to keep in step with the call it guards. Here the
+     * lock *is* the call: ending it unsets `live`, the document drops out of
+     * the index, and there is nothing left to release.
+     */
+    {
+      key: { parties: 1 },
+      name: 'live_party_unique',
+      unique: true,
+      partialFilterExpression: { live: true },
+    },
+    /**
+     * The sweeper's one question — which live calls have run out their
+     * deadline — over the handful of calls that are live at all. Partial, so
+     * the index holds only those and never grows with history.
+     */
+    { key: { deadline: 1 }, name: 'live_deadline', partialFilterExpression: { live: true } },
+    /**
+     * Calls that ended and whose row in the thread is not written yet. Empty
+     * almost always: it exists for the process that died between the two
+     * writes. `logPending` leads so this is not the same key as the TTL below
+     * — two indexes on one key with different options is an
+     * `IndexOptionsConflict` on older servers.
+     */
+    {
+      key: { logPending: 1, endedAt: 1 },
+      name: 'log_pending',
+      partialFilterExpression: { logPending: true },
+    },
+    // "How many has this account started in the last hour", and the caller's
+    // half of the unanswered-call cooldown.
+    { key: { callerId: 1, createdAt: -1 }, name: 'caller_recent' },
+    // The other half: whether the person being called has called back since.
+    // Also how a purge and an export find the calls somebody received.
+    { key: { calleeId: 1, createdAt: -1 }, name: 'callee_recent' },
+    /**
+     * A call's record outlives the call by a month and no longer. The thread
+     * keeps its own row for as long as the thread exists; what expires here is
+     * the operational detail — which device, which second, why it ended —
+     * that is worth having while a report about the call can still arrive and
+     * is nobody's business after. Only an ended call carries `endedAt`, so a
+     * live one can never expire out from under the people in it.
+     */
+    { key: { endedAt: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
+  ],
+
+  [COLLECTIONS.callEndpoints]: [
+    // One row per installation per account; registering again updates it.
+    { key: { userId: 1, deviceId: 1 }, name: 'user_device_unique', unique: true },
+    /**
+     * A PushKit token belongs to one phone, and so to whoever is signed in on
+     * it now. Unique for the reason `push_token_unique` is on `devices`: a
+     * phone handed on must not ring for its previous owner's calls. Partial
+     * because an Android endpoint has no such token at all.
+     */
+    {
+      key: { 'voip.token': 1 },
+      name: 'voip_token_unique',
+      unique: true,
+      partialFilterExpression: { 'voip.token': { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.scheduledMessages]: [

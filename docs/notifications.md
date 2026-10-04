@@ -207,6 +207,38 @@ And nothing at all is said about a **sandbox or TestFlight** event: those move
 the entitlement so a tester can see the paid app, and write no `churnedFrom`,
 send no mail and no push. None of it is anybody's money.
 
+### Calls — a ring is not a notification
+
+`modules/calls/ring.ts`. When somebody is called, every device of theirs that
+said it can take a call is rung, and none of it asks a notification
+preference: the switch for being called at all is `privacy.refuseCalls`, and
+somebody who left that on and was then never told their phone was ringing has
+been failed twice.
+
+| What                  | Goes to                                                                     | How                                                                      | Stops                                                         |
+| --------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| `call:incoming`       | every open app that declared `auth.calls`                                   | the socket                                                               | `call:ended` on the same socket                               |
+| **VoIP push**         | iPhones with a PushKit token, where the system call screen is allowed       | straight to Apple (`voipPush.ts`), expiring with the ring                | the phone's own ring timer; the app asking when it wakes      |
+| `callRing` data push  | Android phones with the native ringer and a deliverable `devices` row       | Expo's relay, `priority: high`, lifetime of the ring; never drawn        | a `callCancel` data push                                      |
+| **"Incoming … call"** | iPhones that cannot be rung the first way, with a deliverable `devices` row | Expo's relay, kind `call`, in the phone's language, lifetime of the ring | nothing — it stays in the shade, and tapping opens the thread |
+
+The VoIP push is the only push in this app that does not go through Expo,
+because Expo's relay does not carry that push type; `decisions.md` has the
+reasoning. It is **only ever sent to ring**: iOS requires every VoIP push to
+end in a call reported to the system and stops delivering them to an app that
+breaks the rule, so there is no VoIP push that means "never mind".
+
+The ring carries a ticket that can decline that one call (`callToken.ts`,
+`POST /calls/:id/decline`), because "Decline" on a lock screen runs with no
+session in reach. It expires a minute after the ring.
+
+A device silenced with its own switch (`devices.pushEnabled: false`) is not
+rung by either Expo-carried push. A VoIP push needs no `devices` row and no
+notification permission at all.
+
+What a call leaves behind **is** a notification, and an ordinary one: see _A
+call you missed_ in the table below.
+
 ### Gifts of Pro — a record, then information
 
 `modules/billing/proGifts.ts`, on the half-hourly timer (`runProGiftPass`) and
@@ -256,6 +288,7 @@ every one claims a row in `notificationLedger` before it sends.
 | Message                                          | Kind            | When               | Period key                                        |
 | ------------------------------------------------ | --------------- | ------------------ | ------------------------------------------------- |
 | A message arrived                                | `messages`      | on the message     | — (fan-out)                                       |
+| **A call you missed**                            | `messages`      | when it ends       | the call — `messages.call_id_unique`              |
 | Streak reminder — only while still savable today | `streak`        | 20:00 local        | local day                                         |
 | Badge round-up                                   | `badges`        | 18:00 local        | badge ids                                         |
 | Profile visits                                   | `profileVisits` | 12:00 local        | local day                                         |
@@ -290,6 +323,14 @@ Two of those sections say something the phone has already said, and that is
 what the trigger column is for: they are worth a line in a letter that is
 going out, and never worth one of their own. The hourly gift is in neither
 table — a button becoming available is not something that happened.
+
+A call nobody picked up is a message too, as far as telling anybody goes. The
+row it leaves in the thread goes through the same fan-out, so the push — "📞
+Missed voice call", under the caller's name — reaches only the devices not
+holding a socket, obeys the thread's mute and the `messages` switch, and counts
+in the unread total. Only `missed` and `busy` do this: a call both people took
+and a call somebody declined were both seen happening. A call ended by a
+block or a suspension leaves its row and sends nothing.
 
 A message scheduled with "Send later" is a message: it pushes when it goes
 out, through the same fan-out as one typed at that moment, under `messages`.
@@ -640,6 +681,7 @@ appears at noon the next day.
 | Kind                         | Opens                                                   |
 | ---------------------------- | ------------------------------------------------------- |
 | `message`, `meetingReminder` | the conversation, or `/chats`                           |
+| `call`                       | the conversation, or `/chats`                           |
 | `streakReminder`             | `/chats`                                                |
 | `badgeEarned`                | `/me`                                                   |
 | `profileVisits`              | `/viewers`                                              |

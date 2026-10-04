@@ -68,8 +68,9 @@ Verified external constraints:
 - **RevenueCat Web supports connecting your own Stripe Billing account** → the
   existing Stripe setup is preserved.
 
-Out of scope: video calls, group rooms, vocabulary notebook, moderation
-console, badge system, on-chain token.
+Out of scope: group rooms, vocabulary notebook, moderation console, badge
+system, on-chain token. _(One-to-one calls were on this list until October
+2026; see_ Calls _below.)_
 
 ## The product promise changes — this is a deliverable
 
@@ -623,6 +624,43 @@ and re-checked in `sendMediaMessage`. `conversations.messageCountBy` backs it an
 rides the write `recordMessage` was already making; an absent value means the
 thread predates the counter and is counted on demand.
 
+### Calls
+
+Two people in a thread can call each other, voice or video. The API carries no
+media: the two devices connect to each other with WebRTC through a TURN relay,
+relay-only so neither learns the other's address, and what the server does is
+decide who may ring whom, keep the one document that says what state a call is
+in, and relay the handful of frames two devices need to find each other.
+`docs/decisions.md` → _Calls: two devices, a relay, and a server that only
+keeps the state_ has the reasoning; this is the shape.
+
+- **Gate.** `assertConversationAccess`, then `assertCallAllowed`: the media
+  gate's rule and number (`MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES` received from
+  the other person), `privacy.refuseCalls` in both directions, no official
+  accounts or guests, no suspended recipient. Free on every plan; the ceilings
+  are `CALL_LIMITS` in `packages/shared`.
+- **State.** `calls` — `ringing → connecting → active → ended`, every
+  transition a conditional write. A unique partial index over `parties` on
+  `live: true` is what makes one live call per person a constraint. Each state
+  has a `deadline`; a sweeper on every machine ends what is past it, so nothing
+  depends on a socket staying up.
+- **Transport.** Socket events (`CALL_EVENTS`), each through the access
+  re-check and a named bucket like every other. The call's room holds exactly
+  the two sockets in it, joined only by a guarded handler; a signalling frame is
+  relayed if its sender is in that room, with no database read.
+- **Ringing.** A socket that declared `auth.calls` is rung over the socket. A
+  phone whose app is closed is rung by a VoIP push sent straight to Apple, or by
+  an Android data push through Expo — both turned into the system's call screen
+  by native code — and falls back to an ordinary notification where neither is
+  possible. `callEndpoints` holds which phones can be rung and how.
+- **The thread.** A finished call leaves a `type: 'call'` message, written by
+  `recordCallLog` rather than `recordMessage`: it moves no message counter and
+  pays no tokens. A missed one is unread and is pushed as a message.
+- **Optional.** No relay (`CLOUDFLARE_TURN_KEY_ID` or `ICE_SERVERS_JSON`) means
+  `GET /app-config` reports `callService: false` in production and no button is
+  drawn; `flags.callsEnabled` is the operator's switch. No APNs key means
+  iPhones are rung by the fallback notification.
+
 ### Anti-abuse
 
 The reciprocity requirement, per-partner caps, daily caps, a ramp-up for new
@@ -835,9 +873,10 @@ denormalized `lastMessage`, `unread: {<userId>: n}`, `firstMessageBy`,
 **`messages`** — a separate collection; embedding would hit the 16MB limit.
 
 ```ts
-{ conversationId, senderId, type: 'text'|'correction'|'image'|'audio'|'video',
+{ conversationId, senderId, type: 'text'|'correction'|'image'|'audio'|'video'|…|'call',
   body,                                    // caption for the attachments
   correction?: { targetMessageId, original, corrected, note },
+  call?: { callId, media, outcome, durationSeconds? },   // the row a call leaves; see Calls
   attachments?: [{ url, contentType, sizeBytes, durationSeconds?, width?, height? }],
   media?: <attachments[0]>,                // legacy; see below
   readAt?, createdAt, deletedWithAccount? }
@@ -884,6 +923,14 @@ so one per direction and a second write is an edit; `{subjectId, createdAt}`
 for the profile list. `ownerHiddenAt` and `moderatorHiddenAt` are separate
 fields: the owner can undo their own, never the moderator's. Deleted with
 either account.
+**`calls`** — one document per call, `_id` the UUID the caller's device minted.
+Unique partial `{parties}` on `live: true` (one live call per person),
+`{deadline}` partial on the same for the sweeper, and a 30-day TTL on
+`endedAt`. Deleted with either account.
+**`callEndpoints`** — the phones that can be rung while their app is closed:
+unique `{userId, deviceId}`, and a unique partial index on the PushKit token.
+Apart from `devices` because that row needs notification permission and a
+PushKit token does not.
 **`translationCache`** — unique `{sourceHash, targetLang}`, TTL.
 **`blocks`**, **`reports`**, **`devices`**, **`streakReminders`**,
 ~~`appwriteIdMap`~~ — removed. It had a collection, a unique index and a purge
@@ -1460,8 +1507,9 @@ only thing that matters is preserving store identity.
 **P1:** Copilot, badges, availability hours, discovery boost, the "New Users"
 and "Enthusiasts" sort presets. _(Voice messages moved into P0 — the message
 migration needs them.)_
-**P2:** video calls, groups, **Echo**, an on-chain distribution
-layer (after legal review). _(The moderation console was on this list and was
+**P2:** groups, **Echo**, an on-chain distribution layer (after legal
+review). _(One-to-one voice and video calls were first on this list and are
+built — see_ Calls _above.)_ _(The moderation console was on this list and was
 pulled forward: the mailbox flow could decide a report but could not show which
 ones were still open, and three separate things — a frozen `tokenFrozenAt` that
 nothing cleared, an appeal queue that never emptied, a bug report with no

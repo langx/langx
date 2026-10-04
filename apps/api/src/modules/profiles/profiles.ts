@@ -218,6 +218,8 @@ export interface Profile {
     activityMapVisible?: boolean
     weekChartVisible?: boolean
     hideCity?: boolean
+    /** Nobody calls this account and it calls nobody. See `updateProfileSchema`. */
+    refuseCalls?: boolean
   }
   entitlement: {
     /** May still be the retired `pro_plus` — read it through `effectivePlanTier`. */
@@ -1529,6 +1531,17 @@ export interface PublicProfile {
    */
   acceptsMessages?: boolean
   /**
+   * Whether this account can be called. Absent for almost everybody, who can;
+   * present and `false` for somebody who switched calls off and for an
+   * official account, which has nobody to pick up. The chat header reads it
+   * to draw no call button, for `acceptsMessages`'s reason: a button the
+   * server will refuse should not be offered.
+   *
+   * It says nothing about whether *this viewer* may call them — that is the
+   * consent gate, which is per thread and travels as `mediaLockedFor`.
+   */
+  acceptsCalls?: false
+  /**
    * Whether this account is still an account.
    *
    * `suspended` and `deleted` are states somebody arriving from an old
@@ -1612,6 +1625,12 @@ export function toPublicProfile(
       ? OFFICIAL_WRITABLE[profile.handle]
       : true
   } else result.age = ageFromBirthDate(profile.birthDate, now)
+  // Spelled out here rather than read from `modules/calls`, which imports
+  // `modules/official`, which imports this file. `assertCallAllowed` is the
+  // rule; this is the hint that keeps a button from promising otherwise.
+  if (profile.official || profile.guest || profile.privacy?.refuseCalls === true) {
+    result.acceptsCalls = false
+  }
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
   if (profile.bio !== undefined) result.bio = profile.bio

@@ -75,6 +75,8 @@ export interface MessageView {
   sticker?: { packId: string; stickerId: string }
   /** Already rounded when approximate. See `Message.location`. */
   location?: Message['location']
+  /** The call this row records. See `Message.call`. */
+  call?: Message['call']
   /** Mutual by design: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which one is the viewer's own, so the strip can show it selected. */
@@ -168,6 +170,10 @@ export function toMessageView(
   if (!deleted && message.sticker) view.sticker = message.sticker
   // A withdrawn location takes the place with it, like a withdrawn photo.
   if (!deleted && message.location) view.location = message.location
+  // Not behind `!deleted`: a call's row cannot be withdrawn, and an account
+  // purge that blanks its sender's messages leaves the fact that two people
+  // spoke — there are no words of anybody's in it.
+  if (message.call) view.call = message.call
   if (!deleted && message.quiz) {
     view.quiz = {
       question: message.quiz.question,

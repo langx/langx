@@ -22,6 +22,7 @@ import { registerAuthRoutes } from './routes/auth'
 import { billingRoutes } from './routes/billing'
 import { instagramWebhookRoutes } from './routes/instagramWebhook'
 import { resendWebhookRoutes } from './routes/resendWebhook'
+import { callRoutes } from './routes/calls'
 import { cityRoutes } from './routes/cities'
 import { conversationRoutes } from './routes/conversations'
 import { discoveryRoutes } from './routes/discovery'
@@ -53,6 +54,8 @@ import { referralRoutes } from './routes/referrals'
 import { xpRoutes } from './routes/tokens'
 import { wellKnownRoutes } from './routes/wellKnown'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
+import { NotConfiguredIceProvider, type IceServerProvider } from './modules/calls/ice'
+import { NotConfiguredVoipSender, type VoipSender } from './modules/calls/voipPush'
 import { LoggingPushSender, type PushSender } from './modules/push/devices'
 import { ConsoleEmailSender, type EmailSender } from './email/sender'
 import type { StorageProvider } from './storage/StorageProvider'
@@ -86,6 +89,23 @@ declare module 'fastify' {
     stt: SttProvider
     revenueCat: RevenueCatClient
     push: PushSender
+    /**
+     * Where a call's media may travel. The not-configured one when no relay is
+     * set, in which case `/app-config` says there is no call service and
+     * nothing draws a call button. See `modules/calls/ice.ts`.
+     */
+    ice: IceServerProvider
+    /**
+     * The push that makes an iPhone ring, sent to Apple directly because
+     * Expo's relay does not carry it. The stand-in without a key, and then an
+     * iPhone is rung with an ordinary notification instead.
+     */
+    voip: VoipSender
+    /**
+     * The deadlines this process is timing, by call id. See
+     * `modules/calls/service.ts` for why they live here and what they are not.
+     */
+    callTimers: Map<string, NodeJS.Timeout>
     /**
      * The same sender Better Auth was handed, so that one array in a test
      * holds both the verification mail and the notification mail — they are
@@ -138,6 +158,13 @@ export interface BuildAppOptions {
    */
   push?: PushSender
   /**
+   * Defaults to the not-configured one, so calling is off in every test that
+   * does not ask for it — which is also what production is without a relay.
+   */
+  ice?: IceServerProvider
+  /** Defaults to the stand-in, which records what would have been sent. */
+  voip?: VoipSender
+  /**
    * Defaults to the console sender for the same reason `push` defaults to the
    * logging one: a test that never sends mail should not have to name it.
    */
@@ -173,6 +200,8 @@ export async function buildApp({
   tts = new NotConfiguredTtsProvider(),
   stt = new NotConfiguredSttProvider(),
   push = new LoggingPushSender(),
+  ice = new NotConfiguredIceProvider(),
+  voip = new NotConfiguredVoipSender(),
   email = new ConsoleEmailSender(console),
   assistant = null,
   linkFetch = safeGet,
@@ -236,6 +265,17 @@ export async function buildApp({
   app.decorate('stt', stt)
   app.decorate('revenueCat', revenueCat)
   app.decorate('push', push)
+  app.decorate('ice', ice)
+  app.decorate('voip', voip)
+  const callTimers = new Map<string, NodeJS.Timeout>()
+  app.decorate('callTimers', callTimers)
+  app.addHook('onClose', () => {
+    // The sender holds connections to Apple open between pushes.
+    voip.close()
+    for (const timer of callTimers.values()) clearTimeout(timer)
+    callTimers.clear()
+    return Promise.resolve()
+  })
   app.decorate('email', email)
   app.decorate('assistant', assistant)
   app.decorate('linkFetch', linkFetch)
@@ -371,6 +411,7 @@ export async function buildApp({
   await app.register(likeRoutes)
   await app.register(conversationRoutes)
   await app.register(messageRoutes)
+  await app.register(callRoutes)
   await app.register(scheduledMessageRoutes)
   await app.register(notificationRoutes)
   await app.register(translationRoutes)

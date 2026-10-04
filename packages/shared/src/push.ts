@@ -87,6 +87,19 @@ export const PUSH_KINDS = [
   'social',
   /** Yesterday's pool, or the hourly gift being ready again. */
   'wallet',
+  /**
+   * Somebody is calling, said as an ordinary notification.
+   *
+   * The fallback, not the ring: a phone that can show the system's call screen
+   * is rung through `CALL_RING_KIND`, which is not in this list because it is
+   * never drawn. This one is for the phones that cannot — where the system
+   * call screen is not allowed, or the deployment has no VoIP credentials —
+   * and tapping it opens the thread, where the app rings for itself if the
+   * call is still live. No preference gates it: `privacy.refuseCalls` is the
+   * switch for being called at all, and a call somebody agreed to receive and
+   * was never told about is worse than either answer.
+   */
+  'call',
 ] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 

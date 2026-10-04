@@ -35,6 +35,7 @@ const MESSAGE_PREVIEW_KEY = {
   quiz: 'messageMeta.quiz',
   sticker: 'messageMeta.sticker',
   location: 'messageMeta.location',
+  call: 'messageMeta.call',
 } as const satisfies Record<MessageType, MessageKey>
 
 export function messagePreviewKey(type: MessageType): MessageKey {

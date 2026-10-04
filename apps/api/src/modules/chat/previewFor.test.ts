@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { MESSAGE_TYPES } from '@langx/shared'
-import { previewFor } from './messages'
+import { missedCallPreview, previewFor } from './messages'
 
 describe('previewFor', () => {
   /**
@@ -31,6 +31,25 @@ describe('previewFor', () => {
   /** The push body is this line, so it names the kind and never the place. */
   it('calls a location a location', () => {
     expect(previewFor('location')).toBe('📍 Location')
+  })
+
+  /**
+   * One line is stored for both readers, so it cannot take a side: whether a
+   * call was missed depends on who is looking at the list.
+   */
+  it('names a call without saying whose it was to miss', () => {
+    expect(previewFor('call')).toBe('📞 Voice call')
+    expect(previewFor('call', 1, { media: 'audio' })).toBe('📞 Voice call')
+    expect(previewFor('call', 1, { media: 'video' })).toBe('📹 Video call')
+    for (const media of ['audio', 'video'] as const) {
+      expect(previewFor('call', 1, { media })).not.toMatch(/missed/i)
+    }
+  })
+
+  /** The push goes to the person who was called and to nobody else. */
+  it('words the push from the side of whoever missed it', () => {
+    expect(missedCallPreview({ media: 'audio' })).toBe('📞 Missed voice call')
+    expect(missedCallPreview({ media: 'video' })).toBe('📹 Missed video call')
   })
 
   /** Text and corrections carry their own words; a preview would replace them. */

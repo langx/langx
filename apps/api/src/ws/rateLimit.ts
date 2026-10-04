@@ -48,6 +48,23 @@ export const EVENT_LIMITS: Record<string, BucketConfig> = {
   // client looping on it is refused. `DEFAULT_LIMIT` would cover it, but the
   // note below is explicit that a new event gets a named entry.
   'presence:ping': { capacity: 4, refillPerSecond: 0.05 },
+  /*
+   * Calls. Starting one makes somebody else's phone ring, so it is the
+   * tightest bucket here: three in a burst — a call, a misdial, a call back —
+   * and then one every twenty seconds. `CALL_LIMITS` holds the hourly and
+   * per-person ceilings; this is only the brake on a client looping.
+   */
+  'call:start': { capacity: 3, refillPerSecond: 0.05 },
+  // Answer, end, rejoin: one each per call in ordinary use.
+  'call:control': { capacity: 10, refillPerSecond: 0.5 },
+  // Connected, the half-minute heartbeat, a status check on waking.
+  'call:state': { capacity: 10, refillPerSecond: 0.2 },
+  // The one event that arrives in bursts by design: a description, then
+  // candidates in batches a fifth of a second apart while the path is found.
+  // Each is relayed through the bus, which is why the client batches at all.
+  'call:signal': { capacity: 60, refillPerSecond: 5 },
+  // Mute and camera toggles. A held finger must not become a relay loop.
+  'call:media': { capacity: 20, refillPerSecond: 1 },
 }
 
 /** Applied to any event not named above, so a new one is never accidentally unlimited. */

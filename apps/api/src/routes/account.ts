@@ -18,6 +18,8 @@ import {
   requestDeletion,
 } from '../modules/account/deletion'
 import type { Profile } from '../modules/profiles/profiles'
+import { unregisterCallEndpoint } from '../modules/calls/endpoints'
+import { endCallsOf } from '../modules/calls/service'
 import { registerDevice, setDevicePushEnabled, unregisterDevice } from '../modules/push/devices'
 import { COLLECTIONS } from '../db/collections'
 import { ApiError } from '../lib/ApiError'
@@ -36,6 +38,12 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireMember, schema: { body: deleteAccountSchema } },
     async (request, reply) => {
       const status = await requestDeletion(app.mongo.db, request.userId, feedbackFrom(request.body))
+      // The account stops being usable at once, and a call in progress is a
+      // use of it. Never fatal: the deletion is done, and the call's lease
+      // ends it anyway.
+      await endCallsOf(app, request.userId, 'deleted').catch((error: unknown) =>
+        request.log.warn({ err: error }, 'ending a call on deletion failed'),
+      )
       return reply.send(status)
     },
   )
@@ -157,6 +165,9 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireMember, schema: { querystring: unregisterDeviceQuerySchema } },
     async (request, reply) => {
       await unregisterDevice(app.mongo.db, request.userId, { deviceId: request.query.deviceId })
+      // And stop ringing it. Signing out of a phone that went on taking the
+      // previous account's calls would be the worst version of a stale token.
+      await unregisterCallEndpoint(app.mongo.db, request.userId, request.query.deviceId)
       return reply.code(204).send()
     },
   )
@@ -178,6 +189,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
       pushToken: decodeURIComponent(token),
       ...(deviceId ? { deviceId } : {}),
     })
+    if (deviceId) await unregisterCallEndpoint(app.mongo.db, request.userId, deviceId)
     return reply.code(204).send()
   })
 

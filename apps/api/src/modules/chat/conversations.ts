@@ -2,6 +2,7 @@ import {
   ERROR_CODES,
   type MeetingStatus,
   type MessageAsk,
+  type MessageCall,
   type MessageInteractive,
   type MessageTranslation,
   type MessageMedia,
@@ -23,7 +24,20 @@ export interface Conversation {
   _id: ObjectId
   pairKey: string
   participants: [string, string]
-  lastMessage: { body: string; senderId: string; createdAt: Date; deleted?: boolean }
+  lastMessage: {
+    body: string
+    senderId: string
+    createdAt: Date
+    deleted?: boolean
+    /**
+     * Set when the newest thing in the thread is a call's row. `body` still
+     * carries a line every build can show; this is what lets a build that
+     * knows about calls word it for whoever is reading — "missed" is the
+     * callee's word and "no answer" the caller's. Replaced along with the
+     * rest of `lastMessage` by the next message, so it never outlives its row.
+     */
+    call?: Pick<MessageCall, 'media' | 'outcome' | 'durationSeconds'>
+  }
   unread: Record<string, number>
   /**
    * Per-user, and a **map keyed by user id** rather than an array of ids.
@@ -199,6 +213,13 @@ export interface Message {
    * exists on the server. `label` is the name the sender's device resolved.
    */
   location?: { lat: number; lng: number; precision: SharedLocationPrecision; label?: string }
+  /**
+   * A call that happened in this thread, on the row it left behind. Written
+   * once, by `recordCallLog`, when the call ends — `senderId` is whoever
+   * placed it. See `MessageCall` for why the outcome is stored and the
+   * wording is not.
+   */
+  call?: MessageCall
   /**
    * Everything attached to this message, in the order it was picked.
    *

@@ -145,6 +145,15 @@ export const dataExportSchema = z.object({
     written: z.array(z.unknown()),
     received: z.array(z.unknown()),
   }),
+  /**
+   * Calls this user placed and calls they received: who, when, for how long
+   * and how each ended. Both directions, because a call is not one person's
+   * words the way a message is. Only the last month — the record expires —
+   * and never what was said, which was never ours to keep.
+   */
+  calls: z.array(z.unknown()),
+  /** The phones registered to be rung, without the tokens that ring them. */
+  callEndpoints: z.array(z.unknown()),
 })
 export type DataExport = z.infer<typeof dataExportSchema>
 
