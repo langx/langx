@@ -660,6 +660,13 @@ keeps the state_ has the reasoning; this is the shape.
   `GET /app-config` reports `callService: false` in production and no button is
   drawn; `flags.callsEnabled` is the operator's switch. No APNs key means
   iPhones are rung by the fallback notification.
+- **Client.** `src/lib/calls/` in the app: a reducer the call screen is drawn
+  from (`machine.ts`), the session that turns socket events and media-engine
+  callbacks into its events (`session.ts`), and the media engine behind an
+  interface (`engine.ts`) — the browser's own WebRTC in `rtc.web.ts`, and on a
+  phone a stub that says no until the native module ships. The screen is
+  `CallHost`, a `Modal` at the root beside the dialogs; a call that is put away
+  is `CallBar`, a strip in the layout above the navigator.
 
 ### Anti-abuse
 
