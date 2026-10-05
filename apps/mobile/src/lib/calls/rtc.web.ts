@@ -286,6 +286,11 @@ export const engine: CallEngine = {
         const next = facing === 'user' ? 'environment' : 'user'
         try {
           const track = await openCamera(next)
+          // The call ended while the camera was being opened.
+          if (closed) {
+            track.stop()
+            return
+          }
           facing = next
           current.stop()
           stream.removeTrack(current)

@@ -87,6 +87,11 @@ interface Live {
   startedAt: number
   /** This device asked for the call to end, so nothing needs explaining. */
   endedByMe: boolean
+  /**
+   * When the caller last sent an offer that has not been answered. A second
+   * offer inside that window would cross the first — see `rebuildPath`.
+   */
+  offerSentAt: number | null
 }
 
 /** How long the closing line stays up before the screen goes by itself. */
@@ -108,6 +113,12 @@ let clearTimer: Timer | null = null
 let pendingIncoming: CallIncoming | null = null
 /** Set when the server said "they are calling you" and that call is not here yet. */
 let answerNextFrom: { peerId: string; until: number; camera: boolean } | null = null
+/**
+ * A call is being placed and is still waiting for the microphone. The state
+ * says nothing yet — the screen appears after the permission prompt — so a
+ * second press needs its own guard, or it takes the devices a second time.
+ */
+let placing = false
 
 export function engineSupported(): boolean {
   return engine.supported()
@@ -190,6 +201,7 @@ function newLive(callId: string, role: Live['role'], media: CallMedia): Live {
     mediaUp: false,
     startedAt: Date.now(),
     endedByMe: false,
+    offerSentAt: null,
   }
 }
 
@@ -214,7 +226,7 @@ function release(): void {
  * Takes the call off the screen — at once, or after its closing line has had
  * a moment to be read — and then turns to a ring that was waiting behind it.
  */
-function settle(endedByMe: boolean): void {
+function settle(endedByMe: boolean, now = false): void {
   if (clearTimer) clearTimeout(clearTimer)
   clearTimer = null
   const state = callState()
@@ -230,7 +242,7 @@ function settle(endedByMe: boolean): void {
     if (waiting && ringUntilFrom(waiting.call) > Date.now()) showIncoming(waiting)
   }
 
-  if (state.phase === 'ended' && showsClosingLine(state, endedByMe)) {
+  if (!now && state.phase === 'ended' && showsClosingLine(state, endedByMe)) {
     clearTimer = setTimeout(finish, CLOSING_LINE_MS)
   } else finish()
 }
@@ -280,7 +292,12 @@ async function rebuildPath(): Promise<void> {
   const held = live
   if (!held?.session) return
   if (held.role === 'caller') {
+    // One offer at a time. The caller's own timer and the other side asking
+    // fire together when a network drops under both of them, and the answer
+    // to the first offer would land on the second.
+    if (held.offerSentAt !== null && Date.now() - held.offerSentAt < RESTART_EVERY_MS - 500) return
     try {
+      held.offerSentAt = Date.now()
       const offer = await held.session.createOffer({ iceRestart: true })
       if (live === held) sendSignal(held.callId, { description: offer })
     } catch {
@@ -385,6 +402,7 @@ function applySignal(held: Live, signal: CallSignal): void {
         if (live === held) sendSignal(held.callId, { description: answer })
       } else if (signal.description?.type === 'answer') {
         await session.acceptAnswer(signal.description)
+        held.offerSentAt = null
       }
       if (signal.candidates) await session.addCandidates(signal.candidates)
       if (signal.restart && held.role === 'caller') await rebuildPath()
@@ -396,14 +414,46 @@ function startHeartbeat(held: Live): void {
   if (held.heartbeat) return
   held.heartbeat = setInterval(() => {
     ask(CALL_EVENTS.heartbeat, { callId: held.callId }).catch((error: unknown) => {
-      // Only the server saying the call is over ends it here. A heartbeat
-      // that timed out is a socket having a bad moment, and the lease allows
-      // for two of those.
-      if (error instanceof CallRefusal && error.code === 'CALL_ENDED') {
-        close(held.callId, { kind: 'ended', reason: 'ended' }, false)
-      }
+      /*
+       * A heartbeat that timed out is a socket having a bad moment, and the
+       * lease allows for two of those. A refusal is not proof either: the
+       * server says the same thing to a socket that has not got back into the
+       * call's room yet — which a reconnect's buffered heartbeat, sent ahead
+       * of the resume, always is. So the answer is to rejoin, and only a
+       * refused rejoin ends the call.
+       */
+      if (error instanceof CallRefusal && error.code === 'CALL_ENDED') void rejoin(held)
     })
   }, CALL_LIMITS.heartbeatSeconds * 1000)
+}
+
+/**
+ * Gets this device's socket back into the call's room with the key it was
+ * handed, and catches up on what it missed while it was out — the answer, for
+ * a caller whose socket dropped while it rang.
+ */
+async function rejoin(held: Live): Promise<void> {
+  if (!held.resumeKey) return
+  let view: CallView
+  try {
+    view = await ask<CallView>(CALL_EVENTS.resume, {
+      callId: held.callId,
+      resumeKey: held.resumeKey,
+    })
+  } catch (error) {
+    // Timed out: the next heartbeat asks again.
+    if (live === held && error instanceof CallRefusal && error.code !== 'ACK_TIMEOUT') {
+      close(held.callId, { kind: 'ended', reason: 'ended' }, false)
+    }
+    return
+  }
+  if (live !== held) return
+  const phase = callState()?.phase
+  if (held.role === 'caller' && phase === 'outgoing' && view.state !== 'ringing') {
+    onAccepted({ callId: held.callId })
+  } else if (held.session && !held.mediaUp && phase !== 'outgoing') {
+    void rebuildPath()
+  }
 }
 
 /**
@@ -474,9 +524,12 @@ export async function placeCall(input: {
 }): Promise<void> {
   const current = callState()
   if (current && current.phase !== 'ended') throw new CallRefusal('CALL_IN_PROGRESS')
+  // A second press while the first is still at the permission prompt.
+  if (placing) return
 
   // Before anything rings: see `CallEngine.acquire`.
   let local: LocalMedia
+  placing = true
   try {
     local = await engine.acquire({ video: input.media === 'video' })
   } catch (error) {
@@ -486,6 +539,23 @@ export async function placeCall(input: {
         : 'MIC_DENIED'
     track({ name: 'call_refused', properties: { code } })
     throw new CallRefusal(code)
+  } finally {
+    placing = false
+  }
+
+  /*
+   * A ring arrived while the permission prompt was up. From the person being
+   * called, it is the call this one was about to be, so it is answered. From
+   * anybody else, it is ringing on screen now, and this call is simply not
+   * placed: the screen already says what is happening.
+   */
+  const meanwhile = callState()
+  if (meanwhile && meanwhile.phase !== 'ended') {
+    local.release()
+    if (meanwhile.phase === 'incoming' && meanwhile.peer._id === input.peer._id) {
+      await answerCall({ camera: input.media === 'video' })
+    }
+    return
   }
 
   if (clearTimer) clearTimeout(clearTimer)
@@ -509,15 +579,27 @@ export async function placeCall(input: {
   startRinging('outgoing')
   track({ name: 'call_started', properties: { media: input.media, source: input.source } })
 
+  const start = { callId, conversationId: input.conversationId, media: input.media }
   let session: CallSession
   try {
-    session = await ask<CallSession>(CALL_EVENTS.start, {
-      callId,
-      conversationId: input.conversationId,
-      media: input.media,
+    session = await ask<CallSession>(CALL_EVENTS.start, start).catch((error: unknown) => {
+      /*
+       * No answer is not "no". The server may have placed the call and be
+       * ringing them while the ack was lost, so the same start is sent again:
+       * with the same id it is that call handed back, not a second one.
+       */
+      if (error instanceof CallRefusal && error.code === 'ACK_TIMEOUT' && live === held) {
+        return ask<CallSession>(CALL_EVENTS.start, start)
+      }
+      throw error
     })
   } catch (error) {
     const refusal = error instanceof CallRefusal ? error : new CallRefusal('INTERNAL')
+    // Twice without an answer: whatever the server did, it is cancelled, so
+    // nobody is left ringing for a screen that has already closed.
+    if (refusal.code === 'ACK_TIMEOUT') {
+      void api.post(`/calls/${callId}/end`, {}).catch(() => undefined)
+    }
     track({ name: 'call_refused', properties: { code: refusal.code } })
     if (live !== held) return
     if (refusal.code === 'CALL_GLARE') {
@@ -620,12 +702,26 @@ export async function answerCall(options: { camera: boolean }): Promise<void> {
   try {
     session = await ask<CallSession>(CALL_EVENTS.accept, { callId: held.callId })
   } catch (error) {
+    /*
+     * No answer to the answer: the server may have taken it and put this
+     * socket in the call. Ending it from here lands either way — as a hang-up
+     * if it was accepted, as a decline if it is still ringing — so the caller
+     * is not left on "connecting" for a call nobody is going to join.
+     */
+    if (error instanceof CallRefusal && error.code === 'ACK_TIMEOUT') {
+      tell(CALL_EVENTS.end, { callId: held.callId })
+    }
     if (live !== held) return
     const reason = error instanceof CallRefusal ? error.reason : undefined
     close(held.callId, { kind: 'ended', reason: isEndReason(reason) ? reason : 'ended' }, false)
     return
   }
-  if (live !== held) return
+  // Hung up while the answer was on its way. The server took it, so it has
+  // to be ended — with the key it just handed over, the only proof it takes.
+  if (live !== held) {
+    tell(CALL_EVENTS.end, { callId: held.callId, resumeKey: session.resumeKey })
+    return
+  }
 
   held.resumeKey = session.resumeKey
   openEngine(held, session)
@@ -702,7 +798,7 @@ export function setCallMinimized(value: boolean): void {
 
 /** Closes the closing line early. */
 export function dismissCall(): void {
-  if (callState()?.phase === 'ended') settle(true)
+  if (callState()?.phase === 'ended') settle(true, true)
 }
 
 /**
@@ -734,18 +830,8 @@ export async function resyncCalls(): Promise<void> {
   if (state && held && state.phase !== 'ended') {
     // In a call, with a key: get back into its room. Without one the server
     // has not acknowledged this call yet, and there is nothing to rejoin.
-    if (held.resumeKey) {
-      try {
-        await ask(CALL_EVENTS.resume, { callId: held.callId, resumeKey: held.resumeKey })
-        if (live === held && held.session && !held.mediaUp && state.phase !== 'outgoing') {
-          void rebuildPath()
-        }
-      } catch (error) {
-        if (error instanceof CallRefusal && error.code !== 'ACK_TIMEOUT') {
-          close(held.callId, { kind: 'ended', reason: 'ended' }, false)
-        }
-      }
-    } else if (state.phase === 'incoming') void refreshFromServer(held.callId)
+    if (held.resumeKey) await rejoin(held)
+    else if (state.phase === 'incoming') void refreshFromServer(held.callId)
     return
   }
 
