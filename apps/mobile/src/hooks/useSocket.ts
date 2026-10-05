@@ -31,7 +31,7 @@ import {
 } from '../lib/messageCache'
 import { clearFromTray, sweepTray } from '../lib/notifications'
 import { applyPresence } from '../lib/presenceCache'
-import { closeSocket, getSocket, restartSocket } from '../lib/socket'
+import { closeSocket, onSocket, restartSocket } from '../lib/socket'
 
 /**
  * Opens the app's single socket and turns realtime events into cache updates.
@@ -46,9 +46,10 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
 
   useEffect(() => {
     if (!enabled) return
-    let cancelled = false
-    let heartbeat: ReturnType<typeof setInterval> | null = null
-    let opened: Socket | null = null
+    /** The socket object in use now — it is replaced after a refused handshake. */
+    let current: Socket | null = null
+    /** How many sockets this run has attached to; every one after the first is a gap. */
+    let attached = 0
 
     /**
      * What the socket missed while it was away.
@@ -105,31 +106,44 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       if (online) restartSocket()
     })
 
-    void (async () => {
-      const socket = await getSocket()
-      if (cancelled) return
-      opened = socket
+    /**
+     * Says "still here" while the app is open. Without it `lastActiveAt`
+     * only moved when a message was sent, so browsing for an hour left you
+     * offline. Lives with the socket rather than in a screen for the reason
+     * `_layout.tsx` gives for owning the socket once — and goes to whichever
+     * socket object is current, not the one that was when this started.
+     */
+    const heartbeat = setInterval(() => {
+      current?.emit('presence:ping', {})
+    }, PRESENCE_HEARTBEAT_MS)
+
+    /*
+     * Through `onSocket`, so the handlers follow the socket when a refused
+     * handshake makes `getSocket()` build a new one. They used to stay on the
+     * old object, and realtime went quiet until the app was restarted.
+     */
+    const stop = onSocket((socket) => {
+      current = socket
+      const offs: (() => void)[] = []
+      const on = (event: string, handler: Parameters<Socket['on']>[1]): void => {
+        socket.on(event, handler)
+        offs.push(() => socket.off(event, handler))
+      }
 
       /*
        * On the Manager, not the socket: `reconnect` is the Manager's event,
        * and it fires only for an automatic reconnection — the one case where
        * something may have happened in between. socket.io-client keeps one
-       * Manager per URL across `closeSocket()`, so the cleanup below has to
-       * take this handler off again or every re-run of this effect stacks one.
+       * Manager per URL across sockets, so the cleanup below has to take this
+       * handler off again or every replacement stacks one.
        */
       socket.io.on('reconnect', resync)
+      offs.push(() => socket.io.off('reconnect', resync))
+      // A replacement socket is a gap too, and its first connection is not a
+      // Manager reconnect, so it is caught here.
+      if (attached++ > 0) socket.once('connect', resync)
 
-      /**
-       * Says "still here" while the app is open. Without it `lastActiveAt`
-       * only moved when a message was sent, so browsing for an hour left you
-       * offline. Lives with the socket rather than in a screen for the reason
-       * `_layout.tsx` gives for owning the socket once.
-       */
-      heartbeat = setInterval(() => {
-        socket.emit('presence:ping', {})
-      }, PRESENCE_HEARTBEAT_MS)
-
-      socket.on('message:new', (message: MessageDto) => {
+      on('message:new', (message: MessageDto) => {
         const conversationId =
           typeof message.conversationId === 'string'
             ? message.conversationId
@@ -276,7 +290,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
        * A client that applies "the message is now this" cannot drift; one that
        * applied a patch would have to be right about the order they arrive in.
        */
-      socket.on('message:updated', (message: MessageDto) => {
+      on('message:updated', (message: MessageDto) => {
         const conversationId = String(message.conversationId)
         queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
           { queryKey: keys.messages(conversationId) },
@@ -290,7 +304,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
         }
       })
 
-      socket.on(
+      on(
         'conversation:pinned',
         ({
           conversationId,
@@ -306,7 +320,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
         },
       )
 
-      socket.on(
+      on(
         'conversation:delivered',
         ({
           conversationId,
@@ -336,7 +350,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
        * it means their unread total has dropped, and that number is the
        * server's to give.
        */
-      socket.on(
+      on(
         'conversation:read',
         ({ conversationId, readBy }: { conversationId: string; readBy: string }) => {
           void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
@@ -369,26 +383,30 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
        * is one small request; the list refetches only while the inbox is open,
        * which is both the rare case and the one where freshness is the point.
        */
-      socket.on('notification:new', () => {
+      on('notification:new', () => {
         invalidateNotifications(queryClient)
       })
 
       /** The same account on another device has cleared the bell. */
-      socket.on('notification:read', () => {
+      on('notification:read', () => {
         invalidateNotifications(queryClient)
         // And its pushes, which this device is still showing. The event says
         // only that something was read, not what, so the server is asked —
         // the same question the app asks when it opens.
         void sweepTray(trayFacts)
       })
-    })()
+
+      return () => {
+        for (const off of offs) off()
+        if (current === socket) current = null
+      }
+    })
 
     return () => {
-      cancelled = true
-      if (heartbeat) clearInterval(heartbeat)
+      clearInterval(heartbeat)
       appStateSubscription.remove()
       unsubscribeOnline()
-      opened?.io.off('reconnect', resync)
+      stop()
       closeSocket()
     }
   }, [enabled, queryClient])
