@@ -2248,6 +2248,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   calls: {
+    call: 'Ara',
     voiceCall: 'Sesli arama',
     videoCall: 'Görüntülü arama',
     incomingVoice: 'Gelen sesli arama',

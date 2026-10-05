@@ -2598,6 +2598,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   calls: {
+    call: 'اتصال',
     voiceCall: 'مكالمة صوتية',
     videoCall: 'مكالمة فيديو',
     incomingVoice: 'مكالمة صوتية واردة',
