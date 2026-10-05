@@ -6506,6 +6506,19 @@ caller-offers rule does not cover: the server refuses the second with
 `CALL_GLARE`, and that device answers the call that is ringing it instead,
 which is what both of them were trying to do.
 
+**On a phone, LiveKit's build of react-native-webrtc.** Two candidates were
+measured on 5 October 2026: react-native-webrtc 124.0.8 (Jitsi's WebRTC M124)
+and `@livekit/react-native-webrtc` 144.2.0 (WebRTC M144). Both Android
+libraries are 16 KB aligned on the 64-bit ABIs (`LOAD` alignment `0x4000`), so
+the requirement Play enforces disqualified neither. What decided it is what
+the library is for: WebRTC parses packets sent by a stranger's device, and
+M124 is two and a half years of security fixes behind M144. LiveKit's build
+is also the one maintained this month, and the one the CallKit and Telecom
+work can share a WebRTC with. It declares a screen-sharing foreground service
+calls never use, which `plugins/withCalls.js` removes from the manifest so
+Play has nothing to ask about. Its Java classes are reached by name from C++,
+so R8 keeps `livekit.org.webrtc.**`.
+
 **A call that is put away pushes the app down; it does not float over it.**
 The small green strip a call leaves when somebody goes to look something up
 sits in the layout above every screen, the way a phone's in-call bar does. The
