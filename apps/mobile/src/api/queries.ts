@@ -25,6 +25,7 @@ import {
   type PhraseScope,
   type MeetingStatus,
   type MessageAsk,
+  type MessageCall,
   type BroadcastInteractive,
   type MessageInteractive,
   type PollResults,
@@ -626,6 +627,8 @@ export interface MeProfile {
     activityMapVisible?: boolean
     weekChartVisible?: boolean
     hideCity?: boolean
+    /** Calls switched off, in both directions. Absent means calls are on. */
+    refuseCalls?: boolean
   }
   /**
    * Present only while the user is sharing one, which is exactly what the
@@ -882,7 +885,17 @@ export function useSubmitAppeal() {
 export interface ConversationDto {
   _id: string
   participants: string[]
-  lastMessage: { body: string; senderId: string; createdAt: string }
+  lastMessage: {
+    body: string
+    senderId: string
+    createdAt: string
+    /**
+     * Set when the newest thing in the thread is a call's row. `body` is then
+     * a line in English for builds that predate calls; this is what the row is
+     * worded from — see `callRowLabel`.
+     */
+    call?: Pick<MessageCall, 'media' | 'outcome' | 'durationSeconds'>
+  }
   /** This viewer's count. Resolved server-side by `toConversationView`. */
   unread: number
   pinned: boolean
@@ -973,6 +986,8 @@ export interface MessageDto {
   sticker?: { packId: string; stickerId: string }
   /** A place shared once. Already on the server's grid when approximate. */
   location?: { lat: number; lng: number; precision: SharedLocationPrecision; label?: string }
+  /** The call this row records, when `type` is `call`. `senderId` is who placed it. */
+  call?: MessageCall
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */

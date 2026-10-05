@@ -52,6 +52,7 @@ import { coordinatesText, mapsUrl } from '../lib/sharedLocation'
 import { LocationMapPreview } from './LocationMapPreview'
 import { useT, type MessageKey } from '../i18n'
 import { createDoubleTap, doubleTapToReactEnabled } from '../lib/doubleTapToReact'
+import { callRowIcon, callRowLabel, formatCallDuration } from '../lib/calls/callLabels'
 import { impact } from '../lib/haptics'
 
 /**
@@ -132,6 +133,19 @@ export interface MessageBubbleProps {
   onCardAction: (message: MessageDto) => void
   /** Hands an agreed meeting to the reader's calendar, as an `.ics`. */
   onAddToCalendar: (message: MessageDto) => void
+  /**
+   * Places the same kind of call again, from the row an earlier one left.
+   * Absent where a call cannot be placed from this thread at all — no call
+   * service, a build with no media engine, a channel — and then the row is
+   * only a record.
+   */
+  onCallBack?: ((message: MessageDto) => void) | undefined
+  /**
+   * Calls the other person about an agreed time, on its card. Present only
+   * while that time is close — see `meetingCallOpen` — and a call can be
+   * placed from this thread.
+   */
+  onMeetingCall?: ((message: MessageDto) => void) | undefined
   /**
    * The proposal in the reader's own zone, formatted by the thread — only it
    * has the profiles the zones come from. Empty for anything but a meeting.
@@ -218,6 +232,8 @@ export const MessageBubble = memo(function MessageBubble({
   onAnswerPoll,
   onCardAction,
   onAddToCalendar,
+  onCallBack,
+  onMeetingCall,
   meetingWhen = '',
   meetingLength = '',
   meetingTheirWhen = '',
@@ -298,7 +314,9 @@ export const MessageBubble = memo(function MessageBubble({
 
   const translateX = useSharedValue(0)
   const pan = Gesture.Pan()
-    .enabled(canReply && swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
+    // Not on the row a call leaves: the server refuses a reply to one, and a
+    // swipe that springs back to an error is worse than one that is not there.
+    .enabled(canReply && message.type !== 'call' && swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
     /*
      * The same two thresholds `shouldCaptureSwipe` applied, now decided
      * natively — which is what stops the drag from competing with the list's
@@ -551,6 +569,19 @@ export const MessageBubble = memo(function MessageBubble({
                   <Text style={styles.meetingCalendar}>{t('chat.meetingAddToCalendar')}</Text>
                 </Pressable>
               ) : null}
+              {/* The time has come: the card that arranged the call can start it. */}
+              {onMeetingCall ? (
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onLongPress={press}
+                  onPress={() => onMeetingCall(message)}
+                  style={styles.meetingCallRow}
+                >
+                  <Feather name="phone" size={13} color={colors.success} />
+                  <Text style={styles.meetingAccept}>{t('calls.callNow')}</Text>
+                </Pressable>
+              ) : null}
             </View>
           ) : (
             /*
@@ -709,6 +740,61 @@ export const MessageBubble = memo(function MessageBubble({
         </View>
         {badge}
         <View style={styles.cardMeta}>{meta}</View>
+      </Pressable>,
+    )
+  }
+
+  /*
+   * The row a call leaves behind.
+   *
+   * A record rather than a message, and drawn as one: no tail, no reply
+   * swipe, no heart, and under it only the clock — "Delivered" and "Read" are
+   * things that happen to something that was sent. It sits on the side of
+   * whoever placed the call, and the words are chosen for whoever is reading:
+   * see `callRowLabel`.
+   */
+  if (message.type === 'call' && message.call) {
+    const call = message.call
+    const label = callRowLabel(call, mine)
+    const detail =
+      call.outcome === 'completed' && call.durationSeconds !== undefined
+        ? formatCallDuration(call.durationSeconds)
+        : label.detail
+          ? t(label.detail)
+          : null
+    return shell(
+      <Pressable onLongPress={press} style={column}>
+        <View ref={box} style={[styles.card, styles.callCard, flash]}>
+          <View style={[styles.callIcon, label.missed && styles.callIconMissed]}>
+            <Feather
+              name={callRowIcon(call, mine)}
+              size={18}
+              color={label.missed ? colors.danger : colors.text}
+            />
+          </View>
+          <View style={styles.callText}>
+            <Text style={[styles.callTitle, label.missed && styles.callTitleMissed]}>
+              {t(label.title)}
+            </Text>
+            {detail ? <Text style={styles.meetingTheirs}>{detail}</Text> : null}
+            {onCallBack ? (
+              <Pressable
+                accessibilityRole="button"
+                hitSlop={8}
+                onLongPress={press}
+                onPress={() => onCallBack(message)}
+                style={styles.callAction}
+              >
+                <Text style={styles.meetingCalendar}>
+                  {t(mine ? 'calls.callAgain' : 'calls.callBack')}
+                </Text>
+              </Pressable>
+            ) : null}
+          </View>
+        </View>
+        <View style={styles.cardMeta}>
+          <MessageMeta message={message} mine={false} />
+        </View>
       </Pressable>,
     )
   }
@@ -1179,6 +1265,20 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   phraseMeaning: { color: colors.text, fontSize: 15, lineHeight: 21 },
   phraseExample: { color: colors.textMuted, fontSize: 14, fontStyle: 'italic', lineHeight: 20 },
   meetingWhen: { color: colors.text, fontSize: 16, fontWeight: '700' },
+  callCard: { alignItems: 'flex-start', flexDirection: 'row', gap: 12 },
+  callIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+    borderRadius: radius.pill,
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
+  },
+  callIconMissed: { backgroundColor: colors.dangerBg },
+  callText: { flexShrink: 1, gap: 2 },
+  callTitle: { color: colors.text, fontSize: 15, fontWeight: '700' },
+  callTitleMissed: { color: colors.danger },
+  callAction: { alignSelf: 'flex-start', marginTop: 6 },
   sticker: { height: 112, width: 112 },
   locationRow: { alignItems: 'center', flexDirection: 'row', gap: 6, marginTop: 2 },
   locationPlace: { color: colors.text, flexShrink: 1, fontSize: 16, fontWeight: '700' },
@@ -1216,6 +1316,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   // Blue, because it is the thing you can press. Green next to green read as
   // one broken sentence rather than as a state and an action.
   meetingCalendar: { color: colors.accent, fontSize: 13, fontWeight: '700' },
+  meetingCallRow: { alignItems: 'center', flexDirection: 'row', gap: 5 },
   meetingAccepted: { color: colors.success },
   meetingRefused: { color: colors.textMuted },
   sentTranslationRow: { alignItems: 'flex-start', flexDirection: 'row', gap: 5, marginTop: 4 },

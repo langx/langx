@@ -317,6 +317,32 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           }
         />
       )
+    case 'privacy.allowCalls':
+      /*
+       * Stored as its opposite — `refuseCalls`, absent meaning calls are on —
+       * and drawn the way round a person thinks of it: a switch that is on
+       * when they can be called. It cuts both ways, and the line under it
+       * says so: somebody who cannot be called cannot call either.
+       *
+       * Not drawn on a deployment that has no calls to allow.
+       */
+      return model.callsRow ? (
+        <ListRow
+          title={t('settings.allowCalls')}
+          subtitle={t('settings.allowCallsBody')}
+          last={last}
+          accessory={
+            <Toggle
+              accessibilityLabel={t('settings.allowCalls')}
+              {...(() => {
+                const toggle = privacyToggle('refuseCalls', profile?.privacy.refuseCalls ?? false)
+                return { busy: toggle.busy, value: !toggle.value }
+              })()}
+              onValueChange={(allow) => setPrivacy({ refuseCalls: !allow })}
+            />
+          }
+        />
+      ) : null
     case 'privacy.hideCity':
       // A preference, like the activity map. Beside what other people see
       // rather than beside "share location", which is about what is collected.

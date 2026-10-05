@@ -128,6 +128,23 @@ describe('the media lock counts down as messages arrive', () => {
     const after = appendIncomingMessage(data, message('a', THEM))
     expect(after?.pages[0]?.mediaLockedFor).toBe(3)
   })
+
+  /**
+   * Calls sit behind this same gate. A row that records one is not something
+   * they said, and if it counted, ringing somebody would be a way to earn the
+   * right to ring them.
+   */
+  it('does not move for the row a call leaves', () => {
+    const row: MessageDto = {
+      ...message('call', THEM),
+      type: 'call',
+      body: '',
+      call: { callId: '6f2c1a0e-8d4b-4c7a-9b1e-2a3f4d5e6f70', media: 'audio', outcome: 'missed' },
+    }
+    const after = appendIncomingMessage(locked(3), row, ME)
+    expect(after?.pages[0]?.mediaLockedFor).toBe(3)
+    expect(after?.pages[0]?.items.at(-1)?._id).toBe('call')
+  })
 })
 
 describe('applyDeliveredAt', () => {

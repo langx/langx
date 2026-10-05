@@ -13,6 +13,7 @@ import {
   useUpdateProfile,
 } from '../api/queries'
 import { useAnalyticsPreference } from './useAnalyticsPreference'
+import { useAppConfig } from './useAppConfig'
 import { useIsOnline } from './useIsOnline'
 import {
   enablePushOnThisDevice,
@@ -211,6 +212,9 @@ export function useSettingsModel() {
   // No row without a key: a switch that changes nothing is worse than none,
   // and a self-hosted build with no PostHog project has nothing to switch.
   const analyticsRow = isAnalyticsAvailable()
+  // The same rule for calls: a deployment with no relay has no calls, and a
+  // switch for something that cannot happen is a question nobody can answer.
+  const callsRow = useAppConfig().data?.callService === true
   // The tag on a locked row: the one paid plan's mark, from the shared table.
   const incognitoBadge = TIER_BADGES.pro
   const boostBadge = TIER_BADGES.pro
@@ -430,6 +434,7 @@ export function useSettingsModel() {
     tips,
     analytics,
     analyticsRow,
+    callsRow,
     incognitoBadge,
     boostBadge,
     canDeckExport,

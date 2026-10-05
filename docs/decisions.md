@@ -6484,10 +6484,30 @@ reach.
 ended — expires thirty days after the call. The thread's row stays as long as
 the thread does. Nothing was ever said to us, so there is nothing else to keep.
 
-**What this does not yet include.** The server and the contract come first,
-and by themselves ring nobody: no client declares the capability yet. The
-clients follow in the order their constraints allow — the browser first,
-because it needs no native code, and the phones with a store round, because
-the media engine, CallKit and PushKit, and Android's Telecom integration are a
-native module and change the build fingerprint. Until a build declares that it
-can take a call, it is simply never rung.
+**The browser first, the phones with a store round.** The server and the
+contract came first, and by themselves rang nobody. The browser client
+followed, because it needs no native code: the browser has WebRTC built in,
+and `rtc.web.ts` is the whole of its media engine. The phones follow with a
+store round, because the media engine, CallKit and PushKit, and Android's
+Telecom integration are a native module and change the build fingerprint.
+Until then the phone build answers "no" to `engine.supported()`, and that one
+answer is the whole switch: the socket declares nothing, the server never
+rings the phone, and the header draws no button. Call rows other people's
+calls leave in a thread are drawn all the same — they are just messages.
+
+**Every call carries a video line, even a voice call.** Both devices always
+negotiate one audio and one video line, and a voice call is a video line with
+nothing on it. Turning the camera on, answering a video call without one, and
+turning it off again are each a track swapped onto a line that already exists,
+so after the answer the only thing ever renegotiated is the path itself, when
+a network changes — and the caller is always the one who offers, so two offers
+never cross. Two people pressing call at the same moment is the one race the
+caller-offers rule does not cover: the server refuses the second with
+`CALL_GLARE`, and that device answers the call that is ringing it instead,
+which is what both of them were trying to do.
+
+**A call that is put away pushes the app down; it does not float over it.**
+The small green strip a call leaves when somebody goes to look something up
+sits in the layout above every screen, the way a phone's in-call bar does. The
+first version floated it over the top of the screen, like the message banner,
+and in a thread that put it over the name of the person on the call.

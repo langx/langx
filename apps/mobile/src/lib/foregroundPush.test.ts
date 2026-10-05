@@ -11,6 +11,16 @@ describe('what to do with a push that arrives while the app is open', () => {
   })
 
   /**
+   * "Sofia is calling", sent to a phone the system's own call screen cannot
+   * ring. In front, the socket has already put the call screen up over
+   * everything; behind, this notification is the only ring there is.
+   */
+  it('does not announce a call that is already ringing on screen', () => {
+    expect(presentationFor({ kind: 'call', conversationId: 'c1' }, true)).toBe('suppress')
+    expect(presentationFor({ kind: 'call', conversationId: 'c1' }, false)).toBe('os')
+  })
+
+  /**
    * These arrive once a day, have no in-app equivalent, and are the sort of
    * thing somebody swipes away and looks for again in the shade.
    */

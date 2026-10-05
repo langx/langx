@@ -152,7 +152,11 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
          * `message_sent` with extra steps.
          */
         if (meId && message.senderId !== meId) {
-          track({ name: 'message_received', properties: { kind: message.type } })
+          // The row a call leaves is not something that was said to anybody;
+          // the call has its own events.
+          if (message.type !== 'call') {
+            track({ name: 'message_received', properties: { kind: message.type } })
+          }
           /*
            * A message is its sender being here. The chat header reads their
            * presence off a profile cached for five minutes, and it kept
@@ -195,6 +199,17 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
               senderId: message.senderId,
               createdAt: message.createdAt,
               forUserId: meId,
+              ...(message.call
+                ? {
+                    call: {
+                      media: message.call.media,
+                      outcome: message.call.outcome,
+                      ...(message.call.durationSeconds === undefined
+                        ? {}
+                        : { durationSeconds: message.call.durationSeconds }),
+                    },
+                  }
+                : {}),
             })
             if (!next) return old
             patched = true

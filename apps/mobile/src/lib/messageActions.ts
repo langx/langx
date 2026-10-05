@@ -124,6 +124,36 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
   const { t } = context
   const actions: MessageAction[] = []
 
+  /*
+   * The row a call leaves. It is a record, not something anybody said, and
+   * the server refuses everything that treats it as a message — a reply, a
+   * reaction, a star, a pin, a correction. What is left is what a person can
+   * do to their own copy, and the one thing they may need to do about the
+   * call itself.
+   *
+   * Report is offered on a call the reader placed as well, unlike on a
+   * message: the row says who rang, not who behaved badly on the call, and
+   * the report goes to the other person either way.
+   */
+  if (context.type === 'call') {
+    return [
+      {
+        id: 'delete',
+        label: t('messageActions.delete'),
+        icon: 'trash-outline',
+        page: 'primary',
+        destructive: true,
+      },
+      {
+        id: 'report',
+        label: t('messageActions.report'),
+        icon: 'flag-outline',
+        page: 'primary',
+        destructive: true,
+      },
+    ]
+  }
+
   // Every message can be answered, including a captionless voice note — the
   // quote carries a label for those rather than a body. First in the list
   // because on web it is the only way in: the swipe gesture is native-only.

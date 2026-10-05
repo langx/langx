@@ -2030,6 +2030,9 @@ export const en = {
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',
     hideOnlineBody: 'Hides your green dot and when you were last here. You can still see theirs.',
+    allowCalls: 'Allow calls',
+    allowCallsBody:
+      'Voice and video calls with people you chat with. Off, nobody can call you and you can’t call anyone.',
     hideCity: 'Hide my city',
     hideCityBody:
       'Your city and time zone are worked out from your location. This keeps both off your profile; distance and country are unaffected.',
@@ -2469,6 +2472,76 @@ export const en = {
    * "testimonial" and the screens say "review" — see `packages/shared`'s
    * `testimonials.ts`. Nothing here names how a pair unlocks them.
    */
+  /**
+   * Calls: the buttons in a chat's header, the screen a call is on, the line it
+   * leaves when it closes, and the row it leaves in the thread.
+   *
+   * `row.*` is worded per reader — see `lib/calls/callLabels.ts`. A caller is
+   * told "no answer" whether the call rang out or was declined, on purpose.
+   * `locked` follows `chat.mediaLocked`, because it is the same gate.
+   */
+  calls: {
+    voiceCall: 'Voice call',
+    videoCall: 'Video call',
+    incomingVoice: 'Incoming voice call',
+    incomingVideo: 'Incoming video call',
+    calling: 'Calling…',
+    ringing: 'Ringing…',
+    connecting: 'Connecting…',
+    reconnecting: 'Reconnecting…',
+    answer: 'Answer',
+    answerNoCamera: 'Answer without camera',
+    decline: 'Decline',
+    cancel: 'Cancel',
+    hangUp: 'Hang up',
+    mute: 'Mute',
+    unmute: 'Unmute',
+    cameraOn: 'Turn camera on',
+    cameraOff: 'Turn camera off',
+    flipCamera: 'Switch camera',
+    minimize: 'Hide call',
+    returnToCall: 'Return to call',
+    peerMuted: '{name} is muted',
+    peerCameraOff: 'Camera off',
+    ended: 'Call ended',
+    noAnswer: 'No answer',
+    busy: '{name} can’t take a call right now',
+    unreachable: '{name} can’t be reached right now. They’ll see that you called.',
+    failed: 'The call couldn’t connect',
+    connectionLost: 'The connection was lost',
+    maxDuration: 'The call reached its time limit',
+    cooldown: '{name} hasn’t answered. You can call again once they write or call you back.',
+    inProgress: 'You’re already in a call',
+    unavailable: 'Calls aren’t available right now',
+    unavailableThem: '{name} can’t be called',
+    tooMany: 'Too many calls. Try again later.',
+    refusedThem: '{name} has calls switched off',
+    refusedYou: 'You have calls switched off. You can turn them on in Settings → Privacy.',
+    lockedShort: 'Calls aren’t unlocked here yet',
+    locked: {
+      one: 'Calls unlock after one more message from them.',
+      other: 'Calls unlock after {count} more messages from them.',
+    },
+    micNeeded: 'LangX needs your microphone for calls. Allow it, then try again.',
+    cameraNeeded:
+      'LangX needs your camera for video calls. Allow it, or answer without the camera.',
+    cameraBlocked: 'LangX can’t use your camera. Allow it, then try again.',
+    callNow: 'Call now',
+    callBack: 'Call back',
+    callAgain: 'Call again',
+    row: {
+      outgoingVoice: 'Outgoing voice call',
+      outgoingVideo: 'Outgoing video call',
+      incomingVoice: 'Incoming voice call',
+      incomingVideo: 'Incoming video call',
+      missedVoice: 'Missed voice call',
+      missedVideo: 'Missed video call',
+      noAnswer: 'No answer',
+      declined: 'Declined',
+      failed: 'Couldn’t connect',
+    },
+  },
+
   testimonials: {
     title: 'Reviews',
     sectionTitle: { one: 'Reviews · {count}', other: 'Reviews · {count}' },

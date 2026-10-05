@@ -102,6 +102,37 @@ describe('shouldShowIncomingBanner', () => {
       }),
     ).toBe('markRead')
   })
+
+  /**
+   * The row a call leaves. The call itself was ringing on this screen a
+   * moment ago, so a banner about it is the same news twice.
+   */
+  describe('for a call’s row', () => {
+    const row = (outcome: string) => incoming({ type: 'call', call: { outcome } })
+
+    it('never shows a banner, whatever became of the call', () => {
+      for (const outcome of ['completed', 'missed', 'declined', 'busy', 'failed']) {
+        expect(shouldShowIncomingBanner(row(outcome))).toBe('ignore')
+      }
+    })
+
+    it('reads a missed call when its thread is the one open', () => {
+      for (const outcome of ['missed', 'busy']) {
+        expect(shouldShowIncomingBanner({ ...row(outcome), activeConversationId: 'c1' })).toBe(
+          'markRead',
+        )
+      }
+    })
+
+    /** The server counted no unread for these, so there is nothing to clear. */
+    it('posts no read for a call that left nothing unread', () => {
+      for (const outcome of ['completed', 'declined', 'failed']) {
+        expect(shouldShowIncomingBanner({ ...row(outcome), activeConversationId: 'c1' })).toBe(
+          'ignore',
+        )
+      }
+    })
+  })
 })
 
 describe('the banner queue', () => {

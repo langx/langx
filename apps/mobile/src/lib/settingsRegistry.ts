@@ -98,6 +98,12 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         titleKey: 'settings.hideOnline',
         bodyKey: 'settings.hideOnlineBody',
       },
+      // With the other rows about who can reach you, and how.
+      {
+        id: 'privacy.allowCalls',
+        titleKey: 'settings.allowCalls',
+        bodyKey: 'settings.allowCallsBody',
+      },
       { id: 'privacy.hideCity', titleKey: 'settings.hideCity', bodyKey: 'settings.hideCityBody' },
       {
         id: 'privacy.shareLocation',

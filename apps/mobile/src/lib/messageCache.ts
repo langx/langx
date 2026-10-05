@@ -50,8 +50,11 @@ export function appendIncomingMessage(data: Pages, message: MessageDto, viewerId
         // lying for a few seconds. Only a message from the *other* person
         // counts — the gate is on what you have received, and letting your
         // own messages tick it down would be the old loophole in the client.
+        // Nor does a call's row: it is a record that somebody rang, not
+        // something they said, and three unanswered calls must not open the
+        // gate the calls themselves are behind.
         mediaLockedFor:
-          viewerId !== undefined && message.senderId === viewerId
+          (viewerId !== undefined && message.senderId === viewerId) || message.type === 'call'
             ? first.mediaLockedFor
             : Math.max(0, first.mediaLockedFor - 1),
       },

@@ -151,12 +151,47 @@ describe('messageActionsFor', () => {
    * how a meeting card could stop being starrable without a red test. A
    * bodyless type is passed as bodyless, because that is the shape a meeting
    * and a sticker actually arrive in.
+   *
+   * Every type but the row a call leaves, which is not a message: the server
+   * refuses to star it, and the block below says what it offers instead.
    */
   it('offers star on every message type', () => {
-    for (const type of MESSAGE_TYPES) {
+    for (const type of MESSAGE_TYPES.filter((type) => type !== 'call')) {
       const hasBody = type === 'text' || type === 'correction'
       expect(ids({ type, hasBody })).toContain('star')
     }
+  })
+
+  /**
+   * The server refuses a reply, a reaction, a star, a pin and a correction on
+   * a call's row. A menu that offered any of them would end in an error, so
+   * the whole list is pinned here rather than each absence separately.
+   */
+  describe('on the row a call leaves', () => {
+    const call: Partial<MessageActionContext> = { type: 'call', hasBody: false }
+
+    it('offers deleting your copy and reporting, and nothing else', () => {
+      expect(ids({ ...call, mine: false })).toEqual(['delete', 'report'])
+    })
+
+    /**
+     * Unlike a message, where your own is never yours to report: the row says
+     * who rang, not who behaved badly once it was answered.
+     */
+    it('offers report on a call the reader placed too', () => {
+      expect(ids({ ...call, mine: true })).toEqual(['delete', 'report'])
+    })
+
+    it('keeps both on the first page, so there is no More… to open', () => {
+      const actions = messageActionsFor({ ...theirs, ...call })
+      expect(paginateActions(actions, 'primary')).toEqual({ actions, hasMore: false })
+    })
+
+    it('offers nothing that sends, even with every capability switched on', () => {
+      expect(
+        ids({ ...call, hasBody: true, canSpeak: true, canRomanize: true, canEdit: true }),
+      ).toEqual(['delete', 'report'])
+    })
   })
 
   it('offers edit only when the caller says the rules allow it', () => {

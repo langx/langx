@@ -111,6 +111,13 @@ export interface PublicProfileDto {
    */
   acceptsMessages?: boolean
   /**
+   * Present, and `false`, only for somebody who cannot be called at all: they
+   * switched calls off, or the account is an official one with nobody to pick
+   * up. Absent means yes — including from an API that predates calls, where
+   * `/app-config` says there is no call service anyway.
+   */
+  acceptsCalls?: false
+  /**
    * Whether this account is still one. `suspended` and `deleted` open as a
    * profile with a tag rather than a 404, so somebody arriving from an old
    * conversation is told what happened — see `toPublicProfile`. Optional

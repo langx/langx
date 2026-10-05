@@ -17,6 +17,7 @@ import { useExchangeActivity } from '../../src/hooks/useExchangeActivity'
 import { usePendingRoute } from '../../src/hooks/usePendingRoute'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
+import { useCalls } from '../../src/hooks/useCalls'
 import { useSocket } from '../../src/hooks/useSocket'
 
 /**
@@ -51,6 +52,9 @@ export default function AppLayout() {
    * heartbeat would make them show up as "online" to real people.
    */
   const isGuest = shouldGateGuest(session?.user)
+  // Before `useSocket`, on purpose: cleanups run in this order, and this one
+  // has a last word to say on the socket the next one's closes.
+  useCalls({ enabled: !isGuest })
   useSocket({ enabled: !isGuest })
   useLocationRefresh({ enabled: !isGuest })
   useTimezoneSync({ enabled: !isGuest })

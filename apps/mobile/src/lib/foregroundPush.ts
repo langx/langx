@@ -4,7 +4,7 @@ import { PUSH_KINDS, TRAY_SYNC_KIND, type PushKind } from '@langx/shared'
  * Whether an arriving notification should be drawn by the OS, or handed to the
  * in-app banner instead.
  *
- * Only a message, and only while the app is in front. A heads-up banner
+ * Only a message or a ringing call, and only while the app is in front. A heads-up banner
  * sliding over the app somebody is already using is the most irritating thing
  * a notification can do, and it is redundant: the socket has already put the
  * message in the chat list, and the in-app banner says the same thing without
@@ -27,5 +27,7 @@ export function presentationFor(data: unknown, appActive: boolean): 'suppress' |
   if (kind === TRAY_SYNC_KIND) return 'silent'
   if (!appActive) return 'os'
   if (typeof kind !== 'string' || !(PUSH_KINDS as readonly string[]).includes(kind)) return 'os'
-  return (kind as PushKind) === 'message' ? 'suppress' : 'os'
+  // A message, and a call that is ringing: both are already on screen by way
+  // of the socket — the second as the call screen itself, over everything.
+  return (kind as PushKind) === 'message' || (kind as PushKind) === 'call' ? 'suppress' : 'os'
 }
