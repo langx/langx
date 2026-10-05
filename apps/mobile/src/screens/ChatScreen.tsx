@@ -93,7 +93,7 @@ import { useProfileCache, useProfileCacheStatus } from '../hooks/useProfileCache
 import { useReviewPrompt } from '../hooks/useReviewPrompt'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { chooseAlert, confirmAlert, showAlert } from '../lib/alert'
-import { emitWithAck, getSocket } from '../lib/socket'
+import { emitWithAck, getSocket, onSocket } from '../lib/socket'
 import { typingIndicator } from '../lib/typingIndicator'
 import {
   addUnsent,
@@ -733,22 +733,20 @@ export function ChatScreen({
         indicator.set(false)
       }
     }
-    let socket: Awaited<ReturnType<typeof getSocket>> | undefined
-    let cancelled = false
-    void getSocket().then((opened) => {
-      if (cancelled) return
-      socket = opened
-      opened.on('typing', onTyping)
-      opened.on('message:new', onMessage)
+    const stop = onSocket((socket) => {
+      socket.on('typing', onTyping)
+      socket.on('message:new', onMessage)
+      return () => {
+        socket.off('typing', onTyping)
+        socket.off('message:new', onMessage)
+      }
     })
     return () => {
-      cancelled = true
       indicator.dispose()
       // Here, where React calls it. It used to be returned from the async
       // setup, where nothing did, and every thread opened left its listener
       // on the socket for the rest of the session.
-      socket?.off('typing', onTyping)
-      socket?.off('message:new', onMessage)
+      stop()
     }
   }, [conversationId])
 

@@ -12,8 +12,24 @@ import { authClient } from './auth-client'
 import { engine } from './calls/rtc'
 import { deviceId } from './deviceId'
 import { DRAWABLE_INBOX_KINDS } from './notificationInbox'
+import { createSocketListeners, type SocketAttach } from './socketListeners'
 
 let socket: Socket | null = null
+const listeners = createSocketListeners<Socket>()
+
+/**
+ * Listens to the app's socket — this one, and every one that replaces it.
+ * The only way anything should hang a handler on it: see `socketListeners.ts`
+ * for what went wrong when they were hung on one socket object directly.
+ *
+ * Asks for the socket as well: whatever registers first is what opens it, and
+ * a registration that finds a socket socket.io has given up on replaces it.
+ */
+export function onSocket(attach: SocketAttach<Socket>): () => void {
+  const stop = listeners.add(attach)
+  void getSocket().catch(() => undefined)
+  return stop
+}
 
 /**
  * One socket for the whole app, not one per chat screen.
@@ -74,17 +90,22 @@ export async function getSocket(): Promise<Socket> {
    */
   if (engine.supported()) auth[CALLS_AUTH_KEY] = String(CALL_PROTOCOL_VERSION)
 
-  socket ??= io(API_URL, {
-    auth,
-    transports: ['websocket'],
-    autoConnect: true,
-  })
+  // Two callers can arrive here together; only the first builds one.
+  if (!socket) {
+    socket = io(API_URL, {
+      auth,
+      transports: ['websocket'],
+      autoConnect: true,
+    })
+    listeners.replace(socket)
+  }
   return socket
 }
 
 export function closeSocket(): void {
   socket?.close()
   socket = null
+  listeners.replace(null)
 }
 
 /**

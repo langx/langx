@@ -2,11 +2,17 @@ import { useEffect, useState, useSyncExternalStore } from 'react'
 import { AppState, Platform } from 'react-native'
 import { formatCallDuration } from '../lib/calls/callLabels'
 import type { CallState } from '../lib/calls/machine'
-import { attachCallSocket, engineSupported, hangUp, resyncCalls } from '../lib/calls/session'
+import {
+  attachCallSocket,
+  engineSupported,
+  hangUp,
+  leaveCalls,
+  resyncCalls,
+} from '../lib/calls/session'
 import { callState, subscribeToCall } from '../lib/calls/store'
 import { callStreams, subscribeToCallStreams, type CallStreams } from '../lib/calls/streams'
 import { resumedFromBackground } from '../lib/missedEvents'
-import { getSocket } from '../lib/socket'
+import { onSocket } from '../lib/socket'
 
 /**
  * Lets calls reach this device, for as long as somebody is signed in.
@@ -26,13 +32,9 @@ import { getSocket } from '../lib/socket'
 export function useCalls({ enabled = true }: { enabled?: boolean } = {}): void {
   useEffect(() => {
     if (!enabled || !engineSupported()) return
-    let cancelled = false
-    let detach: (() => void) | null = null
-
-    void getSocket().then((socket) => {
-      if (cancelled) return
-      detach = attachCallSocket(socket)
-    })
+    // Follows the socket from one connection object to the next: a call in
+    // progress moves with it rather than being hung up.
+    const stop = onSocket(attachCallSocket)
 
     /*
      * A phone that was in a pocket has no socket, and a call that started
@@ -56,10 +58,11 @@ export function useCalls({ enabled = true }: { enabled?: boolean } = {}): void {
     if (onWeb) window.addEventListener('pagehide', leaving)
 
     return () => {
-      cancelled = true
       appState.remove()
       if (onWeb) window.removeEventListener('pagehide', leaving)
-      detach?.()
+      // Said to the server while the socket can still say it, then let go.
+      leaveCalls()
+      stop()
     }
   }, [enabled])
 }

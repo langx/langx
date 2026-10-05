@@ -917,8 +917,10 @@ function onConnect(): void {
 }
 
 /**
- * Hangs the call's events on the app's one socket. Called by `useCalls` once
- * the socket exists, and again with a new socket after a sign-in.
+ * Hangs the call's events on the app's one socket — through `onSocket`, so
+ * on whichever socket object that is now. Taking them off again leaves the
+ * call alone: when the socket is replaced, the call moves to the new one and
+ * rejoins its room on `connect`. `leaveCalls` is what ends it.
  */
 export function attachCallSocket(next: Socket): () => void {
   socket = next
@@ -940,19 +942,22 @@ export function attachCallSocket(next: Socket): () => void {
     next.off(CALL_EVENTS.ringing, onRinging)
     next.off(CALL_EVENTS.media, onMedia)
     next.off('connect', onConnect)
-    /*
-     * The socket is going — signing out, mostly. A call in progress goes with
-     * it: said to the server while the socket can still say it, and taken off
-     * the screen without a line, because the screen is going too.
-     */
-    const state = callState()
-    if (live && state && state.phase !== 'ended') endOnServer(live)
-    release()
-    pendingIncoming = null
-    answerNextFrom = null
-    if (clearTimer) clearTimeout(clearTimer)
-    clearTimer = null
-    dispatchCall({ type: 'cleared' })
     if (socket === next) socket = null
   }
+}
+
+/**
+ * Calls stop reaching this device — signing out, mostly. A call in progress
+ * ends with it: said to the server while the socket can still say it, and
+ * taken off the screen without a line, because the screen is going too.
+ */
+export function leaveCalls(): void {
+  const state = callState()
+  if (live && state && state.phase !== 'ended') endOnServer(live)
+  release()
+  pendingIncoming = null
+  answerNextFrom = null
+  if (clearTimer) clearTimeout(clearTimer)
+  clearTimer = null
+  dispatchCall({ type: 'cleared' })
 }
