@@ -10,6 +10,7 @@ import type { Db, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { blockedUserIds } from '../moderation/blocks'
+import { notSuspended } from '../moderation/suspension'
 import { rankOf } from './leaderboard'
 
 /**
@@ -39,6 +40,9 @@ export async function getStreakLeaderboard(
   const filter: Filter<Profile> = {
     deletedAt: { $exists: false },
     $or: [{ 'settings.discoverable': true }, { _id: viewerId }],
+    // Not a suspended account either — see the token board. In the query for
+    // the same reason: a skipped row would still take a place in the page.
+    ...notSuspended(at),
   }
   if (query.metric === 'current') {
     /*

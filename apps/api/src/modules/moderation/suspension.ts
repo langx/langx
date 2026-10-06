@@ -39,8 +39,8 @@ export function isSuspended(
 
 /**
  * The same question as a Mongo fragment, for the reads that must not return a
- * suspended account at all — discovery, the boosted strip, handle search and
- * the signed-out shared link.
+ * suspended account at all — discovery, the boosted strip, handle search, the
+ * three leaderboards and the signed-out shared link.
  *
  * `$not: { $gt: now }` rather than `$lte: now`, because a field that is not
  * there has to pass: almost every profile has never been suspended and must

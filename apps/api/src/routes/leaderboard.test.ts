@@ -139,6 +139,23 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
     expect(response.statusCode, response.body).toBe(200)
   }
 
+  /** A suspension a moderator would write, a year long. */
+  function suspend(userId: string) {
+    return handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: userId },
+      {
+        $set: {
+          suspension: {
+            at: new Date(),
+            until: new Date(Date.now() + 365 * 86_400_000),
+            permanent: false,
+            reason: 'harassment',
+          },
+        },
+      },
+    )
+  }
+
   /** Writes a streak straight onto the profile, as the daily check-in would. */
   function setStreak(
     userId: string,
@@ -611,6 +628,25 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       await setStreak(hiding.userId, { current: 0, longest: 0, lastQualifiedDay: null })
     })
 
+    /**
+     * Discovery and search already propose nobody suspended; a leaderboard
+     * would be one more place that did. Left out in the query, like a hidden
+     * person, so the page is still full.
+     */
+    it('leaves out a suspended account, and still fills the page', async () => {
+      const viewer = await newUser()
+      const suspended = await newUser()
+      await setStreak(suspended.userId, { current: 998, longest: 998, lastQualifiedDay: today })
+      await suspend(suspended.userId)
+
+      const board = await streakBoard(viewer)
+      expect(board.entries.some((e) => e.userId === suspended.userId)).toBe(false)
+      const top = await streakBoard(viewer, '?metric=current&limit=1')
+      expect(top.entries).toHaveLength(1)
+
+      await setStreak(suspended.userId, { current: 0, longest: 0, lastQualifiedDay: null })
+    })
+
     it('leaves out a deleted account', async () => {
       const gone = await newUser()
       await setStreak(gone.userId, { current: 99, longest: 99, lastQualifiedDay: today })
@@ -819,6 +855,32 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
      * Discover" off promises nobody will. Same shape as a deletion: gone from
      * the table, place kept.
      */
+    it('hides a suspended account, keeping its place', async () => {
+      const suspended = await newUser()
+      const viewer = await newUser()
+      await awardTokens(handle.db, {
+        userId: suspended.userId,
+        kind: 'adjustment',
+        amount: 300_000,
+        refId: 'suspended',
+      })
+      await awardTokens(handle.db, {
+        userId: viewer.userId,
+        kind: 'adjustment',
+        amount: 290_000,
+        refId: 'below-suspended',
+      })
+      const before = (await board(viewer, '?period=all')).entries.find(
+        (e) => e.userId === viewer.userId,
+      )
+
+      await suspend(suspended.userId)
+
+      const after = await board(viewer, '?period=all')
+      expect(after.entries.some((e) => e.userId === suspended.userId)).toBe(false)
+      expect(after.entries.find((e) => e.userId === viewer.userId)?.rank).toBe(before?.rank)
+    })
+
     it('hides somebody not shown in Discover, keeping their place', async () => {
       const hiding = await newUser()
       const viewer = await newUser()

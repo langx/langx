@@ -12,6 +12,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import type { Profile } from '../profiles/profiles'
 import { blockedUserIds } from '../moderation/blocks'
+import { notSuspended } from '../moderation/suspension'
 import type { TokenAggregate } from './ledger'
 
 /**
@@ -142,6 +143,9 @@ export async function getLeaderboard(
         _id: { $in: top.map((row) => row.userId) },
         deletedAt: { $exists: false },
         $or: [{ 'settings.discoverable': true }, { _id: viewerId }],
+        // Nothing proposes a suspended account — discovery and search already
+        // leave it out, and a leaderboard is one more place that would.
+        ...notSuspended(),
       },
       {
         projection: {
