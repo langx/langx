@@ -157,6 +157,95 @@ export function recapHighlights(recap: Pick<MonthlyRecapDto, RecapStat>, max = 4
   return RECAP_STATS.filter((stat) => recap[stat] > 0).slice(0, max)
 }
 
+/**
+ * The slides of "Your Month", in the order the story plays them. Each one can
+ * be shared on its own, so the server draws a card per slide as well.
+ */
+export const RECAP_SLIDES = [
+  'intro',
+  'messages',
+  'corrections',
+  'echo',
+  'streak',
+  'summary',
+] as const
+export type RecapSlide = (typeof RECAP_SLIDES)[number]
+
+/** The numbers `recapSlides` and the calendars read, in a month and a year alike. */
+type RecapCounts = Pick<
+  MonthlyRecapDto,
+  'messages' | 'corrections' | 'echoReviews' | 'currentStreak' | 'activeDays'
+>
+
+/**
+ * The slides a month earns, in order. A number that is zero does not get a
+ * slide of its own: "You gave back 0" is not a thing to be congratulated on.
+ *
+ * Shared because the server only draws a slide's card for a slide the story
+ * could have shown; anything else gets the summary poster.
+ */
+export function recapSlides(recap: RecapCounts): RecapSlide[] {
+  const slides: RecapSlide[] = ['intro']
+  if (recap.messages > 0) slides.push('messages')
+  if (recap.corrections > 0) slides.push('corrections')
+  if (recap.echoReviews > 0) slides.push('echo')
+  if (recap.currentStreak > 0 || recap.activeDays > 0) slides.push('streak')
+  slides.push('summary')
+  return slides
+}
+
+/** `2026-02` → 28. */
+export function daysInMonth(month: string): number {
+  const [year = 1970, index = 1] = month.split('-').map(Number)
+  return new Date(Date.UTC(year, index, 0)).getUTCDate()
+}
+
+export type CalendarDay = 'streak' | 'active' | 'idle'
+
+/**
+ * One square per day of the month, for the streak slide and its card.
+ *
+ * "Streak" is the unbroken run of active days that ends on the month's last
+ * day, and only while a streak is still alive — capped at the current one,
+ * since that is the only streak the server records. A run that ended mid-month
+ * is ordinary activity: calling it the streak would draw one the reader lost.
+ *
+ * The days are UTC days, which is what `dailyActivity` keeps; a square can sit
+ * one day off the reader's own calendar near midnight, which is not worth a
+ * second tally for a picture.
+ */
+export function recapCalendar(
+  recap: Pick<MonthlyRecapDto, 'month' | 'activeDates' | 'currentStreak'>,
+): CalendarDay[] {
+  const total = daysInMonth(recap.month)
+  const active = new Set(recap.activeDates)
+  let streakFrom = total + 1
+  if (recap.currentStreak > 0) {
+    for (let day = total; day >= 1 && active.has(day); day--) {
+      if (total - day + 1 > recap.currentStreak) break
+      streakFrom = day
+    }
+  }
+  return Array.from({ length: total }, (_, index) => {
+    const day = index + 1
+    if (day >= streakFrom) return 'streak'
+    return active.has(day) ? 'active' : 'idle'
+  })
+}
+
+/**
+ * One square per month for a year's streak slide, each the share of that
+ * month's days that were active (0–1), January first.
+ *
+ * A year has no "streak" squares: the one streak the server records is at
+ * most a few weeks of the last square, and a shade says the year better.
+ */
+export function yearCalendar(recap: Pick<YearlyRecapDto, 'year' | 'activeMonths'>): number[] {
+  return recap.activeMonths.map((days, index) =>
+    Math.min(1, days / daysInMonth(`${recap.year}-${String(index + 1).padStart(2, '0')}`)),
+  )
+}
+
 /** One label per number, each already in the plural form for its count. */
 const recapLabel = z.string().trim().min(1).max(40)
 
@@ -172,6 +261,11 @@ const recapLabel = z.string().trim().min(1).max(40)
 export const recapCardInputSchema = z.object({
   /** `YYYY-MM` for a month's card, `YYYY` for a year's. */
   month: z.string().regex(/^\d{4}(-(0[1-9]|1[0-2]))?$/),
+  /**
+   * Which slide of the story the card is of. Absent is the summary — the
+   * poster every build before per-slide sharing asked for.
+   */
+  slide: z.enum(RECAP_SLIDES).optional(),
   locale: localeSchema,
   /** The line above the month: "My month on LangX". */
   kicker: z.string().trim().min(1).max(40),

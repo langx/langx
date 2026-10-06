@@ -35,11 +35,11 @@ export interface RecapCardContent {
 
 // From `apps/mobile/src/lib/theme/tokens.ts`, light scheme: a card leaving the
 // app should be the app's colours, not a second palette that drifts.
-const BLUE = '#3b6cf6'
-const YELLOW = '#ffc409'
-const ON_YELLOW = '#201900'
-const INK = '#17191c'
-const PAPER = '#ffffff'
+export const BLUE = '#3b6cf6'
+export const YELLOW = '#ffc409'
+export const ON_YELLOW = '#201900'
+export const INK = '#17191c'
+export const PAPER = '#ffffff'
 const PAPER_80 = 'rgba(255, 255, 255, 0.8)'
 const PAPER_88 = 'rgba(255, 255, 255, 0.88)'
 
@@ -53,9 +53,37 @@ const MARK_ARCS =
   '<path fill="#000000" d="M393.661 591.654A235.3 235.3 0 0 1 462.846 266.161A235.3 235.3 0 0 1 788.339 335.346L718.059 380.987A151.5 151.5 0 0 0 508.487 336.441A151.5 151.5 0 0 0 463.941 546.013Z"/>' +
   '<path fill="#ffffff" d="M630.339 432.346A235.3 235.3 0 0 1 561.154 757.839A235.3 235.3 0 0 1 235.661 688.654L305.941 643.013A151.5 151.5 0 0 0 515.513 687.559A151.5 151.5 0 0 0 560.059 477.987Z"/>' +
   '</svg>'
-const MARK_SRC = `data:image/svg+xml;base64,${Buffer.from(MARK_ARCS).toString('base64')}`
+export const MARK_SRC = `data:image/svg+xml;base64,${Buffer.from(MARK_ARCS).toString('base64')}`
 
-function el(type: string, props: CardNode['props']): CardNode {
+/**
+ * The colours of everything that is not a tile: the poster is white on blue,
+ * and a slide's card is the slide's own ink on the slide's own ground.
+ */
+export interface Ink {
+  /** The month, the handle, the wordmark. */
+  text: string
+  /** The kicker above the month. */
+  kicker: string
+  /** The sentence under the month, the languages under the handle. */
+  soft: string
+  /** The mark beside the wordmark, as a data URI. */
+  mark: string
+  /** The disc an absent face is drawn on, and the ring round a present one. */
+  chip: string
+  /** The initial on that disc. */
+  chipText: string
+}
+
+const ON_BLUE: Ink = {
+  text: PAPER,
+  kicker: PAPER_80,
+  soft: PAPER_88,
+  mark: MARK_SRC,
+  chip: PAPER,
+  chipText: BLUE,
+}
+
+export function el(type: string, props: CardNode['props']): CardNode {
   return { type, props }
 }
 
@@ -81,7 +109,7 @@ type TextStyle = Record<string, unknown> & { fontSize: number; color: string }
  * direction rather than by the text engine, leaves that pass nothing to
  * reorder, and each word is still shaped whole, so Arabic letters still join.
  */
-function textLine(text: string, style: TextStyle, rtl: boolean, width?: number): CardNode {
+export function textLine(text: string, style: TextStyle, rtl: boolean, width?: number): CardNode {
   const sized = width ? { width } : {}
   if (!rtl && !/[→←]/.test(text)) {
     return el('div', { style: { display: 'flex', ...sized, ...style }, children: text })
@@ -122,13 +150,13 @@ function textLine(text: string, style: TextStyle, rtl: boolean, width?: number):
  * purpose — a month a size smaller than it could be is invisible; one that
  * wraps or runs off the card is not.
  */
-function fitSize(text: string, width: number, max: number, perChar: number): number {
+export function fitSize(text: string, width: number, max: number, perChar: number): number {
   const chars = Math.max([...text].length, 1)
   return Math.min(max, width / (chars * perChar))
 }
 
 /** Every measurement the three shapes differ in, in pixels. */
-interface Metrics {
+export interface Metrics {
   mark: number
   wordmark: number
   kicker: number
@@ -147,7 +175,7 @@ interface Metrics {
   qr: number
 }
 
-const METRICS: Record<CardShape, Metrics> = {
+export const METRICS: Record<CardShape, Metrics> = {
   story: {
     mark: 84,
     wordmark: 54,
@@ -297,7 +325,7 @@ function statGrid(content: RecapCardContent, width: number, m: Metrics, rtl: boo
   })
 }
 
-function brand(m: Metrics, rtl: boolean): CardNode {
+export function brand(m: Metrics, rtl: boolean, ink: Ink = ON_BLUE): CardNode {
   return el('div', {
     style: {
       alignItems: 'center',
@@ -307,10 +335,10 @@ function brand(m: Metrics, rtl: boolean): CardNode {
       gap: m.mark * 0.26,
     },
     children: [
-      el('img', { src: MARK_SRC, width: m.mark, height: m.mark }),
+      el('img', { src: ink.mark, width: m.mark, height: m.mark }),
       el('div', {
         style: {
-          color: PAPER,
+          color: ink.text,
           display: 'flex',
           fontSize: m.wordmark,
           fontWeight: 800,
@@ -322,21 +350,21 @@ function brand(m: Metrics, rtl: boolean): CardNode {
   })
 }
 
-function avatarNode(content: RecapCardContent, size: number): CardNode {
+function avatarNode(content: Owner, size: number, ink: Ink): CardNode {
   if (content.avatar) {
     return el('img', {
       src: content.avatar,
       width: size,
       height: size,
-      style: { border: `${Math.round(size * 0.04)}px solid ${PAPER}`, borderRadius: size },
+      style: { border: `${Math.round(size * 0.04)}px solid ${ink.chip}`, borderRadius: size },
     })
   }
   return el('div', {
     style: {
       alignItems: 'center',
-      backgroundColor: PAPER,
+      backgroundColor: ink.chip,
       borderRadius: size,
-      color: BLUE,
+      color: ink.chipText,
       display: 'flex',
       flexShrink: 0,
       fontSize: size * 0.46,
@@ -351,12 +379,15 @@ function avatarNode(content: RecapCardContent, size: number): CardNode {
   })
 }
 
+/** Whose card it is: what `owner` draws. */
+type Owner = Pick<RecapCardContent, 'handle' | 'languages' | 'avatar'>
+
 /** The face, the handle, and the languages under it. */
-function owner(content: RecapCardContent, m: Metrics, rtl: boolean): CardNode {
+export function owner(content: Owner, m: Metrics, rtl: boolean, ink: Ink = ON_BLUE): CardNode {
   const lines: CardNode[] = [
     el('div', {
       style: {
-        color: PAPER,
+        color: ink.text,
         display: 'flex',
         fontSize: m.handle,
         fontWeight: 800,
@@ -367,7 +398,7 @@ function owner(content: RecapCardContent, m: Metrics, rtl: boolean): CardNode {
   ]
   if (content.languages && m.languages > 0) {
     lines.push(
-      textLine(content.languages, { color: PAPER_88, fontSize: m.languages, fontWeight: 600 }, rtl),
+      textLine(content.languages, { color: ink.soft, fontSize: m.languages, fontWeight: 600 }, rtl),
     )
   }
   return el('div', {
@@ -381,7 +412,7 @@ function owner(content: RecapCardContent, m: Metrics, rtl: boolean): CardNode {
       gap: m.avatar * 0.22,
     },
     children: [
-      avatarNode(content, m.avatar),
+      avatarNode(content, m.avatar, ink),
       el('div', {
         style: {
           alignItems: rtl ? 'flex-end' : 'flex-start',
@@ -403,10 +434,16 @@ function owner(content: RecapCardContent, m: Metrics, rtl: boolean): CardNode {
  * Arabic a mixed run is where satori's reordering goes wrong, and a lone
  * number is safe on either side of one.
  */
-function headline(content: RecapCardContent, width: number, m: Metrics, rtl: boolean): CardNode {
+export function headline(
+  content: Pick<RecapCardContent, 'kicker' | 'locale' | 'year' | 'month' | 'people'>,
+  width: number,
+  m: Metrics,
+  rtl: boolean,
+  ink: Ink = ON_BLUE,
+): CardNode {
   const kicker = rtl ? content.kicker : content.kicker.toLocaleUpperCase(content.locale)
   const kickerStyle = {
-    color: PAPER_80,
+    color: ink.kicker,
     fontSize: m.kicker,
     fontWeight: 800,
     // Tracking only where there are capitals to track: spaced-out Arabic
@@ -434,7 +471,7 @@ function headline(content: RecapCardContent, width: number, m: Metrics, rtl: boo
     }),
     el('div', {
       style: {
-        color: PAPER,
+        color: ink.text,
         display: 'flex',
         flexShrink: 0,
         fontSize: fitSize(content.month, width, m.month, 0.56),
@@ -449,7 +486,7 @@ function headline(content: RecapCardContent, width: number, m: Metrics, rtl: boo
     children.push(
       textLine(
         content.people,
-        { color: PAPER_88, fontSize: m.people, fontWeight: 600 },
+        { color: ink.soft, fontSize: m.people, fontWeight: 600 },
         rtl,
         width,
       ),
@@ -469,7 +506,12 @@ function headline(content: RecapCardContent, width: number, m: Metrics, rtl: boo
 }
 
 /** "langx.io" and, on a story, the code a second phone can scan. */
-function site(m: Metrics, rtl: boolean, qr: string | undefined): CardNode {
+export function site(
+  m: Metrics,
+  rtl: boolean,
+  qr: string | undefined,
+  ink: Ink = ON_BLUE,
+): CardNode {
   return el('div', {
     style: {
       alignItems: 'center',
@@ -480,7 +522,7 @@ function site(m: Metrics, rtl: boolean, qr: string | undefined): CardNode {
     },
     children: [
       el('div', {
-        style: { color: PAPER, display: 'flex', fontSize: m.site, fontWeight: 800 },
+        style: { color: ink.text, display: 'flex', fontSize: m.site, fontWeight: 800 },
         children: 'langx.io',
       }),
       ...(qr && m.qr > 0
@@ -507,10 +549,10 @@ function site(m: Metrics, rtl: boolean, qr: string | undefined): CardNode {
  * The yellow disc bled off the top corner — the one piece of decoration, and
  * mirrored in Arabic, where the brand starts on the right.
  */
-function disc(size: number, offset: number, rtl: boolean): CardNode {
+export function disc(size: number, offset: number, rtl: boolean, colour = YELLOW): CardNode {
   return el('div', {
     style: {
-      backgroundColor: YELLOW,
+      backgroundColor: colour,
       borderRadius: size,
       display: 'flex',
       height: size,

@@ -12,6 +12,7 @@ import type { Profile } from '../profiles/profiles'
 import { cardElement, type CardCopy } from './design'
 import { recapCardContent } from './recapCard'
 import { recapCardElement } from './recapDesign'
+import { recapSlideElement } from './recapSlideDesign'
 import { renderCard, type CardNode } from './render'
 
 export interface ShareCard {
@@ -95,7 +96,8 @@ export async function createShareCard(
 }
 
 /**
- * The poster for a recap that came with its wording, the badge card for
+ * The poster for a recap that came with its wording — or, when one slide of
+ * the story was asked for, that slide's card — and the badge card for
  * everything else.
  *
  * A month with nothing in it falls back to the badge card too: the app does
@@ -115,7 +117,11 @@ async function elementFor(
       recap: input.recap,
       storagePublicBaseUrl: input.storagePublicBaseUrl,
     })
-    if (content.stats.length > 0) return recapCardElement(content, input.shape, qr)
+    if (content.stats.length > 0) {
+      return content.slide
+        ? recapSlideElement(content.slide, input.shape, qr)
+        : recapCardElement(content, input.shape, qr)
+    }
   }
   return cardElement(input.kind, input.copy, input.shape, qr)
 }
