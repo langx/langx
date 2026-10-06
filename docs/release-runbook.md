@@ -1198,11 +1198,15 @@ not needed again for any of them. What each step was, for a re-run:
 ## Release
 
 **Both stores release to 100% of users, every time.** There is no stage to
-widen, on either platform, and no post-submission step to remember.
+widen, on either platform.
 
-- **Play:** `eas.json` sets `releaseStatus: completed` and names no rollout, so
-  a submission goes straight to everyone. Nothing to do in the Console after
-  `eas submit`.
+- **Play:** `eas submit` sends the bundle to the **internal testing** track
+  (`track: internal`, `releaseStatus: completed`), where the Early Adopters
+  list can install it within minutes, before any review. Going live is
+  Play Console → Internal testing → **Promote release → Production**, which
+  sends that same bundle to review and then to everyone, with no rollout
+  stage. It cannot be a second `eas submit`: Play refuses a version code it
+  has already been given.
 - **iOS:** the version page's **Phased Release for App Store Automatic
   Updates** must read _Release update to all users immediately_. This is the
   one that needs an eye: it is a per-version radio in App Store Connect, not a
