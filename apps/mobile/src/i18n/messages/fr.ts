@@ -1497,6 +1497,7 @@ export const fr: Localized<EnMessages> = {
     notFound: 'Profil introuvable.',
     interests: 'Centres d’intérêt',
     sendMessage: 'Envoyer un message',
+    newChatsRefused: '{name} n’accepte pas de nouvelles conversations pour le moment.',
     sendFailed: 'Impossible d’envoyer le message.',
     blockConfirm: 'Bloquer {name} ? Vous n’apparaîtrez plus l’un dans les listes de l’autre.',
     blocked: '{name} est bloqué.',
@@ -1847,6 +1848,9 @@ export const fr: Localized<EnMessages> = {
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',
     hideOnlineBody: 'Masque ton point vert et ta dernière visite. Tu continueras de voir le leur.',
+    refuseNewChats: 'Seuls mes contacts peuvent m’écrire',
+    refuseNewChatsBody:
+      'Personne de nouveau ne peut t’envoyer un premier message. Tu peux toujours écrire à qui tu veux, et on peut te répondre.',
     allowCalls: 'Autoriser les appels',
     allowCallsBody:
       'Appels vocaux et vidéo avec les personnes avec qui tu discutes. Désactivé, personne ne peut t’appeler et tu ne peux appeler personne.',

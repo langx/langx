@@ -1677,6 +1677,7 @@ export const en = {
     notFound: 'Profile not found.',
     interests: 'Interests',
     sendMessage: 'Send a message',
+    newChatsRefused: '{name} isn’t taking new chats right now.',
     sendFailed: 'Could not send the message.',
     blockConfirm: 'Block {name}? Neither of you will appear in the other’s lists.',
     blocked: '{name} is blocked.',
@@ -2030,6 +2031,9 @@ export const en = {
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',
     hideOnlineBody: 'Hides your green dot and when you were last here. You can still see theirs.',
+    refuseNewChats: 'Only people I talk to can write',
+    refuseNewChatsBody:
+      'Nobody new can send you a first message. You can still write to anyone, and they can reply.',
     allowCalls: 'Allow calls',
     allowCallsBody:
       'Voice and video calls with people you chat with. Off, nobody can call you and you can’t call anyone.',

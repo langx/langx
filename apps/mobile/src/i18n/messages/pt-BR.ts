@@ -1482,6 +1482,7 @@ export const ptBR: Localized<EnMessages> = {
     notFound: 'Perfil não encontrado.',
     interests: 'Interesses',
     sendMessage: 'Enviar uma mensagem',
+    newChatsRefused: '{name} não está aceitando novas conversas no momento.',
     sendFailed: 'Não deu para enviar a mensagem.',
     blockConfirm: 'Bloquear {name}? Nenhum de vocês vai aparecer nas listas do outro.',
     blocked: '{name} foi bloqueado.',
@@ -1826,6 +1827,9 @@ export const ptBR: Localized<EnMessages> = {
     hideOnline: 'Esconder quando eu estiver on-line',
     hideOnlineBody:
       'Oculta seu ponto verde e quando você esteve aqui pela última vez. Você continua vendo o dos outros.',
+    refuseNewChats: 'Só meus contatos podem me escrever',
+    refuseNewChatsBody:
+      'Ninguém novo pode te mandar uma primeira mensagem. Você ainda pode escrever para qualquer pessoa, e ela pode responder.',
     allowCalls: 'Permitir chamadas',
     allowCallsBody:
       'Chamadas de voz e de vídeo com quem você conversa. Desativado, ninguém pode ligar para você e você não pode ligar para ninguém.',

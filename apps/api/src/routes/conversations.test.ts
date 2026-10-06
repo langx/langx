@@ -219,6 +219,119 @@ describe('Faz 4 — starting a conversation', () => {
     expect(threads).toBe(0)
   })
 
+  describe('somebody who takes no new chats', () => {
+    /**
+     * Through the real PATCH rather than the database, because the schema
+     * strips a key it does not know without a word — a switch missing from
+     * it would save nothing and still answer 200.
+     */
+    async function refusing(email: string) {
+      const user = await newUser(email)
+      const patched = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { privacy: { refuseNewChats: true } },
+      })
+      expect(patched.statusCode, patched.body).toBe(200)
+      expect(patched.json()).toMatchObject({ privacy: { refuseNewChats: true } })
+      return user
+    }
+
+    it('refuses a stranger’s first message, and spends no slot on it', async () => {
+      const stranger = await newUser('closed-stranger@example.com')
+      const closed = await refusing('closed-target@example.com')
+
+      const response = await startConversation(stranger, closed.userId)
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'NEW_CHATS_REFUSED' })
+
+      const quota = await app.inject({
+        method: 'GET',
+        url: '/me/quota',
+        headers: { cookie: stranger.cookie },
+      })
+      expect(quota.json()).toMatchObject({
+        initiations: { remaining: PLAN_LIMITS.free.initiationsPer24h },
+      })
+      const threads = await handle.db
+        .collection(COLLECTIONS.conversations)
+        .countDocuments({ participants: closed.userId })
+      expect(threads).toBe(0)
+    })
+
+    /**
+     * The switch is about strangers. Somebody already talking to them is
+     * handed their thread — the same answer as before the switch was on —
+     * and can go on writing in it.
+     */
+    it('leaves a conversation that already exists alone', async () => {
+      const friend = await newUser('closed-friend@example.com')
+      const target = await newUser('closed-later@example.com')
+      const conversationId = (await startConversation(friend, target.userId)).json<{
+        _id: string
+      }>()._id
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: target.userId }, { $set: { 'privacy.refuseNewChats': true } })
+
+      const again = await startConversation(friend, target.userId)
+      expect(again.statusCode).toBe(409)
+      expect(again.json()).toMatchObject({ code: 'CONVERSATION_EXISTS' })
+
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const sent = await sendTextMessage(handle.db, friend.userId, {
+        conversationId,
+        body: 'still here',
+      })
+      expect(sent.message.body).toBe('still here')
+    })
+
+    it('can still write to anyone, and they can answer', async () => {
+      const closed = await refusing('closed-writer@example.com')
+      const other = await newUser('closed-written-to@example.com')
+
+      const started = await startConversation(closed, other.userId)
+      expect(started.statusCode, started.body).toBe(201)
+      const conversationId = started.json<{ _id: string }>()._id
+
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const reply = await sendTextMessage(handle.db, other.userId, {
+        conversationId,
+        body: 'hi back',
+      })
+      expect(reply.message.body).toBe('hi back')
+    })
+
+    /**
+     * The one-sidedness is only safe because the person written to keeps
+     * every way out: they can open the profile and block it. A block has to
+     * work exactly as it does for anyone else.
+     */
+    it('can be opened and blocked by the person it wrote to', async () => {
+      const closed = await refusing('closed-blockable@example.com')
+      const other = await newUser('closed-blocker@example.com')
+      expect((await startConversation(closed, other.userId)).statusCode).toBe(201)
+
+      const profile = await app.inject({
+        method: 'GET',
+        url: `/profiles/${closed.handle}`,
+        headers: { cookie: other.cookie },
+      })
+      expect(profile.statusCode, profile.body).toBe(200)
+      expect(profile.json()).toMatchObject({ acceptsNewChats: false })
+      expect(profile.json<{ conversationId?: string }>().conversationId).toBeDefined()
+
+      const block = await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: other.cookie },
+        payload: { userId: closed.userId },
+      })
+      expect(block.statusCode, block.body).toBeLessThan(300)
+    })
+  })
+
   it('creates a conversation with the right shape', async () => {
     const viewer = await newUser('convo-creator@example.com')
     const recipient = await newUser('convo-recipient@example.com')

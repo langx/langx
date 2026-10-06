@@ -64,6 +64,12 @@ export default function NewChatScreen() {
    * suspension, or a link, still can.
    */
   const suspended = partner?.accountStatus === 'suspended'
+  /*
+   * The same for somebody who takes messages only from people they already
+   * talk to. Not while a conversation exists — the effect below hands that
+   * one to its thread, where writing is still open.
+   */
+  const refused = !suspended && partner?.acceptsNewChats === false && !partner.conversationId
   const [draft, setDraft] = useState('')
   /**
    * The sentence, drawn as its own bubble the moment Send is pressed, exactly
@@ -84,7 +90,7 @@ export default function NewChatScreen() {
    * are always on offer until the first send — seeded by the partner, there
    * being no conversation id to seed them by.
    */
-  const offerTopics = !suspended && !sending && partnerId !== ''
+  const offerTopics = !suspended && !refused && !sending && partnerId !== ''
 
   /*
    * A conversation these two already have makes this the wrong screen: the
@@ -191,6 +197,12 @@ export default function NewChatScreen() {
         // again swaps the composer for the line that says so.
         if (caught.code === 'RECIPIENT_SUSPENDED') {
           showToast(t('chat.suspendedOnly'))
+          void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
+          return
+        }
+        // Switched new chats off since the profile was read — same answer.
+        if (caught.code === 'NEW_CHATS_REFUSED') {
+          showToast(t('profile.newChatsRefused', { name: partner?.displayName ?? '' }))
           void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
           return
         }
@@ -309,6 +321,12 @@ export default function NewChatScreen() {
         {suspended ? (
           <View style={styles.suspendedNote}>
             <Text style={styles.suspendedNoteText}>{t('chat.suspendedOnly')}</Text>
+          </View>
+        ) : refused ? (
+          <View style={styles.suspendedNote}>
+            <Text style={styles.suspendedNoteText}>
+              {t('profile.newChatsRefused', { name: partner?.displayName ?? '' })}
+            </Text>
           </View>
         ) : (
           <ChatComposer

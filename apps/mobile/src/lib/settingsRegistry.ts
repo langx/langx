@@ -100,6 +100,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
       },
       // With the other rows about who can reach you, and how.
       {
+        id: 'privacy.refuseNewChats',
+        titleKey: 'settings.refuseNewChats',
+        bodyKey: 'settings.refuseNewChatsBody',
+      },
+      {
         id: 'privacy.allowCalls',
         titleKey: 'settings.allowCalls',
         bodyKey: 'settings.allowCallsBody',

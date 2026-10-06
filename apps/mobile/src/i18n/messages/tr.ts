@@ -1488,6 +1488,7 @@ export const tr: Localized<EnMessages> = {
     notFound: 'Profil bulunamadı.',
     interests: 'İlgi alanları',
     sendMessage: 'Mesaj gönder',
+    newChatsRefused: '{name} şu an yeni sohbetlere kapalı.',
     sendFailed: 'Mesaj gönderilemedi.',
     blockConfirm: '{name} engellensin mi? İkiniz de birbirinizin listelerinde çıkmayacaksınız.',
     blocked: '{name} engellendi.',
@@ -1829,6 +1830,9 @@ export const tr: Localized<EnMessages> = {
     hideOnline: 'Çevrimiçiyken gizlen',
     hideOnlineBody:
       'Yeşil noktanı ve en son ne zaman burada olduğunu gizler. Sen onlarınkini görmeye devam edersin.',
+    refuseNewChats: 'Sadece konuştuklarım yazabilsin',
+    refuseNewChatsBody:
+      'Yeni biri sana ilk mesajı atamaz. Sen istediğine yazabilirsin, o da sana cevap verebilir.',
     allowCalls: 'Aramalara izin ver',
     allowCallsBody:
       'Sohbet ettiğin kişilerle sesli ve görüntülü arama. Kapalıyken kimse seni arayamaz, sen de kimseyi arayamazsın.',

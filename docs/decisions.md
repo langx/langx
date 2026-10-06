@@ -6512,6 +6512,35 @@ sits in the layout above every screen, the way a phone's in-call bar does. The
 first version floated it over the top of the screen, like the message banner,
 and in a thread that put it over the name of the person on the call.
 
+## Taking no new chats closes one door, in one direction
+
+`privacy.refuseNewChats` stops anybody new from starting a conversation. It is
+for somebody who is being found and written to by people they did not choose,
+and it is free on every plan, for `refuseCalls`'s reason: a way to be left
+alone is not something to charge for.
+
+**One direction, unlike calls.** The person with the switch on can still write
+to anyone, and whoever they write to can answer, because the conversation then
+exists. `refuseCalls` cuts both ways so nobody can ring people who cannot ring
+back; here the asymmetry is the feature, and it is safe because the person
+written to keeps every way out — the thread's header still opens the profile,
+and block and report work exactly as they do for anyone else.
+
+**Conversations that already exist are untouched.** The check sits in
+`startConversation`, after the existing-conversation check, so somebody already
+in a thread is handed it rather than told the door is shut. It is the only gate
+needed: every other way of writing — the socket, scheduled messages,
+forwarding, calls — needs a conversation that exists. Official accounts'
+messages go through `deliverOfficialMessage` and are not refused; a welcome or
+a warning is not a stranger writing. Before the quota, so a refused first
+message costs no slot.
+
+**Said, not hidden.** The profile shows "isn't taking new chats right now" in
+place of the message button, rather than leaving the button out: a person with
+no way to write to them and no reason given reads as a broken screen.
+`acceptsNewChats: false` is about the account, like `acceptsCalls`, and the
+profile reads `conversationId` first.
+
 ## "Show me in Discover" off takes you off the leaderboards too
 
 A leaderboard is a place strangers find people: every row opens a profile, and
