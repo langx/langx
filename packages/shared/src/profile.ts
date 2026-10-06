@@ -425,6 +425,13 @@ export const updateProfileSchema = z
          * reason.
          */
         refuseNewChats: z.boolean(),
+        /**
+         * The switch over four of the others — discoverable, hideOnlineStatus,
+         * refuseNewChats and incognito. Off turns all four off and keeps what
+         * they were; on brings them back. The server does both, in this same
+         * request: see `hiddenModePaths` in the API.
+         */
+        hiddenMode: z.boolean(),
       })
       .partial(),
   })

@@ -1819,12 +1819,15 @@ export const tr: Localized<EnMessages> = {
     voiceCreditsEngines: 'Motorlar Kokoro-82M ve Piper, ikisi de açık kaynak.',
     legalSection: 'Hukuki',
     linkDeviceBody: 'Bir girişi onayla, nerelerde açık olduğunu gör.',
-    showInDiscover: 'Keşfet’te görün',
-    showInDiscoverBody:
-      'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne liderlik tablolarında, ne de kullanıcı adınla arayarak.',
+    hiddenMode: 'Gizli mod',
+    hiddenModeBody: 'Yeni insanlara görünmez ol. Konuştuğun kişilerle her şey aynı kalır.',
+    hideFromDiscover: 'Keşfet’ten gizlen',
+    hideFromDiscoverBody:
+      'Kimse seni bulamaz — ne Keşfet’te, ne liderlik tablolarında, ne başkalarının takipçi listelerinde, ne de kullanıcı adınla arayarak. Paylaştığın gönderiler Akış’ta kalır.',
     boost: 'Profilimi öne çıkar',
     boostBody:
       'Keşfet’in üstündeki öne çıkanlar şeridinde, dilleri benimkilerle eşleşen kişilere görün. Pro ile açık.',
+    boostHidden: 'Keşfet’ten gizliyken profilin öne çıkarılamaz.',
     incognito: 'Gizli gezin',
     incognitoBody: 'Ziyaretçilerinde görünmezsin.',
     hideOnline: 'Çevrimiçiyken gizlen',

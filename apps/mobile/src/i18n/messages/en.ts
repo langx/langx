@@ -2021,12 +2021,16 @@ export const en = {
     voiceCreditsEngines: 'The engines are Kokoro-82M and Piper, both open source.',
     legalSection: 'Legal',
     linkDeviceBody: 'Approve a sign-in, and see where you are signed in.',
-    showInDiscover: 'Show me in Discover',
-    showInDiscoverBody:
-      'Turn this off and nobody will find you — not in Discover, not on the leaderboards, and not by searching your username.',
+    hiddenMode: 'Hidden mode',
+    hiddenModeBody:
+      'Stay out of sight of new people. Everything with the people you already talk to stays the same.',
+    hideFromDiscover: 'Hide me from Discover',
+    hideFromDiscoverBody:
+      'Nobody will find you — not in Discover, not on the leaderboards, not in other people’s follower lists, and not by searching your username. Your posts stay in the Feed.',
     boost: 'Boost my profile',
     boostBody:
       'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Pro.',
+    boostHidden: 'Your profile can’t be boosted while it’s hidden from Discover.',
     incognito: 'Browse incognito',
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',

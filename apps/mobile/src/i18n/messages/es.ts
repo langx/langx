@@ -1820,12 +1820,15 @@ export const es: Localized<EnMessages> = {
     voiceCreditsEngines: 'Los motores son Kokoro-82M y Piper, ambos de código abierto.',
     legalSection: 'Legal',
     linkDeviceBody: 'Aprueba un inicio de sesión y mira dónde tienes la sesión abierta.',
-    showInDiscover: 'Mostrarme en Descubrir',
-    showInDiscoverBody:
-      'Desactívalo y nadie te encontrará: ni en Descubrir, ni en las clasificaciones, ni buscando tu nombre de usuario.',
+    hiddenMode: 'Modo oculto',
+    hiddenModeBody: 'Que la gente nueva no te vea. Con quienes ya hablas, todo sigue igual.',
+    hideFromDiscover: 'Ocultarme en Descubrir',
+    hideFromDiscoverBody:
+      'Nadie te encontrará: ni en Descubrir, ni en las clasificaciones, ni en las listas de seguidores de otras personas, ni buscando tu nombre de usuario. Tus publicaciones siguen en el Muro.',
     boost: 'Destacar mi perfil',
     boostBody:
       'Muéstrame en la franja de perfiles destacados, arriba de Descubrir, a las personas cuyos idiomas coinciden con los míos. Activo con Pro.',
+    boostHidden: 'Tu perfil no puede destacarse mientras esté oculto en Descubrir.',
     incognito: 'Navegar de incógnito',
     incognitoBody: 'No aparecerás entre sus visitas.',
     hideOnline: 'Ocultarme cuando esté en línea',

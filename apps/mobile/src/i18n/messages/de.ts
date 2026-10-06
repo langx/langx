@@ -1860,12 +1860,17 @@ export const de: Localized<EnMessages> = {
     voiceCreditsEngines: 'Die Engines sind Kokoro-82M und Piper, beide quelloffen.',
     legalSection: 'Rechtliches',
     linkDeviceBody: 'Eine Anmeldung bestätigen und sehen, wo du angemeldet bist.',
-    showInDiscover: 'In Entdecken zeigen',
-    showInDiscoverBody:
-      'Schalte das aus und niemand findet dich — weder in Entdecken noch in den Bestenlisten noch über deinen Benutzernamen.',
+    hiddenMode: 'Versteckter Modus',
+    hiddenModeBody:
+      'Bleib für neue Leute unsichtbar. Mit allen, mit denen du schon schreibst, bleibt alles wie es ist.',
+    hideFromDiscover: 'In Entdecken verbergen',
+    hideFromDiscoverBody:
+      'Niemand findet dich — weder in Entdecken noch in den Bestenlisten, in den Follower-Listen anderer oder über deinen Benutzernamen. Deine Beiträge bleiben im Feed.',
     boost: 'Mein Profil hervorheben',
     boostBody:
       'Zeig mich in der Leiste mit hervorgehobenen Profilen oben in Entdecken — Leuten, deren Sprachen zu meinen passen. Mit Pro aktiv.',
+    boostHidden:
+      'Solange dein Profil in Entdecken verborgen ist, kann es nicht hervorgehoben werden.',
     incognito: 'Inkognito surfen',
     incognitoBody: 'Du erscheinst nicht in ihren Besuchern.',
     hideOnline: 'Verbergen, wenn ich online bin',

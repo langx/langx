@@ -1816,12 +1816,15 @@ export const ptBR: Localized<EnMessages> = {
     voiceCreditsEngines: 'Os motores são Kokoro-82M e Piper, ambos de código aberto.',
     legalSection: 'Jurídico',
     linkDeviceBody: 'Aprove um login e veja onde você está conectado.',
-    showInDiscover: 'Mostrar em Descobrir',
-    showInDiscoverBody:
-      'Desligue e ninguém te encontra — nem no Descobrir, nem nos rankings, nem buscando seu nome de usuário.',
+    hiddenMode: 'Modo oculto',
+    hiddenModeBody: 'Pessoas novas deixam de te ver. Com quem você já conversa, nada muda.',
+    hideFromDiscover: 'Me esconder do Descobrir',
+    hideFromDiscoverBody:
+      'Ninguém te encontra — nem no Descobrir, nem nos rankings, nem nas listas de seguidores de outras pessoas, nem buscando seu nome de usuário. Suas publicações continuam no Feed.',
     boost: 'Destacar meu perfil',
     boostBody:
       'Mostre-me na faixa de perfis em destaque no topo de Descobrir, para quem tem idiomas compatíveis com os meus. Ativo com Pro.',
+    boostHidden: 'Seu perfil não pode ser destacado enquanto estiver escondido do Descobrir.',
     incognito: 'Navegar anonimamente',
     incognitoBody: 'Você não vai aparecer entre os visitantes.',
     hideOnline: 'Esconder quando eu estiver on-line',
