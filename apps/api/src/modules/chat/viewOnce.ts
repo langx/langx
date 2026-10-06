@@ -88,7 +88,7 @@ export async function openViewOnce(
  * The recipient took a screenshot while the file was on their screen.
  *
  * Only after an open — there is nothing to capture before one — and only the
- * first time is recorded: the sender's bubble says "Screenshot taken", which
+ * first time is recorded: the sender's bubble says "Screenshot blocked", which
  * a second one would not change. A repeat returns the message as it is, so a
  * retry after a dropped response is not an error.
  */

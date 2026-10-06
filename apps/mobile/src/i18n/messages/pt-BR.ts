@@ -77,7 +77,7 @@ export const ptBR: Localized<EnMessages> = {
     tapToReplay: 'Toque para rever',
     opened: 'Aberto',
     replayed: 'Revisto',
-    screenshotTaken: 'Captura de tela feita',
+    screenshotBlocked: 'Captura de tela bloqueada',
     sentOnce: 'Ver uma vez',
     sentReplay: 'Pode rever',
     modeOnce: 'Ver uma vez',

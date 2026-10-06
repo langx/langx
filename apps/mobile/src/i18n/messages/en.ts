@@ -114,7 +114,7 @@ export const en = {
     tapToReplay: 'Tap to replay',
     opened: 'Opened',
     replayed: 'Replayed',
-    screenshotTaken: 'Screenshot taken',
+    screenshotBlocked: 'Screenshot blocked',
     sentOnce: 'View once',
     sentReplay: 'Replay allowed',
     modeOnce: 'View once',

@@ -1,7 +1,6 @@
 import type { MessageViewOnce } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import {
-  nextSnapMode,
   pickSixteenNineSize,
   viewOnceBubbleLabel,
   viewOnceForMode,
@@ -66,7 +65,7 @@ describe('viewOnceBubbleLabel', () => {
 
   it('puts a screenshot first on the sender’s side', () => {
     const shot = photo({ opens: 1, opensLeft: 0, screenshotAt: '2026-10-05T12:00:00.000Z' })
-    expect(viewOnceBubbleLabel(shot, true).status).toBe('viewOnce.screenshotTaken')
+    expect(viewOnceBubbleLabel(shot, true).status).toBe('viewOnce.screenshotBlocked')
   })
 })
 
@@ -89,13 +88,7 @@ describe('pickSixteenNineSize', () => {
   })
 })
 
-describe('the mode pill', () => {
-  it('cycles view once → allow replay → keep in chat', () => {
-    expect(nextSnapMode('once')).toBe('replay')
-    expect(nextSnapMode('replay')).toBe('keep')
-    expect(nextSnapMode('keep')).toBe('once')
-  })
-
+describe('the send modes', () => {
   it('sends a replay flag, or nothing for an ordinary message', () => {
     expect(viewOnceForMode('once')).toEqual({ replay: false })
     expect(viewOnceForMode('replay')).toEqual({ replay: true })

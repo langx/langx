@@ -34,7 +34,6 @@ import { sendSnap } from '../../src/lib/snapOutbox'
 import { makeStyles, spacing } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import {
-  nextSnapMode,
   pickSixteenNineSize,
   SNAP_MODES,
   viewOnceForMode,
@@ -81,7 +80,8 @@ function frameFor(width: number, height: number): { width: number; height: numbe
 /**
  * The chat camera: always full screen and 16:9, like Instagram's. Tap the
  * shutter for a photo, hold it for a video. What was shot is then sent as
- * view once, allow replay, or an ordinary message — the pill on the preview.
+ * view once, allow replay, or an ordinary message — the three buttons on the
+ * preview.
  *
  * It sends nothing itself. It hands the file to the thread underneath
  * (`snapOutbox`), which already knows how to upload, retry and refuse, and
@@ -158,7 +158,7 @@ export default function SnapScreen() {
             item={captured}
             mode={mode}
             bottomInset={rounded ? 0 : insets.bottom}
-            onMode={() => setMode(nextSnapMode)}
+            onMode={setMode}
             onRetake={() => setCaptured(null)}
             onSend={send}
           />
@@ -502,7 +502,7 @@ function SnapPreview({
   item: PickedMedia
   mode: SnapMode
   bottomInset: number
-  onMode: () => void
+  onMode: (mode: SnapMode) => void
   onRetake: () => void
   onSend: () => void
 }) {
@@ -523,24 +523,38 @@ function SnapPreview({
       )}
       <TopBar onClose={onRetake} closeLabel={t('viewOnce.retake')} />
       <View style={[styles.bottom, { paddingBottom: spacing.xl + bottomInset }]}>
-        {/* One pill, tapped to cycle, as Instagram's is: three buttons side by
-            side would not fit a narrow phone in German. */}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={labels[mode]}
-          onPress={onMode}
-          style={({ pressed }) => [styles.modePill, pressed && styles.pressed]}
-        >
-          {SNAP_MODES.map((option) => (
-            <Text
-              key={option}
-              style={[styles.modeOption, option === mode && styles.modeOptionOn]}
-              numberOfLines={1}
-            >
-              {labels[option]}
-            </Text>
-          ))}
-        </Pressable>
+        {/* All three at once, tapped to pick, rather than one pill tapped to
+            cycle: cycling hid the choice behind taps nobody knew to count.
+            Equal thirds of the width, and a long label (German, French,
+            Turkish) shrinks a little and then takes a second line, so a 360pt
+            phone never pushes a button off the edge. */}
+        <View style={styles.modes}>
+          {SNAP_MODES.map((option) => {
+            const selected = option === mode
+            return (
+              <Pressable
+                key={option}
+                accessibilityRole="button"
+                accessibilityState={{ selected }}
+                onPress={() => onMode(option)}
+                style={({ pressed }) => [
+                  styles.modeOption,
+                  selected && styles.modeOptionOn,
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Text
+                  style={[styles.modeLabel, selected && styles.modeLabelOn]}
+                  numberOfLines={2}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.85}
+                >
+                  {labels[option]}
+                </Text>
+              </Pressable>
+            )
+          })}
+        </View>
         <Pressable
           accessibilityRole="button"
           onPress={onSend}
@@ -719,25 +733,26 @@ const useStyles = makeStyles(({ colors, font, radius }) => ({
   },
   pillButtonLabel: { ...font.heading, color: colors.primaryText, fontSize: 16 },
   link: { color: ON_STAGE, fontSize: 15, fontWeight: '600', padding: spacing.sm },
-  modePill: {
+  modes: {
+    alignSelf: 'stretch',
     backgroundColor: 'rgba(0, 0, 0, 0.55)',
-    borderRadius: radius.pill,
+    borderRadius: radius.lg,
     flexDirection: 'row',
     gap: 2,
-    maxWidth: '100%',
     padding: 4,
   },
   modeOption: {
-    borderRadius: radius.pill,
-    color: ON_STAGE_MUTED,
-    flexShrink: 1,
-    fontSize: 13,
-    fontWeight: '600',
-    overflow: 'hidden',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    alignItems: 'center',
+    borderRadius: radius.md,
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 40,
+    paddingHorizontal: spacing.xs,
+    paddingVertical: 6,
   },
-  modeOptionOn: { backgroundColor: ON_STAGE, color: STAGE_BG },
+  modeOptionOn: { backgroundColor: ON_STAGE },
+  modeLabel: { color: ON_STAGE_MUTED, fontSize: 13, fontWeight: '600', textAlign: 'center' },
+  modeLabelOn: { color: STAGE_BG },
   send: {
     alignItems: 'center',
     alignSelf: 'flex-end',

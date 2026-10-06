@@ -34,7 +34,9 @@ export interface ViewOnceBubbleLabel {
  * told what a tap will do; the sender is told what has been done — which is
  * the whole of what they get, since they cannot open it themselves. A
  * screenshot outranks everything on the sender's side: it is the one thing
- * they would want to know first.
+ * they would want to know first. It says "blocked", not "taken": the app
+ * blanks the screen while the file is open, so what the recipient got is
+ * black, and "taken" told the sender a copy had been made.
  */
 export function viewOnceBubbleLabel(view: MessageViewOnce, mine: boolean): ViewOnceBubbleLabel {
   const title: MessageKey = view.kind === 'video' ? 'viewOnce.video' : 'viewOnce.photo'
@@ -46,7 +48,7 @@ export function viewOnceBubbleLabel(view: MessageViewOnce, mine: boolean): ViewO
     return { title, status: 'viewOnce.opened', opens: false }
   }
 
-  if (view.screenshotAt) return { title, status: 'viewOnce.screenshotTaken', opens: false }
+  if (view.screenshotAt) return { title, status: 'viewOnce.screenshotBlocked', opens: false }
   if (view.opens >= 2) return { title, status: 'viewOnce.replayed', opens: false }
   if (view.opens === 1) return { title, status: 'viewOnce.opened', opens: false }
   return {
@@ -90,14 +92,9 @@ export function pickSixteenNineSize(sizes: readonly string[]): string | undefine
   return sixteenNine.reduce((best, entry) => (entry.long < best.long ? entry : best)).size
 }
 
-/** The three ways the preview's pill can send what was shot, in the order it cycles. */
+/** The three ways the preview can send what was shot, in the order its buttons sit. */
 export const SNAP_MODES = ['once', 'replay', 'keep'] as const
 export type SnapMode = (typeof SNAP_MODES)[number]
-
-export function nextSnapMode(mode: SnapMode): SnapMode {
-  const index = SNAP_MODES.indexOf(mode)
-  return SNAP_MODES[(index + 1) % SNAP_MODES.length] ?? 'once'
-}
 
 /** What a send carries for a mode: `null` is an ordinary photo or video. */
 export function viewOnceForMode(mode: SnapMode): { replay: boolean } | null {

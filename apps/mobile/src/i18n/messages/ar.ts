@@ -90,7 +90,7 @@ export const ar: Localized<EnMessages> = {
     tapToReplay: 'اضغط لإعادة التشغيل',
     opened: 'تم الفتح',
     replayed: 'أُعيد تشغيله',
-    screenshotTaken: 'تم التقاط لقطة شاشة',
+    screenshotBlocked: 'تم حظر لقطة الشاشة',
     sentOnce: 'عرض مرة واحدة',
     sentReplay: 'يمكن إعادة التشغيل',
     modeOnce: 'عرض مرة واحدة',
