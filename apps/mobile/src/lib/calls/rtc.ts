@@ -1,6 +1,7 @@
 import {
   mediaDevices,
   MediaStream,
+  RTCAudioSession,
   RTCPeerConnection,
   type MediaStreamTrack,
   type RTCRtpSender,
@@ -69,6 +70,12 @@ export const engine: CallEngine = {
    * first call.
    */
   supported: () => NativeModules.WebRTCModule != null,
+
+  setAudioSessionActive(active) {
+    if (Platform.OS !== 'ios') return
+    if (active) RTCAudioSession.audioSessionDidActivate()
+    else RTCAudioSession.audioSessionDidDeactivate()
+  },
 
   async acquire({ video }) {
     let stream: MediaStream

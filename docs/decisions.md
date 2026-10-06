@@ -6519,6 +6519,25 @@ calls never use, which `plugins/withCalls.js` removes from the manifest so
 Play has nothing to ask about. Its Java classes are reached by name from C++,
 so R8 keeps `livekit.org.webrtc.**`.
 
+**On a phone, the system's own call screens.** A call that comes in while
+LangX is closed rings the way a phone call does: CallKit on an iPhone, and on
+Android the call-style notification of a foreground service, full screen over
+a locked phone where the permission allows. Two things in the way of that are
+worth knowing before changing it. A tap on Android's Answer opens the app
+through `CallOpenActivity`, a windowless activity that records the tap in the
+process first, because the development client's launcher swaps the intent
+that opened the app for its own and the tap's meaning was lost on a cold
+start; and the answer is held until the call is on screen, because from a
+cold start the first look at the server comes before the session is read.
+On an iPhone the app starts React Native only when a scene connects
+(`withSceneLifecycle`), so a call answered from the lock screen of a phone
+whose app was not running rings and answers in CallKit, and connects once
+LangX is opened — the media path needs JavaScript. Starting React Native
+without a scene for that one case is the remaining piece, and it needs a real
+iPhone to prove. CallKit is not allowed in mainland China, where the app is
+offered: an iPhone on that storefront registers no PushKit token and is rung
+by an ordinary notification.
+
 **A call that is put away pushes the app down; it does not float over it.**
 The small green strip a call leaves when somebody goes to look something up
 sits in the layout above every screen, the way a phone's in-call bar does. The

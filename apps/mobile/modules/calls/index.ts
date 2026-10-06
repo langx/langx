@@ -15,6 +15,8 @@ interface CallsNative {
   startOngoing: (name: string, video: boolean) => void
   stopOngoing: () => void
   setSpeakerphone: (on: boolean) => void
+  /** iOS only: the PushKit token, or null while PushKit has not answered yet. */
+  voipRegistration?: () => VoipRegistration | null
   addListener: (
     event: 'onCallAction',
     listener: (action: CallNativeAction) => void,
@@ -22,8 +24,16 @@ interface CallsNative {
 }
 
 export interface CallNativeAction {
-  type: 'pending' | 'declined' | 'hangUp'
+  type: 'pending' | 'declined' | 'hangUp' | 'audioActivated' | 'audioDeactivated' | 'voipToken'
   callId?: string | null
+}
+
+/** What an iPhone registers so the API can ring it through Apple. */
+export interface VoipRegistration {
+  voipToken?: string
+  apnsEnvironment: 'sandbox' | 'production'
+  /** False on the Chinese storefront, where CallKit may not be used. */
+  callKit: boolean
 }
 
 const native = requireOptionalNativeModule<CallsNative>('Calls')
@@ -54,6 +64,10 @@ export function stopOngoingCall(): void {
 
 export function setSpeakerphone(on: boolean): void {
   native?.setSpeakerphone(on)
+}
+
+export function voipRegistration(): VoipRegistration | null {
+  return native?.voipRegistration?.() ?? null
 }
 
 export function onNativeCallAction(listener: (action: CallNativeAction) => void): () => void {

@@ -1,6 +1,10 @@
 {
-  "platforms": ["android"],
+  "platforms": ["android", "apple"],
   "android": {
     "modules": ["expo.modules.calls.CallsModule"]
+  },
+  "apple": {
+    "modules": ["CallsModule"],
+    "appDelegateSubscribers": ["CallsAppDelegateSubscriber"]
   }
 }
