@@ -52,6 +52,12 @@ export interface PendingMedia {
    * without the words.
    */
   body?: string
+  /**
+   * Set when it was shot to be seen once. The row then draws no picture —
+   * the sender is never shown a view-once file in the thread, uploading or
+   * not — and a retry sends it view-once again rather than as a keeper.
+   */
+  viewOnce?: { replay: boolean }
   progress: UploadProgress
   startedAt: string
 }
