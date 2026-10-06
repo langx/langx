@@ -6559,8 +6559,8 @@ row.
 
 The feed is not filtered. A post is something a person chose to publish, and
 hiding it would quietly retract what they said in public; the switch's copy
-names Discover, the leaderboards, follower lists and username search, and
-nothing else.
+names Discover, the leaderboards, follower and like lists and username
+search, and nothing else.
 
 **Follower and following lists too**, for the same reason as the boards: they
 are where people browse from one profile to the next. Left out of anybody
@@ -6569,6 +6569,12 @@ the block's reason — a number bigger than the rows under it says somebody is
 missing. Never out of the list's owner's own view, though: they chose to follow
 that person or were told they followed, and somebody you follow but cannot see
 in your own list is somebody you cannot unfollow.
+
+**And who liked a post**, for the same reason and with the same exceptions:
+the author of what was liked still sees everyone — they were told who liked it
+— and the person sees themselves. The like count on the card is left as it is,
+for the reason `listLikers` already gives for blocks: likers are many and the
+count is unattributable, so nobody can tell which name is missing.
 
 ## Hidden mode is a gate over four switches
 

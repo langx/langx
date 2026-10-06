@@ -1865,7 +1865,7 @@ export const de: Localized<EnMessages> = {
       'Bleib für neue Leute unsichtbar. Mit allen, mit denen du schon schreibst, bleibt alles wie es ist.',
     hideFromDiscover: 'In Entdecken verbergen',
     hideFromDiscoverBody:
-      'Niemand findet dich — weder in Entdecken noch in den Bestenlisten, in den Follower-Listen anderer oder über deinen Benutzernamen. Deine Beiträge bleiben im Feed.',
+      'Niemand findet dich — weder in Entdecken noch in den Bestenlisten, in den Follower- oder Like-Listen anderer oder über deinen Benutzernamen. Deine Beiträge bleiben im Feed.',
     boost: 'Mein Profil hervorheben',
     boostBody:
       'Zeig mich in der Leiste mit hervorgehobenen Profilen oben in Entdecken — Leuten, deren Sprachen zu meinen passen. Mit Pro aktiv.',

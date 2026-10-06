@@ -254,7 +254,7 @@ export async function listLikers(
   userId: string,
   query: ListLikersQuery,
 ): Promise<LikersPage> {
-  const { _id, targetType } = await resolveTargetForRead(db, userId, query)
+  const { _id, targetType, mine } = await resolveTargetForRead(db, userId, query)
   const hidden = await blockedUserIds(db, userId)
 
   const filter: Document = { targetType, targetId: _id }
@@ -277,14 +277,26 @@ export async function listLikers(
 
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .find({ _id: { $in: rows.map((row) => row.userId) }, deletedAt: { $exists: false } })
+    .find({
+      _id: { $in: rows.map((row) => row.userId) },
+      deletedAt: { $exists: false },
+      /*
+       * Somebody with "hide me from Discover" on is left out of anybody else's
+       * view of the list, as in follower lists: a likers list is somewhere
+       * people browse from one profile to the next. Never out of the author's
+       * view — they were told who liked it — nor out of their own. The count
+       * on the card stays as it is, for the reason above.
+       */
+      ...(mine ? {} : { $or: [{ 'settings.discoverable': true }, { _id: userId }] }),
+    })
     .toArray()
   const byId = new Map(profiles.map((profile) => [profile._id, profile]))
 
-  // A row whose profile is gone is dropped rather than rendered as "Deleted
-  // account": a feed post outlives its author because the sentence is the
-  // point, but a name in a list of names is only the name. The page can
-  // therefore come back shorter than `limit`, exactly as `getViewers` does.
+  // A row whose profile is gone, or is hidden from this reader, is dropped
+  // rather than rendered as "Deleted account": a feed post outlives its author
+  // because the sentence is the point, but a name in a list of names is only
+  // the name. The page can therefore come back shorter than `limit`, exactly
+  // as `getViewers` does.
   const items = rows.flatMap((row) => {
     const profile = byId.get(row.userId)
     if (!profile) return []
@@ -312,12 +324,14 @@ async function resolveTargetForRead(
   db: Db,
   userId: string,
   target: LikeTarget,
-): Promise<{ _id: ObjectId; targetType: LikeTargetType }> {
+): Promise<{ _id: ObjectId; targetType: LikeTargetType; mine: boolean }> {
   try {
-    return await resolveTarget(db, userId, target)
+    return { ...(await resolveTarget(db, userId, target)), mine: false }
   } catch (error) {
+    // The self-check is the only thing that refuses with this code, so it is
+    // also how this learns the reader wrote the thing being read about.
     if (error instanceof ApiError && error.code === ERROR_CODES.VALIDATION_FAILED) {
-      return { _id: new ObjectId(target.targetId), targetType: target.targetType }
+      return { _id: new ObjectId(target.targetId), targetType: target.targetType, mine: true }
     }
     throw error
   }
