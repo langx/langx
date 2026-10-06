@@ -335,7 +335,11 @@ const useStyles = makeStyles(({ radius }) => ({
   trackFill: { backgroundColor: ON_STAGE, height: 3 },
   // `flex` rather than `absoluteFill`: on the web the player's element keeps
   // the clip's own size inside an absolute box and runs off the screen.
-  video: { flex: 1, width: '100%' },
+  // `minHeight: 0` because the element is a bare `<video>`, not a View, so it
+  // misses the zero minimum react-native-web gives its own boxes. A flex item's
+  // default minimum is its content, so a portrait clip on a landscape screen
+  // grew to the width times 16/9 and showed only its middle, looking zoomed.
+  video: { flex: 1, minHeight: 0, width: '100%' },
   playCentre: {
     alignItems: 'center',
     bottom: 0,
