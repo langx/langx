@@ -1824,7 +1824,7 @@ export const es: Localized<EnMessages> = {
     hiddenModeBody: 'Que la gente nueva no te vea. Con quienes ya hablas, todo sigue igual.',
     hideFromDiscover: 'Ocultarme en Descubrir',
     hideFromDiscoverBody:
-      'Nadie te encontrará: ni en Descubrir, ni en las clasificaciones, ni en las listas de seguidores de otras personas, ni buscando tu nombre de usuario. Tus publicaciones siguen en el Muro.',
+      'Nadie te encontrará: ni en Descubrir, ni en las clasificaciones, ni en las listas de seguidores o de «me gusta» de otras personas, ni buscando tu nombre de usuario. Tus publicaciones siguen en el Muro.',
     boost: 'Destacar mi perfil',
     boostBody:
       'Muéstrame en la franja de perfiles destacados, arriba de Descubrir, a las personas cuyos idiomas coinciden con los míos. Activo con Pro.',

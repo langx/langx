@@ -1823,7 +1823,7 @@ export const tr: Localized<EnMessages> = {
     hiddenModeBody: 'Yeni insanlara görünmez ol. Konuştuğun kişilerle her şey aynı kalır.',
     hideFromDiscover: 'Keşfet’ten gizlen',
     hideFromDiscoverBody:
-      'Kimse seni bulamaz — ne Keşfet’te, ne liderlik tablolarında, ne başkalarının takipçi listelerinde, ne de kullanıcı adınla arayarak. Paylaştığın gönderiler Akış’ta kalır.',
+      'Kimse seni bulamaz — ne Keşfet’te, ne liderlik tablolarında, ne başkalarının takipçi ve beğenen listelerinde, ne de kullanıcı adınla arayarak. Paylaştığın gönderiler Akış’ta kalır.',
     boost: 'Profilimi öne çıkar',
     boostBody:
       'Keşfet’in üstündeki öne çıkanlar şeridinde, dilleri benimkilerle eşleşen kişilere görün. Pro ile açık.',
