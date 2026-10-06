@@ -130,8 +130,6 @@ export const tr: Localized<EnMessages> = {
     chatsSwipe: 'Bir sohbeti yana kaydırıp sabitleyebilir veya arşivleyebilirsin.',
     chatsPin: 'Sık döndüğün sohbetleri sabitle, en üstte kalsınlar.',
     chatsUnreplied: 'Yanıtlanmayan sekmesi, hâlâ senden cevap bekleyenler.',
-    discoverRadius:
-      'Yakında en yakından başlayıp dışa doğru gider. Sınırlamak için filtrelerden bir yarıçap seç.',
     discoverSearch: 'Belirli birini mi arıyorsun? Kullanıcı adıyla ara.',
     feedCorrect: 'Bir cümleyi düzeltmek bir dakikanı alır ve burada yapabileceğin en faydalı şey.',
     feedPronounce:

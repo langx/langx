@@ -57,7 +57,6 @@ export const TIP_SLOTS = {
   ],
   discover: [
     'discoverFilters',
-    'discoverRadius',
     'discoverSearch',
     'discoverActive',
     'discoverFollow',

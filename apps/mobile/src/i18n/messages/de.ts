@@ -117,8 +117,6 @@ export const de: Localized<EnMessages> = {
     chatsSwipe: 'Wische einen Chat zur Seite, um ihn anzuheften oder zu archivieren.',
     chatsPin: 'Hefte die Chats an, zu denen du zurückkommst — sie bleiben oben.',
     chatsUnreplied: 'Der Tab Unbeantwortet sind alle, die noch auf dich warten.',
-    discoverRadius:
-      '„In der Nähe“ geht vom Nächsten nach außen. Setz in den Filtern einen Radius, um es zu begrenzen.',
     discoverSearch: 'Suchst du jemand Bestimmten? Such nach dem Namen.',
     feedCorrect: 'Einen Satz zu korrigieren dauert einen Moment und ist das Nützlichste hier.',
     feedPronounce:

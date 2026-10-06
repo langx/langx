@@ -115,8 +115,6 @@ export const ptBR: Localized<EnMessages> = {
     chatsSwipe: 'Arraste uma conversa para o lado para fixá-la ou arquivá-la.',
     chatsPin: 'Fixe as conversas às quais você volta e elas ficam no topo.',
     chatsUnreplied: 'A aba Sem resposta são todos que ainda esperam por você.',
-    discoverRadius:
-      '“Por perto” vai do mais próximo para fora. Defina um raio nos filtros para limitar.',
     discoverSearch: 'Procurando alguém específico? Busque pelo nome de usuário.',
     feedCorrect: 'Corrigir uma frase leva um instante e é a coisa mais útil que você faz aqui.',
     feedPronounce:
