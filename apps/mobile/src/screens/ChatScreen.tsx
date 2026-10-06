@@ -2487,6 +2487,54 @@ export function ChatScreen({
   }, [])
 
   /**
+   * The last six of the bubble's handlers, stabilised for the same reason.
+   *
+   * Four were inline arrows and two were passed by name, so every bubble's
+   * props were still unequal on every render: a message arriving, a page of
+   * history landing or the typing dots appearing re-rendered every row on
+   * screen, on the JS thread that also has to keep up with the scroll.
+   */
+  const bubbleActionsRef = useRef({
+    answerAsk,
+    respondMeeting,
+    answerQuiz,
+    answerPoll,
+    cardAction,
+    addToCalendar,
+  })
+  useEffect(() => {
+    bubbleActionsRef.current = {
+      answerAsk,
+      respondMeeting,
+      answerQuiz,
+      answerPoll,
+      cardAction,
+      addToCalendar,
+    }
+  })
+  const onAnswerAsk = useCallback((message: MessageDto, ask: MessageAsk) => {
+    bubbleActionsRef.current.answerAsk(message, ask)
+  }, [])
+  const onRespondMeeting = useCallback(
+    (message: MessageDto, status: 'accepted' | 'declined' | 'cancelled') => {
+      void bubbleActionsRef.current.respondMeeting(message, status)
+    },
+    [],
+  )
+  const onAnswerQuiz = useCallback((message: MessageDto, index: number) => {
+    void bubbleActionsRef.current.answerQuiz(message, index)
+  }, [])
+  const onAnswerPoll = useCallback((message: MessageDto, optionId: string) => {
+    void bubbleActionsRef.current.answerPoll(message, optionId)
+  }, [])
+  const onCardAction = useCallback((message: MessageDto) => {
+    bubbleActionsRef.current.cardAction(message)
+  }, [])
+  const onAddToCalendar = useCallback((message: MessageDto) => {
+    void bubbleActionsRef.current.addToCalendar(message)
+  }, [])
+
+  /**
    * Places a call from this thread.
    *
    * The two refusals that come back here are the ones that happen before
@@ -2916,6 +2964,29 @@ export function ChatScreen({
                  */
                 inverted
                 /**
+                 * Holds the reader's place while they are up in the history.
+                 *
+                 * `inverted` leaves one case open. Everything new arrives at
+                 * index 0, under the reader — a message, the typing dots, a photo
+                 * learning its height — and scrolled up, each of those moved the
+                 * thread. A message did worse than move it by its own height:
+                 * VirtualizedList keeps each row's measurement with the index it
+                 * was taken at, so one row added at 0 voided the measurement of
+                 * every row it had unmounted, and the average-height guesses it
+                 * fell back on threw the thread hundreds of points at a time, and
+                 * blanked it for a few frames, for as long as the reader went on
+                 * scrolling.
+                 *
+                 * This pins the first row on screen natively, and VirtualizedList
+                 * moves its render window along with it. Only while away: at the
+                 * bottom a new message has to push the thread up into view, which
+                 * the inverted list already does, and pinned there it would
+                 * arrive out of sight. React Native Web has no such prop.
+                 */
+                maintainVisibleContentPosition={
+                  awayFrom !== null ? { minIndexForVisible: 0 } : undefined
+                }
+                /**
                  * "End" is the end of the data, and inverted that is the oldest
                  * message — so the same prop that means "load more" everywhere else
                  * in the app means "load older" here. It also sidesteps
@@ -3098,12 +3169,12 @@ export function ChatScreen({
                         : {})}
                       highlighted={highlighted === row.message._id}
                       askAnswered={answeredAsks.has(row.message._id)}
-                      onAnswerAsk={answerAsk}
-                      onRespondMeeting={(message, status) => void respondMeeting(message, status)}
-                      onAnswerQuiz={(message, index) => void answerQuiz(message, index)}
-                      onAnswerPoll={(message, optionId) => void answerPoll(message, optionId)}
-                      onCardAction={cardAction}
-                      onAddToCalendar={(message) => void addToCalendar(message)}
+                      onAnswerAsk={onAnswerAsk}
+                      onRespondMeeting={onRespondMeeting}
+                      onAnswerQuiz={onAnswerQuiz}
+                      onAnswerPoll={onAnswerPoll}
+                      onCardAction={onCardAction}
+                      onAddToCalendar={onAddToCalendar}
                       meetingWhen={meetingWhenFor(row.message)}
                       meetingLength={meetingLengthFor(row.message)}
                       meetingTheirWhen={meetingTheirWhenFor(row.message)}
