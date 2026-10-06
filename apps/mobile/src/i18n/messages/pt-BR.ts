@@ -101,6 +101,7 @@ export const ptBR: Localized<EnMessages> = {
     cameraUnavailable:
       'A câmera não está disponível aqui. Escolha uma foto ou um vídeo da sua galeria.',
     captureFailed: 'Não foi possível capturar. Tente de novo.',
+    playFailed: 'Este vídeo não pode ser reproduzido neste dispositivo.',
   },
   tips: {
     composerCorrect: 'Segure para corrigir',

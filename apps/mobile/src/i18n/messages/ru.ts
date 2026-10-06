@@ -110,6 +110,7 @@ export const ru: Localized<EnMessages> = {
     microphonePermission: 'LangX нужен микрофон, чтобы записать видео со звуком.',
     cameraUnavailable: 'Камера здесь недоступна. Выберите фото или видео из галереи.',
     captureFailed: 'Не удалось снять. Попробуйте ещё раз.',
+    playFailed: 'Это видео нельзя воспроизвести на этом устройстве.',
   },
   tips: {
     composerCorrect: 'Удерживайте, чтобы исправить',

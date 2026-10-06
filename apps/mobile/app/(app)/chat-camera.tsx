@@ -13,6 +13,7 @@ import { useVideoPlayer, VideoView } from 'expo-video'
 import { useEffect, useRef, useState } from 'react'
 import {
   ActivityIndicator,
+  AppState,
   Linking,
   Platform,
   Pressable,
@@ -189,7 +190,7 @@ function SnapCamera({
 }) {
   const t = useT()
   const styles = useStyles()
-  const [permission, requestPermission] = useCameraPermissions()
+  const [permission, requestPermission, getPermission] = useCameraPermissions()
   const [microphone, requestMicrophone] = useMicrophonePermissions()
   const camera = useRef<CameraView>(null)
   const [facing, setFacing] = useState<CameraType>('back')
@@ -226,6 +227,19 @@ function SnapCamera({
     return () => clearTimeout(timer)
     // `record` is re-made each render and reads only refs; the mode is the trigger.
   }, [cameraMode])
+
+  /*
+   * Read again whenever the app comes back to the front. Two ways the answer
+   * changes behind the hook's back: the system's own permission sheet, after
+   * which Android was seen keeping the old "denied" until the next tap, and a
+   * trip to Settings from the button below.
+   */
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') void getPermission()
+    })
+    return () => subscription.remove()
+  }, [getPermission])
 
   // A timer left running when the screen goes would fire into an unmounted camera.
   useEffect(
@@ -366,7 +380,7 @@ function SnapCamera({
           accessibilityRole="button"
           onPress={() => {
             if (permission.canAskAgain === false) void Linking.openSettings()
-            else void requestPermission()
+            else void requestPermission().then(() => getPermission())
           }}
           style={({ pressed }) => [styles.pillButton, pressed && styles.pressed]}
         >
@@ -548,7 +562,8 @@ function PreviewVideo({ uri }: { uri: string }) {
   return (
     <VideoView
       player={player}
-      style={StyleSheet.absoluteFill}
+      // Sized, not `absoluteFill`: see the viewer's note on the web player.
+      style={{ height: '100%', width: '100%' }}
       contentFit="contain"
       nativeControls={false}
     />

@@ -113,6 +113,7 @@ export const ar: Localized<EnMessages> = {
     microphonePermission: 'يحتاج LangX إلى الميكروفون لتسجيل فيديو بالصوت.',
     cameraUnavailable: 'الكاميرا غير متاحة هنا. اختر صورة أو فيديو من مكتبتك بدلًا من ذلك.',
     captureFailed: 'تعذر الالتقاط. حاول مرة أخرى.',
+    playFailed: 'لا يمكن تشغيل هذا الفيديو على هذا الجهاز.',
   },
   tips: {
     composerCorrect: 'اضغط مطوّلًا للتصحيح',

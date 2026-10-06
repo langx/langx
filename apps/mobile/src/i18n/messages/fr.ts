@@ -101,6 +101,7 @@ export const fr: Localized<EnMessages> = {
     cameraUnavailable:
       'L’appareil photo n’est pas disponible ici. Choisis plutôt une photo ou une vidéo dans ta galerie.',
     captureFailed: 'Impossible de prendre ça. Réessaie.',
+    playFailed: 'Cette vidéo ne peut pas être lue sur cet appareil.',
   },
   tips: {
     composerCorrect: 'Appui long pour corriger',

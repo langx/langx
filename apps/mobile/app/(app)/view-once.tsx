@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
-import { useEventListener } from 'expo'
+import { useEvent, useEventListener } from 'expo'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
@@ -29,6 +29,8 @@ const STAGE_BG = '#000000'
 const ON_STAGE = '#ffffff'
 const SCRIM = 'rgba(0, 0, 0, 0.35)'
 const TRACK = 'rgba(255, 255, 255, 0.3)'
+/** How long a clip may take to start before the viewer gives up on it. */
+const STALL_MS = 15_000
 
 /**
  * One open of a view-once photo or video.
@@ -127,7 +129,16 @@ export default function ViewOnceScreen() {
           <ActivityIndicator color={ON_STAGE} />
         </View>
       ) : media.contentType.startsWith('video/') ? (
-        <OnceVideo url={media.url} onEnd={close} topInset={insets.top} />
+        <OnceVideo
+          url={media.url}
+          onEnd={close}
+          onFail={() => {
+            // Not "try again": the open is spent, and there is nothing to retry.
+            showToast(t('viewOnce.playFailed'))
+            close()
+          }}
+          topInset={insets.top}
+        />
       ) : (
         // A tap anywhere is done looking, as it is on Instagram.
         <Pressable
@@ -173,8 +184,20 @@ export default function ViewOnceScreen() {
  * bubble's to offer, not the player's. No controls: scrubbing back would be
  * a replay by another name.
  */
-function OnceVideo({ url, onEnd, topInset }: { url: string; onEnd: () => void; topInset: number }) {
+function OnceVideo({
+  url,
+  onEnd,
+  onFail,
+  topInset,
+}: {
+  url: string
+  onEnd: () => void
+  /** The player gave up on the file — a codec the phone cannot decode, a dropped download. */
+  onFail: () => void
+  topInset: number
+}) {
   const styles = useStyles()
+  const t = useT()
   const [progress, setProgress] = useState(0)
   const player = useVideoPlayer(url, (instance) => {
     instance.loop = false
@@ -182,6 +205,42 @@ function OnceVideo({ url, onEnd, topInset }: { url: string; onEnd: () => void; t
     instance.play()
   })
   useEventListener(player, 'playToEnd', onEnd)
+  /*
+   * Said and closed rather than left on a play button that can never play:
+   * the open is already spent, and a black screen reads as the app hanging.
+   * Read as state rather than caught as an event, because the failure can
+   * land before a listener is attached — an iPhone refuses a file whose sound
+   * it cannot decode while the asset is still being inspected.
+   */
+  const { status } = useEvent(player, 'statusChange', { status: player.status })
+  const failed = useRef(false)
+  // The latest handler, so a re-render does not restart the stall timer below.
+  const fail = useRef(onFail)
+  fail.current = onFail
+  useEffect(() => {
+    if (status !== 'error' || failed.current) return
+    failed.current = true
+    fail.current()
+  }, [status])
+  /*
+   * And a clip that never moves. An iPhone given a file whose sound it cannot
+   * decode — AMR, which some Android encoder profiles choose — reports no
+   * error status at all: the player says it is playing, AVKit draws its own
+   * crossed-out play symbol, and the clock stays at zero. So this watches the
+   * clock, not the flag. A phone gets a playable clip moving within moments
+   * of the address arriving; one still at zero by now is not going to move.
+   * Not on the web, where waiting for the viewer's tap is the normal state.
+   */
+  const { isPlaying: started } = useEvent(player, 'playingChange', { isPlaying: player.playing })
+  useEffect(() => {
+    if (Platform.OS === 'web' || progress > 0) return
+    const timer = setTimeout(() => {
+      if (failed.current) return
+      failed.current = true
+      fail.current()
+    }, STALL_MS)
+    return () => clearTimeout(timer)
+  }, [progress])
   useEventListener(player, 'timeUpdate', ({ currentTime }) => {
     if (player.duration > 0) setProgress(Math.min(1, currentTime / player.duration))
   })
@@ -190,7 +249,7 @@ function OnceVideo({ url, onEnd, topInset }: { url: string; onEnd: () => void; t
     <>
       <VideoView
         player={player}
-        style={StyleSheet.absoluteFill}
+        style={styles.video}
         contentFit="contain"
         nativeControls={false}
         allowsVideoFrameAnalysis={false}
@@ -199,6 +258,24 @@ function OnceVideo({ url, onEnd, topInset }: { url: string; onEnd: () => void; t
       <View style={[styles.track, { top: topInset + 6 }]}>
         <View style={[styles.trackFill, { width: `${progress * 100}%` }]} />
       </View>
+      {/*
+        A browser will not start a clip with sound by itself: the tap that
+        opened this screen was spent on the open, before the file arrived. So
+        on the web a clip that has not started waits for one more tap, which
+        also lets its sound through. A phone starts it at once.
+      */}
+      {!started && progress === 0 ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('media.playVideo')}
+          onPress={() => player.play()}
+          style={styles.playCentre}
+        >
+          <View style={styles.playButton}>
+            <Feather name="play" size={30} color={ON_STAGE} />
+          </View>
+        </Pressable>
+      ) : null}
     </>
   )
 }
@@ -256,4 +333,24 @@ const useStyles = makeStyles(({ radius }) => ({
     right: spacing.lg,
   },
   trackFill: { backgroundColor: ON_STAGE, height: 3 },
+  // `flex` rather than `absoluteFill`: on the web the player's element keeps
+  // the clip's own size inside an absolute box and runs off the screen.
+  video: { flex: 1, width: '100%' },
+  playCentre: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  playButton: {
+    alignItems: 'center',
+    backgroundColor: SCRIM,
+    borderRadius: radius.pill,
+    height: 72,
+    justifyContent: 'center',
+    width: 72,
+  },
 }))

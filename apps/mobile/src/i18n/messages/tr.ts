@@ -116,6 +116,7 @@ export const tr: Localized<EnMessages> = {
     cameraUnavailable:
       'Kamera burada kullanılamıyor. Bunun yerine galeriden bir fotoğraf ya da video seç.',
     captureFailed: 'Çekilemedi. Tekrar dene.',
+    playFailed: 'Bu video bu cihazda oynatılamıyor.',
   },
   tips: {
     composerCorrect: 'Düzeltmek için mesaja basılı tut',

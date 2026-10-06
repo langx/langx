@@ -101,6 +101,7 @@ export const de: Localized<EnMessages> = {
     cameraUnavailable:
       'Die Kamera ist hier nicht verfügbar. Wähle stattdessen ein Foto oder Video aus deiner Mediathek.',
     captureFailed: 'Das hat nicht geklappt. Versuch es noch einmal.',
+    playFailed: 'Dieses Video kann auf diesem Gerät nicht abgespielt werden.',
   },
   tips: {
     composerCorrect: 'Gedrückt halten zum Korrigieren',

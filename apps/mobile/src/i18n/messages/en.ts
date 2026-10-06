@@ -138,6 +138,7 @@ export const en = {
     cameraUnavailable:
       'The camera isn’t available here. Choose a photo or video from your library instead.',
     captureFailed: 'Couldn’t take that. Try again.',
+    playFailed: 'This video can’t be played on this device.',
   },
   tips: {
     composerCorrect: 'Hold a message to correct it',
