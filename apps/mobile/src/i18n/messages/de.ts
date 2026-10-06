@@ -108,7 +108,8 @@ export const de: Localized<EnMessages> = {
     composerReply: 'Wischen, um zu antworten',
     composerStar: 'Gedrückt halten zum Markieren oder Übersetzen',
     composerVoice: 'Mikrofon antippen, anhören, senden',
-    chatStar: 'Halte eine Nachricht gedrückt und wähle Markieren, um sie wiederzufinden.',
+    chatStar:
+      'Halte eine Nachricht gedrückt, tippe auf Mehr… und dann auf Markieren, um sie wiederzufinden.',
     chatTranslate:
       'Halte eine Nachricht gedrückt, um sie zu übersetzen, ohne das Gespräch zu verlassen.',
     chatVoice:
@@ -154,6 +155,43 @@ export const de: Localized<EnMessages> = {
       'Schreib unter Alle Karten eine eigene Karte. Lass die Bedeutung leer und sie wird für dich übersetzt.',
     echoRecord:
       'Öffne eine Karte, um ein Bild hinzuzufügen oder sie mit deiner eigenen Stimme aufzunehmen.',
+    chatDoubleTap:
+      'Tippe zweimal auf eine Nachricht, um ein ❤️ zu schicken. Noch einmal zweimal tippen nimmt es zurück.',
+    chatWords:
+      'Halte eine empfangene Nachricht gedrückt, tippe auf Mehr… und dann auf Wörter, um jedes Wort nachzuschlagen.',
+    chatReplyPart:
+      'Lange Nachricht? Halte sie gedrückt, tippe auf Mehr… und dann auf Auf einen Teil antworten.',
+    chatPin:
+      'Halte eine Nachricht gedrückt, tippe auf Mehr… und dann auf Anheften. Sie bleibt oben im Chat.',
+    chatPhrase:
+      'Halte eine empfangene Nachricht gedrückt, tippe auf Mehr… und dann auf Als Wendung speichern. Deine Wendungen findest du oben unter ⋯.',
+    chatSchedule: 'Halte den Senden-Knopf gedrückt, um eine Nachricht später zu senden.',
+    chatFormat:
+      'Schreib ||so etwas||, und die Wörter bleiben verdeckt, bis man sie antippt — ideal für Quizantworten.',
+    chatPlaybackSpeed: 'Tippe neben einer Sprachnachricht auf 1×, um sie halb so schnell zu hören.',
+    chatThreadMenu:
+      'Das ⋯ oben im Chat enthält die Suche, deine gespeicherten Wendungen und alle Fotos und Sprachnachrichten.',
+    chatEdit:
+      'Vertippt? Halte deine Nachricht gedrückt, tippe auf Mehr… und dann auf Bearbeiten. Das geht zwei Tage lang.',
+    composerSchedule: 'Senden halten, um später zu senden',
+    composerDoubleTap: 'Zweimal tippen für ein ❤️',
+    chatsHold:
+      'Halte einen Chat gedrückt oder tippe auf sein ⋯, um ihn anzuheften, zu archivieren, stummzuschalten oder zu löschen.',
+    chatsArchived: 'Archivierte Chats warten im Tab Archiv und zählen nicht zu deinen ungelesenen.',
+    discoverBoosted:
+      'Was hat es mit der Reihe Hervorgehoben auf sich? Tippe daneben auf Was ist das?',
+    discoverFollow:
+      'Öffne ein Profil und tippe auf Folgen, dann erscheinen die Beiträge dieser Person in deinem Feed.',
+    feedLikedBy: 'Tippe auf die Zahl der Likes, um zu sehen, wem ein Beitrag gefällt.',
+    feedCommentReply:
+      'In den Kommentaren kannst du einer Person direkt antworten. Halte einen Kommentar gedrückt für mehr.',
+    feedReport: 'Stimmt mit einem Beitrag etwas nicht? Halte ihn gedrückt, um ihn zu melden.',
+    echoPacks: 'Unter Pakete findest du fertige Wörter für die Sprache, die du lernst.',
+    echoLeaderboard: 'Die Bestenliste zeigt, wer die meisten Karten beantwortet hat.',
+    echoPostToFeed:
+      'Unsicher, wie eine Karte klingt? Öffne sie und wähle Im Feed posten — vielleicht spricht sie jemand für dich ein.',
+    echoSelect:
+      'Unter Alle Karten kannst du suchen oder mit Karten auswählen mehrere auf einmal bearbeiten.',
     feedMoment:
       'Teile ein Foto, ein Video oder einen Satz aus deinem Tag — eine Frage ist nicht nötig.',
   },
@@ -1210,32 +1248,64 @@ export const de: Localized<EnMessages> = {
       favoriteSeason: 'Welche Jahreszeit magst du bei dir am liebsten?',
       hometown: 'Wie ist es in deiner Heimatstadt?',
       perfectDay: 'Wie sähe für dich ein perfekter Tag aus?',
+      morningOrNight: 'Bist du eher Frühaufsteher oder Nachteule?',
+      weatherToday: 'Wie ist das Wetter heute bei dir?',
+      neighborhood: 'Was gefällt dir am meisten an dem Ort, an dem du gerade wohnst?',
+      smallJoy: 'Welche Kleinigkeit hat dich diese Woche glücklich gemacht?',
       dreamTrip: 'Wenn du morgen überallhin reisen könntest – wohin würdest du fahren?',
       bestPlaceVisited: 'Was ist der schönste Ort, an dem du je warst?',
       visitorMustSee: 'Was sollte man in deiner Stadt auf keinen Fall verpassen?',
       travelSurprise: 'Was hat dich auf einer Reise ins Ausland am meisten überrascht?',
+      nextTrip: 'Gibt es eine Reise, auf die du dich freust?',
+      travelStyle: 'Lieber Städte, Strände oder Berge?',
+      souvenir: 'Was ist das Schönste, das du von einer Reise mitgebracht hast?',
       comfortFood: 'Was isst du am liebsten nach einem langen Tag?',
       dishToTry: 'Welches Gericht aus deinem Land sollte ich als Erstes probieren?',
       breakfast: 'Wie sieht ein typisches Frühstück bei euch aus?',
       streetFood: 'Was ist dein liebstes Streetfood?',
+      signatureDish: 'Gibt es ein Gericht, das du richtig gut kochst?',
+      coffeeOrTea: 'Kaffee oder Tee — und wie trinkst du ihn?',
+      foreignFood: 'Welches Essen aus einem anderen Land liebst du?',
       favoriteCelebration: 'Welches Fest im Jahr magst du am liebsten, und wie verbringst du es?',
       localCustom: 'Gibt es bei euch einen Brauch, der Besucher überrascht?',
       childhoodGame: 'Welches Spiel hast du als Kind am meisten gespielt?',
       favoriteSong: 'Welches Lied in deiner Sprache sollte ich mir anhören?',
       greetings: 'Wie begrüßt man sich bei euch normalerweise?',
+      holidayFood: 'Was isst man bei dir an Feiertagen?',
+      popularSport: 'Welchen Sport verfolgen die Leute bei dir am meisten?',
+      childhoodShow: 'Mit welcher Zeichentrickserie oder Sendung bist du aufgewachsen?',
+      musicLately: 'Was hörst du in letzter Zeit?',
       untranslatableWord: 'Welches Wort in deiner Sprache lässt sich nicht übersetzen?',
       whyLearning: 'Wie bist du dazu gekommen, eine neue Sprache zu lernen?',
       hardestPart: 'Was fällt dir beim Sprachenlernen am schwersten?',
       favoriteWord: 'Was ist dein Lieblingswort in deiner Muttersprache?',
       funnyMistake: 'Was war dein lustigster Fehler in einer Fremdsprache?',
       localSaying: 'Gibt es ein Sprichwort in deiner Sprache, das du besonders magst?',
+      firstPhrase: 'Was war der erste Satz, den du in einer neuen Sprache gelernt hast?',
+      practiceMethod: 'Wie übst du eine Sprache außerhalb von Gesprächen?',
+      hardestSound: 'Welcher Laut fällt dir beim Aussprechen am schwersten?',
+      slang: 'Welches Slangwort benutzen Leute in deinem Alter ständig?',
+      tongueTwister: 'Kennst du einen Zungenbrecher in deiner Sprache?',
+      everydayWord: 'Kannst du mir ein Wort beibringen, das du jeden Tag benutzt?',
       freeTime: 'Was machst du gern in deiner Freizeit?',
       recentBook: 'Welches Buch hat dir zuletzt richtig gut gefallen?',
       filmToRecommend: 'Welchen Film oder welche Serie würdest du mir empfehlen?',
       newSkill: 'Gibt es etwas, das du dieses Jahr lernen möchtest?',
+      sportsYouPlay: 'Machst du selbst Sport oder schaust du nur zu?',
+      games: 'Spielst du gern — Videospiele, Brettspiele oder Karten?',
+      makeThings: 'Machst du gern selbst etwas — zeichnen, Musik, basteln?',
+      channelToRecommend: 'Gibt es einen Podcast oder Kanal, den du empfehlen würdest?',
+      pets: 'Hast du ein Haustier, oder hättest du gern eins?',
       whatYouDo: 'Was machst du beruflich, oder was studierst du?',
       dreamJob: 'Wenn du jeden Job haben könntest – welcher wäre es?',
       learnedRecently: 'Was hast du in letzter Zeit Interessantes gelernt?',
+      favoriteSubject: 'Was war dein Lieblingsfach in der Schule?',
+      focusTips: 'Was hilft dir, dich zu konzentrieren, wenn viel zu tun ist?',
+      superpower: 'Wenn du eine Superkraft haben könntest, welche wäre es?',
+      overnightLanguage:
+        'Wenn du über Nacht eine weitere Sprache perfekt sprechen könntest, welche wäre es?',
+      timeTravel:
+        'Wenn du einen beliebigen Moment der Geschichte besuchen könntest, welchen würdest du wählen?',
     },
     pinnedMessage: 'Angeheftete Nachricht',
     goToPinned: 'Zur angehefteten Nachricht',
