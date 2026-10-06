@@ -2305,6 +2305,9 @@ export const de: Localized<EnMessages> = {
 
   calls: {
     call: 'Anrufen',
+    channel: 'Anrufe',
+    ongoingChannel: 'Laufende Anrufe',
+    speaker: 'Lautsprecher',
     voiceCall: 'Sprachanruf',
     videoCall: 'Videoanruf',
     incomingVoice: 'Eingehender Sprachanruf',

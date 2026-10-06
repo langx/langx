@@ -2504,6 +2504,9 @@ export const ru: Localized<EnMessages> = {
 
   calls: {
     call: 'Позвонить',
+    channel: 'Звонки',
+    ongoingChannel: 'Текущие звонки',
+    speaker: 'Динамик',
     voiceCall: 'Аудиозвонок',
     videoCall: 'Видеозвонок',
     incomingVoice: 'Входящий аудиозвонок',

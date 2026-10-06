@@ -1,0 +1,42 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!--
+    A call that rings while the app is closed is a foreground service of type
+    `phoneCall`, which Android 14 allows to an app that holds MANAGE_OWN_CALLS;
+    once answered it also keeps the microphone and, for video, the camera, so
+    the call goes on while the screen is off or another app is in front.
+    USE_FULL_SCREEN_INTENT is what lets the ring take over a locked screen;
+    without it the ring is a heads-up notification, which still works.
+  -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+  <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
+  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+  <application>
+    <service
+      android:name=".CallService"
+      android:exported="false"
+      android:foregroundServiceType="phoneCall|microphone|camera" />
+
+    <!--
+      What a tap on a call's notification opens first: it records which call
+      and whether it was Answer, then opens the app. No window of its own.
+    -->
+    <activity
+      android:name=".CallOpenActivity"
+      android:exported="false"
+      android:excludeFromRecents="true"
+      android:noHistory="true"
+      android:taskAffinity=""
+      android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+    <!-- Decline and hang up. A receiver, because Decline has to work with no app running. -->
+    <receiver
+      android:name=".CallActionReceiver"
+      android:enabled="true"
+      android:exported="false" />
+  </application>
+</manifest>

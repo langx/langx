@@ -82,4 +82,10 @@ export interface CallEngine {
    */
   acquire: (want: { video: boolean }) => Promise<LocalMedia>
   open: (config: IceConfig, local: LocalMedia, handlers: EngineHandlers) => EngineSession
+  /**
+   * iOS: CallKit owns the audio session and says when it is live; WebRTC has
+   * to be told, or it plays into a session nobody activated. Absent where
+   * nothing owns the session but the engine itself.
+   */
+  setAudioSessionActive?: (active: boolean) => void
 }

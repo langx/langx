@@ -2258,6 +2258,9 @@ export const ptBR: Localized<EnMessages> = {
 
   calls: {
     call: 'Ligar',
+    channel: 'Chamadas',
+    ongoingChannel: 'Chamadas em andamento',
+    speaker: 'Alto-falante',
     voiceCall: 'Chamada de voz',
     videoCall: 'Chamada de vídeo',
     incomingVoice: 'Chamada de voz recebida',

@@ -2490,6 +2490,9 @@ export const en = {
    */
   calls: {
     call: 'Call',
+    channel: 'Calls',
+    ongoingChannel: 'Calls in progress',
+    speaker: 'Speaker',
     voiceCall: 'Voice call',
     videoCall: 'Video call',
     incomingVoice: 'Incoming voice call',

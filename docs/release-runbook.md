@@ -911,12 +911,15 @@ The API half of calling deploys dormant: with no relay configured,
 Turning it on is configuration, in this order, and each step is something only
 the account owner can do. `docs/self-host.md` → _Calls_ has the detail.
 
-- [ ] **A TURN key.** Cloudflare dashboard → Realtime → TURN → create a key,
+- [x] **A TURN key** — done 5 October 2026; browsers have been able to call
+      since. Cloudflare dashboard → Realtime → TURN → create a key,
       and set its two values on `langx-api` (first command below). The restart
       is automatic, and from that moment browsers can call browsers. Add a
       usage alert: the first terabyte a month is free, and relayed video is a
       few hundred megabytes an hour.
-- [ ] **An APNs auth key**, for ringing an iPhone whose app is closed. Apple
+- [x] **An APNs auth key** — done 5 October 2026, with the team's existing
+      push key (it is team-scoped, so the `.voip` topic is covered). For
+      ringing an iPhone whose app is closed. Apple
       Developer → Keys → a key with _Apple Push Notifications service_, set
       with the second command. Only useful once a build with the native call
       module is in the stores; until then no iPhone registers a PushKit token
@@ -924,13 +927,18 @@ the account owner can do. `docs/self-host.md` → _Calls_ has the detail.
 - [ ] **The native half ships with a store round**, never over the air: the
       media engine and the system call screens are native code, so they change
       the build fingerprint. That round carries its own store paperwork —
-      Play's foreground-service and full-screen-intent declarations, and App
-      Review notes with two demo accounts on a thread that is already
-      unlocked, since a reviewer cannot exchange five messages with themselves.
-- [ ] **Check whether the app is offered in mainland China.** Apple does not
-      accept CallKit there; the app registers such a phone as one that may not
-      use the system call screen, and it is rung by an ordinary notification
-      instead.
+      Play's declarations for the foreground-service types `phoneCall`,
+      `microphone` and `camera` and for `USE_FULL_SCREEN_INTENT` (allowed for
+      calling apps), and App Review notes with two demo accounts on a thread
+      that is already unlocked, since a reviewer cannot exchange five messages
+      with themselves. Do the Play declarations with that bundle, not before:
+      Play asks for them against a bundle that holds the permissions, and a
+      submission sent while another is in review restarts the review.
+- [x] **Check whether the app is offered in mainland China** — it is (checked
+      5 October 2026). Apple does not accept CallKit there, so an iPhone on the
+      Chinese storefront never starts PushKit and registers as one that may not
+      use the system call screen; it is rung by an ordinary notification
+      instead (`modules/calls/ios/CallCenter.swift`).
 
 ```bash
 fly secrets set -a langx-api \

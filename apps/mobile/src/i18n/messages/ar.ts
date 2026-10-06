@@ -2607,6 +2607,9 @@ export const ar: Localized<EnMessages> = {
 
   calls: {
     call: 'اتصال',
+    channel: 'المكالمات',
+    ongoingChannel: 'المكالمات الجارية',
+    speaker: 'مكبر الصوت',
     voiceCall: 'مكالمة صوتية',
     videoCall: 'مكالمة فيديو',
     incomingVoice: 'مكالمة صوتية واردة',
