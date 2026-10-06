@@ -317,7 +317,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
     '/posts/:id',
     { preHandler: requireAuth, schema: { params: postParamsSchema } },
     async (request, reply) => {
-      await deletePost(app.mongo.db, request.userId, request.params.id, app.storage)
+      await deletePost(app.mongo.db, request.userId, request.params.id)
       return reply.code(204).send()
     },
   )
@@ -387,13 +387,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
     '/posts/:postId/corrections/:id',
     { preHandler: requireAuth, schema: { params: childParamsSchema } },
     async (request, reply) => {
-      await deleteCorrection(
-        app.mongo.db,
-        request.userId,
-        request.params.postId,
-        request.params.id,
-        app.storage,
-      )
+      await deleteCorrection(app.mongo.db, request.userId, request.params.postId, request.params.id)
       return reply.code(204).send()
     },
   )
@@ -440,13 +434,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
     '/posts/:postId/answers/:id',
     { preHandler: requireAuth, schema: { params: childParamsSchema } },
     async (request, reply) => {
-      await deleteAnswer(
-        app.mongo.db,
-        request.userId,
-        request.params.postId,
-        request.params.id,
-        app.storage,
-      )
+      await deleteAnswer(app.mongo.db, request.userId, request.params.postId, request.params.id)
       return reply.code(204).send()
     },
   )

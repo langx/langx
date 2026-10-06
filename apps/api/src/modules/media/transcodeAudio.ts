@@ -96,7 +96,6 @@ export function transcodedKey(key: string): string {
 export interface TranscodeDeps {
   get(key: string): Promise<Uint8Array>
   put(key: string, body: Uint8Array, contentType: string): Promise<string>
-  del(key: string): Promise<void>
   keyOf(url: string): string | null
   /** Returns `null` when the conversion could not be made, for any reason. */
   transcode(input: Uint8Array): Promise<Uint8Array | null>
@@ -224,23 +223,8 @@ async function normalizeOne(deps: TranscodeDeps, input: Media): Promise<Media> {
     const target = transcodedKey(key)
     const url = await deps.put(target, converted, TRANSCODE_TO)
 
-    /*
-     * Only when the conversion landed somewhere else. A mislabelled note is
-     * already under a `.m4a` key, so the new object *is* the old one — and
-     * deleting it here would delete the file just written, which is the one
-     * way this could lose a message rather than merely fail to improve it.
-     */
-    if (target !== key) {
-      // Best-effort, and after the new object exists: a leaked original costs
-      // bytes, while deleting first and then failing to write costs the note.
-      // `deleteAttachment` swallows in the same way and for the same reason.
-      try {
-        await deps.del(key)
-      } catch (error) {
-        deps.warn(error, 'could not remove the original of a transcoded voice note')
-      }
-    }
-
+    // The original stays where it was uploaded, beside the conversion: nothing
+    // leaves the bucket (docs/decisions.md), and it is the recording as sent.
     return withWaveform(
       { ...media, url, contentType: TRANSCODE_TO, sizeBytes: converted.byteLength },
       await waveform,
@@ -271,7 +255,6 @@ export function createAttachmentNormalizer(
   const deps: TranscodeDeps = {
     get: (key) => storage.getObject(key),
     put: (key, body, contentType) => storage.putObject(key, body, contentType),
-    del: (key) => storage.deleteObject(key),
     keyOf: (url) => storage.keyFromPublicUrl(url),
     transcode: ffmpegTranscoder(ffmpegPath, warn),
     waveform: ffmpegWaveform(ffmpegPath, warn),

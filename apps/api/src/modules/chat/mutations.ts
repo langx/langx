@@ -1,5 +1,4 @@
 import {
-  attachmentsOf,
   canDeleteForEveryone,
   MAX_PINNED_CONVERSATIONS,
   canEditMessage,
@@ -14,7 +13,6 @@ import {
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
-import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
 import { acceptsMessages } from '../official/accounts'
 import { assertConversationAccess } from './access'
 import type { Conversation, Message } from './conversations'
@@ -194,7 +192,6 @@ export async function deleteMessage(
   db: Db,
   userId: string,
   input: DeleteMessageInput,
-  storage?: StorageProvider,
 ): Promise<MessageMutationResult> {
   const { conversation, message } = await loadMutableMessage(
     db,
@@ -261,7 +258,6 @@ export async function deleteMessage(
   }
 
   await applyDeleteSideEffects(db, conversation, message)
-  await deleteAttachment(message, storage)
 
   return { message: updated, conversation, audience: 'both' }
 }
@@ -308,32 +304,6 @@ async function applyDeleteSideEffects(
     { _id: conversation._id, [`unread.${recipientId}`]: { $gt: 0 } },
     { $inc: { [`unread.${recipientId}`]: -1 } },
   )
-}
-
-/**
- * Mongo first, bucket second, and never the other way round: unsetting the
- * reference after deleting the bytes leaves a window where the message points
- * at a 404. Best-effort, like the account purge — a storage failure must not
- * undo a deletion the user has already been told happened.
- */
-async function deleteAttachment(message: Message, storage?: StorageProvider): Promise<void> {
-  if (!storage || !supportsPut(storage)) return
-  // A forward's files are the original's, shared rather than copied, and the
-  // original is still in somebody's thread. Withdrawing the copy is not the
-  // copy's author's call to make about them.
-  if (message.forwarded) return
-  // Every file, not just the first: a gallery leaves as many objects behind as
-  // it put there, and `attachmentsOf` is what makes one deleted photo and six
-  // the same code path.
-  for (const item of attachmentsOf(message)) {
-    const key = storage.keyFromPublicUrl(item.url)
-    if (!key) continue
-    try {
-      await storage.deleteObject(key)
-    } catch {
-      // Swallowed on purpose: the row is already a tombstone.
-    }
-  }
 }
 
 /**

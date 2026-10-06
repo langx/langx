@@ -19,9 +19,8 @@ import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
-import { deleteCorrection, deletePost } from '../modules/feed/feed'
+import { deletePost } from '../modules/feed/feed'
 import { listTimeline, olderThan, visibleTo, withinRange } from '../modules/feed/timeline'
-import type { StorageProvider, UploadUrl } from '../storage/StorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 
 const PASSWORD = 'correct horse battery staple'
@@ -1965,92 +1964,6 @@ describe('community feed', () => {
   })
 
   describe('hardening before moments', () => {
-    const BASE = 'https://cdn.example.com'
-    const picture = (owner: SignedUpUser, name: string) => ({
-      url: `${BASE}/posts/${owner.userId}/${name}.jpg`,
-      contentType: 'image/jpeg',
-      sizeBytes: 1024,
-      width: 800,
-      height: 600,
-    })
-
-    /** Records every key it is asked to delete; `supportsPut` needs `putObject`. */
-    function recordingStorage(): StorageProvider & { deleted: string[] } {
-      const deleted: string[] = []
-      return {
-        deleted,
-        getUploadUrl: (): Promise<UploadUrl> => Promise.reject(new Error('unused')),
-        putObject: (): Promise<string> => Promise.reject(new Error('unused')),
-        getObject: (): Promise<Uint8Array> => Promise.reject(new Error('unused')),
-        deleteObject: (key: string): Promise<void> => {
-          deleted.push(key)
-          return Promise.resolve()
-        },
-        keyFromPublicUrl: (url: string): string | null =>
-          url.startsWith(`${BASE}/`) ? url.slice(BASE.length + 1) : null,
-      } as StorageProvider & { deleted: string[] }
-    }
-
-    it('deletes every file of a gallery with its post, not only the first', async () => {
-      const author = await newUser('gallery-del-author@example.com')
-      const helper = await newUser('gallery-del-helper@example.com')
-      const created = await app.inject({
-        method: 'POST',
-        url: '/posts',
-        headers: { cookie: author.cookie },
-        payload: {
-          body: 'Two pictures of my notes.',
-          language: 'en',
-          attachments: [picture(author, 'a'), picture(author, 'b')],
-        },
-      })
-      expect(created.statusCode, created.body).toBe(201)
-      const postId = created.json<{ _id: string }>()._id
-      const corrected = await app.inject({
-        method: 'POST',
-        url: `/posts/${postId}/corrections`,
-        headers: { cookie: helper.cookie },
-        payload: {
-          corrected: 'Two pictures of my notes!',
-          attachments: [picture(helper, 'c'), picture(helper, 'd')],
-        },
-      })
-      expect(corrected.statusCode, corrected.body).toBe(201)
-
-      const storage = recordingStorage()
-      await deletePost(handle.db, author.userId, postId, storage)
-      expect(storage.deleted.sort()).toEqual(
-        [
-          `posts/${author.userId}/a.jpg`,
-          `posts/${author.userId}/b.jpg`,
-          `posts/${helper.userId}/c.jpg`,
-          `posts/${helper.userId}/d.jpg`,
-        ].sort(),
-      )
-    })
-
-    it('deletes every file of a correction with it', async () => {
-      const author = await newUser('gallery-corr-author@example.com')
-      const helper = await newUser('gallery-corr-helper@example.com')
-      const postId = (await post(author, 'I has two pen.')).json<{ _id: string }>()._id
-      const correction = await app.inject({
-        method: 'POST',
-        url: `/posts/${postId}/corrections`,
-        headers: { cookie: helper.cookie },
-        payload: {
-          corrected: 'I have two pens.',
-          attachments: [picture(helper, 'e'), picture(helper, 'f')],
-        },
-      })
-      const correctionId = correction.json<{ _id: string }>()._id
-
-      const storage = recordingStorage()
-      await deleteCorrection(handle.db, helper.userId, postId, correctionId, storage)
-      expect(storage.deleted.sort()).toEqual(
-        [`posts/${helper.userId}/e.jpg`, `posts/${helper.userId}/f.jpg`].sort(),
-      )
-    })
-
     it('will not take a correction or a recording across a block', async () => {
       const author = await newUser('block-write-author@example.com')
       const helper = await newUser('block-write-helper@example.com')

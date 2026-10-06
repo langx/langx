@@ -65,7 +65,6 @@ import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users
 import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
 import { payBounty } from '../modules/feedback/awardBounty'
 import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
-import { deleteObjects } from '../modules/feed/attachments'
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
 import { rewardReporter } from '../modules/moderation/reward'
@@ -605,9 +604,9 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
   /**
    * Takes down an avatar that breaks the community guidelines.
    *
-   * The file goes too, not only the field. The account purge finds an avatar
-   * through `avatarUrl`, so a file left behind here would outlive the account
-   * and stay publicly fetchable at its URL — the removed photo, still online.
+   * Only the field: the file stays in the bucket, as everything does (see
+   * "Nothing a person deletes leaves the bucket" in docs/decisions.md). It is
+   * evidence for the report that led here, and nothing links to it any more.
    *
    * An official account is refused: its avatar is written from code at every
    * boot, so removing it here would be undone by the next deploy.
@@ -629,7 +628,6 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const removed = await removeAvatar(app.mongo.db, profile._id)
       if (removed) {
-        await deleteObjects(app.storage, [removed])
         await recordAdminAction(app.mongo.db, request.log, {
           adminId: request.userId,
           action: 'user.removeAvatar',

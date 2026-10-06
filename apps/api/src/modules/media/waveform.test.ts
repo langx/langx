@@ -101,7 +101,6 @@ describe.skipIf(!hasFfmpeg)('with ffmpeg', () => {
       {
         get: () => Promise.resolve(webm),
         put: (key) => Promise.resolve(`https://cdn.example.com/${key}`),
-        del: () => Promise.resolve(),
         keyOf: (url) => url.replace('https://cdn.example.com/', ''),
         transcode: ffmpegTranscoder('ffmpeg', warn),
         waveform: ffmpegWaveform('ffmpeg', warn),

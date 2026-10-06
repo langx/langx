@@ -625,7 +625,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       if (!limited('message:delete', ack)) return
       deleteMessageSchema
         .parseAsync(payload)
-        .then((input) => deleteMessage(app.mongo.db, userId, input, app.storage))
+        .then((input) => deleteMessage(app.mongo.db, userId, input))
         .then(({ message, conversation, audience }) => {
           fanOutMessageUpdate(io, conversation, message, audience, userId)
           ack?.({ ok: true, data: toMessageView(message, userId) })

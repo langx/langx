@@ -1325,31 +1325,6 @@ describe('echo', () => {
       durationSeconds: 3,
     })
 
-    /** Remembers what it was asked to delete, which is the whole assertion. */
-    function fakeStorage() {
-      const deleted: string[] = []
-      return {
-        deleted,
-        storage: {
-          getUploadUrl: () => {
-            throw new Error('not used')
-          },
-          putObject: () => {
-            throw new Error('not used')
-          },
-          getObject: () => {
-            throw new Error('not used')
-          },
-          deleteObject: (key: string) => {
-            deleted.push(key)
-            return Promise.resolve()
-          },
-          keyFromPublicUrl: (url: string) =>
-            url.startsWith(`${BUCKET}/`) ? url.slice(BUCKET.length + 1) : null,
-        },
-      }
-    }
-
     async function writeCard(user: SignedUpUser, clientId: string) {
       const made = await capture(user, {
         kind: 'manual',
@@ -1411,11 +1386,11 @@ describe('echo', () => {
     })
 
     /*
-     * The rule the whole `origin` field exists for. A copied URL belongs to the
-     * message, post or pack that still plays it; deleting it because a card
-     * stopped pointing at it would take a recording out of somebody's thread.
+     * Taking a recording off a card only stops the card pointing at it: the
+     * file stays in the bucket whoever owned it, so there is no storage to
+     * hand `updateCard` any more. What is left to check is the card itself.
      */
-    it('deletes a removed recording only when the card owned it', async () => {
+    it('takes a removed recording off the card, copied or its own', async () => {
       const user = await newUser('media-delete@example.com')
       const cardId = await writeCard(user, 'media-delete')
       const { updateCard } = await import('../modules/echo/cards')
@@ -1434,40 +1409,32 @@ describe('echo', () => {
       )
 
       // Adding one of your own takes nothing away: recordings accumulate.
-      const added = fakeStorage()
-      await updateCard(
+      const added = await updateCard(
         handle.db,
         user.userId,
         cardId,
         { ...lines, audio: recording(user, 'mine') },
         BUCKET,
-        added.storage,
       )
-      expect(added.deleted).toEqual([])
+      expect(added.audios?.map((entry) => entry.url)).toEqual([
+        copiedUrl,
+        recording(user, 'mine').url,
+      ])
 
-      // Taking the copy off leaves the post that still plays it alone.
-      const copy = fakeStorage()
       await updateCard(
         handle.db,
         user.userId,
         cardId,
         { ...lines, removeAudio: [copiedUrl] },
         BUCKET,
-        copy.storage,
       )
-      expect(copy.deleted).toEqual([])
-
-      // Taking off the card's own recording does delete it: nothing else holds it.
-      const own = fakeStorage()
       const card = await updateCard(
         handle.db,
         user.userId,
         cardId,
         { ...lines, removeAudio: [recording(user, 'mine').url] },
         BUCKET,
-        own.storage,
       )
-      expect(own.deleted).toEqual([`echo/${user.userId}/mine.m4a`])
       expect(card.audios ?? []).toEqual([])
       expect(card.audio).toBeUndefined()
     })
