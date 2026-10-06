@@ -91,7 +91,11 @@ export async function requestDeletion(
   }
 }
 
-/** Signing back in during the grace period is the cancel gesture. */
+/**
+ * The banner's "Keep it": the way out for an account that is still signed in
+ * with a deletion pending, which `cancelDeletionOnSignIn` never sees — one
+ * that signed back in before that hook existed, or whose cancel there failed.
+ */
 export async function cancelDeletion(db: Db, userId: string): Promise<AccountDeletionStatus> {
   const updated = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
     { _id: userId },
@@ -102,6 +106,21 @@ export async function cancelDeletion(db: Db, userId: string): Promise<AccountDel
   )
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
   return { pending: false, deletedAt: null, purgeAt: null }
+}
+
+/**
+ * Signing back in during the grace period is the cancel gesture — the promise
+ * the delete screen, the confirmation mail and langx.io all make. It runs on
+ * every new session, so it writes only when a deletion is pending, and a
+ * sign-up with no profile yet is not an error.
+ */
+export async function cancelDeletionOnSignIn(db: Db, userId: string): Promise<boolean> {
+  const result = await db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+    { _id: userId, deletedAt: { $exists: true } },
+    // The reason goes too, as in `cancelDeletion`.
+    { $unset: { deletedAt: '', deletionFeedback: '' } },
+  )
+  return result.modifiedCount > 0
 }
 
 export async function deletionStatus(db: Db, userId: string): Promise<AccountDeletionStatus> {

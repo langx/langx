@@ -29,6 +29,7 @@ import { sendWelcomeBackMessage } from './modules/official/welcomeBack'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import { notifyLifetimeGift } from './modules/handles/lifetimeGiftNotice'
 import { recordTermsAcceptance } from './modules/account/terms'
+import { cancelDeletionOnSignIn } from './modules/account/deletion'
 import type { EmailSender } from './email/sender'
 import {
   existingAccountEmail,
@@ -560,6 +561,25 @@ export async function createAuth({
            * had. See `legacyPrecreate.ts`; a no-op for everyone else.
            */
           after: async (session) => {
+            /*
+             * Signing back in during the grace period cancels a pending
+             * deletion: the delete screen, the confirmation mail and langx.io
+             * all say so in eight languages, and until this line nothing did
+             * — only the banner's "Keep it" called `cancelDeletion`, so
+             * somebody who came back as told stayed on course to be purged.
+             * On the session because every way in — password, magic link,
+             * Google, Apple, Facebook, a linked device — makes one. Its own
+             * try: a failure leaves the banner as the way out instead of
+             * failing the sign-in.
+             */
+            try {
+              await cancelDeletionOnSignIn(db, session.userId)
+            } catch (error) {
+              console.error('[deletion] cancel on sign-in failed', {
+                userId: session.userId,
+                error,
+              })
+            }
             try {
               /*
                * `true` means the row was one of the script's, which is the
