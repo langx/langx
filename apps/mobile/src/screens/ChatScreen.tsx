@@ -26,6 +26,7 @@ import {
   ERROR_CODES,
   MAX_SCHEDULED_PER_CONVERSATION,
   THEIR_MORNING_HOUR,
+  viewOnceState,
 } from '@langx/shared'
 import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import {
@@ -167,6 +168,8 @@ import { saveMediaToDevice } from '../lib/saveMedia'
 import { shareLink } from '../lib/share'
 import { addMeetingToCalendar } from '../lib/addToCalendar'
 import { showToast } from '../lib/toast'
+import { onSnap } from '../lib/snapOutbox'
+import { withoutViewOnceFallback } from '../lib/viewOnce'
 import {
   appendIncomingMessage,
   messagesNewestFirst,
@@ -1090,6 +1093,12 @@ export function ChatScreen({
       await shareLocation()
       return
     }
+    // The chat's own camera now, not the system one: full screen, 16:9, and
+    // the only place a view-once photo or video can be shot. See `chat-camera.tsx`.
+    if (choice === 'camera') {
+      openCamera()
+      return
+    }
     if (choice === 'voice') {
       await toggleRecording()
       return
@@ -1167,6 +1176,19 @@ export function ChatScreen({
       t('errors.tooManyAttachments', { count: MAX_ATTACHMENTS }),
     )
     return null
+  }
+
+  /**
+   * The chat camera, full screen. Behind the media lock like the rows that
+   * carry bytes, and said the same way: what it shoots could only be sent
+   * into a lock it would then hit.
+   */
+  function openCamera(): void {
+    if (mediaLockedFor > 0) {
+      void showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
+      return
+    }
+    router.push({ pathname: '/(app)/chat-camera', params: { id: conversationId } })
   }
 
   async function pickMedia(source: PickSource): Promise<void> {
@@ -1319,13 +1341,15 @@ export function ChatScreen({
     if (!message?._id) return
     queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
       { queryKey: keys.messages(conversationId) },
-      (old) => appendIncomingMessage(old, message, viewerId) ?? old,
+      (old) => appendIncomingMessage(old, withoutViewOnceFallback(message), viewerId) ?? old,
     )
   }
 
   async function sendAttachments(
     items: readonly PendingAttachment[],
     body: string | undefined,
+    /** From the camera's pill: a view-once photo or video. Never with a caption. */
+    viewOnce: { replay: boolean } | null = null,
   ): Promise<void> {
     const first = items[0]
     if (!first) return
@@ -1386,12 +1410,14 @@ export function ChatScreen({
       const saved = await emitWithAck<MessageDto>(socket, 'message:media', {
         conversationId,
         attachments: uploaded,
-        ...(body ? { body } : {}),
+        ...(body && !viewOnce ? { body } : {}),
         ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
         // Separate from the quote: a reply quotes, and quoting is not
         // answering. The server re-checks all of it and drops the claim if the
-        // target never asked, or if the asker is the one recording.
-        ...(answersAskId ? { answersMessageId: answersAskId } : {}),
+        // target never asked, or if the asker is the one recording. Never on a
+        // view-once file, which the server refuses as an answer.
+        ...(answersAskId && !viewOnce ? { answersMessageId: answersAskId } : {}),
+        ...(viewOnce ? { viewOnce } : {}),
       })
       track({ name: 'message_sent', properties: { kind: first.kind, reply: replyingTo !== null } })
       // In first, then the uploading row goes: same batch, no frame without
@@ -1399,7 +1425,7 @@ export function ChatScreen({
       landed(saved)
       setPending((list) => removePending(list, clientId))
       setReplyingTo(null)
-      setAnsweringAskId(null)
+      if (!viewOnce) setAnsweringAskId(null)
     } catch (error) {
       // `emitWithAck` rejects with a plain Error carrying `.code`, not an
       // ApiRequestError, so the `instanceof` this used to do never matched
@@ -1439,6 +1465,21 @@ export function ChatScreen({
       setSendingMedia(false)
     }
   }
+
+  /*
+   * What the camera shot, handed back by `snapOutbox`. Through a ref, so the
+   * listener is subscribed once per thread and still sends with this
+   * render's reply — a photo shot while replying is a reply.
+   */
+  const sendAttachmentsRef = useRef(sendAttachments)
+  sendAttachmentsRef.current = sendAttachments
+  useEffect(
+    () =>
+      onSnap(conversationId, (snap) => {
+        void sendAttachmentsRef.current([snap.item], undefined, snap.viewOnce)
+      }),
+    [conversationId],
+  )
 
   /**
    * A send refused because the other account was suspended after this screen
@@ -2005,7 +2046,11 @@ export function ChatScreen({
       wordCount: lookupWords(message.body).length,
       mine: isMine(message),
       type: message.type,
-      hasBody: message.body.trim().length > 0,
+      // Nothing to copy, translate, share or keep in a view-once message:
+      // `withoutViewOnceFallback` has already emptied its body, and its file
+      // never reaches the thread. Said here too so the rule does not depend on
+      // where the message came in.
+      hasBody: !message.viewOnce && message.body.trim().length > 0,
       hasMedia: attachmentsOf(message).length > 0,
       alreadyTranslated,
       // Evaluated here rather than in the menu, so the row and the server
@@ -2333,6 +2378,34 @@ export function ChatScreen({
   const onOpenMedia = useCallback(
     (items: Media[], index: number) => setViewing({ items, index }),
     [],
+  )
+
+  /**
+   * A view-once bubble tapped. Its own screen rather than `PhotoViewer` — see
+   * `view-once.tsx` for why it cannot be a modal. The sender is told why
+   * nothing opens instead of being shown nothing; a used-up one says it has
+   * been opened, which is what a second device needs to hear.
+   */
+  const viewerIdRef = useRef(me.data?._id)
+  viewerIdRef.current = me.data?._id
+  const onOpenViewOnce = useCallback(
+    (message: MessageDto) => {
+      const view = message.viewOnce
+      if (!view) return
+      if (message.senderId === viewerIdRef.current) {
+        showToast(t('viewOnce.onlyRecipient'))
+        return
+      }
+      if (viewOnceState(view) === 'gone') {
+        showToast(t('viewOnce.gone'))
+        return
+      }
+      router.push({
+        pathname: '/(app)/view-once',
+        params: { conversationId, messageId: message._id, senderId: message.senderId },
+      })
+    },
+    [conversationId, t],
   )
 
   /**
@@ -3056,6 +3129,7 @@ export function ChatScreen({
                       }
                       onJumpTo={onJumpTo}
                       onOpenMedia={onOpenMedia}
+                      onOpenViewOnce={onOpenViewOnce}
                     />
                   )
                 }
@@ -3192,27 +3266,44 @@ export function ChatScreen({
                 carry bytes — which is where the sheet draws it, with the
                 number of messages still to come.
               */
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={t('composer.attachMenu')}
-                    onPress={() => void openAttachMenu()}
-                    disabled={
-                      sendingMedia ||
-                      locating ||
-                      pendingMedia.length >= MAX_ATTACHMENTS ||
-                      // A voice draft is waiting for the send button, and a note
-                      // travels alone. Send it or throw it away first.
-                      pendingMedia.some((item) => item.kind === 'audio')
-                    }
-                    hitSlop={8}
-                    style={styles.attach}
-                  >
-                    {locating ? (
-                      <ActivityIndicator size="small" color={colors.textMuted} />
-                    ) : (
-                      <Feather name="plus" size={22} color={colors.textMuted} />
-                    )}
-                  </Pressable>
+                  <View style={styles.leadingRow}>
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t('composer.attachMenu')}
+                      onPress={() => void openAttachMenu()}
+                      disabled={
+                        sendingMedia ||
+                        locating ||
+                        pendingMedia.length >= MAX_ATTACHMENTS ||
+                        // A voice draft is waiting for the send button, and a note
+                        // travels alone. Send it or throw it away first.
+                        pendingMedia.some((item) => item.kind === 'audio')
+                      }
+                      hitSlop={8}
+                      style={styles.attach}
+                    >
+                      {locating ? (
+                        <ActivityIndicator size="small" color={colors.textMuted} />
+                      ) : (
+                        <Feather name="plus" size={22} color={colors.textMuted} />
+                      )}
+                    </Pressable>
+                    {/*
+                      The camera beside it, where Instagram keeps its own: the
+                      way into a view-once photo, so it cannot live two taps
+                      down a sheet. Locked the way the sheet's rows are.
+                    */}
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t('composer.attachCamera')}
+                      onPress={openCamera}
+                      disabled={sendingMedia}
+                      hitSlop={8}
+                      style={styles.attach}
+                    >
+                      <Feather name="camera" size={21} color={colors.textMuted} />
+                    </Pressable>
+                  </View>
                 )
               }
               idleAction={
@@ -3578,6 +3669,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   },
   recordButtonActive: { backgroundColor: colors.danger },
   micDisabled: { opacity: 0.35 },
+  leadingRow: { flexDirection: 'row' },
   // A bare muted glyph, sized to line up with the pill beside it.
   attach: {
     alignItems: 'center',

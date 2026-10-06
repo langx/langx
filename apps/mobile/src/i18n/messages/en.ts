@@ -102,6 +102,44 @@ export const en = {
     saveDenied:
       'LangX needs permission to add photos and videos to your library. You can allow it in Settings.',
   },
+  /**
+   * A photo or a video sent to be seen once, or once and replayed once, and
+   * the camera that shoots it. The bubble says what a tap will do for the
+   * person it was sent to, and what has been done for the person who sent it.
+   */
+  viewOnce: {
+    photo: 'Photo',
+    video: 'Video',
+    tapToView: 'Tap to view',
+    tapToReplay: 'Tap to replay',
+    opened: 'Opened',
+    replayed: 'Replayed',
+    screenshotTaken: 'Screenshot taken',
+    sentOnce: 'View once',
+    sentReplay: 'Replay allowed',
+    modeOnce: 'View once',
+    modeReplay: 'Allow replay',
+    modeKeep: 'Keep in chat',
+    send: 'Send',
+    retake: 'Retake',
+    hint: 'Tap for photo, hold for video',
+    close: 'Close camera',
+    flip: 'Switch camera',
+    flash: 'Flash',
+    gallery: 'Choose from library',
+    shutter: 'Take photo',
+    recording: 'Recording',
+    gone: 'This has already been opened.',
+    openFailed: 'Couldn’t open it. Try again.',
+    onlyRecipient: 'Only the person you sent it to can open it.',
+    report: 'Report',
+    cameraPermission: 'LangX needs permission to use your camera.',
+    microphonePermission: 'LangX needs your microphone to record a video with sound.',
+    cameraUnavailable:
+      'The camera isn’t available here. Choose a photo or video from your library instead.',
+    captureFailed: 'Couldn’t take that. Try again.',
+    playFailed: 'This video can’t be played on this device.',
+  },
   tips: {
     composerCorrect: 'Hold a message to correct it',
     composerReply: 'Swipe a message to reply',

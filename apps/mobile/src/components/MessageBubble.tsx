@@ -54,6 +54,7 @@ import { useT, type MessageKey } from '../i18n'
 import { createDoubleTap, doubleTapToReactEnabled } from '../lib/doubleTapToReact'
 import { callRowIcon, callRowLabel, formatCallDuration } from '../lib/calls/callLabels'
 import { impact } from '../lib/haptics'
+import { viewOnceBubbleLabel } from '../lib/viewOnce'
 
 /**
  * Whether this device has a finger. Read once, at module scope: it cannot
@@ -161,6 +162,12 @@ export interface MessageBubbleProps {
   /** Opens the full-screen viewer. The thread owns it, so paging can leave this bubble. */
   /** Opens the viewer on this message's attachments, at the one that was tapped. */
   onOpenMedia: (items: Media[], index: number) => void
+  /**
+   * A view-once photo or video was tapped. The thread decides what that means
+   * — an open for the recipient, a word of explanation for the sender — since
+   * only it holds the viewer.
+   */
+  onOpenViewOnce: (message: MessageDto) => void
 }
 
 /**
@@ -239,6 +246,7 @@ export const MessageBubble = memo(function MessageBubble({
   meetingTheirWhen = '',
   onJumpTo,
   onOpenMedia,
+  onOpenViewOnce,
 }: MessageBubbleProps) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -825,6 +833,58 @@ export const MessageBubble = memo(function MessageBubble({
   /** Where a profile or a post opened from this bubble's text comes back to. */
   const from = `/(app)/chat/${message.conversationId}`
 
+  /*
+   * A view-once photo or video: never the picture, on either side — the
+   * thread has no file to draw, only what has happened to it. Before the
+   * media branch, whose type it shares. Shaped like a call's row, because it
+   * is the same kind of thing: a record of something that is not in the
+   * thread itself.
+   */
+  if (message.viewOnce) {
+    const view = message.viewOnce
+    const label = viewOnceBubbleLabel(view, mine)
+    const length =
+      view.kind === 'video' && view.durationSeconds !== undefined
+        ? ` · ${formatCallDuration(view.durationSeconds)}`
+        : ''
+    return shell(
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${t(label.title)}, ${t(label.status)}`}
+        onPress={() => onOpenViewOnce(message)}
+        onLongPress={press}
+        style={column}
+      >
+        {quote}
+        <View ref={box} style={[styles.card, styles.callCard, flash]}>
+          <View
+            style={[
+              styles.callIcon,
+              label.opens ? styles.viewOnceIconLive : styles.viewOnceIconUsed,
+            ]}
+          >
+            <Feather
+              name={view.kind === 'video' ? 'video' : 'camera'}
+              size={17}
+              color={label.opens ? colors.textInverse : colors.textMuted}
+            />
+          </View>
+          <View style={styles.callText}>
+            <Text style={[styles.callTitle, !label.opens && !mine && styles.viewOnceUsedTitle]}>
+              {t(label.title)}
+              {length}
+            </Text>
+            <Text style={label.opens ? styles.viewOnceAction : styles.meetingTheirs}>
+              {t(label.status)}
+            </Text>
+          </View>
+        </View>
+        {badge}
+        <View style={styles.cardMeta}>{meta}</View>
+      </Pressable>,
+    )
+  }
+
   if (message.type === 'image' || message.type === 'audio' || message.type === 'video') {
     const attachments = attachmentsOf(message)
     const openable = message.type !== 'audio' && attachments.length > 0
@@ -1275,6 +1335,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     width: 36,
   },
   callIconMissed: { backgroundColor: colors.dangerBg },
+  viewOnceIconLive: { backgroundColor: colors.accent },
+  viewOnceIconUsed: { borderColor: colors.border, borderStyle: 'dashed', borderWidth: 1.5 },
+  viewOnceUsedTitle: { color: colors.textMuted },
+  viewOnceAction: { color: colors.accent, fontSize: 13, fontWeight: '700' },
   callText: { flexShrink: 1, gap: 2 },
   callTitle: { color: colors.text, fontSize: 15, fontWeight: '700' },
   callTitleMissed: { color: colors.danger },

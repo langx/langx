@@ -188,10 +188,21 @@ const config: ExpoConfig = {
      * all. It is the same policy as `READ_EXTERNAL_STORAGE` above: a photo
      * permission the app never requests is still one Play asks about.
      */
+    /*
+     * `READ_MEDIA_IMAGES` is expo-screen-capture's, declared for Android 13
+     * only: there, noticing a screenshot means watching the gallery for a new
+     * image. Same policy again, and a gallery-reading permission to tell the
+     * sender of a view-once photo about a screenshot is the wrong trade.
+     * Blocking the screenshot does not need it — `FLAG_SECURE` takes no
+     * permission — and from Android 14 noticing one goes through
+     * `DETECT_SCREEN_CAPTURE`, which is not a photo permission. So on 13 and
+     * below the screenshot comes out black and the sender is not told.
+     */
     blockedPermissions: [
       'android.permission.READ_EXTERNAL_STORAGE',
       'android.permission.ACTIVITY_RECOGNITION',
       'android.permission.READ_MEDIA_VISUAL_USER_SELECTED',
+      'android.permission.READ_MEDIA_IMAGES',
     ],
     intentFilters: [
       {
@@ -517,18 +528,20 @@ const config: ExpoConfig = {
      */
     'expo-maps',
     /*
-     * The scanner behind the scan icon on the Me tab (`(app)/scan.tsx`).
-     * `NSCameraUsageDescription` was already written by expo-image-picker;
-     * this plugin writes it again with a sentence that names both jobs the
-     * camera has. `recordAudioAndroid: false` because the scanner never
-     * records, and a `RECORD_AUDIO` line here would be a second declaration
-     * of a permission expo-audio already owns.
+     * The chat camera (`(app)/snap.tsx`) and the scanner behind the scan icon
+     * on the Me tab (`(app)/scan.tsx`). `NSCameraUsageDescription` was already
+     * written by expo-image-picker; this plugin writes it again with a
+     * sentence that names both jobs the camera has. `recordAudioAndroid:
+     * false` although the chat camera records video with sound: `RECORD_AUDIO`
+     * is already declared by expo-audio, and a second line here would be a
+     * second declaration of a permission it owns. The microphone's sentence is
+     * expo-audio's too, further down.
      */
     [
       'expo-camera',
       {
         cameraPermission:
-          'LangX uses your camera for video calls, to take a photo to send, and to scan a sign-in or profile code.',
+          'LangX uses your camera for video calls, to take photos and videos to send, and to scan a sign-in or profile code.',
         recordAudioAndroid: false,
       },
     ],
@@ -557,7 +570,7 @@ const config: ExpoConfig = {
       'expo-audio',
       {
         microphonePermission:
-          'LangX uses the microphone for calls and so you can send voice messages.',
+          'LangX uses the microphone for calls, voice messages and videos with sound.',
         enableBackgroundPlayback: false,
       },
     ],
@@ -575,7 +588,8 @@ const config: ExpoConfig = {
          * own manifest, and the plugin only ever *blocks* it, when this is
          * explicitly `false`.
          */
-        cameraPermission: 'LangX uses your camera for video calls and to take a photo to send.',
+        cameraPermission:
+          'LangX uses your camera for video calls, to take photos and videos to send, and to scan a sign-in or profile code.',
       },
     ],
     /*
