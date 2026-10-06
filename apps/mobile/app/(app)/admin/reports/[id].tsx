@@ -332,6 +332,49 @@ export default function AdminCaseScreen() {
               </>
             ) : null}
 
+            {/* A message report names no post, so it too sits where the post
+                would have. Its files are drawn, view-once ones included —
+                the app stops showing those to the person who received them,
+                and the server keeps them for exactly this screen. */}
+            {report.data.message ? (
+              <>
+                <Text style={styles.heading}>{ADMIN.reports.message}</Text>
+                <Card>
+                  {report.data.message.body.trim() ? (
+                    <Text style={styles.quote}>{report.data.message.body}</Text>
+                  ) : report.data.message.attachments.length === 0 ? (
+                    <Text style={styles.muted}>{ADMIN.reports.noMessageText}</Text>
+                  ) : null}
+                  {report.data.message.attachments.length ? (
+                    <View style={styles.media}>
+                      <MediaGallery
+                        items={report.data.message.attachments}
+                        onOpen={(index) => setViewing(index)}
+                      />
+                    </View>
+                  ) : null}
+                </Card>
+                {report.data.message.viewOnce ? (
+                  <Callout tone="info">
+                    <Text style={styles.calloutBody}>
+                      {ADMIN.reports.viewOnce(
+                        report.data.message.viewOnce.replay,
+                        report.data.message.viewOnce.opens,
+                      )}
+                      {report.data.message.viewOnce.screenshotAt
+                        ? ` ${ADMIN.reports.viewOnceScreenshot}`
+                        : ''}
+                    </Text>
+                  </Callout>
+                ) : null}
+                {report.data.message.deletedAt ? (
+                  <Callout tone="warning">
+                    <Text style={styles.calloutBody}>{ADMIN.reports.messageDeleted}</Text>
+                  </Callout>
+                ) : null}
+              </>
+            ) : null}
+
             {/* A review report names neither a post nor a comment, so it too
                 sits where the post would have. Its author is the reported
                 account; whose profile it is on is said in the heading. The
@@ -465,7 +508,8 @@ export default function AdminCaseScreen() {
         )}
       </Screen>
       <PhotoViewer
-        photos={report.data?.post?.attachments ?? []}
+        // A report names a post or a message, never both.
+        photos={report.data?.post?.attachments ?? report.data?.message?.attachments ?? []}
         index={viewing}
         onClose={() => setViewing(null)}
         onIndexChange={setViewing}

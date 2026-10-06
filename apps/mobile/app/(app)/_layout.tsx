@@ -140,6 +140,20 @@ export default function AppLayout() {
           name="recap"
           options={{ animation: 'slide_from_bottom', gestureEnabled: false }}
         />
+        {/*
+          The chat camera rises from the bottom, as a camera does in every
+          messaging app, and takes no swipe: a held shutter is a drag waiting
+          to happen, and the edge gesture would end a recording.
+        */}
+        <Stack.Screen
+          name="chat-camera"
+          options={{ animation: 'slide_from_bottom', gestureEnabled: false }}
+        />
+        {/*
+          A view-once photo fades in and out like the photo viewer does, and
+          cannot be swiped away half-seen into a peek at the thread.
+        */}
+        <Stack.Screen name="view-once" options={{ animation: 'fade', gestureEnabled: false }} />
       </Stack>
       {/*
         "You're Pro now". Here, at the root of the signed-in area, because the

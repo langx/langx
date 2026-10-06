@@ -31,6 +31,7 @@ import {
   type PollResults,
   type MessageTranslation,
   type MessageType,
+  type MessageViewOnce,
   type SharedLocationPrecision,
   type CaptureEchoInput,
   type CaptureEchoResult,
@@ -128,6 +129,7 @@ import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
 import { putWithProgress } from '../lib/putWithProgress'
+import { withoutViewOnceFallback } from '../lib/viewOnce'
 import { isOfflineFailure, reportActionError } from '../lib/reportActionError'
 import { errorCodeOf } from '../lib/errors'
 import { showToast } from '../lib/toast'
@@ -959,6 +961,12 @@ export interface MessageDto {
   attachments?: MessageMediaDto[]
   /** The first attachment, repeated by the server for builds without the list. */
   media?: MessageMediaDto
+  /**
+   * A photo or video to be seen once, in place of `attachments` — which
+   * neither person is sent. Its `body` is a line for older builds; this one
+   * empties it on the way in (`withoutViewOnceFallback`).
+   */
+  viewOnce?: MessageViewOnce
   correction?: { original: string; corrected: string; note?: string }
   /** A snapshot taken when the reply was sent, so it survives the target. */
   replyTo?: { messageId: string; senderId: string; preview: string }
@@ -1021,6 +1029,12 @@ export interface MessageDto {
   createdAt: string
 }
 
+/** A page of a thread, with each view-once message's line for older builds emptied. */
+async function getMessagePage(path: string): Promise<MessagePageDto> {
+  const page = await api.get<MessagePageDto>(path)
+  return { ...page, items: page.items.map(withoutViewOnceFallback) }
+}
+
 /**
  * The thread itself.
  *
@@ -1033,7 +1047,7 @@ export function useMessages(conversationId: string) {
   return useInfiniteQuery({
     queryKey: keys.messages(conversationId),
     queryFn: ({ pageParam }: { pageParam: string }) =>
-      api.get<MessagePageDto>(
+      getMessagePage(
         `/conversations/${conversationId}/messages${
           pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''
         }`,
@@ -1320,7 +1334,10 @@ export function useRepairDay() {
 export function useStarred() {
   return useQuery({
     queryKey: keys.starred,
-    queryFn: () => api.get<{ items: MessageDto[] }>('/me/starred'),
+    queryFn: async () => {
+      const page = await api.get<{ items: MessageDto[] }>('/me/starred')
+      return { items: page.items.map(withoutViewOnceFallback) }
+    },
   })
 }
 
@@ -1371,7 +1388,7 @@ export function useMessageWindow(conversationId: string, anchorId: string | null
 
   return useInfiniteQuery({
     queryKey: keys.messagesAround(conversationId, anchorId ?? ''),
-    queryFn: ({ pageParam }) => api.get<MessagePageDto>(windowUrl(conversationId, pageParam)),
+    queryFn: ({ pageParam }) => getMessagePage(windowUrl(conversationId, pageParam)),
     initialPageParam: start,
     getNextPageParam: (last): MessageWindowParam | undefined =>
       last.nextCursor ? { dir: 'older', value: last.nextCursor } : undefined,
@@ -2527,6 +2544,41 @@ export async function uploadMessageMedia(input: {
   }
 }
 
+/** What one open of a view-once photo or video hands back. */
+export interface ViewOnceOpenDto {
+  /** The message with the open counted, as the socket will also deliver it. */
+  message: MessageDto
+  /** The file, for as long as the viewer is open. Never cached, never written to disk. */
+  media: Omit<MessageMediaDto, 'sizeBytes' | 'transcript'>
+}
+
+/**
+ * Spends one open of a view-once message and returns its file.
+ *
+ * A plain function rather than a mutation hook: the viewer owns the result
+ * for exactly as long as it is on screen, and nothing should be holding a
+ * copy of the address in a cache after it closes.
+ */
+export function openViewOnce(conversationId: string, messageId: string): Promise<ViewOnceOpenDto> {
+  return api.post<ViewOnceOpenDto>(
+    `/conversations/${encodeURIComponent(conversationId)}/messages/${encodeURIComponent(
+      messageId,
+    )}/view-once`,
+  )
+}
+
+/** Tells the sender a screenshot was attempted while their view-once file was open. */
+export function reportViewOnceScreenshot(
+  conversationId: string,
+  messageId: string,
+): Promise<MessageDto> {
+  return api.post<MessageDto>(
+    `/conversations/${encodeURIComponent(conversationId)}/messages/${encodeURIComponent(
+      messageId,
+    )}/view-once/screenshot`,
+  )
+}
+
 /** Upload an attachment for a post or a correction. */
 export function uploadPostMedia(input: PresignedUpload): Promise<Media> {
   return uploadToSigningRoute('/posts/upload-url', input)
@@ -3186,6 +3238,21 @@ export interface AdminReportDto {
     editedAt: string | null
     ownerHiddenAt: string | null
     moderatorHiddenAt: string | null
+  } | null
+  /**
+   * The chat message a report was raised from, on the detail read, with its
+   * files — a view-once one's too, which the server keeps for this. Absent
+   * from an API older than it.
+   */
+  message?: {
+    id: string
+    type: string
+    senderId: string
+    body: string
+    attachments: Media[]
+    viewOnce: { replay: boolean; opens: number; screenshotAt: string | null } | null
+    deletedAt: string | null
+    createdAt: string
   } | null
   suspension?: { until: string; permanent: boolean; reason: string } | null
   otherOpenReports?: number

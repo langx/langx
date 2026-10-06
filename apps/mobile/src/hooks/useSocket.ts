@@ -32,6 +32,7 @@ import {
 import { clearFromTray, sweepTray } from '../lib/notifications'
 import { applyPresence } from '../lib/presenceCache'
 import { closeSocket, onSocket, restartSocket } from '../lib/socket'
+import { withoutViewOnceFallback } from '../lib/viewOnce'
 
 /**
  * Opens the app's single socket and turns realtime events into cache updates.
@@ -143,7 +144,8 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       // Manager reconnect, so it is caught here.
       if (attached++ > 0) socket.once('connect', resync)
 
-      on('message:new', (message: MessageDto) => {
+      on('message:new', (incoming: MessageDto) => {
+        const message = withoutViewOnceFallback(incoming)
         const conversationId =
           typeof message.conversationId === 'string'
             ? message.conversationId
@@ -290,7 +292,8 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
        * A client that applies "the message is now this" cannot drift; one that
        * applied a patch would have to be right about the order they arrive in.
        */
-      on('message:updated', (message: MessageDto) => {
+      on('message:updated', (incoming: MessageDto) => {
+        const message = withoutViewOnceFallback(incoming)
         const conversationId = String(message.conversationId)
         queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
           { queryKey: keys.messages(conversationId) },

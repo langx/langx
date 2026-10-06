@@ -301,6 +301,7 @@ export default function NewChatScreen() {
                 onAddToCalendar={ignore}
                 onJumpTo={ignore}
                 onOpenMedia={ignore}
+                onOpenViewOnce={ignore}
               />
             </View>
           ) : null}
