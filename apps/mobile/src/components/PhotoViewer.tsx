@@ -704,7 +704,9 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   stage: { flex: 1, overflow: 'hidden', width: '100%' },
   strip: { bottom: 0, flexDirection: 'row', position: 'absolute', top: 0, width: '300%' },
   slot: { flex: 1 },
-  full: { flex: 1, width: '100%' },
+  // `minHeight: 0`: the web player is a bare `<video>`, and without it a
+  // portrait clip grows past the screen; see the view-once screen's note.
+  full: { flex: 1, minHeight: 0, width: '100%' },
   /*
    * A disc on a scrim rather than a bare glyph: over a light photo the glyph
    * alone disappeared. 36pt plus the hit slop is the platform's 44pt target.
