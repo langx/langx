@@ -1369,6 +1369,7 @@ export function ChatScreen({
           ...first,
           ...(items.length > 1 ? { files: [...items] } : {}),
           ...(body ? { body } : {}),
+          ...(viewOnce ? { viewOnce } : {}),
         },
         new Date(),
       ),
@@ -2944,7 +2945,11 @@ export function ChatScreen({
                               item={row}
                               onRetry={() => {
                                 setPending((list) => removePending(list, row.clientId))
-                                void sendAttachments(row.files ?? [attachmentOf(row)], row.body)
+                                void sendAttachments(
+                                  row.files ?? [attachmentOf(row)],
+                                  row.body,
+                                  row.viewOnce,
+                                )
                               }}
                               onDiscard={discard}
                               onLongPress={() =>

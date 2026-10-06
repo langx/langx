@@ -45,7 +45,28 @@ export function PendingMediaBubble({
 
   const body = (
     <>
-      {item.kind === 'image' ? (
+      {item.viewOnce ? (
+        // A card, not the picture: once it lands the sender's bubble shows
+        // no picture either, and the upload is no reason to show one.
+        <View style={styles.audioRow}>
+          <Feather
+            name={item.kind === 'video' ? 'video' : 'camera'}
+            size={16}
+            color={colors.textMuted}
+          />
+          <Text style={styles.viewOnceTitle}>
+            {t(item.kind === 'video' ? 'viewOnce.video' : 'viewOnce.photo')}
+          </Text>
+          <View style={styles.track}>
+            <View
+              style={[
+                styles.trackFill,
+                { backgroundColor: colors.accent, width: `${Math.max(2, percent)}%` },
+              ]}
+            />
+          </View>
+        </View>
+      ) : item.kind === 'image' ? (
         <View>
           <Image
             source={{ uri: item.uri }}
@@ -155,6 +176,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // read the note yet, and what fills here is the upload, not the playhead.
   track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
+  viewOnceTitle: { ...font.body, color: colors.text, fontSize: 15, fontWeight: '600' },
   caption: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
   status: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   label: { ...font.caption, color: colors.textFaint, fontVariant: ['tabular-nums'] },
