@@ -12,6 +12,7 @@ import {
 import { useT } from '../i18n'
 import type { PendingMedia } from '../lib/pendingMedia'
 import { DiscardUnsentButton } from './DiscardUnsentButton'
+import { UploadRing } from './UploadRing'
 import { percentOf } from '../lib/uploadProgress'
 import { makeStyles, useTheme } from '../lib/theme'
 
@@ -22,7 +23,7 @@ import { makeStyles, useTheme } from '../lib/theme'
  * reader is waiting for is a message, so the waiting should look like one. The
  * picture is the local file the picker returned, so it appears the instant it
  * is chosen rather than after a round trip — a video as its first frame. The
- * spinner and the percentage sit on the picture itself, the way every
+ * ring and the percentage sit on the picture itself, the way every
  * messenger draws an upload: a video used to fall through to the voice-note
  * row and showed a microphone while it went up.
  *
@@ -110,20 +111,20 @@ export function PendingMediaBubble({
           )}
           {failed ? null : (
             <View style={[styles.veil, styles.progressOverlay]} pointerEvents="none">
-              <View style={styles.progressBadge}>
-                <ActivityIndicator size="large" color="#fff" />
-                <Text style={styles.progressText}>
-                  {/*
-                    The number alone, as `PendingPhotoTile` draws it: the
-                    sentence does not fit in the circle, and the picture
-                    already says what is being uploaded. Reading has no number
-                    yet, so it is an ellipsis rather than 0%.
-                  */}
-                  {item.progress.phase === 'reading'
+              {/*
+                The number alone, as `PendingPhotoTile` draws it: the sentence
+                does not fit in the ring, and the picture already says what is
+                being uploaded. Reading has no number yet, so it is an ellipsis
+                rather than 0%.
+              */}
+              <UploadRing
+                fraction={item.progress.phase === 'reading' ? null : item.progress.fraction}
+                label={
+                  item.progress.phase === 'reading'
                     ? t('composer.percentPending')
-                    : t('composer.percentOnly', { percent })}
-                </Text>
-              </View>
+                    : t('composer.percentOnly', { percent })
+                }
+              />
             </View>
           )}
         </View>
@@ -225,25 +226,6 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     top: 0,
   },
   progressOverlay: { alignItems: 'center', justifyContent: 'center' },
-  progressBadge: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    borderRadius: 44,
-    gap: 4,
-    height: 88,
-    justifyContent: 'center',
-    width: 88,
-  },
-  /*
-   * Tabular figures, as in `AttachmentPreview`: 9%, 49% and 100% are three
-   * widths, and a centred proportional number slides as it counts.
-   */
-  progressText: {
-    color: '#fff',
-    fontSize: 12,
-    fontVariant: ['tabular-nums'],
-    fontWeight: '700',
-  },
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   // A plain track rather than `AudioBubble`'s waveform: the server has not
   // read the note yet, and what fills here is the upload, not the playhead.
