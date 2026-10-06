@@ -24,6 +24,7 @@ const ROWS = [
   'Show my activity map',
   'Show this week’s chart',
   'Browse incognito',
+  'Only people I talk to can write',
   'Blocked people',
   'App language',
   'Delete account',

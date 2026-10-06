@@ -1707,6 +1707,7 @@ export const ar: Localized<EnMessages> = {
     notFound: 'الملف غير موجود.',
     interests: 'الاهتمامات',
     sendMessage: 'إرسال رسالة',
+    newChatsRefused: 'لا يمكن بدء محادثة جديدة مع {name} حاليًا.',
     sendFailed: 'تعذّر إرسال الرسالة.',
     blockConfirm: 'حظر {name}؟ لن يظهر أي منكما في قوائم الآخر.',
     blocked: 'تم حظر {name}.',
@@ -2076,6 +2077,9 @@ export const ar: Localized<EnMessages> = {
     incognitoBody: 'لن تظهر ضمن زوّارهم.',
     hideOnline: 'أخفني عندما أكون متصلًا',
     hideOnlineBody: 'يخفي النقطة الخضراء وآخر مرة كنت فيها هنا. ستظل ترى حالتهم.',
+    refuseNewChats: 'يراسلني فقط من أتحدث معهم',
+    refuseNewChatsBody:
+      'لا يمكن لأحد جديد أن يرسل إليك أول رسالة. يمكنك مراسلة من تشاء، ويمكنهم الرد عليك.',
     allowCalls: 'السماح بالمكالمات',
     allowCallsBody:
       'مكالمات صوتية ومكالمات فيديو مع من تتحدث معهم. عند الإيقاف لن يستطيع أحد الاتصال بك، ولن تستطيع الاتصال بأحد.',

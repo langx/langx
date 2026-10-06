@@ -381,6 +381,25 @@ export async function startConversation(
   }
 
   /*
+   * After the existing-conversation check, so somebody who already talks to
+   * them is handed their thread rather than told the door is shut — the
+   * switch is about strangers, and they are not one. Before the quota, so a
+   * refused first message costs no slot.
+   *
+   * This is the only gate it needs. Every other way of writing to somebody —
+   * the socket, scheduled messages, forwarding, calls — needs a conversation
+   * that already exists, and an official account's message is delivered by
+   * `deliverOfficialMessage`, which does not come through here on purpose: a
+   * welcome, a warning or a gift notice is not a stranger writing.
+   */
+  if (recipient.privacy?.refuseNewChats === true) {
+    throw new ApiError(
+      ERROR_CODES.NEW_CHATS_REFUSED,
+      'This account only takes messages from people it already talks to',
+    )
+  }
+
+  /*
    * Writing to LangX costs nothing. The initiation quota exists to pace how
    * many strangers one person opens a thread with; the assistant is not one
    * of them, and spending a slot to ask a question — or to report somebody —
