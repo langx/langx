@@ -1843,7 +1843,7 @@ export const fr: Localized<EnMessages> = {
       'Les nouvelles personnes ne te voient plus. Avec celles à qui tu parles déjà, rien ne change.',
     hideFromDiscover: 'Me masquer de Découvrir',
     hideFromDiscoverBody:
-      'Personne ne te trouvera — ni dans Découvrir, ni dans les classements, ni en cherchant ton nom d’utilisateur. Tes publications restent dans le Fil.',
+      'Personne ne te trouvera — ni dans Découvrir, ni dans les classements, ni dans les listes d’abonnés des autres, ni en cherchant ton nom d’utilisateur. Tes publications restent dans le Fil.',
     boost: 'Mettre mon profil en avant',
     boostBody:
       'Affiche-moi dans le bandeau des profils mis en avant, en haut de Découvrir, aux personnes dont les langues correspondent aux miennes. Actif avec Pro.',

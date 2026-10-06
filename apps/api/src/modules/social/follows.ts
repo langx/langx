@@ -110,15 +110,21 @@ export async function readFollowState(
   const hidden = await blockedUserIds(db, viewerId)
   const notHidden = hidden.length > 0 ? { $nin: hidden } : undefined
 
+  /*
+   * Your own counts are plain counts — your own lists show everyone (see
+   * `listEdges`). Anybody else's leave out the people their list leaves out,
+   * for the block's reason above: a count beside a shorter list says somebody
+   * is missing from it, and that is the thing "hide me from Discover" is for.
+   * A join rather than a `countDocuments`, so only when it is needed.
+   */
+  const count = (match: Document, personField: PersonField) =>
+    viewerId === targetId
+      ? follows.countDocuments({ ...match, ...(notHidden ? { [personField]: notHidden } : {}) })
+      : countListed(db, viewerId, match, personField, notHidden)
+
   const [followers, following, mine] = await Promise.all([
-    follows.countDocuments({
-      followeeId: targetId,
-      ...(notHidden ? { followerId: notHidden } : {}),
-    }),
-    follows.countDocuments({
-      followerId: targetId,
-      ...(notHidden ? { followeeId: notHidden } : {}),
-    }),
+    count({ followeeId: targetId }, 'followerId'),
+    count({ followerId: targetId }, 'followeeId'),
     viewerId === targetId
       ? Promise.resolve(null)
       : follows.findOne({ followerId: viewerId, followeeId: targetId }),
@@ -127,13 +133,61 @@ export async function readFollowState(
   return { followers, following, viewerFollows: mine !== null }
 }
 
+type PersonField = 'followerId' | 'followeeId'
+
+/**
+ * Who a list shows, as a profile filter. Somebody with "hide me from
+ * Discover" on is left out of other people's lists — a follower list is a
+ * place strangers browse to find people, and the switch promises they will
+ * not — but never out of their own view of it, and never out of the list's
+ * owner's. The owner chose to follow them or was told they followed; and a
+ * person you follow but cannot see in your own list is somebody you cannot
+ * unfollow.
+ */
+function listedProfiles(viewerId: string, ownerId: string): Document {
+  if (viewerId === ownerId) return { deletedAt: { $exists: false } }
+  return {
+    deletedAt: { $exists: false },
+    $or: [{ 'settings.discoverable': true }, { _id: viewerId }],
+  }
+}
+
+/** The number of rows `listEdges` would show `viewerId`, across every page. */
+async function countListed(
+  db: Db,
+  viewerId: string,
+  match: Document,
+  personField: PersonField,
+  notHidden: { $nin: string[] } | undefined,
+): Promise<number> {
+  const ownerId = String(personField === 'followerId' ? match.followeeId : match.followerId)
+  const [row] = await db
+    .collection<Follow>(COLLECTIONS.follows)
+    .aggregate<{ n: number }>([
+      { $match: { ...match, ...(notHidden ? { [personField]: notHidden } : {}) } },
+      {
+        $lookup: {
+          from: COLLECTIONS.profiles,
+          localField: personField,
+          foreignField: '_id',
+          pipeline: [{ $match: listedProfiles(viewerId, ownerId) }, { $project: { _id: 1 } }],
+          as: 'person',
+        },
+      },
+      { $match: { 'person.0': { $exists: true } } },
+      { $count: 'n' },
+    ])
+    .toArray()
+  return row?.n ?? 0
+}
+
 export async function listFollowers(
   db: Db,
   viewerId: string,
   targetId: string,
   query: ListFollowsQuery,
 ): Promise<PeoplePage> {
-  return listEdges(db, viewerId, { followeeId: targetId }, 'followerId', query)
+  return listEdges(db, viewerId, targetId, { followeeId: targetId }, 'followerId', query)
 }
 
 export async function listFollowing(
@@ -142,14 +196,15 @@ export async function listFollowing(
   targetId: string,
   query: ListFollowsQuery,
 ): Promise<PeoplePage> {
-  return listEdges(db, viewerId, { followerId: targetId }, 'followeeId', query)
+  return listEdges(db, viewerId, targetId, { followerId: targetId }, 'followeeId', query)
 }
 
 async function listEdges(
   db: Db,
   viewerId: string,
+  ownerId: string,
   match: Document,
-  personField: 'followerId' | 'followeeId',
+  personField: PersonField,
   query: ListFollowsQuery,
 ): Promise<PeoplePage> {
   const hidden = await blockedUserIds(db, viewerId)
@@ -173,14 +228,17 @@ async function listEdges(
 
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .find({ _id: { $in: rows.map((row) => row[personField]) }, deletedAt: { $exists: false } })
+    .find({
+      _id: { $in: rows.map((row) => row[personField]) },
+      ...listedProfiles(viewerId, ownerId),
+    })
     .toArray()
   const byId = new Map(profiles.map((profile) => [profile._id, profile]))
 
-  // A row whose profile is gone is dropped rather than rendered, so the page
-  // can come back shorter than `limit` — the accepted behaviour in `getViewers`
-  // and the likers list for the same reason: a name in a list of names is only
-  // the name, and there is nothing left to show.
+  // A row whose profile is gone, or is hidden from this viewer, is dropped
+  // rather than rendered, so the page can come back shorter than `limit` — the
+  // accepted behaviour in `getViewers` and the likers list for the same reason:
+  // a name in a list of names is only the name, and there is nothing to show.
   const items = rows.flatMap((row) => {
     const profile = byId.get(row[personField])
     if (!profile) return []

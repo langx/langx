@@ -2026,7 +2026,7 @@ export const en = {
       'Stay out of sight of new people. Everything with the people you already talk to stays the same.',
     hideFromDiscover: 'Hide me from Discover',
     hideFromDiscoverBody:
-      'Nobody will find you — not in Discover, not on the leaderboards, and not by searching your username. Your posts stay in the Feed.',
+      'Nobody will find you — not in Discover, not on the leaderboards, not in other people’s follower lists, and not by searching your username. Your posts stay in the Feed.',
     boost: 'Boost my profile',
     boostBody:
       'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Pro.',
