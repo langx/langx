@@ -1,4 +1,5 @@
 import { normalizePlanTier, type StoredPaidPlanTier, type StoredPlanTier } from '@langx/shared'
+import { effectiveHiddenMode } from './hiddenMode'
 
 /**
  * What a profile looks like to the person it belongs to, on the wire.
@@ -29,9 +30,23 @@ export function toOwnProfileWire<
   T extends {
     entitlement?: { tier: StoredPlanTier } | undefined
     restoredFromV1?: { lifetimeGranted?: StoredPaidPlanTier | null | undefined } | undefined
+    privacy?: { hiddenMode?: boolean } | undefined
   },
 >(profile: T): T {
   const wire = { ...profile }
+  /*
+   * The hidden-mode switch, always present, worked out for a profile that
+   * never stored it — see `effectiveHiddenMode`. Before the tier below is
+   * rewritten, since incognito's part in it depends on the real one.
+   */
+  if (wire.privacy && wire.entitlement) {
+    wire.privacy = {
+      ...wire.privacy,
+      hiddenMode: effectiveHiddenMode(
+        profile as unknown as Parameters<typeof effectiveHiddenMode>[0],
+      ),
+    }
+  }
   if (wire.entitlement && normalizePlanTier(wire.entitlement.tier) !== 'free') {
     wire.entitlement = { ...wire.entitlement, tier: LEGACY_WIRE_TIER }
   }

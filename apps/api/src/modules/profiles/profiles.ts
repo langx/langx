@@ -42,6 +42,7 @@ import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mon
 import { COLLECTIONS } from '../../db/collections'
 import { nearestCity } from '../cities/cities'
 import { effectiveTier } from './entitlement'
+import { hiddenModePaths, type HiddenModeChoices } from './hiddenMode'
 import { nameTokens } from './nameTokens'
 import { ApiError } from '../../lib/ApiError'
 import { hidesOnlineStatus } from './presenceVisibility'
@@ -222,6 +223,13 @@ export interface Profile {
     refuseCalls?: boolean
     /** Nobody new can start a conversation with this account. See `updateProfileSchema`. */
     refuseNewChats?: boolean
+    /**
+     * The switch over the four above. Absent on every profile from before it
+     * existed — read it through `effectiveHiddenMode`, never directly.
+     */
+    hiddenMode?: boolean
+    /** What the four were while the switch is off. Only `hiddenModePaths` writes it. */
+    hiddenModeChoices?: HiddenModeChoices
   }
   entitlement: {
     /** May still be the retired `pro_plus` — read it through `effectivePlanTier`. */
@@ -1292,6 +1300,8 @@ export async function updateProfile(
         ...(input.displayName !== undefined ? { nameTokens: nameTokens(input.displayName) } : {}),
         ...privacyPaths,
         ...settingsPaths,
+        // Last of the three, so the switch's rule wins where a request disagrees.
+        ...hiddenModePaths(current, { privacy, discoverable: settings?.discoverable }),
         ...equippedPaths,
         ...(timezoneUpdatedAt ? { timezoneUpdatedAt } : {}),
         updatedAt: now,

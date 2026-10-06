@@ -6560,3 +6560,42 @@ row.
 The feed is not filtered. A post is something a person chose to publish, and
 hiding it would quietly retract what they said in public; the switch's copy
 names Discover, the leaderboards and username search, and nothing else.
+
+## Hidden mode is a gate over four switches
+
+Settings → Privacy opens with "Hidden mode", and under it, set in: hide me from
+Discover, hide when I'm online, only people I talk to can write, and browse
+incognito. With the switch off all four are off — greyed out on the screen,
+and off for real on the server. Turned back on, they come back as they were.
+Changing one of the four leaves the switch alone.
+
+**The four fields keep holding what is in force.** `settings.discoverable`,
+`hideOnlineStatus`, `refuseNewChats` and `incognito` are still the values
+discovery's `$match`, presence, `startConversation` and `recordProfileView`
+read, so none of those had to learn about the switch and no index moved. What
+the switch adds is somewhere to keep the person's choices while it is off:
+`privacy.hiddenModeChoices`, written only by `hiddenModePaths` and outside the
+PATCH schema, so no request can name it. On the server, because a choice kept
+on one phone is lost on the next and the switch would then restore something
+nobody picked.
+
+**No backfill, and that is the important part.** Everybody who switched
+Discover or their online status off before the switch existed has no
+`hiddenMode` stored. Read as off, their rows would draw greyed out and the next
+write would put them back on: an app update would have made them visible.
+`effectiveHiddenMode` reads a missing switch as "on if anything is hidden", and
+the first time one of the four is touched it is pinned, so a switch nobody
+touched never flips by itself.
+
+**An old app cannot break the rule.** A build from before the switch writes the
+four directly. "Off means nothing is hidden" survives it: hiding anything while
+the switch is off turns the switch on.
+
+**The first time on is all four**, incognito only on a plan that has it — and so
+are kept choices that hide nothing, because restoring "nothing hidden" would
+leave somebody who asked to be hidden exactly as visible as before. A retried
+"off" keeps what the first one kept rather than overwriting it with the
+all-visible values in force by then.
+
+Boost is not under the switch: it makes a person more visible, not less. It is
+greyed out while they are hidden from Discover, which the strip is part of.
