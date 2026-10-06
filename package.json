@@ -1,6 +1,6 @@
 {
   "name": "langx",
-  "version": "2.8",
+  "version": "2.9",
   "private": true,
   "description": "LangX v2 \u2014 language exchange app (Expo mobile/web + Fastify API + MongoDB Atlas)",
   "license": "BSD-3-Clause",
