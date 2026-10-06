@@ -13,7 +13,7 @@ import { useDisplayNames, useLocale, useT } from '../../src/i18n'
 import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
 import { monthName, recapMonthParam, recapYearParam } from '../../src/lib/recapMonth'
-import { isQuietRecap, recapCardInput } from '../../src/lib/recapStory'
+import { isQuietRecap, recapCardInput, type RecapSlide } from '../../src/lib/recapStory'
 import { shareLink } from '../../src/lib/share'
 import { recapShareText } from '../../src/lib/shareText'
 import { DISPLAY_FONT, palettes } from '../../src/lib/theme'
@@ -105,6 +105,19 @@ export default function RecapScreen() {
       })
     : null
 
+  // Every slide shares through the same sheet; only the summary is the
+  // poster, and any other slide asks the server for a card of itself.
+  const share = (slide?: RecapSlide): void => {
+    if (!fallback) return
+    setCard({
+      kind: 'recap',
+      headline: name,
+      caption: yearKey ? t('recap.year.cardCaption') : t('recap.cardCaption'),
+      fallback,
+      recap: recapCardInput(t, data, locale, languages, slide),
+    })
+  }
+
   return (
     <>
       <RecapStory
@@ -115,16 +128,9 @@ export default function RecapScreen() {
         {...(languages ? { languages: t('recap.card.languages', languages) } : {})}
         {...(blackLoaded ? { blackFont: 'Nunito_900Black' } : {})}
         onClose={close}
-        onShare={() => {
-          if (!fallback) return
-          setCard({
-            kind: 'recap',
-            headline: name,
-            caption: yearKey ? t('recap.year.cardCaption') : t('recap.cardCaption'),
-            fallback,
-            recap: recapCardInput(t, data, locale, languages),
-          })
-        }}
+        onShare={() => share()}
+        onShareSlide={share}
+        paused={card !== null}
         onJustLink={() => {
           if (fallback) void shareLink(fallback)
         }}

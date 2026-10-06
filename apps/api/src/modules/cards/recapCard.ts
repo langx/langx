@@ -1,4 +1,12 @@
-import { recapHighlights, type RecapCardInput } from '@langx/shared'
+import {
+  recapCalendar,
+  recapHighlights,
+  recapSlides,
+  yearCalendar,
+  type MonthlyRecapDto,
+  type RecapCardInput,
+  type YearlyRecapDto,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { isOwnBucketUrl } from '../../lib/assertOwnBucket'
@@ -6,6 +14,7 @@ import { sniffImageType } from '../../lib/sniffImageType'
 import { recapForMonth, recapForYear } from '../notifications/newsletter'
 import type { Profile } from '../profiles/profiles'
 import type { RecapCardContent } from './recapDesign'
+import type { RecapSlideContent } from './recapSlideDesign'
 
 /** A face on a card is drawn at most ~140px across; nothing bigger is worth the wait. */
 const MAX_AVATAR_BYTES = 1024 * 1024
@@ -64,7 +73,7 @@ export async function recapCardContent(
     recap: RecapCardInput
     storagePublicBaseUrl: string | undefined
   },
-): Promise<RecapCardContent> {
+): Promise<RecapCardContent & { slide?: RecapSlideContent }> {
   const { recap, userId } = input
   // Four digits is a year's card, whose headline is the year itself.
   const yearly = recap.month.length === 4
@@ -75,8 +84,11 @@ export async function recapCardContent(
       .findOne({ _id: userId }, { projection: { avatarUrl: 1 } }),
   ])
   const format = new Intl.NumberFormat(recap.locale)
+  // French groups digits with a narrow no-break space, which Nunito does not
+  // have: satori drew "1204". The ordinary no-break space it does have.
+  const show = (value: number): string => format.format(value).replace(/\u202f/g, '\u00a0')
   const avatar = await fetchCardAvatar(profile?.avatarUrl, input.storagePublicBaseUrl)
-  return {
+  const content: RecapCardContent = {
     month: capitalise(input.monthName, recap.locale),
     ...(yearly
       ? {}
@@ -90,13 +102,54 @@ export async function recapCardContent(
     ...(recap.languages ? { languages: recap.languages } : {}),
     stats: recapHighlights(numbers).map((stat) => ({
       stat,
-      // French groups digits with a narrow no-break space, which Nunito does not
-      // have: satori drew "1204". The ordinary no-break space it does have.
-      value: format.format(numbers[stat]).replace(/\u202f/g, '\u00a0'),
+      value: show(numbers[stat]),
       label: recap.labels[stat],
     })),
     handle: input.handle,
     ...(avatar ? { avatar } : {}),
     locale: recap.locale,
+  }
+  const slide = slideContent(content, numbers, recap, show)
+  return slide ? { ...content, slide } : content
+}
+
+/**
+ * The card of one slide, when one was asked for and the month earned it.
+ *
+ * A slide the story would not have shown — the corrections of a month with
+ * none, from a build that disagrees with this one about the slides — gets the
+ * summary poster instead: a card is never a zero to be congratulated on.
+ */
+function slideContent(
+  content: RecapCardContent,
+  numbers: MonthlyRecapDto | YearlyRecapDto,
+  recap: RecapCardInput,
+  show: (value: number) => string,
+): RecapSlideContent | undefined {
+  const slide = recap.slide
+  if (!slide || slide === 'summary' || !recapSlides(numbers).includes(slide)) return undefined
+  const base = { ...content, slide }
+  switch (slide) {
+    case 'intro':
+      return base
+    case 'messages':
+      return { ...base, value: show(numbers.messages), label: recap.labels.messages }
+    case 'corrections':
+      return { ...base, value: show(numbers.corrections), label: recap.labels.corrections }
+    case 'echo':
+      return { ...base, value: show(numbers.echoReviews), label: recap.labels.echoReviews }
+    case 'streak': {
+      // The slide's number: the streak while one is alive, the active days
+      // otherwise — the same choice `StreakSlide` makes.
+      const streaking = numbers.currentStreak > 0
+      return {
+        ...base,
+        value: show(streaking ? numbers.currentStreak : numbers.activeDays),
+        label: streaking ? recap.labels.currentStreak : recap.labels.activeDays,
+        ...('activeMonths' in numbers
+          ? { months: yearCalendar(numbers) }
+          : { days: recapCalendar(numbers) }),
+      }
+    }
   }
 }

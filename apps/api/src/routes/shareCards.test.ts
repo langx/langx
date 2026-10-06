@@ -13,6 +13,7 @@ import { cardElement } from '../modules/cards/design'
 import { recapCardContent } from '../modules/cards/recapCard'
 import { recapForYear } from '../modules/notifications/newsletter'
 import { recapCardElement } from '../modules/cards/recapDesign'
+import { recapSlideElement } from '../modules/cards/recapSlideDesign'
 import { renderCard } from '../modules/cards/render'
 import type { StorageProviderWithPut, UploadUrl } from '../storage/StorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -406,6 +407,52 @@ describe('share cards', () => {
       value: new Intl.NumberFormat('fr').format(messages).replace(/\u202f/g, '\u00a0'),
     })
   })
+
+  it('draws one slide of the story as its own card, and only a slide the month earned', async () => {
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ handle: 'cardhaver' })
+    const userId = profile!._id
+    await handle.db.collection(COLLECTIONS.dailyActivity).insertMany([
+      { userId, day: '2026-05-30', messages: 12, corrections: 0 },
+      { userId, day: '2026-05-31', messages: 30, corrections: 0 },
+    ] as never[])
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: userId }, { $set: { 'streak.current': 2 } })
+    const content = (slide: 'messages' | 'corrections' | 'streak') =>
+      recapCardContent(handle.db, {
+        userId,
+        handle: '@cardhaver',
+        monthName: 'May',
+        recap: { ...RECAP_WORDS, month: '2026-05', slide },
+        storagePublicBaseUrl: undefined,
+      })
+
+    // The number is the ledger's, under the label the app sent for it.
+    expect((await content('messages')).slide).toMatchObject({
+      slide: 'messages',
+      value: '42',
+      label: 'messages sent',
+    })
+    // The streak's card carries the month's calendar, the run ending on the 31st.
+    const streak = (await content('streak')).slide
+    expect(streak).toMatchObject({ value: '2', label: 'day streak, still going' })
+    expect(streak?.days).toHaveLength(31)
+    expect(streak?.days?.slice(-3)).toEqual(['idle', 'streak', 'streak'])
+    // No corrections this month, so no corrections card: the summary instead.
+    expect((await content('corrections')).slide).toBeUndefined()
+
+    for (const [shape, expected] of [
+      ['story', [1080, 1920]],
+      ['square', [1080, 1080]],
+      ['wide', [1200, 675]],
+    ] as const) {
+      const png = await renderCard(await recapSlideElement(streak!, shape), shape)
+      const view = new DataView(png.buffer, png.byteOffset, png.byteLength)
+      expect([view.getUint32(16), view.getUint32(20)]).toEqual([...expected])
+    }
+  }, 60_000)
 
   it('draws the recap poster at the size every shape claims', async () => {
     for (const [shape, expected] of [

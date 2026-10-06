@@ -32,6 +32,7 @@ import {
   recapSlides,
   swipeIntent,
   tapDirection,
+  type RecapSlide,
   type StoryRecap,
 } from '../../lib/recapStory'
 import { DISPLAY_FONT, useTheme } from '../../lib/theme'
@@ -63,7 +64,12 @@ export interface RecapStoryProps {
   /** Nunito Black, once it has loaded. */
   blackFont?: string
   onClose: () => void
+  /** The last slide's button: the summary poster. */
   onShare: () => void
+  /** Any other slide's share button: a card of that slide. */
+  onShareSlide: (slide: RecapSlide) => void
+  /** Held still while something is open over it — the share sheet. */
+  paused: boolean
   onJustLink: () => void
   /** Once, as the story goes away: how far it got. */
   onViewed: (seen: { slides: number; completed: boolean }) => void
@@ -74,7 +80,9 @@ export interface RecapStoryProps {
  *
  * Tap the far third to go back and anywhere else to go on; hold to pause;
  * swipe across to step and down to leave. Each slide advances by itself after
- * `SLIDE_MS` except the last, which is the share card and waits.
+ * `SLIDE_MS` except the last, which is the share card and waits. Every
+ * other slide can be shared on its own from the button beside Close, and the
+ * story holds still while the sheet for it is open.
  *
  * **Auto-advance is off under reduced motion and with a screen reader.** A
  * timer that moves the page on is motion of its own, and it takes the page
@@ -203,6 +211,14 @@ export function RecapStory(props: RecapStoryProps) {
     held.current = false
     if (!last && autoplay) run(index, false)
   }, [index, last, autoplay, run])
+
+  // The share sheet is a hold the reader did not have to keep a finger on:
+  // the slide they are sharing should still be there when it closes.
+  const { paused } = props
+  useEffect(() => {
+    if (paused) pause()
+    else resume()
+  }, [paused, pause, resume])
 
   // The ground cross-fades rather than cuts: 500ms, as designed.
   const ground = useSharedValue(look.ground)
@@ -355,23 +371,18 @@ export function RecapStory(props: RecapStoryProps) {
               />
               <Text style={{ color: look.ink, fontFamily: DISPLAY_FONT, fontSize: 17 }}>LangX</Text>
             </View>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('recap.story.close')}
-              hitSlop={8}
-              onPress={onClose}
-              style={({ pressed }) => ({
-                alignItems: 'center',
-                backgroundColor: look.chrome,
-                borderRadius: 18,
-                height: 36,
-                justifyContent: 'center',
-                transform: [{ scale: pressed ? 0.94 : 1 }],
-                width: 36,
-              })}
-            >
-              <Feather name="x" size={18} color={look.ink} />
-            </Pressable>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              {/* The last slide has its own, larger share button. */}
+              {last ? null : (
+                <ChromeButton
+                  icon="share"
+                  label={t('recap.story.shareSlide')}
+                  look={look}
+                  onPress={() => props.onShareSlide(slide)}
+                />
+              )}
+              <ChromeButton icon="x" label={t('recap.story.close')} look={look} onPress={onClose} />
+            </View>
           </View>
         </View>
 
@@ -439,6 +450,39 @@ export function RecapStory(props: RecapStoryProps) {
         ) : null}
       </Animated.View>
     </Animated.View>
+  )
+}
+
+/** A round glyph button in the story's top row. */
+function ChromeButton({
+  icon,
+  label,
+  look,
+  onPress,
+}: {
+  icon: 'x' | 'share'
+  label: string
+  look: { chrome: string; ink: string }
+  onPress: () => void
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      hitSlop={8}
+      onPress={onPress}
+      style={({ pressed }) => ({
+        alignItems: 'center',
+        backgroundColor: look.chrome,
+        borderRadius: 18,
+        height: 36,
+        justifyContent: 'center',
+        transform: [{ scale: pressed ? 0.94 : 1 }],
+        width: 36,
+      })}
+    >
+      <Feather name={icon} size={icon === 'x' ? 18 : 16} color={look.ink} />
+    </Pressable>
   )
 }
 

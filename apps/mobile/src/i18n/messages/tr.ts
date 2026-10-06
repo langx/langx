@@ -2784,6 +2784,7 @@ export const tr: Localized<EnMessages> = {
         other: 'gün, bu ay pratik yaptın.',
       },
       justLink: 'Sadece bağlantıyı gönder',
+      shareSlide: 'Bu slaytı paylaş',
     },
     card: {
       kicker: 'Ayım',

@@ -3223,6 +3223,7 @@ export const ar: Localized<EnMessages> = {
         other: 'يوم تدرّبت فيه هذا الشهر.',
       },
       justLink: 'أرسل الرابط فقط',
+      shareSlide: 'شارك هذه الشريحة',
     },
     card: {
       kicker: 'شهري',

@@ -128,6 +128,13 @@ describe('recapCardInput', () => {
     // Russian takes the genitive plural after 248.
     expect(input.labels.messages).toBe('сообщений')
   })
+
+  it('names the slide a card is of, and leaves it out for the summary poster', () => {
+    const t = createTranslate('en')
+    expect(recapCardInput(t, SEPTEMBER, 'en', undefined, 'echo').slide).toBe('echo')
+    // An older API reads no `slide` and draws the poster, as it always did.
+    expect(recapCardInput(t, SEPTEMBER, 'en')).not.toHaveProperty('slide')
+  })
 })
 
 describe('Your Year', () => {
