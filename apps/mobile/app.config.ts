@@ -683,10 +683,15 @@ const config: ExpoConfig = {
            * WebRTC's Java side is reached from C++ through JNI, by name, which
            * R8 cannot see — so it would rename or drop classes the native
            * library then fails to find, at the first call rather than at
-           * build time. LiveKit's build moves WebRTC under `livekit.org.webrtc`.
+           * build time. LiveKit's build moves WebRTC under `livekit.org.webrtc`,
+           * and its JNI registration under `livekit.org.jni_zero`: without the
+           * second rule `JniInit` is stripped and the release app dies loading
+           * the library, on launch, before any call (found on 2.9's first
+           * release build).
            */
           extraProguardRules: [
             '-keep class livekit.org.webrtc.** { *; }',
+            '-keep class livekit.org.jni_zero.** { *; }',
             '-keep class com.oney.WebRTCModule.** { *; }',
           ].join('\n'),
         },
