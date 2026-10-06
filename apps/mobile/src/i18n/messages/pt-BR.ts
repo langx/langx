@@ -2796,6 +2796,7 @@ export const ptBR: Localized<EnMessages> = {
         other: 'dias de prática neste mês.',
       },
       justLink: 'Enviar só o link',
+      shareSlide: 'Compartilhar este slide',
     },
     card: {
       kicker: 'Meu mês',

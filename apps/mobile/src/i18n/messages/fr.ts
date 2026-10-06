@@ -2829,6 +2829,7 @@ export const fr: Localized<EnMessages> = {
         other: 'jours de pratique ce mois-ci.',
       },
       justLink: 'Envoyer juste le lien',
+      shareSlide: 'Partager cette diapositive',
     },
     card: {
       kicker: 'Mon mois',

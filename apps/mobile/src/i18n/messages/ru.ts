@@ -3091,6 +3091,7 @@ export const ru: Localized<EnMessages> = {
         other: 'дня практики в этом месяце.',
       },
       justLink: 'Отправить только ссылку',
+      shareSlide: 'Поделиться этим слайдом',
     },
     card: {
       kicker: 'Мой месяц',

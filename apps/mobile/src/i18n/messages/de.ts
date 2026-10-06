@@ -2852,6 +2852,7 @@ export const de: Localized<EnMessages> = {
         other: 'Tage mit Übung diesen Monat.',
       },
       justLink: 'Nur den Link senden',
+      shareSlide: 'Diese Folie teilen',
     },
     card: {
       kicker: 'Mein Monat',

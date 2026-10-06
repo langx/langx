@@ -2796,6 +2796,7 @@ export const es: Localized<EnMessages> = {
         other: 'días que practicaste este mes.',
       },
       justLink: 'Enviar solo el enlace',
+      shareSlide: 'Compartir esta diapositiva',
     },
     card: {
       kicker: 'Mi mes',

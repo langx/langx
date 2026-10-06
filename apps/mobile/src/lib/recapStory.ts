@@ -1,6 +1,7 @@
 import {
   RECAP_STATS,
   type Locale,
+  type RecapSlide,
   type MonthlyRecapDto,
   type RecapCardInput,
   type RecapStat,
@@ -17,7 +18,16 @@ import type { MessageKey, TranslateFn } from '../i18n/runtime'
  * arithmetic.
  */
 
-export type RecapSlide = 'intro' | 'messages' | 'corrections' | 'echo' | 'streak' | 'summary'
+// The slide list and the calendars live in `packages/shared`, because the
+// server draws a card of each slide from the same arithmetic.
+export {
+  daysInMonth,
+  recapCalendar,
+  recapSlides,
+  yearCalendar,
+  type CalendarDay,
+  type RecapSlide,
+} from '@langx/shared'
 
 /** What the story plays: a month, or — "Your Year" — twelve of them. */
 export type StoryRecap = MonthlyRecapDto | YearlyRecapDto
@@ -38,70 +48,6 @@ export function recapKey(recap: StoryRecap): string {
  */
 export function isQuietRecap(recap: StoryRecap): boolean {
   return recap.messages + recap.corrections + recap.echoReviews === 0
-}
-
-/**
- * The slides a month earns, in order. A number that is zero does not get a
- * slide of its own: "You gave back 0" is not a thing to be congratulated on.
- */
-export function recapSlides(recap: StoryRecap): RecapSlide[] {
-  const slides: RecapSlide[] = ['intro']
-  if (recap.messages > 0) slides.push('messages')
-  if (recap.corrections > 0) slides.push('corrections')
-  if (recap.echoReviews > 0) slides.push('echo')
-  if (recap.currentStreak > 0 || recap.activeDays > 0) slides.push('streak')
-  slides.push('summary')
-  return slides
-}
-
-/** `2026-02` → 28. */
-export function daysInMonth(month: string): number {
-  const [year = 1970, index = 1] = month.split('-').map(Number)
-  return new Date(Date.UTC(year, index, 0)).getUTCDate()
-}
-
-export type CalendarDay = 'streak' | 'active' | 'idle'
-
-/**
- * One square per day of the month, for the streak slide.
- *
- * "Streak" is the unbroken run of active days that ends on the month's last
- * day, and only while a streak is still alive — capped at the current one,
- * since that is the only streak the server records. A run that ended mid-month
- * is ordinary activity: calling it the streak would draw one the reader lost.
- *
- * The days are UTC days, which is what `dailyActivity` keeps; a square can sit
- * one day off the reader's own calendar near midnight, which is not worth a
- * second tally for a picture.
- */
-export function recapCalendar(recap: MonthlyRecapDto): CalendarDay[] {
-  const total = daysInMonth(recap.month)
-  const active = new Set(recap.activeDates)
-  let streakFrom = total + 1
-  if (recap.currentStreak > 0) {
-    for (let day = total; day >= 1 && active.has(day); day--) {
-      if (total - day + 1 > recap.currentStreak) break
-      streakFrom = day
-    }
-  }
-  return Array.from({ length: total }, (_, index) => {
-    const day = index + 1
-    if (day >= streakFrom) return 'streak'
-    return active.has(day) ? 'active' : 'idle'
-  })
-}
-
-/**
- * One square per month for a year's streak slide, each the share of that
- * month's days that were active (0–1), January first.
- *
- * A year has no "streak" squares: the one streak the server records is at
- * most a few weeks of the last square, and a shade says the year better.
- */
-export function yearCalendar(recap: YearlyRecapDto): number[] {
-  return recap.activeMonths.map((days, index) =>
-    Math.min(1, days / daysInMonth(`${recap.year}-${String(index + 1).padStart(2, '0')}`)),
-  )
 }
 
 /**
@@ -162,18 +108,22 @@ export function recapLabel(t: TranslateFn, stat: RecapStat, count: number): stri
 /**
  * The words that go with a recap card. Every label is resolved for the count
  * the app was shown; the numbers themselves are read again on the server.
+ *
+ * `slide` asks for a card of that one slide rather than the summary poster.
  */
 export function recapCardInput(
   t: TranslateFn,
   recap: StoryRecap,
   locale: Locale,
   languages?: { native: string; learning: string },
+  slide?: RecapSlide,
 ): RecapCardInput {
   const labels = Object.fromEntries(
     RECAP_STATS.map((stat) => [stat, recapLabel(t, stat, recap[stat])]),
   ) as RecapCardInput['labels']
   return {
     month: recapKey(recap),
+    ...(slide ? { slide } : {}),
     locale,
     kicker: isYearRecap(recap) ? t('recap.year.cardKicker') : t('recap.card.kicker'),
     labels,

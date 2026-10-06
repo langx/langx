@@ -3046,6 +3046,7 @@ export const en = {
         other: 'days you practised this month.',
       },
       justLink: 'Just send the link',
+      shareSlide: 'Share this slide',
     },
     /**
      * The words on the recap share card and on the story's last slide, which
