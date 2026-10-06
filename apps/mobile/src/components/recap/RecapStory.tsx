@@ -66,7 +66,7 @@ export interface RecapStoryProps {
   onClose: () => void
   /** The last slide's button: the summary poster. */
   onShare: () => void
-  /** Any other slide's share button: a card of that slide. */
+  /** The share button in the top row: a card of the slide it is on. */
   onShareSlide: (slide: RecapSlide) => void
   /** Held still while something is open over it — the share sheet. */
   paused: boolean
@@ -81,8 +81,8 @@ export interface RecapStoryProps {
  * Tap the far third to go back and anywhere else to go on; hold to pause;
  * swipe across to step and down to leave. Each slide advances by itself after
  * `SLIDE_MS` except the last, which is the share card and waits. Every
- * other slide can be shared on its own from the button beside Close, and the
- * story holds still while the sheet for it is open.
+ * slide can be shared on its own from the button beside Close, and the story
+ * holds still while the sheet for it is open.
  *
  * **Auto-advance is off under reduced motion and with a screen reader.** A
  * timer that moves the page on is motion of its own, and it takes the page
@@ -372,15 +372,14 @@ export function RecapStory(props: RecapStoryProps) {
               <Text style={{ color: look.ink, fontFamily: DISPLAY_FONT, fontSize: 17 }}>LangX</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 10 }}>
-              {/* The last slide has its own, larger share button. */}
-              {last ? null : (
-                <ChromeButton
-                  icon="share"
-                  label={t('recap.story.shareSlide')}
-                  look={look}
-                  onPress={() => props.onShareSlide(slide)}
-                />
-              )}
+              {/* On the last slide too, beside its larger button: the
+                  share is always in the same corner. */}
+              <ChromeButton
+                icon="share"
+                label={t('recap.story.shareSlide')}
+                look={look}
+                onPress={() => props.onShareSlide(slide)}
+              />
               <ChromeButton icon="x" label={t('recap.story.close')} look={look} onPress={onClose} />
             </View>
           </View>

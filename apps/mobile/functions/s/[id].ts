@@ -71,6 +71,11 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const size = DIMENSIONS[card.shape] ?? SQUARE
   const title = `${card.headline} · ${card.caption}`
   const canonical = `https://app.langx.io/s/${encodeURIComponent(card.id)}`
+  // The owner's invite link, as `inviteUrl` in packages/shared writes it: a
+  // stranger who opens the app from somebody's card is that person's invite,
+  // the same as one who taps the link beside it. Spelled out rather than
+  // imported, because this function is bundled on its own at the edge.
+  const invite = `https://app.langx.io/${encodeURIComponent(card.handle.replace(/^@/, ''))}?invite=1`
 
   const html = `<!doctype html>
 <html lang="en">
@@ -119,7 +124,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       native build.
     -->
     <a class="primary" href="${escapeHtml(card.imageUrl)}" download>Download</a>
-    <a class="secondary" href="https://app.langx.io/">Open LangX</a>
+    <a class="secondary" href="${escapeHtml(invite)}">Open LangX</a>
   </div>
 </body>
 </html>`
