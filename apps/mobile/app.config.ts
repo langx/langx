@@ -588,7 +588,8 @@ const config: ExpoConfig = {
          * own manifest, and the plugin only ever *blocks* it, when this is
          * explicitly `false`.
          */
-        cameraPermission: 'LangX uses your camera for video calls and to take a photo to send.',
+        cameraPermission:
+          'LangX uses your camera for video calls, to take photos and videos to send, and to scan a sign-in or profile code.',
       },
     ],
     /*
