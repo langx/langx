@@ -1,3 +1,4 @@
+import { previewOf, stripFormatting } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
 import type { ConversationDto } from '../api/queries'
 
@@ -68,6 +69,20 @@ export function applyIncomingMessage(
   }
 
   return moveToHead(data, input.conversationId, patched, found.pinned)
+}
+
+/**
+ * What the chat list row says for a message that just arrived over the socket.
+ *
+ * The server stores `body || previewOf(message)` as the row's line, so the
+ * live patch has to do the same. Passing `body` alone blanked the row for
+ * every message without words — a photo, a voice note, a sticker — until the
+ * next refetch, and a view-once photo most visibly of all: its body is
+ * emptied on the way in (`withoutViewOnceFallback`), and the refetch that
+ * finally wrote "📷 View-once photo" only came when it was opened.
+ */
+export function listPreviewOf(message: Parameters<typeof previewOf>[0] & { body: string }): string {
+  return stripFormatting(message.body) || previewOf(message)
 }
 
 /**

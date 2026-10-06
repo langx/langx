@@ -5,7 +5,9 @@ import {
   applyIncomingMessage,
   cachedConversation,
   type ConversationPageDto,
+  listPreviewOf,
 } from './conversationCache'
+import { withoutViewOnceFallback } from './viewOnce'
 
 const ME = 'me'
 const THEM = 'them'
@@ -277,5 +279,68 @@ describe('cachedConversation', () => {
       [['conversations', 'unreplied'], undefined],
     ] as const
     expect(cachedConversation(entries, 'c2')).toBeUndefined()
+  })
+})
+
+/**
+ * The row's line for a message that arrives over the socket. The server
+ * stores `body || previewOf(message)`; the live patch has to write the same,
+ * or a message with no words blanks the row until the next refetch.
+ */
+describe('listPreviewOf', () => {
+  /*
+   * As `message:new` delivers it to a build that knows view-once: the
+   * fallback sentence in `body`, which `useSocket` empties on the way in.
+   */
+  const viewOnce = (type: 'image' | 'video', senderId: string) =>
+    withoutViewOnceFallback({
+      conversationId: 'c3',
+      senderId,
+      type,
+      body:
+        type === 'video'
+          ? '🎬 View-once video · update LangX to open it'
+          : '📷 View-once photo · update LangX to open it',
+      createdAt: '2026-10-06T12:00:00.000Z',
+      viewOnce: {
+        kind: type === 'video' ? ('video' as const) : ('image' as const),
+        replay: false,
+        opens: 0,
+        opensLeft: 1,
+      },
+    })
+
+  const rowAfter = (message: ReturnType<typeof viewOnce>) =>
+    applyIncomingMessage(pages([[conversation('c3')]]), {
+      conversationId: message.conversationId,
+      body: listPreviewOf(message),
+      senderId: message.senderId,
+      createdAt: message.createdAt,
+      forUserId: ME,
+    })?.pages[0]?.items[0]?.lastMessage.body
+
+  it.each([
+    ['image', '📷 View-once photo'],
+    ['video', '🎬 View-once video'],
+  ] as const)('words an unopened view-once %s for the recipient', (type, line) => {
+    expect(rowAfter(viewOnce(type, THEM))).toBe(line)
+  })
+
+  it.each([
+    ['image', '📷 View-once photo'],
+    ['video', '🎬 View-once video'],
+  ] as const)("words a view-once %s on the sender's own row", (type, line) => {
+    expect(rowAfter(viewOnce(type, ME))).toBe(line)
+  })
+
+  it('words a message without a caption the way the server stores it', () => {
+    expect(listPreviewOf({ type: 'image', body: '', attachments: [{}, {}] })).toBe('📷 2 photos')
+    expect(listPreviewOf({ type: 'audio', body: '', media: {} })).toBe('🎤 Voice message')
+  })
+
+  it('keeps words when there are some, without their formatting', () => {
+    expect(listPreviewOf({ type: 'image', body: 'look *here*', attachments: [{}] })).toBe(
+      'look here',
+    )
   })
 })
