@@ -42,6 +42,12 @@ Change the copy here first and carry it over; nothing checks the two agree.
 Play has no Russian or Arabic listing, so the file has no Play entry for
 either.
 
+Why each language's App Store keywords are what they are, and the custom
+product pages, the Product Page Optimization test and the screenshot order
+built on them, are in [`app-store-growth.md`](app-store-growth.md). A keyword
+change there has to be carried into the keyword line below and into
+`2.9-metadata.json`.
+
 Apple's subtitle is **30 characters**; the 80-character line is Google Play's
 short description. They were the same field here until now, which made every
 subtitle in this file too long for the App Store — the English and the Turkish
@@ -99,7 +105,7 @@ included. Both are written out below, per language.
 > Privacy Policy: https://langx.io/privacy-policy
 
 **Keywords (iOS, 100 chars)**
-`language,exchange,learn,practice,speaking,tandem,partner,english,spanish,chat`
+`speaking,conversation,call,video,tandem,partner,penpal,english,spanish,learn,chat,japanese,korean`
 
 ---
 
@@ -153,7 +159,7 @@ included. Both are written out below, per language.
 > Gizlilik Politikası: https://langx.io/privacy-policy
 
 **Anahtar kelimeler (iOS, 100 karakter)**
-`dil,değişim,öğren,pratik,konuşma,tandem,partner,ingilizce,ispanyolca,sohbet`
+`konuşma,arama,görüntülü,sesli,arkadaş,yabancı,ingilizce,ispanyolca,sohbet,öğren,almanca,korece`
 
 ---
 
@@ -207,7 +213,7 @@ included. Both are written out below, per language.
 > Política de privacidad: https://langx.io/privacy-policy
 
 **Palabras clave (iOS, 100 caracteres)**
-`idioma,intercambio,aprender,practicar,hablar,tándem,compañero,inglés,español,chat`
+`hablar,conversación,llamada,videollamada,tándem,amigos,inglés,español,aprender,chat,francés,alemán`
 
 ---
 
@@ -261,7 +267,7 @@ included. Both are written out below, per language.
 > Политика конфиденциальности: https://langx.io/privacy-policy
 
 **Ключевые слова (iOS, 100 символов)**
-`язык,обмен,учить,практика,разговор,тандем,партнёр,английский,испанский,чат`
+`разговорный,звонок,тандем,общение,иностранцы,английский,испанский,язык,учить,немецкий,корейский`
 
 ---
 
@@ -315,7 +321,7 @@ included. Both are written out below, per language.
 > سياسة الخصوصية: https://langx.io/privacy-policy
 
 **الكلمات المفتاحية (iOS، 100 حرف)**
-`لغة,تبادل,تعلم,تدريب,محادثة,تاندم,شريك,إنجليزي,إسباني,دردشة`
+`محادثة,مكالمة,فيديو,صوتية,شريك,أصدقاء,أجانب,انجليزي,اسباني,تعلم,لغة,دردشة,فرنسي,ألماني,كوري,تركي`
 
 ---
 
@@ -369,7 +375,7 @@ included. Both are written out below, per language.
 > Politique de confidentialité : https://langx.io/privacy-policy
 
 **Mots-clés (iOS, 100 caractères)**
-`langue,échange,apprendre,pratiquer,parler,tandem,partenaire,anglais,espagnol,chat`
+`parler,conversation,appel,tandem,correspondant,anglais,espagnol,langue,apprendre,japonais,coréen`
 
 ---
 
@@ -423,7 +429,7 @@ included. Both are written out below, per language.
 > Datenschutzerklärung: https://langx.io/privacy-policy
 
 **Keywords (iOS, 100 Zeichen)**
-`Sprache,Austausch,lernen,üben,sprechen,Tandem,Partner,Englisch,Spanisch,Chat`
+`sprechen,Anruf,Tandem,Sprachpartner,Brieffreund,Englisch,Spanisch,Sprachen,lernen,Französisch,Chat`
 
 ---
 
@@ -477,7 +483,7 @@ included. Both are written out below, per language.
 > Política de privacidade: https://langx.io/privacy-policy
 
 **Palavras-chave (iOS, 100 caracteres)**
-`idioma,intercâmbio,aprender,praticar,falar,tandem,parceiro,inglês,espanhol,chat`
+`falar,conversação,ligação,amigos,estrangeiros,inglês,espanhol,aprender,francês,japonês,coreano`
 
 ---
 
