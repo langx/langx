@@ -6519,12 +6519,14 @@ the token board is readable by anyone on the web without signing in. The
 switch promised "nobody will find you", and for as long as the boards ignored
 it that promise was false for anyone active enough to rank.
 
-All three boards — tokens, streaks and Echo — now leave such a person out.
-They keep their place, the same as a blocked or deleted account, so turning
-the switch off promotes nobody past them and moves nobody's number. The viewer
-always sees their own row. The streak board skips them in its loop rather than
-in its query, because the viewer's rank is counted with that query and would
-otherwise close up around them.
+All three boards — tokens, streaks and Echo — now leave such a person out,
+exactly the way each board already leaves out a deleted account. On the token
+and Echo boards they keep their place, so turning the switch off promotes
+nobody past them. On the streak board they are left out in the query and the
+ranks close up, as they do there around a deletion: a row skipped after the
+fetch still takes a place in the page's limit, and somebody hidden near the top
+would have cut that board short for everyone. The viewer always sees their own
+row.
 
 The feed is not filtered. A post is something a person chose to publish, and
 hiding it would quietly retract what they said in public; the switch's copy
