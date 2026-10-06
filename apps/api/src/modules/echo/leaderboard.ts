@@ -50,7 +50,12 @@ export async function getEchoLeaderboard(
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .find(
-      { _id: { $in: top.map((row) => row.userId) }, deletedAt: { $exists: false } },
+      // Off the board with "Show me in Discover" off — see the token board.
+      {
+        _id: { $in: top.map((row) => row.userId) },
+        deletedAt: { $exists: false },
+        $or: [{ 'settings.discoverable': true }, { _id: viewerId }],
+      },
       { projection: { handle: 1, displayName: 1, avatarUrl: 1, cosmetics: 1, equipped: 1 } },
     )
     .toArray()

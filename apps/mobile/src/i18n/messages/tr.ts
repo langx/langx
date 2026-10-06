@@ -1820,7 +1820,7 @@ export const tr: Localized<EnMessages> = {
     linkDeviceBody: 'Bir girişi onayla, nerelerde açık olduğunu gör.',
     showInDiscover: 'Keşfet’te görün',
     showInDiscoverBody:
-      'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne de kullanıcı adınla arayarak.',
+      'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne liderlik tablolarında, ne de kullanıcı adınla arayarak.',
     boost: 'Profilimi öne çıkar',
     boostBody:
       'Keşfet’in üstündeki öne çıkanlar şeridinde, dilleri benimkilerle eşleşen kişilere görün. Pro ile açık.',

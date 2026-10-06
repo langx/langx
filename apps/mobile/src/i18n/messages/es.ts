@@ -1821,7 +1821,7 @@ export const es: Localized<EnMessages> = {
     linkDeviceBody: 'Aprueba un inicio de sesión y mira dónde tienes la sesión abierta.',
     showInDiscover: 'Mostrarme en Descubrir',
     showInDiscoverBody:
-      'Desactívalo y nadie te encontrará: ni en Descubrir ni buscando tu nombre de usuario.',
+      'Desactívalo y nadie te encontrará: ni en Descubrir, ni en las clasificaciones, ni buscando tu nombre de usuario.',
     boost: 'Destacar mi perfil',
     boostBody:
       'Muéstrame en la franja de perfiles destacados, arriba de Descubrir, a las personas cuyos idiomas coinciden con los míos. Activo con Pro.',

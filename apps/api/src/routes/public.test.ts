@@ -150,6 +150,37 @@ describe('the routes anybody can call', () => {
       }
       expect(body).not.toHaveProperty('viewer')
     })
+
+    /**
+     * The one board anybody on the web can read, so the one where "Show me in
+     * Discover" off matters most. Their place stays taken, as everywhere else.
+     */
+    it('leaves out somebody not shown in Discover, keeping their place', async () => {
+      await handle.db.collection(COLLECTIONS.profiles).insertOne({
+        _id: 'd',
+        handle: 'di',
+        displayName: 'DI',
+        entitlement: { tier: 'free' },
+        streak: { current: 1, longest: 1, lastQualifiedDay: '2026-09-01' },
+        settings: { discoverable: false, notifications: {} },
+      } as never)
+      await handle.db.collection(COLLECTIONS.tokenAggregates).insertOne({
+        _id: aggregateId('d', 'all', 'all'),
+        userId: 'd',
+        periodType: 'all',
+        periodKey: 'all',
+        tokens: 500,
+        updatedAt: new Date(),
+      } as never)
+
+      const response = await app.inject({ method: 'GET', url: '/public/leaderboard/token' })
+      const body = response.json<{ entries: Record<string, unknown>[] }>()
+      expect(body.entries.map((e) => [e.rank, e.handle, e.tokens])).toEqual([
+        [2, 'ada', 300],
+        [2, 'bo', 300],
+        [4, 'cy', 100],
+      ])
+    })
   })
 
   describe('the bare hostname of the stats site', () => {

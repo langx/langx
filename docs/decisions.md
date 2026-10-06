@@ -6511,3 +6511,21 @@ The small green strip a call leaves when somebody goes to look something up
 sits in the layout above every screen, the way a phone's in-call bar does. The
 first version floated it over the top of the screen, like the message banner,
 and in a thread that put it over the name of the person on the call.
+
+## "Show me in Discover" off takes you off the leaderboards too
+
+A leaderboard is a place strangers find people: every row opens a profile, and
+the token board is readable by anyone on the web without signing in. The
+switch promised "nobody will find you", and for as long as the boards ignored
+it that promise was false for anyone active enough to rank.
+
+All three boards — tokens, streaks and Echo — now leave such a person out.
+They keep their place, the same as a blocked or deleted account, so turning
+the switch off promotes nobody past them and moves nobody's number. The viewer
+always sees their own row. The streak board skips them in its loop rather than
+in its query, because the viewer's rank is counted with that query and would
+otherwise close up around them.
+
+The feed is not filtered. A post is something a person chose to publish, and
+hiding it would quietly retract what they said in public; the switch's copy
+names Discover, the leaderboards and username search, and nothing else.
