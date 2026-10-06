@@ -39,4 +39,13 @@
   <string name="notifications_markAsRead">Mark as read</string>
   <string name="notifications_replyFailed">Reply not sent</string>
   <string name="messageMeta_you">You</string>
+  <string name="calls_channel">Calls</string>
+  <string name="calls_ongoingChannel">Calls in progress</string>
+  <string name="calls_incomingVoice">Incoming voice call</string>
+  <string name="calls_incomingVideo">Incoming video call</string>
+  <string name="calls_voiceCall">Voice call</string>
+  <string name="calls_videoCall">Video call</string>
+  <string name="calls_answer">Answer</string>
+  <string name="calls_decline">Decline</string>
+  <string name="calls_hangUp">Hang up</string>
 </resources>

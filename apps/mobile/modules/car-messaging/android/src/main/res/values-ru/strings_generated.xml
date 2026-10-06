@@ -39,4 +39,13 @@
   <string name="notifications_markAsRead">Отметить прочитанным</string>
   <string name="notifications_replyFailed">Ответ не отправлен</string>
   <string name="messageMeta_you">Ты</string>
+  <string name="calls_channel">Звонки</string>
+  <string name="calls_ongoingChannel">Текущие звонки</string>
+  <string name="calls_incomingVoice">Входящий аудиозвонок</string>
+  <string name="calls_incomingVideo">Входящий видеозвонок</string>
+  <string name="calls_voiceCall">Аудиозвонок</string>
+  <string name="calls_videoCall">Видеозвонок</string>
+  <string name="calls_answer">Ответить</string>
+  <string name="calls_decline">Отклонить</string>
+  <string name="calls_hangUp">Завершить</string>
 </resources>
