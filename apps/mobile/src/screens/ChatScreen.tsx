@@ -2916,6 +2916,29 @@ export function ChatScreen({
                  */
                 inverted
                 /**
+                 * Holds the reader's place while they are up in the history.
+                 *
+                 * `inverted` leaves one case open. Everything new arrives at
+                 * index 0, under the reader — a message, the typing dots, a photo
+                 * learning its height — and scrolled up, each of those moved the
+                 * thread. A message did worse than move it by its own height:
+                 * VirtualizedList keeps each row's measurement with the index it
+                 * was taken at, so one row added at 0 voided the measurement of
+                 * every row it had unmounted, and the average-height guesses it
+                 * fell back on threw the thread hundreds of points at a time, and
+                 * blanked it for a few frames, for as long as the reader went on
+                 * scrolling.
+                 *
+                 * This pins the first row on screen natively, and VirtualizedList
+                 * moves its render window along with it. Only while away: at the
+                 * bottom a new message has to push the thread up into view, which
+                 * the inverted list already does, and pinned there it would
+                 * arrive out of sight. React Native Web has no such prop.
+                 */
+                maintainVisibleContentPosition={
+                  awayFrom !== null ? { minIndexForVisible: 0 } : undefined
+                }
+                /**
                  * "End" is the end of the data, and inverted that is the oldest
                  * message — so the same prop that means "load more" everywhere else
                  * in the app means "load older" here. It also sidesteps
