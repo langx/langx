@@ -108,7 +108,8 @@ export const fr: Localized<EnMessages> = {
     composerReply: 'Glissez un message pour répondre',
     composerStar: 'Appui long pour épingler ou traduire',
     composerVoice: 'Touchez le micro, écoutez, envoyez',
-    chatStar: 'Appuyez longuement sur un message et choisissez Épingler pour le retrouver.',
+    chatStar:
+      'Appuie longuement sur un message, touche Plus…, puis Mettre en favori pour le retrouver.',
     chatTranslate:
       'Appuyez longuement sur un message pour le traduire sans quitter la conversation.',
     chatVoice:
@@ -155,6 +156,66 @@ export const fr: Localized<EnMessages> = {
     echoOwn:
       'Écris ta propre carte depuis Toutes les cartes. Laisse le sens vide et il sera traduit pour toi.',
     echoRecord: 'Ouvre une carte pour y ajouter une image ou l’enregistrer avec ta propre voix.',
+    chatDoubleTap:
+      'Touche deux fois un message pour lui envoyer un ❤️. Recommence pour le retirer.',
+    chatWords:
+      'Appuie longuement sur un message reçu, touche Plus…, puis Mots pour chercher n’importe quel mot.',
+    chatReplyPart:
+      'Message long ? Appuie longuement dessus, touche Plus…, puis Répondre à une partie.',
+    chatPin:
+      'Appuie longuement sur un message, touche Plus…, puis Épingler pour le garder en haut du chat.',
+    chatPhrase:
+      'Appuie longuement sur un message reçu, touche Plus…, puis Enregistrer comme expression. Tu les retrouves sous le ⋯ en haut.',
+    chatSchedule: 'Appuie longuement sur le bouton d’envoi pour envoyer un message plus tard.',
+    chatFormat:
+      'Écris ||comme ça|| et ces mots restent cachés jusqu’à ce qu’on les touche. Parfait pour les réponses d’un quiz.',
+    chatPlaybackSpeed: 'Touche 1× à côté d’un message vocal pour l’écouter deux fois moins vite.',
+    chatThreadMenu:
+      'Le ⋯ en haut du chat contient la recherche, tes expressions enregistrées et toutes les photos et messages vocaux.',
+    chatEdit:
+      'Une faute de frappe ? Appuie longuement sur ton message, touche Plus…, puis Modifier. C’est possible pendant deux jours.',
+    composerSchedule: 'Maintiens Envoyer pour plus tard',
+    composerDoubleTap: 'Touche deux fois pour un ❤️',
+    chatsHold:
+      'Appuie longuement sur une discussion, ou touche son ⋯, pour l’épingler, l’archiver, la mettre en sourdine ou la supprimer.',
+    chatsArchived:
+      'Les discussions archivées attendent dans l’onglet Archivés et ne comptent pas dans tes non-lus.',
+    discoverBoosted:
+      'Tu te demandes ce qu’est la rangée En avant ? Touche Qu’est-ce que c’est ? à côté.',
+    discoverFollow:
+      'Ouvre un profil et touche Suivre pour voir les publications de cette personne dans ton fil.',
+    feedLikedBy: 'Touche le nombre de j’aime pour voir qui a aimé une publication.',
+    feedCommentReply:
+      'Dans les commentaires, tu peux répondre directement à quelqu’un. Appuie longuement sur un commentaire pour plus d’options.',
+    feedReport: 'Un problème avec une publication ? Appuie longuement dessus pour la signaler.',
+    echoPacks: 'Ouvre Packs pour des mots tout prêts dans la langue que tu apprends.',
+    echoLeaderboard: 'Le Classement montre qui a répondu au plus de cartes.',
+    echoPostToFeed:
+      'Un doute sur la prononciation d’une carte ? Ouvre-la et choisis Publier dans le fil : quelqu’un pourra l’enregistrer pour toi.',
+    echoSelect:
+      'Dans Toutes les cartes, tu peux chercher ou utiliser Sélectionner des cartes pour en gérer plusieurs à la fois.',
+    chatCall:
+      'Touche le téléphone en haut de la discussion pour un appel vocal ou vidéo. Il se débloque après quelques messages de l’autre personne.',
+    chatViewOnce:
+      'Touche + puis Prendre une photo. Avant d’envoyer, choisis Voir une fois, Autoriser à revoir ou Garder dans la discussion.',
+    chatLocation:
+      'Touche + puis Partager ma position. Zone approximative montre seulement ton quartier ; Position exacte montre où tu es.',
+    chatReadAloud: 'Appuie longuement sur un message et choisis Lire à voix haute pour l’entendre.',
+    chatTranscript: 'Touche Afficher le texte sous un message vocal pour lire ce qui a été dit.',
+    chatReview:
+      'L’échange te plaît ? Écris un avis depuis le ⋯ en haut : il s’affiche sur son profil.',
+    chatsOnlyKnown:
+      'Trop de nouvelles discussions ? Réglages → Confidentialité → Seuls mes contacts peuvent m’écrire.',
+    discoverHidden:
+      'Besoin d’une pause loin des nouvelles personnes ? Active le Mode discret dans Réglages → Confidentialité.',
+    discoverLocalTime:
+      'Les profils affichent l’heure locale de la personne : jette un œil avant d’écrire ou d’appeler.',
+    meRecap: 'Les premiers jours de chaque mois, ton bilan apparaît ici, prêt à être partagé.',
+    meInvite:
+      'Ton lien est dans Réglages → Partager et inviter. Vous gagnez tous les deux des jetons quand la personne invitée commence à discuter.',
+    meGiftCode: 'Tu as un code cadeau ? Touche Tu as un code cadeau ? sur l’écran Pro.',
+    meCalls:
+      'Tu préfères ne pas recevoir d’appels ? Désactive Autoriser les appels dans Réglages → Confidentialité.',
     feedMoment:
       'Partagez une photo, une vidéo ou une phrase de votre journée — pas besoin de poser une question.',
   },
@@ -1189,32 +1250,64 @@ export const fr: Localized<EnMessages> = {
       favoriteSeason: 'Quelle saison préfères-tu là où tu vis ?',
       hometown: 'Comment est ta ville natale ?',
       perfectDay: 'À quoi ressemblerait ta journée idéale ?',
+      morningOrNight: 'Tu es plutôt du matin ou du soir ?',
+      weatherToday: 'Quel temps fait-il chez toi aujourd’hui ?',
+      neighborhood: 'Qu’est-ce que tu aimes le plus là où tu vis en ce moment ?',
+      smallJoy: 'Quelle petite chose t’a fait plaisir cette semaine ?',
       dreamTrip: 'Si tu pouvais partir n’importe où demain, où irais-tu ?',
       bestPlaceVisited: 'Quel est le plus bel endroit que tu aies visité ?',
       visitorMustSee: 'Qu’est-ce qu’il ne faut surtout pas manquer dans ta ville ?',
       travelSurprise: 'Quelle a été ta plus grande surprise lors d’un voyage à l’étranger ?',
+      nextTrip: 'Y a-t-il un voyage que tu attends avec impatience ?',
+      travelStyle: 'Tu préfères les villes, les plages ou les montagnes ?',
+      souvenir: 'Quel est le plus beau souvenir que tu as rapporté d’un voyage ?',
       comfortFood: 'Qu’est-ce que tu aimes manger après une longue journée ?',
       dishToTry: 'Quel plat de ton pays devrais-je goûter en premier ?',
       breakfast: 'À quoi ressemble un petit-déjeuner typique chez toi ?',
       streetFood: 'Quelle est ta street food préférée ?',
+      signatureDish: 'Y a-t-il un plat que tu cuisines vraiment bien ?',
+      coffeeOrTea: 'Café ou thé ? Et comment tu le prends ?',
+      foreignFood: 'Quel plat d’un autre pays adores-tu ?',
       favoriteCelebration: 'Quelle est ta fête préférée de l’année, et comment la passes-tu ?',
       localCustom: 'Y a-t-il une coutume chez toi qui surprend les visiteurs ?',
       childhoodGame: 'À quel jeu jouais-tu le plus quand tu étais enfant ?',
       favoriteSong: 'Quelle chanson dans ta langue devrais-je écouter ?',
       greetings: 'Comment les gens se saluent-ils d’habitude chez toi ?',
+      holidayFood: 'Qu’est-ce qu’on mange pendant les fêtes là où tu vis ?',
+      popularSport: 'Quel sport les gens suivent-ils le plus là où tu vis ?',
+      childhoodShow: 'Avec quel dessin animé ou quelle série as-tu grandi ?',
+      musicLately: 'Qu’est-ce que tu écoutes en ce moment ?',
       untranslatableWord: 'Quel mot de ta langue n’a pas de traduction ?',
       whyLearning: 'Qu’est-ce qui t’a donné envie d’apprendre une nouvelle langue ?',
       hardestPart: 'Qu’est-ce qui est le plus difficile pour toi quand tu apprends une langue ?',
       favoriteWord: 'Quel est ton mot préféré dans ta langue maternelle ?',
       funnyMistake: 'Quelle est l’erreur la plus drôle que tu aies faite dans une autre langue ?',
       localSaying: 'Y a-t-il une expression de ta langue que tu adores ?',
+      firstPhrase: 'Quelle est la première phrase que tu as apprise dans une nouvelle langue ?',
+      practiceMethod: 'Comment pratiques-tu une langue en dehors des conversations ?',
+      hardestSound: 'Quel son as-tu le plus de mal à prononcer ?',
+      slang: 'Quel mot d’argot les gens de ton âge utilisent-ils tout le temps ?',
+      tongueTwister: 'Tu connais un virelangue dans ta langue ?',
+      everydayWord: 'Tu peux m’apprendre un mot que tu utilises tous les jours ?',
       freeTime: 'Qu’est-ce que tu aimes faire pendant ton temps libre ?',
       recentBook: 'Quel est le dernier livre que tu as vraiment aimé ?',
       filmToRecommend: 'Quel film ou quelle série me conseillerais-tu ?',
       newSkill: 'Y a-t-il quelque chose que tu aimerais apprendre cette année ?',
+      sportsYouPlay: 'Tu fais du sport, ou tu préfères regarder ?',
+      games: 'Tu joues à des jeux ? Jeux vidéo, de société ou de cartes ?',
+      makeThings: 'Tu aimes créer des choses, comme dessiner, faire de la musique ou bricoler ?',
+      channelToRecommend: 'Y a-t-il un podcast ou une chaîne que tu me recommanderais ?',
+      pets: 'Tu as un animal de compagnie, ou tu aimerais en avoir un ?',
       whatYouDo: 'Qu’est-ce que tu fais dans la vie, ou qu’est-ce que tu étudies ?',
       dreamJob: 'Si tu pouvais faire n’importe quel métier, lequel choisirais-tu ?',
       learnedRecently: 'Qu’as-tu appris d’intéressant récemment ?',
+      favoriteSubject: 'Quelle était ta matière préférée à l’école ?',
+      focusTips: 'Qu’est-ce qui t’aide à te concentrer quand tu as beaucoup à faire ?',
+      superpower: 'Si tu pouvais avoir un super-pouvoir, lequel choisirais-tu ?',
+      overnightLanguage:
+        'Si tu pouvais parler une autre langue parfaitement du jour au lendemain, laquelle choisirais-tu ?',
+      timeTravel:
+        'Si tu pouvais visiter n’importe quel moment de l’histoire, lequel choisirais-tu ?',
     },
     pinnedMessage: 'Message épinglé',
     goToPinned: 'Aller au message épinglé',

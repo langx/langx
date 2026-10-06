@@ -24,22 +24,83 @@ export const TIP_SLOTS = {
   chat: [
     'chatCorrect',
     'chatSwipeReply',
+    'chatCall',
+    'chatViewOnce',
+    'chatLocation',
+    'chatReadAloud',
+    'chatTranscript',
+    'chatReview',
     'chatEcho',
     'chatStar',
     'chatTranslate',
     'chatVoice',
     'chatAttach',
+    'chatDoubleTap',
+    'chatWords',
+    'chatReplyPart',
+    'chatSchedule',
+    'chatPin',
+    'chatPhrase',
+    'chatPlaybackSpeed',
+    'chatThreadMenu',
+    'chatFormat',
+    'chatEdit',
   ],
-  chats: ['chatsSwipe', 'chatsPin', 'chatsUnreplied', 'chatsStarred'],
-  discover: ['discoverFilters', 'discoverRadius', 'discoverSearch', 'discoverActive'],
-  feed: ['feedMoment', 'feedAsk', 'feedCorrect', 'feedPronounce', 'feedEcho', 'feedSlowTake'],
+  chats: [
+    'chatsSwipe',
+    'chatsPin',
+    'chatsUnreplied',
+    'chatsStarred',
+    'chatsHold',
+    'chatsArchived',
+    'chatsOnlyKnown',
+  ],
+  discover: [
+    'discoverFilters',
+    'discoverRadius',
+    'discoverSearch',
+    'discoverActive',
+    'discoverFollow',
+    'discoverBoosted',
+    'discoverLocalTime',
+    'discoverHidden',
+  ],
+  feed: [
+    'feedMoment',
+    'feedAsk',
+    'feedCorrect',
+    'feedPronounce',
+    'feedEcho',
+    'feedSlowTake',
+    'feedCommentReply',
+    'feedLikedBy',
+    'feedReport',
+  ],
   /**
    * The review tab, once there is a card to review. Every one of these is
    * about a control the tab does not draw — Again is on the session, Archive
    * on the cards list — because the tab itself is one tile and two rows, and
    * what it cannot show is exactly what a hint is for.
    */
-  echo: ['echoAgain', 'echoAutoplay', 'echoTyping', 'echoArchive', 'echoOwn', 'echoRecord'],
+  echo: [
+    'echoAgain',
+    'echoAutoplay',
+    'echoTyping',
+    'echoArchive',
+    'echoOwn',
+    'echoRecord',
+    'echoPacks',
+    'echoPostToFeed',
+    'echoSelect',
+    'echoLeaderboard',
+  ],
+  /**
+   * The Me tab, under the language columns. Everything here is reached from
+   * Me or the Settings behind it, and none of it has a home on the other tabs:
+   * the recap row only exists in a month's first week, and the switches and
+   * the gift-code link are two screens deep.
+   */
+  me: ['meRecap', 'meCalls', 'meInvite', 'meGiftCode'],
   /**
    * The line under the chat composer, which is not a `Tip`: it has no dismiss
    * button and half a row to live in, so its entries are four words rather
@@ -47,7 +108,15 @@ export const TIP_SLOTS = {
    * was the same one — it said "hold a message to correct it" forever, beneath
    * a yellow tip saying exactly that.
    */
-  composer: ['composerCorrect', 'composerReply', 'composerEcho', 'composerStar', 'composerVoice'],
+  composer: [
+    'composerCorrect',
+    'composerReply',
+    'composerEcho',
+    'composerStar',
+    'composerVoice',
+    'composerSchedule',
+    'composerDoubleTap',
+  ],
 } as const satisfies Record<string, readonly string[]>
 
 export type TipSlot = keyof typeof TIP_SLOTS

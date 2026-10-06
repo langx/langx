@@ -108,7 +108,7 @@ export const ptBR: Localized<EnMessages> = {
     composerReply: 'Arraste para responder',
     composerStar: 'Segure para destacar ou traduzir',
     composerVoice: 'Toque no microfone, ouça e envie',
-    chatStar: 'Segure uma mensagem e escolha Destacar para achá-la depois.',
+    chatStar: 'Segure uma mensagem, toque em Mais… e depois em Favoritar para achá-la depois.',
     chatTranslate: 'Segure uma mensagem para traduzi-la sem sair da conversa.',
     chatVoice:
       'Toque no microfone para um áudio — dá para ouvir antes de enviar, e ouvir a palavra é metade do aprendizado.',
@@ -151,6 +151,63 @@ export const ptBR: Localized<EnMessages> = {
     echoOwn:
       'Escreva seu próprio cartão em Todos os cartões. Deixe o significado vazio e ele é traduzido para você.',
     echoRecord: 'Abra um cartão para adicionar uma foto ou gravá-lo com a sua própria voz.',
+    chatDoubleTap:
+      'Toque duas vezes em uma mensagem para mandar um ❤️. Toque duas vezes de novo para tirar.',
+    chatWords:
+      'Segure uma mensagem recebida, toque em Mais… e depois em Palavras para consultar qualquer palavra.',
+    chatReplyPart: 'Mensagem longa? Segure, toque em Mais… e depois em Responder a uma parte.',
+    chatPin:
+      'Segure uma mensagem, toque em Mais… e depois em Fixar para deixá-la no topo da conversa.',
+    chatPhrase:
+      'Segure uma mensagem recebida, toque em Mais… e depois em Salvar como expressão. Elas ficam no ⋯ lá em cima.',
+    chatSchedule: 'Segure o botão de enviar para mandar uma mensagem mais tarde.',
+    chatFormat:
+      'Escreva ||assim|| e as palavras ficam escondidas até alguém tocar nelas. Ótimo para respostas de quiz.',
+    chatPlaybackSpeed: 'Toque em 1× ao lado de um áudio para ouvir na metade da velocidade.',
+    chatThreadMenu:
+      'O ⋯ no topo da conversa tem a busca, suas expressões salvas e todas as fotos e áudios.',
+    chatEdit:
+      'Errou a digitação? Segure sua mensagem, toque em Mais… e depois em Editar. Dá para fazer isso por dois dias.',
+    composerSchedule: 'Segure Enviar para mandar depois',
+    composerDoubleTap: 'Toque duas vezes para um ❤️',
+    chatsHold:
+      'Segure uma conversa, ou toque no ⋯ dela, para fixar, arquivar, silenciar ou apagar.',
+    chatsArchived: 'Conversas arquivadas ficam na aba Arquivados e não contam como não lidas.',
+    discoverBoosted: 'Quer saber o que é a fila Em destaque? Toque em O que é isso? ao lado.',
+    discoverFollow:
+      'Abra um perfil e toque em Seguir para ver as publicações dessa pessoa no seu feed.',
+    feedLikedBy: 'Toque no número de curtidas para ver quem curtiu uma publicação.',
+    feedCommentReply:
+      'Nos comentários, você pode responder alguém diretamente. Segure um comentário para ver mais opções.',
+    feedReport: 'Algo errado em uma publicação? Segure-a para denunciar.',
+    echoPacks: 'Abra Pacotes para ter palavras prontas no idioma que você está aprendendo.',
+    echoLeaderboard: 'A Classificação mostra quem respondeu mais cartões.',
+    echoPostToFeed:
+      'Não sabe como um cartão soa? Abra-o e escolha Publicar no feed — alguém pode gravar para você.',
+    echoSelect:
+      'Em Todos os cartões você pode buscar ou usar Selecionar cartões para cuidar de vários de uma vez.',
+    chatCall:
+      'Toque no telefone no topo da conversa para uma chamada de voz ou de vídeo. Ela é liberada depois de algumas mensagens da outra pessoa.',
+    chatViewOnce:
+      'Toque em + e depois em Tirar uma foto. Antes de enviar, escolha Ver uma vez, Permitir rever ou Manter na conversa.',
+    chatLocation:
+      'Toque em + e depois em Compartilhar localização. Região aproximada mostra só a sua região; Localização exata mostra onde você está.',
+    chatReadAloud: 'Segure uma mensagem e escolha Ler em voz alta para ouvir como ela soa.',
+    chatTranscript: 'Toque em Mostrar texto embaixo de um áudio para ler o que foi dito.',
+    chatReview:
+      'Gostando da troca? Escreva uma avaliação pelo ⋯ no topo — ela aparece no perfil da pessoa.',
+    chatsOnlyKnown:
+      'Conversas novas demais? Configurações → Privacidade → Só meus contatos podem me escrever.',
+    discoverHidden:
+      'Precisa de uma pausa de gente nova? Ative o Modo oculto em Configurações → Privacidade.',
+    discoverLocalTime:
+      'Os perfis mostram a hora local da pessoa — vale olhar antes de escrever ou ligar.',
+    meRecap: 'Nos primeiros dias de cada mês, o seu resumo aparece aqui, pronto para compartilhar.',
+    meInvite:
+      'Seu link está em Configurações → Compartilhar e convidar. Vocês dois ganham tokens quando a pessoa convidada começa a conversar.',
+    meGiftCode: 'Tem um código de presente? Toque em Tem um código de presente? na tela do Pro.',
+    meCalls:
+      'Prefere não receber chamadas? Desative Permitir chamadas em Configurações → Privacidade.',
     feedMoment:
       'Compartilhe uma foto, um vídeo ou uma frase do seu dia — não precisa perguntar nada.',
   },
@@ -1176,32 +1233,63 @@ export const ptBR: Localized<EnMessages> = {
       favoriteSeason: 'De qual estação do ano você mais gosta onde mora?',
       hometown: 'Como é a sua cidade natal?',
       perfectDay: 'Como seria o seu dia perfeito?',
+      morningOrNight: 'Você é mais da manhã ou da noite?',
+      weatherToday: 'Como está o tempo aí hoje?',
+      neighborhood: 'Do que você mais gosta no lugar onde mora agora?',
+      smallJoy: 'Que coisa pequena te deixou feliz esta semana?',
       dreamTrip: 'Se pudesse viajar para qualquer lugar amanhã, para onde você iria?',
       bestPlaceVisited: 'Qual é o lugar mais bonito que você já conheceu?',
       visitorMustSee: 'O que quem visita a sua cidade não pode deixar de ver?',
       travelSurprise: 'O que mais te surpreendeu numa viagem ao exterior?',
+      nextTrip: 'Tem alguma viagem que você mal pode esperar para fazer?',
+      travelStyle: 'Você prefere cidades, praias ou montanhas?',
+      souvenir: 'Qual é a melhor coisa que você já trouxe de uma viagem?',
       comfortFood: 'O que você gosta de comer depois de um dia longo?',
       dishToTry: 'Qual prato do seu país eu deveria provar primeiro?',
       breakfast: 'Como é um café da manhã típico onde você mora?',
       streetFood: 'Qual é a sua comida de rua favorita?',
+      signatureDish: 'Tem algum prato que você cozinha muito bem?',
+      coffeeOrTea: 'Café ou chá? E como você toma?',
+      foreignFood: 'Qual comida de outro país você adora?',
       favoriteCelebration: 'Qual é a sua comemoração favorita do ano, e como você a passa?',
       localCustom: 'Existe algum costume onde você mora que surpreende quem vem de fora?',
       childhoodGame: 'Qual era a sua brincadeira favorita de infância?',
       favoriteSong: 'Que música no seu idioma eu deveria ouvir?',
       greetings: 'Como as pessoas costumam se cumprimentar onde você mora?',
+      holidayFood: 'O que se come nos feriados e festas onde você mora?',
+      popularSport: 'Qual esporte as pessoas mais acompanham onde você mora?',
+      childhoodShow: 'Com qual desenho ou série você cresceu?',
+      musicLately: 'O que você tem escutado ultimamente?',
       untranslatableWord: 'Qual palavra do seu idioma não tem tradução?',
       whyLearning: 'O que te fez começar a aprender um novo idioma?',
       hardestPart: 'Qual é a parte mais difícil de aprender um idioma para você?',
       favoriteWord: 'Qual é a sua palavra favorita no seu próprio idioma?',
       funnyMistake: 'Qual foi o erro mais engraçado que você já cometeu em outro idioma?',
       localSaying: 'Tem algum ditado no seu idioma que você adora?',
+      firstPhrase: 'Qual foi a primeira frase que você aprendeu em um novo idioma?',
+      practiceMethod: 'Como você pratica um idioma fora das conversas?',
+      hardestSound: 'Qual som é o mais difícil para você pronunciar?',
+      slang: 'Qual gíria as pessoas da sua idade usam o tempo todo?',
+      tongueTwister: 'Você conhece algum trava-língua no seu idioma?',
+      everydayWord: 'Você me ensina uma palavra que usa todo dia?',
       freeTime: 'O que você gosta de fazer no seu tempo livre?',
       recentBook: 'Qual foi o último livro de que você gostou muito?',
       filmToRecommend: 'Que filme ou série você me recomendaria?',
       newSkill: 'Tem algo que você gostaria de aprender este ano?',
+      sportsYouPlay: 'Você pratica algum esporte ou só assiste?',
+      games: 'Você joga alguma coisa? Videogame, jogo de tabuleiro ou cartas?',
+      makeThings: 'Você gosta de criar coisas, como desenhar, fazer música ou artesanato?',
+      channelToRecommend: 'Tem algum podcast ou canal que você recomendaria?',
+      pets: 'Você tem um animal de estimação ou gostaria de ter um?',
       whatYouDo: 'Você trabalha com o quê, ou o que estuda?',
       dreamJob: 'Se pudesse ter qualquer profissão, qual seria?',
       learnedRecently: 'Qual foi a coisa mais interessante que você aprendeu recentemente?',
+      favoriteSubject: 'Qual era a sua matéria favorita na escola?',
+      focusTips: 'O que te ajuda a se concentrar quando você tem muito para fazer?',
+      superpower: 'Se você pudesse ter um superpoder, qual seria?',
+      overnightLanguage:
+        'Se você pudesse falar outro idioma perfeitamente da noite para o dia, qual escolheria?',
+      timeTravel: 'Se você pudesse visitar qualquer momento da história, qual escolheria?',
     },
     pinnedMessage: 'Mensagem fixada',
     goToPinned: 'Ir para a mensagem fixada',
