@@ -2,13 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import type { ObjectId } from 'mongodb'
 import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
-import { countUnread, markDelivered, missedCallPreview, previewFor } from '../modules/chat/messages'
-import {
-  attachmentsOf,
-  notificationsAllowed,
-  PUSH_CATEGORY_MESSAGE,
-  stripFormatting,
-} from '@langx/shared'
+import { countUnread, markDelivered, missedCallPreview, previewOf } from '../modules/chat/messages'
+import { notificationsAllowed, PUSH_CATEGORY_MESSAGE, stripFormatting } from '@langx/shared'
 import { respondAsOfficial } from '../modules/official/assistant'
 import { devicesFor, devicesToPush, sendPush } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
@@ -192,7 +187,7 @@ async function deliver(
         // simply true. See `missedCallPreview`.
         message.type === 'call' && message.call
           ? missedCallPreview(message.call)
-          : message.body || previewFor(message.type, attachmentsOf(message).length),
+          : message.body || previewOf(message),
       ).slice(0, 120),
       data: {
         kind: 'message',

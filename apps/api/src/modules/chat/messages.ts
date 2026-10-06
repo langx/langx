@@ -101,6 +101,22 @@ export function previewFor(
 }
 
 /**
+ * `previewFor` with the message in hand, which is what every caller has.
+ *
+ * The one thing it adds is the view-once wording. "📷 Photo" would be true,
+ * but it would also be the only hint on a lock screen or a chat list row that
+ * this is not a photo the reader can come back to.
+ */
+export function previewOf(
+  message: Pick<Message, 'type' | 'attachments' | 'media' | 'viewOnce'>,
+): string {
+  if (message.viewOnce) {
+    return message.type === 'video' ? '🎬 View-once video' : '📷 View-once photo'
+  }
+  return previewFor(message.type, attachmentsOf(message).length)
+}
+
+/**
  * The line a push carries for a call nobody picked up.
  *
  * Its own function because it is the one place the server *can* word a call
@@ -161,9 +177,10 @@ async function resolveReplyTo(
     senderId: target.senderId,
     // Stripped before it is cut: a cut through a `||spoiler||` would leave its
     // closing marker behind, and the words would show with nothing to hide them.
-    preview: stripFormatting(
-      quote ?? (target.body || previewFor(target.type, attachmentsOf(target).length)),
-    ).slice(0, REPLY_PREVIEW_MAX_LENGTH),
+    preview: stripFormatting(quote ?? (target.body || previewOf(target))).slice(
+      0,
+      REPLY_PREVIEW_MAX_LENGTH,
+    ),
   }
 }
 
@@ -295,7 +312,7 @@ export async function recordMessage(
         lastMessage: {
           // The chat list shows this verbatim, so an attachment needs a label
           // rather than the empty string a caption-less voice note carries.
-          body: message.body || previewFor(message.type, attachmentsOf(message).length),
+          body: message.body || previewOf(message),
           senderId: message.senderId,
           createdAt: message.createdAt,
         },
@@ -984,6 +1001,7 @@ export async function sendMediaMessage(
     ...(first ? { media: first } : {}),
     ...(replyTo ? { replyTo } : {}),
     ...(answers ? { answersMessageId: answers._id } : {}),
+    ...(input.viewOnce ? { viewOnce: { replay: input.viewOnce.replay, opens: 0 } } : {}),
     createdAt: new Date(),
   }
 
@@ -1044,7 +1062,9 @@ export async function forwardMessage(
   if (source.deletedAt || source.hiddenFor?.includes(senderId)) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
   }
-  if (!isForwardableType(source.type)) {
+  // A view-once file is the recipient's to see once, not theirs to pass on —
+  // and a forward would hand the copy out with no limit at all.
+  if (!isForwardableType(source.type) || source.viewOnce) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'This kind of message cannot be forwarded')
   }
   // The menu does not offer it in a channel, and this is the same rule where

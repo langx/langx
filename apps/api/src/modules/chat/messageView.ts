@@ -5,6 +5,8 @@ import {
   type MessageInteractive,
   type MessageTranslation,
   type MessageType,
+  type MessageViewOnce,
+  viewOnceMaxOpens,
 } from '@langx/shared'
 import type { Message } from './conversations'
 
@@ -34,6 +36,11 @@ export interface MessageView {
   attachments?: Message['attachments']
   /** The first of `attachments`, for builds that predate the list. */
   media?: Message['media']
+  /**
+   * In place of `attachments` on a view-once message, for both people. The
+   * file itself is fetched through the open route, one open at a time.
+   */
+  viewOnce?: MessageViewOnce
   correction?: {
     targetMessageId: string
     original: string
@@ -192,7 +199,11 @@ export function toMessageView(
       ...(message.meeting.note ? { note: message.meeting.note } : {}),
     }
   }
-  if (!deleted) {
+  if (!deleted && message.viewOnce) {
+    // Instead of the attachments, never beside them — see `Message.viewOnce`.
+    view.viewOnce = viewOnceViewOf(message, message.viewOnce)
+    view.body = viewOnceFallbackBody(message)
+  } else if (!deleted) {
     const attachments = attachmentsOf(message)
     if (attachments.length > 0) {
       view.attachments = attachments
@@ -229,4 +240,43 @@ export function toMessageView(
   if (message.readAt) view.readAt = message.readAt.toISOString()
 
   return view
+}
+
+/**
+ * What a view-once message says about itself without its file.
+ *
+ * The same for both people on purpose. The sender needs `opens` for "Opened"
+ * and "Replayed"; the recipient needs `opensLeft` for the bubble; and there is
+ * nothing here either of them could not already work out.
+ */
+function viewOnceViewOf(
+  message: Message,
+  viewOnce: NonNullable<Message['viewOnce']>,
+): MessageViewOnce {
+  const file = attachmentsOf(message)[0]
+  return {
+    kind: message.type === 'video' ? 'video' : 'image',
+    replay: viewOnce.replay,
+    opens: viewOnce.opens,
+    opensLeft: Math.max(0, viewOnceMaxOpens(viewOnce.replay) - viewOnce.opens),
+    ...(viewOnce.screenshotAt ? { screenshotAt: viewOnce.screenshotAt.toISOString() } : {}),
+    ...(file?.durationSeconds !== undefined ? { durationSeconds: file.durationSeconds } : {}),
+  }
+}
+
+/**
+ * The caption an installed build shows on a view-once message.
+ *
+ * A build that predates `viewOnce` reads an `image` with no attachments and
+ * would draw an empty bubble — for as long as it stays installed, which for a
+ * feature that ships with a new binary is weeks. So the view carries a line
+ * in `body` for it, and a build that knows `viewOnce` ignores `body` on these.
+ * English, for `previewFor`'s reason: the projection does not know who is
+ * reading in which language. The stored body stays empty, so nothing else —
+ * the list row, a push, a quote — ever reads this.
+ */
+function viewOnceFallbackBody(message: Message): string {
+  return message.type === 'video'
+    ? '🎬 View-once video · update LangX to open it'
+    : '📷 View-once photo · update LangX to open it'
 }

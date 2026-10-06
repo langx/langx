@@ -114,6 +114,15 @@ export const ERROR_CODES = {
    * `UNSUPPORTED_MEDIA_TYPE` was split out to undo.
    */
   MEDIA_TOO_LONG: 'MEDIA_TOO_LONG',
+  /**
+   * A view-once photo or video whose opens are used up.
+   *
+   * Its own code, and 410 rather than 404: the message is still there and
+   * still says what it was, only the file is no longer handed out. The app
+   * answers it by drawing the bubble as opened, which is what a second device
+   * that tapped it a moment after the first needs to hear.
+   */
+  VIEW_ONCE_GONE: 'VIEW_ONCE_GONE',
 
   // calls
   /**
@@ -302,6 +311,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   UNSUPPORTED_MEDIA_TYPE: 415,
   MEDIA_TOO_LARGE: 413,
   MEDIA_TOO_LONG: 413,
+  VIEW_ONCE_GONE: 410,
   PASSWORD_ALREADY_SET: 409,
   HANDLE_TAKEN: 409,
   HANDLE_RESERVED: 409,
