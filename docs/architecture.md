@@ -833,7 +833,9 @@ write to them directly and never change their shape.
   interests: ['music', 'tech'],
   settings: { discoverable, notifications: { <kind>: { push, email } } },
   locationUpdatedAt,
-  privacy: { incognito: false },
+  privacy: { incognito, hideOnlineStatus?, refuseNewChats?, hiddenMode?, hiddenModeChoices?, … },
+                                      ← four of them sit under `hiddenMode`; see decisions.md →
+                                        "Hidden mode is a gate over four switches"
   entitlement: { tier: 'free' | 'pro', expiresAt?, willRenew?, store?, updatedAt },
   quota: { initiations: [Date], translations: [Date] },
   streak: { current, longest, lastQualifiedDay },
@@ -959,6 +961,9 @@ $addFields onlineBucket = active in the last 5 min AND not hiding it → 1/0
 $addFields score = language fit + shared interests + activity recency
 $sort:     onlineBucket desc, score desc, lastActiveAt desc  → cursor pagination
 ```
+
+`discoverable: false` reaches past this aggregation: it also keeps somebody off
+the leaderboards and out of other people's follower and following lists.
 
 **Mutual fit is temporarily an `or`.** `DISCOVERY_CROSS_MATCH_FALLBACK` in
 `packages/shared` is on, and while it is, the **default** search accepts either
