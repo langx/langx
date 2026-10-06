@@ -56,13 +56,14 @@ const CARPLAY = join(HERE, '../carplay')
  *
  * They are separate builds, not one: `wear/` is its own application and its
  * own APK, while `modules/car-messaging` is a library that merges into the
- * phone's. So the same `strings_generated.xml` is written twice rather than
+ * phone's. So the same `strings_generated.xml` is written to each rather than
  * shared — a resource in one is not visible to the other, and neither can
  * reach an Apple string catalogue any more than Swift can read `en.ts`.
  */
 const ANDROID_RES = [
   join(HERE, '../wear/src/main/res'),
   join(HERE, '../modules/car-messaging/android/src/main/res'),
+  join(HERE, '../modules/calls/android/src/main/res'),
 ]
 
 /**

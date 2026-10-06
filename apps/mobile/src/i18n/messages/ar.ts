@@ -1707,6 +1707,7 @@ export const ar: Localized<EnMessages> = {
     notFound: 'الملف غير موجود.',
     interests: 'الاهتمامات',
     sendMessage: 'إرسال رسالة',
+    newChatsRefused: 'لا يمكن بدء محادثة جديدة مع {name} حاليًا.',
     sendFailed: 'تعذّر إرسال الرسالة.',
     blockConfirm: 'حظر {name}؟ لن يظهر أي منكما في قوائم الآخر.',
     blocked: 'تم حظر {name}.',
@@ -2067,15 +2068,22 @@ export const ar: Localized<EnMessages> = {
     voiceCreditsEngines: 'المحرّكان هما Kokoro-82M وPiper، وكلاهما مفتوح المصدر.',
     legalSection: 'القانونية',
     linkDeviceBody: 'وافق على تسجيل دخول وشاهد أين سجّلت الدخول.',
-    showInDiscover: 'أظهرني في الاستكشاف',
-    showInDiscoverBody: 'أطفئه ولن يعثر عليك أحد — لا في الاستكشاف ولا بالبحث عن اسم المستخدم.',
+    hiddenMode: 'الوضع المخفي',
+    hiddenModeBody: 'لن يراك الأشخاص الجدد. ويبقى كل شيء كما هو مع من تتحدث معهم.',
+    hideFromDiscover: 'إخفائي من الاستكشاف',
+    hideFromDiscoverBody:
+      'لن يعثر عليك أحد — لا في الاستكشاف، ولا في لوحات الصدارة، ولا في قوائم المتابعين أو الإعجابات لدى الآخرين، ولا بالبحث عن اسم المستخدم. تبقى منشوراتك في الأخبار.',
     boost: 'إبراز ملفي',
     boostBody:
       'أظهِرني في شريط الملفات المُبرَزة أعلى «استكشاف»، لمن تتطابق لغاتهم مع لغاتي. مُفعّل مع Pro.',
+    boostHidden: 'لا يمكن إبراز ملفك ما دام مخفيًا من الاستكشاف.',
     incognito: 'تصفّح خفي',
     incognitoBody: 'لن تظهر ضمن زوّارهم.',
     hideOnline: 'أخفني عندما أكون متصلًا',
     hideOnlineBody: 'يخفي النقطة الخضراء وآخر مرة كنت فيها هنا. ستظل ترى حالتهم.',
+    refuseNewChats: 'يراسلني فقط من أتحدث معهم',
+    refuseNewChatsBody:
+      'لا يمكن لأحد جديد أن يرسل إليك أول رسالة. يمكنك مراسلة من تشاء، ويمكنهم الرد عليك.',
     allowCalls: 'السماح بالمكالمات',
     allowCallsBody:
       'مكالمات صوتية ومكالمات فيديو مع من تتحدث معهم. عند الإيقاف لن يستطيع أحد الاتصال بك، ولن تستطيع الاتصال بأحد.',
@@ -2599,6 +2607,9 @@ export const ar: Localized<EnMessages> = {
 
   calls: {
     call: 'اتصال',
+    channel: 'المكالمات',
+    ongoingChannel: 'المكالمات الجارية',
+    speaker: 'مكبر الصوت',
     voiceCall: 'مكالمة صوتية',
     videoCall: 'مكالمة فيديو',
     incomingVoice: 'مكالمة صوتية واردة',

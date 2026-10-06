@@ -1482,6 +1482,7 @@ export const ptBR: Localized<EnMessages> = {
     notFound: 'Perfil não encontrado.',
     interests: 'Interesses',
     sendMessage: 'Enviar uma mensagem',
+    newChatsRefused: '{name} não está aceitando novas conversas no momento.',
     sendFailed: 'Não deu para enviar a mensagem.',
     blockConfirm: 'Bloquear {name}? Nenhum de vocês vai aparecer nas listas do outro.',
     blocked: '{name} foi bloqueado.',
@@ -1815,17 +1816,23 @@ export const ptBR: Localized<EnMessages> = {
     voiceCreditsEngines: 'Os motores são Kokoro-82M e Piper, ambos de código aberto.',
     legalSection: 'Jurídico',
     linkDeviceBody: 'Aprove um login e veja onde você está conectado.',
-    showInDiscover: 'Mostrar em Descobrir',
-    showInDiscoverBody:
-      'Desligue e ninguém te encontra — nem no Descobrir, nem buscando seu nome de usuário.',
+    hiddenMode: 'Modo oculto',
+    hiddenModeBody: 'Pessoas novas deixam de te ver. Com quem você já conversa, nada muda.',
+    hideFromDiscover: 'Me esconder do Descobrir',
+    hideFromDiscoverBody:
+      'Ninguém te encontra — nem no Descobrir, nem nos rankings, nem nas listas de seguidores ou de curtidas de outras pessoas, nem buscando seu nome de usuário. Suas publicações continuam no Feed.',
     boost: 'Destacar meu perfil',
     boostBody:
       'Mostre-me na faixa de perfis em destaque no topo de Descobrir, para quem tem idiomas compatíveis com os meus. Ativo com Pro.',
+    boostHidden: 'Seu perfil não pode ser destacado enquanto estiver escondido do Descobrir.',
     incognito: 'Navegar anonimamente',
     incognitoBody: 'Você não vai aparecer entre os visitantes.',
     hideOnline: 'Esconder quando eu estiver on-line',
     hideOnlineBody:
       'Oculta seu ponto verde e quando você esteve aqui pela última vez. Você continua vendo o dos outros.',
+    refuseNewChats: 'Só meus contatos podem me escrever',
+    refuseNewChatsBody:
+      'Ninguém novo pode te mandar uma primeira mensagem. Você ainda pode escrever para qualquer pessoa, e ela pode responder.',
     allowCalls: 'Permitir chamadas',
     allowCallsBody:
       'Chamadas de voz e de vídeo com quem você conversa. Desativado, ninguém pode ligar para você e você não pode ligar para ninguém.',
@@ -2251,6 +2258,9 @@ export const ptBR: Localized<EnMessages> = {
 
   calls: {
     call: 'Ligar',
+    channel: 'Chamadas',
+    ongoingChannel: 'Chamadas em andamento',
+    speaker: 'Alto-falante',
     voiceCall: 'Chamada de voz',
     videoCall: 'Chamada de vídeo',
     incomingVoice: 'Chamada de voz recebida',

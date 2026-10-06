@@ -1677,6 +1677,7 @@ export const en = {
     notFound: 'Profile not found.',
     interests: 'Interests',
     sendMessage: 'Send a message',
+    newChatsRefused: '{name} isn’t taking new chats right now.',
     sendFailed: 'Could not send the message.',
     blockConfirm: 'Block {name}? Neither of you will appear in the other’s lists.',
     blocked: '{name} is blocked.',
@@ -2020,16 +2021,23 @@ export const en = {
     voiceCreditsEngines: 'The engines are Kokoro-82M and Piper, both open source.',
     legalSection: 'Legal',
     linkDeviceBody: 'Approve a sign-in, and see where you are signed in.',
-    showInDiscover: 'Show me in Discover',
-    showInDiscoverBody:
-      'Turn this off and nobody will find you — not in Discover, and not by searching your username.',
+    hiddenMode: 'Hidden mode',
+    hiddenModeBody:
+      'Stay out of sight of new people. Everything with the people you already talk to stays the same.',
+    hideFromDiscover: 'Hide me from Discover',
+    hideFromDiscoverBody:
+      'Nobody will find you — not in Discover, not on the leaderboards, not in other people’s follower or like lists, and not by searching your username. Your posts stay in the Feed.',
     boost: 'Boost my profile',
     boostBody:
       'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Pro.',
+    boostHidden: 'Your profile can’t be boosted while it’s hidden from Discover.',
     incognito: 'Browse incognito',
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',
     hideOnlineBody: 'Hides your green dot and when you were last here. You can still see theirs.',
+    refuseNewChats: 'Only people I talk to can write',
+    refuseNewChatsBody:
+      'Nobody new can send you a first message. You can still write to anyone, and they can reply.',
     allowCalls: 'Allow calls',
     allowCallsBody:
       'Voice and video calls with people you chat with. Off, nobody can call you and you can’t call anyone.',
@@ -2482,6 +2490,9 @@ export const en = {
    */
   calls: {
     call: 'Call',
+    channel: 'Calls',
+    ongoingChannel: 'Calls in progress',
+    speaker: 'Speaker',
     voiceCall: 'Voice call',
     videoCall: 'Video call',
     incomingVoice: 'Incoming voice call',

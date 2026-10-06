@@ -2,6 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react'
 import { AppState, Platform } from 'react-native'
 import { formatCallDuration } from '../lib/calls/callLabels'
 import type { CallState } from '../lib/calls/machine'
+import { startNativeCallBridge, takePendingAction } from '../lib/calls/nativeBridge'
 import {
   attachCallSocket,
   engineSupported,
@@ -35,6 +36,8 @@ export function useCalls({ enabled = true }: { enabled?: boolean } = {}): void {
     // Follows the socket from one connection object to the next: a call in
     // progress moves with it rather than being hung up.
     const stop = onSocket(attachCallSocket)
+    // The phone's own ring and call-in-progress notification, where there are any.
+    const stopBridge = startNativeCallBridge()
 
     /*
      * A phone that was in a pocket has no socket, and a call that started
@@ -44,7 +47,11 @@ export function useCalls({ enabled = true }: { enabled?: boolean } = {}): void {
      */
     let lastAppState = AppState.currentState
     const appState = AppState.addEventListener('change', (next) => {
-      if (resumedFromBackground(lastAppState, next)) void resyncCalls()
+      if (resumedFromBackground(lastAppState, next)) {
+        void resyncCalls()
+        // Back from the call's notification, perhaps: Answer opens the app.
+        void takePendingAction()
+      }
       lastAppState = next
     })
 
@@ -62,6 +69,7 @@ export function useCalls({ enabled = true }: { enabled?: boolean } = {}): void {
       if (onWeb) window.removeEventListener('pagehide', leaving)
       // Said to the server while the socket can still say it, then let go.
       leaveCalls()
+      stopBridge()
       stop()
     }
   }, [enabled])

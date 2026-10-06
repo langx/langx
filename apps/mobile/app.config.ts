@@ -325,6 +325,12 @@ const config: ExpoConfig = {
      */
     './plugins/withFontScaleConfigChange',
     /*
+     * Takes out of the Android build what the WebRTC module declares and calls
+     * do not use — a screen-sharing foreground service Play would ask about.
+     * See `plugins/withCalls.js`.
+     */
+    './plugins/withCalls',
+    /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
      * so the views live in `widgets/` as TSX and the plugin only has to write
@@ -522,7 +528,7 @@ const config: ExpoConfig = {
       'expo-camera',
       {
         cameraPermission:
-          'LangX uses your camera to take a photo to send, and to scan a sign-in or profile code.',
+          'LangX uses your camera for video calls, to take a photo to send, and to scan a sign-in or profile code.',
         recordAudioAndroid: false,
       },
     ],
@@ -550,7 +556,8 @@ const config: ExpoConfig = {
     [
       'expo-audio',
       {
-        microphonePermission: 'LangX uses the microphone so you can send voice messages.',
+        microphonePermission:
+          'LangX uses the microphone for calls and so you can send voice messages.',
         enableBackgroundPlayback: false,
       },
     ],
@@ -568,7 +575,7 @@ const config: ExpoConfig = {
          * own manifest, and the plugin only ever *blocks* it, when this is
          * explicitly `false`.
          */
-        cameraPermission: 'LangX uses your camera so you can take a photo to send.',
+        cameraPermission: 'LangX uses your camera for video calls and to take a photo to send.',
       },
     ],
     /*
@@ -658,6 +665,16 @@ const config: ExpoConfig = {
         android: {
           enableProguardInReleaseBuilds: true,
           enableShrinkResourcesInReleaseBuilds: true,
+          /*
+           * WebRTC's Java side is reached from C++ through JNI, by name, which
+           * R8 cannot see — so it would rename or drop classes the native
+           * library then fails to find, at the first call rather than at
+           * build time. LiveKit's build moves WebRTC under `livekit.org.webrtc`.
+           */
+          extraProguardRules: [
+            '-keep class livekit.org.webrtc.** { *; }',
+            '-keep class com.oney.WebRTCModule.** { *; }',
+          ].join('\n'),
         },
       },
     ],

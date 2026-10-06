@@ -39,4 +39,13 @@
   <string name="notifications_markAsRead">Okundu işaretle</string>
   <string name="notifications_replyFailed">Yanıt gönderilemedi</string>
   <string name="messageMeta_you">Sen</string>
+  <string name="calls_channel">Aramalar</string>
+  <string name="calls_ongoingChannel">Süren aramalar</string>
+  <string name="calls_incomingVoice">Gelen sesli arama</string>
+  <string name="calls_incomingVideo">Gelen görüntülü arama</string>
+  <string name="calls_voiceCall">Sesli arama</string>
+  <string name="calls_videoCall">Görüntülü arama</string>
+  <string name="calls_answer">Cevapla</string>
+  <string name="calls_decline">Reddet</string>
+  <string name="calls_hangUp">Kapat</string>
 </resources>

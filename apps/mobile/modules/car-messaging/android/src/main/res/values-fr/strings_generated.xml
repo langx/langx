@@ -39,4 +39,13 @@
   <string name="notifications_markAsRead">Marquer comme lu</string>
   <string name="notifications_replyFailed">Réponse non envoyée</string>
   <string name="messageMeta_you">Toi</string>
+  <string name="calls_channel">Appels</string>
+  <string name="calls_ongoingChannel">Appels en cours</string>
+  <string name="calls_incomingVoice">Appel vocal entrant</string>
+  <string name="calls_incomingVideo">Appel vidéo entrant</string>
+  <string name="calls_voiceCall">Appel vocal</string>
+  <string name="calls_videoCall">Appel vidéo</string>
+  <string name="calls_answer">Répondre</string>
+  <string name="calls_decline">Refuser</string>
+  <string name="calls_hangUp">Raccrocher</string>
 </resources>

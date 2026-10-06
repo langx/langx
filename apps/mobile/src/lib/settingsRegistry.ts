@@ -68,20 +68,40 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
     bodyKey: 'settings.privacyBody',
     route: '/(app)/settings/privacy',
     items: [
+      /*
+       * The switch first, and the four it governs straight under it — drawn
+       * indented and greyed out while it is off. See `hiddenMode.ts` in the
+       * API for what turning it off and on does to them.
+       */
       {
-        id: 'privacy.discoverable',
-        titleKey: 'settings.showInDiscover',
-        bodyKey: 'settings.showInDiscoverBody',
+        id: 'privacy.hiddenMode',
+        titleKey: 'settings.hiddenMode',
+        bodyKey: 'settings.hiddenModeBody',
       },
       {
-        id: 'privacy.boost',
-        titleKey: 'settings.boost',
-        bodyKey: 'settings.boostBody',
+        id: 'privacy.discoverable',
+        titleKey: 'settings.hideFromDiscover',
+        bodyKey: 'settings.hideFromDiscoverBody',
+      },
+      {
+        id: 'privacy.hideOnline',
+        titleKey: 'settings.hideOnline',
+        bodyKey: 'settings.hideOnlineBody',
+      },
+      {
+        id: 'privacy.refuseNewChats',
+        titleKey: 'settings.refuseNewChats',
+        bodyKey: 'settings.refuseNewChatsBody',
       },
       {
         id: 'privacy.incognito',
         titleKey: 'settings.incognito',
         bodyKey: 'settings.incognitoBody',
+      },
+      {
+        id: 'privacy.boost',
+        titleKey: 'settings.boost',
+        bodyKey: 'settings.boostBody',
       },
       {
         id: 'privacy.activityMap',
@@ -93,12 +113,6 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         titleKey: 'settings.showWeekChart',
         bodyKey: 'settings.showWeekChartBody',
       },
-      {
-        id: 'privacy.hideOnline',
-        titleKey: 'settings.hideOnline',
-        bodyKey: 'settings.hideOnlineBody',
-      },
-      // With the other rows about who can reach you, and how.
       {
         id: 'privacy.allowCalls',
         titleKey: 'settings.allowCalls',

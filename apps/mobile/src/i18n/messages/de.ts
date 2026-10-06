@@ -1520,6 +1520,7 @@ export const de: Localized<EnMessages> = {
     notFound: 'Profil nicht gefunden.',
     interests: 'Interessen',
     sendMessage: 'Nachricht senden',
+    newChatsRefused: '{name} nimmt gerade keine neuen Chats an.',
     sendFailed: 'Die Nachricht konnte nicht gesendet werden.',
     blockConfirm: '{name} blockieren? Ihr taucht beide in den Listen des anderen nicht mehr auf.',
     blocked: '{name} ist blockiert.',
@@ -1859,17 +1860,25 @@ export const de: Localized<EnMessages> = {
     voiceCreditsEngines: 'Die Engines sind Kokoro-82M und Piper, beide quelloffen.',
     legalSection: 'Rechtliches',
     linkDeviceBody: 'Eine Anmeldung bestätigen und sehen, wo du angemeldet bist.',
-    showInDiscover: 'In Entdecken zeigen',
-    showInDiscoverBody:
-      'Schalte das aus und niemand findet dich — weder in Entdecken noch über deinen Benutzernamen.',
+    hiddenMode: 'Versteckter Modus',
+    hiddenModeBody:
+      'Bleib für neue Leute unsichtbar. Mit allen, mit denen du schon schreibst, bleibt alles wie es ist.',
+    hideFromDiscover: 'In Entdecken verbergen',
+    hideFromDiscoverBody:
+      'Niemand findet dich — weder in Entdecken noch in den Bestenlisten, in den Follower- oder Like-Listen anderer oder über deinen Benutzernamen. Deine Beiträge bleiben im Feed.',
     boost: 'Mein Profil hervorheben',
     boostBody:
       'Zeig mich in der Leiste mit hervorgehobenen Profilen oben in Entdecken — Leuten, deren Sprachen zu meinen passen. Mit Pro aktiv.',
+    boostHidden:
+      'Solange dein Profil in Entdecken verborgen ist, kann es nicht hervorgehoben werden.',
     incognito: 'Inkognito surfen',
     incognitoBody: 'Du erscheinst nicht in ihren Besuchern.',
     hideOnline: 'Verbergen, wenn ich online bin',
     hideOnlineBody:
       'Verbirgt deinen grünen Punkt und wann du zuletzt hier warst. Du siehst ihren weiterhin.',
+    refuseNewChats: 'Nur meine Chatpartner können schreiben',
+    refuseNewChatsBody:
+      'Niemand Neues kann dir eine erste Nachricht schicken. Du kannst weiterhin allen schreiben, und sie können antworten.',
     allowCalls: 'Anrufe erlauben',
     allowCallsBody:
       'Sprach- und Videoanrufe mit Leuten, mit denen du schreibst. Ausgeschaltet kann dich niemand anrufen – und du niemanden.',
@@ -2296,6 +2305,9 @@ export const de: Localized<EnMessages> = {
 
   calls: {
     call: 'Anrufen',
+    channel: 'Anrufe',
+    ongoingChannel: 'Laufende Anrufe',
+    speaker: 'Lautsprecher',
     voiceCall: 'Sprachanruf',
     videoCall: 'Videoanruf',
     incomingVoice: 'Eingehender Sprachanruf',

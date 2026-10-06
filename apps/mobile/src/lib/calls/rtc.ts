@@ -1,23 +1,342 @@
-import { MediaAccessError, type CallEngine } from './engine'
+import {
+  AudioDeviceModule,
+  audioDeviceModuleEvents,
+  mediaDevices,
+  MediaStream,
+  RTCAudioSession,
+  RTCPeerConnection,
+  type MediaStreamTrack,
+  type RTCRtpSender,
+} from '@livekit/react-native-webrtc'
+import type { CallIceCandidate, IceConfig } from '@langx/shared'
+import { NativeModules, Platform } from 'react-native'
+import {
+  MediaAccessError,
+  type CallEngine,
+  type EngineHandlers,
+  type EngineSession,
+  type LocalMedia,
+  type SessionDescription,
+} from './engine'
+import { iceConfigFor } from './iceConfig'
 
 /**
- * The media engine on a phone — which, in this build, there is not one of.
+ * The media engine on a phone: LiveKit's build of react-native-webrtc.
  *
- * Carrying a call on iOS or Android takes a native WebRTC module, and a native
- * module is not something an over-the-air update can add: it changes the
- * build itself, and arrives with a store release. Until it does, this says so,
- * and everything downstream follows from that one answer — no capability is
- * declared on the socket, the server never rings this phone, and the chat
- * header draws no call button. The call rows other people's calls leave in a
- * thread are drawn all the same; they are just messages.
+ * The same shape as the browser's (`rtc.web.ts`), on purpose and in detail —
+ * both people always negotiate one audio and one video line, the caller always
+ * offers, a camera is a track swapped onto a line that exists — because a call
+ * is between a phone and a browser as often as between two phones, and the
+ * two ends must agree about what a call contains without either knowing what
+ * the other is.
  *
- * `rtc.web.ts` is the real engine, for browsers. Metro resolves that file on
- * the web and this one everywhere else.
+ * Why this binding rather than react-native-webrtc itself: both ship 16 KB
+ * aligned Android libraries, and this one carries WebRTC M144 against M124 —
+ * two and a half years of fixes in the code that parses packets from a
+ * stranger's device. `docs/decisions.md` → _Calls_ has the comparison.
  */
+
+/** Enough for a face on a phone, and a ceiling on what the relay carries. */
+const VIDEO_CONSTRAINTS = {
+  width: 640,
+  height: 480,
+  frameRate: 24,
+}
+const MAX_VIDEO_BITRATE = 1_000_000
+
+type Facing = 'user' | 'environment'
+
+function asStream(media: LocalMedia): MediaStream {
+  return media.stream as MediaStream
+}
+
+async function openCamera(facingMode: Facing): Promise<MediaStreamTrack> {
+  try {
+    const stream = await mediaDevices.getUserMedia({
+      video: { ...VIDEO_CONSTRAINTS, facingMode },
+    })
+    const [track] = stream.getVideoTracks()
+    if (!track) throw new MediaAccessError('camera')
+    return track
+  } catch {
+    throw new MediaAccessError('camera')
+  }
+}
+
+/**
+ * The iPhone's audio engine, set up once before its first call.
+ *
+ * LiveKit's audio engine stops at each of its steps — created, enabling,
+ * starting, stopping — to ask JavaScript whether to go on, and waits up to two
+ * seconds for an answer. The package wires up the answering side only in its
+ * `registerGlobals()`, which this app does not call, so nothing answered: every
+ * call spent six seconds frozen inside `setLocalDescription`, the answer held
+ * back from the caller all that time. `setupListeners()` is the wiring on its
+ * own, and with no handlers registered it tells the native side not to ask.
+ *
+ * The session policy is the other half of what `registerGlobals()` users get
+ * from LiveKit's own SDK: nothing else puts the session into play-and-record,
+ * and without it the microphone is never opened. On an iPhone where CallKit
+ * answered, CallKit has already done the same (`CallCenter.swift`).
+ */
+let audioPrepared = false
+function prepareAudio(): void {
+  if (audioPrepared || Platform.OS !== 'ios') return
+  audioPrepared = true
+  audioDeviceModuleEvents.setupListeners()
+  AudioDeviceModule.setAutomaticAudioSessionConfiguration({
+    recording: {
+      audioCategory: 'playAndRecord',
+      audioMode: 'voiceChat',
+      audioCategoryOptions: ['allowBluetooth', 'allowBluetoothA2DP'],
+    },
+    playout: {
+      audioCategory: 'playAndRecord',
+      audioMode: 'voiceChat',
+      audioCategoryOptions: ['allowBluetooth', 'allowBluetoothA2DP'],
+    },
+    deactivateOnStop: true,
+  })
+}
+
 export const engine: CallEngine = {
-  supported: () => false,
-  acquire: () => Promise.reject(new MediaAccessError('microphone')),
-  open: () => {
-    throw new Error('This build has no media engine')
+  /*
+   * The native module, not the package: this file is in every bundle built
+   * from this branch on, and an over-the-air update can reach a binary that
+   * predates the module. Asking for it by name is what keeps that binary
+   * answering "no" — and so never being rung — instead of crashing on the
+   * first call.
+   */
+  supported: () => NativeModules.WebRTCModule != null,
+
+  setAudioSessionActive(active) {
+    if (Platform.OS !== 'ios') return
+    if (active) RTCAudioSession.audioSessionDidActivate()
+    else RTCAudioSession.audioSessionDidDeactivate()
+  },
+
+  async acquire({ video }) {
+    prepareAudio()
+    let stream: MediaStream
+    try {
+      stream = await mediaDevices.getUserMedia({ audio: true })
+    } catch {
+      throw new MediaAccessError('microphone')
+    }
+    let hasVideo = false
+    if (video) {
+      // Separately, after the microphone: a refused camera costs the camera,
+      // not the call. See `rtc.web.ts`.
+      try {
+        stream.addTrack(await openCamera('user'))
+        hasVideo = true
+      } catch (error) {
+        for (const track of stream.getTracks()) track.stop()
+        throw error
+      }
+    }
+    return {
+      stream,
+      hasVideo,
+      release: () => {
+        for (const track of stream.getTracks()) track.stop()
+        stream.release()
+      },
+    }
+  },
+
+  open(config: IceConfig, local: LocalMedia, handlers: EngineHandlers): EngineSession {
+    const stream = asStream(local)
+    const { iceServers, iceTransportPolicy } = iceConfigFor(config, Platform.OS)
+    const connection = new RTCPeerConnection({
+      iceServers: iceServers.map((server) => ({
+        urls: server.urls,
+        ...(server.username === undefined ? {} : { username: server.username }),
+        ...(server.credential === undefined ? {} : { credential: server.credential }),
+      })),
+      iceTransportPolicy,
+    })
+
+    /*
+     * The other person's media, gathered into one stream for the view. Their
+     * voice needs nothing: on a phone WebRTC plays received audio itself,
+     * whether or not anything draws their picture.
+     */
+    const remote = new MediaStream()
+    let audioSender: RTCRtpSender | null = null
+    let videoSender: RTCRtpSender | null = null
+    let facing: Facing = 'user'
+    let hasRemoteDescription = false
+    let early: CallIceCandidate[] = []
+    let closed = false
+
+    connection.addEventListener('icecandidate', (event) => {
+      const candidate = event.candidate
+      handlers.onCandidate(
+        candidate
+          ? {
+              candidate: candidate.candidate,
+              sdpMid: candidate.sdpMid ?? null,
+              sdpMLineIndex: candidate.sdpMLineIndex ?? null,
+            }
+          : null,
+      )
+    })
+    connection.addEventListener('connectionstatechange', () => {
+      const state = connection.connectionState
+      if (state === 'connected' || state === 'disconnected' || state === 'failed') {
+        handlers.onConnection(state)
+      }
+    })
+    connection.addEventListener('track', (event) => {
+      const track = event.track
+      if (track && !remote.getTracks().some((existing) => existing.id === track.id)) {
+        remote.addTrack(track)
+      }
+      handlers.onRemoteStream(remote)
+    })
+
+    function addLines(): void {
+      const [audio] = stream.getAudioTracks()
+      const [video] = stream.getVideoTracks()
+      audioSender = connection.addTransceiver(audio ?? 'audio', {
+        direction: 'sendrecv',
+        streams: [stream],
+      }).sender
+      videoSender = connection.addTransceiver(video ?? 'video', {
+        direction: 'sendrecv',
+        streams: [stream],
+      }).sender
+    }
+
+    async function adoptLines(): Promise<void> {
+      for (const transceiver of connection.getTransceivers()) {
+        const kind = transceiver.receiver.track?.kind
+        transceiver.direction = 'sendrecv'
+        if (kind === 'audio') {
+          audioSender = transceiver.sender
+          await transceiver.sender.replaceTrack(stream.getAudioTracks()[0] ?? null)
+        } else if (kind === 'video') {
+          videoSender = transceiver.sender
+          await transceiver.sender.replaceTrack(stream.getVideoTracks()[0] ?? null)
+        }
+      }
+    }
+
+    async function capVideo(): Promise<void> {
+      if (!videoSender) return
+      try {
+        const parameters = videoSender.getParameters()
+        const [encoding] = parameters.encodings
+        if (!encoding) return
+        encoding.maxBitrate = MAX_VIDEO_BITRATE
+        await videoSender.setParameters(parameters)
+      } catch {
+        // The call is worth more than the ceiling.
+      }
+    }
+
+    async function addOne(candidate: CallIceCandidate): Promise<void> {
+      try {
+        await connection.addIceCandidate({
+          candidate: candidate.candidate,
+          sdpMid: candidate.sdpMid ?? null,
+          sdpMLineIndex: candidate.sdpMLineIndex ?? null,
+        })
+      } catch {
+        // One bad candidate out of a dozen is not the call's problem.
+      }
+    }
+
+    async function drainEarly(): Promise<void> {
+      hasRemoteDescription = true
+      const waiting = early
+      early = []
+      for (const candidate of waiting) await addOne(candidate)
+    }
+
+    return {
+      async createOffer(options) {
+        if (!audioSender) addLines()
+        const offer = (await connection.createOffer(
+          options?.iceRestart ? { iceRestart: true } : {},
+        )) as { type: 'offer'; sdp: string }
+        await connection.setLocalDescription(offer)
+        return { type: 'offer', sdp: offer.sdp }
+      },
+
+      async acceptOffer(offer: SessionDescription) {
+        await connection.setRemoteDescription(offer)
+        if (!audioSender) await adoptLines()
+        await drainEarly()
+        const answer = (await connection.createAnswer()) as { type: 'answer'; sdp: string }
+        await connection.setLocalDescription(answer)
+        void capVideo()
+        return { type: 'answer', sdp: answer.sdp }
+      },
+
+      async acceptAnswer(answer: SessionDescription) {
+        await connection.setRemoteDescription(answer)
+        await drainEarly()
+        void capVideo()
+      },
+
+      async addCandidates(candidates) {
+        for (const candidate of candidates) {
+          if (hasRemoteDescription) await addOne(candidate)
+          else early.push(candidate)
+        }
+      },
+
+      setMicrophone(on) {
+        for (const track of stream.getAudioTracks()) track.enabled = on
+      },
+
+      async setCamera(on) {
+        const [current] = stream.getVideoTracks()
+        if (!on) {
+          if (current) {
+            current.stop()
+            stream.removeTrack(current)
+          }
+          await videoSender?.replaceTrack(null)
+          return false
+        }
+        if (current) return true
+        try {
+          const track = await openCamera(facing)
+          if (closed) {
+            track.stop()
+            return false
+          }
+          stream.addTrack(track)
+          await videoSender?.replaceTrack(track)
+          void capVideo()
+          return true
+        } catch {
+          return false
+        }
+      },
+
+      async flipCamera() {
+        const [current] = stream.getVideoTracks()
+        if (!current) return
+        const next: Facing = facing === 'user' ? 'environment' : 'user'
+        try {
+          // The same track, pointed the other way: nothing to renegotiate.
+          await current.applyConstraints({ facingMode: next })
+          facing = next
+        } catch {
+          // One camera only. It stays.
+        }
+      },
+
+      close() {
+        closed = true
+        connection.close()
+        for (const track of remote.getTracks()) remote.removeTrack(track)
+        local.release()
+      },
+    }
   },
 }

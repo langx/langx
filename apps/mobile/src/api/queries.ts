@@ -629,6 +629,14 @@ export interface MeProfile {
     hideCity?: boolean
     /** Calls switched off, in both directions. Absent means calls are on. */
     refuseCalls?: boolean
+    /** Nobody new can start a conversation. Absent means anyone can. */
+    refuseNewChats?: boolean
+    /**
+     * The switch over discoverable, hideOnlineStatus, refuseNewChats and
+     * incognito. Always present from a current API, worked out for profiles
+     * that never stored it; absent only from one that predates it.
+     */
+    hiddenMode?: boolean
   }
   /**
    * Present only while the user is sharing one, which is exactly what the

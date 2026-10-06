@@ -1,12 +1,23 @@
-/**
- * The sounds a call makes while it waits: a ring for the person being called,
- * and the tone the caller hears while it rings.
- *
- * Nothing on a phone, in this build. A phone that is being called is rung by
- * the system's own call screen, with the system's ringtone, and that arrives
- * with the native module — along with everything else a phone needs to take a
- * call. `ringtone.web.ts` is the one that makes a sound.
- */
-export function startRinging(_kind: 'incoming' | 'outgoing', _label?: string): void {}
+import { Vibration } from 'react-native'
 
-export function stopRinging(): void {}
+/**
+ * The ring on a phone, while the app is open: a vibration, and no sound.
+ *
+ * A ringtone file would have to be chosen, licensed and bundled, and on a
+ * phone the ring that matters is the system's own call screen — CallKit and
+ * Android's call notification, with the person's own ringtone — which arrives
+ * with the second half of the native work. Until then a call that comes in
+ * while the app is in front buzzes like one, and the screen says who it is.
+ * The caller hears nothing while it rings; the screen says "Ringing…".
+ * `ringtone.web.ts` is the one that makes a sound.
+ */
+const PATTERN = [0, 900, 1100]
+
+export function startRinging(kind: 'incoming' | 'outgoing', _label?: string): void {
+  stopRinging()
+  if (kind === 'incoming') Vibration.vibrate(PATTERN, true)
+}
+
+export function stopRinging(): void {
+  Vibration.cancel()
+}

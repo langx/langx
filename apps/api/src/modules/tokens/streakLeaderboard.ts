@@ -10,6 +10,7 @@ import type { Db, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { blockedUserIds } from '../moderation/blocks'
+import { notSuspended } from '../moderation/suspension'
 import { rankOf } from './leaderboard'
 
 /**
@@ -28,7 +29,21 @@ export async function getStreakLeaderboard(
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const field = query.metric === 'current' ? 'streak.current' : 'streak.longest'
 
-  const filter: Filter<Profile> = { deletedAt: { $exists: false } }
+  /*
+   * "Show me in Discover" off means off the board as well — see the token
+   * board — except to themselves. In the query, the way a deleted account is
+   * left out of this board, rather than skipped in the loop like a block:
+   * a skipped row still takes a place in the page's `limit`, so somebody
+   * hidden near the top would cut the board short for everyone. The ranks
+   * close up around them instead, as they already do around a deletion here.
+   */
+  const filter: Filter<Profile> = {
+    deletedAt: { $exists: false },
+    $or: [{ 'settings.discoverable': true }, { _id: viewerId }],
+    // Not a suspended account either — see the token board. In the query for
+    // the same reason: a skipped row would still take a place in the page.
+    ...notSuspended(at),
+  }
   if (query.metric === 'current') {
     /*
      * Liveness, and the board is meaningless without it. `streak.current` is

@@ -82,6 +82,20 @@ export const NATIVE_KEYS = [
   'notifications.markAsRead',
   'notifications.replyFailed',
   'messageMeta.you',
+  /*
+   * A call ringing a phone whose app is closed. Android draws it from Kotlin
+   * — the call notification, its two buttons, and the notification channel
+   * people see in the system settings — before any JavaScript is running.
+   */
+  'calls.channel',
+  'calls.ongoingChannel',
+  'calls.incomingVoice',
+  'calls.incomingVideo',
+  'calls.voiceCall',
+  'calls.videoCall',
+  'calls.answer',
+  'calls.decline',
+  'calls.hangUp',
 ] as const satisfies readonly Paths<EnMessages>[]
 
 export type NativeKey = (typeof NATIVE_KEYS)[number]

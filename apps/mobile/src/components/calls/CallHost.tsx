@@ -28,6 +28,7 @@ import {
   toggleCamera,
   toggleMicrophone,
 } from '../../lib/calls/session'
+import { setSpeakerphone } from '../../../modules/calls'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
 import { CallVideoView } from './CallVideoView'
@@ -95,6 +96,13 @@ function CallScreen({ call }: { call: CallState }) {
   const [answering, setAnswering] = useState(false)
   /** Which way the camera faces. Only the front one is drawn as a mirror. */
   const [front, setFront] = useState(true)
+  /**
+   * Where the sound comes out, on a phone. A browser has no say — it plays
+   * through whatever the computer is set to — so there is no button there.
+   * Starts where every dialer starts it: the speaker for video, held in front
+   * of the face; the earpiece for voice, held to the ear.
+   */
+  const [speaker, setSpeaker] = useState(call.media === 'video')
 
   const name = call.peer.displayName
   const statusKey = callStatusKey(call)
@@ -288,6 +296,17 @@ function CallScreen({ call }: { call: CallState }) {
                   onPress={() => {
                     setFront((current) => !current)
                     void flipCamera()
+                  }}
+                />
+              ) : null}
+              {Platform.OS !== 'web' ? (
+                <Disc
+                  icon="volume-2"
+                  label={t('calls.speaker')}
+                  lit={speaker}
+                  onPress={() => {
+                    setSpeakerphone(!speaker)
+                    setSpeaker(!speaker)
                   }}
                 />
               ) : null}

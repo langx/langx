@@ -230,6 +230,80 @@ describe('follows', () => {
     expect(new Set(seen).size).toBe(3)
   })
 
+  describe('somebody hidden from Discover', () => {
+    function hide(user: SignedUpUser) {
+      return app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { settings: { discoverable: false } },
+      })
+    }
+
+    async function followerIds(viewer: SignedUpUser, targetId: string) {
+      const response = await list(viewer, targetId, 'followers')
+      expect(response.statusCode, response.body).toBe(200)
+      return response.json<{ items: { _id: string }[] }>().items.map((item) => item._id)
+    }
+
+    async function counts(viewer: SignedUpUser, targetId: string) {
+      const profile = await app.inject({
+        method: 'GET',
+        url: `/profiles/${targetId}`,
+        headers: { cookie: viewer.cookie },
+      })
+      return profile.json<{ follow: { followers: number; following: number } }>().follow
+    }
+
+    /**
+     * A follower list is somewhere strangers browse to find people, and the
+     * switch promises they will not. The count agrees with the list, for the
+     * block test's reason above: a number bigger than the rows under it says
+     * somebody is missing.
+     */
+    it('is left out of a stranger’s view of the lists, and of the counts', async () => {
+      const stranger = await newUser('hidden-lists-stranger@example.com')
+      const target = await newUser('hidden-lists-target@example.com')
+      const hiding = await newUser('hidden-lists-hiding@example.com')
+      const open = await newUser('hidden-lists-open@example.com')
+      await follow(hiding, target.userId)
+      await follow(open, target.userId)
+      await follow(target, hiding.userId)
+      expect((await hide(hiding)).statusCode).toBe(200)
+
+      expect(await followerIds(stranger, target.userId)).toEqual([open.userId])
+      const following = (await list(stranger, target.userId, 'following')).json<{
+        items: { _id: string }[]
+      }>()
+      expect(following.items).toHaveLength(0)
+      expect(await counts(stranger, target.userId)).toMatchObject({ followers: 1, following: 0 })
+    })
+
+    /**
+     * The owner chose to follow them, or was told they followed — and somebody
+     * you follow but cannot see in your own list is somebody you cannot
+     * unfollow.
+     */
+    it('stays in the list’s owner’s own view, and in their own', async () => {
+      const target = await newUser('hidden-own-target@example.com')
+      const hiding = await newUser('hidden-own-hiding@example.com')
+      await follow(hiding, target.userId)
+      await follow(target, hiding.userId)
+      expect((await hide(hiding)).statusCode).toBe(200)
+
+      expect(await followerIds(target, target.userId)).toEqual([hiding.userId])
+      const following = (await list(target, target.userId, 'following')).json<{
+        items: { _id: string }[]
+      }>()
+      expect(following.items.map((item) => item._id)).toEqual([hiding.userId])
+      expect(await counts(target, target.userId)).toMatchObject({ followers: 1, following: 1 })
+
+      // And to themselves, in somebody else's list.
+      expect(await followerIds(hiding, target.userId)).toEqual([hiding.userId])
+      expect(await counts(hiding, target.userId)).toMatchObject({ followers: 1 })
+    })
+  })
+
   it('lists who somebody follows, and reports it on their profile', async () => {
     const viewer = await newUser('following-list-viewer@example.com')
     const a = await newUser('following-list-a@example.com')

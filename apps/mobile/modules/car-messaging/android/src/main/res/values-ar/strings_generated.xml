@@ -39,4 +39,13 @@
   <string name="notifications_markAsRead">تحديد كمقروء</string>
   <string name="notifications_replyFailed">لم يُرسل الرد</string>
   <string name="messageMeta_you">أنت</string>
+  <string name="calls_channel">المكالمات</string>
+  <string name="calls_ongoingChannel">المكالمات الجارية</string>
+  <string name="calls_incomingVoice">مكالمة صوتية واردة</string>
+  <string name="calls_incomingVideo">مكالمة فيديو واردة</string>
+  <string name="calls_voiceCall">مكالمة صوتية</string>
+  <string name="calls_videoCall">مكالمة فيديو</string>
+  <string name="calls_answer">ردّ</string>
+  <string name="calls_decline">رفض</string>
+  <string name="calls_hangUp">إنهاء المكالمة</string>
 </resources>
