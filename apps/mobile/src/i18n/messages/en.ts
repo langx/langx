@@ -215,6 +215,25 @@ export const en = {
     echoPostToFeed:
       'Not sure how a card sounds? Open it and choose Post to the feed — someone may record it for you.',
     echoSelect: 'In All cards you can search, or use Select cards to handle several at once.',
+    chatCall:
+      'Tap the phone at the top of a chat for a voice or video call. It unlocks after a few messages from them.',
+    chatViewOnce:
+      'Tap + then Take a photo. Before sending, pick View once, Allow replay or Keep in chat.',
+    chatLocation:
+      'Tap + then Share location. Approximate area shows roughly where you are; Exact location shows the spot.',
+    chatReadAloud: 'Hold a message and choose Read aloud to hear how it sounds.',
+    chatTranscript: 'Tap Show text under a voice note to read what was said.',
+    chatReview:
+      'Enjoying the exchange? Write a review from the ⋯ at the top — it shows on their profile.',
+    chatsOnlyKnown: 'Too many new chats? Settings → Privacy → Only people I talk to can write.',
+    discoverHidden: 'Need a break from new people? Turn on Hidden mode in Settings → Privacy.',
+    discoverLocalTime:
+      'Profiles show the other person’s local time — worth a look before you write or call.',
+    meRecap: 'In the first days of each month, your recap shows up here, ready to share.',
+    meInvite:
+      'Settings → Share & invite has your link. You both earn tokens once your friend starts talking.',
+    meGiftCode: 'Got a gift code? Tap Have a gift code? on the Pro screen.',
+    meCalls: 'Rather not get calls? Turn off Allow calls in Settings → Privacy.',
     feedMoment: 'Share a photo, a video or a line from your day — no question needed.',
   },
   tour: {

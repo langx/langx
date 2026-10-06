@@ -196,6 +196,26 @@ export const tr: Localized<EnMessages> = {
       'Bir kartın nasıl okunduğundan emin değil misin? Kartı açıp Akışa gönder’i seç — biri senin için seslendirebilir.',
     echoSelect:
       'Tüm kartlar’da arama yapabilir ya da Kart seç ile birkaçını birden yönetebilirsin.',
+    chatCall:
+      'Sesli ya da görüntülü arama için sohbetin üstündeki telefona dokun. Ondan birkaç mesaj gelince açılır.',
+    chatViewOnce:
+      '+ ve Fotoğraf çek’e dokun. Göndermeden önce Bir kez görüntüle, Tekrar oynatmaya izin ver ya da Sohbette kalsın’ı seç.',
+    chatLocation:
+      '+ ve Konum paylaş’a dokun. Yaklaşık bölge sadece çevreni, Tam konum tam olarak nerede olduğunu gösterir.',
+    chatReadAloud: 'Nasıl okunduğunu duymak için bir mesaja basılı tut ve Sesli oku’yu seç.',
+    chatTranscript: 'Sesli mesajda ne dendiğini okumak için altındaki Metni göster’e dokun.',
+    chatReview: 'Sohbetten memnun musun? Üstteki ⋯ menüsünden Yorum yaz; profilinde görünür.',
+    chatsOnlyKnown:
+      'Çok fazla yeni sohbet mi? Ayarlar → Gizlilik → Sadece konuştuklarım yazabilsin.',
+    discoverHidden:
+      'Yeni insanlardan biraz uzak mı durmak istiyorsun? Ayarlar → Gizlilik’ten Gizli mod’u aç.',
+    discoverLocalTime:
+      'Profillerde karşındakinin yerel saati yazar — yazmadan ya da aramadan önce bir bak.',
+    meRecap: 'Her ayın ilk günlerinde aylık özetin burada çıkar, paylaşmaya hazır.',
+    meInvite:
+      'Davet bağlantın Ayarlar → Paylaş ve davet et’te. Arkadaşın konuşmaya başlayınca ikiniz de jeton kazanırsınız.',
+    meGiftCode: 'Hediye kodun mu var? Pro ekranında Hediye kodun var mı?’ya dokun.',
+    meCalls: 'Arama almak istemiyor musun? Ayarlar → Gizlilik’ten Aramalara izin ver’i kapat.',
     feedMoment: 'Gününden bir fotoğraf, video ya da bir cümle paylaş — soru sormak şart değil.',
   },
   tour: {

@@ -22,6 +22,7 @@ import { BadgeStrip } from '../../../src/components/BadgeStrip'
 import { DebugQuotaPanel } from '../../../src/components/DebugQuotaPanel'
 import { HiddenFromOthers } from '../../../src/components/HiddenFromOthers'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
+import { Tip } from '../../../src/components/Tip'
 import { ProMark } from '../../../src/components/ProMark'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
@@ -296,6 +297,8 @@ export default function MeScreen() {
           style={styles.languages}
         />
       </Pressable>
+
+      <Tip slot="me" />
 
       {/*
         Four across: the streak, then three running totals. Corrections and

@@ -192,6 +192,29 @@ export const de: Localized<EnMessages> = {
       'Unsicher, wie eine Karte klingt? Öffne sie und wähle Im Feed posten — vielleicht spricht sie jemand für dich ein.',
     echoSelect:
       'Unter Alle Karten kannst du suchen oder mit Karten auswählen mehrere auf einmal bearbeiten.',
+    chatCall:
+      'Tippe oben im Chat auf das Telefon für einen Sprach- oder Videoanruf. Es wird nach ein paar Nachrichten von der anderen Person frei.',
+    chatViewOnce:
+      'Tippe auf + und dann auf Foto aufnehmen. Wähle vor dem Senden Einmal ansehen, Wiederholen erlauben oder Im Chat behalten.',
+    chatLocation:
+      'Tippe auf + und dann auf Standort teilen. Ungefähre Gegend zeigt nur deine Umgebung, Genauer Standort zeigt, wo du bist.',
+    chatReadAloud: 'Halte eine Nachricht gedrückt und wähle Vorlesen, um zu hören, wie sie klingt.',
+    chatTranscript:
+      'Tippe unter einer Sprachnachricht auf Text anzeigen, um zu lesen, was gesagt wurde.',
+    chatReview:
+      'Gefällt dir der Austausch? Über das ⋯ oben kannst du eine Bewertung schreiben — sie erscheint auf dem Profil.',
+    chatsOnlyKnown:
+      'Zu viele neue Chats? Einstellungen → Privatsphäre → Nur meine Chatpartner können schreiben.',
+    discoverHidden:
+      'Brauchst du eine Pause von neuen Leuten? Schalte den Versteckten Modus unter Einstellungen → Privatsphäre ein.',
+    discoverLocalTime:
+      'Profile zeigen die Ortszeit der Person — ein Blick lohnt sich, bevor du schreibst oder anrufst.',
+    meRecap: 'In den ersten Tagen jedes Monats erscheint hier dein Rückblick, bereit zum Teilen.',
+    meInvite:
+      'Unter Einstellungen → Teilen und einladen findest du deinen Link. Ihr beide bekommt Tokens, sobald deine Freundin oder dein Freund loslegt.',
+    meGiftCode:
+      'Du hast einen Geschenkcode? Tippe auf dem Pro-Bildschirm auf Hast du einen Geschenkcode?',
+    meCalls: 'Lieber keine Anrufe? Schalte Anrufe erlauben unter Einstellungen → Privatsphäre aus.',
     feedMoment:
       'Teile ein Foto, ein Video oder einen Satz aus deinem Tag — eine Frage ist nicht nötig.',
   },

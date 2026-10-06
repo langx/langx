@@ -194,6 +194,28 @@ export const fr: Localized<EnMessages> = {
       'Un doute sur la prononciation d’une carte ? Ouvre-la et choisis Publier dans le fil : quelqu’un pourra l’enregistrer pour toi.',
     echoSelect:
       'Dans Toutes les cartes, tu peux chercher ou utiliser Sélectionner des cartes pour en gérer plusieurs à la fois.',
+    chatCall:
+      'Touche le téléphone en haut de la discussion pour un appel vocal ou vidéo. Il se débloque après quelques messages de l’autre personne.',
+    chatViewOnce:
+      'Touche + puis Prendre une photo. Avant d’envoyer, choisis Voir une fois, Autoriser à revoir ou Garder dans la discussion.',
+    chatLocation:
+      'Touche + puis Partager ma position. Zone approximative montre seulement ton quartier ; Position exacte montre où tu es.',
+    chatReadAloud: 'Appuie longuement sur un message et choisis Lire à voix haute pour l’entendre.',
+    chatTranscript: 'Touche Afficher le texte sous un message vocal pour lire ce qui a été dit.',
+    chatReview:
+      'L’échange te plaît ? Écris un avis depuis le ⋯ en haut : il s’affiche sur son profil.',
+    chatsOnlyKnown:
+      'Trop de nouvelles discussions ? Réglages → Confidentialité → Seuls mes contacts peuvent m’écrire.',
+    discoverHidden:
+      'Besoin d’une pause loin des nouvelles personnes ? Active le Mode discret dans Réglages → Confidentialité.',
+    discoverLocalTime:
+      'Les profils affichent l’heure locale de la personne : jette un œil avant d’écrire ou d’appeler.',
+    meRecap: 'Les premiers jours de chaque mois, ton bilan apparaît ici, prêt à être partagé.',
+    meInvite:
+      'Ton lien est dans Réglages → Partager et inviter. Vous gagnez tous les deux des jetons quand la personne invitée commence à discuter.',
+    meGiftCode: 'Tu as un code cadeau ? Touche Tu as un code cadeau ? sur l’écran Pro.',
+    meCalls:
+      'Tu préfères ne pas recevoir d’appels ? Désactive Autoriser les appels dans Réglages → Confidentialité.',
     feedMoment:
       'Partagez une photo, une vidéo ou une phrase de votre journée — pas besoin de poser une question.',
   },

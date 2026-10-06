@@ -189,6 +189,28 @@ export const es: Localized<EnMessages> = {
       '¿No sabes cómo suena una tarjeta? Ábrela y elige Publicar en el muro: quizá alguien la grabe por ti.',
     echoSelect:
       'En Todas las tarjetas puedes buscar o usar Seleccionar tarjetas para gestionar varias a la vez.',
+    chatCall:
+      'Toca el teléfono arriba del chat para una llamada de voz o videollamada. Se desbloquea tras unos mensajes de la otra persona.',
+    chatViewOnce:
+      'Toca + y luego Hacer una foto. Antes de enviar, elige Ver una vez, Permitir volver a ver o Mantener en el chat.',
+    chatLocation:
+      'Toca + y luego Compartir ubicación. Zona aproximada muestra solo tu zona; Ubicación exacta, dónde estás.',
+    chatReadAloud: 'Mantén pulsado un mensaje y elige Leer en voz alta para oír cómo suena.',
+    chatTranscript: 'Toca Mostrar texto bajo una nota de voz para leer lo que se dijo.',
+    chatReview:
+      '¿Te gusta el intercambio? Escribe una reseña desde el ⋯ de arriba: aparece en su perfil.',
+    chatsOnlyKnown:
+      '¿Demasiados chats nuevos? Ajustes → Privacidad → Solo pueden escribirme mis contactos de chat.',
+    discoverHidden:
+      '¿Necesitas un descanso de gente nueva? Activa el Modo oculto en Ajustes → Privacidad.',
+    discoverLocalTime:
+      'Los perfiles muestran la hora local de la otra persona: échale un vistazo antes de escribir o llamar.',
+    meRecap: 'En los primeros días de cada mes aparece aquí tu resumen, listo para compartir.',
+    meInvite:
+      'En Ajustes → Compartir e invitar está tu enlace. Los dos ganáis tokens cuando tu amigo empieza a hablar.',
+    meGiftCode:
+      '¿Tienes un código de regalo? Toca ¿Tienes un código de regalo? en la pantalla de Pro.',
+    meCalls: '¿Prefieres no recibir llamadas? Desactiva Permitir llamadas en Ajustes → Privacidad.',
     feedMoment: 'Comparte una foto, un vídeo o una frase de tu día; no hace falta preguntar nada.',
   },
   tour: {

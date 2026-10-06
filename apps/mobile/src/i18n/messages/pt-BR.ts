@@ -186,6 +186,28 @@ export const ptBR: Localized<EnMessages> = {
       'Não sabe como um cartão soa? Abra-o e escolha Publicar no feed — alguém pode gravar para você.',
     echoSelect:
       'Em Todos os cartões você pode buscar ou usar Selecionar cartões para cuidar de vários de uma vez.',
+    chatCall:
+      'Toque no telefone no topo da conversa para uma chamada de voz ou de vídeo. Ela é liberada depois de algumas mensagens da outra pessoa.',
+    chatViewOnce:
+      'Toque em + e depois em Tirar uma foto. Antes de enviar, escolha Ver uma vez, Permitir rever ou Manter na conversa.',
+    chatLocation:
+      'Toque em + e depois em Compartilhar localização. Região aproximada mostra só a sua região; Localização exata mostra onde você está.',
+    chatReadAloud: 'Segure uma mensagem e escolha Ler em voz alta para ouvir como ela soa.',
+    chatTranscript: 'Toque em Mostrar texto embaixo de um áudio para ler o que foi dito.',
+    chatReview:
+      'Gostando da troca? Escreva uma avaliação pelo ⋯ no topo — ela aparece no perfil da pessoa.',
+    chatsOnlyKnown:
+      'Conversas novas demais? Configurações → Privacidade → Só meus contatos podem me escrever.',
+    discoverHidden:
+      'Precisa de uma pausa de gente nova? Ative o Modo oculto em Configurações → Privacidade.',
+    discoverLocalTime:
+      'Os perfis mostram a hora local da pessoa — vale olhar antes de escrever ou ligar.',
+    meRecap: 'Nos primeiros dias de cada mês, o seu resumo aparece aqui, pronto para compartilhar.',
+    meInvite:
+      'Seu link está em Configurações → Compartilhar e convidar. Vocês dois ganham tokens quando a pessoa convidada começa a conversar.',
+    meGiftCode: 'Tem um código de presente? Toque em Tem um código de presente? na tela do Pro.',
+    meCalls:
+      'Prefere não receber chamadas? Desative Permitir chamadas em Configurações → Privacidade.',
     feedMoment:
       'Compartilhe uma foto, um vídeo ou uma frase do seu dia — não precisa perguntar nada.',
   },

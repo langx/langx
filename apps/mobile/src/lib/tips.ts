@@ -24,6 +24,12 @@ export const TIP_SLOTS = {
   chat: [
     'chatCorrect',
     'chatSwipeReply',
+    'chatCall',
+    'chatViewOnce',
+    'chatLocation',
+    'chatReadAloud',
+    'chatTranscript',
+    'chatReview',
     'chatEcho',
     'chatStar',
     'chatTranslate',
@@ -40,7 +46,15 @@ export const TIP_SLOTS = {
     'chatFormat',
     'chatEdit',
   ],
-  chats: ['chatsSwipe', 'chatsPin', 'chatsUnreplied', 'chatsStarred', 'chatsHold', 'chatsArchived'],
+  chats: [
+    'chatsSwipe',
+    'chatsPin',
+    'chatsUnreplied',
+    'chatsStarred',
+    'chatsHold',
+    'chatsArchived',
+    'chatsOnlyKnown',
+  ],
   discover: [
     'discoverFilters',
     'discoverRadius',
@@ -48,6 +62,8 @@ export const TIP_SLOTS = {
     'discoverActive',
     'discoverFollow',
     'discoverBoosted',
+    'discoverLocalTime',
+    'discoverHidden',
   ],
   feed: [
     'feedMoment',
@@ -78,6 +94,13 @@ export const TIP_SLOTS = {
     'echoSelect',
     'echoLeaderboard',
   ],
+  /**
+   * The Me tab, under the language columns. Everything here is reached from
+   * Me or the Settings behind it, and none of it has a home on the other tabs:
+   * the recap row only exists in a month's first week, and the switches and
+   * the gift-code link are two screens deep.
+   */
+  me: ['meRecap', 'meCalls', 'meInvite', 'meGiftCode'],
   /**
    * The line under the chat composer, which is not a `Tip`: it has no dismiss
    * button and half a row to live in, so its entries are four words rather
