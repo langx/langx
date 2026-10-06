@@ -2251,6 +2251,7 @@ export const es: Localized<EnMessages> = {
   },
 
   calls: {
+    call: 'Llamar',
     voiceCall: 'Llamada de voz',
     videoCall: 'Videollamada',
     incomingVoice: 'Llamada de voz entrante',

@@ -2272,6 +2272,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   calls: {
+    call: 'Appeler',
     voiceCall: 'Appel vocal',
     videoCall: 'Appel vidéo',
     incomingVoice: 'Appel vocal entrant',

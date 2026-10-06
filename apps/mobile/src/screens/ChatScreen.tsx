@@ -119,6 +119,7 @@ import { listState } from '../lib/listState'
 import { startersDue } from '../lib/conversationStarters'
 import { messageActionsFor, unsentActionsFor } from '../lib/messageActions'
 import { callAvailability, meetingCallOpen } from '../lib/calls/callGate'
+import { CallMenu } from '../components/calls/CallMenu'
 import { callRowLabel, closingLine } from '../lib/calls/callLabels'
 import { CallRefusal, engineSupported, placeCall } from '../lib/calls/session'
 import { meetingClock } from '../lib/meetingClock'
@@ -2476,6 +2477,23 @@ export function ChatScreen({
     return () => clearInterval(timer)
   }, [hasAgreedTime, callGate])
 
+  /**
+   * The header's call button. Behind the consent gate it explains the gate
+   * rather than offering a choice that would only be refused; otherwise it
+   * drops down the two kinds of call, under the button.
+   */
+  const callButton = useRef<View>(null)
+  const [callMenu, setCallMenu] = useState<AnchorRect | null>(null)
+  function openCallMenu(): void {
+    if (callGate === 'locked') {
+      void showAlert(t('chat.mediaLockedTitle'), t('calls.locked', { count: mediaLockedFor }))
+      return
+    }
+    callButton.current?.measureInWindow((x, y, width, height) =>
+      setCallMenu({ x, y, width, height }),
+    )
+  }
+
   function reportMessage(message: MessageDto): void {
     if (!partnerId) return
     router.push({
@@ -2715,34 +2733,20 @@ export function ChatScreen({
           */}
           <View style={styles.headerActions}>
             {callGate !== 'hidden' ? (
-              <>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={t('calls.voiceCall')}
-                  hitSlop={4}
-                  onPress={() => void startCall('audio', 'header')}
-                  style={styles.more}
-                >
-                  <Feather
-                    name="phone"
-                    size={20}
-                    color={callGate === 'locked' ? colors.textFaint : colors.text}
-                  />
-                </Pressable>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={t('calls.videoCall')}
-                  hitSlop={4}
-                  onPress={() => void startCall('video', 'header')}
-                  style={styles.more}
-                >
-                  <Feather
-                    name="video"
-                    size={21}
-                    color={callGate === 'locked' ? colors.textFaint : colors.text}
-                  />
-                </Pressable>
-              </>
+              <Pressable
+                ref={callButton}
+                accessibilityRole="button"
+                accessibilityLabel={t('calls.call')}
+                hitSlop={6}
+                onPress={openCallMenu}
+                style={styles.more}
+              >
+                <Feather
+                  name="phone"
+                  size={20}
+                  color={callGate === 'locked' ? colors.textFaint : colors.text}
+                />
+              </Pressable>
             ) : null}
             <Pressable
               accessibilityRole="button"
@@ -3329,6 +3333,11 @@ export function ChatScreen({
           </View>
         </View>
       ) : null}
+      <CallMenu
+        anchor={callMenu}
+        onPick={(media) => void startCall(media, 'header')}
+        onClose={() => setCallMenu(null)}
+      />
     </Screen>
   )
 }

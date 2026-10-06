@@ -2481,6 +2481,7 @@ export const en = {
    * `locked` follows `chat.mediaLocked`, because it is the same gate.
    */
   calls: {
+    call: 'Call',
     voiceCall: 'Voice call',
     videoCall: 'Video call',
     incomingVoice: 'Incoming voice call',
