@@ -6555,8 +6555,9 @@ photo and hold for a clip.
 
 **The file is kept.** Viewing never deletes anything from the bucket. A
 view-once file stays where every chat file stays, under
-`messages/<conversationId>/`, and is removed only by what removes any chat
-file — the sender's "delete for everyone", or an account purge. The reason is
+`messages/<conversationId>/`, and like every chat file it outlives the
+sender's "delete for everyone" — see _Nothing a person deletes leaves the
+bucket_. The reason is
 reports. The person most likely to report a picture is the one who has just
 seen it, and by then a file deleted on viewing would be gone, leaving the
 operator to judge a report about nothing. So the report detail in the panel
@@ -6698,3 +6699,27 @@ all-visible values in force by then.
 
 Boost is not under the switch: it makes a person more visible, not less. It is
 greyed out while they are hidden from Discover, which the strip is part of.
+
+## Nothing a person deletes leaves the bucket
+
+Deleting something in the app takes it out of the database and out of every
+screen; the file it pointed at stays in storage. That covers a chat message
+withdrawn for everyone, a post with its corrections and recordings, a single
+correction or recording, a picture or recording taken off an Echo card, the
+original of a voice note the server re-encoded for iPhones, and an avatar the
+operator panel takes down.
+
+The reason is reports, the same as view-once's. The person most likely to
+report something is the one who has just seen it, and the sender can delete it
+a minute later: before this, a picture sent, opened and withdrawn for everyone
+left the operator judging a report about nothing. A file that is in the bucket
+can be looked at; one that was deleted cannot be brought back for anybody.
+
+What it costs: storage grows by what people delete as well as what they keep,
+and a file whose address somebody already had stays fetchable at it, because
+the bucket is public. Nothing in the app links to it any more — the address
+was only ever in the row that is gone.
+
+The account purge is not part of this. The privacy policy says a deleted
+account's photos, videos and voice messages are removed from storage, and it
+still does exactly that.

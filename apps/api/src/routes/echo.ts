@@ -84,7 +84,6 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
           request.params.id,
           request.body,
           app.env.STORAGE_PUBLIC_BASE_URL,
-          app.storage,
         ),
       )
     },

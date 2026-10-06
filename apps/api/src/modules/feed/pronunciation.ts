@@ -13,12 +13,11 @@ import { readEchoedPostIds } from '../echo/echoed'
 import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { blockedUserIds } from '../moderation/blocks'
-import type { StorageProvider } from '../../storage/StorageProvider'
 import type { Profile } from '../profiles/profiles'
 import { awardTokens } from '../tokens/ledger'
 import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
-import { assertAttachable, deleteObjects } from './attachments'
+import { assertAttachable } from './attachments'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { notHidden } from './documents'
 import type { Post, PostCorrectionDoc, PronunciationAnswerDoc } from './documents'
@@ -303,7 +302,7 @@ export async function listPronunciationAnswers(
 /**
  * Delete a recording you left.
  *
- * Both takes leave the bucket, `answerCount` comes down so the request goes
+ * Both takes stay in the bucket, `answerCount` comes down so the request goes
  * back into the queue, and `post_author_unique` releases so you can record a
  * better one.
  *
@@ -318,7 +317,6 @@ export async function deleteAnswer(
   userId: string,
   postId: string,
   answerId: string,
-  storage?: StorageProvider,
 ): Promise<void> {
   if (!ObjectId.isValid(postId) || !ObjectId.isValid(answerId)) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Answer not found')
@@ -327,7 +325,6 @@ export async function deleteAnswer(
   const post_id = new ObjectId(postId)
 
   const answers = db.collection<PronunciationAnswerDoc>(COLLECTIONS.pronunciationAnswers)
-  const doc = await answers.findOne({ _id, postId: post_id })
   const deleted = await answers.deleteOne({ _id, postId: post_id, authorId: userId })
   if (deleted.deletedCount === 0) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Answer not found')
 
@@ -337,5 +334,4 @@ export async function deleteAnswer(
       .updateOne({ _id: post_id }, { $inc: { answerCount: -1 } }),
     db.collection(COLLECTIONS.likes).deleteMany({ targetType: 'answer', targetId: _id }),
   ])
-  await deleteObjects(storage, [doc?.media.url, doc?.slowMedia?.url])
 }

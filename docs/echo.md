@@ -369,11 +369,10 @@ The edit screen attaches, replaces and removes both the picture and the
 recording. Three things make that safe to have added:
 
 - **`origin: 'self'` is a fact, not a label.** Every other origin names a copy
-  of an object a message, a post or a pack still plays. `updateCard` deletes
-  the object behind a replaced or cleared file **only when its origin was
-  `self`** — a bare `deleteObjects(previous.url)` there would look right and
-  would take a recording out of somebody's thread because a card stopped
-  pointing at it.
+  of an object a message, a post or a pack still plays. A replaced or cleared
+  file only stops being pointed at; `updateCard` deletes nothing from the
+  bucket, whatever the origin — see _Nothing a person deletes leaves the
+  bucket_ in `decisions.md`.
 - **The server builds the field.** A client sends the `Media` an upload
   returned and nothing else; `origin` is stamped here, so nobody can file their
   own recording under a partner's name.

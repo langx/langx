@@ -857,12 +857,7 @@ export async function listCorrectionsByAuthor(
  * 404 rather than 403 for somebody else's post, for the reason the rest of this
  * module gives: a 403 confirms the row exists.
  */
-export async function deletePost(
-  db: Db,
-  userId: string,
-  postId: string,
-  storage?: StorageProvider,
-): Promise<void> {
+export async function deletePost(db: Db, userId: string, postId: string): Promise<void> {
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   const _id = new ObjectId(postId)
 
@@ -871,7 +866,9 @@ export async function deletePost(
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   }
 
-  if (!(await deletePostCascade(db, post, storage))) {
+  // No storage: the files stay in the bucket — see "Nothing a person deletes
+  // leaves the bucket" in docs/decisions.md.
+  if (!(await deletePostCascade(db, post))) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   }
 }
@@ -986,7 +983,6 @@ export async function deleteCorrection(
   userId: string,
   postId: string,
   correctionId: string,
-  storage?: StorageProvider,
 ): Promise<void> {
   if (!ObjectId.isValid(postId) || !ObjectId.isValid(correctionId)) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Correction not found')
@@ -995,7 +991,6 @@ export async function deleteCorrection(
   const post_id = new ObjectId(postId)
 
   const corrections = db.collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
-  const doc = await corrections.findOne({ _id, postId: post_id })
   const deleted = await corrections.deleteOne({ _id, postId: post_id, authorId: userId })
   if (deleted.deletedCount === 0) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Correction not found')
@@ -1007,5 +1002,4 @@ export async function deleteCorrection(
       .updateOne({ _id: post_id }, { $inc: { correctionCount: -1 } }),
     db.collection(COLLECTIONS.likes).deleteMany({ targetType: 'correction', targetId: _id }),
   ])
-  await deleteObjects(storage, doc ? attachmentsOf(doc).map((item) => item.url) : [])
 }

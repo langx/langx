@@ -32,7 +32,6 @@ function deps(overrides: Partial<TranscodeDeps> = {}) {
   const spies = {
     get: vi.fn(() => Promise.resolve(WEBM_BYTES)),
     put: vi.fn((key: string) => Promise.resolve(`${BUCKET}/${key}`)),
-    del: vi.fn(() => Promise.resolve()),
     transcode: vi.fn(() => Promise.resolve(new Uint8Array([9, 9]))),
     // `null` by default, so every case above the waveform's own reads the
     // rows exactly as it did before there was one.
@@ -68,8 +67,8 @@ describe('transcodedKey', () => {
 })
 
 describe('normalizeAttachments', () => {
-  it('rewrites a browser note to AAC and removes the original', async () => {
-    const { deps: d, del } = deps()
+  it('rewrites a browser note to AAC beside the original', async () => {
+    const { deps: d, put } = deps()
     const [note] = await normalizeAttachments(d, [webmNote()])
 
     expect(note).toEqual({
@@ -80,7 +79,8 @@ describe('normalizeAttachments', () => {
       // Kept: the recorder measured it and ffmpeg does not change it.
       durationSeconds: 7,
     })
-    expect(del).toHaveBeenCalledWith('messages/c1/a.webm')
+    // A new key, so the recording as sent is still under its own.
+    expect(put).toHaveBeenCalledWith('messages/c1/a.m4a', expect.anything(), 'audio/mp4')
   })
 
   /*
@@ -89,7 +89,7 @@ describe('normalizeAttachments', () => {
    * key holding Opus — and it is the note that was reported.
    */
   it('converts a note whose label lies about what is inside it', async () => {
-    const { deps: d, put, del } = deps()
+    const { deps: d, put } = deps()
     const mislabelled: Media = {
       url: `${BUCKET}/messages/c1/a.m4a`,
       contentType: 'audio/m4a',
@@ -101,9 +101,6 @@ describe('normalizeAttachments', () => {
     expect(note?.contentType).toBe('audio/mp4')
     expect(note?.url).toBe(`${BUCKET}/messages/c1/a.m4a`)
     expect(put).toHaveBeenCalledWith('messages/c1/a.m4a', expect.anything(), 'audio/mp4')
-    // The converted file went to the key the original was under, so deleting
-    // "the original" would delete what was just written.
-    expect(del).not.toHaveBeenCalled()
   })
 
   it('converts nothing for a real AAC note, and never fetches a picture', async () => {
@@ -144,12 +141,11 @@ describe('normalizeAttachments', () => {
   // The whole bargain: a missing ffmpeg, a timeout or a file it cannot read
   // costs the conversion, never the message.
   it('stores the original when the conversion cannot be made', async () => {
-    const { deps: d, put, del } = deps({ transcode: vi.fn(() => Promise.resolve(null)) })
+    const { deps: d, put } = deps({ transcode: vi.fn(() => Promise.resolve(null)) })
     const original = webmNote()
 
     expect(await normalizeAttachments(d, [original])).toEqual([original])
     expect(put).not.toHaveBeenCalled()
-    expect(del).not.toHaveBeenCalled()
   })
 
   it('stores the original when the bytes cannot be read back', async () => {
@@ -170,17 +166,6 @@ describe('normalizeAttachments', () => {
 
     expect(await normalizeAttachments(d, [foreign])).toEqual([foreign])
     expect(get).not.toHaveBeenCalled()
-  })
-
-  it('keeps the note when only the original could not be deleted', async () => {
-    const { deps: d, warn } = deps({
-      del: vi.fn(() => Promise.reject(new Error('delete failed'))),
-    })
-    const [note] = await normalizeAttachments(d, [webmNote()])
-
-    // A leaked object costs bytes; losing the note costs the message.
-    expect(note?.contentType).toBe('audio/mp4')
-    expect(warn).toHaveBeenCalled()
   })
 
   it('converts both takes of a pronunciation answer', async () => {

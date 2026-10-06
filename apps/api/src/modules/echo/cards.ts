@@ -35,11 +35,10 @@ import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
-import type { StorageProvider } from '../../storage/StorageProvider'
 import type { TranslationProvider } from '../../translation/TranslationProvider'
 import { assertConversationAccess } from '../chat/access'
 import type { Conversation, Message } from '../chat/conversations'
-import { assertAttachable, deleteObjects } from '../feed/attachments'
+import { assertAttachable } from '../feed/attachments'
 import {
   notHidden,
   type Post,
@@ -574,13 +573,11 @@ function selfAudio(media: Media): EchoAudio {
  * card that is not theirs is a card that is not there.
  *
  * `image` and `audio` are three-state — absent, `null`, a `Media` — and the
- * schema says which is which. What is worth saying here is the deletion rule:
- * **the object behind a replaced or cleared file is removed only when its
- * origin was `self`.** Every other origin is a URL this card copied from a
- * message, a post or a pack, all of which still play it; deleting one would
- * take the recording out of somebody's thread because a card stopped
- * pointing at it. A bare `deleteObjects(previous.url)` here would look right
- * and be exactly that bug.
+ * schema says which is which. A replaced or cleared file only stops being
+ * pointed at: **the object stays in the bucket**, whatever its origin — see
+ * "Nothing a person deletes leaves the bucket" in docs/decisions.md. Most
+ * origins are a URL this card copied from a message, a post or a pack, all of
+ * which still play it, so removing one was never this card's call anyway.
  *
  * **A rewritten sentence loses its readings.** `voices` are a machine reading
  * *this* text in *this* language, so once either changes they are readings of
@@ -599,7 +596,6 @@ export async function updateCard(
   cardId: string,
   input: UpdateEchoCardInput,
   storagePublicBaseUrl?: string,
-  storage?: StorageProvider,
 ): Promise<EchoCard> {
   if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
 
@@ -689,17 +685,6 @@ export async function updateCard(
     { returnDocument: 'after' },
   )
   if (!updated) throw notFound('Card not found')
-
-  // After the write, and only ours. See the rule in the doc comment: a
-  // recording that survived the edit is not gone, and one the card only ever
-  // held a copy of is not ours to remove.
-  const kept = new Set(nextAudios.map((entry) => entry.url))
-  await deleteObjects(storage, [
-    input.image !== undefined && card.image?.origin === 'self' ? card.image.url : undefined,
-    ...echoAudiosOf(card)
-      .filter((entry) => entry.origin === 'self' && !kept.has(entry.url))
-      .map((entry) => entry.url),
-  ])
 
   return toEchoCard(updated)
 }
