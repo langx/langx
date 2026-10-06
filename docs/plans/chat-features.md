@@ -28,7 +28,9 @@ section.
 
 **Not doing, on purpose:** a "who reacted" list — a one-to-one conversation
 has two people in it, as the comment at `MessageBubble.tsx:368` says — and
-vanish mode or view-once messages.
+vanish mode. View-once photos and videos were on this list too, and were
+decided as a feature on 5 October 2026; see `docs/decisions.md` → _View-once
+hides, it does not delete_.
 
 **Behic's decisions:** voice transcripts run on **our own Whisper service**;
 **GIFs stay, through Giphy**, and come last; this plan lives in the repository

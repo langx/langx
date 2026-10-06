@@ -231,6 +231,24 @@ export interface Message {
   /** The first of `attachments`, repeated for builds that predate the list. */
   media?: MessageMedia
   /**
+   * A photo or video the recipient may open once, or once plus a replay.
+   *
+   * The file stays in `attachments` like any other — that is what keeps
+   * "delete for everyone" and the account purge working without a branch of
+   * their own — and `toMessageView` is what keeps it there: neither person is
+   * ever sent the address. `opens` is how far the recipient got; the limit is
+   * `viewOnceMaxOpens(replay)`, never a field, so a rule change applies to
+   * messages already sent.
+   */
+  viewOnce?: {
+    replay: boolean
+    opens: number
+    /** The last open. */
+    openedAt?: Date
+    /** The recipient took a screenshot while it was on their screen. */
+    screenshotAt?: Date
+  }
+  /**
    * The v1 message id this was imported from — absent on everything sent in
    * v2. Carried so `messages.legacy_id_unique` can refuse a second import of
    * the same message, which is what lets the importer be replayed safely.

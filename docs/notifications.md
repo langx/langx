@@ -336,6 +336,10 @@ what the trigger column is for: they are worth a line in a letter that is
 going out, and never worth one of their own. The hourly gift is in neither
 table — a button becoming available is not something that happened.
 
+A view-once photo or video pushes "📷 View-once photo" or "🎬 View-once
+video" under the sender's name, and nothing else: it cannot carry a caption,
+so there are never words of its own to read out on a lock screen.
+
 A call nobody picked up is a message too, as far as telling anybody goes. The
 row it leaves in the thread goes through the same fan-out, so the push — "📞
 Missed voice call", under the caller's name — reaches only the devices not

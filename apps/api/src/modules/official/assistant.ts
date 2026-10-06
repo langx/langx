@@ -5,7 +5,6 @@ import {
   OFFICIAL_ASSISTANT,
   OFFICIAL_WRITABLE,
   TIER_NAMES,
-  attachmentsOf,
   feedbackSchema,
   type OfficialHandle,
 } from '@langx/shared'
@@ -16,7 +15,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { translator } from '../../i18n'
 import { fanOutMessage } from '../../ws/fanOut'
 import type { Message } from '../chat/conversations'
-import { previewFor } from '../chat/messages'
+import { previewOf } from '../chat/messages'
 import { submitFeedback } from '../feedback/submit'
 import { localeFor } from '../profiles/localeFor'
 import { officialHandleOf, officialIds } from './accounts'
@@ -226,10 +225,7 @@ async function historyFor(
     // because the newest is the question. A message may be 2,000 characters,
     // and twenty of those is ten thousand tokens of context for a reply that
     // answers the last one.
-    text: truncate(
-      row.body || previewFor(row.type, attachmentsOf(row).length),
-      index === ordered.length - 1,
-    ),
+    text: truncate(row.body || previewOf(row), index === ordered.length - 1),
   }))
 }
 

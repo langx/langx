@@ -8,6 +8,7 @@ import {
 } from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import type { Message } from '../chat/conversations'
 import type { Report } from '../moderation/blocks'
 import type { PostCommentDoc } from '../feed/documents'
 import type { Post } from '../feed/feed'
@@ -83,6 +84,26 @@ export interface AdminReportedTestimonial {
   moderatorHiddenAt: string | null
 }
 
+/**
+ * A reported chat message, as the person who reported it saw it — and, for a
+ * view-once photo or video, as they no longer can. The file is still in the
+ * bucket for exactly this reader; see `Message.viewOnce`.
+ *
+ * Only the message the report names. The panel is not a way to read a
+ * thread, and the reporter chose this one to show.
+ */
+export interface AdminReportedMessage {
+  id: string
+  type: Message['type']
+  senderId: string
+  body: string
+  /** Empty once its sender deleted it for everyone, which also took the files. */
+  attachments: Media[]
+  viewOnce: { replay: boolean; opens: number; screenshotAt: string | null } | null
+  deletedAt: string | null
+  createdAt: string
+}
+
 export interface AdminReportDetail extends AdminReportRow {
   /**
    * The post, read unfiltered — this is the one reader that must still find a
@@ -107,6 +128,8 @@ export interface AdminReportDetail extends AdminReportRow {
   comment: AdminReportedComment | null
   /** The review, when the report named one. Never beside `post` or `comment`. */
   testimonial: AdminReportedTestimonial | null
+  /** The chat message, when the report was raised from one. */
+  message: AdminReportedMessage | null
   /** What is in force on the reported account right now. */
   suspension: Profile['suspension'] | null
   /** Other reports against the same account still waiting, this one excluded. */
@@ -244,6 +267,7 @@ export async function getReport(
     ...toRow(report, parties),
     comment: await readComment(db, report.commentId),
     testimonial: await readTestimonial(db, report.testimonialId, now),
+    message: await readMessage(db, report.messageId),
     post: post
       ? {
           id: post._id.toHexString(),
@@ -263,6 +287,31 @@ export async function getReport(
     earlierWarnings: earlierWarnings.flatMap((row) =>
       row.warning ? [{ at: row.warning.at.toISOString(), reason: row.reason }] : [],
     ),
+  }
+}
+
+async function readMessage(
+  db: Db,
+  messageId: ObjectId | undefined,
+): Promise<AdminReportedMessage | null> {
+  if (!messageId) return null
+  const message = await db.collection<Message>(COLLECTIONS.messages).findOne({ _id: messageId })
+  if (!message) return null
+  return {
+    id: message._id.toHexString(),
+    type: message.type,
+    senderId: message.senderId,
+    body: message.body,
+    attachments: attachmentsOf(message),
+    viewOnce: message.viewOnce
+      ? {
+          replay: message.viewOnce.replay,
+          opens: message.viewOnce.opens,
+          screenshotAt: message.viewOnce.screenshotAt?.toISOString() ?? null,
+        }
+      : null,
+    deletedAt: message.deletedAt?.toISOString() ?? null,
+    createdAt: message.createdAt.toISOString(),
   }
 }
 

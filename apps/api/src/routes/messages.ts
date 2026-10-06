@@ -38,6 +38,7 @@ import { answerPoll } from '../modules/chat/polls'
 import { romanizeMessage } from '../modules/chat/romanize'
 import { speakMessage } from '../modules/chat/speak'
 import { transcribeMessage } from '../modules/chat/transcript'
+import { openViewOnce, recordViewOnceScreenshot } from '../modules/chat/viewOnce'
 import { fanOutMessage, fanOutMessageUpdate } from '../ws/fanOut'
 import { sendTraySync } from '../ws/traySync'
 
@@ -241,6 +242,77 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
         optionId: request.body.optionId,
       })
       fanOutMessageUpdate(app.io, conversation, message, 'actor', request.userId)
+      return reply.send(toMessageView(message, request.userId))
+    },
+  )
+
+  /*
+   * One open of a view-once photo or video — the only door its file leaves
+   * the server by. REST rather than a socket event because the answer is the
+   * file's address and the caller is waiting on it; the open is counted
+   * before anything is returned, see `openViewOnce`. Both people hear the new
+   * count, so the sender's bubble turns to "Opened" while the picture is
+   * still on the other screen.
+   */
+  app.post(
+    '/conversations/:id/messages/:messageId/view-once',
+    {
+      preHandler: requireAuth,
+      schema: {
+        params: z.object({
+          id: z.string().trim().min(1),
+          messageId: z.string().trim().min(1),
+        }),
+      },
+      config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const { message, conversation, media } = await openViewOnce(
+        app.mongo.db,
+        request.userId,
+        request.params.id,
+        request.params.messageId,
+      )
+      fanOutMessageUpdate(app.io, conversation, message, 'both', request.userId)
+      return reply.header('cache-control', 'no-store').send({
+        message: toMessageView(message, request.userId),
+        media: {
+          url: media.url,
+          contentType: media.contentType,
+          ...(media.width ? { width: media.width } : {}),
+          ...(media.height ? { height: media.height } : {}),
+          ...(media.durationSeconds !== undefined
+            ? { durationSeconds: media.durationSeconds }
+            : {}),
+        },
+      })
+    },
+  )
+
+  /*
+   * The recipient's phone saw a screenshot taken while the file was open.
+   * Told to both, because the sender is who it is for.
+   */
+  app.post(
+    '/conversations/:id/messages/:messageId/view-once/screenshot',
+    {
+      preHandler: requireAuth,
+      schema: {
+        params: z.object({
+          id: z.string().trim().min(1),
+          messageId: z.string().trim().min(1),
+        }),
+      },
+      config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const { message, conversation } = await recordViewOnceScreenshot(
+        app.mongo.db,
+        request.userId,
+        request.params.id,
+        request.params.messageId,
+      )
+      fanOutMessageUpdate(app.io, conversation, message, 'both', request.userId)
       return reply.send(toMessageView(message, request.userId))
     },
   )

@@ -54,6 +54,9 @@ export async function listConversationMedia(
     type: query.tab === 'audio' ? 'audio' : { $in: [...VISUAL_TYPES] },
     deletedAt: { $exists: false },
     hiddenFor: { $ne: userId },
+    // A view-once file is not one either of them can come back to, and a tile
+    // carries no address to show. A residual filter on the index's rows.
+    viewOnce: { $exists: false },
   }
 
   if (query.cursor) {

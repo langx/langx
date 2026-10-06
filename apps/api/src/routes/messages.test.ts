@@ -2102,6 +2102,253 @@ describe('Faz 5 — conversation/message history REST', () => {
      * anybody, ever. And not something the stranger can talk their own way
      * past: the count is theirs to raise, not yours.
      */
+    describe('view-once photos and videos', () => {
+      async function sendViewOnce(
+        a: SignedUpUser,
+        conversationId: string,
+        file: ReturnType<typeof image> | ReturnType<typeof video>,
+        replay: boolean,
+      ) {
+        const { sendMediaMessage } = await import('../modules/chat/messages')
+        const input = sendMediaMessageSchema.parse({
+          conversationId,
+          attachments: [file],
+          viewOnce: { replay },
+        })
+        return sendMediaMessage(handle.db, a.userId, input, BUCKET)
+      }
+
+      function open(user: SignedUpUser, conversationId: string, messageId: string) {
+        return app.inject({
+          method: 'POST',
+          url: `/conversations/${conversationId}/messages/${messageId}/view-once`,
+          headers: { cookie: user.cookie },
+        })
+      }
+
+      function screenshot(user: SignedUpUser, conversationId: string, messageId: string) {
+        return app.inject({
+          method: 'POST',
+          url: `/conversations/${conversationId}/messages/${messageId}/view-once/screenshot`,
+          headers: { cookie: user.cookie },
+        })
+      }
+
+      async function history(user: SignedUpUser, conversationId: string) {
+        const response = await app.inject({
+          method: 'GET',
+          url: `/conversations/${conversationId}/messages`,
+          headers: { cookie: user.cookie },
+        })
+        expect(response.statusCode, response.body).toBe(200)
+        return response
+      }
+
+      it('reaches neither of them as a file, and says what it is in the list', async () => {
+        const { a, b, conversationId } = await pair('vo-hidden')
+        const file = image(conversationId)
+        const { message, conversation } = await sendViewOnce(a, conversationId, file, false)
+        expect(conversation.lastMessage.body).toBe('📷 View-once photo')
+
+        for (const user of [a, b]) {
+          const response = await history(user, conversationId)
+          // Anywhere in the page, not just on the row: a URL in any field is a leak.
+          expect(response.body).not.toContain(file.url)
+          const row = response
+            .json<{
+              items: { _id: string; body: string; viewOnce?: unknown; attachments?: unknown }[]
+            }>()
+            .items.find((item) => item._id === message._id.toHexString())
+          expect(row?.attachments).toBeUndefined()
+          // What an installed build that predates view-once draws instead of an empty bubble.
+          expect(row?.body).toContain('update LangX')
+          expect(row?.viewOnce).toEqual({ kind: 'image', replay: false, opens: 0, opensLeft: 1 })
+        }
+      })
+
+      it('opens once for the recipient, then is gone — and the file stays stored', async () => {
+        const { a, b, conversationId } = await pair('vo-once')
+        const file = image(conversationId)
+        const { message } = await sendViewOnce(a, conversationId, file, false)
+        const id = message._id.toHexString()
+
+        const first = await open(b, conversationId, id)
+        expect(first.statusCode, first.body).toBe(200)
+        expect(first.headers['cache-control']).toBe('no-store')
+        expect(first.json()).toMatchObject({
+          media: { url: file.url, contentType: 'image/jpeg', width: 800, height: 600 },
+          message: { viewOnce: { opens: 1, opensLeft: 0 } },
+        })
+
+        const second = await open(b, conversationId, id)
+        expect(second.statusCode).toBe(410)
+        expect(second.json()).toMatchObject({ code: 'VIEW_ONCE_GONE' })
+
+        // Hidden, not deleted: a report has to be able to look at it.
+        const row = await handle.db
+          .collection<Message>(COLLECTIONS.messages)
+          .findOne({ _id: message._id })
+        expect(row?.attachments?.[0]?.url).toBe(file.url)
+        expect((await history(b, conversationId)).body).not.toContain(file.url)
+      })
+
+      it('allows exactly one replay', async () => {
+        const { a, b, conversationId } = await pair('vo-replay')
+        const file = video(conversationId)
+        const { message, conversation } = await sendViewOnce(a, conversationId, file, true)
+        expect(conversation.lastMessage.body).toBe('🎬 View-once video')
+        const id = message._id.toHexString()
+
+        const first = await open(b, conversationId, id)
+        expect(first.json()).toMatchObject({
+          message: {
+            viewOnce: { kind: 'video', replay: true, opens: 1, opensLeft: 1, durationSeconds: 30 },
+          },
+        })
+        expect((await open(b, conversationId, id)).statusCode).toBe(200)
+        expect((await open(b, conversationId, id)).statusCode).toBe(410)
+      })
+
+      it('gives two devices one open each, never a third between them', async () => {
+        const { a, b, conversationId } = await pair('vo-race')
+        const { message } = await sendViewOnce(a, conversationId, image(conversationId), true)
+        const id = message._id.toHexString()
+        const codes = await Promise.all(
+          [1, 2, 3, 4].map(async () => (await open(b, conversationId, id)).statusCode),
+        )
+        expect(codes.filter((code) => code === 200)).toHaveLength(2)
+        expect(codes.filter((code) => code === 410)).toHaveLength(2)
+      })
+
+      it('cannot be opened by the person who sent it, or by a stranger', async () => {
+        const { a, conversationId } = await pair('vo-sender')
+        const stranger = await newUser('vo-sender-c@example.com')
+        const { message } = await sendViewOnce(a, conversationId, image(conversationId), false)
+        const id = message._id.toHexString()
+        expect((await open(a, conversationId, id)).statusCode).toBe(403)
+        expect((await open(stranger, conversationId, id)).statusCode).toBe(404)
+      })
+
+      it('is not a view-once door onto an ordinary photo', async () => {
+        const { a, b, conversationId } = await pair('vo-ordinary')
+        const { sendMediaMessage } = await import('../modules/chat/messages')
+        const { message } = await sendMediaMessage(
+          handle.db,
+          a.userId,
+          { conversationId, attachments: [image(conversationId)] },
+          BUCKET,
+        )
+        expect((await open(b, conversationId, message._id.toHexString())).statusCode).toBe(404)
+      })
+
+      it('stays out of the media grid, the starred list, forwarding and Echo', async () => {
+        const { a, b, conversationId } = await pair('vo-elsewhere')
+        const file = image(conversationId)
+        const { message } = await sendViewOnce(a, conversationId, file, true)
+        const id = message._id.toHexString()
+
+        const grid = await app.inject({
+          method: 'GET',
+          url: `/conversations/${conversationId}/media?tab=visual`,
+          headers: { cookie: b.cookie },
+        })
+        expect(grid.statusCode, grid.body).toBe(200)
+        expect(grid.json<{ items: unknown[] }>().items).toHaveLength(0)
+
+        const { starMessage } = await import('../modules/chat/mutations')
+        await starMessage(handle.db, b.userId, { conversationId, messageId: id, starred: true })
+        const starred = await app.inject({
+          method: 'GET',
+          url: '/me/starred',
+          headers: { cookie: b.cookie },
+        })
+        expect(starred.statusCode).toBe(200)
+        expect(starred.body).toContain(id)
+        expect(starred.body).not.toContain(file.url)
+
+        const other = await newUser('vo-elsewhere-c@example.com')
+        const elsewhere = await startConversation(b, other.userId, 'hello')
+        const { forwardMessage } = await import('../modules/chat/messages')
+        await expect(
+          forwardMessage(handle.db, b.userId, {
+            conversationId: elsewhere._id,
+            messageId: id,
+          }),
+        ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+
+        const { captureFromMessage } = await import('../modules/echo/cards')
+        const translation = createTranslationProvider(
+          loadEnv({
+            NODE_ENV: 'test',
+            MONGODB_URI: 'mongodb://unused',
+            BETTER_AUTH_SECRET: 'a'.repeat(32),
+            BETTER_AUTH_URL: 'http://localhost:4000',
+          }),
+        )
+        await expect(
+          captureFromMessage(handle.db, { translation }, b.userId, {
+            conversationId,
+            messageId: id,
+          }),
+        ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+      })
+
+      it('tells the sender about a screenshot, once, and only after an open', async () => {
+        const { a, b, conversationId } = await pair('vo-screenshot')
+        const { message } = await sendViewOnce(a, conversationId, image(conversationId), true)
+        const id = message._id.toHexString()
+
+        expect((await screenshot(b, conversationId, id)).statusCode).toBe(400)
+        await open(b, conversationId, id)
+        const taken = await screenshot(b, conversationId, id)
+        expect(taken.statusCode, taken.body).toBe(200)
+        const at = taken.json<{ viewOnce: { screenshotAt?: string } }>().viewOnce.screenshotAt
+        expect(at).toBeDefined()
+
+        const again = await screenshot(b, conversationId, id)
+        expect(again.json<{ viewOnce: { screenshotAt?: string } }>().viewOnce.screenshotAt).toBe(at)
+        // The sender's own copy says so; the sender cannot report one.
+        expect((await screenshot(a, conversationId, id)).statusCode).toBe(403)
+        const seen = (await history(a, conversationId))
+          .json<{ items: { _id: string; viewOnce?: { screenshotAt?: string } }[] }>()
+          .items.find((item) => item._id === id)
+        expect(seen?.viewOnce?.screenshotAt).toBe(at)
+      })
+
+      it('shows the operator the file a report names, after it is gone', async () => {
+        const { a, b, conversationId } = await pair('vo-report')
+        const file = image(conversationId)
+        const { message } = await sendViewOnce(a, conversationId, file, false)
+        await open(b, conversationId, message._id.toHexString())
+
+        const report = await app.inject({
+          method: 'POST',
+          url: '/reports',
+          headers: { cookie: b.cookie },
+          payload: {
+            userId: a.userId,
+            reason: 'harassment',
+            conversationId,
+            messageId: message._id.toHexString(),
+          },
+        })
+        expect(report.statusCode, report.body).toBeLessThan(300)
+        const row = await handle.db
+          .collection<{ _id: ObjectId; messageId?: ObjectId }>(COLLECTIONS.reports)
+          .findOne({ messageId: message._id })
+        expect(row).not.toBeNull()
+
+        const { getReport } = await import('../modules/admin/reports')
+        const detail = await getReport(handle.db, row!._id.toHexString())
+        expect(detail?.message).toMatchObject({
+          id: message._id.toHexString(),
+          attachments: [{ url: file.url }],
+          viewOnce: { replay: false, opens: 1, screenshotAt: null },
+          deletedAt: null,
+        })
+      })
+    })
+
     describe('attachments are locked until the other person has written to you', () => {
       async function uploadUrl(user: SignedUpUser, conversationId: string) {
         return app.inject({

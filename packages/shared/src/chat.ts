@@ -28,7 +28,8 @@ export {
   type MediaKind,
   type MessageMedia,
 } from './media'
-import { attachmentsSchema, mediaKindSchema } from './media'
+import { attachmentsSchema, mediaKindOfContentType, mediaKindSchema } from './media'
+import { viewOnceSendSchema } from './viewOnce'
 import { isTranslatableLanguage, languageCodeSchema } from './languages'
 import { coarsen, locationInputSchema } from './location'
 
@@ -881,25 +882,62 @@ export const sendMediaMessageSchema = z.preprocess(
     const { media, kind: _kind, ...rest } = body
     return { ...rest, attachments: [media] }
   },
-  z.object({
-    conversationId: z.string().trim().min(1),
-    attachments: attachmentsSchema,
-    body: z.string().trim().max(MAX_MESSAGE_LENGTH).optional(),
-    replyToMessageId: z.string().trim().min(1).optional(),
-    /**
-     * This recording answers that message's `pronunciation` ask.
-     *
-     * Separate from `replyToMessageId`, which the client also sets, because
-     * the two say different things: a reply quotes, and quoting is not
-     * answering. Without the distinction "has somebody said this out loud"
-     * has to be guessed from any voice note that happens to quote the
-     * sentence — which is what the chat screen did, in memory, forgetting
-     * every answer that had scrolled out of the loaded window.
-     *
-     * Echo reads it to give a card a human voice, so the guess had to go.
-     */
-    answersMessageId: z.string().trim().min(1).optional(),
-  }),
+  z
+    .object({
+      conversationId: z.string().trim().min(1),
+      attachments: attachmentsSchema,
+      body: z.string().trim().max(MAX_MESSAGE_LENGTH).optional(),
+      replyToMessageId: z.string().trim().min(1).optional(),
+      /**
+       * This recording answers that message's `pronunciation` ask.
+       *
+       * Separate from `replyToMessageId`, which the client also sets, because
+       * the two say different things: a reply quotes, and quoting is not
+       * answering. Without the distinction "has somebody said this out loud"
+       * has to be guessed from any voice note that happens to quote the
+       * sentence — which is what the chat screen did, in memory, forgetting
+       * every answer that had scrolled out of the loaded window.
+       *
+       * Echo reads it to give a card a human voice, so the guess had to go.
+       */
+      answersMessageId: z.string().trim().min(1).optional(),
+      /**
+       * Send it as a view-once photo or video. See `viewOnce.ts`.
+       *
+       * One file, a picture or a clip, and no caption: the caption is what the
+       * chat list and the push notification would read out, and a lock screen
+       * showing the words of a message meant to be seen once is the leak this
+       * exists to prevent. Not an answer to a pronunciation ask either — a
+       * recording that vanishes cannot be what Echo keeps as the human voice.
+       */
+      viewOnce: viewOnceSendSchema.optional(),
+    })
+    .superRefine((input, ctx) => {
+      if (!input.viewOnce) return
+      const [only, ...rest] = input.attachments
+      const kind = only ? mediaKindOfContentType(only.contentType) : null
+      if (rest.length > 0 || (kind !== 'image' && kind !== 'video')) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['attachments'],
+          message: 'A view-once message is one photo or one video',
+        })
+      }
+      if (input.body) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['body'],
+          message: 'A view-once message has no caption',
+        })
+      }
+      if (input.answersMessageId) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['answersMessageId'],
+          message: 'A view-once message cannot answer an ask',
+        })
+      }
+    }),
 )
 export type SendMediaMessageInput = z.infer<typeof sendMediaMessageSchema>
 

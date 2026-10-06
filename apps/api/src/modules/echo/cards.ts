@@ -324,7 +324,9 @@ export async function captureFromMessage(
   })
   if (!message) throw notFound('Message not found')
 
-  if (!CAPTURABLE_MESSAGE_TYPES.has(message.type)) {
+  // A view-once photo has no caption to keep, and a card would keep the
+  // picture forever — the one thing it was sent not to be.
+  if (!CAPTURABLE_MESSAGE_TYPES.has(message.type) || message.viewOnce) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'This kind of message cannot be echoed')
   }
   const front = frontOf(message)

@@ -6544,6 +6544,53 @@ sits in the layout above every screen, the way a phone's in-call bar does. The
 first version floated it over the top of the screen, like the message banner,
 and in a thread that put it over the name of the person on the call.
 
+## View-once hides, it does not delete
+
+A photo or a video can be sent to be seen once, or once and replayed once —
+Instagram's "view once" and "allow replay". The chat roadmap
+(`docs/plans/chat-features.md`) had listed view-once under "not doing, on
+purpose" with no reason written down; on 5 October 2026 it was decided as a
+feature, with the camera that shoots it: always 16:9, full screen, tap for a
+photo and hold for a clip.
+
+**The file is kept.** Viewing never deletes anything from the bucket. A
+view-once file stays where every chat file stays, under
+`messages/<conversationId>/`, and is removed only by what removes any chat
+file — the sender's "delete for everyone", or an account purge. The reason is
+reports. The person most likely to report a picture is the one who has just
+seen it, and by then a file deleted on viewing would be gone, leaving the
+operator to judge a report about nothing. So the report detail in the panel
+shows the reported message with its files, view-once or not, and the file is
+there to be shown.
+
+**What ends is the address being handed out.** The bucket is public, so the
+address is the file, and the whole of "once" is that the server stops giving
+it to anyone. `toMessageView` drops the attachments of a view-once message for
+_both_ people — the sender too, because the row is shared, and a URL in the
+sender's copy is a URL in their starred list and their cache — and puts a
+`viewOnce` summary in their place. The only door is
+`POST /conversations/:id/messages/:messageId/view-once`, which counts an open
+with a conditional `$inc` below `VIEW_ONCE_OPENS` and only then returns the
+address. Two devices tapping at once get one open each. The grid, forwarding
+and Echo all refuse the message, and its caption is forbidden by the send
+schema because a caption is what the chat list and the lock screen would read
+out.
+
+**It is a promise, not DRM.** A recipient who keeps the address has kept the
+picture, which a camera pointed at the screen also does. While the file is
+open the app blocks screenshots and screen recording — `FLAG_SECURE` on
+Android, a secure layer on iOS, both through `expo-screen-capture` — and tells
+the sender when one is attempted, which is as far as an app can honestly go. A
+signed, short-lived URL would not have added anything: its key is the public
+key, so it reveals the permanent address anyway, and the bucket would have to
+stop being public for every other file to change that.
+
+**Old builds get a sentence.** A build that predates `viewOnce` would draw an
+image message with no image as an empty bubble, for as long as it stays
+installed. The projection puts "📷 View-once photo · update LangX to open it"
+in `body` for them, and a build that knows the field ignores `body` there. The
+stored body stays empty, so the list row, a push and a quote never read it.
+
 ## Taking no new chats closes one door, in one direction
 
 `privacy.refuseNewChats` stops anybody new from starting a conversation. It is
