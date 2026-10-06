@@ -33,7 +33,8 @@ product page, and the app description is the only place Apple reads it from
 when the standard Apple EULA is used. The footer below is that link, plus the
 privacy policy so both documents are one tap away. Keep it when the description
 is next rewritten. Play's full description is the same text without the
-Apple EULA line.
+Apple EULA line — once it is entered; Play still shows an older text, see
+_Play's live full description_ below.
 
 `docs/store/2.9-metadata.json` is this file's 2.9 text in plain form — no
 Markdown, one object per store locale — for the App Store Connect and Play APIs.
@@ -699,3 +700,269 @@ Russian or Arabic listing**, so there are no notes for either.
 > O modo oculto te esconde de pessoas novas.
 >
 > Voltando do app antigo? Cadastre-se com o e-mail que você usava antes - seu nome de usuário está esperando por você.
+
+Play has more languages than this file. On 6 October 2026 the 2.9 notes went
+into all 13 of its listings: en-GB carries the English text above, and the seven
+below were translated for Play alone — this file has no listing copy in those
+languages.
+
+**Español de Latinoamérica**
+
+> Llegaron las llamadas de voz y las videollamadas: llama a tus compañeros de práctica desde el chat. Suena como una llamada telefónica, incluso con la app cerrada. Gratis para todos.
+> Nueva cámara del chat: envía una foto o un video como Ver una vez.
+> Escribe una reseña en el perfil de alguien con quien practicas.
+> El modo oculto hace que la gente nueva no te vea.
+>
+> ¿Vuelves de la app anterior? Regístrate con el correo que usabas antes: tu nombre de usuario te está esperando.
+
+**Bahasa Indonesia**
+
+> Panggilan suara dan video sudah hadir: hubungi partner latihanmu langsung dari obrolan. Berdering seperti telepon biasa, bahkan saat aplikasi ditutup. Gratis untuk semua.
+> Kamera obrolan baru: kirim foto atau video sebagai Lihat sekali.
+> Tulis ulasan di profil orang yang berlatih denganmu.
+> Mode tersembunyi membuatmu tidak terlihat oleh orang baru.
+>
+> Kembali dari aplikasi lama? Daftar dengan email yang dulu kamu pakai - nama penggunamu sudah menunggu.
+
+**Italiano**
+
+> Arrivano le chiamate vocali e video: chiama i tuoi partner di pratica direttamente dalla chat. Squilla come una telefonata, anche ad app chiusa. Gratis per tutti.
+> Nuova fotocamera in chat: invia una foto o un video come Visualizza una volta.
+> Scrivi una recensione sul profilo di chi pratica con te.
+> La modalità nascosta ti tiene lontano dagli sguardi delle persone nuove.
+>
+> Torni dalla vecchia app? Registrati con l'email che usavi prima: il tuo nome utente ti aspetta.
+
+**日本語**
+
+> 音声通話とビデオ通話が登場：チャットから練習相手に直接電話できます。アプリを閉じていても電話のように着信します。すべての人に無料。
+> 新しいチャットカメラ：写真や動画を「1回だけ表示」で送れます。
+> 一緒に練習している人のプロフィールにレビューを書けます。
+> 非表示モードで新しい人から見えなくなります。
+>
+> 旧アプリから戻ってきましたか？以前使っていたメールアドレスで登録すると、ユーザー名がそのまま待っています。
+
+**한국어**
+
+> 음성 통화와 영상 통화가 나왔어요: 채팅에서 바로 연습 파트너에게 전화하세요. 앱이 닫혀 있어도 전화처럼 벨이 울려요. 모두 무료.
+> 새 채팅 카메라: 사진이나 동영상을 '한 번만 보기'로 보내세요.
+> 함께 연습하는 사람의 프로필에 리뷰를 남기세요.
+> 숨김 모드로 새로운 사람들에게 보이지 않을 수 있어요.
+>
+> 예전 앱에서 돌아오셨나요? 전에 쓰던 이메일로 가입하면 사용자 이름이 그대로 기다리고 있어요.
+
+**ไทย**
+
+> โทรด้วยเสียงและวิดีโอมาแล้ว: โทรหาคู่ฝึกภาษาได้จากหน้าแชท สายเรียกเข้าดังเหมือนโทรศัพท์แม้ปิดแอปอยู่ ใช้ฟรีทุกคน
+> กล้องแชทใหม่: ส่งรูปหรือวิดีโอแบบดูครั้งเดียว
+> เขียนรีวิวบนโปรไฟล์ของคนที่ฝึกด้วยกัน
+> โหมดซ่อนตัวทำให้คนใหม่มองไม่เห็นคุณ
+>
+> กลับมาจากแอปเดิมใช่ไหม? สมัครด้วยอีเมลที่เคยใช้ ชื่อผู้ใช้ของคุณรออยู่
+
+**简体中文**
+
+> 语音和视频通话来了：直接在聊天中呼叫你的练习伙伴。即使应用已关闭，来电也会像普通电话一样响铃。所有人免费。
+> 全新聊天相机：以“仅查看一次”发送照片或视频。
+> 在练习伙伴的个人资料上写评价。
+> 隐身模式让新朋友看不到你。
+>
+> 从旧版应用回来？使用你以前的邮箱注册，你的用户名在等你。
+
+---
+
+## Play's live full description (as of 2.9)
+
+Play's full description is **not** the copy in this file, and
+`play.<locale>.fullDescription` in `2.9-metadata.json` is the text it is meant
+to become, not what it shows. Every Play listing still carries the older
+v1-era description, which was never kept in the repo. With the 2.9 release, on
+6 October 2026, the parts of it that had become false were corrected by hand in
+all 13 Play languages, and nothing else was touched.
+
+| Passage in the v1-era text                                                  | Change                                           | Why                                               |
+| --------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------- |
+| "Hey there, Redditors…" opening paragraphs                                  | Replaced by the intro below                      | Introduced v1, not the app on the store           |
+| —                                                                           | 📞 calls bullet added, first in the feature list | 2.9 is the calls release                          |
+| —                                                                           | 📷 chat camera bullet added right after it       | New in 2.9                                        |
+| 💰 "Zero cost… no in-app purchases"                                         | Replaced by the 💰 free-to-use bullet            | False since LangX Pro is sold in the app          |
+| ⭐ "Rating evaluation… coming soon"                                         | Replaced by the ⭐ reviews bullet                | Shipped as reviews on a partner's profile (#1686) |
+| "FOR ME, THE MOST EXCITING ONE:" heading                                    | Removed                                          | It introduced the AI bullet                       |
+| 🤖 "Learn with AI… coming soon"                                             | Removed                                          | Never shipped                                     |
+| "This project has been a labor of love… AI-driven features in the pipeline" | Removed                                          | Promised features that never shipped              |
+
+Left as they were: the other emoji bullets, and the closing "I'm aware there
+are similar apps…" and "Your feedback…" paragraphs. They are v1-era text that
+is not in the repo, so nothing here can check them; read them in Play Console
+before relying on them.
+
+**Promo video.** The YouTube video on every Play listing is now
+https://www.youtube.com/watch?v=BXjsO37_TMk, "LangX — Open Source Alternative
+to Tandem and HelloTalk".
+
+**Still open: replace Play's description with this file's copy.** Until then
+Play and the App Store describe the app differently. English, Turkish, Spanish
+(es-ES), French, German and Brazilian Portuguese are written above; the other
+seven Play languages have no full copy yet and need one translated first.
+
+### The corrected paragraphs
+
+Verbatim as entered, per Play language: the intro, the 📞 and 📷 bullets that
+open the feature list, then the 💰 and ⭐ bullets in the places of the ones they
+replaced.
+
+**English (en-GB)**
+
+> LangX is an open-source alternative to Tandem and HelloTalk. Practise a language by chatting with people who speak the language you're learning and are learning yours: text, voice messages, corrections, and now voice and video calls. LangX is free to use on Android, iPhone and the web.
+>
+> 📞 Voice and Video Calls : Call your language partners for free on every plan, right from the chat. Calls ring like a phone call even when the app is closed, and a single setting turns them off.
+>
+> 📷 Chat Camera : Take a photo or video right in the chat and send it as View once, Allow replay or Keep in chat. While a view-once photo or video is open, screenshots are blocked.
+>
+> 💰 Free to Use : Chatting, voice messages, corrections and calls are free. An optional Pro subscription adds extras for those who want more.
+>
+> ⭐ Reviews : Once you have practised together, you and your partner can leave a review on each other's profile.
+
+**Türkçe (tr-TR)**
+
+> LangX, Tandem ve HelloTalk'a açık kaynaklı bir alternatiftir. Öğrendiğiniz dili konuşan ve sizin dilinizi öğrenen kişilerle sohbet ederek pratik yapın: yazı, sesli mesaj, düzeltmeler ve artık sesli ve görüntülü arama. LangX, Android, iPhone ve web'de ücretsizdir.
+>
+> 📞 Sesli ve Görüntülü Arama : Her planda ücretsiz olarak dil partnerlerinizi doğrudan sohbetten arayın. Uygulama kapalıyken bile arama telefon gibi çalar; tek bir ayarla aramaları kapatabilirsiniz.
+>
+> 📷 Sohbet Kamerası : Doğrudan sohbette fotoğraf ya da video çekin ve Bir kez görüntüle, Tekrar oynatılabilir ya da Sohbette tut olarak gönderin. Tek görüntülük bir fotoğraf açıkken ekran görüntüsü alınamaz.
+>
+> 💰 Ücretsiz : Sohbet, sesli mesaj, düzeltmeler ve aramalar ücretsizdir. Daha fazlasını isteyenler için isteğe bağlı Pro aboneliği ek özellikler sunar.
+>
+> ⭐ Değerlendirmeler : Birlikte pratik yaptıktan sonra siz ve partneriniz birbirinizin profiline değerlendirme bırakabilirsiniz.
+
+**Español (es-ES)**
+
+> LangX es una alternativa de código abierto a Tandem y HelloTalk. Practica un idioma chateando con personas que hablan el idioma que aprendes y están aprendiendo el tuyo: mensajes, mensajes de voz, correcciones y ahora llamadas de voz y videollamadas. LangX es gratis en Android, iPhone y la web.
+>
+> 📞 Llamadas de voz y videollamadas : llama gratis a tus compañeros de idioma en cualquier plan, directamente desde el chat. Las llamadas suenan como una llamada telefónica aunque la app esté cerrada, y un solo ajuste las desactiva.
+>
+> 📷 Cámara en el chat : haz una foto o graba un vídeo directamente en el chat y envíalo como Ver una vez, Permitir repetir o Guardar en el chat. Mientras una foto de ver una vez está abierta, las capturas de pantalla se bloquean.
+>
+> 💰 Gratis : el chat, los mensajes de voz, las correcciones y las llamadas son gratis. Una suscripción Pro opcional añade extras para quien quiera más.
+>
+> ⭐ Reseñas : después de practicar juntos, tu compañero y tú podéis dejar una reseña en el perfil del otro.
+
+**Español de Latinoamérica (es-419)**
+
+> LangX es una alternativa de código abierto a Tandem y HelloTalk. Practica un idioma chateando con personas que hablan el idioma que aprendes y están aprendiendo el tuyo: mensajes, mensajes de voz, correcciones y ahora llamadas de voz y videollamadas. LangX es gratis en Android, iPhone y la web.
+>
+> 📞 Llamadas de voz y videollamadas : llama gratis a tus compañeros de idioma en cualquier plan, directamente desde el chat. Las llamadas suenan como una llamada telefónica aunque la app esté cerrada, y un solo ajuste las desactiva.
+>
+> 📷 Cámara en el chat : toma una foto o graba un video directamente en el chat y envíalo como Ver una vez, Permitir repetir o Guardar en el chat. Mientras una foto de ver una vez está abierta, las capturas de pantalla se bloquean.
+>
+> 💰 Gratis : el chat, los mensajes de voz, las correcciones y las llamadas son gratis. Una suscripción Pro opcional añade extras para quien quiera más.
+>
+> ⭐ Reseñas : después de practicar juntos, tú y tu compañero pueden dejar una reseña en el perfil del otro.
+
+**Français (fr-FR)**
+
+> LangX est une alternative open source à Tandem et HelloTalk. Pratiquez une langue en discutant avec des personnes qui parlent la langue que vous apprenez et qui apprennent la vôtre : messages, messages vocaux, corrections et maintenant appels vocaux et vidéo. LangX est gratuit sur Android, iPhone et le web.
+>
+> 📞 Appels vocaux et vidéo : appelez gratuitement vos partenaires de langue depuis la discussion, quel que soit votre forfait. L'appel sonne comme un appel téléphonique même quand l'application est fermée, et un seul réglage permet de les désactiver.
+>
+> 📷 Appareil photo du chat : prenez une photo ou une vidéo directement dans la discussion et envoyez-la en « Vue unique », « Revoir une fois » ou « Garder dans la discussion ». Les captures d'écran sont bloquées pendant qu'une photo à vue unique est ouverte.
+>
+> 💰 Gratuit : discussions, messages vocaux, corrections et appels sont gratuits. Un abonnement Pro facultatif ajoute des extras pour ceux qui en veulent plus.
+>
+> ⭐ Avis : après avoir pratiqué ensemble, vous et votre partenaire pouvez laisser un avis sur le profil de l'autre.
+
+**Deutsch (de-DE)**
+
+> LangX ist eine Open-Source-Alternative zu Tandem und HelloTalk. Üben Sie eine Sprache im Chat mit Menschen, die die Sprache sprechen, die Sie lernen, und Ihre lernen: Nachrichten, Sprachnachrichten, Korrekturen und jetzt auch Sprach- und Videoanrufe. LangX ist kostenlos auf Android, iPhone und im Web.
+>
+> 📞 Sprach- und Videoanrufe : Rufen Sie Ihre Sprachpartner in jedem Tarif kostenlos direkt aus dem Chat an. Anrufe klingeln wie ein Telefonanruf, auch wenn die App geschlossen ist, und eine einzige Einstellung schaltet sie aus.
+>
+> 📷 Chat-Kamera : Nehmen Sie direkt im Chat ein Foto oder Video auf und senden Sie es als „Einmal ansehen“, „Wiederholen erlauben“ oder „Im Chat behalten“. Solange ein Einmal-Foto geöffnet ist, sind Screenshots blockiert.
+>
+> 💰 Kostenlos : Chatten, Sprachnachrichten, Korrekturen und Anrufe sind kostenlos. Ein optionales Pro-Abo bietet Extras für alle, die mehr wollen.
+>
+> ⭐ Bewertungen : Wenn Sie gemeinsam geübt haben, können Sie und Ihr Partner eine Bewertung auf dem Profil des anderen hinterlassen.
+
+**Português do Brasil (pt-BR)**
+
+> O LangX é uma alternativa de código aberto ao Tandem e ao HelloTalk. Pratique um idioma conversando com pessoas que falam o idioma que você aprende e estão aprendendo o seu: mensagens, mensagens de voz, correções e agora chamadas de voz e de vídeo. O LangX é gratuito no Android, no iPhone e na web.
+>
+> 📞 Chamadas de voz e de vídeo : ligue de graça para seus parceiros de idioma em qualquer plano, direto da conversa. A chamada toca como uma ligação de telefone mesmo com o app fechado, e uma única configuração desativa as chamadas.
+>
+> 📷 Câmera no chat : tire uma foto ou grave um vídeo direto na conversa e envie como Visualização única, Permitir rever ou Manter na conversa. Enquanto uma foto de visualização única está aberta, capturas de tela são bloqueadas.
+>
+> 💰 Gratuito : conversas, mensagens de voz, correções e chamadas são gratuitas. Uma assinatura Pro opcional traz extras para quem quer mais.
+>
+> ⭐ Avaliações : depois de praticarem juntos, você e seu parceiro podem deixar uma avaliação no perfil um do outro.
+
+**Bahasa Indonesia (id)**
+
+> LangX adalah alternatif open source untuk Tandem dan HelloTalk. Latih bahasa dengan mengobrol bersama orang yang berbicara bahasa yang Anda pelajari dan sedang mempelajari bahasa Anda: teks, pesan suara, koreksi, dan kini panggilan suara dan video. LangX gratis digunakan di Android, iPhone, dan web.
+>
+> 📞 Panggilan Suara dan Video : Hubungi partner bahasa Anda secara gratis di semua paket, langsung dari obrolan. Panggilan berdering seperti telepon biasa meskipun aplikasi ditutup, dan satu pengaturan dapat mematikannya.
+>
+> 📷 Kamera Obrolan : Ambil foto atau video langsung di obrolan dan kirim sebagai Lihat sekali, Izinkan putar ulang, atau Simpan di obrolan. Saat foto atau video sekali lihat dibuka, tangkapan layar diblokir.
+>
+> 💰 Gratis Digunakan : Obrolan, pesan suara, koreksi, dan panggilan semuanya gratis. Langganan Pro opsional menambahkan fitur ekstra bagi yang menginginkan lebih.
+>
+> ⭐ Ulasan : Setelah berlatih bersama, Anda dan partner Anda dapat meninggalkan ulasan di profil masing-masing.
+
+**Italiano (it-IT)**
+
+> LangX è un'alternativa open source a Tandem e HelloTalk. Pratica una lingua chattando con persone che parlano la lingua che stai imparando e stanno imparando la tua: messaggi, messaggi vocali, correzioni e ora chiamate vocali e video. LangX è gratuito su Android, iPhone e web.
+>
+> 📞 Chiamate vocali e video : chiama gratis i tuoi partner linguistici con qualsiasi piano, direttamente dalla chat. Le chiamate squillano come una telefonata anche ad app chiusa, e basta un'impostazione per disattivarle.
+>
+> 📷 Fotocamera in chat : scatta una foto o un video direttamente in chat e invialo come Visualizza una volta, Consenti di rivedere o Tieni in chat. Mentre una foto da vedere una volta è aperta, gli screenshot sono bloccati.
+>
+> 💰 Gratuito : chat, messaggi vocali, correzioni e chiamate sono gratuiti. Un abbonamento Pro facoltativo aggiunge extra per chi vuole di più.
+>
+> ⭐ Recensioni : dopo aver fatto pratica insieme, tu e il tuo partner potete lasciare una recensione sul profilo dell'altro.
+
+**日本語 (ja-JP)**
+
+> LangX は Tandem や HelloTalk に代わるオープンソースのアプリです。あなたが学んでいる言語を話し、あなたの言語を学んでいる人とチャットして練習できます。テキスト、ボイスメッセージ、添削、そして音声通話とビデオ通話にも対応。LangX は Android、iPhone、ウェブで無料で使えます。
+>
+> 📞 音声通話・ビデオ通話：どのプランでも無料で、チャットから語学パートナーに直接電話できます。アプリを閉じていても電話のように着信し、設定ひとつでオフにできます。
+>
+> 📷 チャットカメラ：チャットの中で写真や動画を撮って、「1回だけ表示」「もう1回再生可」「チャットに残す」のいずれかで送れます。1回だけ表示の写真や動画を開いている間はスクリーンショットできません。
+>
+> 💰 無料で使える：チャット、ボイスメッセージ、添削、通話はすべて無料です。もっと使いたい方には、任意の Pro サブスクリプションで追加機能を用意しています。
+>
+> ⭐ レビュー：一緒に練習したあと、お互いのプロフィールにレビューを残せます。
+
+**한국어 (ko-KR)**
+
+> LangX는 Tandem과 HelloTalk의 오픈 소스 대안입니다. 내가 배우는 언어를 쓰고 내 언어를 배우는 사람과 채팅하며 연습하세요. 텍스트, 음성 메시지, 첨삭, 그리고 이제 음성 통화와 영상 통화까지. LangX는 Android, iPhone, 웹에서 무료로 사용할 수 있습니다.
+>
+> 📞 음성 및 영상 통화 : 모든 요금제에서 무료로, 채팅에서 바로 언어 파트너에게 전화하세요. 앱이 닫혀 있어도 일반 전화처럼 벨이 울리며, 설정 하나로 끌 수 있습니다.
+>
+> 📷 채팅 카메라 : 채팅에서 바로 사진이나 동영상을 찍어 '한 번만 보기', '다시 보기 허용', '채팅에 남기기' 중 하나로 보내세요. 한 번만 보기 사진이나 동영상이 열려 있는 동안에는 스크린샷이 차단됩니다.
+>
+> 💰 무료 사용 : 채팅, 음성 메시지, 첨삭, 통화 모두 무료입니다. 더 많은 기능을 원하시면 선택형 Pro 구독으로 추가 기능을 이용할 수 있습니다.
+>
+> ⭐ 리뷰 : 함께 연습한 뒤에는 서로의 프로필에 리뷰를 남길 수 있습니다.
+
+**ไทย (th)**
+
+> LangX คือทางเลือกโอเพ่นซอร์สแทน Tandem และ HelloTalk ฝึกภาษาด้วยการแชทกับคนที่พูดภาษาที่คุณกำลังเรียนและกำลังเรียนภาษาของคุณ ทั้งข้อความ ข้อความเสียง การแก้ไขประโยค และตอนนี้มีโทรด้วยเสียงและวิดีโอแล้ว ใช้ LangX ได้ฟรีบน Android, iPhone และเว็บ
+>
+> 📞 โทรด้วยเสียงและวิดีโอ : โทรหาคู่ฝึกภาษาได้ฟรีในทุกแพ็กเกจ จากหน้าแชทได้ทันที สายเรียกเข้าจะดังเหมือนโทรศัพท์แม้ปิดแอปอยู่ และปิดการโทรได้ด้วยการตั้งค่าเดียว
+>
+> 📷 กล้องในแชท : ถ่ายรูปหรือวิดีโอในแชทได้ทันที แล้วส่งแบบดูครั้งเดียว อนุญาตให้ดูซ้ำ หรือเก็บไว้ในแชท ระหว่างที่เปิดรูปหรือวิดีโอแบบดูครั้งเดียว จะไม่สามารถจับภาพหน้าจอได้
+>
+> 💰 ใช้ฟรี : แชท ข้อความเสียง การแก้ไขประโยค และการโทรใช้ได้ฟรี ส่วนการสมัคร Pro เป็นทางเลือกเสริมสำหรับคนที่ต้องการฟีเจอร์เพิ่มเติม
+>
+> ⭐ รีวิว : เมื่อได้ฝึกด้วยกันแล้ว คุณและคู่ฝึกสามารถเขียนรีวิวไว้ในโปรไฟล์ของอีกฝ่ายได้
+
+**简体中文 (zh-CN)**
+
+> LangX 是 Tandem 和 HelloTalk 的开源替代品。与说你正在学习的语言、同时也在学习你的语言的人聊天来练习：文字、语音消息、纠错，现在还有语音和视频通话。LangX 可在 Android、iPhone 和网页上免费使用。
+>
+> 📞 语音和视频通话：所有方案均可免费从聊天中直接呼叫你的语言伙伴。即使应用已关闭，来电也会像普通电话一样响铃；只需一个设置即可关闭通话。
+>
+> 📷 聊天相机：直接在聊天中拍照或录像，并以“仅查看一次”“允许重播”或“保留在聊天中”发送。仅查看一次的照片或视频打开时，无法截屏。
+>
+> 💰 免费使用：聊天、语音消息、纠错和通话都是免费的。可选的 Pro 订阅为需要更多功能的用户提供额外功能。
+>
+> ⭐ 评价：一起练习之后，你和你的伙伴可以在对方的个人资料上留下评价。
