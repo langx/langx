@@ -6580,7 +6580,9 @@ out.
 picture, which a camera pointed at the screen also does. While the file is
 open the app blocks screenshots and screen recording — `FLAG_SECURE` on
 Android, a secure layer on iOS, both through `expo-screen-capture` — and tells
-the sender when one is attempted, which is as far as an app can honestly go. A
+the sender when one is attempted, which is as far as an app can honestly go.
+Their bubble says "Screenshot blocked", not "taken": the capture comes out
+black, and the first wording read as if a copy had been made. A
 signed, short-lived URL would not have added anything: its key is the public
 key, so it reveals the permanent address anyway, and the bucket would have to
 stop being public for every other file to change that.

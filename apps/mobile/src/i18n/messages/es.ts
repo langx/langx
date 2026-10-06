@@ -80,7 +80,7 @@ export const es: Localized<EnMessages> = {
     tapToReplay: 'Toca para volver a ver',
     opened: 'Abierto',
     replayed: 'Visto de nuevo',
-    screenshotTaken: 'Captura de pantalla',
+    screenshotBlocked: 'Captura de pantalla bloqueada',
     sentOnce: 'Ver una vez',
     sentReplay: 'Se puede volver a ver',
     modeOnce: 'Ver una vez',

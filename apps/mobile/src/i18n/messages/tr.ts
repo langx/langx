@@ -92,7 +92,7 @@ export const tr: Localized<EnMessages> = {
     tapToReplay: 'Tekrar oynatmak için dokun',
     opened: 'Açıldı',
     replayed: 'Tekrar oynatıldı',
-    screenshotTaken: 'Ekran görüntüsü alındı',
+    screenshotBlocked: 'Ekran görüntüsü engellendi',
     sentOnce: 'Bir kez görüntüle',
     sentReplay: 'Tekrar oynatılabilir',
     modeOnce: 'Bir kez görüntüle',

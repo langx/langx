@@ -77,7 +77,7 @@ export const fr: Localized<EnMessages> = {
     tapToReplay: 'Touche pour revoir',
     opened: 'Ouvert',
     replayed: 'Revu',
-    screenshotTaken: 'Capture d’écran prise',
+    screenshotBlocked: 'Capture d’écran bloquée',
     sentOnce: 'Voir une fois',
     sentReplay: 'Revoir autorisé',
     modeOnce: 'Voir une fois',

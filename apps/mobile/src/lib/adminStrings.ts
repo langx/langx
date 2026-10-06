@@ -206,7 +206,7 @@ export const ADMIN = {
     messageDeleted: 'Its sender deleted it for everyone, and its files with it.',
     viewOnce: (replay: boolean, opens: number) =>
       `Sent view-once${replay ? ', with one replay' : ''}. Opened ${opens} time${opens === 1 ? '' : 's'}. The person who received it can no longer see it; it is kept for this.`,
-    viewOnceScreenshot: 'They tried to take a screenshot while it was open.',
+    viewOnceScreenshot: 'They tried to take a screenshot while it was open; the app blocked it.',
     suspendDays: 'Suspend for N days',
     suspendPermanent: 'Suspend permanently',
     dismiss: 'Dismiss the report',

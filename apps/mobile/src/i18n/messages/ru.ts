@@ -87,7 +87,7 @@ export const ru: Localized<EnMessages> = {
     tapToReplay: 'Нажмите, чтобы пересмотреть',
     opened: 'Открыто',
     replayed: 'Пересмотрено',
-    screenshotTaken: 'Сделан скриншот',
+    screenshotBlocked: 'Скриншот заблокирован',
     sentOnce: 'Один просмотр',
     sentReplay: 'Можно пересмотреть',
     modeOnce: 'Один просмотр',
