@@ -555,13 +555,15 @@ function SnapPreview({
             )
           })}
         </View>
+        {/* A paper plane and no word, as Instagram's is; the word stays for
+            screen readers. */}
         <Pressable
           accessibilityRole="button"
+          accessibilityLabel={t('viewOnce.send')}
           onPress={onSend}
           style={({ pressed }) => [styles.send, pressed && styles.pressed]}
         >
-          <Text style={styles.sendLabel}>{t('viewOnce.send')}</Text>
-          <Feather name="arrow-right" size={18} color={styles.sendLabel.color} />
+          <Feather name="send" size={24} color={styles.sendIcon.color} style={styles.sendIcon} />
         </Pressable>
       </View>
     </>
@@ -758,10 +760,11 @@ const useStyles = makeStyles(({ colors, font, radius }) => ({
     alignSelf: 'flex-end',
     backgroundColor: colors.primary,
     borderRadius: radius.pill,
-    flexDirection: 'row',
-    gap: spacing.sm,
-    minHeight: 48,
-    paddingHorizontal: spacing.xl,
+    height: 56,
+    justifyContent: 'center',
+    width: 56,
   },
-  sendLabel: { ...font.heading, color: colors.primaryText, fontSize: 16 },
+  // The plane's point is up and to the right, so its box sits off-centre;
+  // nudged back so it reads as centred in the circle.
+  sendIcon: { color: colors.primaryText, marginLeft: -2, marginTop: 2 },
 }))
