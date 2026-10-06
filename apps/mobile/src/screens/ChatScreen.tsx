@@ -2487,6 +2487,54 @@ export function ChatScreen({
   }, [])
 
   /**
+   * The last six of the bubble's handlers, stabilised for the same reason.
+   *
+   * Four were inline arrows and two were passed by name, so every bubble's
+   * props were still unequal on every render: a message arriving, a page of
+   * history landing or the typing dots appearing re-rendered every row on
+   * screen, on the JS thread that also has to keep up with the scroll.
+   */
+  const bubbleActionsRef = useRef({
+    answerAsk,
+    respondMeeting,
+    answerQuiz,
+    answerPoll,
+    cardAction,
+    addToCalendar,
+  })
+  useEffect(() => {
+    bubbleActionsRef.current = {
+      answerAsk,
+      respondMeeting,
+      answerQuiz,
+      answerPoll,
+      cardAction,
+      addToCalendar,
+    }
+  })
+  const onAnswerAsk = useCallback((message: MessageDto, ask: MessageAsk) => {
+    bubbleActionsRef.current.answerAsk(message, ask)
+  }, [])
+  const onRespondMeeting = useCallback(
+    (message: MessageDto, status: 'accepted' | 'declined' | 'cancelled') => {
+      void bubbleActionsRef.current.respondMeeting(message, status)
+    },
+    [],
+  )
+  const onAnswerQuiz = useCallback((message: MessageDto, index: number) => {
+    void bubbleActionsRef.current.answerQuiz(message, index)
+  }, [])
+  const onAnswerPoll = useCallback((message: MessageDto, optionId: string) => {
+    void bubbleActionsRef.current.answerPoll(message, optionId)
+  }, [])
+  const onCardAction = useCallback((message: MessageDto) => {
+    bubbleActionsRef.current.cardAction(message)
+  }, [])
+  const onAddToCalendar = useCallback((message: MessageDto) => {
+    void bubbleActionsRef.current.addToCalendar(message)
+  }, [])
+
+  /**
    * Places a call from this thread.
    *
    * The two refusals that come back here are the ones that happen before
@@ -3121,12 +3169,12 @@ export function ChatScreen({
                         : {})}
                       highlighted={highlighted === row.message._id}
                       askAnswered={answeredAsks.has(row.message._id)}
-                      onAnswerAsk={answerAsk}
-                      onRespondMeeting={(message, status) => void respondMeeting(message, status)}
-                      onAnswerQuiz={(message, index) => void answerQuiz(message, index)}
-                      onAnswerPoll={(message, optionId) => void answerPoll(message, optionId)}
-                      onCardAction={cardAction}
-                      onAddToCalendar={(message) => void addToCalendar(message)}
+                      onAnswerAsk={onAnswerAsk}
+                      onRespondMeeting={onRespondMeeting}
+                      onAnswerQuiz={onAnswerQuiz}
+                      onAnswerPoll={onAnswerPoll}
+                      onCardAction={onCardAction}
+                      onAddToCalendar={onAddToCalendar}
                       meetingWhen={meetingWhenFor(row.message)}
                       meetingLength={meetingLengthFor(row.message)}
                       meetingTheirWhen={meetingTheirWhenFor(row.message)}
