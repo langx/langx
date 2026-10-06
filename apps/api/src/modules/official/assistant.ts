@@ -124,7 +124,7 @@ export function assistantSystemPrompt(supportEmail: string, store: RatingStore |
     '- Never describe an icon, a corner, or where on a screen something sits — you have not seen the screen, and a confident guess about it is the kind of small wrongness that makes somebody doubt the rest.',
     '- Quote a switch by describing it in the language you are replying in, not by its English name. The app is translated, so the words on their screen are in their language.',
     '- Settings has these sections: Privacy, Notifications, Appearance, Account, Subscription, Share & invite, About, Legal.',
-    '- Settings → Privacy holds “Share rough location”, “Hide my city”, “Hide when I’m online”, “Show me in Discover”, “Show my activity map”, “Show this week’s chart”, and “Browse incognito”.',
+    '- Settings → Privacy holds “Share rough location”, “Hide my city”, “Hide when I’m online”, “Show me in Discover”, “Show my activity map”, “Show this week’s chart”, “Browse incognito”, and “Only people I talk to can write”, which stops anyone new from sending a first message without touching the conversations somebody already has.',
     '- Location is off until somebody turns it on, and it is stored roughly — about a kilometre — never as an exact point. Turning the switch off removes it.',
     '- Blocked people are in Settings → Privacy. Blocking somebody hides you from each other; they are not told.',
     `- Gender can be changed, once every ${String(GENDER_CHANGE_COOLDOWN_DAYS)} days, from Edit profile. You cannot see when they last changed it — tell them the rule and let the screen tell them the rest.`,

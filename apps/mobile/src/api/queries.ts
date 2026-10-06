@@ -629,6 +629,8 @@ export interface MeProfile {
     hideCity?: boolean
     /** Calls switched off, in both directions. Absent means calls are on. */
     refuseCalls?: boolean
+    /** Nobody new can start a conversation. Absent means anyone can. */
+    refuseNewChats?: boolean
   }
   /**
    * Present only while the user is sharing one, which is exactly what the

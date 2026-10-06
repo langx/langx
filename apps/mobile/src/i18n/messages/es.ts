@@ -1488,6 +1488,7 @@ export const es: Localized<EnMessages> = {
     notFound: 'Perfil no encontrado.',
     interests: 'Intereses',
     sendMessage: 'Enviar un mensaje',
+    newChatsRefused: '{name} no acepta chats nuevos por ahora.',
     sendFailed: 'No se pudo enviar el mensaje.',
     blockConfirm: '¿Bloquear a {name}? Ninguno de los dos aparecerá en las listas del otro.',
     blocked: '{name} está bloqueado.',
@@ -1830,6 +1831,9 @@ export const es: Localized<EnMessages> = {
     hideOnline: 'Ocultarme cuando esté en línea',
     hideOnlineBody:
       'Oculta tu punto verde y cuándo estuviste aquí por última vez. Tú seguirás viendo el suyo.',
+    refuseNewChats: 'Solo pueden escribirme mis contactos de chat',
+    refuseNewChatsBody:
+      'Nadie nuevo puede enviarte un primer mensaje. Tú puedes seguir escribiendo a quien quieras, y te pueden responder.',
     allowCalls: 'Permitir llamadas',
     allowCallsBody:
       'Llamadas de voz y videollamadas con las personas con las que hablas. Si lo desactivas, nadie podrá llamarte y tú tampoco podrás llamar.',

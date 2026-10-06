@@ -317,6 +317,23 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           }
         />
       )
+    case 'privacy.refuseNewChats':
+      // Free, like `hideOnline` above: a way to be left alone is not something
+      // to charge for.
+      return (
+        <ListRow
+          title={t('settings.refuseNewChats')}
+          subtitle={t('settings.refuseNewChatsBody')}
+          last={last}
+          accessory={
+            <Toggle
+              accessibilityLabel={t('settings.refuseNewChats')}
+              {...privacyToggle('refuseNewChats', profile?.privacy.refuseNewChats ?? false)}
+              onValueChange={(refuseNewChats) => setPrivacy({ refuseNewChats })}
+            />
+          }
+        />
+      )
     case 'privacy.allowCalls':
       /*
        * Stored as its opposite — `refuseCalls`, absent meaning calls are on —
