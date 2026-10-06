@@ -152,7 +152,6 @@ export const en = {
     chatsSwipe: 'Swipe a chat sideways to pin or archive it.',
     chatsPin: 'Pin the chats you come back to and they stay at the top.',
     chatsUnreplied: 'The Unreplied tab is everyone still waiting on you.',
-    discoverRadius: 'Nearby goes from closest outwards. Set a radius in the filters to stop it.',
     discoverSearch: 'Looking for someone in particular? Search their handle.',
     feedCorrect: 'Fixing one sentence takes a moment and is the most useful thing you can do here.',
     feedPronounce:

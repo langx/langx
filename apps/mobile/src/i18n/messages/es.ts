@@ -118,8 +118,6 @@ export const es: Localized<EnMessages> = {
     chatsSwipe: 'Desliza un chat hacia un lado para fijarlo o archivarlo.',
     chatsPin: 'Fija los chats a los que vuelves y se quedarán arriba.',
     chatsUnreplied: 'La pestaña Sin responder es todo el que sigue esperándote.',
-    discoverRadius:
-      '«Cerca» va de lo más próximo hacia fuera. Pon un radio en los filtros para acotarlo.',
     discoverSearch: '¿Buscas a alguien en concreto? Busca su usuario.',
     feedCorrect: 'Corregir una frase lleva un momento y es lo más útil que puedes hacer aquí.',
     feedPronounce:

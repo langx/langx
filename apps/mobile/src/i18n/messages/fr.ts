@@ -117,8 +117,6 @@ export const fr: Localized<EnMessages> = {
     chatsSwipe: 'Faites glisser une conversation sur le côté pour l’épingler ou l’archiver.',
     chatsPin: 'Épinglez les conversations où vous revenez : elles restent en haut.',
     chatsUnreplied: 'L’onglet Sans réponse, ce sont tous ceux qui vous attendent encore.',
-    discoverRadius:
-      '« À proximité » part du plus proche vers l’extérieur. Mets un rayon dans les filtres pour le limiter.',
     discoverSearch: 'Vous cherchez quelqu’un en particulier ? Cherchez son identifiant.',
     feedCorrect:
       'Corriger une phrase prend un instant et c’est le plus utile que vous puissiez faire ici.',
