@@ -6576,6 +6576,11 @@ the author of what was liked still sees everyone — they were told who liked it
 for the reason `listLikers` already gives for blocks: likers are many and the
 count is unattributable, so nobody can tell which name is missing.
 
+**A suspended account is off the boards as well**, without any switch: nothing
+proposes one — discovery, the boosted strip and handle search already used
+`notSuspended()` — and the leaderboards had simply been missed. It is left out
+the same way as a deleted account on each board.
+
 ## Hidden mode is a gate over four switches
 
 Settings → Privacy opens with "Hidden mode", and under it, set in: hide me from
