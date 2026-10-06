@@ -170,7 +170,7 @@ describe('deleting an account', () => {
       expect(purge.getTime() - at.getTime()).toBe(ACCOUNT_DELETION_GRACE_DAYS * 24 * 60 * 60 * 1000)
     })
 
-    it('is undone by signing back in', async () => {
+    it('is undone by "Keep it"', async () => {
       const fi = userId('f1')
       await seed(fi)
       await requestDeletion(handle.db, fi)

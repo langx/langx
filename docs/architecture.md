@@ -1417,6 +1417,10 @@ creates accounts; GDPR additionally requires access and portability.
 - That POST calls the same `requestDeletion` the direct path always did → a
   **soft delete**: `profiles.deletedAt` is written, the user drops out of every
   list, sessions are destroyed and push tokens deleted.
+- **Signing back in cancels it.** `auth.ts`'s session-create hook calls
+  `cancelDeletionOnSignIn`, so every way in clears `deletedAt` and the
+  feedback. The banner's "Keep it" (`POST /me/delete/cancel`) remains for an
+  account still signed in with a deletion pending.
 - `POST /me/delete` still exists and is the fallback for a deployment with no
   `RESEND_API_KEY`, where the sender is `ConsoleEmailSender` and a link would
   only reach a log. The request endpoint answers `deliverable: false` in that

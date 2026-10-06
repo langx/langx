@@ -6725,3 +6725,22 @@ was only ever in the row that is gone.
 The account purge is not part of this. The privacy policy says a deleted
 account's photos, videos and voice messages are removed from storage, and it
 still does exactly that.
+
+## Signing back in cancels a deletion
+
+The delete screen, the confirmation mail and langx.io's privacy policy, data
+deletion page and terms all say that signing back in within the 30 days cancels
+a deletion. Nothing did. The only caller of `cancelDeletion` was the banner's
+"Keep it", so somebody who came back as told found a countdown instead of their
+account — and the test named for signing back in called the function directly,
+so it passed throughout.
+
+Making the code keep the promise beat rewording it: the promise is in eight
+languages in the app and the mail, in three legal pages, and in mail already
+sent to everyone with a deletion pending. `cancelDeletionOnSignIn` runs in the
+session-create hook, which every way in passes through. Its test signs in
+through the real endpoint.
+
+The cost is that signing in only to download your data also cancels. The data
+deletion page already tells people to export before deleting, and a person who
+signs in by mistake can delete again.

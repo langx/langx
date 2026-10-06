@@ -10,6 +10,8 @@ import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { COLLECTIONS } from './db/collections'
+import { requestDeletion } from './modules/account/deletion'
+import type { Profile } from './modules/profiles/profiles'
 import { CapturingEmailSender, setCookieValue, signUpAndSignIn } from './testSupport/authFlow'
 
 describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', () => {
@@ -272,5 +274,36 @@ describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', (
       headers: { cookie: full },
     })
     expect(suspended.statusCode).toBe(ERROR_STATUS.ACCOUNT_SUSPENDED)
+  })
+
+  /*
+   * Through the real sign-in rather than by calling a function: the promise
+   * this keeps had a test of its own, named for signing back in, that called
+   * `cancelDeletion` directly — and passed for as long as nothing did.
+   */
+  it('cancels a pending deletion when the account signs back in', async () => {
+    const email = 'came-back@example.com'
+    const password = 'correct horse battery staple'
+    const { userId } = await signUpAndSignIn(app, emailSender, { email, password, name: 'Back' })
+    const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+    await profiles.updateOne(
+      { _id: userId },
+      { $set: { entitlement: { tier: 'free', updatedAt: new Date() } } },
+      { upsert: true },
+    )
+    await requestDeletion(handle.db, userId, { reason: 'taking_a_break' })
+    expect((await profiles.findOne({ _id: userId }))?.deletedAt).toBeInstanceOf(Date)
+
+    const signIn = await app.inject({
+      method: 'POST',
+      url: '/api/auth/sign-in/email',
+      payload: { email, password },
+    })
+    expect(signIn.statusCode, signIn.body).toBe(200)
+
+    const profile = await profiles.findOne({ _id: userId })
+    expect(profile?.deletedAt).toBeUndefined()
+    // Somebody who came back has not left, and is not counted as if they had.
+    expect(profile?.deletionFeedback).toBeUndefined()
   })
 })
