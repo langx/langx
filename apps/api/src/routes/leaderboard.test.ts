@@ -585,21 +585,30 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(mine?.rank).toBeGreaterThan(1)
     })
 
-    it('leaves out somebody not shown in Discover, without promoting anyone', async () => {
+    /**
+     * Left out the way a deleted account is on this board — in the query, so
+     * the ranks close up — because a row skipped after the fetch still takes
+     * a place in the page, and somebody hidden near the top would cut the
+     * board short for everyone.
+     */
+    it('leaves out somebody not shown in Discover, and still fills the page', async () => {
       const viewer = await newUser()
       const hiding = await newUser()
-      await setStreak(hiding.userId, { current: 61, longest: 61, lastQualifiedDay: today })
+      await setStreak(hiding.userId, { current: 999, longest: 999, lastQualifiedDay: today })
       await setStreak(viewer.userId, { current: 60, longest: 60, lastQualifiedDay: today })
-      const before = (await streakBoard(viewer)).entries.find((e) => e.userId === viewer.userId)
 
       await hideFromDiscover(hiding)
 
       const after = await streakBoard(viewer)
       expect(after.entries.some((e) => e.userId === hiding.userId)).toBe(false)
-      expect(after.entries.find((e) => e.userId === viewer.userId)?.rank).toBe(before?.rank)
+      const top = await streakBoard(viewer, '?metric=current&limit=1')
+      expect(top.entries).toHaveLength(1)
       // Their own board still has them on it.
       const own = await streakBoard(hiding)
       expect(own.entries.some((e) => e.userId === hiding.userId)).toBe(true)
+
+      // Back to an ordinary streak, so the boards later tests read are theirs.
+      await setStreak(hiding.userId, { current: 0, longest: 0, lastQualifiedDay: null })
     })
 
     it('leaves out a deleted account', async () => {

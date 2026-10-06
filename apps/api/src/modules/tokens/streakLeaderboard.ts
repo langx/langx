@@ -28,7 +28,18 @@ export async function getStreakLeaderboard(
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const field = query.metric === 'current' ? 'streak.current' : 'streak.longest'
 
-  const filter: Filter<Profile> = { deletedAt: { $exists: false } }
+  /*
+   * "Show me in Discover" off means off the board as well — see the token
+   * board — except to themselves. In the query, the way a deleted account is
+   * left out of this board, rather than skipped in the loop like a block:
+   * a skipped row still takes a place in the page's `limit`, so somebody
+   * hidden near the top would cut the board short for everyone. The ranks
+   * close up around them instead, as they already do around a deletion here.
+   */
+  const filter: Filter<Profile> = {
+    deletedAt: { $exists: false },
+    $or: [{ 'settings.discoverable': true }, { _id: viewerId }],
+  }
   if (query.metric === 'current') {
     /*
      * Liveness, and the board is meaningless without it. `streak.current` is
@@ -62,7 +73,6 @@ export async function getStreakLeaderboard(
         streak: 1,
         cosmetics: 1,
         equipped: 1,
-        'settings.discoverable': 1,
       },
     })
     // `_id` breaks ties deterministically, so repeat calls agree.
@@ -89,14 +99,6 @@ export async function getStreakLeaderboard(
     )
     previous = { rank, days }
     if (hidden.has(profile._id)) continue
-    /*
-     * "Show me in Discover" off means off the board as well — see the token
-     * board. Skipped here rather than left out of `filter`, which the viewer's
-     * rank count below reuses: left out there, the ranks of everyone under
-     * them would close up, and a switch about being found would move other
-     * people's numbers.
-     */
-    if (profile.settings?.discoverable !== true && profile._id !== viewerId) continue
 
     const entry: StreakLeaderboardEntry = {
       rank,

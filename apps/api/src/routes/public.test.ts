@@ -156,22 +156,31 @@ describe('the routes anybody can call', () => {
      * Discover" off matters most. Their place stays taken, as everywhere else.
      */
     it('leaves out somebody not shown in Discover, keeping their place', async () => {
-      await handle.db.collection(COLLECTIONS.profiles).insertOne({
-        _id: 'd',
-        handle: 'di',
-        displayName: 'DI',
-        entitlement: { tier: 'free' },
-        streak: { current: 1, longest: 1, lastQualifiedDay: '2026-09-01' },
-        settings: { discoverable: false, notifications: {} },
-      } as never)
-      await handle.db.collection(COLLECTIONS.tokenAggregates).insertOne({
-        _id: aggregateId('d', 'all', 'all'),
-        userId: 'd',
-        periodType: 'all',
-        periodKey: 'all',
-        tokens: 500,
-        updatedAt: new Date(),
-      } as never)
+      const now = new Date()
+      const people = [
+        { id: 'd', handle: 'di', tokens: 500, discoverable: false },
+        { id: 'a', handle: 'ada', tokens: 300, discoverable: true },
+        { id: 'b', handle: 'bo', tokens: 300, discoverable: true },
+        { id: 'c', handle: 'cy', tokens: 100, discoverable: true },
+      ]
+      for (const p of people) {
+        await handle.db.collection(COLLECTIONS.profiles).insertOne({
+          _id: p.id,
+          handle: p.handle,
+          displayName: p.handle.toUpperCase(),
+          entitlement: { tier: 'free' },
+          streak: { current: 1, longest: 1, lastQualifiedDay: '2026-09-01' },
+          settings: { discoverable: p.discoverable, notifications: {} },
+        } as never)
+        await handle.db.collection(COLLECTIONS.tokenAggregates).insertOne({
+          _id: aggregateId(p.id, 'all', 'all'),
+          userId: p.id,
+          periodType: 'all',
+          periodKey: 'all',
+          tokens: p.tokens,
+          updatedAt: now,
+        } as never)
+      }
 
       const response = await app.inject({ method: 'GET', url: '/public/leaderboard/token' })
       const body = response.json<{ entries: Record<string, unknown>[] }>()
