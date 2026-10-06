@@ -6570,6 +6570,11 @@ missing. Never out of the list's owner's own view, though: they chose to follow
 that person or were told they followed, and somebody you follow but cannot see
 in your own list is somebody you cannot unfollow.
 
+**A suspended account is off the boards as well**, without any switch: nothing
+proposes one — discovery, the boosted strip and handle search already used
+`notSuspended()` — and the leaderboards had simply been missed. It is left out
+the same way as a deleted account on each board.
+
 ## Hidden mode is a gate over four switches
 
 Settings → Privacy opens with "Hidden mode", and under it, set in: hide me from
