@@ -128,6 +128,17 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
     return response.json<StreakLeaderboard>()
   }
 
+  /** "Show me in Discover" off, through the same request the switch sends. */
+  async function hideFromDiscover(user: SignedUpUser) {
+    const response = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { settings: { discoverable: false } },
+    })
+    expect(response.statusCode, response.body).toBe(200)
+  }
+
   /** Writes a streak straight onto the profile, as the daily check-in would. */
   function setStreak(
     userId: string,
@@ -574,6 +585,32 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(mine?.rank).toBeGreaterThan(1)
     })
 
+    /**
+     * Left out the way a deleted account is on this board — in the query, so
+     * the ranks close up — because a row skipped after the fetch still takes
+     * a place in the page, and somebody hidden near the top would cut the
+     * board short for everyone.
+     */
+    it('leaves out somebody not shown in Discover, and still fills the page', async () => {
+      const viewer = await newUser()
+      const hiding = await newUser()
+      await setStreak(hiding.userId, { current: 999, longest: 999, lastQualifiedDay: today })
+      await setStreak(viewer.userId, { current: 60, longest: 60, lastQualifiedDay: today })
+
+      await hideFromDiscover(hiding)
+
+      const after = await streakBoard(viewer)
+      expect(after.entries.some((e) => e.userId === hiding.userId)).toBe(false)
+      const top = await streakBoard(viewer, '?metric=current&limit=1')
+      expect(top.entries).toHaveLength(1)
+      // Their own board still has them on it.
+      const own = await streakBoard(hiding)
+      expect(own.entries.some((e) => e.userId === hiding.userId)).toBe(true)
+
+      // Back to an ordinary streak, so the boards later tests read are theirs.
+      await setStreak(hiding.userId, { current: 0, longest: 0, lastQualifiedDay: null })
+    })
+
     it('leaves out a deleted account', async () => {
       const gone = await newUser()
       await setStreak(gone.userId, { current: 99, longest: 99, lastQualifiedDay: today })
@@ -775,6 +812,39 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       // Rank 1 is now vacant rather than reassigned — nobody gets promoted by
       // someone else deleting their account.
       expect(withoutGhost.entries[0]?.rank).toBe(2)
+    })
+
+    /**
+     * A leaderboard is somewhere strangers find people, and "Show me in
+     * Discover" off promises nobody will. Same shape as a deletion: gone from
+     * the table, place kept.
+     */
+    it('hides somebody not shown in Discover, keeping their place', async () => {
+      const hiding = await newUser()
+      const viewer = await newUser()
+      await awardTokens(handle.db, {
+        userId: hiding.userId,
+        kind: 'adjustment',
+        amount: 200_000,
+        refId: 'hiding',
+      })
+      await awardTokens(handle.db, {
+        userId: viewer.userId,
+        kind: 'adjustment',
+        amount: 190_000,
+        refId: 'below-hiding',
+      })
+      const before = (await board(viewer, '?period=all')).entries.find(
+        (e) => e.userId === viewer.userId,
+      )
+
+      await hideFromDiscover(hiding)
+
+      const after = await board(viewer, '?period=all')
+      expect(after.entries.some((e) => e.userId === hiding.userId)).toBe(false)
+      expect(after.entries.find((e) => e.userId === viewer.userId)?.rank).toBe(before?.rank)
+      const own = await board(hiding, '?period=all')
+      expect(own.entries.some((e) => e.userId === hiding.userId)).toBe(true)
     })
   })
 

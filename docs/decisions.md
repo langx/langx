@@ -6540,3 +6540,23 @@ place of the message button, rather than leaving the button out: a person with
 no way to write to them and no reason given reads as a broken screen.
 `acceptsNewChats: false` is about the account, like `acceptsCalls`, and the
 profile reads `conversationId` first.
+
+## "Show me in Discover" off takes you off the leaderboards too
+
+A leaderboard is a place strangers find people: every row opens a profile, and
+the token board is readable by anyone on the web without signing in. The
+switch promised "nobody will find you", and for as long as the boards ignored
+it that promise was false for anyone active enough to rank.
+
+All three boards — tokens, streaks and Echo — now leave such a person out,
+exactly the way each board already leaves out a deleted account. On the token
+and Echo boards they keep their place, so turning the switch off promotes
+nobody past them. On the streak board they are left out in the query and the
+ranks close up, as they do there around a deletion: a row skipped after the
+fetch still takes a place in the page's limit, and somebody hidden near the top
+would have cut that board short for everyone. The viewer always sees their own
+row.
+
+The feed is not filtered. A post is something a person chose to publish, and
+hiding it would quietly retract what they said in public; the switch's copy
+names Discover, the leaderboards and username search, and nothing else.

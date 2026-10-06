@@ -131,7 +131,18 @@ export async function getLeaderboard(
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .find(
-      { _id: { $in: top.map((row) => row.userId) }, deletedAt: { $exists: false } },
+      /*
+       * Somebody who has switched "Show me in Discover" off is off the board
+       * too: a leaderboard is a place strangers find people, and that switch
+       * promises nobody will. They keep their place, like a blocked or deleted
+       * account, so turning it off promotes nobody past them. The viewer always
+       * sees their own row.
+       */
+      {
+        _id: { $in: top.map((row) => row.userId) },
+        deletedAt: { $exists: false },
+        $or: [{ 'settings.discoverable': true }, { _id: viewerId }],
+      },
       {
         projection: {
           handle: 1,

@@ -2023,7 +2023,7 @@ export const en = {
     linkDeviceBody: 'Approve a sign-in, and see where you are signed in.',
     showInDiscover: 'Show me in Discover',
     showInDiscoverBody:
-      'Turn this off and nobody will find you — not in Discover, and not by searching your username.',
+      'Turn this off and nobody will find you — not in Discover, not on the leaderboards, and not by searching your username.',
     boost: 'Boost my profile',
     boostBody:
       'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Pro.',
