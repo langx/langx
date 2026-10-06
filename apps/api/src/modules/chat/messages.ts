@@ -25,6 +25,8 @@ import {
   isForwardableType,
   type MessageCall,
   type ThreadTestimonialState,
+  previewFor,
+  previewOf,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -60,61 +62,12 @@ export interface SendResult {
  * "sending a message" means for the conversation document, and so the socket
  * transport earns tokens through exactly the same code REST does.
  */
-/**
- * The line the chat list and a reply quote show for a message with no words
- * of its own.
- *
- * English, from the server, and so the one string in a message that does not
- * come from the app's catalogues — it is denormalized into
- * `conversations.lastMessage` at send time, where the reader's language is not
- * known and cannot be. Localising it would mean either storing it per reader
- * or re-deriving the list's preview on every read.
+/*
+ * The wording of a message with no words of its own lives in
+ * `@langx/shared`, because the app's live chat-list patch has to write the
+ * same line. Re-exported so everything here keeps importing it from chat.
  */
-export function previewFor(
-  type: Message['type'],
-  count = 1,
-  /** A call's row, when there is one in hand, so the line can say which kind. */
-  call?: Pick<MessageCall, 'media'>,
-): string {
-  /*
-   * Neutral on purpose: "Voice call", never "Missed voice call". This line is
-   * stored once on the conversation and read by both people, and whether a
-   * call was missed depends on which of them is reading. A build that knows
-   * about calls words it per reader from `lastMessage.call`; this is for the
-   * ones that do not, and for anything that only has the type.
-   */
-  if (type === 'call') return call?.media === 'video' ? '📹 Video call' : '📞 Voice call'
-  if (type === 'image') return count > 1 ? `📷 ${count} photos` : '📷 Photo'
-  if (type === 'video') return count > 1 ? `🎬 ${count} videos` : '🎬 Video'
-  if (type === 'audio') return '🎤 Voice message'
-  // Every type that carries no `body` needs a line here. Forget one and the
-  // chat list row and the push notification are both blank — the message
-  // arrives and says nothing.
-  if (type === 'phrase') return '🗂️ Phrase'
-  if (type === 'meeting') return '📅 Meeting'
-  if (type === 'quiz') return '❓ Quiz'
-  if (type === 'sticker') return '🩷 Sticker'
-  // Never the place name: this line is the chat list row and the push body,
-  // and a lock screen is not where somebody's whereabouts should be read out.
-  if (type === 'location') return '📍 Location'
-  return ''
-}
-
-/**
- * `previewFor` with the message in hand, which is what every caller has.
- *
- * The one thing it adds is the view-once wording. "📷 Photo" would be true,
- * but it would also be the only hint on a lock screen or a chat list row that
- * this is not a photo the reader can come back to.
- */
-export function previewOf(
-  message: Pick<Message, 'type' | 'attachments' | 'media' | 'viewOnce'>,
-): string {
-  if (message.viewOnce) {
-    return message.type === 'video' ? '🎬 View-once video' : '📷 View-once photo'
-  }
-  return previewFor(message.type, attachmentsOf(message).length)
-}
+export { previewFor, previewOf }
 
 /**
  * The line a push carries for a call nobody picked up.

@@ -21,6 +21,7 @@ import {
   applyIncomingMessage,
   cachedConversation,
   type ConversationPageDto,
+  listPreviewOf,
 } from '../lib/conversationCache'
 import {
   appendIncomingMessage,
@@ -211,7 +212,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
             if (!old || !meId) return old
             const next = applyIncomingMessage(old, {
               conversationId,
-              body: stripFormatting(message.body),
+              body: listPreviewOf(message),
               senderId: message.senderId,
               createdAt: message.createdAt,
               forUserId: meId,
