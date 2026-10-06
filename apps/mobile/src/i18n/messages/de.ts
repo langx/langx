@@ -1862,7 +1862,7 @@ export const de: Localized<EnMessages> = {
     linkDeviceBody: 'Eine Anmeldung bestätigen und sehen, wo du angemeldet bist.',
     showInDiscover: 'In Entdecken zeigen',
     showInDiscoverBody:
-      'Schalte das aus und niemand findet dich — weder in Entdecken noch über deinen Benutzernamen.',
+      'Schalte das aus und niemand findet dich — weder in Entdecken noch in den Bestenlisten noch über deinen Benutzernamen.',
     boost: 'Mein Profil hervorheben',
     boostBody:
       'Zeig mich in der Leiste mit hervorgehobenen Profilen oben in Entdecken — Leuten, deren Sprachen zu meinen passen. Mit Pro aktiv.',

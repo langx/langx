@@ -62,6 +62,7 @@ export async function getStreakLeaderboard(
         streak: 1,
         cosmetics: 1,
         equipped: 1,
+        'settings.discoverable': 1,
       },
     })
     // `_id` breaks ties deterministically, so repeat calls agree.
@@ -88,6 +89,14 @@ export async function getStreakLeaderboard(
     )
     previous = { rank, days }
     if (hidden.has(profile._id)) continue
+    /*
+     * "Show me in Discover" off means off the board as well — see the token
+     * board. Skipped here rather than left out of `filter`, which the viewer's
+     * rank count below reuses: left out there, the ranks of everyone under
+     * them would close up, and a switch about being found would move other
+     * people's numbers.
+     */
+    if (profile.settings?.discoverable !== true && profile._id !== viewerId) continue
 
     const entry: StreakLeaderboardEntry = {
       rank,

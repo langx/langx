@@ -1840,7 +1840,7 @@ export const fr: Localized<EnMessages> = {
     linkDeviceBody: 'Approuver une connexion et voir où vous êtes connecté.',
     showInDiscover: 'M’afficher dans Découvrir',
     showInDiscoverBody:
-      'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni en cherchant ton nom d’utilisateur.',
+      'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni dans les classements, ni en cherchant ton nom d’utilisateur.',
     boost: 'Mettre mon profil en avant',
     boostBody:
       'Affiche-moi dans le bandeau des profils mis en avant, en haut de Découvrir, aux personnes dont les langues correspondent aux miennes. Actif avec Pro.',
