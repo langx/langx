@@ -781,6 +781,51 @@ describe('echo', () => {
       expect(result.periodKey).toBe(weekKey(new Date()))
     })
 
+    it('leaves out somebody not shown in Discover, without promoting anyone', async () => {
+      const hiding = await newUser('board-hiding@example.com')
+      const viewer = await newUser('board-hiding-viewer@example.com')
+      await answer(hiding, 'hiding', 9)
+      await answer(viewer, 'hiding-viewer', 8)
+      const before = (await board(viewer)).entries.find((row) => row.userId === viewer.userId)
+
+      const hidden = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: hiding.cookie },
+        payload: { settings: { discoverable: false } },
+      })
+      expect(hidden.statusCode, hidden.body).toBe(200)
+
+      const after = await board(viewer)
+      expect(after.entries.some((row) => row.userId === hiding.userId)).toBe(false)
+      expect(after.entries.find((row) => row.userId === viewer.userId)?.rank).toBe(before?.rank)
+      // Their own board still has them on it.
+      const own = await board(hiding)
+      expect(own.entries.some((row) => row.userId === hiding.userId)).toBe(true)
+    })
+
+    it('leaves out a suspended account', async () => {
+      const suspended = await newUser('board-suspended@example.com')
+      const viewer = await newUser('board-suspended-viewer@example.com')
+      await answer(suspended, 'suspended', 7)
+      await handle.db.collection(COLLECTIONS.profiles).updateOne(
+        { _id: suspended.userId as never },
+        {
+          $set: {
+            suspension: {
+              at: new Date(),
+              until: new Date(Date.now() + 365 * 86_400_000),
+              permanent: false,
+              reason: 'harassment',
+            },
+          },
+        },
+      )
+
+      const result = await board(viewer)
+      expect(result.entries.some((row) => row.userId === suspended.userId)).toBe(false)
+    })
+
     it('counts the same cards into every period', async () => {
       const user = await newUser('board-periods@example.com')
       await answer(user, 'periods', 4)

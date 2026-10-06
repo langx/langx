@@ -82,6 +82,14 @@ export const ERROR_CODES = {
   /** A conversation between these two already exists — see `conversations.pairKey`. */
   CONVERSATION_EXISTS: 'CONVERSATION_EXISTS',
   /**
+   * A first message to somebody who has `privacy.refuseNewChats` on.
+   *
+   * Its own code for `RECIPIENT_SUSPENDED`'s reason: the client's answer is
+   * specific — say so, and put the composer away — and `FORBIDDEN` would
+   * leave it showing the server's English sentence instead.
+   */
+  NEW_CHATS_REFUSED: 'NEW_CHATS_REFUSED',
+  /**
    * A photo or voice note to somebody who has not yet sent you
    * `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES` messages.
    *
@@ -319,6 +327,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   BLOCKED: 403,
   RECIPIENT_SUSPENDED: 403,
   CONVERSATION_EXISTS: 409,
+  NEW_CHATS_REFUSED: 403,
   GENDER_CHANGE_TOO_SOON: 409,
   LOCATION_REQUIRED: 409,
   GIFT_CODE_REJECTED: 409,

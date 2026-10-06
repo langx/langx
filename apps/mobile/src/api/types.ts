@@ -118,6 +118,12 @@ export interface PublicProfileDto {
    */
   acceptsCalls?: false
   /**
+   * Present, and `false`, when they take messages only from people they
+   * already talk to. About the account, not you: read `conversationId` first,
+   * since somebody already in a thread with them can go on writing in it.
+   */
+  acceptsNewChats?: false
+  /**
    * Whether this account is still one. `suspended` and `deleted` open as a
    * profile with a tag rather than a 404, so somebody arriving from an old
    * conversation is told what happened — see `toPublicProfile`. Optional

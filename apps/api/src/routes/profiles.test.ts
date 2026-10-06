@@ -2294,6 +2294,143 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     })
   })
 
+  describe('hidden mode', () => {
+    async function onboarded(email: string, userHandle: string): Promise<SignedUpUser> {
+      const user = await newUser(email)
+      const created = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: userHandle }),
+      })
+      if (created.statusCode !== 201) throw new Error(`onboarding failed: ${created.body}`)
+      return user
+    }
+
+    const patch = (user: SignedUpUser, payload: Record<string, unknown>) =>
+      app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload,
+      })
+
+    const me = async (user: SignedUpUser) => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      return response.json<Profile>()
+    }
+
+    /**
+     * The one failure this must not have. Somebody who hid themselves before
+     * the switch existed has no `hiddenMode` stored; read as off, the app
+     * would grey their settings out and the next write would make them
+     * visible.
+     */
+    it('reads as on for somebody who was already hiding before it existed', async () => {
+      const user = await onboarded('hidden-legacy@example.com', 'hiddenlegacy')
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { 'privacy.hideOnlineStatus': true } })
+
+      const profile = await me(user)
+      expect(profile.privacy).toMatchObject({ hiddenMode: true, hideOnlineStatus: true })
+
+      const fresh = await onboarded('hidden-fresh@example.com', 'hiddenfresh')
+      expect((await me(fresh)).privacy).toMatchObject({ hiddenMode: false })
+    })
+
+    it('turns all four off and brings them back as they were', async () => {
+      const user = await onboarded('hidden-cycle@example.com', 'hiddencycle')
+      const stranger = await onboarded('hidden-cycle-stranger@example.com', 'hiddencyclestranger')
+      const strangerView = async () => {
+        const response = await app.inject({
+          method: 'GET',
+          url: '/profiles/hiddencycle',
+          headers: { cookie: stranger.cookie },
+        })
+        expect(response.statusCode, response.body).toBe(200)
+        return response.json<Record<string, unknown>>()
+      }
+
+      // First time on: all four, incognito aside on a free plan.
+      expect((await patch(user, { privacy: { hiddenMode: true } })).statusCode).toBe(200)
+      // Then one of them chosen back off, with the switch staying on.
+      expect((await patch(user, { privacy: { hideOnlineStatus: false } })).statusCode).toBe(200)
+      let profile = await me(user)
+      expect(profile.settings.discoverable).toBe(false)
+      expect(profile.privacy).toMatchObject({
+        hiddenMode: true,
+        hideOnlineStatus: false,
+        refuseNewChats: true,
+      })
+      expect(await strangerView()).toMatchObject({ acceptsNewChats: false })
+
+      // Off: visible everywhere, for real — not just drawn that way.
+      expect((await patch(user, { privacy: { hiddenMode: false } })).statusCode).toBe(200)
+      profile = await me(user)
+      expect(profile.settings.discoverable).toBe(true)
+      expect(profile.privacy).toMatchObject({
+        hiddenMode: false,
+        hideOnlineStatus: false,
+        refuseNewChats: false,
+        incognito: false,
+      })
+      expect(await strangerView()).not.toHaveProperty('acceptsNewChats')
+      const opened = await app.inject({
+        method: 'POST',
+        url: '/conversations',
+        headers: { cookie: stranger.cookie },
+        payload: { toUserId: user.userId, body: 'hello' },
+      })
+      expect(opened.statusCode, opened.body).toBe(201)
+
+      // On again: exactly the choices from before, not the first-time four.
+      expect((await patch(user, { privacy: { hiddenMode: true } })).statusCode).toBe(200)
+      profile = await me(user)
+      expect(profile.settings.discoverable).toBe(false)
+      expect(profile.privacy).toMatchObject({
+        hiddenMode: true,
+        hideOnlineStatus: false,
+        refuseNewChats: true,
+      })
+    })
+
+    /** An app from before the switch writes a child directly. */
+    it('turns itself on when an old app hides something while it is off', async () => {
+      const user = await onboarded('hidden-old-app@example.com', 'hiddenoldapp')
+      expect((await me(user)).privacy).toMatchObject({ hiddenMode: false })
+
+      expect((await patch(user, { settings: { discoverable: false } })).statusCode).toBe(200)
+      const profile = await me(user)
+      expect(profile.settings.discoverable).toBe(false)
+      expect(profile.privacy).toMatchObject({ hiddenMode: true })
+    })
+
+    it('keeps the kept choices out of reach of a request', async () => {
+      const user = await onboarded('hidden-forge@example.com', 'hiddenforge')
+      const response = await patch(user, {
+        privacy: {
+          hiddenModeChoices: {
+            hideFromDiscover: false,
+            hideOnlineStatus: false,
+            refuseNewChats: false,
+            incognito: false,
+          },
+        },
+      })
+      expect(response.statusCode).toBeLessThan(500)
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(stored?.privacy.hiddenModeChoices).toBeUndefined()
+    })
+  })
+
   describe('the city, which nobody types', () => {
     /** Upserted, so each test can ask for it without minding who ran first. */
     async function seedCities(): Promise<void> {

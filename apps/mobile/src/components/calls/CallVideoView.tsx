@@ -1,3 +1,6 @@
+import { RTCView, type MediaStream } from '@livekit/react-native-webrtc'
+import { StyleSheet } from 'react-native'
+
 export interface CallVideoViewProps {
   /** Opaque: whatever the media engine handed `streams.ts`. */
   stream: unknown
@@ -10,13 +13,23 @@ export interface CallVideoViewProps {
 }
 
 /**
- * One picture of a call: this device's camera, or the other person's.
+ * One picture of a call on a phone: WebRTC's own native view, handed the
+ * stream by its URL. `CallVideoView.web.tsx` is the browser's.
  *
- * Nothing, on a phone, in this build — there is no media engine to have made
- * a stream, and so never a call to draw. The real view arrives with the
- * native module, the way `rtc.ts` says. `CallVideoView.web.tsx` is the
- * browser's.
+ * Keyed on `revision`, because the native view binds to the stream's video
+ * track when it mounts: a camera turned on in the middle of a call adds a
+ * track the mounted view would never look at.
  */
-export function CallVideoView(_props: CallVideoViewProps): null {
-  return null
+export function CallVideoView({ stream, revision, mirrored = false, fit }: CallVideoViewProps) {
+  const media = stream as MediaStream | null
+  if (!media || media.getVideoTracks().length === 0) return null
+  return (
+    <RTCView
+      key={revision}
+      streamURL={media.toURL()}
+      mirror={mirrored}
+      objectFit={fit}
+      style={StyleSheet.absoluteFill}
+    />
+  )
 }

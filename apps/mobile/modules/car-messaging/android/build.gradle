@@ -49,4 +49,10 @@ dependencies {
    * reply needed first. Same cookie, same route, one implementation.
    */
   implementation project(':wear-link')
+  /*
+   * A call's ring arrives as a push like any other, and this module's
+   * service is where every push lands — so it hands those to the calls
+   * module rather than each of them registering a receiver of its own.
+   */
+  implementation project(':calls')
 }

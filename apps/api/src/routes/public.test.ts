@@ -150,6 +150,46 @@ describe('the routes anybody can call', () => {
       }
       expect(body).not.toHaveProperty('viewer')
     })
+
+    /**
+     * The one board anybody on the web can read, so the one where "Show me in
+     * Discover" off matters most. Their place stays taken, as everywhere else.
+     */
+    it('leaves out somebody not shown in Discover, keeping their place', async () => {
+      const now = new Date()
+      const people = [
+        { id: 'd', handle: 'di', tokens: 500, discoverable: false },
+        { id: 'a', handle: 'ada', tokens: 300, discoverable: true },
+        { id: 'b', handle: 'bo', tokens: 300, discoverable: true },
+        { id: 'c', handle: 'cy', tokens: 100, discoverable: true },
+      ]
+      for (const p of people) {
+        await handle.db.collection(COLLECTIONS.profiles).insertOne({
+          _id: p.id,
+          handle: p.handle,
+          displayName: p.handle.toUpperCase(),
+          entitlement: { tier: 'free' },
+          streak: { current: 1, longest: 1, lastQualifiedDay: '2026-09-01' },
+          settings: { discoverable: p.discoverable, notifications: {} },
+        } as never)
+        await handle.db.collection(COLLECTIONS.tokenAggregates).insertOne({
+          _id: aggregateId(p.id, 'all', 'all'),
+          userId: p.id,
+          periodType: 'all',
+          periodKey: 'all',
+          tokens: p.tokens,
+          updatedAt: now,
+        } as never)
+      }
+
+      const response = await app.inject({ method: 'GET', url: '/public/leaderboard/token' })
+      const body = response.json<{ entries: Record<string, unknown>[] }>()
+      expect(body.entries.map((e) => [e.rank, e.handle, e.tokens])).toEqual([
+        [2, 'ada', 300],
+        [2, 'bo', 300],
+        [4, 'cy', 100],
+      ])
+    })
   })
 
   describe('the bare hostname of the stats site', () => {

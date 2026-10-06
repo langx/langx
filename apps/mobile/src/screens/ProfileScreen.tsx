@@ -580,7 +580,19 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
               label={t('profile.openChat')}
               onPress={() => router.push(`/(app)/chat/${user.conversationId}`)}
             />
-          ) : user.acceptsMessages === false ? null : (
+          ) : user.acceptsMessages === false ? null : user.acceptsNewChats === false ? (
+            /*
+              Said rather than left out, unlike a channel's button: a person
+              with no way to write to them and no reason given reads as a
+              broken screen, and the reason is one sentence long.
+            */
+            <View style={styles.closedNote}>
+              <Feather name="lock" size={16} color={colors.textMuted} />
+              <Text style={styles.closedNoteText}>
+                {t('profile.newChatsRefused', { name: user.displayName })}
+              </Text>
+            </View>
+          ) : (
             <Button
               label={t('profile.sendMessage')}
               // Gated here as well as at the send: a guest should hear about
@@ -714,5 +726,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   statusDeleted: { backgroundColor: colors.fill },
   statusLabel: { fontSize: 12, fontWeight: '700' },
   actions: { gap: spacing.md, paddingTop: spacing.xl },
+  closedNote: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.lg,
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+  closedNoteText: { color: colors.text, flex: 1, fontSize: 14, lineHeight: 20 },
   editProfile: { marginTop: spacing.xl },
 }))

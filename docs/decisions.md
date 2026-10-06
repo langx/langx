@@ -6506,6 +6506,38 @@ caller-offers rule does not cover: the server refuses the second with
 `CALL_GLARE`, and that device answers the call that is ringing it instead,
 which is what both of them were trying to do.
 
+**On a phone, LiveKit's build of react-native-webrtc.** Two candidates were
+measured on 5 October 2026: react-native-webrtc 124.0.8 (Jitsi's WebRTC M124)
+and `@livekit/react-native-webrtc` 144.2.0 (WebRTC M144). Both Android
+libraries are 16 KB aligned on the 64-bit ABIs (`LOAD` alignment `0x4000`), so
+the requirement Play enforces disqualified neither. What decided it is what
+the library is for: WebRTC parses packets sent by a stranger's device, and
+M124 is two and a half years of security fixes behind M144. LiveKit's build
+is also the one maintained this month, and the one the CallKit and Telecom
+work can share a WebRTC with. It declares a screen-sharing foreground service
+calls never use, which `plugins/withCalls.js` removes from the manifest so
+Play has nothing to ask about. Its Java classes are reached by name from C++,
+so R8 keeps `livekit.org.webrtc.**`.
+
+**On a phone, the system's own call screens.** A call that comes in while
+LangX is closed rings the way a phone call does: CallKit on an iPhone, and on
+Android the call-style notification of a foreground service, full screen over
+a locked phone where the permission allows. Two things in the way of that are
+worth knowing before changing it. A tap on Android's Answer opens the app
+through `CallOpenActivity`, a windowless activity that records the tap in the
+process first, because the development client's launcher swaps the intent
+that opened the app for its own and the tap's meaning was lost on a cold
+start; and the answer is held until the call is on screen, because from a
+cold start the first look at the server comes before the session is read.
+On an iPhone the app starts React Native only when a scene connects
+(`withSceneLifecycle`), so a call answered from the lock screen of a phone
+whose app was not running rings and answers in CallKit, and connects once
+LangX is opened — the media path needs JavaScript. Starting React Native
+without a scene for that one case is the remaining piece, and it needs a real
+iPhone to prove. CallKit is not allowed in mainland China, where the app is
+offered: an iPhone on that storefront registers no PushKit token and is rung
+by an ordinary notification.
+
 **A call that is put away pushes the app down; it does not float over it.**
 The small green strip a call leaves when somebody goes to look something up
 sits in the layout above every screen, the way a phone's in-call bar does. The
@@ -6558,3 +6590,111 @@ image message with no image as an empty bubble, for as long as it stays
 installed. The projection puts "📷 View-once photo · update LangX to open it"
 in `body` for them, and a build that knows the field ignores `body` there. The
 stored body stays empty, so the list row, a push and a quote never read it.
+
+## Taking no new chats closes one door, in one direction
+
+`privacy.refuseNewChats` stops anybody new from starting a conversation. It is
+for somebody who is being found and written to by people they did not choose,
+and it is free on every plan, for `refuseCalls`'s reason: a way to be left
+alone is not something to charge for.
+
+**One direction, unlike calls.** The person with the switch on can still write
+to anyone, and whoever they write to can answer, because the conversation then
+exists. `refuseCalls` cuts both ways so nobody can ring people who cannot ring
+back; here the asymmetry is the feature, and it is safe because the person
+written to keeps every way out — the thread's header still opens the profile,
+and block and report work exactly as they do for anyone else.
+
+**Conversations that already exist are untouched.** The check sits in
+`startConversation`, after the existing-conversation check, so somebody already
+in a thread is handed it rather than told the door is shut. It is the only gate
+needed: every other way of writing — the socket, scheduled messages,
+forwarding, calls — needs a conversation that exists. Official accounts'
+messages go through `deliverOfficialMessage` and are not refused; a welcome or
+a warning is not a stranger writing. Before the quota, so a refused first
+message costs no slot.
+
+**Said, not hidden.** The profile shows "isn't taking new chats right now" in
+place of the message button, rather than leaving the button out: a person with
+no way to write to them and no reason given reads as a broken screen.
+`acceptsNewChats: false` is about the account, like `acceptsCalls`, and the
+profile reads `conversationId` first.
+
+## "Show me in Discover" off takes you off the leaderboards too
+
+A leaderboard is a place strangers find people: every row opens a profile, and
+the token board is readable by anyone on the web without signing in. The
+switch promised "nobody will find you", and for as long as the boards ignored
+it that promise was false for anyone active enough to rank.
+
+All three boards — tokens, streaks and Echo — now leave such a person out,
+exactly the way each board already leaves out a deleted account. On the token
+and Echo boards they keep their place, so turning the switch off promotes
+nobody past them. On the streak board they are left out in the query and the
+ranks close up, as they do there around a deletion: a row skipped after the
+fetch still takes a place in the page's limit, and somebody hidden near the top
+would have cut that board short for everyone. The viewer always sees their own
+row.
+
+The feed is not filtered. A post is something a person chose to publish, and
+hiding it would quietly retract what they said in public; the switch's copy
+names Discover, the leaderboards, follower and like lists and username
+search, and nothing else.
+
+**Follower and following lists too**, for the same reason as the boards: they
+are where people browse from one profile to the next. Left out of anybody
+else's view of a list, and out of its counts, which agree with the list for
+the block's reason — a number bigger than the rows under it says somebody is
+missing. Never out of the list's owner's own view, though: they chose to follow
+that person or were told they followed, and somebody you follow but cannot see
+in your own list is somebody you cannot unfollow.
+
+**And who liked a post**, for the same reason and with the same exceptions:
+the author of what was liked still sees everyone — they were told who liked it
+— and the person sees themselves. The like count on the card is left as it is,
+for the reason `listLikers` already gives for blocks: likers are many and the
+count is unattributable, so nobody can tell which name is missing.
+
+**A suspended account is off the boards as well**, without any switch: nothing
+proposes one — discovery, the boosted strip and handle search already used
+`notSuspended()` — and the leaderboards had simply been missed. It is left out
+the same way as a deleted account on each board.
+
+## Hidden mode is a gate over four switches
+
+Settings → Privacy opens with "Hidden mode", and under it, set in: hide me from
+Discover, hide when I'm online, only people I talk to can write, and browse
+incognito. With the switch off all four are off — greyed out on the screen,
+and off for real on the server. Turned back on, they come back as they were.
+Changing one of the four leaves the switch alone.
+
+**The four fields keep holding what is in force.** `settings.discoverable`,
+`hideOnlineStatus`, `refuseNewChats` and `incognito` are still the values
+discovery's `$match`, presence, `startConversation` and `recordProfileView`
+read, so none of those had to learn about the switch and no index moved. What
+the switch adds is somewhere to keep the person's choices while it is off:
+`privacy.hiddenModeChoices`, written only by `hiddenModePaths` and outside the
+PATCH schema, so no request can name it. On the server, because a choice kept
+on one phone is lost on the next and the switch would then restore something
+nobody picked.
+
+**No backfill, and that is the important part.** Everybody who switched
+Discover or their online status off before the switch existed has no
+`hiddenMode` stored. Read as off, their rows would draw greyed out and the next
+write would put them back on: an app update would have made them visible.
+`effectiveHiddenMode` reads a missing switch as "on if anything is hidden", and
+the first time one of the four is touched it is pinned, so a switch nobody
+touched never flips by itself.
+
+**An old app cannot break the rule.** A build from before the switch writes the
+four directly. "Off means nothing is hidden" survives it: hiding anything while
+the switch is off turns the switch on.
+
+**The first time on is all four**, incognito only on a plan that has it — and so
+are kept choices that hide nothing, because restoring "nothing hidden" would
+leave somebody who asked to be hidden exactly as visible as before. A retried
+"off" keeps what the first one kept rather than overwriting it with the
+all-visible values in force by then.
+
+Boost is not under the switch: it makes a person more visible, not less. It is
+greyed out while they are hidden from Discover, which the strip is part of.

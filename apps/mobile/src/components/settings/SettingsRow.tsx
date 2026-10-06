@@ -11,6 +11,7 @@ import {
   type ProBenefit,
 } from '@langx/shared'
 import { router } from 'expo-router'
+import type { ReactNode } from 'react'
 import { Image, Platform, Pressable, Text, View } from 'react-native'
 import darkIcon from '../../../assets/icons/dark.png'
 import defaultIcon from '../../../assets/icons/default.png'
@@ -113,6 +114,37 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
     return { busy: pending !== undefined, value: pending ?? stored }
   }
 
+  /*
+   * Hidden mode, as the four rows under it read it: what was asked for while
+   * the request is in flight, so they grey out with the switch rather than a
+   * beat after it. An API from before the switch sends no `hiddenMode`; then
+   * it is worked out the way the server works it out, so nobody already
+   * hiding something sees their rows greyed out and thinks it undone.
+   */
+  const privacy = profile?.privacy
+  const hiddenStored =
+    privacy?.hiddenMode ??
+    (profile?.settings.discoverable === false ||
+      privacy?.hideOnlineStatus === true ||
+      privacy?.refuseNewChats === true ||
+      (privacy?.incognito === true && model.canIncognito))
+  const hiddenPending = pendingPrivacy?.hiddenMode !== undefined
+  const hiddenOn = pendingPrivacy?.hiddenMode ?? hiddenStored
+  /*
+   * A row under the switch: indented, and greyed out and inert while it is
+   * off. The one place this file draws a disabled row rather than none — the
+   * rule above is about rows with nowhere to go, and these have somewhere:
+   * the switch right over them.
+   */
+  const underHidden = (row: ReactNode) => (
+    <View style={[styles.hiddenChild, !hiddenOn && styles.hiddenChildOff]}>{row}</View>
+  )
+  /** `privacyToggle` for a row under the switch: busy while the switch is too. */
+  const hiddenChildToggle = (field: keyof NonNullable<typeof pendingPrivacy>, stored: boolean) => {
+    const toggle = privacyToggle(field, stored)
+    return { busy: toggle.busy || hiddenPending, value: toggle.value, disabled: !hiddenOn }
+  }
+
   switch (id) {
     case 'plan.current':
       // The plan as a tag rather than a value: it is a brand mark.
@@ -176,22 +208,44 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
         />
       ) : null
 
-    case 'privacy.discoverable':
+    case 'privacy.hiddenMode':
       return (
         <ListRow
-          title={t('settings.showInDiscover')}
-          subtitle={t('settings.showInDiscoverBody')}
+          title={t('settings.hiddenMode')}
+          subtitle={t('settings.hiddenModeBody')}
           last={last}
           accessory={
             <Toggle
-              accessibilityLabel={t('settings.showInDiscover')}
-              value={profile?.settings.discoverable ?? true}
-              onValueChange={(discoverable) =>
-                update.mutate({ settings: { ...profile?.settings, discoverable } })
-              }
+              accessibilityLabel={t('settings.hiddenMode')}
+              {...privacyToggle('hiddenMode', hiddenStored)}
+              onValueChange={(hiddenMode) => setPrivacy({ hiddenMode })}
             />
           }
         />
+      )
+    case 'privacy.discoverable':
+      /*
+       * Stored as `settings.discoverable` and drawn the other way round, so
+       * all four rows under hidden mode are on when they hide something and
+       * off — greyed out — when the switch is.
+       */
+      return underHidden(
+        <ListRow
+          title={t('settings.hideFromDiscover')}
+          subtitle={t('settings.hideFromDiscoverBody')}
+          last={last}
+          accessory={
+            <Toggle
+              accessibilityLabel={t('settings.hideFromDiscover')}
+              value={profile?.settings.discoverable === false}
+              busy={hiddenPending}
+              disabled={!hiddenOn}
+              onValueChange={(hide) =>
+                update.mutate({ settings: { ...profile?.settings, discoverable: !hide } })
+              }
+            />
+          }
+        />,
       )
     case 'privacy.boost':
       /*
@@ -209,12 +263,24 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
               <Text style={styles.rowTitle}>{t('settings.boost')}</Text>
               {model.canBoost ? null : <Text style={styles.proTag}>{model.boostBadge}</Text>}
             </View>
-            <Text style={styles.rowSubtitle}>{t('settings.boostBody')}</Text>
+            <Text style={styles.rowSubtitle}>
+              {model.canBoost && profile?.settings.discoverable === false
+                ? t('settings.boostHidden')
+                : t('settings.boostBody')}
+            </Text>
           </View>
           {model.canBoost ? (
+            /*
+             * Off and inert while hidden from Discover: the strip is part of
+             * Discover, and the server already leaves them out of it. The
+             * stored choice is untouched, so it is back when they are.
+             */
             <Toggle
               accessibilityLabel={t('settings.boost')}
-              value={profile?.settings.boosted ?? true}
+              disabled={profile?.settings.discoverable === false}
+              value={
+                profile?.settings.discoverable !== false && (profile?.settings.boosted ?? true)
+              }
               onValueChange={(boosted) =>
                 update.mutate({ settings: { ...profile?.settings, boosted } })
               }
@@ -237,7 +303,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
        * plan lacks the feature the switch is drawn dimmed and a press opens the
        * paywall — the row still says what it is for, and where to get it.
        */
-      return (
+      return underHidden(
         <View style={[styles.row, !last && styles.divided]}>
           <View style={styles.rowText}>
             <View style={styles.titleWithTag}>
@@ -251,7 +317,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           {model.canIncognito ? (
             <Toggle
               accessibilityLabel={t('settings.incognito')}
-              {...privacyToggle('incognito', profile?.privacy.incognito ?? false)}
+              {...hiddenChildToggle('incognito', profile?.privacy.incognito ?? false)}
               onValueChange={(incognito) => setPrivacy({ incognito })}
             />
           ) : (
@@ -259,11 +325,12 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
               <Toggle
                 accessibilityLabel={t('settings.incognito')}
                 value={false}
+                disabled={!hiddenOn}
                 onValueChange={() => openPaywall('incognito', '/(app)/settings/privacy')}
               />
             </View>
           )}
-        </View>
+        </View>,
       )
     case 'privacy.activityMap':
       // Free, unlike incognito: the streak this is drawn from is already on
@@ -303,7 +370,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
         />
       )
     case 'privacy.hideOnline':
-      return (
+      return underHidden(
         <ListRow
           title={t('settings.hideOnline')}
           subtitle={t('settings.hideOnlineBody')}
@@ -311,11 +378,28 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           accessory={
             <Toggle
               accessibilityLabel={t('settings.hideOnline')}
-              {...privacyToggle('hideOnlineStatus', profile?.privacy.hideOnlineStatus ?? false)}
+              {...hiddenChildToggle('hideOnlineStatus', profile?.privacy.hideOnlineStatus ?? false)}
               onValueChange={(hideOnlineStatus) => setPrivacy({ hideOnlineStatus })}
             />
           }
-        />
+        />,
+      )
+    case 'privacy.refuseNewChats':
+      // Free, like `hideOnline` above: a way to be left alone is not something
+      // to charge for.
+      return underHidden(
+        <ListRow
+          title={t('settings.refuseNewChats')}
+          subtitle={t('settings.refuseNewChatsBody')}
+          last={last}
+          accessory={
+            <Toggle
+              accessibilityLabel={t('settings.refuseNewChats')}
+              {...hiddenChildToggle('refuseNewChats', profile?.privacy.refuseNewChats ?? false)}
+              onValueChange={(refuseNewChats) => setPrivacy({ refuseNewChats })}
+            />
+          }
+        />,
       )
     case 'privacy.allowCalls':
       /*
@@ -892,6 +976,9 @@ const useStyles = makeStyles(({ colors, spacing, radius }) => {
     },
     /** A switch the plan does not include: still there, visibly not live. */
     locked: { opacity: 0.6 },
+    /** The four rows under hidden mode, set in from the switch they belong to. */
+    hiddenChild: { paddingStart: spacing.xl },
+    hiddenChildOff: { opacity: 0.5 },
     planPill: {
       borderColor: proTint,
       borderRadius: radius.pill,

@@ -1521,6 +1521,7 @@ export const tr: Localized<EnMessages> = {
     notFound: 'Profil bulunamadı.',
     interests: 'İlgi alanları',
     sendMessage: 'Mesaj gönder',
+    newChatsRefused: '{name} şu an yeni sohbetlere kapalı.',
     sendFailed: 'Mesaj gönderilemedi.',
     blockConfirm: '{name} engellensin mi? İkiniz de birbirinizin listelerinde çıkmayacaksınız.',
     blocked: '{name} engellendi.',
@@ -1851,17 +1852,23 @@ export const tr: Localized<EnMessages> = {
     voiceCreditsEngines: 'Motorlar Kokoro-82M ve Piper, ikisi de açık kaynak.',
     legalSection: 'Hukuki',
     linkDeviceBody: 'Bir girişi onayla, nerelerde açık olduğunu gör.',
-    showInDiscover: 'Keşfet’te görün',
-    showInDiscoverBody:
-      'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne de kullanıcı adınla arayarak.',
+    hiddenMode: 'Gizli mod',
+    hiddenModeBody: 'Yeni insanlara görünmez ol. Konuştuğun kişilerle her şey aynı kalır.',
+    hideFromDiscover: 'Keşfet’ten gizlen',
+    hideFromDiscoverBody:
+      'Kimse seni bulamaz — ne Keşfet’te, ne liderlik tablolarında, ne başkalarının takipçi ve beğenen listelerinde, ne de kullanıcı adınla arayarak. Paylaştığın gönderiler Akış’ta kalır.',
     boost: 'Profilimi öne çıkar',
     boostBody:
       'Keşfet’in üstündeki öne çıkanlar şeridinde, dilleri benimkilerle eşleşen kişilere görün. Pro ile açık.',
+    boostHidden: 'Keşfet’ten gizliyken profilin öne çıkarılamaz.',
     incognito: 'Gizli gezin',
     incognitoBody: 'Ziyaretçilerinde görünmezsin.',
     hideOnline: 'Çevrimiçiyken gizlen',
     hideOnlineBody:
       'Yeşil noktanı ve en son ne zaman burada olduğunu gizler. Sen onlarınkini görmeye devam edersin.',
+    refuseNewChats: 'Sadece konuştuklarım yazabilsin',
+    refuseNewChatsBody:
+      'Yeni biri sana ilk mesajı atamaz. Sen istediğine yazabilirsin, o da sana cevap verebilir.',
     allowCalls: 'Aramalara izin ver',
     allowCallsBody:
       'Sohbet ettiğin kişilerle sesli ve görüntülü arama. Kapalıyken kimse seni arayamaz, sen de kimseyi arayamazsın.',
@@ -2282,6 +2289,9 @@ export const tr: Localized<EnMessages> = {
 
   calls: {
     call: 'Ara',
+    channel: 'Aramalar',
+    ongoingChannel: 'Süren aramalar',
+    speaker: 'Hoparlör',
     voiceCall: 'Sesli arama',
     videoCall: 'Görüntülü arama',
     incomingVoice: 'Gelen sesli arama',

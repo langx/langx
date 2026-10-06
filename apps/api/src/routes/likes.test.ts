@@ -352,6 +352,37 @@ describe('likes', () => {
     expect(filtered.items).toHaveLength(2)
   })
 
+  /**
+   * A likers list is somewhere people browse from one profile to the next,
+   * like a follower list. Left out of anybody else's view; never out of the
+   * author's, who was told who liked it, nor out of their own.
+   */
+  it('leaves somebody hidden from Discover out of other people’s view of the likers', async () => {
+    const author = await newUser('likers-hidden-author@example.com')
+    const stranger = await newUser('likers-hidden-stranger@example.com')
+    const hiding = await newUser('likers-hidden-hiding@example.com')
+    const open = await newUser('likers-hidden-open@example.com')
+    const postId = await post(author, 'Who likes me quietly?')
+    await like(hiding, 'post', postId)
+    await like(open, 'post', postId)
+    const hidden = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: hiding.cookie },
+      payload: { settings: { discoverable: false } },
+    })
+    expect(hidden.statusCode, hidden.body).toBe(200)
+
+    const ids = async (reader: SignedUpUser) =>
+      (await likers(reader, 'post', postId))
+        .json<{ items: { _id: string }[] }>()
+        .items.map((item) => item._id)
+
+    expect(await ids(stranger)).toEqual([open.userId])
+    expect((await ids(author)).sort()).toEqual([hiding.userId, open.userId].sort())
+    expect((await ids(hiding)).sort()).toEqual([hiding.userId, open.userId].sort())
+  })
+
   it('likes a recorded answer, and keeps it apart from its request', async () => {
     const asker = await newUser('answer-like-asker@example.com')
     const helper = await newUser('answer-like-helper@example.com')

@@ -39,4 +39,13 @@
   <string name="notifications_markAsRead">Als gelesen markieren</string>
   <string name="notifications_replyFailed">Antwort nicht gesendet</string>
   <string name="messageMeta_you">Du</string>
+  <string name="calls_channel">Anrufe</string>
+  <string name="calls_ongoingChannel">Laufende Anrufe</string>
+  <string name="calls_incomingVoice">Eingehender Sprachanruf</string>
+  <string name="calls_incomingVideo">Eingehender Videoanruf</string>
+  <string name="calls_voiceCall">Sprachanruf</string>
+  <string name="calls_videoCall">Videoanruf</string>
+  <string name="calls_answer">Annehmen</string>
+  <string name="calls_decline">Ablehnen</string>
+  <string name="calls_hangUp">Auflegen</string>
 </resources>

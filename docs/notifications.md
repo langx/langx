@@ -219,7 +219,7 @@ been failed twice.
 | --------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------- |
 | `call:incoming`       | every open app that declared `auth.calls`                                   | the socket                                                               | `call:ended` on the same socket                               |
 | **VoIP push**         | iPhones with a PushKit token, where the system call screen is allowed       | straight to Apple (`voipPush.ts`), expiring with the ring                | the phone's own ring timer; the app asking when it wakes      |
-| `callRing` data push  | Android phones with the native ringer and a deliverable `devices` row       | Expo's relay, `priority: high`, lifetime of the ring; never drawn        | a `callCancel` data push                                      |
+| `callRing` data push  | Android phones with the native ringer and a deliverable `devices` row       | Expo's relay, `priority: high`, lifetime of the ring; drawn by the app   | a `callCancel` data push                                      |
 | **"Incoming … call"** | iPhones that cannot be rung the first way, with a deliverable `devices` row | Expo's relay, kind `call`, in the phone's language, lifetime of the ring | nothing — it stays in the shade, and tapping opens the thread |
 
 The VoIP push is the only push in this app that does not go through Expo,
@@ -231,6 +231,18 @@ breaks the rule, so there is no VoIP push that means "never mind".
 The ring carries a ticket that can decline that one call (`callToken.ts`,
 `POST /calls/:id/decline`), because "Decline" on a lock screen runs with no
 session in reach. It expires a minute after the ring.
+
+**On the phone.** Neither ring push is drawn by Expo. An iPhone's VoIP push
+goes to `CallCenter.swift`, which hands it to CallKit — the system's own
+incoming-call screen, Answer and Decline, the person's ringtone. An Android
+phone's `callRing` reaches `car-messaging`'s notification service like every
+push, which passes call pushes to `modules/calls`: a foreground service rings
+with the system's call notification (its own "Calls" channel, full screen
+over a locked phone where Android allows it). Decline on either goes to the
+server from native code with the ticket, so it works with no JavaScript
+running; Answer opens the app, which answers once the call is on screen. A
+call that is answered becomes Android's "call in progress" notification, with
+Hang up, which is also what keeps the microphone running in the background.
 
 A device silenced with its own switch (`devices.pushEnabled: false`) is not
 rung by either Expo-carried push. A VoIP push needs no `devices` row and no

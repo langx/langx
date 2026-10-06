@@ -408,6 +408,30 @@ export const updateProfileSchema = z
          * left alone is not something to charge for.
          */
         refuseCalls: z.boolean(),
+        /**
+         * Nobody new can start a conversation with this account. People it
+         * already talks to are untouched, and it can still write to anyone —
+         * whoever it writes to can answer, because the conversation then
+         * exists.
+         *
+         * One direction only, unlike `refuseCalls`, and that is the point:
+         * this is for somebody who is being found and written to by people
+         * they did not choose, and the fix is to close the door to strangers,
+         * not to stop them reaching out themselves. The recipient of their
+         * message is no worse off than with anyone else — the conversation
+         * header still opens the profile, and block and report still work.
+         *
+         * Absent means open, and free on every plan, for `refuseCalls`'s
+         * reason.
+         */
+        refuseNewChats: z.boolean(),
+        /**
+         * The switch over four of the others — discoverable, hideOnlineStatus,
+         * refuseNewChats and incognito. Off turns all four off and keeps what
+         * they were; on brings them back. The server does both, in this same
+         * request: see `hiddenModePaths` in the API.
+         */
+        hiddenMode: z.boolean(),
       })
       .partial(),
   })

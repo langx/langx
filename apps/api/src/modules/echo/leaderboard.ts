@@ -10,6 +10,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { blockedUserIds } from '../moderation/blocks'
+import { notSuspended } from '../moderation/suspension'
 import { rankOf } from '../tokens/leaderboard'
 import type { EchoAggregate } from './documents'
 
@@ -50,7 +51,14 @@ export async function getEchoLeaderboard(
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .find(
-      { _id: { $in: top.map((row) => row.userId) }, deletedAt: { $exists: false } },
+      // Off the board with "Show me in Discover" off — see the token board.
+      {
+        _id: { $in: top.map((row) => row.userId) },
+        deletedAt: { $exists: false },
+        $or: [{ 'settings.discoverable': true }, { _id: viewerId }],
+        // Not a suspended account either — see the token board.
+        ...notSuspended(),
+      },
       { projection: { handle: 1, displayName: 1, avatarUrl: 1, cosmetics: 1, equipped: 1 } },
     )
     .toArray()

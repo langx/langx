@@ -1530,6 +1530,7 @@ export const fr: Localized<EnMessages> = {
     notFound: 'Profil introuvable.',
     interests: 'Centres d’intérêt',
     sendMessage: 'Envoyer un message',
+    newChatsRefused: '{name} n’accepte pas de nouvelles conversations pour le moment.',
     sendFailed: 'Impossible d’envoyer le message.',
     blockConfirm: 'Bloquer {name} ? Vous n’apparaîtrez plus l’un dans les listes de l’autre.',
     blocked: '{name} est bloqué.',
@@ -1870,16 +1871,23 @@ export const fr: Localized<EnMessages> = {
     voiceCreditsEngines: 'Les moteurs sont Kokoro-82M et Piper, tous deux libres.',
     legalSection: 'Mentions légales',
     linkDeviceBody: 'Approuver une connexion et voir où vous êtes connecté.',
-    showInDiscover: 'M’afficher dans Découvrir',
-    showInDiscoverBody:
-      'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni en cherchant ton nom d’utilisateur.',
+    hiddenMode: 'Mode discret',
+    hiddenModeBody:
+      'Les nouvelles personnes ne te voient plus. Avec celles à qui tu parles déjà, rien ne change.',
+    hideFromDiscover: 'Me masquer de Découvrir',
+    hideFromDiscoverBody:
+      'Personne ne te trouvera — ni dans Découvrir, ni dans les classements, ni dans les listes d’abonnés ou de « j’aime » des autres, ni en cherchant ton nom d’utilisateur. Tes publications restent dans le Fil.',
     boost: 'Mettre mon profil en avant',
     boostBody:
       'Affiche-moi dans le bandeau des profils mis en avant, en haut de Découvrir, aux personnes dont les langues correspondent aux miennes. Actif avec Pro.',
+    boostHidden: 'Ton profil ne peut pas être mis en avant tant qu’il est masqué de Découvrir.',
     incognito: 'Navigation incognito',
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',
     hideOnlineBody: 'Masque ton point vert et ta dernière visite. Tu continueras de voir le leur.',
+    refuseNewChats: 'Seuls mes contacts peuvent m’écrire',
+    refuseNewChatsBody:
+      'Personne de nouveau ne peut t’envoyer un premier message. Tu peux toujours écrire à qui tu veux, et on peut te répondre.',
     allowCalls: 'Autoriser les appels',
     allowCallsBody:
       'Appels vocaux et vidéo avec les personnes avec qui tu discutes. Désactivé, personne ne peut t’appeler et tu ne peux appeler personne.',
@@ -2306,6 +2314,9 @@ export const fr: Localized<EnMessages> = {
 
   calls: {
     call: 'Appeler',
+    channel: 'Appels',
+    ongoingChannel: 'Appels en cours',
+    speaker: 'Haut-parleur',
     voiceCall: 'Appel vocal',
     videoCall: 'Appel vidéo',
     incomingVoice: 'Appel vocal entrant',
