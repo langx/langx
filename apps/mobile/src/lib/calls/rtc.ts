@@ -1,4 +1,6 @@
 import {
+  AudioDeviceModule,
+  audioDeviceModuleEvents,
   mediaDevices,
   MediaStream,
   RTCAudioSession,
@@ -61,6 +63,42 @@ async function openCamera(facingMode: Facing): Promise<MediaStreamTrack> {
   }
 }
 
+/**
+ * The iPhone's audio engine, set up once before its first call.
+ *
+ * LiveKit's audio engine stops at each of its steps — created, enabling,
+ * starting, stopping — to ask JavaScript whether to go on, and waits up to two
+ * seconds for an answer. The package wires up the answering side only in its
+ * `registerGlobals()`, which this app does not call, so nothing answered: every
+ * call spent six seconds frozen inside `setLocalDescription`, the answer held
+ * back from the caller all that time. `setupListeners()` is the wiring on its
+ * own, and with no handlers registered it tells the native side not to ask.
+ *
+ * The session policy is the other half of what `registerGlobals()` users get
+ * from LiveKit's own SDK: nothing else puts the session into play-and-record,
+ * and without it the microphone is never opened. On an iPhone where CallKit
+ * answered, CallKit has already done the same (`CallCenter.swift`).
+ */
+let audioPrepared = false
+function prepareAudio(): void {
+  if (audioPrepared || Platform.OS !== 'ios') return
+  audioPrepared = true
+  audioDeviceModuleEvents.setupListeners()
+  AudioDeviceModule.setAutomaticAudioSessionConfiguration({
+    recording: {
+      audioCategory: 'playAndRecord',
+      audioMode: 'voiceChat',
+      audioCategoryOptions: ['allowBluetooth', 'allowBluetoothA2DP'],
+    },
+    playout: {
+      audioCategory: 'playAndRecord',
+      audioMode: 'voiceChat',
+      audioCategoryOptions: ['allowBluetooth', 'allowBluetoothA2DP'],
+    },
+    deactivateOnStop: true,
+  })
+}
+
 export const engine: CallEngine = {
   /*
    * The native module, not the package: this file is in every bundle built
@@ -78,6 +116,7 @@ export const engine: CallEngine = {
   },
 
   async acquire({ video }) {
+    prepareAudio()
     let stream: MediaStream
     try {
       stream = await mediaDevices.getUserMedia({ audio: true })
