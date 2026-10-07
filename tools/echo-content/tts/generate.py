@@ -37,6 +37,14 @@ Usage:
     tools/echo-content/tts/generate.py --out <dir> --lang de --lang ru
     tools/echo-content/tts/generate.py --out <dir> --pack es:fluent
 
+Arabic and Turkish (Chatterbox, see `CHATTERBOX`) want their own venv, on
+Python 3.11 because the release pins torch 2.6, with the upstream source at
+or after commit 5de7a54 over the release — 0.1.7 on PyPI cannot load v3:
+    python3.11 -m venv .venv-cb && .venv-cb/bin/pip install chatterbox-tts==0.1.7
+    .venv-cb/bin/pip install --no-deps https://github.com/resemble-ai/chatterbox/archive/5de7a54aa4e5e2baadb0182dde554908b48b85c2.tar.gz
+    .venv-cb/bin/python tools/echo-content/tts/generate.py --out <dir> --lang ar --lang tr
+A Mac's GPU (MPS) is used when there is one.
+
 Model files:
     Kokoro's two go beside this script, or pass --model/--voices:
     https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/
@@ -74,6 +82,40 @@ KOKORO = {
     "hi": ("hi", ("hf_alpha", "hm_omega")),
     "zh": ("cmn", ("zf_xiaoyi", "zm_yunxi")),
 }
+
+# **Chatterbox Multilingual for Arabic and Turkish, and only here.** Both are
+# interface locales, and every Turkish and Arabic voice in Piper's catalogue is
+# non-commercial or unlicensed. Chatterbox (Resemble AI) is MIT — code,
+# weights and the one voice it ships, `conds.pt` — and reads both; the
+# measurement that chose it, against the other licences that were checked, is
+# in `content/echo/ATTRIBUTION.md`.
+#
+# Offline only, on purpose. It is a 0.5B model on PyTorch, seconds per
+# sentence on a laptop GPU and far slower on the voice service's shared CPUs,
+# so `apps/tts` does not load it and `SPEECH_VOICES` does not list these ids:
+# the app offers "Read it aloud" only for a language the service can serve,
+# and a member's own Turkish card still has no button. A pack's readings are
+# files, made once, here.
+#
+# One voice, the model's own, never a clone. Chatterbox reads in whatever voice
+# it is handed a recording of; the only voice we hand it is the conditioning
+# Resemble bundles in the MIT repository, so no real person from a dataset is
+# made to say anything. Every file also carries Resemble's Perth watermark, an
+# inaudible mark that says the audio is synthetic — which is what the card
+# already says out loud.
+#
+# The id is the language's, not the model's: `voiceLabel` in the app draws it
+# as "Synthesised", and a second voice later would be `chatterbox-ar-2`.
+CHATTERBOX = {"ar": "chatterbox-ar", "tr": "chatterbox-tr"}
+# Pinned, so a re-uploaded checkpoint cannot become a different voice unnoticed.
+CHATTERBOX_REPO = "ResembleAI/chatterbox"
+CHATTERBOX_REVISION = "5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18"
+CHATTERBOX_T3 = "t3_mtl23ls_v3.safetensors"
+# The model's default guidance, measured against the alternative its own README
+# suggests for a reference voice in another language: on the thirty test
+# sentences a recogniser read back 94.0% of the Arabic at 0.5 and 88.9% at 0.
+CHATTERBOX_CFG = 0.5
+CHATTERBOX_FILES = ["ve.pt", CHATTERBOX_T3, "s3gen.pt", "grapheme_mtl_merged_expanded_v1.json", "conds.pt", "Cangjie5_TC.json"]
 
 ROOT = Path(__file__).resolve().parents[3]
 CONTENT = ROOT / "content" / "echo"
@@ -127,6 +169,44 @@ def load_piper(path: Path):
     from piper import PiperVoice
 
     return PiperVoice.load(str(path))
+
+
+def load_chatterbox(ckpt: Path | None):
+    """Chatterbox Multilingual at the pinned revision, on the Mac's GPU if it has one.
+
+    `from_local` rather than `from_pretrained`, because the latter always
+    reads `main`. Needs the upstream source at or after the commit that added
+    the v3 checkpoint — the 0.1.7 wheel on PyPI predates it; see the docstring.
+    `ckpt` is a directory already holding `CHATTERBOX_FILES` at that revision,
+    for a machine whose link stalls the hub client; without it the hub fetches.
+    """
+    import torch
+    from chatterbox.mtl_tts import ChatterboxMultilingualTTS
+
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    if ckpt is None:
+        from huggingface_hub import snapshot_download
+
+        ckpt = Path(snapshot_download(CHATTERBOX_REPO, revision=CHATTERBOX_REVISION, allow_patterns=CHATTERBOX_FILES))
+    return ChatterboxMultilingualTTS.from_local(ckpt, device, t3_model=CHATTERBOX_T3)
+
+
+def chatterbox_wav(model, text: str, lang: str, seed: int, path: Path) -> None:
+    """One Chatterbox reading, written as WAV.
+
+    Seeded by the item, because the model samples: the same pack run twice
+    must give the same file, or "regenerate the missing ones" quietly changes
+    the ones that were there.
+    """
+    import soundfile as sf
+    import torch
+
+    torch.manual_seed(seed)
+    wav = model.generate(text, language_id=lang, cfg_weight=CHATTERBOX_CFG)
+    samples = wav.squeeze(0).cpu().numpy()
+    if samples.size == 0:
+        raise ValueError(f"chatterbox produced no audio for {text!r}")
+    sf.write(path, samples, model.sr)
 
 
 def piper_wav(voice, text: str, path: Path) -> None:
@@ -354,6 +434,7 @@ def main() -> int:
     ap.add_argument("--model", type=Path, default=here / "kokoro-v1.0.onnx")
     ap.add_argument("--voices", type=Path, default=here / "voices-v1.0.bin")
     ap.add_argument("--piper-dir", type=Path, default=here / "piper")
+    ap.add_argument("--chatterbox-dir", type=Path, help="CHATTERBOX_FILES at CHATTERBOX_REVISION, already downloaded")
     args = ap.parse_args()
 
     # Loaded on first use rather than up front, because the models a run needs
@@ -369,6 +450,11 @@ def main() -> int:
             loaded["kokoro"] = kokoro(args.model, args.voices)
         return loaded["kokoro"]
 
+    def chatterbox_engine():
+        if "chatterbox" not in loaded:
+            loaded["chatterbox"] = load_chatterbox(args.chatterbox_dir)
+        return loaded["chatterbox"]
+
     def piper_engine(model: str):
         if model not in loaded:
             path = args.piper_dir / model
@@ -383,13 +469,20 @@ def main() -> int:
     for path, pack in packs(args.lang, args.pack):
         # The engine follows from the language and nothing else. Kokoro's six
         # first, since those are the packs that lead with two registers;
-        # everything else the service speaks is Piper's, one voice each.
+        # everything else the service speaks is Piper's, one voice each; and
+        # the two it cannot, Chatterbox's, offline.
         spoken = KOKORO.get(pack["lang"])
         piper = [] if spoken else PIPER.get(pack["lang"], [])
-        if not spoken and not piper:
+        chatterbox = None if spoken or piper else CHATTERBOX.get(pack["lang"])
+        if not spoken and not piper and not chatterbox:
             print(f"  {pack['id']}: no voice reads {pack['lang']}, left silent", flush=True)
             continue
-        espeak, voices = spoken if spoken else (None, tuple(v["id"] for v in piper))
+        if spoken:
+            espeak, voices = spoken
+        elif piper:
+            espeak, voices = None, tuple(v["id"] for v in piper)
+        else:
+            espeak, voices = None, (chatterbox,)
         out = args.out / pack["id"].replace(":", "_")
         out.mkdir(parents=True, exist_ok=True)
         changed = False
@@ -412,6 +505,8 @@ def main() -> int:
                 wav = target.with_suffix(".wav")
                 if spoken:
                     kokoro_wav(kokoro_engine(), item, pack["lang"], voice, espeak, wav)
+                elif chatterbox:
+                    chatterbox_wav(chatterbox_engine(), item["text"], pack["lang"], item["index"], wav)
                 else:
                     model = next(v["model"] for v in piper if v["id"] == voice)
                     piper_wav(piper_engine(model), item["text"], wav)
