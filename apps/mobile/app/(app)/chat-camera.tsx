@@ -27,6 +27,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useT } from '../../src/i18n'
 import { showAlert } from '../../src/lib/alert'
 import { impact } from '../../src/lib/haptics'
+import { FLAG_KEYS, readFlag, writeFlag } from '../../src/lib/localFlags'
 import { goBackTo } from '../../src/lib/navigation'
 import { pickMediaAssets } from '../../src/lib/pickMediaAsset'
 import type { PickedMedia } from '../../src/lib/pickedAssets'
@@ -34,6 +35,8 @@ import { sendSnap } from '../../src/lib/snapOutbox'
 import { makeStyles, spacing } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import {
+  DEFAULT_SNAP_MODE,
+  parseSnapMode,
   pickSixteenNineSize,
   SNAP_MODES,
   viewOnceForMode,
@@ -97,7 +100,22 @@ export default function SnapScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const conversationId = id ?? ''
   const [captured, setCaptured] = useState<PickedMedia | null>(null)
-  const [mode, setMode] = useState<SnapMode>('once')
+  const [mode, setMode] = useState<SnapMode>(DEFAULT_SNAP_MODE)
+  // The stored choice arrives after the first render; a tap made before it
+  // lands is newer and wins.
+  const modePicked = useRef(false)
+
+  useEffect(() => {
+    void readFlag(FLAG_KEYS.snapMode).then((raw) => {
+      if (!modePicked.current) setMode(parseSnapMode(raw))
+    })
+  }, [])
+
+  function pickMode(next: SnapMode): void {
+    modePicked.current = true
+    setMode(next)
+    void writeFlag(FLAG_KEYS.snapMode, next)
+  }
 
   const frame = frameFor(window.width, window.height - insets.top - insets.bottom)
   // Rounded only when there is stage around it; edge to edge it would cut the corners off.
@@ -158,7 +176,7 @@ export default function SnapScreen() {
             item={captured}
             mode={mode}
             bottomInset={rounded ? 0 : insets.bottom}
-            onMode={setMode}
+            onMode={pickMode}
             onRetake={() => setCaptured(null)}
             onSend={send}
           />
