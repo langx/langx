@@ -515,6 +515,8 @@ def main() -> int:
     # Narrower than --lang, for a new pack beside old ones: the m4a of the old
     # ones live wherever the last run left them, not in this --out, so walking
     # them again re-reads every one — an hour of audio already in the bucket.
+    # Also how Chatterbox fills a GPU: one process per pack, since two
+    # processes on one pack would race on its files.
     ap.add_argument("--pack", action="append", help="only these pack ids, e.g. es:fluent")
     ap.add_argument("--model", type=Path, default=here / "kokoro-v1.0.onnx")
     ap.add_argument("--voices", type=Path, default=here / "voices-v1.0.bin")
