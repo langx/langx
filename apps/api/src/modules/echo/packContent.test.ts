@@ -28,6 +28,18 @@ function built(): Set<string> {
   return new Set(Object.values(concepts))
 }
 
+/** The pack languages whose script does not say how a sentence is read. */
+const READ_LANGUAGES = new Set(['zh', 'ja'])
+
+/**
+ * Packs built after every card was required to carry a picture, a synthesised
+ * reading and a reading of its script: the Japanese ones. Named one by one,
+ * because the rule is newer than the packs before them — the sixteen English
+ * and Chinese cards without an honest cue are the answer there, not a gap —
+ * and a pack added to this list is a promise that nothing in it is bare.
+ */
+const COMPLETE_PACKS = ['ja:jlptN5', 'ja:jlptN4', 'ja:jlptN3']
+
 function packFiles(): string[] {
   const found: string[] = []
   for (const lang of readdirSync(CONTENT, { withFileTypes: true })) {
@@ -123,13 +135,14 @@ describe('the packs in content/echo', () => {
 
     /*
      * A Chinese card without its pinyin is a card most of the people it is for
-     * cannot read aloud — there is no synthesised reading for Chinese to fall
-     * back on — so a Chinese pack carries a reading on every item, and only a
-     * Chinese pack carries one at all.
+     * cannot read aloud, and a Japanese one without its kana the same — the
+     * characters do not say how they are read — so those two carry a reading
+     * on every item, and no other pack carries one at all.
      */
-    it(`${name} reads every item if it is Chinese, and none if it is not`, () => {
+    it(`${name} reads every item if it is Chinese or Japanese, and none if not`, () => {
       const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
-      const wrong = pack.items.filter((item) => !!item.reading !== (pack.lang === 'zh'))
+      const read = READ_LANGUAGES.has(pack.lang)
+      const wrong = pack.items.filter((item) => !!item.reading !== read)
       expect(wrong.map((item) => item.text)).toEqual([])
     })
 
@@ -206,6 +219,31 @@ describe('the packs in content/echo', () => {
       expect(repeated).toEqual([])
     })
   }
+
+  /*
+   * Every card in a complete pack has a picture, a voice and a reading.
+   *
+   * The pickers for these packs refuse a sentence with no honest cue and take
+   * the next one, so a bare item here is a hand edit or a generation run that
+   * stopped halfway — both the kind of thing nobody sees until a card comes up
+   * blank. Looked up by id rather than by path, so a renamed file fails here
+   * instead of quietly leaving the list.
+   */
+  it('finds every complete pack, and nothing bare in any of them', () => {
+    const packs = new Map(
+      files
+        .map((path) => echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8'))))
+        .map((pack) => [pack.id, pack]),
+    )
+    for (const id of COMPLETE_PACKS) {
+      const pack = packs.get(id)
+      expect(pack, id).toBeDefined()
+      const bare = (pack?.items ?? [])
+        .filter((item) => !item.image || !item.voices?.length || !item.reading)
+        .map((item) => `${id} ${item.index} ${item.text}`)
+      expect(bare).toEqual([])
+    }
+  })
 
   /*
    * And the other direction, once: a picture nothing points at.
