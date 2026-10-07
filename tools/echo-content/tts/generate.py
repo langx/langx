@@ -35,6 +35,7 @@ Usage:
     # then, from the repository root:
     tools/echo-content/tts/generate.py --out <dir>
     tools/echo-content/tts/generate.py --out <dir> --lang de --lang ru
+    tools/echo-content/tts/generate.py --out <dir> --pack es:fluent
 
 Model files:
     Kokoro's two go beside this script, or pass --model/--voices:
@@ -276,12 +277,15 @@ def to_m4a(wav: Path, target: Path) -> None:
     subprocess.run(command, check=True, capture_output=True)
 
 
-def packs(only=None):
+def packs(only=None, ids=None):
     for lang in sorted(p for p in CONTENT.iterdir() if p.is_dir()):
         if only and lang.name not in only:
             continue
         for path in sorted(lang.glob("*.json")):
-            yield path, json.loads(path.read_text())
+            pack = json.loads(path.read_text())
+            if ids and pack["id"] not in ids:
+                continue
+            yield path, pack
 
 
 def voice_key(pack_id: str, index: int, voice: str) -> str:
@@ -343,6 +347,10 @@ def main() -> int:
     # again: the run costs an hour and `contentVersion` goes up for a file
     # nothing changed in, which is the one thing that field must not say.
     ap.add_argument("--lang", action="append", help="only these pack languages")
+    # Narrower than --lang, for a new pack beside old ones: the m4a of the old
+    # ones live wherever the last run left them, not in this --out, so walking
+    # them again re-reads every one — an hour of audio already in the bucket.
+    ap.add_argument("--pack", action="append", help="only these pack ids, e.g. es:fluent")
     ap.add_argument("--model", type=Path, default=here / "kokoro-v1.0.onnx")
     ap.add_argument("--voices", type=Path, default=here / "voices-v1.0.bin")
     ap.add_argument("--piper-dir", type=Path, default=here / "piper")
@@ -372,7 +380,7 @@ def main() -> int:
     made = skipped = 0
     written: list[Path] = []
 
-    for path, pack in packs(args.lang):
+    for path, pack in packs(args.lang, args.pack):
         # The engine follows from the language and nothing else. Kokoro's six
         # first, since those are the packs that lead with two registers;
         # everything else the service speaks is Piper's, one voice each.
