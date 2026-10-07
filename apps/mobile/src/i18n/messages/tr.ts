@@ -211,7 +211,7 @@ export const tr: Localized<EnMessages> = {
       'Profillerde karşındakinin yerel saati yazar — yazmadan ya da aramadan önce bir bak.',
     meRecap: 'Her ayın ilk günlerinde aylık özetin burada çıkar, paylaşmaya hazır.',
     meInvite:
-      'Davet bağlantın Ayarlar → Paylaş ve davet et’te. Arkadaşın konuşmaya başlayınca ikiniz de jeton kazanırsınız.',
+      'Davet bağlantın Ayarlar → Paylaş ve davet et’te. Arkadaşın biriyle gerçek bir sohbet edince ikiniz de jeton kazanırsınız.',
     meGiftCode: 'Hediye kodun mu var? Pro ekranında Hediye kodun var mı?’ya dokun.',
     meCalls: 'Arama almak istemiyor musun? Ayarlar → Gizlilik’ten Aramalara izin ver’i kapat.',
     feedMoment: 'Gününden bir fotoğraf, video ya da bir cümle paylaş — soru sormak şart değil.',
@@ -578,6 +578,9 @@ export const tr: Localized<EnMessages> = {
     emailNotVerified: 'Önce e-posta adresini doğrula — gelen kutuna bak.',
     passwordTooShort: 'Bu parola çok kısa.',
     invalidEmail: 'Bu bir e-posta adresine benzemiyor.',
+    disposableEmail:
+      'Bu adres geçici bir e-posta servisine ait. Kullanmaya devam edeceğin bir adres gir.',
+    signUpLimitReached: 'Bugün bu ağdan çok fazla hesap açıldı. Yarın tekrar dene.',
     invalidToken: 'Bu bağlantı artık geçerli değil.',
     captchaFailed: 'İnsan olduğunu doğrulayamadık. Tekrar dene.',
     uploadFailed: 'Yüklenemedi',
@@ -1634,7 +1637,7 @@ export const tr: Localized<EnMessages> = {
     shareMessage: "LangX'te benimle dil pratiği yap: {url}",
     badges: 'Rozetler',
     invite: 'Arkadaşını davet et',
-    inviteBody: 'LangX’i kullanmaya başlayınca token kazan',
+    inviteBody: 'Arkadaşın LangX’te gerçek bir sohbet edince token kazan',
     dayStreak: 'Günlük seri',
     followsTitle: 'Takipçiler ve takip edilenler',
     nextBadge: 'Sıradaki: {label}',
@@ -2137,7 +2140,7 @@ export const tr: Localized<EnMessages> = {
 
   invite: {
     title: 'Arkadaşını davet et',
-    body: 'Linkini paylaş. Davet ettiğin biri kaydolup insanlarla konuşmaya başladığında ikiniz de token kazanırsınız.',
+    body: 'Linkini paylaş. Davet ettiğin biri kaydolup biriyle gerçek bir sohbet ettiğinde ikiniz de token kazanırsınız.',
     code: 'Davet kodun',
     share: 'Linki paylaş',
     copy: 'Linki kopyala',
@@ -2145,7 +2148,8 @@ export const tr: Localized<EnMessages> = {
     shareMessage: 'LangX’te benimle dil pratiği yap: {url}',
     howTitle: 'Nasıl çalışıyor',
     step1: 'Linkini, senin dilini öğrenen birine gönder.',
-    step2: 'Kaydolup ilk mesajını ya da düzeltmesini yazsın — {activation} token o zaman geliyor.',
+    step2:
+      'Kaydolup gerçek bir sohbet etsin — senden başka biri ona cevap yazsın. {activation} token o zaman geliyor.',
     step3: 'Ücretli bir plana geçerse {subscription} token daha. Kişi başına toplam {max}.',
     step4:
       'Onlar da kazanır: aynı anda {invitee} token daha, yani kayıt bonusuyla {total} ile başlarlar.',
@@ -2161,13 +2165,17 @@ export const tr: Localized<EnMessages> = {
       one: 'token',
       other: 'token',
     },
-    statusPending: 'Henüz yazmadı',
+    statusPending: 'Henüz sohbet yok',
     statusActivated: 'Aktif',
     statusSubscribed: 'Abone',
     emptyTitle: 'Henüz kimse yok',
     emptyBody: 'Linkini paylaş, katılanlar burada görünsün.',
     disclaimer:
-      'Tokenlar uygulama içi puandır. Kayıt için hiçbir şey ödenmez — davet, ancak davet ettiğin kişi gerçekten birine yazdığında kazandırır.',
+      'Tokenlar uygulama içi puandır. Kayıt için hiçbir şey ödenmez — davet, ancak davet ettiğin kişi senden başka biriyle gerçek bir sohbet ettiğinde kazandırır.',
+    monthlyLimit: {
+      one: 'Davetler ayda en fazla {count} kişi için token kazandırır.',
+      other: 'Davetler ayda en fazla {count} kişi için token kazandırır.',
+    },
   },
 
   tokenKind: {
@@ -2260,7 +2268,7 @@ export const tr: Localized<EnMessages> = {
     ctaBody: "{name} LangX'te dil pratiği yapıyor. Merhaba demek için katıl.",
     ctaLabel: "LangX'i aç",
     inviteBody:
-      '{name} seni davet etti. Kaydolup birine yaz, {total} token ile başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
+      '{name} seni davet etti. Kaydol, biriyle gerçek bir sohbet et, {total} token ile başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
   },
 
   shareProfile: {

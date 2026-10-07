@@ -45,12 +45,28 @@ export interface Referral {
   activationAward?: number
   /** What the invitee was paid at the same moment; 0 when withheld. */
   inviteeAward?: number
+  /**
+   * Why the activation paid less than the rules say, written with
+   * `activatedAt` — for an operator reading the row, and for the later
+   * subscription settle, which follows the same decision. Absent when the
+   * referral paid normally (a frozen referrer's zero is not recorded here; the
+   * profile's `tokenFrozenAt` already says that).
+   *
+   * - `monthlyLimit` — the referrer was past `maxActivationsPerMonth`. The
+   *   invitee's welcome was paid; the referrer's award was not, and the
+   *   activation does not count towards their referral gifts of Pro.
+   * - `sharedNetwork` / `sharedDevice` — the two accounts share a sign-in
+   *   address or an installation. Neither side is paid, top-up included.
+   */
+  unpaidReason?: ReferralUnpaidReason
 
   subscribedAt?: Date
   subscriptionAward?: number
   /** May still be the retired `pro_plus` on rows from before the merge. */
   subscriptionTier?: StoredPaidPlanTier
 }
+
+export type ReferralUnpaidReason = 'monthlyLimit' | 'sharedNetwork' | 'sharedDevice'
 
 function referrals(db: Db) {
   return db.collection<Referral>(COLLECTIONS.referrals)
@@ -122,8 +138,8 @@ export async function attachReferral(
  * Under a filter rather than a read, so a webhook redelivered beside the
  * client's own `POST /billing/refresh` cannot stamp it twice. Settling is left
  * to `settleReferral`, which will pay nothing at all if the activation has not
- * happened yet — the row simply carries `subscribedAt` until the invitee sends
- * their first real message, and then both awards land in one call.
+ * happened yet — the row simply carries `subscribedAt` until the invitee is
+ * activated, and then both awards land in one call.
  */
 export async function markInviteeSubscribed(
   db: Db,

@@ -43,6 +43,19 @@ export const ERROR_CODES = {
    * gains nothing.
    */
   ADMIN_REQUIRED: 'ADMIN_REQUIRED',
+  /**
+   * A sign-up with an address on a known throwaway mail domain. Its own code
+   * because the fix is specific — use another address — and the sign-up form
+   * can only say so if it can tell this apart from a malformed address.
+   */
+  DISPOSABLE_EMAIL: 'DISPOSABLE_EMAIL',
+  /**
+   * Too many accounts were opened from this network in the last day — see
+   * `SIGN_UP_RULES`. Comes back from email sign-up as JSON and from a social
+   * sign-up as `?error=` on the redirect, so the app maps it in both places.
+   * The message does not carry the number.
+   */
+  SIGN_UP_LIMIT_REACHED: 'SIGN_UP_LIMIT_REACHED',
 
   // entitlement + quota
   UPGRADE_REQUIRED: 'UPGRADE_REQUIRED',
@@ -313,6 +326,8 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   UNDERAGE: 403,
   ACCOUNT_SUSPENDED: 403,
   ADMIN_REQUIRED: 403,
+  DISPOSABLE_EMAIL: 400,
+  SIGN_UP_LIMIT_REACHED: 429,
   UPGRADE_REQUIRED: 403,
   QUOTA_EXCEEDED: 402,
   MEDIA_LOCKED: 409,

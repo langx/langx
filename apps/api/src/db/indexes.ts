@@ -1,3 +1,4 @@
+import { SIGN_UP_RULES } from '@langx/shared'
 import type { Db, IndexDescription } from 'mongodb'
 import { PULSE_RETENTION_SECONDS } from '../modules/admin/pulse'
 import { COLLECTIONS, type CollectionName } from './collections'
@@ -585,6 +586,17 @@ export const INDEXES: Partial<IndexSpec> = {
       unique: true,
       partialFilterExpression: { deviceId: { $exists: true } },
     },
+    /*
+     * Every account one installation was used by — the operator panel's
+     * "linked accounts". The unique index above leads with `userId`, so it
+     * cannot answer "who else is on this phone" without a scan. Partial for the
+     * same reason: rows from builds that predate `deviceId` have nothing to find.
+     */
+    {
+      key: { deviceId: 1 },
+      name: 'device_id',
+      partialFilterExpression: { deviceId: { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.profileViews]: [
@@ -1040,6 +1052,18 @@ export const INDEXES: Partial<IndexSpec> = {
     // stops the collection growing forever — a nudge from last month proves
     // nothing today.
     { key: { sentOn: 1 }, name: 'ttl_7d', expireAfterSeconds: 7 * 24 * 60 * 60 },
+  ],
+
+  [COLLECTIONS.signUpsByIp]: [
+    // The count taken before every new account: this network, inside the window.
+    { key: { network: 1, at: -1 }, name: 'network_at' },
+    // The window is all these rows are for. Its length is `SIGN_UP_RULES.windowMs`;
+    // see the note there before changing either.
+    {
+      key: { at: 1 },
+      name: 'ttl_24h',
+      expireAfterSeconds: SIGN_UP_RULES.windowMs / 1000,
+    },
   ],
 
   [COLLECTIONS.meetingReminders]: [

@@ -15,6 +15,7 @@ import {
   type AdminUserDto,
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
+import { LinkedAccounts } from '../../../src/components/admin/LinkedAccounts'
 import { Button } from '../../../src/components/ui/Button'
 import { Callout } from '../../../src/components/ui/Callout'
 import { Card } from '../../../src/components/ui/Card'
@@ -389,6 +390,9 @@ function Found({ data }: { data: AdminUserDto }) {
           onPress={() => run('sign-out', ADMIN.users.confirmSignOut(who))}
         />
       </View>
+
+      {/* ── who else this might be ── */}
+      <LinkedAccounts key={user.userId} userId={user.userId} />
 
       {/* ── Pro as a gift ── */}
       <Text style={styles.heading}>{ADMIN.users.gift.title}</Text>

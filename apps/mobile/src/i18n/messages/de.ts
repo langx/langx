@@ -209,7 +209,7 @@ export const de: Localized<EnMessages> = {
       'Profile zeigen die Ortszeit der Person — ein Blick lohnt sich, bevor du schreibst oder anrufst.',
     meRecap: 'In den ersten Tagen jedes Monats erscheint hier dein Rückblick, bereit zum Teilen.',
     meInvite:
-      'Unter Einstellungen → Teilen und einladen findest du deinen Link. Ihr beide bekommt Tokens, sobald deine Freundin oder dein Freund loslegt.',
+      'Unter Einstellungen → Teilen und einladen findest du deinen Link. Ihr beide bekommt Tokens, sobald deine Freundin oder dein Freund ein echtes Gespräch mit jemandem führt.',
     meGiftCode:
       'Du hast einen Geschenkcode? Tippe auf dem Pro-Bildschirm auf Hast du einen Geschenkcode?',
     meCalls: 'Lieber keine Anrufe? Schalte Anrufe erlauben unter Einstellungen → Privatsphäre aus.',
@@ -580,6 +580,10 @@ export const de: Localized<EnMessages> = {
     emailNotVerified: 'Bestätige zuerst deine E-Mail-Adresse — schau in dein Postfach.',
     passwordTooShort: 'Dieses Passwort ist zu kurz.',
     invalidEmail: 'Das sieht nicht nach einer E-Mail-Adresse aus.',
+    disposableEmail:
+      'Diese Adresse gehört zu einem Wegwerf-E-Mail-Dienst. Nimm eine, die du behältst.',
+    signUpLimitReached:
+      'Aus diesem Netzwerk wurden heute zu viele Konten erstellt. Versuch es morgen noch einmal.',
     invalidToken: 'Dieser Link ist nicht mehr gültig.',
     captchaFailed: 'Wir konnten nicht prüfen, ob du ein Mensch bist. Versuch es noch einmal.',
     uploadFailed: 'Upload fehlgeschlagen',
@@ -1677,7 +1681,7 @@ export const de: Localized<EnMessages> = {
     shareMessage: 'Übe Sprachen mit mir auf LangX: {url}',
     badges: 'Abzeichen',
     invite: 'Freund einladen',
-    inviteBody: 'Verdiene Token, wenn sie LangX nutzen',
+    inviteBody: 'Verdiene Token, wenn sie ein echtes Gespräch auf LangX führen',
     dayStreak: 'Tagesserie',
     followsTitle: 'Follower und wem du folgst',
     nextBadge: 'Als Nächstes: {label}',
@@ -2191,7 +2195,7 @@ export const de: Localized<EnMessages> = {
 
   invite: {
     title: 'Freund einladen',
-    body: 'Teile deinen Link. Wenn jemand, den du eingeladen hast, sich anmeldet und anfängt, mit Leuten zu reden, verdient ihr beide Token.',
+    body: 'Teile deinen Link. Wenn jemand, den du eingeladen hast, sich anmeldet und ein echtes Gespräch mit jemandem führt, verdient ihr beide Token.',
     code: 'Dein Einladungscode',
     share: 'Link teilen',
     copy: 'Link kopieren',
@@ -2200,7 +2204,7 @@ export const de: Localized<EnMessages> = {
     howTitle: 'So funktioniert es',
     step1: 'Schick deinen Link jemandem, der deine Sprache lernt.',
     step2:
-      'Sie melden sich an und schreiben ihre erste Nachricht oder Korrektur — dann gibt es {activation} Token.',
+      'Sie melden sich an und führen ein echtes Gespräch — jemand anderes als du schreibt zurück. Dann gibt es {activation} Token.',
     step3:
       'Starten sie irgendwann ein bezahltes Abo, gibt es {subscription} mehr. {max} insgesamt, pro Person.',
     step4:
@@ -2217,13 +2221,17 @@ export const de: Localized<EnMessages> = {
       one: 'Token',
       other: 'Token',
     },
-    statusPending: 'Hat noch nichts geschrieben',
+    statusPending: 'Noch kein Gespräch',
     statusActivated: 'Aktiv',
     statusSubscribed: 'Abonniert',
     emptyTitle: 'Noch niemand',
     emptyBody: 'Teile deinen Link — wer beitritt, erscheint hier.',
     disclaimer:
-      'Token sind In-App-Punkte. Für eine Anmeldung allein gibt es nichts — eine Einladung zahlt erst, wenn die eingeladene Person wirklich jemandem schreibt.',
+      'Token sind In-App-Punkte. Für eine Anmeldung allein gibt es nichts — eine Einladung zahlt erst, wenn die eingeladene Person ein echtes Gespräch mit jemand anderem als dir führt.',
+    monthlyLimit: {
+      one: 'Einladungen bringen dir Token für bis zu {count} Person im Monat.',
+      other: 'Einladungen bringen dir Token für bis zu {count} Personen im Monat.',
+    },
   },
 
   tokenKind: {
@@ -2316,7 +2324,7 @@ export const de: Localized<EnMessages> = {
     ctaBody: '{name} übt Sprachen auf LangX. Komm dazu und sag Hallo.',
     ctaLabel: 'LangX öffnen',
     inviteBody:
-      '{name} hat dich eingeladen. Melde dich an und schreib jemandem, dann startest du mit {total} Token; {name} verdient {activation} — bis zu {max}, falls du je ein Abo nimmst. Kostenlos.',
+      '{name} hat dich eingeladen. Melde dich an und führe ein echtes Gespräch mit jemandem, dann startest du mit {total} Token; {name} verdient {activation} — bis zu {max}, falls du je ein Abo nimmst. Kostenlos.',
   },
 
   shareProfile: {

@@ -230,7 +230,7 @@ export const en = {
       'Profiles show the other person’s local time — worth a look before you write or call.',
     meRecap: 'In the first days of each month, your recap shows up here, ready to share.',
     meInvite:
-      'Settings → Share & invite has your link. You both earn tokens once your friend starts talking.',
+      'Settings → Share & invite has your link. You both earn tokens once your friend has a real conversation with someone.',
     meGiftCode: 'Got a gift code? Tap Have a gift code? on the Pro screen.',
     meCalls: 'Rather not get calls? Turn off Allow calls in Settings → Privacy.',
     feedMoment: 'Share a photo, a video or a line from your day — no question needed.',
@@ -669,6 +669,10 @@ export const en = {
     emailNotVerified: 'Verify your email address first — check your inbox.',
     passwordTooShort: 'That password is too short.',
     invalidEmail: 'That does not look like an email address.',
+    disposableEmail: 'That address is from a temporary email service. Use one you’ll keep.',
+    /** Never names the number: the rule is the server's, and it can change. */
+    signUpLimitReached:
+      'Too many accounts were created from this network today. Try again tomorrow.',
     invalidToken: 'That link is no longer valid.',
     captchaFailed: 'We couldn’t check that you’re human. Try again.',
     uploadFailed: 'Upload failed',
@@ -1824,7 +1828,7 @@ export const en = {
     shareMessage: 'Practise languages with me on LangX: {url}',
     badges: 'Badges',
     invite: 'Invite a friend',
-    inviteBody: 'Earn tokens when they start using LangX',
+    inviteBody: 'Earn tokens when they have a real conversation on LangX',
     dayStreak: 'Day streak',
     followsTitle: 'Followers and following',
     nextBadge: 'Next: {label}',
@@ -2342,7 +2346,7 @@ export const en = {
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
   invite: {
     title: 'Invite a friend',
-    body: 'Share your link. When someone you invited signs up and starts talking to people, you both earn tokens.',
+    body: 'Share your link. When someone you invited signs up and has a real conversation with someone, you both earn tokens.',
     code: 'Your invite code',
     share: 'Share the link',
     copy: 'Copy the link',
@@ -2351,7 +2355,7 @@ export const en = {
     howTitle: 'How it works',
     step1: 'Send your link to somebody learning your language.',
     step2:
-      'They sign up and write their first message or correction — that is when you earn {activation} tokens.',
+      'They sign up and have a real conversation — somebody other than you writes back. That is when you earn {activation} tokens.',
     step3:
       'If they ever start a paid plan, you earn {subscription} more. {max} in total, per person.',
     step4:
@@ -2368,13 +2372,17 @@ export const en = {
       one: 'token',
       other: 'tokens',
     },
-    statusPending: 'Has not written yet',
+    statusPending: 'No conversation yet',
     statusActivated: 'Active',
     statusSubscribed: 'Subscribed',
     emptyTitle: 'Nobody yet',
     emptyBody: 'Share your link and whoever joins will show up here.',
     disclaimer:
-      'Tokens are in-app points. Nothing is paid for signing up — an invite earns only once the person you invited actually writes to somebody.',
+      'Tokens are in-app points. Nothing is paid for signing up — an invite earns only once the person you invited has a real conversation with somebody other than you.',
+    monthlyLimit: {
+      one: 'Invites earn you tokens for up to {count} friend a month.',
+      other: 'Invites earn you tokens for up to {count} friends a month.',
+    },
   },
 
   tokenKind: {
@@ -2478,7 +2486,7 @@ export const en = {
     ctaBody: '{name} practises languages on LangX. Join to say hello.',
     ctaLabel: 'Open LangX',
     inviteBody:
-      '{name} invited you. Sign up and write to somebody, and you start with {total} tokens; {name} earns {activation} — up to {max} if you ever go paid. Free to join.',
+      '{name} invited you. Sign up and have a real conversation with someone, and you start with {total} tokens; {name} earns {activation} — up to {max} if you ever go paid. Free to join.',
   },
 
   shareProfile: {

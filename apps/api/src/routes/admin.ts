@@ -12,6 +12,7 @@ import {
   adminGiftCodeCreateSchema,
   adminGiftCodeUpdateSchema,
   adminGiftProSchema,
+  adminBulkSuspendSchema,
   adminSuspendSchema,
   adminUserSearchSchema,
   bountyAwardSchema,
@@ -63,6 +64,8 @@ import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
 import { listOnline, readAdminPulse } from '../modules/admin/pulse'
 import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
+import { suspendMany } from '../modules/admin/bulkSuspend'
+import { findLinkedAccounts } from '../modules/admin/linked'
 import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
 import { payBounty } from '../modules/feedback/awardBounty'
 import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
@@ -501,6 +504,41 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       const profile = await getProfile(app.mongo.db, request.params.userId)
       if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
       return reply.send(await getAdminUser(app.mongo.db, profile))
+    },
+  )
+
+  /**
+   * Who else this person might be: accounts sharing a recent network or an
+   * installation. A read, so nothing is recorded — the same as the detail
+   * above. Its own route rather than part of the detail because the network
+   * half scans `session`, and the detail is opened far more often than this.
+   */
+  app.get(
+    '/admin/users/:userId/linked',
+    { preHandler: requireAdmin, schema: { params: z.object({ userId: z.string() }) } },
+    async (request, reply) => {
+      const profile = await getProfile(app.mongo.db, request.params.userId)
+      if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
+      return reply.send(await findLinkedAccounts(app.mongo.db, profile._id))
+    },
+  )
+
+  /**
+   * Suspending a list of linked accounts in one go. Every account is decided
+   * the way the single route below decides it, and logged the way it logs it
+   * — one row each — so a bulk decision reads, per account, exactly like any
+   * other. See `suspendMany` for what it refuses.
+   */
+  app.post(
+    '/admin/users/suspend-bulk',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminBulkSuspendSchema },
+      config: { rateLimit: limit(10, '1 minute') },
+    },
+    async (request, reply) => {
+      const results = await suspendMany(app, request.log, request.userId, request.body)
+      return reply.send({ results })
     },
   )
 

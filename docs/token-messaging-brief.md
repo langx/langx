@@ -146,16 +146,22 @@ person who did the inviting, never to the person who paid.
 Two things to keep in the copy, because they are what make it defensible:
 
 - **Nothing is paid for signing up.** An invite earns only once the invited
-  person has verified an email, finished their profile and written to somebody.
-  Do not write "get 1000 tokens per sign-up"; write "when they start talking".
+  person has verified an email, finished their profile and had a real
+  conversation — both sides writing — with somebody other than the inviter. Do
+  not write "get 1000 tokens per sign-up"; write "once they have a real
+  conversation".
 - **It is capped per person, forever.** One invitee is worth
   `TOKEN_RULES.referral.maxPerInvitee` at most, ever — not per month, not per
   renewal.
+- **And per inviter, per month** (since 6 October 2026): an inviter is paid for
+  at most `TOKEN_RULES.referral.maxActivationsPerMonth` activations in a
+  calendar month. Say it where the copy already explains the rules; it does not
+  belong in a headline.
 - **The invited person gets a welcome, too** (since 5 September 2026):
   `TOKEN_RULES.referral.inviteeActivation` at the same activation moment —
   never at sign-up — so that, with the sign-up bonus, they start on
   `TOKEN_RULES.referral.inviteeTotal`. Quote the total ("start with 1000"),
-  and say when: "once you write to somebody", not "for joining". The first
+  and say when: "once you have a real conversation", not "for joining". The first
   sentence above still holds for both sides.
 
 Never: "refer and earn", "affiliate", "commission", "payout". They are the

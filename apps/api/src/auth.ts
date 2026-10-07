@@ -1,5 +1,6 @@
 import {
   APP_SCHEMES,
+  ERROR_CODES,
   IOS_BUNDLE_ID,
   magicLinkUrl,
   PASSWORD_MIN_LENGTH,
@@ -9,7 +10,7 @@ import {
   type Locale,
 } from '@langx/shared'
 import { betterAuth } from 'better-auth'
-import { createAuthMiddleware } from 'better-auth/api'
+import { APIError, createAuthMiddleware } from 'better-auth/api'
 import { setSessionCookie } from 'better-auth/cookies'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
@@ -19,7 +20,10 @@ import { magicLink } from 'better-auth/plugins/magic-link'
 import type { Db, MongoClient, ObjectId } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
 import { captchaPlugins } from './auth/captcha'
+import { isDisposableEmail } from './auth/disposableEmail'
 import { WARMUP_EMAIL } from './auth/warmUp'
+import { CLIENT_IP_HEADER, networkKey } from './lib/clientIp'
+import { claimSignUpSlot, networkHash } from './modules/account/signUpCap'
 import {
   emailForHandle,
   looksLikeHandle,
@@ -97,6 +101,25 @@ export interface CreateAuthOptions {
  * the password is exactly who this mail is about.
  */
 const PASSWORD_CHANGE_PATHS = new Set(['/change-password', '/set-password', '/reset-password'])
+
+/**
+ * Refuses an email sign-up for an address on a known throwaway domain.
+ *
+ * Before the endpoint rather than in the user-create hook, so it answers the
+ * same whether or not the address already has an account — the endpoint's own
+ * reply is built not to say which. Email sign-up only: the social providers
+ * hand over an address they hold for the person, and there is no route that
+ * changes an account's address afterwards.
+ */
+function refuseThrowawayAddress(body: unknown): void {
+  if (typeof body !== 'object' || body === null) return
+  const email: unknown = (body as { email?: unknown }).email
+  if (typeof email !== 'string' || !isDisposableEmail(email)) return
+  throw new APIError('BAD_REQUEST', {
+    code: ERROR_CODES.DISPOSABLE_EMAIL,
+    message: 'Use an email address you will keep',
+  })
+}
 
 export async function createAuth({
   env,
@@ -313,14 +336,26 @@ export async function createAuth({
     ],
 
     database: mongodbAdapter(db, { client }),
-    /*
-     * One read for a session instead of two. Without joins Better Auth finds
-     * the session and then the user as two separate `aggregate`s, and that
-     * pair runs before every authenticated request and every socket
-     * handshake. On a shared Atlas tier, whose price and ceiling are both
-     * operations per second, it was a third of the load an app open made.
-     */
-    advanced: { database: { joins: true } },
+    advanced: {
+      /*
+       * One read for a session instead of two. Without joins Better Auth finds
+       * the session and then the user as two separate `aggregate`s, and that
+       * pair runs before every authenticated request and every socket
+       * handshake. On a shared Atlas tier, whose price and ceiling are both
+       * operations per second, it was a third of the load an app open made.
+       */
+      database: { joins: true },
+      /*
+       * Where Better Auth reads a client's address — for its rate limiter and
+       * for `session.ipAddress` — and nowhere else. The header is written by
+       * the bridge in `routes/auth.ts` on every request, replacing anything
+       * the client sent, from Cloudflare's `CF-Connecting-IP` when the edge
+       * secret vouches for the request and from Fastify's `request.ip`
+       * otherwise. See `CLIENT_IP_HEADER` for why the default,
+       * `X-Forwarded-For`, left every production request without an address.
+       */
+      ipAddress: { ipAddressHeaders: [CLIENT_IP_HEADER] },
+    },
 
     emailAndPassword: {
       enabled: true,
@@ -482,6 +517,10 @@ export async function createAuth({
        * anybody can read off a profile page.
        */
       before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path === '/sign-up/email') {
+          refuseThrowawayAddress(ctx.body)
+          return
+        }
         // The emailed link accepts a handle for the same reason, and the
         // rewrite runs before the endpoint's own `z.email()` check does.
         if (ctx.path !== '/sign-in/email' && ctx.path !== '/sign-in/magic-link') return
@@ -522,6 +561,36 @@ export async function createAuth({
     databaseHooks: {
       user: {
         create: {
+          /**
+           * The cap on accounts per network. Here because every way a `user`
+           * row is written passes through it — email sign-up, a first Google,
+           * Apple, Facebook or Discord sign-in (the OAuth callback and the
+           * native ID-token sign-in alike) and the guest plugin — so one check
+           * covers them all, including whichever provider comes next.
+           *
+           * Guests are let through uncounted: a guest session is not an
+           * account, the app opens one before showing anybody a sign-up form,
+           * and counting them would spend the network's allowance on people
+           * who are only looking. No address — the boot warm-up, a script —
+           * is let through too, as there is nothing to count it against.
+           *
+           * Thrown as an `APIError` so the reason reaches the app: as JSON
+           * from email sign-up, and as `?error=` on the redirect from an
+           * OAuth callback, which forwards an `APIError`'s code.
+           */
+          before: async (user, context) => {
+            if ((user as { isAnonymous?: unknown }).isAnonymous === true) return
+            const headers = context?.request?.headers ?? context?.headers
+            const ip = headers?.get(CLIENT_IP_HEADER)
+            const network = ip && networkKey(ip)
+            if (!network) return
+            const claimed = await claimSignUpSlot(db, networkHash(network, env.BETTER_AUTH_SECRET))
+            if (claimed) return
+            throw new APIError('TOO_MANY_REQUESTS', {
+              code: ERROR_CODES.SIGN_UP_LIMIT_REACHED,
+              message: 'Too many accounts were created from this network today',
+            })
+          },
           /**
            * Covers the routes `afterEmailVerification` does not: Google and
            * Apple, where the provider has already proven the address and the
