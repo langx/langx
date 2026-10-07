@@ -10,6 +10,7 @@ import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
 import { authClient } from '../../src/lib/auth-client'
 import { useIsOnline } from '../../src/hooks/useIsOnline'
+import { useCaptcha } from '../../src/hooks/useCaptcha'
 import { signInFailureKey } from '../../src/lib/errors'
 import { goBackTo } from '../../src/lib/navigation'
 import { withSignInProgress } from '../../src/lib/signInProgress'
@@ -28,6 +29,7 @@ export default function SignIn() {
   // Better Auth has no code for "nobody answered", so the form would have
   // said "Sign in failed" to somebody whose request never left the phone.
   const online = useIsOnline()
+  const captcha = useCaptcha()
   /**
    * Only Better Auth's own sign-in. A v1 password cannot be checked here — the
    * hash is one-way and from another system — and the bridge that once asked
@@ -44,9 +46,11 @@ export default function SignIn() {
       // request, so for those people it is genuinely slow (see
       // `lib/signInProgress.ts`).
       const { error: signInError } = await withSignInProgress(() =>
-        authClient.signIn.email({ email, password }),
+        authClient.signIn.email({ email, password, fetchOptions: captcha.fetchOptions }),
       )
       if (signInError) {
+        // A token is single-use: the next attempt needs a new one.
+        captcha.reset()
         setError(t(signInFailureKey(signInError, online)))
         return
       }
@@ -72,6 +76,7 @@ export default function SignIn() {
        * would leave the reader sitting on them. They keep their call.
        */
     } catch {
+      captcha.reset()
       // Thrown before the server could answer — see `signInFailureKey`.
       setError(t(signInFailureKey(undefined, online)))
     } finally {
@@ -81,7 +86,7 @@ export default function SignIn() {
 
   // The same condition the button uses, so Enter can never submit a
   // form the button refuses — nor fire twice while one is in flight.
-  const canSubmit = !loading && !!email && !!password
+  const canSubmit = !loading && !!email && !!password && !captcha.checking
 
   return (
     <Screen scroll style={styles.form}>
@@ -131,12 +136,16 @@ export default function SignIn() {
         </Link>
       </View>
 
+      {captcha.widget}
       <Button
         label={t('auth.signIn')}
         onPress={onSubmit}
         loading={loading}
-        disabled={!email || !password}
+        disabled={!email || !password || captcha.checking}
       />
+      {!!email && !!password && captcha.checking ? (
+        <Text style={styles.checking}>{t('auth.captchaChecking')}</Text>
+      ) : null}
 
       {/*
         The door with no password behind it — and for a returning v1
@@ -178,6 +187,8 @@ export default function SignIn() {
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   // 22 between blocks, as the prototype stacks the auth screens.
   form: { gap: 22 },
+  // Under the button it is holding, and quieter than an error.
+  checking: { color: colors.textFaint, fontSize: 13, marginTop: -spacing.sm, textAlign: 'center' },
   title: { ...font.title, color: colors.text, lineHeight: 36 },
   subtitle: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.sm },
   fields: { gap: 14 },

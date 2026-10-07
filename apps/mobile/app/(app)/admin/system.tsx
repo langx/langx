@@ -2,6 +2,7 @@ import { compareVersions, isVersion, versionForPlatform, type MinVersion } from 
 import { useState } from 'react'
 import { Text, View } from 'react-native'
 import {
+  useAdminSetCaptchaRequired,
   useAdminSetLatestVersion,
   useAdminSetMinVersion,
   useAdminStats,
@@ -68,6 +69,7 @@ export default function AdminSystemScreen() {
   const [minPlatform, setMinPlatform] = useState<keyof MinVersion>('ios')
   const [minVersion, setMinVersion] = useState('')
   const force = useAdminSetMinVersion()
+  const captcha = useAdminSetCaptchaRequired()
 
   /*
    * Checked here as well as on the server, against the same function, because
@@ -120,6 +122,27 @@ export default function AdminSystemScreen() {
           setMinVersion('')
           showToast(ADMIN.system.minDone(minPlatform, minTyped))
         },
+        onError: () => showToast(ADMIN.common.failed),
+      },
+    )
+  }
+
+  async function toggleCaptcha(): Promise<void> {
+    if (!system) return
+    const required = !system.config.flags.captchaRequired
+    // Only turning it on can lock anybody out, so only that asks — off is the undo.
+    if (required) {
+      const ok = await confirmAlert({
+        title: ADMIN.system.confirmCaptcha,
+        confirmLabel: ADMIN.system.captchaRequire,
+        destructive: true,
+      })
+      if (!ok) return
+    }
+    captcha.mutate(
+      { required },
+      {
+        onSuccess: () => showToast(ADMIN.system.captchaDone(required)),
         onError: () => showToast(ADMIN.common.failed),
       },
     )
@@ -273,6 +296,29 @@ export default function AdminSystemScreen() {
                   onPress={() => void submitMin()}
                   disabled={!minReady}
                   loading={force.isPending}
+                />
+              </View>
+            </Card>
+
+            <Text style={styles.heading}>{ADMIN.system.captcha}</Text>
+            <Card>
+              <Text style={styles.muted}>{ADMIN.system.captchaHint}</Text>
+              <View style={styles.editor}>
+                <Text style={styles.row}>
+                  {ADMIN.system.captcha}:{' '}
+                  {system.config.flags.captchaRequired
+                    ? ADMIN.system.captchaOn
+                    : ADMIN.system.captchaOff}
+                </Text>
+                <Button
+                  label={
+                    system.config.flags.captchaRequired
+                      ? ADMIN.system.captchaRelax
+                      : ADMIN.system.captchaRequire
+                  }
+                  variant={system.config.flags.captchaRequired ? 'secondary' : 'danger'}
+                  onPress={() => void toggleCaptcha()}
+                  loading={captcha.isPending}
                 />
               </View>
             </Card>

@@ -581,6 +581,7 @@ export const fr: Localized<EnMessages> = {
     passwordTooShort: 'Ce mot de passe est trop court.',
     invalidEmail: 'Cela ne ressemble pas à une adresse e-mail.',
     invalidToken: 'Ce lien n’est plus valable.',
+    captchaFailed: 'Impossible de vérifier que tu es humain. Réessaie.',
     uploadFailed: 'Échec de l’envoi',
     loadFailed: 'Impossible de charger. Vérifie ta connexion et réessaie.',
     offlineAction: 'Ça n’est pas passé — tu es hors ligne.',
@@ -746,6 +747,7 @@ export const fr: Localized<EnMessages> = {
     resent: 'Envoyé — renvoyer encore',
     resetTitle: 'Réinitialise ton mot de passe',
     sendResetLink: 'Envoyer le lien',
+    captchaChecking: 'On vérifie que tu es humain…',
     resetSentBody: 'Si un compte existe pour {email}, le lien est en route.',
     linkExpiredTitle: 'Lien expiré',
     linkExpiredBody:

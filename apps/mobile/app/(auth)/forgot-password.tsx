@@ -9,6 +9,8 @@ import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { authClient } from '../../src/lib/auth-client'
+import { authErrorKey } from '../../src/lib/errors'
+import { useCaptcha } from '../../src/hooks/useCaptcha'
 import { goBackTo } from '../../src/lib/navigation'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -21,17 +23,33 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState<string>()
+  const captcha = useCaptcha()
 
   async function onSubmit() {
+    setError(undefined)
     setLoading(true)
     // Better Auth returns { status: true } whether or not the email exists,
     // by design (see api/routes/password.mjs) — that ambiguity is
     // intentional, so the UI can't tell an attacker which emails are real.
-    await authClient.requestPasswordReset({
+    const { error: resetError } = await authClient.requestPasswordReset({
       email,
       redirectTo: Linking.createURL('reset-password'),
+      fetchOptions: captcha.fetchOptions,
     })
     setLoading(false)
+    /*
+     * The one refusal worth saying out loud: a failed bot check means no mail
+     * went, and "a reset link is on its way" would be untrue. It says nothing
+     * about the address, so the ambiguity above survives. Anything else keeps
+     * the old answer.
+     */
+    const key = authErrorKey(resetError)
+    if (key === 'errors.captchaFailed') {
+      captcha.reset()
+      setError(t(key))
+      return
+    }
     setSent(true)
   }
 
@@ -53,7 +71,7 @@ export default function ForgotPassword() {
 
   // The same condition the button uses, so Enter can never submit a
   // form the button refuses — nor fire twice while one is in flight.
-  const canSubmit = !loading && !!email
+  const canSubmit = !loading && !!email && !captcha.checking
 
   return (
     <Screen scroll style={styles.form}>
@@ -72,13 +90,18 @@ export default function ForgotPassword() {
         keyboardType="email-address"
         textContentType="emailAddress"
         autoComplete="email"
+        error={error}
       />
+      {captcha.widget}
       <Button
         label={t('auth.sendResetLink')}
         onPress={onSubmit}
         loading={loading}
-        disabled={!email}
+        disabled={!email || captcha.checking}
       />
+      {!!email && captcha.checking ? (
+        <Text style={styles.checking}>{t('auth.captchaChecking')}</Text>
+      ) : null}
       <Link href="/(auth)/sign-in" style={styles.textLink}>
         {t('auth.backToSignIn')}
       </Link>
@@ -89,6 +112,8 @@ export default function ForgotPassword() {
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // 22 between blocks, as the prototype stacks the auth screens.
   form: { gap: 22 },
+  // Under the button it is holding, and quieter than an error.
+  checking: { color: colors.textFaint, fontSize: 13, marginTop: -spacing.sm, textAlign: 'center' },
   title: { ...font.title, color: colors.text, lineHeight: 36 },
   body: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.sm },
   textLink: {

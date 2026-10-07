@@ -670,6 +670,7 @@ export const en = {
     passwordTooShort: 'That password is too short.',
     invalidEmail: 'That does not look like an email address.',
     invalidToken: 'That link is no longer valid.',
+    captchaFailed: 'We couldn’t check that you’re human. Try again.',
     uploadFailed: 'Upload failed',
     loadFailed: 'Could not load this. Check your connection and try again.',
     /** A write that never reached a server: the one failure the reader can place. */
@@ -852,6 +853,7 @@ export const en = {
     resent: 'Sent — resend again',
     resetTitle: 'Reset your password',
     sendResetLink: 'Send reset link',
+    captchaChecking: 'Checking you’re human…',
     resetSentBody: 'If an account exists for {email}, a reset link is on its way.',
     linkExpiredTitle: 'Link expired',
     linkExpiredBody:
