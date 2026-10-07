@@ -585,6 +585,17 @@ export const INDEXES: Partial<IndexSpec> = {
       unique: true,
       partialFilterExpression: { deviceId: { $exists: true } },
     },
+    /*
+     * Every account one installation was used by — the operator panel's
+     * "linked accounts". The unique index above leads with `userId`, so it
+     * cannot answer "who else is on this phone" without a scan. Partial for the
+     * same reason: rows from builds that predate `deviceId` have nothing to find.
+     */
+    {
+      key: { deviceId: 1 },
+      name: 'device_id',
+      partialFilterExpression: { deviceId: { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.profileViews]: [

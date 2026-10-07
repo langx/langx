@@ -90,6 +90,83 @@ export const adminSuspendSchema = z.object({
 })
 export type AdminSuspendInput = z.infer<typeof adminSuspendSchema>
 
+/**
+ * Other accounts that look like the same person: one that signed in from the
+ * same network recently, or one registered from the same installation.
+ *
+ * A lead, not a verdict. A network is often a household, a campus or a mobile
+ * carrier's shared address, so "same network" alone says little; "same
+ * device" says a great deal more. The panel shows which it was for each row.
+ */
+export const ADMIN_LINK_VIAS = ['network', 'device'] as const
+export type AdminLinkVia = (typeof ADMIN_LINK_VIAS)[number]
+
+/** How far back a shared network counts. Sessions older than this are ignored. */
+export const ADMIN_LINK_NETWORK_DAYS = 30
+/** The most linked accounts one lookup returns, and the most one bulk suspension takes. */
+export const ADMIN_LINKED_MAX = 50
+
+/**
+ * One linked account. No address in it: the IPs stay on the server, and the
+ * panel is told how many networks were shared rather than which.
+ */
+export interface AdminLinkedAccount {
+  userId: string
+  handle: string
+  displayName: string
+  createdAt: string
+  suspended: boolean
+  /** Reports against them still waiting for a decision. */
+  openReports: number
+  via: AdminLinkVia[]
+  sharedNetworks: number
+  sharedDevices: number
+}
+
+export interface AdminLinkedAccounts {
+  items: AdminLinkedAccount[]
+  /** More were found than `ADMIN_LINKED_MAX`; the strongest links are the ones kept. */
+  truncated: boolean
+}
+
+/**
+ * Suspending several linked accounts at once, with one reason and one length.
+ *
+ * Days only, like `adminSuspendSchema` and for the same reason: a suspension
+ * that never ends should be reached from the report that justifies it.
+ */
+export const adminBulkSuspendSchema = adminSuspendSchema.extend({
+  userIds: z
+    .array(z.string().trim().min(1))
+    .min(1)
+    .max(ADMIN_LINKED_MAX)
+    // A repeated id would be suspended, mailed and logged twice.
+    .transform((ids) => [...new Set(ids)]),
+})
+export type AdminBulkSuspendInput = z.infer<typeof adminBulkSuspendSchema>
+
+/**
+ * Why one id in a bulk suspension was left alone. `suspended` because a
+ * suspension replaces the one before it: sweeping a permanently suspended
+ * account into a list would quietly shorten it to the list's days.
+ */
+export const ADMIN_BULK_SKIPS = [
+  'self',
+  'admin',
+  'official',
+  'suspended',
+  'not_found',
+  'failed',
+] as const
+export type AdminBulkSkip = (typeof ADMIN_BULK_SKIPS)[number]
+
+export type AdminBulkSuspendResult =
+  { userId: string; suspended: true } | { userId: string; suspended: false; skipped: AdminBulkSkip }
+
+export interface AdminBulkSuspendResponse {
+  results: AdminBulkSuspendResult[]
+}
+
 /** A message sent from `@langx` to one person, from the panel. */
 export const ADMIN_MESSAGE_MAX_LENGTH = 2000
 export const adminMessageSchema = z.object({

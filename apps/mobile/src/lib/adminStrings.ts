@@ -393,6 +393,35 @@ export const ADMIN = {
     },
   },
 
+  linked: {
+    title: 'Linked accounts',
+    hint: (days: number) =>
+      `Accounts that signed in from the same network in the last ${days} days, or used the same phone. A network can be a household, a campus or a mobile carrier — a lead, not proof. A shared device is much stronger.`,
+    empty: 'No other accounts share a network or device with this one.',
+    truncated: (n: number) => `Showing the ${n} strongest links. There are more.`,
+    network: 'same network',
+    device: 'same device',
+    suspended: 'suspended',
+    age: (days: number) =>
+      days < 1
+        ? 'joined today'
+        : days < 60
+          ? `joined ${days}d ago`
+          : days < 730
+            ? `joined ${Math.floor(days / 30)}mo ago`
+            : `joined ${Math.floor(days / 365)}y ago`,
+    reports: (n: number) => `${n} open report${n === 1 ? '' : 's'}`,
+    select: (handle: string) => `Select @${handle}`,
+    selectAll: 'Select all',
+    suspendSelected: (n: number) => `Suspend ${n} selected`,
+    confirm: (n: number, days: number) =>
+      `Suspend ${n} account${n === 1 ? '' : 's'} for ${days} days?`,
+    confirmMessage:
+      'Each one gets the usual notice and is logged on its own account. Operators, official accounts, you, and anyone already suspended are skipped.',
+    done: (suspended: number, skipped: number) =>
+      skipped === 0 ? `${suspended} suspended.` : `${suspended} suspended, ${skipped} skipped.`,
+  },
+
   online: {
     title: 'In the app now',
     empty: 'Nobody is in the app right now.',

@@ -67,6 +67,9 @@ import {
   type UpcomingMeeting,
   type MonthlyRecapDto,
   type YearlyRecapDto,
+  type AdminBulkSuspendInput,
+  type AdminBulkSuspendResponse,
+  type AdminLinkedAccounts,
   CONVERSATION_SEARCH_MIN_LENGTH,
 } from '@langx/shared'
 import type {
@@ -338,6 +341,7 @@ export const keys = {
   adminBroadcasts: ['admin', 'broadcasts'] as const,
   adminBroadcast: (id: string) => ['admin', 'broadcasts', id] as const,
   adminUser: (q: string) => ['admin', 'user', q] as const,
+  adminLinked: (userId: string) => ['admin', 'linked', userId] as const,
   adminMembers: (tier: string) => ['admin', 'members', tier] as const,
 }
 
@@ -3787,6 +3791,26 @@ export function useAdminUser(q: string) {
     queryFn: () => api.get<AdminUserDto>(`/admin/users?q=${encodeURIComponent(q)}`),
     enabled: q.trim().length >= 2,
     retry: false,
+  })
+}
+
+/** Other accounts sharing a recent network or an installation with this one. */
+export function useAdminLinkedAccounts(userId: string) {
+  return useQuery({
+    queryKey: keys.adminLinked(userId),
+    queryFn: () => api.get<AdminLinkedAccounts>(`/admin/users/${userId}/linked`),
+  })
+}
+
+/** One reason and one length for several accounts; the answer says what happened to each. */
+export function useAdminBulkSuspend() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: AdminBulkSuspendInput) =>
+      api.post<AdminBulkSuspendResponse>('/admin/users/suspend-bulk', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
   })
 }
 
