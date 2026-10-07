@@ -6744,3 +6744,47 @@ through the real endpoint.
 The cost is that signing in only to download your data also cancels. The data
 deletion page already tells people to export before deleting, and a person who
 signs in by mistake can delete again.
+
+## Sign-up refuses throwaway addresses and caps accounts per network
+
+Two rules sit in front of account creation.
+
+**Throwaway addresses.** An email sign-up whose address is on a known
+temporary-mail domain, or a subdomain of one, is refused with
+`DISPOSABLE_EMAIL`. The list is the public-domain `disposable-email-domains`
+project, vendored as `apps/api/src/auth/disposableDomains.ts` rather than
+installed, so it changes only when somebody refreshes the file. The check runs
+before the endpoint, so the answer is the same whether or not the address
+already has an account. Social sign-up is not checked: the provider hands over
+an address it holds for the person.
+
+**Accounts per network.** At most `SIGN_UP_RULES.accountsPerIp` new accounts
+per network in a rolling day; past that, `SIGN_UP_LIMIT_REACHED`. It is checked
+in Better Auth's user-create hook, which every way of opening an account passes
+through — email sign-up and a first sign-in with any social provider — so a new
+provider is covered without anyone remembering to add it. Guest sessions are
+not counted: the app opens one before anybody has decided to sign up. The
+address comes from Cloudflare when the edge secret proves the request came
+through it, and from Fastify's `request.ip` otherwise; IPv6 is grouped by its
+/64. Loopback and private addresses are not counted, which is what keeps local
+development and the test suite working without configuration, and a request
+with no address at all is let through rather than refused.
+
+That address is resolved once, in the bridge to Better Auth, and handed to it
+in a header the bridge always overwrites. Better Auth reads the same header for
+its rate limiter and for `session.ipAddress`. Its default, `X-Forwarded-For`,
+is ignored when it holds more than one address unless trusted proxies are
+listed, and behind Cloudflare and Fly it always holds two — so until this,
+sessions recorded no address and the rate limiter counted every client in one
+bucket per route.
+
+The counter is a collection, `signUpsByIp`, not Better Auth's rate limiter.
+That limiter keeps its counts in process memory, and the API runs on more than
+one machine, so each would count on its own and the cap would be multiplied by
+however many machines were up. Rows hold an HMAC of the network under
+`BETTER_AUTH_SECRET`, not the address, and a TTL removes them when the window
+ends.
+
+The app shows both refusals in the reader's language, from the sign-up form and
+from a social sign-in's return. The message about the cap does not give the
+number.

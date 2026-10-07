@@ -669,6 +669,10 @@ export const en = {
     emailNotVerified: 'Verify your email address first — check your inbox.',
     passwordTooShort: 'That password is too short.',
     invalidEmail: 'That does not look like an email address.',
+    disposableEmail: 'That address is from a temporary email service. Use one you’ll keep.',
+    /** Never names the number: the rule is the server's, and it can change. */
+    signUpLimitReached:
+      'Too many accounts were created from this network today. Try again tomorrow.',
     invalidToken: 'That link is no longer valid.',
     uploadFailed: 'Upload failed',
     loadFailed: 'Could not load this. Check your connection and try again.',

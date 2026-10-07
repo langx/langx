@@ -572,6 +572,10 @@ export const ptBR: Localized<EnMessages> = {
     emailNotVerified: 'Confirme seu e-mail primeiro — olhe sua caixa de entrada.',
     passwordTooShort: 'Essa senha é curta demais.',
     invalidEmail: 'Isso não parece um endereço de e-mail.',
+    disposableEmail:
+      'Esse endereço é de um serviço de e-mail temporário. Use um que você vá manter.',
+    signUpLimitReached:
+      'Muitas contas foram criadas a partir desta rede hoje. Tente de novo amanhã.',
     invalidToken: 'Esse link não é mais válido.',
     uploadFailed: 'Falha no envio',
     loadFailed: 'Não deu para carregar. Confira sua conexão e tente de novo.',

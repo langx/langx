@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import type { Auth } from '../auth'
+import { CLIENT_IP_HEADER, resolveClientIp } from '../lib/clientIp'
 
 /**
  * Bridges Fastify to Better Auth's handler, which speaks the Web Fetch API
@@ -50,6 +51,10 @@ export async function registerAuthRoutes(app: FastifyInstance, auth: Auth): Prom
         if (typeof value === 'string') headers.append(key, value)
         else if (Array.isArray(value)) for (const v of value) headers.append(key, v)
       }
+      // After the copy, so it replaces anything a client sent under this name.
+      const clientIp = resolveClientIp(request.headers, request.ip, app.env.EDGE_SECRET)
+      if (clientIp) headers.set(CLIENT_IP_HEADER, clientIp)
+      else headers.delete(CLIENT_IP_HEADER)
 
       // Only a request that actually carried bytes gets a body: Better Auth
       // answers 415 to an empty body with no content-type, which is exactly

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { errorCodeOf, oauthReturnErrorKey, signInFailureKey } from './errors'
+import { authErrorKey, errorCodeOf, oauthReturnErrorKey, signInFailureKey } from './errors'
 
 /**
  * `ApiRequestError` is deliberately not imported: `api/client` reaches
@@ -65,6 +65,18 @@ describe('oauthReturnErrorKey', () => {
     expect(oauthReturnErrorKey('oauth_provider_not_found')).toBe('errors.signInFailed')
     expect(oauthReturnErrorKey('email_not_found')).toBe('errors.signInFailed')
     expect(oauthReturnErrorKey('state_not_found')).toBe('errors.signInFailed')
+  })
+
+  it('says why when the API refused the new account', () => {
+    expect(oauthReturnErrorKey('SIGN_UP_LIMIT_REACHED')).toBe('errors.signUpLimitReached')
+    expect(oauthReturnErrorKey('DISPOSABLE_EMAIL')).toBe('errors.disposableEmail')
+  })
+})
+
+describe('authErrorKey', () => {
+  it('names both sign-up refusals', () => {
+    expect(authErrorKey({ code: 'SIGN_UP_LIMIT_REACHED' })).toBe('errors.signUpLimitReached')
+    expect(authErrorKey({ code: 'DISPOSABLE_EMAIL' })).toBe('errors.disposableEmail')
   })
 })
 

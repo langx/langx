@@ -580,6 +580,10 @@ export const de: Localized<EnMessages> = {
     emailNotVerified: 'Bestätige zuerst deine E-Mail-Adresse — schau in dein Postfach.',
     passwordTooShort: 'Dieses Passwort ist zu kurz.',
     invalidEmail: 'Das sieht nicht nach einer E-Mail-Adresse aus.',
+    disposableEmail:
+      'Diese Adresse gehört zu einem Wegwerf-E-Mail-Dienst. Nimm eine, die du behältst.',
+    signUpLimitReached:
+      'Aus diesem Netzwerk wurden heute zu viele Konten erstellt. Versuch es morgen noch einmal.',
     invalidToken: 'Dieser Link ist nicht mehr gültig.',
     uploadFailed: 'Upload fehlgeschlagen',
     loadFailed: 'Das konnte nicht geladen werden. Prüfe deine Verbindung und versuch es erneut.',
