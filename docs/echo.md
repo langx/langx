@@ -1106,7 +1106,9 @@ So the packs are read in `jf_nezumi` and `jm_kumo` — the best of the four
 female voices and the only male one. Its lower character score is mostly the
 recogniser writing in kana what it heard right (彼は誰？ as かれわだれ), but not
 only: it heard 人形 as 人魚 once, and いいお医者さん as イオ医者さん. espeak-ng's 5%
-is why Japanese was silent. Every number is well past the 85% that would have
+is why Japanese was silent. A second sample of thirty, from the three packs as
+committed (N3 included), came back at 98.4% of the kana for `jf_nezumi` and
+98.8% for `jm_kumo`. Every number is well past the 85% that would have
 sent this to Chatterbox Multilingual, which was therefore not evaluated.
 
 A member's own Japanese card is read the same way through the service, from
