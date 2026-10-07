@@ -105,7 +105,7 @@ included. Both are written out below, per language.
 > Privacy Policy: https://langx.io/privacy-policy
 
 **Keywords (iOS, 100 chars)**
-`speaking,conversation,call,video,tandem,partner,penpal,english,spanish,learn,chat,japanese,korean`
+`language,exchange,speaking,conversation,call,video,tandem,partner,english,spanish,chat,japanese`
 
 ---
 

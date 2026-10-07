@@ -36,7 +36,7 @@ Rules every string follows:
 
 | Locale | 2.9 keywords                                                                                         | Chars | Why                                                                                                                                                                                                                                       |
 | ------ | ---------------------------------------------------------------------------------------------------- | ----: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| en-US  | `speaking,conversation,call,video,tandem,partner,penpal,english,spanish,learn,chat,japanese,korean`  |    97 | Drops language/exchange/practice (already indexed from name and subtitle) for the 2.9 calls words (call, video, conversation) and pen-pal intent; Japanese and Korean are the fastest-growing targets after Spanish.                      |
+| en-US  | `language,exchange,speaking,conversation,call,video,tandem,partner,english,spanish,chat,japanese`    |    95 | The live en-US name and subtitle are "LangX                                                                                                                                                                                               | Practice Learn Succeed" / "Open Source Tandem Alternative", not the title in listing.md, so language and exchange are not indexed from them and stay; learn and practice are in the name. tandem stays so the partner page can own it. 2.9 calls words (call, video, conversation) and Japanese fill the rest. |
 | tr     | `konuşma,arama,görüntülü,sesli,arkadaş,yabancı,ingilizce,ispanyolca,sohbet,öğren,almanca,korece`     |    94 | Turkish searchers say 'yabancı arkadaş' and 'görüntülü/sesli arama', not 'tandem' or 'partner'; dil/değişim/pratik are already in the name and subtitle, and German and Korean are the next most-learned languages after English.         |
 | es-ES  | `hablar,conversación,llamada,videollamada,tándem,amigos,inglés,español,aprender,chat,francés,alemán` |    98 | intercambio/idiomas/practica are in the name and subtitle; the space goes to videollamada/llamada/conversación, and French and German, which outrank Japanese and Korean among learners in Spain.                                         |
 | ru     | `разговорный,звонок,тандем,общение,иностранцы,английский,испанский,язык,учить,немецкий,корейский`    |    95 | обмен/практика are in the name and subtitle; 'разговорный' and 'общение с иностранцами' are how Russian learners phrase it, and German and Korean are the next targets after English and Spanish.                                         |
@@ -56,9 +56,8 @@ duplicates; the rest lost their place to a word the same searchers type more.
 
 | Locale | Dropped       | Why                                                                                                                        |
 | ------ | ------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| en-US  | `language`    | already in the app name, which is indexed anyway                                                                           |
-| en-US  | `exchange`    | already in the app name, which is indexed anyway                                                                           |
-| en-US  | `practice`    | the subtitle already carries this word (or its imperative form), which is indexed anyway                                   |
+| en-US  | `practice`    | already in the live en-US name ("LangX \| Practice Learn Succeed"), which is indexed anyway                                |
+| en-US  | `learn`       | already in the live en-US name, which is indexed anyway                                                                    |
 | tr     | `dil`         | already in the app name, which is indexed anyway                                                                           |
 | tr     | `değişim`     | already in the app name, which is indexed anyway                                                                           |
 | tr     | `pratik`      | the subtitle already carries this word (or its imperative form), which is indexed anyway                                   |
@@ -156,7 +155,7 @@ Pages and why each owns its words:
 
 | Locale | Now (2.8 list)      | After 2.9 is approved              |
 | ------ | ------------------- | ---------------------------------- |
-| en-US  | `tandem,partner`    | `tandem,partner,penpal`            |
+| en-US  | `tandem,partner`    | `tandem,partner`                   |
 | tr     | `tandem,partner`    | `arkadaş,yabancı`                  |
 | es-ES  | `tándem,compañero`  | `tándem,amigos`                    |
 | ru     | `тандем,партнёр`    | `тандем,общение,иностранцы`        |
