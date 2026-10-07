@@ -18,9 +18,12 @@
  * The feature graphic comes across too, as `<locale>/images/featureGraphic.png`.
  * It is the banner at the top of a Play listing and the one store asset that is
  * not a screenshot, so it is a different slot in the API and a different flag on
- * the lane — but it is drawn from the same set, in the same eight languages, and
- * a listing that got new screenshots and kept the old banner would show two
- * different versions of the app on one page.
+ * the lane. Since 2.9 it is one wordless file for every language,
+ * `2.x/android-feature-graphic.png`: Play draws the app's title over the left of
+ * it on desktop and a play button over its centre on phones, which is where the
+ * per-language banners put their headline. Those `2.x/<lang>/android/
+ * feature-graphic.png` files are still in branding and are deliberately not read
+ * here — sending them would put the covered-up headline back on five listings.
  *
  *   node apps/mobile/scripts/collect-play-screenshots.mjs
  *   cd apps/mobile && fastlane play
@@ -139,7 +142,7 @@ for (const [ours, play] of Object.entries(LOCALES)) {
   }
 
   // supply reads one file per image type, named for the type itself.
-  const banner = within(BRANDING, '2.x', ours, 'android', 'feature-graphic.png')
+  const banner = within(BRANDING, '2.x', 'android-feature-graphic.png')
   if (!fs.existsSync(banner)) {
     console.error(`Missing ${banner}`)
     process.exit(1)
