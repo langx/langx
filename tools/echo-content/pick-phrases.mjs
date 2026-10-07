@@ -75,7 +75,12 @@
  *
  * `--cues ./images/cues.es.json` takes only phrases that table gives a picture
  * to. Run once without it and a large `--limit` to get a pool, write the cues
- * for the pool, then run again with it at the pack's size. See `cued`.
+ * for the pool, then run again with it at the pack's size. See `cued`. The
+ * Arabic and Turkish packs were picked that way:
+ *
+ *   node tools/echo-content/pick-phrases.mjs --lang ar --frequency ./ar_50k.txt \
+ *     --tatoeba ./tatoeba/per_language --levels absoluteBeginner,beginner,intermediate \
+ *     --cues tools/echo-content/images/cues.ar.json --limit 300 --out-dir ./picked-ar
  */
 
 import { spawn } from 'node:child_process'
@@ -125,9 +130,22 @@ const LEVELS = {
  * A sentence has to be a sentence: long enough to carry a pattern, short
  * enough to read on a card and to type back when a production card asks for
  * it (`ECHO_PRODUCTION_MAX_LENGTH`, 40 characters).
+ *
+ * **Two words is a sentence in Turkish and Arabic.** Both glue the pronoun,
+ * the object and the negation onto the verb: _Seni seviyorum._ is "I love
+ * you." and _قرأت كتابك._ is "I read your book.", three and four words in
+ * English. A floor of three, measured in a language that writes those apart,
+ * drops exactly the short, everyday sentences a first pack is made of.
  */
 const MIN_WORDS = 3
+const MIN_WORDS_BY_LANG = { tr: 2, ar: 2 }
 const MAX_WORDS = 8
+
+/**
+ * Where a sentence may end. Arabic asks with its own mark, `؟` (U+061F), and
+ * a filter that only knew `?` refused every Arabic question in the export.
+ */
+const SENTENCE_ENDS = '.?!؟'
 
 /** `don't` is one token to a regular expression and two words to CEFR-J. */
 const CONTRACTIONS = {
@@ -294,6 +312,27 @@ async function gradedWords(profilePaths, ngslPath) {
 }
 
 /**
+ * A phrase as the frequency list spells it, for looking its words up.
+ *
+ * **Turkish lowercases by its own rule.** `I` is `ı` and `İ` is `i`; the
+ * locale-blind `toLowerCase` turns `Işık` into `işık` and `İyi` into `i` plus a
+ * combining dot, which `\p{L}` then splits off — two ways for an everyday word
+ * to go missing from the list and take its sentence with it.
+ *
+ * **Arabic is looked up without its vowel marks.** Tatoeba writes harakat on
+ * some sentences and not on others, and the subtitle corpus behind the
+ * frequency list almost never does. A mark is `\p{M}`, not `\p{L}`, so left in
+ * it would also cut `مَرْحَبًا` into single letters. The tatweel, a stretch
+ * with no sound, goes for the same reason. Only the lookup is bare: the text
+ * that reaches the card keeps every mark its writer put there.
+ */
+function lower(phrase, lang) {
+  if (lang === 'tr') return phrase.toLocaleLowerCase('tr')
+  if (lang === 'ar') return phrase.normalize('NFC').replace(/[\p{M}ـ]/gu, '')
+  return phrase.toLowerCase()
+}
+
+/**
  * The words of a phrase, in any script.
  *
  * `\p{L}` rather than `a-z`: `días` is one Spanish word and two ASCII ones,
@@ -304,8 +343,7 @@ async function gradedWords(profilePaths, ngslPath) {
  */
 function words(phrase, lang = 'en') {
   return (
-    phrase
-      .toLowerCase()
+    lower(phrase, lang)
       .match(/[\p{L}']+/gu)
       ?.flatMap((token) =>
         lang === 'en' ? (CONTRACTIONS[token] ?? [token.replace(/^'|'$/g, '')]) : [token],
@@ -429,9 +467,9 @@ async function tatoeba(graded, levels, lang, locales, required, base) {
   const levelOfId = new Map()
   for await (const line of lines(`${base}/${source}/${source}_sentences.tsv.bz2`)) {
     const [id, , text] = line.split('\t')
-    if (!text || !'.?!'.includes(text.at(-1))) continue
+    if (!text || !SENTENCE_ENDS.includes(text.at(-1))) continue
     const count = words(text, lang).length
-    if (count < MIN_WORDS || count > MAX_WORDS) continue
+    if (count < (MIN_WORDS_BY_LANG[lang] ?? MIN_WORDS) || count > MAX_WORDS) continue
     const band = levelOf(text, graded, lang)
     if (!band || !levels.includes(band)) continue
     if (band === 'fluent' && restsOnName(text, graded, lang)) continue

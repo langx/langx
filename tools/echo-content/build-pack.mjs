@@ -356,11 +356,11 @@ async function main() {
     console.error('Need --words, --lang and --out. See the header of this file.')
     process.exit(1)
   }
+  // Only a line that is not already glossed needs a dictionary. The Turkish
+  // and Arabic packs are Tatoeba sentences end to end — their phrasebooks
+  // would need an edition this file does not read — so every line arrives
+  // in `--glosses` and the missing edition is not a reason to stop.
   const edition = EDITIONS[lang]
-  if (!edition) {
-    console.error(`No kaikki edition mapped for '${lang}'. Add it to EDITIONS.`)
-    process.exit(1)
-  }
   const locales = localesFor(lang)
 
   const lines = (await readFile(wordsPath, 'utf8'))
@@ -394,6 +394,10 @@ async function main() {
       continue
     }
 
+    if (!edition) {
+      console.error(`No kaikki edition mapped for '${lang}', and '${text}' is not in --glosses.`)
+      process.exit(1)
+    }
     let found = await entries(text, edition)
     await sleep(PAUSE_MS)
     let groups = sensesWithTranslations(found, partOfSpeech)
@@ -453,11 +457,17 @@ async function main() {
     /** The gate. `seed-echo-packs.ts` refuses to write a file that says false. */
     reviewed: false,
     sources: [
-      {
-        name: 'Wiktionary, via kaikki.org (wiktextract)',
-        licence: 'CC BY-SA 4.0',
-        url: 'https://kaikki.org/',
-      },
+      // Only when something was looked up there: `sources` is the licence
+      // record, and a pack glossed wholly from Tatoeba owes kaikki nothing.
+      ...(items.length > fromPrepared
+        ? [
+            {
+              name: 'Wiktionary, via kaikki.org (wiktextract)',
+              licence: 'CC BY-SA 4.0',
+              url: 'https://kaikki.org/',
+            },
+          ]
+        : []),
       ...(fromPrepared > 0
         ? [{ name: 'Tatoeba', licence: 'CC BY 2.0 FR', url: 'https://tatoeba.org/' }]
         : []),
