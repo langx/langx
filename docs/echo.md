@@ -688,8 +688,24 @@ Spanish candidates average 6.1 of 7 locales. The cost is stated rather than
 hidden: Arabic reaches 87% of the English items, 36% of the Russian and 9% of
 the Italian, and a reader whose column is missing gets English.
 
-That decision does not reach up to `fluent`, which is still unbuilt, and it
-does not reach back to English, which still requires all eight.
+That decision does not reach back to English, which still requires all eight,
+and so English `fluent` is still unbuilt. It does reach up to `fluent`
+everywhere else.
+
+**German and Russian `fluent` are drafted, and unread.** `de/fluent.json` is
+270 sentences and `ru/fluent.json` 244, both `"reviewed": false`. The level is
+the frequency list read past B1 — ranks 10,001 to 50,000 are C1 and C2 — so
+what these packs teach is the long tail of everyday vocabulary rather than C1
+grammar, and in both languages a declined form can rank past 10,000 on its
+ending alone; `tools/echo-content/FLUENT-MEASUREMENT.md` has the measurement.
+They were built to a stricter rule than the three levels below them: **every
+item carries a cue and a Piper reading**, and the cue was decided before the
+phrase was taken (`pick-phrases.mjs --cues`), so a sentence with no honest
+picture gave its place to the next candidate instead of shipping bare. That
+rule, not the gloss floor, is what sets the size — 280 of 1,100 German
+candidates and 256 of 700 Russian ones had a picture that says what they are
+about, and Wiktionary's own-language editions had no translation table for any
+of the 22 phrasebook entries among them, so every item is a Tatoeba sentence.
 
 **Sources and licence** — verify at the version downloaded, record it:
 

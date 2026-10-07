@@ -432,8 +432,8 @@ A draft is a pack file with `"reviewed": false`. **The seed script refuses to
 write one**, and that refusal is the whole quality gate. The three English
 packs have passed it; see "In use" above for what passing meant.
 
-**There are no drafts today.** The fifteen drafted on 20 September were read
-the same night; see "What the review of the fifteen was" below.
+**The only drafts are the German and Russian `fluent` packs** at the end of
+this section. The fifteen drafted on 20 September were read the same night; see "What the review of the fifteen was" below.
 `tools/echo-content/lint-glosses.mjs` had 92 things to say about them before
 that reading — 64 Russian copula dashes written as a hyphen, 13 Arabic
 sentences spaced before their punctuation, 3 Persian letters inside Arabic
@@ -519,3 +519,69 @@ carry one voice where the other three carry two. Both are explained above, and
 both are the honest answer rather than a gap to fill.
 
 **Four columns per file unread**, as above.
+
+### German and Russian `fluent`: drafts, 7 October
+
+**`de:fluent` (270 items) and `ru:fluent` (244), `"reviewed": false`.** The
+seed refuses both until somebody reads them. Every item is a Tatoeba sentence
+glossed by its own contributors; English is on every item and the other
+columns are what Tatoeba has.
+
+**No new source.** The same four as the three levels below: Tatoeba (CC BY 2.0
+FR) for every sentence and gloss, FrequencyWords (CC BY-SA 4.0) for the level,
+Wiktionary's phrasebook category listing (CC BY-SA 4.0) as a candidate source
+that contributed nothing this time, and Piper's `de_DE-thorsten-medium` and
+`ru_RU-denis-medium` voices (CC0) for the readings. Tatoeba's exports were the
+3 October per-language files and FrequencyWords the 2018 `<lang>_50k.txt`.
+Nothing non-commercial was read.
+
+**Every item has a cue and a reading, by construction.** The cue tables were
+written first, against the 1,100 best-covered German and 700 best-covered
+Russian candidates, by two Claude subagents and then thinned by hand; only
+phrases with an honest picture from the existing 372 were then picked. 280
+German and 256 Russian survived that. The 22 phrasebook entries among them
+(`ich bin katholisch`, `сладких снов`…) then found no translation table on
+their own wiki and were dropped by `build-pack.mjs`, and their lines were
+taken back out of the cue tables. No concept was drawn for these packs.
+
+What the picture rule did to the pool, and why it is worth knowing before
+reading: it takes out every sentence about a country, a city, a language or a
+nationality (no flags, no landmarks, no picture of a language), every
+abstraction, and every animal or object the palette does not draw. What is
+left leans concrete — weather, food, animals, music, travel, the body. That is
+a skew a reviewer should weigh, not a defect to fix by loosening the rule.
+
+**Judgement calls a reviewer should check:**
+
+- **🍊 for an orange.** The drawing is a tangerine; the reviewed English pack
+  already uses it for oranges, and the two are the same shape and colour in
+  this style. A lemon is not, which is why the lemon got its own drawing.
+- **Named people kept where the subject is drawn** — Picasso 🎨, Charlie
+  Chaplin 🎬, Beethoven and Bach 🎼. Named living people were left out.
+- **Brands kept where the object is drawn** — Porsche and Toyota 🚗,
+  Coca-Cola 🥤, the BBC 📺.
+- **Jobs shown by their tool or produce** — 🍞 for a baker, 🐟 for a
+  fishmonger, 🩺 for a nurse, 👁️ for an ophthalmologist, 💇 for a hairdresser.
+- **Near-duplicates thinned to one or two per picture**: the toothbrush,
+  swimming, snow, cold, dictionary and wake-up families each lost members.
+- **Dropped as content**, as on the fifteen: slogans and politicians, quotations
+  and proverbs, war and death tolls, insults, stereotypes, Tatoeba meta, and
+  religious identity other than the Christian lines the cross can honestly
+  carry (which then fell out with the rest of the phrasebook).
+
+**Mechanical repairs, named in `review`:** two Russian fronts with a hyphen
+for the copula dash (`frontWas`), seven Russian glosses in the German pack with
+the same hyphen, and two Arabic glosses in the Russian pack — a space before
+`؟` and Latin commas. `lint-glosses.mjs` has one note left on `ru:fluent`, a
+French gloss three times the length of `Я ем банан.`, which is correct French.
+
+**What the review owes:** the front, English and Turkish read line by line, as
+on the fifteen; whether each sentence is fluent-level at all, since the band
+is a surface-form frequency and `Bälle sind rund.` is in it for its plural;
+and whether each cue says what the sentence is about.
+
+**Readings.** One Piper take per item, made on 7 October in the `apps/tts`
+image (Linux, the only place Piper's wheel runs) with
+`generate.py --pack de:fluent` / `--pack ru:fluent`. The 514 m4a files are not
+uploaded; `upload-echo-voices.ts` is the step that puts them where the keys in
+the packs point.

@@ -85,8 +85,18 @@ pack), and the second run takes only phrases the table maps. What survived:
 | fr   |  700 |             pending |       |       |
 | it   |  700 |             pending |       |       |
 
-`de` and `ru` are drafted on a sibling branch (Piper voices); their rows are
-theirs to add.
+`de` and `ru` were drafted on a sibling branch (Piper voices):
+
+| Pack |  Pool | Given an honest cue | Taken | Built                                  |
+| ---- | ----: | ------------------: | ----: | -------------------------------------- |
+| de   | 1,100 |                 280 |   270 | yes — 10 phrasebook lines had no table |
+| ru   |   700 |                 256 |   244 | yes — 12 phrasebook lines had no table |
+
+German needed a second block of 400 candidates: the first 700 gave 228 cues
+before near-duplicates were thinned, too close to the 200 floor once the
+phrasebook lines fell out. "Taken" is after `build-pack.mjs`, which found no
+translation table on de.wiktionary or ru.wiktionary for any of the 22
+phrasebook entries the cue tables had kept, so both packs are all Tatoeba.
 
 ## How to repeat it
 
