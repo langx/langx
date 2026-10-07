@@ -20,8 +20,8 @@ import { proGiftKey, queueProGift } from './proGifts'
  *
  * Called from the streak's daily milestone claim, so at most once a day per
  * person. The row's key (`streak:<days>:<user>`) is what makes it once in a
- * lifetime; the marker only saves the daily attempt a write once both rungs
- * are paid. Row first, marker second: a crash between them re-queues a key
+ * lifetime; the marker only saves the daily attempt a write once every rung
+ * is paid. Row first, marker second: a crash between them re-queues a key
  * that already exists, which is nothing.
  */
 export async function queueStreakGifts(
@@ -37,6 +37,7 @@ export async function queueStreakGifts(
         _id: proGiftKey.streak(rung.days, profile._id),
         userId: profile._id,
         months: rung.months,
+        ...(rung.weeks ? { weeks: rung.weeks } : {}),
         source: 'streak',
       },
       at,

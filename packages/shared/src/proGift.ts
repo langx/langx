@@ -29,11 +29,17 @@ export const PRO_GIFT_RULES = {
    *
    * "At least", not "exactly": a streak already past a milestone on the day
    * this shipped — a v1 restore of four hundred days, say — earns every rung
-   * below it on its next real action, once. So a streak of 400 is owed 1 + 3.
+   * below it on its next real action, once. So a streak of 400 is owed a
+   * week + 1 + 3.
+   *
+   * A rung's length is `months` plus `weeks`. The first rung is the one most
+   * people reach, so it is a taste rather than a month: a week, the same
+   * length as the store's free trial.
    */
   streak: [
-    { days: 100, months: 1 },
-    { days: 365, months: 3 },
+    { days: 7, months: 0, weeks: 1 },
+    { days: 100, months: 1, weeks: 0 },
+    { days: 365, months: 3, weeks: 0 },
   ],
   /**
    * Every `activationsPerGift` invitees who become real users in a calendar
@@ -84,7 +90,7 @@ export function addMonthsUtc(from: Date, months: number): Date {
 export function streakGiftsOwed(
   current: number,
   alreadyGiven: readonly number[] = [],
-): { days: number; months: number }[] {
+): { days: number; months: number; weeks: number }[] {
   return PRO_GIFT_RULES.streak.filter(
     (rung) => current >= rung.days && !alreadyGiven.includes(rung.days),
   )

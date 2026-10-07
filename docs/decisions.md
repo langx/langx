@@ -6847,3 +6847,29 @@ ends.
 The app shows both refusals in the reader's language, from the sign-up form and
 from a social sign-in's return. The message about the cap does not give the
 number.
+
+## The streak's first gift of Pro is a week, at seven days
+
+The streak rungs were 100 days for a month and 365 for three. Few people reach
+100, so the gift that is meant to show what Pro is like reached almost nobody.
+A rung at seven days now gives a week — the length of the store's free trial,
+and the first milestone most people actually cross.
+
+**A length is `months` plus `weeks`.** Every other door gives whole months, so
+`weeks` is an optional field on the `proGifts` row rather than a new unit for
+all of them: the week rung is `months: 0, weeks: 1`, and rows written before it
+have no `weeks` at all. The end is still decided once, stacked on any gift
+already running. The letter's first line has its own key, `introStreakWeeks`,
+because "0 months of Pro" is what the old one would say. The "You're Pro now"
+screen gets no length for a week and falls back to its title without one, which
+is also what every app already in the stores does with it.
+
+**No "ends in a week" for a gift that is a week.** A week-long gift is inside
+the week reminder's window from the moment it is granted, so the reminder would
+arrive straight after the letter announcing it. A reminder is skipped when the
+gift's own length is no longer than its window; the day-before one still goes.
+
+**"At least" still holds, so it is paid backwards once.** Everybody whose streak
+is already past seven days — including those already given the 100-day month —
+is owed the week on their next real action. That is one wave of grants after
+the deploy, drained by the scheduler fifty per pass, not a standing cost.

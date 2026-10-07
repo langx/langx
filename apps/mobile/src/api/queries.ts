@@ -3345,6 +3345,7 @@ export interface AdminUserDto {
     gifts: {
       _id: string
       months: number
+      weeks?: number
       source: string
       status: string
       endsAt: string | null

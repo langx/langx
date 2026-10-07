@@ -656,6 +656,10 @@ export const en = {
       one: '🔥 {days} days in a row! Here’s {count} month of Pro to keep it going.',
       other: '🔥 {days} days in a row! Here’s {count} months of Pro to keep it going.',
     },
+    introStreakWeeks: {
+      one: '🔥 {days} days in a row! Here’s {count} week of Pro to keep it going.',
+      other: '🔥 {days} days in a row! Here’s {count} weeks of Pro to keep it going.',
+    },
     /** A gift code typed into the paywall; `{code}` is the code as stored, upper case. */
     introCode: {
       one: '🎟️ Code {code} worked: {count} month of LangX Pro is yours.',

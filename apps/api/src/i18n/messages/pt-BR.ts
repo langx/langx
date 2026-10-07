@@ -568,6 +568,10 @@ export const ptBR: Localized<ServerMessages> = {
       one: '🔥 {days} dias seguidos! Aqui está {count} mês de Pro para continuar assim.',
       other: '🔥 {days} dias seguidos! Aqui estão {count} meses de Pro para continuar assim.',
     },
+    introStreakWeeks: {
+      one: '🔥 {days} dias seguidos! Aqui está {count} semana de Pro para continuar assim.',
+      other: '🔥 {days} dias seguidos! Aqui estão {count} semanas de Pro para continuar assim.',
+    },
     introCode: {
       one: '🎟️ O código {code} funcionou: {count} mês de LangX Pro é seu.',
       other: '🎟️ O código {code} funcionou: {count} meses de LangX Pro são seus.',

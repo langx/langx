@@ -388,7 +388,8 @@ export const ADMIN = {
       pending: 'Saved — RevenueCat did not answer, so the scheduler will retry it.',
       already: 'That gift was already given today.',
       list: 'Gifts',
-      row: (months: number, detail: string) => `${months} mo · ${detail}`,
+      row: (months: number, weeks: number, detail: string) =>
+        `${weeks ? `${weeks} wk` : `${months} mo`} · ${detail}`,
       until: (date: string) => `until ${date}`,
     },
   },

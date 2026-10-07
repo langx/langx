@@ -261,13 +261,13 @@ gift reminds eleven months after the ledger would have forgotten it.
 | Message                       | Fires on                                                   | Channels                        | Once because                           |
 | ----------------------------- | ---------------------------------------------------------- | ------------------------------- | -------------------------------------- |
 | **A gift of Pro**             | a gift is granted (operator, streak, referrals, gift code) | @langx message + push + email   | `sender_client_id_unique` + row status |
-| **Your Pro gift ends {date}** | 7 days before the end                                      | @langx message + email, no push | `remindedAt.week` on the row           |
+| **Your Pro gift ends {date}** | 7 days before the end, if the gift is longer than a week   | @langx message + email, no push | `remindedAt.week` on the row           |
 | **…ends tomorrow**            | 1 day before the end                                       | @langx message + push           | `remindedAt.day` on the row            |
 | **Your Pro gift has ended**   | the end, if the refresh leaves the account free            | @langx message, no push         | `endedNotifiedAt` on the row           |
 
 The letter is three short paragraphs. The first line says who gave it — an
 operator ("🎁 N months of LangX Pro, on us. Thanks for being here!"), a
-100/365-day streak, three invitees who became real users, or a gift code
+7/100/365-day streak, three invitees who became real users, or a gift code
 ("🎟️ Code {CODE} worked: N months of LangX Pro are yours.", the code in
 capitals as it is stored) — and doubles as the push preview. Then four things
 Pro opens, one emoji-led line each, with "…and more." under them, and the end

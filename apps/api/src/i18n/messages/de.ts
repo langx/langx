@@ -572,6 +572,10 @@ export const de: Localized<ServerMessages> = {
       one: '🔥 {days} Tage am Stück! Hier ist {count} Monat Pro, damit es so weitergeht.',
       other: '🔥 {days} Tage am Stück! Hier sind {count} Monate Pro, damit es so weitergeht.',
     },
+    introStreakWeeks: {
+      one: '🔥 {days} Tage am Stück! Hier ist {count} Woche Pro, damit es so weitergeht.',
+      other: '🔥 {days} Tage am Stück! Hier sind {count} Wochen Pro, damit es so weitergeht.',
+    },
     introCode: {
       one: '🎟️ Code {code} hat geklappt: {count} Monat LangX Pro gehört dir.',
       other: '🎟️ Code {code} hat geklappt: {count} Monate LangX Pro gehören dir.',

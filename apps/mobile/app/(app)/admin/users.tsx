@@ -430,6 +430,7 @@ function Found({ data }: { data: AdminUserDto }) {
               <Text key={gift._id} style={styles.row}>
                 {ADMIN.users.gift.row(
                   gift.months,
+                  gift.weeks ?? 0,
                   [
                     gift.source,
                     gift.status,

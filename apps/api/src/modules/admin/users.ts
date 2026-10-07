@@ -68,7 +68,7 @@ export interface AdminUserView {
   /** Gifts of Pro, newest first — without the operator's lease bookkeeping. */
   gifts: Pick<
     ProGift,
-    '_id' | 'months' | 'source' | 'status' | 'endsAt' | 'createdAt' | 'note' | 'grantedBy'
+    '_id' | 'months' | 'weeks' | 'source' | 'status' | 'endsAt' | 'createdAt' | 'note' | 'grantedBy'
   >[]
   official: boolean
   admin: boolean
@@ -250,6 +250,7 @@ async function toAdminUserView(db: Db, profile: Profile): Promise<AdminUserView>
     gifts: gifts.map((gift) => ({
       _id: gift._id,
       months: gift.months,
+      ...(gift.weeks ? { weeks: gift.weeks } : {}),
       source: gift.source,
       status: gift.status,
       endsAt: gift.endsAt,
