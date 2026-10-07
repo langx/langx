@@ -54,67 +54,70 @@ function TabIcon({
 /**
  * The bar's own label style, kept as a constant because a screen that sets
  * `tabBarLabelStyle` of its own replaces this one rather than merging with it
- * — and Echo sets one.
+ * — and Chats sets one.
  */
 const TAB_LABEL = { fontSize: 11, fontWeight: '600' } as const
 
 /**
- * The raised disc under the Echo tab, and the geometry that keeps the five
+ * The raised disc under the Chats tab, and the geometry that keeps the five
  * words on one line.
  *
  * `tabBarIconStyle` overrides the fixed slot the bar lays out for an icon —
  * 31 by 28 — so the disc has to hand back what it borrows: it starts
- * `ECHO_LIFT` above the other glyphs and gives the remainder of the 28 back
+ * `DISC_LIFT` above the other glyphs and gives the remainder of the 28 back
  * underneath, which is what `marginBottom` works out to. Get either margin
- * wrong and Echo's label sits off the line the other four share.
+ * wrong and Chats' label sits off the line the other four share.
  *
  * The lift stops at 20 because the part of the disc that clears the bar's top
  * edge is drawn but not tappable on Android, which delivers no touch outside a
  * view's parent. At 20 the disc's centre and two thirds of its face stay
  * inside the bar; a taller lift would start trading looks for a dead target.
  */
-const ECHO_SIZE = 46
-const ECHO_LIFT = 20
-const ECHO_GLYPH = 26
-const ECHO_ICON_STYLE = {
-  width: ECHO_SIZE,
-  height: ECHO_SIZE,
-  marginTop: -ECHO_LIFT,
-  marginBottom: 28 + ECHO_LIFT - ECHO_SIZE,
+const DISC_SIZE = 46
+const DISC_LIFT = 20
+const DISC_GLYPH = 26
+const DISC_ICON_STYLE = {
+  width: DISC_SIZE,
+  height: DISC_SIZE,
+  marginTop: -DISC_LIFT,
+  marginBottom: 28 + DISC_LIFT - DISC_SIZE,
 } as const
 
 /**
  * Accent whether the tab is focused or not, which is the whole point: the bar
  * renders every icon twice and cross-fades an active copy against an inactive
- * one, and this one has nothing to fade between. Echo is the habit the app is
- * built around, and a habit that only announces itself once you are already
- * looking at it announces nothing.
+ * one, and this one has nothing to fade between.
+ *
+ * Chats, in the middle, because Chats and Discover are where people actually
+ * spend their time. The disc used to be Echo's, put there to make Echo a
+ * habit; it did not, and the middle of the bar is worth more to the tab that
+ * is already used.
  *
  * The tour hole hugs the disc — `pad={6}` and a circle, against the 14-point
  * square the flat glyphs need — because a 46-point disc is already the size of
  * a thing you can point at.
  */
-function EchoTabIcon() {
+function ChatsTabIcon() {
   const styles = useStyles()
   const { colors, radius } = useTheme()
   return (
-    <TourTarget id="tabEcho" pad={6} radius={radius.pill}>
-      <View style={styles.echoDisc}>
-        <Feather name="repeat" size={ECHO_GLYPH} color={colors.textInverse} />
+    <TourTarget id="tabChats" pad={6} radius={radius.pill}>
+      <View style={styles.disc}>
+        <Feather name="message-square" size={DISC_GLYPH} color={colors.textInverse} />
       </View>
     </TourTarget>
   )
 }
 
 const useStyles = makeStyles(({ cardShadow, colors, radius }) => ({
-  echoDisc: {
+  disc: {
     ...cardShadow,
     alignItems: 'center',
     backgroundColor: colors.accent,
     borderRadius: radius.pill,
-    height: ECHO_SIZE,
+    height: DISC_SIZE,
     justifyContent: 'center',
-    width: ECHO_SIZE,
+    width: DISC_SIZE,
   },
 }))
 
@@ -186,7 +189,7 @@ export default function TabsLayout() {
         /*
          * Forced, rather than left to the bar's own rule, which moves the words
          * beside the icons once the window is 768 points wide — the web build,
-         * on a desktop. Echo's disc is laid out as a column: it borrows space
+         * on a desktop. The Chats disc is laid out as a column: it borrows space
          * above the glyph and returns it below the word, and in a row there is
          * no below.
          */
@@ -198,16 +201,40 @@ export default function TabsLayout() {
         name="discover"
         options={{
           title: t('tabs.discover'),
-          tabBarIcon: ({ color }) => <TabIcon name="search" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="compass" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="echo"
+        options={{
+          title: t('tabs.echo'),
+          tabBarIcon: ({ color }) => <TabIcon name="repeat" color={color} tour="tabEcho" />,
+          /*
+           * `ink`, not `danger` like the other two: red in this bar means
+           * somebody is waiting for you, and a due count is an invitation you
+           * made to yourself.
+           */
+          ...(echoBadge
+            ? {
+                tabBarBadge: echoBadge,
+                tabBarBadgeStyle: {
+                  backgroundColor: colors.ink,
+                  color: colors.bg,
+                  fontSize: 11,
+                  fontWeight: '700',
+                },
+              }
+            : {}),
         }}
       />
       <Tabs.Screen
         name="chats"
         options={{
           title: t('tabs.chats'),
-          tabBarIcon: ({ color }) => (
-            <TabIcon name="message-square" color={color} tour="tabChats" />
-          ),
+          tabBarIcon: () => <ChatsTabIcon />,
+          tabBarIconStyle: DISC_ICON_STYLE,
+          // The word under the disc is lit for the same reason the disc is.
+          tabBarLabelStyle: { ...TAB_LABEL, color: colors.accent, fontWeight: '700' },
           /*
            * A message that arrives while somebody is on another tab was
            * invisible until they went looking for it. The count comes from
@@ -220,35 +247,6 @@ export default function TabsLayout() {
                 tabBarBadgeStyle: {
                   backgroundColor: colors.danger,
                   color: colors.textInverse,
-                  fontSize: 11,
-                  fontWeight: '700',
-                },
-              }
-            : {}),
-        }}
-      />
-      <Tabs.Screen
-        name="echo"
-        options={{
-          title: t('tabs.echo'),
-          tabBarIcon: () => <EchoTabIcon />,
-          tabBarIconStyle: ECHO_ICON_STYLE,
-          // The word under the disc is lit for the same reason the disc is.
-          tabBarLabelStyle: { ...TAB_LABEL, color: colors.accent, fontWeight: '700' },
-          /*
-           * `ink`, where this badge used to be `accent` and the other two are
-           * `danger`. Red in this bar means somebody is waiting for you, and a
-           * due count is an invitation you made to yourself — that part has
-           * not changed. What changed is that accent is now the disc the badge
-           * sits on, so the old colour would have gone missing over exactly
-           * the half of the badge that overlaps it. Ink reads on both.
-           */
-          ...(echoBadge
-            ? {
-                tabBarBadge: echoBadge,
-                tabBarBadgeStyle: {
-                  backgroundColor: colors.ink,
-                  color: colors.bg,
                   fontSize: 11,
                   fontWeight: '700',
                 },
