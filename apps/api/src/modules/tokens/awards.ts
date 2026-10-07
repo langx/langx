@@ -6,7 +6,7 @@ import type { Profile } from '../profiles/profiles'
 import { isOfficialId } from '../official/accounts'
 import { settleReferral } from '../referrals/settle'
 import { recordActivity } from './dailyActivity'
-import { awardTokens } from './ledger'
+import { MUTUAL_REF_PREFIX, awardTokens } from './ledger'
 import { recordQualifyingAction, type StreakResult } from './streak'
 
 export interface SendAward {
@@ -19,7 +19,7 @@ export interface SendAward {
 
 /** `refId` for the reciprocity bonus — can never collide with a message id. */
 function mutualRefId(conversation: Conversation): string {
-  return `mutual:${conversation._id.toHexString()}`
+  return `${MUTUAL_REF_PREFIX}${conversation._id.toHexString()}`
 }
 
 /**
@@ -167,7 +167,9 @@ export async function awardForSend(
   if (streak) tokens += streak.milestoneXp
 
   /*
-   * The invitee's first real earning is what activates their referrer's award.
+   * An invitee's earning send is what may activate their referrer's award —
+   * once it is part of a two-way conversation with somebody else; see
+   * `isActivated`.
    *
    * Gated on `sender.referredBy` — a field this function has already read, so
    * an account nobody invited, which is nearly all of them, pays a property
@@ -181,6 +183,14 @@ export async function awardForSend(
    * accounts pays out nothing. That is the design working.
    */
   if (sender?.referredBy && tokens > 0) await settleReferral(db, senderId, at)
+  /*
+   * The other side of the reply that made this conversation two-way. If they
+   * were invited, this reply may be exactly what their activation waits on —
+   * see `isActivated` — and without this they would only be settled on their
+   * own next send. Once per conversation, since `becameMutual` is the
+   * transition, and for nearly everyone one `_id` read that finds no row.
+   */
+  if (becameMutual && partnerId) await settleReferral(db, partnerId, at)
 
   return { tokens, streak, capped }
 }

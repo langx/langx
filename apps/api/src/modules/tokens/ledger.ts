@@ -33,6 +33,13 @@ export interface TokenLedgerEntry {
   createdAt: Date
 }
 
+/**
+ * The `refId` prefix of the reciprocity bonus, `mutual:<conversationId>`.
+ * Here rather than beside the award in `awards.ts` because referral settling
+ * reads it too, and `awards.ts` already imports that module.
+ */
+export const MUTUAL_REF_PREFIX = 'mutual:'
+
 export interface TokenAggregate {
   /** `<userId>:<periodType>:<periodKey>` — see `aggregateId`. */
   _id: string

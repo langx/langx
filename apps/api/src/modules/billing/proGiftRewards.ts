@@ -77,6 +77,9 @@ export async function queueReferralGifts(
           $gte: new Date(Date.UTC(year, 0, 1)),
           $lt: new Date(Date.UTC(year + 1, 0, 1)),
         },
+        // An activation the referrer was not paid for — past the monthly
+        // limit, or a shared network or device — is not progress either.
+        unpaidReason: { $exists: false },
       },
       { _id: inviteeId, activatedAt: { $exists: false } },
     ],
