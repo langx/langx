@@ -61,7 +61,11 @@ included. Both are written out below, per language.
 `LangX: Language Exchange`
 
 **Apple subtitle (30)**
-`Practice with real people`
+`Talk with native speakers`
+
+Since 2.9 the App Store's en-US name and subtitle are these two lines; before
+it they read "LangX | Practice Learn Succeed" and "Open Source Tandem
+Alternative", which named a competitor (App Review guideline 2.3.7).
 
 **Play short description (80)**
 `Practice a language by talking with people learning yours.`
@@ -105,7 +109,7 @@ included. Both are written out below, per language.
 > Privacy Policy: https://langx.io/privacy-policy
 
 **Keywords (iOS, 100 chars)**
-`language,exchange,speaking,conversation,call,video,tandem,partner,english,spanish,chat,japanese`
+`speaking,conversation,call,video,tandem,partner,english,spanish,chat,japanese,learn,practice,korean`
 
 ---
 
