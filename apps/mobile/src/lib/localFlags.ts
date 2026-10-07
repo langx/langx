@@ -250,6 +250,14 @@ export const FLAG_KEYS = {
    * losing this list costs one card shown again, never the way to write one.
    */
   testimonialCardsDismissed: 'testimonialCardsDismissed',
+  /**
+   * The chat camera's send mode last picked here: `once`, `replay` or `keep`.
+   *
+   * Device-level like the reaction row: it is a habit of whoever holds this
+   * phone. `parseSnapMode` turns anything else, a missing value included,
+   * into the default, so a lost or stale value costs one extra tap.
+   */
+  snapMode: 'snapMode',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]
