@@ -179,7 +179,7 @@ function LinkedRow({
         <View style={styles.chips}>
           {item.via.includes('device') ? <Chip label={ADMIN.linked.device} tone="accent" /> : null}
           {item.via.includes('network') ? <Chip label={ADMIN.linked.network} /> : null}
-          {item.suspended ? <Chip label={ADMIN.linked.suspended} tone="streak" selected /> : null}
+          {item.suspended ? <Chip label={ADMIN.linked.suspended} tone="streak" /> : null}
         </View>
       </Pressable>
     </View>
