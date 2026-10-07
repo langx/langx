@@ -1,0 +1,3693 @@
+{
+  "id": "tr:absoluteBeginner",
+  "lang": "tr",
+  "level": "absoluteBeginner",
+  "contentVersion": 2,
+  "reviewed": false,
+  "sources": [
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/hermitdave/FrequencyWords"
+    }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "Ben de.",
+      "gloss": { "en": "Me, too.", "de": "Ich auch.", "es": "Yo también." },
+      "freqRank": 1,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-raising-hand"
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "Ne kadar?",
+      "gloss": { "en": "How much?", "es": "¿Cuánto cuesta?", "fr": "C’est combien ?" },
+      "freqRank": 2,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heavy-dollar-sign"
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "Bana ne?",
+      "gloss": {
+        "en": "What do I care?",
+        "es": "¿Y a mí qué?",
+        "pt-BR": "Que me importa?",
+        "ru": "А мне то что?"
+      },
+      "freqRank": 3,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "Evet, lütfen.",
+      "gloss": { "en": "Yes, please.", "de": "Ja, bitte.", "es": "Sí, por favor." },
+      "freqRank": 4,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark-button"
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "Onu biliyorum.",
+      "gloss": { "en": "I know that.", "de": "Ich kenne sie.", "es": "Lo sé." },
+      "freqRank": 5,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb"
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "Bu doğru.",
+      "gloss": { "en": "It's true.", "de": "Stimmt.", "pt-BR": "Isto é verdade." },
+      "freqRank": 6,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark"
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "Gerçekten bilmiyorum.",
+      "gloss": {
+        "en": "I really don't know.",
+        "es": "La verdad es que no lo sé.",
+        "ru": "Я правда не знаю."
+      },
+      "freqRank": 7,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "Hayır, teşekkürler.",
+      "gloss": {
+        "en": "No, thank you.",
+        "de": "Nein, danke.",
+        "es": "No, gracias.",
+        "fr": "Non, merci.",
+        "pt-BR": "Não, obrigado.",
+        "ru": "Нет, спасибо."
+      },
+      "freqRank": 8,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-gesturing-no"
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "O yeni.",
+      "gloss": { "en": "It's new.", "de": "Er ist neu.", "es": "Es nuevo." },
+      "freqRank": 9,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:new-button"
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "Sorun nerede?",
+      "gloss": {
+        "en": "Where is the problem?",
+        "de": "Wo ist das Problem?",
+        "es": "¿Dónde está el problema?",
+        "fr": "Où est le problème ?",
+        "ar": "أين المشكلة؟"
+      },
+      "freqRank": 10,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning"
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "Gerçekten harika.",
+      "gloss": {
+        "en": "It's really awesome.",
+        "es": "¡Es realmente fantástico!",
+        "fr": "C'est vraiment génial."
+      },
+      "freqRank": 11,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:grinning-face-with-big-eyes"
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "Çok üzgünüm.",
+      "gloss": {
+        "en": "I'm terribly sorry.",
+        "de": "Es tut mir schrecklich leid.",
+        "es": "Lo siento de verdad."
+      },
+      "freqRank": 12,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:disappointed-face"
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "Tabii ki.",
+      "gloss": { "en": "Certainly.", "de": "Natürlich.", "ar": "طبعاً." },
+      "freqRank": 13,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ok-hand"
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "Buraya gel.",
+      "gloss": { "en": "Come here.", "es": "Ven aquí.", "ru": "Подойди-ка!" },
+      "freqRank": 14,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:backhand-index-pointing-down"
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "Kız nerede?",
+      "gloss": {
+        "en": "Where's the girl?",
+        "de": "Wo ist das Mädchen?",
+        "es": "¿Dónde está la chica?"
+      },
+      "freqRank": 15,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:girl"
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "Teşekkürler anne.",
+      "gloss": { "en": "Thanks, Mom.", "de": "Danke, Mama!", "es": "¡Gracias, mamá!" },
+      "freqRank": 16,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:folded-hands"
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "Önemli değil.",
+      "gloss": { "en": "It's not important.", "es": "No tiene importancia.", "ar": "ليس مهماً." },
+      "freqRank": 17,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "Tekrar et!",
+      "gloss": { "en": "Repeat!", "de": "Wiederhole!", "fr": "Répète !" },
+      "freqRank": 18,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:repeat-button"
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "Kim benimle?",
+      "gloss": {
+        "en": "Who's with me?",
+        "es": "¿Quién está conmigo?",
+        "pt-BR": "Quem está comigo?",
+        "ru": "Кто со мной?"
+      },
+      "freqRank": 19,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-raising-hand"
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Bu para.",
+      "gloss": {
+        "en": "This is money.",
+        "de": "Das ist Geld.",
+        "es": "Esto es dinero.",
+        "ru": "Это деньги."
+      },
+      "freqRank": 20,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote"
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "Onlar büyük.",
+      "gloss": { "en": "They are big.", "de": "Sie sind groß.", "es": "Son grandes." },
+      "freqRank": 21,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:straight-ruler"
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "Emin misin?",
+      "gloss": { "en": "Are you sure?", "de": "Bist du sicher?", "ar": "هل انت متأكد" },
+      "freqRank": 22,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-raised-eyebrow"
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "Herkes biliyor.",
+      "gloss": { "en": "Everybody knows.", "de": "Alle wissen es.", "pt-BR": "Todo o mundo sabe." },
+      "freqRank": 23,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette"
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "Özür dilerim.",
+      "gloss": { "en": "I'm sorry.", "es": "Disculpa.", "ar": "عفوًا." },
+      "freqRank": 24,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-bowing"
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "Herkes iyi.",
+      "gloss": {
+        "en": "Everybody is fine.",
+        "de": "Alle machen es gut.",
+        "es": "Todos están bien."
+      },
+      "freqRank": 25,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "Bekle beni!",
+      "gloss": { "en": "Wait for me!", "ru": "Подожди меня!", "ar": "انتظرني" },
+      "freqRank": 26,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:raised-hand"
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "Burada bekle.",
+      "gloss": { "en": "Wait here.", "de": "Warte hier drin!", "ru": "Жди здесь." },
+      "freqRank": 27,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chair"
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "Eve gidelim.",
+      "gloss": { "en": "Let us go home.", "es": "Vámonos a casa.", "ru": "Давайте пойдём домой." },
+      "freqRank": 28,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "Bu nedir?",
+      "gloss": { "en": "What is this?", "es": "¿Qué es esto?", "ru": "Что это?" },
+      "freqRank": 29,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left"
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "Saat kaç?",
+      "gloss": {
+        "en": "What time?",
+        "de": "Wie spät ist es?",
+        "es": "¿Qué hora es?",
+        "fr": "Quelle heure est-il ?",
+        "ru": "Который час?"
+      },
+      "freqRank": 30,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:one-o-clock"
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "Çocuklar nerede?",
+      "gloss": {
+        "en": "Where are the children?",
+        "es": "¿Dónde están los niños?",
+        "fr": "Où sont les enfants ?"
+      },
+      "freqRank": 31,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baby"
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "Kadın hazır.",
+      "gloss": {
+        "en": "The woman is ready.",
+        "es": "La mujer está lista.",
+        "ru": "Женщина готова."
+      },
+      "freqRank": 32,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman"
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "Bu zor.",
+      "gloss": { "en": "This is difficult.", "de": "Das ist schwierig.", "fr": "C'est difficile." },
+      "freqRank": 33,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:weary-face"
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "Bunu seviyorum.",
+      "gloss": { "en": "I like this one.", "de": "Ich liebe das.", "es": "Me gusta éste." },
+      "freqRank": 34,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "Onu seviyorum.",
+      "gloss": { "en": "I love her.", "de": "Ich liebe sie.", "es": "La quiero.", "ar": "أحبها." },
+      "freqRank": 35,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:two-hearts"
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "Seni seviyorum.",
+      "gloss": {
+        "en": "I love you.",
+        "de": "Ich liebe dich!",
+        "es": "Te quiero.",
+        "fr": "Je t'aime !",
+        "pt-BR": "Te amo.",
+        "ru": "Я люблю тебя!"
+      },
+      "freqRank": 36,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart"
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "Evet, elbette.",
+      "gloss": { "en": "Yes, of course.", "de": "Ja, natürlich.", "fr": "Oui, bien sûr." },
+      "freqRank": 37,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "Doktor nerede?",
+      "gloss": {
+        "en": "Where's the doctor?",
+        "de": "Wo ist der Arzt?",
+        "es": "¿Dónde está el médico?",
+        "ru": "Где врач?"
+      },
+      "freqRank": 38,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope"
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "Bu yemek.",
+      "gloss": { "en": "This is food.", "es": "Esto es comida.", "ru": "Это еда." },
+      "freqRank": 39,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate"
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "Yemek nerede?",
+      "gloss": {
+        "en": "Where is the food?",
+        "es": "¿Dónde está la comida?",
+        "pt-BR": "Onde a comida?"
+      },
+      "freqRank": 40,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food"
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "Çok geç.",
+      "gloss": { "en": "Too late.", "es": "Demasiado tarde.", "pt-BR": "Tarde demais." },
+      "freqRank": 41,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock"
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "Mutlu musun?",
+      "gloss": { "en": "Are you happy?", "es": "¿Estás feliz?", "ru": "Ты рад?" },
+      "freqRank": 42,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes"
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "O mutlu.",
+      "gloss": {
+        "en": "He is happy.",
+        "de": "Sie ist glücklich.",
+        "es": "Es feliz.",
+        "ru": "Она счастлива."
+      },
+      "freqRank": 43,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:grinning-face"
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "Nereye gitti?",
+      "gloss": {
+        "en": "Where did he go?",
+        "de": "Wo ist er hingegangen?",
+        "es": "¿A dónde fue él?",
+        "fr": "Où a-t-il disparu ?",
+        "ru": "Куда он пошел?"
+      },
+      "freqRank": 44,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:compass"
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "O gitti.",
+      "gloss": { "en": "She left.", "es": "Se fue.", "ru": "Он ушёл." },
+      "freqRank": 45,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-walking"
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "Yalnız mısın?",
+      "gloss": {
+        "en": "Are you alone?",
+        "de": "Bist du alleine?",
+        "es": "¿Estás solo?",
+        "fr": "Es-tu seule ?"
+      },
+      "freqRank": 46,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-standing"
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "İnsan nedir?",
+      "gloss": {
+        "en": "What is a human being?",
+        "es": "¿Qué es un ser humano?",
+        "fr": "Qu'est-ce qu'un être humain ?",
+        "ru": "Что такое человек?"
+      },
+      "freqRank": 47,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person"
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "Onu gördüm.",
+      "gloss": { "en": "I did see him.", "es": "Le vi.", "pt-BR": "Eu o vi." },
+      "freqRank": 48,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes"
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "Sonra görüşürüz.",
+      "gloss": { "en": "See you then.", "es": "Nos vemos luego.", "ru": "Увидимся позже." },
+      "freqRank": 49,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand"
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "Babam doktor.",
+      "gloss": {
+        "en": "My father is a doctor.",
+        "de": "Mein Vater ist Arzt.",
+        "es": "Mi padre es doctor.",
+        "fr": "Mon père est médecin.",
+        "pt-BR": "Meu pai é médico.",
+        "ru": "Мой отец - врач."
+      },
+      "freqRank": 50,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope"
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "Gidiyor musun?",
+      "gloss": { "en": "Are you going?", "es": "¿Te bajas?", "fr": "Est-ce que tu y vas ?" },
+      "freqRank": 51,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-walking"
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "Güzel gidiyor!",
+      "gloss": {
+        "en": "It's going nicely!",
+        "de": "Es läuft prima!",
+        "fr": "Ça se passe gentiment !"
+      },
+      "freqRank": 52,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chart-increasing"
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "Sakin ol.",
+      "gloss": { "en": "Take it easy!", "de": "Beruhige dich!", "pt-BR": "Calma." },
+      "freqRank": 53,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-in-lotus-position"
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "Onu yaptım.",
+      "gloss": { "en": "I have done it.", "de": "Ich habe das gemacht.", "es": "Lo he hecho." },
+      "freqRank": 54,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark-button"
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "Yalnız değilsin.",
+      "gloss": {
+        "en": "You're not alone.",
+        "de": "Du bist nicht allein.",
+        "es": "No estás solo.",
+        "ru": "Ты не один."
+      },
+      "freqRank": 55,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:people-hugging"
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "Ne gördün?",
+      "gloss": {
+        "en": "What did you see?",
+        "de": "Was hast du gesehen?",
+        "es": "¿Qué has visto?",
+        "fr": "Qu'as-tu vu ?",
+        "ru": "Что ты видел?"
+      },
+      "freqRank": 56,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye"
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "Su, lütfen.",
+      "gloss": { "en": "Water, please.", "de": "Wasser bitte.", "ru": "Воды, пожалуйста." },
+      "freqRank": 57,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:potable-water"
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "Onu yaptın!",
+      "gloss": { "en": "You've done it!", "es": "¡Lo has hecho!", "ru": "Ты сделал это!" },
+      "freqRank": 58,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:party-popper"
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "Bu olamaz!",
+      "gloss": {
+        "en": "This can't be!",
+        "de": "Das kann nicht sein!",
+        "es": "¡Esto no puede ser!"
+      },
+      "freqRank": 59,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:astonished-face"
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "Mutlu görünüyor.",
+      "gloss": {
+        "en": "She seems happy.",
+        "de": "Sie sieht glücklich aus.",
+        "es": "Ella parece feliz."
+      },
+      "freqRank": 60,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:grinning-face-with-smiling-eyes"
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "Bu kolay.",
+      "gloss": { "en": "It's easy.", "es": "Esto es fácil.", "ru": "Легко." },
+      "freqRank": 61,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ok-hand"
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "Kolay değildi.",
+      "gloss": { "en": "It wasn't easy.", "es": "No ha sido fácil.", "pt-BR": "Não foi fácil." },
+      "freqRank": 62,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:weary-face"
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "Gelecek mi?",
+      "gloss": {
+        "en": "Will he come?",
+        "de": "Wird sie kommen?",
+        "es": "¿Vendrá ella?",
+        "fr": "Est-ce qu'il viendra ?",
+        "ar": "هل سيأتي؟"
+      },
+      "freqRank": 63,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-walking"
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "Yol nerede?",
+      "gloss": { "en": "Where is the road?", "ru": "Где дорога?", "ar": "أين هو الطريق؟" },
+      "freqRank": 64,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map"
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "Konuşmak istiyor.",
+      "gloss": { "en": "She wants to speak.", "es": "Quiere hablar.", "fr": "Elle veut parler." },
+      "freqRank": 65,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head"
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "Gitmek istiyorum.",
+      "gloss": { "en": "I would love to go.", "es": "Me quiero ir.", "ru": "Я хочу уйти." },
+      "freqRank": 66,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage"
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "Seni anlıyorum.",
+      "gloss": {
+        "en": "I understand you.",
+        "de": "Ich verstehe dich.",
+        "es": "Te entiendo.",
+        "fr": "Je te comprends."
+      },
+      "freqRank": 67,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain"
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "Cevap zor.",
+      "gloss": {
+        "en": "The answer's tricky.",
+        "es": "La respuesta es difícil.",
+        "ru": "Ответ найти непросто."
+      },
+      "freqRank": 68,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face"
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "Evde misin?",
+      "gloss": { "en": "Are you at home?", "de": "Bist du zu Hause?", "es": "¿Estás en casa?" },
+      "freqRank": 69,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "Neredeyse bitti.",
+      "gloss": {
+        "en": "It's almost over.",
+        "de": "Es ist fast vorbei.",
+        "es": "Está casi acabado.",
+        "fr": "C'est presque terminé."
+      },
+      "freqRank": 70,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done"
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "Ne düşünüyorsun?",
+      "gloss": { "en": "Where's your head at?", "de": "Was denken Sie?", "es": "¿Qué opinas?" },
+      "freqRank": 71,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thought-balloon"
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "Bu mükemmel.",
+      "gloss": { "en": "This is perfect.", "es": "Esto es perfecto.", "pt-BR": "Isto é perfeito." },
+      "freqRank": 72,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hundred-points"
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "Beni ara!",
+      "gloss": { "en": "Call me!", "de": "Ruf mich an!", "es": "¡Llámame!" },
+      "freqRank": 73,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver"
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "Aç mısın?",
+      "gloss": { "en": "Are you hungry?", "de": "Hast du Hunger?", "es": "¿Tienes hambre?" },
+      "freqRank": 74,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife"
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "Saat on.",
+      "gloss": {
+        "en": "It's ten o'clock.",
+        "de": "Es ist zehn Uhr.",
+        "es": "Son las diez.",
+        "fr": "Il est dix heures."
+      },
+      "freqRank": 75,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ten-o-clock"
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "Bugün gidiyorum.",
+      "gloss": { "en": "I'm leaving today.", "es": "Me voy hoy.", "ru": "Я сегодня уезжаю." },
+      "freqRank": 76,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage"
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "Eve gidiyorum.",
+      "gloss": { "en": "I'm going home.", "de": "Ich geh nach Hause.", "ru": "Иду домой." },
+      "freqRank": 77,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden"
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "Araba burada.",
+      "gloss": {
+        "en": "Here is the car.",
+        "de": "Hier ist das Auto.",
+        "es": "El coche está aquí."
+      },
+      "freqRank": 78,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "Burada çalışıyorum.",
+      "gloss": {
+        "en": "I work here.",
+        "de": "Ich arbeite hier.",
+        "es": "Trabajo aquí.",
+        "pt-BR": "Eu trabalho aqui."
+      },
+      "freqRank": 79,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "Araba nerede?",
+      "gloss": {
+        "en": "Where's the car?",
+        "es": "¿Dónde está el auto?",
+        "fr": "Où est la voiture ?"
+      },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "Yalan söylüyor.",
+      "gloss": { "en": "She is lying.", "de": "Er lügt.", "fr": "Il ment." },
+      "freqRank": 81,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face"
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "Güçlü değilim.",
+      "gloss": {
+        "en": "I'm not strong.",
+        "de": "Ich bin nicht stark.",
+        "es": "No soy fuerte.",
+        "fr": "Je ne suis pas fort."
+      },
+      "freqRank": 82,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps"
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "Hayat bu.",
+      "gloss": { "en": "That's life.", "de": "So ist das Leben.", "fr": "C'est la vie." },
+      "freqRank": 83,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "Çalışıyor musun?",
+      "gloss": { "en": "Are you studying?", "es": "¿Estás trabajando?", "ru": "Ты учишься?" },
+      "freqRank": 84,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books"
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "Kadın çalışıyor.",
+      "gloss": {
+        "en": "The woman is working.",
+        "es": "La mujer está trabajando.",
+        "ru": "Женщина работает."
+      },
+      "freqRank": 85,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "Geç geldin.",
+      "gloss": { "en": "You came in late.", "es": "Has venido tarde.", "ru": "Ты поздно пришла." },
+      "freqRank": 86,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock"
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "Hoş geldin!",
+      "gloss": {
+        "en": "Welcome!",
+        "de": "Willkommen!",
+        "fr": "Bienvenue !",
+        "ru": "Добро пожаловать!",
+        "ar": "أهلًا وسهلًا!"
+      },
+      "freqRank": 87,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-open-hands"
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "Nereden geldin?",
+      "gloss": {
+        "en": "Where did you come from?",
+        "es": "¿De dónde venías?",
+        "fr": "D'où viens-tu ?"
+      },
+      "freqRank": 88,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa"
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "Arkadaşım geldi.",
+      "gloss": {
+        "en": "My friend has arrived.",
+        "es": "Ha venido mi amigo.",
+        "pt-BR": "A minha amiga veio."
+      },
+      "freqRank": 89,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "Güzel soru.",
+      "gloss": {
+        "en": "Good question.",
+        "de": "Gute Frage.",
+        "es": "Buena pregunta.",
+        "fr": "Bonne question."
+      },
+      "freqRank": 90,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-question-mark"
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "Arkadaşım mısın?",
+      "gloss": {
+        "en": "Are you my friend?",
+        "de": "Bist du mein Freund?",
+        "es": "¿Eres mi amigo?"
+      },
+      "freqRank": 91,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "Hava nasıl?",
+      "gloss": {
+        "en": "How is the weather?",
+        "de": "Wie ist das Wetter?",
+        "es": "¿Cómo está el tiempo?",
+        "ru": "Как погода?"
+      },
+      "freqRank": 92,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun-behind-rain-cloud"
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "Hayat kısa.",
+      "gloss": {
+        "en": "Life is short.",
+        "de": "Das Leben ist kurz.",
+        "es": "La vida es corta.",
+        "pt-BR": "A vida é curta."
+      },
+      "freqRank": 93,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done"
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "Acele et!",
+      "gloss": { "en": "Hurry up.", "es": "¡Date prisa!", "ru": "Быстрее." },
+      "freqRank": 94,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running"
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "Baban nerede?",
+      "gloss": {
+        "en": "Where is your father?",
+        "de": "Wo ist dein Vater?",
+        "es": "¿Dónde está tu padre?",
+        "fr": "Où est ton père ?",
+        "pt-BR": "Onde está seu pai?",
+        "ru": "Где твой отец?"
+      },
+      "freqRank": 95,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:man"
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "Dans ettim.",
+      "gloss": {
+        "en": "I danced.",
+        "de": "Ich habe getanzt.",
+        "es": "Bailé.",
+        "fr": "J'ai dansé.",
+        "ru": "Я танцевал."
+      },
+      "freqRank": 96,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-dancing"
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "Bu tuhaf.",
+      "gloss": { "en": "This is weird.", "es": "Esto es extraño.", "ru": "Это странно." },
+      "freqRank": 97,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-raised-eyebrow"
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "Güzel fikir.",
+      "gloss": { "en": "Nice idea.", "es": "Buena idea.", "fr": "Bonne idée." },
+      "freqRank": 98,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb"
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "Nereye gidiyorsun?",
+      "gloss": {
+        "en": "Where are you going?",
+        "de": "Wohin gehst du?",
+        "es": "¿Adónde vas?",
+        "fr": "Où vas-tu ?",
+        "pt-BR": "Para onde você está indo?",
+        "ru": "Куда ты идёшь?"
+      },
+      "freqRank": 99,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:compass"
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "Ben iyiyim.",
+      "gloss": {
+        "en": "I'm doing fine.",
+        "es": "Estoy bien.",
+        "pt-BR": "Estou bem.",
+        "ar": "أنا بخير."
+      },
+      "freqRank": 100,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:slightly-smiling-face"
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "Mümkün değil!",
+      "gloss": {
+        "en": "No way!",
+        "de": "Das ist nicht möglich!",
+        "fr": "C'est pas possible !",
+        "ru": "Не выйдет!"
+      },
+      "freqRank": 101,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-gesturing-no"
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "Hasta mısın?",
+      "gloss": { "en": "Are you sick?", "de": "Bist du krank?", "es": "¿Estás enferma?" },
+      "freqRank": 102,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer"
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "O, hasta.",
+      "gloss": { "en": "He is ill.", "es": "Él está enfermo.", "fr": "Il est malade." },
+      "freqRank": 103,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-medical-mask"
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "Annen nasıl?",
+      "gloss": {
+        "en": "How is your mother?",
+        "es": "¿Cómo está tu madre?",
+        "fr": "Comment va ta mère ?",
+        "ru": "Как твоя матушка?"
+      },
+      "freqRank": 104,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman"
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "Şaka yapıyorum.",
+      "gloss": { "en": "I am joking.", "es": "Estoy bromeando.", "ar": "أنا أمزح فقط." },
+      "freqRank": 105,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:winking-face-with-tongue"
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "Annen nerede?",
+      "gloss": {
+        "en": "Where's your mom?",
+        "de": "Wo ist deine Mutter?",
+        "es": "¿Dónde está tu madre?",
+        "fr": "Où est ta mère ?",
+        "ru": "Где твоя мать?"
+      },
+      "freqRank": 106,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman"
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "Yemek yapıyorum.",
+      "gloss": { "en": "I'm cooking.", "fr": "Je fais la cuisine.", "ru": "Я готовлю еду." },
+      "freqRank": 107,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food"
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "Onlar aile.",
+      "gloss": {
+        "en": "They're family.",
+        "es": "Ellos son familia.",
+        "pt-BR": "Eles são uma família.",
+        "ru": "Они семья."
+      },
+      "freqRank": 108,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family"
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "Yemin ederim!",
+      "gloss": { "en": "I swear!", "fr": "Je jure !", "ru": "Я клянусь!" },
+      "freqRank": 109,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:raised-hand"
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "At benim.",
+      "gloss": {
+        "en": "The horse is mine.",
+        "de": "Das Pferd gehört mir.",
+        "es": "El caballo es mío."
+      },
+      "freqRank": 110,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:horse"
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "Kahve istiyorum.",
+      "gloss": {
+        "en": "I want coffee.",
+        "es": "Quiero café.",
+        "pt-BR": "Quero café.",
+        "ru": "Мне, пожалуйста, кофе."
+      },
+      "freqRank": 111,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage"
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "Hâlâ erken.",
+      "gloss": {
+        "en": "It's still early.",
+        "de": "Es ist noch früh.",
+        "es": "Todavía es temprano."
+      },
+      "freqRank": 112,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunrise"
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "Su sıcak.",
+      "gloss": {
+        "en": "The water is hot.",
+        "de": "Das Wasser ist warm.",
+        "es": "El agua está caliente.",
+        "fr": "L'eau est chaude."
+      },
+      "freqRank": 113,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thermometer"
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "Hâlâ buradayım.",
+      "gloss": {
+        "en": "I'm still here.",
+        "es": "Todavía estoy aquí.",
+        "pt-BR": "Ainda estou aqui."
+      },
+      "freqRank": 114,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:round-pushpin"
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "Kimse bilmiyor.",
+      "gloss": { "en": "No one knows.", "es": "No lo sabe nadie.", "ar": "لا أحد يعرف." },
+      "freqRank": 115,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "Köpek benim.",
+      "gloss": {
+        "en": "The dog is mine.",
+        "de": "Der Hund gehört mir.",
+        "es": "El perro es mío.",
+        "ru": "Это моя собака."
+      },
+      "freqRank": 116,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "Ne duydun?",
+      "gloss": { "en": "What did you hear?", "es": "¿Qué has oído?", "ru": "Что ты слышал?" },
+      "freqRank": 117,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "Köpek beyaz.",
+      "gloss": {
+        "en": "The dog is white.",
+        "de": "Der Hund ist weiß.",
+        "es": "El perro es blanco.",
+        "fr": "Le chien est blanc.",
+        "pt-BR": "O cachorro é branco.",
+        "ru": "Собака белая."
+      },
+      "freqRank": 118,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "Evi gördüm.",
+      "gloss": {
+        "en": "I saw the house.",
+        "de": "Ich habe das Haus gesehen.",
+        "es": "Vi la casa."
+      },
+      "freqRank": 119,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "Köpek evde.",
+      "gloss": {
+        "en": "The dog is in the house.",
+        "de": "Der Hund ist im Haus.",
+        "es": "El perro está en la casa.",
+        "pt-BR": "O cachorro está na casa."
+      },
+      "freqRank": 120,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "Vakit geldi.",
+      "gloss": {
+        "en": "The time has come.",
+        "de": "Die Zeit ist gekommen.",
+        "es": "Ha llegado el momento.",
+        "pt-BR": "É chegado o momento."
+      },
+      "freqRank": 121,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-done"
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "Şimdi görüyorum.",
+      "gloss": {
+        "en": "I see it now.",
+        "de": "Ich sehe jetzt.",
+        "es": "Ya lo veo.",
+        "fr": "Je vois maintenant.",
+        "ru": "Теперь я вижу."
+      },
+      "freqRank": 122,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes"
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "Harika görünüyorsun.",
+      "gloss": { "en": "You look fantastic.", "de": "Du siehst toll aus.", "es": "Estás genial." },
+      "freqRank": 123,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mirror"
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "Bunu bilmiyordum.",
+      "gloss": {
+        "en": "I did not know this.",
+        "de": "Das wusste ich nicht.",
+        "es": "No lo sabía.",
+        "fr": "Je ne le savais pas."
+      },
+      "freqRank": 124,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:astonished-face"
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "Ne buldun?",
+      "gloss": {
+        "en": "What did you find?",
+        "es": "¿Qué has encontrado?",
+        "fr": "Qu'as-tu trouvé ?"
+      },
+      "freqRank": 125,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left"
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "Sizi anlamıyorum.",
+      "gloss": {
+        "en": "I do not understand you.",
+        "de": "Ich verstehe Sie nicht.",
+        "es": "No te entiendo."
+      },
+      "freqRank": 126,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:confused-face"
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "Günaydın, Mike.",
+      "gloss": {
+        "en": "Good morning, Mike.",
+        "de": "Guten Morgen, Mike.",
+        "es": "Buenos días, Mike."
+      },
+      "freqRank": 127,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunrise"
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "Fena değil.",
+      "gloss": { "en": "Not bad.", "de": "Nicht schlecht.", "fr": "Pas mal." },
+      "freqRank": 128,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ok-hand"
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "Ben Tom.",
+      "gloss": { "en": "I'm Tom.", "de": "Ich bin Tom.", "fr": "Je suis Tom." },
+      "freqRank": 129,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-raising-hand"
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "Bilmiyorum, Tom.",
+      "gloss": {
+        "en": "I don't know, Tom.",
+        "es": "No sé, Tom.",
+        "fr": "Je ne sais pas, Tom.",
+        "ru": "Я не знаю, Том.",
+        "ar": "لا أعلم يا تام."
+      },
+      "freqRank": 130,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "Merhaba, Tom.",
+      "gloss": { "en": "Hello, Tom.", "de": "Hallo, Tom.", "fr": "Salut, Tom." },
+      "freqRank": 131,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand"
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "Tom geldi.",
+      "gloss": {
+        "en": "Tom's arrived.",
+        "de": "Tom kam.",
+        "es": "Tom vino.",
+        "fr": "Tom est venu."
+      },
+      "freqRank": 132,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door"
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "Bir zamanlar...",
+      "gloss": {
+        "en": "Once upon a time...",
+        "de": "Es war einmal ...",
+        "es": "Había una vez...",
+        "fr": "Il était une fois..."
+      },
+      "freqRank": 133,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book"
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "Tom hasta.",
+      "gloss": {
+        "en": "Tom is sick.",
+        "de": "Tom ist krank.",
+        "es": "Tom está enfermo.",
+        "ru": "Том болен."
+      },
+      "freqRank": 134,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer"
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "David evde.",
+      "gloss": {
+        "en": "David is at home.",
+        "de": "David ist zu Hause.",
+        "es": "David está en casa.",
+        "pt-BR": "David está em casa."
+      },
+      "freqRank": 135,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "Tom nerede?",
+      "gloss": { "en": "Where's Tom?", "de": "Wo ist Tom?", "es": "¿Dónde está Tom?" },
+      "freqRank": 136,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:round-pushpin"
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "Arkadaşın burada.",
+      "gloss": {
+        "en": "Your friend is here.",
+        "de": "Dein Freund ist hier.",
+        "es": "Tu amigo está aquí."
+      },
+      "freqRank": 137,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "Tom sakin.",
+      "gloss": { "en": "Tom is calm.", "es": "Tom está tranquilo.", "ru": "Том спокоен." },
+      "freqRank": 138,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-in-lotus-position"
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "Arkadaşın kim?",
+      "gloss": { "en": "Who is your friend?", "es": "¿Quién es tu amigo?", "ru": "Кто твой друг?" },
+      "freqRank": 139,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "Öyle söyleme.",
+      "gloss": { "en": "Don't say that.", "de": "Sag das nicht.", "es": "No digas eso." },
+      "freqRank": 140,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:zipper-mouth-face"
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "Yalan söyleme!",
+      "gloss": { "en": "Don't you lie!", "de": "Nicht lügen!", "es": "¡No mientas!" },
+      "freqRank": 141,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face"
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "O bekliyor.",
+      "gloss": { "en": "He is waiting.", "es": "Está esperando.", "fr": "Elle attend." },
+      "freqRank": 142,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done"
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "Bunu alacağım.",
+      "gloss": { "en": "I'll take this one.", "es": "Lo compraré.", "ru": "Я возьму вот этот." },
+      "freqRank": 143,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shopping-cart"
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "Ev soğuk.",
+      "gloss": {
+        "en": "The house is cold.",
+        "de": "Das Haus ist kalt.",
+        "es": "La casa está fría."
+      },
+      "freqRank": 144,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cold-face"
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "Hava soğuk.",
+      "gloss": { "en": "It's cold.", "de": "Es ist kalt.", "fr": "Il fait froid." },
+      "freqRank": 145,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snowflake"
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "Kahve soğuk.",
+      "gloss": {
+        "en": "The coffee is cold.",
+        "de": "Der Kaffee ist kalt.",
+        "es": "El café está frío.",
+        "pt-BR": "O café está frio.",
+        "ru": "Кофе холодный."
+      },
+      "freqRank": 146,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage"
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "Nerede çalışıyorsun?",
+      "gloss": {
+        "en": "Where do you work?",
+        "de": "Wo arbeitest du?",
+        "es": "¿Dónde trabajas?",
+        "fr": "Où travailles-tu ?"
+      },
+      "freqRank": 147,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "İyi günler.",
+      "gloss": { "en": "Have a nice day.", "ru": "Добрый день.", "ar": "أتمنى لك يوماً طيباً." },
+      "freqRank": 148,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun"
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "Onu görmedim.",
+      "gloss": { "en": "I didn't see her.", "es": "No lo he visto.", "fr": "Je ne l'ai pas vu." },
+      "freqRank": 149,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:see-no-evil-monkey"
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "Kapı nerede?",
+      "gloss": { "en": "Where is the gate?", "pt-BR": "Onde está a porta?", "ru": "Где дверь?" },
+      "freqRank": 150,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door"
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "Bir şey değil.",
+      "gloss": { "en": "Don't mention it.", "es": "De nada.", "ru": "Не стоит благодарности." },
+      "freqRank": 151,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes"
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "Bu çok iyi.",
+      "gloss": { "en": "It's very good.", "es": "Está muy bien.", "ar": "هذا جيد جدا" },
+      "freqRank": 152,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "Burada ne var?",
+      "gloss": { "en": "What's in here?", "de": "Was gibt es hier?", "es": "¿Qué hay aquí?" },
+      "freqRank": 153,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:package"
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "Bu iyi değil.",
+      "gloss": { "en": "This isn't good.", "es": "Esto no está bien.", "fr": "Ce n'est pas bien." },
+      "freqRank": 154,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-down"
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "Sadece seni istiyorum.",
+      "gloss": {
+        "en": "I only want you.",
+        "de": "Ich will nur dich.",
+        "fr": "Je ne veux que toi."
+      },
+      "freqRank": 155,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heart-with-arrow"
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "Kim olduğunu biliyorum.",
+      "gloss": { "en": "I know who you are.", "es": "Sé quién eres.", "pt-BR": "Sei quem é." },
+      "freqRank": 156,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:identification-card"
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "Bu doğru değil.",
+      "gloss": {
+        "en": "This is not true.",
+        "es": "Esto es incorrecto.",
+        "fr": "Ce n'est pas vrai.",
+        "ru": "Это неверно."
+      },
+      "freqRank": 157,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cross-mark"
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "O çok büyük.",
+      "gloss": {
+        "en": "It's too big.",
+        "es": "Es demasiado grande.",
+        "pt-BR": "É muito grande.",
+        "ar": "إنها كبيرة جداً."
+      },
+      "freqRank": 158,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:straight-ruler"
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "Bu adam kim?",
+      "gloss": {
+        "en": "Who is that man?",
+        "de": "Wer ist dieser Mann?",
+        "es": "¿Quién es este hombre?",
+        "fr": "Qui est cet homme ?",
+        "ar": "من هذا الرجل؟"
+      },
+      "freqRank": 159,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:man"
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "Sanırım o doğru.",
+      "gloss": {
+        "en": "I believe it to be true.",
+        "de": "Ich glaube, es ist wahr.",
+        "fr": "Je pense que c'est vrai."
+      },
+      "freqRank": 160,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "Hiçbir şey bilmiyorum.",
+      "gloss": { "en": "I know nothing.", "es": "No sé nada.", "fr": "Je ne sais rien." },
+      "freqRank": 161,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "Yardım için teşekkürler.",
+      "gloss": {
+        "en": "Thanks for the help.",
+        "es": "Gracias por la ayuda.",
+        "ru": "Спасибо за помощь."
+      },
+      "freqRank": 162,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:folded-hands"
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "Her şey yeni.",
+      "gloss": { "en": "Everything is new.", "de": "Alles ist neu.", "es": "Todo es nuevo." },
+      "freqRank": 163,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:new-button"
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "Nerede olduğunu biliyorum.",
+      "gloss": {
+        "en": "I know where you are.",
+        "de": "Ich weiß, wo du bist.",
+        "es": "Sé dónde estás.",
+        "ru": "Я знаю, где ты."
+      },
+      "freqRank": 164,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:round-pushpin"
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "Her şeyi biliyorum.",
+      "gloss": { "en": "I know everything.", "es": "Lo sé todo.", "ru": "Я всё знаю." },
+      "freqRank": 165,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain"
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "Bir sorun var.",
+      "gloss": {
+        "en": "There is one problem.",
+        "de": "Es gibt ein Problem.",
+        "es": "Hay un problema.",
+        "pt-BR": "Há um problema."
+      },
+      "freqRank": 166,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning"
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "Bana yardım et.",
+      "gloss": { "en": "Lend me a hand.", "es": "Ayúdame.", "ru": "Помоги мне." },
+      "freqRank": 167,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sos-button"
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "Ona yardım et.",
+      "gloss": { "en": "Give him a hand.", "es": "Ayúdalo.", "ru": "Помоги ему." },
+      "freqRank": 168,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "Bu doğru olabilir.",
+      "gloss": {
+        "en": "It may be true.",
+        "de": "Es könnte wahr sein.",
+        "es": "Es posible que eso sea cierto.",
+        "fr": "Cela peut être vrai.",
+        "pt-BR": "É possível que isso seja verdade."
+      },
+      "freqRank": 169,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "Çok teşekkür ederim!",
+      "gloss": {
+        "en": "Thank you very much!",
+        "de": "Vielen Dank!",
+        "es": "¡Muchas gracias!",
+        "fr": "Merci beaucoup !",
+        "pt-BR": "Muito obrigado!",
+        "ru": "Большое спасибо!"
+      },
+      "freqRank": 170,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:folded-hands"
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "Bu çok küçük.",
+      "gloss": {
+        "en": "It's too small.",
+        "de": "Es ist sehr klein.",
+        "es": "Es muy pequeño.",
+        "fr": "C’est trop petit."
+      },
+      "freqRank": 171,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:straight-ruler"
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "O bir kız.",
+      "gloss": {
+        "en": "She's a girl.",
+        "de": "Sie ist ein Mädchen.",
+        "es": "Es una niña.",
+        "ru": "Она девочка.",
+        "ar": "هي بنتٌ."
+      },
+      "freqRank": 172,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:girl"
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "Ona zaman ver.",
+      "gloss": { "en": "Give her time.", "de": "Gib ihm Zeit.", "fr": "Donne-lui du temps." },
+      "freqRank": 173,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done"
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "Bir iş istiyorum.",
+      "gloss": {
+        "en": "I want a job.",
+        "es": "Quiero un trabajo.",
+        "pt-BR": "Eu quero um trabalho."
+      },
+      "freqRank": 174,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "Bu bizim için.",
+      "gloss": {
+        "en": "This one is for us.",
+        "es": "Éste es para nosotros.",
+        "pt-BR": "Esse é para a gente."
+      },
+      "freqRank": 175,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrapped-gift"
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "Hala işte misin?",
+      "gloss": {
+        "en": "Are you still at work?",
+        "pt-BR": "Você ainda está no trabalho?",
+        "ru": "Ты ещё на работе?"
+      },
+      "freqRank": 176,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "Lütfen benimle gel.",
+      "gloss": {
+        "en": "Come with me, please.",
+        "es": "Por favor, ven conmigo.",
+        "fr": "Viens avec moi, s'il te plaît."
+      },
+      "freqRank": 177,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-walking"
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "Yardım mı lazım?",
+      "gloss": {
+        "en": "Need some help?",
+        "es": "¿Necesita ayuda?",
+        "fr": "Besoin d'aide ?",
+        "pt-BR": "Precisa de ajuda?",
+        "ru": "Нужна помощь?"
+      },
+      "freqRank": 178,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring-buoy"
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "Ben para istiyorum.",
+      "gloss": { "en": "I want money.", "de": "Ich will Geld.", "ru": "Я хочу денег." },
+      "freqRank": 179,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-bag"
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "Biraz para istiyorum.",
+      "gloss": {
+        "en": "I want a little money.",
+        "es": "Quiero un poco de dinero.",
+        "ar": "أريد بعض المال."
+      },
+      "freqRank": 180,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:coin"
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "Bugün ilk gün.",
+      "gloss": {
+        "en": "Today is the first day.",
+        "de": "Heute ist der erste Tag.",
+        "es": "Hoy es el primer día.",
+        "pt-BR": "Hoje é o primeiro dia."
+      },
+      "freqRank": 181,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:spiral-calendar"
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "Onlar benimle birlikte.",
+      "gloss": { "en": "They're with me.", "es": "Ellas están conmigo.", "ar": "إنّهم معي." },
+      "freqRank": 182,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette"
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "Bu saat benim.",
+      "gloss": {
+        "en": "This clock is mine.",
+        "de": "Das ist meine Uhr.",
+        "es": "Este reloj es mío."
+      },
+      "freqRank": 183,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock"
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "Çok yer misin?",
+      "gloss": { "en": "Do you eat a lot?", "de": "Isst du viel?", "es": "¿Comes mucho?" },
+      "freqRank": 184,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate"
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "Et yer misin?",
+      "gloss": { "en": "Do you eat meat?", "de": "Isst du Fleisch?", "es": "¿Comes carne?" },
+      "freqRank": 185,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cut-of-meat"
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "Birlikte gidelim mi?",
+      "gloss": {
+        "en": "Shall we go together?",
+        "de": "Sollen wir zusammen gehen?",
+        "es": "¿Vamos juntos?"
+      },
+      "freqRank": 186,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-and-man-holding-hands"
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "Yardım etmek istiyorum.",
+      "gloss": {
+        "en": "I want to help.",
+        "es": "Quiero ayudar.",
+        "ru": "Я хочу помочь.",
+        "ar": "أود أن أساعد"
+      },
+      "freqRank": 187,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-raising-hand"
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "Her şey hazır.",
+      "gloss": {
+        "en": "Everything is ready.",
+        "de": "Alles ist bereit.",
+        "es": "Todo está listo."
+      },
+      "freqRank": 188,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark-button"
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "Sana yardım ediyorum.",
+      "gloss": {
+        "en": "I'm helping you.",
+        "es": "Te estoy ayudando.",
+        "pt-BR": "Eu estou ajudando você."
+      },
+      "freqRank": 189,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "Onları görmek istiyorum!",
+      "gloss": {
+        "en": "I want to see them!",
+        "de": "Ich möchte sie sehen!",
+        "es": "¡Quiero verlos!"
+      },
+      "freqRank": 190,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes"
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "Seni çok seviyorum.",
+      "gloss": {
+        "en": "I like you very much.",
+        "de": "Ich liebe dich sehr.",
+        "es": "Te amo mucho.",
+        "fr": "Je t'aime beaucoup.",
+        "pt-BR": "Eu te amo muito."
+      },
+      "freqRank": 191,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sparkling-heart"
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "Yarın tekrar gel.",
+      "gloss": {
+        "en": "Come again tomorrow.",
+        "de": "Kommt morgen wieder.",
+        "es": "Vuelve mañana."
+      },
+      "freqRank": 192,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tear-off-calendar"
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "Bir doktor musun?",
+      "gloss": { "en": "Are you a doctor?", "de": "Bist du Arzt?", "es": "¿Tú eres médico?" },
+      "freqRank": 193,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope"
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "Ne yemek istiyorsun?",
+      "gloss": {
+        "en": "What do you want to eat?",
+        "es": "¿Qué quieres comer?",
+        "ru": "Что ты хочешь есть?"
+      },
+      "freqRank": 194,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife"
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "Yemek yemek istiyorum.",
+      "gloss": { "en": "I would like to eat.", "es": "Quiero comer.", "ru": "Я хочу есть." },
+      "freqRank": 195,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate"
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "Bize yardım etti.",
+      "gloss": {
+        "en": "He helped us.",
+        "de": "Sie hat uns geholfen.",
+        "es": "Nos ayudó.",
+        "ru": "Она помогла нам."
+      },
+      "freqRank": 196,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "Onu mutlu etti.",
+      "gloss": {
+        "en": "He made her happy.",
+        "de": "Er hat sie glücklich gemacht.",
+        "es": "Él la hizo feliz."
+      },
+      "freqRank": 197,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes"
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "Onlar yalan söyledi.",
+      "gloss": {
+        "en": "They lied.",
+        "de": "Sie haben gelogen.",
+        "es": "Ellos mintieron.",
+        "pt-BR": "Eles mentiram."
+      },
+      "freqRank": 198,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face"
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "Seni onunla gördüm.",
+      "gloss": {
+        "en": "I saw you with him.",
+        "de": "Ich habe dich mit ihr gesehen.",
+        "es": "Te vi con ella."
+      },
+      "freqRank": 199,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-and-man-holding-hands"
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "Onlar iyi insanlar.",
+      "gloss": {
+        "en": "They are good people.",
+        "de": "Sie sind gute Leute.",
+        "ru": "Они хорошие люди."
+      },
+      "freqRank": 200,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette"
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "Neden polis burada?",
+      "gloss": {
+        "en": "Why are the police here?",
+        "de": "Warum ist die Polizei hier?",
+        "es": "¿Por qué está aquí la policía?"
+      },
+      "freqRank": 201,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:police-car"
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "Buna ihtiyacım var.",
+      "gloss": {
+        "en": "I need this.",
+        "de": "Ich brauche das.",
+        "fr": "J'ai besoin de ça.",
+        "ru": "Мне нужно это."
+      },
+      "freqRank": 202,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:palm-up-hand"
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "Bu iyi haber.",
+      "gloss": {
+        "en": "This is good news.",
+        "es": "Es una buena noticia.",
+        "ru": "Это хорошая новость."
+      },
+      "freqRank": 203,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:party-popper"
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "O benim babam.",
+      "gloss": {
+        "en": "He is my father.",
+        "de": "Das ist mein Vater.",
+        "es": "Él es mi padre.",
+        "fr": "C'est mon père."
+      },
+      "freqRank": 204,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family-man-boy"
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "Bunu gördün mü?",
+      "gloss": { "en": "Have you seen this?", "es": "¿Has visto esto?", "ru": "Ты видел это?" },
+      "freqRank": 205,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes"
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "O tamamen yanlış.",
+      "gloss": {
+        "en": "That's altogether wrong.",
+        "de": "Das ist völlig falsch.",
+        "fr": "C'est complètement faux."
+      },
+      "freqRank": 206,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cross-mark"
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "Bu sadece su.",
+      "gloss": {
+        "en": "This is just water.",
+        "es": "Esto es solo agua.",
+        "ru": "Это просто вода."
+      },
+      "freqRank": 207,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet"
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "Onun adı nedir?",
+      "gloss": {
+        "en": "What is his name?",
+        "es": "¿Cómo se llama?",
+        "fr": "Comment s'appelle-t-il ?"
+      },
+      "freqRank": 208,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:identification-card"
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "Konuşmak istiyor musun?",
+      "gloss": {
+        "en": "Do you wanna talk?",
+        "de": "Willst du reden?",
+        "es": "¿Quieres hablar?",
+        "pt-BR": "Você quer conversar?"
+      },
+      "freqRank": 209,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon"
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "Onunla konuşmak istiyorum.",
+      "gloss": {
+        "en": "I want to talk to her.",
+        "de": "Ich will mit ihr sprechen.",
+        "es": "Quiero hablar con él.",
+        "fr": "Je veux parler avec elle."
+      },
+      "freqRank": 210,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head"
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "Sadece konuşmak istiyorum.",
+      "gloss": {
+        "en": "I just want to talk.",
+        "de": "Ich will nur reden.",
+        "es": "Solo quiero hablar."
+      },
+      "freqRank": 211,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon"
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "Tüm para bitti.",
+      "gloss": {
+        "en": "All the money was gone.",
+        "es": "Se acabó todo el dinero.",
+        "fr": "Tout l'argent est terminé."
+      },
+      "freqRank": 212,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-with-wings"
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "Evde biri var.",
+      "gloss": {
+        "en": "Somebody's inside the house.",
+        "de": "Es ist jemand im Haus.",
+        "es": "Hay alguien en la casa."
+      },
+      "freqRank": 213,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "O bugün evde.",
+      "gloss": {
+        "en": "He is at home today.",
+        "de": "Er ist heute zu Hause.",
+        "es": "Él está en casa hoy."
+      },
+      "freqRank": 214,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden"
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "Bu çok hızlı.",
+      "gloss": { "en": "It's too fast.", "de": "Das ist zu schnell.", "es": "Es muy rápido." },
+      "freqRank": 215,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fast-forward-button"
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "Her şeyi duydum.",
+      "gloss": {
+        "en": "I've heard everything.",
+        "de": "Ich habe alles gehört.",
+        "es": "Lo he oído todo."
+      },
+      "freqRank": 216,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "Yeni işin nasıl?",
+      "gloss": {
+        "en": "How's your new job?",
+        "es": "¿Qué tal tu nuevo trabajo?",
+        "ru": "Как твоя новая работа?"
+      },
+      "freqRank": 217,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "Bu bir araba.",
+      "gloss": { "en": "This is a car.", "es": "Esto es un coche.", "ru": "Это машина." },
+      "freqRank": 218,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "Benim adım Jack.",
+      "gloss": {
+        "en": "My name is Jack.",
+        "es": "Me llamo Jack.",
+        "ru": "Меня зовут Джек.",
+        "ar": "اسمي جاك."
+      },
+      "freqRank": 219,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:identification-card"
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "Kim yalan söylüyor?",
+      "gloss": { "en": "Who's lying?", "es": "¿Quién miente?", "fr": "Qui ment ?" },
+      "freqRank": 220,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face"
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "Yarın burada olacağım.",
+      "gloss": {
+        "en": "I will be here tomorrow.",
+        "es": "Estaré aquí mañana.",
+        "ru": "Завтра я буду тут."
+      },
+      "freqRank": 221,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tear-off-calendar"
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "Bugün çalışıyor musun?",
+      "gloss": {
+        "en": "Are you working today?",
+        "de": "Arbeitest du heute?",
+        "ar": "هل تعمل اليوم؟"
+      },
+      "freqRank": 222,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "O benim arkadaşım.",
+      "gloss": { "en": "He is my friend.", "de": "Er ist mein Freund.", "es": "Es mi amigo." },
+      "freqRank": 223,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "Erkek kardeşim nerede?",
+      "gloss": {
+        "en": "Where is my brother?",
+        "es": "¿Dónde está mi hermano?",
+        "ru": "Где мой брат?",
+        "ar": "أين أخي؟"
+      },
+      "freqRank": 224,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:men-holding-hands"
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "Bu konuda haklısın.",
+      "gloss": {
+        "en": "You're right about that one.",
+        "de": "In diesem Fall hast du recht.",
+        "es": "Tienes razón en este sentido."
+      },
+      "freqRank": 225,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark"
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "Zor bir soru.",
+      "gloss": {
+        "en": "It's a hard question.",
+        "es": "Es una pregunta difícil.",
+        "ru": "Это трудный вопрос."
+      },
+      "freqRank": 226,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face"
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "Bugün hava kötü.",
+      "gloss": {
+        "en": "The weather is bad today.",
+        "de": "Heute ist das Wetter schlecht.",
+        "es": "Hoy hace mal tiempo."
+      },
+      "freqRank": 227,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain"
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "Onu yarın yapacağım.",
+      "gloss": {
+        "en": "I will do it tomorrow.",
+        "es": "Lo haré mañana.",
+        "pt-BR": "Eu fá-lo-ei amanhã."
+      },
+      "freqRank": 228,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tear-off-calendar"
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "Bu çok kısa.",
+      "gloss": {
+        "en": "This is too short.",
+        "de": "Das ist zu kurz.",
+        "es": "Esto es muy corto.",
+        "pt-BR": "Isto é muito curto."
+      },
+      "freqRank": 229,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:straight-ruler"
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "Bir telefon aldım.",
+      "gloss": {
+        "en": "I've bought a phone.",
+        "es": "Compré un teléfono.",
+        "ru": "Я купил телефон."
+      },
+      "freqRank": 230,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mobile-phone"
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "Bu bir şaka.",
+      "gloss": { "en": "That's a joke.", "de": "Das ist ein Scherz.", "es": "Es una broma." },
+      "freqRank": 231,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-tears-of-joy"
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "Yeterince su yok.",
+      "gloss": {
+        "en": "There's not enough water.",
+        "de": "Es gibt nicht genug Wasser.",
+        "es": "No hay suficiente agua.",
+        "fr": "Il n'y a pas assez d'eau."
+      },
+      "freqRank": 232,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet"
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "Bu bir telefon.",
+      "gloss": { "en": "This is a phone.", "de": "Das ist ein Telefon.", "ru": "Это телефон." },
+      "freqRank": 233,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mobile-phone"
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "Ona söz verdim.",
+      "gloss": { "en": "I promised him.", "es": "Le di mi palabra.", "fr": "Je lui promis." },
+      "freqRank": 234,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "Senin baban kim?",
+      "gloss": {
+        "en": "Who's your father?",
+        "es": "¿Quién es tu padre?",
+        "fr": "Qui est ton père ?"
+      },
+      "freqRank": 235,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:man"
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "Her şey yolunda.",
+      "gloss": {
+        "en": "Everything is OK.",
+        "de": "Es ist alles in Ordnung.",
+        "ru": "Все в порядке."
+      },
+      "freqRank": 236,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ok-hand"
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "Dans etmek istiyor.",
+      "gloss": { "en": "She wants to dance.", "de": "Sie will tanzen.", "ar": "هي تريد أن ترقص" },
+      "freqRank": 237,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-dancing"
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "Kapıyı aç, lütfen.",
+      "gloss": {
+        "en": "Open the door, please.",
+        "es": "Abre la puerta, por favor.",
+        "ru": "Пожалуйста, откройте дверь."
+      },
+      "freqRank": 238,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door"
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "Daha iyi hissediyorum.",
+      "gloss": { "en": "I'm feeling better.", "es": "Me siento mejor.", "fr": "Je me sens mieux." },
+      "freqRank": 239,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:relieved-face"
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "Kapıyı açık bırak.",
+      "gloss": {
+        "en": "Leave the door open.",
+        "es": "Deje la puerta abierta.",
+        "pt-BR": "Deixa a porta aberta."
+      },
+      "freqRank": 240,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door"
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "Kendimi kötü hissediyorum.",
+      "gloss": {
+        "en": "I feel sick.",
+        "de": "Ich fühle mich schlecht.",
+        "es": "Me siento mal.",
+        "ru": "Я плохо себя чувствую."
+      },
+      "freqRank": 241,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:nauseated-face"
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "İyi geceler, anne.",
+      "gloss": {
+        "en": "Good night, Mom.",
+        "de": "Gute Nacht, Mutter!",
+        "es": "Buenas noches, mamá.",
+        "fr": "Bonne nuit, maman.",
+        "ar": "ليلة سعيدة يا أُمّي."
+      },
+      "freqRank": 242,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon"
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "Benim hayatım sensin.",
+      "gloss": {
+        "en": "You are my life.",
+        "es": "Tú eres mi vida.",
+        "fr": "Tu es ma vie.",
+        "ru": "Ты моя жизнь."
+      },
+      "freqRank": 243,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:growing-heart"
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "İyiyim, teşekkür ederim.",
+      "gloss": {
+        "en": "I'm fine, thank you.",
+        "de": "Es geht mir gut, danke.",
+        "es": "Estoy bien, gracias.",
+        "pt-BR": "Eu estou bem, obrigado."
+      },
+      "freqRank": 244,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes"
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "Üzgünüm, onu yapamam.",
+      "gloss": {
+        "en": "I'm sorry, I can't do that.",
+        "de": "Es tut mir leid, das kann ich nicht machen.",
+        "es": "Lo siento, no puedo hacerlo."
+      },
+      "freqRank": 245,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-gesturing-no"
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "Kız kardeşim hasta.",
+      "gloss": {
+        "en": "My sister has been sick.",
+        "de": "Meine Schwester ist krank.",
+        "es": "Mi hermana está enferma."
+      },
+      "freqRank": 246,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer"
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "Annen evde mi?",
+      "gloss": {
+        "en": "Is your mother at home?",
+        "de": "Ist deine Mutter zu Hause?",
+        "es": "¿Está tu madre en casa?",
+        "fr": "Ta mère est-elle à la maison ?"
+      },
+      "freqRank": 247,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "Beni anladın mı?",
+      "gloss": {
+        "en": "Did you understand me?",
+        "de": "Hast du mich verstanden?",
+        "es": "¿Me entendiste?",
+        "fr": "M'as-tu compris ?"
+      },
+      "freqRank": 248,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain"
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "O kaç yaşında?",
+      "gloss": {
+        "en": "How old is he?",
+        "de": "Wie alt ist er?",
+        "es": "¿Cuántos años tiene él?",
+        "fr": "Quel âge a-t-il ?"
+      },
+      "freqRank": 249,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake"
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "İki kızım var.",
+      "gloss": {
+        "en": "I have two daughters.",
+        "de": "Ich habe zwei Töchter.",
+        "es": "Tengo dos hijas.",
+        "fr": "J'ai deux filles."
+      },
+      "freqRank": 250,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:girl"
+    },
+    {
+      "index": 250,
+      "kind": "phrase",
+      "text": "Kahve aldın mı?",
+      "gloss": {
+        "en": "Did you buy coffee?",
+        "de": "Hast du Kaffee gekauft?",
+        "es": "¿Compraste café?",
+        "fr": "As-tu acheté du café ?",
+        "ru": "Ты купил кофе?"
+      },
+      "freqRank": 251,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage"
+    },
+    {
+      "index": 251,
+      "kind": "phrase",
+      "text": "Bir köpek gördüm.",
+      "gloss": {
+        "en": "I saw a dog.",
+        "es": "Vi a un perro.",
+        "ru": "Я увидел собаку.",
+        "ar": "رأيت كلباً."
+      },
+      "freqRank": 252,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "Dikkat! Köpek var.",
+      "gloss": {
+        "en": "Beware of the dog!",
+        "de": "Vorsicht vor dem Hund!",
+        "es": "¡Cuidado con el perro!",
+        "fr": "Attention au chien !"
+      },
+      "freqRank": 253,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 253,
+      "kind": "phrase",
+      "text": "Neye ihtiyacın var?",
+      "gloss": {
+        "en": "What do you need?",
+        "de": "Was brauchst du?",
+        "es": "¿Qué necesitas?",
+        "ru": "Что тебе нужно?"
+      },
+      "freqRank": 254,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:palm-up-hand"
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
+      "text": "Ben gerçeği biliyorum.",
+      "gloss": {
+        "en": "I know the truth.",
+        "de": "Ich kenne die Wahrheit.",
+        "es": "Sé la verdad.",
+        "fr": "Je connais la vérité.",
+        "pt-BR": "Eu conheço a verdade."
+      },
+      "freqRank": 255,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb"
+    },
+    {
+      "index": 255,
+      "kind": "phrase",
+      "text": "Bir araba alacağım.",
+      "gloss": {
+        "en": "I will buy a car.",
+        "de": "Ich werde ein Auto kaufen.",
+        "es": "Voy a comprar un coche.",
+        "fr": "Je vais acheter une voiture."
+      },
+      "freqRank": 256,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 256,
+      "kind": "phrase",
+      "text": "Bu, babamın evi.",
+      "gloss": {
+        "en": "This is my father's house.",
+        "de": "Das ist das Haus meines Vaters.",
+        "es": "Esta es la casa de mi padre.",
+        "pt-BR": "Esta é a casa do meu pai."
+      },
+      "freqRank": 257,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 257,
+      "kind": "phrase",
+      "text": "Babam bizi seviyor.",
+      "gloss": {
+        "en": "My father loves us.",
+        "de": "Mein Vater liebt uns.",
+        "es": "Mi padre nos ama.",
+        "pt-BR": "O meu pai nos ama."
+      },
+      "freqRank": 258,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family"
+    },
+    {
+      "index": 258,
+      "kind": "phrase",
+      "text": "John nerede yaşıyor?",
+      "gloss": {
+        "en": "Where does John live?",
+        "de": "Wo wohnt John?",
+        "es": "¿Dónde vive John?",
+        "fr": "Où habite John ?",
+        "pt-BR": "Onde John mora?",
+        "ru": "Где живет Джон?"
+      },
+      "freqRank": 259,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 259,
+      "kind": "phrase",
+      "text": "O burada yaşıyor.",
+      "gloss": {
+        "en": "He lives here.",
+        "de": "Er wohnt hier.",
+        "es": "Él vive aquí.",
+        "fr": "Elle demeure ici."
+      },
+      "freqRank": 260,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden"
+    },
+    {
+      "index": 260,
+      "kind": "phrase",
+      "text": "Kimse savaş istemiyor.",
+      "gloss": {
+        "en": "Nobody wants war.",
+        "de": "Niemand will Krieg.",
+        "es": "Nadie quiere guerra.",
+        "pt-BR": "Ninguém quer guerra.",
+        "ru": "Никто не хочет войны."
+      },
+      "freqRank": 261,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:peace-symbol"
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "Kim için çalışıyorsun?",
+      "gloss": {
+        "en": "Who do you work for?",
+        "de": "Für wen arbeitest du?",
+        "es": "¿Para quién trabajas?",
+        "ru": "На кого ты работаешь?"
+      },
+      "freqRank": 262,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 262,
+      "kind": "phrase",
+      "text": "Birçok çocukları oldu.",
+      "gloss": {
+        "en": "They had several children.",
+        "de": "Sie hatten mehrere Kinder.",
+        "es": "Tuvieron muchos hijos.",
+        "fr": "Ils eurent beaucoup d'enfants."
+      },
+      "freqRank": 263,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family"
+    },
+    {
+      "index": 263,
+      "kind": "phrase",
+      "text": "Bir araba istiyoruz.",
+      "gloss": {
+        "en": "We want a car.",
+        "es": "Queremos un coche.",
+        "pt-BR": "Queremos um carro.",
+        "ru": "Мы хотим машину."
+      },
+      "freqRank": 264,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 264,
+      "kind": "phrase",
+      "text": "Onun ne olduğunu bilmiyorum.",
+      "gloss": {
+        "en": "I don't know what it is.",
+        "de": "Ich weiß nicht, was das ist.",
+        "es": "No sé lo que es.",
+        "fr": "Je ne sais pas ce que c'est.",
+        "pt-BR": "Eu não sei o que é isso."
+      },
+      "freqRank": 265,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 265,
+      "kind": "phrase",
+      "text": "Daha fazla para istiyorum.",
+      "gloss": {
+        "en": "I want more money.",
+        "de": "Ich will mehr Geld.",
+        "es": "Quiero más dinero.",
+        "ru": "Я хочу больше денег."
+      },
+      "freqRank": 266,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-mouth-face"
+    },
+    {
+      "index": 266,
+      "kind": "phrase",
+      "text": "O sadece bir çocuk.",
+      "gloss": {
+        "en": "He is just a kid.",
+        "es": "Él es solo un niño.",
+        "fr": "Il n'est qu'un enfant.",
+        "ru": "Он всего лишь ребёнок."
+      },
+      "freqRank": 267,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:boy"
+    },
+    {
+      "index": 267,
+      "kind": "phrase",
+      "text": "Seni tekrar görmek istiyorum.",
+      "gloss": {
+        "en": "I want to see you again.",
+        "de": "Ich will dich wiedersehen.",
+        "es": "Quiero verte otra vez.",
+        "fr": "Je veux te revoir."
+      },
+      "freqRank": 268,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:people-hugging"
+    },
+    {
+      "index": 268,
+      "kind": "phrase",
+      "text": "O beni mutlu ediyor.",
+      "gloss": {
+        "en": "She makes me happy.",
+        "de": "Sie macht mich glücklich.",
+        "es": "Ella me hace feliz.",
+        "fr": "Elle me rend heureux.",
+        "pt-BR": "Ela me faz feliz."
+      },
+      "freqRank": 269,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes"
+    },
+    {
+      "index": 269,
+      "kind": "phrase",
+      "text": "Bir ev almak istiyorum.",
+      "gloss": {
+        "en": "I want to buy a house.",
+        "de": "Ich will ein Haus kaufen.",
+        "es": "Quiero comprar una casa.",
+        "ar": "أريد أن أشتري منزلًا"
+      },
+      "freqRank": 270,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "O benden daha genç.",
+      "gloss": {
+        "en": "He's younger than me.",
+        "de": "Er ist jünger als ich.",
+        "es": "Ella es más joven que yo.",
+        "fr": "Elle est plus jeune que moi.",
+        "ru": "Она моложе меня."
+      },
+      "freqRank": 271,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake"
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "Beş dakika önce çıktı.",
+      "gloss": {
+        "en": "He left five minutes ago.",
+        "es": "Se fue hace cinco minutos.",
+        "fr": "Il est parti il y a cinq minutes.",
+        "pt-BR": "Ele saiu há cinco minutos.",
+        "ru": "Он ушёл пять минут назад."
+      },
+      "freqRank": 272,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door"
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "Bu araba yeni mi?",
+      "gloss": {
+        "en": "Is this car new?",
+        "de": "Ist dieser Wagen neu?",
+        "es": "¿Este coche es nuevo?",
+        "fr": "Est-ce que cette voiture est neuve ?",
+        "ar": "هل هذه السيارة جديدة؟"
+      },
+      "freqRank": 273,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "Bir kız arkadaşım var.",
+      "gloss": {
+        "en": "I have a girlfriend.",
+        "es": "Tengo una novia.",
+        "ru": "У меня есть девушка.",
+        "ar": "عندي صديقة."
+      },
+      "freqRank": 274,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-and-man-holding-hands"
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "Bu benim kız kardeşim.",
+      "gloss": {
+        "en": "This is my sister.",
+        "de": "Das ist meine Schwester.",
+        "es": "Ésta es mi hermana.",
+        "fr": "C'est ma sœur.",
+        "ru": "Это моя сестра."
+      },
+      "freqRank": 275,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands"
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "Bir erkek kardeşim var.",
+      "gloss": {
+        "en": "I have one brother.",
+        "es": "Tengo un hermano.",
+        "fr": "J'ai un frère.",
+        "pt-BR": "Eu tenho um irmão."
+      },
+      "freqRank": 276,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:men-holding-hands"
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "İki erkek kardeşim var.",
+      "gloss": {
+        "en": "I have two brothers.",
+        "de": "Ich habe zwei Brüder.",
+        "es": "Tengo dos hermanos.",
+        "fr": "J'ai deux frères.",
+        "pt-BR": "Tenho dois irmãos.",
+        "ru": "У меня два брата."
+      },
+      "freqRank": 277,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:men-holding-hands"
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "Bir kız kardeşim var.",
+      "gloss": {
+        "en": "I have one sister.",
+        "es": "Yo tengo una hermana.",
+        "fr": "J'ai une sœur.",
+        "pt-BR": "Eu tenho uma irmã."
+      },
+      "freqRank": 278,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands"
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "O benim erkek kardeşim.",
+      "gloss": {
+        "en": "He is my brother.",
+        "de": "Er ist mein Bruder.",
+        "es": "Él es mi hermano.",
+        "pt-BR": "Ele é meu irmão.",
+        "ru": "Это мой брат."
+      },
+      "freqRank": 279,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:men-holding-hands"
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "Su varsa, hayat var.",
+      "gloss": {
+        "en": "Where there's water, there's life.",
+        "de": "Wo Wasser ist, ist Leben.",
+        "es": "Donde hay agua hay vida.",
+        "fr": "Là où il y a de l'eau, il y a de la vie.",
+        "pt-BR": "Se existe água, há vida.",
+        "ru": "Где вода, там жизнь.",
+        "ar": "حيث يوجد الماء، توجد الحياة؟"
+      },
+      "freqRank": 280,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet"
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "Babam bana yardım edecek.",
+      "gloss": {
+        "en": "My father will help me.",
+        "de": "Mein Vater wird mir helfen.",
+        "es": "Mi padre me ayudará.",
+        "pt-BR": "Meu pai me ajudará."
+      },
+      "freqRank": 281,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family-man-boy"
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "Neden bizi takip ediyorsun?",
+      "gloss": {
+        "en": "Why are you following us?",
+        "de": "Warum folgst du uns?",
+        "es": "¿Por qué nos sigues?",
+        "fr": "Pourquoi nous suivez-vous ?",
+        "ru": "Почему ты следишь за нами?"
+      },
+      "freqRank": 282,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:footprints"
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "O senin annen mi?",
+      "gloss": {
+        "en": "Is she your mother?",
+        "es": "¿Ella es tu madre?",
+        "fr": "Est-elle ta mère ?",
+        "pt-BR": "Ela é tua mãe?"
+      },
+      "freqRank": 283,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman"
+    },
+    {
+      "index": 283,
+      "kind": "phrase",
+      "text": "Bugün hava çok sıcak.",
+      "gloss": {
+        "en": "It is very hot today.",
+        "es": "Hace mucho calor hoy.",
+        "fr": "Aujourd'hui, il fait très chaud.",
+        "ar": "الطقس اليوم شديد الحرارة."
+      },
+      "freqRank": 284,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-face"
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "Ne sıcak bir gün!",
+      "gloss": {
+        "en": "What a hot day it is!",
+        "de": "Was für ein heißer Tag!",
+        "es": "¡Vaya día más caluroso!",
+        "fr": "Quelle chaude journée !"
+      },
+      "freqRank": 285,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun"
+    },
+    {
+      "index": 285,
+      "kind": "phrase",
+      "text": "Bu küçük bir köpek.",
+      "gloss": {
+        "en": "It is a small dog.",
+        "es": "Es un perro pequeño.",
+        "fr": "C'est un petit chien.",
+        "ru": "Это маленькая собака."
+      },
+      "freqRank": 286,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "İki kadın şarkı söylüyor.",
+      "gloss": {
+        "en": "Two women are singing.",
+        "de": "Zwei Frauen singen.",
+        "es": "Dos mujeres cantan.",
+        "fr": "Deux femmes chantent.",
+        "pt-BR": "Duas mulheres estão cantando."
+      },
+      "freqRank": 287,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone"
+    },
+    {
+      "index": 287,
+      "kind": "phrase",
+      "text": "O bir şarkı söyledi.",
+      "gloss": {
+        "en": "He sang a song.",
+        "es": "Él cantó una canción.",
+        "fr": "Il chanta une chanson.",
+        "ar": "غنى أغنية."
+      },
+      "freqRank": 288,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note"
+    },
+    {
+      "index": 288,
+      "kind": "phrase",
+      "text": "Bugün hava çok soğuk.",
+      "gloss": {
+        "en": "It's very cold today.",
+        "es": "Hoy hace mucho frío.",
+        "fr": "Il fait très froid aujourd'hui.",
+        "pt-BR": "Hoje está muito frio.",
+        "ru": "Сегодня очень холодно."
+      },
+      "freqRank": 289,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cold-face"
+    },
+    {
+      "index": 289,
+      "kind": "phrase",
+      "text": "O onu hâlâ seviyor.",
+      "gloss": {
+        "en": "She still loves him.",
+        "es": "Todavía le quiere.",
+        "fr": "Elle l'aime encore.",
+        "pt-BR": "Ela ainda o ama."
+      },
+      "freqRank": 290,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:two-hearts"
+    },
+    {
+      "index": 290,
+      "kind": "phrase",
+      "text": "Onun kim olduğunu merak ediyorum.",
+      "gloss": {
+        "en": "I wonder who she is.",
+        "de": "Ich frage mich, wer sie ist.",
+        "es": "Me pregunto quién es ella.",
+        "fr": "Je me demande qui elle est.",
+        "ru": "Интересно, кто она."
+      },
+      "freqRank": 291,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face"
+    },
+    {
+      "index": 291,
+      "kind": "phrase",
+      "text": "O, benim bir arkadaşım için.",
+      "gloss": {
+        "en": "It's for a friend of mine.",
+        "de": "Es ist für einen Freund von mir.",
+        "es": "Es para un amigo mío.",
+        "fr": "C'est pour un de mes amis.",
+        "pt-BR": "É para um amigo meu."
+      },
+      "freqRank": 292,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrapped-gift"
+    },
+    {
+      "index": 292,
+      "kind": "phrase",
+      "text": "Ona her gün telefon ederim.",
+      "gloss": {
+        "en": "I phone him every day.",
+        "de": "Ich rufe ihn jeden Tag an.",
+        "es": "Le llamo todos los días.",
+        "ru": "Я звоню ему каждый день."
+      },
+      "freqRank": 293,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver"
+    },
+    {
+      "index": 293,
+      "kind": "phrase",
+      "text": "O kötü bir fikir değil.",
+      "gloss": {
+        "en": "That's not a bad idea.",
+        "de": "Das ist keine schlechte Idee.",
+        "es": "No es una mala idea.",
+        "fr": "Ce n'est pas une mauvaise idée."
+      },
+      "freqRank": 294,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb"
+    },
+    {
+      "index": 294,
+      "kind": "phrase",
+      "text": "Tom bu gece geri geliyor.",
+      "gloss": {
+        "en": "Tom is coming back tonight.",
+        "es": "Tom volverá esta noche.",
+        "fr": "Tom revient ce soir.",
+        "ru": "Том возвращается сегодня вечером."
+      },
+      "freqRank": 295,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:back-arrow"
+    },
+    {
+      "index": 295,
+      "kind": "phrase",
+      "text": "Onun babası bir doktor mu?",
+      "gloss": {
+        "en": "Is his father a doctor?",
+        "de": "Ist sein Vater Arzt?",
+        "es": "¿Su padre es médico?",
+        "fr": "Son père est-il médecin ?",
+        "ru": "Его отец доктор?"
+      },
+      "freqRank": 296,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope"
+    },
+    {
+      "index": 296,
+      "kind": "phrase",
+      "text": "Bir erkek ve bir kadın görüyorum.",
+      "gloss": {
+        "en": "I'm looking at a man and a woman.",
+        "de": "Ich sehe einen Mann und eine Frau.",
+        "es": "Estoy viendo a un hombre y a una mujer.",
+        "fr": "Je vois un homme et une femme."
+      },
+      "freqRank": 297,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-and-man-holding-hands"
+    },
+    {
+      "index": 297,
+      "kind": "phrase",
+      "text": "Tom şu anda bana yardım ediyor.",
+      "gloss": {
+        "en": "Tom is helping me right now.",
+        "de": "Tom hilft mir gerade.",
+        "es": "Tom me está ayudando ahora mismo.",
+        "fr": "Tom m'aide en ce moment.",
+        "ru": "Том помогает мне прямо сейчас."
+      },
+      "freqRank": 298,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 298,
+      "kind": "phrase",
+      "text": "Onun on bir tane çocuğu var.",
+      "gloss": {
+        "en": "He has eleven children.",
+        "de": "Er hat elf Kinder.",
+        "es": "Él tiene once hijos.",
+        "pt-BR": "Ele tem onze filhos."
+      },
+      "freqRank": 299,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family"
+    },
+    {
+      "index": 299,
+      "kind": "phrase",
+      "text": "Tom onu sadece para için yaptı.",
+      "gloss": {
+        "en": "Tom did it simply for the money.",
+        "de": "Tom hat es nur fürs Geld gemacht.",
+        "es": "Tom lo hizo solo por dinero.",
+        "fr": "Tom l'a fait juste pour l'argent."
+      },
+      "freqRank": 300,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-bag"
+    }
+  ]
+}
