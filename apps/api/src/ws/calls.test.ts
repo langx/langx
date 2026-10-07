@@ -2,6 +2,7 @@ import {
   CALL_EVENTS,
   CALL_LIMITS,
   CALL_TOKEN_HEADER,
+  DEFAULT_APP_CONFIG,
   MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
   type AppConfigResponse,
   type CallEnded,
@@ -1470,12 +1471,7 @@ describe('calls over Socket.io', () => {
       const { alice, bob, conversationId } = await pair()
       await connect(bob, 'bob-phone')
       await updateAppConfig(handle.db, {
-        flags: {
-          translationEnabled: true,
-          discoveryEnabled: true,
-          signupsEnabled: true,
-          callsEnabled: false,
-        },
+        flags: { ...DEFAULT_APP_CONFIG.flags, callsEnabled: false },
       })
       try {
         expect((await config()).callService).toBe(false)

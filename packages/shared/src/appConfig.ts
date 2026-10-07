@@ -65,6 +65,15 @@ export const appConfigSchema = z.object({
      * draws a button. Calls already running are left to finish.
      */
     callsEnabled: z.boolean(),
+    /**
+     * Whether an email sign-up, sign-in or reset request must carry a
+     * Turnstile token. The one flag that starts off, because it is not a kill
+     * switch but the second stage of a rollout: until every installed build
+     * sends a token, refusing a request without one would lock out everybody
+     * on 2.9 and older. Off, a token that *is* sent is still checked. See
+     * `docs/decisions.md` → _Turnstile on the password forms_.
+     */
+    captchaRequired: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -84,6 +93,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     discoveryEnabled: true,
     signupsEnabled: true,
     callsEnabled: true,
+    captchaRequired: false,
   },
 }
 

@@ -18,6 +18,7 @@ import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
 import { magicLink } from 'better-auth/plugins/magic-link'
 import type { Db, MongoClient, ObjectId } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
+import { captchaPlugins } from './auth/captcha'
 import { WARMUP_EMAIL } from './auth/warmUp'
 import {
   emailForHandle,
@@ -772,6 +773,8 @@ export async function createAuth({
           await emailSender.send({ to: user.email, ...mail })
         },
       }),
+      // Turnstile on the password forms; nothing at all without a secret.
+      ...captchaPlugins(env, db),
     ],
   })
 

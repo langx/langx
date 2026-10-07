@@ -192,6 +192,18 @@ undeliverable by construction. Set `ANTHROPIC_API_KEY` to have `@langx` answer
 messages, or leave it unset and it says so instead. See
 [`architecture.md`](architecture.md) → _Official accounts_.
 
+**Bot protection** is optional. Set `TURNSTILE_SECRET_KEY` on the API and
+`EXPO_PUBLIC_TURNSTILE_SITE_KEY` at build time — the two halves of one
+Cloudflare Turnstile widget, which must list the hostname your web build is
+served from — and the email sign-up, sign-in and password-reset forms carry a
+token that the API checks. A missing token is still accepted until
+`flags.captchaRequired` is turned on (`scripts/maintenance.ts flag
+captchaRequired true`, or the admin panel's System screen). Leave both unset
+and nothing is checked. The native app's widget page claims
+`https://app.langx.io` (`BASE_URL` in `apps/mobile/src/components/Turnstile.tsx`);
+a fork on its own domain changes that line. See [`decisions.md`](decisions.md) → _Turnstile on the
+password forms_.
+
 **Analytics** is optional. Set `EXPO_PUBLIC_POSTHOG_KEY` (and
 `EXPO_PUBLIC_POSTHOG_HOST` for a region other than the EU) at build time and
 the app sends screen views and a short list of funnel events to that PostHog

@@ -6744,3 +6744,39 @@ through the real endpoint.
 The cost is that signing in only to download your data also cancels. The data
 deletion page already tells people to export before deleting, and a person who
 signs in by mistake can delete again.
+
+## Turnstile on the password forms
+
+Email sign-up, email sign-in and the password-reset request carry a Cloudflare
+Turnstile token, checked by Better Auth's `captcha` plugin. Those three are the
+forms a script is worth pointing at: two send mail to whatever address is typed,
+and the third tries passwords. The widget is Managed and drawn
+`interaction-only`, so most people never see it; the native app hosts it in a
+WebView whose page claims `https://app.langx.io`, because a site key only works
+on the hostnames its widget lists. Without `TURNSTILE_SECRET_KEY` on the API the
+plugin is not registered; without `EXPO_PUBLIC_TURNSTILE_SITE_KEY` in the client
+no widget is drawn. Either way the forms work as before.
+
+**Two stages, because 2.9 and older send no token.** Registering the plugin
+bare would have refused every email sign-up and sign-in from every installed
+build the day the API deployed. So `auth/captcha.ts` wraps it:
+
+1. `flags.captchaRequired` off — the default. A request that carries a token is
+   checked and a bad one refused; a request without one passes, as it always
+   has. This protects nothing against a bot that simply leaves the header off,
+   and is not meant to: it proves the widget works in every client before
+   anything depends on it.
+2. Once `minVersion` has moved everybody to a build that sends tokens, the
+   operator turns `flags.captchaRequired` on — from the admin panel's System
+   screen or `scripts/maintenance.ts flag captchaRequired true` — and a missing
+   token is refused too. No deploy either way, and off is the undo.
+
+The switch is in the app config rather than an env var for that last reason:
+if the widget turns out to fail somewhere, the fix is one press, not a deploy.
+It is the one flag that starts off; the others are kill switches, and a switch
+nobody has thrown is on.
+
+A widget that fails in the client lets the form submit without a token rather
+than locking the person out — while the flag is off that request is accepted,
+and once it is on the form says the check failed and fetches a new token. A
+token is single-use, so every failed attempt fetches a new one too.

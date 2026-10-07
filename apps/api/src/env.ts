@@ -44,6 +44,15 @@ const envSchema = z.object({
         .filter(Boolean),
     ),
 
+  /**
+   * Cloudflare Turnstile's secret, for checking the token the email sign-up,
+   * sign-in and reset forms send. Optional: without it the captcha plugin is
+   * not registered at all and those forms work exactly as they did before —
+   * see `auth/captcha.ts`, and `EXPO_PUBLIC_TURNSTILE_SITE_KEY` for the half
+   * the client holds.
+   */
+  TURNSTILE_SECRET_KEY: emptyToUndefined(z.string().optional()),
+
   // Verification and password-reset email. Without a key, sendEmail logs the
   // link instead of sending it — the app still boots and is testable, but
   // nothing is delivered until a real key is set.
