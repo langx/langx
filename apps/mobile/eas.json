@@ -17,7 +17,7 @@
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.langx.io",
-        "EXPO_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFPOBb_nvpHUAt62"
+        "EXPO_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFP0Bb_nvpHUAt62"
       },
       "android": {
         "buildType": "app-bundle"

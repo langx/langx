@@ -108,7 +108,7 @@ jobs:
           # update never reads that (see above), so without this line every
           # update would ship a bundle that quietly stopped sending tokens.
           # Public by design; the same literal as eas.json and deploy-web.yml.
-          EXPO_PUBLIC_TURNSTILE_SITE_KEY: 0x4AAAAAAFPOBb_nvpHUAt62
+          EXPO_PUBLIC_TURNSTILE_SITE_KEY: 0x4AAAAAAFP0Bb_nvpHUAt62
           UPDATE_MESSAGE: ${{ github.event.head_commit.message || github.sha }}
         run: |
           npx --yes eas-cli@23 update \
