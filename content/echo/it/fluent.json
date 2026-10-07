@@ -1,0 +1,5399 @@
+{
+  "id": "it:fluent",
+  "lang": "it",
+  "level": "fluent",
+  "contentVersion": 3,
+  "reviewed": false,
+  "sources": [
+    {
+      "name": "Wiktionary, via kaikki.org (wiktextract)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://kaikki.org/"
+    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/hermitdave/FrequencyWords"
+    },
+    {
+      "name": "Kokoro-82M (hexgrad)",
+      "licence": "Apache-2.0",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M"
+    }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "Lui stava volando.",
+      "gloss": { "en": "He was flying.", "es": "Él estaba volando.", "ru": "Он летал." },
+      "freqRank": 2,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/it_fluent/0-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/0-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "Sono molto timida.",
+      "gloss": { "en": "I'm very shy.", "es": "Soy muy tímida.", "fr": "Je suis très timide." },
+      "freqRank": 3,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flushed-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/1-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/1-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "Tu sei timida.",
+      "gloss": { "en": "You're shy.", "fr": "Tu es timide.", "pt-BR": "Tu és tímida." },
+      "freqRank": 4,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flushed-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/2-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/2-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "Sono un rabbino.",
+      "gloss": {
+        "en": "I'm a rabbi.",
+        "tr": "Ben bir hahamım.",
+        "de": "Ich bin Rabbi.",
+        "es": "Soy un rabino.",
+        "fr": "Je suis rabbin.",
+        "ru": "Я раввин."
+      },
+      "freqRank": 5,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [
+        { "key": "echo/packs/it_fluent/3-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/3-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "Lui è puntuale.",
+      "gloss": {
+        "en": "He is punctual.",
+        "de": "Er ist pünktlich.",
+        "es": "Él es puntual.",
+        "fr": "Il est ponctuel.",
+        "pt-BR": "Ele é pontual."
+      },
+      "freqRank": 6,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/it_fluent/4-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/4-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "È una tassista?",
+      "gloss": {
+        "en": "Is she a taxi driver?",
+        "es": "¿Es ella una taxista?",
+        "fr": "Est-elle chauffeur de taxi ?",
+        "ru": "Она водитель такси?"
+      },
+      "freqRank": 7,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/it_fluent/5-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/5-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "Guida con prudenza.",
+      "gloss": {
+        "en": "Drive carefully.",
+        "es": "Maneja con cuidado.",
+        "fr": "Il conduit avec prudence.",
+        "ru": "Веди аккуратно."
+      },
+      "freqRank": 8,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/it_fluent/6-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/6-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "Io sono razionale.",
+      "gloss": {
+        "en": "I'm rational.",
+        "de": "Ich bin rational.",
+        "fr": "Je suis rationnel.",
+        "pt-BR": "Eu sou racional.",
+        "ru": "Я рациональная."
+      },
+      "freqRank": 9,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/it_fluent/7-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/7-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "Gli uccelli volano.",
+      "gloss": {
+        "en": "Birds fly.",
+        "de": "Vögel fliegen.",
+        "es": "Los pájaros vuelan.",
+        "fr": "Les oiseaux volent.",
+        "pt-BR": "Os pássaros voam.",
+        "ru": "Птицы летают."
+      },
+      "freqRank": 10,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/it_fluent/8-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/8-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "Voglio renderla felice.",
+      "gloss": {
+        "en": "I want to make her happy.",
+        "de": "Ich möchte sie glücklich machen.",
+        "es": "La quiero hacer feliz.",
+        "fr": "Je veux la rendre heureuse."
+      },
+      "freqRank": 11,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/it_fluent/9-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/9-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "Mangi e beva.",
+      "gloss": {
+        "en": "Eat and drink.",
+        "es": "Coma y beba.",
+        "fr": "Mangez et buvez.",
+        "ru": "Ешьте и пейте."
+      },
+      "freqRank": 12,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/10-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/10-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "Dove possiamo parcheggiare?",
+      "gloss": {
+        "en": "Where can we park?",
+        "de": "Wo können wir parken?",
+        "es": "¿Dónde podemos estacionarnos?",
+        "pt-BR": "Onde podemos estacionar?"
+      },
+      "freqRank": 13,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:p-button",
+      "voices": [
+        { "key": "echo/packs/it_fluent/11-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/11-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "Bevo per rilassarmi.",
+      "gloss": {
+        "en": "I drink to relax.",
+        "pt-BR": "Eu bebo para relaxar.",
+        "ru": "Я пью, чтобы расслабиться."
+      },
+      "freqRank": 14,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/it_fluent/12-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/12-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "Perché stanno sorridendo?",
+      "gloss": {
+        "en": "Why are they smiling?",
+        "de": "Warum lächeln sie?",
+        "fr": "Pourquoi sourient-ils ?"
+      },
+      "freqRank": 15,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/it_fluent/13-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/13-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "Si lamenta sempre.",
+      "gloss": {
+        "en": "You are always complaining.",
+        "tr": "Her zaman şikâyet eder.",
+        "de": "Sie beschweren sich dauernd.",
+        "fr": "Vous vous plaignez toujours."
+      },
+      "freqRank": 16,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:unamused-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/14-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/14-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "Ieri ero ammalato.",
+      "gloss": {
+        "en": "Yesterday I was sick.",
+        "de": "Gestern war ich krank.",
+        "fr": "Hier, j'étais malade."
+      },
+      "freqRank": 17,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/it_fluent/15-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/15-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "Tom è ammalato.",
+      "gloss": { "en": "Tom is sick.", "fr": "Tom est malade.", "ru": "Том болен." },
+      "freqRank": 18,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/it_fluent/16-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/16-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "Noi eravamo sposate.",
+      "gloss": {
+        "en": "We used to be married.",
+        "de": "Wir waren verheiratet.",
+        "fr": "Nous étions mariées."
+      },
+      "freqRank": 19,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/it_fluent/17-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/17-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "Chi sta gridando?",
+      "gloss": {
+        "en": "Who's screaming?",
+        "es": "¿Quién está gritando?",
+        "pt-BR": "Quem está gritando?"
+      },
+      "freqRank": 20,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-screaming-in-fear",
+      "voices": [
+        { "key": "echo/packs/it_fluent/18-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/18-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Spero di sposarla.",
+      "gloss": {
+        "en": "I hope to marry her.",
+        "fr": "J'espère l'épouser.",
+        "ru": "Я надеюсь жениться на ней."
+      },
+      "freqRank": 21,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/it_fluent/19-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/19-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "Ho appena cenato.",
+      "gloss": {
+        "en": "I have just had dinner.",
+        "tr": "Akşam yemeğini daha yeni yedim.",
+        "ru": "Я только что поужинал."
+      },
+      "freqRank": 22,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/20-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/20-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "Noi non dimentichiamo.",
+      "gloss": {
+        "en": "We don't forget.",
+        "de": "Wir vergessen nicht.",
+        "fr": "Nous n'oublions pas."
+      },
+      "freqRank": 23,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/it_fluent/21-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/21-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "Sono una gatta.",
+      "gloss": {
+        "en": "I'm a cat.",
+        "tr": "Ben bir kediyim.",
+        "de": "Ich bin eine Katze.",
+        "ru": "Я кошка."
+      },
+      "freqRank": 24,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/it_fluent/22-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/22-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "Loro sono professori.",
+      "gloss": { "en": "They are teachers.", "fr": "Ils sont professeurs.", "ru": "Они учителя." },
+      "freqRank": 25,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/it_fluent/23-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/23-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "Chi sta vincendo?",
+      "gloss": {
+        "en": "Who's winning?",
+        "de": "Wer ist am Gewinnen?",
+        "pt-BR": "Quem está vencendo?"
+      },
+      "freqRank": 26,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:trophy",
+      "voices": [
+        { "key": "echo/packs/it_fluent/24-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/24-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "Manca una forchetta.",
+      "gloss": {
+        "en": "There is a fork missing.",
+        "de": "Eine Gabel fehlt.",
+        "fr": "Il manque une fourchette.",
+        "ru": "Нужна вилка."
+      },
+      "freqRank": 27,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/it_fluent/25-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/25-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "Perché Marie sanguina?",
+      "gloss": {
+        "en": "Why is Mary bleeding?",
+        "de": "Warum blutet Maria?",
+        "fr": "Pourquoi Marie saigne ?"
+      },
+      "freqRank": 28,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drop-of-blood",
+      "voices": [
+        { "key": "echo/packs/it_fluent/26-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/26-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "Voglio una caramella.",
+      "gloss": {
+        "en": "I want a piece of candy.",
+        "de": "Ich will ein Bonbon.",
+        "es": "Quiero un caramelo.",
+        "fr": "Je veux un bonbon.",
+        "ru": "Хочу конфету."
+      },
+      "freqRank": 29,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:candy",
+      "voices": [
+        { "key": "echo/packs/it_fluent/27-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/27-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "Sono un informatico.",
+      "gloss": {
+        "en": "I'm a computer scientist.",
+        "de": "Ich bin Informatiker.",
+        "fr": "Je suis informaticien."
+      },
+      "freqRank": 30,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/it_fluent/28-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/28-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "Ci siamo baciati.",
+      "gloss": { "en": "We kissed each other.", "es": "Nos besamos.", "pt-BR": "Beijamo-nos." },
+      "freqRank": 31,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:kiss-mark",
+      "voices": [
+        { "key": "echo/packs/it_fluent/29-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/29-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "È molto frustrante.",
+      "gloss": {
+        "en": "It's very frustrating.",
+        "de": "Es ist sehr frustrierend.",
+        "pt-BR": "É muito frustrante."
+      },
+      "freqRank": 32,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:weary-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/30-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/30-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "Lo capivo appena.",
+      "gloss": {
+        "en": "I could hardly understand him.",
+        "fr": "Je pouvais à peine le comprendre.",
+        "ru": "Я едва мог его понять."
+      },
+      "freqRank": 33,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:confused-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/31-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/31-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "Il sole brilla.",
+      "gloss": { "en": "The sun is shining.", "pt-BR": "O sol brilha.", "ru": "Солнце светит." },
+      "freqRank": 34,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun",
+      "voices": [
+        { "key": "echo/packs/it_fluent/32-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/32-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "Sono una casalinga.",
+      "gloss": {
+        "en": "I am a housewife.",
+        "de": "Ich bin Hausfrau.",
+        "es": "Soy ama de casa.",
+        "fr": "Je suis femme au foyer."
+      },
+      "freqRank": 35,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broom",
+      "voices": [
+        { "key": "echo/packs/it_fluent/33-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/33-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "Prendo delle vitamine.",
+      "gloss": {
+        "en": "I take vitamins.",
+        "tr": "Vitamin alıyorum.",
+        "ru": "Я принимаю витамины."
+      },
+      "freqRank": 36,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pill",
+      "voices": [
+        { "key": "echo/packs/it_fluent/34-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/34-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "Ti scriverò presto.",
+      "gloss": {
+        "en": "I will write to you soon.",
+        "de": "Ich werde dir bald schreiben.",
+        "fr": "Je t'écrirai bientôt.",
+        "ru": "Я тебе скоро напишу."
+      },
+      "freqRank": 37,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/it_fluent/35-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/35-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "Il cane abbaia.",
+      "gloss": {
+        "en": "The dog barks.",
+        "de": "Der Hund bellt.",
+        "es": "El perro ladra.",
+        "pt-BR": "O cão late."
+      },
+      "freqRank": 38,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/it_fluent/36-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/36-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "Loro sono noiosi.",
+      "gloss": {
+        "en": "They're boring.",
+        "es": "Ellos son aburridos.",
+        "fr": "Ils sont ennuyeux."
+      },
+      "freqRank": 39,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:expressionless-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/37-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/37-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "Tom è resistente.",
+      "gloss": { "en": "Tom's tough.", "es": "Tom es resistente.", "ru": "Том выносливый." },
+      "freqRank": 40,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/it_fluent/38-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/38-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "Non sono ammalata.",
+      "gloss": { "en": "I'm not sick.", "de": "Ich bin nicht krank.", "ru": "Я не болен." },
+      "freqRank": 41,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/it_fluent/39-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/39-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "Tom è disoccupato.",
+      "gloss": {
+        "en": "Tom is unemployed.",
+        "fr": "Tom est au chômage.",
+        "ru": "Том безработный."
+      },
+      "freqRank": 42,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/it_fluent/40-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/40-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "Era sorprendentemente bella.",
+      "gloss": {
+        "en": "She was astonishingly beautiful.",
+        "es": "Era asombrosamente hermosa.",
+        "fr": "Elle était incroyablement belle."
+      },
+      "freqRank": 43,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cherry-blossom",
+      "voices": [
+        { "key": "echo/packs/it_fluent/41-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/41-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "Sono un imprenditore.",
+      "gloss": {
+        "en": "I'm an entrepreneur.",
+        "fr": "Je suis entrepreneur.",
+        "ru": "Я предприниматель."
+      },
+      "freqRank": 44,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/it_fluent/42-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/42-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "Mangia più verdura.",
+      "gloss": {
+        "en": "Eat more vegetables.",
+        "es": "Come más vegetales.",
+        "fr": "Mange plus de légumes."
+      },
+      "freqRank": 45,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/it_fluent/43-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/43-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "Non sono sorda.",
+      "gloss": {
+        "en": "I am not deaf.",
+        "de": "Ich bin nicht taub.",
+        "es": "No soy sorda.",
+        "fr": "Je ne suis pas sourde."
+      },
+      "freqRank": 46,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/it_fluent/44-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/44-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "Lei è creativa.",
+      "gloss": { "en": "You're creative.", "de": "Sie sind kreativ.", "fr": "Vous êtes créative." },
+      "freqRank": 47,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/it_fluent/45-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/45-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "Sono un turista.",
+      "gloss": { "en": "I'm a tourist.", "pt-BR": "Sou um turista.", "ru": "Я турист." },
+      "freqRank": 48,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage",
+      "voices": [
+        { "key": "echo/packs/it_fluent/46-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/46-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "Ho ventiquattro anni.",
+      "gloss": {
+        "en": "I'm 24 years old.",
+        "tr": "24 yaşındayım.",
+        "de": "Ich bin 24 Jahre alt.",
+        "fr": "J'ai 24 ans.",
+        "ru": "Мне двадцать четыре года."
+      },
+      "freqRank": 49,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/it_fluent/47-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/47-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "Prova a controllarti.",
+      "gloss": {
+        "en": "Try to control yourself.",
+        "de": "Versuche dich zu beherrschen.",
+        "es": "Trata de controlarte.",
+        "fr": "Essaie de te contrôler."
+      },
+      "freqRank": 50,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-in-lotus-position",
+      "voices": [
+        { "key": "echo/packs/it_fluent/48-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/48-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "Canto quando cucino.",
+      "gloss": {
+        "en": "I sing when I cook.",
+        "es": "Canto mientras cocino.",
+        "fr": "Je chante quand je cuisine."
+      },
+      "freqRank": 51,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/it_fluent/49-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/49-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "Lui vende automobili.",
+      "gloss": {
+        "en": "He sells cars.",
+        "de": "Er verkauft Autos.",
+        "es": "Él vende coches.",
+        "fr": "Il vend des voitures.",
+        "pt-BR": "Ele vende carros.",
+        "ru": "Он продаёт автомобили."
+      },
+      "freqRank": 52,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/it_fluent/50-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/50-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "Ho appena pranzato.",
+      "gloss": {
+        "en": "I've just had lunch.",
+        "tr": "Az önce öğle yemeğini yedim.",
+        "ru": "Я только что пообедал."
+      },
+      "freqRank": 53,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/51-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/51-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "Ti amerò sempre.",
+      "gloss": {
+        "en": "I will love you always.",
+        "es": "Siempre te querré.",
+        "fr": "Je t'aimerai toujours."
+      },
+      "freqRank": 54,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/it_fluent/52-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/52-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "Ho già pranzato.",
+      "gloss": {
+        "en": "I have already eaten lunch.",
+        "fr": "J'ai déjà pris mon déjeuner.",
+        "ru": "Я уже обедал."
+      },
+      "freqRank": 55,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/53-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/53-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "Io sono musulmano.",
+      "gloss": { "en": "I am a Muslim.", "de": "Ich bin Muslim.", "fr": "Je suis musulman." },
+      "freqRank": 56,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [
+        { "key": "echo/packs/it_fluent/54-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/54-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "Tom è musulmano.",
+      "gloss": {
+        "en": "Tom is a Muslim.",
+        "es": "Tom es musulmán.",
+        "fr": "Tom est musulman.",
+        "ar": "توم مسلم."
+      },
+      "freqRank": 57,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [
+        { "key": "echo/packs/it_fluent/55-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/55-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "È un dizionario.",
+      "gloss": {
+        "en": "It's a dictionary.",
+        "tr": "O bir sözlük.",
+        "de": "Es ist ein Wörterbuch.",
+        "es": "Es un diccionario.",
+        "fr": "C'est un dictionnaire."
+      },
+      "freqRank": 58,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/56-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/56-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "Tom si ricorderà.",
+      "gloss": {
+        "en": "Tom will remember.",
+        "de": "Tom wird sich erinnern.",
+        "es": "Tom recordará."
+      },
+      "freqRank": 59,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/it_fluent/57-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/57-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "Ho il dizionario.",
+      "gloss": {
+        "en": "I have the dictionary.",
+        "de": "Ich habe das Wörterbuch.",
+        "fr": "J'ai le dictionnaire."
+      },
+      "freqRank": 60,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/58-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/58-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "Suona il flauto.",
+      "gloss": {
+        "en": "She plays the flute.",
+        "de": "Sie spielt Flöte.",
+        "fr": "Elle joue de la flûte."
+      },
+      "freqRank": 61,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/it_fluent/59-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/59-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "Ho un dizionario.",
+      "gloss": {
+        "en": "I have a dictionary.",
+        "tr": "Benim bir sözlüğüm var.",
+        "es": "Tengo un diccionario.",
+        "pt-BR": "Eu tenho um dicionário.",
+        "ru": "У меня есть словарь."
+      },
+      "freqRank": 62,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/60-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/60-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "Noi siamo divorziati.",
+      "gloss": { "en": "We're divorced.", "pt-BR": "Estamos divorciados.", "ru": "Мы разведены." },
+      "freqRank": 63,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/it_fluent/61-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/61-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "Tom sta cucinando.",
+      "gloss": { "en": "Tom's cooking.", "de": "Tom kocht gerade.", "es": "Tom está cocinando." },
+      "freqRank": 64,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/it_fluent/62-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/62-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "Ho diciannove anni.",
+      "gloss": {
+        "en": "I am 19 years old.",
+        "de": "Ich bin 19 Jahre alt.",
+        "es": "Tengo 19 años.",
+        "fr": "J'ai 19 ans.",
+        "ru": "Мне девятнадцать лет."
+      },
+      "freqRank": 65,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/it_fluent/63-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/63-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "Lei nuota bene.",
+      "gloss": { "en": "She swims well.", "de": "Sie schwimmt gut.", "fr": "Elle nage bien." },
+      "freqRank": 66,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/it_fluent/64-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/64-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "Ti piace danzare?",
+      "gloss": {
+        "en": "Do you like to dance?",
+        "fr": "Aimes-tu danser ?",
+        "pt-BR": "Você gosta de dançar ?"
+      },
+      "freqRank": 67,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-dancing",
+      "voices": [
+        { "key": "echo/packs/it_fluent/65-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/65-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "Non sta piovendo.",
+      "gloss": {
+        "en": "It is not raining.",
+        "es": "No está lloviendo.",
+        "pt-BR": "Não está chovendo."
+      },
+      "freqRank": 68,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/it_fluent/66-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/66-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "Tom abitava lì.",
+      "gloss": { "en": "Tom lived there.", "de": "Tom lebte dort.", "es": "Tom vivía ahí." },
+      "freqRank": 69,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/it_fluent/67-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/67-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "Javier diventò rosso.",
+      "gloss": {
+        "en": "Javier turned red.",
+        "de": "Javier wird rot.",
+        "es": "Javier se puso rojo.",
+        "pt-BR": "Javier ficou vermelho."
+      },
+      "freqRank": 70,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flushed-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/68-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/68-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "Sono un matematico.",
+      "gloss": {
+        "en": "I'm a mathematician.",
+        "tr": "Ben bir matematikçiyim.",
+        "es": "Soy matemático.",
+        "fr": "Je suis mathématicien.",
+        "ru": "Я математик."
+      },
+      "freqRank": 71,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:divide",
+      "voices": [
+        { "key": "echo/packs/it_fluent/69-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/69-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "Lui parla portoghese.",
+      "gloss": {
+        "en": "He speaks Portuguese.",
+        "de": "Sie spricht Portugiesisch.",
+        "es": "Él habla portugués.",
+        "fr": "Il parle portugais.",
+        "pt-BR": "Ele fala português.",
+        "ru": "Он говорит по-португальски."
+      },
+      "freqRank": 72,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/70-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/70-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "Non parlo portoghese.",
+      "gloss": {
+        "en": "I don't speak Portuguese.",
+        "fr": "Je ne parle pas portugais.",
+        "pt-BR": "Não falo português.",
+        "ru": "Я не говорю по-португальски."
+      },
+      "freqRank": 73,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/71-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/71-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "Si lamentano sempre.",
+      "gloss": {
+        "en": "They are always complaining.",
+        "es": "Siempre se están quejando.",
+        "fr": "Ils se plaignent toujours.",
+        "ru": "Они всегда жалуются."
+      },
+      "freqRank": 74,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:unamused-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/72-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/72-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "Lei è vegetariana.",
+      "gloss": {
+        "en": "She is a vegetarian.",
+        "tr": "O bir vejetaryen.",
+        "de": "Sie ist Vegetarierin.",
+        "es": "Ella es vegetariana.",
+        "fr": "Elle est végétarienne.",
+        "ru": "Она вегетарианка."
+      },
+      "freqRank": 75,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/it_fluent/73-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/73-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "Insegnare è apprendere.",
+      "gloss": {
+        "en": "Teaching is learning.",
+        "de": "Unterrichten ist Lernen.",
+        "es": "Enseñar es aprender.",
+        "fr": "Enseigner c'est apprendre."
+      },
+      "freqRank": 76,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:graduation-cap",
+      "voices": [
+        { "key": "echo/packs/it_fluent/74-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/74-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "Lei è deceduta?",
+      "gloss": {
+        "en": "Is she dead?",
+        "de": "Ist sie tot?",
+        "es": "¿Está muerta?",
+        "fr": "Est-elle décédée ?"
+      },
+      "freqRank": 77,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:coffin",
+      "voices": [
+        { "key": "echo/packs/it_fluent/75-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/75-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "Tom è vegano.",
+      "gloss": {
+        "en": "Tom is a vegan.",
+        "de": "Tom ist Veganer.",
+        "es": "Tom es vegano.",
+        "pt-BR": "O Tom é vegano."
+      },
+      "freqRank": 78,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/it_fluent/76-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/76-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "Lei sta nuotando.",
+      "gloss": {
+        "en": "She is swimming.",
+        "de": "Sie schwimmt.",
+        "es": "Ella está nadando.",
+        "fr": "Elle nage.",
+        "pt-BR": "Ela está nadando."
+      },
+      "freqRank": 79,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/it_fluent/77-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/77-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "Noi studiamo musica.",
+      "gloss": {
+        "en": "We study music.",
+        "de": "Wir studieren Musik.",
+        "es": "Nosotros estudiamos música.",
+        "fr": "Nous étudions la musique."
+      },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-score",
+      "voices": [
+        { "key": "echo/packs/it_fluent/78-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/78-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "Vogliamo frasi complete.",
+      "gloss": {
+        "en": "We want complete sentences.",
+        "de": "Wir wollen vollständige Sätze.",
+        "es": "Queremos frases completas.",
+        "fr": "Nous voulons des phrases complètes.",
+        "pt-BR": "Queremos frases completas."
+      },
+      "freqRank": 81,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:memo",
+      "voices": [
+        { "key": "echo/packs/it_fluent/79-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/79-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "È un cardiologo.",
+      "gloss": {
+        "en": "He's a cardiologist.",
+        "tr": "O bir kardiyolog.",
+        "de": "Er ist Kardiologe.",
+        "es": "Es cardiólogo.",
+        "fr": "C'est un cardiologue.",
+        "pt-BR": "É cardiologista.",
+        "ru": "Он кардиолог."
+      },
+      "freqRank": 82,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/it_fluent/80-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/80-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "Io sono analfabeta.",
+      "gloss": {
+        "en": "I'm illiterate.",
+        "de": "Ich bin Analphabet.",
+        "fr": "Je suis analphabète.",
+        "ru": "Я неграмотный."
+      },
+      "freqRank": 83,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-latin-letters",
+      "voices": [
+        { "key": "echo/packs/it_fluent/81-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/81-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "Il piccione tuba.",
+      "gloss": {
+        "en": "The pigeon is cooing.",
+        "de": "Die Taube gurrt.",
+        "es": "El pichón pipía.",
+        "fr": "Le pigeon roucoule.",
+        "pt-BR": "O pombo arrulha.",
+        "ru": "Голубь воркует."
+      },
+      "freqRank": 84,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/it_fluent/82-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/82-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "È un girasole.",
+      "gloss": {
+        "en": "It's a sunflower.",
+        "de": "Das ist eine Sonnenblume.",
+        "es": "Es un girasol.",
+        "fr": "C'est un tournesol."
+      },
+      "freqRank": 85,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunflower",
+      "voices": [
+        { "key": "echo/packs/it_fluent/83-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/83-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "Noi tutti mentiamo.",
+      "gloss": {
+        "en": "We all lie.",
+        "de": "Wir lügen alle.",
+        "es": "Todos mentimos.",
+        "ru": "Мы все врём."
+      },
+      "freqRank": 86,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/84-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/84-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "Sono una lupa.",
+      "gloss": {
+        "en": "I'm a she-wolf.",
+        "tr": "Ben kurdum.",
+        "de": "Ich bin eine Wölfin.",
+        "fr": "Je suis une louve.",
+        "ru": "Я волчица."
+      },
+      "freqRank": 87,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wolf",
+      "voices": [
+        { "key": "echo/packs/it_fluent/85-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/85-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "Quando ti trasferirai?",
+      "gloss": {
+        "en": "When are you going to move?",
+        "de": "Wann wirst du umziehen?",
+        "es": "¿Cuándo te vas a mudar?",
+        "fr": "Quand déménageras-tu ?"
+      },
+      "freqRank": 88,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:package",
+      "voices": [
+        { "key": "echo/packs/it_fluent/86-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/86-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "Sono un tennista.",
+      "gloss": {
+        "en": "I'm a tennis player.",
+        "de": "Ich bin ein Tennisspieler.",
+        "es": "Soy un tenista.",
+        "ru": "Я теннисист."
+      },
+      "freqRank": 89,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tennis",
+      "voices": [
+        { "key": "echo/packs/it_fluent/87-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/87-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "Loro stanno danzando.",
+      "gloss": {
+        "en": "They're dancing.",
+        "de": "Sie tanzen.",
+        "es": "Están bailando.",
+        "fr": "Ils sont en train de danser."
+      },
+      "freqRank": 90,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-dancing",
+      "voices": [
+        { "key": "echo/packs/it_fluent/88-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/88-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "Sono un alchimista.",
+      "gloss": {
+        "en": "I'm an alchemist.",
+        "tr": "Simyacıyım.",
+        "de": "Ich bin Alchemist.",
+        "es": "Soy alquimista.",
+        "fr": "Je suis alchimiste."
+      },
+      "freqRank": 91,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [
+        { "key": "echo/packs/it_fluent/89-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/89-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "Il gatto miagola.",
+      "gloss": {
+        "en": "The cat meows.",
+        "de": "Die Katze miaut.",
+        "es": "El gato maúlla.",
+        "ru": "Кошка мяукает."
+      },
+      "freqRank": 92,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/it_fluent/90-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/90-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "Nessuno è invulnerabile.",
+      "gloss": {
+        "en": "No one is invulnerable.",
+        "de": "Niemand ist unverwundbar.",
+        "fr": "Personne n'est invulnérable.",
+        "ru": "Неуязвимых нет."
+      },
+      "freqRank": 93,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shield",
+      "voices": [
+        { "key": "echo/packs/it_fluent/91-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/91-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "Il lupo ulula.",
+      "gloss": {
+        "en": "The wolf howls.",
+        "es": "El lobo aúlla.",
+        "pt-BR": "O lobo uiva.",
+        "ru": "Волк воет."
+      },
+      "freqRank": 94,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wolf",
+      "voices": [
+        { "key": "echo/packs/it_fluent/92-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/92-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "I fiori sono gialli.",
+      "gloss": {
+        "en": "Flowers are yellow.",
+        "tr": "Çiçekler sarıdır.",
+        "es": "Las flores son amarillas.",
+        "pt-BR": "As flores são amarelas."
+      },
+      "freqRank": 95,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunflower",
+      "voices": [
+        { "key": "echo/packs/it_fluent/93-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/93-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "Tom è un rabbino.",
+      "gloss": {
+        "en": "Tom is a rabbi.",
+        "tr": "Tom bir haham.",
+        "es": "Tom es un rabino.",
+        "fr": "Tom est un rabbin."
+      },
+      "freqRank": 96,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [
+        { "key": "echo/packs/it_fluent/94-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/94-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "Puoi insegnarmi il francese?",
+      "gloss": {
+        "en": "Can you teach me French?",
+        "de": "Kannst du mir Französisch beibringen?",
+        "es": "¿Podés enseñarme francés?",
+        "fr": "Peux-tu m'enseigner le français ?",
+        "pt-BR": "Você pode me ensinar francês?"
+      },
+      "freqRank": 97,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/95-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/95-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "Ho sposato un canadese.",
+      "gloss": {
+        "en": "I married a Canadian.",
+        "tr": "Bir Kanadalı ile evlendim.",
+        "de": "Ich habe einen Kanadier geheiratet.",
+        "ru": "Я вышла замуж за канадца."
+      },
+      "freqRank": 98,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/it_fluent/96-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/96-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "Sono solo un messaggero.",
+      "gloss": {
+        "en": "I'm just a messenger.",
+        "es": "Solo soy un mensajero.",
+        "fr": "Je ne suis qu'un messager.",
+        "pt-BR": "Eu sou só um mensageiro."
+      },
+      "freqRank": 99,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/it_fluent/97-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/97-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "Le formiche hanno orecchie?",
+      "gloss": {
+        "en": "Do ants have ears?",
+        "de": "Haben Ameisen Ohren?",
+        "es": "¿Las hormigas tienen orejas?",
+        "fr": "Les fourmis ont-elles des oreilles ?",
+        "ru": "У муравьев есть уши?"
+      },
+      "freqRank": 100,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ant",
+      "voices": [
+        { "key": "echo/packs/it_fluent/98-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/98-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "Non ha animali domestici.",
+      "gloss": {
+        "en": "He doesn't have any pets.",
+        "de": "Er hat keine Haustiere.",
+        "es": "Él no tiene ninguna mascota.",
+        "ru": "У него нет домашних животных."
+      },
+      "freqRank": 101,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:paw-prints",
+      "voices": [
+        { "key": "echo/packs/it_fluent/99-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/99-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "Tom mangia un pomodoro.",
+      "gloss": {
+        "en": "Tom is eating a tomato.",
+        "de": "Tom isst eine Tomate.",
+        "es": "Tom está comiendo un tomate.",
+        "fr": "Tom mange une tomate.",
+        "ru": "Том ест помидор."
+      },
+      "freqRank": 102,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tomato",
+      "voices": [
+        { "key": "echo/packs/it_fluent/100-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/100-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "Siamo tutti dei bugiardi.",
+      "gloss": {
+        "en": "We're all liars.",
+        "es": "Todos somos mentirosos.",
+        "fr": "Nous sommes tous des menteurs.",
+        "pt-BR": "Todos somos mentirosos.",
+        "ar": "كلنا كذّابون."
+      },
+      "freqRank": 103,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/101-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/101-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "Gli sanguina il naso.",
+      "gloss": {
+        "en": "He has a nose bleed.",
+        "es": "Le sangra la nariz.",
+        "fr": "Il saigne du nez.",
+        "pt-BR": "O nariz dele está sangrando."
+      },
+      "freqRank": 104,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drop-of-blood",
+      "voices": [
+        { "key": "echo/packs/it_fluent/102-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/102-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "Il suo dito sanguina.",
+      "gloss": {
+        "en": "His finger bleeds.",
+        "de": "Sein Finger blutet.",
+        "es": "Su dedo sangra.",
+        "fr": "Son doigt saigne."
+      },
+      "freqRank": 105,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drop-of-blood",
+      "voices": [
+        { "key": "echo/packs/it_fluent/103-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/103-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "La storia si ripete.",
+      "gloss": {
+        "en": "History repeats itself.",
+        "es": "La historia se repite.",
+        "fr": "L'histoire se répète.",
+        "pt-BR": "A história se repete."
+      },
+      "freqRank": 106,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:repeat-button",
+      "voices": [
+        { "key": "echo/packs/it_fluent/104-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/104-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "Perché non ci sediamo?",
+      "gloss": {
+        "en": "Why don't we sit?",
+        "de": "Warum setzen wir uns nicht?",
+        "fr": "Pourquoi ne nous asseyons-nous pas ?",
+        "ru": "Почему бы нам не присесть?"
+      },
+      "freqRank": 107,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chair",
+      "voices": [
+        { "key": "echo/packs/it_fluent/105-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/105-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "Questo cane abbaia molto.",
+      "gloss": {
+        "en": "This dog barks a lot.",
+        "es": "Este perro ladra mucho.",
+        "fr": "Ce chien aboie beaucoup.",
+        "pt-BR": "Este cachorro late muito.",
+        "ru": "Эта собака много лает."
+      },
+      "freqRank": 108,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/it_fluent/106-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/106-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "Sono uno studente universitario.",
+      "gloss": {
+        "en": "I am a university student.",
+        "de": "Ich bin Student.",
+        "es": "Soy universitario.",
+        "fr": "Je suis étudiant."
+      },
+      "freqRank": 109,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:graduation-cap",
+      "voices": [
+        { "key": "echo/packs/it_fluent/107-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/107-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "Questo giornale è gratuito.",
+      "gloss": {
+        "en": "This newspaper is free.",
+        "es": "Este periódico es gratuito.",
+        "fr": "Ce journal est gratuit.",
+        "ru": "Эта газета бесплатна."
+      },
+      "freqRank": 110,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:free-button",
+      "voices": [
+        { "key": "echo/packs/it_fluent/108-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/108-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "Non so il polacco.",
+      "gloss": {
+        "en": "I don't know Polish.",
+        "es": "No sé polaco.",
+        "fr": "Je ne connais pas le polonais.",
+        "ru": "Я не знаю польский."
+      },
+      "freqRank": 111,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/109-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/109-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "Le luci sono spente.",
+      "gloss": {
+        "en": "The lights are out.",
+        "tr": "Işıklar söndü.",
+        "de": "Die Lichter sind aus.",
+        "fr": "Les lumières sont éteintes."
+      },
+      "freqRank": 112,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/it_fluent/110-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/110-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "Ho i piedi freddi.",
+      "gloss": {
+        "en": "I've got cold feet.",
+        "es": "Tengo los pies fríos.",
+        "fr": "J'ai les pieds froids.",
+        "ru": "У меня ноги холодные."
+      },
+      "freqRank": 113,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/111-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/111-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "Sei un bambino prodigio?",
+      "gloss": {
+        "en": "Are you a wunderkind?",
+        "de": "Bist du ein Wunderkind?",
+        "es": "¿Eres un niño prodigio?",
+        "ru": "Ты вундеркинд?"
+      },
+      "freqRank": 114,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/it_fluent/112-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/112-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "Ti piacciono gli elefanti.",
+      "gloss": {
+        "en": "You like elephants.",
+        "es": "Te gustan los elefantes.",
+        "fr": "Tu aimes les éléphants.",
+        "pt-BR": "Você gosta de elefantes."
+      },
+      "freqRank": 115,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:elephant",
+      "voices": [
+        { "key": "echo/packs/it_fluent/113-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/113-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "Ho gli occhi azzurri.",
+      "gloss": {
+        "en": "I have blue eyes.",
+        "de": "Ich habe blaue Augen.",
+        "es": "Tengo ojos azules.",
+        "pt-BR": "Tenho olhos azuis.",
+        "ru": "У меня голубые глаза."
+      },
+      "freqRank": 116,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/it_fluent/114-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/114-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "Come si scrive \"pretty\"?",
+      "gloss": {
+        "en": "How do you spell \"pretty\"?",
+        "de": "Wie schreibt man \"pretty\"?",
+        "es": "¿Cómo se escribe \"pretty\"?",
+        "fr": "Comment épelles-tu \"pretty\" ?",
+        "pt-BR": "Como se escreve \"pretty\"?"
+      },
+      "freqRank": 117,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-latin-letters",
+      "voices": [
+        { "key": "echo/packs/it_fluent/115-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/115-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "Non ho ancora pranzato.",
+      "gloss": {
+        "en": "I haven't eaten lunch yet.",
+        "tr": "Henüz öğle yemeği yemedim.",
+        "es": "Todavía no he comido.",
+        "fr": "Je n'ai pas encore déjeuné."
+      },
+      "freqRank": 118,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/116-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/116-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "È il mio fratellastro.",
+      "gloss": {
+        "en": "He's my half-brother.",
+        "de": "Er ist mein Halbbruder.",
+        "es": "Es mi hermanastro.",
+        "fr": "Il est mon demi-frère."
+      },
+      "freqRank": 119,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/it_fluent/117-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/117-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "Tom nuota molto bene.",
+      "gloss": {
+        "en": "Tom swims very well.",
+        "de": "Tom schwimmt sehr gut.",
+        "pt-BR": "Tom nada muito bem.",
+        "ru": "Том очень хорошо плавает."
+      },
+      "freqRank": 120,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/it_fluent/118-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/118-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "Dove sono le docce?",
+      "gloss": {
+        "en": "Where are the showers?",
+        "de": "Wo sind die Duschen?",
+        "es": "¿Dónde están las duchas?",
+        "fr": "Où sont les douches ?"
+      },
+      "freqRank": 121,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soap",
+      "voices": [
+        { "key": "echo/packs/it_fluent/119-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/119-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "Tom nuota molto velocemente.",
+      "gloss": {
+        "en": "Tom swims very fast.",
+        "de": "Tom schwimmt sehr schnell.",
+        "es": "Tom nada muy rápido.",
+        "pt-BR": "Tom nada muito rápido."
+      },
+      "freqRank": 122,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/it_fluent/120-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/120-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "Non dimentichi lo scontrino.",
+      "gloss": {
+        "en": "Don't forget the receipt.",
+        "de": "Vergessen Sie den Kassenzettel nicht.",
+        "fr": "N'oubliez pas le ticket de caisse.",
+        "ru": "Не забудьте чек."
+      },
+      "freqRank": 123,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:receipt",
+      "voices": [
+        { "key": "echo/packs/it_fluent/121-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/121-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "Tom ha abbracciato Mary.",
+      "gloss": {
+        "en": "Tom hugged Mary.",
+        "es": "Tom abrazó a Mary.",
+        "fr": "Tom fit un câlin à Marie.",
+        "pt-BR": "Tom abraçou Mary.",
+        "ru": "Том обнял Мэри."
+      },
+      "freqRank": 124,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:people-hugging",
+      "voices": [
+        { "key": "echo/packs/it_fluent/122-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/122-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "È una persona perbene.",
+      "gloss": {
+        "en": "He's a good person.",
+        "de": "Er ist ein guter Mensch.",
+        "fr": "C'est quelqu'un de bien.",
+        "ru": "Это хороший человек."
+      },
+      "freqRank": 125,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-halo",
+      "voices": [
+        { "key": "echo/packs/it_fluent/123-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/123-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "Ha una figlia pianista.",
+      "gloss": {
+        "en": "She has a daughter who is a pianist.",
+        "de": "Sie hat eine Tochter, die Pianistin ist.",
+        "es": "Ella tiene una hija pianista.",
+        "fr": "Elle a une fille qui est pianiste."
+      },
+      "freqRank": 126,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-score",
+      "voices": [
+        { "key": "echo/packs/it_fluent/124-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/124-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "Tom è un pianista.",
+      "gloss": {
+        "en": "Tom is a pianist.",
+        "de": "Tom ist Pianist.",
+        "es": "Tom es pianista.",
+        "ru": "Том - пианист."
+      },
+      "freqRank": 127,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-score",
+      "voices": [
+        { "key": "echo/packs/it_fluent/125-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/125-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "Voglio abitare in Italia.",
+      "gloss": {
+        "en": "I want to live in Italy.",
+        "es": "Quiero vivir en Italia.",
+        "fr": "Je veux habiter en Italie.",
+        "pt-BR": "Quero morar na Itália."
+      },
+      "freqRank": 128,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/it_fluent/126-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/126-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "Le banane sono gialle.",
+      "gloss": {
+        "en": "Bananas are yellow.",
+        "es": "Los plátanos son amarillos.",
+        "fr": "Les bananes sont jaunes.",
+        "pt-BR": "As bananas são amarelas.",
+        "ru": "Бананы жёлтые.",
+        "ar": "الموز أصفر."
+      },
+      "freqRank": 129,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:banana",
+      "voices": [
+        { "key": "echo/packs/it_fluent/127-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/127-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "Il pollo è crudo.",
+      "gloss": {
+        "en": "The chicken is raw.",
+        "es": "El pollo está crudo.",
+        "fr": "Le poulet est cru.",
+        "ru": "Курица сырая."
+      },
+      "freqRank": 130,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:meat-on-bone",
+      "voices": [
+        { "key": "echo/packs/it_fluent/128-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/128-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "Spesso mangiamo pesce crudo.",
+      "gloss": {
+        "en": "We often eat raw fish.",
+        "tr": "Sıklıkla çiğ balık yeriz.",
+        "es": "Comemos pescado crudo a menudo.",
+        "ru": "Мы часто едим сырую рыбу."
+      },
+      "freqRank": 131,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fish",
+      "voices": [
+        { "key": "echo/packs/it_fluent/129-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/129-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "Mi piacciono le lasagne.",
+      "gloss": {
+        "en": "I love lasagna.",
+        "es": "Adoro la lasaña.",
+        "fr": "J'adore les lasagnes.",
+        "pt-BR": "Eu amo lasanha."
+      },
+      "freqRank": 132,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/130-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/130-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "Il cavallo sta saltando.",
+      "gloss": {
+        "en": "The horse is jumping.",
+        "de": "Das Pferd springt.",
+        "es": "El caballo está saltando.",
+        "fr": "Le cheval saute.",
+        "pt-BR": "O cavalo está pulando.",
+        "ru": "Лошадь прыгает."
+      },
+      "freqRank": 133,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:horse",
+      "voices": [
+        { "key": "echo/packs/it_fluent/131-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/131-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "Ti proibisco di fumare.",
+      "gloss": {
+        "en": "I forbid you to smoke.",
+        "de": "Ich verbiete dir zu rauchen.",
+        "es": "Te prohíbo fumar.",
+        "fr": "Je t'interdis de fumer."
+      },
+      "freqRank": 134,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:no-smoking",
+      "voices": [
+        { "key": "echo/packs/it_fluent/132-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/132-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "Adoro il cinema statunitense.",
+      "gloss": {
+        "en": "I love American movies.",
+        "es": "Me encanta el cine estadounidense.",
+        "fr": "J'aime le cinéma étasunien.",
+        "pt-BR": "Eu adoro o cinema estadunidense."
+      },
+      "freqRank": 135,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/it_fluent/133-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/133-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "Tua moglie è credente?",
+      "gloss": {
+        "en": "Is your wife a believer?",
+        "de": "Ist deine Frau eine Gläubige?",
+        "fr": "Ta femme est-elle croyante ?",
+        "ru": "Твоя жена верующая?"
+      },
+      "freqRank": 136,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [
+        { "key": "echo/packs/it_fluent/134-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/134-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "Mi dimenticherai un giorno.",
+      "gloss": {
+        "en": "You'll forget about me someday.",
+        "de": "Du wirst mich eines Tages vergessen.",
+        "es": "Me olvidarás algún día.",
+        "fr": "Tu m'oublieras un jour."
+      },
+      "freqRank": 137,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/it_fluent/135-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/135-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "I cani sono leali.",
+      "gloss": {
+        "en": "Dogs are loyal.",
+        "de": "Hunde sind loyal.",
+        "es": "Los perros son leales.",
+        "fr": "Les chiens sont loyaux."
+      },
+      "freqRank": 138,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/it_fluent/136-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/136-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "Mia moglie è vegetariana.",
+      "gloss": {
+        "en": "My wife is a vegetarian.",
+        "de": "Meine Frau ist Vegetarierin.",
+        "es": "Mi mujer es vegetariana.",
+        "fr": "Ma femme est végétarienne.",
+        "pt-BR": "Minha mulher é vegetariana."
+      },
+      "freqRank": 139,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/it_fluent/137-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/137-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "Ho un visto turistico.",
+      "gloss": {
+        "en": "I have a tourist visa.",
+        "de": "Ich habe ein Touristenvisum.",
+        "es": "Tengo una visa de turista.",
+        "fr": "J'ai un visa de tourisme."
+      },
+      "freqRank": 140,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:passport-control",
+      "voices": [
+        { "key": "echo/packs/it_fluent/138-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/138-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "Tom è un cyborg.",
+      "gloss": {
+        "en": "Tom is a cyborg.",
+        "tr": "Tom bir sayborg.",
+        "es": "Tom es un cíborg.",
+        "fr": "Tom est un cyborg."
+      },
+      "freqRank": 141,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:gear",
+      "voices": [
+        { "key": "echo/packs/it_fluent/139-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/139-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "Gli mandò una cartolina.",
+      "gloss": {
+        "en": "She sent him a postcard.",
+        "de": "Er schickte ihm eine Karte.",
+        "es": "Le envió una postal.",
+        "fr": "Elle lui a envoyé une carte postale."
+      },
+      "freqRank": 142,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/it_fluent/140-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/140-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "Io scrissi il libro.",
+      "gloss": {
+        "en": "I wrote the book.",
+        "de": "Ich habe das Buch geschrieben.",
+        "es": "Escribí el libro.",
+        "fr": "J'ai écrit le livre."
+      },
+      "freqRank": 143,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/it_fluent/141-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/141-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "Chi governa il mondo?",
+      "gloss": {
+        "en": "Who rules the world?",
+        "tr": "Dünyayı kim yönetiyor?",
+        "de": "Wer regiert die Welt?",
+        "es": "¿Quién gobierna el mundo?",
+        "fr": "Qui gouverne le monde ?",
+        "ar": "من يحكم العالم؟"
+      },
+      "freqRank": 144,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/it_fluent/142-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/142-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "Dio creò il mondo.",
+      "gloss": {
+        "en": "God created the world.",
+        "de": "Gott schuf die Welt.",
+        "es": "Dios creó el mundo.",
+        "ru": "Бог создал мир."
+      },
+      "freqRank": 145,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/it_fluent/143-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/143-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "Non abbiamo acqua potabile.",
+      "gloss": {
+        "en": "We have no drinking water.",
+        "de": "Wir haben kein Trinkwasser.",
+        "es": "No tenemos agua potable.",
+        "fr": "Nous n'avons pas d'eau potable."
+      },
+      "freqRank": 146,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:potable-water",
+      "voices": [
+        { "key": "echo/packs/it_fluent/144-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/144-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "I mammiferi producono latte.",
+      "gloss": {
+        "en": "Mammals produce milk.",
+        "de": "Säugetiere produzieren Milch.",
+        "es": "Los mamíferos producen leche.",
+        "fr": "Les mammifères produisent du lait."
+      },
+      "freqRank": 147,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:glass-of-milk",
+      "voices": [
+        { "key": "echo/packs/it_fluent/145-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/145-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "Il legno galleggia bene.",
+      "gloss": {
+        "en": "Wood floats well.",
+        "es": "La madera flota bien.",
+        "fr": "Le bois flotte bien.",
+        "ru": "Дерево хорошо плавает."
+      },
+      "freqRank": 148,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wood",
+      "voices": [
+        { "key": "echo/packs/it_fluent/146-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/146-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "Queste banane sono mature?",
+      "gloss": {
+        "en": "Are these bananas ripe?",
+        "es": "¿Están maduros estos plátanos?",
+        "fr": "Ces bananes sont-elles mûres ?",
+        "pt-BR": "Estas bananas estão maduras?",
+        "ru": "Эти бананы спелые?"
+      },
+      "freqRank": 149,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:banana",
+      "voices": [
+        { "key": "echo/packs/it_fluent/147-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/147-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "Il mondo mi affascina.",
+      "gloss": {
+        "en": "The world fascinates me.",
+        "de": "Die Welt fasziniert mich.",
+        "es": "El mundo me fascina.",
+        "fr": "Le monde me fascine.",
+        "pt-BR": "O mundo me fascina.",
+        "ru": "Мир меня завораживает."
+      },
+      "freqRank": 150,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/it_fluent/148-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/148-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "Vivo nella Svezia settentrionale.",
+      "gloss": {
+        "en": "I live in northern Sweden.",
+        "es": "Vivo en el norte de Suecia.",
+        "fr": "J'habite dans le nord de la Suède.",
+        "pt-BR": "Eu moro no norte da Suécia."
+      },
+      "freqRank": 151,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:compass",
+      "voices": [
+        { "key": "echo/packs/it_fluent/149-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/149-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "Questa pianta è commestibile.",
+      "gloss": {
+        "en": "This plant is good to eat.",
+        "de": "Diese Pflanze ist zum Verzehr geeignet.",
+        "es": "Esta planta es comestible.",
+        "fr": "Cette plante est consommable."
+      },
+      "freqRank": 152,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:seedling",
+      "voices": [
+        { "key": "echo/packs/it_fluent/150-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/150-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "I bambini comprendono tutto.",
+      "gloss": {
+        "en": "Children understand everything.",
+        "de": "Die Kinder verstehen alles.",
+        "es": "Los niños entienden todo.",
+        "ru": "Дети всё понимают."
+      },
+      "freqRank": 153,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/it_fluent/151-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/151-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "Alcuni serpenti sono velenosi.",
+      "gloss": {
+        "en": "Some snakes are poisonous.",
+        "tr": "Bazı yılanlar zehirlidir.",
+        "es": "Algunas serpientes son venenosas.",
+        "fr": "Certains serpents sont venimeux.",
+        "ru": "Некоторые змеи ядовиты."
+      },
+      "freqRank": 154,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snake",
+      "voices": [
+        { "key": "echo/packs/it_fluent/152-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/152-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "Ho molte macchine fotografiche.",
+      "gloss": {
+        "en": "I have a lot of cameras.",
+        "es": "Tengo muchas cámaras de fotos.",
+        "fr": "J'ai beaucoup d'appareils photo.",
+        "ru": "У меня много фотоаппаратов."
+      },
+      "freqRank": 155,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:camera",
+      "voices": [
+        { "key": "echo/packs/it_fluent/153-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/153-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "Mi sanguinano le gengive.",
+      "gloss": {
+        "en": "I have bleeding gums.",
+        "es": "Me sangran las encías.",
+        "fr": "Mes gencives saignent.",
+        "ru": "Мои десны кровоточат."
+      },
+      "freqRank": 156,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tooth",
+      "voices": [
+        { "key": "echo/packs/it_fluent/154-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/154-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "Tutti commettiamo degli errori.",
+      "gloss": {
+        "en": "We all make mistakes.",
+        "de": "Wir alle machen Fehler.",
+        "es": "Todos cometemos errores.",
+        "fr": "Nous commettons tous des erreurs.",
+        "pt-BR": "Todos cometemos erros."
+      },
+      "freqRank": 157,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cross-mark",
+      "voices": [
+        { "key": "echo/packs/it_fluent/155-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/155-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "Il cane mi seguì.",
+      "gloss": {
+        "en": "The dog followed me.",
+        "de": "Der Hund folgte mir.",
+        "es": "El perro me siguió.",
+        "fr": "Le chien me suivit."
+      },
+      "freqRank": 158,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/it_fluent/156-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/156-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "È solo un placebo.",
+      "gloss": {
+        "en": "It's just a placebo.",
+        "de": "Es ist bloß ein Placebo.",
+        "es": "Solo es un placebo.",
+        "fr": "Ça n'est qu'un placebo.",
+        "pt-BR": "É apenas um placebo."
+      },
+      "freqRank": 159,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pill",
+      "voices": [
+        { "key": "echo/packs/it_fluent/157-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/157-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "Gli uomini stanno pranzando.",
+      "gloss": {
+        "en": "The men are eating lunch.",
+        "de": "Die Männer essen zu Mittag.",
+        "fr": "Les hommes sont en train de déjeuner.",
+        "pt-BR": "Os homens estão a almoçar."
+      },
+      "freqRank": 160,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/158-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/158-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "È difficile essere vegani?",
+      "gloss": {
+        "en": "Is it hard to be vegan?",
+        "de": "Ist es schwierig, vegan zu sein?",
+        "es": "¿Es duro ser vegano?",
+        "fr": "Est-il difficile d'être végétalien ?"
+      },
+      "freqRank": 161,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/it_fluent/159-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/159-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "Tom è un biologo.",
+      "gloss": {
+        "en": "Tom is a biologist.",
+        "de": "Tom ist Biologe.",
+        "es": "Tomás es biólogo.",
+        "fr": "Thomas est biologiste.",
+        "pt-BR": "Tom é biólogo.",
+        "ru": "Том - биолог."
+      },
+      "freqRank": 162,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [
+        { "key": "echo/packs/it_fluent/160-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/160-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "Kenji è un tennista.",
+      "gloss": {
+        "en": "Kenji is a tennis player.",
+        "de": "Kenji ist ein Tennisspieler.",
+        "es": "Kenji es un tenista.",
+        "fr": "Kenji est un joueur de tennis."
+      },
+      "freqRank": 163,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tennis",
+      "voices": [
+        { "key": "echo/packs/it_fluent/161-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/161-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "Oggi studieremo Charles Dickens.",
+      "gloss": {
+        "en": "Today we'll study Charles Dickens.",
+        "de": "Heute werden wir uns mit Charles Dickens befassen.",
+        "es": "Hoy estudiaremos a Charles Dickens.",
+        "fr": "Aujourd'hui nous allons étudier Charles Dickens."
+      },
+      "freqRank": 164,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/it_fluent/162-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/162-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "Quanto costa questo sofà?",
+      "gloss": {
+        "en": "How much is this sofa?",
+        "de": "Wie viel kostet dieses Sofa?",
+        "es": "¿Cuánto cuesta este sofá?",
+        "fr": "Combien coûte ce sofa ?",
+        "pt-BR": "Quanto custa este sofá?"
+      },
+      "freqRank": 165,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heavy-dollar-sign",
+      "voices": [
+        { "key": "echo/packs/it_fluent/163-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/163-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "No, non sono assonnato.",
+      "gloss": {
+        "en": "No, I'm not sleepy.",
+        "de": "Nein, ich bin nicht müde.",
+        "fr": "Non, je n'ai pas sommeil.",
+        "ru": "Нет, я не сонный."
+      },
+      "freqRank": 166,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleepy-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/164-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/164-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "I leoni sono carnivori.",
+      "gloss": {
+        "en": "Lions are carnivores.",
+        "tr": "Aslanlar etoburdur.",
+        "de": "Löwen sind Fleischfresser.",
+        "fr": "Les lions sont des carnivores."
+      },
+      "freqRank": 167,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lion",
+      "voices": [
+        { "key": "echo/packs/it_fluent/165-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/165-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "Ha vinto molte competizioni.",
+      "gloss": {
+        "en": "He won many competitions.",
+        "de": "Er hat viele Wettbewerbe gewonnen.",
+        "es": "Ha ganado muchas competiciones.",
+        "fr": "Il a gagné beaucoup de compétitions."
+      },
+      "freqRank": 168,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:trophy",
+      "voices": [
+        { "key": "echo/packs/it_fluent/166-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/166-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "Mangiando troppo si ingrassa.",
+      "gloss": {
+        "en": "If you eat too much, you'll become fat.",
+        "tr": "Çok fazla yersen şişmanlarsın.",
+        "de": "Wenn man zu viel isst, wird man dick.",
+        "es": "Comiendo mucho se engorda.",
+        "fr": "Si on mange trop on grossit."
+      },
+      "freqRank": 169,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/167-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/167-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "Io studierò il tedesco.",
+      "gloss": {
+        "en": "I will study German.",
+        "de": "Ich werde Deutsch studieren.",
+        "es": "Voy a estudiar alemán.",
+        "fr": "J'étudierai l'allemand."
+      },
+      "freqRank": 170,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/168-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/168-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "Non traduco più romanzi.",
+      "gloss": {
+        "en": "I don't translate novels anymore.",
+        "de": "Ich übersetze keine Romane mehr.",
+        "pt-BR": "Não traduzo mais novelas.",
+        "ru": "Я больше не перевожу романы."
+      },
+      "freqRank": 171,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-latin-letters",
+      "voices": [
+        { "key": "echo/packs/it_fluent/169-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/169-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "Tom non è un rabbino.",
+      "gloss": {
+        "en": "Tom isn't a rabbi.",
+        "tr": "Tom bir haham değil.",
+        "de": "Tom ist kein Rabbi.",
+        "es": "Tom no es un rabino.",
+        "ru": "Том не раввин."
+      },
+      "freqRank": 172,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [
+        { "key": "echo/packs/it_fluent/170-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/170-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "Chi sta suonando la chitarra?",
+      "gloss": {
+        "en": "Who is playing the guitar?",
+        "es": "¿Quién está tocando la guitarra?",
+        "fr": "Qui est-ce qui est en train de jouer de la guitare ?",
+        "pt-BR": "Quem está tocando violão?",
+        "ru": "Кто это играет на гитаре?"
+      },
+      "freqRank": 173,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:guitar",
+      "voices": [
+        { "key": "echo/packs/it_fluent/171-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/171-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "Qualcuno sta suonando il pianoforte.",
+      "gloss": {
+        "en": "Somebody is playing the piano.",
+        "es": "Alguien está tocando el piano.",
+        "fr": "Quelqu'un joue du piano.",
+        "pt-BR": "Alguém está tocando piano.",
+        "ru": "Кто-то играет на фортепьяно."
+      },
+      "freqRank": 174,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/it_fluent/172-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/172-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "Come si dice in serbo?",
+      "gloss": {
+        "en": "How do you say it in Serbian?",
+        "de": "Wie sagt man das auf Serbisch?",
+        "fr": "Comment ça se dit en serbe ?",
+        "ru": "Как это будет по-сербски?"
+      },
+      "freqRank": 175,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/173-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/173-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "Non trattarmi come un bambino.",
+      "gloss": {
+        "en": "Don't treat me like a child.",
+        "de": "Behandel mich nicht wie ein Kind.",
+        "fr": "Ne me traite pas comme un enfant.",
+        "ru": "Не надо со мной как с маленьким."
+      },
+      "freqRank": 176,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/it_fluent/174-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/174-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "Il nostro tempo è limitato.",
+      "gloss": {
+        "en": "Our time is limited.",
+        "de": "Unsere Zeit ist begrenzt.",
+        "es": "Nuestro tiempo es limitado.",
+        "ru": "Наше время ограничено."
+      },
+      "freqRank": 177,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/it_fluent/175-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/175-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "La famiglia ha cenato insieme.",
+      "gloss": {
+        "en": "The family ate dinner together.",
+        "de": "Die Familie aß zusammen zu Abend.",
+        "es": "La familia cenó junta.",
+        "fr": "La famille a dîné ensemble.",
+        "pt-BR": "A família almoçou junta."
+      },
+      "freqRank": 178,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/it_fluent/176-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/176-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "Le carote costano tre dollari.",
+      "gloss": {
+        "en": "The carrots cost three dollars.",
+        "de": "Die Karotten kosten drei Dollar.",
+        "es": "Las zanahorias cuestan tres dólares.",
+        "fr": "Les carottes coûtent trois dollars.",
+        "pt-BR": "As cenouras custam três dólares.",
+        "ru": "Морковь стоит три доллара."
+      },
+      "freqRank": 179,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/it_fluent/177-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/177-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "Il mio cane non morde.",
+      "gloss": {
+        "en": "My dog doesn't bite.",
+        "de": "Mein Hund beißt nicht.",
+        "es": "Mi perro no muerde.",
+        "fr": "Mon chien ne mord pas.",
+        "pt-BR": "Meu cachorro não morde.",
+        "ru": "Моя собака не кусается."
+      },
+      "freqRank": 180,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/it_fluent/178-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/178-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "Abbiamo festeggiato il suo compleanno.",
+      "gloss": {
+        "en": "We celebrated his birthday.",
+        "de": "Wir feierten seinen Geburtstag.",
+        "fr": "Nous avons célébré son anniversaire.",
+        "pt-BR": "Comemoramos o aniversário dele."
+      },
+      "freqRank": 181,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/it_fluent/179-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/179-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "Le balene non sono pesci.",
+      "gloss": {
+        "en": "Whales are not fish.",
+        "tr": "Balinalar balık değildir.",
+        "de": "Wale sind keine Fische.",
+        "es": "Las ballenas no son peces."
+      },
+      "freqRank": 182,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:whale",
+      "voices": [
+        { "key": "echo/packs/it_fluent/180-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/180-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "Perché non mangi la verdura?",
+      "gloss": {
+        "en": "Why don't you eat vegetables?",
+        "de": "Warum isst du kein Gemüse?",
+        "es": "¿Por qué no comes verdura?",
+        "fr": "Pourquoi est-ce que tu ne manges pas de légumes ?",
+        "ru": "Почему ты не ешь овощи?"
+      },
+      "freqRank": 183,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/it_fluent/181-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/181-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "Come si dice in polacco?",
+      "gloss": {
+        "en": "How do you say it in Polish?",
+        "de": "Wie sagt man das auf polnisch?",
+        "fr": "Comment ça se dit en polonais ?",
+        "ru": "Как это будет по-польски?"
+      },
+      "freqRank": 184,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/182-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/182-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "Il ghiaccio si è sciolto.",
+      "gloss": {
+        "en": "The ice has melted.",
+        "es": "El hielo se derritió.",
+        "fr": "La glace a fondu.",
+        "pt-BR": "O gelo derreteu."
+      },
+      "freqRank": 185,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/it_fluent/183-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/183-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "I miei piedi sono freddi.",
+      "gloss": {
+        "en": "My feet are cold.",
+        "de": "Meine Füße sind kalt.",
+        "es": "Mis pies están fríos.",
+        "fr": "Mes pieds sont froids."
+      },
+      "freqRank": 186,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/184-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/184-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "Gli elefanti bevono molta acqua.",
+      "gloss": {
+        "en": "Elephants drink a lot of water.",
+        "de": "Elefanten trinken viel Wasser.",
+        "es": "Los elefantes beben mucha agua.",
+        "fr": "Les éléphants boivent beaucoup d'eau.",
+        "ru": "Слоны пьют много воды."
+      },
+      "freqRank": 187,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:elephant",
+      "voices": [
+        { "key": "echo/packs/it_fluent/185-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/185-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "I miei occhi sono azzurri.",
+      "gloss": {
+        "en": "My eyes are blue.",
+        "es": "Mis ojos son azules.",
+        "fr": "Mes yeux sont bleus.",
+        "pt-BR": "Meus olhos são azuis."
+      },
+      "freqRank": 188,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/it_fluent/186-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/186-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "Maria ha gli occhi azzurri.",
+      "gloss": {
+        "en": "Maria has blue eyes.",
+        "de": "Maria hat blaue Augen.",
+        "es": "María tiene los ojos azules.",
+        "fr": "Maria a les yeux bleus.",
+        "pt-BR": "Maria tem olhos azuis."
+      },
+      "freqRank": 189,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/it_fluent/187-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/187-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "I suoi occhi sono azzurri.",
+      "gloss": {
+        "en": "His eyes are blue.",
+        "es": "Sus ojos son azules.",
+        "fr": "Ses yeux sont bleus.",
+        "pt-BR": "Seus olhos são azuis."
+      },
+      "freqRank": 190,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/it_fluent/188-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/188-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "Tom è il mio fratellastro.",
+      "gloss": {
+        "en": "Tom is my half brother.",
+        "tr": "Tom benim üvey erkek kardeşim.",
+        "de": "Tom ist mein Halbbruder.",
+        "ar": "توم أخي من أبي."
+      },
+      "freqRank": 191,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/it_fluent/189-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/189-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "Quante arance ha mangiato Tom?",
+      "gloss": {
+        "en": "How many oranges did Tom eat?",
+        "de": "Wie viele Orangen hat Tom gegessen?",
+        "es": "¿Cuántas naranjas se comió Tom ?",
+        "pt-BR": "Quantas laranjas o Tom comeu?"
+      },
+      "freqRank": 192,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/it_fluent/190-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/190-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "Di chi è questo dizionario?",
+      "gloss": {
+        "en": "Whose dictionary is this?",
+        "es": "¿De quién es este diccionario?",
+        "fr": "À qui est ce dictionnaire ?",
+        "pt-BR": "De quem é este dicionário?"
+      },
+      "freqRank": 193,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/191-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/191-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "Io ho un buon dizionario.",
+      "gloss": {
+        "en": "I have a good dictionary.",
+        "fr": "J'ai un bon dictionnaire.",
+        "pt-BR": "Eu tenho um bom dicionário.",
+        "ru": "У меня есть хороший словарь."
+      },
+      "freqRank": 194,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/192-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/192-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "Ti racconterò la mia storia.",
+      "gloss": {
+        "en": "I'll tell you my story.",
+        "de": "Ich werde dir meine Geschichte erzählen.",
+        "es": "Te contaré mi historia.",
+        "fr": "Je te dirai mon histoire."
+      },
+      "freqRank": 195,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/193-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/193-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "I miei genitori sono divorziati.",
+      "gloss": {
+        "en": "My parents are divorced.",
+        "de": "Meine Eltern sind geschieden.",
+        "es": "Mis padres están divorciados.",
+        "fr": "Mes parents sont divorcés.",
+        "pt-BR": "Meus pais estão divorciados."
+      },
+      "freqRank": 196,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/it_fluent/194-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/194-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "Le tartarughe non hanno denti.",
+      "gloss": {
+        "en": "Turtles don't have teeth.",
+        "es": "Las tortugas no tienen dientes.",
+        "fr": "Les tortues n'ont pas de dents.",
+        "ru": "У черепах нет зубов."
+      },
+      "freqRank": 197,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:turtle",
+      "voices": [
+        { "key": "echo/packs/it_fluent/195-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/195-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "Ho letto i suoi diari.",
+      "gloss": {
+        "en": "I read his diaries.",
+        "de": "Ich habe seine Tagebücher gelesen.",
+        "es": "Leí sus diarios.",
+        "ru": "Я читал его дневники."
+      },
+      "freqRank": 198,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/196-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/196-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "Gli orsi amano le bacche.",
+      "gloss": {
+        "en": "Bears love berries.",
+        "de": "Bären lieben Beeren.",
+        "es": "Los osos aman las bayas.",
+        "fr": "Les ours aiment les baies.",
+        "ru": "Медведи любят ягоды."
+      },
+      "freqRank": 199,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bear",
+      "voices": [
+        { "key": "echo/packs/it_fluent/197-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/197-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "Devo andare a far compere.",
+      "gloss": {
+        "en": "I have to go shopping.",
+        "de": "Ich muss einkaufen gehen.",
+        "es": "Tengo que ir a comprar.",
+        "fr": "Je dois aller faire les courses.",
+        "pt-BR": "Tenho que sair para fazer compras."
+      },
+      "freqRank": 200,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shopping-cart",
+      "voices": [
+        { "key": "echo/packs/it_fluent/198-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/198-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "Questa zuppa è troppo salata.",
+      "gloss": {
+        "en": "This soup's too salty.",
+        "es": "Esta sopa está demasiado salada.",
+        "fr": "Cette soupe est trop salée.",
+        "ru": "Этот суп слишком солёный."
+      },
+      "freqRank": 201,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:salt",
+      "voices": [
+        { "key": "echo/packs/it_fluent/199-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/199-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "Quattro più diciotto fa ventidue.",
+      "gloss": {
+        "en": "Four plus eighteen is twenty-two.",
+        "fr": "Quatre et dix-huit font vingt-deux.",
+        "ru": "Четыре плюс восемнадцать будет двадцать два.",
+        "ar": "أربعة زائد ثمانية عشر يساوي اثنان و عشرون."
+      },
+      "freqRank": 202,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:plus",
+      "voices": [
+        { "key": "echo/packs/it_fluent/200-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/200-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "Il cibo è troppo salato.",
+      "gloss": {
+        "en": "The food is too salty.",
+        "de": "Das Essen ist versalzen.",
+        "fr": "La nourriture est trop salée.",
+        "ru": "Еда пересолена."
+      },
+      "freqRank": 203,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:salt",
+      "voices": [
+        { "key": "echo/packs/it_fluent/201-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/201-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "Questo serpente non è velenoso.",
+      "gloss": {
+        "en": "This snake is not venomous.",
+        "de": "Diese Schlange ist nicht giftig.",
+        "fr": "Ce serpent n'est pas venimeux.",
+        "ru": "Эта змея не ядовитая."
+      },
+      "freqRank": 204,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snake",
+      "voices": [
+        { "key": "echo/packs/it_fluent/202-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/202-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "Uno specchio riflette la luce.",
+      "gloss": {
+        "en": "A mirror reflects light.",
+        "es": "Un espejo refleja la luz.",
+        "fr": "Un miroir reflète la lumière.",
+        "pt-BR": "Um espelho reflete a luz."
+      },
+      "freqRank": 205,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mirror",
+      "voices": [
+        { "key": "echo/packs/it_fluent/203-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/203-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "Prendi un libro e leggilo!",
+      "gloss": {
+        "en": "Take a book and read it.",
+        "de": "Nimm ein Buch und lies es!",
+        "es": "¡Toma un libro y léelo!",
+        "fr": "Prends un livre et lis-le !",
+        "ru": "Возьми книгу и прочитай её!"
+      },
+      "freqRank": 206,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/204-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/204-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "Il treno partirà in ritardo.",
+      "gloss": {
+        "en": "The train's departure will be delayed.",
+        "de": "Der Zug wird verspätet abfahren.",
+        "es": "El tren saldrá con retraso.",
+        "fr": "Le train partira en retard."
+      },
+      "freqRank": 207,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:train",
+      "voices": [
+        { "key": "echo/packs/it_fluent/205-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/205-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "Mio padre smise di bere.",
+      "gloss": {
+        "en": "My father stopped drinking.",
+        "es": "Mi padre dejó de beber.",
+        "fr": "Mon père arrêta de boire.",
+        "pt-BR": "O meu pai parou de beber."
+      },
+      "freqRank": 208,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:beer-mug",
+      "voices": [
+        { "key": "echo/packs/it_fluent/206-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/206-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "Gli atomi formano delle molecole.",
+      "gloss": {
+        "en": "Atoms form molecules.",
+        "de": "Atome bilden Moleküle.",
+        "es": "Los átomos forman moléculas.",
+        "pt-BR": "Átomos formam moléculas."
+      },
+      "freqRank": 209,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [
+        { "key": "echo/packs/it_fluent/207-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/207-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "Come si dice in ungherese?",
+      "gloss": {
+        "en": "How do you say it in Hungarian?",
+        "de": "Wie sagt man das auf Ungarisch?",
+        "fr": "Comment ça se dit en hongrois ?",
+        "ru": "Как это будет по-венгерски?"
+      },
+      "freqRank": 210,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/208-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/208-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "I pomodori maturi sono rossi.",
+      "gloss": {
+        "en": "Ripe tomatoes are red.",
+        "de": "Reife Tomaten sind rot.",
+        "es": "Los tomates maduros son rojos.",
+        "fr": "Les tomates mûres sont rouges.",
+        "ru": "Спелые помидоры красные."
+      },
+      "freqRank": 211,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tomato",
+      "voices": [
+        { "key": "echo/packs/it_fluent/209-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/209-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "Sono i difensori della città.",
+      "gloss": {
+        "en": "They're the defenders of the city.",
+        "es": "Son los defensores de la ciudad.",
+        "fr": "Ils sont les défenseurs de la ville.",
+        "pt-BR": "São os defensores da cidade.",
+        "ru": "Они защитники города.",
+        "ar": "هم المدافعون عن المدينة."
+      },
+      "freqRank": 212,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shield",
+      "voices": [
+        { "key": "echo/packs/it_fluent/210-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/210-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "Gli scrissi una lunga lettera.",
+      "gloss": {
+        "en": "I wrote a long letter to him.",
+        "de": "Ich schrieb ihm einen langen Brief.",
+        "es": "Le escribí una larga carta.",
+        "fr": "Je lui ai écrit une longue lettre."
+      },
+      "freqRank": 213,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/it_fluent/211-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/211-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "Sto studiando la grammatica francese.",
+      "gloss": {
+        "en": "I'm studying French grammar.",
+        "de": "Ich lerne französische Grammatik.",
+        "es": "Estoy estudiando la gramática francesa.",
+        "fr": "Je suis en train d'étudier la grammaire française."
+      },
+      "freqRank": 214,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/212-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/212-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "Tom è un cantante talentuoso.",
+      "gloss": {
+        "en": "Tom is a talented singer.",
+        "es": "Tom es un cantante talentoso.",
+        "fr": "Tom est un chanteur talentueux.",
+        "pt-BR": "Tom é um cantor talentoso."
+      },
+      "freqRank": 215,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/it_fluent/213-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/213-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "Posso digitare 50 parole al minuto.",
+      "gloss": {
+        "en": "I can type 50 words a minute.",
+        "de": "Ich kann 50 Wörter pro Minute tippen.",
+        "es": "Puedo teclear cincuenta palabras por minuto.",
+        "fr": "Je peux taper 50 mots par minute.",
+        "pt-BR": "Eu consigo digitar 50 palavras por minuto."
+      },
+      "freqRank": 216,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/it_fluent/214-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/214-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "Cristo è resuscitato dai morti!",
+      "gloss": {
+        "en": "Christ is risen from the dead!",
+        "de": "Christus ist von den Toten auferstanden!",
+        "es": "¡Cristo resucitó de entre los muertos!",
+        "fr": "Le Christ est ressuscité des morts !"
+      },
+      "freqRank": 217,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:latin-cross",
+      "voices": [
+        { "key": "echo/packs/it_fluent/215-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/215-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "Il sito web è offline.",
+      "gloss": {
+        "en": "The website is down.",
+        "de": "Die Website ist nicht erreichbar.",
+        "fr": "Le site web est par terre.",
+        "ru": "Сайт недоступен."
+      },
+      "freqRank": 218,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/it_fluent/216-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/216-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "Tutte le risposte sono corrette.",
+      "gloss": {
+        "en": "All the answers are correct.",
+        "de": "Alle Antworten sind richtig.",
+        "fr": "Toutes les réponses sont correctes.",
+        "pt-BR": "Todas as respostas são corretas."
+      },
+      "freqRank": 219,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark-button",
+      "voices": [
+        { "key": "echo/packs/it_fluent/217-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/217-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "Questo è un testo biblico.",
+      "gloss": {
+        "en": "This is a biblical text.",
+        "es": "Este es un texto bíblico.",
+        "pt-BR": "Este é um texto bíblico.",
+        "ru": "Это библейский текст."
+      },
+      "freqRank": 220,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:scroll",
+      "voices": [
+        { "key": "echo/packs/it_fluent/218-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/218-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "Ho incontrato delle persone simpatiche.",
+      "gloss": {
+        "en": "I met nice people.",
+        "de": "Ich habe nette Leute getroffen.",
+        "es": "He conocido gente simpática.",
+        "fr": "J'ai rencontré des personnes sympathiques."
+      },
+      "freqRank": 221,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/it_fluent/219-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/219-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "Hanno inventato una storia inverosimile.",
+      "gloss": {
+        "en": "They made up an unlikely story.",
+        "fr": "Ils ont inventé une histoire invraisemblable.",
+        "pt-BR": "Inventaram uma história inverossímil.",
+        "ru": "Они придумали неправдоподобную историю."
+      },
+      "freqRank": 222,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/220-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/220-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "Tom scriverà a sua sorella.",
+      "gloss": {
+        "en": "Tom will write to his sister.",
+        "de": "Tom wird seiner Schwester schreiben.",
+        "fr": "Tom écrira à sa sœur.",
+        "pt-BR": "O Tom vai escrever para a sua irmã."
+      },
+      "freqRank": 223,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/it_fluent/221-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/221-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "Secondo la radio pioverà domani.",
+      "gloss": {
+        "en": "According to the radio, it will rain tomorrow.",
+        "de": "Laut Radio wird es morgen regnen.",
+        "es": "Según la radio, mañana lloverá.",
+        "fr": "Selon la radio, il va pleuvoir demain."
+      },
+      "freqRank": 224,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/it_fluent/222-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/222-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "Tom è un bugiardo patologico.",
+      "gloss": {
+        "en": "Tom is a pathological liar.",
+        "tr": "Tom hastalık düzeyinde bir yalancıdır.",
+        "de": "Tom ist ein krankhafter Lügner.",
+        "es": "Tom es un mentiroso patológico.",
+        "ru": "Том - патологический лжец."
+      },
+      "freqRank": 225,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/223-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/223-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "Come si dice in ceco?",
+      "gloss": {
+        "en": "How do you say it in Czech?",
+        "de": "Wie sagt man das auf Tschechisch?",
+        "fr": "Comment ça se dit en tchèque ?",
+        "ru": "Как это будет по-чешски?"
+      },
+      "freqRank": 226,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/224-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/224-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "I vegetariani non mangiano carne.",
+      "gloss": {
+        "en": "Vegetarians don't eat meat.",
+        "fr": "Les végétariens ne mangent pas de viande.",
+        "pt-BR": "Os vegetarianos não comem carne.",
+        "ru": "Вегетарианцы не едят мясо."
+      },
+      "freqRank": 227,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/it_fluent/225-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/225-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "Mary e Jane sono cugine.",
+      "gloss": {
+        "en": "Mary and Jane are cousins.",
+        "fr": "Mary et Jane sont cousines.",
+        "pt-BR": "Mary e Jane são primas.",
+        "ru": "Мэри и Джейн — кузины."
+      },
+      "freqRank": 228,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands",
+      "voices": [
+        { "key": "echo/packs/it_fluent/226-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/226-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "La guerra durò due anni.",
+      "gloss": {
+        "en": "The war lasted two years.",
+        "es": "La guerra duró dos años.",
+        "fr": "La guerre dura deux ans.",
+        "pt-BR": "A guerra durou dois anos.",
+        "ru": "Война длилась два года."
+      },
+      "freqRank": 229,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crossed-swords",
+      "voices": [
+        { "key": "echo/packs/it_fluent/227-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/227-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "Si trasferì a Parigi nel 1966.",
+      "gloss": {
+        "en": "She moved to Paris in 1966.",
+        "de": "Sie siedelte 1966 nach Paris über.",
+        "es": "Ella se trasladó a París en 1966.",
+        "fr": "Elle déménagea à Paris en 1966."
+      },
+      "freqRank": 230,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:package",
+      "voices": [
+        { "key": "echo/packs/it_fluent/228-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/228-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "Io fumavo quando ero giovane.",
+      "gloss": {
+        "en": "I did smoke when I was young.",
+        "de": "Als ich jung war, habe ich geraucht.",
+        "es": "Yo fumaba cuando era joven.",
+        "fr": "Je fumais quand j'étais jeune."
+      },
+      "freqRank": 231,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cigarette",
+      "voices": [
+        { "key": "echo/packs/it_fluent/229-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/229-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "Posso farle una domanda indiscreta?",
+      "gloss": {
+        "en": "May I ask you an indiscreet question?",
+        "de": "Darf ich Ihnen eine indiskrete Frage stellen?",
+        "es": "¿Puedo hacerle una pregunta indiscreta?",
+        "fr": "Puis-je vous poser une question indiscrète ?"
+      },
+      "freqRank": 232,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/it_fluent/230-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/230-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "Meg ha trovato un quadrifoglio.",
+      "gloss": {
+        "en": "Meg found a four leaf clover.",
+        "de": "Meg hat ein vierblättriges Kleeblatt gefunden.",
+        "fr": "Meg a trouvé un trèfle à quatre feuilles.",
+        "ru": "Мэг нашла клевер с четырьмя листьями."
+      },
+      "freqRank": 233,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:four-leaf-clover",
+      "voices": [
+        { "key": "echo/packs/it_fluent/231-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/231-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "A me piace dormire bocconi.",
+      "gloss": {
+        "en": "I like to sleep on my stomach.",
+        "de": "Es gefällt mir, auf dem Bauch zu schlafen.",
+        "fr": "Moi, j'aime dormir sur le ventre.",
+        "ru": "А я люблю спать на животе."
+      },
+      "freqRank": 234,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bed",
+      "voices": [
+        { "key": "echo/packs/it_fluent/232-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/232-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "Mi piacerebbe lavorare al refettorio.",
+      "gloss": {
+        "en": "I'd like to work at the cafeteria.",
+        "de": "Ich würde gern in der Cafeteria arbeiten.",
+        "es": "Quisiera trabajar en la cafetería.",
+        "pt-BR": "Gostaria de trabalhar na cafeteria."
+      },
+      "freqRank": 235,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/it_fluent/233-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/233-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "Ha nevicato tutta la notte.",
+      "gloss": {
+        "en": "It's been snowing all night.",
+        "de": "Es hat die ganze Nacht geschneit.",
+        "es": "Ha estado nevando toda la noche.",
+        "fr": "Il a neigé toute la nuit.",
+        "ru": "Шёл снег всю ночь."
+      },
+      "freqRank": 236,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [
+        { "key": "echo/packs/it_fluent/234-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/234-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "Il sole sta per tramontare.",
+      "gloss": {
+        "en": "The sun is about to set.",
+        "tr": "Güneş batmak üzere.",
+        "es": "El sol está a punto de ponerse.",
+        "fr": "Le soleil est sur le point de se coucher."
+      },
+      "freqRank": 237,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunset",
+      "voices": [
+        { "key": "echo/packs/it_fluent/235-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/235-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "Tom fuma come una ciminiera.",
+      "gloss": {
+        "en": "Tom smokes like a chimney.",
+        "de": "Tom raucht wie ein Schlot.",
+        "es": "Tom fuma como una chimenea.",
+        "fr": "Tom fume comme une cheminée.",
+        "pt-BR": "Tom fuma como uma chaminé."
+      },
+      "freqRank": 238,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cigarette",
+      "voices": [
+        { "key": "echo/packs/it_fluent/236-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/236-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "La lampadina si è fulminata.",
+      "gloss": {
+        "en": "The light bulb has burned out.",
+        "de": "Die Glühbirne ist durchgebrannt.",
+        "es": "Se quemó la ampolleta.",
+        "ru": "Лампочка перегорела."
+      },
+      "freqRank": 239,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/it_fluent/237-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/237-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "Il cesto era pieno di mele.",
+      "gloss": {
+        "en": "The basket was full of apples.",
+        "de": "Der Korb war voller Äpfel.",
+        "es": "La canasta estaba llena de manzanas.",
+        "fr": "Le panier était plein de pommes.",
+        "pt-BR": "O cesto estava cheio de maçãs.",
+        "ru": "Корзина была полна яблок."
+      },
+      "freqRank": 240,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/it_fluent/238-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/238-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "Vorrei migliorare la mia pronuncia inglese.",
+      "gloss": {
+        "en": "I would like to improve my English pronunciation.",
+        "tr": "İngilizce telaffuzumu geliştirmek istiyorum.",
+        "fr": "J'aimerais améliorer ma prononciation de l'anglais.",
+        "pt-BR": "Eu gostaria de melhorar minha pronúncia de inglês."
+      },
+      "freqRank": 241,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/239-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/239-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "Maria divenne rossa come un pomodoro.",
+      "gloss": {
+        "en": "Mary turned red as a tomato.",
+        "de": "Maria wurde rot wie eine Tomate.",
+        "fr": "Marie devint rouge comme une tomate.",
+        "ru": "Мэри стала красная как помидор."
+      },
+      "freqRank": 242,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flushed-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/240-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/240-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "Tom divenne rosso come un pomodoro.",
+      "gloss": {
+        "en": "Tom turned red as a tomato.",
+        "de": "Tom wurde rot wie eine Tomate.",
+        "fr": "Tom devint rouge comme une tomate.",
+        "ru": "Том стал красный как помидор."
+      },
+      "freqRank": 243,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flushed-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/241-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/241-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "I gatti non mangiano le banane.",
+      "gloss": {
+        "en": "Cats don't eat bananas.",
+        "es": "Los gatos no comen plátanos.",
+        "fr": "Les chats ne mangent pas de bananes.",
+        "pt-BR": "Os gatos não comem bananas.",
+        "ru": "Кошки не едят бананы."
+      },
+      "freqRank": 244,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/it_fluent/242-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/242-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "La mela non è ancora matura.",
+      "gloss": {
+        "en": "The apple is not yet ripe.",
+        "tr": "Elma henüz olgun değil.",
+        "fr": "La pomme n'est pas encore mûre.",
+        "ru": "Яблоко ещё не спелое."
+      },
+      "freqRank": 245,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/it_fluent/243-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/243-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "Perché la luna brilla la notte?",
+      "gloss": {
+        "en": "Why does the moon shine at night?",
+        "de": "Warum scheint der Mond nachts?",
+        "fr": "Pourquoi la Lune brille-t-elle la nuit ?",
+        "ru": "Почему Луна светит ночью?"
+      },
+      "freqRank": 246,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/it_fluent/244-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/244-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "Helen Keller era sorda e cieca.",
+      "gloss": {
+        "en": "Helen Keller was deaf and blind.",
+        "de": "Helen Keller war taub und blind.",
+        "es": "Helen Keller era sorda y ciega.",
+        "fr": "Hellen Keller était sourde et aveugle."
+      },
+      "freqRank": 247,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:white-cane",
+      "voices": [
+        { "key": "echo/packs/it_fluent/245-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/245-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "La settimana scorsa eravamo molto occupate.",
+      "gloss": {
+        "en": "We were very busy last week.",
+        "fr": "La semaine passée nous étions très occupées.",
+        "pt-BR": "Na semana passada estávamos muito ocupadas.",
+        "ru": "На прошлой неделе мы были очень заняты."
+      },
+      "freqRank": 248,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/it_fluent/246-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/246-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "Tom sperava di ottenere un bacio.",
+      "gloss": {
+        "en": "Tom was hoping to get a kiss.",
+        "de": "Tom erhoffte sich einen Kuss.",
+        "es": "Tom esperaba conseguir un beso.",
+        "pt-BR": "Tom esperava conseguir um beijo."
+      },
+      "freqRank": 249,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:kiss-mark",
+      "voices": [
+        { "key": "echo/packs/it_fluent/247-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/247-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "Nessuna delle automobili è la mia.",
+      "gloss": {
+        "en": "None of the cars is mine.",
+        "de": "Keines dieser Autos gehört mir.",
+        "es": "Ninguno de los coches es mío.",
+        "fr": "Aucune des voitures n'est la mienne.",
+        "pt-BR": "Nenhum dos carros é o meu."
+      },
+      "freqRank": 250,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/it_fluent/248-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/248-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "Il simbolo chimico H significa idrogeno.",
+      "gloss": {
+        "en": "The chemical symbol H indicates hydrogen.",
+        "tr": "H kimyasal sembolü hidrojeni ifade eder.",
+        "de": "Das chemische Symbol H steht für Wasserstoff.",
+        "es": "El símbolo químico H designa al hidrógeno.",
+        "fr": "Le symbole chimique H désigne l'hydrogène."
+      },
+      "freqRank": 251,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [
+        { "key": "echo/packs/it_fluent/249-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/249-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 250,
+      "kind": "phrase",
+      "text": "La partita è terminata senza goal.",
+      "gloss": {
+        "en": "The match ended with no goal.",
+        "de": "Das Spiel endete ohne Tor.",
+        "es": "El partido terminó sin goles.",
+        "fr": "Le match termina sans but."
+      },
+      "freqRank": 252,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soccer-ball",
+      "voices": [
+        { "key": "echo/packs/it_fluent/250-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/250-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 251,
+      "kind": "phrase",
+      "text": "Il prezzo della benzina sta aumentando.",
+      "gloss": {
+        "en": "The price of gas is rising.",
+        "de": "Der Benzinpreis steigt.",
+        "es": "El precio de la gasolina sube.",
+        "fr": "Le prix de l'essence augmente.",
+        "pt-BR": "O preço da gasolina sobe."
+      },
+      "freqRank": 253,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fuel-pump",
+      "voices": [
+        { "key": "echo/packs/it_fluent/251-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/251-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "Sei un filosofo, non è vero?",
+      "gloss": {
+        "en": "You're a philosopher, aren't you?",
+        "de": "Du bist ein Philosoph, nicht wahr?",
+        "es": "Eres un filósofo, ¿verdad?",
+        "pt-BR": "Você é filósofo, não é?",
+        "ru": "Ты философ, не так ли?"
+      },
+      "freqRank": 254,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/it_fluent/252-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/252-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 253,
+      "kind": "phrase",
+      "text": "Le macchine tedesche sono molto popolari.",
+      "gloss": {
+        "en": "German cars are very popular.",
+        "tr": "Alman arabaları çok popüler.",
+        "de": "Deutsche Autos sind sehr beliebt.",
+        "es": "Los autos alemanes son muy populares.",
+        "pt-BR": "Os carros alemães são muito populares."
+      },
+      "freqRank": 255,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/it_fluent/253-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/253-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
+      "text": "Il mio migliore amico è portoghese.",
+      "gloss": {
+        "en": "My best friend is Portuguese.",
+        "de": "Mein bester Freund ist Portugiese.",
+        "pt-BR": "O meu melhor amigo é português.",
+        "ru": "Мой лучший друг — португалец."
+      },
+      "freqRank": 256,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/it_fluent/254-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/254-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 255,
+      "kind": "phrase",
+      "text": "Mi piace studiare le lingue straniere.",
+      "gloss": {
+        "en": "I like to study foreign languages.",
+        "de": "Ich lerne gerne Fremdsprachen.",
+        "fr": "J'aime étudier les langues étrangères.",
+        "pt-BR": "Eu gosto de estudar idiomas estrangeiros.",
+        "ru": "Мне нравится изучать иностранные языки."
+      },
+      "freqRank": 257,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/255-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/255-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 256,
+      "kind": "phrase",
+      "text": "Trovo molto interessanti le lingue straniere.",
+      "gloss": {
+        "en": "I find foreign languages very interesting.",
+        "de": "Ich finde Fremdsprachen sehr interessant.",
+        "es": "Encuentro las lenguas extranjeras muy interesantes.",
+        "fr": "Je trouve les langues étrangères très intéressantes."
+      },
+      "freqRank": 258,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/256-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/256-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 257,
+      "kind": "phrase",
+      "text": "Jimmy è il mio figlio adottivo.",
+      "gloss": {
+        "en": "Jimmy is my foster child.",
+        "es": "Jimmy es mi hijo adoptivo.",
+        "fr": "Jimmy est mon enfant adoptif.",
+        "pt-BR": "Jimmy é meu filho adotivo.",
+        "ru": "Джимми — мой приёмный сын."
+      },
+      "freqRank": 259,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family-man-boy",
+      "voices": [
+        { "key": "echo/packs/it_fluent/257-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/257-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 258,
+      "kind": "phrase",
+      "text": "Il sole tramonta sempre ad ovest.",
+      "gloss": {
+        "en": "The sun always sets in the west.",
+        "de": "Die Sonne geht immer im Westen unter.",
+        "es": "El sol siempre se pone en el oeste.",
+        "ru": "Солнце всегда заходит на западе."
+      },
+      "freqRank": 260,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunset",
+      "voices": [
+        { "key": "echo/packs/it_fluent/258-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/258-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 259,
+      "kind": "phrase",
+      "text": "La nostra classe ha quarantacinque studenti.",
+      "gloss": {
+        "en": "Our class has forty-five students.",
+        "de": "Unsere Klasse besteht aus fünfundvierzig Schülern.",
+        "es": "Nuestra clase tiene cuarenta y cinco estudiantes.",
+        "ru": "В нашем классе сорок пять студентов."
+      },
+      "freqRank": 261,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/it_fluent/259-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/259-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 260,
+      "kind": "phrase",
+      "text": "Un giorno correrò come il vento.",
+      "gloss": {
+        "en": "Someday I'll run like the wind.",
+        "de": "Irgendwann werde ich wie der Wind rennen.",
+        "es": "Algún día correré como el viento.",
+        "fr": "Un jour je courrai comme le vent.",
+        "pt-BR": "Algum dia eu vou correr como o vento."
+      },
+      "freqRank": 262,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/it_fluent/260-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/260-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "Ha rifiutato di prendere la tangente.",
+      "gloss": {
+        "en": "He refused to take the bribe.",
+        "de": "Er weigerte sich, das Schmiergeld anzunehmen.",
+        "es": "Él se rehusó a recibir el soborno.",
+        "fr": "Il s'est refusé à prendre le pot-de-vin.",
+        "ru": "Он отказался принять взятку."
+      },
+      "freqRank": 263,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/it_fluent/261-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/261-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 262,
+      "kind": "phrase",
+      "text": "San Valentino viene celebrato in febbraio.",
+      "gloss": {
+        "en": "Valentine's Day is celebrated in February.",
+        "de": "Der Valentinstag wird im Februar gefeiert.",
+        "es": "El día de San Valentín se celebra en febrero.",
+        "pt-BR": "O dia de São Valentim comemora-se em fevereiro."
+      },
+      "freqRank": 264,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/it_fluent/262-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/262-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 263,
+      "kind": "phrase",
+      "text": "Tom dispone di poco tempo libero.",
+      "gloss": {
+        "en": "Tom has limited free time.",
+        "es": "Tom tiene poco tiempo libre.",
+        "fr": "Tom dispose de peu de temps libre.",
+        "ru": "У Тома мало свободного времени."
+      },
+      "freqRank": 265,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/it_fluent/263-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/263-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 264,
+      "kind": "phrase",
+      "text": "Il numero atomico del ferro è 26.",
+      "gloss": {
+        "en": "The atomic number of iron is 26.",
+        "de": "Die Ordnungszahl von Eisen ist 26.",
+        "es": "El número atómico del hierro es 26.",
+        "fr": "Le numéro atomique du fer est le 26.",
+        "pt-BR": "O número atômico do ferro é 26.",
+        "ru": "Порядковый номер железа - 26."
+      },
+      "freqRank": 266,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [
+        { "key": "echo/packs/it_fluent/264-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/264-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 265,
+      "kind": "phrase",
+      "text": "Come si dice \"grazie\" in ceco?",
+      "gloss": {
+        "en": "How do you say \"thank you\" in Czech?",
+        "es": "¿Cómo se dice «gracias» en checo?",
+        "fr": "Comment dit-on « merci » en tchèque ?",
+        "ru": "Как будет \"спасибо\" по-чешски?"
+      },
+      "freqRank": 267,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:folded-hands",
+      "voices": [
+        { "key": "echo/packs/it_fluent/265-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/265-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 266,
+      "kind": "phrase",
+      "text": "Quando mi sono svegliato stava nevicando.",
+      "gloss": {
+        "en": "When I awoke, it was snowing.",
+        "de": "Als ich aufwachte, schneite es.",
+        "es": "Cuando me desperté estaba nevando.",
+        "ar": "عندما استيقظت كانت تثلج."
+      },
+      "freqRank": 268,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [
+        { "key": "echo/packs/it_fluent/266-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/266-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 267,
+      "kind": "phrase",
+      "text": "Il leone è un animale carnivoro.",
+      "gloss": {
+        "en": "The lion is a carnivorous animal.",
+        "tr": "Aslan etçil bir hayvandır.",
+        "es": "El león es un animal carnívoro.",
+        "fr": "Le lion est un animal carnivore.",
+        "ru": "Лев - плотоядное животное."
+      },
+      "freqRank": 269,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lion",
+      "voices": [
+        { "key": "echo/packs/it_fluent/267-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/267-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 268,
+      "kind": "phrase",
+      "text": "\"Roma\" è un anagramma di \"amor\".",
+      "gloss": {
+        "en": "\"Roma\" is an anagram of \"amor.\"",
+        "de": "\"Roma\" ist ein Anagramm von \"amor\".",
+        "es": "\"Roma\" es un anagrama de \"amor\".",
+        "pt-BR": "\"Roma\" é um anagrama de \"amor\"."
+      },
+      "freqRank": 270,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-latin-letters",
+      "voices": [
+        { "key": "echo/packs/it_fluent/268-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/268-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 269,
+      "kind": "phrase",
+      "text": "Tutti i fiori nel giardino sono gialli.",
+      "gloss": {
+        "en": "All the flowers in the garden are yellow.",
+        "de": "Alle Blumen im Garten sind gelb.",
+        "es": "Todas las flores del jardín son amarillas.",
+        "pt-BR": "Todas as flores no jardim são amarelas.",
+        "ru": "Все цветы в саду - жёлтые."
+      },
+      "freqRank": 271,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunflower",
+      "voices": [
+        { "key": "echo/packs/it_fluent/269-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/269-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "Il registratore ha registrato la sua voce.",
+      "gloss": {
+        "en": "The tape recorder has recorded his voice.",
+        "de": "Der Kassettenrekorder nahm seine Stimme auf.",
+        "es": "La grabadora ha grabado su voz.",
+        "fr": "Le magnétophone a enregistré sa voix.",
+        "ru": "Диктофон записал его голос."
+      },
+      "freqRank": 272,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/it_fluent/270-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/270-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "Non ho letto nessuno dei suoi romanzi.",
+      "gloss": {
+        "en": "I haven't read any of his novels.",
+        "tr": "Onun romanlarından hiçbirini okumadım.",
+        "de": "Ich habe keinen seiner Romane gelesen.",
+        "es": "No he leído ninguna de sus novelas."
+      },
+      "freqRank": 273,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/it_fluent/271-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/271-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "È proibito dare da mangiare ai piccioni.",
+      "gloss": {
+        "en": "Feeding pigeons is prohibited.",
+        "es": "Está prohibido dar de comer a las palomas.",
+        "fr": "Il est interdit de nourrir les pigeons.",
+        "pt-BR": "É proibido alimentar os pombos."
+      },
+      "freqRank": 274,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/it_fluent/272-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/272-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "Dobbiamo aiutare coloro che non possono difendersi.",
+      "gloss": {
+        "en": "We must help those who can't defend themselves.",
+        "de": "Wir müssen denen helfen, die sich nicht wehren können.",
+        "es": "Tenemos que ayudar a los que no pueden defenderse.",
+        "ru": "Мы должны помочь тем, кто не может себя защитить."
+      },
+      "freqRank": 275,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shield",
+      "voices": [
+        { "key": "echo/packs/it_fluent/273-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/273-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "È sempre bello ritrovare le vecchie amicizie.",
+      "gloss": {
+        "en": "It's always nice to reconnect with old friends.",
+        "de": "Es ist immer schön, alte Freunde wieder zu treffen.",
+        "fr": "C'est toujours agréable de renouer avec de vieux amis.",
+        "ru": "Всегда приятно вновь пообщаться со старыми друзьями."
+      },
+      "freqRank": 276,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:people-hugging",
+      "voices": [
+        { "key": "echo/packs/it_fluent/274-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/274-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "Quella piccola stella è la più luminosa.",
+      "gloss": {
+        "en": "That small star is brightest.",
+        "de": "Dieser kleine Stern ist der hellste.",
+        "fr": "Cette petite étoile est la plus lumineuse.",
+        "pt-BR": "Aquela estrela pequena é a mais luminosa."
+      },
+      "freqRank": 277,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:night-with-stars",
+      "voices": [
+        { "key": "echo/packs/it_fluent/275-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/275-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "Oggi è la Giornata mondiale degli elefanti.",
+      "gloss": {
+        "en": "Today is World Elephant Day.",
+        "tr": "Bugün Dünya Fil Günü.",
+        "de": "Heute ist Weltelefantentag.",
+        "es": "Hoy es el Día Mundial del Elefante.",
+        "fr": "Aujourd'hui, c'est la Journée mondiale des éléphants."
+      },
+      "freqRank": 278,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:elephant",
+      "voices": [
+        { "key": "echo/packs/it_fluent/276-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/276-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "Ho lasciato il mio dizionario di sotto.",
+      "gloss": {
+        "en": "I left my dictionary downstairs.",
+        "de": "Ich habe mein Wörterbuch unten gelassen.",
+        "es": "Me dejé el diccionario en el piso de abajo.",
+        "fr": "J'ai laissé mon dictionnaire en bas."
+      },
+      "freqRank": 279,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/277-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/277-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "Non ho soldi per comprare il dizionario.",
+      "gloss": {
+        "en": "I have no money to buy the dictionary.",
+        "es": "No tengo dinero para comprar el diccionario.",
+        "fr": "Je n'ai pas d'argent pour acheter le dictionnaire.",
+        "pt-BR": "Não tenho dinheiro para comprar o dicionário."
+      },
+      "freqRank": 280,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/278-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/278-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "Prima di tutto devi cercarlo nel dizionario.",
+      "gloss": {
+        "en": "First of all, you must look it up in the dictionary.",
+        "de": "Zuallererst musst du es im Wörterbuch nachschlagen.",
+        "es": "Primero que todo, debes buscarlo en el diccionario.",
+        "fr": "Tout d'abord, tu dois le chercher dans un dictionnaire.",
+        "pt-BR": "Antes de tudo, você deve procurar no dicionário."
+      },
+      "freqRank": 281,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/279-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/279-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "Questa parola non è sul mio dizionario.",
+      "gloss": {
+        "en": "That word isn't in my dictionary.",
+        "de": "Dieses Wort ist nicht in meinem Wörterbuch.",
+        "es": "Esa palabra no está en mi diccionario.",
+        "fr": "Ce mot n'est pas dans mon dictionnaire.",
+        "pt-BR": "Essa palavra não está no meu dicionário.",
+        "ru": "Этого слова у меня в словаре нет."
+      },
+      "freqRank": 282,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/280-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/280-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "Avresti dovuto rifiutare una proposta così ingiusta.",
+      "gloss": {
+        "en": "You should have refused such an unfair proposal.",
+        "de": "So einen ungerechten Vorschlag hättest du ablehnen sollen.",
+        "es": "Deberías haber rechazado una respuesta tan injusta.",
+        "fr": "Tu aurais dû refuser une proposition aussi injuste."
+      },
+      "freqRank": 283,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        { "key": "echo/packs/it_fluent/281-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/281-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "Al mio gatto piace la mia tastiera.",
+      "gloss": {
+        "en": "My cat likes my keyboard.",
+        "de": "Meine Katze mag meine Tastatur.",
+        "fr": "Mon chat aime mon clavier.",
+        "pt-BR": "Meu gato gosta do meu teclado."
+      },
+      "freqRank": 284,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/it_fluent/282-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/282-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 283,
+      "kind": "phrase",
+      "text": "Tom voleva sapere come finiva la storia.",
+      "gloss": {
+        "en": "Tom wanted to know how the story ended.",
+        "de": "Tom wollte wissen, wie die Geschichte ausging.",
+        "fr": "Tom voulait savoir comment se terminait l'histoire.",
+        "ru": "Том хотел знать, чем заканчивается история."
+      },
+      "freqRank": 285,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/it_fluent/283-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/283-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "Il vecchio uomo mi parlò in francese.",
+      "gloss": {
+        "en": "The old man spoke to me in French.",
+        "de": "Der alte Mann sprach mich auf Französisch an.",
+        "es": "El anciano me habló en francés.",
+        "ru": "Старик говорил со мной по-французски."
+      },
+      "freqRank": 286,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/it_fluent/284-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/284-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 285,
+      "kind": "phrase",
+      "text": "Jane ed io suoniamo bene il piano.",
+      "gloss": {
+        "en": "Jane and I play the piano well.",
+        "de": "Jane und ich spielen gut Klavier.",
+        "es": "Jane y yo tocamos bien el piano.",
+        "ru": "Мы с Джейн хорошо играем на пианино."
+      },
+      "freqRank": 287,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/it_fluent/285-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/285-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "Le arance sono più dolci dei limoni.",
+      "gloss": {
+        "en": "Oranges are sweeter than lemons.",
+        "de": "Orangen sind süßer als Zitronen.",
+        "fr": "Les oranges sont plus douces que les citrons.",
+        "ru": "Апельсины слаще, чем лимоны."
+      },
+      "freqRank": 288,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lemon",
+      "voices": [
+        { "key": "echo/packs/it_fluent/286-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/286-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 287,
+      "kind": "phrase",
+      "text": "Per quanto tempo hanno abitato in Inghilterra?",
+      "gloss": {
+        "en": "How long did they live in England?",
+        "de": "Wie lange haben sie in England gelebt?",
+        "es": "¿Cuánto tiempo han vivido en Inglaterra?",
+        "fr": "Combien de temps ont-ils vécu en Angleterre ?"
+      },
+      "freqRank": 289,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/it_fluent/287-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/287-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 288,
+      "kind": "phrase",
+      "text": "Questo è uno stallone o una cavalla?",
+      "gloss": {
+        "en": "Is this a stallion or a mare?",
+        "de": "Ist das ein Hengst oder eine Stute?",
+        "es": "¿Es este un padrillo o una yegua?",
+        "fr": "Est-ce un étalon ou une jument ?",
+        "pt-BR": "É este um garanhão ou uma égua?",
+        "ru": "Это жеребец или кобыла?"
+      },
+      "freqRank": 290,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:horse",
+      "voices": [
+        { "key": "echo/packs/it_fluent/288-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/288-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 289,
+      "kind": "phrase",
+      "text": "Questa sedia ha bisogno di essere riparata.",
+      "gloss": {
+        "en": "This chair needs to be fixed.",
+        "de": "Der Stuhl muss repariert werden.",
+        "fr": "Cette chaise a besoin d'être réparée.",
+        "pt-BR": "Esta cadeira precisa ser consertada."
+      },
+      "freqRank": 291,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chair",
+      "voices": [
+        { "key": "echo/packs/it_fluent/289-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/289-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 290,
+      "kind": "phrase",
+      "text": "Se non ci fossi tu dovrei inventarti.",
+      "gloss": {
+        "en": "If you didn't exist, I'd have to invent you.",
+        "de": "Wenn es dich nicht gäbe, müsste ich dich erfinden.",
+        "es": "Si no existieras, habría que inventarte.",
+        "ru": "Если бы тебя не существовало, мне следовало бы изобрести тебя."
+      },
+      "freqRank": 292,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/it_fluent/290-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/290-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 291,
+      "kind": "phrase",
+      "text": "Nonostante tutte le sue ricchezze, non è felice.",
+      "gloss": {
+        "en": "For all her riches, she's not happy.",
+        "de": "Trotz ihres Reichtums ist sie nicht glücklich.",
+        "es": "A pesar de toda su riqueza no es feliz.",
+        "fr": "En dépit de toute sa fortune, elle n'est pas heureuse."
+      },
+      "freqRank": 293,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/it_fluent/291-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/291-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 292,
+      "kind": "phrase",
+      "text": "Abbiamo dovuto chiudere la finestra per le zanzare.",
+      "gloss": {
+        "en": "We had to shut the window because of the mosquitoes.",
+        "de": "Der Mücken wegen mussten wir das Fenster schließen.",
+        "es": "Tuvimos que cerrar la ventana por los mosquitos.",
+        "fr": "Nous avons dû fermer la fenêtre à cause des moustiques."
+      },
+      "freqRank": 294,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:window",
+      "voices": [
+        { "key": "echo/packs/it_fluent/292-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/292-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 293,
+      "kind": "phrase",
+      "text": "Il bebè non può ancora usare un cucchiaio.",
+      "gloss": {
+        "en": "The baby cannot use a spoon yet.",
+        "de": "Das Baby kann noch keinen Löffel benutzen.",
+        "es": "El bebé todavía no puede usar una cuchara.",
+        "fr": "Le bébé ne sait pas encore utiliser une cuillère."
+      },
+      "freqRank": 295,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/it_fluent/293-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/293-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 294,
+      "kind": "phrase",
+      "text": "La nostra ipotesi si basa su solidi esperimenti.",
+      "gloss": {
+        "en": "Our hypothesis is based on solid experiments.",
+        "de": "Unsere Hypothese basiert auf gründlichen Experimenten.",
+        "es": "Nuestra hipótesis se basa en experimentos sólidos.",
+        "pt-BR": "Nossa hipótese se baseia em experimentos sólidos."
+      },
+      "freqRank": 296,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [
+        { "key": "echo/packs/it_fluent/294-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/294-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 295,
+      "kind": "phrase",
+      "text": "Il nostro aereo ha decollato alle 18 in punto.",
+      "gloss": {
+        "en": "Our plane took off exactly at 6 p.m.",
+        "es": "Nuestro avión despegó a las 18 en punto.",
+        "fr": "Notre avion a décollé exactement à 18h.",
+        "pt-BR": "Nosso avião decolou às 18h00 em ponto."
+      },
+      "freqRank": 297,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/it_fluent/295-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/295-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 296,
+      "kind": "phrase",
+      "text": "La stazione è situata tra queste due città.",
+      "gloss": {
+        "en": "The station is located between these two towns.",
+        "de": "Der Bahnhof befindet sich zwischen diesen beiden Städten.",
+        "es": "La estación se encuentra entre estas dos ciudades.",
+        "fr": "La gare est située entre ces deux villes."
+      },
+      "freqRank": 298,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:station",
+      "voices": [
+        { "key": "echo/packs/it_fluent/296-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/296-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 297,
+      "kind": "phrase",
+      "text": "Per rendere le cose peggiori, iniziò a nevicare.",
+      "gloss": {
+        "en": "To make matters worse, it began snowing.",
+        "tr": "Daha da kötüsü, kar yağmaya başladı.",
+        "de": "Zu allem Übel fing es an zu schneien.",
+        "es": "Para empeorar las cosas, empezó a nevar."
+      },
+      "freqRank": 299,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [
+        { "key": "echo/packs/it_fluent/297-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/297-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 298,
+      "kind": "phrase",
+      "text": "Ogni giorno utilizziamo molte cose inventate da Edison.",
+      "gloss": {
+        "en": "Every day we use many things which Edison invented.",
+        "de": "Jeden Tag benutzen wir viele Dinge, die Edison erfunden hat.",
+        "es": "Todos los días usamos muchas cosas que Edison inventó.",
+        "ru": "Каждый день мы используем много вещей, изобретенных Эдисоном."
+      },
+      "freqRank": 300,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/it_fluent/298-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/298-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    }
+  ]
+}

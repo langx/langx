@@ -208,6 +208,33 @@ describe('the packs in content/echo', () => {
   }
 
   /*
+   * A picture and a reading on every item, for the packs drafted under that
+   * rule from the start.
+   *
+   * Named by id rather than asked of every pack, because the older packs were
+   * not held to it and are right not to be: sixteen of their cards carry no
+   * cue on purpose (`docs/echo.md`, _Images_). The `fluent` packs were picked
+   * with `pick-phrases.mjs --cues`, so a phrase without an honest picture
+   * never got in, and this is what says the rule survived the build and the
+   * readings — a run of `generate.py` that stopped halfway would leave items
+   * silent and this would name them.
+   */
+  const PICTURED_AND_READ = ['es:fluent', 'fr:fluent', 'it:fluent']
+
+  for (const id of PICTURED_AND_READ) {
+    it(`${id} gives every item a cue and a reading`, () => {
+      const [lang = '', level = ''] = id.split(':')
+      const pack = echoPackFileSchema.parse(
+        JSON.parse(readFileSync(join(CONTENT, lang, `${level}.json`), 'utf8')),
+      )
+      const bare = pack.items
+        .filter((item) => !item.image || !item.voices?.length)
+        .map((item) => item.text)
+      expect(bare).toEqual([])
+    })
+  }
+
+  /*
    * And the other direction, once: a picture nothing points at.
    *
    * Harmless in production — an unused object in a bucket costs nothing — but
