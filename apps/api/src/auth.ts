@@ -21,7 +21,7 @@ import type { Db, MongoClient, ObjectId } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
 import { isDisposableEmail } from './auth/disposableEmail'
 import { WARMUP_EMAIL } from './auth/warmUp'
-import { clientIpFromHeaders, networkKey } from './lib/clientIp'
+import { CLIENT_IP_HEADER, networkKey } from './lib/clientIp'
 import { claimSignUpSlot, networkHash } from './modules/account/signUpCap'
 import {
   emailForHandle,
@@ -335,14 +335,26 @@ export async function createAuth({
     ],
 
     database: mongodbAdapter(db, { client }),
-    /*
-     * One read for a session instead of two. Without joins Better Auth finds
-     * the session and then the user as two separate `aggregate`s, and that
-     * pair runs before every authenticated request and every socket
-     * handshake. On a shared Atlas tier, whose price and ceiling are both
-     * operations per second, it was a third of the load an app open made.
-     */
-    advanced: { database: { joins: true } },
+    advanced: {
+      /*
+       * One read for a session instead of two. Without joins Better Auth finds
+       * the session and then the user as two separate `aggregate`s, and that
+       * pair runs before every authenticated request and every socket
+       * handshake. On a shared Atlas tier, whose price and ceiling are both
+       * operations per second, it was a third of the load an app open made.
+       */
+      database: { joins: true },
+      /*
+       * Where Better Auth reads a client's address — for its rate limiter and
+       * for `session.ipAddress` — and nowhere else. The header is written by
+       * the bridge in `routes/auth.ts` on every request, replacing anything
+       * the client sent, from Cloudflare's `CF-Connecting-IP` when the edge
+       * secret vouches for the request and from Fastify's `request.ip`
+       * otherwise. See `CLIENT_IP_HEADER` for why the default,
+       * `X-Forwarded-For`, left every production request without an address.
+       */
+      ipAddress: { ipAddressHeaders: [CLIENT_IP_HEADER] },
+    },
 
     emailAndPassword: {
       enabled: true,
@@ -567,10 +579,8 @@ export async function createAuth({
            */
           before: async (user, context) => {
             if ((user as { isAnonymous?: unknown }).isAnonymous === true) return
-            const ip = clientIpFromHeaders(
-              context?.request?.headers ?? context?.headers,
-              env.EDGE_SECRET,
-            )
+            const headers = context?.request?.headers ?? context?.headers
+            const ip = headers?.get(CLIENT_IP_HEADER)
             const network = ip && networkKey(ip)
             if (!network) return
             const claimed = await claimSignUpSlot(db, networkHash(network, env.BETTER_AUTH_SECRET))

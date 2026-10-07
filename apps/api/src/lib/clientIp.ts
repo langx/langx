@@ -1,40 +1,50 @@
+import type { IncomingHttpHeaders } from 'node:http'
 import { BlockList, isIPv4, isIPv6 } from 'node:net'
 
 /**
- * Fastify's `request.ip`, carried across the bridge into Better Auth.
+ * The client's address, as the API resolved it, carried across the bridge
+ * into Better Auth — the one place everything in Better Auth reads an address
+ * from: its rate limiter, `session.ipAddress`, and the sign-up cap.
  *
  * Better Auth's handlers see a Fetch `Request` built from the incoming
- * headers, and a `Request` has no socket — so `routes/auth.ts` writes the
- * address Fastify resolved (through `trustProxy` in production) into this
- * header. It is `set`, never appended, so whatever a client sends under the
- * same name is replaced rather than believed.
+ * headers, and a `Request` has no socket — so `routes/auth.ts` writes
+ * {@link resolveClientIp}'s answer here. It is `set`, never appended, and
+ * deleted when there is no answer, so whatever a client sends under the same
+ * name is never what is read.
+ *
+ * Better Auth's own default, `X-Forwarded-For`, does not work here: without a
+ * list of trusted proxies it gives up on any header holding more than one
+ * address, and behind Cloudflare and Fly that header always holds two. Every
+ * request then had no address at all — sessions recorded none, and the rate
+ * limiter counted everybody in one bucket per route.
  */
 export const CLIENT_IP_HEADER = 'x-langx-client-ip'
 
 /**
- * The address a Better Auth request came from, or `undefined` when there is
- * none to go on.
+ * Where a request came from, or `undefined` when there is nothing to go on.
  *
  * `CF-Connecting-IP` when the request proves it passed through the edge — the
  * same shared-secret check `requestCountry.ts` makes before it believes
- * `CF-IPCountry`. Otherwise the address Fastify resolved, which is what the
- * API's own rate limiter keys on. Unlike the country, Cloudflare's header is
- * not taken at face value when no secret is configured: a deployment without
- * an edge has no Cloudflare in front of it, so the header could only have
- * come from the client.
+ * `CF-IPCountry`. Otherwise the address Fastify resolved (`request.ip`, through
+ * `trustProxy` in production), which is what the API's own rate limiter keys
+ * on. Unlike the country, Cloudflare's header is not taken at face value when
+ * no secret is configured: the origin can be reached without passing through
+ * Cloudflare, and a header the edge did not vouch for may have come from the
+ * client.
  */
-export function clientIpFromHeaders(
-  headers: Headers | undefined,
+export function resolveClientIp(
+  headers: IncomingHttpHeaders,
+  transportIp: string | undefined,
   edgeSecret: string | undefined,
 ): string | undefined {
-  if (!headers) return undefined
   if (edgeSecret !== undefined && edgeSecret.length > 0) {
-    if (headers.get('x-langx-edge') === edgeSecret) {
-      const edge = headers.get('cf-connecting-ip')?.trim()
-      if (edge && (isIPv4(edge) || isIPv6(edge))) return edge
+    const edge = headers['cf-connecting-ip']
+    if (headers['x-langx-edge'] === edgeSecret && typeof edge === 'string') {
+      const trimmed = edge.trim()
+      if (isIPv4(trimmed) || isIPv6(trimmed)) return trimmed
     }
   }
-  const resolved = headers.get(CLIENT_IP_HEADER)?.trim()
+  const resolved = transportIp?.trim()
   return resolved && (isIPv4(resolved) || isIPv6(resolved)) ? resolved : undefined
 }
 

@@ -1,34 +1,28 @@
 import { describe, expect, it } from 'vitest'
-import { CLIENT_IP_HEADER, clientIpFromHeaders, networkKey } from './clientIp'
+import { networkKey, resolveClientIp } from './clientIp'
 
 const SECRET = 'edge-secret-value'
 
-describe('clientIpFromHeaders', () => {
+describe('resolveClientIp', () => {
   it('believes Cloudflare only when the edge secret matches', () => {
-    const headers = new Headers({
-      'cf-connecting-ip': '203.0.113.7',
-      'x-langx-edge': SECRET,
-      [CLIENT_IP_HEADER]: '198.51.100.1',
-    })
-    expect(clientIpFromHeaders(headers, SECRET)).toBe('203.0.113.7')
+    const vouched = { 'cf-connecting-ip': '203.0.113.7', 'x-langx-edge': SECRET }
+    expect(resolveClientIp(vouched, '198.51.100.1', SECRET)).toBe('203.0.113.7')
 
-    headers.set('x-langx-edge', 'wrong')
-    expect(clientIpFromHeaders(headers, SECRET)).toBe('198.51.100.1')
+    const unvouched = { 'cf-connecting-ip': '203.0.113.7', 'x-langx-edge': 'wrong' }
+    expect(resolveClientIp(unvouched, '198.51.100.1', SECRET)).toBe('198.51.100.1')
   })
 
   it('ignores the Cloudflare header when no edge is configured', () => {
-    const headers = new Headers({
-      'cf-connecting-ip': '203.0.113.7',
-      [CLIENT_IP_HEADER]: '198.51.100.1',
-    })
-    expect(clientIpFromHeaders(headers, undefined)).toBe('198.51.100.1')
+    expect(resolveClientIp({ 'cf-connecting-ip': '203.0.113.7' }, '198.51.100.1', undefined)).toBe(
+      '198.51.100.1',
+    )
   })
 
-  it('has no answer without headers or a valid address', () => {
-    expect(clientIpFromHeaders(undefined, undefined)).toBeUndefined()
-    expect(clientIpFromHeaders(new Headers(), undefined)).toBeUndefined()
+  it('has no answer without a valid address', () => {
+    expect(resolveClientIp({}, undefined, undefined)).toBeUndefined()
+    expect(resolveClientIp({}, 'not-an-ip', undefined)).toBeUndefined()
     expect(
-      clientIpFromHeaders(new Headers({ [CLIENT_IP_HEADER]: 'not-an-ip' }), undefined),
+      resolveClientIp({ 'cf-connecting-ip': 'nope', 'x-langx-edge': SECRET }, undefined, SECRET),
     ).toBeUndefined()
   })
 })

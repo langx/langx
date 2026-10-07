@@ -6770,6 +6770,14 @@ through it, and from Fastify's `request.ip` otherwise; IPv6 is grouped by its
 development and the test suite working without configuration, and a request
 with no address at all is let through rather than refused.
 
+That address is resolved once, in the bridge to Better Auth, and handed to it
+in a header the bridge always overwrites. Better Auth reads the same header for
+its rate limiter and for `session.ipAddress`. Its default, `X-Forwarded-For`,
+is ignored when it holds more than one address unless trusted proxies are
+listed, and behind Cloudflare and Fly it always holds two — so until this,
+sessions recorded no address and the rate limiter counted every client in one
+bucket per route.
+
 The counter is a collection, `signUpsByIp`, not Better Auth's rate limiter.
 That limiter keeps its counts in process memory, and the API runs on more than
 one machine, so each would count on its own and the cap would be multiplied by

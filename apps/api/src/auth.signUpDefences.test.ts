@@ -10,7 +10,8 @@ import { ensureIndexes } from './db/indexes'
 import { loadEnv } from './env'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { createStorageProvider } from './storage/createStorageProvider'
-import { CapturingEmailSender } from './testSupport/authFlow'
+import { authId } from './lib/authId'
+import { CapturingEmailSender, signUpAndSignIn } from './testSupport/authFlow'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 
 /**
@@ -20,9 +21,12 @@ import { createTranslationProvider } from './translation/createTranslationProvid
  * and social sign-up alike, and never for a guest.
  *
  * Every request names its address with `remoteAddress`, which is what
- * Fastify's `request.ip` reads without a proxy in front. Each test uses
- * addresses of its own, so the counts do not run into each other.
+ * Fastify's `request.ip` reads without a proxy in front, unless it is testing
+ * the edge. Each test uses addresses of its own, so the counts do not run into
+ * each other.
  */
+const EDGE_SECRET = 'edge-secret-for-tests'
+
 describe('sign-up defences', () => {
   let replSet: MongoMemoryReplSet
   let handle: DbHandle
@@ -42,6 +46,7 @@ describe('sign-up defences', () => {
       BETTER_AUTH_URL: 'http://localhost:4000',
       DISCORD_CLIENT_ID: 'discord-app',
       DISCORD_CLIENT_SECRET: 'discord-secret',
+      EDGE_SECRET,
     })
     await ensureIndexes(handle.db)
     app = await buildApp({
@@ -209,10 +214,88 @@ describe('sign-up defences', () => {
       expect(await userExists(refusedEmail)).toBe(false)
     })
 
+    it('counts by the address the edge vouches for, and only then', async () => {
+      // From loopback, which is never counted by itself — so every count here
+      // is the Cloudflare header's.
+      const viaEdge = { 'cf-connecting-ip': '203.0.113.40', 'x-langx-edge': EDGE_SECRET }
+      const signUpViaEdge = async (headers: Record<string, string>) =>
+        app.inject({
+          method: 'POST',
+          url: '/api/auth/sign-up/email',
+          headers,
+          payload: { email: freshEmail(), password: 'correct horse battery', name: 'Sofia' },
+        })
+
+      // Not vouched for: the header is ignored, and loopback is not counted.
+      for (let i = 0; i <= SIGN_UP_RULES.accountsPerIp; i++) {
+        const response = await signUpViaEdge({ 'cf-connecting-ip': '203.0.113.40' })
+        expect(response.statusCode).toBe(200)
+      }
+      for (let i = 0; i < SIGN_UP_RULES.accountsPerIp; i++) {
+        expect((await signUpViaEdge(viaEdge)).statusCode).toBe(200)
+      }
+      const refused = await signUpViaEdge(viaEdge)
+      expect(refused.statusCode).toBe(429)
+      expect(refused.json<{ code: string }>().code).toBe(ERROR_CODES.SIGN_UP_LIMIT_REACHED)
+    })
+
     it('stores no address, only a hash of it', async () => {
       const rows = await handle.db.collection(COLLECTIONS.signUpsByIp).find().toArray()
       expect(rows.length).toBeGreaterThan(0)
       expect(JSON.stringify(rows)).not.toContain('203.0.113')
+    })
+  })
+
+  describe('the address on a session', () => {
+    async function latestSessionIp(userId: string): Promise<unknown> {
+      const session = await handle.db
+        .collection(COLLECTIONS.session)
+        .find({ userId: authId(userId) })
+        .sort({ createdAt: -1 })
+        .limit(1)
+        .next()
+      return session?.ipAddress
+    }
+
+    async function signIn(email: string, ip: string, headers: Record<string, string>) {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/email',
+        remoteAddress: ip,
+        headers,
+        payload: { email, password: 'correct horse battery' },
+      })
+      expect(response.statusCode).toBe(200)
+    }
+
+    it('records the address Cloudflare vouched for', async () => {
+      const email = freshEmail()
+      const { userId } = await signUpAndSignIn(app, emailSender, {
+        email,
+        password: 'correct horse battery',
+        name: 'Sofia',
+      })
+
+      await signIn(email, '198.51.100.10', {
+        'cf-connecting-ip': '198.51.100.77',
+        'x-langx-edge': EDGE_SECRET,
+      })
+      expect(await latestSessionIp(userId)).toBe('198.51.100.77')
+    })
+
+    it('records the connecting address when the edge did not vouch', async () => {
+      const email = freshEmail()
+      const { userId } = await signUpAndSignIn(app, emailSender, {
+        email,
+        password: 'correct horse battery',
+        name: 'Sofia',
+      })
+
+      await signIn(email, '198.51.100.88', {
+        'cf-connecting-ip': '198.51.100.77',
+        'x-langx-client-ip': '198.51.100.99',
+      })
+      expect(await latestSessionIp(userId)).toBe('198.51.100.88')
     })
   })
 })
