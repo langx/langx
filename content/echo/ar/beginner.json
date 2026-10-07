@@ -1,0 +1,3212 @@
+{
+  "id": "ar:beginner",
+  "lang": "ar",
+  "level": "beginner",
+  "contentVersion": 2,
+  "reviewed": false,
+  "sources": [
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/hermitdave/FrequencyWords"
+    }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "اسمي جاك.",
+      "gloss": { "en": "My name is Jack.", "tr": "Benim adım Jack.", "ru": "Меня зовут Джек." },
+      "freqRank": 1,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:identification-card"
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "أنت محقّ.",
+      "gloss": { "en": "You're right.", "fr": "Tu as raison.", "ru": "Ты прав." },
+      "freqRank": 2,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark"
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "أنا طبيب.",
+      "gloss": {
+        "en": "I'm a doctor.",
+        "tr": "Doktorum.",
+        "fr": "Je suis toubib.",
+        "ru": "Я врач."
+      },
+      "freqRank": 3,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope"
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "إنه طبيب.",
+      "gloss": { "en": "He is a doctor.", "fr": "Il est médecin." },
+      "freqRank": 4,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope"
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "بوب صديقي.",
+      "gloss": {
+        "en": "Bob is my friend.",
+        "de": "Bob ist mein Freund.",
+        "es": "Bob es mi amigo.",
+        "fr": "Bob est mon ami.",
+        "ru": "Боб — мой друг."
+      },
+      "freqRank": 5,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "قد رأيته.",
+      "gloss": { "en": "I did see him.", "es": "Ya lo he visto." },
+      "freqRank": 6,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes"
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "أخذت الكتاب.",
+      "gloss": { "en": "I took the book.", "ru": "Я взял книгу." },
+      "freqRank": 7,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book"
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "الكتاب صغير.",
+      "gloss": { "en": "That book is small.", "es": "El libro es pequeño." },
+      "freqRank": 8,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book"
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "لا أهتم.",
+      "gloss": { "en": "I don't care.", "de": "Es ist mir egal.", "ru": "Мне все равно." },
+      "freqRank": 9,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "مساء الخير.",
+      "gloss": {
+        "en": "Good evening.",
+        "de": "Guten Abend!",
+        "es": "Buenas tardes.",
+        "ru": "Добрый вечер."
+      },
+      "freqRank": 10,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunset"
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "أعرف اسمك.",
+      "gloss": { "en": "I know your name.", "ru": "Я знаю твоё имя." },
+      "freqRank": 11,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:identification-card"
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "ما اسمُك؟",
+      "gloss": {
+        "en": "What's your name?",
+        "de": "Wie heißen Sie?",
+        "es": "¿Cómo te llamas?",
+        "fr": "Comment est-ce que tu t'appelles ?",
+        "ru": "Как твоё имя?"
+      },
+      "freqRank": 12,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:identification-card"
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "أفضل القهوة.",
+      "gloss": { "en": "I prefer coffee.", "de": "Ich bevorzuge Kaffee.", "es": "Prefiero café." },
+      "freqRank": 13,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage"
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "أكره القهوة.",
+      "gloss": {
+        "en": "I hate coffee.",
+        "tr": "Kahveden nefret ederim.",
+        "de": "Ich hasse Kaffee.",
+        "es": "Odio el café.",
+        "fr": "Je déteste le café.",
+        "pt-BR": "Eu detesto café.",
+        "ru": "Я ненавижу кофе."
+      },
+      "freqRank": 14,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage"
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "انا صديقك.",
+      "gloss": { "en": "I'm your friend.", "ru": "Я твой друг." },
+      "freqRank": 15,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "أملك سيارةً.",
+      "gloss": { "en": "I have a car.", "fr": "J'ai une voiture." },
+      "freqRank": 16,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "لا أعرفه.",
+      "gloss": { "en": "I don't know him.", "ru": "Я его не знаю." },
+      "freqRank": 17,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "منزلي كبير.",
+      "gloss": {
+        "en": "My house is big.",
+        "de": "Mein Haus ist groß.",
+        "es": "Mi casa es grande.",
+        "fr": "Ma maison est grande."
+      },
+      "freqRank": 18,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "وصلت البارحة.",
+      "gloss": {
+        "en": "I arrived here last night.",
+        "de": "Ich bin gestern angekommen.",
+        "es": "Llegué ayer.",
+        "ru": "Я приехал вчера."
+      },
+      "freqRank": 19,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane-arrival"
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "أنا خائف.",
+      "gloss": { "en": "I am afraid.", "de": "Ich habe Angst." },
+      "freqRank": 20,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fearful-face"
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "رأيت الكلب.",
+      "gloss": {
+        "en": "I saw the dog.",
+        "tr": "Köpeği gördüm.",
+        "de": "Ich habe den Hund gesehen.",
+        "fr": "J'ai vu le chien."
+      },
+      "freqRank": 21,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "الحمّام جاهز.",
+      "gloss": { "en": "The bath is ready.", "es": "El baño está listo." },
+      "freqRank": 22,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bathtub"
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "أنا ولد.",
+      "gloss": { "en": "I am a boy.", "de": "Ich bin ein Junge.", "fr": "Je suis un garçon." },
+      "freqRank": 23,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:boy"
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "هي قوية.",
+      "gloss": { "en": "She is strong.", "de": "Sie ist stark.", "fr": "Elle est forte." },
+      "freqRank": 24,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps"
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "عندي كتاب.",
+      "gloss": { "en": "I have a book.", "ru": "У меня есть книга." },
+      "freqRank": 25,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book"
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "هذا كتاب.",
+      "gloss": {
+        "en": "This is a book.",
+        "de": "Das ist ein Buch.",
+        "es": "Este es un libro.",
+        "ru": "Это книга."
+      },
+      "freqRank": 26,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book"
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "انها ابنتي.",
+      "gloss": { "en": "She's my daughter.", "ru": "Она моя дочь." },
+      "freqRank": 27,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family-man-woman-girl"
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "هذه أختي.",
+      "gloss": { "en": "This is my sister.", "es": "Ésta es mi hermana.", "ru": "Это моя сестра." },
+      "freqRank": 28,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands"
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "أنا مريض.",
+      "gloss": { "en": "I am sick.", "tr": "Hastayım.", "fr": "Je suis malade." },
+      "freqRank": 29,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer"
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "أراك لاحقاً.",
+      "gloss": { "en": "I'll see you later.", "es": "Te veo luego." },
+      "freqRank": 30,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand"
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "أنت متأخر.",
+      "gloss": { "en": "You're running late.", "de": "Du bist zu spät." },
+      "freqRank": 31,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock"
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "صديقي ساعدني.",
+      "gloss": { "en": "My friend helped me.", "ru": "Мой друг мне помог." },
+      "freqRank": 32,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "العالم مدرسة.",
+      "gloss": {
+        "en": "The world is a school.",
+        "tr": "Dünya bir okuldur.",
+        "de": "Die Welt ist eine Schule.",
+        "es": "El mundo es una escuela.",
+        "fr": "Le monde est une école.",
+        "ru": "Мир - это школа."
+      },
+      "freqRank": 33,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school"
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "هذه مدرسة.",
+      "gloss": { "en": "This is a school.", "ru": "Это школа." },
+      "freqRank": 34,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school"
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "هذا بيتي.",
+      "gloss": { "en": "This house is mine.", "ru": "Это мой дом." },
+      "freqRank": 35,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "لدي قلب.",
+      "gloss": { "en": "I have a heart.", "ru": "У меня есть сердце." },
+      "freqRank": 36,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart"
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "الفندق هناك.",
+      "gloss": { "en": "The hotel is down there.", "es": "El hotel está ahí." },
+      "freqRank": 37,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hotel"
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "عندي صديقة.",
+      "gloss": {
+        "en": "I have a girlfriend.",
+        "tr": "Bir kız arkadaşım var.",
+        "de": "Ich habe eine Freundin."
+      },
+      "freqRank": 38,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:two-hearts"
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "لديه كلب .",
+      "gloss": {
+        "en": "He has a dog.",
+        "tr": "Onun bir köpeği var.",
+        "de": "Er hat einen Hund.",
+        "es": "Él tiene un perro.",
+        "fr": "Il a un chien."
+      },
+      "freqRank": 39,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "إسمع جيداً.",
+      "gloss": { "en": "Listen carefully.", "fr": "Écoutez attentivement." },
+      "freqRank": 40,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "لقد وصلنا.",
+      "gloss": {
+        "en": "We've arrived.",
+        "es": "Hemos llegado.",
+        "fr": "On est arrivés.",
+        "ru": "Мы приехали."
+      },
+      "freqRank": 41,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:round-pushpin"
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "هل اتصلت؟",
+      "gloss": { "en": "Did you call?", "ru": "Ты звонил?" },
+      "freqRank": 42,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver"
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "أصدقائي عائلتي.",
+      "gloss": { "en": "My friends are my family.", "ru": "Мои друзья - это моя семья." },
+      "freqRank": 43,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family"
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "أعيش هنا.",
+      "gloss": { "en": "I live here.", "ru": "Я тут живу." },
+      "freqRank": 44,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "مع السلامة.",
+      "gloss": { "en": "Take care.", "de": "Bis dann.", "es": "¡Hasta luego!" },
+      "freqRank": 45,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand"
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "اجلس معي.",
+      "gloss": {
+        "en": "Sit down with me.",
+        "de": "Setz dich zu mir.",
+        "es": "Siéntate conmigo.",
+        "ru": "Сядь со мной."
+      },
+      "freqRank": 46,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chair"
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "أيمكنك مساعدتي؟",
+      "gloss": {
+        "en": "Could you help me?",
+        "de": "Könntest du mir helfen?",
+        "es": "¿Podrías ayudarme?"
+      },
+      "freqRank": 47,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sos-button"
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "السيارة جاهزة.",
+      "gloss": { "en": "The car is ready.", "ru": "Машина готова." },
+      "freqRank": 48,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "علينا الجلوس.",
+      "gloss": { "en": "We should sit down.", "es": "Tenemos que sentarnos." },
+      "freqRank": 49,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chair"
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "استمع الجميع.",
+      "gloss": { "en": "Everyone listened.", "fr": "Tout le monde a écouté." },
+      "freqRank": 50,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "أُقَدِّر مساعدتك.",
+      "gloss": { "en": "I appreciate your help.", "ru": "Я ценю твою помощь." },
+      "freqRank": 51,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:folded-hands"
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "دخلت ماري.",
+      "gloss": { "en": "In came Mary.", "es": "Entró Mary.", "ru": "Вошла Мэри." },
+      "freqRank": 52,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door"
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "لديها أمل.",
+      "gloss": { "en": "She has hope.", "ru": "У неё есть надежда." },
+      "freqRank": 53,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crossed-fingers"
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "أريد السلام.",
+      "gloss": { "en": "I want peace.", "tr": "Barış istiyorum." },
+      "freqRank": 54,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:peace-symbol"
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "منزلك رائع.",
+      "gloss": { "en": "Your house is fantastic.", "fr": "Votre maison est fantastique." },
+      "freqRank": 55,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden"
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "أنا مشغول.",
+      "gloss": { "en": "I'm busy.", "tr": "Meşgulüm.", "es": "Estoy ocupado." },
+      "freqRank": 56,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "انا حامل.",
+      "gloss": { "en": "I am pregnant.", "es": "Estoy embarazada." },
+      "freqRank": 57,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pregnant-woman"
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "هي حامل.",
+      "gloss": { "en": "She's pregnant.", "tr": "O, hamiledir." },
+      "freqRank": 58,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pregnant-woman"
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "الأسود لي.",
+      "gloss": {
+        "en": "That black one is mine.",
+        "es": "El negro es mío.",
+        "fr": "Le noir est à moi."
+      },
+      "freqRank": 59,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:black-circle"
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "أحب والدتي.",
+      "gloss": {
+        "en": "I love my mother.",
+        "de": "Ich liebe meine Mutter.",
+        "fr": "J'aime ma mère."
+      },
+      "freqRank": 60,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart"
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "الطريق خطير.",
+      "gloss": { "en": "The road is dangerous.", "fr": "La route est dangereuse." },
+      "freqRank": 61,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning"
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "طلبت النجدة.",
+      "gloss": {
+        "en": "I called for help.",
+        "es": "He pedido ayuda.",
+        "fr": "J'ai appelé à l'aide."
+      },
+      "freqRank": 62,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sos-button"
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "أمي غاضبة.",
+      "gloss": { "en": "My mother is angry.", "ru": "Моя мама сердится." },
+      "freqRank": 63,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face"
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "إنها غاضبة.",
+      "gloss": { "en": "She's outraged.", "ru": "Она сердитая." },
+      "freqRank": 64,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:enraged-face"
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "أحضر المفتاح.",
+      "gloss": { "en": "Bring the key.", "ru": "Принеси ключ." },
+      "freqRank": 65,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:key"
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "دخل أحدهم.",
+      "gloss": { "en": "Someone entered.", "es": "Alguien entró." },
+      "freqRank": 66,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door"
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "قرأت الكتاب.",
+      "gloss": { "en": "I read the book.", "ru": "Я прочитал книгу." },
+      "freqRank": 67,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book"
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "دخل الطبيب.",
+      "gloss": { "en": "The doctor came in.", "ru": "Вошёл врач." },
+      "freqRank": 68,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope"
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "أفكر فيك.",
+      "gloss": {
+        "en": "I'm thinking about you.",
+        "fr": "Je pense à toi.",
+        "ru": "Я думаю о тебе."
+      },
+      "freqRank": 69,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thought-balloon"
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "عندي فيل.",
+      "gloss": { "en": "I have an elephant.", "tr": "Bir filim var." },
+      "freqRank": 70,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:elephant"
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "النجوم جميلة.",
+      "gloss": { "en": "The stars are beautiful.", "ru": "Звёзды красивые." },
+      "freqRank": 71,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:night-with-stars"
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "هذا يعجبني.",
+      "gloss": { "en": "I like it.", "de": "Das gefällt mir." },
+      "freqRank": 72,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "أنا بطل.",
+      "gloss": {
+        "en": "I'm a hero.",
+        "de": "Ich bin ein Held.",
+        "es": "Soy un héroe.",
+        "fr": "Je suis un héros."
+      },
+      "freqRank": 73,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:superhero"
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "الجو بارد.",
+      "gloss": {
+        "en": "It's cold.",
+        "tr": "Hava soğuktur.",
+        "de": "Es ist kalt.",
+        "es": "Hace frío.",
+        "fr": "Le temps est froid."
+      },
+      "freqRank": 74,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cold-face"
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "الحياة قصيرة.",
+      "gloss": { "en": "Life is short.", "ru": "Жизнь коротка." },
+      "freqRank": 75,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-done"
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "أين الولد؟",
+      "gloss": { "en": "Where is the boy?", "tr": "Oğlan nerede?", "es": "¿Dónde está el niño?" },
+      "freqRank": 76,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:boy"
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "افتح الباب.",
+      "gloss": { "en": "Open the door!", "es": "¡Abre la puerta!" },
+      "freqRank": 77,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door"
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "تريد ماء.",
+      "gloss": { "en": "She wants water.", "fr": "Elle veut de l'eau.", "ru": "Она хочет воды." },
+      "freqRank": 78,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:potable-water"
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "افتح النافذة.",
+      "gloss": { "en": "Open the window.", "de": "Mach das Fenster auf." },
+      "freqRank": 79,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:window"
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "شاهد الجميع.",
+      "gloss": { "en": "Everyone watched.", "ru": "Все смотрели." },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes"
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "إنتهى وقتك.",
+      "gloss": { "en": "Your time is up.", "ru": "Твоё время вышло." },
+      "freqRank": 81,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-done"
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "خذ وقتك.",
+      "gloss": { "en": "Take your time.", "de": "Lass dir Zeit.", "es": "Tómate tu tiempo." },
+      "freqRank": 82,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:turtle"
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "إنها تأكل.",
+      "gloss": { "en": "She is eating.", "ru": "Она ест." },
+      "freqRank": 83,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate"
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "عادت الرّسالة.",
+      "gloss": { "en": "The letter returned.", "ru": "Письмо вернулось." },
+      "freqRank": 84,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope"
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "تلك سيارتك.",
+      "gloss": { "en": "That's your car.", "ru": "Это твоя машина." },
+      "freqRank": 85,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "أحتاج للمساعدة.",
+      "gloss": { "en": "I need help.", "ru": "Мне нужна помощь." },
+      "freqRank": 86,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sos-button"
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "أين الكتب؟",
+      "gloss": { "en": "Where is the book?", "ru": "Где книга?" },
+      "freqRank": 87,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books"
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "كم عمره؟",
+      "gloss": {
+        "en": "What is his age?",
+        "de": "Wie alt ist er?",
+        "es": "¿Cuántos años tiene él?",
+        "ru": "Сколько ему лет?"
+      },
+      "freqRank": 88,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake"
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "التفاصيل مهمة.",
+      "gloss": {
+        "en": "Details matter.",
+        "tr": "Ayrıntılar önemlidir.",
+        "de": "Die Details sind wichtig.",
+        "fr": "Les détails comptent.",
+        "pt-BR": "Os detalhes são importantes."
+      },
+      "freqRank": 89,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left"
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "أغلق البوابة.",
+      "gloss": { "en": "Lock the gate.", "ru": "Запри ворота." },
+      "freqRank": 90,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:key"
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "دفع الثمن.",
+      "gloss": { "en": "He paid the cost.", "tr": "Bedelini ödemiş." },
+      "freqRank": 91,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote"
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "كُتبت الرّسالة.",
+      "gloss": {
+        "en": "The letter was written.",
+        "tr": "Mesaj yazıldı.",
+        "ru": "Письмо было написано."
+      },
+      "freqRank": 92,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand"
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "سأتّصل بالشّرطة.",
+      "gloss": {
+        "en": "I'll call the cops.",
+        "es": "Contactaré a la policía.",
+        "ru": "Я позвоню в полицию."
+      },
+      "freqRank": 93,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:police-car"
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "يتكلم بسرعة.",
+      "gloss": {
+        "en": "He is a fast speaker.",
+        "fr": "Il parle vite.",
+        "ru": "Он быстро говорит."
+      },
+      "freqRank": 94,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head"
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "اللّون رائع.",
+      "gloss": { "en": "The color is spectacular.", "ru": "Цвет отличный." },
+      "freqRank": 95,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:artist-palette"
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "أحتاج وقتا.",
+      "gloss": { "en": "I need time.", "ru": "Мне нужно время." },
+      "freqRank": 96,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done"
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "أنا جائع.",
+      "gloss": {
+        "en": "I'm hungry!",
+        "tr": "Ben açım.",
+        "de": "Ich habe Hunger!",
+        "es": "¡Tengo hambre!"
+      },
+      "freqRank": 97,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drooling-face"
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "لماذا تأخرت؟",
+      "gloss": { "en": "Why were you late?", "de": "Weshalb kommst du zu spät?" },
+      "freqRank": 98,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock"
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "أين أختك؟",
+      "gloss": { "en": "Where is your sister?", "ru": "Где твоя сестра?" },
+      "freqRank": 99,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands"
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "أحب الأفلام.",
+      "gloss": { "en": "I like movies.", "tr": "Filmleri severim.", "ru": "Я люблю кино." },
+      "freqRank": 100,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board"
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "أكره الإنترنت.",
+      "gloss": { "en": "I hate the internet.", "ru": "Я ненавижу Интернет." },
+      "freqRank": 101,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop"
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "أهذه سيارتك؟",
+      "gloss": { "en": "Is this your car?", "ru": "Это твоя машина?" },
+      "freqRank": 102,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "شكراً جزيلاً!",
+      "gloss": { "en": "Thank you very much!", "fr": "Merci beaucoup !", "ru": "Большое спасибо!" },
+      "freqRank": 103,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:folded-hands"
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "أين الحديقة؟",
+      "gloss": {
+        "en": "Where's the garden?",
+        "tr": "Bahçe nerede?",
+        "es": "¿Donde está el jardín?",
+        "fr": "Où est le jardin ?",
+        "pt-BR": "Onde é o jardim?"
+      },
+      "freqRank": 104,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden"
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "هل تستمع؟",
+      "gloss": { "en": "Are you listening?", "de": "Hörst du?", "es": "¿Escuchas?" },
+      "freqRank": 105,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "هذا سؤال جيد.",
+      "gloss": { "en": "That's a good question.", "ru": "Это хороший вопрос." },
+      "freqRank": 106,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-question-mark"
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "ذهبت إلى المستشفى.",
+      "gloss": {
+        "en": "I went to the hospital.",
+        "tr": "Hastaneye gittim.",
+        "de": "Ich bin ins Krankenhaus gegangen.",
+        "fr": "Je suis allée à l'hôpital.",
+        "ru": "Я пошёл в больницу."
+      },
+      "freqRank": 107,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ambulance"
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "هذا سؤال صعب.",
+      "gloss": { "en": "That's a hard question to answer.", "de": "Das ist eine schwere Frage." },
+      "freqRank": 108,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face"
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "قُل شيئاً, رجاءً.",
+      "gloss": { "en": "Please say something.", "es": "Por favor, diga algo." },
+      "freqRank": 109,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon"
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "انا بخير، وانت؟",
+      "gloss": { "en": "I am fine, and you?", "es": "Estoy bien, ¿y vos?" },
+      "freqRank": 110,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:slightly-smiling-face"
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "أكره هذا المنزل.",
+      "gloss": {
+        "en": "I hate this house.",
+        "es": "Odio esta casa.",
+        "fr": "Je déteste cette maison."
+      },
+      "freqRank": 111,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "إنك في خطر!",
+      "gloss": { "en": "It's dangerous!", "ru": "Ты в опасности!" },
+      "freqRank": 112,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning"
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "العالم في خطر.",
+      "gloss": { "en": "The world is in danger.", "tr": "Dünya tehlikede." },
+      "freqRank": 113,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa"
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "هل تعيش هنا؟",
+      "gloss": { "en": "Do you live here?", "es": "¿Usted vive aquí?", "ru": "Ты живёшь здесь?" },
+      "freqRank": 114,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "أبي يحب أمي.",
+      "gloss": {
+        "en": "My father loves my mother.",
+        "de": "Mein Vater liebt meine Mutter.",
+        "pt-BR": "Meu pai ama minha mãe.",
+        "ru": "Мой папа любит мою маму."
+      },
+      "freqRank": 115,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-and-man-holding-hands"
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "إنه عالم رائع.",
+      "gloss": { "en": "He's a wonderful scholar.", "ru": "Мир поистине чудесен." },
+      "freqRank": 116,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:graduation-cap"
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "سأكون هناك غداً.",
+      "gloss": {
+        "en": "I'll be there tomorrow.",
+        "es": "Voy a estar ahí mañana.",
+        "ru": "Я буду там завтра."
+      },
+      "freqRank": 117,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:calendar"
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "أعرف أولئك الفتيات.",
+      "gloss": { "en": "I know those girls.", "es": "Conozco a aquellas chicas." },
+      "freqRank": 118,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands"
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "إني أنظر فحسب.",
+      "gloss": { "en": "I'm just looking.", "de": "Ich schaue nur.", "es": "Sólo estoy mirando." },
+      "freqRank": 119,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes"
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "عيد ميلاد سعيد.",
+      "gloss": { "en": "Happy birthday!", "fr": "Joyeux anniversaire." },
+      "freqRank": 120,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake"
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "إني في المنزل.",
+      "gloss": {
+        "en": "I am at home.",
+        "de": "Ich bin zu Hause.",
+        "es": "Estoy en casa.",
+        "fr": "Je suis à la maison."
+      },
+      "freqRank": 121,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "أراك الأسبوع القادم!",
+      "gloss": { "en": "See you next week!", "es": "¡Hasta la semana que viene!" },
+      "freqRank": 122,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:spiral-calendar"
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "هل العشاء جاهز؟",
+      "gloss": { "en": "Is dinner ready?", "ru": "Ужин готов?" },
+      "freqRank": 123,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food"
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "عدت من المدرسة.",
+      "gloss": { "en": "I returned from school.", "fr": "Je suis rentré de l'école." },
+      "freqRank": 124,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:backpack"
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "ماذا تبحث هناك؟",
+      "gloss": { "en": "What are you looking for there?", "ru": "Что ты там ищешь?" },
+      "freqRank": 125,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left"
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "لا تنظر إلي!",
+      "gloss": { "en": "Don't look at me.", "ru": "Не смотри на меня!" },
+      "freqRank": 126,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:see-no-evil-monkey"
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "تعال إلى منزلي.",
+      "gloss": { "en": "Come to my house.", "fr": "Viens à la maison." },
+      "freqRank": 127,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "أتذكر أشياء كثيرة.",
+      "gloss": {
+        "en": "I remember many things.",
+        "fr": "Je me souviens de beaucoup de choses.",
+        "ru": "Я много чего помню."
+      },
+      "freqRank": 128,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain"
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "عائلتي ليست كبيرة.",
+      "gloss": { "en": "My family is not very large.", "ru": "Моя семья небольшая." },
+      "freqRank": 129,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family"
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "أنا أتعلم الموسيقى.",
+      "gloss": { "en": "I'm learning music.", "ru": "Я изучаю музыку." },
+      "freqRank": 130,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-score"
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "لا أفهم الموسيقى.",
+      "gloss": { "en": "I don't understand music.", "de": "Ich verstehe Musik nicht." },
+      "freqRank": 131,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note"
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "أريد العيش هنا.",
+      "gloss": { "en": "I want to live here.", "ru": "Я хочу здесь жить." },
+      "freqRank": 132,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden"
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "ما قلته صحيح.",
+      "gloss": { "en": "What you say is true.", "es": "Lo que decís es cierto." },
+      "freqRank": 133,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark"
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "أحب ذلك الكلب.",
+      "gloss": { "en": "I like the dog.", "es": "Me gusta el perro." },
+      "freqRank": 134,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "هذا الكلب لي.",
+      "gloss": {
+        "en": "This dog is mine.",
+        "es": "Este perro es mío.",
+        "fr": "Ce chien est à moi."
+      },
+      "freqRank": 135,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "إنها في الحمام.",
+      "gloss": { "en": "She is in the bathroom.", "ru": "Она в ванной." },
+      "freqRank": 136,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:restroom"
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "أنا من أمريكا.",
+      "gloss": { "en": "I'm from America.", "de": "Ich komme aus Amerika." },
+      "freqRank": 137,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map"
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "عاد من أمريكا.",
+      "gloss": { "en": "He came back from America.", "ru": "Он вернулся из Америки." },
+      "freqRank": 138,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane"
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "أين وُلِدَ توم؟",
+      "gloss": {
+        "en": "Where was Tom born?",
+        "de": "Wo wurde Tom geboren?",
+        "es": "¿Dónde nació Tom?",
+        "fr": "Où est né Tom ?"
+      },
+      "freqRank": 139,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baby"
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "لمن تلك السيارة؟",
+      "gloss": {
+        "en": "Whose car is that?",
+        "de": "Wessen Auto ist das?",
+        "es": "¿De quién es ese auto?"
+      },
+      "freqRank": 140,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "احب العمل معك.",
+      "gloss": { "en": "I love working with you.", "ru": "Я люблю с тобой работать." },
+      "freqRank": 141,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "احتاج توم الطعام .",
+      "gloss": { "en": "Tom needed food.", "de": "Tom benötigte Lebensmittel." },
+      "freqRank": 142,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food"
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "أنا امرأة قوية.",
+      "gloss": {
+        "en": "I'm a strong woman.",
+        "tr": "Ben güçlü bir kadınım.",
+        "fr": "Je suis une femme forte.",
+        "ru": "Я сильная женщина."
+      },
+      "freqRank": 143,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps"
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "كنت في الحفلة.",
+      "gloss": { "en": "I was at the party.", "tr": "Partideydim." },
+      "freqRank": 144,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:party-popper"
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "هناك كتاب هنا.",
+      "gloss": { "en": "There's a book here.", "es": "Hay un libro aquí." },
+      "freqRank": 145,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book"
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "أهلاً كيف حالك؟",
+      "gloss": {
+        "en": "Hi! How are you?",
+        "es": "¡Hola! ¿Qué tal?",
+        "fr": "Salut. Comment vas-tu ?",
+        "ru": "Привет! Как дела?"
+      },
+      "freqRank": 146,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand"
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "إنه مريض جداً.",
+      "gloss": { "en": "He's very ill.", "ru": "Он очень болен." },
+      "freqRank": 147,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer"
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "ليس لدي مال.",
+      "gloss": {
+        "en": "I don't have any money.",
+        "es": "No tengo el dinero.",
+        "ru": "У меня нет денег."
+      },
+      "freqRank": 148,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-with-wings"
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "غداً عيد الأم.",
+      "gloss": { "en": "Tomorrow is Mother's Day.", "es": "Mañana es el día de la madre." },
+      "freqRank": 149,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bouquet"
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "إنه وقت الغداء.",
+      "gloss": { "en": "It's lunch time.", "es": "Es hora del almuerzo.", "ru": "Время обеда." },
+      "freqRank": 150,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate"
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "أنا في لندن.",
+      "gloss": { "en": "I am in London.", "ru": "Я в Лондоне." },
+      "freqRank": 151,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:round-pushpin"
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "أهذا كلب توم ؟",
+      "gloss": { "en": "Is that Tom's dog?", "tr": "O, Tom'un köpeği mi?" },
+      "freqRank": 152,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "إنه كلبٌ كبير.",
+      "gloss": { "en": "It's a big dog.", "de": "Das ist ein großer Hund." },
+      "freqRank": 153,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "نحن في حرب.",
+      "gloss": {
+        "en": "We're at war.",
+        "fr": "Nous sommes en guerre.",
+        "ru": "Мы находимся в состоянии войны."
+      },
+      "freqRank": 154,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crossed-swords"
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "إنها تتكلم كثيراً.",
+      "gloss": { "en": "She talks a lot.", "ru": "Она много говорит." },
+      "freqRank": 155,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon"
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "جئت مع أصدقائي.",
+      "gloss": { "en": "I came with my friends.", "es": "Vine con mis amigos." },
+      "freqRank": 156,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette"
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "خرجت مع أصدقائي.",
+      "gloss": {
+        "en": "I went out with my friends.",
+        "es": "Salí con mis amigos.",
+        "ru": "Я вышел с друзьями."
+      },
+      "freqRank": 157,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette"
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "عيد حب سعيد.",
+      "gloss": { "en": "Happy Valentine's Day.", "tr": "Sevgililer Günün kutlu olsun!" },
+      "freqRank": 158,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heart-with-arrow"
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "هذا اللحم جيد.",
+      "gloss": {
+        "en": "This meat is good.",
+        "de": "Dieses Fleisch ist gut.",
+        "es": "Esta carne es buena.",
+        "ru": "Это мясо хорошее."
+      },
+      "freqRank": 159,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cut-of-meat"
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "إنني قلق عليه.",
+      "gloss": { "en": "I worry about him.", "de": "Ich mache mir Sorgen um ihn." },
+      "freqRank": 160,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:worried-face"
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "ما تاريخ اليوم؟",
+      "gloss": {
+        "en": "What is the date today?",
+        "de": "Welches Datum haben wir heute?",
+        "es": "¿Cuál es la fecha de hoy?"
+      },
+      "freqRank": 161,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tear-off-calendar"
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "اِجلس من فضلك.",
+      "gloss": { "en": "Sit down, please.", "ru": "Садись, пожалуйста." },
+      "freqRank": 162,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chair"
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "خط أمي جميل.",
+      "gloss": { "en": "My mother has good handwriting.", "ru": "У моей матери красивый почерк." },
+      "freqRank": 163,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand"
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "أُدخل إلى المستشفى.",
+      "gloss": { "en": "He has been hospitalized.", "ru": "Его положили в больницу." },
+      "freqRank": 164,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ambulance"
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "يحب مشاهدة التلفاز.",
+      "gloss": { "en": "He likes to watch TV.", "ru": "Он любит смотреть телевизор." },
+      "freqRank": 165,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:television"
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "يمكنك مشاهدة التلفاز.",
+      "gloss": { "en": "You can watch television.", "es": "Puedes ver televisión." },
+      "freqRank": 166,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:television"
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "استمع و تعلّم.",
+      "gloss": { "en": "Listen and learn.", "ru": "Слушай и изучай." },
+      "freqRank": 167,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "الحب و السلام.",
+      "gloss": { "en": "Love and Peace.", "es": "Amor y paz." },
+      "freqRank": 168,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:peace-symbol"
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "هل أنا حامل؟",
+      "gloss": {
+        "en": "Am I pregnant?",
+        "tr": "Hamile miyim?",
+        "de": "Bin ich schwanger?",
+        "fr": "Suis-je enceinte ?"
+      },
+      "freqRank": 169,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pregnant-woman"
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "تصبح على خير.",
+      "gloss": { "en": "Good night!", "de": "Gute Nacht!" },
+      "freqRank": 170,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon"
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "هذه صديقتي ماري.",
+      "gloss": {
+        "en": "She is my friend Mari.",
+        "tr": "O benim arkadaşım Mari.",
+        "de": "Sie ist meine Freundin Mari.",
+        "es": "Ella es mi amiga Mari."
+      },
+      "freqRank": 171,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands"
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "هل عائلتك كبيرة؟",
+      "gloss": { "en": "Do you come from a big family?", "ru": "Твоя семья большая?" },
+      "freqRank": 172,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family"
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "أحدهم يبحث عنك.",
+      "gloss": { "en": "Somebody is looking for you.", "ru": "Один из них ищет тебя." },
+      "freqRank": 173,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left"
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "إنها غاضبة عليّ.",
+      "gloss": { "en": "She is mad at me.", "fr": "Elle est en colère contre moi." },
+      "freqRank": 174,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face"
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "أنا في سيارتي.",
+      "gloss": {
+        "en": "I'm in my car.",
+        "tr": "Arabamdayım.",
+        "de": "Ich bin in meinem Auto.",
+        "es": "Estoy en mi coche.",
+        "fr": "Je suis dans ma voiture.",
+        "pt-BR": "Estou no meu carro."
+      },
+      "freqRank": 175,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "حسناً. أنا موافق.",
+      "gloss": { "en": "OK. I agree.", "ru": "Хорошо. Я согласен." },
+      "freqRank": 176,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ok-hand"
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "لا تكذب أبداً!",
+      "gloss": { "en": "Never tell a lie!", "es": "¡No mientas jamás!" },
+      "freqRank": 177,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face"
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "أنا قرأت الرسالة.",
+      "gloss": { "en": "I read a letter.", "ru": "Я читал письмо." },
+      "freqRank": 178,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope"
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "الكتاب علي الطاولة.",
+      "gloss": { "en": "The book is on the table.", "de": "Das Buch ist auf dem Tisch." },
+      "freqRank": 179,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book"
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "المفتاح على الطاولة.",
+      "gloss": { "en": "The key is on the table.", "ru": "Ключ на столе." },
+      "freqRank": 180,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:key"
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "اتصلت به بالأمس.",
+      "gloss": { "en": "I called him up yesterday.", "ru": "Я позвонил ему вчера." },
+      "freqRank": 181,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver"
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "أبي غاضب معي.",
+      "gloss": { "en": "Father is angry with me.", "ru": "Мой отец на меня зол." },
+      "freqRank": 182,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face"
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "هو يحبّ الثلجَ.",
+      "gloss": { "en": "He likes snow.", "ru": "Он любит снег." },
+      "freqRank": 183,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snowflake"
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "هذا الكتاب قديم.",
+      "gloss": {
+        "en": "This book is old.",
+        "es": "Este libro es viejo.",
+        "ru": "Эта книга старая."
+      },
+      "freqRank": 184,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book"
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "انه يحب الشاي.",
+      "gloss": {
+        "en": "He likes tea.",
+        "de": "Er liebt Tee.",
+        "es": "Le gusta el té.",
+        "ru": "Он любит чай."
+      },
+      "freqRank": 185,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:teacup-without-handle"
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "لدي مفاجأة لك.",
+      "gloss": { "en": "I have a surprise for you.", "es": "Tengo una sorpresa para ustedes." },
+      "freqRank": 186,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrapped-gift"
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "غادر صديقك المدينة.",
+      "gloss": {
+        "en": "Your friend left town.",
+        "es": "Tu amigo dejó la ciudad.",
+        "fr": "Ton ami a quitté la ville.",
+        "ru": "Твой друг покинул город."
+      },
+      "freqRank": 187,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage"
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "تلك حقيبة جين.",
+      "gloss": { "en": "This is Jane's bag.", "ru": "Это портфель Джейн." },
+      "freqRank": 188,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handbag"
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "هل الماء بارد؟",
+      "gloss": {
+        "en": "Is the water cold?",
+        "tr": "Su soğuk mu?",
+        "de": "Ist das Wasser kalt?",
+        "es": "¿El agua está fría?",
+        "pt-BR": "A água está fria?"
+      },
+      "freqRank": 189,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet"
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "كتب رسالة واحدة.",
+      "gloss": { "en": "He wrote one letter.", "ru": "Он написал одно письмо." },
+      "freqRank": 190,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand"
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "من كتب الرسالة؟",
+      "gloss": {
+        "en": "Who wrote the letter?",
+        "de": "Wer hat den Brief geschrieben?",
+        "es": "¿Quién escribió la carta?"
+      },
+      "freqRank": 191,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope"
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "هو كتب الكتاب.",
+      "gloss": { "en": "He wrote the book.", "ru": "Он написал книгу." },
+      "freqRank": 192,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand"
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "يبدو أنك ذكي.",
+      "gloss": {
+        "en": "You look smart.",
+        "tr": "Akıllı görünüyorsun.",
+        "fr": "Tu as l'air intelligent."
+      },
+      "freqRank": 193,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain"
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "لدي سيارة قديمة.",
+      "gloss": { "en": "I have an old car.", "tr": "Eski bir arabam var." },
+      "freqRank": 194,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "أريد هذه الكاميرا.",
+      "gloss": {
+        "en": "I want this camera.",
+        "de": "Ich will diese Kamera.",
+        "es": "Quiero esta cámara.",
+        "fr": "Je veux cette caméra."
+      },
+      "freqRank": 195,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:camera"
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "أنت تأكل اللحم.",
+      "gloss": { "en": "You are eating meat.", "de": "Du isst Fleisch." },
+      "freqRank": 196,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cut-of-meat"
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "لا تأكلْ اللحم!",
+      "gloss": { "en": "Don't eat meat!", "fr": "Ne mange pas de viande !" },
+      "freqRank": 197,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cut-of-meat"
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "اهدأ يا بني.",
+      "gloss": { "en": "Calm down, son.", "ru": "Успокойся, сынок." },
+      "freqRank": 198,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:relieved-face"
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "ادخل إلى المنزل.",
+      "gloss": { "en": "Go in the house.", "ru": "Входи в дом." },
+      "freqRank": 199,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "أظن أنها مريضة.",
+      "gloss": { "en": "I think she is sick.", "es": "Creo que ella está enferma." },
+      "freqRank": 200,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer"
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "ما مشكلة سيارتك؟",
+      "gloss": {
+        "en": "What is the matter with your car?",
+        "ru": "Какая проблема у твоей машины?"
+      },
+      "freqRank": 201,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrench"
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "لنذهب إلى الشاطئ.",
+      "gloss": { "en": "Let's go to the beach.", "es": "Vamos a la playa." },
+      "freqRank": 202,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:desert-island"
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "أنا أكره الكذب.",
+      "gloss": {
+        "en": "I hate lies.",
+        "tr": "Yalanlardan nefret ederim.",
+        "de": "Ich hasse Lügen.",
+        "es": "Odio las mentiras.",
+        "fr": "Je déteste les mensonges.",
+        "pt-BR": "Detesto mentiras.",
+        "ru": "Я ненавижу ложь."
+      },
+      "freqRank": 203,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face"
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "لمن هذه الكتب؟",
+      "gloss": {
+        "en": "Whose books are these?",
+        "de": "Wessen Bücher sind das?",
+        "es": "¿De quién son esos libros?"
+      },
+      "freqRank": 204,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books"
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "حان الوقت للنوم.",
+      "gloss": { "en": "It's time to go to bed.", "es": "Es hora de acostarse." },
+      "freqRank": 205,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bed"
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "أيمكنك أن تسمعني؟",
+      "gloss": { "en": "Can you hear me?", "es": "¿Puedes oírme?" },
+      "freqRank": 206,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "لم أعد أحبه.",
+      "gloss": { "en": "I no longer love him.", "fr": "Je ne l'aime plus." },
+      "freqRank": 207,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart"
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "أفضل السفر لوحدي.",
+      "gloss": {
+        "en": "I prefer traveling on my own.",
+        "de": "Ich reise lieber alleine.",
+        "es": "Prefiero viajar solo."
+      },
+      "freqRank": 208,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage"
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "المفاتيح من فضلك.",
+      "gloss": { "en": "The keys, please.", "ru": "Ключи, пожалуйста." },
+      "freqRank": 209,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:key"
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "هل أنت جائع؟",
+      "gloss": { "en": "Are you hungry?", "ru": "Ты голоден?" },
+      "freqRank": 210,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate"
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "كم عمر أختك ؟",
+      "gloss": {
+        "en": "How old is your sister?",
+        "es": "¿Qué edad tiene tu hermana?",
+        "ru": "Сколько лет твоей сестре?"
+      },
+      "freqRank": 211,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake"
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "إنها ذكية جداً.",
+      "gloss": { "en": "She is very intelligent.", "ru": "Она очень умна." },
+      "freqRank": 212,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain"
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "أحب الأفلام الأمريكية.",
+      "gloss": { "en": "I love American movies.", "ru": "Я люблю американские фильмы." },
+      "freqRank": 213,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board"
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "أحببت هذا الفيلم.",
+      "gloss": { "en": "I liked this film.", "es": "Me gustó esta película." },
+      "freqRank": 214,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board"
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "سأبقى في البيت.",
+      "gloss": { "en": "I'll stay home.", "ru": "Я останусь в доме." },
+      "freqRank": 215,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "كان توم يتصل.",
+      "gloss": { "en": "Tom was calling.", "fr": "Tom appelait." },
+      "freqRank": 216,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver"
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "أُحِبّ هذه الأغنية.",
+      "gloss": { "en": "I love this song.", "ru": "Я люблю эту песню." },
+      "freqRank": 217,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-notes"
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "ها هو العنوان.",
+      "gloss": {
+        "en": "Here's the address.",
+        "es": "Acá está la dirección.",
+        "fr": "Voici l'adresse.",
+        "ru": "Вот адрес."
+      },
+      "freqRank": 218,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:round-pushpin"
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "أين تقع باريس؟",
+      "gloss": {
+        "en": "Where is Paris?",
+        "fr": "Où se trouve Paris ?",
+        "ru": "Где находится Париж?"
+      },
+      "freqRank": 219,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map"
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "لقد حسّن الجهاز.",
+      "gloss": {
+        "en": "He improved the device.",
+        "es": "Él mejoró el dispositivo.",
+        "ru": "Он усовершенствовал устройство."
+      },
+      "freqRank": 220,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hammer-and-wrench"
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "أكره رائحة الكحول.",
+      "gloss": { "en": "I hate the smell of alcohol.", "ru": "Я ненавижу запах алкоголя." },
+      "freqRank": 221,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:nose"
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "أنا لست سعيداً.",
+      "gloss": { "en": "I'm not happy.", "es": "No estoy feliz." },
+      "freqRank": 222,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:disappointed-face"
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "كان توم سعيدا.",
+      "gloss": { "en": "Tom was happy.", "ru": "Том был счастлив." },
+      "freqRank": 223,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes"
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "ذهبت إلى المدرسة أمس.",
+      "gloss": { "en": "I went to school yesterday.", "ru": "Я пошёл вчера в школу." },
+      "freqRank": 224,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school"
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "هو الآن في المستشفى.",
+      "gloss": { "en": "He is in the hospital at present.", "ru": "Он сейчас в больнице." },
+      "freqRank": 225,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-head-bandage"
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "حياتي كانت في خطر.",
+      "gloss": {
+        "en": "My life was in danger.",
+        "de": "Mein Leben war in Gefahr.",
+        "es": "Mi vida estaba en peligro.",
+        "ru": "Моя жизнь была в опасности."
+      },
+      "freqRank": 226,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning"
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "خطر له فكرة جيدة.",
+      "gloss": { "en": "A good idea crossed his mind.", "ru": "Хорошая идея пришла ему в голову." },
+      "freqRank": 227,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb"
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "إنها تعيش في نيويورك.",
+      "gloss": {
+        "en": "She lives in New York.",
+        "fr": "Elle vit à New York.",
+        "ru": "Она живёт в Нью-Йорке."
+      },
+      "freqRank": 228,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cityscape-at-dusk"
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "عن ماذا يتحدث الكتاب؟",
+      "gloss": {
+        "en": "What is the book about?",
+        "tr": "Kitap ne hakkında?",
+        "es": "¿De qué trata el libro?",
+        "fr": "De quoi parle le livre ?",
+        "pt-BR": "De que fala o livro?"
+      },
+      "freqRank": 229,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book"
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "هل هذا الكتاب لك؟",
+      "gloss": { "en": "Is this book yours?", "ru": "Эта книга твоя?" },
+      "freqRank": 230,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book"
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "إني في مشكلة الآن.",
+      "gloss": { "en": "I'm in trouble now.", "ru": "У меня проблемы." },
+      "freqRank": 231,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:worried-face"
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "توم يعيش في المدينة.",
+      "gloss": {
+        "en": "Tom lives in town.",
+        "tr": "Tom kasabada yaşar.",
+        "de": "Tom lebt in der Stadt.",
+        "fr": "Tom vit en ville.",
+        "ru": "Том живёт в городе."
+      },
+      "freqRank": 232,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:houses"
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "تركت لي أمي رسالة.",
+      "gloss": { "en": "My mother left me a message.", "ru": "Мама оставила мне сообщение." },
+      "freqRank": 233,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope"
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "آمل أن أراك مجدداً.",
+      "gloss": { "en": "I hope to see you again.", "ru": "Надеюсь увидеть тебя снова." },
+      "freqRank": 234,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand"
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "أنا أيضاً أحب الموسيقى.",
+      "gloss": {
+        "en": "I love music, too.",
+        "es": "A mí también me gusta la música.",
+        "ru": "Я тоже люблю музыку."
+      },
+      "freqRank": 235,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note"
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "تحدثت معها خلال ساعة.",
+      "gloss": {
+        "en": "I talked with her for an hour.",
+        "ru": "Я говорил с ней на протяжении часа."
+      },
+      "freqRank": 236,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon"
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "النساء و الأطفال أولا!",
+      "gloss": {
+        "en": "Women and children first!",
+        "de": "Frauen und Kinder zuerst!",
+        "es": "¡Mujeres y niños primero!",
+        "fr": "Les femmes et les enfants d'abord !"
+      },
+      "freqRank": 237,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring-buoy"
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "نحن سنفعل ذلك غداً.",
+      "gloss": { "en": "We'll do it tomorrow.", "ru": "Мы сделаем это завтра." },
+      "freqRank": 238,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:calendar"
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "لا يمكننا الانتظار أكثر.",
+      "gloss": { "en": "We can't wait much longer.", "ru": "Мы не можем больше ждать." },
+      "freqRank": 239,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done"
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "هل هذهِ هدية لي؟",
+      "gloss": { "en": "Is this a gift for me?", "es": "¿Es un regalo para mí?" },
+      "freqRank": 240,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrapped-gift"
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "هو دائما نفس الصّوت.",
+      "gloss": { "en": "It's always the same voice.", "ru": "Это всегда один и тот же голос." },
+      "freqRank": 241,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head"
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "هل سمعت ذلك الصوت؟",
+      "gloss": { "en": "Did you hear that sound?", "es": "¿Has oído ese sonido?" },
+      "freqRank": 242,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "من تلك الفتاة الجميلة؟",
+      "gloss": { "en": "Who is that pretty girl?", "ru": "Кто эта красивая девушка?" },
+      "freqRank": 243,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:girl"
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "ماذا يوجد على وجهك؟",
+      "gloss": { "en": "What's on your face?", "ru": "Что у тебя на лице?" },
+      "freqRank": 244,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mirror"
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "أشعر أنّي مريض قليلا.",
+      "gloss": { "en": "I'm feeling a little sick.", "ru": "Чувствую, я немного приболел." },
+      "freqRank": 245,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:nauseated-face"
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "نحن نعود إلى السفينة.",
+      "gloss": { "en": "We return to the ship.", "tr": "Gemiyle dönüyoruz." },
+      "freqRank": 246,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ship"
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "من يملك هذا المنزل؟",
+      "gloss": { "en": "Who owns this house?", "de": "Wem gehört dieses Haus?" },
+      "freqRank": 247,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "لقد طَلَبَت مني مال.",
+      "gloss": {
+        "en": "She asked me for money.",
+        "es": "Ella me pidió dinero.",
+        "fr": "Elle m'a demandé de l'argent.",
+        "ru": "Она попросила у меня денег."
+      },
+      "freqRank": 248,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote"
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "أنا هنا منذ أسبوع.",
+      "gloss": { "en": "I have been here for a week.", "ru": "Я здесь уже неделю." },
+      "freqRank": 249,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:spiral-calendar"
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "متى وصلت إلى لندن؟",
+      "gloss": { "en": "When did you get to London?", "ru": "Когда ты приехал в Лондон?" },
+      "freqRank": 250,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane-arrival"
+    },
+    {
+      "index": 250,
+      "kind": "phrase",
+      "text": "توم لديه كلب آخر.",
+      "gloss": { "en": "Tom has another dog.", "fr": "Tom a un autre chien." },
+      "freqRank": 251,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 251,
+      "kind": "phrase",
+      "text": "أنت في مكان آمن.",
+      "gloss": {
+        "en": "You are in a safe place.",
+        "de": "Du bist an einem sicheren Ort.",
+        "es": "Estás en un lugar seguro."
+      },
+      "freqRank": 252,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shield"
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "فقط لدي بعض الأسئلة.",
+      "gloss": { "en": "I just have a few questions.", "ru": "У меня лишь несколько вопросов." },
+      "freqRank": 253,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-question-mark"
+    },
+    {
+      "index": 253,
+      "kind": "phrase",
+      "text": "أيمكنني أن أقول شيئاً؟",
+      "gloss": {
+        "en": "May I say something?",
+        "de": "Darf ich etwas sagen?",
+        "es": "¿Puedo decir algo?",
+        "fr": "Est-ce que je peux dire quelque chose?"
+      },
+      "freqRank": 254,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-raising-hand"
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
+      "text": "لم يصل القطار بعد.",
+      "gloss": { "en": "The train hasn't arrived yet.", "es": "El tren todavía no llega." },
+      "freqRank": 255,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:train"
+    },
+    {
+      "index": 255,
+      "kind": "phrase",
+      "text": "أخي صغير لكنه قوي.",
+      "gloss": { "en": "My brother is small but strong.", "ru": "Мой брат маленький, но сильный." },
+      "freqRank": 256,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps"
+    },
+    {
+      "index": 256,
+      "kind": "phrase",
+      "text": "عد إلى المنزل بسرعة.",
+      "gloss": { "en": "Go home quickly.", "fr": "Retourne rapidement à la maison." },
+      "freqRank": 257,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 257,
+      "kind": "phrase",
+      "text": "فكّر جيّدا بما ستفعل.",
+      "gloss": {
+        "en": "Think carefully about what you are going to do.",
+        "ru": "Хорошо обдумай, что ты будешь делать."
+      },
+      "freqRank": 258,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face"
+    },
+    {
+      "index": 258,
+      "kind": "phrase",
+      "text": "منزل جون مقابل الكنيسة.",
+      "gloss": {
+        "en": "John's house is opposite the church.",
+        "es": "La casa de Juan está frente a la iglesia."
+      },
+      "freqRank": 259,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 259,
+      "kind": "phrase",
+      "text": "تحب ماري مشاهدة التلفاز.",
+      "gloss": { "en": "Mary likes watching TV.", "ru": "Мэри любит смотреть телевизор." },
+      "freqRank": 260,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:television"
+    },
+    {
+      "index": 260,
+      "kind": "phrase",
+      "text": "القمر بعيد عن الأرض.",
+      "gloss": {
+        "en": "The moon is distant from the earth.",
+        "es": "La luna está lejos de la Tierra.",
+        "ru": "Луна удалена от Земли."
+      },
+      "freqRank": 261,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon"
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "لا أحد يملك القمر.",
+      "gloss": { "en": "Nobody owns the moon.", "de": "Niemand besitzt den Mond." },
+      "freqRank": 262,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon"
+    },
+    {
+      "index": 262,
+      "kind": "phrase",
+      "text": "نحن نعمل لأجل السلام.",
+      "gloss": { "en": "We are working in the interest of peace.", "ru": "Мы работаем ради мира." },
+      "freqRank": 263,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:peace-symbol"
+    },
+    {
+      "index": 263,
+      "kind": "phrase",
+      "text": "نريد السلام في العالم.",
+      "gloss": {
+        "en": "We want peace in the world.",
+        "es": "Queremos paz en el mundo.",
+        "ru": "Мы хотим мира во всём мире."
+      },
+      "freqRank": 264,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove"
+    },
+    {
+      "index": 264,
+      "kind": "phrase",
+      "text": "أنا في رحلة أعمال.",
+      "gloss": { "en": "I am on a business trip.", "ru": "Я в командировке." },
+      "freqRank": 265,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 265,
+      "kind": "phrase",
+      "text": "قال توني: لا أعلم.",
+      "gloss": { "en": "\"I don't know,\" said Tony.", "tr": "Tony dedi ki: bilmiyorum." },
+      "freqRank": 266,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging"
+    },
+    {
+      "index": 266,
+      "kind": "phrase",
+      "text": "لا تلعب هنا أبداً.",
+      "gloss": { "en": "Never play here.", "ru": "Никогда тут не играй." },
+      "freqRank": 267,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:no-entry"
+    },
+    {
+      "index": 267,
+      "kind": "phrase",
+      "text": "هل تلعب كرة القدم؟",
+      "gloss": {
+        "en": "Do you play soccer?",
+        "de": "Spielst du Fußball?",
+        "es": "¿Juegas al futbol?"
+      },
+      "freqRank": 268,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soccer-ball"
+    },
+    {
+      "index": 268,
+      "kind": "phrase",
+      "text": "لديكم الكثير من الأصدقاء.",
+      "gloss": {
+        "en": "You have lots of friends.",
+        "es": "Tenéis muchos amigos.",
+        "ru": "У вас много друзей."
+      },
+      "freqRank": 269,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette"
+    },
+    {
+      "index": 269,
+      "kind": "phrase",
+      "text": "قف هناك من فضلك.",
+      "gloss": { "en": "Just stand there, please.", "ru": "Будь добр, постой там." },
+      "freqRank": 270,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-standing"
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "إن القطار قد غادر.",
+      "gloss": {
+        "en": "The last train has already gone.",
+        "es": "El último tren ya ha partido.",
+        "ru": "Последний поезд уже ушёл."
+      },
+      "freqRank": 271,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:station"
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "ذَهبَ الولَدُ إلى المدرَسةِ.",
+      "gloss": {
+        "en": "The boy went to school.",
+        "fr": "Le garçon alla à l'école.",
+        "ru": "Мальчик пошёл в школу."
+      },
+      "freqRank": 272,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:backpack"
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "هل يوجد ماء هنا؟",
+      "gloss": { "en": "Is there water there?", "tr": "Orada su var mı?", "es": "¿Aquí hay agua?" },
+      "freqRank": 273,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:potable-water"
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "لقد مرّ الصيف بسرعة.",
+      "gloss": {
+        "en": "Summer has certainly passed by quickly.",
+        "es": "El verano pasó rápido.",
+        "ru": "Лето быстро прошло."
+      },
+      "freqRank": 274,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun"
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "شاهد توم التلفاز بالأمس.",
+      "gloss": {
+        "en": "Tom watched TV yesterday.",
+        "de": "Tom hat gestern Fernsehen geschaut.",
+        "fr": "Tom a regardé la télé hier.",
+        "ru": "Том вчера смотрел телевизор."
+      },
+      "freqRank": 275,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:television"
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "ماذا تحب أن تأكل؟",
+      "gloss": {
+        "en": "What do you like to eat?",
+        "de": "Was isst du gerne?",
+        "es": "¿Qué te gusta comer?",
+        "ru": "Что ты любишь есть?"
+      },
+      "freqRank": 276,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate"
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "ليس هناك قهوة كافية.",
+      "gloss": {
+        "en": "There's not enough coffee.",
+        "tr": "Yeterince kahve yok.",
+        "de": "Es ist nicht genug Kaffee da.",
+        "es": "No hay suficiente café."
+      },
+      "freqRank": 277,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage"
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "يعيش عمي قرب المدرسة.",
+      "gloss": {
+        "en": "My uncle lives near the school.",
+        "es": "Mi tío vive cerca de la escuela.",
+        "ru": "Мой дядя живёт рядом со школой."
+      },
+      "freqRank": 278,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school"
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "السفر سهل هذه الأيام.",
+      "gloss": {
+        "en": "Travelling is easy these days.",
+        "de": "Reisen ist heutzutage leicht.",
+        "es": "Hoy en día es fácil viajar."
+      },
+      "freqRank": 279,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane"
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "لا أستطيع تحمل الحرارة.",
+      "gloss": {
+        "en": "I can't take the heat.",
+        "de": "Ich kann die Hitze nicht ertragen.",
+        "es": "No puedo soportar el calor."
+      },
+      "freqRank": 280,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-face"
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "عمري تسعة عشر عاماً.",
+      "gloss": {
+        "en": "I am 19 years old.",
+        "de": "Ich bin 19 Jahre alt.",
+        "es": "Tengo 19 años.",
+        "ru": "Мне девятнадцать лет."
+      },
+      "freqRank": 281,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake"
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "أفضل السمك على اللحم.",
+      "gloss": {
+        "en": "I prefer fish to meat.",
+        "es": "Prefiero el pescado a la carne.",
+        "fr": "Je préfère le poisson à la viande."
+      },
+      "freqRank": 282,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fish"
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "يعيش السمك في الماء.",
+      "gloss": {
+        "en": "Fish live in the water.",
+        "tr": "Balıklar suda yaşar.",
+        "de": "Fische leben im Wasser.",
+        "es": "Los peces viven en el agua.",
+        "fr": "Les poissons vivent dans l'eau."
+      },
+      "freqRank": 283,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fish"
+    },
+    {
+      "index": 283,
+      "kind": "phrase",
+      "text": "سرق الرجل حقيبة يدي.",
+      "gloss": {
+        "en": "The man robbed me of my purse.",
+        "de": "Der Mann hat mir das Portemonnaie geklaut.",
+        "es": "El hombre me robó la cartera."
+      },
+      "freqRank": 284,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:purse"
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "أريد أن أذهب إلى المستشفى.",
+      "gloss": {
+        "en": "I want to go to the hospital.",
+        "tr": "Hastaneye gitmek istiyorum.",
+        "es": "Quiero ir al hospital.",
+        "fr": "Je veux aller à l'hôpital."
+      },
+      "freqRank": 285,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ambulance"
+    },
+    {
+      "index": 285,
+      "kind": "phrase",
+      "text": "سوف يكون في البيت غداً.",
+      "gloss": {
+        "en": "He will be at home tomorrow.",
+        "es": "Estará en casa mañana.",
+        "ru": "Завтра он будет дома."
+      },
+      "freqRank": 286,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "سأتصل عليك بعد ظهر الغد.",
+      "gloss": {
+        "en": "I will call you tomorrow afternoon.",
+        "de": "Ich rufe dich morgen Nachmittag an.",
+        "es": "Te llamaré mañana a la tarde."
+      },
+      "freqRank": 287,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver"
+    },
+    {
+      "index": 287,
+      "kind": "phrase",
+      "text": "توم كان حُبُّ ماري الأوّل.",
+      "gloss": {
+        "en": "Tom was Mary's first love.",
+        "es": "Tom fue el primer amor de Mary.",
+        "ru": "Том был первой любовью Мэри."
+      },
+      "freqRank": 288,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heart-with-arrow"
+    },
+    {
+      "index": 288,
+      "kind": "phrase",
+      "text": "على الأصدقاء مساعدة بعضهم البعض.",
+      "gloss": {
+        "en": "Friends should help one another.",
+        "de": "Freunde sollten sich gegenseitig helfen.",
+        "es": "Los amigos deben ayudarse mutuamente.",
+        "ru": "Друзья должны помогать друг другу."
+      },
+      "freqRank": 289,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 289,
+      "kind": "phrase",
+      "text": "السيارة قديمة و لكنها جيدة.",
+      "gloss": {
+        "en": "The car is old but good.",
+        "es": "El coche es viejo pero bueno.",
+        "ru": "Машина старая, но хорошая."
+      },
+      "freqRank": 290,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 290,
+      "kind": "phrase",
+      "text": "توم هو مدير مطعم صغير.",
+      "gloss": {
+        "en": "Tom is the manager of a small restaurant.",
+        "tr": "Tom küçük bir restoranın yöneticisidir.",
+        "es": "Tom es el gerente de un pequeño restaurante.",
+        "pt-BR": "Tom é o gerente de um pequeno restaurante.",
+        "ru": "Том — менеджер в небольшом ресторане."
+      },
+      "freqRank": 291,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate"
+    },
+    {
+      "index": 291,
+      "kind": "phrase",
+      "text": "سأذهب إلى لندن في الصيف.",
+      "gloss": {
+        "en": "I'm going to London this summer.",
+        "es": "Voy a ir a Londres este verano.",
+        "ru": "Летом я поеду в Лондон."
+      },
+      "freqRank": 292,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane"
+    },
+    {
+      "index": 292,
+      "kind": "phrase",
+      "text": "هل هي بعيدة من هنا؟",
+      "gloss": {
+        "en": "Is it far from here?",
+        "fr": "Est-ce loin d'ici ?",
+        "ru": "Это далеко отсюда?"
+      },
+      "freqRank": 293,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:compass"
+    },
+    {
+      "index": 293,
+      "kind": "phrase",
+      "text": "احتاج ان اتحدث معك الآن.",
+      "gloss": {
+        "en": "I need to speak with you right away.",
+        "es": "Necesito hablar contigo ahora.",
+        "ru": "Мне нужно поговорить с тобой сейчас."
+      },
+      "freqRank": 294,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon"
+    },
+    {
+      "index": 294,
+      "kind": "phrase",
+      "text": "أعتقد أن عينيك جميلة جدّا.",
+      "gloss": {
+        "en": "I think your eyes are very beautiful.",
+        "tr": "Bence gözlerin çok güzel.",
+        "ru": "Я считаю твои глаза очень красивыми."
+      },
+      "freqRank": 295,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye"
+    },
+    {
+      "index": 295,
+      "kind": "phrase",
+      "text": "توقف عن فعل هذا لو سمحت.",
+      "gloss": {
+        "en": "Please, stop doing that.",
+        "tr": "Lütfen, bunu yapmaktan vazgeç.",
+        "fr": "Arrête de faire ça, s’il te plaît."
+      },
+      "freqRank": 296,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:raised-hand"
+    },
+    {
+      "index": 296,
+      "kind": "phrase",
+      "text": "توم يحب الشاي أكثر من القهوة.",
+      "gloss": {
+        "en": "Tom likes tea better than coffee.",
+        "es": "A Tom le gusta más el té que el café.",
+        "ru": "Том любит чай больше, чем кофе."
+      },
+      "freqRank": 297,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:teacup-without-handle"
+    },
+    {
+      "index": 297,
+      "kind": "phrase",
+      "text": "لديه سيارة جديدة و أخرى قديمة.",
+      "gloss": {
+        "en": "He has a new car and an old car.",
+        "de": "Er hat ein neues und ein altes Auto.",
+        "ru": "У него новая машина, а ещё есть старая."
+      },
+      "freqRank": 298,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 298,
+      "kind": "phrase",
+      "text": "كم من الوقت علينا أن ننتظر؟",
+      "gloss": {
+        "en": "How long do we have to wait?",
+        "es": "¿Cuánto tiempo debemos esperar?",
+        "ru": "Сколько мы должны ждать?"
+      },
+      "freqRank": 299,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done"
+    },
+    {
+      "index": 299,
+      "kind": "phrase",
+      "text": "حاولت الاتصال بك و لكني لم أستطِع.",
+      "gloss": {
+        "en": "I tried to call you, but couldn't.",
+        "de": "Ich habe versucht, dich anzurufen, aber ich habe es nicht geschafft.",
+        "es": "Intenté llamarte pero no pude."
+      },
+      "freqRank": 300,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver"
+    }
+  ]
+}
