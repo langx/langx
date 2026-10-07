@@ -416,6 +416,7 @@ export const ptBR: Localized<EnMessages> = {
     },
     packProgress: '{done} de {total} começados',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'Escreva em {language}',
     produceHint: 'Digite a expressão',
     check: 'Conferir',

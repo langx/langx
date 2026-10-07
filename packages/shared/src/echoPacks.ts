@@ -69,12 +69,12 @@ export type EchoVoice = z.infer<typeof echoVoiceSchema>
  *
  * Two per language where the model has both registers, for the reason the
  * schema above is a list: one synthetic reading reads as *the* pronunciation.
- * French has one voice in the model, so French gets one. Japanese is absent on
- * purpose — the model has voices for it, but the service phonemises through
- * espeak-ng, which is not what those voices were trained on, and a reading a
- * native speaker would wince at is worse than none. Chinese was absent for the
- * same reason until it was given its own phonemiser; see `zh_phonemes` in
- * `apps/tts/server.py`, and the measurement there.
+ * French has one voice in the model, so French gets one. Chinese and Japanese
+ * were absent on purpose — the model has voices for both, but the service
+ * phonemised through espeak-ng, which is not what those voices were trained
+ * on, and a reading a native speaker would wince at is worse than none. Each
+ * came in once it had its own phonemiser; see `zh_phonemes` and `ja_phonemes`
+ * in `apps/tts/server.py`, and the measurements there.
  *
  * Shared rather than API-only because the app reads it too: the card screen
  * offers "Read it aloud" only for a language that has an entry here, so a
@@ -91,6 +91,11 @@ export const ECHO_SYNTH_VOICES: Readonly<Record<string, readonly string[]>> = {
   // recogniser read back 97% of the characters from each, and 76% from
   // `zf_xiaoni`, the worst.
   zh: ['zf_xiaoyi', 'zm_yunxi'],
+  // The best female of Kokoro's four and its one male, measured the same way
+  // on thirty pack sentences read from their kana: the recogniser got back
+  // 99.2% of the kana from `jf_nezumi` and 97.8% from `jm_kumo`, and 97.3%
+  // from `jf_alpha`, the worst. Through espeak-ng it got 4.8%.
+  ja: ['jf_nezumi', 'jm_kumo'],
 }
 
 /**
@@ -162,12 +167,14 @@ export const echoPackItemSchema = z.object({
   /** The word itself, in the language being learned. Never translated copy. */
   text: z.string().trim().min(1),
   /**
-   * How `text` is read, where its script does not say: pinyin, for Chinese.
+   * How `text` is read, where its script does not say: pinyin, for Chinese,
+   * and kana spaced between phrases, for Japanese (わたしは がくせいです。).
    *
    * On the item rather than derived in the app, because deriving it is the
-   * hard part — 觉 is *jué* in 觉得 and *jiào* in 睡觉, and a table of
-   * characters gets that wrong — so it is decided once, by the pipeline, and
-   * read by a person before it ships. Absent for every alphabetic pack.
+   * hard part — 觉 is *jué* in 觉得 and *jiào* in 睡觉, 何 is *nani* or *nan*
+   * by what follows it, and a table of characters gets both wrong — so it is
+   * decided once, by the pipeline, and read by a person before it ships.
+   * Absent for every alphabetic pack.
    */
   reading: z.string().trim().min(1).optional(),
   gloss: echoGlossSchema,
@@ -261,6 +268,33 @@ export function hskLanguageLevel(hsk: HskLevel): LanguageLevel {
 const hskLevelSchema = z.literal(HSK_LEVELS)
 
 /**
+ * The JLPT levels, N5 first and N1 last, and where each sits on our scale:
+ * Japanese's second name, the way HSK is Chinese's. See `docs/echo.md`,
+ * _Japanese is named by JLPT_.
+ *
+ * Stored as the number the level is called by — `5` is N5 — which runs the
+ * other way from HSK, where 1 is the first. Kept that way round because "N5"
+ * is what a learner reads, searches for and sits.
+ *
+ * The CEFR bands are the Japan Foundation's: since December 2025 a passing
+ * score report names one — A1 for N5, A2 for N4, and B1, B2 and C1 for N3, N2
+ * and N1 on a high enough score (a band lower otherwise). The band a level is
+ * aimed at is the one used here, so N3 and N2 share `intermediate` — and, as
+ * with HSK 3 and 4, the id carries the JLPT level and `listPacks` breaks the
+ * tie on it.
+ */
+export const JLPT_LEVELS = [5, 4, 3, 2, 1] as const
+export type JlptLevel = (typeof JLPT_LEVELS)[number]
+
+const JLPT_CEFR: Record<JlptLevel, string> = { 5: 'A1', 4: 'A2', 3: 'B1', 2: 'B2', 1: 'C1' }
+
+export function jlptLanguageLevel(jlpt: JlptLevel): LanguageLevel {
+  return CEFR_TO_LANGUAGE_LEVEL[JLPT_CEFR[jlpt]]!
+}
+
+const jlptLevelSchema = z.literal(JLPT_LEVELS)
+
+/**
  * The file on disk, and what the seed script reads.
  *
  * `contentVersion` is what makes a re-seed safe to reason about: the seed is
@@ -271,7 +305,8 @@ export const echoPackFileSchema = z
   .object({
     /**
      * `<lang>:<level>`, e.g. `fr:absoluteBeginner`, or `zh:hsk<n>` for a pack
-     * named by its HSK level. The pack's `_id`.
+     * named by its HSK level, or `ja:jlptN<n>` for one named by its JLPT
+     * level. The pack's `_id`.
      */
     id: z
       .string()
@@ -281,6 +316,8 @@ export const echoPackFileSchema = z
     level: languageLevelSchema,
     /** The HSK 2.0 level this pack is, for a Chinese pack. See `HSK_LEVELS`. */
     hsk: hskLevelSchema.optional(),
+    /** The JLPT level this pack is, for a Japanese pack: `5` is N5. See `JLPT_LEVELS`. */
+    jlpt: jlptLevelSchema.optional(),
     contentVersion: z.number().int().positive(),
     /** Every source this pack draws on, with its licence. See ATTRIBUTION.md. */
     sources: z.array(z.object({ name: z.string(), licence: z.string(), url: z.url() })).min(1),
@@ -292,11 +329,25 @@ export const echoPackFileSchema = z
    * themselves `zh:intermediate` would overwrite each other at the next seed.
    */
   .refine(
-    (file) =>
-      file.hsk === undefined
-        ? file.id === `${file.lang}:${file.level}`
-        : file.id === `${file.lang}:hsk${file.hsk}` && file.level === hskLanguageLevel(file.hsk),
-    { message: 'id must be <lang>:<level>, or <lang>:hsk<n> at the level HSK n maps to' },
+    (file) => {
+      if (file.hsk !== undefined && file.jlpt !== undefined) return false
+      if (file.hsk !== undefined) {
+        return (
+          file.id === `${file.lang}:hsk${file.hsk}` && file.level === hskLanguageLevel(file.hsk)
+        )
+      }
+      if (file.jlpt !== undefined) {
+        return (
+          file.id === `${file.lang}:jlptN${file.jlpt}` &&
+          file.level === jlptLanguageLevel(file.jlpt)
+        )
+      }
+      return file.id === `${file.lang}:${file.level}`
+    },
+    {
+      message:
+        'id must be <lang>:<level>, <lang>:hsk<n> or <lang>:jlptN<n>, at the level that name maps to',
+    },
   )
 export type EchoPackFile = z.infer<typeof echoPackFileSchema>
 
@@ -307,6 +358,8 @@ export const echoPackSchema = z.object({
   level: languageLevelSchema,
   /** Set on a Chinese pack, and then it is the pack's name. See `HSK_LEVELS`. */
   hsk: hskLevelSchema.optional(),
+  /** Set on a Japanese pack, and then it is the pack's name. See `JLPT_LEVELS`. */
+  jlpt: jlptLevelSchema.optional(),
   itemCount: z.number().int().nonnegative(),
   /** How many of its items this person already holds a card for. */
   startedCount: z.number().int().nonnegative(),
@@ -382,7 +435,7 @@ export type EchoPackPreviewQuery = z.infer<typeof echoPackPreviewQuerySchema>
 export const echoPackPreviewItemSchema = z.object({
   index: z.number().int().nonnegative(),
   text: z.string(),
-  /** Pinyin, on a Chinese pack. See `echoPackItemSchema.reading`. */
+  /** Pinyin on a Chinese pack, kana on a Japanese one. See `echoPackItemSchema.reading`. */
   reading: z.string().optional(),
   /** Resolved for this reader, by the same chain a started card would use. */
   back: z.string(),

@@ -44,9 +44,14 @@ export function levelLabel(t: TranslateFn, level: LanguageLevel): string {
   return t(`level.${level}` as MessageKey)
 }
 
-/** A pack's name: its level, or the HSK level a Chinese pack is named by. */
-export function packLabel(t: TranslateFn, pack: Pick<EchoPack, 'level' | 'hsk'>): string {
-  return pack.hsk ? t('echo.packHsk', { level: pack.hsk }) : levelLabel(t, pack.level)
+/**
+ * A pack's name: its level, or the HSK level a Chinese pack is named by, or
+ * the JLPT level a Japanese one is.
+ */
+export function packLabel(t: TranslateFn, pack: Pick<EchoPack, 'level' | 'hsk' | 'jlpt'>): string {
+  if (pack.hsk) return t('echo.packHsk', { level: pack.hsk })
+  if (pack.jlpt) return t('echo.packJlpt', { level: pack.jlpt })
+  return levelLabel(t, pack.level)
 }
 
 /**
