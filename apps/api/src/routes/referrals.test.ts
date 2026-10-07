@@ -60,20 +60,35 @@ describe('referrals', () => {
     return { ...user, handle: body.handle }
   }
 
-  /** The invitee does the one thing that activates a referral: teaches. */
-  async function earn(
-    userId: string,
-    kind: 'message' | 'correction' | 'pronunciation' = 'message',
-  ) {
-    const { awardTokens } = await import('../modules/tokens/ledger')
-    await awardTokens(handle.db, {
-      userId,
-      kind,
-      amount: 2,
-      refId: `earn-${userId}-${Math.random()}`,
-    })
-    const { settleReferral } = await import('../modules/referrals/settle')
-    await settleReferral(handle.db, userId, new Date())
+  /** Somebody for invitees to talk to who did not invite any of them. */
+  let stranger: SignedUpUser & { handle: string }
+  const threads = new Map<string, string>()
+
+  /** Opens a conversation through the module the route calls, so the award path is the real one. */
+  async function start(fromId: string, toUserId: string): Promise<string> {
+    const { startConversation } = await import('../modules/chat/conversations')
+    const { conversation } = await startConversation(handle.db, fromId, { toUserId, body: 'hi' })
+    return conversation._id.toHexString()
+  }
+
+  /** Replies over the module the socket handler calls — there is no REST reply. */
+  async function say(senderId: string, conversationId: string) {
+    const { sendTextMessage } = await import('../modules/chat/messages')
+    await sendTextMessage(handle.db, senderId, { conversationId, body: 'hello again' })
+  }
+
+  /**
+   * The invitee does the thing that activates a referral: a conversation that
+   * goes both ways, with somebody other than the referrer. The first call
+   * opens one with `stranger` and has them answer; later calls are the
+   * invitee writing in it again.
+   */
+  async function earn(userId: string) {
+    const existing = threads.get(userId)
+    if (existing) return say(userId, existing)
+    const conversationId = await start(userId, stranger.userId)
+    threads.set(userId, conversationId)
+    await say(stranger.userId, conversationId)
   }
 
   const rowOf = (inviteeId: string) =>
@@ -130,6 +145,7 @@ describe('referrals', () => {
       await new Promise((r) => setTimeout(r, 200))
     }
     emailSender.messages.length = 0
+    stranger = await newUser()
   }, 180_000)
 
   afterAll(async () => {
@@ -255,15 +271,144 @@ describe('referrals', () => {
       expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(1)
     })
 
-    it.each(['message', 'correction', 'pronunciation'] as const)(
-      'counts a %s as the invitee having earned',
-      async (kind) => {
+    /**
+     * Talking only with the person who sent the invite is not activation,
+     * however much of it there is: the rule asks for somebody else.
+     */
+    it('does not activate on a conversation with the referrer alone', async () => {
+      const a = await newUser()
+      const b = await newUser({ referredByHandle: a.handle })
+
+      const conversationId = await start(b.userId, a.userId)
+      await say(a.userId, conversationId)
+      await say(b.userId, conversationId)
+
+      expect(await ledgerOf(a.userId, 'referral')).toHaveLength(0)
+      expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(0)
+      expect((await rowOf(b.userId))?.activatedAt).toBeUndefined()
+    })
+
+    /**
+     * A first message nobody has answered is not a conversation yet. The
+     * answer is what activates, and it does so on the *partner's* send — the
+     * invitee does not have to write again for it to land.
+     */
+    it('activates when somebody other than the referrer answers', async () => {
+      const a = await newUser()
+      const b = await newUser({ referredByHandle: a.handle })
+
+      const conversationId = await start(b.userId, stranger.userId)
+      expect(await ledgerOf(a.userId, 'referral')).toHaveLength(0)
+
+      await say(stranger.userId, conversationId)
+      expect(await ledgerOf(a.userId, 'referral')).toHaveLength(1)
+      expect(await rowOf(b.userId)).toMatchObject({
+        activationAward: RULES.activation,
+        inviteeAward: RULES.inviteeActivation,
+      })
+      expect((await rowOf(b.userId))?.unpaidReason).toBeUndefined()
+    })
+
+    describe('the monthly limit', () => {
+      /** Activations already on the record for this referrer, as rows. */
+      async function priorActivations(referrerId: string, count: number, at: Date) {
+        await handle.db.collection<Referral>(COLLECTIONS.referrals).insertMany(
+          Array.from({ length: count }, (_, i) => ({
+            _id: `prior-${referrerId}-${at.getTime()}-${i}`,
+            referrerId,
+            referrerHandle: 'prior',
+            source: 'link' as const,
+            createdAt: at,
+            activatedAt: at,
+            activationAward: RULES.activation,
+          })),
+        )
+      }
+
+      it('pays the referrer nothing past it, and still welcomes the invitee', async () => {
+        const a = await newUser()
+        await priorActivations(a.userId, RULES.maxActivationsPerMonth, new Date())
+        const b = await newUser({ referredByHandle: a.handle })
+
+        await earn(b.userId)
+        expect(await ledgerOf(a.userId, 'referral')).toHaveLength(0)
+        expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(1)
+        expect(await rowOf(b.userId)).toMatchObject({
+          activationAward: 0,
+          inviteeAward: RULES.inviteeActivation,
+          unpaidReason: 'monthlyLimit',
+        })
+      })
+
+      it('counts only the current calendar month', async () => {
+        const a = await newUser()
+        const now = new Date()
+        const lastMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 15))
+        await priorActivations(a.userId, RULES.maxActivationsPerMonth, lastMonth)
+        const b = await newUser({ referredByHandle: a.handle })
+
+        await earn(b.userId)
+        expect(await ledgerOf(a.userId, 'referral')).toHaveLength(1)
+        expect((await rowOf(b.userId))?.unpaidReason).toBeUndefined()
+      })
+    })
+
+    describe('a shared network or installation', () => {
+      it('pays neither side when both accounts signed in from one address', async () => {
         const a = await newUser()
         const b = await newUser({ referredByHandle: a.handle })
-        await earn(b.userId, kind)
-        expect(await ledgerOf(a.userId, 'referral')).toHaveLength(1)
-      },
-    )
+        const { authId } = await import('../lib/authId')
+        await handle.db
+          .collection(COLLECTIONS.session)
+          .updateMany(
+            { userId: { $in: [authId(a.userId), authId(b.userId)] } },
+            { $set: { ipAddress: '203.0.113.7' } },
+          )
+
+        await earn(b.userId)
+        expect(await ledgerOf(a.userId, 'referral')).toHaveLength(0)
+        expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(0)
+        expect(await rowOf(b.userId)).toMatchObject({
+          activationAward: 0,
+          inviteeAward: 0,
+          unpaidReason: 'sharedNetwork',
+        })
+      })
+
+      it('pays neither side, top-up included, when both registered one installation', async () => {
+        const a = await newUser()
+        const b = await newUser({ referredByHandle: a.handle })
+        const now = new Date()
+        await handle.db.collection(COLLECTIONS.devices).insertMany(
+          [a, b].map((user) => ({
+            userId: user.userId,
+            pushToken: `ExponentPushToken[${user.userId}]`,
+            platform: 'ios',
+            deviceId: `install-${a.userId}`,
+            createdAt: now,
+            updatedAt: now,
+          })),
+        )
+
+        await earn(b.userId)
+        await webhook({
+          id: `evt-shared-${b.userId}`,
+          type: 'INITIAL_PURCHASE',
+          app_user_id: b.userId,
+          store: 'APP_STORE',
+          period_type: 'NORMAL',
+        })
+        expect(await ledgerOf(a.userId, 'referral')).toHaveLength(0)
+        expect(await ledgerOf(a.userId, 'referralSubscription')).toHaveLength(0)
+        expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(0)
+        expect(await rowOf(b.userId)).toMatchObject({
+          activationAward: 0,
+          inviteeAward: 0,
+          subscriptionAward: 0,
+          unpaidReason: 'sharedDevice',
+        })
+      })
+    })
 
     /**
      * Invisible without an explicit assertion, and it is the leaderboard

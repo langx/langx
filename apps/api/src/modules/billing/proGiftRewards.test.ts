@@ -43,6 +43,7 @@ describe('earned gifts of Pro', () => {
       COLLECTIONS.tokenLedger,
       COLLECTIONS.tokenAggregates,
       COLLECTIONS.streakDays,
+      COLLECTIONS.conversations,
     ]) {
       await db.collection(name).deleteMany({})
     }
@@ -204,11 +205,19 @@ describe('earned gifts of Pro', () => {
         source: 'link',
         createdAt: now,
       })
+      // What activation reads: a two-way conversation with somebody other
+      // than the referrer, as the reciprocity bonus records it.
+      const conversationId = new ObjectId()
+      await db.collection(COLLECTIONS.conversations).insertOne({
+        _id: conversationId,
+        participants: [invitee._id, new ObjectId().toHexString()],
+        bothSpoke: true,
+      })
       await db.collection(COLLECTIONS.tokenLedger).insertOne({
         userId: invitee._id,
         kind: 'message',
         amount: 5,
-        refId: new ObjectId().toHexString(),
+        refId: `mutual:${conversationId.toHexString()}`,
         createdAt: now,
       })
       return invitee._id
@@ -226,6 +235,30 @@ describe('earned gifts of Pro', () => {
         .findOne({ _id: inviteeId })
       expect(referral?.activatedAt).toBeDefined()
       expect(await giftsOf(referrer._id)).toHaveLength(1)
+    })
+
+    /**
+     * An activation recorded with an `unpaidReason` paid the referrer nothing,
+     * so it is not progress towards a gift either. Two of them plus the one
+     * settling now would complete a group if they counted.
+     */
+    it('does not count an activation the referrer was not paid for', async () => {
+      const referrer = await person()
+      for (const unpaidReason of ['sharedNetwork', 'monthlyLimit'] as const) {
+        await db.collection<Referral>(COLLECTIONS.referrals).insertOne({
+          _id: new ObjectId().toHexString(),
+          referrerId: referrer._id,
+          referrerHandle: 'ref',
+          source: 'link',
+          createdAt: now,
+          activatedAt: now,
+          unpaidReason,
+        })
+      }
+      const inviteeId = await readyInvitee(referrer._id)
+
+      await settleReferral(db, inviteeId, now)
+      expect(await giftsOf(referrer._id)).toHaveLength(0)
     })
 
     it('gives a frozen referrer nothing', async () => {

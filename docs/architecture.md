@@ -533,14 +533,17 @@ nobody can correct their own.
 
 **2) Referrals**, and the only award paid to somebody other than the person who
 acted. Nothing is paid for a sign-up: the invitee has to verify an email,
-finish onboarding and _earn_ — a message, a correction or a pronunciation
-answer — before their referrer is paid `TOKEN_RULES.referral.activation`. If
-that invitee later starts a paid plan, on `INITIAL_PURCHASE` only, the referrer
-gets `referral.subscription` on top, to `referral.maxPerInvitee` per person,
-ever. Both kinds are **grants**: all-time only, never the weekly table, because
-inviting is not practising. `referrals._id` is the invitee, so one person has
-one referrer forever; `tokenLedger`'s `{userId, kind, refId}` with the invitee
-as `refId` is what caps the pair.
+finish onboarding and have a two-way conversation — both sides have written —
+with someone other than the referrer before their referrer is paid
+`TOKEN_RULES.referral.activation`. If that invitee later starts a paid plan,
+on `INITIAL_PURCHASE` only, the referrer gets `referral.subscription` on top,
+to `referral.maxPerInvitee` per person, ever. A referrer is paid for at most
+`referral.maxActivationsPerMonth` activations per calendar month (UTC), and a
+referral pays neither side when both accounts share a network or a device;
+the row's `unpaidReason` says which. Both kinds are **grants**: all-time only,
+never the weekly table, because inviting is not practising. `referrals._id` is
+the invitee, so one person has one referrer forever; `tokenLedger`'s
+`{userId, kind, refId}` with the invitee as `refId` is what caps the pair.
 
 **3) The daily pool**, paid out the morning after the day closes: a fixed daily
 pool `P` is split among that day's active users **in proportion to an activity

@@ -210,7 +210,7 @@ export const fr: Localized<EnMessages> = {
       'Les profils affichent l’heure locale de la personne : jette un œil avant d’écrire ou d’appeler.',
     meRecap: 'Les premiers jours de chaque mois, ton bilan apparaît ici, prêt à être partagé.',
     meInvite:
-      'Ton lien est dans Réglages → Partager et inviter. Vous gagnez tous les deux des jetons quand la personne invitée commence à discuter.',
+      'Ton lien est dans Réglages → Partager et inviter. Vous gagnez tous les deux des jetons quand la personne invitée a une vraie conversation avec quelqu’un.',
     meGiftCode: 'Tu as un code cadeau ? Touche Tu as un code cadeau ? sur l’écran Pro.',
     meCalls:
       'Tu préfères ne pas recevoir d’appels ? Désactive Autoriser les appels dans Réglages → Confidentialité.',
@@ -1656,7 +1656,7 @@ export const fr: Localized<EnMessages> = {
     shareMessage: 'Pratique les langues avec moi sur LangX : {url}',
     badges: 'Badges',
     invite: 'Inviter quelqu’un',
-    inviteBody: 'Gagne des tokens quand la personne se met à utiliser LangX',
+    inviteBody: 'Gagne des tokens quand la personne a une vraie conversation sur LangX',
     dayStreak: 'Série de jours',
     followsTitle: 'Abonnés et abonnements',
     nextBadge: 'Prochain : {label}',
@@ -2170,7 +2170,7 @@ export const fr: Localized<EnMessages> = {
 
   invite: {
     title: 'Inviter quelqu’un',
-    body: 'Partage ton lien. Quand quelqu’un que tu as invité s’inscrit et se met à parler avec des gens, vous gagnez des tokens tous les deux.',
+    body: 'Partage ton lien. Quand quelqu’un que tu as invité s’inscrit et a une vraie conversation avec quelqu’un, vous gagnez des tokens tous les deux.',
     code: 'Ton code d’invitation',
     share: 'Partager le lien',
     copy: 'Copier le lien',
@@ -2179,7 +2179,7 @@ export const fr: Localized<EnMessages> = {
     howTitle: 'Comment ça marche',
     step1: 'Envoie ton lien à quelqu’un qui apprend ta langue.',
     step2:
-      'La personne s’inscrit et écrit son premier message ou sa première correction — là, tu gagnes {activation} tokens.',
+      'La personne s’inscrit et a une vraie conversation : quelqu’un d’autre que toi lui répond. Là, tu gagnes {activation} tokens.',
     step3:
       'Si elle prend un jour une formule payante, tu gagnes {subscription} de plus. {max} au total, par personne.',
     step4:
@@ -2196,13 +2196,17 @@ export const fr: Localized<EnMessages> = {
       one: 'token',
       other: 'tokens',
     },
-    statusPending: 'N’a pas encore écrit',
+    statusPending: 'Pas encore de conversation',
     statusActivated: 'Actif',
     statusSubscribed: 'Abonné',
     emptyTitle: 'Personne pour l’instant',
     emptyBody: 'Partage ton lien : ceux qui rejoignent apparaîtront ici.',
     disclaimer:
-      'Les tokens sont des points dans l’app. S’inscrire ne rapporte rien — une invitation ne paie que lorsque la personne invitée écrit vraiment à quelqu’un.',
+      'Les tokens sont des points dans l’app. S’inscrire ne rapporte rien — une invitation ne paie que lorsque la personne invitée a une vraie conversation avec quelqu’un d’autre que toi.',
+    monthlyLimit: {
+      one: 'Les invitations te rapportent des tokens pour {count} personne maximum par mois.',
+      other: 'Les invitations te rapportent des tokens pour {count} personnes maximum par mois.',
+    },
   },
 
   tokenKind: {
@@ -2295,7 +2299,7 @@ export const fr: Localized<EnMessages> = {
     ctaBody: '{name} pratique des langues sur LangX. Rejoins pour dire bonjour.',
     ctaLabel: 'Ouvrir LangX',
     inviteBody:
-      '{name} t’a invité. Inscris-toi et écris à quelqu’un : tu démarres avec {total} tokens ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
+      '{name} t’a invité. Inscris-toi et discute vraiment avec quelqu’un : tu démarres avec {total} tokens ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
   },
 
   shareProfile: {

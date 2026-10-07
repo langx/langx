@@ -1566,6 +1566,29 @@ so it stays off the weekly and monthly tables. A frozen referrer does not
 withhold it (the activation was the invitee's own doing); a deleted referrer
 ends the referral for both sides, as before.
 
+**Amendment, 6 October 2026 — activation is a conversation, with limits.** An
+invite now pays once the invitee has had a two-way conversation — both sides
+have written — with someone other than the inviter, rather than on their first
+earning ledger row. The signal is the invitee's own reciprocity bonus
+(`mutual:<conversationId>`), whose conversation names the other side.
+`awardForSend` writes that row only for a live exchange, so conversations with
+an official account and history imported from v1 do not count, and the reply
+that makes a conversation two-way now settles the other side's referral too —
+the invitee does not have to write again for it to land. A frozen invitee is
+not activated, as before.
+
+Two more rules sit beside it. A monthly limit per inviter,
+`TOKEN_RULES.referral.maxActivationsPerMonth` (10), counted per calendar month
+in UTC — the same calendar `queueReferralGifts` counts its year in, so the two
+agree on what a period is. Past it the invitee's welcome is still paid; the
+inviter's activation award is not, and the activation does not count towards
+their referral gifts of Pro. And no payout when both accounts share a network
+or a device — a `session.ipAddress` or a `devices.deviceId` in common — for
+either side, the subscription top-up included. Each is recorded on the
+referral row as `unpaidReason` (`monthlyLimit`, `sharedNetwork`,
+`sharedDevice`), because the ledger cannot represent a withheld payment on its
+own. Referrals that were already activated keep what they were paid.
+
 ## Countries are a compile-time table, like languages
 
 `profiles.country` was a free-text two-letter field, which meant the edit form

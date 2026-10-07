@@ -157,7 +157,9 @@ export default function InviteScreen() {
         ))}
       </View>
 
-      <Text style={styles.disclaimer}>{t('invite.disclaimer')}</Text>
+      <Text style={styles.disclaimer}>
+        {t('invite.disclaimer')} {t('invite.monthlyLimit', { count: RULES.maxActivationsPerMonth })}
+      </Text>
 
       <Button
         label={t('invite.share')}

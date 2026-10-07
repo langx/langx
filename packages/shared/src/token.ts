@@ -57,8 +57,8 @@ export const TOKEN_KINDS = [
   'signupBonus',
   /**
    * Paid to the *referrer* when somebody they invited becomes real: verified,
-   * onboarded, and having earned from a message or a correction of their own.
-   * Never paid at sign-up — see `settleReferral`.
+   * onboarded, and in a two-way conversation with somebody other than the
+   * referrer. Never paid at sign-up — see `settleReferral`.
    */
   'referral',
   /**
@@ -311,8 +311,8 @@ export interface TokenRules {
   referral: {
     /**
      * Paid when the invitee is **activated** — email verified, onboarding
-     * finished, and at least one `message` or `correction` ledger row of their
-     * own. Deliberately not at sign-up: an award for creating an account is an
+     * finished, and a two-way conversation with somebody other than the person
+     * who invited them. Deliberately not at sign-up: an award for creating an account is an
      * award for creating accounts. Same reasoning as
      * `pool.accountAgeRampUpHours`, expressed as a person rather than a clock.
      *
@@ -360,6 +360,15 @@ export interface TokenRules {
      * `activation + subscription === maxPerInvitee`.
      */
     maxPerInvitee: number
+    /**
+     * How many activations a single referrer is paid for in one calendar
+     * month (UTC). Past it the invitee's own welcome still lands, but the
+     * referrer's `activation` is not paid and the activation does not count
+     * towards their referral gifts of Pro. Calendar rather than rolling for
+     * the reason `queueReferralGifts` counts a calendar year: an operator can
+     * check it with a date range, and the year's count is a sum of months.
+     */
+    maxActivationsPerMonth: number
   }
   /**
    * The hourly gift in the wallet's store. Free, on request, and random: the
@@ -488,6 +497,7 @@ export const TOKEN_RULES: TokenRules = {
     inviteeActivation: 750,
     inviteeTotal: 1000,
     maxPerInvitee: 5000,
+    maxActivationsPerMonth: 10,
   },
   gift: {
     cooldownMs: 60 * 60 * 1000,
