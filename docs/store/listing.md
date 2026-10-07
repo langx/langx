@@ -781,6 +781,31 @@ languages.
 
 ---
 
+## Play's app names (as of 2.9)
+
+Play had kept the v1-era "LangX | Practice Learn Succeed" in English and a
+machine translation of it in every other listing (Korean even spelled the
+brand "랭X"). Since 7 October 2026 every listing reads "LangX:" and the
+language's own word for a language exchange, the same as the App Store name
+where this file has one:
+
+| Listing         | App name                      |
+| --------------- | ----------------------------- |
+| en-GB (default) | LangX: Language Exchange      |
+| tr-TR           | LangX: Dil Değişimi           |
+| es-ES, es-419   | LangX: Intercambio de idiomas |
+| fr-FR           | LangX : échange linguistique  |
+| de-DE           | LangX: Sprachaustausch        |
+| pt-BR           | LangX: Intercâmbio de Idiomas |
+| it-IT           | LangX: Scambio linguistico    |
+| id              | LangX: Pertukaran Bahasa      |
+| ja-JP           | LangX: 言語交換               |
+| ko-KR           | LangX: 언어 교환              |
+| zh-CN           | LangX：语言交换               |
+| th              | LangX: แลกเปลี่ยนภาษา         |
+
+The brand stays in Latin letters in every language.
+
 ## Play's live full description (as of 2.9)
 
 Play's full description is **not** the copy in this file, and
