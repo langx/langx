@@ -208,6 +208,30 @@ describe('the packs in content/echo', () => {
   }
 
   /*
+   * The German and Russian `fluent` packs were built to a stricter rule than
+   * the three levels below them: every item has a cue and a reading, enforced
+   * when the phrases were picked rather than left to whatever survived. A
+   * phrase with no honest picture was not taken, so a cue-less item here
+   * means somebody edited the pack or the cue table by hand afterwards.
+   *
+   * An explicit list rather than every `fluent` file, because the rule is the
+   * brief these packs were drafted under; a later pack may be held to its own.
+   */
+  for (const id of ['de:fluent', 'ru:fluent']) {
+    it(`${id} gives every item a cue and a reading`, () => {
+      const [lang, level] = id.split(':') as [string, string]
+      const pack = echoPackFileSchema.parse(
+        JSON.parse(readFileSync(join(CONTENT, lang, `${level}.json`), 'utf8')),
+      )
+      const bare = pack.items
+        .filter((item) => !item.image || !item.voices || item.voices.length === 0)
+        .map((item) => `${item.index} ${item.text}`)
+      expect(pack.items.length).toBeGreaterThanOrEqual(200)
+      expect(bare).toEqual([])
+    })
+  }
+
+  /*
    * And the other direction, once: a picture nothing points at.
    *
    * Harmless in production — an unused object in a bucket costs nothing — but
