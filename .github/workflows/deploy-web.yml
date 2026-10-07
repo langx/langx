@@ -76,6 +76,9 @@ jobs:
         working-directory: apps/mobile
         env:
           EXPO_PUBLIC_API_URL: https://api.langx.io
+          # Public by design, like the API URL: Cloudflare only honours it on
+          # langx.io hostnames. The secret half is TURNSTILE_SECRET_KEY on Fly.
+          EXPO_PUBLIC_TURNSTILE_SITE_KEY: 0x4AAAAAAFP0Bb_nvpHUAt62
           EXPO_PUBLIC_REVENUECAT_WEB_KEY: ${{ secrets.EXPO_PUBLIC_REVENUECAT_WEB_KEY }}
           EXPO_PUBLIC_POSTHOG_KEY: ${{ secrets.EXPO_PUBLIC_POSTHOG_KEY }}
         run: pnpm build:web

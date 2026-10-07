@@ -3,6 +3,7 @@ import {
   adminLatestVersionSchema,
   adminListQuerySchema,
   adminMinVersionSchema,
+  adminCaptchaRequiredSchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
   adminUserMessageSchema,
@@ -269,6 +270,39 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         adminId: request.userId,
         action: 'appConfig.minVersion',
         payload: { platform, version },
+      })
+      return reply.send(config)
+    },
+  )
+
+  /**
+   * Requiring a Turnstile token on email sign-up, sign-in and reset.
+   *
+   * Thrown the day `minVersion` moves everybody to a build that sends one —
+   * before that, refusing a missing token locks every older build out of the
+   * password forms. Off is the undo and is never refused. Writes the flags
+   * whole from the current config, like the script does, so the other
+   * switches keep whatever value they had. See `auth/captcha.ts`.
+   */
+  app.post(
+    '/admin/app-config/captcha-required',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminCaptchaRequiredSchema },
+      config: { rateLimit: limit(20, '1 minute') },
+    },
+    async (request, reply) => {
+      const { required } = request.body
+      const current = await getAppConfig(app.mongo.db)
+      const config = await updateAppConfig(app.mongo.db, {
+        flags: { ...current.flags, captchaRequired: required },
+      })
+      forgetAdminStats()
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'appConfig.captchaRequired',
+        payload: { required },
       })
       return reply.send(config)
     },

@@ -585,6 +585,7 @@ export const de: Localized<EnMessages> = {
     signUpLimitReached:
       'Aus diesem Netzwerk wurden heute zu viele Konten erstellt. Versuch es morgen noch einmal.',
     invalidToken: 'Dieser Link ist nicht mehr gültig.',
+    captchaFailed: 'Wir konnten nicht prüfen, ob du ein Mensch bist. Versuch es noch einmal.',
     uploadFailed: 'Upload fehlgeschlagen',
     loadFailed: 'Das konnte nicht geladen werden. Prüfe deine Verbindung und versuch es erneut.',
     offlineAction: 'Das ging nicht durch — du bist offline.',
@@ -750,6 +751,7 @@ export const de: Localized<EnMessages> = {
     resent: 'Gesendet — noch einmal senden',
     resetTitle: 'Passwort zurücksetzen',
     sendResetLink: 'Link senden',
+    captchaChecking: 'Wir prüfen, ob du ein Mensch bist…',
     resetSentBody: 'Wenn es ein Konto für {email} gibt, ist der Link unterwegs.',
     linkExpiredTitle: 'Link abgelaufen',
     linkExpiredBody:

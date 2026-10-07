@@ -40,6 +40,10 @@ const AUTH_ERROR_KEYS: Record<string, MessageKey> = {
   INVALID_EMAIL: 'errors.invalidEmail',
   INVALID_TOKEN: 'errors.invalidToken',
   EXPIRED_TOKEN: 'errors.invalidToken',
+  // Better Auth's captcha plugin: a Turnstile token that Cloudflare refused,
+  // and — once `flags.captchaRequired` is on — none at all.
+  VERIFICATION_FAILED: 'errors.captchaFailed',
+  MISSING_RESPONSE: 'errors.captchaFailed',
   ...SIGN_UP_REFUSED_KEYS,
 }
 

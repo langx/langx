@@ -577,6 +577,7 @@ export const ptBR: Localized<EnMessages> = {
     signUpLimitReached:
       'Muitas contas foram criadas a partir desta rede hoje. Tente de novo amanhã.',
     invalidToken: 'Esse link não é mais válido.',
+    captchaFailed: 'Não conseguimos confirmar que você é humano. Tente de novo.',
     uploadFailed: 'Falha no envio',
     loadFailed: 'Não deu para carregar. Confira sua conexão e tente de novo.',
     offlineAction: 'Não deu certo — você está sem conexão.',
@@ -740,6 +741,7 @@ export const ptBR: Localized<EnMessages> = {
     resent: 'Enviado — reenviar de novo',
     resetTitle: 'Redefina sua senha',
     sendResetLink: 'Enviar link',
+    captchaChecking: 'Confirmando que você é humano…',
     resetSentBody: 'Se existir uma conta para {email}, o link está a caminho.',
     linkExpiredTitle: 'Link expirado',
     linkExpiredBody: 'Este link não é mais válido. Peça um novo na tela de entrada.',

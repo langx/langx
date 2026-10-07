@@ -484,7 +484,7 @@ export const ADMIN = {
     maintenanceOn: 'ON',
     maintenanceOff: 'off',
     readOnly:
-      'Maintenance and the flags are read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
+      'Maintenance and the other flags are read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
     minVersion: 'Minimum version',
     flags: 'Flags',
     latestVersion: 'Latest version',
@@ -502,6 +502,16 @@ export const ADMIN = {
     confirmForce: (platform: string, version: string) =>
       `Block every ${platform} build below ${version} until it updates?`,
     minDone: (platform: string, version: string) => `Minimum ${platform} version is now ${version}`,
+    captcha: 'Bot check on sign-up',
+    captchaHint:
+      'Email sign-up, sign-in and password reset carry a Cloudflare Turnstile token from builds that have the widget, and a token that is sent is always checked. Requiring it also refuses requests with no token — which is every build older than the widget, so raise Minimum version to that build first. Needs TURNSTILE_SECRET_KEY on the API; without it nothing is checked either way.',
+    captchaOn: 'required',
+    captchaOff: 'checked when sent',
+    captchaRequire: 'Require it',
+    captchaRelax: 'Stop requiring it',
+    confirmCaptcha: 'Refuse email sign-up, sign-in and reset from any build that sends no token?',
+    captchaDone: (required: boolean) =>
+      required ? 'The bot check is now required' : 'The bot check is checked only when sent',
   },
 
   /**

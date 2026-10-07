@@ -47,6 +47,12 @@ interface ExpoPublicEnv {
    */
   readonly EXPO_PUBLIC_POSTHOG_KEY?: string
   readonly EXPO_PUBLIC_POSTHOG_HOST?: string
+  /**
+   * Cloudflare Turnstile site key for the password forms. Public by design;
+   * only valid on the hostnames its widget lists. Unset, no widget is drawn
+   * and no token is sent — see `hooks/useCaptcha.tsx`.
+   */
+  readonly EXPO_PUBLIC_TURNSTILE_SITE_KEY?: string
 }
 
 declare global {

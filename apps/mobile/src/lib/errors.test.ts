@@ -87,6 +87,12 @@ describe('signInFailureKey', () => {
     )
   })
 
+  // Both of the captcha plugin's refusals: a bad token, and none once required.
+  it('says the bot check failed rather than that the password was wrong', () => {
+    expect(signInFailureKey({ code: 'VERIFICATION_FAILED' }, true)).toBe('errors.captchaFailed')
+    expect(signInFailureKey({ code: 'MISSING_RESPONSE' }, true)).toBe('errors.captchaFailed')
+  })
+
   it('falls back to the generic failure, or to offline, for an unknown code', () => {
     expect(signInFailureKey({ code: 'SOMETHING_NEW' }, true)).toBe('errors.signInFailed')
     expect(signInFailureKey({ code: 'SOMETHING_NEW' }, false)).toBe('common.offline')

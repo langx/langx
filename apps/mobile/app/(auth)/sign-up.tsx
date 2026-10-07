@@ -16,6 +16,7 @@ import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { authClient } from '../../src/lib/auth-client'
 import { useIsOnline } from '../../src/hooks/useIsOnline'
+import { useCaptcha } from '../../src/hooks/useCaptcha'
 import { authErrorKey } from '../../src/lib/errors'
 import { goBackTo } from '../../src/lib/navigation'
 import { PASSWORD_MIN_LENGTH, passwordIssueKey } from '../../src/lib/passwordForm'
@@ -46,6 +47,7 @@ export default function SignUp() {
   const [accepted, setAccepted] = useState(false)
   const { data: session } = authClient.useSession()
   const fromGuest = shouldGateGuest(session?.user)
+  const captcha = useCaptcha()
 
   async function onSubmit() {
     setError(undefined)
@@ -72,8 +74,11 @@ export default function SignUp() {
       password,
       // No `callbackURL`: the API builds the mailed link itself, as
       // `app/verify-email.tsx` explains, so anything passed here is ignored.
+      fetchOptions: captcha.fetchOptions,
     })
     if (signUpError) {
+      // The token was spent on this attempt whatever the answer was.
+      captcha.reset()
       setLoading(false)
       setError(t(authErrorKey(signUpError) ?? (online ? 'errors.signUpFailed' : 'common.offline')))
       return
@@ -93,7 +98,8 @@ export default function SignUp() {
 
   // The same condition the button uses, so Enter can never submit a
   // form the button refuses — nor fire twice while one is in flight.
-  const canSubmit = !loading && !!email && !passwordTooShort(password) && accepted
+  const filled = !!email && !passwordTooShort(password) && accepted
+  const canSubmit = !loading && filled && !captcha.checking
 
   return (
     <Screen scroll style={styles.form}>
@@ -172,7 +178,12 @@ export default function SignUp() {
         </View>
       </View>
 
+      {captcha.widget}
       <Button label={t('auth.signUp')} onPress={onSubmit} loading={loading} disabled={!canSubmit} />
+      {/* Only once the form is otherwise ready, so the wait has a reason on screen. */}
+      {filled && captcha.checking ? (
+        <Text style={styles.checking}>{t('auth.captchaChecking')}</Text>
+      ) : null}
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>{t('auth.haveAccount')}</Text>
@@ -203,6 +214,8 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   fields: { gap: 14 },
   // Sits under the pill at the pill's own text inset.
   hint: { color: colors.textFaint, fontSize: 13, paddingHorizontal: 20, paddingTop: spacing.sm },
+  // Under the button it is holding, and quieter than an error.
+  checking: { color: colors.textFaint, fontSize: 13, marginTop: -spacing.sm, textAlign: 'center' },
   link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
   terms: { paddingHorizontal: spacing.xs, paddingVertical: spacing.sm },
   termsText: { color: colors.textMuted, fontSize: 15, lineHeight: 22 },

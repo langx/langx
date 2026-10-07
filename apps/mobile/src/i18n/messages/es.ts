@@ -579,6 +579,7 @@ export const es: Localized<EnMessages> = {
     signUpLimitReached:
       'Hoy se crearon demasiadas cuentas desde esta red. Inténtalo de nuevo mañana.',
     invalidToken: 'Ese enlace ya no es válido.',
+    captchaFailed: 'No pudimos comprobar que eres una persona. Inténtalo de nuevo.',
     uploadFailed: 'Error al subir',
     loadFailed: 'No se pudo cargar. Revisa tu conexión e inténtalo de nuevo.',
     offlineAction: 'No se pudo completar: estás sin conexión.',
@@ -743,6 +744,7 @@ export const es: Localized<EnMessages> = {
     resent: 'Enviado: reenviar otra vez',
     resetTitle: 'Restablece tu contraseña',
     sendResetLink: 'Enviar enlace',
+    captchaChecking: 'Comprobando que eres una persona…',
     resetSentBody: 'Si existe una cuenta para {email}, el enlace ya está en camino.',
     linkExpiredTitle: 'Enlace caducado',
     linkExpiredBody:

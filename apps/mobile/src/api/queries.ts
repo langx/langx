@@ -54,6 +54,7 @@ import {
   type ShareCardResult,
   type AdminLatestVersionInput,
   type AdminMinVersionInput,
+  type AdminCaptchaRequiredInput,
   type AppConfig,
   ERROR_CODES,
   type MessageSpeech,
@@ -3484,6 +3485,17 @@ export function useAdminSetMinVersion() {
   return useMutation({
     mutationFn: (input: AdminMinVersionInput) =>
       api.post<AppConfig>('/admin/app-config/min-version', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export function useAdminSetCaptchaRequired() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: AdminCaptchaRequiredInput) =>
+      api.post<AppConfig>('/admin/app-config/captcha-required', input),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },

@@ -2,6 +2,7 @@ import {
   APP_PLATFORM_HEADER,
   APP_VERSION_HEADER,
   BOUNTY_MIN,
+  DEFAULT_APP_CONFIG,
   ERROR_CODES,
   REPORTS_TO_FREEZE_XP,
   SUSPENSION_FOREVER,
@@ -1843,6 +1844,35 @@ describe('the operator panel', () => {
         .collection(COLLECTIONS.adminActions)
         .findOne({ action: 'appConfig.minVersion', adminId: admin.userId })
       expect(row?.payload).toEqual({ platform: 'web', version: '0.0.0' })
+    })
+  })
+
+  describe('POST /admin/app-config/captcha-required', () => {
+    it('turns the Turnstile requirement on and off, leaving the other flags as they were', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      const on = await post(admin, '/admin/app-config/captcha-required', { required: true })
+      expect(on.statusCode).toBe(200)
+      const flags = (await get(admin, '/admin/stats')).json<AdminStats>().system.config.flags
+      expect(flags).toEqual({ ...DEFAULT_APP_CONFIG.flags, captchaRequired: true })
+
+      const off = await post(admin, '/admin/app-config/captcha-required', { required: false })
+      expect(off.json<AppConfig>().flags.captchaRequired).toBe(false)
+
+      const rows = await handle.db
+        .collection<{ payload: unknown }>(COLLECTIONS.adminActions)
+        .find({ action: 'appConfig.captchaRequired', adminId: admin.userId })
+        .toArray()
+      expect(rows.map((row) => row.payload)).toEqual(
+        expect.arrayContaining([{ required: true }, { required: false }]),
+      )
+    })
+
+    it('is not something an ordinary member can do', async () => {
+      const member = await newUser()
+      const response = await post(member, '/admin/app-config/captcha-required', { required: true })
+      expect(response.statusCode).toBe(403)
     })
   })
 })

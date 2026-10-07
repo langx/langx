@@ -208,6 +208,17 @@ export const adminMinVersionSchema = adminLatestVersionSchema
 export type AdminMinVersionInput = AdminLatestVersionInput
 
 /**
+ * Turning `flags.captchaRequired` on or off — the one flag the panel writes.
+ *
+ * It sits with `minVersion` rather than with the kill switches in
+ * `scripts/maintenance.ts` for `minVersion`'s reason: it is thrown on a release
+ * day, the day the minimum moves everybody to a build that sends a Turnstile
+ * token, not in an incident. Off is always the undo.
+ */
+export const adminCaptchaRequiredSchema = z.object({ required: z.boolean() })
+export type AdminCaptchaRequiredInput = z.infer<typeof adminCaptchaRequiredSchema>
+
+/**
  * Every mutating thing the panel can do, as the audit log names it.
  *
  * A closed list rather than free text: these end up in a collection nobody
@@ -243,6 +254,7 @@ export const ADMIN_ACTIONS = [
   'broadcast.delete',
   'appConfig.latestVersion',
   'appConfig.minVersion',
+  'appConfig.captchaRequired',
 ] as const
 export type AdminActionName = (typeof ADMIN_ACTIONS)[number]
 
