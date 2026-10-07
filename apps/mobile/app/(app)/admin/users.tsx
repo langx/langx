@@ -429,8 +429,9 @@ function Found({ data }: { data: AdminUserDto }) {
             {user.gifts.map((gift) => (
               <Text key={gift._id} style={styles.row}>
                 {ADMIN.users.gift.row(
-                  gift.months,
-                  gift.weeks ?? 0,
+                  gift.weeks
+                    ? ADMIN.users.gift.weeksShort(gift.weeks)
+                    : ADMIN.users.gift.monthsShort(gift.months),
                   [
                     gift.source,
                     gift.status,
