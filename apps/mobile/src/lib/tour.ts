@@ -37,8 +37,8 @@ export interface TourRect {
 export const TOUR_TARGETS = [
   'discoverPair',
   'discoverSorts',
-  'tabEcho',
   'tabChats',
+  'tabEcho',
   'tabFeed',
   'discoverCard',
 ] as const
@@ -110,15 +110,16 @@ export interface TourStep {
 export const TOUR_STEPS: readonly TourStep[] = [
   { target: 'discoverPair' },
   { target: 'discoverSorts' },
+  { target: 'tabChats', tab: TOUR_TABS.chats },
   /*
-   * Before Chats, which is where the tab sits — the run walks the bar left to
-   * right, and a step out of that order would make the circle jump backwards.
+   * Between Chats and Feed, which is where the tab sits — the run walks the
+   * bar left to right, and a step out of that order would make the circle
+   * jump backwards.
    *
    * It only earns a step now that the packs exist. Introducing an empty tab
    * was the reason there was no step in phase one.
    */
   { target: 'tabEcho', tab: TOUR_TABS.echo },
-  { target: 'tabChats', tab: TOUR_TABS.chats },
   { target: 'tabFeed', tab: TOUR_TABS.feed },
   { target: 'discoverCard', tab: TOUR_TABS.discover },
 ]

@@ -1,11 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Tabs } from 'expo-router'
 import { useEffect } from 'react'
-import { View, type ColorValue } from 'react-native'
+import { type ColorValue } from 'react-native'
 import { useEchoSummary, useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
 import { TourTarget } from '../../../src/components/TourTarget'
 import type { TourTargetId } from '../../../src/lib/tour'
-import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useTheme } from '../../../src/lib/theme'
 import { useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
 import { shouldGateGuest } from '../../../src/lib/guestGate'
@@ -50,76 +50,6 @@ function TabIcon({
     icon
   )
 }
-
-/**
- * The bar's own label style, kept as a constant because a screen that sets
- * `tabBarLabelStyle` of its own replaces this one rather than merging with it
- * — and Chats sets one.
- */
-const TAB_LABEL = { fontSize: 11, fontWeight: '600' } as const
-
-/**
- * The raised disc under the Chats tab, and the geometry that keeps the five
- * words on one line.
- *
- * `tabBarIconStyle` overrides the fixed slot the bar lays out for an icon —
- * 31 by 28 — so the disc has to hand back what it borrows: it starts
- * `DISC_LIFT` above the other glyphs and gives the remainder of the 28 back
- * underneath, which is what `marginBottom` works out to. Get either margin
- * wrong and Chats' label sits off the line the other four share.
- *
- * The lift stops at 20 because the part of the disc that clears the bar's top
- * edge is drawn but not tappable on Android, which delivers no touch outside a
- * view's parent. At 20 the disc's centre and two thirds of its face stay
- * inside the bar; a taller lift would start trading looks for a dead target.
- */
-const DISC_SIZE = 46
-const DISC_LIFT = 20
-const DISC_GLYPH = 26
-const DISC_ICON_STYLE = {
-  width: DISC_SIZE,
-  height: DISC_SIZE,
-  marginTop: -DISC_LIFT,
-  marginBottom: 28 + DISC_LIFT - DISC_SIZE,
-} as const
-
-/**
- * Accent whether the tab is focused or not, which is the whole point: the bar
- * renders every icon twice and cross-fades an active copy against an inactive
- * one, and this one has nothing to fade between.
- *
- * Chats, in the middle, because Chats and Discover are where people actually
- * spend their time. The disc used to be Echo's, put there to make Echo a
- * habit; it did not, and the middle of the bar is worth more to the tab that
- * is already used.
- *
- * The tour hole hugs the disc — `pad={6}` and a circle, against the 14-point
- * square the flat glyphs need — because a 46-point disc is already the size of
- * a thing you can point at.
- */
-function ChatsTabIcon() {
-  const styles = useStyles()
-  const { colors, radius } = useTheme()
-  return (
-    <TourTarget id="tabChats" pad={6} radius={radius.pill}>
-      <View style={styles.disc}>
-        <Feather name="message-square" size={DISC_GLYPH} color={colors.textInverse} />
-      </View>
-    </TourTarget>
-  )
-}
-
-const useStyles = makeStyles(({ cardShadow, colors, radius }) => ({
-  disc: {
-    ...cardShadow,
-    alignItems: 'center',
-    backgroundColor: colors.accent,
-    borderRadius: radius.pill,
-    height: DISC_SIZE,
-    justifyContent: 'center',
-    width: DISC_SIZE,
-  },
-}))
 
 /**
  * The five tabs, and only the five tabs.
@@ -185,15 +115,7 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: colors.textFaint,
         // v3 brings the words back under the icons — 11px, semibold.
         tabBarShowLabel: true,
-        tabBarLabelStyle: TAB_LABEL,
-        /*
-         * Forced, rather than left to the bar's own rule, which moves the words
-         * beside the icons once the window is 768 points wide — the web build,
-         * on a desktop. The Chats disc is laid out as a column: it borrows space
-         * above the glyph and returns it below the word, and in a row there is
-         * no below.
-         */
-        tabBarLabelPosition: 'below-icon',
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
       }}
     >
@@ -201,7 +123,33 @@ export default function TabsLayout() {
         name="discover"
         options={{
           title: t('tabs.discover'),
-          tabBarIcon: ({ color }) => <TabIcon name="compass" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="users" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="chats"
+        options={{
+          title: t('tabs.chats'),
+          tabBarIcon: ({ color }) => (
+            <TabIcon name="message-square" color={color} tour="tabChats" />
+          ),
+          /*
+           * A message that arrives while somebody is on another tab was
+           * invisible until they went looking for it. The count comes from
+           * the server rather than from the loaded chat list, which is paged
+           * and would only ever total what had been scrolled to.
+           */
+          ...(badge
+            ? {
+                tabBarBadge: badge,
+                tabBarBadgeStyle: {
+                  backgroundColor: colors.danger,
+                  color: colors.textInverse,
+                  fontSize: 11,
+                  fontWeight: '700',
+                },
+              }
+            : {}),
         }}
       />
       <Tabs.Screen
@@ -220,33 +168,6 @@ export default function TabsLayout() {
                 tabBarBadgeStyle: {
                   backgroundColor: colors.ink,
                   color: colors.bg,
-                  fontSize: 11,
-                  fontWeight: '700',
-                },
-              }
-            : {}),
-        }}
-      />
-      <Tabs.Screen
-        name="chats"
-        options={{
-          title: t('tabs.chats'),
-          tabBarIcon: () => <ChatsTabIcon />,
-          tabBarIconStyle: DISC_ICON_STYLE,
-          // The word under the disc is lit for the same reason the disc is.
-          tabBarLabelStyle: { ...TAB_LABEL, color: colors.accent, fontWeight: '700' },
-          /*
-           * A message that arrives while somebody is on another tab was
-           * invisible until they went looking for it. The count comes from
-           * the server rather than from the loaded chat list, which is paged
-           * and would only ever total what had been scrolled to.
-           */
-          ...(badge
-            ? {
-                tabBarBadge: badge,
-                tabBarBadgeStyle: {
-                  backgroundColor: colors.danger,
-                  color: colors.textInverse,
                   fontSize: 11,
                   fontWeight: '700',
                 },
