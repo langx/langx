@@ -42,7 +42,8 @@ Python 3.11 because the release pins torch 2.6, with the upstream source at
 or after commit 5de7a54 over the release — 0.1.7 on PyPI cannot load v3:
     python3.11 -m venv .venv-cb && .venv-cb/bin/pip install chatterbox-tts==0.1.7
     .venv-cb/bin/pip install --no-deps https://github.com/resemble-ai/chatterbox/archive/5de7a54aa4e5e2baadb0182dde554908b48b85c2.tar.gz
-    .venv-cb/bin/python tools/echo-content/tts/generate.py --out <dir> --lang ar --lang tr
+    .venv-cb/bin/pip install faster-whisper==1.2.1     # for --readback
+    .venv-cb/bin/python tools/echo-content/tts/generate.py --out <dir> --lang ar --lang tr --readback large-v3-turbo
 A Mac's GPU (MPS) is used when there is one.
 
 Model files:
@@ -191,14 +192,14 @@ def load_chatterbox(ckpt: Path | None):
     return ChatterboxMultilingualTTS.from_local(ckpt, device, t3_model=CHATTERBOX_T3)
 
 
-def chatterbox_wav(model, text: str, lang: str, seed: int, path: Path) -> None:
-    """One Chatterbox reading, written as WAV.
+def chatterbox_samples(model, text: str, lang: str, seed: int):
+    """One Chatterbox reading, as samples at `model.sr`.
 
-    Seeded by the item, because the model samples: the same pack run twice
-    must give the same file, or "regenerate the missing ones" quietly changes
-    the ones that were there.
+    Seeded, because the model samples: the same pack run twice must give the
+    same file, or "regenerate the missing ones" quietly changes the ones that
+    were there. The first take of item N is seed N; see `READBACK_TRIES` for
+    the others.
     """
-    import soundfile as sf
     import torch
 
     torch.manual_seed(seed)
@@ -206,7 +207,91 @@ def chatterbox_wav(model, text: str, lang: str, seed: int, path: Path) -> None:
     samples = wav.squeeze(0).cpu().numpy()
     if samples.size == 0:
         raise ValueError(f"chatterbox produced no audio for {text!r}")
-    sf.write(path, samples, model.sr)
+    return samples
+
+
+# **A sampled model gets a sentence wrong now and then, and the short ones
+# most.** Chatterbox's thirty test sentences averaged 94% read back, but the
+# first fifty-seven Arabic beginner items — two words, most of them — came
+# back with seventeen below 70%: a phrase said twice, a word swallowed. So
+# with `--readback`, every take is read back by Whisper (faster-whisper, MIT)
+# and one below the floor is drawn again with another seed, up to
+# `READBACK_TRIES` takes, keeping the best. Not a proof the reading is right —
+# a recogniser forgives an accent a learner should not copy — but it catches
+# the takes that are plainly something else, which nobody else would.
+READBACK_FLOOR = 0.85
+READBACK_TRIES = 4
+READBACK_FOLD = str.maketrans({"أ": "ا", "إ": "ا", "آ": "ا", "ٱ": "ا", "ى": "ي", "ة": "ه", "ؤ": "و", "ئ": "ي"})
+
+
+def readback_text(text: str, lang: str) -> str:
+    """What a listener can hear of `text`: no case, punctuation or spaces; in
+    Arabic no vowel marks, and the letters writers swap folded together."""
+    import re
+    import unicodedata
+
+    text = unicodedata.normalize("NFC", text)
+    text = text.replace("I", "ı").replace("İ", "i").lower() if lang == "tr" else text.lower()
+    if lang == "ar":
+        bare = "".join(c for c in unicodedata.normalize("NFD", text) if not unicodedata.combining(c))
+        text = unicodedata.normalize("NFC", bare).replace("ـ", "").translate(READBACK_FOLD)
+    return re.sub(r"[\W_]+", "", text)
+
+
+def readback_accuracy(whisper, samples, rate: int, text: str, lang: str) -> float:
+    """One minus the character error rate of Whisper's reading of `samples`."""
+    import librosa
+
+    audio = librosa.resample(samples.astype("float32"), orig_sr=rate, target_sr=16000)
+    segments, _ = whisper.transcribe(audio, language=lang, beam_size=5)
+    heard = readback_text("".join(s.text for s in segments), lang)
+    said = readback_text(text, lang)
+    prev = list(range(len(heard) + 1))
+    for i, a in enumerate(said, 1):
+        cur = [i]
+        for j, b in enumerate(heard, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a != b)))
+        prev = cur
+    return 1 - prev[-1] / max(1, len(said))
+
+
+def chatterbox_take(model, whisper, item: dict, lang: str, target: Path, wav: Path, record: dict) -> bool:
+    """Makes `target` for one item, reading it back if `whisper` is given.
+
+    `record` is the pack's `readback.json`, by file name: the seed kept, how
+    much of it came back and how many takes were drawn. A file already there
+    is left alone once it has a record; without one it competes with the new
+    takes as take zero, so a rerun with `--readback` repairs a pack made
+    without it. Returns whether a file was written.
+    """
+    import soundfile as sf
+
+    if target.exists() and (whisper is None or target.name in record):
+        return False
+    if whisper is None:
+        samples = chatterbox_samples(model, item["text"], lang, item["index"])
+        sf.write(wav, samples, model.sr)
+        to_m4a(wav, target)
+        wav.unlink()
+        return True
+    takes = []  # (accuracy, seed, samples or None for the file already there)
+    if target.exists():
+        import librosa
+
+        old, rate = librosa.load(str(target), sr=None, mono=True)
+        takes.append((readback_accuracy(whisper, old, rate, item["text"], lang), item["index"], None))
+    while len(takes) < READBACK_TRIES and not any(take[0] >= READBACK_FLOOR for take in takes):
+        seed = item["index"] + len(takes) * 100_000
+        samples = chatterbox_samples(model, item["text"], lang, seed)
+        takes.append((readback_accuracy(whisper, samples, model.sr, item["text"], lang), seed, samples))
+    score, seed, samples = max(takes, key=lambda take: take[0])
+    record[target.name] = {"seed": seed, "accuracy": round(score, 3), "takes": len(takes)}
+    if samples is None:
+        return False
+    sf.write(wav, samples, model.sr)
+    to_m4a(wav, target)
+    wav.unlink()
+    return True
 
 
 def piper_wav(voice, text: str, path: Path) -> None:
@@ -435,6 +520,12 @@ def main() -> int:
     ap.add_argument("--voices", type=Path, default=here / "voices-v1.0.bin")
     ap.add_argument("--piper-dir", type=Path, default=here / "piper")
     ap.add_argument("--chatterbox-dir", type=Path, help="CHATTERBOX_FILES at CHATTERBOX_REVISION, already downloaded")
+    ap.add_argument(
+        "--readback",
+        metavar="WHISPER",
+        help="Chatterbox only: read every take back with this faster-whisper model "
+        "(a name such as large-v3-turbo, or a directory) and redraw the ones below READBACK_FLOOR",
+    )
     args = ap.parse_args()
 
     # Loaded on first use rather than up front, because the models a run needs
@@ -454,6 +545,15 @@ def main() -> int:
         if "chatterbox" not in loaded:
             loaded["chatterbox"] = load_chatterbox(args.chatterbox_dir)
         return loaded["chatterbox"]
+
+    def whisper():
+        if not args.readback:
+            return None
+        if "whisper" not in loaded:
+            from faster_whisper import WhisperModel
+
+            loaded["whisper"] = WhisperModel(args.readback, device="cpu", compute_type="int8")
+        return loaded["whisper"]
 
     def piper_engine(model: str):
         if model not in loaded:
@@ -485,6 +585,10 @@ def main() -> int:
             espeak, voices = None, (chatterbox,)
         out = args.out / pack["id"].replace(":", "_")
         out.mkdir(parents=True, exist_ok=True)
+        # Beside the audio rather than in the pack: it is a record of how the
+        # files were made, and it travels with them.
+        record_path = out / "readback.json"
+        record = json.loads(record_path.read_text()) if record_path.exists() else {}
         changed = False
         for item in pack["items"]:
             # Written whether or not the audio was regenerated: the key is
@@ -499,14 +603,22 @@ def main() -> int:
                 changed = True
             for voice in voices:
                 target = out / f"{item['index']}-{voice}.m4a"
+                wav = target.with_suffix(".wav")
+                if chatterbox:
+                    # Its own path, because with `--readback` a file already
+                    # there is not necessarily done; see `chatterbox_take`.
+                    if chatterbox_take(chatterbox_engine(), whisper(), item, pack["lang"], target, wav, record):
+                        made += 1
+                    else:
+                        skipped += 1
+                    if args.readback:
+                        record_path.write_text(json.dumps(record, indent=1) + "\n")
+                    continue
                 if target.exists():
                     skipped += 1
                     continue
-                wav = target.with_suffix(".wav")
                 if spoken:
                     kokoro_wav(kokoro_engine(), item, pack["lang"], voice, espeak, wav)
-                elif chatterbox:
-                    chatterbox_wav(chatterbox_engine(), item["text"], pack["lang"], item["index"], wav)
                 else:
                     model = next(v["model"] for v in piper if v["id"] == voice)
                     piper_wav(piper_engine(model), item["text"], wav)
