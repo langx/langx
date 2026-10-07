@@ -9,6 +9,16 @@ interface BetterAuthErrorLike {
 }
 
 /**
+ * The API's own reasons for refusing a new account. Listed apart because they
+ * arrive two ways — as a code on an email sign-up's reply, and as `?error=` on
+ * a social sign-up's redirect — and both places below have to know them.
+ */
+const SIGN_UP_REFUSED_KEYS: Record<string, MessageKey> = {
+  DISPOSABLE_EMAIL: 'errors.disposableEmail',
+  SIGN_UP_LIMIT_REACHED: 'errors.signUpLimitReached',
+}
+
+/**
  * Better Auth's codes, mapped onto our own wording.
  *
  * The `message` beside each code is English, written by a library that has no
@@ -30,6 +40,7 @@ const AUTH_ERROR_KEYS: Record<string, MessageKey> = {
   INVALID_EMAIL: 'errors.invalidEmail',
   INVALID_TOKEN: 'errors.invalidToken',
   EXPIRED_TOKEN: 'errors.invalidToken',
+  ...SIGN_UP_REFUSED_KEYS,
 }
 
 /**
@@ -81,11 +92,12 @@ const OAUTH_CANCELLED_CODES = new Set(['access_denied', 'user_cancelled_authoriz
  * not registered, a code the API could not exchange, a profile that came back
  * without an email — and none of them would have them do anything differently.
  * What they need to know is that this attempt did not work and the form below
- * still does.
+ * still does. The exception is a sign-up the API refused on purpose: trying
+ * again would only be refused again, so that one says why.
  */
 export function oauthReturnErrorKey(code: string | undefined): MessageKey | undefined {
   if (!code || OAUTH_CANCELLED_CODES.has(code)) return undefined
-  return 'errors.signInFailed'
+  return SIGN_UP_REFUSED_KEYS[code] ?? 'errors.signInFailed'
 }
 
 /**

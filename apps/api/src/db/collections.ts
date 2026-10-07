@@ -351,6 +351,16 @@ export const COLLECTIONS = {
    */
   knownDevices: 'knownDevices',
   /**
+   * One row per account opened, holding a keyed hash of the network it came
+   * from and when — nothing that says whose account. Counted against
+   * `SIGN_UP_RULES` before every new user is written, and kept only as long
+   * as that window by a TTL. A collection rather than a counter in memory
+   * because the API runs on more than one machine, and a cap each machine
+   * counted alone would be a cap times the number of machines. See
+   * `modules/account/signUpCap.ts`.
+   */
+  signUpsByIp: 'signUpsByIp',
+  /**
    * One row per person per campaign, written *before* the send. The unique
    * index on `{campaignId, userId}` is the only thing that makes re-running a
    * half-finished campaign safe.

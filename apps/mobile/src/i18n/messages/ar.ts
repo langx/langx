@@ -632,6 +632,8 @@ export const ar: Localized<EnMessages> = {
     emailNotVerified: 'أكّد بريدك أولًا — تحقق من صندوق الوارد.',
     passwordTooShort: 'كلمة المرور قصيرة جدًا.',
     invalidEmail: 'هذا لا يبدو عنوان بريد.',
+    disposableEmail: 'هذا العنوان من خدمة بريد مؤقت. استخدم عنوانًا ستحتفظ به.',
+    signUpLimitReached: 'أُنشئ عدد كبير جدًا من الحسابات من هذه الشبكة اليوم. حاول مجددًا غدًا.',
     invalidToken: 'هذا الرابط لم يعد صالحًا.',
     uploadFailed: 'فشل الرفع',
     loadFailed: 'تعذّر التحميل. تحقّق من اتصالك وحاول مرة أخرى.',

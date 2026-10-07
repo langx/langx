@@ -578,6 +578,9 @@ export const tr: Localized<EnMessages> = {
     emailNotVerified: 'Önce e-posta adresini doğrula — gelen kutuna bak.',
     passwordTooShort: 'Bu parola çok kısa.',
     invalidEmail: 'Bu bir e-posta adresine benzemiyor.',
+    disposableEmail:
+      'Bu adres geçici bir e-posta servisine ait. Kullanmaya devam edeceğin bir adres gir.',
+    signUpLimitReached: 'Bugün bu ağdan çok fazla hesap açıldı. Yarın tekrar dene.',
     invalidToken: 'Bu bağlantı artık geçerli değil.',
     uploadFailed: 'Yüklenemedi',
     loadFailed: 'Bu yüklenemedi. Bağlantını kontrol edip tekrar dene.',

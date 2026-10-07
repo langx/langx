@@ -574,6 +574,10 @@ export const es: Localized<EnMessages> = {
     emailNotVerified: 'Verifica primero tu correo: mira tu bandeja de entrada.',
     passwordTooShort: 'Esa contraseña es demasiado corta.',
     invalidEmail: 'Eso no parece una dirección de correo.',
+    disposableEmail:
+      'Esa dirección es de un servicio de correo temporal. Usa una que vayas a conservar.',
+    signUpLimitReached:
+      'Hoy se crearon demasiadas cuentas desde esta red. Inténtalo de nuevo mañana.',
     invalidToken: 'Ese enlace ya no es válido.',
     uploadFailed: 'Error al subir',
     loadFailed: 'No se pudo cargar. Revisa tu conexión e inténtalo de nuevo.',

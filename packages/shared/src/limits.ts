@@ -491,6 +491,21 @@ export function isPaidTier(tier: PlanTier): boolean {
 export const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000
 
 /**
+ * How many accounts one network may open in a rolling day. Guest sessions are
+ * not accounts and are not counted. See `docs/decisions.md` → _Sign-up refuses
+ * throwaway addresses and caps accounts per network_.
+ */
+export const SIGN_UP_RULES = {
+  accountsPerIp: 5,
+  /**
+   * The window those accounts are counted in, and the TTL of the counter's
+   * rows in `indexes.ts`. Changing a live TTL is an `IndexOptionsConflict` at
+   * boot, so a different window needs a new index name there too.
+   */
+  windowMs: 24 * 60 * 60 * 1000,
+} as const
+
+/**
  * The tier a guard should actually enforce, given a stored entitlement.
  *
  * `tier` alone is not enough: a lapsed subscription whose RevenueCat
