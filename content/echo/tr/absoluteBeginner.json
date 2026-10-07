@@ -2,7 +2,7 @@
   "id": "tr:absoluteBeginner",
   "lang": "tr",
   "level": "absoluteBeginner",
-  "contentVersion": 2,
+  "contentVersion": 3,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -563,7 +563,7 @@
         "es": "Mi padre es doctor.",
         "fr": "Mon père est médecin.",
         "pt-BR": "Meu pai é médico.",
-        "ru": "Мой отец - врач."
+        "ru": "Мой отец — врач."
       },
       "freqRank": 50,
       "review": { "glossedBy": "Tatoeba" },

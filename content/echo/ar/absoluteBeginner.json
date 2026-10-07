@@ -2,7 +2,7 @@
   "id": "ar:absoluteBeginner",
   "lang": "ar",
   "level": "absoluteBeginner",
-  "contentVersion": 2,
+  "contentVersion": 4,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -1361,7 +1361,7 @@
       "index": 135,
       "kind": "phrase",
       "text": "ماري امرأة.",
-      "gloss": { "en": "Mary is a woman.", "de": "Maria ist eine Frau.", "ru": "Мэри - женщина." },
+      "gloss": { "en": "Mary is a woman.", "de": "Maria ist eine Frau.", "ru": "Мэри — женщина." },
       "freqRank": 136,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman"
@@ -1773,7 +1773,7 @@
     {
       "index": 174,
       "kind": "phrase",
-      "text": "مرحبا, كيف حالك؟",
+      "text": "مرحبا، كيف حالك؟",
       "gloss": { "en": "Hello, how are you?" },
       "freqRank": 175,
       "review": { "glossedBy": "Tatoeba" },
@@ -1891,7 +1891,7 @@
       "index": 186,
       "kind": "phrase",
       "text": "الماء هو الحياة.",
-      "gloss": { "en": "Water is life.", "ru": "Вода - это жизнь." },
+      "gloss": { "en": "Water is life.", "ru": "Вода — это жизнь." },
       "freqRank": 187,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:droplet"
@@ -2363,7 +2363,7 @@
     {
       "index": 236,
       "kind": "phrase",
-      "text": "أنا آسف يا أمي .",
+      "text": "أنا آسف يا أمي.",
       "gloss": { "en": "I'm sorry Mother.", "ru": "Мне жаль, мама." },
       "freqRank": 237,
       "review": { "glossedBy": "Tatoeba" },
@@ -2558,7 +2558,7 @@
     {
       "index": 254,
       "kind": "phrase",
-      "text": "مرحباً جون ، كيف حالك؟",
+      "text": "مرحباً جون، كيف حالك؟",
       "gloss": { "en": "Hello, John! How are you?", "de": "Hallo, Johannes! Wie geht es dir?" },
       "freqRank": 255,
       "review": { "glossedBy": "Tatoeba" },
@@ -2652,7 +2652,7 @@
     {
       "index": 262,
       "kind": "phrase",
-      "text": "صباح الخير, أيها الطبيب!",
+      "text": "صباح الخير، أيها الطبيب!",
       "gloss": { "en": "Good morning, doctor!" },
       "freqRank": 263,
       "review": { "glossedBy": "Tatoeba" },

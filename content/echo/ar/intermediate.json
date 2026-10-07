@@ -2,7 +2,7 @@
   "id": "ar:intermediate",
   "lang": "ar",
   "level": "intermediate",
-  "contentVersion": 2,
+  "contentVersion": 3,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -96,7 +96,7 @@
     {
       "index": 7,
       "kind": "phrase",
-      "text": "ماذا تشرب ؟",
+      "text": "ماذا تشرب؟",
       "gloss": { "en": "What're you drinking?", "fr": "Qu'êtes-vous en train de boire ?" },
       "freqRank": 8,
       "review": { "glossedBy": "Tatoeba" },
@@ -237,7 +237,7 @@
         "tr": "At bir hayvandır.",
         "de": "Ein Pferd ist ein Tier.",
         "fr": "Un cheval, c'est un animal.",
-        "ru": "Лошадь - это животное."
+        "ru": "Лошадь — это животное."
       },
       "freqRank": 21,
       "review": { "glossedBy": "Tatoeba" },
@@ -925,7 +925,7 @@
       "index": 87,
       "kind": "phrase",
       "text": "سامي كاتب.",
-      "gloss": { "en": "Sami is an author.", "ru": "Сами - писатель." },
+      "gloss": { "en": "Sami is an author.", "ru": "Сами — писатель." },
       "freqRank": 88,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand"
@@ -3054,7 +3054,7 @@
     {
       "index": 263,
       "kind": "phrase",
-      "text": "هل يوجد شخص تحبه الآن ؟",
+      "text": "هل يوجد شخص تحبه الآن؟",
       "gloss": {
         "en": "Do you fancy anyone?",
         "de": "Hast du momentan jemanden, den du magst?",
@@ -3444,7 +3444,7 @@
     {
       "index": 292,
       "kind": "phrase",
-      "text": "هل سبق لك ان كنت خارج البلد ؟",
+      "text": "هل سبق لك ان كنت خارج البلد؟",
       "gloss": {
         "en": "Have you ever been outside the country?",
         "tr": "Daha önce hiç ülke dışında bulundun mu?",
@@ -3509,7 +3509,7 @@
     {
       "index": 297,
       "kind": "phrase",
-      "text": "هناك القليل من التفاح على الشجرة ، أليس كذلك؟",
+      "text": "هناك القليل من التفاح على الشجرة، أليس كذلك؟",
       "gloss": {
         "en": "There are a few apples on the tree, aren't there?",
         "fr": "Il y a quelques pommes sur cet arbre, n'est-ce pas ?",

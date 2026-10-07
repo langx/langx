@@ -2,7 +2,7 @@
   "id": "tr:beginner",
   "lang": "tr",
   "level": "beginner",
-  "contentVersion": 2,
+  "contentVersion": 3,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -355,7 +355,7 @@
         "es": "¿Dónde estás?",
         "fr": "Où es-tu ?",
         "ru": "Где ты?",
-        "ar": "أين أنت ؟"
+        "ar": "أين أنت؟"
       },
       "freqRank": 29,
       "review": { "glossedBy": "Tatoeba" },
@@ -1751,7 +1751,7 @@
         "en": "Mary is my mother.",
         "de": "Maria ist meine Mutter.",
         "es": "Mary es mi madre.",
-        "ru": "Мэри - моя мать."
+        "ru": "Мэри — моя мать."
       },
       "freqRank": 145,
       "review": { "glossedBy": "Tatoeba" },
@@ -2360,7 +2360,7 @@
         "de": "Du hast mir sehr gefehlt.",
         "es": "Te he echado mucho de menos.",
         "pt-BR": "Senti muito a tua falta.",
-        "ar": "إشتقت إليك كثيرا !"
+        "ar": "إشتقت إليك كثيرا!"
       },
       "freqRank": 193,
       "review": { "glossedBy": "Tatoeba" },
@@ -3531,7 +3531,7 @@
         "fr": "Il a un chien.",
         "pt-BR": "Ele tem um cachorro.",
         "ru": "У него есть собака.",
-        "ar": "لديه كلب ."
+        "ar": "لديه كلب."
       },
       "freqRank": 279,
       "review": { "glossedBy": "Tatoeba" },

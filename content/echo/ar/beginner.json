@@ -2,7 +2,7 @@
   "id": "ar:beginner",
   "lang": "ar",
   "level": "beginner",
-  "contentVersion": 2,
+  "contentVersion": 4,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -361,7 +361,7 @@
         "de": "Die Welt ist eine Schule.",
         "es": "El mundo es una escuela.",
         "fr": "Le monde est une école.",
-        "ru": "Мир - это школа."
+        "ru": "Мир — это школа."
       },
       "freqRank": 33,
       "review": { "glossedBy": "Tatoeba" },
@@ -419,7 +419,7 @@
     {
       "index": 38,
       "kind": "phrase",
-      "text": "لديه كلب .",
+      "text": "لديه كلب.",
       "gloss": {
         "en": "He has a dog.",
         "tr": "Onun bir köpeği var.",
@@ -467,7 +467,7 @@
       "index": 42,
       "kind": "phrase",
       "text": "أصدقائي عائلتي.",
-      "gloss": { "en": "My friends are my family.", "ru": "Мои друзья - это моя семья." },
+      "gloss": { "en": "My friends are my family.", "ru": "Мои друзья — это моя семья." },
       "freqRank": 43,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family"
@@ -1136,7 +1136,7 @@
     {
       "index": 108,
       "kind": "phrase",
-      "text": "قُل شيئاً, رجاءً.",
+      "text": "قُل شيئاً، رجاءً.",
       "gloss": { "en": "Please say something.", "es": "Por favor, diga algo." },
       "freqRank": 109,
       "review": { "glossedBy": "Tatoeba" },
@@ -1468,7 +1468,7 @@
     {
       "index": 141,
       "kind": "phrase",
-      "text": "احتاج توم الطعام .",
+      "text": "احتاج توم الطعام.",
       "gloss": { "en": "Tom needed food.", "de": "Tom benötigte Lebensmittel." },
       "freqRank": 142,
       "review": { "glossedBy": "Tatoeba" },
@@ -1572,7 +1572,7 @@
     {
       "index": 151,
       "kind": "phrase",
-      "text": "أهذا كلب توم ؟",
+      "text": "أهذا كلب توم؟",
       "gloss": { "en": "Is that Tom's dog?", "tr": "O, Tom'un köpeği mi?" },
       "freqRank": 152,
       "review": { "glossedBy": "Tatoeba" },
@@ -2189,7 +2189,7 @@
     {
       "index": 210,
       "kind": "phrase",
-      "text": "كم عمر أختك ؟",
+      "text": "كم عمر أختك؟",
       "gloss": {
         "en": "How old is your sister?",
         "es": "¿Qué edad tiene tu hermana?",

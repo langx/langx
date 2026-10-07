@@ -2,7 +2,7 @@
   "id": "tr:intermediate",
   "lang": "tr",
   "level": "intermediate",
-  "contentVersion": 2,
+  "contentVersion": 3,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -1323,7 +1323,7 @@
       "index": 103,
       "kind": "phrase",
       "text": "Tom denizci.",
-      "gloss": { "en": "Tom is a seaman.", "de": "Tom ist Seemann.", "ru": "Том - моряк." },
+      "gloss": { "en": "Tom is a seaman.", "de": "Tom ist Seemann.", "ru": "Том — моряк." },
       "freqRank": 104,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ship"
@@ -3044,7 +3044,7 @@
         "es": "Mike y Ken son amigos.",
         "fr": "Mike et Ken sont amis.",
         "pt-BR": "Mike e Ken são amigos.",
-        "ru": "Майк и Кен - друзья."
+        "ru": "Майк и Кен — друзья."
       },
       "freqRank": 231,
       "review": { "glossedBy": "Tatoeba" },
