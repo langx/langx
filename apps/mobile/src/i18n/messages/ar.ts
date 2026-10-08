@@ -435,6 +435,7 @@ export const ar: Localized<EnMessages> = {
     },
     packProgress: 'بدأت {done} من {total}',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'اكتبها بـ{language}',
     produceHint: 'اكتب العبارة',
     check: 'تحقّق',
@@ -1533,6 +1534,8 @@ export const ar: Localized<EnMessages> = {
     other: 'شيء آخر',
     details: 'ماذا حدث؟',
     detailsPlaceholder: 'اختياري. أي شيء يساعدنا على الفهم.',
+    threadNotice:
+      'إذا تبادلتما الرسائل، فسيطّلع من يراجع هذا البلاغ أيضًا على آخر رسائلكما حتى هذا البلاغ.',
     submit: 'إرسال البلاغ',
     messageSent: 'تم الإبلاغ. شكرًا — نطّلع على كل بلاغ.',
     profileSent: 'تم إرسال البلاغ. سننظر في الأمر.',

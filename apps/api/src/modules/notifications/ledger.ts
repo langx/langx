@@ -53,6 +53,8 @@ export type NotificationJob =
    * the panel already mailed is never mailed again by the backfill.
    */
   | 'officialNoteEmail'
+  /** Once per suspension, keyed by `suspension.until` — a second suspension is a second date. */
+  | 'suspensionEnded'
   /** Once per fall, keyed by `churnedFrom.at` rather than by a day. */
   | 'billing.planEnded'
   /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */

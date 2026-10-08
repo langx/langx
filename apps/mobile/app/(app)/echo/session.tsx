@@ -291,7 +291,11 @@ export default function EchoSessionScreen() {
     }
   }
 
-  const verdict = card && producing ? productionVerdict(typed, card.front) : 'wrong'
+  // A Japanese card's kana reading is a way to write it too; see productionVerdict.
+  const verdict =
+    card && producing
+      ? productionVerdict(typed, card.front, card.lang === 'ja' ? card.reading : undefined)
+      : 'wrong'
 
   /** The card as a post for the feed, or `null` when it cannot be one. */
   const ask = card ? echoAskParams(card, languages) : null

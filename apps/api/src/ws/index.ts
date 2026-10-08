@@ -320,11 +320,11 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
      * take down a working connection.
      */
     /*
-     * The build, read once per connection rather than per write: the headers
-     * cannot change while a socket is open, and re-parsing them on every
+     * The build, read once per connection rather than per write: the `auth`
+     * object cannot change while a socket is open, and re-parsing it on every
      * heartbeat would be work for an answer that is already known.
      */
-    const build = clientBuildOf(socket.handshake.headers)
+    const build = clientBuildOf(socket.handshake.auth)
 
     void touchPresence(app.mongo.db, userId, new Date(), build).catch((error: unknown) =>
       app.log.warn({ err: error }, 'presence write on connect failed'),

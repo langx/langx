@@ -22,8 +22,10 @@ import sys
 import wave
 
 from server import (
+    LANGUAGES,
     SAMPLE_RATE,
     decode,
+    ja_phonemes,
     kokoro_wav,
     load_kokoro,
     load_piper,
@@ -71,6 +73,17 @@ def main() -> int:
         print("kokoro produced nothing for chinese", flush=True)
         return 1
     print("zh ok", flush=True)
+
+    # Japanese likewise, through misaki's own front end over fugashi and
+    # unidic-lite: jaconv and mojimoji are its two wheels nothing else needs.
+    # Every Japanese voice, because the two were chosen by ear and a voice
+    # pack missing one is the failure this would otherwise ship.
+    for voice in sorted(LANGUAGES["ja"][1]):
+        samples, rate = kokoro.create(ja_phonemes("こんにちは"), voice=voice, is_phonemes=True)
+        if not to_aac(kokoro_wav(samples, rate)):
+            print(f"kokoro produced nothing for japanese in {voice}", flush=True)
+            return 1
+    print("ja ok", flush=True)
 
     # `/romanize` needs no model, but it needs its dictionaries: jieba's, and
     # the UniDic that cutlet reads through MeCab. A wheel that installed

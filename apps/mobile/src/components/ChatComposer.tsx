@@ -206,7 +206,11 @@ export function ChatComposer({
           onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
           placeholder={placeholder}
           placeholderTextColor={colors.textFaint}
-          style={[styles.input, focused && styles.inputFocused]}
+          style={[
+            styles.input,
+            focused && styles.inputFocused,
+            value === '' && Platform.OS === 'ios' && styles.inputEmpty,
+          ]}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           autoFocus={autoFocus}
@@ -356,6 +360,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingVertical: 13,
   },
   inputFocused: { backgroundColor: colors.bg, borderColor: colors.accent },
+  /**
+   * iOS sizes the field from the last text the keyboard reported, and a send
+   * clears the value from JS, which the keyboard never reports — so the box
+   * kept the height of the message that just went. An empty field is one line
+   * by definition; saying so outright skips the stale measurement. The first
+   * letter typed hands sizing back to the text. A placeholder too long for
+   * one line truncates rather than wrapping, which iOS draws with an ellipsis.
+   */
+  inputEmpty: { height: 48 },
   /**
    * The one yellow on the screen, standing on the same hard shadow `ui/Button`
    * does: a shell in the shade, a face on it that drops on press. The negative

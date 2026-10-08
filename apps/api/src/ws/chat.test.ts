@@ -1,4 +1,6 @@
 import {
+  APP_PLATFORM_AUTH_KEY,
+  APP_VERSION_AUTH_KEY,
   IN_APP_NOTIFICATION_KINDS,
   INBOX_KINDS_AUTH_KEY,
   INBOX_KINDS_HEADER,
@@ -734,6 +736,27 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       socket.disconnect()
       await vi.waitFor(async () => {
         expect((await lastActiveAt(user.userId)).getTime()).toBeGreaterThan(stale.getTime())
+      })
+    })
+
+    /**
+     * The build arrives in `auth`, the way the cookie and the inbox kinds do,
+     * because the handshake has no custom headers on either platform. Read
+     * from the headers instead, it was never there, and `stats.appVersion`
+     * existed on no profile in production.
+     */
+    it('records the build a connection says it is', async () => {
+      const user = await newUser('presence-build@example.com')
+      await connectSocket(user.cookie, undefined, {
+        [APP_VERSION_AUTH_KEY]: '2.9.0',
+        [APP_PLATFORM_AUTH_KEY]: 'ios',
+      })
+      await vi.waitFor(async () => {
+        const profile = await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .findOne({ _id: user.userId })
+        expect(profile?.stats.appVersion).toBe('2.9.0')
+        expect(profile?.stats.appPlatform).toBe('ios')
       })
     })
 

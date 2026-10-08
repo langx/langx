@@ -1441,6 +1441,14 @@ export function ChatScreen({
         await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
         return
       }
+      // Dropped for the quota's reason: the same file is the same size on
+      // every retry, so a row offering one would offer nothing.
+      if (code === 'MEDIA_TOO_LARGE') {
+        track({ name: 'message_send_failed', properties: { kind: 'media', reason: code } })
+        setPending((list) => removePending(list, clientId))
+        await showAlert(t('chat.couldNotSend'), t('errors.attachmentTooLarge'))
+        return
+      }
       // Logged before it is generalised: "could not be sent" once covered an
       // unsupported HEIC for a whole test cycle, and nothing anywhere said so.
       console.warn('attachment failed', code ?? error)
@@ -1450,16 +1458,15 @@ export function ChatScreen({
       const reason =
         code === 'UNSUPPORTED_MEDIA_TYPE'
           ? t('errors.attachmentUnsupported')
-          : code === 'MEDIA_TOO_LARGE'
-            ? t('errors.attachmentTooLarge')
-            : code === 'MEDIA_TOO_LONG'
-              ? t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS })
-              : code === 'MEDIA_LOCKED'
-                ? t('chat.mediaLocked', { count: Math.max(1, mediaLockedFor) })
-                : t('chat.attachmentFailed')
+          : code === 'MEDIA_TOO_LONG'
+            ? t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS })
+            : code === 'MEDIA_LOCKED'
+              ? t('chat.mediaLocked', { count: Math.max(1, mediaLockedFor) })
+              : t('chat.attachmentFailed')
       // Kept as a row rather than an alert-and-discard: the picked files are
-      // still there, and tapping it tries again. A quota refusal is the
-      // exception — retrying cannot help, so that one is dropped above.
+      // still there, and tapping it tries again. A quota refusal and an
+      // oversized file are the exceptions — retrying cannot help, so those
+      // are dropped above.
       setPending((list) => updatePending(list, clientId, uploadFailed(startOf(list, clientId))))
       void showAlert(t('chat.couldNotSend'), reason)
     } finally {

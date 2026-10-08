@@ -94,6 +94,7 @@ async function readPack(path: string, mediaBaseUrl?: string): Promise<Draft | nu
       lang: file.lang,
       level: file.level,
       ...(file.hsk ? { hsk: file.hsk } : {}),
+      ...(file.jlpt ? { jlpt: file.jlpt } : {}),
       itemCount: file.items.length,
       contentVersion: file.contentVersion,
       glossLocales: [...glossLocales],

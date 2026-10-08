@@ -207,6 +207,11 @@ export const ADMIN = {
     viewOnce: (replay: boolean, opens: number) =>
       `Sent view-once${replay ? ', with one replay' : ''}. Opened ${opens} time${opens === 1 ? '' : 's'}. The person who received it can no longer see it; it is kept for this.`,
     viewOnceScreenshot: 'They tried to take a screenshot while it was open; the app blocked it.',
+    thread: 'Their conversation',
+    threadHint: 'The last messages before the report, oldest first. Nothing said after it.',
+    threadReported: 'reported',
+    threadDeleted: '(deleted for everyone)',
+    threadFiles: (type: string, count: number) => `(${type}${count > 1 ? `, ${count} files` : ''})`,
     suspendDays: 'Suspend for N days',
     suspendPermanent: 'Suspend permanently',
     dismiss: 'Dismiss the report',
@@ -388,7 +393,10 @@ export const ADMIN = {
       pending: 'Saved — RevenueCat did not answer, so the scheduler will retry it.',
       already: 'That gift was already given today.',
       list: 'Gifts',
-      row: (months: number, detail: string) => `${months} mo · ${detail}`,
+      row: (span: string, detail: string) => `${span} · ${detail}`,
+      monthsShort: (n: number) => `${n} mo`,
+      /** The streak's first rung is a week rather than months. */
+      weeksShort: (n: number) => `${n} wk`,
       until: (date: string) => `until ${date}`,
     },
   },

@@ -26,6 +26,15 @@ cutlet==0.5.2
 fugashi==1.5.2
 unidic-lite==1.0.8
 
+# Japanese's phonemiser, misaki's own (`misaki.cutlet`, already installed for
+# Chinese) over the fugashi and unidic-lite above. These are the two of its
+# `ja` extra that path imports: jaconv (MIT) and mojimoji (Apache-2.0, a
+# manylinux wheel). Not the extra itself, which adds pyopenjtalk — a C++ build
+# and a dictionary download at first use — for a path never taken, and the
+# full `unidic`, a gigabyte the lite one stands in for. See `ja_phonemes`.
+jaconv==0.5.0
+mojimoji==0.0.13
+
 # Chat's "Show text" on a voice note: faster-whisper (MIT) over CTranslate2
 # (MIT), with OpenAI's Whisper weights (MIT) in Systran's conversion of them
 # (MIT). PyAV comes with it to decode the note — BSD, over an LGPL ffmpeg it
@@ -35,6 +44,10 @@ unidic-lite==1.0.8
 # `transcribe` in server.py.
 faster-whisper==1.2.1
 ctranslate2==4.8.2
+# PyAV is faster-whisper's own dependency and it pins only a floor. PyAV 19
+# dropped the `metadata_errors` argument faster-whisper 1.2.1 passes to
+# `av.open`, so an unpinned build broke the selftest's first decode.
+av==18.1.0
 
 # Downloads the Whisper model in the Dockerfile, at a pinned revision. Apache-2.0.
 huggingface_hub==1.33.0

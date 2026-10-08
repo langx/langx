@@ -14,6 +14,7 @@ import {
   type EchoVoice,
   type EchoSource,
   type HskLevel,
+  type JlptLevel,
   type StartPackInput,
   type StartPackResult,
 } from '@langx/shared'
@@ -37,6 +38,8 @@ export interface EchoPackDoc {
   level: string
   /** Set on a Chinese pack, which is named by it. See `HSK_LEVELS`. */
   hsk?: HskLevel
+  /** Set on a Japanese pack, which is named by it. See `JLPT_LEVELS`. */
+  jlpt?: JlptLevel
   itemCount: number
   contentVersion: number
   glossLocales: string[]
@@ -118,12 +121,14 @@ export async function listPacks(db: Db, userId: string): Promise<{ items: EchoPa
 
   // Sorted here rather than in the query: `level` is a word, so Mongo would
   // sort it alphabetically and put `fluent` ahead of `intermediate`. HSK 3 and
-  // 4 share a level, so the HSK number breaks the tie.
+  // 4 share a level, so the HSK number breaks the tie; so do N3 and N2, and
+  // JLPT counts down — N3 comes before N2.
   packs.sort(
     (a, b) =>
       (priority.get(a.lang) ?? 0) - (priority.get(b.lang) ?? 0) ||
       levelRank(a.level as EchoPack['level']) - levelRank(b.level as EchoPack['level']) ||
-      (a.hsk ?? 0) - (b.hsk ?? 0),
+      (a.hsk ?? 0) - (b.hsk ?? 0) ||
+      (b.jlpt ?? 0) - (a.jlpt ?? 0),
   )
 
   const started = await db
@@ -141,6 +146,7 @@ export async function listPacks(db: Db, userId: string): Promise<{ items: EchoPa
       lang: pack.lang,
       level: pack.level as EchoPack['level'],
       ...(pack.hsk ? { hsk: pack.hsk } : {}),
+      ...(pack.jlpt ? { jlpt: pack.jlpt } : {}),
       itemCount: pack.itemCount,
       startedCount: byPack.get(pack._id) ?? 0,
       glossLocales: pack.glossLocales as EchoPack['glossLocales'],

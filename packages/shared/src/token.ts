@@ -59,6 +59,10 @@ export const TOKEN_KINDS = [
    * Paid to the *referrer* when somebody they invited becomes real: verified,
    * onboarded, and in a two-way conversation with somebody other than the
    * referrer. Never paid at sign-up — see `settleReferral`.
+   *
+   * Earned, so it ranks: this and every other reward below credit all four
+   * period buckets. Only the three account-lifecycle credits in
+   * `TOKEN_GRANT_KINDS` stay off the week, month and year tables.
    */
   'referral',
   /**
@@ -77,9 +81,9 @@ export const TOKEN_KINDS = [
   'referralWelcome',
   /**
    * The hourly gift: a small random amount handed out on request, at most
-   * once per `TOKEN_RULES.gift.cooldownMs`. Given, not earned — so it is a
-   * grant kind and stays off the week/month/year tables (see
-   * `TOKEN_GRANT_KINDS`). `refId` is the claim's own timestamp, which the
+   * once per `TOKEN_RULES.gift.cooldownMs`. It counts in every period like
+   * any other reward — the leaderboard shows what somebody actually
+   * received, not a subset. `refId` is the claim's own timestamp, which the
    * atomic claim makes unique per user.
    */
   'gift',
@@ -92,9 +96,8 @@ export const TOKEN_KINDS = [
    * — so the ledger's unique index is what stops one report being paid twice,
    * however many times the link is opened.
    *
-   * A grant kind for the same reason `referral` is: the week, month and year
-   * tables rank practising a language, and finding a bug is not that. It stays
-   * spendable, because grants credit the all-time total.
+   * A reward, not a grant: it was paid for something the person did, so it
+   * ranks in every period like a message does.
    */
   'bounty',
   /**
@@ -105,7 +108,7 @@ export const TOKEN_KINDS = [
    * `BOUNTY_MIN`–`BOUNTY_MAX`, and `refId` is the report's id, so the unique
    * index pays one report once however often the button is pressed. Its own
    * kind rather than `bounty` because the wallet names it, and a report about
-   * a person is not a bug. A grant for the reason `bounty` is one.
+   * a person is not a bug. Ranks in every period, for the reason `bounty` does.
    */
   'reportReward',
   /**
@@ -119,37 +122,29 @@ export const TOKEN_KINDS = [
 export type TokenKind = (typeof TOKEN_KINDS)[number]
 
 /**
- * Kinds that are **given**, not earned.
+ * The three credits that mark an account's arrival rather than anything done
+ * in a period: a sign-up, a return from v1, and the v1 balance that comes with
+ * it.
  *
  * These credit the all-time total — which is where a spendable balance comes
  * from — but deliberately not the week, month or year buckets the leaderboard
- * ranks. Nobody did anything this week to deserve them, and counting them
- * would put whoever signed up (or came back from v1) most recently above
- * whoever actually talked to people. On launch week that is not a hypothetical:
- * a returning user's converted v1 balance would top the weekly table with
- * tokens earned in 2023.
+ * ranks. Counting them would put whoever signed up (or came back from v1)
+ * most recently above whoever actually talked to people. On launch week that
+ * is not a hypothetical: a returning user's converted v1 balance would top the
+ * weekly table with tokens earned in 2023.
  *
- * `adjustment` is not here on purpose. It exists to correct a real award, so
- * it has to land in the same periods that award did.
- *
- * The referral pair is the strongest case for this rule yet, and the first
- * repeatable one. Twenty invitees activating in a week is twenty thousand
- * tokens for somebody who did not send a message — every week, indefinitely —
- * where a v1 conversion is a single launch-week distortion that never recurs.
- * All-time is where a spendable balance comes from and these stay spendable;
- * the week, month and year tables rank practising, and inviting is not
- * practising.
+ * Nothing else is here. The hourly gift, a bounty, a report reward and the
+ * referral payouts used to be, on the argument that the ranked periods should
+ * show practising only; that left the leaderboard disagreeing with the wallet
+ * about how many tokens a person had received this week, and the table now
+ * counts every reward — see `docs/decisions.md` → _The leaderboard counts
+ * every reward_. `adjustment` is not here either: it exists to correct a real
+ * award, so it has to land in the same periods that award did.
  */
 export const TOKEN_GRANT_KINDS = [
   'legacyTokenConversion',
   'welcomeBack',
   'signupBonus',
-  'referral',
-  'referralSubscription',
-  'referralWelcome',
-  'gift',
-  'bounty',
-  'reportReward',
 ] as const satisfies readonly TokenKind[]
 
 export function isGrantKind(kind: TokenKind): boolean {

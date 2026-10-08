@@ -418,6 +418,7 @@ export const es: Localized<EnMessages> = {
     },
     packProgress: '{done} de {total} empezadas',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'Escríbelo en {language}',
     produceHint: 'Escribe la expresión',
     check: 'Comprobar',
@@ -1415,6 +1416,8 @@ export const es: Localized<EnMessages> = {
     other: 'Otra cosa',
     details: '¿Qué ha pasado?',
     detailsPlaceholder: 'Opcional. Cualquier cosa que nos ayude a entenderlo.',
+    threadNotice:
+      'Si os habéis escrito, quien revise esto también verá vuestros últimos mensajes, hasta esta denuncia.',
     submit: 'Enviar denuncia',
     messageSent: 'Denunciado. Gracias: revisamos todas.',
     profileSent: 'Denuncia enviada. Lo revisaremos.',

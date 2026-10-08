@@ -29,19 +29,25 @@ describe('addMonthsUtc', () => {
 
 describe('streakGiftsOwed', () => {
   it('owes nothing below the first milestone', () => {
-    expect(streakGiftsOwed(99)).toEqual([])
+    expect(streakGiftsOwed(6)).toEqual([])
+  })
+
+  it('owes a week at seven days', () => {
+    expect(streakGiftsOwed(7)).toEqual([{ days: 7, months: 0, weeks: 1 }])
+    expect(streakGiftsOwed(99, [7])).toEqual([])
   })
 
   it('owes a milestone at or past it, once', () => {
-    expect(streakGiftsOwed(100)).toEqual([{ days: 100, months: 1 }])
-    expect(streakGiftsOwed(250, [100])).toEqual([])
+    expect(streakGiftsOwed(100, [7])).toEqual([{ days: 100, months: 1, weeks: 0 }])
+    expect(streakGiftsOwed(250, [7, 100])).toEqual([])
   })
 
-  /** A v1 restore of four hundred days earns both rungs on its first action. */
+  /** A v1 restore of four hundred days earns every rung on its first action. */
   it('owes every rung a long streak has passed', () => {
     const owed = streakGiftsOwed(400)
-    expect(owed.map((rung) => rung.days)).toEqual([100, 365])
+    expect(owed.map((rung) => rung.days)).toEqual([7, 100, 365])
     expect(owed.reduce((sum, rung) => sum + rung.months, 0)).toBe(4)
+    expect(owed.reduce((sum, rung) => sum + rung.weeks, 0)).toBe(1)
   })
 })
 

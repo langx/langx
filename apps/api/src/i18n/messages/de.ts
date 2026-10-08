@@ -569,8 +569,14 @@ export const de: Localized<ServerMessages> = {
         '🎉 {friends} Freunde, die du eingeladen hast, unterhalten sich jetzt auf LangX. {count} Monate Pro gehören dir!',
     },
     introStreak: {
-      one: '🔥 {days} Tage am Stück! Hier ist {count} Monat Pro, damit es so weitergeht.',
-      other: '🔥 {days} Tage am Stück! Hier sind {count} Monate Pro, damit es so weitergeht.',
+      one: '🔥 {days} Tage am Stück, unglaublich! Als Dankeschön schenken wir dir {count} Monat Pro.',
+      other:
+        '🔥 {days} Tage am Stück, unglaublich! Als Dankeschön schenken wir dir {count} Monate Pro.',
+    },
+    introStreakWeeks: {
+      one: '🔥 {days} Tage am Stück, stark! Als kleines Dankeschön schenken wir dir {count} Woche Pro.',
+      other:
+        '🔥 {days} Tage am Stück, stark! Als kleines Dankeschön schenken wir dir {count} Wochen Pro.',
     },
     introCode: {
       one: '🎟️ Code {code} hat geklappt: {count} Monat LangX Pro gehört dir.',
@@ -615,6 +621,8 @@ export const de: Localized<ServerMessages> = {
       other:
         'Danke für deine Meldung. Wir haben sie uns angesehen und dir {count} Token gutgeschrieben, weil du hilfst, LangX zu einem guten Ort zum Lernen zu machen. Die gemeldete Person erfährt nie, wer sie gemeldet hat.',
     },
+    suspensionEnded:
+      'Deine Sperre ist abgelaufen und dein Konto ist wieder offen. 👋 Dein Profil ist wieder in Entdecken und in der Suche zu sehen, und deine Chats sind da, wo du sie gelassen hast.\n\nBitte hilf mit, LangX einen guten Ort zum Lernen zu halten — eine weitere bestätigte Meldung kann das Konto dauerhaft schließen. Wenn du denkst, dass etwas schiefgelaufen ist, erreicht Einstellungen → Info → Feedback einen Menschen.',
     assistantOffline:
       'Ich kann gerade nicht auf Nachrichten antworten. Wenn es Zeit hat, versuch es später noch einmal — wenn nicht, schreib an {email}, dort liest ein Mensch mit.',
     assistantLimit:

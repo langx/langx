@@ -19,6 +19,11 @@ import type { EchoSrs } from './srs'
  * of that length on a phone keyboard is a chore that teaches nothing about
  * the language — they will get one clause wrong and grade themselves down for
  * a typing mistake.
+ *
+ * Characters, in every script, and not changed for Chinese or Japanese. A
+ * character there is more of a sentence — forty is a long one, typed through
+ * an input method — so the packs keep theirs to sixteen (HSK) and twenty
+ * (JLPT), and a member's own card is measured the same way as anybody's.
  */
 export const ECHO_PRODUCTION_MAX_LENGTH = 40
 
@@ -88,11 +93,42 @@ function normalise(value: string): string {
   )
 }
 
-export function productionVerdict(typed: string, expected: string): EchoProductionVerdict {
+/**
+ * Katakana folded onto hiragana, punctuation and spaces dropped: two ways of
+ * writing the same Japanese sounds compare equal. Applied to a typed answer
+ * and a kana reading only, never to the front.
+ *
+ * Not through `normalise`, whose NFD would split が into か and a combining
+ * mark and then drop the mark — forgiving a diacritic is right for "ça", and
+ * wrong for a voiced sound that makes a different word.
+ */
+function kanaOf(value: string): string {
+  return value
+    .normalize('NFKC')
+    .replace(/[\p{P}\p{S}\s]+/gu, '')
+    .replace(/[ァ-ヶ]/gu, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0x60))
+}
+
+/**
+ * `kana` is a Japanese card's reading, when it has one.
+ *
+ * Japanese can be written wholly in kana, and an input method offers 私 and
+ * わたし for the same keystrokes, so a learner who typed わたしは がくせいです
+ * for 私は学生です has produced the sentence — in the same sense that "ca va"
+ * produced "ça va". That counts as `close`. Pinyin is not passed here for a
+ * Chinese card: it is a transcription, not a way the language is written, and
+ * typing it is not writing the sentence.
+ */
+export function productionVerdict(
+  typed: string,
+  expected: string,
+  kana?: string,
+): EchoProductionVerdict {
   if (typed.trim().length === 0) return 'wrong'
   if (typed.trim() === expected.trim()) return 'exact'
   const a = normalise(typed)
   const b = normalise(expected)
   if (a.length === 0 || b.length === 0) return 'wrong'
-  return a === b ? 'close' : 'wrong'
+  if (a === b) return 'close'
+  return kana && kanaOf(typed) === kanaOf(kana) ? 'close' : 'wrong'
 }

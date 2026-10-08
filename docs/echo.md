@@ -25,12 +25,13 @@ was written; the back is what it means in your language. The scheduler brings
 it back tomorrow, then in three days, then in a week.
 
 Curated packs (English first, then Spanish, German, French, Russian and
-Italian, then Mandarin at the six HSK levels) exist so a new user has something to review on day one, and so the
+Italian, then Mandarin at the six HSK levels, then Japanese at JLPT N5–N3 —
+drafted, not yet read) exist so a new user has something to review on day one, and so the
 empty tab does not read as "come back after you have made friends". They are the same cards in the same queue. A card from a
 pack and a card from a chat differ only in `source`.
 
 **Any language, not only the pack languages.** A card's `lang` is any code in
-`languages.ts`. The packs are the one thing limited to seven of them; a Japanese
+`languages.ts`. The packs are the one thing limited to a few of them; a Korean
 sentence echoed from a chat lives beside a French pack card, and the tab groups
 by language. Nothing about capture knows which packs exist.
 
@@ -229,13 +230,13 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    its language, takes the readings off the card — they read a line that is
    gone — and the button comes back for the new one; the files stay, because
    they are content-addressed and may be on somebody else's card.
-   **Thirty-one languages** since chat started reading messages aloud
-   too, and Chinese joined them: Kokoro reads the six it was trained for and
-   Chinese, and Piper reads the other twenty-four (`SPEECH_VOICES` is the
-   list, and `ECHO_SYNTH_VOICES` remains Kokoro's half of it). The app hides the button elsewhere — and
-   "elsewhere" is a licence question rather than a modelling one, since the
-   catalogue's only Turkish, Arabic, Japanese and Korean voices are
-   CC BY-NC. A person who already recorded the sentence is still both
+   **Thirty-two languages** since chat started reading messages aloud
+   too, and Chinese and Japanese joined them: Kokoro reads the six it was
+   trained for, Chinese and Japanese, and Piper reads the other twenty-four
+   (`SPEECH_VOICES` is the list, and `ECHO_SYNTH_VOICES` remains Kokoro's half
+   of it). The app hides the button elsewhere — and "elsewhere" is a licence
+   question rather than a modelling one, since the catalogue's only Turkish,
+   Arabic and Korean voices are CC BY-NC. A person who already recorded the sentence is still both
    cheaper and the actual differentiator. (The Turkish and Arabic _packs_ are
    read anyway — offline, by a model too heavy for this service; see
    _Content_ below.)
@@ -395,9 +396,10 @@ violated by accident:
 
 - **Levels are not CEFR.** Pack levels reuse `LANGUAGE_LEVELS`
   (`absoluteBeginner | beginner | intermediate | fluent`). No second scale.
-  The Chinese packs are the one place a pack is _named_ by something else —
-  "HSK 3" — and they still carry one of the four underneath, through
-  `hskLanguageLevel`; see "Chinese is named by HSK" below.
+  The Chinese and Japanese packs are the two places a pack is _named_ by
+  something else — "HSK 3", "JLPT N5" — and they still carry one of the four
+  underneath, through `hskLanguageLevel` and `jlptLanguageLevel`; see "Chinese
+  is named by HSK" and "Japanese is named by JLPT" below.
 - **Eight interface locales, one hundred and eighty languages.** A pack item's
   `gloss` is `Record<Locale, string>` — the known side is drawn from the
   eight, never the hundred and eighty. The fallback when a learner's own
@@ -636,7 +638,8 @@ one that scored higher and was not used, and why, are in
 `content/echo/ATTRIBUTION.md`. Chinese and Japanese are out for a different reason: no
 usable voice either, and the picker's word counts and
 `ECHO_PRODUCTION_MAX_LENGTH` both assume a language that puts spaces between
-words. Portuguese is out on the data — Tatoeba links it to Arabic 348 times.
+words. Both have since been answered — see _Chinese is named by HSK_ and
+_Japanese is named by JLPT_. Portuguese is out on the data — Tatoeba links it to Arabic 348 times.
 
 **A pack is phrases, at every level.** This section said "words and short
 phrases from a frequency list" and the first draft built to it was three
@@ -735,6 +738,15 @@ The candidates were never the limit — 31,000 to 121,000 per language — and t
 picture rule was: 72%, 63% and 61% of the Spanish, French and Italian pools had
 an honest cue. All three are `"reviewed": false`.
 
+**German and Russian `fluent`** were drafted alongside, under the same rules,
+and read by Piper: `de/fluent.json` is 270 sentences and `ru/fluent.json` 244.
+In both languages a declined form can rank past 10,000 on its ending alone, so
+some of their C1 is an inflection rather than a word. The picture rule set
+their size too — 280 of 1,100 German candidates and 256 of 700 Russian ones
+had an honest cue — and Wiktionary's own-language editions had no translation
+table for any of the 22 phrasebook entries among them, so every item is a
+Tatoeba sentence. Both are `"reviewed": false`.
+
 **Sources and licence** — verify at the version downloaded, record it:
 
 | Source                             | Gives                                          | Licence                            | Use                                                 |
@@ -823,11 +835,11 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 
 ## Phases
 
-| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Done when                                                                                                                                     |
-| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
-| 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. pack audio, from Commons with its licence checked per file; the three **English packs**, 809 items, read in two passes and marked `"reviewed": true` — see `content/echo/ATTRIBUTION.md` for what that review covered and what it only sampled. **Also built:** fifteen more packs — Spanish, German, French, Russian and Italian, three levels each, 4,101 items, read and `"reviewed": true` on 20 September; `content/echo/ATTRIBUTION.md` says which three of their seven columns that reading covered. Their cue pictures and synthesised readings too: every card but sixteen carries one of the same 372 concepts, and every item is read — Kokoro's two takes for Spanish, French and Italian, Piper's one for German and Russian. **Also built:** six Mandarin packs, HSK 1–6, each item with its pinyin and 1,586 of 1,639 with a cue from the same 372 — each read in two Kokoro voices from that pinyin; see _Chinese is named by HSK_. **Not built:** OpenMoji icons | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | **Built:** production cards, offline review. **Drafted, unread:** `fluent` in Spanish, French and Italian; the Turkish and Arabic packs, six, read offline by Chatterbox. **Left:** pack multiple choice, listening cards, English `fluent`, FSRS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Done when                                                                                                                                     |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
+| 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. pack audio, from Commons with its licence checked per file; the three **English packs**, 809 items, read in two passes and marked `"reviewed": true` — see `content/echo/ATTRIBUTION.md` for what that review covered and what it only sampled. **Also built:** fifteen more packs — Spanish, German, French, Russian and Italian, three levels each, 4,101 items, read and `"reviewed": true` on 20 September; `content/echo/ATTRIBUTION.md` says which three of their seven columns that reading covered. Their cue pictures and synthesised readings too: every card but sixteen carries one of the same 372 concepts, and every item is read — Kokoro's two takes for Spanish, French and Italian, Piper's one for German and Russian. **Also built:** six Mandarin packs, HSK 1–6, each item with its pinyin and 1,586 of 1,639 with a cue from the same 372 — each read in two Kokoro voices from that pinyin; see _Chinese is named by HSK_. **Drafted, not read:** three Japanese packs, JLPT N5, N4 and N3, 900 items, each with its kana, a cue and two Kokoro readings — see _Japanese is named by JLPT_. **Not built:** OpenMoji icons | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
+| 3     | **Built:** production cards, offline review. **Drafted, unread:** `fluent` in Spanish, French, Italian, German and Russian; the Turkish and Arabic packs, six, read offline by Chatterbox. **Left:** pack multiple choice, listening cards, English `fluent`, FSRS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth
@@ -1033,3 +1045,137 @@ the service reads it through misaki's guess — right almost always, and wrong
 on a polyphone now and then (你得去 as _dé_). A pack card has pinyin somebody
 read, so `tools/echo-content/tts/generate.py` turns _that_ into phonemes, and
 the tones a pack card is read in are the reviewed ones.
+
+## Japanese is named by JLPT
+
+Three Japanese packs, `ja:jlptN5`, `ja:jlptN4` and `ja:jlptN3`, 300 sentences
+each — drafted on 7 October 2026 and **not reviewed**: every file says
+`"reviewed": false`, and the seed refuses them until a person has read them.
+Japanese was 7th of the languages members learn when the second wave was
+chosen, and 6th by the 30 days before this was drafted, ahead of Russian; it
+was the only one of the eight with no pack, for the two reasons written above
+— no usable voice, and a picker that counted words by the spaces between
+them. The Mandarin packs had already answered both, and this follows them.
+
+**A second name, the way HSK is.** A Japanese learner measures themselves by
+the JLPT, so the pack file carries `jlpt` and the list and the pack screen say
+"JLPT N5" (`echo.packJlpt`). `level` is still one of our four, through
+`CEFR_TO_LANGUAGE_LEVEL`: since December 2025 a passing JLPT score report names
+a CEFR band — A1 for N5, A2 for N4, and B1, B2 and C1 for N3, N2 and N1 on a
+high enough score — and `jlptLanguageLevel` takes the band each level is aimed
+at. N3 and N2 are therefore both `intermediate`, which is why the id is
+`ja:jlptN3` and not `ja:intermediate`, why `echoPackFileSchema` refuses a file
+whose id, level and `jlpt` disagree, and why `listPacks` breaks the tie on
+`jlpt` — counting down, since N3 comes before N2. The field holds the number
+the level is called by (`5` is N5), and the id spells the N, because `jlpt5`
+would read as the fifth level in HSK's direction.
+
+**There is no official word list, so the level is Jonathan Waller's.** The
+Japan Foundation stopped publishing one when the test was revised in 2010.
+Waller's lists are the ones the field uses — jisho.org reads them — and they
+are CC BY; see `content/echo/ATTRIBUTION.md`. A sentence's level is its
+hardest word's, exactly as for Chinese, and grammar is free: particles,
+auxiliaries and punctuation are not words a list levels. Two exceptions are
+written into `tools/echo-content/jlpt/pick.py` rather than hidden in it. The
+passive, causative and potential auxiliaries and the conditional ば are N4
+grammar in every syllabus, so a sentence using one is never filed at N5. And
+two words Waller files high that every first lesson teaches — 日本 (N3 on his
+list) and ありがとう (N1, under a kanji nobody writes) — are N5.
+
+**Words without spaces.** fugashi over UniDic (unidic-lite) splits a sentence
+into short units and names each one's dictionary form; that form is what the
+list is looked up by, and the units are what is counted. A pack sentence is
+three to twelve units and at most twenty characters, and carries no digits or
+Latin letters — a digit is read by a rule nobody reviews, a Latin letter is a
+name or a brand. Names drop out on their own: トム is on a fifth of Tatoeba and
+in no word list.
+
+**`ECHO_PRODUCTION_MAX_LENGTH` is unchanged, and still characters.** A
+Japanese character is more of a sentence than a Latin one, and forty of them
+typed through an input method is a long sentence rather than a short one; the
+packs keep theirs to twenty for that reason, as the HSK packs keep theirs to
+sixteen. What changed is what counts as having typed it. Japanese can be
+written wholly in kana and an input method offers 私 and わたし for the same
+keys, so `productionVerdict` takes a Japanese card's reading as a third
+argument and calls an answer that spells it `close` — the way "ca va" is close
+to "ça va". Chinese does not pass its pinyin: that is a transcription, not a
+way the language is written.
+
+**The reading is kana, not romaji.** Every item carries `reading`, the way
+every Mandarin item carries pinyin, and the choice is the opposite one for the
+same reason. Pinyin was chosen because it is how Chinese itself teaches
+pronunciation. Japanese does that with kana: it is the furigana printed over
+kanji in children's books, the script every textbook teaches in its first
+week, and the one a learner reads in the app as soon as they can read
+anything. Romaji is a stage textbooks leave by their second chapter, and it is
+lossy where kana is not — the particle は is _wa_ and the letter is _ha_, おう
+and おお are both _ō_, and Hepburn and Kunrei disagree about half the
+syllabary. A reading in romaji would also be the one thing on the card that
+is not Japanese. Chat's "Show in Latin letters" (`romanize_ja` in
+`apps/tts/server.py`) is there for the person who wants romaji anyway.
+
+It is spaced between phrases — わたしは がくせいです。 — the way a children's
+book or the first chapters of a textbook are, because word boundaries are the
+one thing the sentence does not show and a beginner most needs. Hiragana for
+anything written in kanji, katakana left as katakana. The session shows it
+with the answer, as it does pinyin.
+
+**Two readings, and a person's wins.** UniDic reads 私 as わたくし and 日本 as
+にっぽん, which a dictionary may and a beginner's card should not. Tatoeba
+holds a furigana transcription for almost every Japanese sentence, and
+108,259 of them are signed by the member who wrote or corrected them. Where a
+person's reading and UniDic's disagree, the person's is used and the
+disagreement is written into `review.readingDiffers`; where nobody signed the
+transcription, a sentence is taken only if Tatoeba's machine draft and UniDic
+agree on every word. `tools/echo-content/jlpt/kana.py` lines the two up.
+
+**And a voice, from that reading.** Kokoro has five Japanese voices, all
+Apache-2.0, and the service never used them for Chinese's reason: espeak-ng is
+not what they were trained on. misaki's Japanese front end is — fugashi finds
+each word's pronunciation (学生 as ガクセー, the particle は as ワ) and misaki
+spells it in Kokoro's phonemes. The packs are read from their reviewed kana,
+not from the characters (`ja_phonemes` in `tools/echo-content/tts/generate.py`):
+where a word's kana is the tagger's own, its pronunciation form is used; where
+the reading says something else, the reviewed kana are read as written.
+
+Measured the way the Mandarin voices were, by `tools/echo-content/jlpt/listen.py`:
+thirty sentences from the N5 and N4 drafts, each synthesised and handed to a
+speech recogniser (faster-whisper, `large-v3-turbo`), scored on the share of
+characters it got back. Japanese has two ways to write a right answer, so the
+score that decides is on kana — both sides turned into kana by UniDic — beside
+the one on the characters as written:
+
+| Voice           | Read from      | Characters | Kana  |
+| --------------- | -------------- | ---------- | ----- |
+| `jf_nezumi`     | the kana       | 99.1%      | 99.2% |
+| `jf_gongitsune` | the kana       | 98.4%      | 98.6% |
+| `jm_kumo`       | the kana       | 91.4%      | 97.8% |
+| `jf_tebukuro`   | the kana       | 96.6%      | 97.7% |
+| `jf_alpha`      | the kana       | 95.5%      | 97.3% |
+| `jf_alpha`      | the characters | 94.7%      | 97.3% |
+| `jf_alpha`      | espeak-ng      | 4.6%       | 4.8%  |
+
+So the packs are read in `jf_nezumi` and `jm_kumo` — the best of the four
+female voices and the only male one. Its lower character score is mostly the
+recogniser writing in kana what it heard right (彼は誰？ as かれわだれ), but not
+only: it heard 人形 as 人魚 once, and いいお医者さん as イオ医者さん. espeak-ng's 5%
+is why Japanese was silent. A second sample of thirty, from the three packs as
+committed (N3 included), came back at 98.4% of the kana for `jf_nezumi` and
+98.8% for `jm_kumo`. Every number is well past the 85% that would have
+sent this to Chatterbox Multilingual, which was therefore not evaluated.
+
+A member's own Japanese card is read the same way through the service, from
+the characters (`ja_phonemes` in `apps/tts/server.py`), and chat's "Read
+aloud" now covers Japanese too: `ECHO_SYNTH_VOICES` is what both read.
+
+**A picture on every card.** These are the first packs where a sentence with
+no honest cue is not taken at all: the picker drafts twice what it needs, six
+Claude subagents chose a cue for each candidate from the same 372 concepts or
+said there was none, and `pick.py --cues` takes the first 300 that have one.
+The same pass dropped what should not be in a pack — slogans, proverbs,
+violence, near-duplicates, and glosses or readings that were wrong — 229 of
+2,100 candidates. `packContent.test.ts` holds these packs to it: every item
+has a picture, a voice and a reading.
+
+What a reviewer has to read is in `content/echo/ATTRIBUTION.md`, _What the
+Japanese drafts still need_.

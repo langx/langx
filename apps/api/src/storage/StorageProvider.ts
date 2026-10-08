@@ -9,7 +9,13 @@ export interface UploadUrl {
 }
 
 export interface StorageProvider {
-  getUploadUrl(key: string, contentType: string): Promise<UploadUrl>
+  /**
+   * `sizeBytes`, when given, is signed into the URL as `Content-Length`, so
+   * the bucket refuses a body of any other length. Without it the URL accepts
+   * whatever is sent, and a ceiling checked against a number the client
+   * merely reports is not a ceiling.
+   */
+  getUploadUrl(key: string, contentType: string, sizeBytes?: number): Promise<UploadUrl>
 }
 
 export interface StorageProviderWithPut extends StorageProvider {

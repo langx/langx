@@ -22,7 +22,8 @@ export type SpeechEngine = 'kokoro' | 'piper'
  * expressing — a non-commercial licence simply cannot be used by an app that
  * sells subscriptions, and the catalogue's only Turkish, Arabic, Japanese and
  * Korean voices are all licensed that way. Those languages stay silent until a
- * clean model exists, rather than being read by one we are not allowed to use.
+ * clean model exists, rather than being read by one we are not allowed to use
+ * — which for Japanese turned out to be Kokoro, read through misaki.
  */
 export type SpeechLicense = 'CC0' | 'MIT' | 'Apache-2.0' | 'CC-BY-4.0' | 'CC-BY-SA-4.0'
 
@@ -40,7 +41,7 @@ export interface SpeechVoice {
 /**
  * Every voice we can read a sentence in, by language.
  *
- * **Two engines, one table.** Kokoro reads the seven languages it was trained
+ * **Two engines, one table.** Kokoro reads the eight languages it was trained
  * for and reads them best, so those stay with it — and stay on the cache keys
  * they already occupy. Piper covers the other thirty-one: smaller models, one
  * per language, phonemised through the same espeak-ng, at a quality below
@@ -75,7 +76,7 @@ export interface SpeechVoice {
  */
 export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly SpeechVoice[]>>> = {
   /*
-   * Kokoro's seven, from `ECHO_SYNTH_VOICES` — which stays the definition for
+   * Kokoro's eight, from `ECHO_SYNTH_VOICES` — which stays the definition for
    * Echo and the table `apps/tts/server.py` mirrors. Spelled out here rather
    * than spread in, so this file reads as one list and a reader can see which
    * engine answers for a language without following an import.
@@ -104,6 +105,10 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
   zh: [
     { id: 'zf_xiaoyi', engine: 'kokoro', license: 'Apache-2.0' },
     { id: 'zm_yunxi', engine: 'kokoro', license: 'Apache-2.0' },
+  ],
+  ja: [
+    { id: 'jf_nezumi', engine: 'kokoro', license: 'Apache-2.0' },
+    { id: 'jm_kumo', engine: 'kokoro', license: 'Apache-2.0' },
   ],
   bg: [
     {
@@ -519,7 +524,7 @@ export interface SpeechLanguageHint {
  *    the thing that makes this work at all.
  *
  * An answer naming a language no voice reads is dropped, which is how Turkish,
- * Arabic, Japanese and Korean stay silent rather than being read by the nearest
+ * Arabic and Korean stay silent rather than being read by the nearest
  * voice we happen to have.
  */
 export function detectSpeechLanguage(

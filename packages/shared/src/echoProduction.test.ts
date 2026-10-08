@@ -74,6 +74,22 @@ describe('how close the answer was', () => {
     expect(productionVerdict('كلب', 'قلب')).toBe('wrong')
   })
 
+  /*
+   * Japanese can be written in kana alone, and an input method offers 私 and
+   * わたし for the same keys. A Japanese card passes its reading.
+   */
+  it('takes a Japanese sentence written in kana as close', () => {
+    const front = '私は学生です。'
+    const kana = 'わたしは がくせいです。'
+    expect(productionVerdict('私は学生です', front, kana)).toBe('close')
+    expect(productionVerdict('わたしはがくせいです', front, kana)).toBe('close')
+    expect(productionVerdict('ワタシハ ガクセイデス。', front, kana)).toBe('close')
+    // A voiced sound is a different word, not a diacritic to forgive.
+    expect(productionVerdict('わたしはかくせいです', front, kana)).toBe('wrong')
+    // And without a reading, kana is just a different string.
+    expect(productionVerdict('わたしはがくせいです', front)).toBe('wrong')
+  })
+
   it('never decides the grade — it only reports', () => {
     // The four buttons belong to the person: only they know whether they knew
     // it or guessed it. This function returns a verdict and nothing else.

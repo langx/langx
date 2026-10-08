@@ -1279,7 +1279,7 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect((await open(user)).statusCode).toBe(200)
     })
 
-    it('credits the all-time total only — a gift is not practice, so no leaderboard sees it', async () => {
+    it('credits every period — a gift is a reward, and the ranked tables show what was received', async () => {
       const user = await newUser()
       const at = new Date()
       // Force the top of the table, so the row is unmistakable.
@@ -1298,12 +1298,12 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
         .find({ _id: { $regex: `^${user.userId}:` } })
         .toArray()
       const byType = new Map(aggregates.map((a) => [a._id.split(':')[1], a.tokens]))
-      // The sign-up bonus is a grant too, so `all` is bonus + gift and the
-      // period buckets do not exist at all.
+      // The sign-up bonus is a grant, so `all` is bonus + gift while the
+      // ranked buckets hold the gift alone.
       expect(byType.get('all')).toBe(TOKEN_RULES.signupBonus + 250)
-      expect(byType.get('week')).toBeUndefined()
-      expect(byType.get('month')).toBeUndefined()
-      expect(byType.get('year')).toBeUndefined()
+      expect(byType.get('week')).toBe(250)
+      expect(byType.get('month')).toBe(250)
+      expect(byType.get('year')).toBe(250)
     })
 
     it('consumes the hour but pays nothing while token is frozen', async () => {

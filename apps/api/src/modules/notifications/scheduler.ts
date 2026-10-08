@@ -5,6 +5,8 @@ import { runBroadcastQueuePass } from '../admin/broadcastQueue'
 import { runPlanEndedPass } from '../billing/planEnded'
 import { runProGiftPass, type ProGiftDeps } from '../billing/proGifts'
 import { withJobHealth } from '../admin/jobHealth'
+import { runSuspensionEndedPass } from '../moderation/suspensionEnded'
+import type { OfficialDelivery } from '../official/deliver'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
 import { runCampaignQueuePass } from './campaignQueue'
@@ -24,6 +26,12 @@ import { runVerifyReminderPass } from './verifyReminder'
  * half hour, so a half-hourly tick catches all of them.
  */
 export const NOTIFICATION_INTERVAL_MS = 30 * 60 * 1000
+
+/** What a pass that writes to an @langx thread needs to make it arrive like any other message. */
+export type OfficialFanOut = (
+  delivery: OfficialDelivery,
+  options: { push: boolean },
+) => Promise<void>
 
 /**
  * One timer for the scheduled notification passes rather than one each —
@@ -63,9 +71,16 @@ export function startNotificationScheduler(
      * retries. The rows wait; nothing is lost.
      */
     proGifts?: Pick<ProGiftDeps, 'revenueCat' | 'fanOut'>
+    /**
+     * Paints a delivered @langx message live and knocks on the phone —
+     * `fanOutMessage` in production. Left out, as the tests do, the
+     * suspension-ended notice does not run: the knock is its whole point.
+     */
+    fanOut?: OfficialFanOut
   } = {},
 ): { stop: () => void } {
   const intervalMs = options.intervalMs ?? NOTIFICATION_INTERVAL_MS
+  const fanOut = options.fanOut
   let running = false
 
   async function tick(): Promise<void> {
@@ -115,6 +130,23 @@ export function startNotificationScheduler(
           run('billing plan ended', () =>
             runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
           ),
+        /*
+         * The other clock-triggered transactional note. A suspension is one
+         * date and one comparison, so nothing fires when the date passes —
+         * an end, like an absence, is something only the clock can notice.
+         */
+        ...(fanOut
+          ? [
+              () =>
+                run('suspension ended', () =>
+                  runSuspensionEndedPass(
+                    db,
+                    { fanOut, warn: (error, message) => logger.warn({ err: error }, message) },
+                    now,
+                  ),
+                ),
+            ]
+          : []),
         ...(options.proGifts
           ? [
               () =>

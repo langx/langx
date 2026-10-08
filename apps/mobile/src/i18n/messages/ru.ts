@@ -444,6 +444,7 @@ export const ru: Localized<EnMessages> = {
     },
     packProgress: 'Начато {done} из {total}',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'Напишите на языке: {language}',
     produceHint: 'Введите фразу',
     check: 'Проверить',
@@ -1518,6 +1519,8 @@ export const ru: Localized<EnMessages> = {
     other: 'Другое',
     details: 'Что произошло?',
     detailsPlaceholder: 'Необязательно. Всё, что поможет нам разобраться.',
+    threadNotice:
+      'Если вы переписывались, тот, кто рассмотрит жалобу, увидит и ваши последние сообщения друг другу — до этой жалобы.',
     submit: 'Отправить жалобу',
     messageSent: 'Жалоба отправлена. Спасибо — мы читаем каждую.',
     profileSent: 'Жалоба отправлена. Мы разберёмся.',

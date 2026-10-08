@@ -424,6 +424,7 @@ export const de: Localized<EnMessages> = {
     },
     packProgress: '{done} von {total} begonnen',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'Schreib es auf {language}',
     produceHint: 'Den Ausdruck tippen',
     check: 'Prüfen',
@@ -1447,6 +1448,8 @@ export const de: Localized<EnMessages> = {
     other: 'Etwas anderes',
     details: 'Was ist passiert?',
     detailsPlaceholder: 'Optional. Alles, was uns beim Verstehen hilft.',
+    threadNotice:
+      'Wenn ihr euch geschrieben habt, sieht die Person, die das prüft, auch eure letzten Nachrichten bis zu dieser Meldung.',
     submit: 'Meldung senden',
     messageSent: 'Gemeldet. Danke — wir sehen uns jede an.',
     profileSent: 'Meldung gesendet. Wir schauen uns das an.',

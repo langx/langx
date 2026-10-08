@@ -16,14 +16,16 @@ import {
 } from './speech'
 
 describe('the voice table', () => {
-  it('reads thirty-one languages, and not the ones it must not', () => {
-    expect(SPEECH_LANGUAGES).toHaveLength(31)
-    // The catalogue has voices for all four. Every one of them is CC BY-NC,
-    // which an app that sells subscriptions cannot use — so they stay silent
-    // rather than being read by a model we are not allowed to ship.
-    for (const unlicensed of ['tr', 'ar', 'ja', 'ko']) {
+  it('reads thirty-two languages, and not the ones it must not', () => {
+    expect(SPEECH_LANGUAGES).toHaveLength(32)
+    // Piper's catalogue has voices for all three. Every one of them is CC
+    // BY-NC, which an app that sells subscriptions cannot use — so they stay
+    // silent rather than being read by a model we are not allowed to ship.
+    for (const unlicensed of ['tr', 'ar', 'ko']) {
       expect(speechVoicesFor(unlicensed)).toEqual([])
     }
+    // Japanese was the fourth, until Kokoro read it through misaki.
+    expect(speechVoicesFor('ja').map((voice) => voice.engine)).toEqual(['kokoro', 'kokoro'])
     // And one this engine cannot use, which is a different reason — see the
     // note on `SPEECH_VOICES`.
     expect(speechVoicesFor('lt')).toEqual([])
@@ -165,10 +167,10 @@ describe('speechDetectCandidates', () => {
 describe('speechLanguageFromIso3', () => {
   /*
    * The second half of the refusal: a code can be detected and still have no
-   * voice. These four are the ones with CC BY-NC-only models.
+   * voice. These three are the ones with CC BY-NC-only models.
    */
   it('drops an answer no voice reads, however confident it was', () => {
-    for (const iso3 of ['tur', 'arb', 'jpn', 'kor', 'nonsense'])
+    for (const iso3 of ['tur', 'arb', 'kor', 'nonsense'])
       expect(speechLanguageFromIso3(iso3), iso3).toBeUndefined()
     /*
      * Lithuanian is detectable and unreadable, which is the pair of facts that
@@ -180,6 +182,7 @@ describe('speechLanguageFromIso3', () => {
     expect(speechDetectCandidates(['lt'])).toContain('lit')
     expect(speechLanguageFromIso3('lit')).toBeUndefined()
     expect(speechLanguageFromIso3('cmn')).toBe('zh')
+    expect(speechLanguageFromIso3('jpn')).toBe('ja')
     expect(speechLanguageFromIso3('deu')).toBe('de')
   })
 })

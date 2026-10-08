@@ -247,7 +247,7 @@ async function advance(
       current = claimed.streak.current
       longest = claimed.streak.longest
       /*
-       * The gift of Pro at 100 and 365 days, on the same once-a-day claim —
+       * The gift of Pro at 7, 100 and 365 days, on the same once-a-day claim —
        * "at least", so a streak already past a milestone earns it on its
        * next real action. Only a row is written; the scheduler grants it.
        */

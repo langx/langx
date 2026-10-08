@@ -5304,6 +5304,13 @@ packs' `reading` is drafted by `tools/echo-content/hsk/pick.py` and goes
 through the same gate as a gloss: the pack is `"reviewed": false` until the
 reading column has been read, and the seed refuses it until then.
 
+The Japanese packs' kana are the same kind of thing and go through the same
+gate: 今日 is _kyō_ in one sentence and _konnichi_ in another, and 何 is _nani_
+or _nan_ by what follows it. `tools/echo-content/jlpt/pick.py` drafts them,
+preferring a reading a Tatoeba member signed over the tagger's, and the voice
+reads the reviewed kana rather than the characters, so a corrected reading is
+also a corrected pronunciation.
+
 ## A badge can be a cohort, and `next` must never offer one
 
 Every badge kind was a monotonic counter with thresholds along it, and the
@@ -6847,3 +6854,64 @@ ends.
 The app shows both refusals in the reader's language, from the sign-up form and
 from a social sign-in's return. The message about the cap does not give the
 number.
+
+## The streak's first gift of Pro is a week, at seven days
+
+The streak rungs were 100 days for a month and 365 for three. Few people reach
+100, so the gift that is meant to show what Pro is like reached almost nobody.
+A rung at seven days now gives a week — the length of the store's free trial,
+and the first milestone most people actually cross.
+
+**A length is `months` plus `weeks`.** Every other door gives whole months, so
+`weeks` is an optional field on the `proGifts` row rather than a new unit for
+all of them: the week rung is `months: 0, weeks: 1`, and rows written before it
+have no `weeks` at all. The end is still decided once, stacked on any gift
+already running. The letter's first line has its own key, `introStreakWeeks`,
+because "0 months of Pro" is what the old one would say. The "You're Pro now"
+screen gets no length for a week and falls back to its title without one, which
+is also what every app already in the stores does with it.
+
+**No "ends in a week" for a gift that is a week.** A week-long gift is inside
+the week reminder's window from the moment it is granted, so the reminder would
+arrive straight after the letter announcing it. A reminder is skipped when the
+gift's own length is no longer than its window; the day-before one still goes.
+
+**"At least" still holds, so it is paid backwards once.** Everybody whose streak
+is already past seven days — including those already given the 100-day month —
+is owed the week on their next real action. That is one wave of grants after
+the deploy, drained by the scheduler fifty per pass, not a standing cost.
+
+## The leaderboard counts every reward
+
+The hourly gift, a bounty, a report reward and the three referral payouts were
+grant kinds: all-time only, never the week, month or year. The argument,
+recorded above under _A new account starts with tokens, and grants do not rank
+you_ and in the referral and gift sections, was that the ranked periods show
+practising and none of those is practising.
+
+What it produced was a table that disagreed with the wallet. Somebody who had
+been paid a bounty and a week of gifts saw the tokens arrive, saw them in the
+history, and saw a weekly rank that did not know about them — and read the
+leaderboard as wrong, not as principled. "Earned this week" that leaves out
+things you were paid this week is not a number anyone can check.
+
+So `TOKEN_GRANT_KINDS` is now the three credits that mark an account's
+_arrival_ — `signupBonus`, `welcomeBack`, `legacyTokenConversion` — and nothing
+else. Those three stay all-time only for the original reason: a sign-up bonus
+would put every new account above people who talked to somebody, and a
+converted v1 balance is tokens earned in 2023, not this week. Everything else
+credits all four periods, the daily pool included (it always did).
+
+The referral argument — twenty activations in a week is twenty thousand tokens
+without a message sent — is still true and is accepted: `maxActivationsPerMonth`
+caps it, and inviting twenty people who go on to talk to someone is not
+nothing. The gift is the weakest case, at most a few dozen tokens an hour, and
+a table that could be climbed by opening boxes on the hour is no longer climbed
+far by it.
+
+**Old rows are backfilled, not added on.** `awardTokens` only writes forwards,
+so every reward paid before this change sits in all-time and nowhere else.
+`scripts/backfill-reward-periods.ts` recomputes the week, month and year rows
+of everyone who has ever been paid a reward from the ledger, which carries the
+period keys each row was written with, and writes only the rows that disagree.
+Run it once after deploying; a second run finds nothing to do.

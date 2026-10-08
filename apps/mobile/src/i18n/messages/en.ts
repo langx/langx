@@ -483,6 +483,11 @@ export const en = {
     packProgress: '{done} of {total} started',
     /** A Chinese pack's name: the HSK level it is, which is how learners measure themselves. */
     packHsk: 'HSK {level}',
+    /**
+     * A Japanese pack's name: the JLPT level it is, `{level}` being the number
+     * after the N — "JLPT N5". The exam's own name in every locale, as HSK is.
+     */
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'Write it in {language}',
     produceHint: 'Type the phrase',
     check: 'Check',
@@ -1562,6 +1567,8 @@ export const en = {
     other: 'Something else',
     details: 'What happened?',
     detailsPlaceholder: 'Optional. Anything that helps us understand.',
+    threadNotice:
+      'If you have messaged each other, whoever reviews this also sees your latest messages together, up to this report.',
     submit: 'Send report',
     messageSent: 'Reported. Thank you — we look at every one.',
     profileSent: 'Report sent. We will look into it.',
