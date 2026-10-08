@@ -356,7 +356,8 @@ describe('feedback', () => {
       expect(emailSender.messages).toHaveLength(0)
     })
 
-    it('keeps the award off the week, month and year tables', async () => {
+    // A bounty is a reward, and the week table shows what somebody received.
+    it('reaches the week table, like any other reward', async () => {
       const path = await awardPath('The streak freeze is spent even when the streak is safe.')
       const week = await handle.db
         .collection<{ tokens: number }>(COLLECTIONS.tokenAggregates)
@@ -368,7 +369,7 @@ describe('feedback', () => {
       const after = await handle.db
         .collection<{ tokens: number }>(COLLECTIONS.tokenAggregates)
         .findOne({ userId, periodType: 'week' })
-      expect(after?.tokens ?? 0).toBe(before)
+      expect(after?.tokens ?? 0).toBe(before + 500)
     })
 
     it('refuses an amount outside the range, and pays nothing', async () => {
