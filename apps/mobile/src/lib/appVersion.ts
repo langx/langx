@@ -1,6 +1,11 @@
 import * as Application from 'expo-application'
 import Constants from 'expo-constants'
-import { APP_PLATFORM_HEADER, APP_VERSION_HEADER } from '@langx/shared'
+import {
+  APP_PLATFORM_AUTH_KEY,
+  APP_PLATFORM_HEADER,
+  APP_VERSION_AUTH_KEY,
+  APP_VERSION_HEADER,
+} from '@langx/shared'
 import { Platform } from 'react-native'
 
 /**
@@ -38,5 +43,19 @@ export function versionHeaders(): Record<string, string> {
   return {
     ...(version ? { [APP_VERSION_HEADER]: version } : {}),
     [APP_PLATFORM_HEADER]: appPlatform(),
+  }
+}
+
+/**
+ * The socket's copy of `versionHeaders()`, as `auth` keys — nothing can set a
+ * header on that transport (see `socket.ts`). An unknown version is left out
+ * for the reason above, with one more here: `0.0.0` is a valid version to the
+ * server, and it would have been counted as a build somebody is on.
+ */
+export function versionAuth(): Record<string, string> {
+  const version = knownVersion()
+  return {
+    ...(version ? { [APP_VERSION_AUTH_KEY]: version } : {}),
+    [APP_PLATFORM_AUTH_KEY]: appPlatform(),
   }
 }
