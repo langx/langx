@@ -356,6 +356,15 @@ async function grantProGift(db: Db, deps: ProGiftDeps, gift: ProGift, now: Date)
     // RevenueCat holds the grant; the next refresh or webhook writes it.
     deps.warn(error, 'pro gift refresh failed')
   }
+  /*
+   * A streak gift to somebody whose subscription runs past it anyway changes
+   * nothing they could notice, and a letter about it would only say so. The
+   * gift still lands, quietly: if they cancel, it is what keeps them on Pro,
+   * and the reminders speak up then. Only the streak's: the others answer
+   * something a person did on purpose — an operator's button, a typed code,
+   * friends invited — and that is owed a reply.
+   */
+  if (gift.source === 'streak' && carriesOn(profile.entitlement, endsAt)) return 'granted'
   try {
     const after = await db
       .collection<Profile>(COLLECTIONS.profiles)

@@ -274,7 +274,10 @@ Pro opens, one emoji-led line each, with "…and more." under them, and the end
 date. A code's gift is granted the moment it is redeemed, from
 `POST /me/gift-code`, not on the next pass. Somebody with a running store
 subscription is told it carries on as usual, and that Pro stays until the
-gift's end if it ever stops.
+gift's end if it ever stops. A **streak** gift to somebody whose subscription
+already runs past its end is granted without a word: no letter, no push, no
+mail, no welcome. It changes nothing they would notice, and if they cancel
+later the reminders are the first they hear of it.
 
 The reminders are **information, not an offer**: when it ends and where the
 plan screen is. A "subscribe now" would be marketing and would need the consent

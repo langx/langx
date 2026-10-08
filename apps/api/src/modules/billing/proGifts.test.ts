@@ -294,6 +294,49 @@ describe('gifts of Pro', () => {
       expect((await profile(userId))?.proWelcome).toMatchObject({ source: 'gift', months: 1 })
     })
 
+    it('grants a streak gift quietly under a subscription that outlasts it', async () => {
+      const userId = await person({
+        entitlement: {
+          tier: 'pro',
+          store: 'app_store',
+          willRenew: true,
+          expiresAt: new Date(Date.now() + 10 * DAY),
+        },
+      })
+      const { gift: row } = await queueProGift(
+        db,
+        { _id: proGiftKey.streak(7, userId), userId, months: 0, weeks: 1, source: 'streak' },
+        new Date(),
+      )
+      await grantProGiftNow(db, deps, row._id)
+
+      expect(grants).toHaveLength(1)
+      expect(await gift(row._id)).toMatchObject({ status: 'granted' })
+      expect(await messagesTo(`proGift:${row._id}`)).toHaveLength(0)
+      expect(fanned).toHaveLength(0)
+      expect(email.messages).toHaveLength(0)
+      expect((await profile(userId))?.proWelcome).toBeUndefined()
+    })
+
+    it('still announces a streak gift to a subscriber who has cancelled', async () => {
+      const userId = await person({
+        entitlement: {
+          tier: 'pro',
+          store: 'app_store',
+          willRenew: false,
+          expiresAt: new Date(Date.now() + 3 * DAY),
+        },
+      })
+      const { gift: row } = await queueProGift(
+        db,
+        { _id: proGiftKey.streak(7, userId), userId, months: 0, weeks: 1, source: 'streak' },
+        new Date(),
+      )
+      await grantProGiftNow(db, deps, row._id)
+
+      expect(await messagesTo(`proGift:${row._id}`)).toHaveLength(1)
+    })
+
     /**
      * From free, the refresh crosses the edge and `welcomeIfBecamePro` writes
      * the welcome — through `giftWelcomeFor`, which reads this row. The gift
