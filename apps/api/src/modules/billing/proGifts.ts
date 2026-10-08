@@ -57,6 +57,11 @@ export interface ProGift {
   _id: string
   userId: string
   months: number
+  /**
+   * Added to `months`. Only the first streak rung has any, and its `months`
+   * is 0; rows written before weeks existed have none.
+   */
+  weeks?: number
   source: ProGiftSource
   /** The operator, for an admin gift. */
   grantedBy?: string
@@ -106,6 +111,8 @@ const PRO_ENTITLEMENT = TIER_ENTITLEMENTS.pro[0]
 
 /** Long enough for RevenueCat and a refresh; short enough that a crashed machine's row comes back soon. */
 const LEASE_MS = 2 * 60 * 1000
+const DAY_MS = 24 * 60 * 60 * 1000
+
 /** A day and a half of retries, doubling, before a row is given up on and shown as failed. */
 const MAX_ATTEMPTS = 8
 const BACKOFF_MS = 5 * 60 * 1000
@@ -145,13 +152,17 @@ export function holdsStoreSubscription(entitlement: Profile['entitlement'] | und
  */
 export async function queueProGift(
   db: Db,
-  input: Pick<ProGift, '_id' | 'userId' | 'months' | 'source' | 'grantedBy' | 'note' | 'code'>,
+  input: Pick<
+    ProGift,
+    '_id' | 'userId' | 'months' | 'weeks' | 'source' | 'grantedBy' | 'note' | 'code'
+  >,
   now: Date = new Date(),
 ): Promise<{ gift: ProGift; created: boolean }> {
   const row: ProGift = {
     _id: input._id,
     userId: input.userId,
     months: input.months,
+    ...(input.weeks ? { weeks: input.weeks } : {}),
     source: input.source,
     ...(input.grantedBy ? { grantedBy: input.grantedBy } : {}),
     ...(input.note ? { note: input.note } : {}),
@@ -287,7 +298,10 @@ async function grantProGift(db: Db, deps: ProGiftDeps, gift: ProGift, now: Date)
 
   let endsAt = gift.endsAt
   if (!endsAt) {
-    const decided = addMonthsUtc(await giftBaseline(db, gift.userId, gift._id, now), gift.months)
+    const decided = new Date(
+      addMonthsUtc(await giftBaseline(db, gift.userId, gift._id, now), gift.months).getTime() +
+        (gift.weeks ?? 0) * 7 * DAY_MS,
+    )
     // Conditional, so a row that somehow has one keeps it — the end is
     // decided once, whoever gets there.
     const written = await gifts(db).findOneAndUpdate(
@@ -342,6 +356,15 @@ async function grantProGift(db: Db, deps: ProGiftDeps, gift: ProGift, now: Date)
     // RevenueCat holds the grant; the next refresh or webhook writes it.
     deps.warn(error, 'pro gift refresh failed')
   }
+  /*
+   * A streak gift to somebody whose subscription runs past it anyway changes
+   * nothing they could notice, and a letter about it would only say so. The
+   * gift still lands, quietly: if they cancel, it is what keeps them on Pro,
+   * and the reminders speak up then. Only the streak's: the others answer
+   * something a person did on purpose — an operator's button, a typed code,
+   * friends invited — and that is owed a reply.
+   */
+  if (gift.source === 'streak' && carriesOn(profile.entitlement, endsAt)) return 'granted'
   try {
     const after = await db
       .collection<Profile>(COLLECTIONS.profiles)
@@ -520,7 +543,9 @@ function introFor(gift: ProGift, t: ReturnType<typeof translator>, count: number
         friends: PRO_GIFT_RULES.referral.activationsPerGift,
       })
     case 'streak':
-      return t('proGift.introStreak', { count, days: streakDaysOf(gift._id) })
+      return gift.weeks
+        ? t('proGift.introStreakWeeks', { count: gift.weeks, days: streakDaysOf(gift._id) })
+        : t('proGift.introStreak', { count, days: streakDaysOf(gift._id) })
     case 'code':
       return t('proGift.introCode', { count, code: gift.code ?? '' })
   }
@@ -572,7 +597,8 @@ async function runReminders(db: Db, deps: ProGiftDeps, now: Date): Promise<numbe
   let sent = 0
   const reminders = PRO_GIFT_RULES.reminders
   for (const [index, reminder] of reminders.entries()) {
-    const horizon = new Date(now.getTime() + reminder.daysBefore * 24 * 60 * 60 * 1000)
+    const windowMs = reminder.daysBefore * DAY_MS
+    const horizon = new Date(now.getTime() + windowMs)
     const due = await gifts(db)
       .find({
         status: 'granted',
@@ -592,6 +618,10 @@ async function runReminders(db: Db, deps: ProGiftDeps, now: Date): Promise<numbe
       )
       if (claimed.modifiedCount === 0) continue
       if (!gift.endsAt || !(await isLastGift(db, gift))) continue
+      // A gift no longer than the window — the streak's week — is inside it
+      // from the moment it is granted, and "ends in a week" straight after
+      // "here is a week" reads as a mistake. The stamp above still stands.
+      if (gift.grantedAt && gift.endsAt.getTime() - gift.grantedAt.getTime() <= windowMs) continue
 
       let reader: Awaited<ReturnType<typeof readerOf>>
       try {

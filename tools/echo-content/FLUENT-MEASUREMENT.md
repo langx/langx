@@ -79,11 +79,26 @@ time by `pick-phrases.mjs --cues images/cues.<lang>.json`: the cue table is
 written against a 700-candidate pool (the best-covered 700, about twice a
 pack), and the second run takes only phrases the table maps. What survived:
 
-| Pack | Pool | Given an honest cue | Taken | Built |
-| ---- | ---: | ------------------: | ----: | ----- |
-| es   |  700 |             pending |       |       |
-| fr   |  700 |             pending |       |       |
-| it   |  700 |             pending |       |       |
+| Pack | Pool | Given an honest cue | No picture | Idiom | Content | Name only | Other | Picked | In the pack |
+| ---- | ---: | ------------------: | ---------: | ----: | ------: | --------: | ----: | -----: | ----------: |
+| es   |  700 |           502 (72%) |        126 |    13 |      40 |         8 |    11 |    300 |         296 |
+| fr   |  700 |           438 (63%) |        191 |    19 |      33 |        10 |     9 |    300 |         298 |
+| it   |  700 |           430 (61%) |        197 |    12 |      39 |        22 |     0 |    300 |         299 |
+
+All three clear the 200 floor with room, so all three are built. "Picked" to
+"in the pack" is phrasebook entries kaikki had no translation table for
+(_gracias de antemano_, _próspero año nuevo_, _bon app_, _cercasi personale_
+and three more); `build-pack.mjs` drops those, and dropping them left no two
+neighbours opening with the same word.
+
+"Content" is what the review of the fifteen dropped at the lower levels —
+slogans, quotations, violence, sexual anatomy, stereotypes, Tatoeba nonsense —
+skipped at mapping time rather than left for review, and "no picture" is mostly
+an animal, food or garment the closed set of 372 has no drawing of (goat,
+giraffe, spider, pear, shoes, socks). Six of the mappers' cues were overruled
+before the merge: a symbol heart for the organ (twice), red meat for raw
+chicken, a toothbrush for toothpaste, and two sentences about states'
+diplomatic and political standing.
 
 `de` and `ru` were drafted on a sibling branch (Piper voices):
 

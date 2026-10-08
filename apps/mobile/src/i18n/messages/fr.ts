@@ -1426,6 +1426,8 @@ export const fr: Localized<EnMessages> = {
     other: 'Autre chose',
     details: 'Que s’est-il passé ?',
     detailsPlaceholder: 'Facultatif. Tout ce qui peut nous aider à comprendre.',
+    threadNotice:
+      'Si vous vous êtes écrit, la personne qui examine ce signalement voit aussi vos derniers messages échangés, jusqu’à ce signalement.',
     submit: 'Envoyer le signalement',
     messageSent: 'Signalé. Merci — nous les examinons tous.',
     profileSent: 'Signalement envoyé. Nous allons regarder.',

@@ -576,8 +576,14 @@ export const fr: Localized<ServerMessages> = {
         '🎉 {friends} amis que tu as invités discutent sur LangX. {count} mois de Pro pour toi !',
     },
     introStreak: {
-      one: '🔥 {days} jours d’affilée ! Voici {count} mois de Pro pour continuer sur ta lancée.',
-      other: '🔥 {days} jours d’affilée ! Voici {count} mois de Pro pour continuer sur ta lancée.',
+      one: '🔥 {days} jours d’affilée, chapeau ! Pour te remercier, on t’offre {count} mois de Pro.',
+      other:
+        '🔥 {days} jours d’affilée, chapeau ! Pour te remercier, on t’offre {count} mois de Pro.',
+    },
+    introStreakWeeks: {
+      one: '🔥 {days} jours d’affilée, bravo ! Pour te remercier, on t’offre {count} semaine de Pro.',
+      other:
+        '🔥 {days} jours d’affilée, bravo ! Pour te remercier, on t’offre {count} semaines de Pro.',
     },
     introCode: {
       one: '🎟️ Le code {code} a marché : {count} mois de LangX Pro pour toi.',
@@ -622,6 +628,8 @@ export const fr: Localized<ServerMessages> = {
       other:
         'Merci pour ton signalement. Nous l’avons examiné et ajouté {count} jetons à ton portefeuille, pour avoir aidé à faire de LangX un bon endroit pour apprendre. La personne signalée ne saura jamais qui l’a signalée.',
     },
+    suspensionEnded:
+      'Ta suspension est terminée et ton compte est de nouveau ouvert. 👋 Ton profil est de retour dans Découvrir et dans la recherche, et tes conversations sont là où tu les as laissées.\n\nAide-nous à garder LangX comme un bon endroit pour apprendre : un autre signalement confirmé pourrait fermer le compte pour de bon. Si tu penses que quelque chose a mal tourné, Réglages → À propos → Commentaires arrive chez une vraie personne.',
     assistantOffline:
       'Je ne peux pas répondre aux messages pour le moment. Si ça peut attendre, réessaie plus tard ; sinon, écris à {email} et une personne te lira.',
     assistantLimit:

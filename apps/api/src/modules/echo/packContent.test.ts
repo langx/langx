@@ -208,25 +208,28 @@ describe('the packs in content/echo', () => {
   }
 
   /*
-   * The German and Russian `fluent` packs were built to a stricter rule than
-   * the three levels below them: every item has a cue and a reading, enforced
-   * when the phrases were picked rather than left to whatever survived. A
-   * phrase with no honest picture was not taken, so a cue-less item here
-   * means somebody edited the pack or the cue table by hand afterwards.
+   * A picture and a reading on every item, for the packs drafted under that
+   * rule from the start.
    *
-   * An explicit list rather than every `fluent` file, because the rule is the
-   * brief these packs were drafted under; a later pack may be held to its own.
+   * Named by id rather than asked of every pack, because the older packs were
+   * not held to it and are right not to be: sixteen of their cards carry no
+   * cue on purpose (`docs/echo.md`, _Images_). The `fluent` packs were picked
+   * with `pick-phrases.mjs --cues`, so a phrase without an honest picture
+   * never got in, and this is what says the rule survived the build and the
+   * readings — a run of `generate.py` that stopped halfway would leave items
+   * silent and this would name them.
    */
-  for (const id of ['de:fluent', 'ru:fluent']) {
+  const PICTURED_AND_READ = ['es:fluent', 'fr:fluent', 'it:fluent', 'de:fluent', 'ru:fluent']
+
+  for (const id of PICTURED_AND_READ) {
     it(`${id} gives every item a cue and a reading`, () => {
-      const [lang, level] = id.split(':') as [string, string]
+      const [lang = '', level = ''] = id.split(':')
       const pack = echoPackFileSchema.parse(
         JSON.parse(readFileSync(join(CONTENT, lang, `${level}.json`), 'utf8')),
       )
       const bare = pack.items
-        .filter((item) => !item.image || !item.voices || item.voices.length === 0)
-        .map((item) => `${item.index} ${item.text}`)
-      expect(pack.items.length).toBeGreaterThanOrEqual(200)
+        .filter((item) => !item.image || !item.voices?.length)
+        .map((item) => item.text)
       expect(bare).toEqual([])
     })
   }

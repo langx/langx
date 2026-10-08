@@ -24,3 +24,23 @@ describe('deleteByPrefix', () => {
     await expect(provider.deleteByPrefix('feedback/u1')).rejects.toThrow(/must end in/)
   })
 })
+
+describe('getUploadUrl', () => {
+  function signedHeaders(url: string): string[] {
+    return (new URL(url).searchParams.get('X-Amz-SignedHeaders') ?? '').split(';')
+  }
+
+  /**
+   * The byte ceiling on a presigned upload is only real if the bucket checks
+   * it, and the bucket only checks what the signature covers.
+   */
+  it('signs the length it is given', async () => {
+    const { uploadUrl } = await provider.getUploadUrl('messages/c1/a.jpg', 'image/jpeg', 1234)
+    expect(signedHeaders(uploadUrl)).toContain('content-length')
+  })
+
+  it('signs no length when none is given', async () => {
+    const { uploadUrl } = await provider.getUploadUrl('messages/c1/a.jpg', 'image/jpeg')
+    expect(signedHeaders(uploadUrl)).not.toContain('content-length')
+  })
+})

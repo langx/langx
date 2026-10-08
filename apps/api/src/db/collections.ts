@@ -47,6 +47,13 @@ export const COLLECTIONS = {
   // and it opens no channel.
   conversations: 'conversations',
   messages: 'messages',
+  /**
+   * Chat attachments signed for and not yet sent. A row goes in when the
+   * upload URL is signed and comes out when a message names the file; one
+   * still here a day later is a file nobody sent, and the purge tick deletes
+   * it from the bucket. See `chat/pendingUploads.ts`.
+   */
+  pendingUploads: 'pendingUploads',
   blocks: 'blocks',
   /**
    * The follow graph. One-directional and unconfirmed — following somebody

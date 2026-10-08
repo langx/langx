@@ -253,7 +253,7 @@ describe('referrals', () => {
       expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(1)
     })
 
-    /** The invitee's welcome lands with the referrer's award, once, all-time only. */
+    /** The invitee's welcome lands with the referrer's award, once, in every period. */
     it('welcomes the invitee at the same moment, once', async () => {
       const a = await newUser()
       const b = await newUser({ referredByHandle: a.handle })
@@ -265,7 +265,7 @@ describe('referrals', () => {
       expect(rows[0]).toMatchObject({ amount: RULES.inviteeActivation, refId: b.userId })
       const after = await readAggregates(handle.db, b.userId)
       expect(after.all - before.all).toBeGreaterThanOrEqual(RULES.inviteeActivation)
-      expect(after.week - before.week).toBeLessThan(RULES.inviteeActivation)
+      expect(after.week - before.week).toBeGreaterThanOrEqual(RULES.inviteeActivation)
 
       await earn(b.userId)
       expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(1)
@@ -411,10 +411,10 @@ describe('referrals', () => {
     })
 
     /**
-     * Invisible without an explicit assertion, and it is the leaderboard
-     * invariant: inviting is not practising, so the weekly table must not move.
+     * Invisible without an explicit assertion: the payout reaches every
+     * period, so the weekly table shows what the referrer actually received.
      */
-    it('credits all-time only, never the week or the month', async () => {
+    it('credits every period, the week and the month included', async () => {
       const a = await newUser()
       const b = await newUser({ referredByHandle: a.handle })
       const before = await readAggregates(handle.db, a.userId)
@@ -422,10 +422,10 @@ describe('referrals', () => {
       const after = await readAggregates(handle.db, a.userId)
 
       expect(after.all - before.all).toBe(RULES.activation)
-      expect(after.week).toBe(before.week)
-      expect(after.month).toBe(before.month)
-      expect(after.year).toBe(before.year)
-      expect(TOKEN_GRANT_KINDS as readonly string[]).toContain('referral')
+      expect(after.week - before.week).toBe(RULES.activation)
+      expect(after.month - before.month).toBe(RULES.activation)
+      expect(after.year - before.year).toBe(RULES.activation)
+      expect(TOKEN_GRANT_KINDS as readonly string[]).not.toContain('referral')
     })
 
     /**

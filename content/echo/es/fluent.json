@@ -1,0 +1,5715 @@
+{
+  "id": "es:fluent",
+  "lang": "es",
+  "level": "fluent",
+  "contentVersion": 3,
+  "reviewed": false,
+  "sources": [
+    {
+      "name": "Wiktionary, via kaikki.org (wiktextract)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://kaikki.org/"
+    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/hermitdave/FrequencyWords"
+    },
+    {
+      "name": "Kokoro-82M (hexgrad)",
+      "licence": "Apache-2.0",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M"
+    }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "Al menos respóndeme.",
+      "gloss": {
+        "en": "At least answer me.",
+        "tr": "En azından bana cevap ver.",
+        "de": "Antworte mir wenigstens.",
+        "fr": "Réponds-moi au moins.",
+        "ru": "По крайней мере ответь мне."
+      },
+      "freqRank": 5,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/es_fluent/0-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/0-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "Por favor, respóndeme.",
+      "gloss": {
+        "en": "Please answer me.",
+        "tr": "Lütfen bana cevap ver.",
+        "de": "Antworte mir bitte.",
+        "fr": "S'il te plaît, réponds-moi.",
+        "pt-BR": "Por favor, responda-me."
+      },
+      "freqRank": 6,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/es_fluent/1-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/1-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "Soy un empresario.",
+      "gloss": {
+        "en": "I am an entrepreneur.",
+        "tr": "Ben bir girişimciyim.",
+        "de": "Ich bin Unternehmer.",
+        "fr": "Je suis entrepreneur.",
+        "ru": "Я предприниматель."
+      },
+      "freqRank": 7,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/es_fluent/2-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/2-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "Tengo dieciséis años.",
+      "gloss": {
+        "en": "I am sixteen years old.",
+        "tr": "Ben on altı yaşındayım.",
+        "de": "Ich bin sechzehn Jahre alt.",
+        "fr": "J'ai seize ans.",
+        "pt-BR": "Tenho dezesseis anos.",
+        "ru": "Мне шестнадцать лет."
+      },
+      "freqRank": 8,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/3-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/3-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "Costará unos 10.000 yenes.",
+      "gloss": {
+        "en": "It will cost around 10,000 yen.",
+        "de": "Es wird etwa 10000 Yen kosten.",
+        "fr": "Cela coûtera à peu près 10 000 yens.",
+        "pt-BR": "Custará uns 10.000 ienes.",
+        "ru": "Это будет стоить около десяти тысяч иен."
+      },
+      "freqRank": 9,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:label",
+      "voices": [
+        { "key": "echo/packs/es_fluent/4-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/4-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "No tires piedras.",
+      "gloss": {
+        "en": "Don't throw stones.",
+        "tr": "Taşları atmayın.",
+        "de": "Wirf keine Steine.",
+        "pt-BR": "Não jogue pedra.",
+        "ru": "Не кидайся камнями.",
+        "ar": "لا ترمي بالحجارة."
+      },
+      "freqRank": 10,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:rock",
+      "voices": [
+        { "key": "echo/packs/es_fluent/5-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/5-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "¡Necesito un medico!",
+      "gloss": {
+        "en": "I need a doctor!",
+        "de": "Ich brauche einen Arzt!",
+        "fr": "J'ai besoin d'un médecin !",
+        "ru": "Мне нужен врач!",
+        "ar": "أحتاج إلى طبيب ."
+      },
+      "freqRank": 11,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/es_fluent/6-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/6-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "No hablo sueco.",
+      "gloss": {
+        "en": "I don't speak Swedish.",
+        "tr": "İsveççe konuşmuyorum.",
+        "de": "Ich spreche kein Schwedisch.",
+        "fr": "Je ne parle pas le suédois.",
+        "ru": "Я не говорю по-шведски."
+      },
+      "freqRank": 12,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/7-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/7-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "Yo hablo sueco.",
+      "gloss": {
+        "en": "I speak Swedish.",
+        "de": "Ich spreche Schwedisch.",
+        "fr": "Je parle suédois.",
+        "pt-BR": "Eu falo sueco.",
+        "ru": "Я говорю по-шведски."
+      },
+      "freqRank": 13,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/8-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/8-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "Soy un turista.",
+      "gloss": {
+        "en": "I am a tourist.",
+        "tr": "Ben bir turistim.",
+        "de": "Ich bin Tourist.",
+        "fr": "Je suis touriste.",
+        "pt-BR": "Sou um turista.",
+        "ru": "Я турист."
+      },
+      "freqRank": 14,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage",
+      "voices": [
+        { "key": "echo/packs/es_fluent/9-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/9-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "Tengo dieciocho años.",
+      "gloss": {
+        "en": "I am eighteen years old.",
+        "tr": "On sekiz yaşındayım.",
+        "de": "Ich bin 18 Jahre alt.",
+        "fr": "J'ai dix-huit ans.",
+        "pt-BR": "Eu tenho 18 anos.",
+        "ru": "Мне 18 лет."
+      },
+      "freqRank": 15,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/10-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/10-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "Hablo tres idiomas.",
+      "gloss": {
+        "en": "I speak three languages.",
+        "tr": "Üç dil konuşurum.",
+        "de": "Ich spreche drei Sprachen.",
+        "pt-BR": "Eu falo três línguas.",
+        "ru": "Я говорю на трёх языках."
+      },
+      "freqRank": 16,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/11-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/11-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "Él toma vitaminas.",
+      "gloss": {
+        "en": "He takes vitamins.",
+        "tr": "O vitaminler alır.",
+        "de": "Er nimmt Vitamine.",
+        "pt-BR": "Ele toma vitaminas.",
+        "ru": "Он принимает витамины."
+      },
+      "freqRank": 17,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pill",
+      "voices": [
+        { "key": "echo/packs/es_fluent/12-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/12-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "Ella es agresiva.",
+      "gloss": {
+        "en": "She is aggressive.",
+        "de": "Sie ist aggressiv.",
+        "fr": "Elle est agressive.",
+        "pt-BR": "Ela é agressiva.",
+        "ru": "Она агрессивная."
+      },
+      "freqRank": 18,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/13-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/13-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "Siempre te amaré.",
+      "gloss": {
+        "en": "I will always love you.",
+        "tr": "Seni her zaman seveceğim.",
+        "de": "Ich werde dich immer lieben.",
+        "fr": "Je t'aimerai toujours.",
+        "pt-BR": "Eu sempre vou te amar.",
+        "ru": "Я всегда буду любить тебя."
+      },
+      "freqRank": 19,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/es_fluent/14-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/14-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "Tom fue adoptado.",
+      "gloss": {
+        "en": "Tom was adopted.",
+        "de": "Tom wurde adoptiert.",
+        "fr": "Tom a été adopté.",
+        "pt-BR": "Tom foi adotado.",
+        "ru": "Том был усыновлён."
+      },
+      "freqRank": 20,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/es_fluent/15-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/15-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "No soy sorda.",
+      "gloss": {
+        "en": "I am not deaf.",
+        "de": "Ich bin nicht taub.",
+        "fr": "Je ne suis pas sourde.",
+        "pt-BR": "Não sou surda.",
+        "ru": "Я не глухая."
+      },
+      "freqRank": 21,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear-with-hearing-aid",
+      "voices": [
+        { "key": "echo/packs/es_fluent/16-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/16-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "Prefiero agua mineral.",
+      "gloss": {
+        "en": "I prefer mineral water.",
+        "de": "Ich mag lieber Selters.",
+        "fr": "Je préfère l'eau minérale.",
+        "pt-BR": "Prefiro água mineral.",
+        "ru": "Я предпочитаю минеральную воду.",
+        "ar": "أنا أفضل المياه المعدنية."
+      },
+      "freqRank": 22,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/es_fluent/17-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/17-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "No lo despiertes.",
+      "gloss": {
+        "en": "Don't wake him up.",
+        "tr": "Onu uyandırma.",
+        "de": "Weck ihn nicht.",
+        "fr": "Ne le réveille pas.",
+        "pt-BR": "Não o acorde.",
+        "ru": "Не буди его."
+      },
+      "freqRank": 23,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/18-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/18-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Tengo un diccionario.",
+      "gloss": {
+        "en": "I have a dictionary.",
+        "tr": "Bir sözlüğüm var.",
+        "de": "Ich habe ein Wörterbuch.",
+        "fr": "Je dispose d'un dictionnaire.",
+        "pt-BR": "Eu tenho um dicionário.",
+        "ru": "У меня есть словарь."
+      },
+      "freqRank": 24,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/19-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/19-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "Él leía mucho.",
+      "gloss": {
+        "en": "He used to read a lot.",
+        "de": "Er las echt viel.",
+        "fr": "Il lisait beaucoup.",
+        "pt-BR": "Ele lia muito.",
+        "ru": "Он много читал."
+      },
+      "freqRank": 25,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/es_fluent/20-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/20-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "Se hizo pianista.",
+      "gloss": {
+        "en": "He became a pianist.",
+        "tr": "O bir piyanist oldu.",
+        "de": "Er wurde Pianist.",
+        "pt-BR": "Ele se tornou pianista.",
+        "ru": "Он стал пианистом.",
+        "ar": "أصبح عازف بيانو."
+      },
+      "freqRank": 26,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/es_fluent/21-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/21-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "Tom es pianista.",
+      "gloss": {
+        "en": "Tom is a pianist.",
+        "tr": "Tom bir piyanist.",
+        "de": "Tom ist Pianist.",
+        "fr": "Tom est pianiste.",
+        "pt-BR": "Tom é pianista."
+      },
+      "freqRank": 27,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/es_fluent/22-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/22-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "Odio el karaoke.",
+      "gloss": {
+        "en": "I hate karaoke.",
+        "de": "Ich hasse Karaoke.",
+        "fr": "Je déteste le karaoké.",
+        "pt-BR": "Odeio karaokê.",
+        "ru": "Ненавижу караоке."
+      },
+      "freqRank": 28,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/es_fluent/23-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/23-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "Entiendo tu frustración.",
+      "gloss": {
+        "en": "I understand your frustration.",
+        "de": "Ich kann deinen Frust verstehen.",
+        "fr": "Je comprends ta frustration.",
+        "pt-BR": "Eu entendo a sua frustração.",
+        "ru": "Я понимаю твоё разочарование."
+      },
+      "freqRank": 29,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:weary-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/24-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/24-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "Adoro la lasaña.",
+      "gloss": {
+        "en": "I love lasagna.",
+        "de": "Ich liebe Lasagne.",
+        "fr": "J'adore les lasagnes.",
+        "pt-BR": "Adoro lasanha.",
+        "ru": "Я люблю лазанью."
+      },
+      "freqRank": 30,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/es_fluent/25-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/25-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "¿Dónde puedo aparcar?",
+      "gloss": {
+        "en": "Where can I park?",
+        "tr": "Nereye park edebilirim?",
+        "de": "Wo kann ich parken?",
+        "pt-BR": "Onde posso estacionar?",
+        "ru": "Где можно припарковаться?"
+      },
+      "freqRank": 31,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:p-button",
+      "voices": [
+        { "key": "echo/packs/es_fluent/26-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/26-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "Puedes aparcar aquí.",
+      "gloss": {
+        "en": "You may park here.",
+        "tr": "Buraya park edebilirsin.",
+        "de": "Du kannst hier parken.",
+        "pt-BR": "Você pode estacionar aqui.",
+        "ru": "Можешь припарковаться здесь."
+      },
+      "freqRank": 32,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:p-button",
+      "voices": [
+        { "key": "echo/packs/es_fluent/27-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/27-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "Conducir me relaja.",
+      "gloss": {
+        "en": "Driving relaxes me.",
+        "tr": "Araba sürmek beni rahatlatıyor.",
+        "de": "Fahren entspannt mich.",
+        "fr": "Conduire me détend.",
+        "pt-BR": "Dirigir me faz relaxar."
+      },
+      "freqRank": 33,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/es_fluent/28-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/28-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "Ellas estaban enfermas.",
+      "gloss": {
+        "en": "They were sick.",
+        "tr": "Onlar hastaydı.",
+        "de": "Sie waren krank.",
+        "fr": "Elles étaient malades.",
+        "ru": "Они были больны."
+      },
+      "freqRank": 34,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/es_fluent/29-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/29-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "Ella me sonrió.",
+      "gloss": {
+        "en": "She smiled at me.",
+        "de": "Sie hat mich angelächelt.",
+        "fr": "Elle m'a souri.",
+        "pt-BR": "Ela sorriu para mim.",
+        "ru": "Она улыбнулась мне."
+      },
+      "freqRank": 35,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/es_fluent/30-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/30-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "Tengo un computador.",
+      "gloss": {
+        "en": "I have a computer.",
+        "de": "Ich habe einen Computer.",
+        "fr": "J'ai un ordinateur.",
+        "pt-BR": "Eu tenho um computador.",
+        "ru": "У меня есть компьютер."
+      },
+      "freqRank": 36,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/es_fluent/31-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/31-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "¿Por qué estudias?",
+      "gloss": {
+        "en": "Why do you study?",
+        "de": "Warum studierst du?",
+        "fr": "Pourquoi est-ce que tu étudies ?",
+        "pt-BR": "Por que você estuda?",
+        "ru": "Почему ты учишься?"
+      },
+      "freqRank": 37,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/es_fluent/32-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/32-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "Él habla portugués.",
+      "gloss": {
+        "en": "He speaks Portuguese.",
+        "de": "Er spricht Portugiesisch.",
+        "fr": "Il parle portugais.",
+        "pt-BR": "Ele fala português.",
+        "ru": "Он говорит по-португальски."
+      },
+      "freqRank": 38,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/33-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/33-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "Ella habla portugués.",
+      "gloss": {
+        "en": "She speaks Portuguese.",
+        "tr": "O Portekizce konuşur.",
+        "de": "Sie spricht Portugiesisch.",
+        "fr": "Elle parle portugais.",
+        "pt-BR": "Ela fala português.",
+        "ru": "Она говорит по-португальски."
+      },
+      "freqRank": 39,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/34-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/34-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "Puede que llueva.",
+      "gloss": {
+        "en": "It may rain.",
+        "tr": "Yağmur yağabilir.",
+        "de": "Vielleicht wird es regnen.",
+        "ru": "Может пойти дождь.",
+        "ar": "من الممكن أن تمطر."
+      },
+      "freqRank": 40,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        { "key": "echo/packs/es_fluent/35-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/35-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "Necesito un traductor.",
+      "gloss": {
+        "en": "I need a translator.",
+        "de": "Ich brauche einen Übersetzer.",
+        "fr": "J'ai besoin d'un traducteur.",
+        "pt-BR": "Preciso de um tradutor.",
+        "ru": "Мне нужен переводчик.",
+        "ar": "أحتاج إلى مترجم."
+      },
+      "freqRank": 41,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/36-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/36-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "Tom es traductor.",
+      "gloss": {
+        "en": "Tom is a translator.",
+        "tr": "Tom bir çevirmen.",
+        "de": "Tom ist Übersetzer.",
+        "pt-BR": "Tom é tradutor.",
+        "ar": "توم مترجم."
+      },
+      "freqRank": 42,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/37-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/37-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "Eso es intrigante.",
+      "gloss": {
+        "en": "That is intriguing.",
+        "de": "Das macht neugierig.",
+        "fr": "C'est intrigant.",
+        "pt-BR": "Isso é intrigante.",
+        "ru": "Это интересно."
+      },
+      "freqRank": 43,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/38-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/38-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "Todos cometemos errores.",
+      "gloss": {
+        "en": "We all make mistakes.",
+        "tr": "Hepimiz hata yaparız.",
+        "de": "Jeder macht mal Fehler.",
+        "pt-BR": "Todos cometemos erros.",
+        "ar": "كلنا نخطئ."
+      },
+      "freqRank": 44,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cross-mark",
+      "voices": [
+        { "key": "echo/packs/es_fluent/39-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/39-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "Quiero estudiar hebreo.",
+      "gloss": {
+        "en": "I want to study Hebrew.",
+        "de": "Ich möchte Hebräisch lernen.",
+        "fr": "Je veux étudier l'hébreu.",
+        "pt-BR": "Quero aprender hebraico.",
+        "ru": "Хочу изучать иврит."
+      },
+      "freqRank": 45,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/40-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/40-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "Tengo diecinueve años.",
+      "gloss": {
+        "en": "I am 19 years old.",
+        "tr": "On dokuz yaşındayım.",
+        "de": "Ich bin 19 Jahre alt.",
+        "fr": "J'ai 19 ans.",
+        "ru": "Мне девятнадцать лет."
+      },
+      "freqRank": 46,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/41-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/41-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "Disculpe la tardanza.",
+      "gloss": {
+        "en": "I'm sorry I'm late.",
+        "de": "Entschuldigen Sie die Verspätung.",
+        "fr": "Excusez mon retard.",
+        "pt-BR": "Desculpe o atraso.",
+        "ru": "Прошу прощения за опоздание."
+      },
+      "freqRank": 47,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/es_fluent/42-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/42-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "Él teme equivocarse.",
+      "gloss": {
+        "en": "He is afraid of making mistakes.",
+        "tr": "Hata yapmaktan korkuyor.",
+        "de": "Er hat Angst, Fehler zu machen.",
+        "fr": "Il a peur de se tromper.",
+        "ru": "Он боится ошибиться."
+      },
+      "freqRank": 48,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:worried-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/43-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/43-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "Es un historiador.",
+      "gloss": {
+        "en": "He's a historian.",
+        "de": "Er ist Historiker.",
+        "fr": "Il est historien.",
+        "ru": "Он историк.",
+        "ar": "هو مؤرخ."
+      },
+      "freqRank": 49,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:scroll",
+      "voices": [
+        { "key": "echo/packs/es_fluent/44-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/44-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "Ya he desayunado.",
+      "gloss": {
+        "en": "I've already eaten breakfast.",
+        "tr": "Sabah kahvaltısını zaten yedim.",
+        "de": "Ich habe schon gefrühstückt.",
+        "fr": "J'ai déjà mangé mon petit déjeuner.",
+        "pt-BR": "Já tomei meu café da manhã."
+      },
+      "freqRank": 50,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/es_fluent/45-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/45-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "Tengo un boli.",
+      "gloss": {
+        "en": "I have a pen.",
+        "tr": "Benim bir kalemim var.",
+        "de": "Ich habe einen Kuli.",
+        "fr": "J’ai un stylo.",
+        "pt-BR": "Tenho uma caneta."
+      },
+      "freqRank": 51,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/es_fluent/46-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/46-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "Tom traduce despacio.",
+      "gloss": {
+        "en": "Tom translates slowly.",
+        "tr": "Tom yavaş çeviri yapar.",
+        "de": "Tom übersetzt langsam.",
+        "fr": "Tom traduit lentement.",
+        "ru": "Том переводит медленно."
+      },
+      "freqRank": 52,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/47-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/47-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "Ella habla húngaro.",
+      "gloss": {
+        "en": "She speaks Hungarian.",
+        "de": "Sie spricht Ungarisch.",
+        "fr": "Elle parle hongrois.",
+        "pt-BR": "Ela fala húngaro.",
+        "ru": "Она говорит по-венгерски."
+      },
+      "freqRank": 53,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/48-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/48-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "¿Los gatos sueñan?",
+      "gloss": {
+        "en": "Do cats dream?",
+        "tr": "Kediler rüya görür mü?",
+        "de": "Träumen Katzen?",
+        "fr": "Les chats rêvent-ils ?",
+        "pt-BR": "Os gatos sonham?",
+        "ru": "Кошки видят сны?"
+      },
+      "freqRank": 54,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/es_fluent/49-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/49-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "Vas a caerte.",
+      "gloss": {
+        "en": "You'll fall!",
+        "de": "Du wirst hinunterfallen.",
+        "fr": "Tu vas tomber.",
+        "pt-BR": "Você vai cair!",
+        "ru": "Ты упадёшь."
+      },
+      "freqRank": 55,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/es_fluent/50-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/50-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "No le gustamos.",
+      "gloss": {
+        "en": "He doesn't like us.",
+        "tr": "O bizi sevmiyor.",
+        "de": "Er mag uns nicht.",
+        "fr": "Il ne nous aime pas.",
+        "pt-BR": "Ele não gosta de nós."
+      },
+      "freqRank": 56,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-down",
+      "voices": [
+        { "key": "echo/packs/es_fluent/51-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/51-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "Pero escribirás, ¿verdad?",
+      "gloss": {
+        "en": "But you will write, won't you?",
+        "tr": "Ama yazacaksın, değil mi?",
+        "de": "Aber du wirst schreiben, oder?",
+        "fr": "Mais tu écriras, n'est-ce pas ?",
+        "ru": "Но ты ведь будешь писать, да?"
+      },
+      "freqRank": 57,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/es_fluent/52-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/52-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "Anoche llovió mucho.",
+      "gloss": {
+        "en": "We had a heavy rain last night.",
+        "tr": "Dün gece çok yağmur yağdı.",
+        "de": "Letzte Nacht hat es stark geregnet.",
+        "fr": "Nous avons eu de fortes pluies la nuit dernière.",
+        "pt-BR": "Ontem à noite choveu muito."
+      },
+      "freqRank": 58,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/es_fluent/53-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/53-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "Los pájaros cantaban.",
+      "gloss": {
+        "en": "The birds sang.",
+        "de": "Die Vögel sangen.",
+        "fr": "Les oiseaux chantaient.",
+        "pt-BR": "Os pássaros cantavam.",
+        "ru": "Птицы пели."
+      },
+      "freqRank": 59,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/es_fluent/54-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/54-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "Tom es tuerto.",
+      "gloss": {
+        "en": "Tom is blind in one eye.",
+        "de": "Tom ist auf einem Auge blind.",
+        "fr": "Tom est aveugle d'un œil.",
+        "pt-BR": "Tom é cego de um olho.",
+        "ru": "Том слеп на один глаз."
+      },
+      "freqRank": 60,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/es_fluent/55-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/55-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "Empezó a nevar.",
+      "gloss": {
+        "en": "It began to snow.",
+        "tr": "Kar yağmaya başladı.",
+        "de": "Es fing an zu schneien.",
+        "pt-BR": "Começou a nevar.",
+        "ru": "Пошёл снег."
+      },
+      "freqRank": 61,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [
+        { "key": "echo/packs/es_fluent/56-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/56-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "Estoy aprendiendo checo.",
+      "gloss": {
+        "en": "I learn Czech.",
+        "de": "Ich lerne Tschechisch.",
+        "fr": "J'apprends le tchèque.",
+        "pt-BR": "Estou aprendendo checo.",
+        "ru": "Я учу чешский."
+      },
+      "freqRank": 62,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/57-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/57-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "Tom está tosiendo.",
+      "gloss": {
+        "en": "Tom is coughing.",
+        "tr": "Tom öksürüyor.",
+        "de": "Tom hustet.",
+        "pt-BR": "Tom está tossindo.",
+        "ru": "Том кашляет."
+      },
+      "freqRank": 63,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-medical-mask",
+      "voices": [
+        { "key": "echo/packs/es_fluent/58-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/58-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "Estábamos muy cansadas.",
+      "gloss": {
+        "en": "We were very tired.",
+        "tr": "Çok yorgunduk.",
+        "de": "Wir waren sehr müde.",
+        "fr": "Nous étions très fatiguées.",
+        "ru": "Мы были очень уставшие."
+      },
+      "freqRank": 64,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:weary-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/59-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/59-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "Ellos se besaron.",
+      "gloss": {
+        "en": "They kissed each other.",
+        "tr": "Öpüştüler.",
+        "de": "Sie küssten einander.",
+        "fr": "Ils se sont embrassés.",
+        "pt-BR": "Eles se beijaram."
+      },
+      "freqRank": 65,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:kiss-mark",
+      "voices": [
+        { "key": "echo/packs/es_fluent/60-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/60-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "Necesito un analgésico.",
+      "gloss": {
+        "en": "I need an analgesic.",
+        "de": "Ich brauche ein Schmerzmittel.",
+        "fr": "J'ai besoin d'un analgésique.",
+        "pt-BR": "Preciso de um analgésico.",
+        "ru": "Мне нужно обезболивающее."
+      },
+      "freqRank": 66,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pill",
+      "voices": [
+        { "key": "echo/packs/es_fluent/61-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/61-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "No soy perfeccionista.",
+      "gloss": {
+        "en": "I'm not a perfectionist.",
+        "tr": "Mükemmeliyetçi değilim.",
+        "de": "Ich bin kein Perfektionist.",
+        "fr": "Je ne suis pas perfectionniste.",
+        "pt-BR": "Não sou perfeccionista.",
+        "ru": "Я не перфекционист."
+      },
+      "freqRank": 67,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hundred-points",
+      "voices": [
+        { "key": "echo/packs/es_fluent/62-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/62-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "¡Tengo que apurarme!",
+      "gloss": {
+        "en": "I have to hurry!",
+        "de": "Ich muss mich beeilen!",
+        "fr": "Je dois me dépêcher !",
+        "pt-BR": "Eu devo me apressar!",
+        "ru": "Мне надо спешить!"
+      },
+      "freqRank": 68,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/es_fluent/63-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/63-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "Ayer estudiaron inglés.",
+      "gloss": {
+        "en": "They studied English yesterday.",
+        "fr": "Hier, ils ont étudié l'anglais.",
+        "pt-BR": "Ontem estudaram inglês.",
+        "ru": "Вчера они занимались английским.",
+        "ar": "درسوا الإنجليزية البارحة."
+      },
+      "freqRank": 69,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/64-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/64-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "No hablo catalán.",
+      "gloss": {
+        "en": "I don't speak Catalan.",
+        "de": "Ich spreche kein Katalanisch.",
+        "fr": "Je ne parle pas catalan.",
+        "pt-BR": "Não falo catalão.",
+        "ru": "Я не говорю по-каталански."
+      },
+      "freqRank": 70,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/65-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/65-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "¿Ya has almorzado?",
+      "gloss": {
+        "en": "Have you eaten lunch yet?",
+        "tr": "Öğle yemeği yemiş miydin?",
+        "fr": "As-tu déjà pris ton déjeuner ?",
+        "pt-BR": "Você já almoçou?",
+        "ar": "هل تناولت الغداء ؟"
+      },
+      "freqRank": 71,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/es_fluent/66-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/66-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "Nadie puede entenderle.",
+      "gloss": {
+        "en": "Nobody can understand him.",
+        "tr": "Bunu hiç kimse anlamıyor.",
+        "de": "Niemand kann ihn begreifen.",
+        "fr": "Personne ne peut le comprendre.",
+        "ru": "Никто не может его понять."
+      },
+      "freqRank": 72,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:confused-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/67-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/67-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "Estoy pelando manzanas.",
+      "gloss": {
+        "en": "I am peeling apples.",
+        "tr": "Elma soyuyorum.",
+        "de": "Ich schäle Äpfel.",
+        "fr": "Je suis en train d'éplucher des pommes.",
+        "ru": "Я чищу яблоки."
+      },
+      "freqRank": 73,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/es_fluent/68-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/68-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "Soy un tenista.",
+      "gloss": {
+        "en": "I am a tennis player.",
+        "tr": "Tenisçiyim.",
+        "de": "Ich bin ein Tennisspieler.",
+        "pt-BR": "Sou tenista.",
+        "ru": "Я теннисист."
+      },
+      "freqRank": 74,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tennis",
+      "voices": [
+        { "key": "echo/packs/es_fluent/69-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/69-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "Me estoy duchando.",
+      "gloss": {
+        "en": "I'm taking a shower right now.",
+        "tr": "Ben bir duş alıyorum.",
+        "de": "Ich dusche mich gerade.",
+        "fr": "Je prends une douche.",
+        "ru": "Я принимаю душ."
+      },
+      "freqRank": 75,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soap",
+      "voices": [
+        { "key": "echo/packs/es_fluent/70-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/70-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "Ella es poetisa.",
+      "gloss": {
+        "en": "She's a poet.",
+        "tr": "O şairdir.",
+        "de": "Sie ist Dichterin.",
+        "fr": "Elle est poétesse.",
+        "ru": "Она поэтесса.",
+        "ar": "هي شاعرة."
+      },
+      "freqRank": 76,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/es_fluent/71-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/71-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "Él tiene un blog.",
+      "gloss": {
+        "en": "He has a blog.",
+        "tr": "Onun bir bloğu var.",
+        "fr": "Il a un blog.",
+        "pt-BR": "Ele tem um blog.",
+        "ru": "У него есть блог."
+      },
+      "freqRank": 77,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/es_fluent/72-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/72-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "Ella cruzó las piernas.",
+      "gloss": {
+        "en": "She crossed her legs.",
+        "de": "Sie kreuzte die Beine.",
+        "fr": "Elle croisa les jambes.",
+        "pt-BR": "Ela cruzou as pernas.",
+        "ru": "Она скрестила ноги."
+      },
+      "freqRank": 78,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:leg",
+      "voices": [
+        { "key": "echo/packs/es_fluent/73-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/73-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "Él es verdaderamente veloz.",
+      "gloss": {
+        "en": "He's really quick.",
+        "tr": "O gerçekten hızlı.",
+        "de": "Er ist wirklich schnell.",
+        "pt-BR": "Ele é realmente rápido.",
+        "ru": "Он действительно быстрый."
+      },
+      "freqRank": 79,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/es_fluent/74-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/74-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "Tu auto es veloz.",
+      "gloss": {
+        "en": "Your car is fast.",
+        "de": "Dein Auto ist schnell.",
+        "fr": "Ta voiture est rapide.",
+        "pt-BR": "Teu carro é rápido.",
+        "ru": "У тебя быстрая машина."
+      },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/es_fluent/75-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/75-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "No confíes en él.",
+      "gloss": {
+        "en": "Don't trust him.",
+        "de": "Vertraue ihm nicht.",
+        "fr": "Ne lui fais pas confiance.",
+        "pt-BR": "Não confie nele.",
+        "ru": "Не доверяй ему."
+      },
+      "freqRank": 81,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/76-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/76-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "¿Podría repetirlo, por favor?",
+      "gloss": {
+        "en": "Could you please repeat that?",
+        "de": "Könnten Sie das bitte wiederholen?",
+        "fr": "Pourriez-vous répéter ça s’il vous plaît ?",
+        "pt-BR": "Poderia repetir, por favor?",
+        "ru": "Вы не могли бы повторить?"
+      },
+      "freqRank": 82,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:repeat-button",
+      "voices": [
+        { "key": "echo/packs/es_fluent/77-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/77-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "No come pescado crudo.",
+      "gloss": {
+        "en": "He doesn't eat raw fish.",
+        "de": "Er isst keinen rohen Fisch.",
+        "fr": "Il ne mange pas de poisson cru.",
+        "pt-BR": "Ele não come peixe cru.",
+        "ru": "Он не ест сырую рыбу."
+      },
+      "freqRank": 83,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fish",
+      "voices": [
+        { "key": "echo/packs/es_fluent/78-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/78-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "Yo no lloro fácilmente.",
+      "gloss": {
+        "en": "I don't cry easily.",
+        "tr": "Kolay kolay ağlamam.",
+        "de": "Ich weine nicht einfach.",
+        "fr": "Je ne pleure pas facilement.",
+        "pt-BR": "Eu não choro facilmente."
+      },
+      "freqRank": 84,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crying-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/79-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/79-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "El bus partió temprano.",
+      "gloss": {
+        "en": "The bus left early.",
+        "tr": "Otobüs erken ayrıldı.",
+        "fr": "Le bus est parti tôt.",
+        "pt-BR": "O ônibus partiu mais cedo.",
+        "ru": "Автобус уехал рано."
+      },
+      "freqRank": 85,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bus",
+      "voices": [
+        { "key": "echo/packs/es_fluent/80-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/80-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "¿Las tortugas tienen dientes?",
+      "gloss": {
+        "en": "Do turtles have teeth?",
+        "de": "Haben Schildkröten Zähne?",
+        "fr": "Les tortues ont-elles des dents ?",
+        "pt-BR": "As tartarugas têm dentes?",
+        "ru": "У черепах есть зубы?"
+      },
+      "freqRank": 86,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:turtle",
+      "voices": [
+        { "key": "echo/packs/es_fluent/81-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/81-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "Ayer jugué al fútbol.",
+      "gloss": {
+        "en": "I played soccer yesterday.",
+        "tr": "Dün futbol oynadım.",
+        "de": "Ich habe gestern Fußball gespielt.",
+        "fr": "J'ai joué au foot hier.",
+        "pt-BR": "Ontem joguei futebol.",
+        "ru": "Вчера я играл в футбол."
+      },
+      "freqRank": 87,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soccer-ball",
+      "voices": [
+        { "key": "echo/packs/es_fluent/82-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/82-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "El café es amargo.",
+      "gloss": {
+        "en": "The coffee is bitter.",
+        "tr": "Kahve acı.",
+        "de": "Der Kaffee ist bitter.",
+        "pt-BR": "O café é amargo.",
+        "ru": "Кофе горький."
+      },
+      "freqRank": 88,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/es_fluent/83-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/83-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "¿Te gusta el rap?",
+      "gloss": {
+        "en": "Do you like rap?",
+        "tr": "Rap sever misin?",
+        "de": "Magst du Rap?",
+        "fr": "Tu aimes le rap ?",
+        "pt-BR": "Você gosta de rap?",
+        "ru": "Ты любишь рэп?"
+      },
+      "freqRank": 89,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/es_fluent/84-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/84-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "Los pájaros beben agua.",
+      "gloss": {
+        "en": "Birds drink water.",
+        "tr": "Kuşlar su içer.",
+        "de": "Vögel trinken Wasser.",
+        "fr": "Les oiseaux boivent de l'eau.",
+        "pt-BR": "Os pássaros bebem água.",
+        "ru": "Птицы пьют воду."
+      },
+      "freqRank": 90,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/es_fluent/85-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/85-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "Sabía que él aceptaría.",
+      "gloss": {
+        "en": "I knew he would accept.",
+        "de": "Ich wusste, dass er zustimmen würde.",
+        "fr": "Je savais qu'il accepterait.",
+        "pt-BR": "Eu sabia que ele aceitaria.",
+        "ru": "Я знал, что он согласится."
+      },
+      "freqRank": 91,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/86-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/86-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "El sueco es fácil.",
+      "gloss": {
+        "en": "Swedish is easy.",
+        "de": "Schwedisch ist leicht.",
+        "fr": "Le suédois est facile.",
+        "pt-BR": "O sueco é fácil.",
+        "ru": "Шведский лёгкий."
+      },
+      "freqRank": 92,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/87-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/87-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "Detesto a los mentirosos.",
+      "gloss": {
+        "en": "I hate liars.",
+        "tr": "Yalancılardan nefret ederim.",
+        "de": "Ich hasse Lügner.",
+        "fr": "Je déteste les menteurs.",
+        "pt-BR": "Detesto mentirosos.",
+        "ru": "Я ненавижу лжецов."
+      },
+      "freqRank": 93,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/88-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/88-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "Me gustan los idiomas.",
+      "gloss": {
+        "en": "I like languages.",
+        "de": "Ich mag Sprachen.",
+        "fr": "J'aime les langues.",
+        "pt-BR": "Eu gosto de idiomas.",
+        "ru": "Мне нравятся языки."
+      },
+      "freqRank": 94,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/89-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/89-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "¡Pero qué absurda idea!",
+      "gloss": {
+        "en": "What an absurd idea!",
+        "de": "Was für eine absurde Idee!",
+        "fr": "Quelle idée absurde !",
+        "pt-BR": "Mas que ideia absurda!",
+        "ru": "Что за абсурдная идея!"
+      },
+      "freqRank": 95,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-rolling-eyes",
+      "voices": [
+        { "key": "echo/packs/es_fluent/90-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/90-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "¿Cuántos amigos íntimos tienes?",
+      "gloss": {
+        "en": "How many close friends do you have?",
+        "tr": "Kaç tane yakın arkadaşın var?",
+        "de": "Wie viele enge Freunde hast du?",
+        "fr": "Combien d'amis proches est-ce que tu as ?",
+        "pt-BR": "Quantos amigos íntimos você tem?",
+        "ru": "Сколько у тебя близких друзей?"
+      },
+      "freqRank": 96,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/91-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/91-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "Se fue sin despedirse.",
+      "gloss": {
+        "en": "He left without saying goodbye.",
+        "de": "Er ging, ohne Auf Wiedersehen zu sagen.",
+        "fr": "Il est parti sans dire au revoir.",
+        "pt-BR": "Foi-se sem se despedir.",
+        "ru": "Он ушёл не попрощавшись."
+      },
+      "freqRank": 97,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/es_fluent/92-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/92-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "Lo elegimos para alcalde.",
+      "gloss": {
+        "en": "We elected him to be mayor.",
+        "de": "Wir wählten ihn zum Bürgermeister.",
+        "fr": "Nous l'avons élu maire.",
+        "pt-BR": "Nós o elegemos prefeito.",
+        "ru": "Мы выбрали его мэром."
+      },
+      "freqRank": 98,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ballot-box-with-ballot",
+      "voices": [
+        { "key": "echo/packs/es_fluent/93-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/93-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "Se aproxima mi cumpleaños.",
+      "gloss": {
+        "en": "My birthday is coming soon.",
+        "de": "Mein Geburtstag rückt näher.",
+        "fr": "Mon anniversaire approche.",
+        "pt-BR": "Meu aniversário está chegando.",
+        "ru": "Приближается мой день рождения."
+      },
+      "freqRank": 99,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/94-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/94-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "Ella apagó la luz.",
+      "gloss": {
+        "en": "She turned off the light.",
+        "de": "Sie schaltete das Licht aus.",
+        "fr": "Elle éteignit la lumière.",
+        "pt-BR": "Ela apagou a luz.",
+        "ru": "Она выключила свет."
+      },
+      "freqRank": 100,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/es_fluent/95-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/95-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "Él habla cinco lenguas.",
+      "gloss": {
+        "en": "He can speak five languages.",
+        "de": "Er spricht fünf Sprachen.",
+        "fr": "Il parle cinq langues.",
+        "pt-BR": "Ele fala cinco línguas.",
+        "ar": "يتحدث خمس لغات."
+      },
+      "freqRank": 101,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/96-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/96-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "Jorge habla cuatro lenguas.",
+      "gloss": {
+        "en": "Jorge can speak four languages.",
+        "tr": "Jorge dört dil konuşuyor.",
+        "de": "Jorge spricht vier Sprachen.",
+        "pt-BR": "Jorge fala quatro línguas.",
+        "ru": "Хорхе говорит на четырёх языках."
+      },
+      "freqRank": 102,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/97-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/97-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "Helen tiene diecisiete años.",
+      "gloss": {
+        "en": "Helen is seventeen years old.",
+        "tr": "Helen on yedi yaşında.",
+        "de": "Helen ist siebzehn Jahre alt.",
+        "fr": "Helen a dix-sept ans.",
+        "ru": "Хелен семнадцать лет.",
+        "ar": "هيلين في السابعة عشر من عمرها."
+      },
+      "freqRank": 103,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/98-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/98-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "Prometo que te protegeré.",
+      "gloss": {
+        "en": "I promise you I'll keep you safe.",
+        "de": "Ich verspreche dir, dass ich dich beschützen werde.",
+        "fr": "Je te promets que je te garderai en sécurité.",
+        "pt-BR": "Prometo que te protegerei.",
+        "ru": "Обещаю, что буду тебя защищать."
+      },
+      "freqRank": 104,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shield",
+      "voices": [
+        { "key": "echo/packs/es_fluent/99-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/99-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "¿Puedo usar este diccionario?",
+      "gloss": {
+        "en": "Can I use this dictionary?",
+        "de": "Darf ich dieses Wörterbuch benutzen?",
+        "fr": "Puis-je utiliser ce dictionnaire ?",
+        "pt-BR": "Posso usar este dicionário?",
+        "ru": "Можно мне воспользоваться этим словарём?"
+      },
+      "freqRank": 105,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/100-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/100-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "Puedes usar mi diccionario.",
+      "gloss": {
+        "en": "You may use my dictionary.",
+        "tr": "Sen benim sözlüğümü kullanabilirsin.",
+        "de": "Du kannst mein Wörterbuch verwenden.",
+        "fr": "Tu peux utiliser mon dictionnaire.",
+        "ru": "Можешь воспользоваться моим словарём."
+      },
+      "freqRank": 106,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/101-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/101-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "Quiero comprar este diccionario.",
+      "gloss": {
+        "en": "I want to buy this dictionary.",
+        "de": "Ich will dieses Wörterbuch kaufen.",
+        "fr": "Je veux acheter ce dictionnaire.",
+        "pt-BR": "Quero comprar este dicionário.",
+        "ru": "Я хочу купить этот словарь."
+      },
+      "freqRank": 107,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/102-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/102-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "No cierres los ojos.",
+      "gloss": {
+        "en": "Don't shut your eyes.",
+        "tr": "Gözlerini kapatma.",
+        "de": "Nicht die Augen schließen!",
+        "pt-BR": "Não feche os olhos.",
+        "ru": "Не закрывай глаза."
+      },
+      "freqRank": 108,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/es_fluent/103-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/103-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "Quiero un buen diccionario.",
+      "gloss": {
+        "en": "I want a good dictionary.",
+        "de": "Ich will ein gutes Wörterbuch.",
+        "fr": "Je veux un bon dictionnaire.",
+        "pt-BR": "Eu quero um bom dicionário.",
+        "ru": "Хочу хороший словарь."
+      },
+      "freqRank": 109,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/104-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/104-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "La lista es interminable.",
+      "gloss": {
+        "en": "The list is endless.",
+        "de": "Die Liste ist endlos.",
+        "pt-BR": "A lista é interminável.",
+        "ru": "Список можно продолжать бесконечно.",
+        "ar": "القائمة لانهائيّة."
+      },
+      "freqRank": 110,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clipboard",
+      "voices": [
+        { "key": "echo/packs/es_fluent/105-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/105-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "Me sangra la nariz.",
+      "gloss": {
+        "en": "My nose is bleeding.",
+        "de": "Meine Nase blutet.",
+        "fr": "Mon nez saigne.",
+        "pt-BR": "Meu nariz está sangrando.",
+        "ru": "У меня течёт кровь из носа."
+      },
+      "freqRank": 111,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drop-of-blood",
+      "voices": [
+        { "key": "echo/packs/es_fluent/106-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/106-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "Queremos una solución pacífica.",
+      "gloss": {
+        "en": "We want a peaceful solution.",
+        "tr": "Barışçıl bir çözüm istiyoruz.",
+        "de": "Wir wollen eine friedliche Lösung.",
+        "fr": "Nous voulons une solution pacifique.",
+        "ru": "Мы хотим мирного решения.",
+        "ar": "نحن نريد حلاً سلمياً."
+      },
+      "freqRank": 112,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:peace-symbol",
+      "voices": [
+        { "key": "echo/packs/es_fluent/107-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/107-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "El agua es transparente.",
+      "gloss": {
+        "en": "Water is transparent.",
+        "tr": "Su saydamdır.",
+        "de": "Wasser ist durchsichtig.",
+        "fr": "L'eau est transparente.",
+        "ru": "Вода прозрачная."
+      },
+      "freqRank": 113,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/es_fluent/108-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/108-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "No entiendo este gráfico.",
+      "gloss": {
+        "en": "I don't understand this graph.",
+        "de": "Ich verstehe diese Graphik nicht.",
+        "fr": "Je ne comprends pas ce graphique.",
+        "pt-BR": "Não entendo este gráfico.",
+        "ru": "Я не понимаю этот график."
+      },
+      "freqRank": 114,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chart-increasing",
+      "voices": [
+        { "key": "echo/packs/es_fluent/109-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/109-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "El sol está brillando.",
+      "gloss": {
+        "en": "The sun is shining.",
+        "de": "Die Sonne scheint.",
+        "fr": "Le soleil brille.",
+        "pt-BR": "O sol está brilhando.",
+        "ru": "Солнце светит.",
+        "ar": "الشمس مشرقة."
+      },
+      "freqRank": 115,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun",
+      "voices": [
+        { "key": "echo/packs/es_fluent/110-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/110-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "¿Cuántas lunas tiene Júpiter?",
+      "gloss": {
+        "en": "How many moons does Jupiter have?",
+        "tr": "Jüpiter'in kaç uydusu var?",
+        "de": "Wie viele Monde hat der Jupiter?",
+        "pt-BR": "Quantas luas tem Júpiter?",
+        "ru": "Сколько лун у Юпитера?"
+      },
+      "freqRank": 116,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/es_fluent/111-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/111-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "Tom probó la tarta.",
+      "gloss": {
+        "en": "Tom tasted the cake.",
+        "tr": "Tom kekin tadına baktı.",
+        "fr": "Tom a goûté le gâteau.",
+        "pt-BR": "Tom provou o bolo.",
+        "ru": "Том попробовал торт."
+      },
+      "freqRank": 117,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shortcake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/112-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/112-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "¿Es inmoral comer carne?",
+      "gloss": {
+        "en": "Is eating meat morally wrong?",
+        "de": "Ist es moralisch verwerflich, Fleisch zu essen?",
+        "fr": "Manger de la viande est-il moralement condamnable ?",
+        "pt-BR": "Comer carne é moralmente errado?",
+        "ru": "Есть мясо аморально?"
+      },
+      "freqRank": 118,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cut-of-meat",
+      "voices": [
+        { "key": "echo/packs/es_fluent/113-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/113-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "Nunca lo habría adivinado.",
+      "gloss": {
+        "en": "I would never have guessed that.",
+        "de": "Das hätte ich nie gedacht.",
+        "fr": "Je ne l'aurais jamais deviné.",
+        "pt-BR": "Eu nunca teria adivinhado isso.",
+        "ar": "لم يخطر هذا في بالي أبدا."
+      },
+      "freqRank": 119,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:astonished-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/114-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/114-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "La vida es injusta.",
+      "gloss": {
+        "en": "Life is unfair.",
+        "de": "Das Leben ist unfair.",
+        "fr": "La vie est injuste.",
+        "pt-BR": "A vida é injusta.",
+        "ru": "Жизнь несправедлива."
+      },
+      "freqRank": 120,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:balance-scale",
+      "voices": [
+        { "key": "echo/packs/es_fluent/115-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/115-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "Aquí hay cinco lápices.",
+      "gloss": {
+        "en": "There are five pencils here.",
+        "de": "Hier sind fünf Bleistifte.",
+        "fr": "Ici, il y a cinq crayons.",
+        "pt-BR": "Há cinco lápis aqui.",
+        "ru": "Здесь пять карандашей."
+      },
+      "freqRank": 121,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/es_fluent/116-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/116-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "Ellos escribieron tres libros.",
+      "gloss": {
+        "en": "They wrote three books.",
+        "tr": "Onlar üç kitap yazdılar.",
+        "fr": "Ils ont écrit trois livres.",
+        "pt-BR": "Eles escreveram três livros.",
+        "ru": "Они написали три книги."
+      },
+      "freqRank": 122,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/es_fluent/117-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/117-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "Mis padres están divorciados.",
+      "gloss": {
+        "en": "My parents are divorced.",
+        "tr": "Ebeveynlerim boşandı.",
+        "de": "Meine Eltern sind geschieden.",
+        "pt-BR": "Meus pais estão divorciados.",
+        "ru": "Мои родители развелись."
+      },
+      "freqRank": 123,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/es_fluent/118-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/118-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "Él quebró la ventana.",
+      "gloss": {
+        "en": "He broke the window.",
+        "de": "Er hat das Fenster kaputtgemacht.",
+        "fr": "Il a cassé la fenêtre.",
+        "pt-BR": "Ele quebrou a janela.",
+        "ru": "Он разбил окно."
+      },
+      "freqRank": 124,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:window",
+      "voices": [
+        { "key": "echo/packs/es_fluent/119-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/119-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "La copa se quebró.",
+      "gloss": {
+        "en": "The cup broke.",
+        "tr": "Fincan kırıldı.",
+        "de": "Die Tasse zerbrach.",
+        "fr": "La tasse s'est cassée.",
+        "pt-BR": "O copo quebrou.",
+        "ru": "Чашка разбилась."
+      },
+      "freqRank": 125,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/es_fluent/120-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/120-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "El bebé me sonrió.",
+      "gloss": {
+        "en": "The baby smiled at me.",
+        "tr": "Bebek bana gülümsedi.",
+        "de": "Das Baby lächelte mich an.",
+        "fr": "Le bébé m'a souri.",
+        "pt-BR": "O bebê sorriu para mim.",
+        "ru": "Малыш мне улыбнулся."
+      },
+      "freqRank": 126,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/es_fluent/121-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/121-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "La niña me sonrió.",
+      "gloss": {
+        "en": "The girl smiled at me.",
+        "tr": "Kız bana gülümsedi.",
+        "de": "Das Mädchen lächelte mich an.",
+        "pt-BR": "A menina sorriu para mim.",
+        "ru": "Девочка улыбнулась мне."
+      },
+      "freqRank": 127,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/es_fluent/122-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/122-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "Tengo un vecino egipcio.",
+      "gloss": {
+        "en": "I have an Egyptian neighbor.",
+        "tr": "Mısırlı bir komşum var.",
+        "de": "Ich habe einen ägyptischen Nachbarn.",
+        "fr": "J'ai un voisin égyptien.",
+        "pt-BR": "Eu tenho um vizinho egípcio."
+      },
+      "freqRank": 128,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:houses",
+      "voices": [
+        { "key": "echo/packs/es_fluent/123-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/123-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "Mi mujer es vegetariana.",
+      "gloss": {
+        "en": "My wife is a vegetarian.",
+        "de": "Meine Frau ist Vegetarierin.",
+        "fr": "Ma femme est végétarienne.",
+        "pt-BR": "Minha mulher é vegetariana.",
+        "ru": "Моя жена — вегетарианка."
+      },
+      "freqRank": 129,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/es_fluent/124-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/124-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "No has cantado, ¿verdad?",
+      "gloss": {
+        "en": "You didn't sing, did you?",
+        "tr": "Şarkı söylemedin, değil mi?",
+        "de": "Du hast nicht gesungen, oder?",
+        "fr": "Tu n'as pas chanté, pas vrai ?",
+        "ru": "Ты не пел, верно?"
+      },
+      "freqRank": 130,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/es_fluent/125-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/125-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "¿Por qué estudias francés?",
+      "gloss": {
+        "en": "Why do you study French?",
+        "tr": "Neden Fransızca çalışıyorsun?",
+        "de": "Warum studierst du Französisch?",
+        "fr": "Pourquoi étudiez-vous le français ?",
+        "pt-BR": "Por que você estuda francês?"
+      },
+      "freqRank": 131,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/126-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/126-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "No entiendo el portugués.",
+      "gloss": {
+        "en": "I don't understand Portuguese.",
+        "de": "Ich verstehe kein Portugiesisch.",
+        "fr": "Je ne comprends pas le portugais.",
+        "pt-BR": "Não entendo o português.",
+        "ru": "Я не понимаю по-португальски."
+      },
+      "freqRank": 132,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/127-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/127-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "Yo no hablo portugués.",
+      "gloss": {
+        "en": "I don't speak Portuguese.",
+        "de": "Ich spreche kein Portugiesisch.",
+        "fr": "Je ne parle pas portugais.",
+        "pt-BR": "Não falo português.",
+        "ru": "Я не говорю по-португальски."
+      },
+      "freqRank": 133,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/128-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/128-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "Él tiembla de frío.",
+      "gloss": {
+        "en": "He's shivering because of the cold.",
+        "de": "Er zittert vor Kälte.",
+        "fr": "Il tremble de froid.",
+        "pt-BR": "Ele treme de frio.",
+        "ru": "Он дрожит от холода."
+      },
+      "freqRank": 134,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/129-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/129-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "¿Sabes programar en C?",
+      "gloss": {
+        "en": "Can you program in C?",
+        "de": "Kannst du in C programmieren?",
+        "fr": "Sais-tu programmer en C ?",
+        "pt-BR": "Você sabe programar em C?",
+        "ru": "Ты умеешь программировать на C?"
+      },
+      "freqRank": 135,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/es_fluent/130-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/130-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "La computadora está apagada.",
+      "gloss": {
+        "en": "The computer is switched off.",
+        "de": "Der Computer ist ausgeschaltet.",
+        "fr": "L'ordinateur est éteint.",
+        "pt-BR": "O computador está desligado.",
+        "ru": "Компьютер выключен."
+      },
+      "freqRank": 136,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/es_fluent/131-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/131-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "Los plátanos son amarillos.",
+      "gloss": {
+        "en": "Bananas are yellow.",
+        "de": "Bananen sind gelb.",
+        "fr": "Les bananes sont jaunes.",
+        "pt-BR": "As bananas são amarelas.",
+        "ru": "Бананы жёлтые."
+      },
+      "freqRank": 137,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:banana",
+      "voices": [
+        { "key": "echo/packs/es_fluent/132-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/132-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "No subestimes mi poder.",
+      "gloss": {
+        "en": "Don't underestimate my power.",
+        "de": "Unterschätze nicht meine Macht!",
+        "fr": "Ne sous-estime pas ma puissance.",
+        "pt-BR": "Não subestime meu poder.",
+        "ru": "Не недооценивай мои силы."
+      },
+      "freqRank": 138,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/es_fluent/133-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/133-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "Ellos pararon de hablar.",
+      "gloss": {
+        "en": "They stopped talking.",
+        "de": "Sie hörten auf zu reden.",
+        "fr": "Ils cessèrent de parler.",
+        "pt-BR": "Eles pararam de falar.",
+        "ru": "Они замолчали."
+      },
+      "freqRank": 139,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:zipper-mouth-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/134-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/134-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "Las ballenas son mamíferos.",
+      "gloss": {
+        "en": "A whale is a mammal.",
+        "de": "Wale sind Säugetiere.",
+        "fr": "Les baleines sont des mammifères.",
+        "pt-BR": "Baleias são mamíferos.",
+        "ru": "Киты — млекопитающие."
+      },
+      "freqRank": 140,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:whale",
+      "voices": [
+        { "key": "echo/packs/es_fluent/135-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/135-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "¿Quién gobierna el mundo?",
+      "gloss": {
+        "en": "Who rules the world?",
+        "tr": "Dünyayı kim yönetiyor?",
+        "de": "Wer regiert die Welt?",
+        "fr": "Qui gouverne le monde ?",
+        "ar": "من يحكم العالم؟"
+      },
+      "freqRank": 141,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/es_fluent/136-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/136-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "Está nevando en París.",
+      "gloss": {
+        "en": "It's snowing in Paris.",
+        "tr": "Paris'te kar yağıyor.",
+        "de": "In Paris schneit es.",
+        "fr": "Il neige à Paris.",
+        "pt-BR": "Está nevando em Paris.",
+        "ru": "В Париже идёт снег."
+      },
+      "freqRank": 142,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [
+        { "key": "echo/packs/es_fluent/137-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/137-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "Es una ilusión óptica.",
+      "gloss": {
+        "en": "It's an optical illusion.",
+        "tr": "Bu optik bir illüzyon.",
+        "de": "Das ist eine optische Täuschung.",
+        "fr": "C'est une illusion d'optique.",
+        "pt-BR": "Isso é uma ilusão de ótica."
+      },
+      "freqRank": 143,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/es_fluent/138-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/138-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "No entendimos la pregunta.",
+      "gloss": {
+        "en": "We didn't understand the question.",
+        "tr": "Soruyu anlamadık.",
+        "de": "Wir haben die Frage nicht verstanden.",
+        "fr": "Nous n'avons pas compris la question.",
+        "pt-BR": "Não entendemos a pergunta."
+      },
+      "freqRank": 144,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:confused-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/139-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/139-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "¿Cuál es su nacionalidad?",
+      "gloss": {
+        "en": "What is his nationality?",
+        "de": "Welche Nationalität hat sie?",
+        "fr": "Quelle est sa nationalité ?",
+        "ru": "Кто он по национальности?",
+        "ar": "ما جنسيته؟"
+      },
+      "freqRank": 145,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/es_fluent/140-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/140-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "Mañana me levantaré temprano.",
+      "gloss": {
+        "en": "I will get up early tomorrow.",
+        "tr": "Yarın erken kalkacağım.",
+        "de": "Ich werde morgen früh aufstehen.",
+        "fr": "Je me lèverai tôt demain.",
+        "pt-BR": "Amanhã eu levantarei cedo.",
+        "ru": "Я завтра рано встану."
+      },
+      "freqRank": 146,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunrise",
+      "voices": [
+        { "key": "echo/packs/es_fluent/141-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/141-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "La visité en Alemania.",
+      "gloss": {
+        "en": "I visited her in Germany.",
+        "de": "Ich besuchte sie in Deutschland.",
+        "fr": "Je lui rendis visite en Allemagne.",
+        "pt-BR": "Visitei-a na Alemanha.",
+        "ru": "Я навестил её в Германии."
+      },
+      "freqRank": 147,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/es_fluent/142-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/142-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "Las luces se apagaron.",
+      "gloss": {
+        "en": "The lights turned off.",
+        "de": "Die Lichter gingen aus.",
+        "fr": "Les lumières se sont éteintes.",
+        "pt-BR": "As luzes se apagaram.",
+        "ru": "Огни погасли."
+      },
+      "freqRank": 148,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/es_fluent/143-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/143-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "El mundo me fascina.",
+      "gloss": {
+        "en": "The world fascinates me.",
+        "de": "Die Welt fasziniert mich.",
+        "fr": "Le monde me fascine.",
+        "pt-BR": "O mundo me fascina.",
+        "ru": "Мир меня завораживает."
+      },
+      "freqRank": 149,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/es_fluent/144-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/144-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "Me lavé las manos.",
+      "gloss": {
+        "en": "I washed my hands.",
+        "tr": "Ben ellerimi yıkadım.",
+        "de": "Ich wusch mir die Hände.",
+        "pt-BR": "Eu lavei minhas mãos.",
+        "ru": "Я помыл руки."
+      },
+      "freqRank": 150,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soap",
+      "voices": [
+        { "key": "echo/packs/es_fluent/145-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/145-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "Ellos odiaban a Tom.",
+      "gloss": {
+        "en": "They hated Tom.",
+        "de": "Sie hassten Tom.",
+        "fr": "Ils haïssaient Tom.",
+        "pt-BR": "Eles odiavam o Tom.",
+        "ru": "Они ненавидели Тома."
+      },
+      "freqRank": 151,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-down",
+      "voices": [
+        { "key": "echo/packs/es_fluent/146-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/146-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "¿Cómo se escribe \"pretty\"?",
+      "gloss": {
+        "en": "How do you spell \"pretty\"?",
+        "de": "Wie schreibt man \"pretty\"?",
+        "fr": "Comment épelles-tu \"pretty\" ?",
+        "pt-BR": "Como se escreve \"pretty\"?",
+        "ru": "Как пишется \"pretty\"?"
+      },
+      "freqRank": 152,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-latin-letters",
+      "voices": [
+        { "key": "echo/packs/es_fluent/147-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/147-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "Yo voté por Ken.",
+      "gloss": {
+        "en": "I voted for Ken.",
+        "de": "Ich stimmte für Ken.",
+        "fr": "J'ai voté pour Ken.",
+        "pt-BR": "Eu votei em Ken.",
+        "ru": "Я проголосовал за Кена."
+      },
+      "freqRank": 153,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ballot-box-with-ballot",
+      "voices": [
+        { "key": "echo/packs/es_fluent/148-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/148-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "¿Están maduros estos plátanos?",
+      "gloss": {
+        "en": "Are these bananas ripe?",
+        "tr": "Bu muzlar olgun mu?",
+        "de": "Sind diese Bananen reif?",
+        "fr": "Ces bananes sont-elles mûres ?",
+        "pt-BR": "Estas bananas estão maduras?",
+        "ru": "Эти бананы созревшие?",
+        "ar": "هل هذا الموز ناضج؟"
+      },
+      "freqRank": 154,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:banana",
+      "voices": [
+        { "key": "echo/packs/es_fluent/149-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/149-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "Las termitas comen madera.",
+      "gloss": {
+        "en": "Termites eat wood.",
+        "tr": "Termitler tahta yer.",
+        "de": "Termiten essen Holz.",
+        "pt-BR": "Os cupins comem madeira.",
+        "ru": "Термиты едят дерево."
+      },
+      "freqRank": 155,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wood",
+      "voices": [
+        { "key": "echo/packs/es_fluent/150-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/150-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "Soy un veloz nadador.",
+      "gloss": {
+        "en": "I am a fast swimmer.",
+        "tr": "Hızlı bir yüzücüyüm.",
+        "de": "Ich bin ein schneller Schwimmer.",
+        "pt-BR": "Sou um rápido nadador.",
+        "ru": "Я быстро плаваю."
+      },
+      "freqRank": 156,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/es_fluent/151-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/151-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "Las posibilidades son infinitas.",
+      "gloss": {
+        "en": "The possibilities are endless.",
+        "de": "Die Möglichkeiten sind endlos.",
+        "fr": "Les possibilités sont infinies.",
+        "pt-BR": "As possibilidades são infinitas.",
+        "ru": "Возможности бесконечны."
+      },
+      "freqRank": 157,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:infinity",
+      "voices": [
+        { "key": "echo/packs/es_fluent/152-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/152-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "Mañana, jugará al fútbol.",
+      "gloss": {
+        "en": "He will play soccer tomorrow.",
+        "de": "Morgen spielt er Fußball.",
+        "fr": "Demain, il jouera au football.",
+        "pt-BR": "Amanhã ele vai jogar futebol.",
+        "ru": "Завтра он будет играть в футбол."
+      },
+      "freqRank": 158,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soccer-ball",
+      "voices": [
+        { "key": "echo/packs/es_fluent/153-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/153-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "Los pájaros construyen nidos.",
+      "gloss": {
+        "en": "Birds build nests.",
+        "de": "Vögel bauen Nester.",
+        "fr": "Les oiseaux construisent des nids.",
+        "pt-BR": "Os pássaros constroem ninhos.",
+        "ru": "Птицы вьют гнёзда."
+      },
+      "freqRank": 159,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/es_fluent/154-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/154-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "Él tiene una raqueta.",
+      "gloss": {
+        "en": "He has a racket.",
+        "de": "Er hat einen Schläger.",
+        "fr": "Il a une raquette.",
+        "pt-BR": "Ele tem uma raquete.",
+        "ru": "У него есть ракетка."
+      },
+      "freqRank": 160,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tennis",
+      "voices": [
+        { "key": "echo/packs/es_fluent/155-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/155-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "Los hombres están almorzando.",
+      "gloss": {
+        "en": "The men are eating lunch.",
+        "de": "Die Männer essen zu Mittag.",
+        "fr": "Les hommes sont en train de déjeuner.",
+        "pt-BR": "Os homens estão a almoçar.",
+        "ru": "Мужчины обедают."
+      },
+      "freqRank": 161,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/es_fluent/156-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/156-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "Tom tiene un iPhone.",
+      "gloss": {
+        "en": "Tom has an iPhone.",
+        "tr": "Tom'un bir iPhone'u var.",
+        "de": "Tom hat ein iPhone.",
+        "pt-BR": "Tom tem um iPhone.",
+        "ru": "У Тома есть айфон."
+      },
+      "freqRank": 162,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mobile-phone",
+      "voices": [
+        { "key": "echo/packs/es_fluent/157-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/157-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "No apagué la luz.",
+      "gloss": {
+        "en": "I didn't turn off the light.",
+        "de": "Ich habe das Licht nicht ausgeschaltet.",
+        "fr": "Je n'ai pas éteint la lumière.",
+        "pt-BR": "Não apaguei a luz.",
+        "ru": "Я не погасил свет."
+      },
+      "freqRank": 163,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/es_fluent/158-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/158-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "Fue una escena horrorosa.",
+      "gloss": {
+        "en": "It was a horrible scene.",
+        "tr": "Korkunç bir sahneydi.",
+        "de": "Das war ein grauenhafter Anblick.",
+        "fr": "C'était une scène horrible.",
+        "ru": "Это была ужасная сцена."
+      },
+      "freqRank": 164,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-screaming-in-fear",
+      "voices": [
+        { "key": "echo/packs/es_fluent/159-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/159-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "Esta planta es comestible.",
+      "gloss": {
+        "en": "This plant is edible.",
+        "de": "Diese Pflanze ist zum Verzehr geeignet.",
+        "fr": "Cette plante est consommable.",
+        "pt-BR": "Esta planta é comestível.",
+        "ru": "Это растение съедобно."
+      },
+      "freqRank": 165,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:seedling",
+      "voices": [
+        { "key": "echo/packs/es_fluent/160-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/160-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "Normalmente no cometo errores.",
+      "gloss": {
+        "en": "I usually don't make mistakes.",
+        "tr": "Ben genellikle hata yapmam.",
+        "de": "Normalerweise mache ich keine Fehler.",
+        "fr": "Je ne fais pas d'erreurs, généralement.",
+        "ru": "Я обычно не делаю ошибок."
+      },
+      "freqRank": 166,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cross-mark",
+      "voices": [
+        { "key": "echo/packs/es_fluent/161-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/161-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "Ella bailó con él.",
+      "gloss": {
+        "en": "She danced with him.",
+        "de": "Sie hat mit ihm getanzt.",
+        "fr": "Elle dansa avec lui.",
+        "pt-BR": "Ela dançou com ele.",
+        "ru": "Она с ним танцевала."
+      },
+      "freqRank": 167,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-dancing",
+      "voices": [
+        { "key": "echo/packs/es_fluent/162-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/162-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "Esta silla es liviana.",
+      "gloss": {
+        "en": "This chair is light.",
+        "de": "Dieser Stuhl ist leicht.",
+        "fr": "Cette chaise est légère.",
+        "pt-BR": "Esta cadeira é leve.",
+        "ru": "Этот стул лёгкий."
+      },
+      "freqRank": 168,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chair",
+      "voices": [
+        { "key": "echo/packs/es_fluent/163-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/163-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "¿Qué opinas del reggae?",
+      "gloss": {
+        "en": "What do you think of reggae?",
+        "tr": "Reggae hakkında ne düşünüyorsun?",
+        "de": "Was hältst du von Reggae?",
+        "fr": "Que penses-tu du reggae ?",
+        "ru": "Что ты думаешь о регги?"
+      },
+      "freqRank": 169,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/es_fluent/164-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/164-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "Me interesan los computadores.",
+      "gloss": {
+        "en": "I am interested in computers.",
+        "tr": "Bilgisayarlara ilgi duyuyorum.",
+        "de": "Ich interessiere mich für Computer.",
+        "fr": "Je m'intéresse aux ordinateurs.",
+        "pt-BR": "Me interesso por computadores.",
+        "ru": "Меня интересуют компьютеры."
+      },
+      "freqRank": 170,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/es_fluent/165-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/165-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "Los limones son ácidos.",
+      "gloss": {
+        "en": "Lemons are sour.",
+        "de": "Zitronen sind sauer.",
+        "fr": "Les citrons sont acides.",
+        "pt-BR": "Os limões são ácidos.",
+        "ru": "Лимоны кислые."
+      },
+      "freqRank": 171,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lemon",
+      "voices": [
+        { "key": "echo/packs/es_fluent/166-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/166-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "El viento se calmó.",
+      "gloss": {
+        "en": "The wind calmed down.",
+        "tr": "Rüzgar sakinleşti.",
+        "de": "Der Wind hat sich beruhigt.",
+        "fr": "Le vent s'apaisa.",
+        "ru": "Ветер утих."
+      },
+      "freqRank": 172,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:leaf-fluttering-in-wind",
+      "voices": [
+        { "key": "echo/packs/es_fluent/167-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/167-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "Me quedé sin nafta.",
+      "gloss": {
+        "en": "I ran out of fuel.",
+        "tr": "Yakıtım bitti.",
+        "de": "Mir ging der Treibstoff aus.",
+        "pt-BR": "Fiquei sem combustível.",
+        "ru": "У меня закончилось топливо."
+      },
+      "freqRank": 173,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fuel-pump",
+      "voices": [
+        { "key": "echo/packs/es_fluent/168-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/168-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "Todos gritaron de alegría.",
+      "gloss": {
+        "en": "Everybody shouted for joy.",
+        "tr": "Herkes sevinçle bağırdı.",
+        "de": "Alle schrien vor Freude.",
+        "fr": "Tout le monde a crié de joie.",
+        "pt-BR": "Todos gritaram de alegria."
+      },
+      "freqRank": 174,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:party-popper",
+      "voices": [
+        { "key": "echo/packs/es_fluent/169-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/169-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "Ayer reparé la bicicleta.",
+      "gloss": {
+        "en": "I fixed the bike yesterday.",
+        "de": "Ich habe das Rad gestern repariert.",
+        "fr": "J'ai réparé le vélo hier.",
+        "pt-BR": "Consertei a bicicleta ontem.",
+        "ru": "Вчера я починил велосипед."
+      },
+      "freqRank": 175,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bicycle",
+      "voices": [
+        { "key": "echo/packs/es_fluent/170-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/170-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "Él es irremediablemente romántico.",
+      "gloss": {
+        "en": "He is hopelessly romantic.",
+        "de": "Er ist unrettbar romantisch.",
+        "fr": "Il est irrémédiablement romantique.",
+        "pt-BR": "Ele é um romântico incorrigível.",
+        "ru": "Он безнадёжный романтик."
+      },
+      "freqRank": 176,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:rose",
+      "voices": [
+        { "key": "echo/packs/es_fluent/171-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/171-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "Bob es mi cuate.",
+      "gloss": {
+        "en": "Bob is my friend.",
+        "de": "Bob ist mein Freund.",
+        "fr": "Bob est mon ami.",
+        "pt-BR": "Bob é meu amigo.",
+        "ru": "Боб — мой друг."
+      },
+      "freqRank": 177,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/172-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/172-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "El perro cruzó la calle.",
+      "gloss": {
+        "en": "The dog walked across the street.",
+        "de": "Der Hund überquerte die Straße.",
+        "fr": "Le chien traversa la rue.",
+        "pt-BR": "O cão atravessou a rua.",
+        "ru": "Собака перешла дорогу."
+      },
+      "freqRank": 178,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/es_fluent/173-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/173-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "Él se bebió una cerveza.",
+      "gloss": {
+        "en": "He drank a beer.",
+        "tr": "O, bir bira içti.",
+        "de": "Er trank ein Bier.",
+        "fr": "Il but une bière.",
+        "ru": "Он выпил кружку пива."
+      },
+      "freqRank": 179,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:beer-mug",
+      "voices": [
+        { "key": "echo/packs/es_fluent/174-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/174-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "El niño casi se ahogó.",
+      "gloss": {
+        "en": "The boy was almost drowned.",
+        "de": "Der Junge war fast ertrunken.",
+        "fr": "Le gosse s'est presque noyé.",
+        "pt-BR": "O menino quase se afogou.",
+        "ru": "Мальчик почти утонул."
+      },
+      "freqRank": 180,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring-buoy",
+      "voices": [
+        { "key": "echo/packs/es_fluent/175-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/175-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "Ella misma preparó la cena.",
+      "gloss": {
+        "en": "She cooked the dinner herself.",
+        "tr": "O, akşam yemeğini kendisi pişirdi.",
+        "pt-BR": "Ela mesma preparou o jantar.",
+        "ru": "Она сама приготовила ужин.",
+        "ar": "أعدت العشاء بنفسها."
+      },
+      "freqRank": 181,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/es_fluent/176-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/176-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "No puedo detener el sangrado.",
+      "gloss": {
+        "en": "I cannot stop the bleeding.",
+        "tr": "Kanamayı durduramıyorum.",
+        "de": "Ich kann die Blutung nicht stillen.",
+        "fr": "Je ne parviens pas à juguler l'hémorragie.",
+        "pt-BR": "Não consigo parar o sangramento.",
+        "ru": "Не могу остановить кровотечение."
+      },
+      "freqRank": 182,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drop-of-blood",
+      "voices": [
+        { "key": "echo/packs/es_fluent/177-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/177-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "Él se enamoró de ella.",
+      "gloss": {
+        "en": "He fell in love with her.",
+        "tr": "O, ona âşık oldu.",
+        "de": "Er verliebte sich in sie.",
+        "fr": "Il est tombé amoureux d'elle.",
+        "pt-BR": "Ele se apaixonou por ela.",
+        "ru": "Он влюбился в неё."
+      },
+      "freqRank": 183,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/es_fluent/178-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/178-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "Ella lloró toda la noche.",
+      "gloss": {
+        "en": "She cried throughout the night.",
+        "de": "Sie hat die ganze Nacht geweint.",
+        "fr": "Elle a pleuré toute la nuit.",
+        "pt-BR": "Ela chorou a noite toda.",
+        "ru": "Она проплакала всю ночь."
+      },
+      "freqRank": 184,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:loudly-crying-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/179-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/179-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "Él es alérgico al polvo.",
+      "gloss": {
+        "en": "He is allergic to dust.",
+        "tr": "Onda toz alerjisi var.",
+        "de": "Er ist auf Staub allergisch.",
+        "fr": "Il est allergique à la poussière.",
+        "ru": "У него аллергия на пыль."
+      },
+      "freqRank": 185,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sneezing-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/180-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/180-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "Tom lloró durante una hora.",
+      "gloss": {
+        "en": "Tom cried for an hour.",
+        "tr": "Tom bir saat ağladı.",
+        "fr": "Tom a pleuré pendant une heure.",
+        "pt-BR": "Tom chorou durante uma hora.",
+        "ru": "Том проплакал час."
+      },
+      "freqRank": 186,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:loudly-crying-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/181-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/181-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "Mi coche está en reparación.",
+      "gloss": {
+        "en": "My car is being repaired.",
+        "de": "Mein Auto ist in Reparatur.",
+        "fr": "Ma voiture est en réparation.",
+        "pt-BR": "Meu carro está no conserto.",
+        "ru": "Моя машина в ремонте."
+      },
+      "freqRank": 187,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/es_fluent/182-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/182-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "Tom lloró toda la noche.",
+      "gloss": {
+        "en": "Tom cried all night.",
+        "tr": "Tom, bütün gece ağladı.",
+        "de": "Tom weinte die ganze Nacht.",
+        "fr": "Tom a pleuré toute la nuit.",
+        "pt-BR": "Tom chorou a noite toda."
+      },
+      "freqRank": 188,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:loudly-crying-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/183-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/183-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "¿Te levantas a las seis?",
+      "gloss": {
+        "en": "Do you get up at six?",
+        "tr": "Saat altıda kalkar mısın?",
+        "fr": "Tu te lèves à six heures ?",
+        "pt-BR": "Você se levanta às seis?",
+        "ru": "Ты встаёшь в шесть?"
+      },
+      "freqRank": 189,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/es_fluent/184-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/184-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "¿Qué idiomas hablan en Corea?",
+      "gloss": {
+        "en": "What languages do they speak in Korea?",
+        "tr": "Kore'de hangi dilleri konuşurlar?",
+        "de": "Welche Sprachen werden in Korea gesprochen?",
+        "fr": "Quelles langues parle-t-on en Corée ?",
+        "ru": "На каких языках говорят в Корее?"
+      },
+      "freqRank": 190,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/185-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/185-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "Me gusta aprender idiomas antiguos.",
+      "gloss": {
+        "en": "I like learning old languages.",
+        "de": "Ich lerne gern alte Sprachen.",
+        "fr": "J'aime apprendre des langues anciennes.",
+        "pt-BR": "Gosto de aprender línguas antigas.",
+        "ru": "Мне нравится изучать древние языки."
+      },
+      "freqRank": 191,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:scroll",
+      "voices": [
+        { "key": "echo/packs/es_fluent/186-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/186-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "Japón importa naranjas desde California.",
+      "gloss": {
+        "en": "Japan imports oranges from California.",
+        "de": "Japan führt Orangen aus Kalifornien ein.",
+        "fr": "Le Japon importe des oranges de Californie.",
+        "pt-BR": "O Japão importa laranjas da Califórnia.",
+        "ar": "تستورد اليابانُ الفاكهةَ من كاليفورنيا."
+      },
+      "freqRank": 192,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/es_fluent/187-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/187-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "Un vino tinto, por favor.",
+      "gloss": {
+        "en": "A red wine, please.",
+        "tr": "Bir kırmızı şarap, lütfen",
+        "de": "Einen Rotwein, bitte.",
+        "pt-BR": "Um vinho tinto, por favor.",
+        "ru": "Красное вино, пожалуйста."
+      },
+      "freqRank": 193,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/es_fluent/188-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/188-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "¿Quién cuidará de tu perro?",
+      "gloss": {
+        "en": "Who will look after your dog?",
+        "tr": "Köpeğine kim bakacak?",
+        "de": "Wer wird auf deinen Hund aufpassen?",
+        "pt-BR": "Quem vai cuidar do seu cachorro?",
+        "ru": "Кто позаботится о твоей собаке?"
+      },
+      "freqRank": 194,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/es_fluent/189-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/189-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "Cierra los ojos y duérmete.",
+      "gloss": {
+        "en": "Close your eyes and go to sleep.",
+        "de": "Schließ die Augen und schlaf.",
+        "fr": "Ferme les yeux et dors.",
+        "pt-BR": "Feche seus olhos e durma.",
+        "ru": "Закрой глаза и спи."
+      },
+      "freqRank": 195,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/190-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/190-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "Ella colgó sin decir adiós.",
+      "gloss": {
+        "en": "She hung up without saying good-bye.",
+        "tr": "Hoşça kal demeden telefonu kapadı.",
+        "de": "Sie hängte auf, ohne sich zu verabschieden.",
+        "pt-BR": "Ela desligou sem dizer adeus.",
+        "ru": "Она повесила трубку, не попрощавшись."
+      },
+      "freqRank": 196,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/es_fluent/191-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/191-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "¿Cuál es tu grupo sanguíneo?",
+      "gloss": {
+        "en": "What's your blood group?",
+        "de": "Welche Blutgruppe hast du?",
+        "fr": "Quel est ton groupe sanguin ?",
+        "pt-BR": "Qual é seu tipo sanguíneo?",
+        "ru": "Какая у тебя группа крови?"
+      },
+      "freqRank": 197,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drop-of-blood",
+      "voices": [
+        { "key": "echo/packs/es_fluent/192-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/192-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "Ella admitió que estaba equivocada.",
+      "gloss": {
+        "en": "She admitted that she was wrong.",
+        "de": "Sie gab zu, dass sie sich geirrt habe.",
+        "fr": "Elle admit qu'elle avait tort.",
+        "pt-BR": "Ela admitiu que estava errada.",
+        "ru": "Она признала, что ошибалась."
+      },
+      "freqRank": 198,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cross-mark",
+      "voices": [
+        { "key": "echo/packs/es_fluent/193-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/193-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "Soy alérgica a los antibióticos.",
+      "gloss": {
+        "en": "I'm allergic to antibiotics.",
+        "tr": "Antibiyotiklere alerjim var.",
+        "de": "Ich bin gegen Antibiotika allergisch.",
+        "fr": "Je suis allergique aux antibiotiques.",
+        "pt-BR": "Sou alérgica a antibióticos.",
+        "ru": "У меня аллергия на антибиотики."
+      },
+      "freqRank": 199,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pill",
+      "voices": [
+        { "key": "echo/packs/es_fluent/194-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/194-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "La luz se apagó sola.",
+      "gloss": {
+        "en": "The light went out by itself.",
+        "de": "Das Licht ging von alleine aus.",
+        "fr": "La lumière s'est éteinte d'elle-même.",
+        "pt-BR": "A luz apagou-se sozinha.",
+        "ru": "Свет сам погас."
+      },
+      "freqRank": 200,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/es_fluent/195-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/195-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "Tengo alergia a la leche.",
+      "gloss": {
+        "en": "I have an allergy to milk.",
+        "de": "Ich bin allergisch gegen Milch.",
+        "pt-BR": "Tenho alergia ao leite.",
+        "ru": "У меня аллергия на молоко.",
+        "ar": "لديّ حساسيّة من الحليب."
+      },
+      "freqRank": 201,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:glass-of-milk",
+      "voices": [
+        { "key": "echo/packs/es_fluent/196-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/196-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "Mi amigo tiene diecisiete años.",
+      "gloss": {
+        "en": "My friend is seventeen years old.",
+        "tr": "Arkadaşım on yedi yaşındadır.",
+        "de": "Mein Freund ist siebzehn.",
+        "fr": "Mon ami a dix-sept ans.",
+        "pt-BR": "Meu amigo tem dezessete anos.",
+        "ru": "Моему другу семнадцать лет."
+      },
+      "freqRank": 202,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/197-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/197-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "¡Toma un libro y léelo!",
+      "gloss": {
+        "en": "Take a book and read it.",
+        "de": "Nimm ein Buch und lies es!",
+        "fr": "Prends un livre et lis-le !",
+        "pt-BR": "Pegue um livro e o leia!",
+        "ru": "Возьми книгу и прочитай её!",
+        "ar": "خذ كتاباً واقرأه!"
+      },
+      "freqRank": 203,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/198-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/198-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "Necesito un diccionario japonés-inglés.",
+      "gloss": {
+        "en": "I need a Japanese-English dictionary.",
+        "tr": "Bir Japonca-İngilizce sözlüğe ihtiyacım var.",
+        "de": "Ich brauche ein Wörterbuch „Japanisch-Englisch“.",
+        "fr": "J'ai besoin d'un dictionnaire japonais-anglais.",
+        "pt-BR": "Preciso de um dicionário japonês-inglês."
+      },
+      "freqRank": 204,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/199-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/199-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "Él me prestó dos libros.",
+      "gloss": {
+        "en": "He lent me two books.",
+        "de": "Er lieh mir zwei Bücher.",
+        "pt-BR": "Ele me emprestou dois livros.",
+        "ru": "Он одолжил мне две книги.",
+        "ar": "أعارني كتابَيْن."
+      },
+      "freqRank": 205,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/es_fluent/200-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/200-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "¿Cuál es tu fruta preferida?",
+      "gloss": {
+        "en": "What's your favorite fruit?",
+        "tr": "En sevdiğin meyve hangisidir?",
+        "de": "Was ist dein Lieblingsobst?",
+        "fr": "Quel est ton fruit préféré ?",
+        "pt-BR": "Qual é a sua fruta favorita?",
+        "ru": "Какой твой любимый фрукт?"
+      },
+      "freqRank": 206,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/es_fluent/201-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/201-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "Ella tiene una hija pianista.",
+      "gloss": {
+        "en": "She has a daughter who is a pianist.",
+        "tr": "Piyanist bir kızı var.",
+        "de": "Sie hat eine Tochter, die Pianistin ist.",
+        "fr": "Elle a une fille qui est pianiste.",
+        "pt-BR": "Ela tem uma filha pianista.",
+        "ru": "У неё дочь пианистка."
+      },
+      "freqRank": 207,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/es_fluent/202-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/202-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "Estas tijeras no cortan bien.",
+      "gloss": {
+        "en": "These scissors don't cut well.",
+        "de": "Diese Scheren schneiden nicht gut.",
+        "fr": "Ces ciseaux ne coupent pas bien.",
+        "pt-BR": "Estas tesouras não cortam bem.",
+        "ru": "Эти ножницы плохо режут."
+      },
+      "freqRank": 208,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:scissors",
+      "voices": [
+        { "key": "echo/packs/es_fluent/203-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/203-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "Tengo una visa de turista.",
+      "gloss": {
+        "en": "I have a tourist visa.",
+        "tr": "Bir turist vizem var.",
+        "de": "Ich habe ein Touristenvisum.",
+        "fr": "J'ai un visa de tourisme.",
+        "ru": "У меня туристическая виза."
+      },
+      "freqRank": 209,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:passport-control",
+      "voices": [
+        { "key": "echo/packs/es_fluent/204-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/204-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "Quiero que leas este libro.",
+      "gloss": {
+        "en": "I want you to read this book.",
+        "tr": "Ben senin bu kitabı okumanı istiyorum.",
+        "fr": "Je veux que tu lises ce livre.",
+        "pt-BR": "Quero que você leia este livro.",
+        "ru": "Я хочу, чтобы ты прочёл эту книгу."
+      },
+      "freqRank": 210,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/205-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/205-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "Ella tiene los ojos marrones.",
+      "gloss": {
+        "en": "She has brown eyes.",
+        "tr": "Kahverengi gözleri var.",
+        "de": "Sie hat braune Augen.",
+        "fr": "Elle a les yeux marron.",
+        "ru": "У неё карие глаза."
+      },
+      "freqRank": 211,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/es_fluent/206-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/206-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "Él es odiado por todos.",
+      "gloss": {
+        "en": "He is hated by all.",
+        "tr": "O, herkes tarafından nefret edilir.",
+        "de": "Alle hassen ihn.",
+        "fr": "Il est détesté de tous.",
+        "ru": "Его все ненавидят."
+      },
+      "freqRank": 212,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-down",
+      "voices": [
+        { "key": "echo/packs/es_fluent/207-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/207-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "Llámame cuando decidas casarte conmigo.",
+      "gloss": {
+        "en": "Give me a ring when you decide to marry me.",
+        "tr": "Benimle evlenmeye karar verdiğinde, bana bir yüzük ver.",
+        "de": "Ruf mich an, wenn du dich entschieden hast, mich zu heiraten.",
+        "fr": "Passe-moi un coup de fil quand tu décideras de m'épouser.",
+        "pt-BR": "Me liga quando você resolver casar comigo.",
+        "ru": "Позвони мне, когда решишь выйти за меня замуж."
+      },
+      "freqRank": 213,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/es_fluent/208-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/208-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "Tienes que lavarte las manos.",
+      "gloss": {
+        "en": "You need to wash your hands.",
+        "de": "Du musst dir die Hände waschen.",
+        "fr": "Tu dois te laver les mains.",
+        "pt-BR": "Você precisa lavar as suas mãos.",
+        "ru": "Ты должен вымыть руки."
+      },
+      "freqRank": 214,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soap",
+      "voices": [
+        { "key": "echo/packs/es_fluent/209-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/209-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "La sopa está demasiado salada.",
+      "gloss": {
+        "en": "The soup is too salty.",
+        "de": "Die Suppe ist zu salzig.",
+        "fr": "La soupe est trop salée.",
+        "pt-BR": "A sopa está salgada demais.",
+        "ru": "Суп слишком солёный."
+      },
+      "freqRank": 215,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:salt",
+      "voices": [
+        { "key": "echo/packs/es_fluent/210-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/210-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "¿Comes carne o eres vegetariano?",
+      "gloss": {
+        "en": "Do you eat meat or are you a vegetarian?",
+        "tr": "Et yer misin ya da bir vejetaryen misin?",
+        "de": "Isst du Fleisch, oder bist du Vegetarier?",
+        "pt-BR": "Você come carne ou você é vegetariano?",
+        "ru": "Ты ешь мясо или ты вегетарианец?"
+      },
+      "freqRank": 216,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cut-of-meat",
+      "voices": [
+        { "key": "echo/packs/es_fluent/211-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/211-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "Los gatos negros son bellos.",
+      "gloss": {
+        "en": "Black cats are beautiful.",
+        "tr": "Siyah kediler güzeldir.",
+        "de": "Schwarze Katzen sind schön.",
+        "fr": "Les chats noirs sont beaux.",
+        "ru": "Чёрные кошки красивые."
+      },
+      "freqRank": 217,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/es_fluent/212-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/212-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "Tom se enfada con facilidad.",
+      "gloss": {
+        "en": "Tom gets angry easily.",
+        "de": "Tom wird schnell wütend.",
+        "fr": "Tom se fâche facilement.",
+        "pt-BR": "Tom se zanga com facilidade.",
+        "ru": "Тома легко рассердить."
+      },
+      "freqRank": 218,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/213-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/213-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "¿Cómo puedo modificar esta frase?",
+      "gloss": {
+        "en": "How can I change this sentence?",
+        "de": "Wie kann ich diesen Satz ändern?",
+        "fr": "Comment puis-je modifier cette phrase ?",
+        "pt-BR": "Como posso modificar esta frase?",
+        "ru": "Как я могу изменить это предложение?"
+      },
+      "freqRank": 219,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:memo",
+      "voices": [
+        { "key": "echo/packs/es_fluent/214-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/214-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "El cuchillo no está afilado.",
+      "gloss": {
+        "en": "The knife is not sharp.",
+        "de": "Das Messer ist nicht scharf.",
+        "fr": "Le couteau n'est pas aiguisé.",
+        "pt-BR": "A faca não é afiada.",
+        "ru": "Нож не наточен."
+      },
+      "freqRank": 220,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/es_fluent/215-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/215-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "Esto está un poco salado.",
+      "gloss": {
+        "en": "This is a little salty.",
+        "tr": "Bu biraz tuzlu.",
+        "fr": "C'est un peu salé.",
+        "pt-BR": "Isto está um pouco salgado.",
+        "ru": "Это немного солоновато."
+      },
+      "freqRank": 221,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:salt",
+      "voices": [
+        { "key": "echo/packs/es_fluent/216-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/216-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "No quiero traducir esta frase.",
+      "gloss": {
+        "en": "I don't want to translate this sentence.",
+        "de": "Ich will diesen Satz nicht übersetzen.",
+        "fr": "Je ne veux pas traduire cette phrase.",
+        "pt-BR": "Não quero traduzir esta frase.",
+        "ru": "Я не хочу переводить это предложение."
+      },
+      "freqRank": 222,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:memo",
+      "voices": [
+        { "key": "echo/packs/es_fluent/217-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/217-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "De tal palo, tal astilla.",
+      "gloss": {
+        "en": "Like father, like son.",
+        "de": "Wie der Vater, so der Sohn.",
+        "fr": "Tel père, tel fils.",
+        "pt-BR": "Tal pai, tal filho.",
+        "ru": "Яблоко от яблони недалеко падает."
+      },
+      "freqRank": 223,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family-man-boy",
+      "voices": [
+        { "key": "echo/packs/es_fluent/218-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/218-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "¿Cómo se pronuncia su apellido?",
+      "gloss": {
+        "en": "How is her surname pronounced?",
+        "tr": "Soyadınız nasıl telaffuz edilir?",
+        "de": "Wie spricht man Ihren Vornamen aus?",
+        "fr": "Comment prononce-t-on votre nom de famille ?",
+        "pt-BR": "Como se pronuncia teu sobrenome?",
+        "ru": "Как произносится Ваша фамилия?"
+      },
+      "freqRank": 224,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/219-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/219-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "Yo aprendo idiomas como pasatiempo.",
+      "gloss": {
+        "en": "I learn languages as a hobby.",
+        "tr": "Hobi olarak dil öğreniyorum.",
+        "de": "Ich lerne Sprachen als Hobby.",
+        "pt-BR": "Eu aprendo idiomas como passatempo.",
+        "ru": "Я учу языки в качестве хобби."
+      },
+      "freqRank": 225,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/220-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/220-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "Me dan miedo los terremotos.",
+      "gloss": {
+        "en": "I'm afraid of earthquakes.",
+        "de": "Ich habe Angst vor Erdbeben.",
+        "fr": "J'ai peur des tremblements de terre.",
+        "pt-BR": "Eu tenho medo de terremotos.",
+        "ru": "Я боюсь землетрясений."
+      },
+      "freqRank": 226,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fearful-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/221-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/221-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "Ella cuidó de mi perro.",
+      "gloss": {
+        "en": "She took care of my dog.",
+        "de": "Sie passte auf meinen Hund auf.",
+        "fr": "Elle prit soin de mon chien.",
+        "pt-BR": "Ela cuidou do meu cachorro.",
+        "ru": "Она позаботилась о моей собаке."
+      },
+      "freqRank": 227,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/es_fluent/222-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/222-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "Tengo que ir aunque llueva.",
+      "gloss": {
+        "en": "I have to go even if it rains.",
+        "tr": "Yağmur yağsa bile gitmek zorundayım.",
+        "de": "Ich muß gehen, selbst wenn es regnet.",
+        "fr": "Je dois y aller, même s'il pleut.",
+        "ru": "Я должен идти, хоть и идёт дождь."
+      },
+      "freqRank": 228,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:umbrella-with-rain-drops",
+      "voices": [
+        { "key": "echo/packs/es_fluent/223-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/223-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "Los ancianos se levantan pronto.",
+      "gloss": {
+        "en": "Old people wake up early.",
+        "de": "Alte Menschen werden früh wach.",
+        "fr": "Les personnes âgées se lèvent tôt.",
+        "pt-BR": "Os idosos levantam cedo.",
+        "ru": "Пожилые люди встают рано."
+      },
+      "freqRank": 229,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunrise",
+      "voices": [
+        { "key": "echo/packs/es_fluent/224-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/224-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "Dormí con la luz apagada.",
+      "gloss": {
+        "en": "I slept with the light off.",
+        "tr": "Işık kapalı iken uyudum.",
+        "de": "Ich schlief bei ausgeschaltetem Licht.",
+        "fr": "J'ai dormi avec la lumière éteinte.",
+        "ru": "Я спал с выключенным светом."
+      },
+      "freqRank": 230,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/225-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/225-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "Un día tiene veinticuatro horas.",
+      "gloss": {
+        "en": "A day has twenty-four hours.",
+        "tr": "Bir gün yirmi dört saattir.",
+        "de": "Ein Tag hat vierundzwanzig Stunden.",
+        "fr": "Il y a vingt-quatre heures dans une journée.",
+        "pt-BR": "Um dia tem vinte e quatro horas.",
+        "ru": "В сутках двадцать четыре часа."
+      },
+      "freqRank": 231,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:one-o-clock",
+      "voices": [
+        { "key": "echo/packs/es_fluent/226-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/226-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "Este libro tiene cinco capítulos.",
+      "gloss": {
+        "en": "This book consists of five chapters.",
+        "de": "Dieses Buch hat fünf Kapitel.",
+        "fr": "Ce livre a cinq chapitres.",
+        "pt-BR": "Este livro tem cinco capítulos.",
+        "ru": "В этой книге пять глав."
+      },
+      "freqRank": 232,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/227-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/227-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "Él resolvió el problema fácilmente.",
+      "gloss": {
+        "en": "He solved the problem with ease.",
+        "tr": "Sorunu kolaylıkla halletti.",
+        "fr": "Il résolut le problème facilement.",
+        "pt-BR": "Ele resolveu o problema facilmente.",
+        "ru": "Он решил проблему с лёгкостью."
+      },
+      "freqRank": 233,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/es_fluent/228-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/228-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "Estoy aprendiendo dos lenguas extranjeras.",
+      "gloss": {
+        "en": "I am learning two foreign languages.",
+        "tr": "İki yabancı dil öğreniyorum.",
+        "de": "Ich lerne zwei Fremdsprachen.",
+        "fr": "J'apprends deux langues étrangères.",
+        "pt-BR": "Estou aprendendo duas línguas estrangeiras.",
+        "ru": "Я изучаю два иностранных языка."
+      },
+      "freqRank": 234,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/229-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/229-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "Mary y Jane son primas.",
+      "gloss": {
+        "en": "Mary and Jane are cousins.",
+        "tr": "Mary ve Jane kuzenlerdir.",
+        "fr": "Mary et Jane sont cousines.",
+        "pt-BR": "Mary e Jane são primas.",
+        "ru": "Мэри и Джейн — кузины."
+      },
+      "freqRank": 235,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands",
+      "voices": [
+        { "key": "echo/packs/es_fluent/230-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/230-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "¿Qué día sueles estar libre?",
+      "gloss": {
+        "en": "What day are you usually free?",
+        "de": "An welchem Tag hast du normalerweise frei?",
+        "fr": "Quel jour es-tu libre habituellement ?",
+        "pt-BR": "Que dia costuma estar livre?",
+        "ru": "В какой день ты обычно свободен?"
+      },
+      "freqRank": 236,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/es_fluent/231-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/231-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "Ayer no jugaron al tenis.",
+      "gloss": {
+        "en": "They didn't play tennis yesterday.",
+        "tr": "Dün tenis oynamadılar.",
+        "de": "Gestern haben sie nicht Tennis gespielt.",
+        "fr": "Hier, ils n'ont pas joué au tennis.",
+        "ru": "Вчера они не играли в теннис."
+      },
+      "freqRank": 237,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tennis",
+      "voices": [
+        { "key": "echo/packs/es_fluent/232-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/232-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "El número 2010 tiene dos ceros.",
+      "gloss": {
+        "en": "There are two zeros in the number \"2010.\"",
+        "de": "Die Zahl 2010 hat zwei Nullen.",
+        "fr": "Le nombre 2010 contient deux zéros.",
+        "pt-BR": "O número 2010 tem dois zeros.",
+        "ru": "В числе 2010 два нуля."
+      },
+      "freqRank": 238,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-numbers",
+      "voices": [
+        { "key": "echo/packs/es_fluent/233-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/233-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "Las casas japonesas son pequeñas.",
+      "gloss": {
+        "en": "Japanese houses are small.",
+        "tr": "Japon evleri küçüktür.",
+        "de": "Japanische Häuser sind klein.",
+        "fr": "Les maisons japonaises sont petites.",
+        "ru": "Японские дома маленькие."
+      },
+      "freqRank": 239,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/es_fluent/234-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/234-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "No me gusta la samba.",
+      "gloss": {
+        "en": "I don't like samba.",
+        "tr": "Sambayı sevmiyorum.",
+        "de": "Ich mag Samba nicht.",
+        "fr": "Je n'aime pas la samba.",
+        "pt-BR": "Eu não gosto de samba.",
+        "ru": "Мне не нравится самба."
+      },
+      "freqRank": 240,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-dancing",
+      "voices": [
+        { "key": "echo/packs/es_fluent/235-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/235-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "Les interesa mucho la astronomía.",
+      "gloss": {
+        "en": "They are very interested in astronomy.",
+        "de": "Sie sind sehr an Astronomie interessiert.",
+        "fr": "Ils sont très intéressés par l'astronomie.",
+        "pt-BR": "A astronomia os interessa muito.",
+        "ru": "Они очень интересуются астрономией."
+      },
+      "freqRank": 241,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:night-with-stars",
+      "voices": [
+        { "key": "echo/packs/es_fluent/236-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/236-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "Tu inglés ha mejorado considerablemente.",
+      "gloss": {
+        "en": "Your English has improved considerably.",
+        "de": "Dein Englisch hat sich stark verbessert.",
+        "fr": "Ton anglais s'est beaucoup amélioré.",
+        "pt-BR": "Seu inglês melhorou consideravelmente.",
+        "ru": "Твой английский значительно улучшился."
+      },
+      "freqRank": 242,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chart-increasing",
+      "voices": [
+        { "key": "echo/packs/es_fluent/237-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/237-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "Se rieron de su error.",
+      "gloss": {
+        "en": "They laughed at his mistake.",
+        "de": "Sie lachten über seinen Fehler.",
+        "fr": "Ils ont ri de leur erreur.",
+        "pt-BR": "Eles riram do erro dele.",
+        "ru": "Они смеялись над его ошибкой."
+      },
+      "freqRank": 243,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-tears-of-joy",
+      "voices": [
+        { "key": "echo/packs/es_fluent/238-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/238-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "Todos se rieron de mí.",
+      "gloss": {
+        "en": "Everybody laughed at me.",
+        "de": "Alle lachten mich aus.",
+        "fr": "Tous se moquèrent de moi.",
+        "ru": "Все надо мной смеялись.",
+        "ar": "ضحك الجميع عليّ."
+      },
+      "freqRank": 244,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-tears-of-joy",
+      "voices": [
+        { "key": "echo/packs/es_fluent/239-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/239-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "Tom es mentiroso y manipulador.",
+      "gloss": {
+        "en": "Tom is a liar and manipulator.",
+        "tr": "Tom yalancı ve manipülatördür.",
+        "de": "Tom ist ein Lügner und Manipulator.",
+        "fr": "Tom est un menteur et manipulateur.",
+        "ru": "Том — лжец и манипулятор."
+      },
+      "freqRank": 245,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/240-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/240-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "Él es profesor y novelista.",
+      "gloss": {
+        "en": "He is a teacher and novelist.",
+        "tr": "O bir öğretmen ve romancı.",
+        "de": "Er ist Lehrer und Romanautor.",
+        "fr": "Il est professeur et romancier.",
+        "pt-BR": "Ele é professor e romancista."
+      },
+      "freqRank": 246,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/es_fluent/241-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/241-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "Nos atendió una mesera bonita.",
+      "gloss": {
+        "en": "A pretty waitress waited on us.",
+        "tr": "Hoş bir garson bize hizmet etti.",
+        "de": "Eine schöne Kellnerin bediente uns.",
+        "fr": "Une jolie serveuse s'occupa de nous.",
+        "pt-BR": "Fomos atendidos por uma bela garçonete."
+      },
+      "freqRank": 247,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/es_fluent/242-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/242-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "Estoy almorzando con mi hermana.",
+      "gloss": {
+        "en": "I am eating lunch with my sister.",
+        "de": "Ich esse mit meiner Schwester zu Mittag.",
+        "fr": "Je suis en train de déjeuner avec ma sœur.",
+        "pt-BR": "Estou almoçando com a minha irmã.",
+        "ru": "Я обедаю со своей сестрой."
+      },
+      "freqRank": 248,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/es_fluent/243-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/243-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "Quiero que cantes una canción.",
+      "gloss": {
+        "en": "I want you to sing a song.",
+        "de": "Ich möchte, dass du ein Lied singst.",
+        "fr": "Je veux que tu chantes une chanson.",
+        "pt-BR": "Quero que você me cante uma canção.",
+        "ru": "Я хочу, чтобы ты спела песню."
+      },
+      "freqRank": 249,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/es_fluent/244-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/244-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "Los amigos deben ayudarse mutuamente.",
+      "gloss": {
+        "en": "Friends should help one another.",
+        "de": "Freunde sollten sich gegenseitig helfen.",
+        "pt-BR": "Os amigos devem se ajudar mutuamente.",
+        "ru": "Друзья должны помогать друг другу.",
+        "ar": "على الأصدقاء مساعدة بعضهم البعض."
+      },
+      "freqRank": 250,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/es_fluent/245-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/245-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "No te olvides de escribirme.",
+      "gloss": {
+        "en": "Don't forget to write to me.",
+        "de": "Vergiss nicht, mir zu schreiben.",
+        "fr": "N'oublie pas de m'écrire.",
+        "pt-BR": "Não se esqueça de me escrever.",
+        "ru": "Не забывай мне писать."
+      },
+      "freqRank": 251,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/es_fluent/246-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/246-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "Por favor, pesa estos melocotones.",
+      "gloss": {
+        "en": "Please, weigh these peaches.",
+        "tr": "Lütfen bu şeftalileri tart.",
+        "de": "Bitte wiege diese Pfirsiche ab.",
+        "fr": "S'il te plaît, pèse ces pêches.",
+        "pt-BR": "Pese estes pêssegos, por favor!",
+        "ru": "Взвесьте эти персики, пожалуйста."
+      },
+      "freqRank": 252,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:balance-scale",
+      "voices": [
+        { "key": "echo/packs/es_fluent/247-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/247-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "El tiempo se está agotando.",
+      "gloss": {
+        "en": "Time is running out.",
+        "tr": "Zaman bitiyor.",
+        "de": "Die Zeit läuft aus.",
+        "fr": "Le temps presse.",
+        "ru": "Время истекает."
+      },
+      "freqRank": 253,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/es_fluent/248-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/248-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "Tienes que leerte este libro.",
+      "gloss": {
+        "en": "You must read this book.",
+        "tr": "Bu kitabı okumalısın.",
+        "de": "Du musst dieses Buch lesen.",
+        "fr": "Il faut que tu lises ce livre.",
+        "ru": "Тебе надо прочесть эту книгу."
+      },
+      "freqRank": 254,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/249-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/249-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 250,
+      "kind": "phrase",
+      "text": "Sé que ustedes son vegetarianos.",
+      "gloss": {
+        "en": "I know that you are vegetarians.",
+        "de": "Ich weiß, dass ihr Vegetarier seid.",
+        "fr": "Je sais que vous êtes végétariens.",
+        "pt-BR": "Eu sei que vocês são vegetarianos.",
+        "ru": "Я знаю, что вы вегетарианцы."
+      },
+      "freqRank": 255,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/es_fluent/250-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/250-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 251,
+      "kind": "phrase",
+      "text": "Tom y Mary son vegetarianos.",
+      "gloss": {
+        "en": "Tom and Mary are vegetarians.",
+        "tr": "Tom ve Mary vejeteryandır.",
+        "de": "Tom und Maria sind Vegetarier.",
+        "pt-BR": "O Tom e a Maria são vegetarianos.",
+        "ru": "Том и Мэри — вегетарианцы."
+      },
+      "freqRank": 256,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/es_fluent/251-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/251-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "Me pregunto si lloverá mañana.",
+      "gloss": {
+        "en": "I wonder if it will rain tomorrow.",
+        "tr": "Yarın yağmur yağıp yağmayacağını merak ediyorum.",
+        "de": "Ich frage mich, ob es morgen regnen wird.",
+        "fr": "Je me demande s'il pleuvra demain.",
+        "ru": "Интересно, будет ли завтра дождь."
+      },
+      "freqRank": 257,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        { "key": "echo/packs/es_fluent/252-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/252-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 253,
+      "kind": "phrase",
+      "text": "No pude contener el estornudo.",
+      "gloss": {
+        "en": "I couldn't contain my sneeze.",
+        "de": "Ich konnte mein Niesen nicht unterdrücken.",
+        "fr": "Je n'ai pas pu contenir mon éternuement.",
+        "pt-BR": "Não consegui conter o espirro.",
+        "ru": "Я не смог сдержать чихания."
+      },
+      "freqRank": 258,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sneezing-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/253-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/253-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
+      "text": "Hoy es veintisiete de marzo.",
+      "gloss": {
+        "en": "Today's March 27th.",
+        "tr": "Bugün yirmi yedi Mart.",
+        "de": "Heute ist der siebenundzwanzigste März.",
+        "pt-BR": "Hoje é o dia vinte e sete de março.",
+        "ru": "Сегодня двадцать седьмое марта."
+      },
+      "freqRank": 259,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/es_fluent/254-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/254-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 255,
+      "kind": "phrase",
+      "text": "¡No repitas el mismo error!",
+      "gloss": {
+        "en": "Don't repeat the same mistake!",
+        "de": "Wiederhole nicht denselben Fehler!",
+        "fr": "Ne commets pas de nouveau la même erreur.",
+        "pt-BR": "Não repita o mesmo erro!",
+        "ru": "Не повторяй ту же ошибку!"
+      },
+      "freqRank": 260,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cross-mark",
+      "voices": [
+        { "key": "echo/packs/es_fluent/255-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/255-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 256,
+      "kind": "phrase",
+      "text": "Me saludó con una sonrisa.",
+      "gloss": {
+        "en": "He greeted me with a smile.",
+        "de": "Er begrüßte mich mit einem Lächeln.",
+        "fr": "Il me salua d'un sourire.",
+        "pt-BR": "Cumprimentou-me com um sorriso.",
+        "ru": "Он поприветствовал меня улыбкой."
+      },
+      "freqRank": 261,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/es_fluent/256-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/256-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 257,
+      "kind": "phrase",
+      "text": "No puedo prestarte este libro.",
+      "gloss": {
+        "en": "I cannot lend this book to you.",
+        "de": "Ich kann dir dieses Buch nicht leihen.",
+        "fr": "Je ne peux pas te prêter ce livre.",
+        "pt-BR": "Não posso te emprestar este livro.",
+        "ru": "Я не могу одолжить тебе эту книгу."
+      },
+      "freqRank": 262,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/257-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/257-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 258,
+      "kind": "phrase",
+      "text": "Ella está bañando al bebé.",
+      "gloss": {
+        "en": "She is giving the baby a bath.",
+        "de": "Sie badet das Baby.",
+        "fr": "Elle baigne le bébé.",
+        "pt-BR": "Ela está dando banho no bebê.",
+        "ru": "Она купает ребёнка."
+      },
+      "freqRank": 263,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bathtub",
+      "voices": [
+        { "key": "echo/packs/es_fluent/258-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/258-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 259,
+      "kind": "phrase",
+      "text": "Ha llovido mucho este año.",
+      "gloss": {
+        "en": "There's been a lot of rain this year.",
+        "tr": "Bu yıl çok yağmur vardı.",
+        "de": "Dieses Jahr regnete es viel.",
+        "fr": "Il a plu abondamment cette année.",
+        "ar": "أمطرت بكثرة هذا العام."
+      },
+      "freqRank": 264,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/es_fluent/259-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/259-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 260,
+      "kind": "phrase",
+      "text": "Las nubes cubrieron el sol.",
+      "gloss": {
+        "en": "The clouds hid the sun.",
+        "de": "Die Wolken verdeckten die Sonne.",
+        "fr": "Les nuages cachèrent le soleil.",
+        "ru": "Тучи закрыли солнце.",
+        "ar": "أخفت الغيوم الشمس."
+      },
+      "freqRank": 265,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        { "key": "echo/packs/es_fluent/260-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/260-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "Nunca más cometeré ese error.",
+      "gloss": {
+        "en": "I will never make that mistake again.",
+        "tr": "Bir daha bu hatayı yapmayacağım.",
+        "de": "Den Fehler werde ich gewiss nie wiederholen!",
+        "fr": "Je ne referai plus jamais cette erreur.",
+        "pt-BR": "Nunca mais cometerei esse erro.",
+        "ru": "Никогда больше я не сделаю этой ошибки."
+      },
+      "freqRank": 266,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cross-mark",
+      "voices": [
+        { "key": "echo/packs/es_fluent/261-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/261-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 262,
+      "kind": "phrase",
+      "text": "Me rompí la pierna esquiando.",
+      "gloss": {
+        "en": "I broke my leg skiing.",
+        "de": "Ich hab mir beim Skifahren das Bein gebrochen.",
+        "fr": "Je me suis cassé la jambe en skiant.",
+        "pt-BR": "Quebrei a perna esquiando.",
+        "ru": "Я сломал ногу, катаясь на лыжах."
+      },
+      "freqRank": 267,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:leg",
+      "voices": [
+        { "key": "echo/packs/es_fluent/262-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/262-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 263,
+      "kind": "phrase",
+      "text": "Nosotros nadamos en el mar.",
+      "gloss": {
+        "en": "We swam in the sea.",
+        "tr": "Biz denizde yüzdük.",
+        "de": "Wir schwammen im Meer.",
+        "pt-BR": "Nós nadamos no mar.",
+        "ar": "نسبح في البحر."
+      },
+      "freqRank": 268,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/es_fluent/263-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/263-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 264,
+      "kind": "phrase",
+      "text": "Ella es una buena nadadora.",
+      "gloss": {
+        "en": "She is a good swimmer.",
+        "tr": "O iyi bir yüzücü.",
+        "de": "Sie ist eine gute Schwimmerin.",
+        "fr": "Elle est bonne nageuse.",
+        "ru": "Она хорошо плавает."
+      },
+      "freqRank": 269,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/es_fluent/264-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/264-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 265,
+      "kind": "phrase",
+      "text": "Las enfermeras son muy simpáticas.",
+      "gloss": {
+        "en": "The nurses are very nice.",
+        "tr": "Hemşireler çok hoş.",
+        "fr": "Les infirmières sont très sympa.",
+        "pt-BR": "As enfermeiras são muito simpáticas.",
+        "ru": "Медсёстры очень симпатичные."
+      },
+      "freqRank": 270,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/es_fluent/265-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/265-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 266,
+      "kind": "phrase",
+      "text": "Él podría por lo menos disculparse.",
+      "gloss": {
+        "en": "He might at least apologize.",
+        "tr": "En azından özür dileyebilirdi.",
+        "de": "Er könnte sich wenigstens entschuldigen.",
+        "fr": "Il pourrait au moins s'excuser.",
+        "pt-BR": "Ele poderia pelo menos se desculpar."
+      },
+      "freqRank": 271,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-bowing",
+      "voices": [
+        { "key": "echo/packs/es_fluent/266-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/266-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 267,
+      "kind": "phrase",
+      "text": "Tom dice que no sueña nunca.",
+      "gloss": {
+        "en": "Tom says that he never dreams.",
+        "de": "Tom sagt, dass er niemals träumt.",
+        "fr": "Tom dit qu'il ne rêve jamais.",
+        "pt-BR": "Tom diz que nunca sonha.",
+        "ru": "Том говорит, что ему никогда не снятся сны."
+      },
+      "freqRank": 272,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thought-balloon",
+      "voices": [
+        { "key": "echo/packs/es_fluent/267-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/267-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 268,
+      "kind": "phrase",
+      "text": "Me gusta alimentar a las palomas.",
+      "gloss": {
+        "en": "I like to feed the pigeons.",
+        "tr": "Güvercinleri beslemeyi seviyorum.",
+        "de": "Ich füttere gerne Tauben.",
+        "fr": "J'aime donner à manger aux pigeons.",
+        "pt-BR": "Eu gosto de alimentar as pombas.",
+        "ru": "Я люблю кормить голубей."
+      },
+      "freqRank": 273,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/es_fluent/268-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/268-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 269,
+      "kind": "phrase",
+      "text": "Tom no va a tolerar esto.",
+      "gloss": {
+        "en": "Tom isn't going to tolerate this.",
+        "de": "Tom wird das nicht hinnehmen.",
+        "fr": "Tom ne va pas tolérer ça.",
+        "pt-BR": "Tom não vai tolerar isto.",
+        "ru": "Том не будет это терпеть."
+      },
+      "freqRank": 274,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        { "key": "echo/packs/es_fluent/269-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/269-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "Los bancos no abren los sábados.",
+      "gloss": {
+        "en": "The banks aren't open on Saturdays.",
+        "tr": "Bankalar cumartesi günleri açık değildir.",
+        "de": "Banken sind samstags nicht geöffnet.",
+        "fr": "Les banques ne sont pas ouvertes le samedi.",
+        "pt-BR": "Os bancos não abrem aos sábados."
+      },
+      "freqRank": 275,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/es_fluent/270-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/270-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "Mucha gente se casa los sábados.",
+      "gloss": {
+        "en": "Lots of people get married on Saturdays.",
+        "de": "Viele heiraten samstags.",
+        "fr": "Beaucoup de gens se marient le samedi.",
+        "pt-BR": "Muitas pessoas casam-se no sábado.",
+        "ru": "Многие женятся в субботу."
+      },
+      "freqRank": 276,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wedding",
+      "voices": [
+        { "key": "echo/packs/es_fluent/271-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/271-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "Ayer fueron al zoo en autobús.",
+      "gloss": {
+        "en": "They went to the zoo by bus yesterday.",
+        "tr": "Onlar dün otobüsle hayvanat bahçesine gittiler.",
+        "de": "Gestern sind sie mit den Bus in den Zoo gefahren.",
+        "fr": "Hier ils sont allés au zoo en bus.",
+        "ru": "Они вчера ездили на автобусе в зоопарк."
+      },
+      "freqRank": 277,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bus",
+      "voices": [
+        { "key": "echo/packs/es_fluent/272-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/272-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "Un cuadrado tiene cuatro lados iguales.",
+      "gloss": {
+        "en": "A square has four equal sides.",
+        "de": "Ein Quadrat hat vier gleiche Seiten.",
+        "fr": "Un carré a quatre côtés égaux.",
+        "pt-BR": "Um quadrado tem quatro lados iguais.",
+        "ru": "У квадрата четыре равные стороны."
+      },
+      "freqRank": 278,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:triangular-ruler",
+      "voices": [
+        { "key": "echo/packs/es_fluent/273-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/273-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "Este remedio no tiene efectos secundarios.",
+      "gloss": {
+        "en": "This medicine has no side effects.",
+        "de": "Diese Medizin hat keine Nebenwirkungen.",
+        "fr": "Ce médicament n'a pas d'effets secondaires.",
+        "pt-BR": "Este remédio não tem efeitos colaterais.",
+        "ru": "У этого лекарства нет побочных эффектов."
+      },
+      "freqRank": 279,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pill",
+      "voices": [
+        { "key": "echo/packs/es_fluent/274-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/274-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "¿Alguna vez has comido pescado crudo?",
+      "gloss": {
+        "en": "Have you ever eaten raw fish?",
+        "tr": "Hiç çiğ balık yedin mi?",
+        "de": "Hast du schon einmal rohen Fisch gegessen?",
+        "fr": "As-tu déjà mangé du poisson cru ?",
+        "ru": "Ты когда-нибудь ел сырую рыбу?"
+      },
+      "freqRank": 280,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fish",
+      "voices": [
+        { "key": "echo/packs/es_fluent/275-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/275-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "Ellos jamás regresaron a su país.",
+      "gloss": {
+        "en": "They never returned to their country.",
+        "de": "Sie sind nie in ihr Land zurückgekehrt.",
+        "fr": "Jamais ils ne retournèrent en leur pays.",
+        "pt-BR": "Eles nunca voltaram para o seu país.",
+        "ru": "Они так и не вернулись на родину."
+      },
+      "freqRank": 281,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:back-arrow",
+      "voices": [
+        { "key": "echo/packs/es_fluent/276-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/276-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "El bebé lloró toda la noche.",
+      "gloss": {
+        "en": "The baby cried all night.",
+        "tr": "Bebek tüm gece ağladı.",
+        "de": "Das Baby weinte die ganze Nacht.",
+        "fr": "Le bébé pleura toute la nuit.",
+        "pt-BR": "O bebê chorou a noite toda.",
+        "ru": "Ребенок плакал всю ночь."
+      },
+      "freqRank": 282,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/es_fluent/277-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/277-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "Prefiero el vino tinto al blanco.",
+      "gloss": {
+        "en": "I like red wine better than white.",
+        "tr": "Kırmızı şarabı beyaza tercih ederim.",
+        "de": "Ich mag Rotwein lieber als Weißwein.",
+        "fr": "J'aime le vin rouge plus que le vin blanc.",
+        "pt-BR": "Eu gosto mais de vinho tinto do que de vinho branco.",
+        "ru": "Я предпочитаю красное вино белому."
+      },
+      "freqRank": 283,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/es_fluent/278-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/278-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "Nunca me he puesto un esmoquin.",
+      "gloss": {
+        "en": "I've never worn a tuxedo.",
+        "tr": "Hiç smokin giymedim.",
+        "de": "Ich habe nie einen Smoking getragen.",
+        "fr": "Je n'ai jamais porté de smoking.",
+        "pt-BR": "Nunca usei um smoking.",
+        "ru": "Я ни разу не надевал смокинг."
+      },
+      "freqRank": 284,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:necktie",
+      "voices": [
+        { "key": "echo/packs/es_fluent/279-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/279-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "Esta palabra es difícil de pronunciar.",
+      "gloss": {
+        "en": "This word is difficult to pronounce.",
+        "de": "Dieses Wort ist schwer auszusprechen.",
+        "fr": "Ce mot est difficile à prononcer.",
+        "pt-BR": "Essa palavra é difícil de pronunciar.",
+        "ru": "Это слово сложно произнести.",
+        "ar": "هذه الكلمة من الصعب أن تنطق."
+      },
+      "freqRank": 285,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/280-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/280-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "Me lavo la cara cada mañana.",
+      "gloss": {
+        "en": "I wash my face every morning.",
+        "tr": "Her sabah yüzümü yıkarım.",
+        "de": "Ich wasche mir jeden Morgen das Gesicht.",
+        "fr": "Je me lave le visage chaque matin.",
+        "pt-BR": "Lavo o rosto toda manhã.",
+        "ru": "Я умываюсь каждое утро."
+      },
+      "freqRank": 286,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soap",
+      "voices": [
+        { "key": "echo/packs/es_fluent/281-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/281-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "Acabo de ver una estrella fugaz.",
+      "gloss": {
+        "en": "I just saw a shooting star.",
+        "tr": "Az önce kayan bir yıldız gördüm.",
+        "de": "Ich habe gerade eine Sternschnuppe gesehen.",
+        "fr": "Je viens de voir une étoile filante.",
+        "pt-BR": "Acabo de ver uma estrela cadente.",
+        "ru": "Я только что видел падающую звезду."
+      },
+      "freqRank": 287,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:night-with-stars",
+      "voices": [
+        { "key": "echo/packs/es_fluent/282-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/282-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 283,
+      "kind": "phrase",
+      "text": "El hebreo es un idioma difícil.",
+      "gloss": {
+        "en": "Hebrew is a difficult language.",
+        "tr": "İbranice zor bir dildir.",
+        "de": "Hebräisch ist eine schwere Sprache.",
+        "fr": "L'hébreu est une langue difficile.",
+        "pt-BR": "O hebraico é um idioma difícil.",
+        "ru": "Иврит — трудный язык.",
+        "ar": "العبرية هي لغة صعبة."
+      },
+      "freqRank": 288,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/283-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/283-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "Algunos niños nadan en el mar.",
+      "gloss": {
+        "en": "Some children swim in the ocean.",
+        "de": "Einige Kinder schwimmen im Meer.",
+        "fr": "Quelques enfants nagent dans la mer.",
+        "pt-BR": "Algumas crianças nadam no mar.",
+        "ru": "Некоторые дети плавают в море.",
+        "ar": "بعض الأطفال يسبحون في البحر."
+      },
+      "freqRank": 289,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/es_fluent/284-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/284-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 285,
+      "kind": "phrase",
+      "text": "El español es su lengua materna.",
+      "gloss": {
+        "en": "Spanish is her native language.",
+        "tr": "İspanyolca onun ana dilidir.",
+        "de": "Spanisch ist ihre Muttersprache.",
+        "fr": "L'espagnol est sa langue maternelle.",
+        "pt-BR": "O espanhol é a sua língua materna.",
+        "ru": "Испанский — её родной язык."
+      },
+      "freqRank": 290,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/285-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/285-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "A Tom le gusta el reggae.",
+      "gloss": {
+        "en": "Tom likes reggae.",
+        "tr": "Tom reggae'yi sever.",
+        "de": "Tom mag Reggae.",
+        "fr": "Tom aime le reggae.",
+        "pt-BR": "Tom gosta de reggae.",
+        "ru": "Том любит регги."
+      },
+      "freqRank": 291,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/es_fluent/286-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/286-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 287,
+      "kind": "phrase",
+      "text": "El francés es su lengua materna.",
+      "gloss": {
+        "en": "French is her mother tongue.",
+        "tr": "Onların ana dili Fransızca.",
+        "de": "Französisch ist ihre Muttersprache.",
+        "fr": "Le français est leur langue maternelle.",
+        "pt-BR": "O francês é a língua materna dele.",
+        "ru": "Французский — её родной язык."
+      },
+      "freqRank": 292,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/287-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/287-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 288,
+      "kind": "phrase",
+      "text": "Tenía miedo de perderme en la oscuridad.",
+      "gloss": {
+        "en": "I was afraid of getting lost in the dark.",
+        "tr": "Karanlıkta kaybolmaktan korkuyordum.",
+        "de": "Ich hatte Angst, mich im Dunkeln zu verlaufen.",
+        "fr": "J'avais peur de me perdre dans le noir.",
+        "pt-BR": "Eu tinha medo de me perder no escuro.",
+        "ar": "كنت خائفاً من أن أضيع في الظلمة."
+      },
+      "freqRank": 293,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fearful-face",
+      "voices": [
+        { "key": "echo/packs/es_fluent/288-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/288-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 289,
+      "kind": "phrase",
+      "text": "Le di un diccionario a mi hermana.",
+      "gloss": {
+        "en": "I gave my sister a dictionary.",
+        "de": "Ich habe meiner Schwester ein Wörterbuch gegeben.",
+        "fr": "J'ai donné un dictionnaire à ma sœur.",
+        "pt-BR": "Eu dei um dicionário à minha irmã.",
+        "ru": "Я дал своей сестре словарь.",
+        "ar": "أعطيت أختي قاموساً."
+      },
+      "freqRank": 294,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/289-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/289-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 290,
+      "kind": "phrase",
+      "text": "\"A\" es la primera letra del alfabeto.",
+      "gloss": {
+        "en": "A is the first letter of the alphabet.",
+        "tr": "\"A\", alfabenin ilk harfidir.",
+        "de": "\"A\" ist der erste Buchstabe des Alphabets.",
+        "fr": "« A » est la première lettre de l'alphabet.",
+        "pt-BR": "\"A\" é a primeira letra do alfabeto.",
+        "ru": "«А» — первая буква алфавита."
+      },
+      "freqRank": 295,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-latin-letters",
+      "voices": [
+        { "key": "echo/packs/es_fluent/290-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/290-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 291,
+      "kind": "phrase",
+      "text": "El inglés no es mi lengua materna.",
+      "gloss": {
+        "en": "English is not my mother tongue.",
+        "tr": "İngilizce benim ana dilim değil.",
+        "de": "Englisch ist nicht meine Muttersprache.",
+        "fr": "L'anglais n'est pas ma langue maternelle.",
+        "ru": "Английский - не мой родной язык.",
+        "ar": "الإنغليزية ليست لغتي الأم."
+      },
+      "freqRank": 296,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/es_fluent/291-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/291-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 292,
+      "kind": "phrase",
+      "text": "La astronomía trata de estrellas y planetas.",
+      "gloss": {
+        "en": "Astronomy deals with the stars and planets.",
+        "tr": "Astronomi yıldızlar ve gezegenler ile ilgilenir.",
+        "de": "Astronomie handelt von Sternen und Planeten.",
+        "fr": "L'astronomie traite des étoiles et des planètes.",
+        "pt-BR": "A astronomia trata de estrelas e planetas.",
+        "ru": "Астрономия занимается звёздами и планетами."
+      },
+      "freqRank": 297,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:night-with-stars",
+      "voices": [
+        { "key": "echo/packs/es_fluent/292-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/292-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 293,
+      "kind": "phrase",
+      "text": "Hay una rosa roja en el florero.",
+      "gloss": {
+        "en": "There is a red rose in the vase.",
+        "tr": "Vazoda kırmızı bir gül var.",
+        "de": "In der Vase ist eine rote Rose.",
+        "fr": "Il y a une rose rouge dans le vase.",
+        "pt-BR": "Há uma rosa vermelha no vaso.",
+        "ru": "В вазе красная роза."
+      },
+      "freqRank": 298,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:rose",
+      "voices": [
+        { "key": "echo/packs/es_fluent/293-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/293-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 294,
+      "kind": "phrase",
+      "text": "Este diccionario me ha sido de gran utilidad.",
+      "gloss": {
+        "en": "This dictionary has been of great use to me.",
+        "tr": "Bu sözlük benim için çok yararlıydı.",
+        "de": "Dieses Wörterbuch war mir von großem Nutzen.",
+        "fr": "Ce dictionnaire m'a été d'une grande utilité.",
+        "pt-BR": "Este dicionário me tem sido de grande utilidade.",
+        "ru": "Этот словарь мне очень пригодился."
+      },
+      "freqRank": 299,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/es_fluent/294-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/294-em_alex.m4a", "voice": "em_alex" }
+      ]
+    },
+    {
+      "index": 295,
+      "kind": "phrase",
+      "text": "John tocaba la guitarra y sus amigos cantaban.",
+      "gloss": {
+        "en": "John played guitar and his friends sang.",
+        "tr": "John gitar çaldı ve arkadaşları şarkı söyledi.",
+        "de": "John spielte Gitarre und seine Freunde sangen.",
+        "fr": "John jouait de la guitare et ses amis chantaient.",
+        "pt-BR": "João tocava violão e seus amigos cantavam.",
+        "ru": "Джон играл на гитаре, а его друзья пели."
+      },
+      "freqRank": 300,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:guitar",
+      "voices": [
+        { "key": "echo/packs/es_fluent/295-ef_dora.m4a", "voice": "ef_dora" },
+        { "key": "echo/packs/es_fluent/295-em_alex.m4a", "voice": "em_alex" }
+      ]
+    }
+  ]
+}

@@ -49,7 +49,8 @@ it in Settings → Blocked.
 
 **Report.** From a profile, a message, a post, or a review. Pick the reason that
 fits and add anything that helps us understand; the person you report is never
-told who reported them.
+told who reported them. If the two of you have messaged, whoever reviews the
+report also sees your most recent messages with each other, up to the report.
 
 **Hide a review.** Once you and somebody have talked for a while, each of you
 can write a short review on the other's profile. Every review on your profile is

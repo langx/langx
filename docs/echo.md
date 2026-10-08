@@ -666,17 +666,22 @@ them.
 
 **Scope**: three packs per language, at `absoluteBeginner`, `beginner` and
 `intermediate`, about 300 phrases each — in eight locales for English, and in
-English plus what exists for the rest; see below. A
+English plus what exists for the rest; see below. Outside English there is a
+fourth, at `fluent`, also below. A
 sentence is its own example, so `example` is filled only for a phrasebook
 entry, where the dictionary has one. Each is read end to end by a person before
 its `"reviewed": true`; they are drafted together because the Tatoeba exports
 are two hundred megabytes and one pass answers every level.
 
-**`fluent` has no pack, and the reason is the eight locales rather than the
-level.** Requiring a human translation in all eight is what makes a gloss
-trustworthy, and Arabic is where it binds: across every level Tatoeba links
-Arabic to 16,322 of the 657,063 candidate English sentences, 2.5%. At A1 a
-pool that large still leaves a thousand; at C1 and C2 it leaves four.
+**English `fluent` has no pack, and the reason is the eight locales rather
+than the level.** Requiring a human translation in all eight is what makes a
+gloss trustworthy, and Arabic is where it binds: across every level Tatoeba
+links Arabic to 16,322 of the 657,063 candidate English sentences, 2.5%. At A1
+a pool that large still leaves a thousand; at C1 and C2 it leaves three, and
+63 even with Arabic allowed to be missing. Requiring Turkish alone would leave
+2,540 — whether English moves to the rule below is a decision still open, and
+`tools/echo-content/FLUENT-MEASUREMENT.md` has the numbers it would be taken
+on.
 
 **Outside English that requirement had to go, and the same number is why.**
 Tatoeba links Arabic to 3,393 Spanish sentences, 3,104 French, 2,971 German,
@@ -688,24 +693,42 @@ Spanish candidates average 6.1 of 7 locales. The cost is stated rather than
 hidden: Arabic reaches 87% of the English items, 36% of the Russian and 9% of
 the Italian, and a reader whose column is missing gets English.
 
-That decision does not reach back to English, which still requires all eight,
-and so English `fluent` is still unbuilt. It does reach up to `fluent`
-everywhere else.
+That decision does not reach back to English, which still requires all
+eight. It does reach up to `fluent`, which outside English is drafted:
+`es`, `fr` and `it` in this repository, `de` and `ru` beside them. Three things
+made that level different from the three below it:
 
-**German and Russian `fluent` are drafted, and unread.** `de/fluent.json` is
-270 sentences and `ru/fluent.json` 244, both `"reviewed": false`. The level is
-the frequency list read past B1 — ranks 10,001 to 50,000 are C1 and C2 — so
-what these packs teach is the long tail of everyday vocabulary rather than C1
-grammar, and in both languages a declined form can rank past 10,000 on its
-ending alone; `tools/echo-content/FLUENT-MEASUREMENT.md` has the measurement.
-They were built to a stricter rule than the three levels below them: **every
-item carries a cue and a Piper reading**, and the cue was decided before the
-phrase was taken (`pick-phrases.mjs --cues`), so a sentence with no honest
-picture gave its place to the next candidate instead of shipping bare. That
-rule, not the gloss floor, is what sets the size — 280 of 1,100 German
-candidates and 256 of 700 Russian ones had a picture that says what they are
-about, and Wiktionary's own-language editions had no translation table for any
-of the 22 phrasebook entries among them, so every item is a Tatoeba sentence.
+- **The frequency bands go on past B1.** C1 to rank 25,000 and C2 to the end of
+  the 50,000-form list, both `fluent`; before that a phrase with a rarer word
+  was unlisted and `fluent` could not come out of the picker at all. The bands
+  below are unchanged, so no existing pack would pick differently.
+- **A name does not make a phrase fluent.** Past ten thousand, every place and
+  person in the corpus is suddenly C1, and the first pool was _Vivo en
+  Atenas._ and _Soy Susan Greene._ — so at `fluent` a phrase whose hardest word
+  is capitalised is not taken. German is exempt, since it capitalises every
+  noun.
+- **Every item carries a cue and a reading, by construction.** The cue table
+  was written against a pool of 700, and the picker's `--cues` takes only the
+  phrases it maps, so an item with no honest picture gave its place to the
+  next candidate instead of shipping blank. `packContent.test.ts` holds these
+  packs, by id, to both.
+
+What a frequency list calls C1 is **the long tail of everyday vocabulary**
+rather than C1 grammar: _Te ves pálido._, _La nuit tombait._, _Manca una
+forchetta._ The eight-word ceiling keeps out the long subordinate sentences
+that would carry harder syntax, and a frequency list cannot see syntax anyway.
+The candidates were never the limit — 31,000 to 121,000 per language — and the
+picture rule was: 72%, 63% and 61% of the Spanish, French and Italian pools had
+an honest cue. All three are `"reviewed": false`.
+
+**German and Russian `fluent`** were drafted alongside, under the same rules,
+and read by Piper: `de/fluent.json` is 270 sentences and `ru/fluent.json` 244.
+In both languages a declined form can rank past 10,000 on its ending alone, so
+some of their C1 is an inflection rather than a word. The picture rule set
+their size too — 280 of 1,100 German candidates and 256 of 700 Russian ones
+had an honest cue — and Wiktionary's own-language editions had no translation
+table for any of the 22 phrasebook entries among them, so every item is a
+Tatoeba sentence. Both are `"reviewed": false`.
 
 **Sources and licence** — verify at the version downloaded, record it:
 

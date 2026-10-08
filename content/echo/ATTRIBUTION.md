@@ -432,8 +432,16 @@ A draft is a pack file with `"reviewed": false`. **The seed script refuses to
 write one**, and that refusal is the whole quality gate. The three English
 packs have passed it; see "In use" above for what passing meant.
 
-**The only drafts are the German and Russian `fluent` packs** at the end of
-this section. The fifteen drafted on 20 September were read the same night; see "What the review of the fifteen was" below.
+**Five drafts today, all at `fluent`: `es`, `fr` and `it`**, drafted on 7 October
+2026 — 296, 298 and 299 items, every one with a cue and Kokoro's readings —
+**and `de` and `ru`**, 270 and 244 items read by Piper, described at the end of
+this section. They draw on no source the packs above do not: Tatoeba for the
+sentences and their glosses, FrequencyWords for the level (its bands now
+continue past B1; see `tools/echo-content/FLUENT-MEASUREMENT.md`), kaikki for
+the two French phrasebook entries (_bon rétablissement_, _bonne continuation_),
+and Kokoro-82M and Piper for the readings. Nothing non-commercial. The fifteen
+drafted on 20 September were read the same night; see "What the review of the
+fifteen was" below.
 `tools/echo-content/lint-glosses.mjs` had 92 things to say about them before
 that reading — 64 Russian copula dashes written as a hyphen, 13 Arabic
 sentences spaced before their punctuation, 3 Persian letters inside Arabic
