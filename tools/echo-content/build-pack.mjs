@@ -377,7 +377,10 @@ async function main() {
   for (const [index, line] of lines.entries()) {
     const [text, partOfSpeech] = line.split('\t')
 
-    const ready = prepared[text]
+    // Own keys only: a line reading `constructor` or `__proto__` would find
+    // the prototype's member here, pass as glossed and skip the lookup — and
+    // the missing-edition stop below with it.
+    const ready = Object.hasOwn(prepared, text) ? prepared[text] : undefined
     if (ready) {
       fromPrepared += 1
       items.push({

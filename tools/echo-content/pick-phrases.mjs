@@ -69,8 +69,8 @@
  *
  * Needs `bzip2` on the path: Tatoeba publishes bz2 and node has no decoder for
  * it. Everything is streamed, so the exports are never written to disk.
- * `--tatoeba` points at a copy of `per_language/` instead — a `file://` URL
- * works, since the streaming is curl's — for a run that will be repeated: the
+ * `--tatoeba` points at a copy of `per_language/` instead — a directory or a
+ * `file://` URL — for a run that will be repeated: the
  * `fluent` measurement read every export a dozen times.
  *
  * `--cues ./images/cues.es.json` takes only phrases that table gives a picture
@@ -84,9 +84,11 @@
  */
 
 import { spawn } from 'node:child_process'
+import { createReadStream } from 'node:fs'
 import { createInterface } from 'node:readline'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { opening, spread } from './order.mjs'
 import { writable } from './text.mjs'
 
@@ -192,11 +194,24 @@ function args(name) {
   return found
 }
 
-/** A bz2 export, decompressed and handed over a line at a time. */
+/**
+ * A bz2 export, decompressed and handed over a line at a time.
+ *
+ * No shell: the URL comes from `--tatoeba`, and a quote in it would otherwise
+ * be a command. curl and bzip2 are spawned with argument lists and joined by a
+ * pipe here, and a local mirror is read by node rather than by curl.
+ */
 async function* lines(url) {
-  const curl = spawn('sh', ['-c', `curl -sS --max-time 900 -A '${UA}' '${url}' | bzip2 -dc`])
-  curl.stderr.pipe(process.stderr)
-  for await (const line of createInterface({ input: curl.stdout, crlfDelay: Infinity })) yield line
+  const bzip2 = spawn('bzip2', ['-dc'])
+  bzip2.stderr.pipe(process.stderr)
+  if (/^https?:/.test(url)) {
+    const curl = spawn('curl', ['-sS', '--max-time', '900', '-A', UA, url])
+    curl.stderr.pipe(process.stderr)
+    curl.stdout.pipe(bzip2.stdin)
+  } else {
+    createReadStream(url.startsWith('file:') ? fileURLToPath(url) : url).pipe(bzip2.stdin)
+  }
+  for await (const line of createInterface({ input: bzip2.stdout, crlfDelay: Infinity })) yield line
 }
 
 /**
