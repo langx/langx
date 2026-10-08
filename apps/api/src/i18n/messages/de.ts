@@ -621,6 +621,8 @@ export const de: Localized<ServerMessages> = {
       other:
         'Danke für deine Meldung. Wir haben sie uns angesehen und dir {count} Token gutgeschrieben, weil du hilfst, LangX zu einem guten Ort zum Lernen zu machen. Die gemeldete Person erfährt nie, wer sie gemeldet hat.',
     },
+    suspensionEnded:
+      'Deine Sperre ist abgelaufen und dein Konto ist wieder offen. 👋 Dein Profil ist wieder in Entdecken und in der Suche zu sehen, und deine Chats sind da, wo du sie gelassen hast.\n\nBitte hilf mit, LangX einen guten Ort zum Lernen zu halten — eine weitere bestätigte Meldung kann das Konto dauerhaft schließen. Wenn du denkst, dass etwas schiefgelaufen ist, erreicht Einstellungen → Info → Feedback einen Menschen.',
     assistantOffline:
       'Ich kann gerade nicht auf Nachrichten antworten. Wenn es Zeit hat, versuch es später noch einmal — wenn nicht, schreib an {email}, dort liest ein Mensch mit.',
     assistantLimit:

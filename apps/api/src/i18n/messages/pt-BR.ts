@@ -616,6 +616,8 @@ export const ptBR: Localized<ServerMessages> = {
       other:
         'Obrigado pela sua denúncia. Nós a analisamos e adicionamos {count} fichas à sua carteira por ajudar a manter o LangX um bom lugar para aprender. A pessoa denunciada nunca fica sabendo quem fez a denúncia.',
     },
+    suspensionEnded:
+      'Sua suspensão terminou e sua conta está aberta de novo. 👋 Seu perfil voltou a aparecer em Descobrir e na busca, e suas conversas estão onde você as deixou.\n\nPor favor, ajude a manter o LangX um bom lugar para aprender: outra denúncia confirmada pode fechar a conta de vez. Se você acha que algo deu errado, Configurações → Sobre → Feedback chega a uma pessoa.',
     assistantOffline:
       'Não consigo responder mensagens agora. Se puder esperar, tente mais tarde; se não, escreva para {email} e uma pessoa vai ler.',
     assistantLimit:

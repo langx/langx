@@ -750,6 +750,15 @@ export const en = {
       other:
         'Thank you for your report. We looked into it and added {count} tokens to your wallet for helping keep LangX a good place to learn. The person you reported is never told who sent it.',
     },
+    /**
+     * The other end of the suspension mail, which named the date. A timed
+     * suspension that ran its course, only: a lifted one was told by the
+     * appeal mail, and a permanent one never ends. The second paragraph is
+     * the ladder, said once and plainly — the rung above a suspension is the
+     * last one — and where to write if they think the rung was wrong.
+     */
+    suspensionEnded:
+      'Your suspension has ended and your account is open again. 👋 Your profile is back in Discover and search, and your chats are where you left them.\n\nPlease help keep LangX a good place to learn — another confirmed report could close the account for good. If you think something went wrong, Settings → About → Feedback reaches a person.',
     assistantOffline:
       'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
     /**
