@@ -70,7 +70,7 @@ import { supportsPut, type StorageProvider } from '../src/storage/StorageProvide
  * person had typed it.
  */
 const OFFICIAL_CLIENT_ID =
-  /^(welcome|welcomeback|broadcast|lifetime|admin|bounty|reportReward|reportWarning|proGift|proGiftReminder|proGiftEnded):/
+  /^(welcome|welcomeback|broadcast|lifetime|admin|bounty|reportReward|reportWarning|proGift|proGiftReminder|proGiftEnded|suspensionEnded):/
 
 function personSentFilter(userId: string): Filter<Message> {
   // `$nor` rather than `$not`, so a row with no `clientId` at all matches too.

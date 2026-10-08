@@ -25,7 +25,7 @@ import { startLegacyImportScheduler } from './modules/handles/legacyImportSchedu
 import { startMeetingReminderScheduler } from './modules/push/meetingReminders'
 import { startScheduledMessageScheduler } from './modules/chat/scheduledSender'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
-import { startNotificationScheduler } from './modules/notifications/scheduler'
+import { startNotificationScheduler, type OfficialFanOut } from './modules/notifications/scheduler'
 import { startDailyPoolScheduler } from './modules/tokens/poolScheduler'
 import { fanOutMessage } from './ws/fanOut'
 
@@ -128,6 +128,9 @@ async function main(): Promise<void> {
 
   // Started here rather than in `buildApp` so tests get an app with no timers
   // running behind them — they drive `runDailyPool` directly instead.
+  const fanOutOfficial: OfficialFanOut = (delivery, { push: knock }) =>
+    fanOutMessage(app, app.io, delivery.conversation, delivery.message, { pushWhenAway: knock })
+
   const schedulers = [
     startDailyPoolScheduler(db, app.log),
     startPurgeScheduler(db, app.log, { storage, ...(analytics ? { analytics } : {}) }),
@@ -148,6 +151,9 @@ async function main(): Promise<void> {
      */
     startPresenceSampler(db, app.log),
     startNotificationScheduler(db, { push, email: notificationEmail }, app.log, {
+      // The fan-out is the app's, so a note from @langx paints live and knocks
+      // the way any other message from that account does.
+      fanOut: fanOutOfficial,
       // Up to a minute, so the two machines of a deploy do not tick together.
       // Every pass is keyed to a local hour, so a minute is never a missed one.
       startDelayMs: Math.floor(Math.random() * 60_000),
@@ -157,19 +163,9 @@ async function main(): Promise<void> {
       resendVerification: async (email) => {
         await auth.api.sendVerificationEmail({ body: { email } })
       },
-      // Only with something to grant through — see the option. The fan-out
-      // is the app's, so a gift's message paints live and knocks the way any
-      // other message from @langx does.
+      // Only with something to grant through — see the option.
       ...(env.REVENUECAT_SECRET_API_KEY || env.REVENUECAT_FAKE_STORE
-        ? {
-            proGifts: {
-              revenueCat,
-              fanOut: (delivery, { push: knock }) =>
-                fanOutMessage(app, app.io, delivery.conversation, delivery.message, {
-                  pushWhenAway: knock,
-                }),
-            },
-          }
+        ? { proGifts: { revenueCat, fanOut: fanOutOfficial } }
         : {}),
     }),
   ]

@@ -628,6 +628,8 @@ export const fr: Localized<ServerMessages> = {
       other:
         'Merci pour ton signalement. Nous l’avons examiné et ajouté {count} jetons à ton portefeuille, pour avoir aidé à faire de LangX un bon endroit pour apprendre. La personne signalée ne saura jamais qui l’a signalée.',
     },
+    suspensionEnded:
+      'Ta suspension est terminée et ton compte est de nouveau ouvert. 👋 Ton profil est de retour dans Découvrir et dans la recherche, et tes conversations sont là où tu les as laissées.\n\nAide-nous à garder LangX comme un bon endroit pour apprendre : un autre signalement confirmé pourrait fermer le compte pour de bon. Si tu penses que quelque chose a mal tourné, Réglages → À propos → Commentaires arrive chez une vraie personne.',
     assistantOffline:
       'Je ne peux pas répondre aux messages pour le moment. Si ça peut attendre, réessaie plus tard ; sinon, écris à {email} et une personne te lira.',
     assistantLimit:
