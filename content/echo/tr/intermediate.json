@@ -2,7 +2,7 @@
   "id": "tr:intermediate",
   "lang": "tr",
   "level": "intermediate",
-  "contentVersion": 3,
+  "contentVersion": 4,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -26,7 +26,10 @@
       },
       "freqRank": 1,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/0-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 1,
@@ -39,7 +42,10 @@
       },
       "freqRank": 2,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sun-behind-rain-cloud"
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/1-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 2,
@@ -55,7 +61,10 @@
       },
       "freqRank": 3,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:horse"
+      "image": "cue:horse",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/2-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 3,
@@ -70,7 +79,10 @@
       },
       "freqRank": 4,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/3-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 4,
@@ -83,7 +95,10 @@
       },
       "freqRank": 5,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fearful-face"
+      "image": "cue:fearful-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/4-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 5,
@@ -99,7 +114,10 @@
       },
       "freqRank": 6,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/5-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 6,
@@ -113,7 +131,10 @@
       },
       "freqRank": 7,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:warning"
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/6-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 7,
@@ -122,7 +143,10 @@
       "gloss": { "en": "Eat your food.", "es": "Cómete tu comida.", "ru": "Ешь свою еду." },
       "freqRank": 8,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/7-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 8,
@@ -131,7 +155,10 @@
       "gloss": { "en": "Read the book!", "es": "¡Lee el libro!", "fr": "Lis le livre !" },
       "freqRank": 9,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/8-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 9,
@@ -140,7 +167,10 @@
       "gloss": { "en": "Think about it.", "de": "Denkt darüber nach!", "es": "Piénsalo." },
       "freqRank": 10,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thinking-face"
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/9-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 10,
@@ -153,7 +183,10 @@
       },
       "freqRank": 11,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:game-die"
+      "image": "cue:game-die",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/10-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 11,
@@ -162,7 +195,10 @@
       "gloss": { "en": "I eat a lot.", "de": "Ich esse viel.", "ru": "Я много ем." },
       "freqRank": 12,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/11-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 12,
@@ -176,7 +212,10 @@
       },
       "freqRank": 13,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/12-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 13,
@@ -190,7 +229,10 @@
       },
       "freqRank": 14,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone"
+      "image": "cue:telephone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/13-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 14,
@@ -204,7 +246,10 @@
       },
       "freqRank": 15,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:restroom"
+      "image": "cue:restroom",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/14-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 15,
@@ -217,7 +262,10 @@
       },
       "freqRank": 16,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:place-of-worship"
+      "image": "cue:place-of-worship",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/15-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 16,
@@ -230,7 +278,10 @@
       },
       "freqRank": 17,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/16-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 17,
@@ -244,7 +295,10 @@
       },
       "freqRank": 18,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:growing-heart"
+      "image": "cue:growing-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/17-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 18,
@@ -258,7 +312,10 @@
       },
       "freqRank": 19,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:compass"
+      "image": "cue:compass",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/18-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 19,
@@ -271,7 +328,10 @@
       },
       "freqRank": 20,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:boy"
+      "image": "cue:boy",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/19-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 20,
@@ -284,7 +344,10 @@
       },
       "freqRank": 21,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flag-in-hole"
+      "image": "cue:flag-in-hole",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/20-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 21,
@@ -293,7 +356,10 @@
       "gloss": { "en": "You were right.", "de": "Du hattest recht.", "fr": "Tu as eu raison." },
       "freqRank": 22,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark"
+      "image": "cue:check-mark",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/21-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 22,
@@ -302,7 +368,10 @@
       "gloss": { "en": "Let's drink.", "de": "Lass uns saufen!", "ru": "Может, выпьем?" },
       "freqRank": 23,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clinking-beer-mugs"
+      "image": "cue:clinking-beer-mugs",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/22-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 23,
@@ -318,7 +387,10 @@
       },
       "freqRank": 24,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/23-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 24,
@@ -331,7 +403,10 @@
       },
       "freqRank": 25,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/24-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 25,
@@ -340,7 +415,10 @@
       "gloss": { "en": "Listen to the music.", "es": "Escucha la música.", "ru": "Слушай музыку." },
       "freqRank": 26,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-notes"
+      "image": "cue:musical-notes",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/25-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 26,
@@ -354,7 +432,10 @@
       },
       "freqRank": 27,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-bowing"
+      "image": "cue:person-bowing",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/26-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 27,
@@ -368,7 +449,10 @@
       },
       "freqRank": 28,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-note"
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/27-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 28,
@@ -382,7 +466,10 @@
       },
       "freqRank": 29,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/28-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 29,
@@ -396,7 +483,10 @@
       },
       "freqRank": 30,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ambulance"
+      "image": "cue:ambulance",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/29-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 30,
@@ -409,7 +499,10 @@
       },
       "freqRank": 31,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:radio"
+      "image": "cue:radio",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/30-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 31,
@@ -423,7 +516,10 @@
       },
       "freqRank": 32,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/31-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 32,
@@ -436,7 +532,10 @@
       },
       "freqRank": 33,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-screaming-in-fear"
+      "image": "cue:face-screaming-in-fear",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/32-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 33,
@@ -451,7 +550,10 @@
       },
       "freqRank": 34,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:weary-face"
+      "image": "cue:weary-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/33-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 34,
@@ -464,7 +566,10 @@
       },
       "freqRank": 35,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-raised-eyebrow"
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/34-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 35,
@@ -477,7 +582,10 @@
       },
       "freqRank": 36,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:world-map"
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/35-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 36,
@@ -490,7 +598,10 @@
       },
       "freqRank": 37,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/36-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 37,
@@ -499,7 +610,10 @@
       "gloss": { "en": "This is cheese.", "de": "Das ist Käse.", "ru": "Это сыр." },
       "freqRank": 38,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cheese-wedge"
+      "image": "cue:cheese-wedge",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/37-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 38,
@@ -515,7 +629,10 @@
       },
       "freqRank": 39,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:snowflake"
+      "image": "cue:snowflake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/38-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 39,
@@ -524,7 +641,10 @@
       "gloss": { "en": "Are you busy?", "de": "Bist du beschäftigt?", "es": "¿Estás ocupado?" },
       "freqRank": 40,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/39-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 40,
@@ -533,7 +653,10 @@
       "gloss": { "en": "Are you sad?", "de": "Bist du traurig?", "es": "¿Estás triste?" },
       "freqRank": 41,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crying-face"
+      "image": "cue:crying-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/40-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 41,
@@ -547,7 +670,10 @@
       },
       "freqRank": 42,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mirror"
+      "image": "cue:mirror",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/41-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 42,
@@ -560,7 +686,10 @@
       },
       "freqRank": 43,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/42-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 43,
@@ -573,7 +702,10 @@
       },
       "freqRank": 44,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/43-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 44,
@@ -582,7 +714,10 @@
       "gloss": { "en": "Might I come in?", "es": "¿Puedo entrar?", "pt-BR": "Posso?" },
       "freqRank": 45,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/44-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 45,
@@ -595,7 +730,10 @@
       },
       "freqRank": 46,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:peace-symbol"
+      "image": "cue:peace-symbol",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/45-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 46,
@@ -608,7 +746,10 @@
       },
       "freqRank": 47,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/46-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 47,
@@ -623,7 +764,10 @@
       },
       "freqRank": 48,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/47-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 48,
@@ -637,7 +781,10 @@
       },
       "freqRank": 49,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pleading-face"
+      "image": "cue:pleading-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/48-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 49,
@@ -651,7 +798,10 @@
       },
       "freqRank": 50,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clipboard"
+      "image": "cue:clipboard",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/49-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 50,
@@ -665,7 +815,10 @@
       },
       "freqRank": 51,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-running"
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/50-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 51,
@@ -678,7 +831,10 @@
       },
       "freqRank": 52,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flexed-biceps"
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/51-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 52,
@@ -687,7 +843,10 @@
       "gloss": { "en": "My car is blue.", "de": "Mein Auto ist blau.", "es": "Mi coche es azul." },
       "freqRank": 53,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/52-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 53,
@@ -696,7 +855,10 @@
       "gloss": { "en": "We love you.", "de": "Wir lieben dich.", "fr": "Nous t'aimons." },
       "freqRank": 54,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/53-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 54,
@@ -710,7 +872,10 @@
       },
       "freqRank": 55,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/54-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 55,
@@ -723,7 +888,10 @@
       },
       "freqRank": 56,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/55-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 56,
@@ -736,7 +904,10 @@
       },
       "freqRank": 57,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/56-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 57,
@@ -750,7 +921,10 @@
       },
       "freqRank": 58,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/57-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 58,
@@ -759,7 +933,10 @@
       "gloss": { "en": "Kiss me.", "es": "Bésame.", "ru": "Поцелуй меня." },
       "freqRank": 59,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:kiss-mark"
+      "image": "cue:kiss-mark",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/58-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 59,
@@ -772,7 +949,10 @@
       },
       "freqRank": 60,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/59-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 60,
@@ -788,7 +968,10 @@
       },
       "freqRank": 61,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/60-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 61,
@@ -803,7 +986,10 @@
       },
       "freqRank": 62,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/61-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 62,
@@ -817,7 +1003,10 @@
       },
       "freqRank": 63,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cherry-blossom"
+      "image": "cue:cherry-blossom",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/62-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 63,
@@ -830,7 +1019,10 @@
       },
       "freqRank": 64,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sunflower"
+      "image": "cue:sunflower",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/63-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 64,
@@ -843,7 +1035,10 @@
       },
       "freqRank": 65,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye"
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/64-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 65,
@@ -856,7 +1051,10 @@
       },
       "freqRank": 66,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/65-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 66,
@@ -869,7 +1067,10 @@
       },
       "freqRank": 67,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:expressionless-face"
+      "image": "cue:expressionless-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/66-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 67,
@@ -885,7 +1086,10 @@
       },
       "freqRank": 68,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bed"
+      "image": "cue:bed",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/67-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 68,
@@ -898,7 +1102,10 @@
       },
       "freqRank": 69,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:light-bulb"
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/68-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 69,
@@ -912,7 +1119,10 @@
       },
       "freqRank": 70,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/69-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 70,
@@ -926,7 +1136,10 @@
       },
       "freqRank": 71,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/70-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 71,
@@ -941,7 +1154,10 @@
       },
       "freqRank": 72,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/71-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 72,
@@ -955,7 +1171,10 @@
       },
       "freqRank": 73,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/72-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 73,
@@ -968,7 +1187,10 @@
       },
       "freqRank": 74,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mobile-phone"
+      "image": "cue:mobile-phone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/73-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 74,
@@ -981,7 +1203,10 @@
       },
       "freqRank": 75,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/74-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 75,
@@ -994,7 +1219,10 @@
       },
       "freqRank": 76,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-head-bandage"
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/75-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 76,
@@ -1007,7 +1235,10 @@
       },
       "freqRank": 77,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crying-face"
+      "image": "cue:crying-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/76-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 77,
@@ -1016,7 +1247,10 @@
       "gloss": { "en": "Tom is crying.", "de": "Tom weint.", "es": "Tom está llorando." },
       "freqRank": 78,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:loudly-crying-face"
+      "image": "cue:loudly-crying-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/77-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 78,
@@ -1030,7 +1264,10 @@
       },
       "freqRank": 79,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crescent-moon"
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/78-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 79,
@@ -1045,7 +1282,10 @@
       },
       "freqRank": 80,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/79-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 80,
@@ -1058,7 +1298,10 @@
       },
       "freqRank": 81,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/80-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 81,
@@ -1073,7 +1316,10 @@
       },
       "freqRank": 82,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/81-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 82,
@@ -1082,7 +1328,10 @@
       "gloss": { "en": "Here is the map.", "es": "Aquí está el mapa.", "ru": "Вот карта." },
       "freqRank": 83,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:world-map"
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/82-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 83,
@@ -1091,7 +1340,10 @@
       "gloss": { "en": "She's in pain.", "de": "Sie hat Schmerzen.", "es": "Tiene dolor." },
       "freqRank": 84,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-head-bandage"
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/83-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 84,
@@ -1100,7 +1352,10 @@
       "gloss": { "en": "I need to work.", "es": "Necesito trabajar.", "ru": "Мне нужно работать." },
       "freqRank": 85,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/84-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 85,
@@ -1109,7 +1364,10 @@
       "gloss": { "en": "This is rice.", "de": "Das ist Reis.", "ru": "Это рис." },
       "freqRank": 86,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cooked-rice"
+      "image": "cue:cooked-rice",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/85-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 86,
@@ -1123,7 +1381,10 @@
       },
       "freqRank": 87,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:world-map"
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/86-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 87,
@@ -1137,7 +1398,10 @@
       },
       "freqRank": 88,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/87-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 88,
@@ -1150,7 +1414,10 @@
       },
       "freqRank": 89,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/88-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 89,
@@ -1159,7 +1426,10 @@
       "gloss": { "en": "I know French.", "de": "Ich kann Französisch.", "es": "Yo sé francés." },
       "freqRank": 90,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/89-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 90,
@@ -1173,7 +1443,10 @@
       },
       "freqRank": 91,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/90-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 91,
@@ -1186,7 +1459,10 @@
       },
       "freqRank": 92,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/91-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 92,
@@ -1195,7 +1471,10 @@
       "gloss": { "en": "I drank milk.", "de": "Ich trank Milch.", "es": "He bebido leche." },
       "freqRank": 93,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:glass-of-milk"
+      "image": "cue:glass-of-milk",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/92-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 93,
@@ -1204,7 +1483,10 @@
       "gloss": { "en": "Learn French.", "de": "Lerne Französisch!", "es": "Aprende francés." },
       "freqRank": 94,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/93-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 94,
@@ -1218,7 +1500,10 @@
       },
       "freqRank": 95,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crescent-moon"
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/94-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 95,
@@ -1232,7 +1517,10 @@
       },
       "freqRank": 96,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/95-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 96,
@@ -1246,7 +1534,10 @@
       },
       "freqRank": 97,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/96-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 97,
@@ -1259,7 +1550,10 @@
       },
       "freqRank": 98,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/97-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 98,
@@ -1273,7 +1567,10 @@
       },
       "freqRank": 99,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/98-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 99,
@@ -1286,7 +1583,10 @@
       },
       "freqRank": 100,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/99-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 100,
@@ -1295,7 +1595,10 @@
       "gloss": { "en": "I'm hungry!", "es": "Tengo hambre.", "ar": "أنا جائع." },
       "freqRank": 101,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:drooling-face"
+      "image": "cue:drooling-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/100-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 101,
@@ -1304,7 +1607,10 @@
       "gloss": { "en": "I like my house.", "de": "Ich mag mein Haus.", "es": "Me gusta mi casa." },
       "freqRank": 102,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/101-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 102,
@@ -1317,7 +1623,10 @@
       },
       "freqRank": 103,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tear-off-calendar"
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/102-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 103,
@@ -1326,7 +1635,10 @@
       "gloss": { "en": "Tom is a seaman.", "de": "Tom ist Seemann.", "ru": "Том — моряк." },
       "freqRank": 104,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ship"
+      "image": "cue:ship",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/103-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 104,
@@ -1335,7 +1647,10 @@
       "gloss": { "en": "I'm Mary.", "es": "Soy María.", "ru": "Я Мария." },
       "freqRank": 105,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/104-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 105,
@@ -1349,7 +1664,10 @@
       },
       "freqRank": 106,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:salt"
+      "image": "cue:salt",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/105-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 106,
@@ -1363,7 +1681,10 @@
       },
       "freqRank": 107,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:broom"
+      "image": "cue:broom",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/106-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 107,
@@ -1372,7 +1693,10 @@
       "gloss": { "en": "I am going to sleep.", "es": "Me voy a dormir.", "ru": "Я пошла спать." },
       "freqRank": 108,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sleeping-face"
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/107-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 108,
@@ -1385,7 +1709,10 @@
       },
       "freqRank": 109,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/108-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 109,
@@ -1399,7 +1726,10 @@
       },
       "freqRank": 110,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tangerine"
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/109-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 110,
@@ -1415,7 +1745,10 @@
       },
       "freqRank": 111,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife"
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/110-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 111,
@@ -1428,7 +1761,10 @@
       },
       "freqRank": 112,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/111-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 112,
@@ -1442,7 +1778,10 @@
       },
       "freqRank": 113,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-savoring-food"
+      "image": "cue:face-savoring-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/112-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 113,
@@ -1451,7 +1790,10 @@
       "gloss": { "en": "I like wine.", "de": "Ich mag Wein.", "es": "Me gusta el vino." },
       "freqRank": 114,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wine-glass"
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/113-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 114,
@@ -1460,7 +1802,10 @@
       "gloss": { "en": "You smell good.", "es": "Hueles bien.", "fr": "Tu sens bon." },
       "freqRank": 115,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:nose"
+      "image": "cue:nose",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/114-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 115,
@@ -1469,7 +1814,10 @@
       "gloss": { "en": "We got separated.", "es": "Nos separamos.", "ru": "Мы расстались." },
       "freqRank": 116,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:broken-heart"
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/115-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 116,
@@ -1482,7 +1830,10 @@
       },
       "freqRank": 117,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye"
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/116-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 117,
@@ -1495,7 +1846,10 @@
       },
       "freqRank": 118,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/117-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 118,
@@ -1504,7 +1858,10 @@
       "gloss": { "en": "I like dogs.", "de": "Ich mag Hunde.", "es": "Me gustan los perros." },
       "freqRank": 119,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/118-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 119,
@@ -1518,7 +1875,10 @@
       },
       "freqRank": 120,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cup-with-straw"
+      "image": "cue:cup-with-straw",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/119-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 120,
@@ -1531,7 +1891,10 @@
       },
       "freqRank": 121,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-standing"
+      "image": "cue:person-standing",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/120-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 121,
@@ -1544,7 +1907,10 @@
       },
       "freqRank": 122,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/121-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 122,
@@ -1557,7 +1923,10 @@
       },
       "freqRank": 123,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:guitar"
+      "image": "cue:guitar",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/122-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 123,
@@ -1570,7 +1939,10 @@
       },
       "freqRank": 124,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:banana"
+      "image": "cue:banana",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/123-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 124,
@@ -1579,7 +1951,10 @@
       "gloss": { "en": "It's free of charge.", "es": "Esto es gratis.", "ru": "Это бесплатно." },
       "freqRank": 125,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:free-button"
+      "image": "cue:free-button",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/124-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 125,
@@ -1592,7 +1967,10 @@
       },
       "freqRank": 126,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:shopping-cart"
+      "image": "cue:shopping-cart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/125-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 126,
@@ -1607,7 +1985,10 @@
       },
       "freqRank": 127,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/126-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 127,
@@ -1622,7 +2003,10 @@
       },
       "freqRank": 128,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/127-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 128,
@@ -1637,7 +2021,10 @@
       },
       "freqRank": 129,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cloud-with-rain"
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/128-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 129,
@@ -1646,7 +2033,10 @@
       "gloss": { "en": "I am pregnant.", "ru": "Я беременна.", "ar": "أنا حامل." },
       "freqRank": 130,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pregnant-woman"
+      "image": "cue:pregnant-woman",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/129-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 130,
@@ -1660,7 +2050,10 @@
       },
       "freqRank": 131,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:green-salad"
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/130-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 131,
@@ -1674,7 +2067,10 @@
       },
       "freqRank": 132,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/131-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 132,
@@ -1683,7 +2079,10 @@
       "gloss": { "en": "There's no elevator.", "es": "No hay ascensor.", "ru": "Лифта нет." },
       "freqRank": 133,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:elevator"
+      "image": "cue:elevator",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/132-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 133,
@@ -1696,7 +2095,10 @@
       },
       "freqRank": 134,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/133-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 134,
@@ -1711,7 +2113,10 @@
       },
       "freqRank": 135,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heart-with-arrow"
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/134-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 135,
@@ -1724,7 +2129,10 @@
       },
       "freqRank": 136,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:egg"
+      "image": "cue:egg",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/135-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 136,
@@ -1733,7 +2141,10 @@
       "gloss": { "en": "Use your key.", "es": "Usa tu llave.", "ru": "Воспользуйся своим ключом." },
       "freqRank": 137,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:key"
+      "image": "cue:key",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/136-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 137,
@@ -1742,7 +2153,10 @@
       "gloss": { "en": "I was born here.", "de": "Ich wurde hier geboren.", "es": "Nací aquí." },
       "freqRank": 138,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:baby"
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/137-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 138,
@@ -1755,7 +2169,10 @@
       },
       "freqRank": 139,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hotel"
+      "image": "cue:hotel",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/138-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 139,
@@ -1764,7 +2181,10 @@
       "gloss": { "en": "I don't drink tea.", "de": "Ich trinke keinen Tee.", "es": "No bebo té." },
       "freqRank": 140,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/139-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 140,
@@ -1777,7 +2197,10 @@
       },
       "freqRank": 141,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/140-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 141,
@@ -1790,7 +2213,10 @@
       },
       "freqRank": 142,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wine-glass"
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/141-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 142,
@@ -1799,7 +2225,10 @@
       "gloss": { "en": "You're so funny.", "es": "Eres muy divertido.", "ru": "Ты очень смешной." },
       "freqRank": 143,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-tears-of-joy"
+      "image": "cue:face-with-tears-of-joy",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/142-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 143,
@@ -1808,7 +2237,10 @@
       "gloss": { "en": "I'm mad at you.", "es": "Estoy enfadado contigo.", "ru": "Я зол на тебя." },
       "freqRank": 144,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:angry-face"
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/143-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 144,
@@ -1822,7 +2254,10 @@
       },
       "freqRank": 145,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:grinning-face-with-smiling-eyes"
+      "image": "cue:grinning-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/144-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 145,
@@ -1835,7 +2270,10 @@
       },
       "freqRank": 146,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/145-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 146,
@@ -1848,7 +2286,10 @@
       },
       "freqRank": 147,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye"
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/146-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 147,
@@ -1861,7 +2302,10 @@
       },
       "freqRank": 148,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/147-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 148,
@@ -1874,7 +2318,10 @@
       },
       "freqRank": 149,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:desert-island"
+      "image": "cue:desert-island",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/148-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 149,
@@ -1883,7 +2330,10 @@
       "gloss": { "en": "I eat here.", "es": "Como aquí.", "pt-BR": "Eu como aqui." },
       "freqRank": 150,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/149-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 150,
@@ -1899,7 +2349,10 @@
       },
       "freqRank": 151,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife"
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/150-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 151,
@@ -1908,7 +2361,10 @@
       "gloss": { "en": "I'm eating soup.", "de": "Ich esse Suppe.", "ru": "Я ем суп." },
       "freqRank": 152,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/151-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 152,
@@ -1921,7 +2377,10 @@
       },
       "freqRank": 153,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/152-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 153,
@@ -1935,7 +2394,10 @@
       },
       "freqRank": 154,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:droplet"
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/153-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 154,
@@ -1950,7 +2412,10 @@
       },
       "freqRank": 155,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sleepy-face"
+      "image": "cue:sleepy-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/154-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 155,
@@ -1966,7 +2431,10 @@
       },
       "freqRank": 156,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane"
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/155-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 156,
@@ -1980,7 +2448,10 @@
       },
       "freqRank": 157,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ring"
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/156-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 157,
@@ -1994,7 +2465,10 @@
       },
       "freqRank": 158,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:t-shirt"
+      "image": "cue:t-shirt",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/157-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 158,
@@ -2008,7 +2482,10 @@
       },
       "freqRank": 159,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dove"
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/158-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 159,
@@ -2023,7 +2500,10 @@
       },
       "freqRank": 160,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:shushing-face"
+      "image": "cue:shushing-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/159-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 160,
@@ -2037,7 +2517,10 @@
       },
       "freqRank": 161,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/160-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 161,
@@ -2051,7 +2534,10 @@
       },
       "freqRank": 162,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/161-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 162,
@@ -2066,7 +2552,10 @@
       },
       "freqRank": 163,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:shortcake"
+      "image": "cue:shortcake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/162-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 163,
@@ -2080,7 +2569,10 @@
       },
       "freqRank": 164,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/163-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 164,
@@ -2094,7 +2586,10 @@
       },
       "freqRank": 165,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/164-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 165,
@@ -2108,7 +2603,10 @@
       },
       "freqRank": 166,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/165-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 166,
@@ -2124,7 +2622,10 @@
       },
       "freqRank": 167,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/166-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 167,
@@ -2138,7 +2639,10 @@
       },
       "freqRank": 168,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-bag"
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/167-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 168,
@@ -2152,7 +2656,10 @@
       },
       "freqRank": 169,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/168-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 169,
@@ -2166,7 +2673,10 @@
       },
       "freqRank": 170,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:artist-palette"
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/169-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 170,
@@ -2182,7 +2692,10 @@
       },
       "freqRank": 171,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/170-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 171,
@@ -2196,7 +2709,10 @@
       },
       "freqRank": 172,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/171-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 172,
@@ -2210,7 +2726,10 @@
       },
       "freqRank": 173,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:worried-face"
+      "image": "cue:worried-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/172-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 173,
@@ -2224,7 +2743,10 @@
       },
       "freqRank": 174,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/173-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 174,
@@ -2239,7 +2761,10 @@
       },
       "freqRank": 175,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:waving-hand"
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/174-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 175,
@@ -2253,7 +2778,10 @@
       },
       "freqRank": 176,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/175-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 176,
@@ -2267,7 +2795,10 @@
       },
       "freqRank": 177,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/176-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 177,
@@ -2281,7 +2812,10 @@
       },
       "freqRank": 178,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/177-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 178,
@@ -2296,7 +2830,10 @@
       },
       "freqRank": 179,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/178-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 179,
@@ -2310,7 +2847,10 @@
       },
       "freqRank": 180,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:broken-heart"
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/179-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 180,
@@ -2326,7 +2866,10 @@
       },
       "freqRank": 181,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/180-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 181,
@@ -2340,7 +2883,10 @@
       },
       "freqRank": 182,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pleading-face"
+      "image": "cue:pleading-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/181-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 182,
@@ -2354,7 +2900,10 @@
       },
       "freqRank": 183,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/182-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 183,
@@ -2368,7 +2917,10 @@
       },
       "freqRank": 184,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/183-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 184,
@@ -2382,7 +2934,10 @@
       },
       "freqRank": 185,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bicycle"
+      "image": "cue:bicycle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/184-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 185,
@@ -2396,7 +2951,10 @@
       },
       "freqRank": 186,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:potable-water"
+      "image": "cue:potable-water",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/185-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 186,
@@ -2410,7 +2968,10 @@
       },
       "freqRank": 187,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:window"
+      "image": "cue:window",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/186-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 187,
@@ -2424,7 +2985,10 @@
       },
       "freqRank": 188,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:artist-palette"
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/187-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 188,
@@ -2438,7 +3002,10 @@
       },
       "freqRank": 189,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/188-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 189,
@@ -2452,7 +3019,10 @@
       },
       "freqRank": 190,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:waving-hand"
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/189-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 190,
@@ -2468,7 +3038,10 @@
       },
       "freqRank": 191,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cityscape-at-dusk"
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/190-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 191,
@@ -2482,7 +3055,10 @@
       },
       "freqRank": 192,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/191-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 192,
@@ -2497,7 +3073,10 @@
       },
       "freqRank": 193,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/192-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 193,
@@ -2512,7 +3091,10 @@
       },
       "freqRank": 194,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:houses"
+      "image": "cue:houses",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/193-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 194,
@@ -2528,7 +3110,10 @@
       },
       "freqRank": 195,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/194-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 195,
@@ -2542,7 +3127,10 @@
       },
       "freqRank": 196,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/195-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 196,
@@ -2556,7 +3144,10 @@
       },
       "freqRank": 197,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:glass-of-milk"
+      "image": "cue:glass-of-milk",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/196-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 197,
@@ -2570,7 +3161,10 @@
       },
       "freqRank": 198,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:envelope"
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/197-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 198,
@@ -2584,7 +3178,10 @@
       },
       "freqRank": 199,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/198-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 199,
@@ -2600,7 +3197,10 @@
       },
       "freqRank": 200,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/199-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 200,
@@ -2614,7 +3214,10 @@
       },
       "freqRank": 201,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tangerine"
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/200-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 201,
@@ -2630,7 +3233,10 @@
       },
       "freqRank": 202,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/201-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 202,
@@ -2644,7 +3250,10 @@
       },
       "freqRank": 203,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:people-hugging"
+      "image": "cue:people-hugging",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/202-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 203,
@@ -2658,7 +3267,10 @@
       },
       "freqRank": 204,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:banana"
+      "image": "cue:banana",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/203-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 204,
@@ -2673,7 +3285,10 @@
       },
       "freqRank": 205,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/204-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 205,
@@ -2687,7 +3302,10 @@
       },
       "freqRank": 206,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:label"
+      "image": "cue:label",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/205-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 206,
@@ -2701,7 +3319,10 @@
       },
       "freqRank": 207,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cloud-with-snow"
+      "image": "cue:cloud-with-snow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/206-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 207,
@@ -2716,7 +3337,10 @@
       },
       "freqRank": 208,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/207-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 208,
@@ -2730,7 +3354,10 @@
       },
       "freqRank": 209,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/208-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 209,
@@ -2744,7 +3371,10 @@
       },
       "freqRank": 210,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:memo"
+      "image": "cue:memo",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/209-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 210,
@@ -2758,7 +3388,10 @@
       },
       "freqRank": 211,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:kiss-mark"
+      "image": "cue:kiss-mark",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/210-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 211,
@@ -2772,7 +3405,10 @@
       },
       "freqRank": 212,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:turtle"
+      "image": "cue:turtle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/211-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 212,
@@ -2786,7 +3422,10 @@
       },
       "freqRank": 213,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-in-lotus-position"
+      "image": "cue:person-in-lotus-position",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/212-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 213,
@@ -2800,7 +3439,10 @@
       },
       "freqRank": 214,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/213-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 214,
@@ -2816,7 +3458,10 @@
       },
       "freqRank": 215,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:man"
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/214-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 215,
@@ -2830,7 +3475,10 @@
       },
       "freqRank": 216,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:scroll"
+      "image": "cue:scroll",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/215-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 216,
@@ -2845,7 +3493,10 @@
       },
       "freqRank": 217,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fish"
+      "image": "cue:fish",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/216-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 217,
@@ -2859,7 +3510,10 @@
       },
       "freqRank": 218,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:beer-mug"
+      "image": "cue:beer-mug",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/217-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 218,
@@ -2873,7 +3527,10 @@
       },
       "freqRank": 219,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/218-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 219,
@@ -2889,7 +3546,10 @@
       },
       "freqRank": 220,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/219-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 220,
@@ -2903,7 +3563,10 @@
       },
       "freqRank": 221,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:balance-scale"
+      "image": "cue:balance-scale",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/220-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 221,
@@ -2917,7 +3580,10 @@
       },
       "freqRank": 222,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/221-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 222,
@@ -2931,7 +3597,10 @@
       },
       "freqRank": 223,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:candy"
+      "image": "cue:candy",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/222-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 223,
@@ -2946,7 +3615,10 @@
       },
       "freqRank": 224,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:horse"
+      "image": "cue:horse",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/223-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 224,
@@ -2960,7 +3632,10 @@
       },
       "freqRank": 225,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:snake"
+      "image": "cue:snake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/224-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 225,
@@ -2974,7 +3649,10 @@
       },
       "freqRank": 226,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heart-with-arrow"
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/225-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 226,
@@ -2989,7 +3667,10 @@
       },
       "freqRank": 227,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/226-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 227,
@@ -3003,7 +3684,10 @@
       },
       "freqRank": 228,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:camera"
+      "image": "cue:camera",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/227-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 228,
@@ -3018,7 +3702,10 @@
       },
       "freqRank": 229,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/228-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 229,
@@ -3032,7 +3719,10 @@
       },
       "freqRank": 230,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/229-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 230,
@@ -3048,7 +3738,10 @@
       },
       "freqRank": 231,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:men-holding-hands"
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/230-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 231,
@@ -3062,7 +3755,10 @@
       },
       "freqRank": 232,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/231-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 232,
@@ -3077,7 +3773,10 @@
       },
       "freqRank": 233,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:worried-face"
+      "image": "cue:worried-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/232-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 233,
@@ -3092,7 +3791,10 @@
       },
       "freqRank": 234,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/233-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 234,
@@ -3107,7 +3809,10 @@
       },
       "freqRank": 235,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:soccer-ball"
+      "image": "cue:soccer-ball",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/234-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 235,
@@ -3121,7 +3826,10 @@
       },
       "freqRank": 236,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cow"
+      "image": "cue:cow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/235-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 236,
@@ -3136,7 +3844,10 @@
       },
       "freqRank": 237,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/236-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 237,
@@ -3151,7 +3862,10 @@
       },
       "freqRank": 238,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/237-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 238,
@@ -3165,7 +3879,10 @@
       },
       "freqRank": 239,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/238-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 239,
@@ -3181,7 +3898,10 @@
       },
       "freqRank": 240,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/239-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 240,
@@ -3195,7 +3915,10 @@
       },
       "freqRank": 241,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/240-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 241,
@@ -3209,7 +3932,10 @@
       },
       "freqRank": 242,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mobile-phone"
+      "image": "cue:mobile-phone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/241-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 242,
@@ -3224,7 +3950,10 @@
       },
       "freqRank": 243,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:turtle"
+      "image": "cue:turtle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/242-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 243,
@@ -3239,7 +3968,10 @@
       },
       "freqRank": 244,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-savoring-food"
+      "image": "cue:face-savoring-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/243-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 244,
@@ -3253,7 +3985,10 @@
       },
       "freqRank": 245,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ring"
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/244-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 245,
@@ -3267,7 +4002,10 @@
       },
       "freqRank": 246,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tangerine"
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/245-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 246,
@@ -3283,7 +4021,10 @@
       },
       "freqRank": 247,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:world-map"
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/246-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 247,
@@ -3298,7 +4039,10 @@
       },
       "freqRank": 248,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:rose"
+      "image": "cue:rose",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/247-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 248,
@@ -3312,7 +4056,10 @@
       },
       "freqRank": 249,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:elephant"
+      "image": "cue:elephant",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/248-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 249,
@@ -3326,7 +4073,10 @@
       },
       "freqRank": 250,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heavy-dollar-sign"
+      "image": "cue:heavy-dollar-sign",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/249-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 250,
@@ -3340,7 +4090,10 @@
       },
       "freqRank": 251,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/250-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 251,
@@ -3354,7 +4107,10 @@
       },
       "freqRank": 252,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/251-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 252,
@@ -3368,7 +4124,10 @@
       },
       "freqRank": 253,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:memo"
+      "image": "cue:memo",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/252-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 253,
@@ -3383,7 +4142,10 @@
       },
       "freqRank": 254,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/253-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 254,
@@ -3397,7 +4159,10 @@
       },
       "freqRank": 255,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/254-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 255,
@@ -3412,7 +4177,10 @@
       },
       "freqRank": 256,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/255-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 256,
@@ -3426,7 +4194,10 @@
       },
       "freqRank": 257,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone"
+      "image": "cue:telephone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/256-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 257,
@@ -3440,7 +4211,10 @@
       },
       "freqRank": 258,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bed"
+      "image": "cue:bed",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/257-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 258,
@@ -3455,7 +4229,10 @@
       },
       "freqRank": 259,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:laptop"
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/258-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 259,
@@ -3470,7 +4247,10 @@
       },
       "freqRank": 260,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/259-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 260,
@@ -3484,7 +4264,10 @@
       },
       "freqRank": 261,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/260-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 261,
@@ -3498,7 +4281,10 @@
       },
       "freqRank": 262,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/261-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 262,
@@ -3513,7 +4299,10 @@
       },
       "freqRank": 263,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ring"
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/262-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 263,
@@ -3527,7 +4316,10 @@
       },
       "freqRank": 264,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/263-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 264,
@@ -3542,7 +4334,10 @@
       },
       "freqRank": 265,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/264-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 265,
@@ -3556,7 +4351,10 @@
       },
       "freqRank": 266,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrapped-gift"
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/265-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 266,
@@ -3570,7 +4368,10 @@
       },
       "freqRank": 267,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:envelope"
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/266-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 267,
@@ -3585,7 +4386,10 @@
       },
       "freqRank": 268,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-thermometer"
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/267-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 268,
@@ -3599,7 +4403,10 @@
       },
       "freqRank": 269,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:men-holding-hands"
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/268-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 269,
@@ -3615,7 +4422,10 @@
       },
       "freqRank": 270,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cityscape-at-dusk"
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/269-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 270,
@@ -3629,7 +4439,10 @@
       },
       "freqRank": 271,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/270-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 271,
@@ -3643,7 +4456,10 @@
       },
       "freqRank": 272,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane"
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/271-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 272,
@@ -3658,7 +4474,10 @@
       },
       "freqRank": 273,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-done"
+      "image": "cue:hourglass-done",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/272-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 273,
@@ -3672,7 +4491,10 @@
       },
       "freqRank": 274,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/273-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 274,
@@ -3686,7 +4508,10 @@
       },
       "freqRank": 275,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:input-latin-letters"
+      "image": "cue:input-latin-letters",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/274-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 275,
@@ -3701,7 +4526,10 @@
       },
       "freqRank": 276,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cup-with-straw"
+      "image": "cue:cup-with-straw",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/275-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 276,
@@ -3715,7 +4543,10 @@
       },
       "freqRank": 277,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:artist-palette"
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/276-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 277,
@@ -3730,7 +4561,10 @@
       },
       "freqRank": 278,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bouquet"
+      "image": "cue:bouquet",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/277-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 278,
@@ -3745,7 +4579,10 @@
       },
       "freqRank": 279,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:microphone"
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/278-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 279,
@@ -3759,7 +4596,10 @@
       },
       "freqRank": 280,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dove"
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/279-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 280,
@@ -3773,7 +4613,10 @@
       },
       "freqRank": 281,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:microphone"
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/280-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 281,
@@ -3787,7 +4630,10 @@
       },
       "freqRank": 282,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tennis"
+      "image": "cue:tennis",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/281-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 282,
@@ -3801,7 +4647,10 @@
       },
       "freqRank": 283,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:graduation-cap"
+      "image": "cue:graduation-cap",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/282-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 283,
@@ -3815,7 +4664,10 @@
       },
       "freqRank": 284,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrapped-gift"
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/283-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 284,
@@ -3830,7 +4682,10 @@
       },
       "freqRank": 285,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:scroll"
+      "image": "cue:scroll",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/284-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 285,
@@ -3844,7 +4699,10 @@
       },
       "freqRank": 286,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:angry-face"
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/285-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 286,
@@ -3858,7 +4716,10 @@
       },
       "freqRank": 287,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:desert-island"
+      "image": "cue:desert-island",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/286-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 287,
@@ -3872,7 +4733,10 @@
       },
       "freqRank": 288,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:microphone"
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/287-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 288,
@@ -3886,7 +4750,10 @@
       },
       "freqRank": 289,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/288-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 289,
@@ -3900,7 +4767,10 @@
       },
       "freqRank": 290,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:shushing-face"
+      "image": "cue:shushing-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/289-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 290,
@@ -3914,7 +4784,10 @@
       },
       "freqRank": 291,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/290-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 291,
@@ -3928,7 +4801,10 @@
       },
       "freqRank": 292,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ambulance"
+      "image": "cue:ambulance",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/291-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 292,
@@ -3943,7 +4819,10 @@
       },
       "freqRank": 293,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:alarm-clock"
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/292-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 293,
@@ -3957,7 +4836,10 @@
       },
       "freqRank": 294,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:droplet"
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/293-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 294,
@@ -3971,7 +4853,10 @@
       },
       "freqRank": 295,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/294-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 295,
@@ -3986,7 +4871,10 @@
       },
       "freqRank": 296,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:beer-mug"
+      "image": "cue:beer-mug",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/295-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 296,
@@ -4000,7 +4888,10 @@
       },
       "freqRank": 297,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/296-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 297,
@@ -4015,7 +4906,10 @@
       },
       "freqRank": 298,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/297-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 298,
@@ -4029,7 +4923,10 @@
       },
       "freqRank": 299,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-and-man-holding-hands"
+      "image": "cue:woman-and-man-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/298-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 299,
@@ -4043,7 +4940,10 @@
       },
       "freqRank": 300,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/299-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     }
   ]
 }
