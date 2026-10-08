@@ -574,8 +574,9 @@ export const es: Localized<ServerMessages> = {
       other: '🔥 ¡{days} días seguidos! Aquí tienes {count} meses de Pro para seguir así.',
     },
     introStreakWeeks: {
-      one: '🔥 ¡{days} días seguidos! Aquí tienes {count} semana de Pro para seguir así.',
-      other: '🔥 ¡{days} días seguidos! Aquí tienes {count} semanas de Pro para seguir así.',
+      one: '🔥 ¡{days} días seguidos, qué constancia! Para darte las gracias, te regalamos {count} semana de Pro.',
+      other:
+        '🔥 ¡{days} días seguidos, qué constancia! Para darte las gracias, te regalamos {count} semanas de Pro.',
     },
     introCode: {
       one: '🎟️ El código {code} funcionó: {count} mes de LangX Pro es tuyo.',
