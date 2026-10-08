@@ -1,12 +1,13 @@
-# App Store growth: keywords, custom product pages, PPO
+# App Store growth: keywords, custom product pages, PPO, events
 
 What the App Store listing does beyond the copy in [`listing.md`](listing.md):
-the 2.9 keyword field, four custom product pages, one Product Page
-Optimization test and the default screenshot order. The keyword strings
+the 2.9 keyword field, nine custom product pages, one Product Page
+Optimization test, the default screenshot order, an in-app event and a
+featuring nomination. The keyword strings
 themselves live in [`2.9-metadata.json`](2.9-metadata.json) (`asc.<locale>.keywords`)
 and in each language's section of `listing.md`; this file is the reasoning and
 the page set-up. Apple only, written for 2.9 (6 October 2026). Play has no
-keyword field and no equivalent of either page feature.
+keyword field and no equivalent of any of these.
 
 ## The keyword field
 
@@ -94,13 +95,14 @@ duplicates; the rest lost their place to a word the same searchers type more.
 
 ## Custom product pages
 
-Four pages, each with its own keywords, promotional text, screenshot order and
-deep link. A page whose keyword someone searches can be shown in place of the
-default page, so **each keyword belongs to at most one page** — two pages
-claiming the same word would compete with each other for the same search. The
-broad core (_language_, _exchange_, _learn_, _chat_ and the extra target
-languages) is left to the default page: it describes the whole app, not one
-angle of it.
+Nine pages, each with its own keywords, promotional text, screenshot order and
+deep link: four went to review with 2.9, and five more language pages were
+prepared on 7 October 2026 (see _The five language pages_ below). A page whose
+keyword someone searches can be shown in place of the default page, so **each
+keyword belongs to at most one page** — two pages claiming the same word would
+compete with each other for the same search. The broad core (_language_,
+_exchange_, _learn_, _chat_) is left to the default page: it describes the
+whole app, not one angle of it.
 
 Two constraints decide what the operator can enter today:
 
@@ -135,6 +137,12 @@ Pages and why each owns its words:
   absent from the keyword field in others (Spain, Germany). In the Spanish
   localization the page speaks to the other side of the exchange: someone who
   already speaks Spanish and is wanted by people learning it.
+- **Learn Japanese, Learn Korean, Learn French, Learn German, Learn Turkish**
+  own the other target languages in 2.9's keyword field, each in the locales
+  whose field carries it. They were left to the default page at first; a page
+  of their own lets the search for one language land on a page that names it.
+  As with Spanish, the French page in French, the German page in German and
+  the Turkish page in Turkish speak to the other side of the exchange.
 
 ### Keywords
 
@@ -273,6 +281,88 @@ and `associatedDomains` in `apps/mobile/app.config.ts`); Expo Router serves
   off the cross-match fallback, so the link would fail or come back emptier
   than plain Discover for most people who tap it.
 
+### The five language pages
+
+Prepared on 7 October 2026 while 2.9 was in review, in App Store Connect but
+not yet submitted: each has its promotional text in all eight localizations,
+the same screenshot order and creative assets as Learn English, and the deep
+link `https://app.langx.io/discover`. None of their words is in 2.8's keyword
+list, so a page has no _Now_ set and gets its keywords only once 2.9 is
+approved. A locale left blank has no word for that page in its field.
+
+| Page           | en-US      | tr        | es-ES     | ru          | ar-SA    | fr-FR      | de-DE         | pt-BR     |
+| -------------- | ---------- | --------- | --------- | ----------- | -------- | ---------- | ------------- | --------- |
+| Learn Japanese | `japanese` |           |           |             |          | `japonais` |               | `japonês` |
+| Learn Korean   | `korean`   | `korece`  |           | `корейский` | `كوري`   | `coréen`   |               | `coreano` |
+| Learn French   |            |           | `francés` |             | `فرنسي`  |            | `Französisch` | `francês` |
+| Learn German   |            | `almanca` | `alemán`  | `немецкий`  | `ألماني` |            |               |           |
+| Learn Turkish  |            |           |           |             | `تركي`   |            |               |           |
+
+**Learn Japanese**
+
+| Language       | Promotional text                                                                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| English        | Practice Japanese with native speakers who are learning your language. Trade messages, get gentle corrections, and call when you want to hear it spoken. |
+| Türkçe         | Japonca pratiğini, senin dilini öğrenen ve ana dili Japonca olan kişilerle yap. Mesajlaş, hatalarını düzelttir, duymak istediğinde sesli ara.            |
+| Español        | Practica japonés con nativos que están aprendiendo tu idioma. Escribe, deja que te corrijan y llama cuando quieras oírlo hablado.                        |
+| Русский        | Практикуй японский с носителями, которые учат твой язык. Переписывайся, получай исправления и звони, когда захочешь услышать живую речь.                 |
+| العربية        | تدرّب على اليابانية مع ناطقين أصليين يتعلّمون لغتك. اكتب، ودعهم يصحّحون أخطاءك، واتصل حين تريد أن تسمعها منطوقة.                                         |
+| Français       | Pratiquez le japonais avec des natifs qui apprennent votre langue. Écrivez, faites-vous corriger, et appelez quand vous voulez l'entendre à l'oral.      |
+| Deutsch        | Übe Japanisch mit Muttersprachlern, die deine Sprache lernen. Schreib, lass dich korrigieren und ruf an, wenn du es gesprochen hören willst.             |
+| Português (BR) | Pratique japonês com nativos que estão aprendendo o seu idioma. Escreva, receba correções e ligue quando quiser ouvir a língua falada.                   |
+
+**Learn Korean**
+
+| Language       | Promotional text                                                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| English        | Practice Korean with native speakers who are learning your language. Chat every day, get your mistakes corrected, and call when you're ready to speak. |
+| Türkçe         | Korece pratiğini, senin dilini öğrenen ve ana dili Korece olan kişilerle yap. Her gün yazış, hatalarını düzelttir, konuşmaya hazır olunca ara.         |
+| Español        | Practica coreano con nativos que aprenden tu idioma. Escribe a diario, deja que te corrijan y llama cuando te sientas preparado para hablar.           |
+| Русский        | Практикуй корейский с носителями, которые учат твой язык. Пиши каждый день, получай исправления и звони, когда будешь готов говорить.                  |
+| العربية        | تدرّب على الكورية مع ناطقين أصليين يتعلّمون لغتك. اكتب كل يوم، وتلقَّ التصحيحات، واتصل حين تكون مستعدًا للكلام.                                        |
+| Français       | Pratiquez le coréen avec des natifs qui apprennent votre langue. Écrivez chaque jour, faites-vous corriger, et appelez quand vous êtes prêt à parler.  |
+| Deutsch        | Übe Koreanisch mit Muttersprachlern, die deine Sprache lernen. Schreib jeden Tag, lass dich korrigieren und ruf an, wenn du bereit zum Sprechen bist.  |
+| Português (BR) | Pratique coreano com nativos que estão aprendendo o seu idioma. Escreva todo dia, receba correções e ligue quando se sentir pronto para falar.         |
+
+**Learn French**
+
+| Language       | Promotional text                                                                                                                                                |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| English        | Practice French with native speakers who are learning your language. Write, get corrected as you go, and call when you want to hear it spoken.                  |
+| Türkçe         | Fransızcanı, senin dilini öğrenen ve ana dili Fransızca olan kişilerle geliştir. Yazdıkça düzeltmeleri gör, sesli pratik yapmak istediğinde ara.                |
+| Español        | Practica francés con nativos que aprenden tu idioma. Escribe, deja que te corrijan sobre la marcha y llama cuando quieras oírlo hablado.                        |
+| Русский        | Практикуй французский с носителями, которые учат твой язык. Переписывайся, получай исправления и звони, когда захочешь услышать живую речь.                     |
+| العربية        | تدرّب على الفرنسية مع ناطقين أصليين يتعلّمون لغتك. دردش، وتلقَّ التصحيحات أولًا بأول، واتصل حين تريد أن تسمعها منطوقة.                                          |
+| Français       | Des gens apprennent le français et cherchent quelqu'un comme vous. Aidez-les avec le français et pratiquez leur langue en échange : écrivez, corrigez, appelez. |
+| Deutsch        | Übe Französisch mit Muttersprachlern, die deine Sprache lernen. Chatte, lass dich nebenbei korrigieren und ruf an, wenn du es gesprochen hören willst.          |
+| Português (BR) | Pratique francês com nativos que estão aprendendo o seu idioma. Converse, receba correções na hora e ligue quando quiser ouvir a língua falada.                 |
+
+**Learn German**
+
+| Language       | Promotional text                                                                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| English        | Practice German with native speakers who are learning your language. Write, get your mistakes corrected, and call when you're ready to talk.                 |
+| Türkçe         | Almancanı, senin dilini öğrenen ve ana dili Almanca olan kişilerle geliştir. Yaz, hatalarını düzelttir, konuşmaya hazır olunca ara.                          |
+| Español        | Practica alemán con nativos que quieren aprender tu idioma. Escribe, deja que te corrijan y llama cuando te veas preparado para hablar.                      |
+| Русский        | Практикуй немецкий с носителями, которые хотят выучить твой язык. Пиши, получай исправления и звони, когда будешь готов говорить.                            |
+| العربية        | تدرّب على الألمانية مع ناطقين أصليين يريدون تعلّم لغتك. اكتب، ودعهم يصحّحون أخطاءك، واتصل حين تكون مستعدًا للكلام.                                           |
+| Français       | Pratiquez l'allemand avec des natifs qui veulent apprendre votre langue. Écrivez, faites-vous corriger, et appelez quand vous vous sentez prêt à parler.     |
+| Deutsch        | Andere lernen Deutsch und suchen jemanden wie dich. Hilf ihnen mit dem Deutschen und übe dafür ihre Sprache: schreib, korrigiere und ruf an, wann du willst. |
+| Português (BR) | Pratique alemão com nativos que querem aprender o seu idioma. Escreva, receba correções e ligue quando se sentir pronto para falar.                          |
+
+**Learn Turkish**
+
+| Language       | Promotional text                                                                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| English        | Practice Turkish with native speakers who are learning your language. Write, get your mistakes corrected, and call when you're ready to talk.            |
+| Türkçe         | Türkçe öğrenen ve senin gibi birini arayan insanlar var. Onlara Türkçede yardım et, karşılığında onların dilini pratik et: yaz, düzelt, istediğinde ara. |
+| Español        | Practica turco con nativos que aprenden tu idioma. Escribe, deja que te corrijan y llama cuando te veas preparado para hablar.                           |
+| Русский        | Практикуй турецкий с носителями, которые учат твой язык. Пиши, получай исправления и звони, когда будешь готов говорить.                                 |
+| العربية        | تدرّب على التركية مع ناطقين أصليين يتعلّمون لغتك. اكتب، ودعهم يصحّحون أخطاءك، واتصل حين تكون مستعدًا للكلام.                                             |
+| Français       | Pratiquez le turc avec des natifs qui apprennent votre langue. Écrivez, faites-vous corriger, et appelez quand vous vous sentez prêt à parler.           |
+| Deutsch        | Übe Türkisch mit Muttersprachlern, die deine Sprache lernen. Schreib, lass dich korrigieren und ruf an, wenn du bereit zum Sprechen bist.                |
+| Português (BR) | Pratique turco com nativos que estão aprendendo o seu idioma. Escreva, receba correções e ligue quando se sentir pronto para falar.                      |
+
 ## Default product page
 
 Order for the 2.9 default page, all ten shots:
@@ -301,3 +391,41 @@ the baseline), the new thing (calls), or the moment the app is built around (a
 correction in a chat). Only screenshots change, so a result is about the first
 frame and nothing else. A test runs on the default page only; the custom
 product pages are not part of it.
+
+## In-app event
+
+**Voice and video calls** (reference name "2.9 voice and video calls"), badge
+_Major update_, deep link `https://app.langx.io/chats`, no purchase needed,
+every territory. Created as a draft on 7 October 2026 with placeholder dates
+(12 October to 10 November 2026); the dates move to 2.9's real release day
+before it is submitted, and an event may run at most 31 days. Artwork is
+`branding/2.x/<locale>/ios/event/` (card 1920 × 1080, details page
+1080 × 1920), wordless, since the App Store sets the name and short
+description over it.
+
+| Language       | Name (≤30)               | Short description (≤50)                  | Long description (≤120)                                                                                                 |
+| -------------- | ------------------------ | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| English        | Voice and video calls    | Call your practice partner from the chat | Call the people you practice with, by voice or video, right from the chat. It rings even when the app is closed.        |
+| Türkçe         | Sesli ve görüntülü arama | Pratik arkadaşını sohbetten ara          | Pratik yaptığın kişileri sohbetten sesli ya da görüntülü ara. Uygulama kapalıyken bile çalar. Herkese ücretsiz.         |
+| Español        | Llamadas de voz y vídeo  | Llama a tu compañero desde el chat       | Llama por voz o vídeo a quien practica contigo, desde el chat. Suena aunque la app esté cerrada. Gratis para todos.     |
+| Русский        | Голосовые и видеозвонки  | Звони партнёру прямо из чата             | Звони тем, с кем практикуешься, голосом или по видео прямо из чата. Звонок дойдёт, даже если приложение закрыто.        |
+| العربية        | مكالمات صوتية وفيديو     | اتصل بشريكك مباشرة من الدردشة            | اتصل بمن تتدرّب معهم صوتًا أو فيديو من الدردشة. يرنّ الاتصال حتى لو كان التطبيق مغلقًا. مجانًا للجميع.                  |
+| Français       | Appels vocaux et vidéo   | Appelez votre partenaire depuis le chat  | Appelez vos partenaires de pratique en vocal ou en vidéo, depuis la discussion. Ça sonne même app fermée. Gratuit.      |
+| Deutsch        | Sprach- und Videoanrufe  | Ruf deinen Übungspartner aus dem Chat an | Ruf deine Übungspartner per Sprache oder Video direkt aus dem Chat an. Es klingelt auch bei geschlossener App.          |
+| Português (BR) | Chamadas de voz e vídeo  | Ligue para seu parceiro direto do chat   | Ligue por voz ou vídeo para quem pratica com você, direto da conversa. Toca mesmo com o app fechado. Grátis para todos. |
+
+## Featuring nomination
+
+Apple's editorial team takes nominations in App Store Connect (Featuring →
+Nominations). One for 2.9 is drafted here and entered by hand: type _App
+Enhancements_, name "LangX 2.9: voice and video calls", iPhone and iPad, the
+eight listing locales, linked to the in-app event above, publish date 2.9's
+release day.
+
+> LangX 2.9 brings free voice and video calls to a language exchange where
+> learners practise with native speakers who are learning their language in
+> return. Partners call each other straight from the chat, and on iPhone the
+> call rings like a phone call even when the app is closed. The same release
+> adds a View-once chat camera and reviews that practice partners write on each
+> other's profiles. Calls are free on every plan, and corrections stay
+> unlimited.
