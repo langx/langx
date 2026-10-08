@@ -70,10 +70,21 @@ function normalise(value: string): string {
       .trim()
       .toLocaleLowerCase()
       // Decompose, then drop the combining marks: `é` → `e`, `ç` → `c`.
-      // Leaves Arabic and Cyrillic alone, which have nothing to decompose
-      // that a learner would be typing.
+      // In Arabic the same step drops the vowel marks and the hamza a seat
+      // carries (`أ` → `ا`, `ئ` → `ي`), which is what a learner on a phone
+      // keyboard leaves out; Cyrillic has nothing to decompose.
       .normalize('NFD')
       .replace(/\p{M}+/gu, '')
+      // The letters that are one letter to the ear and two to the keyboard.
+      // Turkish `ı` against `i`: a lowercase that ran without the Turkish
+      // locale turned `I` into `i`, and a learner without a Turkish keyboard
+      // types `i` anyway. Arabic final `ة` against `ه` and `ى` against `ي`,
+      // which writers swap all the time; and the tatweel, a stretch with no
+      // sound in it.
+      .replace(/ı/gu, 'i')
+      .replace(/ة/gu, 'ه')
+      .replace(/ى/gu, 'ي')
+      .replace(/ـ/gu, '')
       // Every kind of punctuation and symbol, and the apostrophes that differ
       // between a phone keyboard and a corpus.
       .replace(/[\p{P}\p{S}]+/gu, '')

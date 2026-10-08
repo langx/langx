@@ -237,7 +237,9 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    of it). The app hides the button elsewhere — and "elsewhere" is a licence
    question rather than a modelling one, since the catalogue's only Turkish,
    Arabic and Korean voices are CC BY-NC. A person who already recorded the sentence is still both
-   cheaper and the actual differentiator.
+   cheaper and the actual differentiator. (The Turkish and Arabic _packs_ are
+   read anyway — offline, by a model too heavy for this service; see
+   _Content_ below.)
 
 4. **Pack recordings. Built.** A Wikimedia Commons file on the pack item,
    played from Commons rather than copied into our storage — the decision
@@ -519,7 +521,9 @@ the learning steps, only when the front is short enough to type on a phone
 (`ECHO_PRODUCTION_MAX_LENGTH`), and only on every other review, by parity of
 `reps` — deterministic, so leaving a session and coming back does not change
 what the card asks. The typed answer is compared with diacritics, case,
-punctuation and spacing stripped, and the result is **reported, never
+punctuation and spacing stripped — and Arabic's vowel marks, hamza seats,
+final `ة`/`ه` and `ى`/`ي`, and Turkish `ı`/`i`, which a phone keyboard swaps —
+and the result is **reported, never
 graded**: only the person knows whether they knew it or guessed it.
 
 ## Client
@@ -615,13 +619,23 @@ Italian 4, Japanese 4. So Spanish, German, French, Russian and Italian — five
 languages that are also, apart from Italian, interface locales. Fifteen packs,
 4,208 items, drafted and unread.
 
-**Turkish and Arabic are not in it, and the reason is written down here so the
-absence reads as a decision.** Both are interface locales and both would be
-silent: the catalogue's only Turkish and Arabic voices are CC BY-NC, which an
-app that sells subscriptions cannot use (`packages/shared/src/speech.ts`).
-Arabic is separately the thinnest gloss column in every other language, so it
-is the language we are worst at serving and the one we can serve last. A clean
-model reopens both. Chinese and Japanese are out for a different reason: no
+**Turkish and Arabic were not in it, and the reason was written down here so
+the absence read as a decision.** Both are interface locales and both would
+have been silent: the catalogue's only Turkish and Arabic voices are CC BY-NC,
+which an app that sells subscriptions cannot use
+(`packages/shared/src/speech.ts`). Arabic is separately the thinnest gloss
+column in every other language, so it is the language we are worst at serving
+and the one we can serve last.
+
+_A clean model reopened both, on 7 October._ Chatterbox Multilingual (Resemble
+AI, MIT, its own bundled voice) reads them — a recogniser got back 94.0% of the
+Arabic characters and 96.1% of the Turkish — and six packs are drafted, three a
+language, every card with a cue and a reading, `"reviewed": false`. **Offline
+only**: it is a 0.5B PyTorch model, a minute a sentence on four CPU threads, so
+the voice service does not load it, `SPEECH_VOICES` does not list it, and a
+member's own Turkish card still has no "Read it aloud". The candidates, the
+one that scored higher and was not used, and why, are in
+`content/echo/ATTRIBUTION.md`. Chinese and Japanese are out for a different reason: no
 usable voice either, and the picker's word counts and
 `ECHO_PRODUCTION_MAX_LENGTH` both assume a language that puts spaces between
 words. Both have since been answered — see _Chinese is named by HSK_ and
@@ -825,7 +839,7 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
 | 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. pack audio, from Commons with its licence checked per file; the three **English packs**, 809 items, read in two passes and marked `"reviewed": true` — see `content/echo/ATTRIBUTION.md` for what that review covered and what it only sampled. **Also built:** fifteen more packs — Spanish, German, French, Russian and Italian, three levels each, 4,101 items, read and `"reviewed": true` on 20 September; `content/echo/ATTRIBUTION.md` says which three of their seven columns that reading covered. Their cue pictures and synthesised readings too: every card but sixteen carries one of the same 372 concepts, and every item is read — Kokoro's two takes for Spanish, French and Italian, Piper's one for German and Russian. **Also built:** six Mandarin packs, HSK 1–6, each item with its pinyin and 1,586 of 1,639 with a cue from the same 372 — each read in two Kokoro voices from that pinyin; see _Chinese is named by HSK_. **Drafted, not read:** three Japanese packs, JLPT N5, N4 and N3, 900 items, each with its kana, a cue and two Kokoro readings — see _Japanese is named by JLPT_. **Not built:** OpenMoji icons | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | **Built:** production cards, offline review. **Left:** pack multiple choice, listening cards, the upper two levels, Turkish and Arabic packs when a voice exists for them, FSRS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| 3     | **Built:** production cards, offline review. **Drafted, unread:** `fluent` in Spanish, French, Italian, German and Russian; the Turkish and Arabic packs, six, read offline by Chatterbox. **Left:** pack multiple choice, listening cards, English `fluent`, FSRS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth

@@ -1,0 +1,4949 @@
+{
+  "id": "tr:intermediate",
+  "lang": "tr",
+  "level": "intermediate",
+  "contentVersion": 4,
+  "reviewed": false,
+  "sources": [
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/hermitdave/FrequencyWords"
+    }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "Evini görüyorum.",
+      "gloss": {
+        "en": "I see your house.",
+        "de": "Ich sehe dein Haus.",
+        "es": "Yo veo tu casa.",
+        "fr": "Je vois ta maison.",
+        "ru": "Я вижу твой дом."
+      },
+      "freqRank": 1,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/0-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "Yağmur durdu.",
+      "gloss": {
+        "en": "It has stopped raining.",
+        "es": "Dejó de llover.",
+        "ru": "Дождь закончился."
+      },
+      "freqRank": 2,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/1-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "Atın güzel.",
+      "gloss": {
+        "en": "Your horse is beautiful.",
+        "de": "Du hast ein schönes Pferd.",
+        "es": "Tienes un bonito caballo.",
+        "fr": "Ton cheval est beau.",
+        "pt-BR": "Seu cavalo é bonito.",
+        "ru": "У тебя красивая лошадь."
+      },
+      "freqRank": 3,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:horse",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/2-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "Görüşme nasıldı?",
+      "gloss": {
+        "en": "How was the interview?",
+        "de": "Wie war das Treffen?",
+        "es": "¿Como estuvo la reunión?",
+        "fr": "Comment s’est passée la réunion ?",
+        "ru": "Как прошла встреча?"
+      },
+      "freqRank": 4,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/3-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "Niçin korkuyorsun?",
+      "gloss": {
+        "en": "Why are you afraid?",
+        "es": "¿Por qué tienes miedo?",
+        "pt-BR": "Por que você está com medo?"
+      },
+      "freqRank": 5,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fearful-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/4-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "Dünya tehlikede.",
+      "gloss": {
+        "en": "The world is in danger.",
+        "de": "Die Welt ist in Gefahr.",
+        "es": "El mundo está en peligro.",
+        "fr": "Le monde est en danger.",
+        "ru": "Мир в опасности.",
+        "ar": "العالم في خطر."
+      },
+      "freqRank": 6,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/5-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "O tehlikede.",
+      "gloss": {
+        "en": "He's in danger.",
+        "de": "Er ist in Gefahr.",
+        "fr": "Il est en danger.",
+        "pt-BR": "Ele está em perigo."
+      },
+      "freqRank": 7,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/6-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "Yemeğini ye.",
+      "gloss": { "en": "Eat your food.", "es": "Cómete tu comida.", "ru": "Ешь свою еду." },
+      "freqRank": 8,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/7-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "Kitabı oku!",
+      "gloss": { "en": "Read the book!", "es": "¡Lee el libro!", "fr": "Lis le livre !" },
+      "freqRank": 9,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/8-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "Bunu düşünün.",
+      "gloss": { "en": "Think about it.", "de": "Denkt darüber nach!", "es": "Piénsalo." },
+      "freqRank": 10,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/9-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "Oyunu kaybettin.",
+      "gloss": {
+        "en": "You lost the game.",
+        "es": "Perdiste el juego.",
+        "ru": "Ты проиграл игру."
+      },
+      "freqRank": 11,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:game-die",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/10-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "Çok yerim.",
+      "gloss": { "en": "I eat a lot.", "de": "Ich esse viel.", "ru": "Я много ем." },
+      "freqRank": 12,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/11-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "Kahve sevmiyorum.",
+      "gloss": {
+        "en": "I don't like the coffee.",
+        "es": "No me gusta el café.",
+        "fr": "Je n'aime pas le café.",
+        "ru": "Я не люблю кофе."
+      },
+      "freqRank": 13,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/12-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "Telefon çalıyor.",
+      "gloss": {
+        "en": "The telephone is ringing.",
+        "de": "Das Telefon klingelt.",
+        "es": "El teléfono está sonando.",
+        "pt-BR": "O telefone está a tocar."
+      },
+      "freqRank": 14,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/13-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "Tuvalet nerede?",
+      "gloss": {
+        "en": "Where is the bathroom?",
+        "de": "Wo ist die Toilette?",
+        "ru": "Где туалет?",
+        "ar": "أين الحمام؟"
+      },
+      "freqRank": 15,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:restroom",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/14-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "Kilise nerede?",
+      "gloss": {
+        "en": "Where's the church?",
+        "de": "Wo ist die Kirche?",
+        "fr": "Où est l'église ?"
+      },
+      "freqRank": 16,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/15-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "Arkadaşların nerede?",
+      "gloss": {
+        "en": "Where are your friends?",
+        "es": "¿Dónde están tus amigos?",
+        "ru": "Где твои друзья?"
+      },
+      "freqRank": 17,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/16-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "Kalp atıyor.",
+      "gloss": {
+        "en": "The heart is beating.",
+        "de": "Das Herz schlägt.",
+        "fr": "Le cœur bat.",
+        "ar": "القلب ينبض."
+      },
+      "freqRank": 18,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:growing-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/17-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "Nereye gidiyorsunuz?",
+      "gloss": {
+        "en": "Where are you going to?",
+        "es": "¿Adónde vais?",
+        "ru": "Куда вы идёте?",
+        "ar": "إلى أين تذهبين؟"
+      },
+      "freqRank": 19,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:compass",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/18-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Oğlunu tanıyorum.",
+      "gloss": {
+        "en": "I know your son.",
+        "de": "Ich kenne deinen Sohn.",
+        "es": "Conozco a tu hijo."
+      },
+      "freqRank": 20,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:boy",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/19-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "Golf oynuyor.",
+      "gloss": {
+        "en": "He is playing golf.",
+        "es": "Está jugando al golf.",
+        "pt-BR": "Ele está jogando golfe."
+      },
+      "freqRank": 21,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flag-in-hole",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/20-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "Sen haklıydın.",
+      "gloss": { "en": "You were right.", "de": "Du hattest recht.", "fr": "Tu as eu raison." },
+      "freqRank": 22,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/21-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "Hadi içelim.",
+      "gloss": { "en": "Let's drink.", "de": "Lass uns saufen!", "ru": "Может, выпьем?" },
+      "freqRank": 23,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clinking-beer-mugs",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/22-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "Kızımı seviyorum.",
+      "gloss": {
+        "en": "I love my daughter.",
+        "de": "Ich liebe meine Tochter.",
+        "es": "Quiero a mi hija.",
+        "fr": "J'aime ma fille.",
+        "pt-BR": "Eu amo a minha filha.",
+        "ru": "Я люблю свою дочь."
+      },
+      "freqRank": 24,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/23-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "Paran nerede?",
+      "gloss": {
+        "en": "Where's your money?",
+        "de": "Wo ist dein Geld?",
+        "es": "¿Dónde está tu dinero?"
+      },
+      "freqRank": 25,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/24-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "Müziği dinle.",
+      "gloss": { "en": "Listen to the music.", "es": "Escucha la música.", "ru": "Слушай музыку." },
+      "freqRank": 26,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-notes",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/25-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "Beni affet!",
+      "gloss": {
+        "en": "Forgive me!",
+        "de": "Vergib mir!",
+        "es": "¡Perdóname!",
+        "fr": "Pardonne-moi !"
+      },
+      "freqRank": 27,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-bowing",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/26-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "Müziği seviyorum.",
+      "gloss": {
+        "en": "I enjoy music.",
+        "de": "Ich liebe die Musik.",
+        "es": "Me encanta la música.",
+        "ru": "Я люблю музыку."
+      },
+      "freqRank": 28,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/27-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "Arabayla gittik.",
+      "gloss": {
+        "en": "We went by car.",
+        "fr": "Nous y sommes allés en voiture.",
+        "pt-BR": "Fomos de carro.",
+        "ru": "Мы поехали на машине."
+      },
+      "freqRank": 29,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/28-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "Hastaneye gittik.",
+      "gloss": {
+        "en": "We went to the hospital.",
+        "es": "Fuimos al hospital.",
+        "fr": "Nous sommes allés à l'hôpital.",
+        "pt-BR": "Fomos ao hospital."
+      },
+      "freqRank": 30,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ambulance",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/29-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "Müzik dinliyorum.",
+      "gloss": {
+        "en": "I am listening to the music.",
+        "de": "Ich höre Musik.",
+        "es": "Escucho música."
+      },
+      "freqRank": 31,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:radio",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/30-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "Seni dinliyorum.",
+      "gloss": {
+        "en": "I'm listening to you.",
+        "es": "Te estoy escuchando.",
+        "fr": "Je t'écoute.",
+        "ru": "Я тебя слушаю."
+      },
+      "freqRank": 32,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/31-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "Gerçekten korktum.",
+      "gloss": {
+        "en": "I was really scared.",
+        "es": "Estaba realmente asustado.",
+        "ru": "Я реально испугался."
+      },
+      "freqRank": 33,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-screaming-in-fear",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/32-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "Ben yorgunum.",
+      "gloss": {
+        "en": "I'm tired.",
+        "es": "Estoy cansado.",
+        "pt-BR": "Estou cansado.",
+        "ru": "Я утомлён.",
+        "ar": "أنا متعب."
+      },
+      "freqRank": 34,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:weary-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/33-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "Garip davranıyor.",
+      "gloss": {
+        "en": "He's behaving weirdly.",
+        "es": "Él está actuando extraño.",
+        "pt-BR": "Ele está agindo de maneira estranha."
+      },
+      "freqRank": 35,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/34-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "Rusya büyük.",
+      "gloss": {
+        "en": "Russia is big.",
+        "de": "Russland ist groß.",
+        "fr": "La Russie est grande."
+      },
+      "freqRank": 36,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/35-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "Dikkatli sür.",
+      "gloss": {
+        "en": "Drive carefully.",
+        "es": "Maneja con cuidado.",
+        "fr": "Conduis avec prudence."
+      },
+      "freqRank": 37,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/36-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "Bu peynir.",
+      "gloss": { "en": "This is cheese.", "de": "Das ist Käse.", "ru": "Это сыр." },
+      "freqRank": 38,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cheese-wedge",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/37-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "Kış bitti.",
+      "gloss": {
+        "en": "Winter is gone.",
+        "de": "Der Winter ist vorüber.",
+        "es": "El invierno se ha ido.",
+        "fr": "L'hiver est passé.",
+        "pt-BR": "O inverno se foi.",
+        "ru": "Зима прошла."
+      },
+      "freqRank": 39,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snowflake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/38-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "Meşgul müsün?",
+      "gloss": { "en": "Are you busy?", "de": "Bist du beschäftigt?", "es": "¿Estás ocupado?" },
+      "freqRank": 40,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/39-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "Üzgün müsün?",
+      "gloss": { "en": "Are you sad?", "de": "Bist du traurig?", "es": "¿Estás triste?" },
+      "freqRank": 41,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crying-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/40-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "Ben güzelim.",
+      "gloss": {
+        "en": "I'm beautiful.",
+        "es": "Soy hermosa.",
+        "pt-BR": "Eu sou belo.",
+        "ru": "Я красивый."
+      },
+      "freqRank": 42,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mirror",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/41-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "Bugün perşembe.",
+      "gloss": {
+        "en": "Today is Thursday.",
+        "de": "Heute ist Donnerstag.",
+        "ar": "اليوم هو الخميس."
+      },
+      "freqRank": 43,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/42-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "Birlikte yaşıyoruz.",
+      "gloss": {
+        "en": "We live together.",
+        "es": "Vivimos juntos.",
+        "fr": "Nous vivons ensemble."
+      },
+      "freqRank": 44,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/43-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "Girebilir miyim?",
+      "gloss": { "en": "Might I come in?", "es": "¿Puedo entrar?", "pt-BR": "Posso?" },
+      "freqRank": 45,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/44-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "Savaş istemiyoruz.",
+      "gloss": {
+        "en": "We don't want a war.",
+        "de": "Wir wollen keinen Krieg.",
+        "ar": "نحن لا نريد حربا."
+      },
+      "freqRank": 46,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:peace-symbol",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/45-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "İsmini değiştirdi.",
+      "gloss": {
+        "en": "He changed his name.",
+        "de": "Er hat seinen Namen geändert.",
+        "fr": "Il a changé de nom."
+      },
+      "freqRank": 47,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/46-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "Dışarıda bekleyeceğim.",
+      "gloss": {
+        "en": "I will wait outside.",
+        "de": "Ich werde draußen warten.",
+        "fr": "Je vais attendre dehors.",
+        "ru": "Я подожду снаружи.",
+        "ar": "سأنتظر بالخارج."
+      },
+      "freqRank": 48,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/47-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "Seni özlüyorum.",
+      "gloss": {
+        "en": "I long for you.",
+        "de": "Ich vermisse dich.",
+        "es": "Te echo de menos.",
+        "pt-BR": "Tenho saudades de você!"
+      },
+      "freqRank": 49,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pleading-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/48-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "Planım var.",
+      "gloss": {
+        "en": "I have plans.",
+        "de": "Ich habe Pläne.",
+        "es": "Tengo planes.",
+        "fr": "J'ai des plans."
+      },
+      "freqRank": 50,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clipboard",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/49-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "Çok meşgulüm.",
+      "gloss": {
+        "en": "I'm too busy.",
+        "es": "Estoy muy ocupada.",
+        "fr": "Je suis très occupé.",
+        "ar": "أنا مشغول جداً."
+      },
+      "freqRank": 51,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/50-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "Senden korkmuyorum.",
+      "gloss": {
+        "en": "I'm not afraid of you.",
+        "de": "Ich habe keine Angst vor dir.",
+        "es": "No te tengo miedo."
+      },
+      "freqRank": 52,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/51-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "Arabam mavi.",
+      "gloss": { "en": "My car is blue.", "de": "Mein Auto ist blau.", "es": "Mi coche es azul." },
+      "freqRank": 53,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/52-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "Seni seviyoruz.",
+      "gloss": { "en": "We love you.", "de": "Wir lieben dich.", "fr": "Nous t'aimons." },
+      "freqRank": 54,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/53-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "Arabam nerede?",
+      "gloss": {
+        "en": "Where is my car?",
+        "de": "Wo ist mein Auto?",
+        "es": "¿Dónde está mi coche?",
+        "ru": "Где мой автомобиль?"
+      },
+      "freqRank": 55,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/54-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "Elma kırmızı.",
+      "gloss": {
+        "en": "The apple is red.",
+        "de": "Der Apfel ist rot.",
+        "es": "La manzana es roja."
+      },
+      "freqRank": 56,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/55-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "Kaç elma?",
+      "gloss": {
+        "en": "How many apples are there?",
+        "de": "Wie viele Äpfel?",
+        "fr": "Combien de pommes ?"
+      },
+      "freqRank": 57,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/56-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "Elma severim.",
+      "gloss": {
+        "en": "I like apples.",
+        "de": "Ich mag Äpfel.",
+        "fr": "J'aime les pommes.",
+        "ru": "Я люблю яблоки."
+      },
+      "freqRank": 58,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/57-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "Beni öp.",
+      "gloss": { "en": "Kiss me.", "es": "Bésame.", "ru": "Поцелуй меня." },
+      "freqRank": 59,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:kiss-mark",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/58-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "O, mutfakta.",
+      "gloss": {
+        "en": "He is in the kitchen.",
+        "de": "Er ist in der Küche.",
+        "es": "Está en la cocina."
+      },
+      "freqRank": 60,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/59-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "Ben 18 yaşındayım.",
+      "gloss": {
+        "en": "I am eighteen years old.",
+        "de": "Ich bin achtzehn Jahre alt.",
+        "es": "Yo tengo 18 años.",
+        "fr": "J'ai dix-huit ans.",
+        "pt-BR": "Eu tenho 18 anos.",
+        "ru": "Мне 18 лет."
+      },
+      "freqRank": 61,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/60-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "Aile önemlidir.",
+      "gloss": {
+        "en": "Family is important.",
+        "de": "Die Familie ist wichtig.",
+        "es": "La familia es importante.",
+        "fr": "La famille, c'est important.",
+        "pt-BR": "A família é importante."
+      },
+      "freqRank": 62,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/61-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "Bahar geldi.",
+      "gloss": {
+        "en": "Spring has come.",
+        "de": "Der Frühling ist da.",
+        "es": "Llegó la primavera.",
+        "fr": "Le printemps est arrivé."
+      },
+      "freqRank": 63,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cherry-blossom",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/62-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "Çiçekler sarı.",
+      "gloss": {
+        "en": "Flowers are yellow.",
+        "es": "Las flores son amarillas.",
+        "pt-BR": "As flores são amarelas."
+      },
+      "freqRank": 64,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunflower",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/63-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "Gözlerim ağrıyor.",
+      "gloss": {
+        "en": "My eyes hurt.",
+        "fr": "Mes yeux me font mal.",
+        "ru": "У меня болят глаза."
+      },
+      "freqRank": 65,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/64-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "Seninle konuşmalıyım.",
+      "gloss": {
+        "en": "I've got to talk to you.",
+        "es": "Tengo que hablar contigo.",
+        "ru": "Я должен поговорить с тобой."
+      },
+      "freqRank": 66,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/65-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "Çabucak sıkıldım.",
+      "gloss": {
+        "en": "I got bored quickly.",
+        "es": "Me aburrí rápidamente.",
+        "ru": "Мне быстро стало скучно."
+      },
+      "freqRank": 67,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:expressionless-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/66-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "Uyumak istiyorum.",
+      "gloss": {
+        "en": "I want to sleep.",
+        "de": "Ich will schlafen.",
+        "es": "Quiero dormir.",
+        "fr": "Je veux dormir.",
+        "pt-BR": "Quero dormir.",
+        "ru": "Я хочу спать."
+      },
+      "freqRank": 68,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bed",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/67-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "Işığı açma.",
+      "gloss": {
+        "en": "Don't turn on the light.",
+        "es": "No des la luz.",
+        "pt-BR": "Não acenda a luz."
+      },
+      "freqRank": 69,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/68-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "Çalışmayı seviyorum.",
+      "gloss": {
+        "en": "I like working.",
+        "de": "Ich arbeite gerne.",
+        "es": "Me gusta trabajar.",
+        "ru": "Мне нравится работать."
+      },
+      "freqRank": 70,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/69-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "Çorba sıcak.",
+      "gloss": {
+        "en": "The soup is hot.",
+        "de": "Die Suppe ist heiß.",
+        "es": "La sopa está caliente.",
+        "fr": "La soupe est chaude."
+      },
+      "freqRank": 71,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/70-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "Sinemaya gittim.",
+      "gloss": {
+        "en": "I went to the cinema.",
+        "de": "Ich bin ins Kino gegangen.",
+        "es": "Fui al cine.",
+        "fr": "Je suis allé au cinéma.",
+        "ru": "Я пошёл в кино."
+      },
+      "freqRank": 72,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/71-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "Çorba soğuk.",
+      "gloss": {
+        "en": "The soup is cold.",
+        "de": "Die Suppe ist kalt.",
+        "es": "La sopa está fría.",
+        "fr": "La soupe est froide."
+      },
+      "freqRank": 73,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/72-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "Twitter kullanıyorum.",
+      "gloss": {
+        "en": "I'm using Twitter.",
+        "es": "Estoy usando Twitter.",
+        "fr": "J'utilise Twitter."
+      },
+      "freqRank": 74,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mobile-phone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/73-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "Dilini anlıyorum.",
+      "gloss": {
+        "en": "I understand your language.",
+        "de": "Ich verstehe deine Sprache.",
+        "es": "Entiendo tu lengua."
+      },
+      "freqRank": 75,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/74-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "Kafasını çarptı.",
+      "gloss": {
+        "en": "He banged his head.",
+        "fr": "Il se heurta la tête.",
+        "ru": "Он ударился головой."
+      },
+      "freqRank": 76,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/75-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "Ağlıyor musun?",
+      "gloss": {
+        "en": "Are you crying?",
+        "es": "¿Estás llorando?",
+        "pt-BR": "Você está chorando?"
+      },
+      "freqRank": 77,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crying-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/76-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "Tom ağlıyor.",
+      "gloss": { "en": "Tom is crying.", "de": "Tom weint.", "es": "Tom está llorando." },
+      "freqRank": 78,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:loudly-crying-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/77-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "Tatlı rüyalar!",
+      "gloss": {
+        "en": "Sweet dreams!",
+        "de": "Süße Träume!",
+        "es": "¡Dulces sueños!",
+        "fr": "Faites de beaux rêves !"
+      },
+      "freqRank": 79,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/78-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "Köpeğin nerede?",
+      "gloss": {
+        "en": "Where is your dog?",
+        "de": "Wo ist dein Hund?",
+        "es": "¿Dónde está tu perro?",
+        "fr": "Où est ton chien ?",
+        "ru": "Где твоя собака?"
+      },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/79-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "Kitabın burada.",
+      "gloss": {
+        "en": "Your book is here.",
+        "es": "Tu libro está aquí.",
+        "ru": "Твоя книга здесь."
+      },
+      "freqRank": 81,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/80-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "Bahçe nerede?",
+      "gloss": {
+        "en": "Where's the garden?",
+        "es": "¿Donde está el jardín?",
+        "fr": "Où est le jardin ?",
+        "pt-BR": "Onde é o jardim?",
+        "ar": "أين الحديقة؟"
+      },
+      "freqRank": 82,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/81-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "İşte harita.",
+      "gloss": { "en": "Here is the map.", "es": "Aquí está el mapa.", "ru": "Вот карта." },
+      "freqRank": 83,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/82-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "Ağrısı var.",
+      "gloss": { "en": "She's in pain.", "de": "Sie hat Schmerzen.", "es": "Tiene dolor." },
+      "freqRank": 84,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/83-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "Çalışmam gerek.",
+      "gloss": { "en": "I need to work.", "es": "Necesito trabajar.", "ru": "Мне нужно работать." },
+      "freqRank": 85,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/84-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "Bu pirinç.",
+      "gloss": { "en": "This is rice.", "de": "Das ist Reis.", "ru": "Это рис." },
+      "freqRank": 86,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cooked-rice",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/85-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "Biz neredeyiz?",
+      "gloss": {
+        "en": "Where are we?",
+        "es": "¿Dónde estamos?",
+        "pt-BR": "Onde estamos?",
+        "ru": "Где мы?"
+      },
+      "freqRank": 87,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/86-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "Dünya değişiyor.",
+      "gloss": {
+        "en": "The world is changing.",
+        "de": "Die Welt verändert sich.",
+        "fr": "Le monde change.",
+        "ru": "Мир меняется."
+      },
+      "freqRank": 88,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/87-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "Adınız nedir?",
+      "gloss": {
+        "en": "What are you called?",
+        "de": "Wie heißen Sie?",
+        "fr": "Comment vous appelez-vous ?"
+      },
+      "freqRank": 89,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/88-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "Fransızca biliyorum.",
+      "gloss": { "en": "I know French.", "de": "Ich kann Französisch.", "es": "Yo sé francés." },
+      "freqRank": 90,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/89-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "Şiir yazıyorum.",
+      "gloss": {
+        "en": "I write poetry.",
+        "de": "Ich schreibe Gedichte.",
+        "es": "Estoy escribiendo poesía.",
+        "fr": "J'écris de la poésie."
+      },
+      "freqRank": 91,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/90-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "Fransızca konuşalım.",
+      "gloss": {
+        "en": "Let's speak in French.",
+        "de": "Sprechen wir Französisch!",
+        "es": "Hablemos en francés."
+      },
+      "freqRank": 92,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/91-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "Süt içtim.",
+      "gloss": { "en": "I drank milk.", "de": "Ich trank Milch.", "es": "He bebido leche." },
+      "freqRank": 93,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:glass-of-milk",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/92-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "Fransızca öğren.",
+      "gloss": { "en": "Learn French.", "de": "Lerne Französisch!", "es": "Aprende francés." },
+      "freqRank": 94,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/93-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "Ay güzeldir.",
+      "gloss": {
+        "en": "The moon is beautiful.",
+        "de": "Der Mond ist schön.",
+        "es": "La luna es bella.",
+        "fr": "La lune est belle."
+      },
+      "freqRank": 95,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/94-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "Dünya güzeldir.",
+      "gloss": {
+        "en": "The world is beautiful.",
+        "de": "Die Welt ist schön.",
+        "es": "El mundo es bello.",
+        "fr": "Le monde est beau."
+      },
+      "freqRank": 96,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/95-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "Restoran dolu.",
+      "gloss": {
+        "en": "The restaurant is full.",
+        "de": "Das Restaurant ist voll.",
+        "es": "El restaurante está lleno.",
+        "ru": "Ресторан полон."
+      },
+      "freqRank": 97,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/96-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "Kitabını aldı.",
+      "gloss": {
+        "en": "He took her book.",
+        "de": "Sie nahm sein Buch.",
+        "es": "Ella tomó su libro."
+      },
+      "freqRank": 98,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/97-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "Ona bakıyordum.",
+      "gloss": {
+        "en": "I was looking at her.",
+        "de": "Ich schaute sie an.",
+        "fr": "Je la regardais.",
+        "pt-BR": "Estava olhando para ela."
+      },
+      "freqRank": 99,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/98-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "Eve gidiyordum.",
+      "gloss": {
+        "en": "I was on my way home.",
+        "es": "Estaba camino a casa.",
+        "fr": "Je rentrais à la maison."
+      },
+      "freqRank": 100,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/99-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "Ben açım.",
+      "gloss": { "en": "I'm hungry!", "es": "Tengo hambre.", "ar": "أنا جائع." },
+      "freqRank": 101,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drooling-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/100-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "Evimi severim.",
+      "gloss": { "en": "I like my house.", "de": "Ich mag mein Haus.", "es": "Me gusta mi casa." },
+      "freqRank": 102,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/101-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "Bugün 2 Ocak.",
+      "gloss": {
+        "en": "Today is January 2nd.",
+        "de": "Heute ist der 2. Januar.",
+        "es": "Hoy es el dos de enero."
+      },
+      "freqRank": 103,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/102-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "Tom denizci.",
+      "gloss": { "en": "Tom is a seaman.", "de": "Tom ist Seemann.", "ru": "Том — моряк." },
+      "freqRank": 104,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ship",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/103-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "Ben Meryem.",
+      "gloss": { "en": "I'm Mary.", "es": "Soy María.", "ru": "Я Мария." },
+      "freqRank": 105,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/104-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "Bu tuz.",
+      "gloss": {
+        "en": "This is salt.",
+        "de": "Das ist Salz.",
+        "fr": "C'est du sel.",
+        "ru": "Это соль."
+      },
+      "freqRank": 106,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:salt",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/105-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "Temizlemek istiyorum.",
+      "gloss": {
+        "en": "I want to clean.",
+        "es": "Quiero limpiar.",
+        "ru": "Я хочу убираться.",
+        "ar": "أريد أن أنظف."
+      },
+      "freqRank": 107,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broom",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/106-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "Uyumaya gidiyorum.",
+      "gloss": { "en": "I am going to sleep.", "es": "Me voy a dormir.", "ru": "Я пошла спать." },
+      "freqRank": 108,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/107-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "Araban nerede?",
+      "gloss": {
+        "en": "Where's your car?",
+        "de": "Wo ist dein Auto?",
+        "pt-BR": "Onde está teu carro?"
+      },
+      "freqRank": 109,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/108-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "Portakal aldım.",
+      "gloss": {
+        "en": "I've bought oranges.",
+        "es": "Compré naranjas.",
+        "fr": "J'ai acheté des oranges.",
+        "ru": "Я купил апельсины."
+      },
+      "freqRank": 110,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/109-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "Afiyet olsun!",
+      "gloss": {
+        "en": "Enjoy your meal!",
+        "de": "Mahlzeit!",
+        "es": "¡Buen provecho!",
+        "fr": "Bon appétit !",
+        "ru": "Приятного аппетита!",
+        "ar": "بالصحة و العافية!"
+      },
+      "freqRank": 111,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/110-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "Kadın okuyor.",
+      "gloss": {
+        "en": "The woman is reading.",
+        "de": "Die Frau liest.",
+        "es": "La mujer está leyendo."
+      },
+      "freqRank": 112,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/111-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "Ne yiyorsun?",
+      "gloss": {
+        "en": "What are you eating?",
+        "de": "Was isst du?",
+        "es": "¿Qué estás comiendo?",
+        "ru": "Что ты ешь?"
+      },
+      "freqRank": 113,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-savoring-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/112-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "Şarabı severim.",
+      "gloss": { "en": "I like wine.", "de": "Ich mag Wein.", "es": "Me gusta el vino." },
+      "freqRank": 114,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/113-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "Güzel kokuyorsun.",
+      "gloss": { "en": "You smell good.", "es": "Hueles bien.", "fr": "Tu sens bon." },
+      "freqRank": 115,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:nose",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/114-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "Biz ayrıldık.",
+      "gloss": { "en": "We got separated.", "es": "Nos separamos.", "ru": "Мы расстались." },
+      "freqRank": 116,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/115-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "Seni izliyorum.",
+      "gloss": {
+        "en": "I have been watching you.",
+        "es": "Te estoy observando.",
+        "fr": "Je t'observe."
+      },
+      "freqRank": 117,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/116-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "Televizyon izliyorum.",
+      "gloss": {
+        "en": "I watch television.",
+        "es": "Estoy viendo la televisión.",
+        "ru": "Я смотрю телевизор."
+      },
+      "freqRank": 118,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/117-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "Köpekleri severim.",
+      "gloss": { "en": "I like dogs.", "de": "Ich mag Hunde.", "es": "Me gustan los perros." },
+      "freqRank": 119,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/118-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "Ne içiyorsun?",
+      "gloss": {
+        "en": "What are you drinking?",
+        "de": "Was trinkst du?",
+        "es": "¿Qué estás bebiendo?",
+        "ru": "Что ты пьёшь?"
+      },
+      "freqRank": 120,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cup-with-straw",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/119-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "Hâlâ yalnızım.",
+      "gloss": {
+        "en": "I am still alone.",
+        "de": "Ich bin immer noch allein.",
+        "es": "Todavía estoy sola."
+      },
+      "freqRank": 121,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-standing",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/120-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "Okumaya çalışıyorum.",
+      "gloss": {
+        "en": "I'm trying to study.",
+        "es": "Estoy intentando estudiar.",
+        "ru": "Я пытаюсь учиться."
+      },
+      "freqRank": 122,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/121-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "Gitar çalıyor.",
+      "gloss": {
+        "en": "He's playing the guitar.",
+        "es": "Él está tocando la guitarra.",
+        "ru": "Он играет на гитаре."
+      },
+      "freqRank": 123,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:guitar",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/122-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "Muz severim.",
+      "gloss": {
+        "en": "I like bananas.",
+        "es": "Me gustan los plátanos.",
+        "ru": "Я люблю бананы."
+      },
+      "freqRank": 124,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:banana",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/123-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "Bu ücretsiz.",
+      "gloss": { "en": "It's free of charge.", "es": "Esto es gratis.", "ru": "Это бесплатно." },
+      "freqRank": 125,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:free-button",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/124-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "Dükkan nerede?",
+      "gloss": {
+        "en": "Where is the store?",
+        "de": "Wo befindet sich der Laden?",
+        "fr": "Où se trouve le magasin ?"
+      },
+      "freqRank": 126,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shopping-cart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/125-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "Ne okuyorsun?",
+      "gloss": {
+        "en": "What're you reading?",
+        "de": "Was liest du?",
+        "es": "¿Qué lees?",
+        "ru": "Что ты читаешь?",
+        "ar": "ماذا تقرأ؟"
+      },
+      "freqRank": 127,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/126-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "Bankaya gittik.",
+      "gloss": {
+        "en": "We went to the bank.",
+        "es": "Fuimos al banco.",
+        "fr": "Nous sommes allés à la banque.",
+        "pt-BR": "Fomos ao banco.",
+        "ru": "Мы пошли в банк."
+      },
+      "freqRank": 128,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/127-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "Yağmur yağıyor.",
+      "gloss": {
+        "en": "It is raining.",
+        "de": "Es regnet.",
+        "es": "Llueve.",
+        "fr": "Il pleut.",
+        "ru": "Идёт дождь."
+      },
+      "freqRank": 129,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/128-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "Ben hamileyim.",
+      "gloss": { "en": "I am pregnant.", "ru": "Я беременна.", "ar": "أنا حامل." },
+      "freqRank": 130,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pregnant-woman",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/129-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "Salata sevmiyorum.",
+      "gloss": {
+        "en": "I don't like salad.",
+        "de": "Ich mag Salat nicht.",
+        "fr": "Je n'aime pas la salade.",
+        "ru": "Я не люблю салат."
+      },
+      "freqRank": 131,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/130-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "Mesajını aldım.",
+      "gloss": {
+        "en": "I got your message.",
+        "de": "Ich habe deine Nachricht erhalten.",
+        "es": "Recibí tu mensaje.",
+        "ru": "Я получил твоё сообщение."
+      },
+      "freqRank": 132,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/131-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "Asansör yok.",
+      "gloss": { "en": "There's no elevator.", "es": "No hay ascensor.", "ru": "Лифта нет." },
+      "freqRank": 133,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:elevator",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/132-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "Kapıyı kapatıyorum.",
+      "gloss": {
+        "en": "I'm closing the door.",
+        "de": "Ich schließe die Tür.",
+        "fr": "Je ferme la porte."
+      },
+      "freqRank": 134,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/133-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "Sensiz yaşayamam.",
+      "gloss": {
+        "en": "I can't live without you.",
+        "de": "Ich kann nicht ohne dich leben.",
+        "es": "No puedo vivir sin ti.",
+        "fr": "Je ne peux vivre sans toi.",
+        "ru": "Я не могу жить без тебя."
+      },
+      "freqRank": 135,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/134-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "Yumurta yedik.",
+      "gloss": {
+        "en": "We have eaten eggs.",
+        "de": "Wir aßen Eier.",
+        "es": "Hemos comido huevos."
+      },
+      "freqRank": 136,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:egg",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/135-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "Anahtarını kullan.",
+      "gloss": { "en": "Use your key.", "es": "Usa tu llave.", "ru": "Воспользуйся своим ключом." },
+      "freqRank": 137,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:key",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/136-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "Burada doğdum.",
+      "gloss": { "en": "I was born here.", "de": "Ich wurde hier geboren.", "es": "Nací aquí." },
+      "freqRank": 138,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/137-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "Odam nerede?",
+      "gloss": {
+        "en": "Where's my room?",
+        "es": "¿Dónde está mi habitación?",
+        "fr": "Où est ma chambre ?"
+      },
+      "freqRank": 139,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hotel",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/138-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "Çay içmem.",
+      "gloss": { "en": "I don't drink tea.", "de": "Ich trinke keinen Tee.", "es": "No bebo té." },
+      "freqRank": 140,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/139-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "Kahve içmem.",
+      "gloss": {
+        "en": "I don't drink coffee.",
+        "de": "Ich trinke keinen Kaffee.",
+        "ru": "Я не пью кофе."
+      },
+      "freqRank": 141,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/140-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "Şarap içmem.",
+      "gloss": {
+        "en": "I don't drink wine.",
+        "de": "Ich trinke keinen Wein.",
+        "es": "No bebo vino."
+      },
+      "freqRank": 142,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/141-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "Çok komiksin.",
+      "gloss": { "en": "You're so funny.", "es": "Eres muy divertido.", "ru": "Ты очень смешной." },
+      "freqRank": 143,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-tears-of-joy",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/142-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "Sana kızgınım.",
+      "gloss": { "en": "I'm mad at you.", "es": "Estoy enfadado contigo.", "ru": "Я зол на тебя." },
+      "freqRank": 144,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/143-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "Tom gülüyor.",
+      "gloss": {
+        "en": "Tom is laughing.",
+        "de": "Tom lacht.",
+        "es": "Tom se está riendo.",
+        "ru": "Том смеётся."
+      },
+      "freqRank": 145,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:grinning-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/144-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "Bana güvenebilirsin.",
+      "gloss": {
+        "en": "You can trust me.",
+        "de": "Man kann mir vertrauen.",
+        "ru": "Можешь опереться на меня."
+      },
+      "freqRank": 146,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/145-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "Gözlerini kapatma.",
+      "gloss": {
+        "en": "Don't shut your eyes.",
+        "de": "Nicht die Augen schließen!",
+        "es": "No cierres los ojos."
+      },
+      "freqRank": 147,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/146-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "Kapıyı kapatma.",
+      "gloss": {
+        "en": "Don't close the door.",
+        "es": "No cierres la puerta.",
+        "ru": "Не закрывай дверь."
+      },
+      "freqRank": 148,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/147-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "Sahile gittim.",
+      "gloss": {
+        "en": "I went to the beach.",
+        "fr": "Je suis allé à la plage.",
+        "ru": "Я отправился на пляж."
+      },
+      "freqRank": 149,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:desert-island",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/148-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "Burada yiyorum.",
+      "gloss": { "en": "I eat here.", "es": "Como aquí.", "pt-BR": "Eu como aqui." },
+      "freqRank": 150,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/149-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "Yemek yiyorum.",
+      "gloss": {
+        "en": "I'm eating.",
+        "de": "Ich esse gerade.",
+        "es": "Estoy comiendo.",
+        "fr": "Je suis sur le point de manger.",
+        "pt-BR": "Estou comendo.",
+        "ru": "Я ем."
+      },
+      "freqRank": 151,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/150-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "Çorba içiyorum.",
+      "gloss": { "en": "I'm eating soup.", "de": "Ich esse Suppe.", "ru": "Я ем суп." },
+      "freqRank": 152,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/151-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "Kahve içiyorum.",
+      "gloss": {
+        "en": "I am drinking coffee.",
+        "es": "Estoy tomando café.",
+        "ar": "أنا أشرب القهوة"
+      },
+      "freqRank": 153,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/152-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "Su içiyorum.",
+      "gloss": {
+        "en": "I'm drinking water.",
+        "es": "Estoy bebiendo agua.",
+        "fr": "Je bois de l'eau.",
+        "ar": "أنا أشرب الماء"
+      },
+      "freqRank": 154,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/153-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "İyi uyuyamıyorum.",
+      "gloss": {
+        "en": "I can't sleep well.",
+        "de": "Ich kann nicht gut schlafen.",
+        "es": "No logro dormir bien.",
+        "fr": "Je n’arrive pas à bien dormir.",
+        "pt-BR": "Não consigo dormir bem."
+      },
+      "freqRank": 155,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleepy-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/154-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "Havaalanı nerede?",
+      "gloss": {
+        "en": "Where's the airport?",
+        "de": "Wo ist der Flughafen?",
+        "es": "¿Dónde está el aeropuerto?",
+        "fr": "Où se trouve l'aéroport ?",
+        "pt-BR": "Onde está o aeroporto?",
+        "ru": "Где аэропорт?"
+      },
+      "freqRank": 156,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/155-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "Evet, evliyim.",
+      "gloss": {
+        "en": "Yes, I am married.",
+        "de": "Ja, ich bin verheiratet.",
+        "es": "Sí, estoy casada.",
+        "fr": "Oui, je suis marié."
+      },
+      "freqRank": 157,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/156-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "Ne giyiyorsun?",
+      "gloss": {
+        "en": "What are you wearing?",
+        "de": "Was hast du an?",
+        "es": "¿Qué llevas puesto?",
+        "fr": "Que portes-tu ?"
+      },
+      "freqRank": 158,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:t-shirt",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/157-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "Kuş uçuyor.",
+      "gloss": {
+        "en": "The bird flies.",
+        "de": "Der Vogel fliegt.",
+        "ru": "Птица летит.",
+        "ar": "يطير الطير."
+      },
+      "freqRank": 159,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/158-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "Keşke sakin olsan.",
+      "gloss": {
+        "en": "I wish you would be quiet.",
+        "de": "Ich wünschte, du würdest dich beruhigen.",
+        "es": "Ojalá te calmaras.",
+        "fr": "J'aimerais que tu te calmes.",
+        "ru": "Я бы хотел, чтобы ты успокоился."
+      },
+      "freqRank": 160,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shushing-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/159-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "Sana yardım edebiliriz.",
+      "gloss": {
+        "en": "We can help you.",
+        "de": "Wir können dir helfen.",
+        "es": "Podemos ayudarte.",
+        "fr": "Nous pouvons t'aider."
+      },
+      "freqRank": 161,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/160-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "Kim kapıyı çalıyor?",
+      "gloss": {
+        "en": "Who's knocking on the door?",
+        "de": "Wer klopft an die Tür?",
+        "fr": "Qui frappe à la porte ?",
+        "ru": "Кто стучит в дверь?"
+      },
+      "freqRank": 162,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/161-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "Bu pasta tatlı.",
+      "gloss": {
+        "en": "This cake is sweet.",
+        "de": "Dieser Kuchen ist süß.",
+        "es": "Esta tarta está dulce.",
+        "fr": "Ce gâteau est sucré.",
+        "pt-BR": "Este bolo é doce."
+      },
+      "freqRank": 163,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shortcake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/162-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "O çay yapıyordu.",
+      "gloss": {
+        "en": "She was making tea.",
+        "es": "Ella estaba haciendo té.",
+        "pt-BR": "Ela estava fazendo chá.",
+        "ru": "Она заваривала чай."
+      },
+      "freqRank": 164,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/163-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "İşimi ciddiye alırım.",
+      "gloss": {
+        "en": "I take my job seriously.",
+        "de": "Ich nehme meine Arbeit ernst.",
+        "fr": "Je prends mon travail au sérieux.",
+        "ru": "Я серьёзно отношусь к своей работе."
+      },
+      "freqRank": 165,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/164-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "O kitabı yazdım.",
+      "gloss": {
+        "en": "I wrote that book.",
+        "de": "Ich schrieb das Buch.",
+        "es": "Yo escribí ese libro.",
+        "pt-BR": "Escrevi esse livro."
+      },
+      "freqRank": 166,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/165-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "İşe arabayla giderim.",
+      "gloss": {
+        "en": "I drive to work.",
+        "de": "Ich fahre mit dem Auto zur Arbeit.",
+        "es": "Voy al trabajo en coche.",
+        "fr": "Je me rends au travail en voiture.",
+        "pt-BR": "Vou ao trabalho de carro.",
+        "ru": "Я езжу на работу на машине."
+      },
+      "freqRank": 167,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/166-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "Çok paran var.",
+      "gloss": {
+        "en": "You have a lot of money.",
+        "es": "Tienes mucho dinero.",
+        "pt-BR": "Tens muito dinheiro.",
+        "ru": "У тебя много денег."
+      },
+      "freqRank": 168,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/167-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "Bugün doğum günüm.",
+      "gloss": {
+        "en": "Today is my birthday.",
+        "de": "Heute ist mein Geburtstag.",
+        "es": "Hoy es mi cumpleaños.",
+        "fr": "Aujourd'hui, c'est mon anniversaire."
+      },
+      "freqRank": 169,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/168-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "Bu rengi seviyorum.",
+      "gloss": {
+        "en": "I like this color.",
+        "de": "Diese Farbe gefällt mir.",
+        "es": "Me gusta este color.",
+        "pt-BR": "Eu gosto desta cor."
+      },
+      "freqRank": 170,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/169-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "Bana hikayeyi anlat.",
+      "gloss": {
+        "en": "Tell me the story.",
+        "de": "Erzähl mir die Geschichte.",
+        "es": "Cuéntame la historia.",
+        "fr": "Raconte-moi l'histoire.",
+        "pt-BR": "Conte-me a história.",
+        "ru": "Расскажи мне историю."
+      },
+      "freqRank": 171,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/170-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "O, sözünü tuttu.",
+      "gloss": {
+        "en": "He kept his promise.",
+        "de": "Er hielt sein Versprechen.",
+        "es": "Él mantuvo su promesa.",
+        "fr": "Il tint parole."
+      },
+      "freqRank": 172,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/171-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "Onun için endişeleniyorum.",
+      "gloss": {
+        "en": "I'm worried about her.",
+        "es": "Me preocupo por él.",
+        "pt-BR": "Estou preocupado com ele.",
+        "ru": "Я беспокоюсь о нём."
+      },
+      "freqRank": 173,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:worried-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/172-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "Kaç dil biliyorsun?",
+      "gloss": {
+        "en": "How many languages do you speak?",
+        "de": "Wie viele Sprachen sprichst du?",
+        "es": "¿Cuántas lenguas hablas?",
+        "pt-BR": "Quantas línguas você fala?"
+      },
+      "freqRank": 174,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/173-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "Merhaba, ben Nancy.",
+      "gloss": {
+        "en": "Hello, I am Nancy.",
+        "de": "Hallo, ich bin Nancy.",
+        "es": "Hola, soy Nancy.",
+        "pt-BR": "Oi, eu sou Nancy.",
+        "ru": "Привет, я Нэнси."
+      },
+      "freqRank": 175,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/174-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "Yemek yapmaktan bıktım.",
+      "gloss": {
+        "en": "I'm tired of cooking.",
+        "es": "Estoy cansado de cocinar.",
+        "pt-BR": "Estou farto de cozinhar.",
+        "ru": "Я устал готовить."
+      },
+      "freqRank": 176,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/175-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "Biz artık arkadaşız.",
+      "gloss": {
+        "en": "We're friends now.",
+        "de": "Wir sind jetzt Freunde.",
+        "es": "Ahora somos amigos.",
+        "fr": "Nous sommes désormais amis."
+      },
+      "freqRank": 177,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/176-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "Erkek arkadaşımı bekliyorum.",
+      "gloss": {
+        "en": "I'm waiting for my boyfriend.",
+        "es": "Estoy esperando a mi novio.",
+        "pt-BR": "Estou esperando o meu namorado.",
+        "ru": "Я жду своего парня."
+      },
+      "freqRank": 178,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/177-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "Kedi yemek yiyor.",
+      "gloss": {
+        "en": "The cat is eating.",
+        "de": "Die Katze frisst.",
+        "es": "El gato está comiendo.",
+        "fr": "Le chat est en train de manger.",
+        "pt-BR": "O gato está comendo."
+      },
+      "freqRank": 179,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/178-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "Kalbim başkasına ait.",
+      "gloss": {
+        "en": "My heart belongs to another.",
+        "de": "Mein Herz gehört jemand anderem.",
+        "es": "Mi corazón pertenece a otra persona.",
+        "fr": "Mon cœur appartient à quelqu'un d'autre."
+      },
+      "freqRank": 180,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/179-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "O, çocuklarını sever.",
+      "gloss": {
+        "en": "She loves her children.",
+        "de": "Sie liebt ihre Kinder.",
+        "es": "Ella ama a sus niños.",
+        "fr": "Elle aime ses enfants.",
+        "ru": "Он любит своих детей.",
+        "ar": "هي تحبّ أطفالها."
+      },
+      "freqRank": 181,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/180-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "Gittiğinde seni özleyeceğim.",
+      "gloss": {
+        "en": "I'll miss you when you're gone.",
+        "de": "Wenn du gehst, wirst du mir fehlen.",
+        "fr": "Quand tu t'en iras tu me manqueras.",
+        "pt-BR": "Quando partires, sentirei saudade."
+      },
+      "freqRank": 182,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pleading-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/181-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "Tony, kapıda durdu.",
+      "gloss": {
+        "en": "Tony stood at the door.",
+        "es": "Tony se paró en la puerta.",
+        "fr": "Tony se trouvait à l'entrée.",
+        "ru": "Тони стоял в дверях."
+      },
+      "freqRank": 183,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/182-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "Sinemaya gitmek istiyorum.",
+      "gloss": {
+        "en": "I want to go to the movies.",
+        "fr": "Je veux aller au cinéma.",
+        "pt-BR": "Quero ir ao cinema.",
+        "ru": "Я хочу пойти в кино."
+      },
+      "freqRank": 184,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/183-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "Bu bisiklet benim.",
+      "gloss": {
+        "en": "This bicycle is mine.",
+        "es": "Esta bicicleta es mía.",
+        "fr": "Ce vélo m'appartient.",
+        "pt-BR": "Esta bicicleta é minha."
+      },
+      "freqRank": 185,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bicycle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/184-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "Sadece su içer.",
+      "gloss": {
+        "en": "He drinks only water.",
+        "de": "Er trinkt nur Wasser.",
+        "es": "Ella solo bebe agua.",
+        "ar": "هي تشرب الماء فقط."
+      },
+      "freqRank": 186,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:potable-water",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/185-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "Pencere kapalı mıydı?",
+      "gloss": {
+        "en": "Was the window closed?",
+        "de": "War das Fenster geschlossen?",
+        "fr": "Est-ce que la fenêtre était fermée ?",
+        "ru": "Окно было закрыто?"
+      },
+      "freqRank": 187,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:window",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/186-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "Tom bir sanatçı.",
+      "gloss": {
+        "en": "Tom is an artist.",
+        "de": "Tom ist Künstler.",
+        "es": "Tom es un artista.",
+        "fr": "Tom est artiste."
+      },
+      "freqRank": 188,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/187-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "Bahçe evin arkasında.",
+      "gloss": {
+        "en": "The garden is behind the house.",
+        "de": "Der Garten ist hinterm Haus.",
+        "es": "El jardín está detrás de la casa.",
+        "fr": "Le jardin est derrière la maison."
+      },
+      "freqRank": 189,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/188-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "Merhaba, Meg, nasılsın?",
+      "gloss": {
+        "en": "Hello, Meg, how have you been?",
+        "de": "Hallo, Meg! Wie geht es dir?",
+        "es": "Hola, Meg. ¿Cómo estás?",
+        "ru": "Привет, Мег. Как ты?"
+      },
+      "freqRank": 190,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/189-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "Şehrin ışıkları yanıyor.",
+      "gloss": {
+        "en": "The city lights are on.",
+        "de": "Die Lichter der Stadt sind an.",
+        "es": "Las luces de la ciudad están encendidas.",
+        "fr": "Les lumières de la ville sont allumées.",
+        "pt-BR": "As luzes da cidade estão acesas.",
+        "ru": "Городские огни включены."
+      },
+      "freqRank": 191,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/190-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "Fransızca öğrenmeye başladım.",
+      "gloss": {
+        "en": "I've started learning French.",
+        "de": "Ich habe angefangen, Französisch zu lernen.",
+        "es": "Empecé a aprender francés.",
+        "ru": "Я начал учить французский."
+      },
+      "freqRank": 192,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/191-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "İyi Fransızca konuşuyorsun!",
+      "gloss": {
+        "en": "You speak good French!",
+        "de": "Du sprichst gut Französisch!",
+        "es": "¡Hablas bien francés!",
+        "fr": "Tu parles bien le français !",
+        "ru": "Ты хорошо говоришь по-французски!"
+      },
+      "freqRank": 193,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/192-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "Tom kasabada yaşar.",
+      "gloss": {
+        "en": "Tom lives in town.",
+        "de": "Tom lebt in der Stadt.",
+        "fr": "Tom vit en ville.",
+        "ru": "Том живёт в городе.",
+        "ar": "توم يعيش في المدينة."
+      },
+      "freqRank": 194,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:houses",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/193-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "Ben bir doktorum.",
+      "gloss": {
+        "en": "I'm a doctor.",
+        "de": "Ich bin Arzt.",
+        "es": "Soy doctora.",
+        "fr": "Je suis médecin.",
+        "pt-BR": "Eu sou médico.",
+        "ru": "Я врач."
+      },
+      "freqRank": 195,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/194-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "Kız çay içiyor.",
+      "gloss": {
+        "en": "The girl is drinking tea.",
+        "es": "La niña bebe el té.",
+        "fr": "La fille boit du thé.",
+        "pt-BR": "A menina está tomando chá."
+      },
+      "freqRank": 196,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/195-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "Tom süt içiyor.",
+      "gloss": {
+        "en": "Tom is drinking milk.",
+        "pt-BR": "Tom está tomando leite.",
+        "ru": "Том пьёт молоко.",
+        "ar": "يشرب توم الحليب."
+      },
+      "freqRank": 197,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:glass-of-milk",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/196-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "Bir mektup okuyorum.",
+      "gloss": {
+        "en": "I am reading a letter.",
+        "de": "Ich lese einen Brief.",
+        "es": "Leo una carta.",
+        "ru": "Я читаю письмо."
+      },
+      "freqRank": 198,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/197-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "Tom, kahve içiyor.",
+      "gloss": {
+        "en": "Tom drinks coffee.",
+        "de": "Tom trinkt Kaffee.",
+        "es": "Tom bebe café.",
+        "ru": "Том пьёт кофе."
+      },
+      "freqRank": 199,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/198-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "Ben bir kadınım.",
+      "gloss": {
+        "en": "I am a woman.",
+        "de": "Ich bin eine Frau.",
+        "es": "Soy una mujer.",
+        "fr": "Je suis une femme.",
+        "pt-BR": "Sou uma mulher.",
+        "ru": "Я женщина."
+      },
+      "freqRank": 200,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/199-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "Bir portakal yedim.",
+      "gloss": {
+        "en": "I ate an orange.",
+        "es": "Comí una naranja.",
+        "ru": "Я съел апельсин.",
+        "ar": "أكلتُ برتقالة."
+      },
+      "freqRank": 201,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/200-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "O bir aktör.",
+      "gloss": {
+        "en": "He is an actor.",
+        "de": "Er ist Schauspieler.",
+        "es": "Él es actor.",
+        "fr": "C'est un acteur.",
+        "pt-BR": "Ele é ator.",
+        "ru": "Он актёр."
+      },
+      "freqRank": 202,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/201-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "Asla yalnız olmayacaksın.",
+      "gloss": {
+        "en": "You will never be alone.",
+        "de": "Du wirst nie allein sein.",
+        "es": "Nunca estarás solo.",
+        "ru": "Ты никогда не будешь один."
+      },
+      "freqRank": 203,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:people-hugging",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/202-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "Bu bir muz.",
+      "gloss": {
+        "en": "That's a banana.",
+        "de": "Das ist eine Banane.",
+        "fr": "C'est une banane.",
+        "ru": "Это банан."
+      },
+      "freqRank": 204,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:banana",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/203-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "Hangi kitabı okuyorsun?",
+      "gloss": {
+        "en": "Which book are you reading?",
+        "de": "Welches Buch liest du?",
+        "es": "¿Qué libro lees?",
+        "fr": "Quel livre lis-tu ?",
+        "ar": "أيّ كتاب تقرأ؟"
+      },
+      "freqRank": 205,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/204-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "O ne satıyor?",
+      "gloss": {
+        "en": "What is she selling?",
+        "de": "Was verkauft er?",
+        "es": "¿Qué vende?",
+        "fr": "Que vend-t-il ?"
+      },
+      "freqRank": 206,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:label",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/205-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "Hâlâ kar yağıyor.",
+      "gloss": {
+        "en": "It's still snowing.",
+        "de": "Es schneit noch immer.",
+        "es": "Todavía nieva.",
+        "fr": "Il neige encore."
+      },
+      "freqRank": 207,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/206-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "Kitap okumayı seviyorum.",
+      "gloss": {
+        "en": "I love reading books.",
+        "de": "Ich lese gerne Bücher.",
+        "es": "Me encanta leer libros.",
+        "fr": "J'adore lire des livres.",
+        "ru": "Я люблю читать книги."
+      },
+      "freqRank": 208,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/207-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "O iflas etti.",
+      "gloss": {
+        "en": "He is bankrupt.",
+        "es": "Él cayó en bancarrota.",
+        "fr": "Il est à sec.",
+        "ru": "Он обанкротился."
+      },
+      "freqRank": 209,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/208-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "Bir makale yazıyorum.",
+      "gloss": {
+        "en": "I am writing an article.",
+        "de": "Ich schreibe einen Artikel.",
+        "es": "Estoy escribiendo un artículo.",
+        "ar": "إني أكتب مقالا."
+      },
+      "freqRank": 210,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:memo",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/209-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "Seni öpmek istiyorum.",
+      "gloss": {
+        "en": "I want to kiss you.",
+        "de": "Ich möchte dich küssen.",
+        "es": "Quiero besarte.",
+        "pt-BR": "Eu quero te beijar."
+      },
+      "freqRank": 211,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:kiss-mark",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/210-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "Ben kaplumbağa istiyorum.",
+      "gloss": {
+        "en": "I want a turtle.",
+        "es": "Quiero una tortuga.",
+        "fr": "Je veux une tortue.",
+        "ru": "Я хочу черепаху."
+      },
+      "freqRank": 212,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:turtle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/211-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "Benim acelem yok.",
+      "gloss": {
+        "en": "I am not in a hurry.",
+        "de": "Ich habe keine Eile.",
+        "es": "No tengo prisa.",
+        "pt-BR": "Não estou com pressa."
+      },
+      "freqRank": 213,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-in-lotus-position",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/212-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "Şimdi videoyu izliyorum.",
+      "gloss": {
+        "en": "I'm watching a video now.",
+        "es": "Estoy viendo el video ahora.",
+        "ru": "Я сейчас смотрю видео.",
+        "ar": "أشاهد الفيديو الآن."
+      },
+      "freqRank": 214,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/213-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "Ben bir erkeğim.",
+      "gloss": {
+        "en": "I am a man.",
+        "de": "Ich bin ein Mann.",
+        "es": "Soy un hombre.",
+        "fr": "Je suis un homme.",
+        "pt-BR": "Eu sou homem.",
+        "ru": "Я мужчина."
+      },
+      "freqRank": 215,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/214-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "Shakespeare ne yazdı?",
+      "gloss": {
+        "en": "What did Shakespeare write?",
+        "de": "Was hat Shakespeare geschrieben?",
+        "es": "¿Qué escribió Shakespeare?",
+        "ru": "Что написал Шекспир?"
+      },
+      "freqRank": 216,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:scroll",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/215-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "Balıklar suda yaşar.",
+      "gloss": {
+        "en": "Fish live in the water.",
+        "de": "Fische leben im Wasser.",
+        "es": "Los peces viven en el agua.",
+        "fr": "Les poissons vivent dans l'eau.",
+        "ar": "يعيش السمك في الماء."
+      },
+      "freqRank": 217,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fish",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/216-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "Bira içmeyi bıraktım.",
+      "gloss": {
+        "en": "I'm off beer.",
+        "de": "Ich habe aufgehört, Bier zu trinken.",
+        "es": "He dejado de beber cerveza.",
+        "pt-BR": "Eu parei de beber cerveja."
+      },
+      "freqRank": 218,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:beer-mug",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/217-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "Siyah kediler güzeldir.",
+      "gloss": {
+        "en": "Black cats are beautiful.",
+        "de": "Schwarze Katzen sind schön.",
+        "es": "Los gatos negros son bellos.",
+        "fr": "Les chats noirs sont beaux."
+      },
+      "freqRank": 219,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/218-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "Benim bir sorum var.",
+      "gloss": {
+        "en": "I have a question.",
+        "de": "Ich habe eine Frage.",
+        "es": "Tengo una pregunta.",
+        "fr": "J'ai une question.",
+        "pt-BR": "Tenho uma pergunta.",
+        "ru": "У меня есть вопрос."
+      },
+      "freqRank": 220,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/219-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "Biz bir avukat arıyoruz.",
+      "gloss": {
+        "en": "We're looking for a lawyer.",
+        "de": "Wir suchen einen Rechtsanwalt.",
+        "es": "Estamos buscando un abogado.",
+        "fr": "Nous recherchons un avocat."
+      },
+      "freqRank": 221,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:balance-scale",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/220-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "O bir kadın oyuncu.",
+      "gloss": {
+        "en": "She is an actress.",
+        "de": "Sie ist Schauspielerin.",
+        "fr": "Elle est actrice.",
+        "ru": "Она актриса."
+      },
+      "freqRank": 222,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/221-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "Tatlı bir tadı vardı.",
+      "gloss": {
+        "en": "It tasted sweet.",
+        "de": "Es schmeckte süß.",
+        "es": "Sabía dulce.",
+        "fr": "Ça avait un goût sucré."
+      },
+      "freqRank": 223,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:candy",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/222-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "Bir atın var mı?",
+      "gloss": {
+        "en": "Do you have a horse?",
+        "de": "Hast du ein Pferd?",
+        "es": "¿Tienes un caballo?",
+        "fr": "As-tu un cheval ?",
+        "ar": "هل لديك فرس؟"
+      },
+      "freqRank": 224,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:horse",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/223-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "Bugün Dünya Yılan Günü.",
+      "gloss": {
+        "en": "Today is World Snake Day.",
+        "de": "Heute ist Weltschlangentag.",
+        "es": "Hoy es el Día Mundial de la Serpiente.",
+        "fr": "Aujourd'hui, c'est la Journée mondiale des serpents."
+      },
+      "freqRank": 225,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/224-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "O, ona âşık oldu.",
+      "gloss": {
+        "en": "He fell in love with her.",
+        "de": "Er verliebte sich in sie.",
+        "es": "Él se enamoró de ella.",
+        "fr": "Il est tombé amoureux d'elle."
+      },
+      "freqRank": 226,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/225-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "Onu hiçbir yerde bulamıyorum.",
+      "gloss": {
+        "en": "I can't find him anywhere.",
+        "de": "Ich kann ihn nirgends finden.",
+        "es": "No lo puedo encontrar por ninguna parte.",
+        "fr": "Je n'arrive pas à le trouver nulle part.",
+        "pt-BR": "Não consigo encontrá-lo em lugar nenhum."
+      },
+      "freqRank": 227,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/226-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "O kız kardeşimin fotoğrafı.",
+      "gloss": {
+        "en": "This is a picture of my sister.",
+        "de": "Das ist ein Foto meiner Schwester.",
+        "es": "Es una fotografía de mi hermana.",
+        "ru": "Это фотография моей младшей сестры."
+      },
+      "freqRank": 228,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:camera",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/227-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "Benim bir arabam var.",
+      "gloss": {
+        "en": "I have a car.",
+        "de": "Ich habe ein Auto.",
+        "es": "Tengo un coche.",
+        "fr": "J'ai une voiture.",
+        "ru": "У меня есть автомобиль."
+      },
+      "freqRank": 229,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/228-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "Eski bir arabam var.",
+      "gloss": {
+        "en": "I have an old car.",
+        "es": "Tengo un coche viejo.",
+        "fr": "J'ai une vieille voiture.",
+        "ar": "لدي سيارة قديمة."
+      },
+      "freqRank": 230,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/229-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "Mike ve Ken arkadaşlar.",
+      "gloss": {
+        "en": "Mike and Ken are friends.",
+        "de": "Mike und Ken sind Freunde.",
+        "es": "Mike y Ken son amigos.",
+        "fr": "Mike et Ken sont amis.",
+        "pt-BR": "Mike e Ken são amigos.",
+        "ru": "Майк и Кен — друзья."
+      },
+      "freqRank": 231,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/230-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "Bütün kitabı okudun mu?",
+      "gloss": {
+        "en": "Did you read the whole book?",
+        "de": "Hast du das ganze Buch gelesen?",
+        "es": "¿Te has leído el libro entero?",
+        "pt-BR": "Você tinha lido o livro inteiro?"
+      },
+      "freqRank": 232,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/231-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "Tom çok endişeli olmalı.",
+      "gloss": {
+        "en": "Tom must be very worried.",
+        "de": "Tom muss sich große Sorgen machen.",
+        "es": "Tom debe estar muy preocupado.",
+        "fr": "Tom doit être très inquiet.",
+        "ru": "Том, должно быть, очень обеспокоен."
+      },
+      "freqRank": 233,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:worried-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/232-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "Bu kitabı kim yazdı?",
+      "gloss": {
+        "en": "Who wrote this book?",
+        "es": "¿Quién escribió este libro?",
+        "fr": "Qui a écrit ce livre ?",
+        "pt-BR": "Quem escreveu este livro?",
+        "ar": "من كتب هذا الكتاب؟"
+      },
+      "freqRank": 234,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/233-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "O, futbol oynamayı sever.",
+      "gloss": {
+        "en": "He likes playing soccer.",
+        "de": "Er spielt gerne Fußball.",
+        "es": "Le gusta jugar al fútbol.",
+        "fr": "Il aime jouer au foot.",
+        "pt-BR": "Ele gosta de jogar futebol."
+      },
+      "freqRank": 235,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soccer-ball",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/234-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "İnek bize süt verir.",
+      "gloss": {
+        "en": "The cow gives us milk.",
+        "de": "Die Kuh gibt uns Milch.",
+        "fr": "La vache nous donne du lait.",
+        "pt-BR": "A vaca nos dá leite."
+      },
+      "freqRank": 236,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cow",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/235-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "Bugün karımın doğum günü.",
+      "gloss": {
+        "en": "Today is my wife's birthday.",
+        "de": "Heute ist der Geburtstag meiner Frau.",
+        "es": "Hoy es el cumpleaños de mi esposa.",
+        "fr": "Aujourd'hui, c'est l'anniversaire de ma femme.",
+        "pt-BR": "Hoje é o aniversário da minha mulher."
+      },
+      "freqRank": 237,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/236-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "Yeşil çay içer misin?",
+      "gloss": {
+        "en": "Do you drink green tea?",
+        "de": "Trinkst du grünen Tee?",
+        "es": "¿Tomas té verde?",
+        "fr": "Bois-tu du thé vert ?",
+        "ru": "Ты пьёшь зелёный чай?"
+      },
+      "freqRank": 238,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/237-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "Bir kitabın var mı?",
+      "gloss": {
+        "en": "Do you have the book?",
+        "de": "Hast du ein Buch?",
+        "es": "¿Tienes un libro?",
+        "fr": "As-tu un livre ?"
+      },
+      "freqRank": 239,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/238-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "Senin iki kitabın var.",
+      "gloss": {
+        "en": "You have two books.",
+        "de": "Du hast zwei Bücher.",
+        "es": "Tienes dos libros.",
+        "fr": "Tu as deux livres.",
+        "pt-BR": "Você tem dois livros.",
+        "ru": "У тебя две книги."
+      },
+      "freqRank": 240,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/239-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "Anneme bir mektup yazıyorum.",
+      "gloss": {
+        "en": "I am writing a letter to my mom.",
+        "de": "Ich schreibe meiner Mutter einen Brief.",
+        "es": "Estoy escribiendo una carta a mi mamá.",
+        "ru": "Я пишу письмо маме."
+      },
+      "freqRank": 241,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/240-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "Yeni bir telefonum var.",
+      "gloss": {
+        "en": "I have a new phone.",
+        "es": "Tengo un teléfono nuevo.",
+        "fr": "J'ai un nouveau téléphone.",
+        "ru": "У меня новый телефон."
+      },
+      "freqRank": 242,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mobile-phone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/241-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "Lütfen daha yavaş konuşun.",
+      "gloss": {
+        "en": "Please speak more slowly.",
+        "de": "Bitte sprich langsamer.",
+        "es": "Por favor, hable más despacio.",
+        "fr": "S'il te plaît, parle moins vite.",
+        "ar": "من فضلك تكلم ببطئٍ أكثر."
+      },
+      "freqRank": 243,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:turtle",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/242-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "Bu benim favori yiyeceğim.",
+      "gloss": {
+        "en": "It's my favorite food.",
+        "de": "Es ist mein Lieblingsessen.",
+        "es": "Es mi comida favorita.",
+        "fr": "C'est ma nourriture favorite.",
+        "pt-BR": "É minha comida favorita."
+      },
+      "freqRank": 244,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-savoring-food",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/243-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "Ben evli bir kadınım.",
+      "gloss": {
+        "en": "I'm a married woman.",
+        "de": "Ich bin eine verheiratete Frau.",
+        "es": "Soy una mujer casada.",
+        "fr": "Je suis une femme mariée."
+      },
+      "freqRank": 245,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/244-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "Bana bir portakal ver.",
+      "gloss": {
+        "en": "Give me an orange.",
+        "es": "Dame una naranja.",
+        "fr": "Donne-moi une orange.",
+        "ru": "Дай мне апельсин."
+      },
+      "freqRank": 246,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/245-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "Macera daha yeni başlıyor.",
+      "gloss": {
+        "en": "The adventure is just beginning.",
+        "de": "Das Abenteuer fängt gerade erst an.",
+        "es": "La aventura no ha hecho más que empezar.",
+        "fr": "L'aventure ne fait que commencer.",
+        "pt-BR": "A aventura está apenas começando.",
+        "ru": "Приключение только начинается."
+      },
+      "freqRank": 247,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/246-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "Onun kırmızı çiçekleri var.",
+      "gloss": {
+        "en": "She has red flowers.",
+        "de": "Er hat rote Blumen.",
+        "es": "Ella tiene flores rojas.",
+        "fr": "Elle a des fleurs rouges.",
+        "pt-BR": "Ela tem flores vermelhas."
+      },
+      "freqRank": 248,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:rose",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/247-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "Bugün Dünya Fil Günü.",
+      "gloss": {
+        "en": "Today is World Elephant Day.",
+        "de": "Heute ist Weltelefantentag.",
+        "es": "Hoy es el Día Mundial del Elefante.",
+        "fr": "Aujourd'hui, c'est la Journée mondiale des éléphants."
+      },
+      "freqRank": 249,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:elephant",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/248-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "Aylık kira ne kadardır?",
+      "gloss": {
+        "en": "How much is the rent per month?",
+        "de": "Was kostet die Miete pro Monat?",
+        "es": "¿Cuánto es el arriendo mensual?",
+        "fr": "À combien se monte le loyer mensuel ?"
+      },
+      "freqRank": 250,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heavy-dollar-sign",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/249-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 250,
+      "kind": "phrase",
+      "text": "Annem babamdan daha yaşlı.",
+      "gloss": {
+        "en": "Mom is older than Dad.",
+        "de": "Mama ist älter als Papa.",
+        "es": "Mi madre es mayor que mi padre.",
+        "ar": "أمي تكبر أبي عمراً."
+      },
+      "freqRank": 251,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/250-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 251,
+      "kind": "phrase",
+      "text": "Bu kitap okumaya değer.",
+      "gloss": {
+        "en": "This book is worth reading.",
+        "de": "Dieses Buch ist lesenswert.",
+        "es": "Vale la pena leer este libro.",
+        "fr": "Cela vaut la peine de lire ce livre."
+      },
+      "freqRank": 252,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/251-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "Bir kitap yazmaya başladım.",
+      "gloss": {
+        "en": "I started writing a book.",
+        "de": "Ich habe angefangen, ein Buch zu schreiben.",
+        "es": "Comencé a escribir un libro.",
+        "fr": "J'ai commencé à écrire un livre."
+      },
+      "freqRank": 253,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:memo",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/252-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 253,
+      "kind": "phrase",
+      "text": "Elma henüz olgun değil.",
+      "gloss": {
+        "en": "The apple is not yet ripe.",
+        "de": "Der Apfel ist noch nicht reif.",
+        "es": "La manzana aún no está madura.",
+        "fr": "La pomme n'est pas encore mûre.",
+        "pt-BR": "A maçã ainda não está madura."
+      },
+      "freqRank": 254,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/253-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
+      "text": "Onu on dolara sattım.",
+      "gloss": {
+        "en": "I sold it for ten dollars.",
+        "de": "Ich habe es für zehn Dollar verkauft.",
+        "es": "Lo vendí en diez dólares.",
+        "fr": "Je l'ai vendu pour dix dollars."
+      },
+      "freqRank": 255,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/254-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 255,
+      "kind": "phrase",
+      "text": "Ben okulda okumayı öğrendim.",
+      "gloss": {
+        "en": "I learned to read in school.",
+        "de": "Ich habe in der Schule lesen gelernt.",
+        "es": "Aprendí a leer en la escuela.",
+        "fr": "J'ai appris à lire à l'école.",
+        "pt-BR": "Eu aprendi a ler na escola."
+      },
+      "freqRank": 256,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/255-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 256,
+      "kind": "phrase",
+      "text": "İşte benim telefon numaram.",
+      "gloss": {
+        "en": "Here's my telephone number.",
+        "de": "Hier ist meine Telefonnummer.",
+        "es": "Aquí tienes mi número de teléfono.",
+        "fr": "Voici mon numéro de téléphone."
+      },
+      "freqRank": 257,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/256-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 257,
+      "kind": "phrase",
+      "text": "Saat kaçta yatmaya gidersin?",
+      "gloss": {
+        "en": "What time do you go to bed?",
+        "de": "Wann gehst du ins Bett?",
+        "es": "¿A qué hora te vas a dormir?",
+        "fr": "À quelle heure vas-tu au lit ?"
+      },
+      "freqRank": 258,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bed",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/257-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 258,
+      "kind": "phrase",
+      "text": "O, bilgisayarı satın alıyor.",
+      "gloss": {
+        "en": "He is buying the computer.",
+        "de": "Er kauft den Computer.",
+        "es": "Él está comprando el ordenador.",
+        "fr": "Il achète l'ordinateur.",
+        "ru": "Он покупает компьютер."
+      },
+      "freqRank": 259,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/258-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 259,
+      "kind": "phrase",
+      "text": "Benim bir köpeğim var.",
+      "gloss": {
+        "en": "I've got a dog.",
+        "de": "Ich habe einen Hund.",
+        "fr": "J'ai un chien.",
+        "pt-BR": "Eu tenho um cachorro.",
+        "ru": "У меня есть собака."
+      },
+      "freqRank": 260,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/259-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 260,
+      "kind": "phrase",
+      "text": "Seni her zaman seveceğim.",
+      "gloss": {
+        "en": "I will always love you.",
+        "de": "Ich werde dich immer lieben.",
+        "es": "Siempre te amaré.",
+        "fr": "Je t'aimerai toujours."
+      },
+      "freqRank": 261,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/260-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "Kutuda altı elma var.",
+      "gloss": {
+        "en": "There are six apples in the box.",
+        "es": "Hay seis manzanas en la caja.",
+        "fr": "Il y a six pommes dans la boîte.",
+        "pt-BR": "Há seis maçãs na caixa."
+      },
+      "freqRank": 262,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/261-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 262,
+      "kind": "phrase",
+      "text": "O, kızımla evlenmek istiyor.",
+      "gloss": {
+        "en": "He wants to marry my daughter.",
+        "de": "Er will meine Tochter heiraten.",
+        "es": "Él se quiere casar con mi hija.",
+        "fr": "Il veut épouser ma fille.",
+        "pt-BR": "Ele quer se casar com a minha filha."
+      },
+      "freqRank": 263,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/262-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 263,
+      "kind": "phrase",
+      "text": "En yakın kütüphane nerede?",
+      "gloss": {
+        "en": "Where's the nearest library?",
+        "de": "Wo ist die nächste Bibliothek?",
+        "es": "¿Dónde está la biblioteca más cercana?",
+        "fr": "Où se trouve la bibliothèque la plus proche ?"
+      },
+      "freqRank": 264,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/263-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 264,
+      "kind": "phrase",
+      "text": "Doğru olabilir ya da olmayabilir.",
+      "gloss": {
+        "en": "It may or may not be true.",
+        "de": "Es mag stimmen oder auch nicht.",
+        "es": "Puede o no ser cierto.",
+        "fr": "Cela peut être ou ne pas être vrai.",
+        "pt-BR": "Isso pode ou não ser verdade."
+      },
+      "freqRank": 265,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/264-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 265,
+      "kind": "phrase",
+      "text": "Her çocuğa bir hediye verildi.",
+      "gloss": {
+        "en": "Each child was given a present.",
+        "de": "Alle Kinder erhielten ein Geschenk.",
+        "es": "A todos los niños se les dio un regalo.",
+        "fr": "Chaque enfant a reçu un cadeau."
+      },
+      "freqRank": 266,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/265-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 266,
+      "kind": "phrase",
+      "text": "Dün gece bir mektup yazdım.",
+      "gloss": {
+        "en": "I wrote a letter last night.",
+        "es": "Escribí una carta ayer por la noche.",
+        "fr": "J'ai écrit une lettre hier soir.",
+        "ru": "Вчера вечером я написал письмо."
+      },
+      "freqRank": 267,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/266-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 267,
+      "kind": "phrase",
+      "text": "Yarın işten hastalık izni alıyorum.",
+      "gloss": {
+        "en": "I'm calling in sick tomorrow.",
+        "de": "Ich werde mich morgen von der Arbeit krankschreiben lassen.",
+        "es": "Mañana me tomaré la baja por enfermedad del trabajo.",
+        "fr": "Je prends un arrêt maladie du travail demain.",
+        "ru": "Завтра я беру больничный."
+      },
+      "freqRank": 268,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/267-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 268,
+      "kind": "phrase",
+      "text": "Tom benim üvey erkek kardeşim.",
+      "gloss": {
+        "en": "Tom is my half brother.",
+        "de": "Tom ist mein Halbbruder.",
+        "pt-BR": "Tom é meu meio-irmão.",
+        "ar": "توم أخي من أبي."
+      },
+      "freqRank": 269,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/268-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 269,
+      "kind": "phrase",
+      "text": "Biz güzel bir şehirde yaşıyoruz.",
+      "gloss": {
+        "en": "We live in a beautiful city.",
+        "de": "Wir leben in einer schönen Stadt.",
+        "es": "Vivimos en una hermosa ciudad.",
+        "fr": "Nous vivons dans une belle ville.",
+        "pt-BR": "Vivemos em uma bela cidade.",
+        "ru": "Мы живем в прекрасном городе."
+      },
+      "freqRank": 270,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/269-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "Bay Brown bir doktor mu?",
+      "gloss": {
+        "en": "Is Mr. Brown a doctor?",
+        "es": "¿El señor Brown es médico?",
+        "fr": "Est-ce que M. Brown est médecin ?",
+        "pt-BR": "O Sr. Brown é médico?"
+      },
+      "freqRank": 271,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/270-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "O bir direkt uçuş mu?",
+      "gloss": {
+        "en": "Is it a direct flight?",
+        "de": "Ist es ein Direktflug?",
+        "es": "¿Es un vuelo directo?",
+        "fr": "Est-ce un vol direct ?"
+      },
+      "freqRank": 272,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/271-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "Kitap okumak için zamanım yok.",
+      "gloss": {
+        "en": "I have no time to read books.",
+        "de": "Ich habe keine Zeit, Bücher zu lesen.",
+        "es": "No tengo tiempo para leer libros.",
+        "fr": "Je n'ai pas le temps de lire des livres.",
+        "ru": "У меня нет времени на чтение книг."
+      },
+      "freqRank": 273,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-done",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/272-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "Aile birlikte bir film izliyor.",
+      "gloss": {
+        "en": "The family is watching a movie together.",
+        "de": "Die Familie schaut sich zusammen einen Film an.",
+        "es": "Juntos, la familia mira una película.",
+        "fr": "La famille regarde un film."
+      },
+      "freqRank": 274,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/273-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "Dil öğrenmek ona kolay gelir.",
+      "gloss": {
+        "en": "Learning languages comes easy to her.",
+        "de": "Es fällt ihr leicht, Sprachen zu lernen.",
+        "es": "Para ella es fácil aprender idiomas.",
+        "ru": "Изучение иностранных языков даётся ей легко."
+      },
+      "freqRank": 275,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-latin-letters",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/274-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "İçecek bir şey ister misiniz?",
+      "gloss": {
+        "en": "Would you like something to drink?",
+        "de": "Möchten Sie etwas trinken?",
+        "es": "¿Quieres algo para beber?",
+        "fr": "Désirez-vous quelque chose à boire ?",
+        "ru": "Хочешь что-нибудь выпить?"
+      },
+      "freqRank": 276,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cup-with-straw",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/275-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "O, harika bir sanat çalışması.",
+      "gloss": {
+        "en": "It's a wonderful work of art.",
+        "de": "Das ist ein wunderbares Kunstwerk.",
+        "es": "Es una obra de arte maravillosa.",
+        "pt-BR": "É uma obra de arte maravilhosa."
+      },
+      "freqRank": 277,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/276-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "Uluslararası Kadınlar Günü kutlu olsun!",
+      "gloss": {
+        "en": "Happy International Women's Day!",
+        "es": "¡Feliz Día Internacional de la Mujer!",
+        "fr": "Bonne Journée internationale des femmes !",
+        "pt-BR": "Feliz Dia Internacional da Mulher!",
+        "ru": "С Восьмым марта!"
+      },
+      "freqRank": 278,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bouquet",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/277-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "Betty iyi şarkı söylemeyi başardı.",
+      "gloss": {
+        "en": "Betty managed to sing well.",
+        "de": "Betty hat es geschafft, gut zu singen.",
+        "es": "Betty logró cantar bien.",
+        "fr": "Betty a réussi à bien chanter.",
+        "ru": "Бетти удалось хорошо спеть."
+      },
+      "freqRank": 279,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/278-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "Bu parkta birçok kuş vardır.",
+      "gloss": {
+        "en": "There are many birds in this park.",
+        "es": "Hay muchos pájaros en este parque.",
+        "fr": "Il y a beaucoup d'oiseaux dans ce parc.",
+        "pt-BR": "Há muitos pássaros neste parque."
+      },
+      "freqRank": 280,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/279-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "Konser için iki bilet aldım.",
+      "gloss": {
+        "en": "I bought two tickets for a concert.",
+        "es": "Compré dos entradas para el concierto.",
+        "fr": "J'ai acheté deux billets pour le concert.",
+        "ru": "Я купил два билета на концерт."
+      },
+      "freqRank": 281,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/280-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "Bizimle tenis oynamak ister misin?",
+      "gloss": {
+        "en": "Do you want to play tennis with us?",
+        "de": "Willst du mit uns Tennis spielen?",
+        "es": "¿Quieres jugar al tenis con nosotros?",
+        "fr": "Veux-tu jouer au tennis avec nous ?"
+      },
+      "freqRank": 282,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tennis",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/281-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "İki kızım da üniversitede okuyor.",
+      "gloss": {
+        "en": "Both of my daughters are in college.",
+        "es": "Mis dos hijas estudian en la universidad.",
+        "fr": "Mes deux filles sont à l'université.",
+        "pt-BR": "Minhas duas filhas estão estudando na universidade."
+      },
+      "freqRank": 283,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:graduation-cap",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/282-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 283,
+      "kind": "phrase",
+      "text": "Karıma bir kitap satın alacağım.",
+      "gloss": {
+        "en": "I will buy my wife a book.",
+        "de": "Ich werde meiner Frau ein Buch kaufen.",
+        "es": "Le compraré un libro a mi mujer.",
+        "fr": "J'achèterai un livre à ma femme."
+      },
+      "freqRank": 284,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/283-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "Bana hikayenin geri kalanını anlat.",
+      "gloss": {
+        "en": "Tell me the rest of the story.",
+        "de": "Erzähl mir den Rest der Geschichte.",
+        "es": "Cuéntame el resto de la historia.",
+        "fr": "Racontez-moi le reste de l'histoire.",
+        "ru": "Расскажи мне остальную часть истории."
+      },
+      "freqRank": 285,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:scroll",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/284-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 285,
+      "kind": "phrase",
+      "text": "İşte bu yüzden ona kızgınım.",
+      "gloss": {
+        "en": "That is why I am angry with him.",
+        "de": "Deshalb bin ich wütend auf ihn.",
+        "es": "Es por eso que estoy enojado con él.",
+        "fr": "C'est pourquoi je suis en colère contre lui."
+      },
+      "freqRank": 286,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/285-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "Tom bizimle sahile gitmek istedi.",
+      "gloss": {
+        "en": "Tom wanted to go to the beach with us.",
+        "es": "Tom quería ir a la playa con nosotros.",
+        "fr": "Tom voulait aller à la plage avec nous.",
+        "ar": "أراد توم أن يذهب إلى الشاطئ معنا."
+      },
+      "freqRank": 287,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:desert-island",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/286-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 287,
+      "kind": "phrase",
+      "text": "O, bir şarkıcı olmak istiyor.",
+      "gloss": {
+        "en": "She wants to be a singer.",
+        "de": "Sie will Sängerin werden.",
+        "es": "Él quiere ser cantante.",
+        "ru": "Она хочет быть певицей."
+      },
+      "freqRank": 288,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/287-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 288,
+      "kind": "phrase",
+      "text": "Bir köpeğin dört bacağı var.",
+      "gloss": {
+        "en": "A dog has four legs.",
+        "es": "Un perro tiene cuatro patas.",
+        "fr": "Un chien a quatre pattes.",
+        "pt-BR": "Um cão tem quatro patas."
+      },
+      "freqRank": 289,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/288-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 289,
+      "kind": "phrase",
+      "text": "İki kişinin bildiği sır, sır değildir.",
+      "gloss": {
+        "en": "A secret known by two people is no longer a secret.",
+        "es": "Un secreto conocido por dos personas ya no es un secreto.",
+        "fr": "Un secret connu de deux personnes n'est plus un secret.",
+        "pt-BR": "Um segredo conhecido por duas pessoas deixa de ser um segredo."
+      },
+      "freqRank": 290,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shushing-face",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/289-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 290,
+      "kind": "phrase",
+      "text": "En az beş dolara mal olur.",
+      "gloss": {
+        "en": "It'll cost at least five dollars.",
+        "de": "Es wird mindestens fünf Dollar kosten.",
+        "es": "Esto costará al menos cinco dólares.",
+        "fr": "Cela coûtera au moins cinq dollars."
+      },
+      "freqRank": 291,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/290-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 291,
+      "kind": "phrase",
+      "text": "Tom kalp krizi geçiriyor gibi görünüyor.",
+      "gloss": {
+        "en": "Tom seems to be having a heart attack.",
+        "de": "Tom scheint einen Herzinfarkt zu haben.",
+        "fr": "Tom semble avoir une crise cardiaque.",
+        "ar": "يبدو أن توم يتعرض لنوبة قلبية."
+      },
+      "freqRank": 292,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ambulance",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/291-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 292,
+      "kind": "phrase",
+      "text": "Özür dilerim. Geciktim. Bir daha olmayacak.",
+      "gloss": {
+        "en": "I'm sorry I'm late. It won't happen again.",
+        "de": "Es tut mir leid. Ich bin spät. Es wird nicht noch einmal passieren.",
+        "es": "Lo siento. Llego tarde. No volverá a suceder.",
+        "fr": "Je suis désolé. Je suis en retard. Cela n'arrivera plus.",
+        "ru": "Простите за опоздание. Это больше не повторится."
+      },
+      "freqRank": 293,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/292-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 293,
+      "kind": "phrase",
+      "text": "Nehir, her zamankinden daha temiz oldu.",
+      "gloss": {
+        "en": "The river has become much cleaner than before.",
+        "de": "Der Fluss ist sauberer als je zuvor.",
+        "fr": "La rivière est plus propre que jamais.",
+        "ru": "Река чище, чем когда-либо."
+      },
+      "freqRank": 294,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/293-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 294,
+      "kind": "phrase",
+      "text": "Bu kitaplar benim en iyi arkadaşlarım.",
+      "gloss": {
+        "en": "These books are my best friends.",
+        "de": "Diese Bücher sind meine besten Freunde.",
+        "es": "Estos libros son mis mejores amigos.",
+        "pt-BR": "Estes livros são meus melhores amigos."
+      },
+      "freqRank": 295,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/294-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 295,
+      "kind": "phrase",
+      "text": "Bazen bir bira için dışarı çıkarım.",
+      "gloss": {
+        "en": "I go out sometimes for a beer.",
+        "de": "Manchmal gehe ich ein Bier trinken.",
+        "es": "A veces salgo a tomar una cerveza.",
+        "fr": "Parfois, je sors boire une bière.",
+        "ru": "Иногда я выхожу выпить пива."
+      },
+      "freqRank": 296,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:beer-mug",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/295-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 296,
+      "kind": "phrase",
+      "text": "Yaşlı adam yolu dikkatlice yürüyerek geçti.",
+      "gloss": {
+        "en": "The old man walked across the road carefully.",
+        "de": "Der alte Mann ging vorsichtig über die Straße.",
+        "es": "Ese anciano cruzó la carretera con gran precaución.",
+        "fr": "Le vieil homme traversa la route prudemment."
+      },
+      "freqRank": 297,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/296-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 297,
+      "kind": "phrase",
+      "text": "Pazartesi, salı, çarşamba, perşembe, cuma, cumartesi, pazar.",
+      "gloss": {
+        "en": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.",
+        "de": "Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Sonnabend, Sonntag.",
+        "es": "Lunes, martes, miércoles, jueves, viernes, sábado, domingo.",
+        "fr": "Lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche.",
+        "ru": "Понедельник, вторник, среда, четверг, пятница, суббота, воскресенье."
+      },
+      "freqRank": 298,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/297-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 298,
+      "kind": "phrase",
+      "text": "Tom bir erkek ve ben bir kadınım.",
+      "gloss": {
+        "en": "Tom is a man, and I'm a woman.",
+        "de": "Tom ist ein Mann, und ich bin eine Frau.",
+        "es": "Tom es un hombre y yo soy una mujer.",
+        "fr": "Tom est un homme et je suis une femme."
+      },
+      "freqRank": 299,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-and-man-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/298-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    },
+    {
+      "index": 299,
+      "kind": "phrase",
+      "text": "Bu sınıfta yalnızca otuz öğrenci için yer var.",
+      "gloss": {
+        "en": "There is only space for thirty students in this classroom.",
+        "de": "In diesem Klassenzimmer ist nur Platz für dreißig Schüler.",
+        "es": "En esta aula sólo hay espacio para treinta estudiantes.",
+        "ru": "В этом классе могут разместиться всего тридцать учеников."
+      },
+      "freqRank": 300,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/tr_intermediate/299-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
+    }
+  ]
+}

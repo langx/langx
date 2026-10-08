@@ -59,6 +59,21 @@ describe('how close the answer was', () => {
     expect(productionVerdict('хлеба', 'хлеб')).toBe('wrong')
   })
 
+  it('forgives what an Arabic or Turkish keyboard makes hard', () => {
+    // Vowel marks and hamza seats, which most learners do not type.
+    expect(productionVerdict('انا هنا', 'أَنَا هُنَا')).toBe('close')
+    expect(productionVerdict('سيارة جديدة', 'سيّارةٌ جديدةٌ')).toBe('close')
+    // Final ta marbuta written as ha, alef maqsura as ya, and a tatweel.
+    expect(productionVerdict('مدرسه', 'مدرسة')).toBe('close')
+    expect(productionVerdict('علي', 'على')).toBe('close')
+    expect(productionVerdict('جميـل', 'جميل')).toBe('close')
+    // Turkish dotless i, whichever way the keyboard or the lowercase went.
+    expect(productionVerdict('isik', 'Işık')).toBe('close')
+    expect(productionVerdict('istanbul', 'İstanbul')).toBe('close')
+    // A different consonant is still a different word.
+    expect(productionVerdict('كلب', 'قلب')).toBe('wrong')
+  })
+
   /*
    * Japanese can be written in kana alone, and an input method offers 私 and
    * わたし for the same keys. A Japanese card passes its reading.

@@ -413,6 +413,103 @@ none.
 column a learner copies without being able to check, and over Portuguese and
 Arabic, which are the thinnest (50–75% and 12–33% of items).
 
+### Arabic and Turkish: the voice
+
+Both are interface locales and both waited on a voice: the only Turkish and
+Arabic voices in Piper's catalogue are non-commercial or unlicensed, and
+Kokoro has neither language. Every open model that reads either was checked on
+7 October 2026, the licence first and then the sound.
+
+**How the sound was measured** — the method the Mandarin voices were chosen by.
+Thirty sentences per language, ten from each level's candidates spaced evenly
+through the list, read by each candidate in its own built-in voice and
+transcribed by Whisper `large-v3-turbo` (faster-whisper, MIT) told the
+language. Accuracy is one minus the character error rate, summed over the
+thirty. Both sides are lowercased (Turkish rules for Turkish) and stripped of
+punctuation and spaces; Arabic additionally loses its vowel marks and tatweel,
+and folds `أ إ آ ٱ` into `ا`, `ى` into `ي`, `ة` into `ه`, `ؤ` into `و` and
+`ئ` into `ي` — Whisper writes Arabic unvowelled and spells hamza seats and ta
+marbuta inconsistently, and none of that is something a listener hears.
+
+| Candidate                                                                                                      | Licence                                                                                                                         | Arabic | Turkish | Verdict                                                 |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------ | ------- | ------------------------------------------------------- |
+| [Chatterbox Multilingual v3](https://huggingface.co/ResembleAI/chatterbox) (Resemble AI), `conds.pt`           | [MIT](https://github.com/resemble-ai/chatterbox/blob/master/LICENSE), code, weights and the bundled voice alike                 | 94.0%  | 96.1%   | **Used, offline**                                       |
+| — the same at `cfg_weight` 0, the README's advice for a voice in another language                              | as above                                                                                                                        | 88.9%  | —       | Worse                                                   |
+| [FreyaTTS-small](https://huggingface.co/freyavoice/Freya-TTS)                                                  | [Apache-2.0](https://github.com/freyavoiceai/FreyaTTS/blob/main/LICENSE); its VAE is VoxCPM2's, Apache-2.0                      | —      | 96.2%   | A tie in Turkish; see below                             |
+| [Nabra-82M](https://huggingface.co/oddadmix/Nabra-82M-v0.1), a Kokoro fine-tune, with CATT's diacritics        | [Apache-2.0](https://huggingface.co/oddadmix/Nabra-82M-v0.1) on the weights; [CATT](https://github.com/abjadai/catt) Apache-2.0 | 97.9%  | —       | **Not used** — the voice's source is unknown; see below |
+| espeak-ng                                                                                                      | GPL-3.0 (output is not a derivative)                                                                                            | 62.2%  | 91.0%   | The floor: a formant voice nobody would learn from      |
+| [SILMA TTS v1](https://huggingface.co/silma-ai/silma-tts)                                                      | Apache-2.0 weights, MIT code                                                                                                    | —      | —       | Not measured: zero-shot only, see below                 |
+| Piper `tr_TR-dfki-medium`                                                                                      | Dataset [CC BY-NC-SA 4.0](https://huggingface.co/rhasspy/piper-voices/blob/main/tr/tr_TR/dfki/medium/MODEL_CARD)                | —      | —       | Non-commercial                                          |
+| Piper `ar_JO-kareem-*`                                                                                         | Dataset "see URL"; [the repository](https://github.com/AliMokhammad/arabicttstrain) grants no licence                           | —      | —       | No licence is not permission                            |
+| Meta MMS-TTS `ara`, `tur`                                                                                      | [CC BY-NC 4.0](https://huggingface.co/facebook/mms-tts-tur)                                                                     | —      | —       | Non-commercial                                          |
+| [OmniVoice](https://huggingface.co/k2-fsa/OmniVoice), and VoiceTut-TTS fine-tuned from it                      | Code Apache-2.0, weights CC BY-NC "due to constraints from its training data"                                                   | —      | —       | Non-commercial                                          |
+| [Habibi-TTS](https://huggingface.co/SWivid/Habibi-TTS); F5-TTS, which it and most Arabic fine-tunes start from | CC BY-NC-SA 4.0; CC BY-NC 4.0                                                                                                   | —      | —       | Non-commercial                                          |
+| Coqui XTTS v2; Fish Speech / OpenAudio                                                                         | CPML; CC BY-NC-SA 4.0                                                                                                           | —      | —       | Non-commercial                                          |
+| Kokoro-82M, CosyVoice, MeloTTS, Qwen3-TTS                                                                      | Apache-2.0 / MIT                                                                                                                | —      | —       | No Arabic or Turkish voice                              |
+
+**Chatterbox, and for both languages.** It clears the bar (85%) in both, by
+nine points in Arabic and eleven in Turkish, and it is one engine for two
+languages. Its MIT licence is Resemble AI's, on the repository that ships
+`conds.pt` — the built-in voice every reading here is in. No voice was cloned:
+Chatterbox reads in whatever voice it is handed a recording of, and the only
+one it was handed is its own. Every file carries Resemble's
+[Perth](https://github.com/resemble-ai/perth) watermark (MIT), an inaudible
+mark that the audio is synthetic, which the card already says out loud. What
+is not known, and is said rather than assumed: Resemble does not name the
+training data ("0.5M hours of cleaned data") or the speaker behind `conds.pt`.
+
+**Freya ties it in Turkish and lost on the second engine.** 96.2% against
+96.1% is one sentence's worth of noise, and a second engine — its own
+repository, not on PyPI, and VoxCPM2's VAE — for no measured gain is a cost
+with nothing on the other side. It is the better answer for a _live_ Turkish
+voice, though: 183M parameters, real time on a laptop CPU, a single voice of
+its own and no cloning by design. See the cost of Chatterbox in `apps/tts`,
+which is what rules Chatterbox out there.
+
+**Nabra scored best and is not used, and that is a judgement a reviewer may
+reverse.** Its 97.9% is real, and it would fit the voice service as it stands
+(it is Kokoro's architecture: 0.6 s a sentence on a CPU). But its one voice is
+a single real speaker the card does not name, trained on data it does not
+name, and the same author publishes TTS corpora cut from named YouTubers'
+channels. A licence on the weights cannot grant rights over a voice the
+licensor did not hold, and nothing here shows that it did. Chatterbox's data
+is undisclosed too; the difference is a company's own default voice against an
+individual's single-speaker fine-tune, which is a difference of risk rather
+than of proof. Its own Kokoro fork is required — hexgrad's `KModel` loads its
+checkpoint with half the decoder missing and produces noise (11% before that
+was found).
+
+**SILMA is zero-shot only.** Its sole voice is a reference clip bundled with
+the package, a reading from a Classical Arabic recording, so every sentence it
+reads is a clone of that speaker. Not measured: the rule here is the model's
+own voice, never a cloned one, and the 2.6 GB checkpoint was not worth
+downloading over the link this ran on to measure something that could not be
+used.
+
+**The packs.** Six drafts, 300 items each, all Tatoeba sentences glossed by
+the person who translated them, `"reviewed": false`. Neither language's
+phrasebook is used: their entries are glossed from an edition of Wiktionary
+`build-pack.mjs` does not read. Every card carries a cue and a reading.
+
+| Pack                  | Items | Locales each | Arabic / Turkish column | Cue | Reading |
+| --------------------- | ----- | ------------ | ----------------------- | --- | ------- |
+| `ar:absoluteBeginner` | 300   | 2.1          | Turkish 29              | 300 | 300     |
+| `ar:beginner`         | 300   | 2.6          | Turkish 44              | 300 | 300     |
+| `ar:intermediate`     | 300   | 3.1          | Turkish 60              | 300 | 300     |
+| `tr:absoluteBeginner` | 300   | 3.6          | Arabic 34               | 300 | 300     |
+| `tr:beginner`         | 300   | 3.6          | Arabic 30               | 300 | 300     |
+| `tr:intermediate`     | 300   | 4.0          | Arabic 35               | 300 | 300     |
+
+Arabic glosses the thinnest of anything: past English, Russian is the next
+column at 117 to 184 items a pack, and Portuguese reaches 9 to 21. A reader
+whose column is missing gets English, as everywhere outside the English packs.
+
+**Every card has a picture because the picker made it so.** A phrase whose
+cue table entry was left out — no honest picture in the 372 — was not taken,
+and the next candidate was. That cost Arabic the most at `absoluteBeginner`:
+its best-covered 650 candidates are mostly "Who's that?" and "Why me?", and
+76 of its 300 items came from the 1,116 candidates further down.
+
 ## Rejected
 
 | Source                                 | Why not                                                                                                    |
@@ -445,6 +542,9 @@ the two French phrasebook entries (_bon rétablissement_, _bonne continuation_),
 and Kokoro-82M and Piper for the readings. Nothing non-commercial. The fifteen
 drafted on 20 September were read the same night; see "What the review of the
 fifteen was" below.
+
+**The six Arabic and Turkish packs are drafts too** — see "Arabic and Turkish:
+the voice" above for what they are and what a reader has to do.
 `tools/echo-content/lint-glosses.mjs` had 92 things to say about them before
 that reading — 64 Russian copula dashes written as a hyphen, 13 Arabic
 sentences spaced before their punctuation, 3 Persian letters inside Arabic

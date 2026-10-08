@@ -28,6 +28,26 @@ function built(): Set<string> {
   return new Set(Object.values(concepts))
 }
 
+/**
+ * Voices a pack may carry that the voice service does not speak.
+ *
+ * Chatterbox reads the Arabic and Turkish packs offline, in
+ * `tools/echo-content/tts/generate.py` — whose `CHATTERBOX` this mirrors — and
+ * is deliberately absent from `SPEECH_VOICES`, which would have the app offer
+ * "Read it aloud" for a member's own Turkish card against a service that
+ * cannot read it. So for these two languages the expected takes come from
+ * here rather than from `echoSynthVoicesFor`, which answers none.
+ */
+const OFFLINE_PACK_VOICES: Readonly<Record<string, readonly string[]>> = {
+  ar: ['chatterbox-ar'],
+  tr: ['chatterbox-tr'],
+}
+
+function packVoicesFor(lang: string): readonly string[] {
+  const served = echoSynthVoicesFor(lang)
+  return served.length > 0 ? served : (OFFLINE_PACK_VOICES[lang] ?? [])
+}
+
 /** The pack languages whose script does not say how a sentence is read. */
 const READ_LANGUAGES = new Set(['zh', 'ja'])
 
@@ -112,7 +132,7 @@ describe('the packs in content/echo', () => {
      */
     it(`${name} gives every read item each voice its language has`, () => {
       const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
-      const expected = echoSynthVoicesFor(pack.lang).length
+      const expected = packVoicesFor(pack.lang).length
       const short = pack.items.filter((item) => item.voices && item.voices.length !== expected)
       expect(short.map((item) => `${item.text} (${item.voices?.length} of ${expected})`)).toEqual(
         [],
@@ -251,23 +271,43 @@ describe('the packs in content/echo', () => {
    *
    * Named by id rather than asked of every pack, because the older packs were
    * not held to it and are right not to be: sixteen of their cards carry no
-   * cue on purpose (`docs/echo.md`, _Images_). The `fluent` packs were picked
-   * with `pick-phrases.mjs --cues`, so a phrase without an honest picture
-   * never got in, and this is what says the rule survived the build and the
-   * readings — a run of `generate.py` that stopped halfway would leave items
-   * silent and this would name them.
+   * cue on purpose (`docs/echo.md`, _Images_). These packs were picked with
+   * `pick-phrases.mjs --cues`, so a phrase without an honest picture never got
+   * in, and this is what says the rule survived the build and the readings — a
+   * run of `generate.py` that stopped halfway would leave items silent and
+   * this would name them. The readings must also be the voices the language is
+   * read in, not some other id. Found by id, so a pack that went missing fails
+   * here too rather than passing by having no items to check.
    */
-  const PICTURED_AND_READ = ['es:fluent', 'fr:fluent', 'it:fluent', 'de:fluent', 'ru:fluent']
+  const PICTURED_AND_READ = [
+    'es:fluent',
+    'fr:fluent',
+    'it:fluent',
+    'de:fluent',
+    'ru:fluent',
+    'ar:absoluteBeginner',
+    'ar:beginner',
+    'ar:intermediate',
+    'tr:absoluteBeginner',
+    'tr:beginner',
+    'tr:intermediate',
+  ]
 
   for (const id of PICTURED_AND_READ) {
     it(`${id} gives every item a cue and a reading`, () => {
-      const [lang = '', level = ''] = id.split(':')
-      const pack = echoPackFileSchema.parse(
-        JSON.parse(readFileSync(join(CONTENT, lang, `${level}.json`), 'utf8')),
-      )
+      const path = files.find((file) => file.endsWith(`/${id.replace(':', '/')}.json`))
+      expect(path, `${id} is not in content/echo`).toBeDefined()
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path!, 'utf8')))
+      expect(pack.id).toBe(id)
+      const voices = packVoicesFor(pack.lang)
       const bare = pack.items
-        .filter((item) => !item.image || !item.voices?.length)
-        .map((item) => item.text)
+        .filter(
+          (item) =>
+            !item.image ||
+            !item.voices?.length ||
+            item.voices.some((take) => !voices.includes(take.voice)),
+        )
+        .map((item) => `${item.index} ${item.text}`)
       expect(bare).toEqual([])
     })
   }
