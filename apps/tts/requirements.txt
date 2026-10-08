@@ -44,6 +44,10 @@ mojimoji==0.0.13
 # `transcribe` in server.py.
 faster-whisper==1.2.1
 ctranslate2==4.8.2
+# PyAV is faster-whisper's own dependency and it pins only a floor. PyAV 19
+# dropped the `metadata_errors` argument faster-whisper 1.2.1 passes to
+# `av.open`, so an unpinned build broke the selftest's first decode.
+av==18.1.0
 
 # Downloads the Whisper model in the Dockerfile, at a pinned revision. Apache-2.0.
 huggingface_hub==1.33.0
