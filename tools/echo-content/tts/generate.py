@@ -16,7 +16,7 @@ personal use only, by Apple's SLA) and Coqui XTTS (CPML).
 pronunciation; two, in different registers, read as what they are. A human
 recording from Commons is better than both and stays first where it exists.
 
-**Two engines, and the language picks one.** Kokoro reads its seven; every
+**Two engines, and the language picks one.** Kokoro reads its eight; every
 other language the service speaks is Piper's, and the voice tables in
 `packages/shared/src/speech.ts` — mirrored by `apps/tts/voices.json`, which is
 what this reads — are the definition of which. Nothing here takes an engine
@@ -29,8 +29,14 @@ now and then (你得去 as *dé*). A pack item carries `reading` — pinyin that
 somebody read — so the tones here are the reviewed ones, turned into Kokoro's
 phonemes by misaki's own pinyin table. See `zh_phonemes`.
 
+**And Japanese from its kana**, for the same reason: the reading is what a
+person checked, so the kana spoken are those rather than the tagger's guess at
+a kanji. See `ja_phonemes`. misaki's `ja` extra also pulls pyopenjtalk, a C++
+build this path never imports; the four packages below are what it uses.
+
 Usage:
-    python3.12 -m venv .venv && .venv/bin/pip install kokoro-onnx soundfile piper-tts 'misaki[zh]'
+    python3.12 -m venv .venv && .venv/bin/pip install kokoro-onnx soundfile piper-tts 'misaki[zh]' \
+        fugashi==1.5.2 unidic-lite==1.0.8 jaconv==0.5.0 mojimoji==0.0.13
     brew install espeak-ng          # the wheel's dylib looks for its build path
     # then, from the repository root:
     tools/echo-content/tts/generate.py --out <dir>
@@ -73,6 +79,7 @@ KOKORO = {
     "pt": ("pt-br", ("pf_dora", "pm_alex")),
     "hi": ("hi", ("hf_alpha", "hm_omega")),
     "zh": ("cmn", ("zf_xiaoyi", "zm_yunxi")),
+    "ja": ("ja", ("jf_nezumi", "jm_kumo")),
 }
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -245,12 +252,69 @@ def zh_phonemes(text: str, reading: str) -> str:
     return " ".join(out)
 
 
+_ja_cutlet = None
+
+
+def ja_phonemes(text: str, reading: str) -> str:
+    """A pack item's reviewed kana as Kokoro's phonemes.
+
+    misaki's Japanese front end (Apache-2.0) is the one Kokoro's Japanese
+    voices were trained on: fugashi splits the sentence, each word's
+    pronunciation form — 学生 as ガクセー, the particle は as ワ — goes through
+    misaki's kana table, and the words are spaced as it spaces them. The
+    service reads a member's card exactly that way (`ja_phonemes` in
+    `apps/tts/server.py`).
+
+    A pack card has a reading somebody checked, so the kana spoken here are
+    those, not the tagger's guess. `kana.align` lines the two up: where a
+    token's reviewed kana is the tagger's own, its pronunciation form is used
+    — which is what carries the long vowels and the particles' sounds — and
+    where the reading says something else (私 as わたし, not わたくし), the
+    reviewed kana are read as written. A reading that spells a different
+    sentence is an error, not a guess.
+
+    `misaki.cutlet` is imported rather than `misaki.ja`, which loads
+    pyopenjtalk at import for a path this does not use.
+    """
+    import re
+
+    import jaconv
+    from misaki.cutlet import Cutlet, Word
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "jlpt"))
+    from kana import align
+
+    global _ja_cutlet
+    if _ja_cutlet is None:
+        _ja_cutlet = Cutlet()
+    cut = _ja_cutlet
+    words = list(cut.tagger(cut._normalize_text(text)))
+    lined = align([(w.surface, jaconv.kata2hira(w.feature.kana or "")) for w in words], reading)
+    if lined is None:
+        raise ValueError(f"{text}: the reading {reading!r} does not spell it")
+    spelled = [
+        Word(
+            w.surface,
+            span if changed else jaconv.kata2hira(w.feature.pron or w.feature.kana or w.surface),
+            6 if w.char_type == 7 or not w.is_unk else w.char_type,
+        )
+        for w, (span, changed) in zip(words, lined)
+    ]
+    # The rest is `Cutlet.__call__` from here on, unchanged (misaki 0.9.4).
+    out = "".join(str(tok) for tok in cut._romaji_tokens(spelled))
+    ps = re.sub(r"\s+", " ", out.strip()).replace("(", "«").replace(")", "»")
+    return re.sub(r'(?<![!",.:;?»—…”]) (?=ʔ)|(?<=ʔ) (?!["«“])', "", ps)
+
+
 def kokoro_wav(k, item: dict, lang: str, voice: str, espeak: str, path: Path) -> None:
     """One Kokoro reading, written as WAV."""
     import soundfile as sf
 
     if lang == "zh":
         phonemes = zh_phonemes(item["text"], item["reading"])
+        samples, rate = k.create(phonemes, voice=voice, speed=1.0, is_phonemes=True)
+    elif lang == "ja":
+        phonemes = ja_phonemes(item["text"], item["reading"])
         samples, rate = k.create(phonemes, voice=voice, speed=1.0, is_phonemes=True)
     else:
         samples, rate = k.create(item["text"], voice=voice, speed=1.0, lang=espeak)

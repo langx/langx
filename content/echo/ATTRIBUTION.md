@@ -432,6 +432,9 @@ A draft is a pack file with `"reviewed": false`. **The seed script refuses to
 write one**, and that refusal is the whole quality gate. The three English
 packs have passed it; see "In use" above for what passing meant.
 
+**The three Japanese packs are drafts too** — see _Japanese: where it came
+from_ at the end of this file.
+
 **Five drafts today, all at `fluent`: `es`, `fr` and `it`**, drafted on 7 October
 2026 — 296, 298 and 299 items, every one with a cue and Kokoro's readings —
 **and `de` and `ru`**, 270 and 244 items read by Piper, described at the end of
@@ -593,3 +596,119 @@ image (Linux, the only place Piper's wheel runs) with
 `generate.py --pack de:fluent` / `--pack ru:fluent`. The 514 m4a files are not
 uploaded; `upload-echo-voices.ts` is the step that puts them where the keys in
 the packs point.
+
+### Japanese: where it came from
+
+Three packs, JLPT N5, N4 and N3, 300 items each, drafted on 7 October 2026 and
+`"reviewed": false`. Named and levelled as `docs/echo.md` says under
+_Japanese is named by JLPT_.
+
+| Source                                                                                                                                       | Gives                                                                    | Licence                                          | Use                                                                   |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------ | --------------------------------------------------------------------- |
+| [JLPT word lists](http://www.tanos.co.uk/jlpt/) (Jonathan Waller), via [yomitan-jlpt-vocab](https://github.com/stephenmk/yomitan-jlpt-vocab) | 8,293 words with the JLPT level each is listed at, in kanji and kana     | CC BY (the lists); CC BY-SA 4.0 (the repository) | Which sentence goes in which pack                                     |
+| [Tatoeba](https://tatoeba.org/), `jpn`                                                                                                       | 248,924 Japanese sentences, their human translations, and their furigana | CC BY 2.0 FR                                     | Every sentence, every gloss, and the reading where a person signed it |
+| [UniDic](https://clrd.ninjal.ac.jp/unidic/) 2.1.2, as [unidic-lite](https://github.com/polm/unidic-lite) 1.0.8                               | Word boundaries, dictionary forms, readings and pronunciations           | BSD-3-Clause (UniDic); MIT (the package)         | Splitting sentences, levelling words, the reading's draft             |
+| [fugashi](https://github.com/polm/fugashi) 1.5.2                                                                                             | MeCab, from Python                                                       | MIT; MeCab under BSD-3-Clause                    | Running UniDic                                                        |
+| [jaconv](https://github.com/ikegami-yukino/jaconv) 0.5.0                                                                                     | Katakana and hiragana conversion                                         | MIT                                              | Comparing two readings                                                |
+| [misaki](https://github.com/hexgrad/misaki) 0.9.4, `misaki.cutlet`                                                                           | Kokoro's own Japanese front end, adapted from cutlet (MIT)               | Apache-2.0                                       | The phonemes the readings are synthesised from                        |
+| [mojimoji](https://github.com/studio-ousia/mojimoji) 0.0.13                                                                                  | Full- and half-width conversion, which misaki's front end imports        | Apache-2.0                                       | Nothing directly                                                      |
+| [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) v1.0, Japanese voices                                                                | `jf_alpha`, `jf_gongitsune`, `jf_nezumi`, `jf_tebukuro`, `jm_kumo`       | Apache-2.0                                       | The two readings on every card: `jf_nezumi` and `jm_kumo`             |
+
+The lists were taken at commit `b062d4e` of yomitan-jlpt-vocab
+(`original_data/n<n>.csv`), on 7 October 2026. That repository is CC BY-SA
+4.0 because it checked Waller's spellings against JMdict (CC BY-SA) and
+modernised a few (歯磨 → 歯磨き); the packs here are CC BY-SA 4.0 already, so
+nothing changes downstream. Waller asks for credit and nothing else, and this
+is it: _JLPT vocabulary lists compiled by Jonathan Waller, tanos.co.uk,
+Creative Commons BY._ There is no official list to prefer — the Japan
+Foundation stopped publishing one in 2010 — and the lists are, in their
+current maintainer's words, an educated guess. Two of their levels were
+overridden, in `tools/echo-content/jlpt/pick.py`: 日本 (N3 on the list) and
+ありがとう (N1) are N5.
+
+Tatoeba's exports were taken the same day: `jpn_sentences`, the `jpn-<code>`
+and `eng-<code>` links for the eight locales, and `transcriptions.csv`. The
+transcriptions are furigana markup; 108,259 Japanese ones carry the name of
+the member who wrote or corrected them, and those are the readings a draft
+prefers.
+
+**Out, and why:** pyopenjtalk (MIT, over Open JTalk, BSD) comes with
+`misaki[ja]` and is not used — the path Kokoro's Japanese voices were trained
+on is `misaki.cutlet`, which does not import it. The full `unidic` package
+(3.1, BSD) is a gigabyte that unidic-lite stands in for, in the service as in
+the drafts. pykakasi and unidecode are GPL, as `apps/tts/requirements.txt`
+already says. Tatoeba's own Japanese recordings are mostly CC BY-NC-ND and
+are not used, for the reason the English ones are not. No JLPT list with a
+non-commercial licence was considered.
+
+**Glosses, direct first.** Tatoeba links Japanese directly to English almost
+everywhere and to Turkish and Arabic hardly at all, so — as for Mandarin — a
+column with no direct translation takes the translation of the English gloss,
+and `review.indirect` names it:
+
+| Locale | N5 (indirect) | N4 (indirect) | N3 (indirect) |
+| ------ | ------------- | ------------- | ------------- |
+| en     | 300 (0)       | 300 (0)       | 300 (0)       |
+| tr     | 275 (255)     | 274 (259)     | 271 (262)     |
+| de     | 297 (23)      | 299 (7)       | 297 (14)      |
+| es     | 292 (21)      | 295 (14)      | 287 (33)      |
+| fr     | 299 (23)      | 291 (18)      | 285 (22)      |
+| pt-BR  | 237 (155)     | 217 (144)     | 220 (158)     |
+| ru     | 296 (40)      | 295 (34)      | 297 (37)      |
+| ar     | 100 (73)      | 102 (58)      | 84 (65)       |
+
+**Readings.** 710 of the 900 are a Tatoeba member's (252, 225 and 233 by
+pack); the other 190 are UniDic's, taken only where Tatoeba's unsigned machine
+draft says the same thing word for word. 65 items carry `review.readingDiffers`,
+one line per word where the member's reading overrode UniDic's.
+
+**Pictures.** Every item carries a cue from the same 372 concepts; nothing was
+drawn. `tools/echo-content/images/cues.ja.json` is the choice, made by six
+Claude subagents over 2,100 candidates (700 per level, twice what a pack
+needs): 1,408 got a cue, 463 had no honest one, and 229 were dropped as not
+belonging in a pack — near-duplicates most of all, then slogans, proverbs and
+quotations, violence and self-harm, glosses that answered a different
+sentence, and readings that were wrong. Three more were dropped by hand
+afterwards (a second "Do you like to travel?", a third "I don't know", and
+出て行け！). A sentence with no cue was not taken; the next was.
+
+**Two synthesised readings each**, in Kokoro's `jf_nezumi` and `jm_kumo`,
+made from the reading through misaki's Japanese front end — so the kana a card
+is read in are the reviewed ones, once they have been reviewed. A speech
+recogniser got back 99.2% and 97.8% of the kana from them on thirty pack
+sentences, against 4.8% through espeak-ng; the table is in `docs/echo.md`.
+The recogniser was faster-whisper (MIT) running `large-v3-turbo` (MIT, in
+Mobius Labs' CTranslate2 conversion, MIT) — a measuring instrument, not
+shipped. The 1,800 files were made on 7 October and are not uploaded.
+
+### What the Japanese drafts still need
+
+**Nobody has read them.** The six subagents that chose the cues looked at the
+sentence, the reading and the English, and dropped what was plainly wrong; that
+is a filter, not a review. Before any of the three is `"reviewed": true`:
+
+1. **The sentence and the reading, every item**, by somebody who reads
+   Japanese. The reading is what a learner copies. Start with the 65 items
+   carrying `review.readingDiffers`, then the 190 whose `review.readingFrom` is
+   `unidic`. Spacing between phrases is drafted by rule and is worth a glance
+   on every line (どうして, 〜ている and 〜そうです are where the rules are
+   thinnest).
+2. **English, every item** — the floor every other locale falls back to.
+3. **Turkish, every item** — 776 of the 820 Turkish glosses are indirect,
+   translations of the English rather than of the Japanese, exactly the
+   column the Mandarin reading found the most in.
+4. **The cue, every item**, against `ILLUSTRATION.md`'s test: does the picture
+   say what the sentence is about before the words do. The subagents' own
+   least-sure lists are in the pull request.
+5. **The level of a sample.** Waller's lists are a guess and the grammar gate
+   is one rule; an N5 sentence that a first-month learner could not read
+   belongs in N4.
+6. `tools/echo-content/lint-glosses.mjs ja` names ten mechanical defects (five
+   Arabic spaces before punctuation, four Russian hyphens for a dash, one
+   Latin word) and 107 "three times the front", which in Japanese is the
+   script being dense rather than the gloss being long.
+7. **Listen to a sample** of the readings, in both voices — a speech
+   recogniser is not a native ear.
+
+German, Spanish, French, Portuguese, Russian and Arabic are owed the same
+check-for-meaning pass the Mandarin six had.

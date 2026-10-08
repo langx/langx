@@ -424,6 +424,7 @@ export const fr: Localized<EnMessages> = {
     },
     packProgress: '{done} sur {total} commencées',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'Écris-le en {language}',
     produceHint: 'Tape la phrase',
     check: 'Vérifier',

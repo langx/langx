@@ -422,6 +422,7 @@ export const tr: Localized<EnMessages> = {
     },
     packProgress: '{total} karttan {done} tanesi başladı',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: '{language} olarak yaz',
     produceHint: 'İfadeyi yaz',
     check: 'Kontrol et',

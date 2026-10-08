@@ -18,14 +18,15 @@ docstring and `docs/decisions.md`: Apache-2.0 over the weights and the voice
 packs alike, where the obvious alternatives are all personal-use or
 non-commercial.
 
-**And Piper beside it, for the other thirty-one languages.** Kokoro reads seven.
+**And Piper beside it, for the other thirty-one languages.** Kokoro reads eight.
 Piper's catalogue reaches far wider, at a quality below Kokoro's and far above
 nothing, with one small model per language instead of one large model for all
 of them — so they are loaded on demand and the least recently used is dropped,
 rather than all two gigabytes being held at once on a 2 GB machine. The same
 licence bar applies and it is what decides the list: the catalogue's only
-Turkish, Arabic, Japanese and Korean voices are CC BY-NC, so this service does
-not read those languages at all. `voices.json` is the manifest, generated from
+Turkish, Arabic, Japanese and Korean voices are CC BY-NC, so Piper reads none
+of them. Japanese is read anyway — by Kokoro, through misaki rather than
+espeak-ng; see `ja_phonemes`. `voices.json` is the manifest, generated from
 `SPEECH_VOICES` in `packages/shared/src/speech.ts`, which stays the definition.
 
 **And Whisper, the other direction: a voice note in, its words out.** Chat's
@@ -116,12 +117,13 @@ from urllib.parse import parse_qs, urlparse
 # the definition — the API refuses before asking, this refuses in case it did
 # not. The right-hand side is what espeak-ng calls the language.
 #
-# Kokoro's seven only. Piper's thirty-one are in `voices.json`, loaded below,
+# Kokoro's eight only. Piper's thirty-one are in `voices.json`, loaded below,
 # for the reason that file exists: they are data, they change by adding a line,
 # and the Dockerfile downloads exactly what the manifest names.
 #
-# Chinese is the exception to the right-hand side: `cmn` is what espeak-ng calls
-# Mandarin, and it is never asked. See `zh_phonemes`.
+# Chinese and Japanese are the exceptions to the right-hand side: `cmn` and `ja`
+# are what espeak-ng calls them, and it is never asked. See `zh_phonemes` and
+# `ja_phonemes`.
 LANGUAGES = {
     "en": ("en-us", {"af_heart", "am_michael"}),
     "es": ("es", {"ef_dora", "em_alex"}),
@@ -130,6 +132,7 @@ LANGUAGES = {
     "pt": ("pt-br", {"pf_dora", "pm_alex"}),
     "hi": ("hi", {"hf_alpha", "hm_omega"}),
     "zh": ("cmn", {"zf_xiaoyi", "zm_yunxi"}),
+    "ja": ("ja", {"jf_nezumi", "jm_kumo"}),
 }
 
 # The card's front is capped at 200 characters (`ECHO_FRONT_MAX_LENGTH`); a
@@ -174,7 +177,7 @@ PIPER_CACHE_SIZE = int(os.environ.get("TTS_PIPER_CACHE", "3"))
 def load_piper_manifest() -> dict:
     """LangX language code to the Piper voices that read it, from `voices.json`.
 
-    Missing or unreadable is not fatal: the service still reads Kokoro's seven and
+    Missing or unreadable is not fatal: the service still reads Kokoro's eight and
     answers 400 for the rest, which is exactly what it did before Piper existed.
     A half-built image should degrade to the old service, not fail to boot.
     """
@@ -182,7 +185,7 @@ def load_piper_manifest() -> dict:
         with open(HERE / "voices.json", encoding="utf8") as handle:
             return json.load(handle)
     except (OSError, ValueError) as caught:
-        print(f"no piper manifest, reading seven languages only: {caught}", flush=True)
+        print(f"no piper manifest, reading eight languages only: {caught}", flush=True)
         return {}
 
 
@@ -238,6 +241,39 @@ def zh_phonemes(text: str) -> str:
 
         _zh_g2p = zh.ZHG2P()
     phonemes, _ = _zh_g2p(text)
+    return phonemes
+
+
+_ja_g2p = None
+
+
+def ja_phonemes(text: str) -> str:
+    """A Japanese sentence as the phonemes Kokoro's Japanese voices were trained on.
+
+    **Not through espeak-ng**, for Chinese's reason: espeak's Japanese is a
+    sketch, and Kokoro's Japanese voices learned misaki's phonemes, not its.
+    misaki's Japanese front end reads each word's pronunciation from UniDic
+    through fugashi — 学生 as ガクセー, the particle は as ワ — and spells it in
+    Kokoro's phoneme set. Measured on thirty pack sentences in `jf_alpha`
+    (`tools/echo-content/jlpt/listen.py`), a speech recogniser got back 97% of
+    the kana from this reading of the characters, and 5% from espeak-ng's.
+
+    It reads the dictionary's first guess at a word, so it can say わたくし for
+    私 where a person would say わたし; the packs are read from their reviewed
+    kana instead (`tools/echo-content/tts/generate.py`). A member's own card
+    has no reading, and this is the best there is for it.
+
+    `misaki.cutlet` rather than `misaki.ja`, which imports pyopenjtalk at load
+    for a path not taken here — a C++ build and a dictionary download for
+    nothing. The UniDic is unidic-lite, already in this image for
+    `romanize_ja`. Loaded on first use, like `zh_phonemes`.
+    """
+    global _ja_g2p
+    if _ja_g2p is None:
+        from misaki.cutlet import Cutlet
+
+        _ja_g2p = Cutlet()
+    phonemes, _ = _ja_g2p(text)
     return phonemes
 
 
@@ -578,6 +614,10 @@ class Handler(BaseHTTPRequestHandler):
                 if lang == "zh":
                     samples, rate = self.kokoro.create(
                         zh_phonemes(text), voice=voice, speed=1.0, is_phonemes=True
+                    )
+                elif lang == "ja":
+                    samples, rate = self.kokoro.create(
+                        ja_phonemes(text), voice=voice, speed=1.0, is_phonemes=True
                     )
                 else:
                     samples, rate = self.kokoro.create(

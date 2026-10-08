@@ -418,6 +418,7 @@ export const es: Localized<EnMessages> = {
     },
     packProgress: '{done} de {total} empezadas',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'Escríbelo en {language}',
     produceHint: 'Escribe la expresión',
     check: 'Comprobar',

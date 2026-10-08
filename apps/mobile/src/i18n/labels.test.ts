@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from './runtime'
-import { lastSeenLabel } from './labels'
+import { lastSeenLabel, packLabel } from './labels'
 
 const NOW = new Date('2026-08-31T12:00:00Z')
 const MINUTE = 60_000
@@ -49,5 +49,15 @@ describe('lastSeenLabel', () => {
 
   it('translates', () => {
     expect(ago(3 * HOUR, 'tr')).toBe('3 saat önce görüldü')
+  })
+})
+
+describe('packLabel', () => {
+  const t = createTranslate('en')
+
+  it('names a pack by its exam where it has one, and by its level otherwise', () => {
+    expect(packLabel(t, { level: 'intermediate', hsk: 3 })).toBe('HSK 3')
+    expect(packLabel(t, { level: 'absoluteBeginner', jlpt: 5 })).toBe('JLPT N5')
+    expect(packLabel(t, { level: 'beginner' })).toBe(t('level.beginner'))
   })
 })

@@ -435,6 +435,7 @@ export const ar: Localized<EnMessages> = {
     },
     packProgress: 'بدأت {done} من {total}',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'اكتبها بـ{language}',
     produceHint: 'اكتب العبارة',
     check: 'تحقّق',

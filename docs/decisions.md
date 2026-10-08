@@ -5304,6 +5304,13 @@ packs' `reading` is drafted by `tools/echo-content/hsk/pick.py` and goes
 through the same gate as a gloss: the pack is `"reviewed": false` until the
 reading column has been read, and the seed refuses it until then.
 
+The Japanese packs' kana are the same kind of thing and go through the same
+gate: 今日 is _kyō_ in one sentence and _konnichi_ in another, and 何 is _nani_
+or _nan_ by what follows it. `tools/echo-content/jlpt/pick.py` drafts them,
+preferring a reading a Tatoeba member signed over the tagger's, and the voice
+reads the reviewed kana rather than the characters, so a corrected reading is
+also a corrected pronunciation.
+
 ## A badge can be a cohort, and `next` must never offer one
 
 Every badge kind was a monotonic counter with thresholds along it, and the

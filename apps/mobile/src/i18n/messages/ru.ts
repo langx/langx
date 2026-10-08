@@ -444,6 +444,7 @@ export const ru: Localized<EnMessages> = {
     },
     packProgress: 'Начато {done} из {total}',
     packHsk: 'HSK {level}',
+    packJlpt: 'JLPT N{level}',
     producePrompt: 'Напишите на языке: {language}',
     produceHint: 'Введите фразу',
     check: 'Проверить',
