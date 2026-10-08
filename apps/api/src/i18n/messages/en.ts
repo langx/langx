@@ -653,12 +653,14 @@ export const en = {
         '🎉 {friends} friends you invited are talking on LangX. {count} months of Pro are yours!',
     },
     introStreak: {
-      one: '🔥 {days} days in a row! Here’s {count} month of Pro to keep it going.',
-      other: '🔥 {days} days in a row! Here’s {count} months of Pro to keep it going.',
+      one: '🔥 {days} days in a row, that’s amazing! To say thanks, here’s {count} month of Pro on us.',
+      other:
+        '🔥 {days} days in a row, that’s amazing! To say thanks, here are {count} months of Pro on us.',
     },
     introStreakWeeks: {
-      one: '🔥 {days} days in a row! Here’s {count} week of Pro to keep it going.',
-      other: '🔥 {days} days in a row! Here’s {count} weeks of Pro to keep it going.',
+      one: '🔥 {days} days in a row, we love to see it! Here’s {count} week of Pro on us, to say thanks.',
+      other:
+        '🔥 {days} days in a row, we love to see it! Here’s {count} weeks of Pro on us, to say thanks.',
     },
     /** A gift code typed into the paywall; `{code}` is the code as stored, upper case. */
     introCode: {

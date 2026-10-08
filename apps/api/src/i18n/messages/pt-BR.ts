@@ -565,12 +565,14 @@ export const ptBR: Localized<ServerMessages> = {
         '🎉 {friends} amigos que você convidou já estão conversando no LangX. {count} meses de Pro são seus!',
     },
     introStreak: {
-      one: '🔥 {days} dias seguidos! Aqui está {count} mês de Pro para continuar assim.',
-      other: '🔥 {days} dias seguidos! Aqui estão {count} meses de Pro para continuar assim.',
+      one: '🔥 {days} dias seguidos, que incrível! Para agradecer, a gente te dá {count} mês de Pro.',
+      other:
+        '🔥 {days} dias seguidos, que incrível! Para agradecer, a gente te dá {count} meses de Pro.',
     },
     introStreakWeeks: {
-      one: '🔥 {days} dias seguidos! Aqui está {count} semana de Pro para continuar assim.',
-      other: '🔥 {days} dias seguidos! Aqui estão {count} semanas de Pro para continuar assim.',
+      one: '🔥 {days} dias seguidos, que dedicação! Para agradecer, a gente te dá {count} semana de Pro.',
+      other:
+        '🔥 {days} dias seguidos, que dedicação! Para agradecer, a gente te dá {count} semanas de Pro.',
     },
     introCode: {
       one: '🎟️ O código {code} funcionou: {count} mês de LangX Pro é seu.',
