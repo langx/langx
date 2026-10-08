@@ -919,6 +919,73 @@ describe('the operator panel', () => {
       expect(detail.post?.attachments.map((item) => item.url)).toEqual([photo.url])
     })
 
+    it('brings the end of their conversation, up to the report and no further', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+      const reporter = await newUser()
+      const conversationId = new ObjectId()
+      // Written directly: what is under test is which messages are read, and
+      // twelve real sends would be a test of the quota.
+      await handle.db.collection(COLLECTIONS.conversations).insertOne({
+        _id: conversationId,
+        pairKey: [target.userId, reporter.userId].sort().join('_'),
+        participants: [target.userId, reporter.userId],
+        createdAt: new Date(),
+      })
+      const start = Date.now() - 60 * 60_000
+      await handle.db.collection<Message>(COLLECTIONS.messages).insertMany(
+        Array.from({ length: 12 }, (_, index) => ({
+          _id: new ObjectId(),
+          conversationId,
+          senderId: index % 2 ? reporter.userId : target.userId,
+          type: 'text' as const,
+          body: index === 11 ? '' : `line ${index}`,
+          ...(index === 11 ? { deletedAt: new Date() } : {}),
+          createdAt: new Date(start + index * 60_000),
+        })),
+      )
+
+      // From the profile, naming no conversation: the thread is found anyway.
+      const filed = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'harassment',
+      })
+      expect(filed.statusCode, filed.body).toBe(201)
+      const reportId = filed.json<{ id: string }>().id
+      // Said after the report, so not part of what was reported.
+      await handle.db.collection<Message>(COLLECTIONS.messages).insertOne({
+        _id: new ObjectId(),
+        conversationId,
+        senderId: target.userId,
+        type: 'text',
+        body: 'after the report',
+        createdAt: new Date(Date.now() + 60_000),
+      })
+
+      const detail = (await get(admin, `/admin/reports/${reportId}`)).json<{
+        thread: {
+          conversationId: string
+          messages: { senderId: string; body: string; deleted: boolean }[]
+        } | null
+      }>()
+      expect(detail.thread?.conversationId).toBe(conversationId.toHexString())
+      expect(detail.thread?.messages.map((message) => message.body)).toEqual([
+        ...Array.from({ length: 9 }, (_, index) => `line ${index + 2}`),
+        '',
+      ])
+      expect(detail.thread?.messages.at(-1)).toMatchObject({ deleted: true })
+      expect(detail.thread?.messages[0]?.senderId).toBe(target.userId)
+
+      // Two people who never talked: no thread, and no error.
+      const stranger = await newUser()
+      const other = await post(stranger, '/reports', { userId: target.userId, reason: 'spam' })
+      const none = (await get(admin, `/admin/reports/${other.json<{ id: string }>().id}`)).json<{
+        thread: unknown
+      }>()
+      expect(none.thread).toBeNull()
+    })
+
     it('hides a post nobody reported, and can put it back', async () => {
       const admin = await newUser()
       await makeAdmin(admin)

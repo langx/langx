@@ -3267,6 +3267,23 @@ export interface AdminReportDto {
     deletedAt: string | null
     createdAt: string
   } | null
+  /**
+   * The last messages between the two of them up to the report, oldest
+   * first, on the detail read. Text only; files are counted. Absent from an
+   * API older than it.
+   */
+  thread?: {
+    conversationId: string
+    messages: {
+      id: string
+      senderId: string
+      type: string
+      body: string
+      attachments: number
+      deleted: boolean
+      createdAt: string
+    }[]
+  } | null
   suspension?: { until: string; permanent: boolean; reason: string } | null
   otherOpenReports?: number
   /** What the reporter was thanked with. Only on the detail read, like the three above. */
