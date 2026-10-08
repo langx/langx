@@ -151,6 +151,11 @@ export default function ReportScreen() {
           style={styles.details}
         />
 
+        {/* Said before they send, not after: the panel shows the reviewer the
+            end of the two people's conversation whichever screen the report
+            came from, the reporter's own messages included. */}
+        <Text style={styles.notice}>{t('report.threadNotice')}</Text>
+
         <Button
           label={t('report.submit')}
           disabled={!reason || report.isPending}
@@ -179,4 +184,5 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   rowTitle: { color: colors.text, fontSize: 17, fontWeight: '600' },
   rowHint: { color: colors.textFaint, fontSize: 13 },
   details: { height: 110, textAlignVertical: 'top' },
+  notice: { color: colors.textFaint, fontSize: 13, lineHeight: 18 },
 }))
