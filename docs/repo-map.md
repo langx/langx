@@ -72,6 +72,9 @@ that repo means reconnecting the Pages project in the dashboard first.
 | `packages/shared/src/limits.ts`                | `website/src/lib/data/features.ts`                           |
 | `packages/shared/src/token.ts`                 | `website/src/lib/data/token.ts`                              |
 | `packages/shared/src/cosmetics.ts`             | `website/src/lib/data/token.ts`                              |
+| `packages/shared/src/proGift.ts`               | `website/src/lib/data/plans.ts` and `faq.ts`                 |
+| `packages/shared/src/proGift.ts`               | `website/src/routes/plans/+page.svelte` and the Terms (§5)   |
+| `packages/shared/src/proGift.ts`               | `docs/library/free-pro.md` and `docs/library/day-streaks.md` |
 | `docs/store/listing.md`                        | `website/src/lib/data/meta.ts`                               |
 | `packages/shared/src/token.ts`, `cosmetics.ts` | the numbers on token.langx.io and the token pages in `docs/` |
 | `apps/mobile/assets/`                          | `branding/brand/` — the same bytes, copied                   |
