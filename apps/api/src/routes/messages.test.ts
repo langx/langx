@@ -2709,6 +2709,106 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(otherWay.statusCode).toBe(415)
     })
 
+    /**
+     * Refused before a URL exists, not after the bytes are stored. The suite
+     * has no bucket, so a size within the ceiling gets past this check and
+     * fails later — the code is what tells the two apart.
+     */
+    it('will not sign an upload URL for a file over its ceiling', async () => {
+      const { a, conversationId } = await pair('media-signsize')
+      const sign = (kind: string, contentType: string, sizeBytes: number) =>
+        app.inject({
+          method: 'POST',
+          url: '/messages/upload-url',
+          headers: { cookie: a.cookie },
+          payload: { conversationId, kind, contentType, sizeBytes },
+        })
+
+      const tooBig = await sign('video', 'video/mp4', MAX_VIDEO_BYTES + 1)
+      expect(tooBig.statusCode).toBe(413)
+      expect(tooBig.json<{ code: string }>().code).toBe('MEDIA_TOO_LARGE')
+
+      const atCeiling = await sign('image', 'image/jpeg', MAX_IMAGE_BYTES)
+      expect(atCeiling.json<{ code?: string }>().code).not.toBe('MEDIA_TOO_LARGE')
+    })
+
+    describe('uploads nobody sent', () => {
+      function fakeStorage() {
+        const deleted: string[] = []
+        return {
+          deleted,
+          storage: {
+            getUploadUrl: () => Promise.reject(new Error('not used')),
+            putObject: () => Promise.reject(new Error('not used')),
+            getObject: () => Promise.reject(new Error('not used')),
+            deleteObject: (key: string) => {
+              deleted.push(key)
+              return Promise.resolve()
+            },
+            keyFromPublicUrl: () => null,
+          },
+        }
+      }
+
+      /**
+       * The whole lifecycle: two files signed for, one sent. A day later the
+       * sweep deletes the other one and leaves the sent one alone.
+       */
+      it('deletes what was never sent, and only that', async () => {
+        const { a, conversationId } = await pair('media-unsent')
+        const { recordPendingUpload, sweepUnsentUploads, UNSENT_UPLOAD_GRACE_MS } =
+          await import('../modules/chat/pendingUploads')
+        const { sendMediaMessage } = await import('../modules/chat/messages')
+
+        const signedAt = new Date()
+        const sent = image(conversationId)
+        const sentKey = `messages/${conversationId}/a.jpg`
+        const unsentKey = `messages/${conversationId}/never.jpg`
+        await recordPendingUpload(handle.db, { url: sent.url, key: sentKey }, signedAt)
+        await recordPendingUpload(
+          handle.db,
+          { url: `${BUCKET}/${unsentKey}`, key: unsentKey },
+          signedAt,
+        )
+        await sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [sent] }, BUCKET)
+
+        const { deleted, storage } = fakeStorage()
+        // Inside the grace period nothing goes, sent or not.
+        expect(await sweepUnsentUploads(handle.db, storage, { now: signedAt })).toEqual({
+          deleted: 0,
+        })
+
+        const later = new Date(signedAt.getTime() + UNSENT_UPLOAD_GRACE_MS + 1000)
+        expect(await sweepUnsentUploads(handle.db, storage, { now: later })).toEqual({
+          deleted: 1,
+        })
+        expect(deleted).toEqual([unsentKey])
+
+        // And the row went with the file, so the next tick has nothing to do.
+        expect(await sweepUnsentUploads(handle.db, storage, { now: later })).toEqual({
+          deleted: 0,
+        })
+      })
+
+      it('keeps the row when the bucket would not delete, so the next tick retries', async () => {
+        const { conversationId } = await pair('media-unsent-retry')
+        const { recordPendingUpload, sweepUnsentUploads, UNSENT_UPLOAD_GRACE_MS } =
+          await import('../modules/chat/pendingUploads')
+        const key = `messages/${conversationId}/stuck.jpg`
+        const signedAt = new Date()
+        await recordPendingUpload(handle.db, { url: `${BUCKET}/${key}`, key }, signedAt)
+        const later = new Date(signedAt.getTime() + UNSENT_UPLOAD_GRACE_MS + 1000)
+
+        const { storage } = fakeStorage()
+        const failing = { ...storage, deleteObject: () => Promise.reject(new Error('B2 down')) }
+        expect(await sweepUnsentUploads(handle.db, failing, { now: later })).toEqual({ deleted: 0 })
+
+        const { deleted, storage: working } = fakeStorage()
+        await sweepUnsentUploads(handle.db, working, { now: later })
+        expect(deleted).toContain(key)
+      })
+    })
+
     it('quotes a caption-less video with its label rather than an empty line', async () => {
       const { a, b, conversationId } = await pair('media-replyvideo')
       const { sendMediaMessage, sendTextMessage } = await import('../modules/chat/messages')

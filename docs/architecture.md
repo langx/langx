@@ -208,7 +208,13 @@ Keys are prefixed `avatars/{userId}/`, `photos/{userId}/`,
 by user rather than by post because the post does not exist when the URL is
 signed. The account purge deletes these through the rows that reference them;
 `feedback/{userId}/` is the exception it sweeps by prefix, because a bug report
-is written to no collection and no row points at its attachments. Attachments
+is written to no collection and no row points at its attachments. A chat
+upload that is signed for and never sent is the other file no row names: each
+signing writes a `pendingUploads` row, the send claims it, and the hourly purge
+tick deletes whatever is still unclaimed a day later. The chat signing route
+also takes the file's size, refuses it over the ceiling and signs it into the
+URL as `Content-Length`, so the bucket itself refuses a body of any other
+length. Attachments
 on posts and corrections share `mediaSchema` and `PLAN_LIMITS.mediaPer24h` with
 chat — one shape, one ceiling table, one abuse budget. The ceilings are per
 kind, in `MEDIA_LIMITS`: 8MB for an image, 16MB and two minutes for a voice note, 64MB
