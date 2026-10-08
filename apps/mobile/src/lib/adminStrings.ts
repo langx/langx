@@ -388,7 +388,10 @@ export const ADMIN = {
       pending: 'Saved — RevenueCat did not answer, so the scheduler will retry it.',
       already: 'That gift was already given today.',
       list: 'Gifts',
-      row: (months: number, detail: string) => `${months} mo · ${detail}`,
+      row: (span: string, detail: string) => `${span} · ${detail}`,
+      monthsShort: (n: number) => `${n} mo`,
+      /** The streak's first rung is a week rather than months. */
+      weeksShort: (n: number) => `${n} wk`,
       until: (date: string) => `until ${date}`,
     },
   },

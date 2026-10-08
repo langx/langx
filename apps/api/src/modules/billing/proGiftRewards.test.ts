@@ -88,9 +88,31 @@ describe('earned gifts of Pro', () => {
     const today = new Date()
     const yesterday = shiftDayKey(utcDayKey(today), -1)
 
+    it('queues a week on the action that reaches 7 days', async () => {
+      const profile = await person({
+        streak: { current: 6, longest: 6, lastQualifiedDay: yesterday, lastActionDay: yesterday },
+      })
+
+      const result = await recordQualifyingAction(db, profile, today)
+      expect(result.current).toBe(7)
+
+      const gifts = await giftsOf(profile._id)
+      expect(gifts).toHaveLength(1)
+      expect(gifts[0]).toMatchObject({
+        _id: `streak:7:${profile._id}`,
+        months: 0,
+        weeks: 1,
+        source: 'streak',
+        status: 'pending',
+        endsAt: null,
+      })
+      expect((await reread(profile._id)).proGiftStreaks).toEqual([7])
+    })
+
     it('queues a month on the action that reaches 100 days', async () => {
       const profile = await person({
         streak: { current: 99, longest: 99, lastQualifiedDay: yesterday, lastActionDay: yesterday },
+        proGiftStreaks: [7],
       })
 
       const result = await recordQualifyingAction(db, profile, today)
@@ -105,10 +127,10 @@ describe('earned gifts of Pro', () => {
         status: 'pending',
         endsAt: null,
       })
-      expect((await reread(profile._id)).proGiftStreaks).toEqual([100])
+      expect((await reread(profile._id)).proGiftStreaks).toEqual([7, 100])
     })
 
-    /** Already past both on the day this shipped — a v1 restore, say. */
+    /** Already past every rung on the day this shipped — a v1 restore, say. */
     it('queues every rung a long streak has passed, once', async () => {
       const profile = await person({
         streak: {
@@ -121,15 +143,16 @@ describe('earned gifts of Pro', () => {
 
       await recordQualifyingAction(db, profile, today)
       const gifts = await giftsOf(profile._id)
-      expect(gifts.map((g) => [g._id, g.months])).toEqual([
-        [`streak:100:${profile._id}`, 1],
-        [`streak:365:${profile._id}`, 3],
+      expect(gifts.map((g) => [g._id, g.months, g.weeks ?? 0])).toEqual([
+        [`streak:100:${profile._id}`, 1, 0],
+        [`streak:365:${profile._id}`, 3, 0],
+        [`streak:7:${profile._id}`, 0, 1],
       ])
 
       // The next day's claim finds the markers and writes nothing.
       const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000)
       await recordQualifyingAction(db, await reread(profile._id), tomorrow)
-      expect(await giftsOf(profile._id)).toHaveLength(2)
+      expect(await giftsOf(profile._id)).toHaveLength(3)
     })
 
     it('pays nothing for opening the app', async () => {

@@ -242,6 +242,28 @@ describe('gifts of Pro', () => {
       ])
     })
 
+    it('gives the streak week a week, and says so in weeks', async () => {
+      const userId = await person()
+      const now = new Date()
+      const { gift: row } = await queueProGift(
+        db,
+        { _id: proGiftKey.streak(7, userId), userId, months: 0, weeks: 1, source: 'streak' },
+        now,
+      )
+
+      await runProGiftPass(db, deps, now)
+      expect(grants.map((g) => g.endsAt)).toEqual([new Date(now.getTime() + 7 * DAY)])
+
+      const [message] = await messagesTo(`proGift:${row._id}`)
+      expect(message?.body).toContain(
+        translator('tr')('proGift.introStreakWeeks', { count: 1, days: 7 }),
+      )
+      // No month count: the welcome falls back to the title without a length.
+      const welcome = (await profile(userId))?.proWelcome
+      expect(welcome).toMatchObject({ source: 'streak' })
+      expect(welcome?.months).toBeUndefined()
+    })
+
     it('gives nothing on top of a lifetime', async () => {
       const userId = await person({ entitlement: { tier: 'pro', store: 'promotional' } })
       const { gift: row } = await adminGift(userId, 1)
@@ -373,6 +395,28 @@ describe('gifts of Pro', () => {
       expect(await messagesTo(`proGiftReminder:week:${row._id}`)).toHaveLength(0)
       expect(fanned.map((f) => f.push)).toEqual([true])
       expect(email.messages).toHaveLength(0)
+    })
+
+    /** Granted already inside the week window: "ends in a week" would follow "here is a week". */
+    it('sends a week-long gift no week note, but the day-before one', async () => {
+      const grantedAt = new Date()
+      const endsAt = new Date(grantedAt.getTime() + 7 * DAY)
+      const userId = await person({ entitlement: giftEntitlement(endsAt) })
+      const row = await granted(userId, endsAt, {
+        _id: proGiftKey.streak(7, userId),
+        months: 0,
+        weeks: 1,
+        source: 'streak',
+        createdAt: grantedAt,
+        grantedAt,
+      })
+
+      await runProGiftPass(db, deps, new Date(grantedAt.getTime() + 60 * 60 * 1000))
+      expect(await messagesTo('proGiftReminder:')).toHaveLength(0)
+      expect(email.messages).toHaveLength(0)
+
+      await runProGiftPass(db, deps, new Date(endsAt.getTime() - 20 * 60 * 60 * 1000))
+      expect(await messagesTo(`proGiftReminder:day:${row._id}`)).toHaveLength(1)
     })
 
     it('says nothing about an end a later gift has moved', async () => {

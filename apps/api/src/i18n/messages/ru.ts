@@ -599,6 +599,12 @@ export const ru: Localized<ServerMessages> = {
       many: '🔥 {days} дней подряд! Вот {count} месяцев Pro, чтобы не сбавлять темп.',
       other: '🔥 {days} дней подряд! Вот {count} месяца Pro, чтобы не сбавлять темп.',
     },
+    introStreakWeeks: {
+      one: '🔥 {days} дней подряд! Вот {count} неделя Pro, чтобы не сбавлять темп.',
+      few: '🔥 {days} дней подряд! Вот {count} недели Pro, чтобы не сбавлять темп.',
+      many: '🔥 {days} дней подряд! Вот {count} недель Pro, чтобы не сбавлять темп.',
+      other: '🔥 {days} дней подряд! Вот {count} недели Pro, чтобы не сбавлять темп.',
+    },
     introCode: {
       one: '🎟️ Код {code} сработал: {count} месяц LangX Pro — твой.',
       few: '🎟️ Код {code} сработал: {count} месяца LangX Pro — твои.',

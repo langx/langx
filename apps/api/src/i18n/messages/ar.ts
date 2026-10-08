@@ -601,6 +601,14 @@ export const ar: Localized<ServerMessages> = {
       many: '🔥 {days} يومًا على التوالي! {count} شهرًا من Pro هدية منّا لتواصل السلسلة.',
       other: '🔥 {days} يومًا على التوالي! {count} شهر من Pro هدية منّا لتواصل السلسلة.',
     },
+    introStreakWeeks: {
+      zero: '🔥 سلسلتك وصلت إلى {days}! {count} أسبوع من Pro هدية منّا لتواصلها.',
+      one: '🔥 سلسلتك وصلت إلى {days}! أسبوع من Pro هدية منّا لتواصلها.',
+      two: '🔥 سلسلتك وصلت إلى {days}! أسبوعان من Pro هدية منّا لتواصلها.',
+      few: '🔥 سلسلتك وصلت إلى {days}! {count} أسابيع من Pro هدية منّا لتواصلها.',
+      many: '🔥 سلسلتك وصلت إلى {days}! {count} أسبوعًا من Pro هدية منّا لتواصلها.',
+      other: '🔥 سلسلتك وصلت إلى {days}! {count} أسبوع من Pro هدية منّا لتواصلها.',
+    },
     introCode: {
       zero: '🎟️ نجح الرمز {code}: {count} شهر من LangX Pro لك.',
       one: '🎟️ نجح الرمز {code}: شهر من LangX Pro لك.',
