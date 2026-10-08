@@ -243,7 +243,9 @@ def readback_accuracy(whisper, samples, rate: int, text: str, lang: str) -> floa
     import librosa
 
     audio = librosa.resample(samples.astype("float32"), orig_sr=rate, target_sr=16000)
-    segments, _ = whisper.transcribe(audio, language=lang, beam_size=5)
+    # Greedy: the question is whether the take says the sentence at all, and
+    # a beam of five costs three times as long to answer it.
+    segments, _ = whisper.transcribe(audio, language=lang, beam_size=1)
     heard = readback_text("".join(s.text for s in segments), lang)
     said = readback_text(text, lang)
     prev = list(range(len(heard) + 1))
