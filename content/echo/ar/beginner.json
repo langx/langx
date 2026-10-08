@@ -2,7 +2,7 @@
   "id": "ar:beginner",
   "lang": "ar",
   "level": "beginner",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -20,7 +20,8 @@
       "gloss": { "en": "My name is Jack.", "tr": "Benim adım Jack.", "ru": "Меня зовут Джек." },
       "freqRank": 1,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [{ "key": "echo/packs/ar_beginner/0-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 1,
@@ -29,7 +30,8 @@
       "gloss": { "en": "You're right.", "fr": "Tu as raison.", "ru": "Ты прав." },
       "freqRank": 2,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark"
+      "image": "cue:check-mark",
+      "voices": [{ "key": "echo/packs/ar_beginner/1-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 2,
@@ -43,7 +45,8 @@
       },
       "freqRank": 3,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [{ "key": "echo/packs/ar_beginner/2-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 3,
@@ -52,7 +55,8 @@
       "gloss": { "en": "He is a doctor.", "fr": "Il est médecin." },
       "freqRank": 4,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [{ "key": "echo/packs/ar_beginner/3-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 4,
@@ -67,7 +71,8 @@
       },
       "freqRank": 5,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [{ "key": "echo/packs/ar_beginner/4-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 5,
@@ -76,7 +81,8 @@
       "gloss": { "en": "I did see him.", "es": "Ya lo he visto." },
       "freqRank": 6,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [{ "key": "echo/packs/ar_beginner/5-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 6,
@@ -85,7 +91,8 @@
       "gloss": { "en": "I took the book.", "ru": "Я взял книгу." },
       "freqRank": 7,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [{ "key": "echo/packs/ar_beginner/6-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 7,
@@ -94,7 +101,8 @@
       "gloss": { "en": "That book is small.", "es": "El libro es pequeño." },
       "freqRank": 8,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [{ "key": "echo/packs/ar_beginner/7-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 8,
@@ -103,7 +111,8 @@
       "gloss": { "en": "I don't care.", "de": "Es ist mir egal.", "ru": "Мне все равно." },
       "freqRank": 9,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [{ "key": "echo/packs/ar_beginner/8-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 9,
@@ -117,7 +126,8 @@
       },
       "freqRank": 10,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sunset"
+      "image": "cue:sunset",
+      "voices": [{ "key": "echo/packs/ar_beginner/9-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 10,
@@ -126,7 +136,8 @@
       "gloss": { "en": "I know your name.", "ru": "Я знаю твоё имя." },
       "freqRank": 11,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [{ "key": "echo/packs/ar_beginner/10-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 11,
@@ -141,7 +152,8 @@
       },
       "freqRank": 12,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [{ "key": "echo/packs/ar_beginner/11-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 12,
@@ -150,7 +162,8 @@
       "gloss": { "en": "I prefer coffee.", "de": "Ich bevorzuge Kaffee.", "es": "Prefiero café." },
       "freqRank": 13,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [{ "key": "echo/packs/ar_beginner/12-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 13,
@@ -167,7 +180,8 @@
       },
       "freqRank": 14,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [{ "key": "echo/packs/ar_beginner/13-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 14,
@@ -176,7 +190,8 @@
       "gloss": { "en": "I'm your friend.", "ru": "Я твой друг." },
       "freqRank": 15,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [{ "key": "echo/packs/ar_beginner/14-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 15,
@@ -185,7 +200,8 @@
       "gloss": { "en": "I have a car.", "fr": "J'ai une voiture." },
       "freqRank": 16,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [{ "key": "echo/packs/ar_beginner/15-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 16,
@@ -194,7 +210,8 @@
       "gloss": { "en": "I don't know him.", "ru": "Я его не знаю." },
       "freqRank": 17,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [{ "key": "echo/packs/ar_beginner/16-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 17,
@@ -208,7 +225,8 @@
       },
       "freqRank": 18,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [{ "key": "echo/packs/ar_beginner/17-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 18,
@@ -222,7 +240,8 @@
       },
       "freqRank": 19,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane-arrival"
+      "image": "cue:airplane-arrival",
+      "voices": [{ "key": "echo/packs/ar_beginner/18-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 19,
@@ -231,7 +250,8 @@
       "gloss": { "en": "I am afraid.", "de": "Ich habe Angst." },
       "freqRank": 20,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fearful-face"
+      "image": "cue:fearful-face",
+      "voices": [{ "key": "echo/packs/ar_beginner/19-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 20,
@@ -245,7 +265,8 @@
       },
       "freqRank": 21,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [{ "key": "echo/packs/ar_beginner/20-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 21,
@@ -254,7 +275,8 @@
       "gloss": { "en": "The bath is ready.", "es": "El baño está listo." },
       "freqRank": 22,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bathtub"
+      "image": "cue:bathtub",
+      "voices": [{ "key": "echo/packs/ar_beginner/21-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 22,
@@ -263,7 +285,8 @@
       "gloss": { "en": "I am a boy.", "de": "Ich bin ein Junge.", "fr": "Je suis un garçon." },
       "freqRank": 23,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:boy"
+      "image": "cue:boy",
+      "voices": [{ "key": "echo/packs/ar_beginner/22-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 23,
@@ -272,7 +295,8 @@
       "gloss": { "en": "She is strong.", "de": "Sie ist stark.", "fr": "Elle est forte." },
       "freqRank": 24,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flexed-biceps"
+      "image": "cue:flexed-biceps",
+      "voices": [{ "key": "echo/packs/ar_beginner/23-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 24,
@@ -281,7 +305,8 @@
       "gloss": { "en": "I have a book.", "ru": "У меня есть книга." },
       "freqRank": 25,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [{ "key": "echo/packs/ar_beginner/24-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 25,
@@ -295,7 +320,8 @@
       },
       "freqRank": 26,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [{ "key": "echo/packs/ar_beginner/25-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 26,
@@ -304,7 +330,8 @@
       "gloss": { "en": "She's my daughter.", "ru": "Она моя дочь." },
       "freqRank": 27,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family-man-woman-girl"
+      "image": "cue:family-man-woman-girl",
+      "voices": [{ "key": "echo/packs/ar_beginner/26-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 27,
@@ -313,7 +340,8 @@
       "gloss": { "en": "This is my sister.", "es": "Ésta es mi hermana.", "ru": "Это моя сестра." },
       "freqRank": 28,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:women-holding-hands"
+      "image": "cue:women-holding-hands",
+      "voices": [{ "key": "echo/packs/ar_beginner/27-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 28,
@@ -322,7 +350,8 @@
       "gloss": { "en": "I am sick.", "tr": "Hastayım.", "fr": "Je suis malade." },
       "freqRank": 29,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-thermometer"
+      "image": "cue:face-with-thermometer",
+      "voices": [{ "key": "echo/packs/ar_beginner/28-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 29,
@@ -331,7 +360,8 @@
       "gloss": { "en": "I'll see you later.", "es": "Te veo luego." },
       "freqRank": 30,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:waving-hand"
+      "image": "cue:waving-hand",
+      "voices": [{ "key": "echo/packs/ar_beginner/29-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 30,
@@ -340,7 +370,8 @@
       "gloss": { "en": "You're running late.", "de": "Du bist zu spät." },
       "freqRank": 31,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:alarm-clock"
+      "image": "cue:alarm-clock",
+      "voices": [{ "key": "echo/packs/ar_beginner/30-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 31,
@@ -349,7 +380,8 @@
       "gloss": { "en": "My friend helped me.", "ru": "Мой друг мне помог." },
       "freqRank": 32,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [{ "key": "echo/packs/ar_beginner/31-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 32,
@@ -365,7 +397,8 @@
       },
       "freqRank": 33,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [{ "key": "echo/packs/ar_beginner/32-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 33,
@@ -374,7 +407,8 @@
       "gloss": { "en": "This is a school.", "ru": "Это школа." },
       "freqRank": 34,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [{ "key": "echo/packs/ar_beginner/33-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 34,
@@ -383,7 +417,8 @@
       "gloss": { "en": "This house is mine.", "ru": "Это мой дом." },
       "freqRank": 35,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [{ "key": "echo/packs/ar_beginner/34-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 35,
@@ -392,7 +427,8 @@
       "gloss": { "en": "I have a heart.", "ru": "У меня есть сердце." },
       "freqRank": 36,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [{ "key": "echo/packs/ar_beginner/35-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 36,
@@ -401,7 +437,8 @@
       "gloss": { "en": "The hotel is down there.", "es": "El hotel está ahí." },
       "freqRank": 37,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hotel"
+      "image": "cue:hotel",
+      "voices": [{ "key": "echo/packs/ar_beginner/36-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 37,
@@ -414,7 +451,8 @@
       },
       "freqRank": 38,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:two-hearts"
+      "image": "cue:two-hearts",
+      "voices": [{ "key": "echo/packs/ar_beginner/37-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 38,
@@ -429,7 +467,8 @@
       },
       "freqRank": 39,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [{ "key": "echo/packs/ar_beginner/38-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 39,
@@ -438,7 +477,8 @@
       "gloss": { "en": "Listen carefully.", "fr": "Écoutez attentivement." },
       "freqRank": 40,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [{ "key": "echo/packs/ar_beginner/39-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 40,
@@ -452,7 +492,8 @@
       },
       "freqRank": 41,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:round-pushpin"
+      "image": "cue:round-pushpin",
+      "voices": [{ "key": "echo/packs/ar_beginner/40-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 41,
@@ -461,7 +502,8 @@
       "gloss": { "en": "Did you call?", "ru": "Ты звонил?" },
       "freqRank": 42,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [{ "key": "echo/packs/ar_beginner/41-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 42,
@@ -470,7 +512,8 @@
       "gloss": { "en": "My friends are my family.", "ru": "Мои друзья — это моя семья." },
       "freqRank": 43,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [{ "key": "echo/packs/ar_beginner/42-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 43,
@@ -479,7 +522,8 @@
       "gloss": { "en": "I live here.", "ru": "Я тут живу." },
       "freqRank": 44,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [{ "key": "echo/packs/ar_beginner/43-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 44,
@@ -488,7 +532,8 @@
       "gloss": { "en": "Take care.", "de": "Bis dann.", "es": "¡Hasta luego!" },
       "freqRank": 45,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:waving-hand"
+      "image": "cue:waving-hand",
+      "voices": [{ "key": "echo/packs/ar_beginner/44-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 45,
@@ -502,7 +547,8 @@
       },
       "freqRank": 46,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:chair"
+      "image": "cue:chair",
+      "voices": [{ "key": "echo/packs/ar_beginner/45-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 46,
@@ -515,7 +561,8 @@
       },
       "freqRank": 47,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sos-button"
+      "image": "cue:sos-button",
+      "voices": [{ "key": "echo/packs/ar_beginner/46-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 47,
@@ -524,7 +571,8 @@
       "gloss": { "en": "The car is ready.", "ru": "Машина готова." },
       "freqRank": 48,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [{ "key": "echo/packs/ar_beginner/47-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 48,
@@ -533,7 +581,8 @@
       "gloss": { "en": "We should sit down.", "es": "Tenemos que sentarnos." },
       "freqRank": 49,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:chair"
+      "image": "cue:chair",
+      "voices": [{ "key": "echo/packs/ar_beginner/48-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 49,
@@ -542,7 +591,8 @@
       "gloss": { "en": "Everyone listened.", "fr": "Tout le monde a écouté." },
       "freqRank": 50,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [{ "key": "echo/packs/ar_beginner/49-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 50,
@@ -551,7 +601,8 @@
       "gloss": { "en": "I appreciate your help.", "ru": "Я ценю твою помощь." },
       "freqRank": 51,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:folded-hands"
+      "image": "cue:folded-hands",
+      "voices": [{ "key": "echo/packs/ar_beginner/50-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 51,
@@ -560,7 +611,8 @@
       "gloss": { "en": "In came Mary.", "es": "Entró Mary.", "ru": "Вошла Мэри." },
       "freqRank": 52,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [{ "key": "echo/packs/ar_beginner/51-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 52,
@@ -569,7 +621,8 @@
       "gloss": { "en": "She has hope.", "ru": "У неё есть надежда." },
       "freqRank": 53,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crossed-fingers"
+      "image": "cue:crossed-fingers",
+      "voices": [{ "key": "echo/packs/ar_beginner/52-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 53,
@@ -578,7 +631,8 @@
       "gloss": { "en": "I want peace.", "tr": "Barış istiyorum." },
       "freqRank": 54,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:peace-symbol"
+      "image": "cue:peace-symbol",
+      "voices": [{ "key": "echo/packs/ar_beginner/53-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 54,
@@ -587,7 +641,8 @@
       "gloss": { "en": "Your house is fantastic.", "fr": "Votre maison est fantastique." },
       "freqRank": 55,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [{ "key": "echo/packs/ar_beginner/54-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 55,
@@ -596,7 +651,8 @@
       "gloss": { "en": "I'm busy.", "tr": "Meşgulüm.", "es": "Estoy ocupado." },
       "freqRank": 56,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [{ "key": "echo/packs/ar_beginner/55-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 56,
@@ -605,7 +661,8 @@
       "gloss": { "en": "I am pregnant.", "es": "Estoy embarazada." },
       "freqRank": 57,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pregnant-woman"
+      "image": "cue:pregnant-woman",
+      "voices": [{ "key": "echo/packs/ar_beginner/56-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 57,
@@ -614,7 +671,8 @@
       "gloss": { "en": "She's pregnant.", "tr": "O, hamiledir." },
       "freqRank": 58,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pregnant-woman"
+      "image": "cue:pregnant-woman",
+      "voices": [{ "key": "echo/packs/ar_beginner/57-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 58,
@@ -627,7 +685,8 @@
       },
       "freqRank": 59,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:black-circle"
+      "image": "cue:black-circle",
+      "voices": [{ "key": "echo/packs/ar_beginner/58-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 59,
@@ -640,7 +699,8 @@
       },
       "freqRank": 60,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [{ "key": "echo/packs/ar_beginner/59-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 60,
@@ -649,7 +709,8 @@
       "gloss": { "en": "The road is dangerous.", "fr": "La route est dangereuse." },
       "freqRank": 61,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:warning"
+      "image": "cue:warning",
+      "voices": [{ "key": "echo/packs/ar_beginner/60-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 61,
@@ -662,7 +723,8 @@
       },
       "freqRank": 62,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sos-button"
+      "image": "cue:sos-button",
+      "voices": [{ "key": "echo/packs/ar_beginner/61-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 62,
@@ -671,7 +733,8 @@
       "gloss": { "en": "My mother is angry.", "ru": "Моя мама сердится." },
       "freqRank": 63,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:angry-face"
+      "image": "cue:angry-face",
+      "voices": [{ "key": "echo/packs/ar_beginner/62-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 63,
@@ -680,7 +743,8 @@
       "gloss": { "en": "She's outraged.", "ru": "Она сердитая." },
       "freqRank": 64,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:enraged-face"
+      "image": "cue:enraged-face",
+      "voices": [{ "key": "echo/packs/ar_beginner/63-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 64,
@@ -689,7 +753,8 @@
       "gloss": { "en": "Bring the key.", "ru": "Принеси ключ." },
       "freqRank": 65,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:key"
+      "image": "cue:key",
+      "voices": [{ "key": "echo/packs/ar_beginner/64-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 65,
@@ -698,7 +763,8 @@
       "gloss": { "en": "Someone entered.", "es": "Alguien entró." },
       "freqRank": 66,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [{ "key": "echo/packs/ar_beginner/65-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 66,
@@ -707,7 +773,8 @@
       "gloss": { "en": "I read the book.", "ru": "Я прочитал книгу." },
       "freqRank": 67,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [{ "key": "echo/packs/ar_beginner/66-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 67,
@@ -716,7 +783,8 @@
       "gloss": { "en": "The doctor came in.", "ru": "Вошёл врач." },
       "freqRank": 68,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [{ "key": "echo/packs/ar_beginner/67-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 68,
@@ -729,7 +797,8 @@
       },
       "freqRank": 69,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thought-balloon"
+      "image": "cue:thought-balloon",
+      "voices": [{ "key": "echo/packs/ar_beginner/68-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 69,
@@ -738,7 +807,8 @@
       "gloss": { "en": "I have an elephant.", "tr": "Bir filim var." },
       "freqRank": 70,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:elephant"
+      "image": "cue:elephant",
+      "voices": [{ "key": "echo/packs/ar_beginner/69-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 70,
@@ -747,7 +817,8 @@
       "gloss": { "en": "The stars are beautiful.", "ru": "Звёзды красивые." },
       "freqRank": 71,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:night-with-stars"
+      "image": "cue:night-with-stars",
+      "voices": [{ "key": "echo/packs/ar_beginner/70-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 71,
@@ -756,7 +827,8 @@
       "gloss": { "en": "I like it.", "de": "Das gefällt mir." },
       "freqRank": 72,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:thumbs-up",
+      "voices": [{ "key": "echo/packs/ar_beginner/71-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 72,
@@ -770,7 +842,8 @@
       },
       "freqRank": 73,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:superhero"
+      "image": "cue:superhero",
+      "voices": [{ "key": "echo/packs/ar_beginner/72-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 73,
@@ -785,7 +858,8 @@
       },
       "freqRank": 74,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cold-face"
+      "image": "cue:cold-face",
+      "voices": [{ "key": "echo/packs/ar_beginner/73-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 74,
@@ -794,7 +868,8 @@
       "gloss": { "en": "Life is short.", "ru": "Жизнь коротка." },
       "freqRank": 75,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-done"
+      "image": "cue:hourglass-done",
+      "voices": [{ "key": "echo/packs/ar_beginner/74-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 75,
@@ -803,7 +878,8 @@
       "gloss": { "en": "Where is the boy?", "tr": "Oğlan nerede?", "es": "¿Dónde está el niño?" },
       "freqRank": 76,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:boy"
+      "image": "cue:boy",
+      "voices": [{ "key": "echo/packs/ar_beginner/75-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 76,
@@ -812,7 +888,8 @@
       "gloss": { "en": "Open the door!", "es": "¡Abre la puerta!" },
       "freqRank": 77,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [{ "key": "echo/packs/ar_beginner/76-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 77,
@@ -821,7 +898,8 @@
       "gloss": { "en": "She wants water.", "fr": "Elle veut de l'eau.", "ru": "Она хочет воды." },
       "freqRank": 78,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:potable-water"
+      "image": "cue:potable-water",
+      "voices": [{ "key": "echo/packs/ar_beginner/77-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 78,
@@ -830,7 +908,8 @@
       "gloss": { "en": "Open the window.", "de": "Mach das Fenster auf." },
       "freqRank": 79,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:window"
+      "image": "cue:window",
+      "voices": [{ "key": "echo/packs/ar_beginner/78-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 79,
@@ -839,7 +918,8 @@
       "gloss": { "en": "Everyone watched.", "ru": "Все смотрели." },
       "freqRank": 80,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [{ "key": "echo/packs/ar_beginner/79-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 80,
@@ -848,7 +928,8 @@
       "gloss": { "en": "Your time is up.", "ru": "Твоё время вышло." },
       "freqRank": 81,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-done"
+      "image": "cue:hourglass-done",
+      "voices": [{ "key": "echo/packs/ar_beginner/80-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 81,
@@ -857,7 +938,8 @@
       "gloss": { "en": "Take your time.", "de": "Lass dir Zeit.", "es": "Tómate tu tiempo." },
       "freqRank": 82,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:turtle"
+      "image": "cue:turtle",
+      "voices": [{ "key": "echo/packs/ar_beginner/81-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 82,
@@ -866,7 +948,8 @@
       "gloss": { "en": "She is eating.", "ru": "Она ест." },
       "freqRank": 83,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [{ "key": "echo/packs/ar_beginner/82-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 83,
@@ -875,7 +958,8 @@
       "gloss": { "en": "The letter returned.", "ru": "Письмо вернулось." },
       "freqRank": 84,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:envelope"
+      "image": "cue:envelope",
+      "voices": [{ "key": "echo/packs/ar_beginner/83-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 84,
@@ -884,7 +968,8 @@
       "gloss": { "en": "That's your car.", "ru": "Это твоя машина." },
       "freqRank": 85,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [{ "key": "echo/packs/ar_beginner/84-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 85,
@@ -893,7 +978,8 @@
       "gloss": { "en": "I need help.", "ru": "Мне нужна помощь." },
       "freqRank": 86,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sos-button"
+      "image": "cue:sos-button",
+      "voices": [{ "key": "echo/packs/ar_beginner/85-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 86,
@@ -902,7 +988,8 @@
       "gloss": { "en": "Where is the book?", "ru": "Где книга?" },
       "freqRank": 87,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [{ "key": "echo/packs/ar_beginner/86-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 87,
@@ -916,7 +1003,8 @@
       },
       "freqRank": 88,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [{ "key": "echo/packs/ar_beginner/87-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 88,
@@ -931,7 +1019,8 @@
       },
       "freqRank": 89,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [{ "key": "echo/packs/ar_beginner/88-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 89,
@@ -940,7 +1029,8 @@
       "gloss": { "en": "Lock the gate.", "ru": "Запри ворота." },
       "freqRank": 90,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:key"
+      "image": "cue:key",
+      "voices": [{ "key": "echo/packs/ar_beginner/89-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 90,
@@ -949,7 +1039,8 @@
       "gloss": { "en": "He paid the cost.", "tr": "Bedelini ödemiş." },
       "freqRank": 91,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [{ "key": "echo/packs/ar_beginner/90-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 91,
@@ -962,7 +1053,8 @@
       },
       "freqRank": 92,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [{ "key": "echo/packs/ar_beginner/91-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 92,
@@ -975,7 +1067,8 @@
       },
       "freqRank": 93,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:police-car"
+      "image": "cue:police-car",
+      "voices": [{ "key": "echo/packs/ar_beginner/92-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 93,
@@ -988,7 +1081,8 @@
       },
       "freqRank": 94,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/ar_beginner/93-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 94,
@@ -997,7 +1091,8 @@
       "gloss": { "en": "The color is spectacular.", "ru": "Цвет отличный." },
       "freqRank": 95,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:artist-palette"
+      "image": "cue:artist-palette",
+      "voices": [{ "key": "echo/packs/ar_beginner/94-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 95,
@@ -1006,7 +1101,8 @@
       "gloss": { "en": "I need time.", "ru": "Мне нужно время." },
       "freqRank": 96,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [{ "key": "echo/packs/ar_beginner/95-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 96,
@@ -1020,7 +1116,8 @@
       },
       "freqRank": 97,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:drooling-face"
+      "image": "cue:drooling-face",
+      "voices": [{ "key": "echo/packs/ar_beginner/96-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 97,
@@ -1029,7 +1126,8 @@
       "gloss": { "en": "Why were you late?", "de": "Weshalb kommst du zu spät?" },
       "freqRank": 98,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:alarm-clock"
+      "image": "cue:alarm-clock",
+      "voices": [{ "key": "echo/packs/ar_beginner/97-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 98,
@@ -1038,7 +1136,8 @@
       "gloss": { "en": "Where is your sister?", "ru": "Где твоя сестра?" },
       "freqRank": 99,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:women-holding-hands"
+      "image": "cue:women-holding-hands",
+      "voices": [{ "key": "echo/packs/ar_beginner/98-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 99,
@@ -1047,7 +1146,8 @@
       "gloss": { "en": "I like movies.", "tr": "Filmleri severim.", "ru": "Я люблю кино." },
       "freqRank": 100,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [{ "key": "echo/packs/ar_beginner/99-chatterbox-ar.m4a", "voice": "chatterbox-ar" }]
     },
     {
       "index": 100,
@@ -1056,7 +1156,10 @@
       "gloss": { "en": "I hate the internet.", "ru": "Я ненавижу Интернет." },
       "freqRank": 101,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:laptop"
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/100-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 101,
@@ -1065,7 +1168,10 @@
       "gloss": { "en": "Is this your car?", "ru": "Это твоя машина?" },
       "freqRank": 102,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/101-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 102,
@@ -1074,7 +1180,10 @@
       "gloss": { "en": "Thank you very much!", "fr": "Merci beaucoup !", "ru": "Большое спасибо!" },
       "freqRank": 103,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:folded-hands"
+      "image": "cue:folded-hands",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/102-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 103,
@@ -1089,7 +1198,10 @@
       },
       "freqRank": 104,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/103-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 104,
@@ -1098,7 +1210,10 @@
       "gloss": { "en": "Are you listening?", "de": "Hörst du?", "es": "¿Escuchas?" },
       "freqRank": 105,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/104-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 105,
@@ -1107,7 +1222,10 @@
       "gloss": { "en": "That's a good question.", "ru": "Это хороший вопрос." },
       "freqRank": 106,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/105-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 106,
@@ -1122,7 +1240,10 @@
       },
       "freqRank": 107,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ambulance"
+      "image": "cue:ambulance",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/106-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 107,
@@ -1131,7 +1252,10 @@
       "gloss": { "en": "That's a hard question to answer.", "de": "Das ist eine schwere Frage." },
       "freqRank": 108,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thinking-face"
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/107-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 108,
@@ -1140,7 +1264,10 @@
       "gloss": { "en": "Please say something.", "es": "Por favor, diga algo." },
       "freqRank": 109,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/108-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 109,
@@ -1149,7 +1276,10 @@
       "gloss": { "en": "I am fine, and you?", "es": "Estoy bien, ¿y vos?" },
       "freqRank": 110,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:slightly-smiling-face"
+      "image": "cue:slightly-smiling-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/109-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 110,
@@ -1162,7 +1292,10 @@
       },
       "freqRank": 111,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/110-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 111,
@@ -1171,7 +1304,10 @@
       "gloss": { "en": "It's dangerous!", "ru": "Ты в опасности!" },
       "freqRank": 112,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:warning"
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/111-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 112,
@@ -1180,7 +1316,10 @@
       "gloss": { "en": "The world is in danger.", "tr": "Dünya tehlikede." },
       "freqRank": 113,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/112-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 113,
@@ -1189,7 +1328,10 @@
       "gloss": { "en": "Do you live here?", "es": "¿Usted vive aquí?", "ru": "Ты живёшь здесь?" },
       "freqRank": 114,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/113-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 114,
@@ -1203,7 +1345,10 @@
       },
       "freqRank": 115,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-and-man-holding-hands"
+      "image": "cue:woman-and-man-holding-hands",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/114-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 115,
@@ -1212,7 +1357,10 @@
       "gloss": { "en": "He's a wonderful scholar.", "ru": "Мир поистине чудесен." },
       "freqRank": 116,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:graduation-cap"
+      "image": "cue:graduation-cap",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/115-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 116,
@@ -1225,7 +1373,10 @@
       },
       "freqRank": 117,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/116-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 117,
@@ -1234,7 +1385,10 @@
       "gloss": { "en": "I know those girls.", "es": "Conozco a aquellas chicas." },
       "freqRank": 118,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:women-holding-hands"
+      "image": "cue:women-holding-hands",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/117-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 118,
@@ -1243,7 +1397,10 @@
       "gloss": { "en": "I'm just looking.", "de": "Ich schaue nur.", "es": "Sólo estoy mirando." },
       "freqRank": 119,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/118-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 119,
@@ -1252,7 +1409,10 @@
       "gloss": { "en": "Happy birthday!", "fr": "Joyeux anniversaire." },
       "freqRank": 120,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/119-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 120,
@@ -1266,7 +1426,10 @@
       },
       "freqRank": 121,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/120-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 121,
@@ -1275,7 +1438,10 @@
       "gloss": { "en": "See you next week!", "es": "¡Hasta la semana que viene!" },
       "freqRank": 122,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:spiral-calendar"
+      "image": "cue:spiral-calendar",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/121-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 122,
@@ -1284,7 +1450,10 @@
       "gloss": { "en": "Is dinner ready?", "ru": "Ужин готов?" },
       "freqRank": 123,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/122-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 123,
@@ -1293,7 +1462,10 @@
       "gloss": { "en": "I returned from school.", "fr": "Je suis rentré de l'école." },
       "freqRank": 124,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:backpack"
+      "image": "cue:backpack",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/123-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 124,
@@ -1302,7 +1474,10 @@
       "gloss": { "en": "What are you looking for there?", "ru": "Что ты там ищешь?" },
       "freqRank": 125,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/124-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 125,
@@ -1311,7 +1486,10 @@
       "gloss": { "en": "Don't look at me.", "ru": "Не смотри на меня!" },
       "freqRank": 126,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:see-no-evil-monkey"
+      "image": "cue:see-no-evil-monkey",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/125-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 126,
@@ -1320,7 +1498,10 @@
       "gloss": { "en": "Come to my house.", "fr": "Viens à la maison." },
       "freqRank": 127,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/126-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 127,
@@ -1333,7 +1514,10 @@
       },
       "freqRank": 128,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:brain"
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/127-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 128,
@@ -1342,7 +1526,10 @@
       "gloss": { "en": "My family is not very large.", "ru": "Моя семья небольшая." },
       "freqRank": 129,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/128-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 129,
@@ -1351,7 +1538,10 @@
       "gloss": { "en": "I'm learning music.", "ru": "Я изучаю музыку." },
       "freqRank": 130,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-score"
+      "image": "cue:musical-score",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/129-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 130,
@@ -1360,7 +1550,10 @@
       "gloss": { "en": "I don't understand music.", "de": "Ich verstehe Musik nicht." },
       "freqRank": 131,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-note"
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/130-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 131,
@@ -1369,7 +1562,10 @@
       "gloss": { "en": "I want to live here.", "ru": "Я хочу здесь жить." },
       "freqRank": 132,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/131-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 132,
@@ -1378,7 +1574,10 @@
       "gloss": { "en": "What you say is true.", "es": "Lo que decís es cierto." },
       "freqRank": 133,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark"
+      "image": "cue:check-mark",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/132-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 133,
@@ -1387,7 +1586,10 @@
       "gloss": { "en": "I like the dog.", "es": "Me gusta el perro." },
       "freqRank": 134,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/133-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 134,
@@ -1400,7 +1602,10 @@
       },
       "freqRank": 135,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/134-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 135,
@@ -1409,7 +1614,10 @@
       "gloss": { "en": "She is in the bathroom.", "ru": "Она в ванной." },
       "freqRank": 136,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:restroom"
+      "image": "cue:restroom",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/135-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 136,
@@ -1418,7 +1626,10 @@
       "gloss": { "en": "I'm from America.", "de": "Ich komme aus Amerika." },
       "freqRank": 137,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:world-map"
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/136-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 137,
@@ -1427,7 +1638,10 @@
       "gloss": { "en": "He came back from America.", "ru": "Он вернулся из Америки." },
       "freqRank": 138,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane"
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/137-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 138,
@@ -1441,7 +1655,10 @@
       },
       "freqRank": 139,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:baby"
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/138-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 139,
@@ -1454,7 +1671,10 @@
       },
       "freqRank": 140,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/139-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 140,
@@ -1463,7 +1683,10 @@
       "gloss": { "en": "I love working with you.", "ru": "Я люблю с тобой работать." },
       "freqRank": 141,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/140-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 141,
@@ -1472,7 +1695,10 @@
       "gloss": { "en": "Tom needed food.", "de": "Tom benötigte Lebensmittel." },
       "freqRank": 142,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/141-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 142,
@@ -1486,7 +1712,10 @@
       },
       "freqRank": 143,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flexed-biceps"
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/142-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 143,
@@ -1495,7 +1724,10 @@
       "gloss": { "en": "I was at the party.", "tr": "Partideydim." },
       "freqRank": 144,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:party-popper"
+      "image": "cue:party-popper",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/143-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 144,
@@ -1504,7 +1736,10 @@
       "gloss": { "en": "There's a book here.", "es": "Hay un libro aquí." },
       "freqRank": 145,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/144-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 145,
@@ -1518,7 +1753,10 @@
       },
       "freqRank": 146,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:waving-hand"
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/145-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 146,
@@ -1527,7 +1765,10 @@
       "gloss": { "en": "He's very ill.", "ru": "Он очень болен." },
       "freqRank": 147,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-thermometer"
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/146-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 147,
@@ -1540,7 +1781,10 @@
       },
       "freqRank": 148,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/147-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 148,
@@ -1549,7 +1793,10 @@
       "gloss": { "en": "Tomorrow is Mother's Day.", "es": "Mañana es el día de la madre." },
       "freqRank": 149,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bouquet"
+      "image": "cue:bouquet",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/148-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 149,
@@ -1558,7 +1805,10 @@
       "gloss": { "en": "It's lunch time.", "es": "Es hora del almuerzo.", "ru": "Время обеда." },
       "freqRank": 150,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/149-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 150,
@@ -1567,7 +1817,10 @@
       "gloss": { "en": "I am in London.", "ru": "Я в Лондоне." },
       "freqRank": 151,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:round-pushpin"
+      "image": "cue:round-pushpin",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/150-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 151,
@@ -1576,7 +1829,10 @@
       "gloss": { "en": "Is that Tom's dog?", "tr": "O, Tom'un köpeği mi?" },
       "freqRank": 152,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/151-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 152,
@@ -1585,7 +1841,10 @@
       "gloss": { "en": "It's a big dog.", "de": "Das ist ein großer Hund." },
       "freqRank": 153,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/152-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 153,
@@ -1598,7 +1857,10 @@
       },
       "freqRank": 154,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crossed-swords"
+      "image": "cue:crossed-swords",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/153-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 154,
@@ -1607,7 +1869,10 @@
       "gloss": { "en": "She talks a lot.", "ru": "Она много говорит." },
       "freqRank": 155,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/154-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 155,
@@ -1616,7 +1881,10 @@
       "gloss": { "en": "I came with my friends.", "es": "Vine con mis amigos." },
       "freqRank": 156,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/155-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 156,
@@ -1629,7 +1897,10 @@
       },
       "freqRank": 157,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/156-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 157,
@@ -1638,7 +1909,10 @@
       "gloss": { "en": "Happy Valentine's Day.", "tr": "Sevgililer Günün kutlu olsun!" },
       "freqRank": 158,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heart-with-arrow"
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/157-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 158,
@@ -1652,7 +1926,10 @@
       },
       "freqRank": 159,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cut-of-meat"
+      "image": "cue:cut-of-meat",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/158-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 159,
@@ -1661,7 +1938,10 @@
       "gloss": { "en": "I worry about him.", "de": "Ich mache mir Sorgen um ihn." },
       "freqRank": 160,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:worried-face"
+      "image": "cue:worried-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/159-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 160,
@@ -1674,7 +1954,10 @@
       },
       "freqRank": 161,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tear-off-calendar"
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/160-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 161,
@@ -1683,7 +1966,10 @@
       "gloss": { "en": "Sit down, please.", "ru": "Садись, пожалуйста." },
       "freqRank": 162,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:chair"
+      "image": "cue:chair",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/161-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 162,
@@ -1692,7 +1978,10 @@
       "gloss": { "en": "My mother has good handwriting.", "ru": "У моей матери красивый почерк." },
       "freqRank": 163,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/162-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 163,
@@ -1701,7 +1990,10 @@
       "gloss": { "en": "He has been hospitalized.", "ru": "Его положили в больницу." },
       "freqRank": 164,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ambulance"
+      "image": "cue:ambulance",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/163-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 164,
@@ -1710,7 +2002,10 @@
       "gloss": { "en": "He likes to watch TV.", "ru": "Он любит смотреть телевизор." },
       "freqRank": 165,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/164-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 165,
@@ -1719,7 +2014,10 @@
       "gloss": { "en": "You can watch television.", "es": "Puedes ver televisión." },
       "freqRank": 166,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/165-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 166,
@@ -1728,7 +2026,10 @@
       "gloss": { "en": "Listen and learn.", "ru": "Слушай и изучай." },
       "freqRank": 167,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/166-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 167,
@@ -1737,7 +2038,10 @@
       "gloss": { "en": "Love and Peace.", "es": "Amor y paz." },
       "freqRank": 168,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:peace-symbol"
+      "image": "cue:peace-symbol",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/167-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 168,
@@ -1751,7 +2055,10 @@
       },
       "freqRank": 169,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pregnant-woman"
+      "image": "cue:pregnant-woman",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/168-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 169,
@@ -1760,7 +2067,10 @@
       "gloss": { "en": "Good night!", "de": "Gute Nacht!" },
       "freqRank": 170,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crescent-moon"
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/169-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 170,
@@ -1774,7 +2084,10 @@
       },
       "freqRank": 171,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:women-holding-hands"
+      "image": "cue:women-holding-hands",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/170-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 171,
@@ -1783,7 +2096,10 @@
       "gloss": { "en": "Do you come from a big family?", "ru": "Твоя семья большая?" },
       "freqRank": 172,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/171-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 172,
@@ -1792,7 +2108,10 @@
       "gloss": { "en": "Somebody is looking for you.", "ru": "Один из них ищет тебя." },
       "freqRank": 173,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/172-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 173,
@@ -1801,7 +2120,10 @@
       "gloss": { "en": "She is mad at me.", "fr": "Elle est en colère contre moi." },
       "freqRank": 174,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:angry-face"
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/173-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 174,
@@ -1817,7 +2139,10 @@
       },
       "freqRank": 175,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/174-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 175,
@@ -1826,7 +2151,10 @@
       "gloss": { "en": "OK. I agree.", "ru": "Хорошо. Я согласен." },
       "freqRank": 176,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ok-hand"
+      "image": "cue:ok-hand",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/175-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 176,
@@ -1835,7 +2163,10 @@
       "gloss": { "en": "Never tell a lie!", "es": "¡No mientas jamás!" },
       "freqRank": 177,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face"
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/176-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 177,
@@ -1844,7 +2175,10 @@
       "gloss": { "en": "I read a letter.", "ru": "Я читал письмо." },
       "freqRank": 178,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:envelope"
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/177-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 178,
@@ -1853,7 +2187,10 @@
       "gloss": { "en": "The book is on the table.", "de": "Das Buch ist auf dem Tisch." },
       "freqRank": 179,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/178-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 179,
@@ -1862,7 +2199,10 @@
       "gloss": { "en": "The key is on the table.", "ru": "Ключ на столе." },
       "freqRank": 180,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:key"
+      "image": "cue:key",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/179-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 180,
@@ -1871,7 +2211,10 @@
       "gloss": { "en": "I called him up yesterday.", "ru": "Я позвонил ему вчера." },
       "freqRank": 181,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/180-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 181,
@@ -1880,7 +2223,10 @@
       "gloss": { "en": "Father is angry with me.", "ru": "Мой отец на меня зол." },
       "freqRank": 182,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:angry-face"
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/181-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 182,
@@ -1889,7 +2235,10 @@
       "gloss": { "en": "He likes snow.", "ru": "Он любит снег." },
       "freqRank": 183,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:snowflake"
+      "image": "cue:snowflake",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/182-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 183,
@@ -1902,7 +2251,10 @@
       },
       "freqRank": 184,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/183-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 184,
@@ -1916,7 +2268,10 @@
       },
       "freqRank": 185,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/184-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 185,
@@ -1925,7 +2280,10 @@
       "gloss": { "en": "I have a surprise for you.", "es": "Tengo una sorpresa para ustedes." },
       "freqRank": 186,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrapped-gift"
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/185-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 186,
@@ -1939,7 +2297,10 @@
       },
       "freqRank": 187,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:luggage"
+      "image": "cue:luggage",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/186-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 187,
@@ -1948,7 +2309,10 @@
       "gloss": { "en": "This is Jane's bag.", "ru": "Это портфель Джейн." },
       "freqRank": 188,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handbag"
+      "image": "cue:handbag",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/187-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 188,
@@ -1963,7 +2327,10 @@
       },
       "freqRank": 189,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:droplet"
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/188-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 189,
@@ -1972,7 +2339,10 @@
       "gloss": { "en": "He wrote one letter.", "ru": "Он написал одно письмо." },
       "freqRank": 190,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/189-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 190,
@@ -1985,7 +2355,10 @@
       },
       "freqRank": 191,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:envelope"
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/190-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 191,
@@ -1994,7 +2367,10 @@
       "gloss": { "en": "He wrote the book.", "ru": "Он написал книгу." },
       "freqRank": 192,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/191-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 192,
@@ -2007,7 +2383,10 @@
       },
       "freqRank": 193,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:brain"
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/192-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 193,
@@ -2016,7 +2395,10 @@
       "gloss": { "en": "I have an old car.", "tr": "Eski bir arabam var." },
       "freqRank": 194,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/193-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 194,
@@ -2030,7 +2412,10 @@
       },
       "freqRank": 195,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:camera"
+      "image": "cue:camera",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/194-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 195,
@@ -2039,7 +2424,10 @@
       "gloss": { "en": "You are eating meat.", "de": "Du isst Fleisch." },
       "freqRank": 196,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cut-of-meat"
+      "image": "cue:cut-of-meat",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/195-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 196,
@@ -2048,7 +2436,10 @@
       "gloss": { "en": "Don't eat meat!", "fr": "Ne mange pas de viande !" },
       "freqRank": 197,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cut-of-meat"
+      "image": "cue:cut-of-meat",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/196-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 197,
@@ -2057,7 +2448,10 @@
       "gloss": { "en": "Calm down, son.", "ru": "Успокойся, сынок." },
       "freqRank": 198,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:relieved-face"
+      "image": "cue:relieved-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/197-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 198,
@@ -2066,7 +2460,10 @@
       "gloss": { "en": "Go in the house.", "ru": "Входи в дом." },
       "freqRank": 199,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/198-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 199,
@@ -2075,7 +2472,10 @@
       "gloss": { "en": "I think she is sick.", "es": "Creo que ella está enferma." },
       "freqRank": 200,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-thermometer"
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/199-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 200,
@@ -2087,7 +2487,10 @@
       },
       "freqRank": 201,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrench"
+      "image": "cue:wrench",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/200-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 201,
@@ -2096,7 +2499,10 @@
       "gloss": { "en": "Let's go to the beach.", "es": "Vamos a la playa." },
       "freqRank": 202,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:desert-island"
+      "image": "cue:desert-island",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/201-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 202,
@@ -2113,7 +2519,10 @@
       },
       "freqRank": 203,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face"
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/202-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 203,
@@ -2126,7 +2535,10 @@
       },
       "freqRank": 204,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/203-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 204,
@@ -2135,7 +2547,10 @@
       "gloss": { "en": "It's time to go to bed.", "es": "Es hora de acostarse." },
       "freqRank": 205,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bed"
+      "image": "cue:bed",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/204-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 205,
@@ -2144,7 +2559,10 @@
       "gloss": { "en": "Can you hear me?", "es": "¿Puedes oírme?" },
       "freqRank": 206,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/205-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 206,
@@ -2153,7 +2571,10 @@
       "gloss": { "en": "I no longer love him.", "fr": "Je ne l'aime plus." },
       "freqRank": 207,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:broken-heart"
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/206-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 207,
@@ -2166,7 +2587,10 @@
       },
       "freqRank": 208,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:luggage"
+      "image": "cue:luggage",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/207-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 208,
@@ -2175,7 +2599,10 @@
       "gloss": { "en": "The keys, please.", "ru": "Ключи, пожалуйста." },
       "freqRank": 209,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:key"
+      "image": "cue:key",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/208-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 209,
@@ -2184,7 +2611,10 @@
       "gloss": { "en": "Are you hungry?", "ru": "Ты голоден?" },
       "freqRank": 210,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/209-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 210,
@@ -2197,7 +2627,10 @@
       },
       "freqRank": 211,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/210-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 211,
@@ -2206,7 +2639,10 @@
       "gloss": { "en": "She is very intelligent.", "ru": "Она очень умна." },
       "freqRank": 212,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:brain"
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/211-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 212,
@@ -2215,7 +2651,10 @@
       "gloss": { "en": "I love American movies.", "ru": "Я люблю американские фильмы." },
       "freqRank": 213,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/212-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 213,
@@ -2224,7 +2663,10 @@
       "gloss": { "en": "I liked this film.", "es": "Me gustó esta película." },
       "freqRank": 214,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/213-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 214,
@@ -2233,7 +2675,10 @@
       "gloss": { "en": "I'll stay home.", "ru": "Я останусь в доме." },
       "freqRank": 215,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/214-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 215,
@@ -2242,7 +2687,10 @@
       "gloss": { "en": "Tom was calling.", "fr": "Tom appelait." },
       "freqRank": 216,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/215-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 216,
@@ -2251,7 +2699,10 @@
       "gloss": { "en": "I love this song.", "ru": "Я люблю эту песню." },
       "freqRank": 217,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-notes"
+      "image": "cue:musical-notes",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/216-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 217,
@@ -2265,7 +2716,10 @@
       },
       "freqRank": 218,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:round-pushpin"
+      "image": "cue:round-pushpin",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/217-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 218,
@@ -2278,7 +2732,10 @@
       },
       "freqRank": 219,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:world-map"
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/218-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 219,
@@ -2291,7 +2748,10 @@
       },
       "freqRank": 220,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hammer-and-wrench"
+      "image": "cue:hammer-and-wrench",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/219-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 220,
@@ -2300,7 +2760,10 @@
       "gloss": { "en": "I hate the smell of alcohol.", "ru": "Я ненавижу запах алкоголя." },
       "freqRank": 221,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:nose"
+      "image": "cue:nose",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/220-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 221,
@@ -2309,7 +2772,10 @@
       "gloss": { "en": "I'm not happy.", "es": "No estoy feliz." },
       "freqRank": 222,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:disappointed-face"
+      "image": "cue:disappointed-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/221-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 222,
@@ -2318,7 +2784,10 @@
       "gloss": { "en": "Tom was happy.", "ru": "Том был счастлив." },
       "freqRank": 223,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/222-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 223,
@@ -2327,7 +2796,10 @@
       "gloss": { "en": "I went to school yesterday.", "ru": "Я пошёл вчера в школу." },
       "freqRank": 224,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/223-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 224,
@@ -2336,7 +2808,10 @@
       "gloss": { "en": "He is in the hospital at present.", "ru": "Он сейчас в больнице." },
       "freqRank": 225,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-head-bandage"
+      "image": "cue:face-with-head-bandage",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/224-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 225,
@@ -2350,7 +2825,10 @@
       },
       "freqRank": 226,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:warning"
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/225-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 226,
@@ -2359,7 +2837,10 @@
       "gloss": { "en": "A good idea crossed his mind.", "ru": "Хорошая идея пришла ему в голову." },
       "freqRank": 227,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:light-bulb"
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/226-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 227,
@@ -2372,7 +2853,10 @@
       },
       "freqRank": 228,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cityscape-at-dusk"
+      "image": "cue:cityscape-at-dusk",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/227-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 228,
@@ -2387,7 +2871,10 @@
       },
       "freqRank": 229,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/228-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 229,
@@ -2396,7 +2883,10 @@
       "gloss": { "en": "Is this book yours?", "ru": "Эта книга твоя?" },
       "freqRank": 230,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book"
+      "image": "cue:closed-book",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/229-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 230,
@@ -2405,7 +2895,10 @@
       "gloss": { "en": "I'm in trouble now.", "ru": "У меня проблемы." },
       "freqRank": 231,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:worried-face"
+      "image": "cue:worried-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/230-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 231,
@@ -2420,7 +2913,10 @@
       },
       "freqRank": 232,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:houses"
+      "image": "cue:houses",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/231-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 232,
@@ -2429,7 +2925,10 @@
       "gloss": { "en": "My mother left me a message.", "ru": "Мама оставила мне сообщение." },
       "freqRank": 233,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:envelope"
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/232-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 233,
@@ -2438,7 +2937,10 @@
       "gloss": { "en": "I hope to see you again.", "ru": "Надеюсь увидеть тебя снова." },
       "freqRank": 234,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:waving-hand"
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/233-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 234,
@@ -2451,7 +2953,10 @@
       },
       "freqRank": 235,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-note"
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/234-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 235,
@@ -2463,7 +2968,10 @@
       },
       "freqRank": 236,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/235-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 236,
@@ -2477,7 +2985,10 @@
       },
       "freqRank": 237,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ring-buoy"
+      "image": "cue:ring-buoy",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/236-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 237,
@@ -2486,7 +2997,10 @@
       "gloss": { "en": "We'll do it tomorrow.", "ru": "Мы сделаем это завтра." },
       "freqRank": 238,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:calendar"
+      "image": "cue:calendar",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/237-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 238,
@@ -2495,7 +3009,10 @@
       "gloss": { "en": "We can't wait much longer.", "ru": "Мы не можем больше ждать." },
       "freqRank": 239,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/238-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 239,
@@ -2504,7 +3021,10 @@
       "gloss": { "en": "Is this a gift for me?", "es": "¿Es un regalo para mí?" },
       "freqRank": 240,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrapped-gift"
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/239-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 240,
@@ -2513,7 +3033,10 @@
       "gloss": { "en": "It's always the same voice.", "ru": "Это всегда один и тот же голос." },
       "freqRank": 241,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/240-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 241,
@@ -2522,7 +3045,10 @@
       "gloss": { "en": "Did you hear that sound?", "es": "¿Has oído ese sonido?" },
       "freqRank": 242,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/241-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 242,
@@ -2531,7 +3057,10 @@
       "gloss": { "en": "Who is that pretty girl?", "ru": "Кто эта красивая девушка?" },
       "freqRank": 243,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/242-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 243,
@@ -2540,7 +3069,10 @@
       "gloss": { "en": "What's on your face?", "ru": "Что у тебя на лице?" },
       "freqRank": 244,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mirror"
+      "image": "cue:mirror",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/243-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 244,
@@ -2549,7 +3081,10 @@
       "gloss": { "en": "I'm feeling a little sick.", "ru": "Чувствую, я немного приболел." },
       "freqRank": 245,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:nauseated-face"
+      "image": "cue:nauseated-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/244-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 245,
@@ -2558,7 +3093,10 @@
       "gloss": { "en": "We return to the ship.", "tr": "Gemiyle dönüyoruz." },
       "freqRank": 246,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ship"
+      "image": "cue:ship",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/245-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 246,
@@ -2567,7 +3105,10 @@
       "gloss": { "en": "Who owns this house?", "de": "Wem gehört dieses Haus?" },
       "freqRank": 247,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/246-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 247,
@@ -2581,7 +3122,10 @@
       },
       "freqRank": 248,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/247-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 248,
@@ -2590,7 +3134,10 @@
       "gloss": { "en": "I have been here for a week.", "ru": "Я здесь уже неделю." },
       "freqRank": 249,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:spiral-calendar"
+      "image": "cue:spiral-calendar",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/248-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 249,
@@ -2599,7 +3146,10 @@
       "gloss": { "en": "When did you get to London?", "ru": "Когда ты приехал в Лондон?" },
       "freqRank": 250,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane-arrival"
+      "image": "cue:airplane-arrival",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/249-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 250,
@@ -2608,7 +3158,10 @@
       "gloss": { "en": "Tom has another dog.", "fr": "Tom a un autre chien." },
       "freqRank": 251,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/250-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 251,
@@ -2621,7 +3174,10 @@
       },
       "freqRank": 252,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:shield"
+      "image": "cue:shield",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/251-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 252,
@@ -2630,7 +3186,10 @@
       "gloss": { "en": "I just have a few questions.", "ru": "У меня лишь несколько вопросов." },
       "freqRank": 253,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/252-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 253,
@@ -2644,7 +3203,10 @@
       },
       "freqRank": 254,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/253-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 254,
@@ -2653,7 +3215,10 @@
       "gloss": { "en": "The train hasn't arrived yet.", "es": "El tren todavía no llega." },
       "freqRank": 255,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:train"
+      "image": "cue:train",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/254-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 255,
@@ -2662,7 +3227,10 @@
       "gloss": { "en": "My brother is small but strong.", "ru": "Мой брат маленький, но сильный." },
       "freqRank": 256,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flexed-biceps"
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/255-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 256,
@@ -2671,7 +3239,10 @@
       "gloss": { "en": "Go home quickly.", "fr": "Retourne rapidement à la maison." },
       "freqRank": 257,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/256-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 257,
@@ -2683,7 +3254,10 @@
       },
       "freqRank": 258,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thinking-face"
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/257-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 258,
@@ -2695,7 +3269,10 @@
       },
       "freqRank": 259,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/258-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 259,
@@ -2704,7 +3281,10 @@
       "gloss": { "en": "Mary likes watching TV.", "ru": "Мэри любит смотреть телевизор." },
       "freqRank": 260,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/259-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 260,
@@ -2717,7 +3297,10 @@
       },
       "freqRank": 261,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crescent-moon"
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/260-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 261,
@@ -2726,7 +3309,10 @@
       "gloss": { "en": "Nobody owns the moon.", "de": "Niemand besitzt den Mond." },
       "freqRank": 262,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crescent-moon"
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/261-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 262,
@@ -2735,7 +3321,10 @@
       "gloss": { "en": "We are working in the interest of peace.", "ru": "Мы работаем ради мира." },
       "freqRank": 263,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:peace-symbol"
+      "image": "cue:peace-symbol",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/262-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 263,
@@ -2748,7 +3337,10 @@
       },
       "freqRank": 264,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dove"
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/263-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 264,
@@ -2757,7 +3349,10 @@
       "gloss": { "en": "I am on a business trip.", "ru": "Я в командировке." },
       "freqRank": 265,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/264-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 265,
@@ -2766,7 +3361,10 @@
       "gloss": { "en": "\"I don't know,\" said Tony.", "tr": "Tony dedi ki: bilmiyorum." },
       "freqRank": 266,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/265-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 266,
@@ -2775,7 +3373,10 @@
       "gloss": { "en": "Never play here.", "ru": "Никогда тут не играй." },
       "freqRank": 267,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:no-entry"
+      "image": "cue:no-entry",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/266-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 267,
@@ -2788,7 +3389,10 @@
       },
       "freqRank": 268,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:soccer-ball"
+      "image": "cue:soccer-ball",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/267-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 268,
@@ -2801,7 +3405,10 @@
       },
       "freqRank": 269,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/268-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 269,
@@ -2810,7 +3417,10 @@
       "gloss": { "en": "Just stand there, please.", "ru": "Будь добр, постой там." },
       "freqRank": 270,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-standing"
+      "image": "cue:person-standing",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/269-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 270,
@@ -2823,7 +3433,10 @@
       },
       "freqRank": 271,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:station"
+      "image": "cue:station",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/270-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 271,
@@ -2836,7 +3449,10 @@
       },
       "freqRank": 272,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:backpack"
+      "image": "cue:backpack",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/271-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 272,
@@ -2845,7 +3461,10 @@
       "gloss": { "en": "Is there water there?", "tr": "Orada su var mı?", "es": "¿Aquí hay agua?" },
       "freqRank": 273,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:potable-water"
+      "image": "cue:potable-water",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/272-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 273,
@@ -2858,7 +3477,10 @@
       },
       "freqRank": 274,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sun"
+      "image": "cue:sun",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/273-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 274,
@@ -2872,7 +3494,10 @@
       },
       "freqRank": 275,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/274-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 275,
@@ -2886,7 +3511,10 @@
       },
       "freqRank": 276,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/275-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 276,
@@ -2900,7 +3528,10 @@
       },
       "freqRank": 277,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/276-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 277,
@@ -2913,7 +3544,10 @@
       },
       "freqRank": 278,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/277-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 278,
@@ -2926,7 +3560,10 @@
       },
       "freqRank": 279,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane"
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/278-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 279,
@@ -2939,7 +3576,10 @@
       },
       "freqRank": 280,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-face"
+      "image": "cue:hot-face",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/279-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 280,
@@ -2953,7 +3593,10 @@
       },
       "freqRank": 281,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/280-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 281,
@@ -2966,7 +3609,10 @@
       },
       "freqRank": 282,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fish"
+      "image": "cue:fish",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/281-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 282,
@@ -2981,7 +3627,10 @@
       },
       "freqRank": 283,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fish"
+      "image": "cue:fish",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/282-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 283,
@@ -2994,7 +3643,10 @@
       },
       "freqRank": 284,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:purse"
+      "image": "cue:purse",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/283-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 284,
@@ -3008,7 +3660,10 @@
       },
       "freqRank": 285,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ambulance"
+      "image": "cue:ambulance",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/284-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 285,
@@ -3021,7 +3676,10 @@
       },
       "freqRank": 286,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/285-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 286,
@@ -3034,7 +3692,10 @@
       },
       "freqRank": 287,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/286-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 287,
@@ -3047,7 +3708,10 @@
       },
       "freqRank": 288,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heart-with-arrow"
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/287-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 288,
@@ -3061,7 +3725,10 @@
       },
       "freqRank": 289,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/288-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 289,
@@ -3074,7 +3741,10 @@
       },
       "freqRank": 290,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/289-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 290,
@@ -3089,7 +3759,10 @@
       },
       "freqRank": 291,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/290-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 291,
@@ -3102,7 +3775,10 @@
       },
       "freqRank": 292,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane"
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/291-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 292,
@@ -3115,7 +3791,10 @@
       },
       "freqRank": 293,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:compass"
+      "image": "cue:compass",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/292-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 293,
@@ -3128,7 +3807,10 @@
       },
       "freqRank": 294,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/293-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 294,
@@ -3141,7 +3823,10 @@
       },
       "freqRank": 295,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye"
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/294-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 295,
@@ -3154,7 +3839,10 @@
       },
       "freqRank": 296,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:raised-hand"
+      "image": "cue:raised-hand",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/295-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 296,
@@ -3167,7 +3855,10 @@
       },
       "freqRank": 297,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/296-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 297,
@@ -3180,7 +3871,10 @@
       },
       "freqRank": 298,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/297-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 298,
@@ -3193,7 +3887,10 @@
       },
       "freqRank": 299,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/298-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     },
     {
       "index": 299,
@@ -3206,7 +3903,10 @@
       },
       "freqRank": 300,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/ar_beginner/299-chatterbox-ar.m4a", "voice": "chatterbox-ar" }
+      ]
     }
   ]
 }

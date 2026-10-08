@@ -2,7 +2,7 @@
   "id": "tr:absoluteBeginner",
   "lang": "tr",
   "level": "absoluteBeginner",
-  "contentVersion": 3,
+  "contentVersion": 4,
   "reviewed": false,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -20,7 +20,10 @@
       "gloss": { "en": "Me, too.", "de": "Ich auch.", "es": "Yo también." },
       "freqRank": 1,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/0-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 1,
@@ -29,7 +32,10 @@
       "gloss": { "en": "How much?", "es": "¿Cuánto cuesta?", "fr": "C’est combien ?" },
       "freqRank": 2,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heavy-dollar-sign"
+      "image": "cue:heavy-dollar-sign",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/1-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 2,
@@ -43,7 +49,10 @@
       },
       "freqRank": 3,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/2-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 3,
@@ -52,7 +61,10 @@
       "gloss": { "en": "Yes, please.", "de": "Ja, bitte.", "es": "Sí, por favor." },
       "freqRank": 4,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark-button"
+      "image": "cue:check-mark-button",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/3-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 4,
@@ -61,7 +73,10 @@
       "gloss": { "en": "I know that.", "de": "Ich kenne sie.", "es": "Lo sé." },
       "freqRank": 5,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:light-bulb"
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/4-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 5,
@@ -70,7 +85,10 @@
       "gloss": { "en": "It's true.", "de": "Stimmt.", "pt-BR": "Isto é verdade." },
       "freqRank": 6,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark"
+      "image": "cue:check-mark",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/5-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 6,
@@ -83,7 +101,10 @@
       },
       "freqRank": 7,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/6-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 7,
@@ -99,7 +120,10 @@
       },
       "freqRank": 8,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-gesturing-no"
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/7-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 8,
@@ -108,7 +132,10 @@
       "gloss": { "en": "It's new.", "de": "Er ist neu.", "es": "Es nuevo." },
       "freqRank": 9,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:new-button"
+      "image": "cue:new-button",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/8-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 9,
@@ -123,7 +150,10 @@
       },
       "freqRank": 10,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:warning"
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/9-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 10,
@@ -136,7 +166,10 @@
       },
       "freqRank": 11,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:grinning-face-with-big-eyes"
+      "image": "cue:grinning-face-with-big-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/10-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 11,
@@ -149,7 +182,10 @@
       },
       "freqRank": 12,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:disappointed-face"
+      "image": "cue:disappointed-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/11-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 12,
@@ -158,7 +194,10 @@
       "gloss": { "en": "Certainly.", "de": "Natürlich.", "ar": "طبعاً." },
       "freqRank": 13,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ok-hand"
+      "image": "cue:ok-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/12-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 13,
@@ -167,7 +206,10 @@
       "gloss": { "en": "Come here.", "es": "Ven aquí.", "ru": "Подойди-ка!" },
       "freqRank": 14,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:backhand-index-pointing-down"
+      "image": "cue:backhand-index-pointing-down",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/13-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 14,
@@ -180,7 +222,10 @@
       },
       "freqRank": 15,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/14-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 15,
@@ -189,7 +234,10 @@
       "gloss": { "en": "Thanks, Mom.", "de": "Danke, Mama!", "es": "¡Gracias, mamá!" },
       "freqRank": 16,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:folded-hands"
+      "image": "cue:folded-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/15-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 16,
@@ -198,7 +246,10 @@
       "gloss": { "en": "It's not important.", "es": "No tiene importancia.", "ar": "ليس مهماً." },
       "freqRank": 17,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/16-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 17,
@@ -207,7 +258,10 @@
       "gloss": { "en": "Repeat!", "de": "Wiederhole!", "fr": "Répète !" },
       "freqRank": 18,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:repeat-button"
+      "image": "cue:repeat-button",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/17-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 18,
@@ -221,7 +275,10 @@
       },
       "freqRank": 19,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/18-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 19,
@@ -235,7 +292,10 @@
       },
       "freqRank": 20,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/19-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 20,
@@ -244,7 +304,10 @@
       "gloss": { "en": "They are big.", "de": "Sie sind groß.", "es": "Son grandes." },
       "freqRank": 21,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:straight-ruler"
+      "image": "cue:straight-ruler",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/20-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 21,
@@ -253,7 +316,10 @@
       "gloss": { "en": "Are you sure?", "de": "Bist du sicher?", "ar": "هل انت متأكد" },
       "freqRank": 22,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-raised-eyebrow"
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/21-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 22,
@@ -262,7 +328,10 @@
       "gloss": { "en": "Everybody knows.", "de": "Alle wissen es.", "pt-BR": "Todo o mundo sabe." },
       "freqRank": 23,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/22-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 23,
@@ -271,7 +340,10 @@
       "gloss": { "en": "I'm sorry.", "es": "Disculpa.", "ar": "عفوًا." },
       "freqRank": 24,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-bowing"
+      "image": "cue:person-bowing",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/23-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 24,
@@ -284,7 +356,10 @@
       },
       "freqRank": 25,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:thumbs-up",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/24-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 25,
@@ -293,7 +368,10 @@
       "gloss": { "en": "Wait for me!", "ru": "Подожди меня!", "ar": "انتظرني" },
       "freqRank": 26,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:raised-hand"
+      "image": "cue:raised-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/25-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 26,
@@ -302,7 +380,10 @@
       "gloss": { "en": "Wait here.", "de": "Warte hier drin!", "ru": "Жди здесь." },
       "freqRank": 27,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:chair"
+      "image": "cue:chair",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/26-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 27,
@@ -311,7 +392,10 @@
       "gloss": { "en": "Let us go home.", "es": "Vámonos a casa.", "ru": "Давайте пойдём домой." },
       "freqRank": 28,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/27-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 28,
@@ -320,7 +404,10 @@
       "gloss": { "en": "What is this?", "es": "¿Qué es esto?", "ru": "Что это?" },
       "freqRank": 29,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/28-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 29,
@@ -335,7 +422,10 @@
       },
       "freqRank": 30,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:one-o-clock"
+      "image": "cue:one-o-clock",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/29-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 30,
@@ -348,7 +438,10 @@
       },
       "freqRank": 31,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:baby"
+      "image": "cue:baby",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/30-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 31,
@@ -361,7 +454,10 @@
       },
       "freqRank": 32,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/31-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 32,
@@ -370,7 +466,10 @@
       "gloss": { "en": "This is difficult.", "de": "Das ist schwierig.", "fr": "C'est difficile." },
       "freqRank": 33,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:weary-face"
+      "image": "cue:weary-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/32-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 33,
@@ -379,7 +478,10 @@
       "gloss": { "en": "I like this one.", "de": "Ich liebe das.", "es": "Me gusta éste." },
       "freqRank": 34,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:thumbs-up",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/33-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 34,
@@ -388,7 +490,10 @@
       "gloss": { "en": "I love her.", "de": "Ich liebe sie.", "es": "La quiero.", "ar": "أحبها." },
       "freqRank": 35,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:two-hearts"
+      "image": "cue:two-hearts",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/34-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 35,
@@ -404,7 +509,10 @@
       },
       "freqRank": 36,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/35-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 36,
@@ -413,7 +521,10 @@
       "gloss": { "en": "Yes, of course.", "de": "Ja, natürlich.", "fr": "Oui, bien sûr." },
       "freqRank": 37,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:thumbs-up",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/36-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 37,
@@ -427,7 +538,10 @@
       },
       "freqRank": 38,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/37-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 38,
@@ -436,7 +550,10 @@
       "gloss": { "en": "This is food.", "es": "Esto es comida.", "ru": "Это еда." },
       "freqRank": 39,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/38-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 39,
@@ -449,7 +566,10 @@
       },
       "freqRank": 40,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/39-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 40,
@@ -458,7 +578,10 @@
       "gloss": { "en": "Too late.", "es": "Demasiado tarde.", "pt-BR": "Tarde demais." },
       "freqRank": 41,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:alarm-clock"
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/40-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 41,
@@ -467,7 +590,10 @@
       "gloss": { "en": "Are you happy?", "es": "¿Estás feliz?", "ru": "Ты рад?" },
       "freqRank": 42,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/41-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 42,
@@ -481,7 +607,10 @@
       },
       "freqRank": 43,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:grinning-face"
+      "image": "cue:grinning-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/42-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 43,
@@ -496,7 +625,10 @@
       },
       "freqRank": 44,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:compass"
+      "image": "cue:compass",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/43-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 44,
@@ -505,7 +637,10 @@
       "gloss": { "en": "She left.", "es": "Se fue.", "ru": "Он ушёл." },
       "freqRank": 45,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/44-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 45,
@@ -519,7 +654,10 @@
       },
       "freqRank": 46,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-standing"
+      "image": "cue:person-standing",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/45-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 46,
@@ -533,7 +671,10 @@
       },
       "freqRank": 47,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person"
+      "image": "cue:person",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/46-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 47,
@@ -542,7 +683,10 @@
       "gloss": { "en": "I did see him.", "es": "Le vi.", "pt-BR": "Eu o vi." },
       "freqRank": 48,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/47-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 48,
@@ -551,7 +695,10 @@
       "gloss": { "en": "See you then.", "es": "Nos vemos luego.", "ru": "Увидимся позже." },
       "freqRank": 49,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:waving-hand"
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/48-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 49,
@@ -567,7 +714,10 @@
       },
       "freqRank": 50,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/49-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 50,
@@ -576,7 +726,10 @@
       "gloss": { "en": "Are you going?", "es": "¿Te bajas?", "fr": "Est-ce que tu y vas ?" },
       "freqRank": 51,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/50-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 51,
@@ -589,7 +742,10 @@
       },
       "freqRank": 52,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:chart-increasing"
+      "image": "cue:chart-increasing",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/51-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 52,
@@ -598,7 +754,10 @@
       "gloss": { "en": "Take it easy!", "de": "Beruhige dich!", "pt-BR": "Calma." },
       "freqRank": 53,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-in-lotus-position"
+      "image": "cue:person-in-lotus-position",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/52-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 53,
@@ -607,7 +766,10 @@
       "gloss": { "en": "I have done it.", "de": "Ich habe das gemacht.", "es": "Lo he hecho." },
       "freqRank": 54,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark-button"
+      "image": "cue:check-mark-button",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/53-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 54,
@@ -621,7 +783,10 @@
       },
       "freqRank": 55,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:people-hugging"
+      "image": "cue:people-hugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/54-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 55,
@@ -636,7 +801,10 @@
       },
       "freqRank": 56,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye"
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/55-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 56,
@@ -645,7 +813,10 @@
       "gloss": { "en": "Water, please.", "de": "Wasser bitte.", "ru": "Воды, пожалуйста." },
       "freqRank": 57,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:potable-water"
+      "image": "cue:potable-water",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/56-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 57,
@@ -654,7 +825,10 @@
       "gloss": { "en": "You've done it!", "es": "¡Lo has hecho!", "ru": "Ты сделал это!" },
       "freqRank": 58,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:party-popper"
+      "image": "cue:party-popper",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/57-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 58,
@@ -667,7 +841,10 @@
       },
       "freqRank": 59,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:astonished-face"
+      "image": "cue:astonished-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/58-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 59,
@@ -680,7 +857,10 @@
       },
       "freqRank": 60,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:grinning-face-with-smiling-eyes"
+      "image": "cue:grinning-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/59-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 60,
@@ -689,7 +869,10 @@
       "gloss": { "en": "It's easy.", "es": "Esto es fácil.", "ru": "Легко." },
       "freqRank": 61,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ok-hand"
+      "image": "cue:ok-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/60-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 61,
@@ -698,7 +881,10 @@
       "gloss": { "en": "It wasn't easy.", "es": "No ha sido fácil.", "pt-BR": "Não foi fácil." },
       "freqRank": 62,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:weary-face"
+      "image": "cue:weary-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/61-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 62,
@@ -713,7 +899,10 @@
       },
       "freqRank": 63,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/62-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 63,
@@ -722,7 +911,10 @@
       "gloss": { "en": "Where is the road?", "ru": "Где дорога?", "ar": "أين هو الطريق؟" },
       "freqRank": 64,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:world-map"
+      "image": "cue:world-map",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/63-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 64,
@@ -731,7 +923,10 @@
       "gloss": { "en": "She wants to speak.", "es": "Quiere hablar.", "fr": "Elle veut parler." },
       "freqRank": 65,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/64-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 65,
@@ -740,7 +935,10 @@
       "gloss": { "en": "I would love to go.", "es": "Me quiero ir.", "ru": "Я хочу уйти." },
       "freqRank": 66,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:luggage"
+      "image": "cue:luggage",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/65-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 66,
@@ -754,7 +952,10 @@
       },
       "freqRank": 67,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:brain"
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/66-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 67,
@@ -767,7 +968,10 @@
       },
       "freqRank": 68,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thinking-face"
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/67-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 68,
@@ -776,7 +980,10 @@
       "gloss": { "en": "Are you at home?", "de": "Bist du zu Hause?", "es": "¿Estás en casa?" },
       "freqRank": 69,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/68-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 69,
@@ -790,7 +997,10 @@
       },
       "freqRank": 70,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/69-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 70,
@@ -799,7 +1009,10 @@
       "gloss": { "en": "Where's your head at?", "de": "Was denken Sie?", "es": "¿Qué opinas?" },
       "freqRank": 71,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thought-balloon"
+      "image": "cue:thought-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/70-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 71,
@@ -808,7 +1021,10 @@
       "gloss": { "en": "This is perfect.", "es": "Esto es perfecto.", "pt-BR": "Isto é perfeito." },
       "freqRank": 72,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hundred-points"
+      "image": "cue:hundred-points",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/71-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 72,
@@ -817,7 +1033,10 @@
       "gloss": { "en": "Call me!", "de": "Ruf mich an!", "es": "¡Llámame!" },
       "freqRank": 73,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/72-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 73,
@@ -826,7 +1045,10 @@
       "gloss": { "en": "Are you hungry?", "de": "Hast du Hunger?", "es": "¿Tienes hambre?" },
       "freqRank": 74,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife"
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/73-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 74,
@@ -840,7 +1062,10 @@
       },
       "freqRank": 75,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ten-o-clock"
+      "image": "cue:ten-o-clock",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/74-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 75,
@@ -849,7 +1074,10 @@
       "gloss": { "en": "I'm leaving today.", "es": "Me voy hoy.", "ru": "Я сегодня уезжаю." },
       "freqRank": 76,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:luggage"
+      "image": "cue:luggage",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/75-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 76,
@@ -858,7 +1086,10 @@
       "gloss": { "en": "I'm going home.", "de": "Ich geh nach Hause.", "ru": "Иду домой." },
       "freqRank": 77,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/76-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 77,
@@ -871,7 +1102,10 @@
       },
       "freqRank": 78,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/77-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 78,
@@ -885,7 +1119,10 @@
       },
       "freqRank": 79,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/78-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 79,
@@ -898,7 +1135,10 @@
       },
       "freqRank": 80,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/79-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 80,
@@ -907,7 +1147,10 @@
       "gloss": { "en": "She is lying.", "de": "Er lügt.", "fr": "Il ment." },
       "freqRank": 81,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face"
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/80-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 81,
@@ -921,7 +1164,10 @@
       },
       "freqRank": 82,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flexed-biceps"
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/81-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 82,
@@ -930,7 +1176,10 @@
       "gloss": { "en": "That's life.", "de": "So ist das Leben.", "fr": "C'est la vie." },
       "freqRank": 83,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/82-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 83,
@@ -939,7 +1188,10 @@
       "gloss": { "en": "Are you studying?", "es": "¿Estás trabajando?", "ru": "Ты учишься?" },
       "freqRank": 84,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/83-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 84,
@@ -952,7 +1204,10 @@
       },
       "freqRank": 85,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/84-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 85,
@@ -961,7 +1216,10 @@
       "gloss": { "en": "You came in late.", "es": "Has venido tarde.", "ru": "Ты поздно пришла." },
       "freqRank": 86,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:alarm-clock"
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/85-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 86,
@@ -976,7 +1234,10 @@
       },
       "freqRank": 87,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-open-hands"
+      "image": "cue:smiling-face-with-open-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/86-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 87,
@@ -989,7 +1250,10 @@
       },
       "freqRank": 88,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/87-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 88,
@@ -1002,7 +1266,10 @@
       },
       "freqRank": 89,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/88-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 89,
@@ -1016,7 +1283,10 @@
       },
       "freqRank": 90,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/89-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 90,
@@ -1029,7 +1299,10 @@
       },
       "freqRank": 91,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/90-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 91,
@@ -1043,7 +1316,10 @@
       },
       "freqRank": 92,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sun-behind-rain-cloud"
+      "image": "cue:sun-behind-rain-cloud",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/91-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 92,
@@ -1057,7 +1333,10 @@
       },
       "freqRank": 93,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/92-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 93,
@@ -1066,7 +1345,10 @@
       "gloss": { "en": "Hurry up.", "es": "¡Date prisa!", "ru": "Быстрее." },
       "freqRank": 94,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-running"
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/93-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 94,
@@ -1082,7 +1364,10 @@
       },
       "freqRank": 95,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:man"
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/94-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 95,
@@ -1097,7 +1382,10 @@
       },
       "freqRank": 96,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-dancing"
+      "image": "cue:woman-dancing",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/95-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 96,
@@ -1106,7 +1394,10 @@
       "gloss": { "en": "This is weird.", "es": "Esto es extraño.", "ru": "Это странно." },
       "freqRank": 97,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-raised-eyebrow"
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/96-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 97,
@@ -1115,7 +1406,10 @@
       "gloss": { "en": "Nice idea.", "es": "Buena idea.", "fr": "Bonne idée." },
       "freqRank": 98,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:light-bulb"
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/97-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 98,
@@ -1131,7 +1425,10 @@
       },
       "freqRank": 99,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:compass"
+      "image": "cue:compass",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/98-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 99,
@@ -1145,7 +1442,10 @@
       },
       "freqRank": 100,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:slightly-smiling-face"
+      "image": "cue:slightly-smiling-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/99-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 100,
@@ -1159,7 +1459,10 @@
       },
       "freqRank": 101,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-gesturing-no"
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/100-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 101,
@@ -1168,7 +1471,10 @@
       "gloss": { "en": "Are you sick?", "de": "Bist du krank?", "es": "¿Estás enferma?" },
       "freqRank": 102,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-thermometer"
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/101-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 102,
@@ -1177,7 +1483,10 @@
       "gloss": { "en": "He is ill.", "es": "Él está enfermo.", "fr": "Il est malade." },
       "freqRank": 103,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-medical-mask"
+      "image": "cue:face-with-medical-mask",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/102-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 103,
@@ -1191,7 +1500,10 @@
       },
       "freqRank": 104,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/103-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 104,
@@ -1200,7 +1512,10 @@
       "gloss": { "en": "I am joking.", "es": "Estoy bromeando.", "ar": "أنا أمزح فقط." },
       "freqRank": 105,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:winking-face-with-tongue"
+      "image": "cue:winking-face-with-tongue",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/104-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 105,
@@ -1215,7 +1530,10 @@
       },
       "freqRank": 106,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/105-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 106,
@@ -1224,7 +1542,10 @@
       "gloss": { "en": "I'm cooking.", "fr": "Je fais la cuisine.", "ru": "Я готовлю еду." },
       "freqRank": 107,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/106-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 107,
@@ -1238,7 +1559,10 @@
       },
       "freqRank": 108,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/107-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 108,
@@ -1247,7 +1571,10 @@
       "gloss": { "en": "I swear!", "fr": "Je jure !", "ru": "Я клянусь!" },
       "freqRank": 109,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:raised-hand"
+      "image": "cue:raised-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/108-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 109,
@@ -1260,7 +1587,10 @@
       },
       "freqRank": 110,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:horse"
+      "image": "cue:horse",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/109-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 110,
@@ -1274,7 +1604,10 @@
       },
       "freqRank": 111,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/110-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 111,
@@ -1287,7 +1620,10 @@
       },
       "freqRank": 112,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sunrise"
+      "image": "cue:sunrise",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/111-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 112,
@@ -1301,7 +1637,10 @@
       },
       "freqRank": 113,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thermometer"
+      "image": "cue:thermometer",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/112-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 113,
@@ -1314,7 +1653,10 @@
       },
       "freqRank": 114,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:round-pushpin"
+      "image": "cue:round-pushpin",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/113-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 114,
@@ -1323,7 +1665,10 @@
       "gloss": { "en": "No one knows.", "es": "No lo sabe nadie.", "ar": "لا أحد يعرف." },
       "freqRank": 115,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/114-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 115,
@@ -1337,7 +1682,10 @@
       },
       "freqRank": 116,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/115-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 116,
@@ -1346,7 +1694,10 @@
       "gloss": { "en": "What did you hear?", "es": "¿Qué has oído?", "ru": "Что ты слышал?" },
       "freqRank": 117,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/116-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 117,
@@ -1362,7 +1713,10 @@
       },
       "freqRank": 118,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/117-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 118,
@@ -1375,7 +1729,10 @@
       },
       "freqRank": 119,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/118-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 119,
@@ -1389,7 +1746,10 @@
       },
       "freqRank": 120,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/119-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 120,
@@ -1403,7 +1763,10 @@
       },
       "freqRank": 121,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-done"
+      "image": "cue:hourglass-done",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/120-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 121,
@@ -1418,7 +1781,10 @@
       },
       "freqRank": 122,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/121-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 122,
@@ -1427,7 +1793,10 @@
       "gloss": { "en": "You look fantastic.", "de": "Du siehst toll aus.", "es": "Estás genial." },
       "freqRank": 123,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mirror"
+      "image": "cue:mirror",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/122-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 123,
@@ -1441,7 +1810,10 @@
       },
       "freqRank": 124,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:astonished-face"
+      "image": "cue:astonished-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/123-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 124,
@@ -1454,7 +1826,10 @@
       },
       "freqRank": 125,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/124-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 125,
@@ -1467,7 +1842,10 @@
       },
       "freqRank": 126,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:confused-face"
+      "image": "cue:confused-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/125-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 126,
@@ -1480,7 +1858,10 @@
       },
       "freqRank": 127,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sunrise"
+      "image": "cue:sunrise",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/126-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 127,
@@ -1489,7 +1870,10 @@
       "gloss": { "en": "Not bad.", "de": "Nicht schlecht.", "fr": "Pas mal." },
       "freqRank": 128,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ok-hand"
+      "image": "cue:ok-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/127-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 128,
@@ -1498,7 +1882,10 @@
       "gloss": { "en": "I'm Tom.", "de": "Ich bin Tom.", "fr": "Je suis Tom." },
       "freqRank": 129,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/128-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 129,
@@ -1513,7 +1900,10 @@
       },
       "freqRank": 130,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/129-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 130,
@@ -1522,7 +1912,10 @@
       "gloss": { "en": "Hello, Tom.", "de": "Hallo, Tom.", "fr": "Salut, Tom." },
       "freqRank": 131,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:waving-hand"
+      "image": "cue:waving-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/130-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 131,
@@ -1536,7 +1929,10 @@
       },
       "freqRank": 132,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/131-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 132,
@@ -1550,7 +1946,10 @@
       },
       "freqRank": 133,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/132-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 133,
@@ -1564,7 +1963,10 @@
       },
       "freqRank": 134,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-thermometer"
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/133-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 134,
@@ -1578,7 +1980,10 @@
       },
       "freqRank": 135,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/134-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 135,
@@ -1587,7 +1992,10 @@
       "gloss": { "en": "Where's Tom?", "de": "Wo ist Tom?", "es": "¿Dónde está Tom?" },
       "freqRank": 136,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:round-pushpin"
+      "image": "cue:round-pushpin",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/135-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 136,
@@ -1600,7 +2008,10 @@
       },
       "freqRank": 137,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/136-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 137,
@@ -1609,7 +2020,10 @@
       "gloss": { "en": "Tom is calm.", "es": "Tom está tranquilo.", "ru": "Том спокоен." },
       "freqRank": 138,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-in-lotus-position"
+      "image": "cue:person-in-lotus-position",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/137-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 138,
@@ -1618,7 +2032,10 @@
       "gloss": { "en": "Who is your friend?", "es": "¿Quién es tu amigo?", "ru": "Кто твой друг?" },
       "freqRank": 139,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/138-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 139,
@@ -1627,7 +2044,10 @@
       "gloss": { "en": "Don't say that.", "de": "Sag das nicht.", "es": "No digas eso." },
       "freqRank": 140,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:zipper-mouth-face"
+      "image": "cue:zipper-mouth-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/139-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 140,
@@ -1636,7 +2056,10 @@
       "gloss": { "en": "Don't you lie!", "de": "Nicht lügen!", "es": "¡No mientas!" },
       "freqRank": 141,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face"
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/140-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 141,
@@ -1645,7 +2068,10 @@
       "gloss": { "en": "He is waiting.", "es": "Está esperando.", "fr": "Elle attend." },
       "freqRank": 142,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/141-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 142,
@@ -1654,7 +2080,10 @@
       "gloss": { "en": "I'll take this one.", "es": "Lo compraré.", "ru": "Я возьму вот этот." },
       "freqRank": 143,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:shopping-cart"
+      "image": "cue:shopping-cart",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/142-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 143,
@@ -1667,7 +2096,10 @@
       },
       "freqRank": 144,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cold-face"
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/143-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 144,
@@ -1676,7 +2108,10 @@
       "gloss": { "en": "It's cold.", "de": "Es ist kalt.", "fr": "Il fait froid." },
       "freqRank": 145,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:snowflake"
+      "image": "cue:snowflake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/144-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 145,
@@ -1691,7 +2126,10 @@
       },
       "freqRank": 146,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/145-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 146,
@@ -1705,7 +2143,10 @@
       },
       "freqRank": 147,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/146-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 147,
@@ -1714,7 +2155,10 @@
       "gloss": { "en": "Have a nice day.", "ru": "Добрый день.", "ar": "أتمنى لك يوماً طيباً." },
       "freqRank": 148,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sun"
+      "image": "cue:sun",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/147-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 148,
@@ -1723,7 +2167,10 @@
       "gloss": { "en": "I didn't see her.", "es": "No lo he visto.", "fr": "Je ne l'ai pas vu." },
       "freqRank": 149,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:see-no-evil-monkey"
+      "image": "cue:see-no-evil-monkey",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/148-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 149,
@@ -1732,7 +2179,10 @@
       "gloss": { "en": "Where is the gate?", "pt-BR": "Onde está a porta?", "ru": "Где дверь?" },
       "freqRank": 150,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/149-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 150,
@@ -1741,7 +2191,10 @@
       "gloss": { "en": "Don't mention it.", "es": "De nada.", "ru": "Не стоит благодарности." },
       "freqRank": 151,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/150-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 151,
@@ -1750,7 +2203,10 @@
       "gloss": { "en": "It's very good.", "es": "Está muy bien.", "ar": "هذا جيد جدا" },
       "freqRank": 152,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:thumbs-up",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/151-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 152,
@@ -1759,7 +2215,10 @@
       "gloss": { "en": "What's in here?", "de": "Was gibt es hier?", "es": "¿Qué hay aquí?" },
       "freqRank": 153,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:package"
+      "image": "cue:package",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/152-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 153,
@@ -1768,7 +2227,10 @@
       "gloss": { "en": "This isn't good.", "es": "Esto no está bien.", "fr": "Ce n'est pas bien." },
       "freqRank": 154,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-down"
+      "image": "cue:thumbs-down",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/153-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 154,
@@ -1781,7 +2243,10 @@
       },
       "freqRank": 155,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heart-with-arrow"
+      "image": "cue:heart-with-arrow",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/154-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 155,
@@ -1790,7 +2255,10 @@
       "gloss": { "en": "I know who you are.", "es": "Sé quién eres.", "pt-BR": "Sei quem é." },
       "freqRank": 156,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/155-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 156,
@@ -1804,7 +2272,10 @@
       },
       "freqRank": 157,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cross-mark"
+      "image": "cue:cross-mark",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/156-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 157,
@@ -1818,7 +2289,10 @@
       },
       "freqRank": 158,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:straight-ruler"
+      "image": "cue:straight-ruler",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/157-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 158,
@@ -1833,7 +2307,10 @@
       },
       "freqRank": 159,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:man"
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/158-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 159,
@@ -1846,7 +2323,10 @@
       },
       "freqRank": 160,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:thumbs-up",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/159-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 160,
@@ -1855,7 +2335,10 @@
       "gloss": { "en": "I know nothing.", "es": "No sé nada.", "fr": "Je ne sais rien." },
       "freqRank": 161,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/160-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 161,
@@ -1868,7 +2351,10 @@
       },
       "freqRank": 162,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:folded-hands"
+      "image": "cue:folded-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/161-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 162,
@@ -1877,7 +2363,10 @@
       "gloss": { "en": "Everything is new.", "de": "Alles ist neu.", "es": "Todo es nuevo." },
       "freqRank": 163,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:new-button"
+      "image": "cue:new-button",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/162-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 163,
@@ -1891,7 +2380,10 @@
       },
       "freqRank": 164,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:round-pushpin"
+      "image": "cue:round-pushpin",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/163-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 164,
@@ -1900,7 +2392,10 @@
       "gloss": { "en": "I know everything.", "es": "Lo sé todo.", "ru": "Я всё знаю." },
       "freqRank": 165,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:brain"
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/164-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 165,
@@ -1914,7 +2409,10 @@
       },
       "freqRank": 166,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:warning"
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/165-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 166,
@@ -1923,7 +2421,10 @@
       "gloss": { "en": "Lend me a hand.", "es": "Ayúdame.", "ru": "Помоги мне." },
       "freqRank": 167,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sos-button"
+      "image": "cue:sos-button",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/166-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 167,
@@ -1932,7 +2433,10 @@
       "gloss": { "en": "Give him a hand.", "es": "Ayúdalo.", "ru": "Помоги ему." },
       "freqRank": 168,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/167-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 168,
@@ -1947,7 +2451,10 @@
       },
       "freqRank": 169,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/168-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 169,
@@ -1963,7 +2470,10 @@
       },
       "freqRank": 170,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:folded-hands"
+      "image": "cue:folded-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/169-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 170,
@@ -1977,7 +2487,10 @@
       },
       "freqRank": 171,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:straight-ruler"
+      "image": "cue:straight-ruler",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/170-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 171,
@@ -1992,7 +2505,10 @@
       },
       "freqRank": 172,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/171-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 172,
@@ -2001,7 +2517,10 @@
       "gloss": { "en": "Give her time.", "de": "Gib ihm Zeit.", "fr": "Donne-lui du temps." },
       "freqRank": 173,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/172-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 173,
@@ -2014,7 +2533,10 @@
       },
       "freqRank": 174,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/173-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 174,
@@ -2027,7 +2549,10 @@
       },
       "freqRank": 175,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrapped-gift"
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/174-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 175,
@@ -2040,7 +2565,10 @@
       },
       "freqRank": 176,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/175-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 176,
@@ -2053,7 +2581,10 @@
       },
       "freqRank": 177,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/176-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 177,
@@ -2068,7 +2599,10 @@
       },
       "freqRank": 178,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ring-buoy"
+      "image": "cue:ring-buoy",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/177-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 178,
@@ -2077,7 +2611,10 @@
       "gloss": { "en": "I want money.", "de": "Ich will Geld.", "ru": "Я хочу денег." },
       "freqRank": 179,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-bag"
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/178-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 179,
@@ -2090,7 +2627,10 @@
       },
       "freqRank": 180,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:coin"
+      "image": "cue:coin",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/179-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 180,
@@ -2104,7 +2644,10 @@
       },
       "freqRank": 181,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:spiral-calendar"
+      "image": "cue:spiral-calendar",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/180-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 181,
@@ -2113,7 +2656,10 @@
       "gloss": { "en": "They're with me.", "es": "Ellas están conmigo.", "ar": "إنّهم معي." },
       "freqRank": 182,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/181-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 182,
@@ -2126,7 +2672,10 @@
       },
       "freqRank": 183,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:alarm-clock"
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/182-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 183,
@@ -2135,7 +2684,10 @@
       "gloss": { "en": "Do you eat a lot?", "de": "Isst du viel?", "es": "¿Comes mucho?" },
       "freqRank": 184,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/183-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 184,
@@ -2144,7 +2696,10 @@
       "gloss": { "en": "Do you eat meat?", "de": "Isst du Fleisch?", "es": "¿Comes carne?" },
       "freqRank": 185,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cut-of-meat"
+      "image": "cue:cut-of-meat",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/184-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 185,
@@ -2157,7 +2712,10 @@
       },
       "freqRank": 186,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-and-man-holding-hands"
+      "image": "cue:woman-and-man-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/185-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 186,
@@ -2171,7 +2729,10 @@
       },
       "freqRank": 187,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-raising-hand"
+      "image": "cue:person-raising-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/186-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 187,
@@ -2184,7 +2745,10 @@
       },
       "freqRank": 188,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark-button"
+      "image": "cue:check-mark-button",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/187-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 188,
@@ -2197,7 +2761,10 @@
       },
       "freqRank": 189,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/188-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 189,
@@ -2210,7 +2777,10 @@
       },
       "freqRank": 190,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/189-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 190,
@@ -2225,7 +2795,10 @@
       },
       "freqRank": 191,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sparkling-heart"
+      "image": "cue:sparkling-heart",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/190-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 191,
@@ -2238,7 +2811,10 @@
       },
       "freqRank": 192,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tear-off-calendar"
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/191-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 192,
@@ -2247,7 +2823,10 @@
       "gloss": { "en": "Are you a doctor?", "de": "Bist du Arzt?", "es": "¿Tú eres médico?" },
       "freqRank": 193,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/192-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 193,
@@ -2260,7 +2839,10 @@
       },
       "freqRank": 194,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife"
+      "image": "cue:fork-and-knife",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/193-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 194,
@@ -2269,7 +2851,10 @@
       "gloss": { "en": "I would like to eat.", "es": "Quiero comer.", "ru": "Я хочу есть." },
       "freqRank": 195,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate"
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/194-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 195,
@@ -2283,7 +2868,10 @@
       },
       "freqRank": 196,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/195-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 196,
@@ -2296,7 +2884,10 @@
       },
       "freqRank": 197,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/196-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 197,
@@ -2310,7 +2901,10 @@
       },
       "freqRank": 198,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face"
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/197-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 198,
@@ -2323,7 +2917,10 @@
       },
       "freqRank": 199,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-and-man-holding-hands"
+      "image": "cue:woman-and-man-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/198-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 199,
@@ -2336,7 +2933,10 @@
       },
       "freqRank": 200,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/199-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 200,
@@ -2349,7 +2949,10 @@
       },
       "freqRank": 201,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:police-car"
+      "image": "cue:police-car",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/200-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 201,
@@ -2363,7 +2966,10 @@
       },
       "freqRank": 202,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:palm-up-hand"
+      "image": "cue:palm-up-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/201-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 202,
@@ -2376,7 +2982,10 @@
       },
       "freqRank": 203,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:party-popper"
+      "image": "cue:party-popper",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/202-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 203,
@@ -2390,7 +2999,10 @@
       },
       "freqRank": 204,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family-man-boy"
+      "image": "cue:family-man-boy",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/203-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 204,
@@ -2399,7 +3011,10 @@
       "gloss": { "en": "Have you seen this?", "es": "¿Has visto esto?", "ru": "Ты видел это?" },
       "freqRank": 205,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/204-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 205,
@@ -2412,7 +3027,10 @@
       },
       "freqRank": 206,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cross-mark"
+      "image": "cue:cross-mark",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/205-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 206,
@@ -2425,7 +3043,10 @@
       },
       "freqRank": 207,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:droplet"
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/206-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 207,
@@ -2438,7 +3059,10 @@
       },
       "freqRank": 208,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/207-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 208,
@@ -2452,7 +3076,10 @@
       },
       "freqRank": 209,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/208-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 209,
@@ -2466,7 +3093,10 @@
       },
       "freqRank": 210,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head"
+      "image": "cue:speaking-head",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/209-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 210,
@@ -2479,7 +3109,10 @@
       },
       "freqRank": 211,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/210-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 211,
@@ -2492,7 +3125,10 @@
       },
       "freqRank": 212,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/211-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 212,
@@ -2505,7 +3141,10 @@
       },
       "freqRank": 213,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/212-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 213,
@@ -2518,7 +3157,10 @@
       },
       "freqRank": 214,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/213-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 214,
@@ -2527,7 +3169,10 @@
       "gloss": { "en": "It's too fast.", "de": "Das ist zu schnell.", "es": "Es muy rápido." },
       "freqRank": 215,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fast-forward-button"
+      "image": "cue:fast-forward-button",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/214-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 215,
@@ -2540,7 +3185,10 @@
       },
       "freqRank": 216,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/215-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 216,
@@ -2553,7 +3201,10 @@
       },
       "freqRank": 217,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/216-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 217,
@@ -2562,7 +3213,10 @@
       "gloss": { "en": "This is a car.", "es": "Esto es un coche.", "ru": "Это машина." },
       "freqRank": 218,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/217-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 218,
@@ -2576,7 +3230,10 @@
       },
       "freqRank": 219,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:identification-card"
+      "image": "cue:identification-card",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/218-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 219,
@@ -2585,7 +3242,10 @@
       "gloss": { "en": "Who's lying?", "es": "¿Quién miente?", "fr": "Qui ment ?" },
       "freqRank": 220,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face"
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/219-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 220,
@@ -2598,7 +3258,10 @@
       },
       "freqRank": 221,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tear-off-calendar"
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/220-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 221,
@@ -2611,7 +3274,10 @@
       },
       "freqRank": 222,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/221-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 222,
@@ -2620,7 +3286,10 @@
       "gloss": { "en": "He is my friend.", "de": "Er ist mein Freund.", "es": "Es mi amigo." },
       "freqRank": 223,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/222-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 223,
@@ -2634,7 +3303,10 @@
       },
       "freqRank": 224,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:men-holding-hands"
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/223-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 224,
@@ -2647,7 +3319,10 @@
       },
       "freqRank": 225,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark"
+      "image": "cue:check-mark",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/224-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 225,
@@ -2660,7 +3335,10 @@
       },
       "freqRank": 226,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thinking-face"
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/225-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 226,
@@ -2673,7 +3351,10 @@
       },
       "freqRank": 227,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cloud-with-rain"
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/226-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 227,
@@ -2686,7 +3367,10 @@
       },
       "freqRank": 228,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tear-off-calendar"
+      "image": "cue:tear-off-calendar",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/227-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 228,
@@ -2700,7 +3384,10 @@
       },
       "freqRank": 229,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:straight-ruler"
+      "image": "cue:straight-ruler",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/228-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 229,
@@ -2713,7 +3400,10 @@
       },
       "freqRank": 230,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mobile-phone"
+      "image": "cue:mobile-phone",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/229-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 230,
@@ -2722,7 +3412,10 @@
       "gloss": { "en": "That's a joke.", "de": "Das ist ein Scherz.", "es": "Es una broma." },
       "freqRank": 231,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-tears-of-joy"
+      "image": "cue:face-with-tears-of-joy",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/230-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 231,
@@ -2736,7 +3429,10 @@
       },
       "freqRank": 232,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:droplet"
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/231-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 232,
@@ -2745,7 +3441,10 @@
       "gloss": { "en": "This is a phone.", "de": "Das ist ein Telefon.", "ru": "Это телефон." },
       "freqRank": 233,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mobile-phone"
+      "image": "cue:mobile-phone",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/232-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 233,
@@ -2754,7 +3453,10 @@
       "gloss": { "en": "I promised him.", "es": "Le di mi palabra.", "fr": "Je lui promis." },
       "freqRank": 234,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/233-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 234,
@@ -2767,7 +3469,10 @@
       },
       "freqRank": 235,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:man"
+      "image": "cue:man",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/234-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 235,
@@ -2780,7 +3485,10 @@
       },
       "freqRank": 236,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ok-hand"
+      "image": "cue:ok-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/235-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 236,
@@ -2789,7 +3497,10 @@
       "gloss": { "en": "She wants to dance.", "de": "Sie will tanzen.", "ar": "هي تريد أن ترقص" },
       "freqRank": 237,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-dancing"
+      "image": "cue:woman-dancing",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/236-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 237,
@@ -2802,7 +3513,10 @@
       },
       "freqRank": 238,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/237-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 238,
@@ -2811,7 +3525,10 @@
       "gloss": { "en": "I'm feeling better.", "es": "Me siento mejor.", "fr": "Je me sens mieux." },
       "freqRank": 239,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:relieved-face"
+      "image": "cue:relieved-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/238-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 239,
@@ -2824,7 +3541,10 @@
       },
       "freqRank": 240,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/239-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 240,
@@ -2838,7 +3558,10 @@
       },
       "freqRank": 241,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:nauseated-face"
+      "image": "cue:nauseated-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/240-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 241,
@@ -2853,7 +3576,10 @@
       },
       "freqRank": 242,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crescent-moon"
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/241-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 242,
@@ -2867,7 +3593,10 @@
       },
       "freqRank": 243,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:growing-heart"
+      "image": "cue:growing-heart",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/242-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 243,
@@ -2881,7 +3610,10 @@
       },
       "freqRank": 244,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/243-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 244,
@@ -2894,7 +3626,10 @@
       },
       "freqRank": 245,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-gesturing-no"
+      "image": "cue:person-gesturing-no",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/244-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 245,
@@ -2907,7 +3642,10 @@
       },
       "freqRank": 246,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-thermometer"
+      "image": "cue:face-with-thermometer",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/245-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 246,
@@ -2921,7 +3659,10 @@
       },
       "freqRank": 247,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/246-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 247,
@@ -2935,7 +3676,10 @@
       },
       "freqRank": 248,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:brain"
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/247-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 248,
@@ -2949,7 +3693,10 @@
       },
       "freqRank": 249,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/248-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 249,
@@ -2963,7 +3710,10 @@
       },
       "freqRank": 250,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/249-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 250,
@@ -2978,7 +3728,10 @@
       },
       "freqRank": 251,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/250-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 251,
@@ -2992,7 +3745,10 @@
       },
       "freqRank": 252,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/251-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 252,
@@ -3006,7 +3762,10 @@
       },
       "freqRank": 253,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/252-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 253,
@@ -3020,7 +3779,10 @@
       },
       "freqRank": 254,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:palm-up-hand"
+      "image": "cue:palm-up-hand",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/253-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 254,
@@ -3035,7 +3797,10 @@
       },
       "freqRank": 255,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:light-bulb"
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/254-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 255,
@@ -3049,7 +3814,10 @@
       },
       "freqRank": 256,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/255-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 256,
@@ -3063,7 +3831,10 @@
       },
       "freqRank": 257,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/256-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 257,
@@ -3077,7 +3848,10 @@
       },
       "freqRank": 258,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/257-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 258,
@@ -3093,7 +3867,10 @@
       },
       "freqRank": 259,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/258-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 259,
@@ -3107,7 +3884,10 @@
       },
       "freqRank": 260,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
+      "image": "cue:house-with-garden",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/259-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 260,
@@ -3122,7 +3902,10 @@
       },
       "freqRank": 261,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:peace-symbol"
+      "image": "cue:peace-symbol",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/260-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 261,
@@ -3136,7 +3919,10 @@
       },
       "freqRank": 262,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/261-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 262,
@@ -3150,7 +3936,10 @@
       },
       "freqRank": 263,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/262-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 263,
@@ -3164,7 +3953,10 @@
       },
       "freqRank": 264,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/263-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 264,
@@ -3179,7 +3971,10 @@
       },
       "freqRank": 265,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging"
+      "image": "cue:person-shrugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/264-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 265,
@@ -3193,7 +3988,10 @@
       },
       "freqRank": 266,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-mouth-face"
+      "image": "cue:money-mouth-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/265-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 266,
@@ -3207,7 +4005,10 @@
       },
       "freqRank": 267,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:boy"
+      "image": "cue:boy",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/266-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 267,
@@ -3221,7 +4022,10 @@
       },
       "freqRank": 268,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:people-hugging"
+      "image": "cue:people-hugging",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/267-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 268,
@@ -3236,7 +4040,10 @@
       },
       "freqRank": 269,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-smiling-eyes"
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/268-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 269,
@@ -3250,7 +4057,10 @@
       },
       "freqRank": 270,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/269-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 270,
@@ -3265,7 +4075,10 @@
       },
       "freqRank": 271,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake"
+      "image": "cue:birthday-cake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/270-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 271,
@@ -3280,7 +4093,10 @@
       },
       "freqRank": 272,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:door"
+      "image": "cue:door",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/271-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 272,
@@ -3295,7 +4111,10 @@
       },
       "freqRank": 273,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/272-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 273,
@@ -3309,7 +4128,10 @@
       },
       "freqRank": 274,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-and-man-holding-hands"
+      "image": "cue:woman-and-man-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/273-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 274,
@@ -3324,7 +4146,10 @@
       },
       "freqRank": 275,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:women-holding-hands"
+      "image": "cue:women-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/274-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 275,
@@ -3338,7 +4163,10 @@
       },
       "freqRank": 276,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:men-holding-hands"
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/275-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 276,
@@ -3354,7 +4182,10 @@
       },
       "freqRank": 277,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:men-holding-hands"
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/276-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 277,
@@ -3368,7 +4199,10 @@
       },
       "freqRank": 278,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:women-holding-hands"
+      "image": "cue:women-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/277-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 278,
@@ -3383,7 +4217,10 @@
       },
       "freqRank": 279,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:men-holding-hands"
+      "image": "cue:men-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/278-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 279,
@@ -3400,7 +4237,10 @@
       },
       "freqRank": 280,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:droplet"
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/279-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 280,
@@ -3414,7 +4254,10 @@
       },
       "freqRank": 281,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family-man-boy"
+      "image": "cue:family-man-boy",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/280-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 281,
@@ -3429,7 +4272,10 @@
       },
       "freqRank": 282,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:footprints"
+      "image": "cue:footprints",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/281-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 282,
@@ -3443,7 +4289,10 @@
       },
       "freqRank": 283,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman"
+      "image": "cue:woman",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/282-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 283,
@@ -3457,7 +4306,10 @@
       },
       "freqRank": 284,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-face"
+      "image": "cue:hot-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/283-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 284,
@@ -3471,7 +4323,10 @@
       },
       "freqRank": 285,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sun"
+      "image": "cue:sun",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/284-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 285,
@@ -3485,7 +4340,10 @@
       },
       "freqRank": 286,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/285-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 286,
@@ -3500,7 +4358,10 @@
       },
       "freqRank": 287,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:microphone"
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/286-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 287,
@@ -3514,7 +4375,10 @@
       },
       "freqRank": 288,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-note"
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/287-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 288,
@@ -3529,7 +4393,10 @@
       },
       "freqRank": 289,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cold-face"
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/288-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 289,
@@ -3543,7 +4410,10 @@
       },
       "freqRank": 290,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:two-hearts"
+      "image": "cue:two-hearts",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/289-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 290,
@@ -3558,7 +4428,10 @@
       },
       "freqRank": 291,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thinking-face"
+      "image": "cue:thinking-face",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/290-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 291,
@@ -3573,7 +4446,10 @@
       },
       "freqRank": 292,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrapped-gift"
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/291-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 292,
@@ -3587,7 +4463,10 @@
       },
       "freqRank": 293,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/292-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 293,
@@ -3601,7 +4480,10 @@
       },
       "freqRank": 294,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:light-bulb"
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/293-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 294,
@@ -3615,7 +4497,10 @@
       },
       "freqRank": 295,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:back-arrow"
+      "image": "cue:back-arrow",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/294-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 295,
@@ -3630,7 +4515,10 @@
       },
       "freqRank": 296,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/295-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 296,
@@ -3644,7 +4532,10 @@
       },
       "freqRank": 297,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-and-man-holding-hands"
+      "image": "cue:woman-and-man-holding-hands",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/296-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 297,
@@ -3659,7 +4550,10 @@
       },
       "freqRank": 298,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/297-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 298,
@@ -3673,7 +4567,10 @@
       },
       "freqRank": 299,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family"
+      "image": "cue:family",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/298-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     },
     {
       "index": 299,
@@ -3687,7 +4584,10 @@
       },
       "freqRank": 300,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-bag"
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/tr_absoluteBeginner/299-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+      ]
     }
   ]
 }
