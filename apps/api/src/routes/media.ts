@@ -2,6 +2,7 @@ import {
   avatarContentTypeSchema,
   avatarConfirmSchema,
   ERROR_CODES,
+  MEDIA_LIMITS,
   mediaKindOfContentType,
   mediaUploadUrlSchema,
   photoAddSchema,
@@ -20,6 +21,7 @@ import {
   requireVerifiedEmail,
 } from '../middleware/requireAuth'
 import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
+import { recordPendingUpload } from '../modules/chat/pendingUploads'
 import { objectExtension } from '../modules/media/objectExtension'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
 import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
@@ -119,12 +121,17 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       // photograph we had already stored.
       await assertMediaUnlocked(app.mongo.db, conversation, request.userId)
 
-      const { kind, contentType } = request.body
+      const { kind, contentType, sizeBytes } = request.body
       if (mediaKindOfContentType(contentType) !== kind) {
         throw new ApiError(
           ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
           `${contentType} is not a supported ${kind} type`,
         )
+      }
+      // Here rather than only at send, which was after the bytes were stored.
+      // The length is then signed into the URL, so it cannot be a fib.
+      if (sizeBytes !== undefined && sizeBytes > MEDIA_LIMITS[kind].maxBytes) {
+        throw new ApiError(ERROR_CODES.MEDIA_TOO_LARGE, `That ${kind} is too large`)
       }
 
       // Keyed by conversation so a leaked key reveals nothing about who is
@@ -133,7 +140,11 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       // nothing about who uploaded.
       const extension = objectExtension(contentType)
       const key = `messages/${conversation._id.toHexString()}/${randomUUID()}.${extension}`
-      return reply.send(await app.storage.getUploadUrl(key, contentType))
+      const upload = await app.storage.getUploadUrl(key, contentType, sizeBytes)
+      // After signing, so an unconfigured bucket records nothing; before the
+      // reply, so no file can exist that the sweep does not know about.
+      await recordPendingUpload(app.mongo.db, { url: upload.publicUrl, key })
+      return reply.send(upload)
     },
   )
 

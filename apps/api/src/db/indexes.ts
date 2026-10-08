@@ -554,6 +554,16 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { sentAt: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
   ],
 
+  [COLLECTIONS.pendingUploads]: [
+    /*
+     * The sweep's question, oldest first. Deliberately not a TTL: the row is
+     * the only record of a file the bucket holds, and Mongo dropping it on
+     * its own would strand the file exactly as before. The sweep deletes the
+     * object and then the row, in that order.
+     */
+    { key: { createdAt: 1 }, name: 'created_at' },
+  ],
+
   [COLLECTIONS.blocks]: [
     { key: { blockerId: 1, blockedId: 1 }, name: 'blocker_blocked_unique', unique: true },
     { key: { blockedId: 1 }, name: 'blocked' },

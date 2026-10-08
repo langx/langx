@@ -48,11 +48,14 @@ export class S3StorageProvider implements StorageProviderWithPut, StorageProvide
     this.#publicBaseUrl = config.publicBaseUrl.replace(/\/$/, '')
   }
 
-  async getUploadUrl(key: string, contentType: string): Promise<UploadUrl> {
+  async getUploadUrl(key: string, contentType: string, sizeBytes?: number): Promise<UploadUrl> {
     const command = new PutObjectCommand({
       Bucket: this.#bucket,
       Key: key,
       ContentType: contentType,
+      // Lands in `X-Amz-SignedHeaders`, which is what makes it binding: a PUT
+      // of any other length no longer matches the signature.
+      ...(sizeBytes !== undefined ? { ContentLength: sizeBytes } : {}),
     })
 
     const uploadUrl = await getSignedUrl(this.#client, command, {

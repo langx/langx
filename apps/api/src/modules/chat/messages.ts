@@ -44,6 +44,7 @@ import { readEchoedMessageIds } from '../echo/echoed'
 import { mirrorPhraseToEcho } from '../echo/phraseMirror'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
+import { claimPendingUploads } from './pendingUploads'
 import { conversationPartners, getProfile, type Profile } from '../profiles/profiles'
 import { effectiveTier } from '../profiles/entitlement'
 import { mediaLockedFor, toConversationView, type ConversationView } from './conversationView'
@@ -976,6 +977,12 @@ export async function sendMediaMessage(
       )
   }
 
+  // The files as the row will name them — after normalising, so a browser's
+  // WebM note, replaced by its AAC copy, is left for the sweep to delete.
+  await claimPendingUploads(
+    db,
+    attachments.map((item) => item.url),
+  )
   const updatedConversation = await recordMessage(db, conversation, message)
   return { message, conversation: updatedConversation }
 }

@@ -859,6 +859,15 @@ export const mediaUploadUrlSchema = z.object({
   conversationId: z.string().trim().min(1),
   kind: mediaKindSchema,
   contentType: z.string().trim().min(1),
+  /**
+   * The exact length of the file about to be PUT. Checked against
+   * `MEDIA_LIMITS` and signed into the URL, so the bucket itself refuses a
+   * body of any other size — the only place a ceiling on a presigned upload
+   * can actually hold. Optional only because binaries released before it
+   * cannot send it; they get the old, unsized URL until `minVersion` passes
+   * them.
+   */
+  sizeBytes: z.number().int().positive().optional(),
 })
 export type MediaUploadUrlInput = z.infer<typeof mediaUploadUrlSchema>
 

@@ -5,6 +5,7 @@ import type { PersonDeleter } from '../analytics/personDeleter'
 import { drainAnalyticsDeletions } from './analyticsDeletions'
 import { purgeExpiredAccounts } from './deletion'
 import { purgeStaleGuests } from '../profiles/purgeGuests'
+import { sweepUnsentUploads } from '../chat/pendingUploads'
 import { withJobHealth } from '../admin/jobHealth'
 
 /** Hourly is plenty — the grace period is 30 days, nothing here is urgent. */
@@ -52,6 +53,16 @@ export function startPurgeScheduler(
           logger.info({ purged: guests.purged }, 'stale guest sessions purged')
         }
 
+        // Chat files that were uploaded and never sent. Same shape again, and
+        // before the analytics drain for that drain's reason: it is the one
+        // half here that waits on somebody else's service.
+        const unsent = options.storage
+          ? await sweepUnsentUploads(db, options.storage)
+          : { deleted: 0 }
+        if (unsent.deleted > 0) {
+          logger.info({ deleted: unsent.deleted }, 'unsent chat uploads deleted')
+        }
+
         /*
          * The deletions the purge above recorded, plus anything an earlier tick
          * could not send. Last in the tick and after the accounts, so a PostHog
@@ -67,7 +78,7 @@ export function startPurgeScheduler(
             logger.info(analytics, 'analytics person deletions drained')
           }
         }
-        return { purged: result.purged, guests: guests.purged }
+        return { purged: result.purged, guests: guests.purged, unsentUploads: unsent.deleted }
       })
     } catch (error) {
       logger.error({ err: error }, 'account purge failed')
