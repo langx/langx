@@ -216,7 +216,9 @@ def level_of(tok, jlpt):
 
 def transcription(markup):
     """Tatoeba's furigana markup — `[私|わたし]は[学生|がく|せい]` — as plain kana."""
-    return re.sub(r"\[([^|\]]+)\|([^\]]+)\]", lambda m: m.group(2).replace("|", ""), markup)
+    # Neither group may contain "[": the markup never nests, and letting a group
+    # run over an opening bracket is what made this regex backtrack polynomially.
+    return re.sub(r"\[([^|\[\]]+)\|([^\[\]]+)\]", lambda m: m.group(2).replace("|", ""), markup)
 
 
 def joins(prev, tok):
