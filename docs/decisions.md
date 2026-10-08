@@ -6873,3 +6873,38 @@ gift's own length is no longer than its window; the day-before one still goes.
 is already past seven days — including those already given the 100-day month —
 is owed the week on their next real action. That is one wave of grants after
 the deploy, drained by the scheduler fifty per pass, not a standing cost.
+
+## The leaderboard counts every reward
+
+The hourly gift, a bounty, a report reward and the three referral payouts were
+grant kinds: all-time only, never the week, month or year. The argument,
+recorded above under _A new account starts with tokens, and grants do not rank
+you_ and in the referral and gift sections, was that the ranked periods show
+practising and none of those is practising.
+
+What it produced was a table that disagreed with the wallet. Somebody who had
+been paid a bounty and a week of gifts saw the tokens arrive, saw them in the
+history, and saw a weekly rank that did not know about them — and read the
+leaderboard as wrong, not as principled. "Earned this week" that leaves out
+things you were paid this week is not a number anyone can check.
+
+So `TOKEN_GRANT_KINDS` is now the three credits that mark an account's
+_arrival_ — `signupBonus`, `welcomeBack`, `legacyTokenConversion` — and nothing
+else. Those three stay all-time only for the original reason: a sign-up bonus
+would put every new account above people who talked to somebody, and a
+converted v1 balance is tokens earned in 2023, not this week. Everything else
+credits all four periods, the daily pool included (it always did).
+
+The referral argument — twenty activations in a week is twenty thousand tokens
+without a message sent — is still true and is accepted: `maxActivationsPerMonth`
+caps it, and inviting twenty people who go on to talk to someone is not
+nothing. The gift is the weakest case, at most a few dozen tokens an hour, and
+a table that could be climbed by opening boxes on the hour is no longer climbed
+far by it.
+
+**Old rows are backfilled, not added on.** `awardTokens` only writes forwards,
+so every reward paid before this change sits in all-time and nowhere else.
+`scripts/backfill-reward-periods.ts` recomputes the week, month and year rows
+of everyone who has ever been paid a reward from the ledger, which carries the
+period keys each row was written with, and writes only the rows that disagree.
+Run it once after deploying; a second run finds nothing to do.

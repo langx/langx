@@ -546,8 +546,8 @@ on `INITIAL_PURCHASE` only, the referrer gets `referral.subscription` on top,
 to `referral.maxPerInvitee` per person, ever. A referrer is paid for at most
 `referral.maxActivationsPerMonth` activations per calendar month (UTC), and a
 referral pays neither side when both accounts share a network or a device;
-the row's `unpaidReason` says which. Both kinds are **grants**: all-time only,
-never the weekly table, because inviting is not practising. `referrals._id` is
+the row's `unpaidReason` says which. Both kinds credit every period, like any
+other reward — see `TOKEN_GRANT_KINDS` for the three that do not. `referrals._id` is
 the invitee, so one person has one referrer forever; `tokenLedger`'s
 `{userId, kind, refId}` with the invitee as `refId` is what caps the pair.
 
