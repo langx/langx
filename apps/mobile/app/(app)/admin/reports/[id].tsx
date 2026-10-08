@@ -375,6 +375,48 @@ export default function AdminCaseScreen() {
               </>
             ) : null}
 
+            {/* Whatever the report was raised from, if the two of them talked:
+                a message is rarely the case on its own, and a profile report
+                about somebody who wrote to you is about what they wrote. */}
+            {report.data.thread?.messages.length ? (
+              <>
+                <Text style={styles.heading}>{ADMIN.reports.thread}</Text>
+                <Text style={styles.hint}>{ADMIN.reports.threadHint}</Text>
+                <Card>
+                  <View style={styles.thread}>
+                    {report.data.thread.messages.map((line) => (
+                      <View
+                        key={line.id}
+                        style={line.id === report.data?.message?.id ? styles.flagged : undefined}
+                      >
+                        <Text style={styles.threadMeta}>
+                          {[
+                            line.senderId === reporter?.userId ? reporterShown : shown,
+                            line.createdAt.slice(0, 16).replace('T', ' '),
+                            ...(line.id === report.data?.message?.id
+                              ? [ADMIN.reports.threadReported]
+                              : []),
+                          ].join(' · ')}
+                        </Text>
+                        <Text style={line.deleted ? styles.muted : styles.quote}>
+                          {line.deleted
+                            ? ADMIN.reports.threadDeleted
+                            : [
+                                line.body.trim(),
+                                line.attachments || line.type !== 'text'
+                                  ? ADMIN.reports.threadFiles(line.type, line.attachments)
+                                  : '',
+                              ]
+                                .filter(Boolean)
+                                .join(' ')}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                </Card>
+              </>
+            ) : null}
+
             {/* A review report names neither a post nor a comment, so it too
                 sits where the post would have. Its author is the reported
                 account; whose profile it is on is said in the heading. The
@@ -537,4 +579,7 @@ const useStyles = makeStyles((theme) => ({
   rewarded: { fontSize: 15, fontWeight: '700', color: theme.colors.text },
   actions: { gap: 12, marginTop: 16 },
   media: { marginTop: 12 },
+  thread: { gap: 12 },
+  threadMeta: { fontSize: 12, color: theme.colors.textMuted, marginBottom: 2 },
+  flagged: { borderLeftWidth: 3, borderLeftColor: theme.colors.danger, paddingLeft: 8 },
 }))

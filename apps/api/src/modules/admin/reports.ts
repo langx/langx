@@ -8,7 +8,7 @@ import {
 } from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import type { Message } from '../chat/conversations'
+import { pairKeyFor, type Conversation, type Message } from '../chat/conversations'
 import type { Report } from '../moderation/blocks'
 import type { PostCommentDoc } from '../feed/documents'
 import type { Post } from '../feed/feed'
@@ -89,8 +89,8 @@ export interface AdminReportedTestimonial {
  * view-once photo or video, as they no longer can. The file is still in the
  * bucket for exactly this reader; see `Message.viewOnce`.
  *
- * Only the message the report names. The panel is not a way to read a
- * thread, and the reporter chose this one to show.
+ * Its files are here and not in `AdminReportThread`: this is the message the
+ * reporter chose to show, the thread is only what led up to it.
  */
 export interface AdminReportedMessage {
   id: string
@@ -102,6 +102,43 @@ export interface AdminReportedMessage {
   viewOnce: { replay: boolean; opens: number; screenshotAt: string | null } | null
   deletedAt: string | null
   createdAt: string
+}
+
+/** How much of the conversation a report brings with it. */
+export const REPORT_THREAD_MESSAGES = 10
+
+/**
+ * The last few messages between the two people, up to the moment of the
+ * report, oldest first.
+ *
+ * A single message is rarely the case on its own: "harassment" is usually the
+ * fifth message after four ignored ones, and a scam is a run of them. So the
+ * panel shows the tail of the thread whichever screen the report came from —
+ * a profile report about somebody who messaged you is about that thread too.
+ *
+ * Bounded twice, on purpose. Ten messages, and none after `createdAt` of the
+ * report: what was said once the report was filed is not what was reported,
+ * and the panel stays a way to judge a report rather than to read chats.
+ *
+ * Read live, not copied into the report. A copy would outlive the reported
+ * account's deletion (`reports` keeps rows against a deleted account), and the
+ * reported message itself is already read live. The cost is that a message
+ * its sender deleted for everyone shows as deleted, which is still worth
+ * knowing. Text only — the files of the message the report names are drawn
+ * in `message`; the rest are named by type.
+ */
+export interface AdminReportThread {
+  conversationId: string
+  messages: {
+    id: string
+    senderId: string
+    type: Message['type']
+    /** `''` for a file sent without words, and once deleted for everyone. */
+    body: string
+    attachments: number
+    deleted: boolean
+    createdAt: string
+  }[]
 }
 
 export interface AdminReportDetail extends AdminReportRow {
@@ -130,6 +167,8 @@ export interface AdminReportDetail extends AdminReportRow {
   testimonial: AdminReportedTestimonial | null
   /** The chat message, when the report was raised from one. */
   message: AdminReportedMessage | null
+  /** The end of their conversation, when the two of them have one. */
+  thread: AdminReportThread | null
   /** What is in force on the reported account right now. */
   suspension: Profile['suspension'] | null
   /** Other reports against the same account still waiting, this one excluded. */
@@ -268,6 +307,7 @@ export async function getReport(
     comment: await readComment(db, report.commentId),
     testimonial: await readTestimonial(db, report.testimonialId, now),
     message: await readMessage(db, report.messageId),
+    thread: await readThread(db, report),
     post: post
       ? {
           id: post._id.toHexString(),
@@ -312,6 +352,40 @@ async function readMessage(
       : null,
     deletedAt: message.deletedAt?.toISOString() ?? null,
     createdAt: message.createdAt.toISOString(),
+  }
+}
+
+/**
+ * Found by the pair, not by `report.conversationId`: the client sends that id,
+ * and the pair is what guarantees the thread shown is the reporter's own with
+ * the person they reported. Served by `conversation_created_id`.
+ */
+async function readThread(db: Db, report: Report): Promise<AdminReportThread | null> {
+  const conversation = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .findOne(
+      { pairKey: pairKeyFor(report.reporterId, report.reportedId) },
+      { projection: { _id: 1 } },
+    )
+  if (!conversation) return null
+  const rows = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .find({ conversationId: conversation._id, createdAt: { $lte: report.createdAt } })
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(REPORT_THREAD_MESSAGES)
+    .toArray()
+  if (rows.length === 0) return null
+  return {
+    conversationId: conversation._id.toHexString(),
+    messages: rows.reverse().map((message) => ({
+      id: message._id.toHexString(),
+      senderId: message.senderId,
+      type: message.type,
+      body: message.body,
+      attachments: attachmentsOf(message).length,
+      deleted: Boolean(message.deletedAt),
+      createdAt: message.createdAt.toISOString(),
+    })),
   }
 }
 
