@@ -721,6 +721,15 @@ The candidates were never the limit — 31,000 to 121,000 per language — and t
 picture rule was: 72%, 63% and 61% of the Spanish, French and Italian pools had
 an honest cue. All three are `"reviewed": false`.
 
+**German and Russian `fluent`** were drafted alongside, under the same rules,
+and read by Piper: `de/fluent.json` is 270 sentences and `ru/fluent.json` 244.
+In both languages a declined form can rank past 10,000 on its ending alone, so
+some of their C1 is an inflection rather than a word. The picture rule set
+their size too — 280 of 1,100 German candidates and 256 of 700 Russian ones
+had an honest cue — and Wiktionary's own-language editions had no translation
+table for any of the 22 phrasebook entries among them, so every item is a
+Tatoeba sentence. Both are `"reviewed": false`.
+
 **Sources and licence** — verify at the version downloaded, record it:
 
 | Source                             | Gives                                          | Licence                            | Use                                                 |

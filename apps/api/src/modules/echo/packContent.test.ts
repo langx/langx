@@ -219,7 +219,7 @@ describe('the packs in content/echo', () => {
    * readings — a run of `generate.py` that stopped halfway would leave items
    * silent and this would name them.
    */
-  const PICTURED_AND_READ = ['es:fluent', 'fr:fluent', 'it:fluent']
+  const PICTURED_AND_READ = ['es:fluent', 'fr:fluent', 'it:fluent', 'de:fluent', 'ru:fluent']
 
   for (const id of PICTURED_AND_READ) {
     it(`${id} gives every item a cue and a reading`, () => {
