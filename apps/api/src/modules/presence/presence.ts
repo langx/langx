@@ -1,4 +1,8 @@
-import { APP_PLATFORM_HEADER, APP_VERSION_HEADER, PRESENCE_WRITE_MIN_GAP_MS } from '@langx/shared'
+import {
+  APP_PLATFORM_AUTH_KEY,
+  APP_VERSION_AUTH_KEY,
+  PRESENCE_WRITE_MIN_GAP_MS,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
@@ -44,23 +48,26 @@ const PLATFORMS = new Set<ClientBuild['appPlatform']>(['ios', 'android', 'web'])
 const VERSION = /^\d{1,3}(\.\d{1,3}){0,2}$/
 
 /**
- * The build behind a connection, from the two headers every request already
- * carries (`app-config.ts` reads the same pair to decide whether an update is
- * required).
+ * The build behind a connection, from the socket's `auth` object: the pair
+ * every REST request carries as headers (`app-config.ts` reads those to decide
+ * whether an update is required), here under `APP_VERSION_AUTH_KEY` and
+ * `APP_PLATFORM_AUTH_KEY` next to the cookie and the device id. Not from
+ * `socket.handshake.headers`, which is where this looked for its first weeks:
+ * a WebSocket handshake takes no custom headers from a browser or from React
+ * Native, so the pair was never there, and `stats.appVersion` existed on no
+ * profile in production.
  *
- * Validated rather than stored as sent. These are client headers, so anything
+ * Validated rather than stored as sent. These are client values, so anything
  * at all can arrive in them, and what this feeds is a `$group` on the admin
  * dashboard — an unbounded string there is an unbounded number of rows in a
  * chart, written by whoever felt like it. Anything unrecognised is simply not
  * recorded, which leaves the field as it was.
  */
-export function clientBuildOf(
-  headers: Record<string, string | string[] | undefined>,
-): ClientBuild | null {
-  const first = (value: string | string[] | undefined): string =>
-    (Array.isArray(value) ? value[0] : value)?.trim().toLowerCase() ?? ''
-  const appVersion = first(headers[APP_VERSION_HEADER])
-  const appPlatform = first(headers[APP_PLATFORM_HEADER]) as ClientBuild['appPlatform']
+export function clientBuildOf(auth: Record<string, unknown> | undefined): ClientBuild | null {
+  const text = (value: unknown): string =>
+    typeof value === 'string' ? value.trim().toLowerCase() : ''
+  const appVersion = text(auth?.[APP_VERSION_AUTH_KEY])
+  const appPlatform = text(auth?.[APP_PLATFORM_AUTH_KEY]) as ClientBuild['appPlatform']
   if (!VERSION.test(appVersion) || !PLATFORMS.has(appPlatform)) return null
   return { appVersion, appPlatform }
 }

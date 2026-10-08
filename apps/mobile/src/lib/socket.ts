@@ -8,6 +8,7 @@ import {
 import { Platform } from 'react-native'
 import { io, type Socket } from 'socket.io-client'
 import { API_URL } from './apiUrl'
+import { versionAuth } from './appVersion'
 import { authClient } from './auth-client'
 import { engine } from './calls/rtc'
 import { deviceId } from './deviceId'
@@ -89,6 +90,13 @@ export async function getSocket(): Promise<Socket> {
    * watch ring. See `calls/rtc.ts`.
    */
   if (engine.supported()) auth[CALLS_AUTH_KEY] = String(CALL_PROTOCOL_VERSION)
+  /*
+   * Which build this is — the socket's copy of the version headers every
+   * request carries, and the only way the server learns it: it cannot read a
+   * header off this handshake, and for weeks it tried to, so the dashboard's
+   * count of who is still on an old build was nobody.
+   */
+  Object.assign(auth, versionAuth())
 
   // Two callers can arrive here together; only the first builds one.
   if (!socket) {
