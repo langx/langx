@@ -569,8 +569,9 @@ export const de: Localized<ServerMessages> = {
         '🎉 {friends} Freunde, die du eingeladen hast, unterhalten sich jetzt auf LangX. {count} Monate Pro gehören dir!',
     },
     introStreak: {
-      one: '🔥 {days} Tage am Stück! Hier ist {count} Monat Pro, damit es so weitergeht.',
-      other: '🔥 {days} Tage am Stück! Hier sind {count} Monate Pro, damit es so weitergeht.',
+      one: '🔥 {days} Tage am Stück, unglaublich! Als Dankeschön schenken wir dir {count} Monat Pro.',
+      other:
+        '🔥 {days} Tage am Stück, unglaublich! Als Dankeschön schenken wir dir {count} Monate Pro.',
     },
     introStreakWeeks: {
       one: '🔥 {days} Tage am Stück, stark! Als kleines Dankeschön schenken wir dir {count} Woche Pro.',

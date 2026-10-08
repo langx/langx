@@ -551,8 +551,9 @@ export const tr: Localized<ServerMessages> = {
         '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
     },
     introStreak: {
-      one: '🔥 {days} gün üst üste! Seriyi sürdürmen için {count} ay Pro bizden.',
-      other: '🔥 {days} gün üst üste! Seriyi sürdürmen için {count} ay Pro bizden.',
+      one: '🔥 {days} gün üst üste, inanılmazsın! Bu emeğe teşekkür olarak {count} ay Pro bizden.',
+      other:
+        '🔥 {days} gün üst üste, inanılmazsın! Bu emeğe teşekkür olarak {count} ay Pro bizden.',
     },
     introStreakWeeks: {
       one: '🔥 {days} gün üst üste, harikasın! Bu emeğe küçük bir teşekkür: {count} hafta Pro bizden.',
