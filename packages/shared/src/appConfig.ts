@@ -159,6 +159,14 @@ export type AppConfigResponse = z.infer<typeof appConfigResponseSchema>
 /** Header the client sends so the server can decide `updateRequired`. */
 export const APP_VERSION_HEADER = 'x-app-version'
 export const APP_PLATFORM_HEADER = 'x-app-platform'
+/**
+ * The socket's copy of the same pair, as `auth` keys — `INBOX_KINDS_AUTH_KEY`'s
+ * reason: a WebSocket handshake takes no custom headers from a browser or from
+ * React Native, so `socket.handshake.headers` never carried them and the
+ * build behind a connection was never recorded.
+ */
+export const APP_VERSION_AUTH_KEY = 'appVersion'
+export const APP_PLATFORM_AUTH_KEY = 'appPlatform'
 
 /** `1`, `1.2` and `1.2.3` are all accepted; anything else is not a version. */
 const VERSION_PATTERN = /^\d+(\.\d+){0,2}$/

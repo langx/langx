@@ -1,0 +1,4718 @@
+{
+  "id": "fr:fluent",
+  "lang": "fr",
+  "level": "fluent",
+  "contentVersion": 3,
+  "reviewed": false,
+  "sources": [
+    {
+      "name": "Wiktionary, via kaikki.org (wiktextract)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://kaikki.org/"
+    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "FrequencyWords (OpenSubtitles 2018, hermitdave)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/hermitdave/FrequencyWords"
+    },
+    {
+      "name": "Kokoro-82M (hexgrad)",
+      "licence": "Apache-2.0",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M"
+    }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "bon rétablissement",
+      "gloss": { "en": "get well soon", "de": "gute Besserung" },
+      "freqRank": 1,
+      "review": {
+        "sense": "Se dit pour souhaiter à quelqu'un de se remettre d'une maladie ou blessure.",
+        "translationCount": 4,
+        "definition": "Se dit pour souhaiter à quelqu'un de se remettre d'une maladie ou blessure.",
+        "otherSenses": []
+      },
+      "image": "cue:adhesive-bandage",
+      "voices": [{ "key": "echo/packs/fr_fluent/0-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "bonne continuation",
+      "gloss": { "en": "keep it up" },
+      "freqRank": 2,
+      "review": {
+        "sense": "J’apprécie votre travail et je vous souhaite de continuer.",
+        "translationCount": 4,
+        "definition": "J’apprécie votre travail et je vous souhaite de continuer.",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/db/LL-Q150_(fra)-WikiLucas00-bonne_continuation.wav/LL-Q150_(fra)-WikiLucas00-bonne_continuation.wav.mp3",
+            "file": "LL-Q150 (fra)-WikiLucas00-bonne continuation.wav",
+            "tags": []
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f3/LL-Q150_(fra)-LoquaxFR-bonne_continuation.wav/LL-Q150_(fra)-LoquaxFR-bonne_continuation.wav.mp3",
+            "file": "LL-Q150 (fra)-LoquaxFR-bonne continuation.wav",
+            "tags": []
+          }
+        ]
+      },
+      "image": "cue:thumbs-up",
+      "voices": [{ "key": "echo/packs/fr_fluent/1-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "Ne tombez pas !",
+      "gloss": {
+        "en": "Don't fall off!",
+        "de": "Fallen Sie nicht!",
+        "es": "¡No os caigáis!",
+        "ru": "Не упадите!"
+      },
+      "freqRank": 5,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning",
+      "voices": [{ "key": "echo/packs/fr_fluent/2-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "Je parle suédois.",
+      "gloss": {
+        "en": "I speak Swedish.",
+        "de": "Ich spreche Schwedisch.",
+        "es": "Yo hablo sueco.",
+        "pt-BR": "Eu falo sueco."
+      },
+      "freqRank": 6,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/3-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "Le robinet coule.",
+      "gloss": {
+        "en": "The tap is running.",
+        "de": "Der Wasserhahn tropft.",
+        "es": "El grifo gotea.",
+        "pt-BR": "A torneira está pingando."
+      },
+      "freqRank": 7,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:potable-water",
+      "voices": [{ "key": "echo/packs/fr_fluent/4-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "Je suis confuse.",
+      "gloss": {
+        "en": "I am confused.",
+        "de": "Ich bin verwirrt.",
+        "es": "Estoy confusa.",
+        "pt-BR": "Estou confusa."
+      },
+      "freqRank": 8,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:confused-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/5-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "Nous nous comprenons.",
+      "gloss": {
+        "en": "We understand each other.",
+        "de": "Wir verstehen einander.",
+        "es": "Nos entendemos el uno al otro.",
+        "ru": "Мы понимаем друг друга."
+      },
+      "freqRank": 9,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [{ "key": "echo/packs/fr_fluent/6-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "Elle est inconsciente.",
+      "gloss": {
+        "en": "She is unconscious.",
+        "de": "Sie ist bewusstlos.",
+        "es": "Ella está inconsciente.",
+        "ru": "Она без сознания."
+      },
+      "freqRank": 10,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-crossed-out-eyes",
+      "voices": [{ "key": "echo/packs/fr_fluent/7-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "Ne pleurez pas.",
+      "gloss": {
+        "en": "Don't cry.",
+        "de": "Weint nicht.",
+        "es": "No lloren.",
+        "ru": "Не плачьте."
+      },
+      "freqRank": 11,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crying-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/8-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "Que cuisines-tu ?",
+      "gloss": {
+        "en": "What are you cooking?",
+        "de": "Was kochst du?",
+        "es": "¿Qué estás cocinando?",
+        "pt-BR": "O que estás cozinhando?",
+        "ru": "Что ты готовишь?"
+      },
+      "freqRank": 12,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [{ "key": "echo/packs/fr_fluent/9-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "Je suis satisfaite.",
+      "gloss": {
+        "en": "I'm satisfied.",
+        "tr": "Ben hoşnutum.",
+        "de": "Ich bin zufrieden.",
+        "es": "Estoy satisfecha."
+      },
+      "freqRank": 13,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:relieved-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/10-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "Tom est mécanicien.",
+      "gloss": {
+        "en": "Tom is a mechanic.",
+        "es": "Tom es mecánico.",
+        "ru": "Том - механик.",
+        "ar": "توم ميكانيكي."
+      },
+      "freqRank": 14,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrench",
+      "voices": [{ "key": "echo/packs/fr_fluent/11-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "Elles semblent heureuses.",
+      "gloss": {
+        "en": "They seem happy.",
+        "de": "Sie sehen glücklich aus.",
+        "es": "Parecen felices.",
+        "ru": "Похоже, они счастливы."
+      },
+      "freqRank": 15,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-smiling-eyes",
+      "voices": [{ "key": "echo/packs/fr_fluent/12-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "Je mangerai ici.",
+      "gloss": {
+        "en": "I'll eat here.",
+        "de": "Ich werde hier essen.",
+        "pt-BR": "Eu comerei aqui.",
+        "ru": "Я поем здесь."
+      },
+      "freqRank": 16,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [{ "key": "echo/packs/fr_fluent/13-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "Tom est musulman.",
+      "gloss": {
+        "en": "Tom is a Muslim.",
+        "de": "Tom ist Moslem.",
+        "es": "Tom es musulmán.",
+        "pt-BR": "Tom é muçulmano.",
+        "ar": "توم مسلم."
+      },
+      "freqRank": 17,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [{ "key": "echo/packs/fr_fluent/14-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "Je suis musulman.",
+      "gloss": {
+        "en": "I am a Muslim.",
+        "de": "Ich bin Muslim.",
+        "es": "Soy musulmán.",
+        "pt-BR": "Sou muçulmano.",
+        "ru": "Я мусульманин."
+      },
+      "freqRank": 18,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [{ "key": "echo/packs/fr_fluent/15-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "Nous partirons demain.",
+      "gloss": {
+        "en": "We're leaving tomorrow.",
+        "de": "Morgen fahren wir ab.",
+        "es": "Iremos mañana.",
+        "ru": "Мы завтра уезжаем."
+      },
+      "freqRank": 19,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage",
+      "voices": [{ "key": "echo/packs/fr_fluent/16-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "Je me noie !",
+      "gloss": {
+        "en": "I'm drowning!",
+        "de": "Ich ertrinke!",
+        "es": "¡Me estoy ahogando!",
+        "ru": "Я тону!"
+      },
+      "freqRank": 20,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring-buoy",
+      "voices": [{ "key": "echo/packs/fr_fluent/17-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "Il est enseignant.",
+      "gloss": {
+        "en": "He is a teacher.",
+        "de": "Er ist Lehrer.",
+        "es": "Él es profesor.",
+        "pt-BR": "Ele é professor.",
+        "ru": "Он учитель."
+      },
+      "freqRank": 21,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school",
+      "voices": [{ "key": "echo/packs/fr_fluent/18-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Je suis touriste.",
+      "gloss": {
+        "en": "I am a tourist.",
+        "de": "Ich bin Tourist.",
+        "es": "Soy un turista.",
+        "pt-BR": "Sou um turista."
+      },
+      "freqRank": 22,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage",
+      "voices": [{ "key": "echo/packs/fr_fluent/19-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "Elle était déprimée.",
+      "gloss": {
+        "en": "She was depressed.",
+        "de": "Sie blies Trübsal.",
+        "es": "Ella estaba deprimida.",
+        "pt-BR": "Ela estava deprimida."
+      },
+      "freqRank": 23,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pensive-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/20-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "Mike a souri.",
+      "gloss": {
+        "en": "Mike smiled.",
+        "es": "Mike sonrió.",
+        "pt-BR": "Mike sorriu.",
+        "ru": "Майк улыбнулся."
+      },
+      "freqRank": 24,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:slightly-smiling-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/21-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "Elle a souri.",
+      "gloss": {
+        "en": "She smiled.",
+        "de": "Sie lächelte.",
+        "es": "Ella sonrió.",
+        "ru": "Она улыбнулась."
+      },
+      "freqRank": 25,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:slightly-smiling-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/22-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "Tu me déçois.",
+      "gloss": {
+        "en": "I'm disappointed with you.",
+        "de": "Du enttäuschst mich.",
+        "es": "Me decepcionas.",
+        "pt-BR": "Você me decepciona.",
+        "ru": "Ты меня разочаровываешь."
+      },
+      "freqRank": 26,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:disappointed-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/23-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "Ils le respectent.",
+      "gloss": {
+        "en": "They respect him.",
+        "de": "Sie respektieren ihn.",
+        "es": "Ellos le respetan.",
+        "pt-BR": "Eles o respeitam.",
+        "ru": "Они его уважают."
+      },
+      "freqRank": 27,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-bowing",
+      "voices": [{ "key": "echo/packs/fr_fluent/24-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "La nuit tombait.",
+      "gloss": {
+        "en": "Night was falling.",
+        "de": "Es wurde Nacht.",
+        "pt-BR": "Caía a noite.",
+        "ru": "Наступала ночь."
+      },
+      "freqRank": 28,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunset",
+      "voices": [{ "key": "echo/packs/fr_fluent/25-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "Nous nous reverrons.",
+      "gloss": {
+        "en": "We will meet again.",
+        "de": "Wir werden uns wiedersehen.",
+        "es": "Volveremos a vernos.",
+        "ru": "Мы ещё увидимся."
+      },
+      "freqRank": 29,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:waving-hand",
+      "voices": [{ "key": "echo/packs/fr_fluent/26-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "Le printemps arriva.",
+      "gloss": {
+        "en": "Spring has come around.",
+        "es": "Llegó la primavera.",
+        "pt-BR": "A primavera chegou.",
+        "ru": "Наступила весна."
+      },
+      "freqRank": 30,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cherry-blossom",
+      "voices": [{ "key": "echo/packs/fr_fluent/27-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "Un renard arriva.",
+      "gloss": {
+        "en": "A fox came along.",
+        "es": "Llegó un zorro.",
+        "pt-BR": "Uma raposa chegou.",
+        "ru": "Пришла лиса."
+      },
+      "freqRank": 31,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fox",
+      "voices": [{ "key": "echo/packs/fr_fluent/28-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "Il lisait beaucoup.",
+      "gloss": {
+        "en": "He used to read a lot.",
+        "de": "Er las echt viel.",
+        "es": "Él leía mucho.",
+        "pt-BR": "Ele lia muito.",
+        "ru": "Читал он очень много."
+      },
+      "freqRank": 32,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [{ "key": "echo/packs/fr_fluent/29-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "Pourquoi boites-tu ?",
+      "gloss": {
+        "en": "Why are you limping?",
+        "de": "Warum humpelst du?",
+        "pt-BR": "Por que manquejas?",
+        "ru": "Ты чего хромаешь?"
+      },
+      "freqRank": 33,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:leg",
+      "voices": [{ "key": "echo/packs/fr_fluent/30-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "Elle est pianiste.",
+      "gloss": {
+        "en": "She is a pianist.",
+        "es": "Ella es pianista.",
+        "pt-BR": "Ela é pianista.",
+        "ru": "Она пианистка."
+      },
+      "freqRank": 34,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-score",
+      "voices": [{ "key": "echo/packs/fr_fluent/31-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "Il est végétarien.",
+      "gloss": {
+        "en": "He's a vegetarian.",
+        "tr": "O bir vejeteryan.",
+        "de": "Er ist Vegetarier.",
+        "ru": "Он вегетарианец."
+      },
+      "freqRank": 35,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [{ "key": "echo/packs/fr_fluent/32-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "Elle est agressive.",
+      "gloss": {
+        "en": "She is aggressive.",
+        "de": "Sie ist aggressiv.",
+        "es": "Ella es agresiva.",
+        "pt-BR": "Ela é agressiva.",
+        "ru": "Она агрессивная."
+      },
+      "freqRank": 36,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/33-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "Je suis végétarien.",
+      "gloss": {
+        "en": "I am a vegetarian.",
+        "de": "Ich bin Vegetarier.",
+        "es": "Soy vegetariano.",
+        "pt-BR": "Sou vegetariano.",
+        "ru": "Я вегетарианец."
+      },
+      "freqRank": 37,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [{ "key": "echo/packs/fr_fluent/34-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "Il est comédien.",
+      "gloss": {
+        "en": "He's a comedian.",
+        "de": "Er ist ein Komödiant.",
+        "es": "Él es comediante.",
+        "pt-BR": "Ele é comediante."
+      },
+      "freqRank": 38,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board",
+      "voices": [{ "key": "echo/packs/fr_fluent/35-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "Je dormirai ici.",
+      "gloss": {
+        "en": "I'll sleep here.",
+        "es": "Dormiré aquí.",
+        "ru": "Я буду спать здесь.",
+        "ar": "سأنام هنا."
+      },
+      "freqRank": 39,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bed",
+      "voices": [{ "key": "echo/packs/fr_fluent/36-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "Nous sommes déçus.",
+      "gloss": {
+        "en": "We're disappointed.",
+        "de": "Wir sind enttäuscht.",
+        "es": "Estamos desilusionados.",
+        "ru": "Мы разочарованы."
+      },
+      "freqRank": 40,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:disappointed-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/37-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "Je suis divorcée.",
+      "gloss": {
+        "en": "I am divorced.",
+        "de": "Ich bin geschieden.",
+        "es": "Estoy divorciada.",
+        "pt-BR": "Estou divorciada.",
+        "ru": "Я в разводе."
+      },
+      "freqRank": 41,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart",
+      "voices": [{ "key": "echo/packs/fr_fluent/38-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "Tom est philosophe.",
+      "gloss": {
+        "en": "Tom is philosophical.",
+        "tr": "Tom bir filozof.",
+        "ru": "Том - философ.",
+        "ar": "توم فيلسوف."
+      },
+      "freqRank": 42,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thinking-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/39-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "Elle parle portugais.",
+      "gloss": {
+        "en": "She speaks Portuguese.",
+        "tr": "O Portekizce konuşur.",
+        "de": "Sie spricht Portugiesisch.",
+        "es": "Ella habla portugués.",
+        "pt-BR": "Ela fala português.",
+        "ru": "Она говорит по-португальски."
+      },
+      "freqRank": 43,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/40-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "Il parle portugais.",
+      "gloss": {
+        "en": "He speaks Portuguese.",
+        "de": "Er spricht Portugiesisch.",
+        "es": "Él habla portugués.",
+        "pt-BR": "Ele fala português.",
+        "ru": "Он говорит по-португальски."
+      },
+      "freqRank": 44,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/41-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "Parles-tu portugais ?",
+      "gloss": {
+        "en": "Do you speak Portuguese?",
+        "de": "Sprichst du Portugiesisch?",
+        "es": "¿Hablas portugués?",
+        "pt-BR": "Você fala português?",
+        "ru": "Ты говоришь по-португальски?"
+      },
+      "freqRank": 45,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/42-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "Êtes-vous sûres ?",
+      "gloss": {
+        "en": "Are you sure?",
+        "de": "Seid ihr sicher?",
+        "es": "¿Estáis seguras?",
+        "pt-BR": "Vocês têm certeza?",
+        "ru": "Вы уверены?"
+      },
+      "freqRank": 46,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [{ "key": "echo/packs/fr_fluent/43-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "Le chien aboie.",
+      "gloss": {
+        "en": "The dog is barking.",
+        "de": "Der Hund bellt.",
+        "es": "El perro ladra.",
+        "pt-BR": "O cão late.",
+        "ru": "Собака лает."
+      },
+      "freqRank": 47,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [{ "key": "echo/packs/fr_fluent/44-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "Un chien aboie.",
+      "gloss": {
+        "en": "A dog is barking.",
+        "de": "Ein Hund bellt.",
+        "es": "Un perro está ladrando.",
+        "ru": "Лает собака."
+      },
+      "freqRank": 48,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [{ "key": "echo/packs/fr_fluent/45-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "Ils sont chanteurs.",
+      "gloss": {
+        "en": "They are singers.",
+        "de": "Sie sind Sänger.",
+        "es": "Son cantantes.",
+        "pt-BR": "Eles são cantores.",
+        "ru": "Они певцы."
+      },
+      "freqRank": 49,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [{ "key": "echo/packs/fr_fluent/46-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "Vous êtes chanteurs.",
+      "gloss": {
+        "en": "You're singers.",
+        "de": "Ihr seid Sänger.",
+        "pt-BR": "Vocês são cantores.",
+        "ru": "Вы певцы."
+      },
+      "freqRank": 50,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [{ "key": "echo/packs/fr_fluent/47-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "Hier il pleuvait.",
+      "gloss": {
+        "en": "Yesterday it was raining.",
+        "de": "Gestern regnete es.",
+        "pt-BR": "Ontem estava chovendo.",
+        "ru": "Вчера шёл дождь."
+      },
+      "freqRank": 51,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain",
+      "voices": [{ "key": "echo/packs/fr_fluent/48-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "Elle mourut en 1960.",
+      "gloss": {
+        "en": "She died in 1960.",
+        "de": "Sie starb 1960.",
+        "es": "Ella murió en 1960.",
+        "pt-BR": "Ela morreu em 1960.",
+        "ru": "Она умерла в 1960 году."
+      },
+      "freqRank": 52,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:coffin",
+      "voices": [{ "key": "echo/packs/fr_fluent/49-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "Il mourut soudainement.",
+      "gloss": {
+        "en": "He died suddenly.",
+        "de": "Plötzlich starb er.",
+        "es": "De repente murió.",
+        "ru": "Он умер внезапно."
+      },
+      "freqRank": 53,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:coffin",
+      "voices": [{ "key": "echo/packs/fr_fluent/50-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "Son père mourut.",
+      "gloss": {
+        "en": "Her father died.",
+        "de": "Ihr Vater starb.",
+        "es": "Su padre murió.",
+        "pt-BR": "O pai dela morreu.",
+        "ru": "Её отец умер."
+      },
+      "freqRank": 54,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:coffin",
+      "voices": [{ "key": "echo/packs/fr_fluent/51-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "Vous me plaisez.",
+      "gloss": {
+        "en": "I like you.",
+        "de": "Ihr gefallt mir.",
+        "pt-BR": "Vocês me agradam.",
+        "ru": "Вы мне нравитесь."
+      },
+      "freqRank": 55,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart",
+      "voices": [{ "key": "echo/packs/fr_fluent/52-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "Facebook est ennuyant.",
+      "gloss": {
+        "en": "Facebook is boring.",
+        "de": "Facebook ist langweilig.",
+        "es": "Facebook es aburrido.",
+        "pt-BR": "O Facebook é chato.",
+        "ru": "Фейсбук скучный."
+      },
+      "freqRank": 56,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:expressionless-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/53-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "Tom est bibliothécaire.",
+      "gloss": {
+        "en": "Tom is a librarian.",
+        "tr": "Tom bir kütüphanecidir.",
+        "de": "Tom ist Bibliothekar.",
+        "ru": "Том — библиотекарь."
+      },
+      "freqRank": 57,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [{ "key": "echo/packs/fr_fluent/54-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "Je le lirai.",
+      "gloss": {
+        "en": "I'll read it.",
+        "de": "Ich werde es lesen.",
+        "es": "Lo voy a leer.",
+        "ru": "Я прочту это."
+      },
+      "freqRank": 58,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/55-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "Tu nous manqueras.",
+      "gloss": {
+        "en": "We'll miss you.",
+        "de": "Wir werden dich vermissen.",
+        "es": "Te extrañaremos.",
+        "ru": "Мы будем по тебе скучать."
+      },
+      "freqRank": 59,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pleading-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/56-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "Il a accéléré.",
+      "gloss": {
+        "en": "He accelerated.",
+        "de": "Er hat beschleunigt.",
+        "es": "Él aceleró.",
+        "pt-BR": "Ele acelerou."
+      },
+      "freqRank": 60,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fast-forward-button",
+      "voices": [{ "key": "echo/packs/fr_fluent/57-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "Étiez-vous occupées ?",
+      "gloss": {
+        "en": "Were you busy?",
+        "de": "Wart ihr beschäftigt?",
+        "es": "¿Estabais ocupadas?",
+        "ru": "Вы были заняты?"
+      },
+      "freqRank": 61,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running",
+      "voices": [{ "key": "echo/packs/fr_fluent/58-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "Elle parle hongrois.",
+      "gloss": {
+        "en": "She speaks Hungarian.",
+        "de": "Sie spricht Ungarisch.",
+        "es": "Ella habla húngaro.",
+        "pt-BR": "Ela fala húngaro.",
+        "ru": "Она говорит по-венгерски."
+      },
+      "freqRank": 62,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/59-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "Parles-tu hébreu ?",
+      "gloss": {
+        "en": "Do you speak Hebrew?",
+        "de": "Sprichst du Hebräisch?",
+        "es": "¿Hablas hebreo?",
+        "pt-BR": "Você fala hebraico?",
+        "ru": "Ты говоришь на иврите?"
+      },
+      "freqRank": 63,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/60-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "Jésus était charpentier.",
+      "gloss": {
+        "en": "Jesus was a carpenter.",
+        "tr": "İsa bir marangozdu.",
+        "de": "Jesus war ein Zimmermann.",
+        "es": "Jesús fue carpintero.",
+        "pt-BR": "Jesus era carpinteiro.",
+        "ru": "Иисус был плотником."
+      },
+      "freqRank": 64,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hammer-and-wrench",
+      "voices": [{ "key": "echo/packs/fr_fluent/61-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "Tu me dégoûtes.",
+      "gloss": {
+        "en": "You disgust me.",
+        "de": "Du widerst mich an.",
+        "pt-BR": "Você me dá nojo.",
+        "ru": "Ты мне противен."
+      },
+      "freqRank": 65,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:nauseated-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/62-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "Elle est coiffeuse.",
+      "gloss": {
+        "en": "She's a hair stylist.",
+        "tr": "O bir kuaför.",
+        "de": "Sie ist Friseurin.",
+        "es": "Es peluquera."
+      },
+      "freqRank": 66,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-getting-haircut",
+      "voices": [{ "key": "echo/packs/fr_fluent/63-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "Je suis boulanger.",
+      "gloss": {
+        "en": "I'm a baker.",
+        "de": "Ich bin Bäcker.",
+        "es": "Soy panadero.",
+        "pt-BR": "Eu sou padeiro.",
+        "ru": "Я пекарь."
+      },
+      "freqRank": 67,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bread",
+      "voices": [{ "key": "echo/packs/fr_fluent/64-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "Tom est électricien.",
+      "gloss": {
+        "en": "Tom is an electrician.",
+        "de": "Tom ist Elektriker.",
+        "pt-BR": "Tom é eletricista.",
+        "ru": "Том — электрик."
+      },
+      "freqRank": 68,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [{ "key": "echo/packs/fr_fluent/65-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "Ils sont lents.",
+      "gloss": {
+        "en": "They're slow.",
+        "de": "Sie sind langsam.",
+        "es": "Son lentos.",
+        "ru": "Они медленные."
+      },
+      "freqRank": 69,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:turtle",
+      "voices": [{ "key": "echo/packs/fr_fluent/66-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "Tom aime expérimenter.",
+      "gloss": {
+        "en": "Tom likes experimenting.",
+        "de": "Tom experimentiert gerne.",
+        "es": "A Tom le gusta experimentar.",
+        "ru": "Том любит экспериментировать."
+      },
+      "freqRank": 70,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [{ "key": "echo/packs/fr_fluent/67-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "Nous sommes victorieux.",
+      "gloss": {
+        "en": "We are victorious.",
+        "tr": "Biz galip gelenleriz.",
+        "es": "Somos vencedores.",
+        "pt-BR": "Nós somos vencedores."
+      },
+      "freqRank": 71,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:trophy",
+      "voices": [{ "key": "echo/packs/fr_fluent/68-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "Tom est somnambule.",
+      "gloss": {
+        "en": "Tom is a sleepwalker.",
+        "de": "Tom ist Schlafwandler.",
+        "es": "Tom es sonámbulo.",
+        "ru": "Том - лунатик."
+      },
+      "freqRank": 72,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleeping-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/69-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "Es-tu bouddhiste ?",
+      "gloss": {
+        "en": "Are you a Buddhist?",
+        "de": "Bist du Buddhist?",
+        "pt-BR": "Você é budista?",
+        "ru": "Ты буддист?"
+      },
+      "freqRank": 73,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [{ "key": "echo/packs/fr_fluent/70-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "Ils ont nagé.",
+      "gloss": {
+        "en": "They swam.",
+        "de": "Sie schwammen.",
+        "pt-BR": "Eles nadaram.",
+        "ru": "Они поплавали."
+      },
+      "freqRank": 74,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [{ "key": "echo/packs/fr_fluent/71-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "Tu as nagé.",
+      "gloss": {
+        "en": "You've been swimming.",
+        "tr": "Yüzdün.",
+        "de": "Du bist geschwommen.",
+        "es": "Vos nadaste."
+      },
+      "freqRank": 75,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [{ "key": "echo/packs/fr_fluent/72-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "Que suggères-tu ?",
+      "gloss": {
+        "en": "What do you suggest?",
+        "de": "Was schlägst du vor?",
+        "es": "¿Qué sugieres?",
+        "pt-BR": "O que você sugere?",
+        "ru": "Что ты предлагаешь?"
+      },
+      "freqRank": 76,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [{ "key": "echo/packs/fr_fluent/73-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "Le soir approchait.",
+      "gloss": {
+        "en": "Evening was drawing near.",
+        "de": "Der Abend nahte.",
+        "es": "La tarde se estaba acercando.",
+        "ru": "Приближался вечер."
+      },
+      "freqRank": 77,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunset",
+      "voices": [{ "key": "echo/packs/fr_fluent/74-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "Nous étions voisines.",
+      "gloss": {
+        "en": "We were neighbors.",
+        "de": "Wir waren Nachbarinnen.",
+        "es": "Éramos vecinas.",
+        "ru": "Мы были соседками.",
+        "ar": "كُنّا جاراتٍ."
+      },
+      "freqRank": 78,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:houses",
+      "voices": [{ "key": "echo/packs/fr_fluent/75-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "Je suis musulmane.",
+      "gloss": {
+        "en": "I'm Muslim.",
+        "es": "Soy musulmana.",
+        "pt-BR": "Sou muçulmana.",
+        "ru": "Я - мусульманка.",
+        "ar": "أنا مسلمة."
+      },
+      "freqRank": 79,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [{ "key": "echo/packs/fr_fluent/76-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "Nous vendons tout.",
+      "gloss": {
+        "en": "We sell everything.",
+        "de": "Wir verkaufen alles.",
+        "pt-BR": "Nós vendemos tudo.",
+        "ru": "Мы продаём всё."
+      },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:label",
+      "voices": [{ "key": "echo/packs/fr_fluent/77-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "Elle est débutante.",
+      "gloss": {
+        "en": "She is a beginner.",
+        "de": "Sie ist Anfängerin.",
+        "es": "Ella es una principiante.",
+        "ru": "Она новичок."
+      },
+      "freqRank": 81,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:new-button",
+      "voices": [{ "key": "echo/packs/fr_fluent/78-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "Il est borgne.",
+      "gloss": {
+        "en": "He is blind in one eye.",
+        "de": "Er ist auf einem Auge blind.",
+        "es": "Es tuerto.",
+        "ru": "Он слепой на один глаз."
+      },
+      "freqRank": 82,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye",
+      "voices": [{ "key": "echo/packs/fr_fluent/79-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "Tom était imbattable.",
+      "gloss": {
+        "en": "Tom was unbeatable.",
+        "de": "Tom war unschlagbar.",
+        "pt-BR": "Tom era imbatível.",
+        "ru": "Том был непобедим."
+      },
+      "freqRank": 83,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:trophy",
+      "voices": [{ "key": "echo/packs/fr_fluent/80-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "Il est historien.",
+      "gloss": {
+        "en": "He's a historian.",
+        "de": "Er ist Historiker.",
+        "es": "Es un historiador.",
+        "pt-BR": "Ele é historiador.",
+        "ru": "Он историк."
+      },
+      "freqRank": 84,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:scroll",
+      "voices": [{ "key": "echo/packs/fr_fluent/81-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "Nous nous aimions.",
+      "gloss": {
+        "en": "We loved one another.",
+        "de": "Sie liebte mich so wie ich sie liebte.",
+        "es": "Nos queríamos.",
+        "pt-BR": "Nós nos amávamos.",
+        "ru": "Мы любили друг друга."
+      },
+      "freqRank": 85,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:two-hearts",
+      "voices": [{ "key": "echo/packs/fr_fluent/82-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "Il est ponctuel.",
+      "gloss": {
+        "en": "He is punctual.",
+        "de": "Er ist pünktlich.",
+        "es": "Él es puntual.",
+        "pt-BR": "Ele é pontual.",
+        "ru": "Он пунктуален."
+      },
+      "freqRank": 86,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock",
+      "voices": [{ "key": "echo/packs/fr_fluent/83-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "Je voyage fréquemment.",
+      "gloss": {
+        "en": "I travel often.",
+        "de": "Ich reise oft.",
+        "pt-BR": "Eu viajo com frequência.",
+        "ru": "Я часто путешествую."
+      },
+      "freqRank": 87,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:luggage",
+      "voices": [{ "key": "echo/packs/fr_fluent/84-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "Il est biologiste.",
+      "gloss": {
+        "en": "He is a biologist.",
+        "de": "Er ist Biologe.",
+        "es": "Él es biólogo.",
+        "pt-BR": "Ele é biólogo.",
+        "ru": "Он биолог."
+      },
+      "freqRank": 88,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [{ "key": "echo/packs/fr_fluent/85-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "Je parle basque.",
+      "gloss": {
+        "en": "I speak Basque.",
+        "de": "Ich spreche Baskisch.",
+        "pt-BR": "Eu falo basco.",
+        "ru": "Я говорю по-баскски."
+      },
+      "freqRank": 89,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/86-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "Thomas est biologiste.",
+      "gloss": {
+        "en": "Tom is a biologist.",
+        "de": "Tom ist Biologe.",
+        "es": "Tomás es biólogo.",
+        "pt-BR": "Tom é biólogo.",
+        "ru": "Том - биолог."
+      },
+      "freqRank": 90,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [{ "key": "echo/packs/fr_fluent/87-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "Je suis alchimiste.",
+      "gloss": {
+        "en": "I'm an alchemist.",
+        "tr": "Simyacıyım.",
+        "de": "Ich bin Alchemistin.",
+        "es": "Soy alquimista."
+      },
+      "freqRank": 91,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [{ "key": "echo/packs/fr_fluent/88-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "Soyez plus modestes.",
+      "gloss": {
+        "en": "Be more modest.",
+        "de": "Seid bescheidener!",
+        "es": "Sean más modestos.",
+        "ru": "Будьте скромнее."
+      },
+      "freqRank": 92,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-bowing",
+      "voices": [{ "key": "echo/packs/fr_fluent/89-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "Le soleil brillait.",
+      "gloss": {
+        "en": "The sun was shining.",
+        "de": "Die Sonne strahlte.",
+        "es": "El sol brillaba.",
+        "ru": "Светило солнце."
+      },
+      "freqRank": 93,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sun",
+      "voices": [{ "key": "echo/packs/fr_fluent/90-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "Tu parles hindi ?",
+      "gloss": {
+        "en": "Do you speak Hindi?",
+        "de": "Sprichst du Hindi?",
+        "pt-BR": "Você fala hindi?",
+        "ru": "Ты говоришь на хинди?"
+      },
+      "freqRank": 94,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/91-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "Nous sommes désolées.",
+      "gloss": {
+        "en": "We're sorry.",
+        "de": "Es tut uns leid.",
+        "es": "Lo sentimos.",
+        "ru": "Мы сожалеем."
+      },
+      "freqRank": 95,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-bowing",
+      "voices": [{ "key": "echo/packs/fr_fluent/92-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "Les oiseaux chantaient.",
+      "gloss": {
+        "en": "The birds sang.",
+        "de": "Die Vögel sangen.",
+        "es": "Los pájaros cantaban.",
+        "pt-BR": "Os pássaros cantavam.",
+        "ru": "Птицы пели."
+      },
+      "freqRank": 96,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [{ "key": "echo/packs/fr_fluent/93-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "Je suis myope.",
+      "gloss": {
+        "en": "I'm nearsighted.",
+        "de": "Ich bin kurzsichtig.",
+        "es": "Soy miope.",
+        "ru": "Я близорук."
+      },
+      "freqRank": 97,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:glasses",
+      "voices": [{ "key": "echo/packs/fr_fluent/94-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "Il le nia.",
+      "gloss": {
+        "en": "He denied it.",
+        "es": "Él lo negó.",
+        "pt-BR": "Ele negou-o.",
+        "ru": "Он это отрицал."
+      },
+      "freqRank": 98,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-gesturing-no",
+      "voices": [{ "key": "echo/packs/fr_fluent/95-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "Où enseignes-tu ?",
+      "gloss": {
+        "en": "Where do you teach?",
+        "de": "Wo unterrichtest du?",
+        "es": "¿Dónde enseñas?",
+        "ru": "Где ты преподаёшь?"
+      },
+      "freqRank": 99,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school",
+      "voices": [{ "key": "echo/packs/fr_fluent/96-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "Il nia tout.",
+      "gloss": {
+        "en": "He denied everything.",
+        "de": "Er stritt alles ab.",
+        "es": "Él lo negó todo.",
+        "ru": "Он всё отрицал."
+      },
+      "freqRank": 100,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-gesturing-no",
+      "voices": [{ "key": "echo/packs/fr_fluent/97-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "Je suis mathématicien.",
+      "gloss": {
+        "en": "I'm a mathematician.",
+        "tr": "Ben bir matematikçiyim.",
+        "es": "Soy matemático.",
+        "ru": "Я математик."
+      },
+      "freqRank": 101,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:divide",
+      "voices": [{ "key": "echo/packs/fr_fluent/98-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "Tom est mathématicien.",
+      "gloss": {
+        "en": "Tom is a mathematician.",
+        "es": "Tom es matemático.",
+        "pt-BR": "Tom é matemático.",
+        "ru": "Том - математик."
+      },
+      "freqRank": 102,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:divide",
+      "voices": [{ "key": "echo/packs/fr_fluent/99-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "Trois semaines passèrent.",
+      "gloss": {
+        "en": "Three weeks went by.",
+        "de": "Es vergingen drei Wochen.",
+        "es": "Transcurrieron tres semanas.",
+        "ru": "Прошло три недели."
+      },
+      "freqRank": 103,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tear-off-calendar",
+      "voices": [{ "key": "echo/packs/fr_fluent/100-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "Je suis musicienne.",
+      "gloss": {
+        "en": "I'm a musician.",
+        "tr": "Ben bir müzisyenim.",
+        "de": "Ich bin Musikerin.",
+        "es": "Soy música.",
+        "ru": "Я музыкант."
+      },
+      "freqRank": 104,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [{ "key": "echo/packs/fr_fluent/101-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "Il est photogénique.",
+      "gloss": {
+        "en": "He comes out well in photographs.",
+        "de": "Er ist fotogen.",
+        "es": "Él es fotogénico.",
+        "pt-BR": "Ele é fotogênico."
+      },
+      "freqRank": 105,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:camera",
+      "voices": [{ "key": "echo/packs/fr_fluent/102-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "Elle se leva.",
+      "gloss": {
+        "en": "She stood up.",
+        "es": "Ella se levantó.",
+        "pt-BR": "Ela levantou-se.",
+        "ru": "Она встала."
+      },
+      "freqRank": 106,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-standing",
+      "voices": [{ "key": "echo/packs/fr_fluent/103-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "Nous travaillerons demain.",
+      "gloss": {
+        "en": "We'll work tomorrow.",
+        "de": "Wir werden morgen arbeiten.",
+        "es": "Trabajaremos mañana.",
+        "ru": "Мы завтра будем работать."
+      },
+      "freqRank": 107,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [{ "key": "echo/packs/fr_fluent/104-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "Je suis horrifié.",
+      "gloss": {
+        "en": "I'm horrified.",
+        "de": "Ich bin entsetzt.",
+        "es": "Estoy horrorizada.",
+        "ru": "Я в ужасе."
+      },
+      "freqRank": 108,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-screaming-in-fear",
+      "voices": [{ "key": "echo/packs/fr_fluent/105-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "Tom est programmeur.",
+      "gloss": {
+        "en": "Tom is a programmer.",
+        "es": "Tom es programador.",
+        "pt-BR": "Tom é programador.",
+        "ru": "Том — программист."
+      },
+      "freqRank": 109,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [{ "key": "echo/packs/fr_fluent/106-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "Parles-tu néerlandais ?",
+      "gloss": {
+        "en": "Do you speak Dutch?",
+        "de": "Sprichst du Niederländisch?",
+        "pt-BR": "Falas holandês?",
+        "ru": "Ты говоришь по-голландски?"
+      },
+      "freqRank": 110,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/107-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "Où habite lain ?",
+      "gloss": {
+        "en": "Where does Iain live?",
+        "de": "Wo wohnt Iain?",
+        "es": "¿Dónde vive Iain?",
+        "pt-BR": "Onde Iain mora?"
+      },
+      "freqRank": 111,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [{ "key": "echo/packs/fr_fluent/108-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "Je suis enrhumé.",
+      "gloss": {
+        "en": "I have a cold.",
+        "de": "Ich habe einen Schnupfen.",
+        "es": "Estoy resfriado.",
+        "pt-BR": "Estou resfriado.",
+        "ru": "Я простужен."
+      },
+      "freqRank": 112,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sneezing-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/109-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "Demain, il pleuvra.",
+      "gloss": {
+        "en": "Tomorrow it will rain.",
+        "de": "Morgen wird es regnen.",
+        "es": "Mañana va a llover.",
+        "ru": "Завтра будет дождь."
+      },
+      "freqRank": 113,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain",
+      "voices": [{ "key": "echo/packs/fr_fluent/110-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "Je te protègerai !",
+      "gloss": {
+        "en": "I'll protect you!",
+        "de": "Ich werde dich beschützen!",
+        "pt-BR": "Eu te protegerei!",
+        "ru": "Я буду тебя защищать!"
+      },
+      "freqRank": 114,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shield",
+      "voices": [{ "key": "echo/packs/fr_fluent/111-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "Il est dramaturge.",
+      "gloss": {
+        "en": "He is a dramatist.",
+        "de": "Er ist Dramatiker.",
+        "es": "Él es dramaturgo.",
+        "pt-BR": "Ele é dramaturgo."
+      },
+      "freqRank": 115,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [{ "key": "echo/packs/fr_fluent/112-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "Je m'en excuse.",
+      "gloss": {
+        "en": "I apologize for this.",
+        "de": "Ich entschuldige mich dafür.",
+        "es": "Me excuso por ello.",
+        "ru": "Прошу у вас за это прощения."
+      },
+      "freqRank": 116,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-bowing",
+      "voices": [{ "key": "echo/packs/fr_fluent/113-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "Elle est soliste.",
+      "gloss": {
+        "en": "She's a soloist.",
+        "de": "Sie ist Solistin.",
+        "es": "Ella es solista.",
+        "ru": "Она солистка."
+      },
+      "freqRank": 117,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [{ "key": "echo/packs/fr_fluent/114-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "Je m'en fiche !",
+      "gloss": {
+        "en": "I don't give a damn about it!",
+        "de": "Das ist mir schnurz!",
+        "es": "¡Me da igual!",
+        "ru": "Да мне плевать!"
+      },
+      "freqRank": 118,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging",
+      "voices": [{ "key": "echo/packs/fr_fluent/115-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "Le chat ronronne.",
+      "gloss": {
+        "en": "The cat is purring.",
+        "de": "Die Katze schnurrt.",
+        "pt-BR": "O gato faz rom-rom.",
+        "ru": "Кошка мурлычет."
+      },
+      "freqRank": 119,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [{ "key": "echo/packs/fr_fluent/116-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "Je m'en fous.",
+      "gloss": {
+        "en": "I don't care.",
+        "de": "Es ist mir egal.",
+        "es": "Me la suda.",
+        "ru": "Мне на это наплевать."
+      },
+      "freqRank": 120,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-shrugging",
+      "voices": [{ "key": "echo/packs/fr_fluent/117-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "Pourquoi rêvons-nous ?",
+      "gloss": {
+        "en": "Why do we have dreams?",
+        "de": "Wieso träumen wir?",
+        "es": "¿Por qué soñamos?",
+        "pt-BR": "Por que sonhamos?",
+        "ru": "Почему мы видим сны?"
+      },
+      "freqRank": 121,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thought-balloon",
+      "voices": [{ "key": "echo/packs/fr_fluent/118-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "Je m'en souviendrai.",
+      "gloss": {
+        "en": "I'll remember that.",
+        "es": "Lo recordaré.",
+        "pt-BR": "Lembrar-me-ei disso.",
+        "ru": "Я это запомню."
+      },
+      "freqRank": 122,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain",
+      "voices": [{ "key": "echo/packs/fr_fluent/119-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "Pourquoi mentons-nous ?",
+      "gloss": {
+        "en": "Why do we lie?",
+        "tr": "Neden yalan söyleriz?",
+        "ru": "Почему мы лжём?",
+        "ar": "لماذا نكذب؟"
+      },
+      "freqRank": 123,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/120-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "Je parle finlandais.",
+      "gloss": {
+        "en": "I speak Finnish.",
+        "tr": "Fince konuşurum.",
+        "de": "Ich spreche Finnisch.",
+        "ru": "Я говорю на финском."
+      },
+      "freqRank": 124,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/121-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "Tu me mentis.",
+      "gloss": {
+        "en": "You lied to me.",
+        "de": "Du hast mich angelogen.",
+        "es": "Me mentiste.",
+        "ru": "Ты мне солгал."
+      },
+      "freqRank": 125,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/122-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "Je t'ai aimé.",
+      "gloss": {
+        "en": "I loved you.",
+        "tr": "Seni seviyordum.",
+        "de": "Ich habe dich geliebt.",
+        "ru": "Я тебя полюбил."
+      },
+      "freqRank": 126,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart",
+      "voices": [{ "key": "echo/packs/fr_fluent/123-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "Il a neigé.",
+      "gloss": { "en": "It snowed.", "de": "Es hat geschneit.", "es": "Nevó.", "ru": "Был снег." },
+      "freqRank": 127,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [{ "key": "echo/packs/fr_fluent/124-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "Je t'ai cherché.",
+      "gloss": {
+        "en": "I have been looking for you.",
+        "de": "Ich habe dich gesucht.",
+        "pt-BR": "Eu te procurei.",
+        "ru": "Я тебя искал."
+      },
+      "freqRank": 128,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [{ "key": "echo/packs/fr_fluent/125-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "Elle se réveilla.",
+      "gloss": {
+        "en": "She woke up.",
+        "de": "Sie wachte auf.",
+        "es": "Ella se despertó.",
+        "pt-BR": "Ela acordou.",
+        "ru": "Она проснулась."
+      },
+      "freqRank": 129,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock",
+      "voices": [{ "key": "echo/packs/fr_fluent/126-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "Je t'ai entendu.",
+      "gloss": {
+        "en": "I heard you.",
+        "de": "Ich habe dich gehört.",
+        "es": "Te he oído.",
+        "ru": "Я тебя слышал."
+      },
+      "freqRank": 130,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear",
+      "voices": [{ "key": "echo/packs/fr_fluent/127-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "Le coréen est facile.",
+      "gloss": {
+        "en": "Korean is easy.",
+        "de": "Koreanisch ist leicht.",
+        "es": "El coreano es fácil.",
+        "ru": "Корейский язык простой."
+      },
+      "freqRank": 131,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/128-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "Je t'ai manqué ?",
+      "gloss": {
+        "en": "Did you miss me?",
+        "tr": "Beni özledin mi?",
+        "de": "Hast du mich vermisst?",
+        "es": "¿Me has echado de menos?",
+        "pt-BR": "Você sentiu a minha falta?",
+        "ru": "Ты скучал по мне?"
+      },
+      "freqRank": 132,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pleading-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/129-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "Ses cheveux ont repoussé.",
+      "gloss": {
+        "en": "Her hair grew back.",
+        "de": "Seine Haare sind nachgewachsen.",
+        "pt-BR": "Seus cabelos voltaram a crescer.",
+        "ru": "Волосы у него отросли."
+      },
+      "freqRank": 133,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-getting-haircut",
+      "voices": [{ "key": "echo/packs/fr_fluent/130-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "Je t'ai trouvé.",
+      "gloss": {
+        "en": "I found you.",
+        "de": "Ich fand dich.",
+        "es": "Te encontré.",
+        "ru": "Я тебя нашёл."
+      },
+      "freqRank": 134,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [{ "key": "echo/packs/fr_fluent/131-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "Il pleut à verse.",
+      "gloss": {
+        "en": "It's raining cats and dogs.",
+        "de": "Es regnet wie aus Eimern.",
+        "es": "Llueve a cántaros.",
+        "pt-BR": "Chove a cântaros.",
+        "ru": "Льёт как из ведра."
+      },
+      "freqRank": 135,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:umbrella-with-rain-drops",
+      "voices": [{ "key": "echo/packs/fr_fluent/132-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "Je l'ai acheté.",
+      "gloss": {
+        "en": "I bought it.",
+        "tr": "Onu satın aldım.",
+        "de": "Ich habe es gekauft.",
+        "es": "Lo he comprado.",
+        "pt-BR": "Comprei-o.",
+        "ru": "Я его купил."
+      },
+      "freqRank": 136,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shopping-cart",
+      "voices": [{ "key": "echo/packs/fr_fluent/133-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "Le suédois est facile.",
+      "gloss": {
+        "en": "Swedish is easy.",
+        "de": "Schwedisch ist leicht.",
+        "es": "El sueco es fácil.",
+        "pt-BR": "O sueco é fácil.",
+        "ru": "Шведский лёгкий."
+      },
+      "freqRank": 137,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/134-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "Je l'ai cherché.",
+      "gloss": {
+        "en": "I looked for him.",
+        "de": "Ich suchte ihn.",
+        "es": "Lo busqué a él.",
+        "ru": "Я его искал."
+      },
+      "freqRank": 138,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [{ "key": "echo/packs/fr_fluent/135-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "Tu aimes le rap ?",
+      "gloss": {
+        "en": "Do you like rap?",
+        "de": "Magst du Rap?",
+        "es": "¿Te gusta el rap?",
+        "pt-BR": "Você gosta de rap?",
+        "ru": "Ты любишь рэп?"
+      },
+      "freqRank": 139,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [{ "key": "echo/packs/fr_fluent/136-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "Je l'ai cherchée.",
+      "gloss": {
+        "en": "I was looking for her.",
+        "de": "Ich suchte sie.",
+        "es": "La busqué.",
+        "ru": "Я её искал."
+      },
+      "freqRank": 140,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [{ "key": "echo/packs/fr_fluent/137-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "Tu aimes les éléphants.",
+      "gloss": {
+        "en": "You like elephants.",
+        "de": "Du magst Elefanten.",
+        "es": "Te gustan los elefantes.",
+        "pt-BR": "Você gosta de elefantes.",
+        "ru": "Ты любишь слонов."
+      },
+      "freqRank": 141,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:elephant",
+      "voices": [{ "key": "echo/packs/fr_fluent/138-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "Je l'ai revu.",
+      "gloss": {
+        "en": "I saw him again.",
+        "de": "Ich bin ihm wieder begegnet.",
+        "pt-BR": "Eu o vi de novo.",
+        "ru": "Я опять его видел."
+      },
+      "freqRank": 142,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes",
+      "voices": [{ "key": "echo/packs/fr_fluent/139-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "Ils habitent à côté.",
+      "gloss": {
+        "en": "They live next door.",
+        "de": "Sie wohnen nebenan.",
+        "es": "Ellos viven puerta con puerta.",
+        "pt-BR": "Eles moram ao lado.",
+        "ru": "Они живут по соседству."
+      },
+      "freqRank": 143,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:houses",
+      "voices": [{ "key": "echo/packs/fr_fluent/140-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "Je l'ai revue.",
+      "gloss": {
+        "en": "I saw her again.",
+        "de": "Ich habe sie wieder gesehen.",
+        "es": "La vi nuevamente.",
+        "ru": "Я её снова видел."
+      },
+      "freqRank": 144,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes",
+      "voices": [{ "key": "echo/packs/fr_fluent/141-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "Ce gâteau est sucré.",
+      "gloss": {
+        "en": "This cake is sweet.",
+        "tr": "Bu pasta tatlı.",
+        "de": "Dieser Kuchen ist süß.",
+        "es": "Esta torta es dulce.",
+        "pt-BR": "Este bolo é doce.",
+        "ru": "Этот пирог сладкий."
+      },
+      "freqRank": 145,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shortcake",
+      "voices": [{ "key": "echo/packs/fr_fluent/142-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "Je l'ai trouvé !",
+      "gloss": {
+        "en": "I've found it.",
+        "de": "Ich habe es gefunden!",
+        "pt-BR": "Eu o encontrei!",
+        "ru": "Нашёл!"
+      },
+      "freqRank": 146,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [{ "key": "echo/packs/fr_fluent/143-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "Mon père est enseignant.",
+      "gloss": {
+        "en": "My father is a teacher.",
+        "tr": "Babam bir öğretmendir.",
+        "de": "Mein Vater ist Lehrer.",
+        "es": "Mi padre es maestro.",
+        "ru": "Мой отец - учитель."
+      },
+      "freqRank": 147,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school",
+      "voices": [{ "key": "echo/packs/fr_fluent/144-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "Je l'ai vu.",
+      "gloss": {
+        "en": "I did see him.",
+        "de": "Ich habe ihn gesehen.",
+        "pt-BR": "Eu o vi.",
+        "ru": "Я видел его."
+      },
+      "freqRank": 148,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes",
+      "voices": [{ "key": "echo/packs/fr_fluent/145-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "Combien coûtent les carottes ?",
+      "gloss": {
+        "en": "How much do the carrots cost?",
+        "de": "Wie viel kosten die Karotten?",
+        "es": "¿Cuánto cuestan las zanahorias?",
+        "pt-BR": "Quanto custam as cenouras?",
+        "ru": "Сколько стоит морковь?"
+      },
+      "freqRank": 149,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heavy-dollar-sign",
+      "voices": [{ "key": "echo/packs/fr_fluent/146-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "Je déjeune à midi.",
+      "gloss": {
+        "en": "I have lunch at noon.",
+        "es": "Almuerzo a las 12 del mediodía.",
+        "pt-BR": "Eu almoço ao meio dia.",
+        "ru": "Я обедаю в полдень."
+      },
+      "freqRank": 150,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [{ "key": "echo/packs/fr_fluent/147-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "Il aime les oranges.",
+      "gloss": {
+        "en": "He likes oranges.",
+        "tr": "O portakalı sever.",
+        "de": "Er mag Orangen.",
+        "es": "A él le gustan las naranjas.",
+        "pt-BR": "Ele gosta de laranjas.",
+        "ru": "Он любит апельсины."
+      },
+      "freqRank": 151,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tangerine",
+      "voices": [{ "key": "echo/packs/fr_fluent/148-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "Je lisais un livre.",
+      "gloss": {
+        "en": "I was reading a book.",
+        "tr": "Bir kitap okuyordum.",
+        "de": "Ich las ein Buch.",
+        "es": "Yo estaba leyendo un libro.",
+        "pt-BR": "Eu estava lendo um livro.",
+        "ru": "Я читал книгу."
+      },
+      "freqRank": 152,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/149-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "Tom commença à pleurer.",
+      "gloss": {
+        "en": "Tom started crying.",
+        "tr": "Tom ağlamaya başladı.",
+        "de": "Tom fing an zu weinen.",
+        "es": "Tom empezó a llorar.",
+        "pt-BR": "Tom começou a chorar.",
+        "ru": "Том заплакал."
+      },
+      "freqRank": 153,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crying-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/150-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "Je dispose de temps.",
+      "gloss": {
+        "en": "I have some time.",
+        "de": "Ich habe Zeit.",
+        "es": "Tengo tiempo.",
+        "pt-BR": "Eu tenho tempo.",
+        "ru": "У меня есть время."
+      },
+      "freqRank": 154,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done",
+      "voices": [{ "key": "echo/packs/fr_fluent/151-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "Ces livres sont neufs.",
+      "gloss": {
+        "en": "These books are new.",
+        "de": "Diese Bücher sind neu.",
+        "es": "Estos libros son nuevos.",
+        "pt-BR": "Estes livros são novos.",
+        "ru": "Эти книги новые."
+      },
+      "freqRank": 155,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [{ "key": "echo/packs/fr_fluent/152-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "Je suis tout ouïe.",
+      "gloss": {
+        "en": "I am all ears to what you say.",
+        "tr": "Can kulağıyla dinliyorum.",
+        "de": "Ich bin ganz Ohr.",
+        "es": "Soy todo oídos.",
+        "pt-BR": "Sou todo ouvidos.",
+        "ru": "Я весь внимание."
+      },
+      "freqRank": 156,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear",
+      "voices": [{ "key": "echo/packs/fr_fluent/153-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "Mes livres sont neufs.",
+      "gloss": {
+        "en": "My books are new.",
+        "tr": "Benim kitaplarım yeni.",
+        "de": "Meine Bücher sind neu.",
+        "es": "Mis libros son nuevos.",
+        "ru": "Мои книги новые."
+      },
+      "freqRank": 157,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books",
+      "voices": [{ "key": "echo/packs/fr_fluent/154-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "Je déteste le karaoké.",
+      "gloss": {
+        "en": "I hate karaoke.",
+        "de": "Ich hasse Karaoke.",
+        "es": "Odio el karaoke.",
+        "pt-BR": "Odeio karaokê.",
+        "ru": "Ненавижу караоке."
+      },
+      "freqRank": 158,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [{ "key": "echo/packs/fr_fluent/155-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "As-tu des crayons ?",
+      "gloss": {
+        "en": "Do you have any pencils?",
+        "de": "Hast du Bleistifte dabei?",
+        "es": "¿Tienes lapiceros?",
+        "pt-BR": "Você tem lápis?",
+        "ru": "У тебя есть карандаши?"
+      },
+      "freqRank": 159,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand",
+      "voices": [{ "key": "echo/packs/fr_fluent/156-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "Je ne perdrai pas !",
+      "gloss": {
+        "en": "I won't lose!",
+        "de": "Ich werde nicht verlieren!",
+        "es": "¡No voy a perder!",
+        "pt-BR": "Eu não perderei!",
+        "ru": "Я не проиграю!"
+      },
+      "freqRank": 160,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps",
+      "voices": [{ "key": "echo/packs/fr_fluent/157-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "Ils ont habité ici ?",
+      "gloss": {
+        "en": "Did they live here?",
+        "de": "Haben sie hier gewohnt?",
+        "es": "¿Ellos vivieron aquí?",
+        "pt-BR": "Eles moraram aqui?",
+        "ru": "Они здесь жили?"
+      },
+      "freqRank": 161,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [{ "key": "echo/packs/fr_fluent/158-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "Les chats rêvent-ils ?",
+      "gloss": {
+        "en": "Do cats dream?",
+        "tr": "Kediler rüya görür mü?",
+        "de": "Träumen Katzen?",
+        "es": "¿Los gatos sueñan?",
+        "ru": "Кошки видят сны?"
+      },
+      "freqRank": 162,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [{ "key": "echo/packs/fr_fluent/159-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "Elles lisent son livre.",
+      "gloss": {
+        "en": "They are reading her book.",
+        "de": "Sie lesen sein Buch.",
+        "es": "Ellas están leyendo su libro.",
+        "pt-BR": "Elas estão lendo o seu livro.",
+        "ru": "Они читают её книгу."
+      },
+      "freqRank": 163,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/160-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "Est-ce ta bicyclette ?",
+      "gloss": {
+        "en": "Is that your bicycle?",
+        "tr": "Bu senin bisikletin mi?",
+        "de": "Ist das dein Fahrrad?",
+        "es": "¿Esta es tu bicicleta?",
+        "ru": "Это твой велосипед?"
+      },
+      "freqRank": 164,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bicycle",
+      "voices": [{ "key": "echo/packs/fr_fluent/161-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "Non, elle est enseignante.",
+      "gloss": {
+        "en": "No, she's a teacher.",
+        "de": "Nein, sie ist Lehrerin.",
+        "es": "No, ella es profesora.",
+        "pt-BR": "Não, ela é professora.",
+        "ru": "Нет, она учитель."
+      },
+      "freqRank": 165,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school",
+      "voices": [{ "key": "echo/packs/fr_fluent/162-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "Quelle est sa nationalité ?",
+      "gloss": {
+        "en": "What is his nationality?",
+        "de": "Welche Nationalität hat sie?",
+        "es": "¿Cuál es su nacionalidad?",
+        "ru": "Кто он по национальности?",
+        "ar": "ما جنسيته؟"
+      },
+      "freqRank": 166,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:passport-control",
+      "voices": [{ "key": "echo/packs/fr_fluent/163-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "Ma femme est végétarienne.",
+      "gloss": {
+        "en": "My wife is a vegetarian.",
+        "de": "Meine Frau ist Vegetarierin.",
+        "es": "Mi mujer es vegetariana.",
+        "pt-BR": "Minha mulher é vegetariana.",
+        "ru": "Моя жена — вегетарианка."
+      },
+      "freqRank": 167,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:green-salad",
+      "voices": [{ "key": "echo/packs/fr_fluent/164-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "Les citrons sont acides.",
+      "gloss": {
+        "en": "Lemons are sour.",
+        "de": "Zitronen sind sauer.",
+        "es": "Los limones son ácidos.",
+        "pt-BR": "Os limões são azedos.",
+        "ru": "Лимоны кислые."
+      },
+      "freqRank": 168,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lemon",
+      "voices": [{ "key": "echo/packs/fr_fluent/165-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "Quel navigateur utilises-tu ?",
+      "gloss": {
+        "en": "Which browser are you using?",
+        "de": "Welchen Browser benutzt du?",
+        "es": "¿Qué navegador estás usando?",
+        "pt-BR": "Qual navegador você usa?",
+        "ru": "Какой браузер ты используешь?"
+      },
+      "freqRank": 169,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop",
+      "voices": [{ "key": "echo/packs/fr_fluent/166-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "Le monde me fascine.",
+      "gloss": {
+        "en": "The world fascinates me.",
+        "de": "Die Welt fasziniert mich.",
+        "es": "El mundo me fascina.",
+        "pt-BR": "O mundo me fascina.",
+        "ru": "Мир меня завораживает."
+      },
+      "freqRank": 170,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [{ "key": "echo/packs/fr_fluent/167-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "Il a la rougeole.",
+      "gloss": {
+        "en": "He has measles.",
+        "de": "Er hat Masern.",
+        "es": "Tiene sarampión.",
+        "pt-BR": "Ele está com sarampo.",
+        "ru": "У него корь."
+      },
+      "freqRank": 171,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-thermometer",
+      "voices": [{ "key": "echo/packs/fr_fluent/168-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "Les oiseaux chantent joyeusement.",
+      "gloss": {
+        "en": "The birds are singing merrily.",
+        "de": "Die Vögel singen fröhlich.",
+        "es": "Los pájaros cantan alegremente.",
+        "ru": "Весело поют птицы.",
+        "ar": "تغرد العصافير بفرحة."
+      },
+      "freqRank": 172,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [{ "key": "echo/packs/fr_fluent/169-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "Je déteste les lundis.",
+      "gloss": {
+        "en": "I hate Mondays.",
+        "de": "Ich hasse Montage.",
+        "es": "Odio los lunes.",
+        "pt-BR": "Eu odeio as segundas.",
+        "ru": "Ненавижу понедельники."
+      },
+      "freqRank": 173,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:calendar",
+      "voices": [{ "key": "echo/packs/fr_fluent/170-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "Nous étions très fatiguées.",
+      "gloss": {
+        "en": "We were very tired.",
+        "tr": "Çok yorgunduk.",
+        "de": "Wir waren sehr müde.",
+        "es": "Estábamos muy cansadas.",
+        "ru": "Мы очень устали."
+      },
+      "freqRank": 174,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:weary-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/171-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "Elle refusa notre proposition.",
+      "gloss": {
+        "en": "She turned down our proposal.",
+        "tr": "Önerimizi reddetti.",
+        "de": "Sie lehnte unseren Vorschlag ab.",
+        "es": "Ella rechazó nuestra propuesta.",
+        "pt-BR": "Ela recusou nossa proposta.",
+        "ru": "Она отклонила наше предложение."
+      },
+      "freqRank": 175,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-gesturing-no",
+      "voices": [{ "key": "echo/packs/fr_fluent/172-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "Le judaïsme est beau.",
+      "gloss": {
+        "en": "Judaism is beautiful.",
+        "tr": "Yahudilik güzeldir.",
+        "de": "Das Judentum ist schön.",
+        "es": "El judaísmo es lindo.",
+        "ar": "اليهودية جميلة."
+      },
+      "freqRank": 176,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:place-of-worship",
+      "voices": [{ "key": "echo/packs/fr_fluent/173-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "Les accidents sont inévitables.",
+      "gloss": {
+        "en": "Accidents will happen.",
+        "de": "Unfälle sind unvermeidlich.",
+        "es": "Los accidentes son inevitables.",
+        "pt-BR": "Os acidentes são inevitáveis.",
+        "ru": "Несчастные случаи неизбежны."
+      },
+      "freqRank": 177,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:collision",
+      "voices": [{ "key": "echo/packs/fr_fluent/174-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "La pierre est pesante.",
+      "gloss": {
+        "en": "The stone is heavy.",
+        "de": "Der Stein ist schwer.",
+        "es": "La piedra está pesada.",
+        "pt-BR": "A pedra é pesada.",
+        "ru": "Камень тяжёлый."
+      },
+      "freqRank": 178,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:rock",
+      "voices": [{ "key": "echo/packs/fr_fluent/175-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "Le bruit est assourdissant.",
+      "gloss": {
+        "en": "The noise is deafening.",
+        "de": "Der Lärm ist ohrenbetäubend.",
+        "es": "El ruido es ensordecedor.",
+        "pt-BR": "O barulho é ensurdecedor.",
+        "ru": "Шум оглушительный."
+      },
+      "freqRank": 179,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:loudspeaker",
+      "voices": [{ "key": "echo/packs/fr_fluent/176-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "Oui, je l'ai embrassé.",
+      "gloss": {
+        "en": "Yes, I kissed him.",
+        "de": "Ja, ich habe ihn geküsst.",
+        "es": "Sí, lo besé.",
+        "pt-BR": "Sim, beijei-a.",
+        "ru": "Да, я его поцеловала."
+      },
+      "freqRank": 180,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:kiss-mark",
+      "voices": [{ "key": "echo/packs/fr_fluent/177-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "Elle tint sa promesse.",
+      "gloss": {
+        "en": "She kept her promise.",
+        "tr": "O sözünü tuttu.",
+        "de": "Sie hielt ihr Versprechen.",
+        "es": "Ella mantuvo su promesa.",
+        "ru": "Она сдержала обещание."
+      },
+      "freqRank": 181,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake",
+      "voices": [{ "key": "echo/packs/fr_fluent/178-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "Envoie-moi une carte postale.",
+      "gloss": {
+        "en": "Send me a postcard.",
+        "de": "Schick mir eine Postkarte.",
+        "es": "Envíame una postal.",
+        "pt-BR": "Mande-me um cartão-postal.",
+        "ru": "Пришли мне открытку."
+      },
+      "freqRank": 182,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [{ "key": "echo/packs/fr_fluent/179-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "Elle a les cheveux courts.",
+      "gloss": {
+        "en": "She has short hair.",
+        "de": "Sie hat kurze Haare.",
+        "es": "Ella tiene el cabello corto.",
+        "pt-BR": "Ela tem cabelo curto.",
+        "ru": "У неё короткие волосы."
+      },
+      "freqRank": 183,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-getting-haircut",
+      "voices": [{ "key": "echo/packs/fr_fluent/180-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "Pourquoi apprends-tu le turc ?",
+      "gloss": {
+        "en": "Why are you learning Turkish?",
+        "tr": "Neden Türkçe öğreniyorsun?",
+        "de": "Warum lernst du Türkisch?",
+        "ru": "Зачем ты учишь турецкий?",
+        "ar": "لماذا تتعلم اللغة التركية؟"
+      },
+      "freqRank": 184,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/181-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "Ces plantes sont toutes toxiques.",
+      "gloss": {
+        "en": "These plants are all poisonous.",
+        "tr": "Bu bitkiler tamamen zehirli.",
+        "de": "Diese Pflanzen sind alle giftig.",
+        "es": "Todas estas plantas son venenosas.",
+        "ru": "Все эти растения ядовитые."
+      },
+      "freqRank": 185,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:skull-and-crossbones",
+      "voices": [{ "key": "echo/packs/fr_fluent/182-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "Nous écoutons de la musique.",
+      "gloss": {
+        "en": "We listen to music.",
+        "de": "Wir hören Musik.",
+        "es": "Escuchamos música.",
+        "pt-BR": "Nós ouvimos música.",
+        "ru": "Мы слушаем музыку."
+      },
+      "freqRank": 186,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-notes",
+      "voices": [{ "key": "echo/packs/fr_fluent/183-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "Les bananes sont encore vertes.",
+      "gloss": {
+        "en": "The bananas are still green.",
+        "tr": "Muzlar hâlâ yeşil.",
+        "es": "Los plátanos están verdes todavía.",
+        "pt-BR": "As bananas ainda estão verdes.",
+        "ru": "Бананы ещё зелёные."
+      },
+      "freqRank": 187,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:banana",
+      "voices": [{ "key": "echo/packs/fr_fluent/184-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "Elle a presque soixante ans.",
+      "gloss": {
+        "en": "She's almost sixty.",
+        "de": "Sie ist fast sechzig.",
+        "es": "Ella tiene casi sesenta años.",
+        "pt-BR": "Ela tem quase sessenta anos.",
+        "ru": "Ей почти шестьдесят лет."
+      },
+      "freqRank": 188,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [{ "key": "echo/packs/fr_fluent/185-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "Il pèse soixante-dix kilos.",
+      "gloss": {
+        "en": "He weighs 70 kilos.",
+        "de": "Er wiegt siebzig Kilo.",
+        "es": "Pesa setenta kilos.",
+        "pt-BR": "Pesa setenta quilos.",
+        "ru": "Он весит семьдесят килограммов."
+      },
+      "freqRank": 189,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:balance-scale",
+      "voices": [{ "key": "echo/packs/fr_fluent/186-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "Je ne parle pas portugais.",
+      "gloss": {
+        "en": "I don't speak Portuguese.",
+        "de": "Ich spreche kein Portugiesisch.",
+        "es": "Yo no hablo portugués.",
+        "pt-BR": "Não falo português.",
+        "ru": "Я не говорю по-португальски."
+      },
+      "freqRank": 190,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/187-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "Cherche-le dans le dictionnaire.",
+      "gloss": {
+        "en": "Look it up in the dictionary.",
+        "tr": "Ona sözlükte bak.",
+        "es": "Búscalo en el diccionario.",
+        "ru": "Поищи это в словаре.",
+        "ar": "ابحث عنه في القاموس."
+      },
+      "freqRank": 191,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/188-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "Je veux un bon dictionnaire.",
+      "gloss": {
+        "en": "I want a good dictionary.",
+        "de": "Ich will ein gutes Wörterbuch.",
+        "es": "Quiero un buen diccionario.",
+        "pt-BR": "Eu quero um bom dicionário.",
+        "ru": "Мне нужен хороший словарь."
+      },
+      "freqRank": 192,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/189-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "Puis-je utiliser ce dictionnaire ?",
+      "gloss": {
+        "en": "Can I use this dictionary?",
+        "de": "Darf ich dieses Wörterbuch benutzen?",
+        "es": "¿Puedo usar este diccionario?",
+        "pt-BR": "Posso usar este dicionário?",
+        "ru": "Можно мне воспользоваться этим словарём?"
+      },
+      "freqRank": 193,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/190-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "La salade est très salée.",
+      "gloss": {
+        "en": "The salad is very salty.",
+        "de": "Der Salat ist sehr salzig.",
+        "es": "La ensalada está muy salada.",
+        "ru": "Салат очень солёный.",
+        "ar": "السَلطة مالحة جدا."
+      },
+      "freqRank": 194,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:salt",
+      "voices": [{ "key": "echo/packs/fr_fluent/191-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "Elle voulait que je mente.",
+      "gloss": {
+        "en": "She wanted me to lie.",
+        "tr": "Yalan söylememi istiyordu.",
+        "de": "Sie wollte, dass ich lüge.",
+        "es": "Ella quería que mintiera.",
+        "ru": "Она хотела, чтобы я соврал."
+      },
+      "freqRank": 195,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/192-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "La soupe est trop salée.",
+      "gloss": {
+        "en": "The soup is too salty.",
+        "tr": "Çorba çok tuzlu.",
+        "de": "Die Suppe ist zu salzig.",
+        "es": "La sopa está demasiado salada.",
+        "pt-BR": "A sopa está salgada demais.",
+        "ru": "Суп слишком солёный."
+      },
+      "freqRank": 196,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:salt",
+      "voices": [{ "key": "echo/packs/fr_fluent/193-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "Les lumières se sont éteintes.",
+      "gloss": {
+        "en": "The lights turned off.",
+        "de": "Die Lichter gingen aus.",
+        "es": "Las luces se apagaron.",
+        "pt-BR": "As luzes apagaram-se.",
+        "ru": "Огни погасли."
+      },
+      "freqRank": 197,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [{ "key": "echo/packs/fr_fluent/194-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "Je ne parle pas hébreu.",
+      "gloss": {
+        "en": "I don't speak Hebrew.",
+        "tr": "İbranice konuşmuyorum.",
+        "de": "Ich spreche kein Hebräisch.",
+        "es": "No hablo hebreo.",
+        "ru": "Я не говорю на иврите."
+      },
+      "freqRank": 198,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/195-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "La température commence à chuter.",
+      "gloss": {
+        "en": "The temperature begins to drop.",
+        "de": "Die Temperatur beginnt zu sinken.",
+        "es": "La temperatura comienza a bajar.",
+        "pt-BR": "A temperatura começa a cair.",
+        "ru": "Температура начинает падать."
+      },
+      "freqRank": 199,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thermometer",
+      "voices": [{ "key": "echo/packs/fr_fluent/196-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "Ne sois pas si avare.",
+      "gloss": {
+        "en": "Don't be so greedy.",
+        "de": "Sei nicht so geizig.",
+        "es": "No seas tan avaricioso.",
+        "pt-BR": "Não seja tão avaro.",
+        "ru": "Не будь таким жадным."
+      },
+      "freqRank": 200,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-mouth-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/197-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "Nos rêves se sont réalisés.",
+      "gloss": {
+        "en": "Our dreams came true.",
+        "de": "Unsere Träume sind in Erfüllung gegangen.",
+        "es": "Nuestros sueños se hicieron realidad.",
+        "pt-BR": "Nossos sonhos se realizaram.",
+        "ru": "Наши мечты сбылись."
+      },
+      "freqRank": 201,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thought-balloon",
+      "voices": [{ "key": "echo/packs/fr_fluent/198-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "Je suis occupé aujourd’hui.",
+      "gloss": {
+        "en": "I am busy today.",
+        "de": "Ich bin heute beschäftigt.",
+        "es": "Hoy estoy ocupado.",
+        "pt-BR": "Hoje estou ocupado.",
+        "ru": "Я занят сегодня."
+      },
+      "freqRank": 202,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running",
+      "voices": [{ "key": "echo/packs/fr_fluent/199-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "Les oiseaux construisent des nids.",
+      "gloss": {
+        "en": "Birds build nests.",
+        "de": "Vögel bauen Nester.",
+        "es": "Los pájaros construyen nidos.",
+        "pt-BR": "Os pássaros constroem ninhos.",
+        "ru": "Птицы вьют гнёзда."
+      },
+      "freqRank": 203,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [{ "key": "echo/packs/fr_fluent/200-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "Il y avait un embouteillage.",
+      "gloss": {
+        "en": "There was a traffic jam.",
+        "de": "Es gab einen Stau.",
+        "es": "Había un embotellamiento.",
+        "pt-BR": "Havia um engarrafamento.",
+        "ru": "Была пробка."
+      },
+      "freqRank": 204,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile",
+      "voices": [{ "key": "echo/packs/fr_fluent/201-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "Nous avons célébré son anniversaire.",
+      "gloss": {
+        "en": "We celebrated his birthday.",
+        "de": "Wir feierten seinen Geburtstag.",
+        "es": "Celebramos su cumpleaños.",
+        "pt-BR": "Celebramos seu aniversário.",
+        "ru": "Мы отпраздновали его день рождения."
+      },
+      "freqRank": 205,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:birthday-cake",
+      "voices": [{ "key": "echo/packs/fr_fluent/202-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "Ne néglige pas ton travail.",
+      "gloss": {
+        "en": "Don't neglect your business.",
+        "tr": "İşini başından savma.",
+        "de": "Vernachlässige deine Arbeit nicht.",
+        "pt-BR": "Não negligencie o seu trabalho.",
+        "ru": "Не относись небрежно к своей работе."
+      },
+      "freqRank": 206,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase",
+      "voices": [{ "key": "echo/packs/fr_fluent/203-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "Il va probablement neiger demain.",
+      "gloss": {
+        "en": "Probably it will snow tomorrow.",
+        "tr": "Yarın muhtemelen kar yağacak.",
+        "de": "Morgen wird es wahrscheinlich schneien.",
+        "es": "Probablemente mañana nevará.",
+        "ru": "Завтра, наверное, будет снег."
+      },
+      "freqRank": 207,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [{ "key": "echo/packs/fr_fluent/204-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "Dix ans se sont écoulés.",
+      "gloss": {
+        "en": "Ten years have gone by.",
+        "de": "Zehn Jahre sind vergangen.",
+        "es": "Han pasado diez años.",
+        "pt-BR": "Dez anos se passaram.",
+        "ru": "Прошло десять лет."
+      },
+      "freqRank": 208,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done",
+      "voices": [{ "key": "echo/packs/fr_fluent/205-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "Il sait où nous habitons.",
+      "gloss": {
+        "en": "He knows where we live.",
+        "de": "Er weiß, wo wir wohnen.",
+        "es": "Él sabe dónde vivimos.",
+        "pt-BR": "Ele sabe onde moramos.",
+        "ru": "Он знает, где мы живем."
+      },
+      "freqRank": 209,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [{ "key": "echo/packs/fr_fluent/206-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "Les cerisiers étaient en fleur.",
+      "gloss": {
+        "en": "The cherry trees were in flower.",
+        "tr": "Kiraz ağaçları çiçeklenmişti.",
+        "de": "Die Kirschbäume standen in Blüte.",
+        "es": "Los cerezos estaban en flor.",
+        "ru": "Вишни были в цвету."
+      },
+      "freqRank": 210,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cherry-blossom",
+      "voices": [{ "key": "echo/packs/fr_fluent/207-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "Il vadrouille dans les rues.",
+      "gloss": {
+        "en": "He wanders the streets.",
+        "de": "Er wandert durch die Straßen.",
+        "es": "Él deambula por las calles.",
+        "pt-BR": "Ele está perambulando pelas ruas.",
+        "ru": "Он бродит по улицам."
+      },
+      "freqRank": 211,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-walking",
+      "voices": [{ "key": "echo/packs/fr_fluent/208-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "Elle épousa un homme riche.",
+      "gloss": {
+        "en": "She married a rich man.",
+        "de": "Sie heiratete einen reichen Mann.",
+        "es": "Ella se casó con un hombre rico.",
+        "pt-BR": "Ela se casou com um rico.",
+        "ru": "Она вышла замуж за богатого человека."
+      },
+      "freqRank": 212,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [{ "key": "echo/packs/fr_fluent/209-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "Il vécut une vie malheureuse.",
+      "gloss": {
+        "en": "He lived an unhappy life.",
+        "de": "Er lebte ein ungückliches Leben.",
+        "es": "Él vivió una vida infeliz.",
+        "pt-BR": "Ele viveu uma vida infeliz.",
+        "ru": "Он прожил несчастливую жизнь."
+      },
+      "freqRank": 213,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:disappointed-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/210-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "Elle lui montra la photo.",
+      "gloss": {
+        "en": "She showed him the photo.",
+        "de": "Sie zeigte ihm das Foto.",
+        "es": "Ella le mostró la foto.",
+        "pt-BR": "Ela mostrou-lhe a foto.",
+        "ru": "Она показала ему фотографию."
+      },
+      "freqRank": 214,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:camera",
+      "voices": [{ "key": "echo/packs/fr_fluent/211-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "Je t'ai apporté des fleurs.",
+      "gloss": {
+        "en": "I brought you flowers.",
+        "de": "Ich habe dir Blumen gebracht.",
+        "es": "Te traje flores.",
+        "pt-BR": "Eu te trouxe flores.",
+        "ru": "Я принёс тебе цветы."
+      },
+      "freqRank": 215,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bouquet",
+      "voices": [{ "key": "echo/packs/fr_fluent/212-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "Elle lui raconta une blague.",
+      "gloss": {
+        "en": "She told him a joke.",
+        "de": "Sie erzählte ihm einen Witz.",
+        "es": "Ella le contó un chiste.",
+        "pt-BR": "Ela lhe contou uma piada.",
+        "ru": "Она рассказала ему анекдот."
+      },
+      "freqRank": 216,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-tears-of-joy",
+      "voices": [{ "key": "echo/packs/fr_fluent/213-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "Je l'ai prévenu du danger.",
+      "gloss": {
+        "en": "I warned him of the danger.",
+        "de": "Ich habe ihn vor der Gefahr gewarnt.",
+        "es": "Le advertí del peligro.",
+        "pt-BR": "Eu o avisei do perigo.",
+        "ru": "Я предупредил его об опасности."
+      },
+      "freqRank": 217,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning",
+      "voices": [{ "key": "echo/packs/fr_fluent/214-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "1, 3 et 5 sont des nombres impairs.",
+      "gloss": {
+        "en": "One, three, and five are odd numbers.",
+        "de": "1, 3 und 5 sind ungerade Zahlen.",
+        "es": "Uno, tres y cinco son números impares.",
+        "pt-BR": "Um, três e cinco são números ímpares.",
+        "ru": "Один, три и пять — это нечётные числа."
+      },
+      "freqRank": 218,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:input-numbers",
+      "voices": [{ "key": "echo/packs/fr_fluent/215-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "Je ne l'ai pas vu.",
+      "gloss": {
+        "en": "I didn't see it.",
+        "tr": "Onu görmedim.",
+        "de": "Ich habe es nicht gesehen.",
+        "es": "No lo vi.",
+        "ru": "Я этого не видел."
+      },
+      "freqRank": 219,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:see-no-evil-monkey",
+      "voices": [{ "key": "echo/packs/fr_fluent/216-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 217,
+      "kind": "phrase",
+      "text": "Elle a les cheveux très courts.",
+      "gloss": {
+        "en": "Her hair is very short.",
+        "de": "Sie hat sehr kurzes Haar.",
+        "es": "Ella tiene el cabello muy corto.",
+        "pt-BR": "Ela tem cabelo muito curto.",
+        "ru": "У неё очень короткие волосы."
+      },
+      "freqRank": 220,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-getting-haircut",
+      "voices": [{ "key": "echo/packs/fr_fluent/217-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 218,
+      "kind": "phrase",
+      "text": "Je respirais contre le miroir.",
+      "gloss": {
+        "en": "I blew my breath against the mirror.",
+        "de": "Ich hauchte auf den Spiegel.",
+        "es": "Espiré sobre el espejo.",
+        "ru": "Я подышал на зеркало.",
+        "ar": "كنت أتنفس على سطح المرآة"
+      },
+      "freqRank": 221,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mirror",
+      "voices": [{ "key": "echo/packs/fr_fluent/218-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "Nous utilisons notre bouche pour manger.",
+      "gloss": {
+        "en": "We eat with our mouths.",
+        "de": "Wir nutzen unseren Mund zum Essen.",
+        "es": "Nosotros usamos la boca para comer.",
+        "pt-BR": "Nós usamos nossa boca para comer.",
+        "ru": "Рот нам нужен, чтобы есть."
+      },
+      "freqRank": 222,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mouth",
+      "voices": [{ "key": "echo/packs/fr_fluent/219-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "Je ne parle pas le suédois.",
+      "gloss": {
+        "en": "I don't speak Swedish.",
+        "de": "Ich spreche kein Schwedisch.",
+        "es": "No hablo sueco.",
+        "pt-BR": "Não falo sueco.",
+        "ru": "Я не говорю по-шведски."
+      },
+      "freqRank": 223,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/220-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 221,
+      "kind": "phrase",
+      "text": "Le turc est une langue difficile.",
+      "gloss": {
+        "en": "Turkish is a difficult language.",
+        "tr": "Türkçe zor bir dildir.",
+        "de": "Türkisch ist eine schwierige Sprache.",
+        "es": "El turco es una lengua difícil.",
+        "pt-BR": "O turco é uma língua difícil.",
+        "ru": "Турецкий - сложный язык."
+      },
+      "freqRank": 224,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/221-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 222,
+      "kind": "phrase",
+      "text": "Je ne parle pas le turc.",
+      "gloss": {
+        "en": "I don't speak Turkish.",
+        "tr": "Türkçe konuşmam.",
+        "de": "Ich spreche kein Türkisch.",
+        "es": "No hablo turco.",
+        "pt-BR": "Não falo turco.",
+        "ru": "Я не говорю по-турецки."
+      },
+      "freqRank": 225,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/222-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 223,
+      "kind": "phrase",
+      "text": "Un carré a quatre côtés égaux.",
+      "gloss": {
+        "en": "A square has four equal sides.",
+        "de": "Ein Quadrat hat vier gleiche Seiten.",
+        "es": "Un cuadrado tiene cuatro lados iguales.",
+        "pt-BR": "Um quadrado tem quatro lados iguais.",
+        "ru": "У квадрата четыре равные стороны."
+      },
+      "freqRank": 226,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:triangular-ruler",
+      "voices": [{ "key": "echo/packs/fr_fluent/223-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 224,
+      "kind": "phrase",
+      "text": "Le bureau est recouvert de poussière.",
+      "gloss": {
+        "en": "The desk is covered with dust.",
+        "de": "Der Schreibtisch ist staubbedeckt.",
+        "es": "El escritorio está cubierto de polvo.",
+        "pt-BR": "A carteira está coberta de poeira.",
+        "ru": "Письменный стол покрыт пылью."
+      },
+      "freqRank": 227,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broom",
+      "voices": [{ "key": "echo/packs/fr_fluent/224-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 225,
+      "kind": "phrase",
+      "text": "Cette ville se situe en France.",
+      "gloss": {
+        "en": "This city is located in France.",
+        "de": "Diese Stadt befindet sich in Frankreich.",
+        "es": "Esta ciudad se encuentra en Francia.",
+        "pt-BR": "Esta cidade está localizada na França.",
+        "ru": "Этот город находится во Франции."
+      },
+      "freqRank": 228,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map",
+      "voices": [{ "key": "echo/packs/fr_fluent/225-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 226,
+      "kind": "phrase",
+      "text": "Les tortues ont-elles des dents ?",
+      "gloss": {
+        "en": "Do turtles have teeth?",
+        "tr": "Kaplumbağaların dişi olur mu?",
+        "de": "Haben Schildkröten Zähne?",
+        "es": "¿Las tortugas tienen dientes?",
+        "pt-BR": "As tartarugas têm dentes?",
+        "ru": "У черепах есть зубы?"
+      },
+      "freqRank": 229,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:turtle",
+      "voices": [{ "key": "echo/packs/fr_fluent/226-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 227,
+      "kind": "phrase",
+      "text": "Pourquoi les plantes sont-elles vertes ?",
+      "gloss": {
+        "en": "Why are plants green?",
+        "tr": "Bitkiler neden yeşildir?",
+        "de": "Warum sind Pflanzen grün?",
+        "es": "¿Por qué las plantas son verdes?",
+        "ru": "Почему растения зелёные?",
+        "ar": "لماذا النباتات لونها أخضر؟"
+      },
+      "freqRank": 230,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:seedling",
+      "voices": [{ "key": "echo/packs/fr_fluent/227-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 228,
+      "kind": "phrase",
+      "text": "Les pommes sont rouges ou vertes.",
+      "gloss": {
+        "en": "Apples are red or green.",
+        "tr": "Elmalar kırmızı veya yeşildir.",
+        "de": "Äpfel sind rot oder grün.",
+        "es": "Las manzanas son rojas o verdes.",
+        "ru": "Яблоки красные или зелёные."
+      },
+      "freqRank": 231,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple",
+      "voices": [{ "key": "echo/packs/fr_fluent/228-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 229,
+      "kind": "phrase",
+      "text": "Trois enfants jouaient dans le parc.",
+      "gloss": {
+        "en": "Three children were playing in the park.",
+        "tr": "Üç çocuk parkta oynuyordu.",
+        "de": "Drei Kinder spielten im Park.",
+        "es": "Tres niños estaban jugando en el parque.",
+        "pt-BR": "Três crianças estavam brincando no parque.",
+        "ru": "Трое детей играли в парке."
+      },
+      "freqRank": 232,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-cartwheeling",
+      "voices": [{ "key": "echo/packs/fr_fluent/229-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 230,
+      "kind": "phrase",
+      "text": "Il était assis, buvant du vin.",
+      "gloss": {
+        "en": "He was sitting drinking wine.",
+        "de": "Er saß da und trank Wein.",
+        "es": "Él estaba sentado bebiendo vino.",
+        "pt-BR": "Ele estava sentado bebendo vinho.",
+        "ru": "Он сидел и пил вино."
+      },
+      "freqRank": 233,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [{ "key": "echo/packs/fr_fluent/230-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 231,
+      "kind": "phrase",
+      "text": "Ils se regardaient dans le miroir.",
+      "gloss": {
+        "en": "They were looking at themselves in the mirror.",
+        "tr": "Aynaya bakıyolardı.",
+        "de": "Sie betrachteten sich im Spiegel.",
+        "pt-BR": "Olhavam-se ao espelho.",
+        "ru": "Они смотрелись в зеркало."
+      },
+      "freqRank": 234,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mirror",
+      "voices": [{ "key": "echo/packs/fr_fluent/231-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 232,
+      "kind": "phrase",
+      "text": "Ma mère a peur des ascenseurs.",
+      "gloss": {
+        "en": "My mother is afraid of lifts.",
+        "de": "Meine Mutter hat Angst vor Aufzügen.",
+        "es": "Mi madre tiene miedo de los ascensores.",
+        "pt-BR": "Minha mãe tem medo de elevadores.",
+        "ru": "Моя мать боится лифтов."
+      },
+      "freqRank": 235,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:elevator",
+      "voices": [{ "key": "echo/packs/fr_fluent/232-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 233,
+      "kind": "phrase",
+      "text": "Je voulais juste vérifier mes emails.",
+      "gloss": {
+        "en": "I just wanted to check my email.",
+        "tr": "Sadece e postamı kontrol etmek istedim.",
+        "de": "Ich wollte gerade meine E-Mails abrufen.",
+        "es": "Yo sólo quería revisar mis correos electrónicos.",
+        "ru": "Я просто хотел проверить почтовый ящик."
+      },
+      "freqRank": 236,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [{ "key": "echo/packs/fr_fluent/233-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 234,
+      "kind": "phrase",
+      "text": "Il économise pour acheter une maison.",
+      "gloss": {
+        "en": "He is saving in order to buy a house.",
+        "de": "Er spart, um ein Haus zu kaufen.",
+        "es": "Está ahorrando para comprarse una casa.",
+        "pt-BR": "Está economizando para comprar uma casa.",
+        "ru": "Он откладывает деньги, чтобы купить дом."
+      },
+      "freqRank": 237,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden",
+      "voices": [{ "key": "echo/packs/fr_fluent/234-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 235,
+      "kind": "phrase",
+      "text": "Je construis des maisons de pierre.",
+      "gloss": {
+        "en": "I build houses out of stone.",
+        "de": "Ich baue Häuser aus Stein.",
+        "es": "Construyo casas de piedra.",
+        "pt-BR": "Eu construo casas de pedra.",
+        "ru": "Я строю дома из камня."
+      },
+      "freqRank": 238,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house",
+      "voices": [{ "key": "echo/packs/fr_fluent/235-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 236,
+      "kind": "phrase",
+      "text": "La musique est une langue universelle.",
+      "gloss": {
+        "en": "Music is a universal language.",
+        "tr": "Müzik evrensel bir dildir.",
+        "de": "Musik ist eine Weltsprache.",
+        "es": "La música es un lenguaje universal.",
+        "pt-BR": "A música é uma linguagem universal.",
+        "ru": "Музыка является универсальным языком."
+      },
+      "freqRank": 239,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note",
+      "voices": [{ "key": "echo/packs/fr_fluent/236-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 237,
+      "kind": "phrase",
+      "text": "Je te présenterai à mes parents.",
+      "gloss": {
+        "en": "I will introduce you to my parents.",
+        "tr": "Seni ailemle tanıştıracağım.",
+        "de": "Ich werde dich meinen Eltern vorstellen.",
+        "es": "Yo te presentaré a mis padres.",
+        "ru": "Я представлю тебя своим родителям."
+      },
+      "freqRank": 240,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family",
+      "voices": [{ "key": "echo/packs/fr_fluent/237-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 238,
+      "kind": "phrase",
+      "text": "Le thaï est une langue intéressante.",
+      "gloss": {
+        "en": "Thai is an interesting language.",
+        "de": "Thai ist eine interessante Sprache.",
+        "es": "El tailandés es un idioma interesante.",
+        "pt-BR": "O tailandês é uma língua interessante.",
+        "ru": "Тайский — интересный язык."
+      },
+      "freqRank": 241,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/238-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 239,
+      "kind": "phrase",
+      "text": "Que le soleil levant est beau !",
+      "gloss": {
+        "en": "How beautiful the rising sun is!",
+        "de": "Wie schön die aufgehende Sonne ist!",
+        "es": "¡Qué bello es el sol naciente!",
+        "pt-BR": "Como é belo o sol nascente!",
+        "ru": "Как прекрасно восходящее солнце!"
+      },
+      "freqRank": 242,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunrise",
+      "voices": [{ "key": "echo/packs/fr_fluent/239-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 240,
+      "kind": "phrase",
+      "text": "Les raisins sont transformés en vin.",
+      "gloss": {
+        "en": "Grapes are made into wine.",
+        "tr": "Şarap, üzümden yapılır.",
+        "de": "Trauben werden zu Wein verarbeitet.",
+        "pt-BR": "As uvas são transformadas em vinho.",
+        "ru": "Виноград превращается в вино."
+      },
+      "freqRank": 243,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [{ "key": "echo/packs/fr_fluent/240-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 241,
+      "kind": "phrase",
+      "text": "La vapeur sort de la marmite.",
+      "gloss": {
+        "en": "Steam comes out of the pot.",
+        "de": "Aus dem Topf steigt Dampf auf.",
+        "es": "Sale vapor de la olla.",
+        "pt-BR": "Sai vapor da panela.",
+        "ru": "Из кастрюли выходит пар."
+      },
+      "freqRank": 244,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food",
+      "voices": [{ "key": "echo/packs/fr_fluent/241-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 242,
+      "kind": "phrase",
+      "text": "Les rues étaient couvertes de neige.",
+      "gloss": {
+        "en": "The streets were covered with snow.",
+        "de": "Die Straßen waren von Schnee bedeckt.",
+        "es": "Las calles estaban cubiertas de nieve.",
+        "pt-BR": "As ruas estavam cobertas de neve.",
+        "ru": "Улицы были покрыты снегом."
+      },
+      "freqRank": 245,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snowflake",
+      "voices": [{ "key": "echo/packs/fr_fluent/242-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 243,
+      "kind": "phrase",
+      "text": "Tom travaillait pour une société pétrolière.",
+      "gloss": {
+        "en": "Tom worked for an oil company.",
+        "de": "Tom arbeitete für eine Petroleumfirma.",
+        "es": "Tom trabajaba para una firma petrolera.",
+        "ru": "Том работал в нефтяной компании.",
+        "ar": "كان توم يشتغل في شركة نفطية."
+      },
+      "freqRank": 246,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fuel-pump",
+      "voices": [{ "key": "echo/packs/fr_fluent/243-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 244,
+      "kind": "phrase",
+      "text": "Les tortues changent-elles de carapace ?",
+      "gloss": {
+        "en": "Do turtles change their shells?",
+        "de": "Wechseln Schildkröten ihren Panzer?",
+        "es": "¿Las tortugas cambian la caparazón?",
+        "pt-BR": "Tartaruga troca de casco?",
+        "ru": "Черепахи меняют свой панцирь?"
+      },
+      "freqRank": 247,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:turtle",
+      "voices": [{ "key": "echo/packs/fr_fluent/244-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 245,
+      "kind": "phrase",
+      "text": "Il a gagné beaucoup de compétitions.",
+      "gloss": {
+        "en": "He won many competitions.",
+        "de": "Er hat viele Wettbewerbe gewonnen.",
+        "es": "Ha ganado muchas competiciones.",
+        "pt-BR": "Ele ganhou muitas competições.",
+        "ru": "Он выиграл много соревнований."
+      },
+      "freqRank": 248,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:trophy",
+      "voices": [{ "key": "echo/packs/fr_fluent/245-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 246,
+      "kind": "phrase",
+      "text": "Quelques enfants nagent dans la mer.",
+      "gloss": {
+        "en": "Some children are swimming in the sea.",
+        "de": "Einige Kinder schwimmen im Meer.",
+        "es": "Algunos niños nadan en el mar.",
+        "ru": "Несколько детей плавает в море.",
+        "ar": "بعض الأطفال يسبحون في البحر."
+      },
+      "freqRank": 249,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [{ "key": "echo/packs/fr_fluent/246-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 247,
+      "kind": "phrase",
+      "text": "Il entendit un appel au secours.",
+      "gloss": {
+        "en": "He heard a cry for help.",
+        "tr": "Bir yardım çağrısı duydu.",
+        "de": "Er hörte einen Hilferuf.",
+        "es": "Él oyó una llamada de auxilio.",
+        "pt-BR": "Ele ouviu um chamado de socorro."
+      },
+      "freqRank": 250,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sos-button",
+      "voices": [{ "key": "echo/packs/fr_fluent/247-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 248,
+      "kind": "phrase",
+      "text": "Elle emplit le verre de vin.",
+      "gloss": {
+        "en": "She filled the glass with wine.",
+        "de": "Sie füllte das Glas mit Wein.",
+        "es": "Ella llenó el vaso de vino.",
+        "ru": "Она наполнила бокал вином.",
+        "ar": "ملأت الكأس بالخمر."
+      },
+      "freqRank": 251,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass",
+      "voices": [{ "key": "echo/packs/fr_fluent/248-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 249,
+      "kind": "phrase",
+      "text": "Petit-déjeunes-tu à la maison ?",
+      "gloss": {
+        "en": "Do you have breakfast at home?",
+        "tr": "Kahvaltıyı evde mi yapacaksın?",
+        "de": "Frühstückst du zu Hause?",
+        "es": "¿Desayunas en casa?",
+        "ru": "Ты завтракаешь дома?"
+      },
+      "freqRank": 252,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fork-and-knife-with-plate",
+      "voices": [{ "key": "echo/packs/fr_fluent/249-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 250,
+      "kind": "phrase",
+      "text": "Que me conseillez-vous de faire ?",
+      "gloss": {
+        "en": "What do you advise me to do?",
+        "de": "Was raten Sie mir zu tun?",
+        "es": "¿Qué me aconsejan hacer?",
+        "pt-BR": "O que o senhor me aconselha fazer?",
+        "ar": "ماذا تنصحني أن أفعل؟"
+      },
+      "freqRank": 253,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb",
+      "voices": [{ "key": "echo/packs/fr_fluent/250-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 251,
+      "kind": "phrase",
+      "text": "Il a neigé toute la nuit.",
+      "gloss": {
+        "en": "It's been snowing all night.",
+        "tr": "Gece boyunca kar yağdı.",
+        "de": "Es hat die ganze Nacht geschneit.",
+        "es": "Ha nevado toda la noche.",
+        "ru": "Снег шёл всю ночь."
+      },
+      "freqRank": 254,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [{ "key": "echo/packs/fr_fluent/251-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 252,
+      "kind": "phrase",
+      "text": "Je l'ai vue la semaine dernière.",
+      "gloss": {
+        "en": "I saw her last week.",
+        "de": "Ich habe sie letzte Woche gesehen.",
+        "es": "La vi la semana pasada.",
+        "pt-BR": "Eu a vi semana passada.",
+        "ru": "Я видел её на прошлой неделе."
+      },
+      "freqRank": 255,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes",
+      "voices": [{ "key": "echo/packs/fr_fluent/252-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 253,
+      "kind": "phrase",
+      "text": "Un oiseau volait haut dans le ciel.",
+      "gloss": {
+        "en": "A bird was flying high up in the sky.",
+        "de": "Ein Vogel flog hoch in der Luft.",
+        "es": "Un pájaro volaba alto por el aire.",
+        "pt-BR": "Um pássaro voava alto no céu.",
+        "ru": "Высоко в небе летала птица."
+      },
+      "freqRank": 256,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove",
+      "voices": [{ "key": "echo/packs/fr_fluent/253-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 254,
+      "kind": "phrase",
+      "text": "Je ne l'ai jamais entendu chanter.",
+      "gloss": {
+        "en": "I never heard him sing.",
+        "de": "Ich habe ihn nie singen gehört.",
+        "es": "Nunca le he escuchado cantar.",
+        "pt-BR": "Nunca a ouvi cantar.",
+        "ru": "Я никогда не слышал, как он поёт."
+      },
+      "freqRank": 257,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone",
+      "voices": [{ "key": "echo/packs/fr_fluent/254-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 255,
+      "kind": "phrase",
+      "text": "Le lac fournit la ville en eau.",
+      "gloss": {
+        "en": "The lake supplies the city with water.",
+        "tr": "Göl, şehre su sağlar.",
+        "de": "Der See versorgt die Stadt mit Wasser.",
+        "es": "El lago proporciona agua a la ciudad.",
+        "ru": "Озеро снабжает город водой."
+      },
+      "freqRank": 258,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet",
+      "voices": [{ "key": "echo/packs/fr_fluent/255-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 256,
+      "kind": "phrase",
+      "text": "Mary et moi sommes devenues bonnes amies.",
+      "gloss": {
+        "en": "Mary and I became good friends.",
+        "de": "Mary und ich sind gute Freundinnen geworden.",
+        "es": "Mary y yo nos hicimos buenas amigas.",
+        "pt-BR": "Mary e eu tornamo-nos bons amigos.",
+        "ru": "Мы с Мэри стали хорошими подругами."
+      },
+      "freqRank": 259,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:women-holding-hands",
+      "voices": [{ "key": "echo/packs/fr_fluent/256-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 257,
+      "kind": "phrase",
+      "text": "Le professeur a parlé de théories mathématiques.",
+      "gloss": {
+        "en": "The teacher talked about mathematical theories.",
+        "tr": "Öğretmen matematik kuramları hakkında konuştu.",
+        "de": "Der Lehrer sprach über mathematische Theorien.",
+        "es": "El profesor habló sobre teorías matemáticas.",
+        "ar": "الأستاذ تحدّث عن نظريات رياضياتية."
+      },
+      "freqRank": 260,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:divide",
+      "voices": [{ "key": "echo/packs/fr_fluent/257-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 258,
+      "kind": "phrase",
+      "text": "Ce passeport est valide pendant cinq ans.",
+      "gloss": {
+        "en": "This passport is valid for five years.",
+        "de": "Dieser Reisepass ist fünf Jahre lang gültig.",
+        "es": "Este pasaporte es válido por cinco años.",
+        "pt-BR": "Este passaporte é válido por cinco anos.",
+        "ru": "Этот паспорт действителен пять лет."
+      },
+      "freqRank": 261,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:passport-control",
+      "voices": [{ "key": "echo/packs/fr_fluent/258-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 259,
+      "kind": "phrase",
+      "text": "Le sang circule à travers les veines.",
+      "gloss": {
+        "en": "The blood circulates through the veins.",
+        "de": "Blut fließt durch die Adern.",
+        "es": "La sangre circula a través de las venas.",
+        "pt-BR": "O sangue circula através das veias.",
+        "ru": "Кровь циркулирует по венам."
+      },
+      "freqRank": 262,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drop-of-blood",
+      "voices": [{ "key": "echo/packs/fr_fluent/259-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 260,
+      "kind": "phrase",
+      "text": "Une minute se compose de soixante secondes.",
+      "gloss": {
+        "en": "A minute is sixty seconds.",
+        "tr": "Bir dakika altmış saniyeden oluşur.",
+        "de": "Eine Minute besteht aus sechzig Sekunden.",
+        "pt-BR": "Um minuto consiste em sessenta segundos.",
+        "ru": "Минута состоит из шестидесяти секунд."
+      },
+      "freqRank": 263,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stopwatch",
+      "voices": [{ "key": "echo/packs/fr_fluent/260-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 261,
+      "kind": "phrase",
+      "text": "Est-ce un étalon ou une jument ?",
+      "gloss": {
+        "en": "Is this a stallion or a mare?",
+        "de": "Ist das ein Hengst oder eine Stute?",
+        "es": "¿Es este un padrillo o una yegua?",
+        "pt-BR": "É este um garanhão ou uma égua?",
+        "ru": "Это жеребец или кобыла?"
+      },
+      "freqRank": 264,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:horse",
+      "voices": [{ "key": "echo/packs/fr_fluent/261-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 262,
+      "kind": "phrase",
+      "text": "Une équipe est composée de onze joueurs.",
+      "gloss": {
+        "en": "A team is composed of eleven players.",
+        "tr": "Bir takım on bir kişiden oluşur.",
+        "de": "Ein Team besteht aus elf Spielern.",
+        "es": "Un equipo consiste de once jugadores.",
+        "ru": "Команда состоит из одиннадцати игроков."
+      },
+      "freqRank": 265,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soccer-ball",
+      "voices": [{ "key": "echo/packs/fr_fluent/262-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 263,
+      "kind": "phrase",
+      "text": "Les vêtements sont gardés dans des placards.",
+      "gloss": {
+        "en": "Clothes are kept in closets.",
+        "de": "Kleidung wird in Schränken aufbewahrt.",
+        "es": "La ropa se guarda en armarios.",
+        "pt-BR": "As roupas são guardadas em armários.",
+        "ru": "Одежду хранят в шкафах."
+      },
+      "freqRank": 266,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:t-shirt",
+      "voices": [{ "key": "echo/packs/fr_fluent/263-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 264,
+      "kind": "phrase",
+      "text": "Est-ce que tu étudies la chimie ?",
+      "gloss": {
+        "en": "Do you study chemistry?",
+        "de": "Studierst du Chemie?",
+        "es": "¿Estudias química?",
+        "pt-BR": "Você estuda química?",
+        "ru": "Ты изучаешь химию?"
+      },
+      "freqRank": 267,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube",
+      "voices": [{ "key": "echo/packs/fr_fluent/264-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 265,
+      "kind": "phrase",
+      "text": "Les oranges sont riches en vitamine C.",
+      "gloss": {
+        "en": "Oranges contain a lot of vitamin C.",
+        "de": "Orangen sind reich an Vitamin C.",
+        "es": "Las naranjas son ricas en vitamina C.",
+        "pt-BR": "As laranjas são ricas em vitamina C.",
+        "ru": "Апельсины богаты витамином С."
+      },
+      "freqRank": 268,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tangerine",
+      "voices": [{ "key": "echo/packs/fr_fluent/265-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 266,
+      "kind": "phrase",
+      "text": "Je dois vous avouer que je ronfle...",
+      "gloss": {
+        "en": "I must admit that I snore.",
+        "de": "Ich muss zugeben, dass ich schnarche.",
+        "es": "Debo admitir que ronco...",
+        "pt-BR": "Tenho que admitir que eu ronco.",
+        "ru": "Должен вам признаться, что я храплю."
+      },
+      "freqRank": 269,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:zzz",
+      "voices": [{ "key": "echo/packs/fr_fluent/266-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 267,
+      "kind": "phrase",
+      "text": "Ils sont les défenseurs de la ville.",
+      "gloss": {
+        "en": "They're the defenders of the city.",
+        "es": "Son los defensores de la ciudad.",
+        "pt-BR": "São os defensores da cidade.",
+        "ru": "Они защитники города.",
+        "ar": "هم المدافعون عن المدينة."
+      },
+      "freqRank": 270,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shield",
+      "voices": [{ "key": "echo/packs/fr_fluent/267-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 268,
+      "kind": "phrase",
+      "text": "Je ne me marierai pas cette année.",
+      "gloss": {
+        "en": "I won't be getting married this year.",
+        "de": "Ich heirate dieses Jahr noch nicht.",
+        "es": "No me voy a casar este año.",
+        "pt-BR": "Eu não vou me casar este ano.",
+        "ru": "В этом году я не женюсь."
+      },
+      "freqRank": 271,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ring",
+      "voices": [{ "key": "echo/packs/fr_fluent/268-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 269,
+      "kind": "phrase",
+      "text": "Il laissa le livre sur la table.",
+      "gloss": {
+        "en": "He left the book on the table.",
+        "de": "Er ließ das Buch auf dem Tisch.",
+        "es": "Dejó el libro sobre la mesa.",
+        "ru": "Он оставил книгу на столе.",
+        "ar": "ترك الكتاب على الطاولة."
+      },
+      "freqRank": 272,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/269-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "Un chat apparut de derrière le rideau.",
+      "gloss": {
+        "en": "A cat appeared from behind the curtain.",
+        "de": "Eine Katze kam hinter dem Vorhang hervor.",
+        "es": "Un gato apareció desde atrás de la cortina.",
+        "pt-BR": "Um gato apareceu de trás da cortina.",
+        "ru": "Из-за занавески появилась кошка."
+      },
+      "freqRank": 273,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat",
+      "voices": [{ "key": "echo/packs/fr_fluent/270-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "Dans deux heures le soleil se couchera.",
+      "gloss": {
+        "en": "The sun will set in two hours.",
+        "de": "In zwei Stunden geht die Sonne unter.",
+        "es": "En dos horas se pondrá el sol.",
+        "pt-BR": "Dentro de duas horas o sol vai se pôr.",
+        "ru": "Через два часа солнце сядет."
+      },
+      "freqRank": 274,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunset",
+      "voices": [{ "key": "echo/packs/fr_fluent/271-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "Le grand homme regarda Tom et sourit.",
+      "gloss": {
+        "en": "The tall man looked at Tom and smiled.",
+        "de": "Der große Mann schaute Tom an und lächelte.",
+        "es": "El hombre alto lo miró a Tom y sonrió.",
+        "pt-BR": "O homem alto olhou para Tom e sorriu.",
+        "ru": "Высокий человек посмотрел на Тома и улыбнулся."
+      },
+      "freqRank": 275,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:slightly-smiling-face",
+      "voices": [{ "key": "echo/packs/fr_fluent/272-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "Je dédie ce livre à ma fille.",
+      "gloss": {
+        "en": "I dedicate this book to my daughter.",
+        "de": "Ich widme dieses Buch meiner Tochter.",
+        "es": "Le dedico este libro a mi hija.",
+        "pt-BR": "Dedico este livro à minha filha.",
+        "ru": "Я посвящаю эту книгу своей дочери."
+      },
+      "freqRank": 276,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/273-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "Combien mesures-tu et combien pèses-tu ?",
+      "gloss": {
+        "en": "How tall are you, and how much do you weigh?",
+        "de": "Wie groß bist du und wie viel wiegst du?",
+        "es": "¿Cuánto mides y cuánto pesas?",
+        "pt-BR": "Qual é a sua altura e quanto você pesa?",
+        "ru": "Какого ты роста и сколько ты весишь?"
+      },
+      "freqRank": 277,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:straight-ruler",
+      "voices": [{ "key": "echo/packs/fr_fluent/274-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "Les rues de cette ville sont étroites.",
+      "gloss": {
+        "en": "This city has narrow streets.",
+        "tr": "Bu şehrin caddeleri dar.",
+        "de": "Die Straßen in dieser Stadt sind eng.",
+        "es": "Las calles de esta ciudad son estrechas.",
+        "ru": "Улицы в этом городе узкие."
+      },
+      "freqRank": 278,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cityscape-at-dusk",
+      "voices": [{ "key": "echo/packs/fr_fluent/275-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "Elle joue au golf tous les weekends.",
+      "gloss": {
+        "en": "She plays golf every weekend.",
+        "de": "Sie spielt jedes Wochenende Golf.",
+        "es": "Ella juega al golf todos los fines de semana.",
+        "pt-BR": "Ela joga golf todos os fins de semana.",
+        "ru": "Она каждые выходные играет в гольф."
+      },
+      "freqRank": 279,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flag-in-hole",
+      "voices": [{ "key": "echo/packs/fr_fluent/276-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "Le vieil homme tenta de nager 5 kilomètres.",
+      "gloss": {
+        "en": "The old man attempted to swim five kilometers.",
+        "de": "Der alte Mann versuchte, 5 Kilometer zu schwimmen.",
+        "es": "El anciano intentó nadar cinco kilómetros.",
+        "pt-BR": "O velho tentou nadar 5 quilômetros.",
+        "ru": "Старик попытался проплыть 5 километров."
+      },
+      "freqRank": 280,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [{ "key": "echo/packs/fr_fluent/277-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "Il a neigé de lundi à vendredi.",
+      "gloss": {
+        "en": "It snowed from Monday to Friday.",
+        "de": "Es schneite von Montag bis Freitag.",
+        "es": "Nevó desde el lunes hasta el viernes.",
+        "pt-BR": "Nevou de segunda a sexta.",
+        "ru": "Снег шёл с понедельника по пятницу."
+      },
+      "freqRank": 281,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow",
+      "voices": [{ "key": "echo/packs/fr_fluent/278-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "Les chiens ont aboyé toute la nuit.",
+      "gloss": {
+        "en": "The dogs barked all night.",
+        "de": "Die Hunde bellten die ganze Nacht über.",
+        "es": "Los perros estuvieron ladrando toda la noche.",
+        "pt-BR": "Os cães latiram a noite toda.",
+        "ru": "Собаки лаяли всю ночь."
+      },
+      "freqRank": 282,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog",
+      "voices": [{ "key": "echo/packs/fr_fluent/279-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "Le nouveau médicament lui sauva la vie.",
+      "gloss": {
+        "en": "The new medicine saved his life.",
+        "de": "Das neue Medikament rettete ihm das Leben.",
+        "es": "La nueva medicina le salvó la vida.",
+        "pt-BR": "O novo medicamento salvou-lhe a vida.",
+        "ru": "Новое лекарство спасло ему жизнь."
+      },
+      "freqRank": 283,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pill",
+      "voices": [{ "key": "echo/packs/fr_fluent/280-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "Quelques enfants se baignent dans la rivière.",
+      "gloss": {
+        "en": "Some children are swimming in the river.",
+        "tr": "Bazı çocuklar nehirde yüzüyor.",
+        "de": "Einige Kinder schwimmen im Fluss.",
+        "es": "Algunos niños están nadando en el río.",
+        "pt-BR": "Algumas crianças se banham no rio.",
+        "ru": "Несколько детей купаются в реке."
+      },
+      "freqRank": 284,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming",
+      "voices": [{ "key": "echo/packs/fr_fluent/281-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "Il demeurera à jamais dans nos cœurs.",
+      "gloss": {
+        "en": "He will forever be in our hearts.",
+        "de": "Er wird immer in unseren Herzen sein.",
+        "es": "Siempre estará en nuestros corazones.",
+        "pt-BR": "Ele sempre estará em nossos corações.",
+        "ru": "Он навсегда останется в наших сердцах."
+      },
+      "freqRank": 285,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:reminder-ribbon",
+      "voices": [{ "key": "echo/packs/fr_fluent/282-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 283,
+      "kind": "phrase",
+      "text": "Ne songe même pas à manger mon chocolat !",
+      "gloss": {
+        "en": "Don't you even think of eating my chocolate!",
+        "tr": "Benim çikolatamı yemeyi düşünme!",
+        "de": "Denk nicht mal dran, meine Schokolade zu essen!",
+        "es": "¡Ni siquiera pienses en comerte mi chocolate!",
+        "ru": "Даже не думай есть мой шоколад!"
+      },
+      "freqRank": 286,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chocolate-bar",
+      "voices": [{ "key": "echo/packs/fr_fluent/283-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "Aucun étudiant ne put répondre à la question.",
+      "gloss": {
+        "en": "No student was able to answer the question.",
+        "de": "Kein Student konnte die Frage beantworten.",
+        "es": "Ningún estudiante pudo contestar a la pregunta.",
+        "pt-BR": "Nenhum estudante pôde responder à pergunta.",
+        "ru": "Ни один студент не смог ответить на вопрос."
+      },
+      "freqRank": 287,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-question-mark",
+      "voices": [{ "key": "echo/packs/fr_fluent/284-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 285,
+      "kind": "phrase",
+      "text": "Il mit ses lunettes et commença à lire.",
+      "gloss": {
+        "en": "He put on his glasses and began to read.",
+        "tr": "Gözlüğünü taktı ve okumaya başladı.",
+        "de": "Er setzte seine Brille auf und begann zu lesen.",
+        "es": "Él se puso sus lentes y comenzó a leer.",
+        "ru": "Он надел свои очки и начал читать."
+      },
+      "freqRank": 288,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:glasses",
+      "voices": [{ "key": "echo/packs/fr_fluent/285-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "Où se situe la source de ce fleuve ?",
+      "gloss": {
+        "en": "Where's the source of this river?",
+        "de": "Wo befindet sich die Quelle dieses Flusses?",
+        "es": "¿Dónde está el nacimiento de este río?",
+        "pt-BR": "Onde fica a nascente deste rio?",
+        "ru": "Откуда берёт начало эта река?"
+      },
+      "freqRank": 289,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:world-map",
+      "voices": [{ "key": "echo/packs/fr_fluent/286-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 287,
+      "kind": "phrase",
+      "text": "Il y a du lait dans le réfrigérateur.",
+      "gloss": {
+        "en": "There is milk in the refrigerator.",
+        "de": "Im Kühlschrank ist Milch.",
+        "es": "Hay leche en el frigorífico.",
+        "pt-BR": "Há leite na geladeira.",
+        "ru": "В холодильнике есть молоко."
+      },
+      "freqRank": 290,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:glass-of-milk",
+      "voices": [{ "key": "echo/packs/fr_fluent/287-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 288,
+      "kind": "phrase",
+      "text": "Elle ne sait pas faire de la bicyclette.",
+      "gloss": {
+        "en": "She can't ride a bicycle.",
+        "tr": "Bisiklete binmeyi bilmiyor.",
+        "de": "Sie kann nicht Fahrrad fahren.",
+        "es": "Ella no sabe montar en bicicleta.",
+        "ru": "Она не умеет ездить на велосипеде."
+      },
+      "freqRank": 291,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bicycle",
+      "voices": [{ "key": "echo/packs/fr_fluent/288-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 289,
+      "kind": "phrase",
+      "text": "Le Japon importe de grandes quantités de pétrole.",
+      "gloss": {
+        "en": "Japan imports a large quantity of oil.",
+        "de": "Japan importiert große Mengen Rohöl.",
+        "es": "Japón importa una gran cantidad de petróleo.",
+        "pt-BR": "O Japão importa grande quantidade de petróleo.",
+        "ru": "Япония импортирует большие объёмы нефти."
+      },
+      "freqRank": 292,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fuel-pump",
+      "voices": [{ "key": "echo/packs/fr_fluent/289-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 290,
+      "kind": "phrase",
+      "text": "Il y a quelqu’un à la porte.",
+      "gloss": {
+        "en": "There's someone at the door.",
+        "de": "Da ist jemand an der Tür.",
+        "es": "Hay alguien en la puerta.",
+        "pt-BR": "Tem alguém na porta.",
+        "ru": "У двери кто-то есть."
+      },
+      "freqRank": 293,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:door",
+      "voices": [{ "key": "echo/packs/fr_fluent/290-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 291,
+      "kind": "phrase",
+      "text": "Ne confonds pas le chinois avec le japonais.",
+      "gloss": {
+        "en": "Don't confuse Chinese with Japanese.",
+        "de": "Verwechsle nicht Chinesisch und Japanisch.",
+        "es": "No confundas el chino con el japonés.",
+        "pt-BR": "Não confunda chinês com japonês.",
+        "ru": "Не путай китайский язык с японским."
+      },
+      "freqRank": 294,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speaking-head",
+      "voices": [{ "key": "echo/packs/fr_fluent/291-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 292,
+      "kind": "phrase",
+      "text": "Si je connaissais son adresse, je lui écrirais.",
+      "gloss": {
+        "en": "If I knew his address, I would write to him.",
+        "de": "Wenn ich seine Adresse kennen würde, würde ich ihm schreiben.",
+        "es": "Si conociera su dirección, le escribiría.",
+        "pt-BR": "Se eu soubesse seu endereço, escrever-lhe-ia.",
+        "ru": "Если бы я знал его адрес, я бы написал ему."
+      },
+      "freqRank": 295,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [{ "key": "echo/packs/fr_fluent/292-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 293,
+      "kind": "phrase",
+      "text": "Ne confonds pas le sucre et le sel.",
+      "gloss": {
+        "en": "Don't confuse sugar with salt.",
+        "de": "Verwechsle nicht den Zucker mit dem Salz.",
+        "es": "No confundas el azúcar y la sal.",
+        "pt-BR": "Não confunda o açúcar com o sal.",
+        "ru": "Не путай сахар с солью."
+      },
+      "freqRank": 296,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:salt",
+      "voices": [{ "key": "echo/packs/fr_fluent/293-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 294,
+      "kind": "phrase",
+      "text": "Fred écrivit une longue lettre à sa mère.",
+      "gloss": {
+        "en": "Fred wrote his mother a long letter.",
+        "tr": "Fred annesine uzun bir mektup yazdı.",
+        "es": "Fred escribió una extensa carta a su madre.",
+        "pt-BR": "Fred escreveu à sua mãe uma longa carta.",
+        "ru": "Фред написал своей маме длинное письмо."
+      },
+      "freqRank": 297,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope",
+      "voices": [{ "key": "echo/packs/fr_fluent/294-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 295,
+      "kind": "phrase",
+      "text": "Vous appelleriez les pompiers pour sauver une fourmi ?",
+      "gloss": {
+        "en": "Would you call the fire brigade to save an ant?",
+        "de": "Würden Sie die Feuerwehr rufen, um eine Ameise zu retten?",
+        "es": "¿Llamarías a los bomberos para salvar una hormiga?",
+        "pt-BR": "Você chamaria o corpo de bombeiros para salvar uma formiga?",
+        "ru": "Вы бы вызвали пожарную команду, чтобы спасти муравья?"
+      },
+      "freqRank": 298,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fire-engine",
+      "voices": [{ "key": "echo/packs/fr_fluent/295-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 296,
+      "kind": "phrase",
+      "text": "Son nouveau roman est devenu un best-seller.",
+      "gloss": {
+        "en": "Her new novel has become a best seller.",
+        "tr": "Onun yeni romanı çoksatar oldu.",
+        "de": "Sein neuer Roman ist ein Bestseller geworden.",
+        "es": "Su nueva novela se convirtió en un best seller.",
+        "ru": "Его новый роман стал бестселлером."
+      },
+      "freqRank": 299,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:closed-book",
+      "voices": [{ "key": "echo/packs/fr_fluent/296-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 297,
+      "kind": "phrase",
+      "text": "Je l'ai acheté à un vendeur de rue.",
+      "gloss": {
+        "en": "I bought that from a street vendor.",
+        "tr": "Bunu bir sokak satıcısından aldım.",
+        "de": "Ich habe das bei einem Straßenhändler gekauft.",
+        "es": "Se lo compré a un vendedor ambulante.",
+        "ru": "Я купил его у уличного торговца."
+      },
+      "freqRank": 300,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shopping-cart",
+      "voices": [{ "key": "echo/packs/fr_fluent/297-ff_siwis.m4a", "voice": "ff_siwis" }]
+    }
+  ]
+}

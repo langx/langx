@@ -1567,6 +1567,8 @@ export const en = {
     other: 'Something else',
     details: 'What happened?',
     detailsPlaceholder: 'Optional. Anything that helps us understand.',
+    threadNotice:
+      'If you have messaged each other, whoever reviews this also sees your latest messages together, up to this report.',
     submit: 'Send report',
     messageSent: 'Reported. Thank you — we look at every one.',
     profileSent: 'Report sent. We will look into it.',

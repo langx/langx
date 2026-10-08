@@ -69,6 +69,13 @@
  *
  * Needs `bzip2` on the path: Tatoeba publishes bz2 and node has no decoder for
  * it. Everything is streamed, so the exports are never written to disk.
+ * `--tatoeba` points at a copy of `per_language/` instead — a `file://` URL
+ * works, since the streaming is curl's — for a run that will be repeated: the
+ * `fluent` measurement read every export a dozen times.
+ *
+ * `--cues ./images/cues.es.json` takes only phrases that table gives a picture
+ * to. Run once without it and a large `--limit` to get a pool, write the cues
+ * for the pool, then run again with it at the pack's size. See `cued`.
  */
 
 import { spawn } from 'node:child_process'
@@ -193,11 +200,28 @@ async function* lines(url) {
  * declined form that did not make the top ten thousand bands its phrase out
  * even where the lemma is everyday. That is the conservative direction, and
  * review pulls back what it should not have lost.
+ *
+ * **C1 and C2 are the rest of the list**, added for `fluent` the way the
+ * Octanove profile was added for English: without a band above B1 a phrase
+ * whose hardest word is rank 10,001 is unlisted, and `fluent` came out empty
+ * rather than wrong. The ceiling is the file's own — fifty thousand forms —
+ * because past it a subtitle corpus is mostly names, typos and transcribed
+ * noise, which is exactly what "unlisted, so dropped" should still catch. The
+ * split at 25,000 decides nothing (both are `fluent`); it is there so the
+ * table reads as CEFR does. The bands below B1 are untouched, so no phrase
+ * moves between the three packs that already exist.
+ *
+ * The surface-form caveat cuts the other way up here: a declined form of an
+ * everyday Russian or German word can rank past ten thousand and make its
+ * phrase `fluent` for its ending rather than its vocabulary. Review is where
+ * that is caught; see `FLUENT-MEASUREMENT.md`.
  */
 const FREQUENCY_BANDS = [
   [1000, 'A1'],
   [3000, 'A2'],
   [10000, 'B1'],
+  [25000, 'C1'],
+  [50000, 'C2'],
 ]
 
 async function frequencyBands(path) {
@@ -311,6 +335,30 @@ function levelOf(phrase, graded, lang) {
 }
 
 /**
+ * Whether the word that makes a phrase this hard is a name.
+ *
+ * Only asked at `fluent`, where it decides most of the pool otherwise. Below
+ * B1 a name is either common enough to be in the band (_Tom_) or unlisted and
+ * dropped. Above it, every place and person in the top fifty thousand forms is
+ * suddenly "C1": the first `fluent` pool was _Vivo en Atenas._, _Soy Susan
+ * Greene._ and _Chipre es una isla._ — A1 sentences carrying a rare name. A
+ * phrase is fluent for its vocabulary, so one that rests on a capitalised word
+ * is not taken.
+ *
+ * Not German, where every noun is capitalised and this would read every
+ * common noun as a name. A German `fluent` pool keeps its names for review to
+ * catch, and the Russian one is held to the rule like the rest.
+ */
+function restsOnName(text, graded, lang) {
+  if (lang === 'de') return false
+  const order = Object.keys(LEVELS)
+  const tokens = text.match(/[\p{L}']+/gu) ?? []
+  const ranks = tokens.map((token) => order.indexOf(graded.get(token.toLowerCase())))
+  const hardest = Math.max(...ranks)
+  return tokens.some((token, index) => ranks[index] === hardest && /^\p{Lu}/u.test(token))
+}
+
+/**
  * A phrase is more than one word.
  *
  * The phrasebook category carries `hello`, `yes` and `sorry`, which are
@@ -349,6 +397,21 @@ async function phrasebook(path) {
 }
 
 /**
+ * The phrases a cue table gives a picture to, when `--cues` names one.
+ *
+ * A pack where every card carries a cue is a rule decided before the phrases
+ * are, so it belongs here rather than in a pass that deletes items afterwards:
+ * the picker then takes the next-best candidate in place of an uncued one and
+ * the pack keeps its size. The table is `images/cues.<lang>.json`, written by
+ * a person against a larger pool first — a phrase whose only picture would be
+ * a literal drawing of its idiom has no honest cue and is simply not in it.
+ */
+async function cued(path) {
+  if (!path) return null
+  return new Set(Object.keys(JSON.parse(await readFile(path, 'utf8'))))
+}
+
+/**
  * Tatoeba sentences at the wanted level, with the translations they have.
  *
  * **`required` is why this is a parameter and not a constant.** English asks
@@ -360,19 +423,18 @@ async function phrasebook(path) {
  * contributor wrote one. The caller then prefers the best-covered sentences,
  * so the thin columns still fill as far as the data allows.
  */
-async function tatoeba(graded, levels, lang, locales, required) {
+async function tatoeba(graded, levels, lang, locales, required, base) {
   const source = PACK_EXPORTS[lang]
   const sentences = new Map()
   const levelOfId = new Map()
-  for await (const line of lines(
-    `https://downloads.tatoeba.org/exports/per_language/${source}/${source}_sentences.tsv.bz2`,
-  )) {
+  for await (const line of lines(`${base}/${source}/${source}_sentences.tsv.bz2`)) {
     const [id, , text] = line.split('\t')
     if (!text || !'.?!'.includes(text.at(-1))) continue
     const count = words(text, lang).length
     if (count < MIN_WORDS || count > MAX_WORDS) continue
     const band = levelOf(text, graded, lang)
     if (!band || !levels.includes(band)) continue
+    if (band === 'fluent' && restsOnName(text, graded, lang)) continue
     sentences.set(id, text)
     levelOfId.set(id, band)
   }
@@ -383,16 +445,12 @@ async function tatoeba(graded, levels, lang, locales, required) {
   const glosses = new Map()
   for (const [locale, code] of Object.entries(locales)) {
     const wanted = new Map()
-    for await (const line of lines(
-      `https://downloads.tatoeba.org/exports/per_language/${source}/${source}-${code}_links.tsv.bz2`,
-    )) {
+    for await (const line of lines(`${base}/${source}/${source}-${code}_links.tsv.bz2`)) {
       const [from, to] = line.split('\t')
       if (sentences.has(from) && to && !wanted.has(to)) wanted.set(to.trim(), from)
     }
     let found = 0
-    for await (const line of lines(
-      `https://downloads.tatoeba.org/exports/per_language/${code}/${code}_sentences.tsv.bz2`,
-    )) {
+    for await (const line of lines(`${base}/${code}/${code}_sentences.tsv.bz2`)) {
       const [id, , text] = line.split('\t')
       const sourceId = wanted.get(id)
       if (!sourceId || !text?.trim()) continue
@@ -490,7 +548,15 @@ async function main() {
   console.error(`graded ${graded.size} ${lang} word forms`)
 
   const book = await phrasebook(arg('phrasebook'))
-  const sentences = await tatoeba(graded, levels, lang, locales, required)
+  const cues = await cued(arg('cues'))
+  const sentences = await tatoeba(
+    graded,
+    levels,
+    lang,
+    locales,
+    required,
+    arg('tatoeba', 'https://downloads.tatoeba.org/exports/per_language'),
+  )
 
   for (const level of levels) {
     const entries = book.filter((phrase) => levelOf(phrase, graded, lang) === level)
@@ -504,6 +570,9 @@ async function main() {
     for (const phrase of [...entries, ...said.map((item) => item.text)]) {
       const key = shape(phrase)
       if (!key || seen.has(key) || !writable(phrase) || !isPhrase(phrase)) continue
+      // Before the limit, not after it: a phrase with no picture gives its
+      // place to the next candidate rather than leaving a hole in the pack.
+      if (cues && !cues.has(phrase)) continue
       seen.add(key)
       candidates.push(phrase)
     }

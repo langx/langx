@@ -565,8 +565,14 @@ export const ptBR: Localized<ServerMessages> = {
         '🎉 {friends} amigos que você convidou já estão conversando no LangX. {count} meses de Pro são seus!',
     },
     introStreak: {
-      one: '🔥 {days} dias seguidos! Aqui está {count} mês de Pro para continuar assim.',
-      other: '🔥 {days} dias seguidos! Aqui estão {count} meses de Pro para continuar assim.',
+      one: '🔥 {days} dias seguidos, que incrível! Para agradecer, a gente te dá {count} mês de Pro.',
+      other:
+        '🔥 {days} dias seguidos, que incrível! Para agradecer, a gente te dá {count} meses de Pro.',
+    },
+    introStreakWeeks: {
+      one: '🔥 {days} dias seguidos, que dedicação! Para agradecer, a gente te dá {count} semana de Pro.',
+      other:
+        '🔥 {days} dias seguidos, que dedicação! Para agradecer, a gente te dá {count} semanas de Pro.',
     },
     introCode: {
       one: '🎟️ O código {code} funcionou: {count} mês de LangX Pro é seu.',
@@ -610,6 +616,8 @@ export const ptBR: Localized<ServerMessages> = {
       other:
         'Obrigado pela sua denúncia. Nós a analisamos e adicionamos {count} fichas à sua carteira por ajudar a manter o LangX um bom lugar para aprender. A pessoa denunciada nunca fica sabendo quem fez a denúncia.',
     },
+    suspensionEnded:
+      'Sua suspensão terminou e sua conta está aberta de novo. 👋 Seu perfil voltou a aparecer em Descobrir e na busca, e suas conversas estão onde você as deixou.\n\nPor favor, ajude a manter o LangX um bom lugar para aprender: outra denúncia confirmada pode fechar a conta de vez. Se você acha que algo deu errado, Configurações → Sobre → Feedback chega a uma pessoa.',
     assistantOffline:
       'Não consigo responder mensagens agora. Se puder esperar, tente mais tarde; se não, escreva para {email} e uma pessoa vai ler.',
     assistantLimit:

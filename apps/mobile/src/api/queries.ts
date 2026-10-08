@@ -72,6 +72,7 @@ import {
   type AdminBulkSuspendResponse,
   type AdminLinkedAccounts,
   CONVERSATION_SEARCH_MIN_LENGTH,
+  MEDIA_LIMITS,
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
@@ -2531,11 +2532,25 @@ export async function uploadMessageMedia(input: {
   // and the bytes all have to agree — a note signed as one thing and uploaded
   // as another is exactly the silent failure this order removes.
   const blob = await (await fetch(input.uri)).blob()
+  /*
+   * The blob is the first point where the size is certain — the picker's
+   * `fileSize` is often missing, and a camera clip has none at all — so this
+   * is where an oversized file is stopped, before a byte of it is sent. The
+   * error carries the server's code so the thread says what the server would.
+   */
+  if (blob.size > MEDIA_LIMITS[input.kind].maxBytes) {
+    throw Object.assign(new Error(`That ${input.kind} is too large`), {
+      code: ERROR_CODES.MEDIA_TOO_LARGE,
+    })
+  }
   const contentType = resolveUploadType(input.kind, input.contentType, blob.type)
   const target = await api.post<UploadUrlDto>('/messages/upload-url', {
     conversationId: input.conversationId,
     kind: input.kind,
     contentType,
+    // Signed into the URL, so the PUT below must be exactly this many bytes.
+    // Left out for an empty blob, which the schema would refuse as a size.
+    ...(blob.size > 0 ? { sizeBytes: blob.size } : {}),
   })
 
   await putWithProgress({
@@ -3267,6 +3282,23 @@ export interface AdminReportDto {
     deletedAt: string | null
     createdAt: string
   } | null
+  /**
+   * The last messages between the two of them up to the report, oldest
+   * first, on the detail read. Text only; files are counted. Absent from an
+   * API older than it.
+   */
+  thread?: {
+    conversationId: string
+    messages: {
+      id: string
+      senderId: string
+      type: string
+      body: string
+      attachments: number
+      deleted: boolean
+      createdAt: string
+    }[]
+  } | null
   suspension?: { until: string; permanent: boolean; reason: string } | null
   otherOpenReports?: number
   /** What the reporter was thanked with. Only on the detail read, like the three above. */
@@ -3345,6 +3377,7 @@ export interface AdminUserDto {
     gifts: {
       _id: string
       months: number
+      weeks?: number
       source: string
       status: string
       endsAt: string | null

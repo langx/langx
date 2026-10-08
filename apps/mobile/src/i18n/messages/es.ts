@@ -1416,6 +1416,8 @@ export const es: Localized<EnMessages> = {
     other: 'Otra cosa',
     details: '¿Qué ha pasado?',
     detailsPlaceholder: 'Opcional. Cualquier cosa que nos ayude a entenderlo.',
+    threadNotice:
+      'Si os habéis escrito, quien revise esto también verá vuestros últimos mensajes, hasta esta denuncia.',
     submit: 'Enviar denuncia',
     messageSent: 'Denunciado. Gracias: revisamos todas.',
     profileSent: 'Denuncia enviada. Lo revisaremos.',

@@ -76,21 +76,22 @@ carrying every kind cannot honestly offer to stop one of them.
 
 ## 1. Transactional — no switch, no unsubscribe
 
-| Message                            | Fires on                                          | Channels                      | Once because                                    |
-| ---------------------------------- | ------------------------------------------------- | ----------------------------- | ----------------------------------------------- |
-| Verify your email                  | sign-up                                           | email                         | Better Auth mints the link                      |
-| Reset your password                | forgot password                                   | email                         | —                                               |
-| Sign-in link                       | magic-link request                                | email                         | single-use, 15 min                              |
-| You already have an account        | sign-up over an existing address                  | email                         | —                                               |
-| Confirm account deletion           | delete request                                    | email                         | token burned on use                             |
-| **Welcome to LangX**               | onboarding completes                              | email                         | `createProfile` refuses a second profile        |
-| **Confirm your email** (reminder)  | unverified 24 h after sign-up, never after a week | email                         | ledger `verifyReminder:<id>:once`               |
-| **Finish your profile** (reminder) | signed up, no profile, 24 h–7 days old            | email                         | ledger `onboardingReminder:<id>:once`           |
-| Bounty paid                        | a report is confirmed                             | @langx message + push + email | the ledger's unique `{userId, kind, refId}`     |
-| **Thanks for a report**            | an operator rewards whoever reported somebody     | @langx message + push         | the ledger's unique `{userId, kind, refId}`     |
-| **The v1 lifetime gift**           | a restore grants a lifetime tier                  | @langx message + push + email | ledger `lifetimeGift:<id>:once`                 |
-| **Welcome back from v1**           | first session on a `precreatedFromV1` row         | @langx message                | `sender_client_id_unique` on `welcomeback:<id>` |
-| Report received / feedback         | somebody reports or writes in                     | email to support              | —                                               |
+| Message                            | Fires on                                           | Channels                      | Once because                                    |
+| ---------------------------------- | -------------------------------------------------- | ----------------------------- | ----------------------------------------------- |
+| Verify your email                  | sign-up                                            | email                         | Better Auth mints the link                      |
+| Reset your password                | forgot password                                    | email                         | —                                               |
+| Sign-in link                       | magic-link request                                 | email                         | single-use, 15 min                              |
+| You already have an account        | sign-up over an existing address                   | email                         | —                                               |
+| Confirm account deletion           | delete request                                     | email                         | token burned on use                             |
+| **Welcome to LangX**               | onboarding completes                               | email                         | `createProfile` refuses a second profile        |
+| **Confirm your email** (reminder)  | unverified 24 h after sign-up, never after a week  | email                         | ledger `verifyReminder:<id>:once`               |
+| **Finish your profile** (reminder) | signed up, no profile, 24 h–7 days old             | email                         | ledger `onboardingReminder:<id>:once`           |
+| Bounty paid                        | a report is confirmed                              | @langx message + push + email | the ledger's unique `{userId, kind, refId}`     |
+| **Thanks for a report**            | an operator rewards whoever reported somebody      | @langx message + push         | the ledger's unique `{userId, kind, refId}`     |
+| **The v1 lifetime gift**           | a restore grants a lifetime tier                   | @langx message + push + email | ledger `lifetimeGift:<id>:once`                 |
+| **Welcome back from v1**           | first session on a `precreatedFromV1` row          | @langx message                | `sender_client_id_unique` on `welcomeback:<id>` |
+| **Your account is open again**     | a timed suspension's end date passes, within a day | @langx message + push         | ledger `suspensionEnded:<id>:<until>`           |
+| Report received / feedback         | somebody reports or writes in                      | email to support              | —                                               |
 
 The lifetime gift and the bounty receipt are the two transactional messages
 that also arrive as a **message in the app**: news with no action attached,
@@ -117,6 +118,20 @@ there is nothing to notify an account nobody has opened. The same goes for the
 welcome-back — a `precreatedFromV1` row nobody has ever signed into has no
 languages to be written to in. That population's channel is the email
 win-back, `audiencePlan(db, 'v1')`.
+
+**Your account is open again** is the one line here that fires on a date an
+operator set passing. A suspension is one field and one comparison (`moderation/suspension.ts`): nothing sweeps it, so nothing was
+there to notice it ending, and the person found out by opening the app and no
+longer being refused. `moderation/suspensionEnded.ts` reads `suspension.until`
+on the half-hourly tick and writes once per end date — a second suspension is
+a second date and gets a second notice. Only a timed suspension that ran its
+course: a lifted one has no record left to find, and the appeal mail already
+said so; a permanent one stores the year 9999 and never matches. Its push is
+the message's own, through `fanOutMessage`, so it opens the @langx thread and
+honours a muted thread and the messages switch like anything else from that
+account. Bounded at a day for the reason the plan-ended letter is: the record
+is never cleared, and the first run after it ships must not write to everybody
+whose suspension ever ended.
 
 **Finish your profile** waits on the clock rather than on an event, because
 the event it waits for is one that never came: a `user` row is written at
@@ -261,20 +276,23 @@ gift reminds eleven months after the ledger would have forgotten it.
 | Message                       | Fires on                                                   | Channels                        | Once because                           |
 | ----------------------------- | ---------------------------------------------------------- | ------------------------------- | -------------------------------------- |
 | **A gift of Pro**             | a gift is granted (operator, streak, referrals, gift code) | @langx message + push + email   | `sender_client_id_unique` + row status |
-| **Your Pro gift ends {date}** | 7 days before the end                                      | @langx message + email, no push | `remindedAt.week` on the row           |
+| **Your Pro gift ends {date}** | 7 days before the end, if the gift is longer than a week   | @langx message + email, no push | `remindedAt.week` on the row           |
 | **…ends tomorrow**            | 1 day before the end                                       | @langx message + push           | `remindedAt.day` on the row            |
 | **Your Pro gift has ended**   | the end, if the refresh leaves the account free            | @langx message, no push         | `endedNotifiedAt` on the row           |
 
 The letter is three short paragraphs. The first line says who gave it — an
 operator ("🎁 N months of LangX Pro, on us. Thanks for being here!"), a
-100/365-day streak, three invitees who became real users, or a gift code
+7/100/365-day streak, three invitees who became real users, or a gift code
 ("🎟️ Code {CODE} worked: N months of LangX Pro are yours.", the code in
 capitals as it is stored) — and doubles as the push preview. Then four things
 Pro opens, one emoji-led line each, with "…and more." under them, and the end
 date. A code's gift is granted the moment it is redeemed, from
 `POST /me/gift-code`, not on the next pass. Somebody with a running store
 subscription is told it carries on as usual, and that Pro stays until the
-gift's end if it ever stops.
+gift's end if it ever stops. A **streak** gift to somebody whose subscription
+already runs past its end is granted without a word: no letter, no push, no
+mail, no welcome. It changes nothing they would notice, and if they cancel
+later the reminders are the first they hear of it.
 
 The reminders are **information, not an offer**: when it ends and where the
 plan screen is. A "subscribe now" would be marketing and would need the consent

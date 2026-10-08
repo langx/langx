@@ -551,8 +551,14 @@ export const tr: Localized<ServerMessages> = {
         '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
     },
     introStreak: {
-      one: '🔥 {days} gün üst üste! Seriyi sürdürmen için {count} ay Pro bizden.',
-      other: '🔥 {days} gün üst üste! Seriyi sürdürmen için {count} ay Pro bizden.',
+      one: '🔥 {days} gün üst üste, inanılmazsın! Bu emeğe teşekkür olarak {count} ay Pro bizden.',
+      other:
+        '🔥 {days} gün üst üste, inanılmazsın! Bu emeğe teşekkür olarak {count} ay Pro bizden.',
+    },
+    introStreakWeeks: {
+      one: '🔥 {days} gün üst üste, harikasın! Bu emeğe küçük bir teşekkür: {count} hafta Pro bizden.',
+      other:
+        '🔥 {days} gün üst üste, harikasın! Bu emeğe küçük bir teşekkür: {count} hafta Pro bizden.',
     },
     introCode: {
       one: '🎟️ {code} kodu işe yaradı: {count} ay LangX Pro senin.',
@@ -597,6 +603,8 @@ export const tr: Localized<ServerMessages> = {
       other:
         "Bildirimin için teşekkürler. İnceledik ve LangX'i öğrenmek için iyi bir yer olarak tutmaya yardım ettiğin için cüzdanına {count} jeton ekledik. Bildirdiğin kişiye, onu kimin bildirdiği asla söylenmez.",
     },
+    suspensionEnded:
+      'Askıya alma süren doldu ve hesabın yeniden açık. 👋 Profilin yeniden Keşfet’te ve aramada görünüyor, sohbetlerin de bıraktığın yerde duruyor.\n\nLütfen LangX’i öğrenmek için iyi bir yer olarak tutmaya yardım et — doğrulanan bir bildirim daha hesabın kalıcı olarak kapanmasına yol açabilir. Bir şeylerin yanlış gittiğini düşünüyorsan Ayarlar → Hakkında → Geri bildirim bir insana ulaşır.',
     assistantOffline:
       'Şu anda mesajlara yanıt veremiyorum. Acelesi yoksa sonra tekrar dene; varsa {email} adresine yaz, bir insan okuyacak.',
     assistantLimit:

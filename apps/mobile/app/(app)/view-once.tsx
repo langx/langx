@@ -262,9 +262,15 @@ function OnceVideo({
         A browser will not start a clip with sound by itself: the tap that
         opened this screen was spent on the open, before the file arrived. So
         on the web a clip that has not started waits for one more tap, which
-        also lets its sound through. A phone starts it at once.
+        also lets its sound through. A phone starts it at once, so there the
+        wait is only the file arriving — a play button in that gap offered a
+        tap nothing needed, and read as a clip that would not start.
       */}
-      {!started && progress === 0 ? (
+      {!started && progress === 0 && Platform.OS !== 'web' ? (
+        <View style={styles.playCentre} pointerEvents="none">
+          <ActivityIndicator color={ON_STAGE} />
+        </View>
+      ) : !started && progress === 0 ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('media.playVideo')}

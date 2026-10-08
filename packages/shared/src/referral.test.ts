@@ -92,11 +92,6 @@ describe('referral rules', () => {
     expect(TOKEN_RULES.referral.subscription).toBeGreaterThan(TOKEN_RULES.referral.activation)
   })
 
-  /**
-   * If either fell out of the grant list, the week and month tables would
-   * start ranking invitations — which is the one thing the leaderboard is not
-   * for. Nothing else would fail.
-   */
   /** The invite page quotes one figure for the newcomer; this keeps it true. */
   it('starts an invited newcomer on the total the invite page quotes', () => {
     const { inviteeActivation, inviteeTotal } = TOKEN_RULES.referral
@@ -104,11 +99,16 @@ describe('referral rules', () => {
     expect(TOKEN_RULES.signupBonus + inviteeActivation).toBe(inviteeTotal)
   })
 
-  it('keeps all three kinds out of the weekly leaderboard', () => {
+  /**
+   * The leaderboard shows what somebody received this week, and a referral
+   * payout is part of that. Only the three account-lifecycle credits stay
+   * off the ranked periods.
+   */
+  it('ranks all three kinds, like any other reward', () => {
     for (const kind of ['referral', 'referralSubscription', 'referralWelcome'] as const) {
       expect(TOKEN_KINDS as readonly string[], kind).toContain(kind)
-      expect(TOKEN_GRANT_KINDS as readonly string[], kind).toContain(kind)
-      expect(isGrantKind(kind), kind).toBe(true)
+      expect(TOKEN_GRANT_KINDS as readonly string[], kind).not.toContain(kind)
+      expect(isGrantKind(kind), kind).toBe(false)
     }
   })
 

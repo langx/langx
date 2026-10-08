@@ -1408,6 +1408,8 @@ export const ptBR: Localized<EnMessages> = {
     other: 'Outra coisa',
     details: 'O que aconteceu?',
     detailsPlaceholder: 'Opcional. Qualquer coisa que nos ajude a entender.',
+    threadNotice:
+      'Se vocês trocaram mensagens, quem analisar esta denúncia também verá as mensagens mais recentes entre vocês, até esta denúncia.',
     submit: 'Enviar denúncia',
     messageSent: 'Denunciado. Obrigado — analisamos todas.',
     profileSent: 'Denúncia enviada. Vamos verificar.',

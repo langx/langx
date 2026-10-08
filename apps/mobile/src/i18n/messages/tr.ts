@@ -1408,6 +1408,8 @@ export const tr: Localized<EnMessages> = {
     other: 'Başka bir şey',
     details: 'Ne oldu?',
     detailsPlaceholder: 'İsteğe bağlı. Anlamamıza yardımcı olacak her şey.',
+    threadNotice:
+      'Mesajlaştıysanız, bildirimi inceleyen kişi aranızdaki son mesajları da görür — bu bildirime kadar olanları.',
     submit: 'Bildirimi gönder',
     messageSent: 'Bildirildi. Teşekkürler — hepsine bakıyoruz.',
     profileSent: 'Bildirim gönderildi. İnceleyeceğiz.',

@@ -62,7 +62,7 @@ export function lastMonthKey(now: Date): string {
  * the same five numbers.
  *
  * The token total is read from the ledger, not `tokenAggregates`: grants —
- * signup bonuses, gifts, v1 conversions — never reach the month buckets, and
+ * signup bonuses, v1 conversions — never reach the month buckets, and
  * "given out" has to include them. `spend` is the only negative kind and is
  * not tokens given out. By `day` rather than `month` because `day` is the
  * ledger's index.

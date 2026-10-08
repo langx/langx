@@ -1322,18 +1322,18 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
     /**
      * The rule this pins down, which is the reason the tile is worth showing
      * at all: `awardTokens` credits a grant kind to `all` and to nothing else,
-     * so the sign-up bonus, the hourly gift and every referral payout stay off
-     * the weekly board. A percentile there is a reading of what somebody did
-     * this week, not of what they were given.
+     * so the sign-up bonus and a converted v1 balance stay off the weekly
+     * board. A percentile there is a reading of this week, not of an
+     * account's arrival.
      */
     it('has no rank for somebody who has only ever been given tokens', async () => {
       const owner = await newUser('rank-idle@example.com', { handle: 'rankidle' })
       const viewer = await newUser('rank-idle-viewer@example.com')
       await awardTokens(handle.db, {
         userId: owner.userId,
-        kind: 'gift',
+        kind: 'welcomeBack',
         amount: 500_000,
-        refId: 'rank-idle-gift',
+        refId: 'rank-idle-welcome',
       })
 
       const week = await handle.db
