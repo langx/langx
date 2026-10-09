@@ -3,12 +3,11 @@ import {
   getCountry,
   HANDLE_PATTERN,
   INVITE_QUERY_PARAM,
-  profileUrl,
   type SharedProfile,
   TOKEN_RULES,
 } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
-import { Redirect, useLocalSearchParams } from 'expo-router'
+import { Redirect, router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { api } from '../src/api/client'
@@ -20,8 +19,8 @@ import { LanguageColumns } from '../src/components/LanguageColumns'
 import { PhotoViewer } from '../src/components/PhotoViewer'
 import { Screen } from '../src/components/ui/Screen'
 import { Skeleton } from '../src/components/ui/Skeleton'
+import { authLandingHref } from '../src/lib/authLanding'
 import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
-import { openExternal } from '../src/lib/openExternal'
 import { makeStyles } from '../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../src/i18n'
 import { usePullToRefresh } from '../src/hooks/usePullToRefresh'
@@ -200,13 +199,12 @@ export default function SharedProfileScreen() {
               })
             : t('shared.ctaBody', { name: user.displayName })}
         </Text>
-        {/* An external open rather than a route: this branch of the tree is
-            the signed-out one, so pushing at `(auth)` from here would cross a
-            `Stack.Protected` boundary that has not flipped yet. */}
-        <Button
-          label={t('shared.ctaLabel')}
-          onPress={() => void openExternal(profileUrl(handle))}
-        />
+        {/* A route, not an external open of `profileUrl(handle)`: that is this
+            very page, so on web the button reloaded it and on a phone the
+            universal link brought it straight back — a loop either way.
+            Signed out, `(auth)` is the mounted branch, so pushing at it
+            crosses nothing; the invite flag above is already written. */}
+        <Button label={t('shared.ctaLabel')} onPress={() => router.push(authLandingHref())} />
       </View>
     </Screen>
   )
