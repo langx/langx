@@ -576,8 +576,8 @@ already exchanged messages (`MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES`); the note
 in App Store Connect offered one demo account and a recording made on
 Android, and the two-account thread planned in
 [`store/2.9-app-review-notes.md`](store/2.9-app-review-notes.md) had never
-been written — on 10 October the two review accounts still had no
-conversation with each other. Apple's own next step for both 2.5.4 items is
+been written — and could not have been as planned, because the second
+account it names is not one the team can sign in to. Apple's own next step for both 2.5.4 items is
 explicit: reply with **a screen recording on a physical device**, going to the
 Home Screen while the mode is in use, and put the recording in the Notes field
 for every later submission.
@@ -597,6 +597,10 @@ What answers it:
    the rejected submission, with the recording and a line confirming CallKit
    is off in China; then _Resubmit to App Review_. No new build is needed —
    the binary was not the problem.
+
+On 10 October 2026 steps 2 and 4 were done — the reply covered all three
+items and pointed at the Android recording — and 2.9 went back into the queue.
+Steps 1 and 3 were still open.
 
 **The rule that follows:** any build that adds a `UIBackgroundModes` entry, a
 CallKit/PushKit capability or anything else App Review checks against
