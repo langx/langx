@@ -545,9 +545,68 @@ So the first build of 2.7, local or cloud, needs the portal visited and its
 iOS credentials regenerated. See
 [`plans/phase-3-carplay.md`](plans/phase-3-carplay.md).
 
-`UIBackgroundModes` held `audio` for builds 172–173 only, for a car that
-spoke messages itself. From 174 Siri reads them and the key is gone again, as
-it was in every build before.
+`UIBackgroundModes` held `audio` for builds 172–173, for a car that spoke
+messages itself; from 174 Siri read them and the key went away. It came back
+in 2.9 for a different reason: calls (`plugins/withCalls.js` adds `voip` and
+`audio`), and this time it stays — see the next section.
+
+## A background mode needs a feature the reviewer can reach
+
+**2.9 (build 190) was rejected on 10 October 2026 for three things at once,**
+all of them about calls, reviewed on an iPad Air:
+
+- **2.5.4, `audio`:** the app declares `audio` in `UIBackgroundModes` and the
+  reviewer found nothing that needs persistent audio.
+- **2.5.4, `voip`:** the same for `voip` — no VoIP service found.
+- **5, CallKit in China:** China's MIIT asked for CallKit to be off on the
+  China App Store, and China is a listed territory.
+
+Neither mode is a leftover. `voip` lets a PushKit push wake the app to ring a
+call; `audio` keeps the call's sound going when the screen locks or another
+app comes to the front, and without it iOS suspends the app and the call goes
+silent. Nothing else plays in the background — expo-audio is configured with
+`enableBackgroundPlayback: false` in `app.config.ts`, and expo-video has no
+background option set. So removing either key would break calls, and the fix
+is to let the reviewer see what they are for. China is already handled:
+`CallCenter.swift` checks the storefront and the region and never starts
+PushKit there, so CallKit is never reached.
+
+The reviewer could not see any of it. A call needs two accounts that have
+already exchanged messages (`MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES`); the note
+in App Store Connect offered one demo account and a recording made on
+Android, and the two-account thread planned in
+[`store/2.9-app-review-notes.md`](store/2.9-app-review-notes.md) had never
+been written — and could not have been as planned, because the second
+account it names is not one the team can sign in to. Apple's own next step for both 2.5.4 items is
+explicit: reply with **a screen recording on a physical device**, going to the
+Home Screen while the mode is in use, and put the recording in the Notes field
+for every later submission.
+
+What answers it:
+
+1. **An iPhone screen recording**: a call in progress, the Home Screen, the
+   device locked, the call still audible and the green call indicator showing.
+   A simulator cannot show this, and an Android recording does not answer an
+   iOS background-mode question.
+2. **The note names both modes and China.** The App Review notes have a
+   paragraph on `voip` and `audio` (added in App Store Connect on 10 October);
+   the China behaviour was already in them.
+3. **The demo thread exists**, so the reviewer can reach a call at all — the
+   checklist in the review-notes file, checked in the database, not assumed.
+4. **Reply, then resubmit.** The reply goes in App Review's message thread on
+   the rejected submission, with the recording and a line confirming CallKit
+   is off in China; then _Resubmit to App Review_. No new build is needed —
+   the binary was not the problem.
+
+On 10 October 2026 steps 2 and 4 were done — the reply covered all three
+items and pointed at the Android recording — and 2.9 went back into the queue.
+Steps 1 and 3 were still open.
+
+**The rule that follows:** any build that adds a `UIBackgroundModes` entry, a
+CallKit/PushKit capability or anything else App Review checks against
+behaviour ships with a review note that says where the behaviour is and how to
+reach it with the demo accounts — and with those accounts already in the state
+the note describes.
 
 ## A new Xcode major is a new review risk
 
@@ -931,7 +990,9 @@ the account owner can do. `docs/self-host.md` → _Calls_ has the detail.
       `microphone` and `camera` and for `USE_FULL_SCREEN_INTENT` (allowed for
       calling apps), and App Review notes with two demo accounts on a thread
       that is already unlocked, since a reviewer cannot exchange five messages
-      with themselves. Do the Play declarations with that bundle, not before:
+      with themselves (2.9 was rejected under 2.5.4 for lacking exactly
+      that — see _A background mode needs a feature the reviewer can
+      reach_). Do the Play declarations with that bundle, not before:
       Play asks for them against a bundle that holds the permissions, and a
       submission sent while another is in review restarts the review.
 - [x] **Check whether the app is offered in mainland China** — it is (checked
