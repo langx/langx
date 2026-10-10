@@ -545,9 +545,52 @@ So the first build of 2.7, local or cloud, needs the portal visited and its
 iOS credentials regenerated. See
 [`plans/phase-3-carplay.md`](plans/phase-3-carplay.md).
 
-`UIBackgroundModes` held `audio` for builds 172–173 only, for a car that
-spoke messages itself. From 174 Siri reads them and the key is gone again, as
-it was in every build before.
+`UIBackgroundModes` held `audio` for builds 172–173, for a car that spoke
+messages itself; from 174 Siri read them and the key went away. It came back
+in 2.9 for a different reason: calls (`plugins/withCalls.js` adds `voip` and
+`audio`), and this time it stays — see the next section.
+
+## A background mode needs a feature the reviewer can reach
+
+**2.9 (build 190) was rejected under Guideline 2.5.4: the app declares `audio`
+in `UIBackgroundModes` and the reviewer found nothing that needs persistent
+audio.** Written down on 10 October 2026.
+
+The mode is not a leftover. `audio` is what keeps a call's sound going when
+the screen locks or another app comes to the front during a call; without it
+iOS suspends the app and the call goes silent. Nothing else plays in the
+background — expo-audio is configured with `enableBackgroundPlayback: false`
+in `app.config.ts`, and expo-video has no background option set. So removing
+the key would break calls, and the fix is to let the reviewer see what it is
+for.
+
+The reviewer could not, because a call needs two accounts that have already
+exchanged messages (`MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES`), and the demo
+thread the review note promised had never been written: on 10 October the two
+review accounts still had no conversation with each other. A reviewer who
+cannot start a call cannot find the only feature the mode serves.
+
+What answers it:
+
+1. **The demo thread exists before anything is sent** — the checklist in
+   [`store/2.9-app-review-notes.md`](store/2.9-app-review-notes.md), checked
+   in the database, not assumed.
+2. **The note names the mode.** The review note has a paragraph on `voip` and
+   `audio`, so the question is answered before it is asked.
+3. **A screen recording from a physical iPhone**, attached to the reply in the
+   Resolution Center: a call in progress, the Home Screen, the device locked,
+   the call still audible and the green call indicator showing. A simulator
+   recording does not show CallKit's behaviour and does not count.
+4. **Reply, then resubmit.** The reply goes in App Review's message thread on
+   the rejected submission; the corrected note goes in App Review Information
+   → Notes; then the version is submitted again. No new build is needed — the
+   binary was not the problem.
+
+**The rule that follows:** any build that adds a `UIBackgroundModes` entry, a
+CallKit/PushKit capability or anything else App Review checks against
+behaviour ships with a review note that says where the behaviour is and how to
+reach it with the demo accounts — and with those accounts already in the state
+the note describes.
 
 ## A new Xcode major is a new review risk
 
@@ -931,7 +974,9 @@ the account owner can do. `docs/self-host.md` → _Calls_ has the detail.
       `microphone` and `camera` and for `USE_FULL_SCREEN_INTENT` (allowed for
       calling apps), and App Review notes with two demo accounts on a thread
       that is already unlocked, since a reviewer cannot exchange five messages
-      with themselves. Do the Play declarations with that bundle, not before:
+      with themselves (2.9 was rejected under 2.5.4 for lacking exactly
+      that — see _A background mode needs a feature the reviewer can
+      reach_). Do the Play declarations with that bundle, not before:
       Play asks for them against a bundle that holds the permissions, and a
       submission sent while another is in review restarts the review.
 - [x] **Check whether the app is offered in mainland China** — it is (checked
