@@ -24,7 +24,7 @@ const { withEntitlementsPlist, withInfoPlist } = require('expo/config-plugins')
  * **`NSUserActivityTypes`** is how the app claims the intents in the places
  * that look at the app rather than the extension — Siri's "continue in app",
  * the Shortcuts app, and handoff. The extension's own `Info.plist` declares
- * the same three under `IntentsSupported`, and the two lists have to agree.
+ * the same four under `IntentsSupported`, and the two lists have to agree.
  */
 
 /** Team-prefixed at build time: the literal would match nothing. */
@@ -37,7 +37,13 @@ const KEYCHAIN_GROUP = '$(AppIdentifierPrefix)tech.newchapter.languageXchange'
  */
 const KEYCHAIN_GROUP_KEY = 'LangXKeychainAccessGroup'
 
-const INTENTS = ['INSendMessageIntent', 'INSearchForMessagesIntent', 'INSetMessageAttributeIntent']
+const INTENTS = [
+  'INSendMessageIntent',
+  'INSearchForMessagesIntent',
+  'INSetMessageAttributeIntent',
+  // Required of a CarPlay app that places VoIP calls; see `CallingHandler.swift`.
+  'INStartCallIntent',
+]
 
 const withSiriMessaging = (config) => {
   config = withEntitlementsPlist(config, (modConfig) => {

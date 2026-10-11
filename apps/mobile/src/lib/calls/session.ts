@@ -520,7 +520,7 @@ export async function placeCall(input: {
   conversationId: string
   peer: CallPeer
   media: CallMedia
-  source: 'header' | 'row' | 'meeting'
+  source: 'header' | 'row' | 'meeting' | 'siri'
 }): Promise<void> {
   const current = callState()
   if (current && current.phase !== 'ended') throw new CallRefusal('CALL_IN_PROGRESS')

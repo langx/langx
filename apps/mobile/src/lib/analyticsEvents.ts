@@ -599,10 +599,10 @@ export type AnalyticsEvent =
       /**
        * A call button was pressed and the microphone was had: the call is on
        * its way to the server. `source` is where the button was — the thread's
-       * header, "Call back" on a call's own row, or an agreed call's card.
+       * header, "Call back" on a call's own row, an agreed call's card, or Siri.
        */
       name: 'call_started'
-      properties: { media: CallMedia; source: 'header' | 'row' | 'meeting' }
+      properties: { media: CallMedia; source: 'header' | 'row' | 'meeting' | 'siri' }
     }
   | {
       /**

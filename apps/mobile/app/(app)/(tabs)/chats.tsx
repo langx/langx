@@ -63,7 +63,7 @@ export default function ChatsScreen() {
    * notification, a widget link and a tap on a row all end up in the same
    * place. A tap sets it directly; nothing navigates.
    */
-  const { open, at } = useLocalSearchParams<{ open?: string; at?: string }>()
+  const { open, at, call } = useLocalSearchParams<{ open?: string; at?: string; call?: string }>()
   const [selected, setSelected] = useState<string | undefined>(open)
   useEffect(() => {
     if (open) setSelected(open)
@@ -495,6 +495,7 @@ export default function ChatsScreen() {
             // Only for the thread the parameter named: "open at that message"
             // belongs to the link that carried it, not to the next row tapped.
             {...(at && open === selected ? { at } : {})}
+            {...(call && open === selected ? { call } : {})}
           />
         )
       }
